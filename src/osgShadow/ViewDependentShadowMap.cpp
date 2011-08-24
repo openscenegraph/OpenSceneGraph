@@ -34,6 +34,74 @@ static const char fragmentShaderSource_withBaseTexture[] =
         "  gl_FragColor = color;                                                                                \n"
         "} \n";
 
+
+template<class T>
+class RenderLeafTraverser : public T
+{
+public:
+
+    RenderLeafTraverser()
+    {
+    }
+
+    void traverse(const osgUtil::RenderStage* rs)
+    {
+        traverse(static_cast<const osgUtil::RenderBin*>(rs));
+    }
+
+    void traverse(const osgUtil::RenderBin* renderBin)
+    {
+        const osgUtil::RenderBin::RenderBinList& rbl = renderBin->getRenderBinList();
+        for(osgUtil::RenderBin::RenderBinList::const_iterator itr = rbl.begin();
+            itr != rbl.end();
+            ++itr)
+        {
+            traverse(itr->second.get());
+        }
+
+        const osgUtil::RenderBin::RenderLeafList& rll = renderBin->getRenderLeafList();
+        for(osgUtil::RenderBin::RenderLeafList::const_iterator itr = rll.begin();
+            itr != rll.end();
+            ++itr)
+        {
+            handle(*itr);
+        }
+
+        const osgUtil::RenderBin::StateGraphList& rgl = renderBin->getStateGraphList();
+        for(osgUtil::RenderBin::StateGraphList::const_iterator itr = rgl.begin();
+            itr != rgl.end();
+            ++itr)
+        {
+            traverse(*itr);
+        }
+
+    }
+
+    void traverse(const osgUtil::StateGraph* stateGraph)
+    {
+        const osgUtil::StateGraph::ChildList& cl = stateGraph->_children;
+        for(osgUtil::StateGraph::ChildList::const_iterator itr = cl.begin();
+            itr != cl.end();
+            ++itr)
+        {
+            traverse(itr->second.get());
+        }
+
+        const osgUtil::StateGraph::LeafList& ll = stateGraph->_leaves;
+        for(osgUtil::StateGraph::LeafList::const_iterator itr = ll.begin();
+            itr != ll.end();
+            ++itr)
+        {
+            handle(itr->get());
+        }
+    }
+
+    inline void handle(const osgUtil::RenderLeaf* renderLeaf)
+    {
+        this->operator()(renderLeaf);
+    }
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // VDSMCameraCullCallback
@@ -489,6 +557,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
     OSG_INFO<<"cv->getProjectionMatrix()="<<*cv.getProjectionMatrix()<<std::endl;
 
+    osg::CullSettings::ComputeNearFarMode cachedNearFarMode = cv.getComputeNearFarMode();
+#if 1
+    cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+#endif
     // 1. Traverse main scene graph
     cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
 
@@ -502,7 +574,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     // are all done correctly.
     cv.computeNearPlane();
 
-    
+    // return compute near far mode back to it's original settings
+    cv.setComputeNearFarMode(cachedNearFarMode);
+
+
     // 2. select active light sources
     //    create a list of light sources + their matrices to place them
     selectActiveLights(&cv, vdd);
@@ -691,23 +766,24 @@ void ViewDependentShadowMap::createShaders()
 
     _shadowCastingStateSet = new osg::StateSet;
 
-#if 1
-    // note soft (attribute only no mode override) setting. When this works ?
-    // 1. for objects prepared for backface culling
-    //    because they usually also set CullFace and CullMode on in their state
-    //    For them we override CullFace but CullMode remains set by them
-    // 2. For one faced, trees, and similar objects which cannot use
-    //    backface nor front face so they usually use CullMode off set here.
-    //    In this case we will draw them in their entirety.
+    if (!_debugDraw)
+    {
+        // note soft (attribute only no mode override) setting. When this works ?
+        // 1. for objects prepared for backface culling
+        //    because they usually also set CullFace and CullMode on in their state
+        //    For them we override CullFace but CullMode remains set by them
+        // 2. For one faced, trees, and similar objects which cannot use
+        //    backface nor front face so they usually use CullMode off set here.
+        //    In this case we will draw them in their entirety.
 
-    _shadowCastingStateSet->setAttribute( new osg::CullFace( osg::CullFace::FRONT ),
-            osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+        _shadowCastingStateSet->setAttribute( new osg::CullFace( osg::CullFace::FRONT ),
+                osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 
-    // make sure GL_CULL_FACE is off by default
-    // we assume that if object has cull face attribute set to back
-    // it will also set cull face mode ON so no need for override
-    _shadowCastingStateSet->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
-#endif
+        // make sure GL_CULL_FACE is off by default
+        // we assume that if object has cull face attribute set to back
+        // it will also set cull face mode ON so no need for override
+        _shadowCastingStateSet->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+    }
     
 #if 1
     float factor = 1.1;
@@ -1026,43 +1102,306 @@ bool ViewDependentShadowMap::perspectiveShadowMapCameraSettings(Frustum& frustum
     return adjustPerspectiveShadowMapCameraSettings(0, frustum, positionedLight, camera);
 }
 
-struct RenderLeafIterator
+struct ConvexHull
 {
-    RenderLeafIterator()
+    typedef std::vector<osg::Vec3d> Vertices;
+    typedef std::pair< osg::Vec3d, osg::Vec3d > Edge;
+    typedef std::list< Edge > Edges;
+
+    Edges _edges;
+
+    void setToFrustum(ViewDependentShadowMap::Frustum& frustum)
     {
+        _edges.push_back( Edge(frustum.corners[0],frustum.corners[1]) );
+        _edges.push_back( Edge(frustum.corners[1],frustum.corners[2]) );
+        _edges.push_back( Edge(frustum.corners[2],frustum.corners[3]) );
+        _edges.push_back( Edge(frustum.corners[3],frustum.corners[0]) );
+
+        _edges.push_back( Edge(frustum.corners[4],frustum.corners[5]) );
+        _edges.push_back( Edge(frustum.corners[5],frustum.corners[6]) );
+        _edges.push_back( Edge(frustum.corners[6],frustum.corners[7]) );
+        _edges.push_back( Edge(frustum.corners[7],frustum.corners[4]) );
+
+        _edges.push_back( Edge(frustum.corners[0],frustum.corners[4]) );
+        _edges.push_back( Edge(frustum.corners[1],frustum.corners[5]) );
+        _edges.push_back( Edge(frustum.corners[2],frustum.corners[6]) );
+        _edges.push_back( Edge(frustum.corners[3],frustum.corners[7]) );
+    }
+    
+    void transform(const osg::Matrixd& m)
+    {
+        for(Edges::iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            itr->first = itr->first * m;
+            itr->second = itr->second * m;
+        }
+    }
+    
+    void clip(const osg::Plane& plane)    
+    {
+        // OSG_NOTICE<<"clip("<<plane<<") edges.size()="<<_edges.size()<<std::endl;
+        for(Edges::iterator itr = _edges.begin();
+            itr != _edges.end();
+            )
+        {
+            double d0 = plane.distance(itr->first);
+            double d1 = plane.distance(itr->second);
+            if (d0<0.0 && d1<0.0)
+            {
+                // OSG_NOTICE<<"  Edge completely outside, removing"<<std::endl;
+                Edges::iterator to_delete_itr = itr;
+                ++itr;
+                _edges.erase(to_delete_itr);
+            }
+            else if (d0>=0.0 && d1>=0.0)
+            {
+                // OSG_NOTICE<<"  Edge completely inside"<<std::endl;
+                ++itr;
+            }
+            else
+            {
+                osg::Vec3d& v0 = itr->first;
+                osg::Vec3d& v1 = itr->second;
+                osg::Vec3d intersection = v0 - (v1-v0)*(d0/(d1-d0));
+                // OSG_NOTICE<<"  Edge across clip plane, v0="<<v0<<", v1="<<v1<<", intersection= "<<intersection<<std::endl;
+                if (d0<0.0)
+                {
+                    // move first vertex on edge
+                    v0 = intersection;
+                }
+                else
+                {
+                    // move second vertex on edge
+                    v1 = intersection;
+                }
+                
+                ++itr;
+            }
+        }
+        // OSG_NOTICE<<"  after clip("<<plane<<") edges.size()="<<_edges.size()<<std::endl;
+    }
+    
+    void clip(const osg::Polytope& polytope)
+    {
+        const osg::Polytope::PlaneList& planes = polytope.getPlaneList();
+        for(osg::Polytope::PlaneList::const_iterator itr = planes.begin();
+            itr != planes.end();
+            ++itr)
+        {
+            clip(*itr);
+        }
     }
 
-    void traverse(osgUtil::RenderStage* rs)
+    double min(unsigned int index) const
     {
-        traverse(static_cast<osgUtil::RenderBin*>(rs));
+        double m = DBL_MAX;
+        for(Edges::const_iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            const Edge& edge = *itr;
+            if (edge.first[index]<m) m = edge.first[index];
+            if (edge.second[index]<m) m = edge.second[index];
+        }
+        return m;
+    }
+    
+    double max(unsigned int index) const
+    {
+        double m = -DBL_MAX;
+        for(Edges::const_iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            const Edge& edge = *itr;
+            if (edge.first[index]>m) m = edge.first[index];
+            if (edge.second[index]>m) m = edge.second[index];
+        }
+        return m;
     }
 
-    void traverse(osgUtil::RenderBin* renderBin)
+    double minRatio(const osg::Vec3d& eye, unsigned int index) const
     {
-        OSG_NOTICE<<"traverse(RenderBin="<<renderBin<<")"<<std::endl;
+        double m = DBL_MAX;
+        osg::Vec3d delta;
+        double ratio;
+        for(Edges::const_iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            const Edge& edge = *itr;
+
+            delta = edge.first-eye;
+            ratio = delta[index]/delta[1];
+            if (ratio<m) m = ratio;
+
+            delta = edge.second-eye;
+            ratio = delta[index]/delta[1];
+            if (ratio<m) m = ratio;
+        }
+        return m;
     }
 
-    void traverse(osgUtil::StateGraph* stateGraph)
+    double maxRatio(const osg::Vec3d& eye, unsigned int index) const
     {
-        OSG_NOTICE<<"traverse(StateGraph="<<stateGraph<<")"<<std::endl;
+        double m = -DBL_MAX;
+        osg::Vec3d delta;
+        double ratio;
+        for(Edges::const_iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            const Edge& edge = *itr;
+
+            delta = edge.first-eye;
+            ratio = delta[index]/delta[1];
+            if (ratio>m) m = ratio;
+
+            delta = edge.second-eye;
+            ratio = delta[index]/delta[1];
+            if (ratio>m) m = ratio;
+        }
+        return m;
     }
 
-    void handle(osgUtil::RenderLeaf* renderLeaf)
+    void output(std::ostream& out)
     {
-        OSG_NOTICE<<"handle("<<renderLeaf<<")"<<std::endl;
-    }  
+        out<<"ConvexHull"<<std::endl;
+        for(Edges::const_iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            const Edge& edge = *itr;
+            out<<"   edge ("<<edge.first<<") ("<<edge.second<<")"<<std::endl;
+        }
+    }
 };
 
+
+struct RenderLeafBounds
+{
+    RenderLeafBounds():
+        n(0.0),
+        previous_modelview(0),
+        clip_min_x(-1.0), clip_max_x(1.0),
+        clip_min_y(-1.0), clip_max_y(1.0),
+        clip_min_z(-1.0), clip_max_z(1.0),
+        clip_min_x_ratio(-DBL_MAX), clip_max_x_ratio(DBL_MAX),
+        clip_min_z_ratio(-DBL_MAX), clip_max_z_ratio(DBL_MAX),
+        min_x_ratio(DBL_MAX), max_x_ratio(-DBL_MAX),
+        min_z_ratio(DBL_MAX), max_z_ratio(-DBL_MAX),
+        min_x(1.0), max_x(-1.0),
+        min_y(1.0), max_y(-1.0),
+        min_z(1.0), max_z(-1.0)
+    {
+        //OSG_NOTICE<<std::endl<<"RenderLeafBounds"<<std::endl;
+    }
+
+    void set(const osg::Matrixd& vp, osg::Vec3d& e_ls, double nr)
+    {
+        light_vp = vp;
+        eye_ls = e_ls;
+        n = nr;
+    }
+    
+    void operator() (const osgUtil::RenderLeaf* renderLeaf)
+    {
+        if (renderLeaf->_modelview.get()!=previous_modelview)
+        {
+            previous_modelview = renderLeaf->_modelview.get();
+            light_mvp.mult(*renderLeaf->_modelview, light_vp);
+            //OSG_NOTICE<<"Computing new light_mvp "<<light_mvp<<std::endl;
+        }
+        else
+        {
+            //OSG_NOTICE<<"Reusing light_mvp "<<light_mvp<<std::endl;
+        }
+
+        const osg::BoundingBox& bb = renderLeaf->_drawable->getBound();
+        if (bb.valid())
+        {
+            handle(osg::Vec3d(bb.xMin(),bb.yMin(),bb.zMin()));
+            handle(osg::Vec3d(bb.xMax(),bb.yMin(),bb.zMin()));
+            handle(osg::Vec3d(bb.xMin(),bb.yMax(),bb.zMin()));
+            handle(osg::Vec3d(bb.xMax(),bb.yMax(),bb.zMin()));
+            handle(osg::Vec3d(bb.xMin(),bb.yMin(),bb.zMax()));
+            handle(osg::Vec3d(bb.xMax(),bb.yMin(),bb.zMax()));
+            handle(osg::Vec3d(bb.xMin(),bb.yMax(),bb.zMax()));
+            handle(osg::Vec3d(bb.xMax(),bb.yMax(),bb.zMax()));
+        }
+        else
+        {
+            //OSG_NOTICE<<"bb invalid"<<std::endl;
+        }
+    }
+
+    void handle(const osg::Vec3d& v)
+    {
+        osg::Vec3d ls = v * light_mvp;
+
+        osg::Vec3d delta = ls-eye_ls;
+
+        double x_ratio, z_ratio;
+        if (delta.y()>n)
+        {
+            x_ratio = delta.x()/delta.y();
+            z_ratio = delta.z()/delta.y();
+        }
+        else
+        {
+            x_ratio = delta.x()/n;
+            z_ratio = delta.z()/n;
+        }
+
+        if (x_ratio<min_x_ratio) min_x_ratio = x_ratio;
+        if (x_ratio>max_x_ratio) max_x_ratio = x_ratio;
+        if (z_ratio<min_z_ratio) min_z_ratio = z_ratio;
+        if (z_ratio>max_z_ratio) max_z_ratio = z_ratio;
+        
+        // clip to the light space
+        if (ls.x()<clip_min_x) ls.x()=clip_min_x;
+        if (ls.x()>clip_max_x) ls.x()=clip_max_x;
+        if (ls.y()<clip_min_y) ls.y()=clip_min_y;
+        if (ls.y()>clip_max_y) ls.y()=clip_max_y;
+        if (ls.z()<clip_min_z) ls.z()=clip_min_z;
+        if (ls.z()>clip_max_z) ls.z()=clip_max_z;
+
+        // compute the xyz range.
+        if (ls.x()<min_x) min_x=ls.x();
+        if (ls.x()>max_x) max_x=ls.x();
+        if (ls.y()<min_y) min_y=ls.y();
+        if (ls.y()>max_y) max_y=ls.y();
+        if (ls.z()<min_z) min_z=ls.z();
+        if (ls.z()>max_z) max_z=ls.z();
+    }
+
+    osg::Matrixd        light_vp;
+    osg::Vec3d          eye_ls;
+    double              n;
+    
+    osg::Matrixd        light_mvp;
+    osg::RefMatrix*     previous_modelview;
+    unsigned int        numLeaves;
+
+    double clip_min_x, clip_max_x;
+    double clip_min_y, clip_max_y;
+    double clip_min_z, clip_max_z;
+
+    double clip_min_x_ratio, clip_max_x_ratio;
+    double clip_min_z_ratio, clip_max_z_ratio;
+    
+    double min_x_ratio, max_x_ratio;
+    double min_z_ratio, max_z_ratio;
+    double min_x, max_x;
+    double min_y, max_y;
+    double min_z, max_z;
+};
 
 bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
 {
 
-    if (renderStage)
-    {
-        RenderLeafIterator rli;
-        //rli.traverse(renderStage);
-    }
-    
     //frustum.projectionMatrix;
     //frustum.modelViewMatrix;
 
@@ -1074,6 +1413,65 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     //OSG_NOTICE<<"light_v="<<light_v<<std::endl;
     //OSG_NOTICE<<"light_p="<<light_p<<std::endl;
     
+    ConvexHull convexHull;
+    convexHull.setToFrustum(frustum);
+    
+#if 0
+    OSG_NOTICE<<"ws ConvexHull xMin="<<convexHull.min(0)<<", xMax="<<convexHull.max(0)<<std::endl;
+    OSG_NOTICE<<"ws ConvexHull yMin="<<convexHull.min(1)<<", yMax="<<convexHull.max(1)<<std::endl;
+    OSG_NOTICE<<"ws ConvexHull zMin="<<convexHull.min(2)<<", zMax="<<convexHull.max(2)<<std::endl;
+    
+    convexHull.output(osg::notify(osg::NOTICE));
+#endif
+    
+    convexHull.transform(light_vp);
+
+#if 0
+    convexHull.output(osg::notify(osg::NOTICE));
+
+    OSG_NOTICE<<"ls ConvexHull xMin="<<convexHull.min(0)<<", xMax="<<convexHull.max(0)<<std::endl;
+    OSG_NOTICE<<"ls ConvexHull yMin="<<convexHull.min(1)<<", yMax="<<convexHull.max(1)<<std::endl;
+    OSG_NOTICE<<"ls ConvexHull zMin="<<convexHull.min(2)<<", zMax="<<convexHull.max(2)<<std::endl;
+#endif
+    
+    convexHull.clip(osg::Plane(0.0,0.0,1,1.0)); // clip by near plane of light space.
+    convexHull.clip(osg::Plane(0.0,0.0,-1,1.0));  // clip by far plane of light space.
+
+#if 0
+    convexHull.output(osg::notify(osg::NOTICE));
+
+    OSG_NOTICE<<"clipped ls ConvexHull xMin="<<convexHull.min(0)<<", xMax="<<convexHull.max(0)<<std::endl;
+    OSG_NOTICE<<"clipped ls ConvexHull yMin="<<convexHull.min(1)<<", yMax="<<convexHull.max(1)<<std::endl;
+    OSG_NOTICE<<"clipped ls ConvexHull zMin="<<convexHull.min(2)<<", zMax="<<convexHull.max(2)<<std::endl;
+#endif
+    
+    if (convexHull.min(0)!=-1.0 || convexHull.min(1)!=-1.0 || convexHull.min(2)!=-1.0 ||
+        convexHull.max(0)!=1.0 || convexHull.max(1)!=1.0 || convexHull.max(2)!=1.0)
+    {
+        double zMin = -1.0;
+        
+        osg::Matrix m;
+        m.makeTranslate(osg::Vec3d(-0.5*(convexHull.max(0)+convexHull.min(0)),
+                                    -0.5*(convexHull.max(1)+convexHull.min(1)),
+                                    -0.5*(convexHull.max(2)+zMin)));
+        
+        m.postMultScale(osg::Vec3d(2.0/(convexHull.max(0)-convexHull.min(0)),
+                                   2.0/(convexHull.max(1)-convexHull.min(1)),
+                                   2.0/(convexHull.max(2)-zMin)));
+
+        convexHull.transform(m);
+        light_p.postMult(m);
+        light_vp = light_v * light_p;
+
+#if 0        
+        OSG_NOTICE<<"Adjusting projection matrix "<<m<<std::endl;
+        convexHull.output(osg::notify(osg::NOTICE));
+#endif
+        camera->setProjectionMatrix(light_p);
+        //return true;
+    }
+
+
     osg::Vec3d eye_v = frustum.eye * light_v;
     osg::Vec3d centerNearPlane_v = frustum.centerNearPlane * light_v;
     osg::Vec3d center_v = frustum.center * light_v;
@@ -1084,7 +1482,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double standardShadowMapToleranceAngle = 2.0;
     if (gamma_v<osg::DegreesToRadians(standardShadowMapToleranceAngle) || gamma_v>osg::DegreesToRadians(180-standardShadowMapToleranceAngle))
     {
-        OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
+        // OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
         return true;
     }
 
@@ -1092,112 +1490,76 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     //OSG_NOTICE<<"viewdir_v="<<viewdir_v<<std::endl;
     
     osg::Vec3d eye_ls = frustum.eye * light_vp;
+#if 0
+    if (eye_ls.y()>-1.0)
+    {
+        OSG_NOTICE<<"Eye point within light space - use standard shadow map."<<std::endl;
+        return true;
+    }
+#endif
+    
     osg::Vec3d centerNearPlane_ls = frustum.centerNearPlane * light_vp;
     osg::Vec3d centerFarPlane_ls = frustum.centerFarPlane * light_vp;
     osg::Vec3d center_ls = frustum.center * light_vp;
     osg::Vec3d viewdir_ls = center_ls-eye_ls; viewdir_ls.normalize();
 
-    double sinGamma = sin(gamma_v);
-
     osg::Vec3d side = lightdir ^ viewdir_ls; side.normalize();
     osg::Vec3d up = side ^ lightdir;
     
-//    double nearDist = (centerNearPlane_ls - eye_ls).length();
-    double nearDist = (centerNearPlane_ls - eye_ls).y();
-    double farDist = (centerFarPlane_ls - eye_ls).y();
-    double nearFarRatio = nearDist/(farDist-nearDist);
+    double d = 2.0;
 
-    double min_y = DBL_MAX;
-    double max_y = -DBL_MAX;
-    for(unsigned int i=0;i<8;++i)
+    double alpha = osg::DegreesToRadians(30.0);
+    double n = tan(alpha)*tan(osg::PI_2-gamma_v)*tan(osg::PI_2-gamma_v);
+    //double n = tan(alpha)*tan(osg::PI_2-gamma_v);
+    double min_n = osg::maximum(-1.0-eye_ls.y(), 0.01);
+    if (n<min_n)
     {
-        osg::Vec3d c_ls = frustum.corners[i] * light_vp;
-
-        if (c_ls.y()<min_y) min_y = c_ls.y();
-        if (c_ls.y()>max_y) max_y = c_ls.y();
-        // OSG_NOTICE<<"   corner light space "<<c_ls<<std::endl;
+        // OSG_NOTICE<<"Clamping n to eye point"<<std::endl;
+        n=min_n;
     }
 
-    double d = (max_y-min_y);
-
-    //OSG_NOTICE<<"nearDist before = "<<nearDist<<", nearFarRatio = "<<nearFarRatio<<std::endl;
-    
-    //double factor = 1.0/sinGamma;
-    //double z_n = factor*nearDist;
-    double z_n = d * nearFarRatio;
-    
-    //perspective transform depth light space y extents
-    double z_f = z_n + d;
-    double n = (z_n+sqrt(z_f*z_n))/sinGamma;
-
-    double min_n = 0.0;
-    if (n<min_n) n = min_n;
+    //n = z_n;
     
     double f = n+d;
 
     double a = (f+n)/(f-n);
     double b = -2.0*f*n/(f-n);
 
-    double shift = n - (min_y - eye_ls.y());
-    osg::Vec3d virtual_eye = eye_ls - up*shift;
+    osg::Vec3d virtual_eye(0.0,-1.0-n, eye_ls.z());
 
     osg::Matrixd lightView;
     lightView.makeLookAt(virtual_eye, virtual_eye+lightdir, up);
 
 
-#if 0
-    OSG_NOTICE<<"Eye world "<<frustum.eye<<std::endl;
-    OSG_NOTICE<<"Eye light space "<<eye_ls<<std::endl;
-    OSG_NOTICE<<"Center light space "<<center_ls<<std::endl;
-    OSG_NOTICE<<"Viewdir light space "<<viewdir_ls<<std::endl;
-    OSG_NOTICE<<"gamma_v "<<osg::RadiansToDegrees(gamma_v)<<std::endl;
-    OSG_NOTICE<<"side "<<side<<std::endl;
-    OSG_NOTICE<<"up "<<up<<std::endl;
-    OSG_NOTICE<<"min_y = "<<min_y<<std::endl;
-    OSG_NOTICE<<"max_y = "<<max_y<<std::endl;
-    OSG_NOTICE<<"d = "<<d<<std::endl;
-    OSG_NOTICE<<"n = "<<n<<std::endl;
-    OSG_NOTICE<<"z_n = "<<z_n<<std::endl;
-    OSG_NOTICE<<"z_f = "<<z_f<<std::endl;
-    OSG_NOTICE<<"nearDist = "<<nearDist<<std::endl;
-    OSG_NOTICE<<"shift = "<<shift<<std::endl;
-#endif
-    
-    double min_x = -1.0 - virtual_eye.x();
-    double max_x = 1.0 - virtual_eye.x();
-    double min_z = -1.0 - virtual_eye.z();
-    double max_z = 1.0 - virtual_eye.z();
-
-#if 0
-    OSG_NOTICE<<"min_x = "<<min_x<<std::endl;
-    OSG_NOTICE<<"max_x = "<<max_x<<std::endl;
-    OSG_NOTICE<<"min_z = "<<min_z<<std::endl;
-    OSG_NOTICE<<"max_z = "<<max_z<<std::endl;
-#endif
-    
     double min_x_ratio = 0.0;
     double max_x_ratio = 0.0;
     double min_z_ratio = FLT_MAX;
     double max_z_ratio = -FLT_MAX;
-    for(unsigned int i=0;i<8;++i)
+
+    min_x_ratio = convexHull.minRatio(virtual_eye,0);
+    min_z_ratio = convexHull.minRatio(virtual_eye,2);
+    max_x_ratio = convexHull.maxRatio(virtual_eye,0);
+    max_z_ratio = convexHull.maxRatio(virtual_eye,2);
+
+    if (renderStage)
     {
-        osg::Vec3d c_ve = frustum.corners[i] * light_vp - virtual_eye;
+        osg::ElapsedTime timer;
+        RenderLeafTraverser<RenderLeafBounds> rli;
+        rli.set(osg::Matrix::inverse(frustum.modelViewMatrix) * light_vp, virtual_eye, n);
+        rli.traverse(renderStage);
+#if 0        
+        OSG_NOTICE<<"Time for RenderLeafTraverser "<<timer.elapsedTime_m()<<"ms"<<std::endl;
+        OSG_NOTICE<<"scene bounds min_x="<<rli.min_x<<", max_x="<<rli.max_x<<std::endl;
+        OSG_NOTICE<<"scene bounds min_y="<<rli.min_y<<", max_y="<<rli.max_y<<std::endl;
+        OSG_NOTICE<<"scene bounds min_z="<<rli.min_z<<", max_z="<<rli.max_z<<std::endl;
+        OSG_NOTICE<<"min_x_ratio="<<rli.min_x_ratio<<", max_x_ratio="<<rli.max_x_ratio<<std::endl;
+        OSG_NOTICE<<"min_z_ratio="<<rli.min_z_ratio<<", max_z_ratio="<<rli.max_z_ratio<<std::endl;
+#endif
+        if (rli.max_z_ratio>max_z_ratio) max_z_ratio = rli.max_z_ratio;
+        if (rli.min_z_ratio<min_z_ratio) min_z_ratio = rli.min_z_ratio;
 
-        double x = c_ve.x();
-        if (x<min_x) x=min_x;
-        if (x>max_x) x=max_x;
-        
-        double x_ratio = x/c_ve.y();
-        if (x_ratio<min_x_ratio) min_x_ratio = x_ratio;
-        if (x_ratio>max_x_ratio) max_x_ratio = x_ratio;
-
-        double z = c_ve.z();
-        if (z<min_z) z=min_z;
-        if (z>max_z) z=max_z;
-
-        double z_ratio = c_ve.z()/c_ve.y();
-        if (z_ratio<min_z_ratio) min_z_ratio = z_ratio;
-        if (z_ratio>max_z_ratio) max_z_ratio = z_ratio;
+        //if (rli.min_y>min_y) min_y = rli.min_y;
+        //if (rli.max_y<max_y) max_y = rli.max_y;
     }
 
     double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));
@@ -1211,7 +1573,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     OSG_NOTICE<<"max_z_ratio = "<<max_z_ratio<<std::endl;
     OSG_NOTICE<<"best_z_ratio = "<<best_z_ratio<<std::endl;
 #endif
-    
+
 #if 0
     osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
                                    0.0,  a,   0.0,  1.0,

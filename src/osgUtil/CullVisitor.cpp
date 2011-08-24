@@ -789,13 +789,13 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                 if (d_far<_computed_znear)
                 {
                     if (d_far>=0.0) _computed_znear = d_far;
-                    else OSG_WARN<<"       1)  sett near with dnear="<<d_near<<"  dfar="<<d_far<< std::endl;
+                    else OSG_INFO<<"       1)  ignoring compute dnear="<<d_near<<"  dfar="<<d_far<< std::endl;
                 }
             }
             else
             {
                 if (d_near>=0.0) _computed_znear = d_near;
-                else OSG_WARN<<"        2) sett near with d_near="<<d_near<< std::endl;
+                else OSG_INFO<<"        2) ignoring computed d_near="<<d_near<< std::endl;
             }
         }
         else

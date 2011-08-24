@@ -485,7 +485,7 @@ ViewDependentShadowMap::ViewDependentData::ViewDependentData(ViewDependentShadow
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique(),
-    _shadowMapProjectionHint(STANDARD_SHADOW_MAP),
+    _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _debugDraw(false)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
@@ -643,7 +643,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             // 4.2 compute RTT camera view+projection matrix settings
             //
-            if (!standardShadowMapCameraSettings(frustum, pl, camera.get()))
+            if (!computeShadowCameraSettings(frustum, pl, camera.get()))
             {
                 OSG_NOTICE<<"No valid Camera settings, no shadow to render"<<std::endl;
                 continue;
@@ -667,19 +667,13 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             cv.popStateSet();
 
-            switch(_shadowMapProjectionHint)
+            if (_shadowMapProjectionHint==PERSPECTIVE_SHADOW_MAP)
             {
-                case(LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP):
-                case(PERSPECTIVE_SHADOW_MAP):
+                adjustPerspectiveShadowMapCameraSettings(vdsmCallback->getRenderStage(), frustum, pl, camera.get());
+                if (vdsmCallback->getProjectionMatrix())
                 {
-                    adjustPerspectiveShadowMapCameraSettings(vdsmCallback->getRenderStage(), frustum, pl, camera.get());
-                    if (vdsmCallback->getProjectionMatrix())
-                    {
-                        vdsmCallback->getProjectionMatrix()->set(camera->getProjectionMatrix());
-                    }
-                    break;
+                    vdsmCallback->getProjectionMatrix()->set(camera->getProjectionMatrix());
                 }
-                default: break;
             }
 
             // 4.4 compute main scene graph TexGen + uniform settings + setup state
@@ -933,18 +927,6 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(Frustum& f
 
 bool ViewDependentShadowMap::computeShadowCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
 {
-    OSG_INFO<<"computeShadowCameraSettings()"<<std::endl;
-
-    switch(_shadowMapProjectionHint)
-    {
-        case(PERSPECTIVE_SHADOW_MAP): return perspectiveShadowMapCameraSettings(frustum, positionedLight, camera);
-        case(LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP): return lightSpacePerspectiveShadowMapCameraSettings(frustum, positionedLight, camera);
-        default: return standardShadowMapCameraSettings(frustum, positionedLight, camera);
-    }    
-}
-
-bool ViewDependentShadowMap::standardShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
-{
     OSG_INFO<<"standardShadowMapCameraSettings()"<<std::endl;
 
 #if 0
@@ -1093,13 +1075,6 @@ bool ViewDependentShadowMap::standardShadowMapCameraSettings(Frustum& frustum, L
         }
     }
     return true;
-}
-
-bool ViewDependentShadowMap::perspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
-{
-   OSG_NOTICE<<"ViewDependentShadowMap::perspectiveShadowMapCameraSettings()"<<std::endl;
-    if (!standardShadowMapCameraSettings(frustum, positionedLight, camera)) return false;
-    return adjustPerspectiveShadowMapCameraSettings(0, frustum, positionedLight, camera);
 }
 
 struct ConvexHull
@@ -1410,6 +1385,16 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     osg::Matrixd light_vp = light_v * light_p;
     osg::Vec3d lightdir(0.0,0.0,-1.0);
 
+    // check whether this light space projection is perspective or orthographic.
+    bool orthographicLightSpaceProjection = light_p(0,3)==0.0 && light_p(1,3)==0.0 && light_p(2,3)==0.0;
+
+    if (!orthographicLightSpaceProjection)
+    {
+        OSG_INFO<<"perspective light space projection not yet supported."<<std::endl;
+        return false;
+    }
+
+
     //OSG_NOTICE<<"light_v="<<light_v<<std::endl;
     //OSG_NOTICE<<"light_p="<<light_p<<std::endl;
     
@@ -1574,56 +1559,16 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     OSG_NOTICE<<"best_z_ratio = "<<best_z_ratio<<std::endl;
 #endif
 
-#if 0
-    osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
-                                   0.0,  a,   0.0,  1.0,
-                                   0.0,  0.0, 1.0,  0.0,
-                                   0.0,  b,   0.0,  0.0 );
-#else
     osg::Matrixd lightPerspective( 1.0/best_x_ratio,  0.0, 0.0,  0.0,
                                    0.0,  a,   0.0,  1.0,
                                    0.0,  0.0, 1.0/best_z_ratio,  0.0,
                                    0.0,  b,   0.0,  0.0 );
-#endif
     osg::Matrixd light_persp = light_p * lightView * lightPerspective;
     osg::Matrixd light_view_persp = light_v * light_persp;
-
-#if 0
-    {    
-        double min_x = DBL_MAX;
-        double max_x = -DBL_MAX;
-        double min_z = DBL_MAX;
-        double max_z = -DBL_MAX;
-        min_y = DBL_MAX;
-        max_y = -DBL_MAX;
-        for(unsigned int i=0;i<8;++i)
-        {
-            osg::Vec3d c_lvp = frustum.corners[i] * light_view_persp;
-
-            if (c_lvp.x()<min_x) min_x = c_lvp.x();
-            if (c_lvp.x()>max_x) max_x = c_lvp.x();
-            if (c_lvp.y()<min_y) min_y = c_lvp.y();
-            if (c_lvp.y()>max_y) max_y = c_lvp.y();
-            if (c_lvp.z()<min_z) min_z = c_lvp.z();
-            if (c_lvp.z()>max_z) max_z = c_lvp.z();
-            OSG_NOTICE<<"   corner light perspective space "<<c_lvp<<std::endl;
-        }
-
-        OSG_NOTICE<<"  min_x="<<min_x<<", max_x="<<max_x<<std::endl;
-        OSG_NOTICE<<"  min_y="<<min_y<<", max_y="<<max_y<<std::endl;
-        OSG_NOTICE<<"  min_z="<<min_z<<", max_z="<<max_z<<std::endl;
-    }
-#endif
 
     camera->setProjectionMatrix(light_persp);
 
     return true;
-}
-
-bool ViewDependentShadowMap::lightSpacePerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
-{
-    OSG_NOTICE<<"ViewDependentShadowMap::lightSpacePerspectiveShadowMapCameraSettings()"<<std::endl;
-    return standardShadowMapCameraSettings(frustum, positionedLight, camera);
 }
 
 bool ViewDependentShadowMap::assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen)

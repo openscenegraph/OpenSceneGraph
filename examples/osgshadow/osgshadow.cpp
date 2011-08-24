@@ -799,7 +799,7 @@ int main(int argc, char** argv)
         while( arguments.read("--debugHUD") ) vdsm->setDebugDraw( true );
 
         if (arguments.read("--persp")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::PERSPECTIVE_SHADOW_MAP);
-        if (arguments.read("--lispsm")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP);
+        if (arguments.read("--ortho")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::ORTHOGRAPHIC_SHADOW_MAP);
         
         shadowedScene->setShadowTechnique(vdsm.get());
     }

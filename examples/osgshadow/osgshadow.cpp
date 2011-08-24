@@ -800,6 +800,9 @@ int main(int argc, char** argv)
 
         if (arguments.read("--persp")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::PERSPECTIVE_SHADOW_MAP);
         if (arguments.read("--ortho")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::ORTHOGRAPHIC_SHADOW_MAP);
+
+        unsigned int unit=1;
+        if (arguments.read("--unit",unit)) vdsm->setBaseShadowTextureUnit(unit);
         
         shadowedScene->setShadowTechnique(vdsm.get());
     }

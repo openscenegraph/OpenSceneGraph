@@ -320,7 +320,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     //_camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
-    //_camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+    _camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
 
     // set viewport
     _camera->setViewport(0,0,textureSize,textureSize);
@@ -359,7 +359,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
 //
 // Frustum
 //
-ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv):
+ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv, double minZNear, double maxZFar):
     corners(8),
     faces(6),
     edges(12)
@@ -369,14 +369,17 @@ ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv):
 
     OSG_INFO<<"Projection matrix "<<projectionMatrix<<std::endl;
 
-    osgUtil::CullVisitor::value_type zNear = cv->getCalculatedNearPlane();
-    osgUtil::CullVisitor::value_type zFar = cv->getCalculatedFarPlane();
+    if (cv->getComputeNearFarMode()!=osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
+    {
+        double zNear = osg::maximum(static_cast<double>(cv->getCalculatedNearPlane()),minZNear);
+        double zFar = osg::minimum(static_cast<double>(cv->getCalculatedFarPlane()),maxZFar);
 
-    cv->clampProjectionMatrix(projectionMatrix,zNear,zFar);
+        cv->clampProjectionMatrix(projectionMatrix, zNear, zFar);
 
-    OSG_INFO<<"zNear = "<<zNear<<", zFar = "<<zFar<<std::endl;
-    OSG_INFO<<"Projection matrix after clamping "<<projectionMatrix<<std::endl;
-
+        OSG_INFO<<"zNear = "<<zNear<<", zFar = "<<zFar<<std::endl;
+        OSG_INFO<<"Projection matrix after clamping "<<projectionMatrix<<std::endl;
+    }
+    
     corners[0].set(-1.0,-1.0,-1.0);
     corners[1].set(1.0,-1.0,-1.0);
     corners[2].set(1.0,-1.0,1.0);
@@ -574,9 +577,34 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     OSG_INFO<<"cv->getProjectionMatrix()="<<*cv.getProjectionMatrix()<<std::endl;
 
     osg::CullSettings::ComputeNearFarMode cachedNearFarMode = cv.getComputeNearFarMode();
-#if 1
+
+    osg::RefMatrix& viewProjectionMatrix = *cv.getProjectionMatrix();
+    
+    // check whether this main views projection is perspective or orthographic
+    bool orthographicViewFrustum = viewProjectionMatrix(0,3)==0.0 &&
+                                   viewProjectionMatrix(1,3)==0.0 &&
+                                   viewProjectionMatrix(2,3)==0.0;
+
+    double minZNear = 0.0;
+    double maxZFar = DBL_MAX;
+
+    if (cachedNearFarMode==osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
+    {
+        double left, right, top, bottom;
+        if (orthographicViewFrustum)
+        {
+            viewProjectionMatrix.getOrtho(left, right, bottom, top, minZNear, maxZFar);
+        }
+        else
+        {
+            viewProjectionMatrix.getFrustum(left, right, bottom, top, minZNear, maxZFar);
+        }
+        OSG_INFO<<"minZNear="<<minZNear<<", maxZFar="<<maxZFar<<std::endl;
+    }
+
+    // set the compute near/far mode to the highest quality setting to ensure we push the near plan out as far as possible
     cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-#endif
+
     // 1. Traverse main scene graph
     cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
 
@@ -586,9 +614,14 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
     cv.popStateSet();
 
-    // make sure that the near plane is computed correctly so that any projection matrix computations
-    // are all done correctly.
-    cv.computeNearPlane();
+    if (cv.getComputeNearFarMode()!=osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
+    {
+        // make sure that the near plane is computed correctly so that any projection matrix computations
+        // are all done correctly.
+        cv.computeNearPlane();
+    }
+    
+    Frustum frustum(&cv, minZNear, maxZFar);
 
     // return compute near far mode back to it's original settings
     cv.setComputeNearFarMode(cachedNearFarMode);
@@ -601,8 +634,6 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     unsigned int pos_x = 0;
     unsigned int textureUnit = _baseShadowTextureUnit;
     unsigned int numValidShadows = 0;
-
-    Frustum frustum(&cv);
 
     ShadowDataList& sdl = vdd->getShadowDataList();
     ShadowDataList previous_sdl;
@@ -682,7 +713,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             cv.popStateSet();
 
-            if (_shadowMapProjectionHint==PERSPECTIVE_SHADOW_MAP)
+            if (!orthographicViewFrustum && _shadowMapProjectionHint==PERSPECTIVE_SHADOW_MAP)
             {
                 adjustPerspectiveShadowMapCameraSettings(vdsmCallback->getRenderStage(), frustum, pl, camera.get());
                 if (vdsmCallback->getProjectionMatrix())
@@ -1278,6 +1309,7 @@ struct ConvexHull
 struct RenderLeafBounds
 {
     RenderLeafBounds():
+        numRenderLeaf(0),
         n(0.0),
         previous_modelview(0),
         clip_min_x(-1.0), clip_max_x(1.0),
@@ -1303,6 +1335,8 @@ struct RenderLeafBounds
     
     void operator() (const osgUtil::RenderLeaf* renderLeaf)
     {
+        ++numRenderLeaf;
+        
         if (renderLeaf->_modelview.get()!=previous_modelview)
         {
             previous_modelview = renderLeaf->_modelview.get();
@@ -1371,6 +1405,8 @@ struct RenderLeafBounds
         if (ls.z()<min_z) min_z=ls.z();
         if (ls.z()>max_z) max_z=ls.z();
     }
+
+    unsigned int        numRenderLeaf;
 
     osg::Matrixd        light_vp;
     osg::Vec3d          eye_ls;
@@ -1450,19 +1486,24 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     OSG_NOTICE<<"clipped ls ConvexHull zMin="<<convexHull.min(2)<<", zMax="<<convexHull.max(2)<<std::endl;
 #endif
     
-    if (convexHull.min(0)!=-1.0 || convexHull.min(1)!=-1.0 || convexHull.min(2)!=-1.0 ||
-        convexHull.max(0)!=1.0 || convexHull.max(1)!=1.0 || convexHull.max(2)!=1.0)
+    double xMin = osg::maximum(-1.0,convexHull.min(0));
+    double xMax = osg::minimum(1.0,convexHull.max(0));
+    double yMin = osg::maximum(-1.0,convexHull.min(1));
+    double yMax = osg::minimum(1.0,convexHull.max(1));
+    double zMin = osg::maximum(-1.0,convexHull.min(2));
+    double zMax = osg::minimum(1.0,convexHull.max(2));
+
+    if (xMin!=-1.0 || yMin!=-1.0 || zMin!=-1.0 ||
+        xMax!=1.0 || yMax!=1.0 || zMax!=1.0)
     {
-        double zMin = -1.0;
-        
         osg::Matrix m;
-        m.makeTranslate(osg::Vec3d(-0.5*(convexHull.max(0)+convexHull.min(0)),
-                                    -0.5*(convexHull.max(1)+convexHull.min(1)),
-                                    -0.5*(convexHull.max(2)+zMin)));
+        m.makeTranslate(osg::Vec3d(-0.5*(xMax+xMin),
+                                    -0.5*(yMax+yMin),
+                                    -0.5*(zMax+zMin)));
         
-        m.postMultScale(osg::Vec3d(2.0/(convexHull.max(0)-convexHull.min(0)),
-                                   2.0/(convexHull.max(1)-convexHull.min(1)),
-                                   2.0/(convexHull.max(2)-zMin)));
+        m.postMultScale(osg::Vec3d(2.0/(xMax-xMin),
+                                   2.0/(yMax-yMin),
+                                   2.0/(zMax-zMin)));
 
         convexHull.transform(m);
         light_p.postMult(m);
@@ -1475,7 +1516,6 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         camera->setProjectionMatrix(light_p);
         //return true;
     }
-
 
     osg::Vec3d eye_v = frustum.eye * light_v;
     osg::Vec3d centerNearPlane_v = frustum.centerNearPlane * light_v;
@@ -1491,6 +1531,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         return true;
     }
 
+    //OSG_NOTICE<<"gamma="<<osg::RadiansToDegrees(gamma_v)<<std::endl;
     //OSG_NOTICE<<"eye_v="<<eye_v<<std::endl;
     //OSG_NOTICE<<"viewdir_v="<<viewdir_v<<std::endl;
     
@@ -1519,9 +1560,13 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double min_n = osg::maximum(-1.0-eye_ls.y(), 0.01);
     if (n<min_n)
     {
-        // OSG_NOTICE<<"Clamping n to eye point"<<std::endl;
+        OSG_INFO<<"Clamping n to eye point"<<std::endl;
         n=min_n;
     }
+
+    //n = min_n;
+
+    //n = 0.01;
 
     //n = z_n;
     
@@ -1535,6 +1580,11 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     osg::Matrixd lightView;
     lightView.makeLookAt(virtual_eye, virtual_eye+lightdir, up);
 
+#if 0    
+    OSG_NOTICE<<"n = "<<n<<", f="<<f<<std::endl;
+    OSG_NOTICE<<"eye_ls = "<<eye_ls<<", virtual_eye="<<virtual_eye<<std::endl;
+    OSG_NOTICE<<"frustum.eye_ls="<<frustum.eye<<std::endl;
+#endif
 
     double min_x_ratio = 0.0;
     double max_x_ratio = 0.0;
@@ -1552,8 +1602,14 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         RenderLeafTraverser<RenderLeafBounds> rli;
         rli.set(osg::Matrix::inverse(frustum.modelViewMatrix) * light_vp, virtual_eye, n);
         rli.traverse(renderStage);
-#if 0        
-        OSG_NOTICE<<"Time for RenderLeafTraverser "<<timer.elapsedTime_m()<<"ms"<<std::endl;
+
+        if (rli.numRenderLeaf==0)
+        {
+            return false;
+        }
+        
+#if 0       
+        OSG_NOTICE<<"Time for RenderLeafTraverser "<<timer.elapsedTime_m()<<"ms, number of render leaves "<<rli.numRenderLeaf<<std::endl;
         OSG_NOTICE<<"scene bounds min_x="<<rli.min_x<<", max_x="<<rli.max_x<<std::endl;
         OSG_NOTICE<<"scene bounds min_y="<<rli.min_y<<", max_y="<<rli.max_y<<std::endl;
         OSG_NOTICE<<"scene bounds min_z="<<rli.min_z<<", max_z="<<rli.max_z<<std::endl;
@@ -1584,8 +1640,13 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
                                    0.0,  0.0, 1.0/best_z_ratio,  0.0,
                                    0.0,  b,   0.0,  0.0 );
     osg::Matrixd light_persp = light_p * lightView * lightPerspective;
-    osg::Matrixd light_view_persp = light_v * light_persp;
 
+#if 0
+    OSG_NOTICE<<"light_p = "<<light_p<<std::endl;
+    OSG_NOTICE<<"lightView = "<<lightView<<std::endl;
+    OSG_NOTICE<<"lightPerspective = "<<lightPerspective<<std::endl;
+    OSG_NOTICE<<"light_persp result = "<<light_persp<<std::endl;
+#endif
     camera->setProjectionMatrix(light_persp);
 
     return true;

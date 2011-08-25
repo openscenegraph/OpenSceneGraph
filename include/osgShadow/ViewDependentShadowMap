@@ -49,7 +49,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         struct OSGSHADOW_EXPORT Frustum
         {
-            Frustum(osgUtil::CullVisitor* cv);
+            Frustum(osgUtil::CullVisitor* cv, double minZNear, double maxZFar);
 
             osg::Matrixd projectionMatrix;
             osg::Matrixd modelViewMatrix;

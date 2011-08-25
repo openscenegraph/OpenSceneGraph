@@ -138,6 +138,33 @@ public:
 };
 
 
+class LightAnimationHandler : public osgGA::GUIEventHandler
+{
+public:
+    LightAnimationHandler(bool flag=true): _animating(flag) {}
+
+    void setAnimating(bool flag) { _animating = flag; }
+    bool getAnimating() const { return _animating; }
+
+    /** Deprecated, Handle events, return true if handled, false otherwise. */
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (ea.getKey() == 'p' )
+            {
+                _animating = !_animating;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool  _animating;
+};
+
+
 static int ReceivesShadowTraversalMask = 0x1;
 static int CastsShadowTraversalMask = 0x2;
 
@@ -973,6 +1000,9 @@ int main(int argc, char** argv)
         }
     }
 
+    osg::ref_ptr<LightAnimationHandler> lightAnimationHandler = updateLightPosition ? new LightAnimationHandler : 0;
+    if (lightAnimationHandler) viewer.addEventHandler(lightAnimationHandler.get());
+
 
     // osgDB::writeNodeFile(*group,"test.osgt");
  
@@ -1002,7 +1032,7 @@ int main(int argc, char** argv)
             }        
         }
 
-        if (updateLightPosition)
+        if (lightAnimationHandler.valid() && lightAnimationHandler ->getAnimating())
         {
             float t = viewer.getFrameStamp()->getSimulationTime();
 

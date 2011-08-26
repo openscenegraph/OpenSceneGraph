@@ -355,6 +355,13 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     }   
 }
 
+void ViewDependentShadowMap::ShadowData::releaseGLObjects(osg::State* state) const
+{
+    OSG_INFO<<"ViewDependentShadowMap::ShadowData::releaseGLObjects"<<std::endl;
+    _texture->releaseGLObjects(state);
+    _camera->releaseGLObjects(state);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Frustum
@@ -495,6 +502,15 @@ ViewDependentShadowMap::ViewDependentData::ViewDependentData(ViewDependentShadow
     _stateset = new osg::StateSet;
 }
 
+void ViewDependentShadowMap::ViewDependentData::releaseGLObjects(osg::State* state) const
+{
+    for(ShadowDataList::const_iterator itr = _shadowDataList.begin();
+        itr != _shadowDataList.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1768,4 +1784,24 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
     }
 
     return vdd.getStateSet();
+}
+
+void ViewDependentShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    // the way that ViewDependentData is mapped shouldn't 
+}
+
+void ViewDependentShadowMap::releaseGLObjects(osg::State* state) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDependentDataMapMutex);
+    for(ViewDependentDataMap::const_iterator itr = _viewDependentDataMap.begin();
+        itr != _viewDependentDataMap.end();
+        ++itr)
+    {
+        ViewDependentData* vdd = itr->second.get();
+        if (vdd)
+        {
+            vdd->releaseGLObjects(state);
+        }
+    }
 }

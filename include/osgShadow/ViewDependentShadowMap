@@ -43,6 +43,14 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
         virtual void cull(osgUtil::CullVisitor& cv);
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
@@ -100,6 +108,8 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         {
             ShadowData(ViewDependentData* vdd);
 
+            virtual void releaseGLObjects(osg::State* = 0) const;
+
             ViewDependentData*                  _viewDependentData;
             
             unsigned int                        _textureUnit;
@@ -124,6 +134,8 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
             osg::StateSet* getStateSet() { return _stateset.get(); }
             
+            virtual void releaseGLObjects(osg::State* = 0) const;
+
         protected:
             virtual ~ViewDependentData() {}
 
@@ -156,8 +168,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
         ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
 
-
-virtual void createShaders();
+        virtual void createShaders();
 
         virtual bool selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const;
 
@@ -184,8 +195,8 @@ protected:
         virtual ~ViewDependentShadowMap();
 
         typedef std::map< osgUtil::CullVisitor*, osg::ref_ptr<ViewDependentData> >  ViewDependentDataMap;
-        OpenThreads::Mutex   _viewDependentDataMapMutex;
-        ViewDependentDataMap _viewDependentDataMap;
+        mutable OpenThreads::Mutex              _viewDependentDataMapMutex;
+        ViewDependentDataMap                    _viewDependentDataMap;
 
         unsigned int                            _baseShadowTextureUnit;
 

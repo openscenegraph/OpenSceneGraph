@@ -96,3 +96,15 @@ void ShadowedScene::dirty()
         _shadowTechnique->dirty();
     }
 }
+
+void ShadowedScene::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_shadowTechnique.valid()) _shadowTechnique->resizeGLObjectBuffers(maxSize);
+    Group::resizeGLObjectBuffers(maxSize);
+}
+
+void ShadowedScene::releaseGLObjects(osg::State* state) const
+{
+    if (_shadowTechnique.valid()) _shadowTechnique->releaseGLObjects(state);
+    Group::releaseGLObjects(state);
+}

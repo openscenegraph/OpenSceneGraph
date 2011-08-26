@@ -151,6 +151,7 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
     osg::Camera* camera = dynamic_cast<osg::Camera*>(node);
     OSG_INFO<<"VDSMCameraCullCallback::operator()(osg::Node* "<<camera<<", osg::NodeVisitor* "<<cv<<")"<<std::endl;
 
+#if 1
     if (!_polytope.empty())
     {
         OSG_INFO<<"Pushing custom Polytope"<<std::endl;
@@ -161,21 +162,24 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
         cv->pushCullingSet();
     }
-    
+#endif
     if (_vdsm->getShadowedScene())
     {
         _vdsm->getShadowedScene()->osg::Group::traverse(*nv);
     }
-
+#if 1
     if (!_polytope.empty())
     {
         OSG_INFO<<"Popping custom Polytope"<<std::endl;
         cv->popCullingSet();
     }
+#endif
 
-    _renderStage = cv->getRenderStage();
+    _renderStage = cv->getCurrentRenderBin()->getStage();
 
-    if (cv->getComputeNearFarMode() != osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)        
+    OSG_INFO<<"VDSM second : _renderStage = "<<_renderStage<<std::endl;
+    
+    if (cv->getComputeNearFarMode() != osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
     {
         // make sure that the near plane is computed correctly.
         cv->computeNearPlane();
@@ -776,7 +780,9 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
     previous_ldl.swap(pll);
 
     //MR testing giving a specific light
-    osgUtil::RenderStage * rs = cv->getRenderStage();
+    osgUtil::RenderStage * rs = cv->getCurrentRenderBin()->getStage();
+
+    OSG_INFO<<"selectActiveLights osgUtil::RenderStage="<<rs<<std::endl;
 
     osg::Matrixd modelViewMatrix = *(cv->getModelViewMatrix());
     
@@ -1357,16 +1363,17 @@ struct RenderLeafBounds
         {
             previous_modelview = renderLeaf->_modelview.get();
             light_mvp.mult(*renderLeaf->_modelview, light_vp);
-            //OSG_NOTICE<<"Computing new light_mvp "<<light_mvp<<std::endl;
+            OSG_INFO<<"Computing new light_mvp "<<light_mvp<<std::endl;
         }
         else
         {
-            //OSG_NOTICE<<"Reusing light_mvp "<<light_mvp<<std::endl;
+            OSG_INFO<<"Reusing light_mvp "<<light_mvp<<std::endl;
         }
 
         const osg::BoundingBox& bb = renderLeaf->_drawable->getBound();
         if (bb.valid())
         {
+            OSG_INFO<<"checked extents of "<<renderLeaf->_drawable->getName()<<std::endl;
             handle(osg::Vec3d(bb.xMin(),bb.yMin(),bb.zMin()));
             handle(osg::Vec3d(bb.xMax(),bb.yMin(),bb.zMin()));
             handle(osg::Vec3d(bb.xMin(),bb.yMax(),bb.zMin()));
@@ -1378,16 +1385,15 @@ struct RenderLeafBounds
         }
         else
         {
-            //OSG_NOTICE<<"bb invalid"<<std::endl;
+            OSG_INFO<<"bb invalid"<<std::endl;
         }
     }
 
     void handle(const osg::Vec3d& v)
     {
         osg::Vec3d ls = v * light_mvp;
-
         osg::Vec3d delta = ls-eye_ls;
-
+        
         double x_ratio, z_ratio;
         if (delta.y()>n)
         {
@@ -1420,6 +1426,7 @@ struct RenderLeafBounds
         if (ls.y()>max_y) max_y=ls.y();
         if (ls.z()<min_z) min_z=ls.z();
         if (ls.z()>max_z) max_z=ls.z();
+
     }
 
     unsigned int        numRenderLeaf;
@@ -1509,6 +1516,8 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double zMin = osg::maximum(-1.0,convexHull.min(2));
     double zMax = osg::minimum(1.0,convexHull.max(2));
 
+    // we always want the lightspace to include the computed near plane.
+    zMin = -1.0;
     if (xMin!=-1.0 || yMin!=-1.0 || zMin!=-1.0 ||
         xMax!=1.0 || yMax!=1.0 || zMax!=1.0)
     {
@@ -1530,7 +1539,6 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         convexHull.output(osg::notify(osg::NOTICE));
 #endif
         camera->setProjectionMatrix(light_p);
-        //return true;
     }
 
     osg::Vec3d eye_v = frustum.eye * light_v;
@@ -1596,10 +1604,10 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     osg::Matrixd lightView;
     lightView.makeLookAt(virtual_eye, virtual_eye+lightdir, up);
 
-#if 0    
+#if 0
     OSG_NOTICE<<"n = "<<n<<", f="<<f<<std::endl;
     OSG_NOTICE<<"eye_ls = "<<eye_ls<<", virtual_eye="<<virtual_eye<<std::endl;
-    OSG_NOTICE<<"frustum.eye_ls="<<frustum.eye<<std::endl;
+    OSG_NOTICE<<"frustum.eyes="<<frustum.eye<<std::endl;
 #endif
 
     double min_x_ratio = 0.0;
@@ -1616,7 +1624,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     {
         osg::ElapsedTime timer;
         RenderLeafTraverser<RenderLeafBounds> rli;
-        rli.set(osg::Matrix::inverse(frustum.modelViewMatrix) * light_vp, virtual_eye, n);
+        rli.set(light_p, virtual_eye, n);
         rli.traverse(renderStage);
 
         if (rli.numRenderLeaf==0)
@@ -1624,7 +1632,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
             return false;
         }
         
-#if 0       
+#if 0
         OSG_NOTICE<<"Time for RenderLeafTraverser "<<timer.elapsedTime_m()<<"ms, number of render leaves "<<rli.numRenderLeaf<<std::endl;
         OSG_NOTICE<<"scene bounds min_x="<<rli.min_x<<", max_x="<<rli.max_x<<std::endl;
         OSG_NOTICE<<"scene bounds min_y="<<rli.min_y<<", max_y="<<rli.max_y<<std::endl;
@@ -1642,6 +1650,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));
     double best_z_ratio = osg::maximum(fabs(min_z_ratio),fabs(max_z_ratio));
 
+    //best_z_ratio = osg::maximum(1.0, best_z_ratio);
 #if 0
     OSG_NOTICE<<"min_x_ratio = "<<min_x_ratio<<std::endl;
     OSG_NOTICE<<"max_x_ratio = "<<max_x_ratio<<std::endl;
@@ -1651,6 +1660,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     OSG_NOTICE<<"best_z_ratio = "<<best_z_ratio<<std::endl;
 #endif
 
+    
     osg::Matrixd lightPerspective( 1.0/best_x_ratio,  0.0, 0.0,  0.0,
                                    0.0,  a,   0.0,  1.0,
                                    0.0,  0.0, 1.0/best_z_ratio,  0.0,

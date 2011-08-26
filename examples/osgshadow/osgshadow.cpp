@@ -524,33 +524,39 @@ namespace ModelThree
         osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
         hints->setDetailRatio(2.0f);
         osg::ref_ptr<osg::ShapeDrawable> shape;
-
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, -2.0f), 10, 10.0f, 0.1f), hints.get());
         shape->setColor(osg::Vec4(0.5f, 0.5f, 0.7f, 1.0f));
+        shape->setName("base box");
         geode_1->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), radius * 2), hints.get());
         shape->setColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+        shape->setName("center sphere");
         geode_1->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(-3.0f, 0.0f, 0.0f), radius), hints.get());
         shape->setColor(osg::Vec4(0.6f, 0.8f, 0.8f, 1.0f));
+        shape->setName("cyan sphere");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f), 2 * radius), hints.get());
         shape->setColor(osg::Vec4(0.4f, 0.9f, 0.3f, 1.0f));
+        shape->setName("green box");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(0.0f, -3.0f, 0.0f), radius, height), hints.get());
         shape->setColor(osg::Vec4(0.2f, 0.5f, 0.7f, 1.0f));
+        shape->setName("blue cone");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 3.0f, 0.0f), radius, height), hints.get());
         shape->setColor(osg::Vec4(1.0f, 0.3f, 0.3f, 1.0f));
+        shape->setName("red cyclinder");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, 3.0f), 2.0f, 2.0f, 0.1f), hints.get());
         shape->setColor(osg::Vec4(0.8f, 0.8f, 0.4f, 1.0f));
+        shape->setName("rotating box");
         geode_3->addDrawable(shape.get());
 
         // material

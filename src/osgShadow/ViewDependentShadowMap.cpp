@@ -522,8 +522,9 @@ void ViewDependentShadowMap::ViewDependentData::releaseGLObjects(osg::State* sta
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique(),
-    _baseShadowTextureUnit(1),
+    _baseShadowTextureUnit(1),    
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
+    _minimumShadowMapNearFarRatio(0.01),
     _debugDraw(false)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
@@ -533,6 +534,7 @@ ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vds
     ShadowTechnique(vdsm,copyop),
     _baseShadowTextureUnit(vdsm._baseShadowTextureUnit),
     _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
+    _minimumShadowMapNearFarRatio(vdsm._minimumShadowMapNearFarRatio),
     _debugDraw(vdsm._debugDraw)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
@@ -1581,7 +1583,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double alpha = osg::DegreesToRadians(30.0);
     double n = tan(alpha)*tan(osg::PI_2-gamma_v)*tan(osg::PI_2-gamma_v);
     //double n = tan(alpha)*tan(osg::PI_2-gamma_v);
-    double min_n = osg::maximum(-1.0-eye_ls.y(), 0.01);
+    double min_n = osg::maximum(-1.0-eye_ls.y(), _minimumShadowMapNearFarRatio);
     if (n<min_n)
     {
         OSG_INFO<<"Clamping n to eye point"<<std::endl;

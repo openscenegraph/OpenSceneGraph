@@ -168,6 +168,10 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
         ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
 
+        void setMinimumShadowMapNearFarRatio(double ratio) { _minimumShadowMapNearFarRatio = ratio; }
+        double getMinimumShadowMapNearFarRatio() const { return _minimumShadowMapNearFarRatio; }
+        
+
         virtual void createShaders();
 
         virtual bool selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const;
@@ -210,6 +214,7 @@ protected:
         osg::ref_ptr<osg::Program>              _program;
 
         ShadowMapProjectionHint                 _shadowMapProjectionHint;
+        double                                  _minimumShadowMapNearFarRatio;
         bool                                    _debugDraw;
         
 };

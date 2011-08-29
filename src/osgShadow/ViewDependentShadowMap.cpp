@@ -884,13 +884,13 @@ void ViewDependentShadowMap::createShaders()
         image->allocateImage( 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE );
         *(osg::Vec4ub*)image->data() = osg::Vec4ub( 0xFF, 0xFF, 0xFF, 0xFF );
 
-        _fallbackBaseTexture = new osg::Texture2D(image);
+        _fallbackBaseTexture = new osg::Texture2D(image.get());
         _fallbackBaseTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
         _fallbackBaseTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
         _fallbackBaseTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
         _fallbackBaseTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
 
-        _fallbackShadowMapTexture = new osg::Texture2D(image);
+        _fallbackShadowMapTexture = new osg::Texture2D(image.get());
         _fallbackShadowMapTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
         _fallbackShadowMapTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
         _fallbackShadowMapTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);

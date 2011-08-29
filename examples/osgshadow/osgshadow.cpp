@@ -837,6 +837,9 @@ int main(int argc, char** argv)
         unsigned int unit=1;
         if (arguments.read("--unit",unit)) vdsm->setBaseShadowTextureUnit(unit);
         
+        double n=0.0;
+        if (arguments.read("-n",n)) vdsm->setMinimumShadowMapNearFarRatio(n);
+
         shadowedScene->setShadowTechnique(vdsm.get());
     }
     else if ( arguments.read("--lispsm") ) 

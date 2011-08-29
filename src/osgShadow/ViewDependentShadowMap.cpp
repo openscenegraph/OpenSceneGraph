@@ -878,7 +878,25 @@ void ViewDependentShadowMap::createShaders()
 
     _program = new osg::Program;
     _program->addShader(fragment_shader.get());
-   
+
+    {
+        osg::ref_ptr<osg::Image> image = new osg::Image;
+        image->allocateImage( 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE );
+        *(osg::Vec4ub*)image->data() = osg::Vec4ub( 0xFF, 0xFF, 0xFF, 0xFF );
+
+        _fallbackBaseTexture = new osg::Texture2D(image);
+        _fallbackBaseTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+        _fallbackBaseTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
+        _fallbackBaseTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
+        _fallbackBaseTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
+
+        _fallbackShadowMapTexture = new osg::Texture2D(image);
+        _fallbackShadowMapTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+        _fallbackShadowMapTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
+        _fallbackShadowMapTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
+        _fallbackShadowMapTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
+
+    }
 }
 
 osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight)
@@ -1742,7 +1760,8 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
     osg::ref_ptr<osg::StateSet> stateset = vdd.getStateSet();
     
     vdd.getStateSet()->clear();
-    //vdd.getStateSet()->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+    
+    vdd.getStateSet()->setTextureAttributeAndModes(0, _fallbackBaseTexture.get(), osg::StateAttribute::ON);
 
     for(Uniforms::const_iterator itr=_uniforms.begin();
         itr!=_uniforms.end();

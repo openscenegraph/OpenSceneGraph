@@ -626,6 +626,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
     // set the compute near/far mode to the highest quality setting to ensure we push the near plan out as far as possible
     cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+    //cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES);
 
     // 1. Traverse main scene graph
     cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
@@ -1662,9 +1663,6 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
 #endif
         if (rli.max_z_ratio>max_z_ratio) max_z_ratio = rli.max_z_ratio;
         if (rli.min_z_ratio<min_z_ratio) min_z_ratio = rli.min_z_ratio;
-
-        //if (rli.min_y>min_y) min_y = rli.min_y;
-        //if (rli.max_y<max_y) max_y = rli.max_y;
     }
 
     double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));

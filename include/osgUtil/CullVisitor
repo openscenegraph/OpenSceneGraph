@@ -211,6 +211,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline value_type getCalculatedFarPlane() const { return _computed_zfar; }
 
         value_type computeNearestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable);
+        value_type computeFurthestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable);
 
         bool updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
 
@@ -381,6 +382,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         
         typedef std::multimap<value_type, MatrixPlanesDrawables>   DistanceMatrixDrawableMap;
         DistanceMatrixDrawableMap                                  _nearPlaneCandidateMap;
+        DistanceMatrixDrawableMap                                  _farPlaneCandidateMap;
 
         osg::ref_ptr<Identifier> _identifier;
 };

@@ -131,6 +131,7 @@ void CullVisitor::reset()
     _currentReuseRenderLeafIndex = 0;
 
     _nearPlaneCandidateMap.clear();
+    _farPlaneCandidateMap.clear();
 }
 
 float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const
@@ -161,10 +162,11 @@ float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODSca
 
 void CullVisitor::computeNearPlane()
 {
+    //OSG_NOTICE<<"CullVisitor::computeNearPlane()"<<std::endl;
     if (!_nearPlaneCandidateMap.empty())
     { 
     
-        // osg::Timer_t start_t = osg::Timer::instance()->tick();
+        //osg::Timer_t start_t = osg::Timer::instance()->tick();
         
         // update near from defferred list of drawables
         unsigned int numTests = 0;
@@ -182,11 +184,39 @@ void CullVisitor::computeNearPlane()
             }
         } 
 
-        // osg::Timer_t end_t = osg::Timer::instance()->tick();
-        // OSG_NOTICE<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
+        //osg::Timer_t end_t = osg::Timer::instance()->tick();
+        //OSG_NOTICE<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
 
         _nearPlaneCandidateMap.clear();
     }
+
+    if (!_farPlaneCandidateMap.empty())
+    {
+
+        //osg::Timer_t start_t = osg::Timer::instance()->tick();
+
+        // update near from defferred list of drawables
+        unsigned int numTests = 0;
+        for(DistanceMatrixDrawableMap::reverse_iterator itr=_farPlaneCandidateMap.rbegin();
+            itr!=_farPlaneCandidateMap.rend() && itr->first>_computed_zfar;
+            ++itr)
+        {
+            ++numTests;
+            // OSG_WARN<<"testing computeFurthestPointInFrustum with d_far = "<<itr->first<<std::endl;
+            value_type d_far = computeFurthestPointInFrustum(itr->second._matrix, itr->second._planes,*(itr->second._drawable));
+            if (d_far>_computed_zfar)
+            {
+                _computed_zfar = d_far;
+                // OSG_WARN<<"updating znear to "<<_computed_znear<<std::endl;
+            }
+        }
+
+        //osg::Timer_t end_t = osg::Timer::instance()->tick();
+        //OSG_NOTICE<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_farPlaneCandidateMap.size()<<std::endl;
+
+        _farPlaneCandidateMap.clear();
+    }
+    
 }
 
 void CullVisitor::popProjectionMatrix()
@@ -305,10 +335,11 @@ bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixd& projection, 
     return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
 }
 
-struct ComputeNearestPointFunctor
+template<typename Comparator>
+struct ComputeNearFarFunctor
 {
 
-    ComputeNearestPointFunctor():
+    ComputeNearFarFunctor():
         _planes(0) {}
 
     void set(CullVisitor::value_type znear, const osg::Matrix& matrix, const osg::Polytope::PlaneList* planes)
@@ -321,6 +352,8 @@ struct ComputeNearestPointFunctor
     typedef std::pair<float, osg::Vec3>  DistancePoint;
     typedef std::vector<DistancePoint>  Polygon;
 
+    Comparator                      _comparator;
+    
     CullVisitor::value_type         _znear;
     osg::Matrix                     _matrix;
     const osg::Polytope::PlaneList* _planes;
@@ -335,7 +368,7 @@ struct ComputeNearestPointFunctor
         CullVisitor::value_type n1 = distance(v1,_matrix);
 
         // check if point is behind znear, if so discard
-        if (n1 >= _znear)
+        if (_comparator.greaterEqual(n1,_znear))
         {
             //OSG_NOTICE<<"Point beyond znear"<<std::endl;
             return;
@@ -375,8 +408,8 @@ struct ComputeNearestPointFunctor
         CullVisitor::value_type n2 = distance(v2,_matrix);
 
         // check if line is totally behind znear, if so discard
-        if (n1 >= _znear &&
-            n2 >= _znear)
+        if (_comparator.greaterEqual(n1,_znear) &&
+            _comparator.greaterEqual(n2,_znear))
         {
             //OSG_NOTICE<<"Line totally beyond znear"<<std::endl;
             return;
@@ -421,8 +454,8 @@ struct ComputeNearestPointFunctor
     
         if (active_mask==0)
         {
-            _znear = osg::minimum(_znear,n1);
-            _znear = osg::minimum(_znear,n2);
+            _znear = minimum(_znear,n1);
+            _znear = minimum(_znear,n2);
             // OSG_NOTICE<<"Line all inside frustum "<<n1<<"\t"<<n2<<" number of plane="<<_planes->size()<<std::endl;
             return;
         }
@@ -472,7 +505,7 @@ struct ComputeNearestPointFunctor
 
         n1 = distance(p1.second,_matrix);
         n2 = distance(p2.second,_matrix);
-        _znear = osg::minimum(n1, n2);
+        _znear = _comparator.minimum(n1, n2);
         //OSG_NOTICE<<"Near plane updated "<<_znear<<std::endl;
     }
 
@@ -484,9 +517,9 @@ struct ComputeNearestPointFunctor
         CullVisitor::value_type n3 = distance(v3,_matrix);
 
         // check if triangle is total behind znear, if so discard
-        if (n1 >= _znear &&
-            n2 >= _znear &&
-            n3 >= _znear)
+        if (_comparator.greaterEqual(n1,_znear) &&
+            _comparator.greaterEqual(n2,_znear) &&
+            _comparator.greaterEqual(n3,_znear))
         {
             //OSG_NOTICE<<"Triangle totally beyond znear"<<std::endl;
             return;
@@ -534,9 +567,9 @@ struct ComputeNearestPointFunctor
     
         if (active_mask==0)
         {
-            _znear = osg::minimum(_znear,n1);
-            _znear = osg::minimum(_znear,n2);
-            _znear = osg::minimum(_znear,n3);
+            _znear = _comparator.minimum(_znear,n1);
+            _znear = _comparator.minimum(_znear,n2);
+            _znear = _comparator.minimum(_znear,n3);
             // OSG_NOTICE<<"Triangle all inside frustum "<<n1<<"\t"<<n2<<"\t"<<n3<<" number of plane="<<_planes->size()<<std::endl;
             return;
         }
@@ -606,7 +639,7 @@ struct ComputeNearestPointFunctor
             ++polyItr)
         {
             CullVisitor::value_type dist = distance(polyItr->second,_matrix);
-            if (dist < _znear) 
+            if (_comparator.less(dist,_znear))
             {
                 _znear = dist;
                 //OSG_NOTICE<<"Near plane updated "<<_znear<<std::endl;
@@ -622,13 +655,45 @@ struct ComputeNearestPointFunctor
     }
 };
 
+
+struct LessComparator
+{
+    inline bool less(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs<rhs; }
+    inline bool lessEqual(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs<=rhs; }
+    inline bool greaterEqual(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs>=rhs; }
+    inline CullVisitor::value_type minimum(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs<rhs?lhs:rhs; }
+};
+typedef ComputeNearFarFunctor<LessComparator> ComputeNearestPointFunctor;
+
+struct GreaterComparator
+{
+    inline bool less(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs>rhs; }
+    inline bool lessEqual(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs>=rhs; }
+    inline bool greaterEqual(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs<=rhs; }
+    inline CullVisitor::value_type minimum(CullVisitor::value_type lhs, CullVisitor::value_type rhs) const { return lhs>rhs?lhs:rhs; }
+};
+typedef ComputeNearFarFunctor<GreaterComparator> ComputeFurthestPointFunctor;
+
+
 CullVisitor::value_type CullVisitor::computeNearestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable)
 {
-    // OSG_WARN<<"CullVisitor::computeNearestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<std::endl;
+    // OSG_NOTICE<<"CullVisitor::computeNearestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<std::endl;
 
     osg::TemplatePrimitiveFunctor<ComputeNearestPointFunctor> cnpf;
     cnpf.set(_computed_znear, matrix, &planes);
     
+    drawable.accept(cnpf);
+
+    return cnpf._znear;
+}
+
+CullVisitor::value_type CullVisitor::computeFurthestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable)
+{
+    //OSG_NOTICE<<"CullVisitor::computeFurthestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<")"<<std::endl;
+
+    osg::TemplatePrimitiveFunctor<ComputeFurthestPointFunctor> cnpf;
+    cnpf.set(_computed_zfar, matrix, &planes);
+
     drawable.accept(cnpf);
 
     return cnpf._znear;
@@ -759,9 +824,9 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
         return false;
     }
 
-    if (d_near<_computed_znear) 
+    if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES || _computeNearFar==COMPUTE_NEAR_USING_PRIMITIVES)
     {
-        if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+        if (d_near<_computed_znear || d_far>_computed_zfar)
         {
             osg::Polytope& frustum = getCurrentCullingSet().getFrustum();
             if (frustum.getResultMask())
@@ -770,42 +835,76 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                 {
                     // OSG_WARN<<"Adding billboard into deffered list"<<std::endl;
                 
+                    // insert drawable into the deferred list of drawables which will be handled at the popProjectionMatrix().
+
                     osg::Polytope transformed_frustum;
                     transformed_frustum.setAndTransformProvidingInverse(getProjectionCullingStack().back().getFrustum(),matrix);
+                    MatrixPlanesDrawables mpd(matrix,&drawable,transformed_frustum);
                 
-                    // insert drawable into the deferred list of drawables which will be handled at the popProjectionMatrix().
-                    _nearPlaneCandidateMap.insert(
-                        DistanceMatrixDrawableMap::value_type(d_near,MatrixPlanesDrawables(matrix,&drawable,transformed_frustum)) );
-                } 
+                    if (d_near<_computed_znear)
+                    {
+                        _nearPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_near,mpd) );
+                    }
+
+                    if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+                    {
+                        if (d_far>_computed_zfar)
+                        {
+                            _farPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_far,mpd) );
+                        }
+                    }
+                }
                 else
                 {
                     // insert drawable into the deferred list of drawables which will be handled at the popProjectionMatrix().
-                    _nearPlaneCandidateMap.insert(
-                        DistanceMatrixDrawableMap::value_type(d_near,MatrixPlanesDrawables(matrix,&drawable,frustum)) );
-                }
+                    MatrixPlanesDrawables mpd(matrix,&drawable,frustum);
+                    if (d_near<_computed_znear)
+                    {
+                        _nearPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_near,mpd) );
+                    }
 
+                    if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+                    {
+                        if (d_far>_computed_zfar)
+                        {
+                            _farPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_far,mpd) );
+                        }
+                    }
+                }
+                
                 // use the far point if its nearer than current znear as this is a conservative estimate of the znear
                 // while the final computation for this drawable is deferred.
-                if (d_far<_computed_znear)
+                if (d_far>=0.0 && d_far<_computed_znear)
                 {
-                    if (d_far>=0.0) _computed_znear = d_far;
-                    else OSG_INFO<<"       1)  ignoring compute dnear="<<d_near<<"  dfar="<<d_far<< std::endl;
+                    _computed_znear = d_far;
+                }
+
+                if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+                {
+                    // use the near point if its further than current zfar as this is a conservative estimate of the zfar
+                    // while the final computation for this drawable is deferred.
+                    if (d_near>=0.0 && d_near>_computed_zfar)
+                    {
+                        _computed_zfar = d_near;
+                    }
+                }
+                else // computing zfar using bounding sphere
+                {
+                    if (d_far>_computed_zfar) _computed_zfar = d_far;
                 }
             }
             else
             {
-                if (d_near>=0.0) _computed_znear = d_near;
-                else OSG_INFO<<"        2) ignoring computed d_near="<<d_near<< std::endl;
+                if (d_near<_computed_znear) _computed_znear = d_near;
+                if (d_far>_computed_zfar) _computed_zfar = d_far;
             }
         }
-        else
-        {
-            //if (d_near<0.0) OSG_WARN<<"         3) set near with d_near="<<d_near<< std::endl;
-            _computed_znear = d_near;
-        }
     }
-
-    if (d_far>_computed_zfar) _computed_zfar = d_far;
+    else
+    {
+        if (d_near<_computed_znear) _computed_znear = d_near;
+        if (d_far>_computed_zfar) _computed_zfar = d_far;
+    }
 
 
 /*
@@ -1176,6 +1275,9 @@ void CullVisitor::apply(Projection& node)
     DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
+    DistanceMatrixDrawableMap  previousFarPlaneCandidateMap;
+    previousFarPlaneCandidateMap.swap(_farPlaneCandidateMap);
+
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
@@ -1201,6 +1303,7 @@ void CullVisitor::apply(Projection& node)
 
     // swap back the near plane candidates
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
+    previousFarPlaneCandidateMap.swap(_farPlaneCandidateMap);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -1406,6 +1509,9 @@ void CullVisitor::apply(osg::Camera& camera)
     DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
+    DistanceMatrixDrawableMap  previousFarPlaneCandidateMap;
+    previousFarPlaneCandidateMap.swap(_farPlaneCandidateMap);
+
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
@@ -1565,6 +1671,7 @@ void CullVisitor::apply(osg::Camera& camera)
 
     // swap back the near plane candidates
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
+    previousFarPlaneCandidateMap.swap(_farPlaneCandidateMap);
 
 
     if (camera.getViewport()) popViewport();

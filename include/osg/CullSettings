@@ -161,7 +161,8 @@ class OSG_EXPORT CullSettings
         {
             DO_NOT_COMPUTE_NEAR_FAR = 0,
             COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
-            COMPUTE_NEAR_FAR_USING_PRIMITIVES
+            COMPUTE_NEAR_FAR_USING_PRIMITIVES,
+            COMPUTE_NEAR_USING_PRIMITIVES
         };
 
         void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; applyMaskAction(COMPUTE_NEAR_FAR_MODE); } 

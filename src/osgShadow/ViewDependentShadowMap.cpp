@@ -293,9 +293,9 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     // set up the texture
     _texture = new osg::Texture2D;
 
-    unsigned int textureSize = debug ? 512 : 2048;
+    osg::Vec2s textureSize = debug ? osg::Vec2s(512,512) : vdd->getViewDependentShadowMap()->getTextureSize();    
+    _texture->setTextureSize(textureSize.x(), textureSize.y());
     
-    _texture->setTextureSize(textureSize, textureSize);
     if (debug)
     {
         _texture->setInternalFormat(GL_RGB);
@@ -327,7 +327,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     _camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
 
     // set viewport
-    _camera->setViewport(0,0,textureSize,textureSize);
+    _camera->setViewport(0,0,textureSize.x(),textureSize.y());
 
 
     if (debug)
@@ -522,7 +522,8 @@ void ViewDependentShadowMap::ViewDependentData::releaseGLObjects(osg::State* sta
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique(),
-    _baseShadowTextureUnit(1),    
+    _baseShadowTextureUnit(1),
+    _textureSize(2048,2048),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _minimumShadowMapNearFarRatio(0.01),
     _debugDraw(false)
@@ -533,6 +534,7 @@ ViewDependentShadowMap::ViewDependentShadowMap():
 ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop):
     ShadowTechnique(vdsm,copyop),
     _baseShadowTextureUnit(vdsm._baseShadowTextureUnit),
+    _textureSize(vdsm._textureSize),
     _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
     _minimumShadowMapNearFarRatio(vdsm._minimumShadowMapNearFarRatio),
     _debugDraw(vdsm._debugDraw)

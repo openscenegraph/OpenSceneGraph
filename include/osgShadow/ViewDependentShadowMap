@@ -165,6 +165,9 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         /** Get the size of the shadow map textures.*/
         const osg::Vec2s& getTextureSize() const { return _textureSize; }
 
+        void setMinimumShadowMapNearFarRatio(double ratio) { _minimumShadowMapNearFarRatio = ratio; }
+        double getMinimumShadowMapNearFarRatio() const { return _minimumShadowMapNearFarRatio; }
+
         enum ShadowMapProjectionHint
         {
             ORTHOGRAPHIC_SHADOW_MAP,
@@ -174,9 +177,15 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
         ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
 
-        void setMinimumShadowMapNearFarRatio(double ratio) { _minimumShadowMapNearFarRatio = ratio; }
-        double getMinimumShadowMapNearFarRatio() const { return _minimumShadowMapNearFarRatio; }
-        
+        enum ShaderHint
+        {
+            NO_SHADERS,
+            PROVIDE_FRAGMENT_SHADER,
+            PROVIDE_VERTEX_AND_FRAGMENT_SHADER
+        };
+
+        void setShaderHint(ShaderHint shaderHint) { _shaderHint = shaderHint; }
+        ShaderHint getShaderHint() const { return _shaderHint; }
 
         virtual void createShaders();
 
@@ -222,8 +231,9 @@ protected:
         Uniforms                                _uniforms;
         osg::ref_ptr<osg::Program>              _program;
 
-        ShadowMapProjectionHint                 _shadowMapProjectionHint;
         double                                  _minimumShadowMapNearFarRatio;
+        ShadowMapProjectionHint                 _shadowMapProjectionHint;
+        ShaderHint                              _shaderHint;
         bool                                    _debugDraw;
         
 };

@@ -3,6 +3,6 @@
 
 SET(TARGET_SRC osgshadow.cpp IslandScene.cpp )
 SET(TARGET_H terrain_coords.h IslandScene.h )
-SET(TARGET_ADDED_LIBRARIES osgShadow )
+SET(TARGET_ADDED_LIBRARIES osgShadow osgTerrain)
 #### end var setup  ###
 SETUP_EXAMPLE(osgshadow)

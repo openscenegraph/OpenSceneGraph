@@ -524,8 +524,10 @@ ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique(),
     _baseShadowTextureUnit(1),
     _textureSize(2048,2048),
-    _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _minimumShadowMapNearFarRatio(0.01),
+    _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
+    _shaderHint(NO_SHADERS),
+//    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
@@ -535,8 +537,9 @@ ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vds
     ShadowTechnique(vdsm,copyop),
     _baseShadowTextureUnit(vdsm._baseShadowTextureUnit),
     _textureSize(vdsm._textureSize),
-    _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
     _minimumShadowMapNearFarRatio(vdsm._minimumShadowMapNearFarRatio),
+    _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
+    _shaderHint(vdsm._shaderHint),
     _debugDraw(vdsm._debugDraw)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
@@ -876,11 +879,23 @@ void ViewDependentShadowMap::createShaders()
     osg::ref_ptr<osg::Uniform> shadowTextureUnit = new osg::Uniform("shadowTextureUnit",(int)_baseShadowTextureUnit);
     _uniforms.push_back(shadowTextureUnit.get());
 
-    //osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
-    osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
-
-    _program = new osg::Program;
-    _program->addShader(fragment_shader.get());
+    switch(_shaderHint)
+    {
+        case(NO_SHADERS):
+        {
+            OSG_NOTICE<<"No shaders provided by, user must supply own shaders"<<std::endl;
+            break;
+        }
+        case(PROVIDE_VERTEX_AND_FRAGMENT_SHADER):
+        case(PROVIDE_FRAGMENT_SHADER):
+        {
+            //osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
+            osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
+            _program = new osg::Program;
+            _program->addShader(fragment_shader.get());
+            break;
+        }
+    }
 
     {
         osg::ref_ptr<osg::Image> image = new osg::Image;
@@ -1774,7 +1789,10 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
         stateset->addUniform(itr->get());
     }
 
-    stateset->setAttribute(_program.get());
+    if (_program.valid())
+    {
+        stateset->setAttribute(_program.get());
+    }
 
     LightDataList& pll = vdd.getLightDataList();
     for(LightDataList::iterator itr = pll.begin();

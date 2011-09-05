@@ -11,6 +11,8 @@
 #include <osg/AlphaFunc>
 #include <osg/CullFace>
 
+#include <osgTerrain/TerrainTile>
+
 static unsigned int heightTexture[] = {
  0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00010101, 0x02000000, 0x00020809,
  0x00000000, 0x00000000, 0x00000000, 0x00000001, 0x00000001, 0x00000000, 0x00000000, 0x00000000,
@@ -469,19 +471,15 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
 {
     float height = 1000;
 
-    osg::Geode* geode = new osg::Geode;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
-    // set up the texture of the base.
-    osg::StateSet* stateset = new osg::StateSet();
-    geode->setStateSet( stateset );
-
-    osg::Image * heightMap = new osg::Image();
+    osg::ref_ptr<osg::Image> heightMap = new osg::Image();
     heightMap->setImage( 64, 64, 1, 
                          GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE, 
                          orderBytes( heightTexture, sizeof( heightTexture ) ), 
                          osg::Image::NO_DELETE );
 
-    osg::Image* colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
+    osg::ref_ptr<osg::Image> colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
     if ( !colorMap ) {        
         
         struct colorElevation 
@@ -527,15 +525,6 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
         }
     }
 
-    if (colorMap)
-    {
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(colorMap);
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-    }
-
-    stateset->setAttributeAndModes( new osg::CullFace(), osg::StateAttribute::ON );
-
     osg::HeightField* grid = new osg::HeightField;
     grid->allocate(heightMap->s(),heightMap->t());
     grid->setOrigin( center - osg::Vec3( radius, radius, 0 ) );
@@ -549,17 +538,33 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
             grid->setHeight( c, r, height * exp( *heightMap->data(c,r) / 255.f ) / exp( 1.0 ) );            
         }
     }
-    osg::ShapeDrawable * sd  = new osg::ShapeDrawable(grid);
-    sd->setColor( osg::Vec4( 1.0, 1.0, 1.0, 1.0 ) );
 
-    geode->addDrawable(sd);
+    osg::ref_ptr<osgTerrain::TerrainTile> terrainTile = new osgTerrain::TerrainTile;
 
-    osg::Group* group = new osg::Group;
-    group->addChild(geode);
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
+    locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+    locator->setTransformAsExtents(center.x()-radius,center.y()-radius,center.x()+radius,center.y()+radius);
 
+    terrainTile->setLocator(locator.get());
+
+    osg::ref_ptr<osgTerrain::HeightFieldLayer> hfl = new osgTerrain::HeightFieldLayer;
+    hfl->setHeightField(grid);
+    hfl->setLocator(locator.get());
+    terrainTile->setElevationLayer(hfl.get());
+
+    osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
+    imageLayer->setImage(colorMap.get());
+    imageLayer->setLocator(locator.get());
+    terrainTile->setColorLayer(0, imageLayer.get());
+
+    osg::StateSet* stateset = terrainTile->getOrCreateStateSet();
+    stateset->setAttributeAndModes( new osg::CullFace(), osg::StateAttribute::ON );
+
+    group->addChild(terrainTile.get());
+    
     group->addChild( createObjects( grid, 1 ) );
 
-    return group;
+    return group.release();
 }
 ////////////////////////////////////////////////////////////////////////////////
 namespace ModelFour {

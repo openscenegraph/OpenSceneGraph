@@ -318,13 +318,14 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     
     // set up the camera
     _camera = new osg::Camera;
-
+    _camera->setName("ShadowCamera");
     _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 
     //_camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
     _camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
+    //_camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
 
     // set viewport
     _camera->setViewport(0,0,textureSize.x(),textureSize.y());
@@ -1548,9 +1549,14 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     OSG_NOTICE<<"ls ConvexHull yMin="<<convexHull.min(1)<<", yMax="<<convexHull.max(1)<<std::endl;
     OSG_NOTICE<<"ls ConvexHull zMin="<<convexHull.min(2)<<", zMax="<<convexHull.max(2)<<std::endl;
 #endif
-    
-    convexHull.clip(osg::Plane(0.0,0.0,1,1.0)); // clip by near plane of light space.
-    convexHull.clip(osg::Plane(0.0,0.0,-1,1.0));  // clip by far plane of light space.
+
+#if 0
+    // only applicable when the light space contains the whole model contained in the view frustum.
+    {
+        convexHull.clip(osg::Plane(0.0,0.0,1,1.0)); // clip by near plane of light space.
+        convexHull.clip(osg::Plane(0.0,0.0,-1,1.0));  // clip by far plane of light space.
+    }
+#endif
 
 #if 0
     convexHull.output(osg::notify(osg::NOTICE));
@@ -1567,6 +1573,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double zMin = osg::maximum(-1.0,convexHull.min(2));
     double zMax = osg::minimum(1.0,convexHull.max(2));
 
+#if 1    
     // we always want the lightspace to include the computed near plane.
     zMin = -1.0;
     if (xMin!=-1.0 || yMin!=-1.0 || zMin!=-1.0 ||
@@ -1592,6 +1599,8 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         camera->setProjectionMatrix(light_p);
     }
 
+#endif
+    
     osg::Vec3d eye_v = frustum.eye * light_v;
     osg::Vec3d centerNearPlane_v = frustum.centerNearPlane * light_v;
     osg::Vec3d center_v = frustum.center * light_v;
@@ -1669,7 +1678,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     min_z_ratio = convexHull.minRatio(virtual_eye,2);
     max_x_ratio = convexHull.maxRatio(virtual_eye,0);
     max_z_ratio = convexHull.maxRatio(virtual_eye,2);
-
+#if 1
     if (renderStage)
     {
         osg::ElapsedTime timer;
@@ -1693,7 +1702,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         if (rli.max_z_ratio>max_z_ratio) max_z_ratio = rli.max_z_ratio;
         if (rli.min_z_ratio<min_z_ratio) min_z_ratio = rli.min_z_ratio;
     }
-
+#endif
     double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));
     double best_z_ratio = osg::maximum(fabs(min_z_ratio),fabs(max_z_ratio));
 

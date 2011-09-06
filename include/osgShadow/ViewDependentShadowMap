@@ -177,6 +177,15 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
         ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
 
+        /** Set the cut off angle, in degrees, between the light direction and the view direction
+         * that determines whether perspective shadow mapping is appropriate, or thar orthographic shadow
+         * map should be used instead.  Default is 2 degrees so that for any angle greater than 2 degrees
+         * perspective shadow map will be used, and any angle less than 2 degrees orthographic shadow map
+         * will be used.  Note, if ShadowMapProjectionHint is set to ORTHOGRAPHIC_SHADOW_MAP then an
+         * orthographic shadow map will always be used.*/
+        void setPerspectiveShadowMapCutOffAngle(double angle) { _perspectiveShadowMapCutOffAngle = angle; }
+        double getPerspectiveShadowMapCutOffAngle() const { return _perspectiveShadowMapCutOffAngle; }
+
         enum ShaderHint
         {
             NO_SHADERS,
@@ -233,6 +242,7 @@ protected:
 
         double                                  _minimumShadowMapNearFarRatio;
         ShadowMapProjectionHint                 _shadowMapProjectionHint;
+        double                                  _perspectiveShadowMapCutOffAngle;
         ShaderHint                              _shaderHint;
         bool                                    _debugDraw;
         

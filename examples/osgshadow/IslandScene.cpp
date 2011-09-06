@@ -424,8 +424,10 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
-    for( unsigned int x = 0; x < grid->getNumColumns() - 1; x++ ) {
-        for( unsigned int y = 0; y < grid->getNumRows() - 1; y++ ) {
+    for( unsigned int x = 0; x < grid->getNumColumns() - 1; x++ )
+    {
+        for( unsigned int y = 0; y < grid->getNumRows() - 1; y++ )
+        {
 
             float z00 = grid->getHeight( x,y );
             float z01 = grid->getHeight( x,y+1 );
@@ -437,10 +439,11 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
             if( z < 400 ) continue;
             if( z > 500 ) continue;
 
-            osg::Vec3 o( x * grid->getXInterval(), y * grid->getYInterval(), 0 );
+            osg::Vec3 o( float(x) * grid->getXInterval(), float(y) * grid->getYInterval(), 0.0f );
             o += grid->getOrigin();
 
-            for( unsigned int d = 0; d < density; d++  ) {
+            for( unsigned int d = 0; d < density; d++  )
+            {
                 osg::Vec3 p( float( rand() ) / RAND_MAX, float( rand() ) / RAND_MAX, 0 );
 
                 z = ( 1.f - p[0] ) * ( 1.f - p[1] ) * z00 + 
@@ -448,14 +451,12 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
                     ( p[0] ) * ( p[1] ) * z11 +
                     ( p[0] ) * ( 1.f - p[1] ) * z10;                
 
-                p.set( p[0] * grid->getXInterval(), p[1] * grid->getYInterval(), z - 2.0 );
-
-                p += o;                 
+                osg::Vec3 pos(o + osg::Vec3(p.x() * grid->getXInterval(), p.y() * grid->getYInterval(), z));
      
                 if( rand() % 3 > 0 )
-                    addTree( p, vertices, normals, texCoords );
+                    addTree( pos, vertices, normals, texCoords );
                 else 
-                    addHouse( p, vertices, normals, texCoords );
+                    addHouse( pos, vertices, normals, texCoords );
 
             }
         }
@@ -480,7 +481,8 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
                          osg::Image::NO_DELETE );
 
     osg::ref_ptr<osg::Image> colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
-    if ( !colorMap ) {        
+    if ( !colorMap )
+    {
         
         struct colorElevation 
         {
@@ -525,17 +527,20 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
         }
     }
 
+    osg::Vec3 origin(center - osg::Vec3( radius, radius, 0 ));
+    origin.z() = 0.0;
+
     osg::HeightField* grid = new osg::HeightField;
     grid->allocate(heightMap->s(),heightMap->t());
-    grid->setOrigin( center - osg::Vec3( radius, radius, 0 ) );
-    grid->setXInterval(radius*2.0f/grid->getNumColumns() );
-    grid->setYInterval(radius*2.0f/grid->getNumRows());
+    grid->setOrigin( origin );
+    grid->setXInterval( radius*2.0f/(grid->getNumColumns()-1.0) );
+    grid->setYInterval( radius*2.0f/(grid->getNumRows()-1.0) );
 
     for( unsigned int r=0;r<grid->getNumRows()-0;++r)
     {
         for(unsigned int c=0;c<grid->getNumColumns()-0;++c)
         {
-            grid->setHeight( c, r, height * exp( *heightMap->data(c,r) / 255.f ) / exp( 1.0 ) );            
+            grid->setHeight( c, r, height * exp( *heightMap->data(c,r) / 255.f ) / exp( 1.0 ) );
         }
     }
 
@@ -543,7 +548,7 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
 
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
     locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-    locator->setTransformAsExtents(center.x()-radius,center.y()-radius,center.x()+radius,center.y()+radius);
+    locator->setTransformAsExtents(center.x()-radius, center.y()-radius, center.x()+radius, center.y()+radius);
 
     terrainTile->setLocator(locator.get());
 
@@ -567,7 +572,8 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
     return group.release();
 }
 ////////////////////////////////////////////////////////////////////////////////
-namespace ModelFour {
+namespace ModelFour
+{
     
 osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
 {

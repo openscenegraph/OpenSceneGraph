@@ -582,6 +582,63 @@ namespace ModelThree
 }
 
 
+namespace ModelFive
+{
+    osg::AnimationPathCallback* createAnimationPathCallback( float radius, float time )
+    {
+        osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
+        path->setLoopMode( osg::AnimationPath::LOOP );
+
+        unsigned int numSamples = 32;
+        float delta_yaw = 2.0f * osg::PI/((float)numSamples - 1.0f);
+        float delta_time = time / (float)numSamples;
+        for ( unsigned int i=0; i<numSamples; ++i )
+        {
+            float yaw = delta_yaw * (float)i;
+            osg::Vec3 pos( sinf(yaw)*radius, cosf(yaw)*radius, 0.0f );
+            osg::Quat rot( -yaw, osg::Z_AXIS );
+            path->insert( delta_time * (float)i, osg::AnimationPath::ControlPoint(pos, rot) );
+        }
+
+        osg::ref_ptr<osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+        apcb->setAnimationPath( path.get() );
+        return apcb.release();
+    }
+
+    osg::Group* createModel(osg::ArgumentParser& arguments)
+    {
+        unsigned int rcvShadowMask = 0x1;
+        unsigned int castShadowMask = 0x2;
+
+        // Set the ground (only receives shadow)
+        osg::ref_ptr<osg::MatrixTransform> groundNode = new osg::MatrixTransform;
+        groundNode->addChild( osgDB::readNodeFile("lz.osg") );
+        groundNode->setMatrix( osg::Matrix::translate(200.0f, 200.0f,-200.0f) );
+        //groundNode->setNodeMask( rcvShadowMask );
+
+        // Set the cessna (only casts shadow)
+        osg::ref_ptr<osg::MatrixTransform> cessnaNode = new osg::MatrixTransform;
+        cessnaNode->addChild( osgDB::readNodeFile("cessna.osg.0,0,90.rot") );
+        cessnaNode->addUpdateCallback( createAnimationPathCallback(50.0f, 6.0f) );
+        //cessnaNode->setNodeMask( castShadowMask );
+
+        osg::ref_ptr<osg::Group> shadowRoot = new osg::Group;
+        shadowRoot->addChild( groundNode.get() );
+        for ( unsigned int i=0; i<10; ++i )
+        {
+            for ( unsigned int j=0; j<10; ++j )
+            {
+                osg::ref_ptr<osg::MatrixTransform> cessnaInstance = new osg::MatrixTransform;
+                cessnaInstance->setMatrix( osg::Matrix::translate((float)i*50.0f-25.0f, (float)j*50.0f-25.0f, 0.0f) );
+                cessnaInstance->addChild( cessnaNode.get() );
+                shadowRoot->addChild( cessnaInstance.get() );
+            }
+        }
+
+        return shadowRoot.release();
+    }
+}
+
 osg::Node* createTestModel(osg::ArgumentParser& arguments)
 {
     if (arguments.read("-1"))
@@ -595,6 +652,10 @@ osg::Node* createTestModel(osg::ArgumentParser& arguments)
     else if (arguments.read("-4"))
     {
         return ModelFour::createModel(arguments);
+    }
+    else if (arguments.read("-5"))
+    {
+        return ModelFive::createModel(arguments);
     }
     else /*if (arguments.read("-3"))*/
     {

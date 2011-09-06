@@ -526,6 +526,7 @@ ViewDependentShadowMap::ViewDependentShadowMap():
     _textureSize(2048,2048),
     _minimumShadowMapNearFarRatio(0.01),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
+    _perspectiveShadowMapCutOffAngle(2.0),
     _shaderHint(NO_SHADERS),
 //    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
@@ -539,6 +540,7 @@ ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vds
     _textureSize(vdsm._textureSize),
     _minimumShadowMapNearFarRatio(vdsm._minimumShadowMapNearFarRatio),
     _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
+    _perspectiveShadowMapCutOffAngle(vdsm._perspectiveShadowMapCutOffAngle),
     _shaderHint(vdsm._shaderHint),
     _debugDraw(vdsm._debugDraw)
 {
@@ -1040,21 +1042,32 @@ bool ViewDependentShadowMap::computeShadowCameraSettings(Frustum& frustum, Light
 {
     OSG_INFO<<"standardShadowMapCameraSettings()"<<std::endl;
 
-#if 0
-    // compute the basis vectors for the light coordinate frame
-    osg::Vec3d lightSide_y = positionedLight.lightDir ^ osg::Vec3d(0.0,1.0,0.0);
-    osg::Vec3d lightSide_z = positionedLight.lightDir ^ osg::Vec3d(0.0,0.0,1.0);
-    osg::Vec3d lightSide = (lightSide_y.length() > lightSide_z.length()) ? lightSide_y : lightSide_z;
-    lightSide.normalize();
-#else
-    osg::Vec3d lightSide = positionedLight.lightDir ^ frustum.frustumCenterLine; lightSide.normalize();
-#endif
+    osg::Vec3d lightSide;
+
+    double dotProduct_v = positionedLight.lightDir * frustum.frustumCenterLine;
+    double gamma_v = acos(dotProduct_v);
+    if (gamma_v<osg::DegreesToRadians(_perspectiveShadowMapCutOffAngle) || gamma_v>osg::DegreesToRadians(180.0-_perspectiveShadowMapCutOffAngle))
+    {
+        OSG_INFO<<"View direction and Light direction below tolerance"<<std::endl;
+        osg::Vec3d viewSide = osg::Matrixd::transform3x3(frustum.modelViewMatrix, osg::Vec3d(1.0,0.0,0.0));
+        lightSide = positionedLight.lightDir ^ (viewSide ^ positionedLight.lightDir);
+        lightSide.normalize();
+    }
+    else
+    {
+        lightSide = positionedLight.lightDir ^ frustum.frustumCenterLine;
+        lightSide.normalize();
+    }
+
     osg::Vec3d lightUp = lightSide ^ positionedLight.lightDir;
 
-    OSG_INFO<<"positionedLight.lightDir="<<positionedLight.lightDir<<std::endl;
-    OSG_INFO<<"lightSide="<<lightSide<<std::endl;
-    OSG_INFO<<"lightUp="<<lightUp<<std::endl;
+#if 0
+    OSG_NOTICE<<"positionedLight.lightDir="<<positionedLight.lightDir<<std::endl;
+    OSG_NOTICE<<"lightSide="<<lightSide<<std::endl;
+    OSG_NOTICE<<"lightUp="<<lightUp<<std::endl;
+#endif
 
+    
     if (positionedLight.directionalLight)
     {
         double xMin=0.0, xMax=0.0;
@@ -1586,8 +1599,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
 
     double dotProduct_v = lightdir * viewdir_v;
     double gamma_v = acos(dotProduct_v);
-    double standardShadowMapToleranceAngle = 2.0;
-    if (gamma_v<osg::DegreesToRadians(standardShadowMapToleranceAngle) || gamma_v>osg::DegreesToRadians(180-standardShadowMapToleranceAngle))
+    if (gamma_v<osg::DegreesToRadians(_perspectiveShadowMapCutOffAngle) || gamma_v>osg::DegreesToRadians(180-_perspectiveShadowMapCutOffAngle))
     {
         // OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
         return true;

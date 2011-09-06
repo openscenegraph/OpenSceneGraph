@@ -45,6 +45,8 @@
 #include <osgShadow/StandardShadowMap>
 #include <osgShadow/ViewDependentShadowMap>
 
+#include <osgUtil/Optimizer>
+
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
@@ -584,6 +586,26 @@ namespace ModelThree
 
 namespace ModelFive
 {
+    struct UseVBOVisitor : public osg::NodeVisitor
+    {
+        UseVBOVisitor():
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}            
+
+        virtual void apply(osg::Geode& geode)
+        {
+            for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+            {
+                osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+                if (geometry)
+                {
+                    OSG_NOTICE<<"geometry->setUseVertexBufferObjects(true);"<<std::endl;
+                    geometry->setUseVertexBufferObjects(true);
+                }
+            }
+        }
+    };
+
+    
     osg::AnimationPathCallback* createAnimationPathCallback( float radius, float time )
     {
         osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
@@ -607,20 +629,17 @@ namespace ModelFive
 
     osg::Group* createModel(osg::ArgumentParser& arguments)
     {
-        unsigned int rcvShadowMask = 0x1;
-        unsigned int castShadowMask = 0x2;
-
         // Set the ground (only receives shadow)
         osg::ref_ptr<osg::MatrixTransform> groundNode = new osg::MatrixTransform;
         groundNode->addChild( osgDB::readNodeFile("lz.osg") );
         groundNode->setMatrix( osg::Matrix::translate(200.0f, 200.0f,-200.0f) );
-        //groundNode->setNodeMask( rcvShadowMask );
+        groundNode->setNodeMask( ReceivesShadowTraversalMask );
 
         // Set the cessna (only casts shadow)
         osg::ref_ptr<osg::MatrixTransform> cessnaNode = new osg::MatrixTransform;
         cessnaNode->addChild( osgDB::readNodeFile("cessna.osg.0,0,90.rot") );
         cessnaNode->addUpdateCallback( createAnimationPathCallback(50.0f, 6.0f) );
-        //cessnaNode->setNodeMask( castShadowMask );
+        cessnaNode->setNodeMask( CastsShadowTraversalMask );
 
         osg::ref_ptr<osg::Group> shadowRoot = new osg::Group;
         shadowRoot->addChild( groundNode.get() );
@@ -634,6 +653,15 @@ namespace ModelFive
                 shadowRoot->addChild( cessnaInstance.get() );
             }
         }
+
+        // cessna is really poorly optimized so fix this by optimizing the mesh and use VBO's.
+        osgUtil::Optimizer optimizer;
+        optimizer.optimize(shadowRoot.get(), osgUtil::Optimizer::INDEX_MESH |
+                                             osgUtil::Optimizer::VERTEX_POSTTRANSFORM |
+                                             osgUtil::Optimizer::VERTEX_PRETRANSFORM);
+
+        UseVBOVisitor useVBOVisitor;
+        shadowRoot->accept(useVBOVisitor);
 
         return shadowRoot.release();
     }

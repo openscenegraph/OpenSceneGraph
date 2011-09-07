@@ -1408,7 +1408,16 @@ struct RenderLeafBounds
         if (renderLeaf->_modelview.get()!=previous_modelview)
         {
             previous_modelview = renderLeaf->_modelview.get();
-            light_mvp.mult(*renderLeaf->_modelview, light_vp);
+            if (previous_modelview)
+            {
+                light_mvp.mult(*renderLeaf->_modelview, light_vp);
+            }
+            else
+            {
+                // no modelview matrix (such as when LightPointNode is in the scene graph) so assume
+                // that modelview matrix is indentity.
+                light_mvp = light_vp;
+            }
             OSG_INFO<<"Computing new light_mvp "<<light_mvp<<std::endl;
         }
         else

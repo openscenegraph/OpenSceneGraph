@@ -38,6 +38,8 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         META_Object(osgShadow, ShadowTechnique);
 
         ShadowedScene* getShadowedScene() { return _shadowedScene; }
+
+        const ShadowedScene* getShadowedScene() const { return _shadowedScene; }
         
         /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();

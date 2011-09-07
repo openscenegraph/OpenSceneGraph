@@ -598,7 +598,6 @@ namespace ModelFive
                 osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
                 if (geometry)
                 {
-                    OSG_NOTICE<<"geometry->setUseVertexBufferObjects(true);"<<std::endl;
                     geometry->setUseVertexBufferObjects(true);
                 }
             }
@@ -641,6 +640,16 @@ namespace ModelFive
         cessnaNode->addUpdateCallback( createAnimationPathCallback(50.0f, 6.0f) );
         cessnaNode->setNodeMask( CastsShadowTraversalMask );
 
+        // cessna is really poorly optimized so fix this by optimizing the mesh and use VBO's.
+        osgUtil::Optimizer optimizer;
+        optimizer.optimize(cessnaNode.get(), osgUtil::Optimizer::INDEX_MESH |
+                                             osgUtil::Optimizer::VERTEX_POSTTRANSFORM |
+                                             osgUtil::Optimizer::VERTEX_PRETRANSFORM);
+
+        UseVBOVisitor useVBOVisitor;
+        cessnaNode->accept(useVBOVisitor);
+
+
         osg::ref_ptr<osg::Group> shadowRoot = new osg::Group;
         shadowRoot->addChild( groundNode.get() );
         for ( unsigned int i=0; i<10; ++i )
@@ -654,14 +663,6 @@ namespace ModelFive
             }
         }
 
-        // cessna is really poorly optimized so fix this by optimizing the mesh and use VBO's.
-        osgUtil::Optimizer optimizer;
-        optimizer.optimize(shadowRoot.get(), osgUtil::Optimizer::INDEX_MESH |
-                                             osgUtil::Optimizer::VERTEX_POSTTRANSFORM |
-                                             osgUtil::Optimizer::VERTEX_PRETRANSFORM);
-
-        UseVBOVisitor useVBOVisitor;
-        shadowRoot->accept(useVBOVisitor);
 
         return shadowRoot.release();
     }
@@ -917,18 +918,20 @@ int main(int argc, char** argv)
     }
     else if( arguments.read("--vdsm") )
     {
-        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
-        while( arguments.read("--debugHUD") ) vdsm->setDebugDraw( true );
+        osgShadow::ShadowSettings* settings = new osgShadow::ShadowSettings;
+        shadowedScene->setShadowSettings(settings);
 
-        if (arguments.read("--persp")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::PERSPECTIVE_SHADOW_MAP);
-        if (arguments.read("--ortho")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::ORTHOGRAPHIC_SHADOW_MAP);
+        while( arguments.read("--debugHUD") ) settings->setDebugDraw( true );
+        if (arguments.read("--persp")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::PERSPECTIVE_SHADOW_MAP);
+        if (arguments.read("--ortho")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::ORTHOGRAPHIC_SHADOW_MAP);
 
         unsigned int unit=1;
-        if (arguments.read("--unit",unit)) vdsm->setBaseShadowTextureUnit(unit);
+        if (arguments.read("--unit",unit)) settings->setBaseShadowTextureUnit(unit);
         
         double n=0.0;
-        if (arguments.read("-n",n)) vdsm->setMinimumShadowMapNearFarRatio(n);
+        if (arguments.read("-n",n)) settings->setMinimumShadowMapNearFarRatio(n);
 
+        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
         shadowedScene->setShadowTechnique(vdsm.get());
     }
     else if ( arguments.read("--lispsm") ) 

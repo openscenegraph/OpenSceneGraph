@@ -15,6 +15,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ShadowTexture
     ${HEADER_PATH}/ShadowVolume
     ${HEADER_PATH}/ShadowedScene
+    ${HEADER_PATH}/ShadowSettings
     ${HEADER_PATH}/SoftShadowMap
     ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
@@ -38,6 +39,7 @@ SET(TARGET_SRC
     ShadowTexture.cpp
     ShadowVolume.cpp
     ShadowedScene.cpp
+    ShadowSettings.cpp
     SoftShadowMap.cpp
     ParallelSplitShadowMap.cpp
     Version.cpp

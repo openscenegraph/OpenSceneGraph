@@ -23,23 +23,34 @@ using namespace osgShadow;
 
 ShadowedScene::ShadowedScene(ShadowTechnique* st):
     _receivesShadowTraversalMask(0xffffffff),
-    _castsShadowTraversalMask(0xffffffff)
+    _castsShadowTraversalMask(0xffffffff)    
 {
     setNumChildrenRequiringUpdateTraversal(1);
     
-    if (st) setShadowTechnique(st);    
+    setShadowSettings(new ShadowSettings);
+
+    if (st) setShadowTechnique(st);
 }
 
-ShadowedScene::ShadowedScene(const ShadowedScene& copy, const osg::CopyOp& copyop):
-    osg::Group(copy,copyop),
-    _receivesShadowTraversalMask(copy._receivesShadowTraversalMask),
-    _castsShadowTraversalMask(copy._castsShadowTraversalMask)    
+ShadowedScene::ShadowedScene(const ShadowedScene& ss, const osg::CopyOp& copyop):
+    osg::Group(ss,copyop),
+    _receivesShadowTraversalMask(ss._receivesShadowTraversalMask),
+    _castsShadowTraversalMask(ss._castsShadowTraversalMask)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     
-    if (copy._shadowTechnique.valid())
+    if (ss._shadowTechnique.valid())
     {
-        setShadowTechnique( dynamic_cast<osgShadow::ShadowTechnique*>(copy._shadowTechnique->clone(copyop)) );
+        setShadowTechnique( dynamic_cast<osgShadow::ShadowTechnique*>(ss._shadowTechnique->clone(copyop)) );
+    }
+
+    if (ss._shadowSettings)
+    {
+        setShadowSettings(ss._shadowSettings.get());
+    }
+    else
+    {
+        setShadowSettings(new ShadowSettings);
     }
     
 }
@@ -59,6 +70,11 @@ void ShadowedScene::traverse(osg::NodeVisitor& nv)
     {
         osg::Group::traverse(nv);
     }
+}
+
+void ShadowedScene::setShadowSettings(ShadowSettings* ss)
+{
+    _shadowSettings = ss;
 }
 
 void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2011 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -285,7 +285,10 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     _viewDependentData(vdd),
     _textureUnit(0)
 {
-    bool debug = vdd->getViewDependentShadowMap()->getDebugDraw();
+
+    const ShadowSettings* settings = vdd->getViewDependentShadowMap()->getShadowedScene()->getShadowSettings();
+    
+    bool debug = settings->getDebugDraw();
 
     // set up texgen
     _texgen = new osg::TexGen;
@@ -293,7 +296,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     // set up the texture
     _texture = new osg::Texture2D;
 
-    osg::Vec2s textureSize = debug ? osg::Vec2s(512,512) : vdd->getViewDependentShadowMap()->getTextureSize();    
+    osg::Vec2s textureSize = debug ? osg::Vec2s(512,512) : settings->getTextureSize();
     _texture->setTextureSize(textureSize.x(), textureSize.y());
     
     if (debug)
@@ -522,28 +525,13 @@ void ViewDependentShadowMap::ViewDependentData::releaseGLObjects(osg::State* sta
 // ViewDependentShadowMap
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
-    ShadowTechnique(),
-    _baseShadowTextureUnit(1),
-    _textureSize(2048,2048),
-    _minimumShadowMapNearFarRatio(0.01),
-    _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
-    _perspectiveShadowMapCutOffAngle(2.0),
-    _shaderHint(NO_SHADERS),
-//    _shaderHint(PROVIDE_FRAGMENT_SHADER),
-    _debugDraw(false)
+    ShadowTechnique()
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
 
 ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop):
-    ShadowTechnique(vdsm,copyop),
-    _baseShadowTextureUnit(vdsm._baseShadowTextureUnit),
-    _textureSize(vdsm._textureSize),
-    _minimumShadowMapNearFarRatio(vdsm._minimumShadowMapNearFarRatio),
-    _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
-    _perspectiveShadowMapCutOffAngle(vdsm._perspectiveShadowMapCutOffAngle),
-    _shaderHint(vdsm._shaderHint),
-    _debugDraw(vdsm._debugDraw)
+    ShadowTechnique(vdsm,copyop)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
@@ -662,8 +650,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     //    create a list of light sources + their matrices to place them
     selectActiveLights(&cv, vdd);
 
+    ShadowSettings* settings = getShadowedScene()->getShadowSettings();
+    
     unsigned int pos_x = 0;
-    unsigned int textureUnit = _baseShadowTextureUnit;
+    unsigned int textureUnit = settings->getBaseShadowTextureUnit();
     unsigned int numValidShadows = 0;
 
     ShadowDataList& sdl = vdd->getShadowDataList();
@@ -698,7 +688,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             osg::ref_ptr<osg::Camera> camera = sd->_camera;
 
-            if (_debugDraw)
+            if (settings->getDebugDraw())
             {
                 camera->getViewport()->x() = pos_x;
                 pos_x += camera->getViewport()->width() + 40;
@@ -744,7 +734,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             cv.popStateSet();
 
-            if (!orthographicViewFrustum && _shadowMapProjectionHint==PERSPECTIVE_SHADOW_MAP)
+            if (!orthographicViewFrustum && settings->getShadowMapProjectionHint()==ShadowSettings::PERSPECTIVE_SHADOW_MAP)
             {
                 adjustPerspectiveShadowMapCameraSettings(vdsmCallback->getRenderStage(), frustum, pl, camera.get());
                 if (vdsmCallback->getProjectionMatrix())
@@ -838,7 +828,9 @@ void ViewDependentShadowMap::createShaders()
 
     _shadowCastingStateSet = new osg::StateSet;
 
-    if (!_debugDraw)
+    ShadowSettings* settings = getShadowedScene()->getShadowSettings();
+    
+    if (!settings->getDebugDraw())
     {
         // note soft (attribute only no mode override) setting. When this works ?
         // 1. for objects prepared for backface culling
@@ -876,21 +868,21 @@ void ViewDependentShadowMap::createShaders()
     osg::ref_ptr<osg::Uniform> baseTextureUnit = new osg::Uniform("baseTextureUnit",(int)_baseTextureUnit);
     _uniforms.push_back(baseTextureUnit.get());
 
-    osg::ref_ptr<osg::Uniform> shadowTextureSampler = new osg::Uniform("shadowTexture",(int)_baseShadowTextureUnit);
+    osg::ref_ptr<osg::Uniform> shadowTextureSampler = new osg::Uniform("shadowTexture",(int)(settings->getBaseShadowTextureUnit()));
     _uniforms.push_back(shadowTextureSampler.get());
 
-    osg::ref_ptr<osg::Uniform> shadowTextureUnit = new osg::Uniform("shadowTextureUnit",(int)_baseShadowTextureUnit);
+    osg::ref_ptr<osg::Uniform> shadowTextureUnit = new osg::Uniform("shadowTextureUnit",(int)(settings->getBaseShadowTextureUnit()));
     _uniforms.push_back(shadowTextureUnit.get());
 
-    switch(_shaderHint)
+    switch(settings->getShaderHint())
     {
-        case(NO_SHADERS):
+        case(ShadowSettings::NO_SHADERS):
         {
             OSG_NOTICE<<"No shaders provided by, user must supply own shaders"<<std::endl;
             break;
         }
-        case(PROVIDE_VERTEX_AND_FRAGMENT_SHADER):
-        case(PROVIDE_FRAGMENT_SHADER):
+        case(ShadowSettings::PROVIDE_VERTEX_AND_FRAGMENT_SHADER):
+        case(ShadowSettings::PROVIDE_FRAGMENT_SHADER):
         {
             //osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
             osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
@@ -1045,9 +1037,11 @@ bool ViewDependentShadowMap::computeShadowCameraSettings(Frustum& frustum, Light
 
     osg::Vec3d lightSide;
 
+    const ShadowSettings* settings = getShadowedScene()->getShadowSettings();
+    
     double dotProduct_v = positionedLight.lightDir * frustum.frustumCenterLine;
     double gamma_v = acos(dotProduct_v);
-    if (gamma_v<osg::DegreesToRadians(_perspectiveShadowMapCutOffAngle) || gamma_v>osg::DegreesToRadians(180.0-_perspectiveShadowMapCutOffAngle))
+    if (gamma_v<osg::DegreesToRadians(settings->getPerspectiveShadowMapCutOffAngle()) || gamma_v>osg::DegreesToRadians(180.0-settings->getPerspectiveShadowMapCutOffAngle()))
     {
         OSG_INFO<<"View direction and Light direction below tolerance"<<std::endl;
         osg::Vec3d viewSide = osg::Matrixd::transform3x3(frustum.modelViewMatrix, osg::Vec3d(1.0,0.0,0.0));
@@ -1507,6 +1501,7 @@ struct RenderLeafBounds
 
 bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
 {
+    const ShadowSettings* settings = getShadowedScene()->getShadowSettings();
 
     //frustum.projectionMatrix;
     //frustum.modelViewMatrix;
@@ -1608,7 +1603,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
 
     double dotProduct_v = lightdir * viewdir_v;
     double gamma_v = acos(dotProduct_v);
-    if (gamma_v<osg::DegreesToRadians(_perspectiveShadowMapCutOffAngle) || gamma_v>osg::DegreesToRadians(180-_perspectiveShadowMapCutOffAngle))
+    if (gamma_v<osg::DegreesToRadians(settings->getPerspectiveShadowMapCutOffAngle()) || gamma_v>osg::DegreesToRadians(180-settings->getPerspectiveShadowMapCutOffAngle()))
     {
         // OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
         return true;
@@ -1640,7 +1635,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double alpha = osg::DegreesToRadians(30.0);
     double n = tan(alpha)*tan(osg::PI_2-gamma_v)*tan(osg::PI_2-gamma_v);
     //double n = tan(alpha)*tan(osg::PI_2-gamma_v);
-    double min_n = osg::maximum(-1.0-eye_ls.y(), _minimumShadowMapNearFarRatio);
+    double min_n = osg::maximum(-1.0-eye_ls.y(), settings->getMinimumShadowMapNearFarRatio());
     if (n<min_n)
     {
         OSG_INFO<<"Clamping n to eye point"<<std::endl;

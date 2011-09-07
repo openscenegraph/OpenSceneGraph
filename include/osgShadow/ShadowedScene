@@ -20,6 +20,7 @@
 #include <osg/TexGenNode>
 
 #include <osgShadow/ShadowTechnique>
+#include <osgShadow/ShadowSettings>
 
 namespace osgShadow {
 
@@ -42,6 +43,10 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
         unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
         
+        void setShadowSettings(ShadowSettings* ss);
+        ShadowSettings* getShadowSettings() { return _shadowSettings.get(); }
+        const ShadowSettings* getShadowSettings() const { return _shadowSettings.get(); }
+
         void setShadowTechnique(ShadowTechnique* technique);
         ShadowTechnique* getShadowTechnique() { return _shadowTechnique.get(); }
         const ShadowTechnique* getShadowTechnique() const { return _shadowTechnique.get(); }
@@ -66,8 +71,9 @@ protected:
 
         unsigned int _receivesShadowTraversalMask;
         unsigned int _castsShadowTraversalMask;
-        
-        osg::ref_ptr<ShadowTechnique> _shadowTechnique;
+
+        osg::ref_ptr<ShadowSettings>    _shadowSettings;
+        osg::ref_ptr<ShadowTechnique>   _shadowTechnique;
         
 };
 

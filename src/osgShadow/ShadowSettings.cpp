@@ -16,6 +16,7 @@
 using namespace osgShadow;
 
 ShadowSettings::ShadowSettings():
+    _lightNum(-1),
     _baseShadowTextureUnit(1),
     _textureSize(2048,2048),
     _minimumShadowMapNearFarRatio(0.01),
@@ -29,6 +30,7 @@ ShadowSettings::ShadowSettings():
 
 ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copyop):
     Object(ss,copyop),
+    _lightNum(ss._lightNum),
     _baseShadowTextureUnit(ss._baseShadowTextureUnit),
     _textureSize(ss._textureSize),
     _minimumShadowMapNearFarRatio(ss._minimumShadowMapNearFarRatio),

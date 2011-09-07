@@ -28,8 +28,11 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         META_Object(osgShadow, ShadowSettings);
 
-        void setLightNum(unsigned int lightNum) { _lightNum = lightNum; }
-        unsigned int getLightNum() const { return _lightNum; }
+        /** Set the LightNum of the light in the scene to assign a shadow for.
+          * Default value is -1, which signifies that shadow technique should automatically select an active light
+          * to assign a shadow, typically this will be the first active light found. */
+        void setLightNum(int lightNum) { _lightNum = lightNum; }
+        int getLightNum() const { return _lightNum; }
 
         void setBaseShadowTextureUnit(unsigned int unit) { _baseShadowTextureUnit = unit; }
         unsigned int getBaseShadowTextureUnit() const { return _baseShadowTextureUnit; }
@@ -79,7 +82,7 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         virtual ~ShadowSettings();
 
-        unsigned int                            _lightNum;
+        int                                     _lightNum;
         unsigned int                            _baseShadowTextureUnit;
         osg::Vec2s                              _textureSize;
 

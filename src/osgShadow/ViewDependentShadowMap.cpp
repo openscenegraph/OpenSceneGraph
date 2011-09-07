@@ -790,6 +790,9 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
     osgUtil::PositionalStateContainer::AttrMatrixList& aml =
         rs->getPositionalStateContainer()->getAttrMatrixList();
 
+
+    const ShadowSettings* settings = getShadowedScene()->getShadowSettings();
+        
     for(osgUtil::PositionalStateContainer::AttrMatrixList::reverse_iterator itr = aml.rbegin();
         itr != aml.rend();
         ++itr)
@@ -797,6 +800,9 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
         const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
         if (light)
         {
+            // is LightNum matched to that defined in settings
+            if (settings && settings->getLightNum()>=0 && light->getLightNum()!=settings->getLightNum()) break;
+            
             LightDataList::iterator pll_itr = pll.begin();
             for(; pll_itr != pll.end(); ++pll_itr)
             {

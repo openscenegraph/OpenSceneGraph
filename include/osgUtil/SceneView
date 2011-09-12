@@ -248,7 +248,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
         inline void setViewMatrix(const osg::Matrixd& matrix) { _camera->setViewMatrix(matrix); }
 
-        /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
+        /** Set the position and orientation of view matrix, using the same convention as gluLookAt. */
         void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
 
         /** Get the view matrix. */
@@ -257,7 +257,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Get the const view matrix. */
         const osg::Matrixd& getViewMatrix() const { return _camera->getViewMatrix(); }
 
-        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
+        /** Get the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
         void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f) const;
 
 

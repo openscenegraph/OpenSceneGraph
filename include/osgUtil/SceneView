@@ -196,7 +196,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
         inline void setProjectionMatrix(const osg::Matrixd& matrix) { _camera->setProjectionMatrix(matrix); }
 
-        /** Set to an orthographic projection. See OpenGL glOrtho for documentation further details.*/
+        /** Set to an orthographic projection. See OpenGL glOrtho documentation for further details.*/
         void setProjectionMatrixAsOrtho(double left, double right,
                                         double bottom, double top,
                                         double zNear, double zFar);
@@ -315,7 +315,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osgUtil::RenderStage* getRenderStageRight() { return _renderStageRight.get(); }
         const osgUtil::RenderStage* getRenderStageRight() const { return _renderStageRight.get(); }
 
-        /** search through any pre and post RenderStage that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread.*/
+        /** search through any pre and post RenderStages that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread.*/
         void collateReferencesToDependentCameras();
 
         /** clear the refence to any any dependent cameras.*/
@@ -374,24 +374,24 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
         /** Calculate the object coordinates of a point in window coordinates.
             Note, current implementation requires that SceneView::draw() has been previously called
-            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
-            windows coordinates are calculated relative to the bottom left of the window.
+            for projectWindowIntoObject to produce valid values. Consistent with OpenGL,
+            window coordinates are calculated relative to the bottom left of the window.
             Returns true on successful projection.
         */
         bool projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& object) const;
 
         /** Calculate the object coordinates of a window x,y when projected onto the near and far planes.
             Note, current implementation requires that SceneView::draw() has been previously called
-            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
-            windows coordinates are calculated relative to the bottom left of the window.
+            for projectWindowIntoObject to produce valid values. Consistent with OpenGL,
+            window coordinates are calculated relative to the bottom left of the window.
             Returns true on successful projection.
         */
         bool projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg::Vec3& far_point) const;
 
         /** Calculate the window coordinates of a point in object coordinates.
             Note, current implementation requires that SceneView::draw() has been previously called
-            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
-            windows coordinates are calculated relative to the bottom left of the window,
+            for projectWindowIntoObject to produce valid values. Consistent with OpenGL,
+            window coordinates are calculated relative to the bottom left of the window,
             whereas window API's normally have the top left as the origin,
             so you may need to pass in (mouseX,window_height-mouseY,...).
             Returns true on successful projection.
@@ -447,7 +447,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
         /** Do init traversal of attached scene graph using Init NodeVisitor.
           * The init traversal is called once for each SceneView, and should
-          * be used to compile display list, texture objects intialize data
+          * be used to compile display lists, texture objects and intialize data
           * not otherwise intialized during scene graph loading. Note, is
           * called automatically by update & cull if it hasn't already been called
           * elsewhere. Also init() should only ever be called within a valid
@@ -466,21 +466,21 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Compute the number of dynamic objects that will be held in the rendering backend */
         unsigned int getDynamicObjectCount() const { return _dynamicObjectCount; }
         
-        /** Release all OpenGL objects from the scene graph, such as texture objects, display lists etc.
-          * These released scene graphs placed in the respective delete GLObjects cache, which
+        /** Release all OpenGL objects from the scene graph, such as texture objects, display lists, etc.
+          * These released scene graphs are placed in the respective delete GLObjects cache, and
           * then need to be deleted in OpenGL by SceneView::flushAllDeleteGLObjects(). */
         virtual void releaseAllGLObjects();
 
-        /** Flush all deleted OpenGL objects, such as texture objects, display lists etc.*/
+        /** Flush all deleted OpenGL objects, such as texture objects, display lists, etc.*/
         virtual void flushAllDeletedGLObjects();
 
-        /** Flush deleted OpenGL objects, such as texture objects, display lists etc within specified available time.*/
+        /** Flush deleted OpenGL objects, such as texture objects, display lists, etc., within the specified available time.*/
         virtual void flushDeletedGLObjects(double& availableTime);
         
         /** Extract stats for current draw list. */
         bool getStats(Statistics& primStats);
 
-        /** Set whether the SceneView should automatically call flishDeletedObjects() on each new frame.*/
+        /** Set whether the SceneView should automatically call flushDeletedObjects() on each new frame.*/
         void setAutomaticFlush(bool automaticFlush) { _automaticFlush = automaticFlush; }
         bool getAutomaticFlush() const { return _automaticFlush; }
 

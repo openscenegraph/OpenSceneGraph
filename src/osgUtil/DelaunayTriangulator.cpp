@@ -1158,7 +1158,14 @@ bool DelaunayTriangulator::triangulate()
             pt_indices.push_back(ti->c());
         }
     }
-
+    
+    // LF August 2011 fix crash when no triangle is created
+    if (!pt_indices.size())
+    {
+        OSG_WARN << "Warning: DelaunayTriangulator::triangulate(): no triangle generated" << std::endl;
+        return false;        
+    }    
+    
     prim_tris_ = new osg::DrawElementsUInt(GL_TRIANGLES, pt_indices.size(), &(pt_indices.front()));
 
     OSG_INFO << "DelaunayTriangulator: process done, " << prim_tris_->getNumPrimitives() << " triangles remain\n";

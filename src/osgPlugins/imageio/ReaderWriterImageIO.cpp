@@ -388,8 +388,10 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         int i, j;
         GLubyte *pixels = (GLubyte *)image_data;
         for (i = the_height * the_width; i--; ) {
-            GLuint *value = (GLuint *)pixels;
+            
 #if __BIG_ENDIAN__
+            // That value is a temporary one and only needed for endianess conversion
+            GLuint *value = (GLuint *)pixels;
             // 
             // swap endian of each pixel for avoiding weird colors on ppc macs
             // by Tatsuhiro Nishioka

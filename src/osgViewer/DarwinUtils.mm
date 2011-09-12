@@ -47,6 +47,25 @@
 
 namespace osgDarwin {
 
+//
+// Lion replacement for CGDisplayBitsPerPixel(CGDirectDisplayID displayId)
+//
+size_t displayBitsPerPixel( CGDirectDisplayID displayId )
+{
+
+    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayId);
+    size_t depth = 0;
+
+    CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+    if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 32;
+    else if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 16;
+    else if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 8;
+
+    return depth;
+}
 
 static inline CGRect toCGRect(NSRect nsRect)
 {
@@ -313,7 +332,7 @@ void DarwinWindowingSystemInterface::getScreenSettings(const osg::GraphicsContex
     CGDirectDisplayID id = getDisplayID(si);
     resolution.width = CGDisplayPixelsWide(id);
     resolution.height = CGDisplayPixelsHigh(id);
-    resolution.colorDepth = CGDisplayBitsPerPixel(id);
+    resolution.colorDepth = displayBitsPerPixel(id);
     resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(id), kCGDisplayRefreshRate);        // Not tested
     if (resolution.refreshRate<0) resolution.refreshRate = 0;
 }
@@ -402,7 +421,7 @@ bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::Graphics
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
                         displayid, 
-                        CGDisplayBitsPerPixel(displayid), 
+                        displayBitsPerPixel(displayid), 
                         width, height,  
                         refresh,  
                         NULL);
@@ -432,7 +451,7 @@ bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::Graphic
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
                         displayid, 
-                        CGDisplayBitsPerPixel(displayid), 
+                        displayBitsPerPixel(displayid), 
                         width, height,  
                         refreshRate,  
                         &success);

@@ -93,6 +93,8 @@ class ValueObject : public Object
 
         virtual bool get(GetValueVisitor& gvv) const { return false; }
         virtual bool set(SetValueVisitor& gvv) { return false; }
+    protected:
+        virtual ~ValueObject() {}
 };
 
 template< typename T >
@@ -133,6 +135,7 @@ class TemplateValueObject : public ValueObject
 
 protected:
 
+        virtual ~TemplateValueObject() {}
         static const char* s_TemplateValueObject_className;
         
         T _value;

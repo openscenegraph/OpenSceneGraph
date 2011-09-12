@@ -109,7 +109,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         const osgDB::ImagePager* getImagePager() const;
 
 
-        /* Set the EventQueue that View uses to integrate external non window related events.*/
+        /* Set the EventQueue that the View uses to integrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
 
         /* Get the View's EventQueue.*/
@@ -128,7 +128,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's CameraManipulator.*/
         const osgGA::CameraManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
 
-        /** Set the view to the CameraManipulator's home position, if non is attached home() is does nothing.
+        /** Set the view to the CameraManipulator's home position, if none is attached home() it does nothing.
           * Note, to set the home position use getCamaraManipulator()->setHomePosition(...). */
         void home();
 
@@ -149,8 +149,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
 
         /** Set the NodePath to any active CoordinateSystemNode present in the Scene.
-          * The CoordinateSystemNode path is used to help applications and CamaraManipualtors handle geocentric coordinates systems,
-          * such as known which way is the local up at any position on the a whole earth. */
+          * The CoordinateSystemNode path is used to help applications and CamaraManipulators handle geocentric coordinates systems,
+          * so that the local up direction is known at any position on the whole earth. */
         void setCoordinateSystemNodePath(const osg::NodePath& nodePath);
 
         /** Get the NodePath to any active CoordinateSystemNode present in the Scene.*/
@@ -169,7 +169,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the DisplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
-        /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
+        /** Set the FusionDistanceMode and Value. Note, only used when working in stereo.*/
         void setFusionDistance(osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f)
         {
             _fusionDistanceMode = mode;
@@ -213,18 +213,18 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;
 
-        /** Get the camera which contains the pointer position x,y specified master cameras window/eye coords.
-          * Also passes back the local window coords for the graphics context associated with the camera passed back. */
+        /** Get the camera which contains the pointer position x,y specified in the master camera's window/eye coordinates.
+          * Also passes back the local window coordinatess for the graphics context associated with the camera. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
 
-        /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified node.
-          * Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
-          * while if its has a viewport the coordintates will be relative to its viewport dimensions.
-          * Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed
-          * directly on to the computeIntersections method. */
+        /** Compute intersections between a ray through the specified master camera's window/eye coordinates and a specified node.
+          * Note, when a master camera has slaves and no viewport itself, its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
+          * while if it has a viewport the coordintates will be relative to its viewport dimensions.
+          * Mouse events handled by the view will automatically be attached to the master camera window/clip coordinates so that they can be passed
+          * directly to the computeIntersections method. */
         bool computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
-        /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. */
+        /** Compute intersections between a ray through the specified master camera's window/eye coordinates and a specified nodePath's subgraph. */
         bool computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
 

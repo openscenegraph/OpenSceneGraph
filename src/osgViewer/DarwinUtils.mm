@@ -52,7 +52,9 @@ namespace osgDarwin {
 //
 size_t displayBitsPerPixel( CGDirectDisplayID displayId )
 {
-
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+    return CGDisplayBitsPerPixel(displayId);
+#else
     CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayId);
     size_t depth = 0;
 
@@ -65,6 +67,7 @@ size_t displayBitsPerPixel( CGDirectDisplayID displayId )
         depth = 8;
 
     return depth;
+#endif
 }
 
 static inline CGRect toCGRect(NSRect nsRect)

@@ -43,14 +43,14 @@ class OSG_EXPORT GraphicsContext : public Object
             
             /** Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly.
               * Note, if either of displayNum or screenNum are not defined then -1 is set respectively to
-              * signify the this parameter has not been set. When parameters are undefined one can call
-              * call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. */
+              * signify that this parameter has not been set. When parameters are undefined one can call
+              * call setUndefinedScreenDetailsToDefaultScreen() after readDISPLAY() to ensure valid values. */
             void readDISPLAY();
             
             /** Set the screenIndentifier from the displayName string.
-              * Note, if either of displayNum or screenNum are not defined then -1 is set respectively to
-              * signify the this parameter has not been set. When parameters are undefined one can call
-              * call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. */
+              * Note, if either of displayNum or screenNum are not defined then -1 is set to
+              * signify that this parameter has not been set. When parameters are undefined one can call
+              * call setUndefinedScreenDetailsToDefaultScreen() after readDISPLAY() to ensure valid values. */
             void setScreenIdentifier(const std::string& displayName);
 
             /** Set any undefined displayNum or screenNum values (i.e. -1) to the default display & screen of 0 respectively.*/
@@ -304,8 +304,8 @@ class OSG_EXPORT GraphicsContext : public Object
         inline const Vec4& getClearColor() const { return _clearColor; }
         
         /** Set the clear mask used in glClear(..).
-          * Defaults to 0 - so no clear is done by default by the GraphicsContext, instead the Camera's attached the GraphicsContext will do the clear. 
-          * GraphicsContext::setClearMask() is useful for when the Camera's Viewports don't conver the whole context, so the context will fill in the gaps. */
+          * Defaults to 0 - so no clear is done by default by the GraphicsContext, instead the Cameras attached to the GraphicsContext will do the clear.
+          * GraphicsContext::setClearMask() is useful for when the Camera Viewports don't cover the whole context, so the context will fill in the gaps. */
         inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
 
         /** Get the clear mask.*/

@@ -248,7 +248,7 @@ public:
         void setKeyEventWindowedResolutionUp(int key) { _keyEventWindowedResolutionUp = key; }
         int getKeyEventWindowedResolutionUp() const { return _keyEventWindowedResolutionUp; }
         void setKeyEventWindowedResolutionDown(int key) { _keyEventWindowedResolutionDown = key; }
-        int getKeyEventWindowedResolutionDown() const { return _keyEventWindowedResolutionUp; }
+        int getKeyEventWindowedResolutionDown() const { return _keyEventWindowedResolutionDown; }
 
         void setChangeWindowedResolution(bool flag) { _changeWindowedResolution = flag; }
         bool getChangeWindowedResolution() const { return _changeWindowedResolution; }

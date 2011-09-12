@@ -56,15 +56,40 @@ size_t displayBitsPerPixel( CGDirectDisplayID displayId )
     return CGDisplayBitsPerPixel(displayId);
 #else
     CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayId);
-    size_t depth = 0;
+    if (!mode)
+    {
+        OSG_WARN << "CGDisplayCopyDisplayMode returned NULL" << std::endl;
+        return 0;
+    }
 
     CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
-    if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    if (!pixEnc)
+    {
+        OSG_WARN << "CGDisplayModeCopyPixelEncoding returned NULL" << std::endl;
+        CGDisplayModeRelease(mode);
+        return 0;
+    }
+
+    size_t depth = 0;
+    if (CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
         depth = 32;
-    else if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    }
+    else if (CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
         depth = 16;
-    else if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    }
+    else if (CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
         depth = 8;
+    }
+    else
+    {
+        OSG_WARN << "Unable to match pixel encoding '" << CFStringGetCStringPtr(pixEnc, kCFStringEncodingUTF8) << "'" << std::endl;
+    }
+
+    CGDisplayModeRelease(mode);
+    CFRelease(pixEnc);
 
     return depth;
 #endif

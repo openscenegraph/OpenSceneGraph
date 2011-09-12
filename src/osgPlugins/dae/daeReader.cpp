@@ -552,7 +552,12 @@ osg::Node* daeReader::processNode( domNode *node, bool skeleton)
 
     if (resultNode->getName().empty())
     {
-        resultNode->setName( node->getId() ? node->getId() : "" );
+        std::string name = "";
+        if (node->getId())
+            name = node->getId();
+        if (node->getName())
+            name = node->getName();
+        resultNode->setName( name );
     }
 
     osg::Group* attachTo = resultNode;

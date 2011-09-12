@@ -358,7 +358,10 @@ osg::Node* daeReader::processLight( domLight *dlight )
 
     osg::LightSource* lightsource = new osg::LightSource();
     lightsource->setLight(light);
-    lightsource->setName(dlight->getId());
+    std::string name = dlight->getId() ? dlight->getId() : "";
+    if (dlight->getName())
+        name = dlight->getName();
+    lightsource->setName(name);
 
     daeElement *el = dlight->getTechnique_common()->getContents()[0];
     ambient = daeSafeCast< domLight::domTechnique_common::domAmbient >( el );

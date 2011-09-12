@@ -515,7 +515,7 @@ void CompositeViewer::realize()
 
     if (_views.empty())
     {
-        OSG_NOTICE<<"CompositeViewer::realize() - not views to realize."<<std::endl;
+        OSG_NOTICE<<"CompositeViewer::realize() - No views to realize."<<std::endl;
         _done = true;
         return;
     }

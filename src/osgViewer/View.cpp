@@ -504,7 +504,7 @@ void View::setUpViewAcrossAllScreens()
             translate_x += double(width) / (double(height) * aspectRatio);
         }
 
-        bool stereoSlitScreens = numScreens==2 &&
+        bool stereoSplitScreens = numScreens==2 &&
                                  ds->getStereoMode()==osg::DisplaySettings::HORIZONTAL_SPLIT &&
                                  ds->getStereo();
 
@@ -551,7 +551,7 @@ void View::setUpViewAcrossAllScreens()
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);
 
-            if (stereoSlitScreens)
+            if (stereoSplitScreens)
             {
                 unsigned int leftCameraNum = (ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT) ? 0 : 1;
 

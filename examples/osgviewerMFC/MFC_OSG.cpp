@@ -52,6 +52,7 @@ void cOSG::InitSceneGraph(void)
 
     // Load the Model from the model name
     mModel = osgDB::readNodeFile(m_ModelName);
+    if (!mModel) return;
 
     // Optimize the model
     osgUtil::Optimizer optimizer;
@@ -141,7 +142,7 @@ void cOSG::PostFrameUpdate()
     // Due any postframe updates in this routine
 }
 
-void cOSG::Render(void* ptr)
+/*void cOSG::Render(void* ptr)
 {
     cOSG* osg = (cOSG*)ptr;
 
@@ -166,4 +167,33 @@ void cOSG::Render(void* ptr)
     AfxMessageBox("Exit Rendering Thread");
 
     _endthread();
+}*/
+
+CRenderingThread::CRenderingThread( cOSG* ptr )
+:   OpenThreads::Thread(), _ptr(ptr), _done(false)
+{
+}
+
+CRenderingThread::~CRenderingThread()
+{
+    _done = true;
+    while( isRunning() )
+        OpenThreads::Thread::YieldCurrentThread();
+}
+
+void CRenderingThread::run()
+{
+    if ( !_ptr )
+    {
+        _done = true;
+        return;
+    }
+
+    osgViewer::Viewer* viewer = _ptr->getViewer();
+    do
+    {
+        _ptr->PreFrameUpdate();
+        viewer->frame();
+        _ptr->PostFrameUpdate();
+    } while ( !testCancel() && !viewer->done() && !_done );
 }

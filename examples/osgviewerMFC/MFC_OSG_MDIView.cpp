@@ -75,9 +75,10 @@ int CMFC_OSG_MDIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CMFC_OSG_MDIView::OnDestroy()
 {
+    delete mThreadHandle;
     if(mOSG != 0) delete mOSG;
 
-    WaitForSingleObject(mThreadHandle, 1000);
+    //WaitForSingleObject(mThreadHandle, 1000);
 
     CView::OnDestroy();
 }
@@ -93,13 +94,15 @@ void CMFC_OSG_MDIView::OnInitialUpdate()
     mOSG->InitOSG(csFileName.GetString());
 
     // Start the thread to do OSG Rendering
-    mThreadHandle = (HANDLE)_beginthread(&cOSG::Render, 0, mOSG); 
+    //mThreadHandle = (HANDLE)_beginthread(&cOSG::Render, 0, mOSG); 
+    mThreadHandle = new CRenderingThread(mOSG);
+    mThreadHandle->start();
 }
 
 void CMFC_OSG_MDIView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     // Pass Key Presses into OSG
-    mOSG->getViewer()->getEventQueue()->keyPress(nChar);
+    //mOSG->getViewer()->getEventQueue()->keyPress(nChar);
 
     // Close Window on Escape Key
     if(nChar == VK_ESCAPE)

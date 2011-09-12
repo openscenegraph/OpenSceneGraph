@@ -23,22 +23,37 @@
 #include <list>
 #include <map>
 
-#ifndef GL_ARB_vertex_buffer_object
+// identify GLES 1.1
+#if (defined(GL_VERSION_ES_CM_1_0) && GL_VERSION_ES_CM_1_0 > 0) || \
+    (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)
 
-    #define GL_ARB_vertex_buffer_object
+    #define OPENGLES_1_1_FOUND 1  
 
-    // for compatibility with gl.h headers that don't support VBO,
+#endif
+
+// for compatibility with gl.h headers that don't support VBO,
+//GL_VERSION_1_5 and GL_ARB_vertex_buffer_object provide these types for OpenGL
+//all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
+#if !defined(GL_VERSION_1_5) && !defined(GL_ARB_vertex_buffer_object) \
+  && !defined(GL_ES_VERSION_2_0) && !defined(OPENGLES_1_1_FOUND)
     #if defined(_WIN64)
-        typedef __int64 GLintptrARB;
-        typedef __int64 GLsizeiptrARB;
-    #elif defined(__ia64__) || defined(__x86_64__)
-        typedef long int GLintptrARB;
-        typedef long int GLsizeiptrARB;
+        typedef __int64 GLintptr;
+        typedef __int64 GLsizeiptr;
+    #elif defined(__ia64__) || defined(__x86_64__) || defined(ANDROID)
+        typedef long int GLintptr;
+        typedef long int GLsizeiptr;
     #else
-        typedef int GLintptrARB;
-        typedef int GLsizeiptrARB;
+        typedef int GLintptr;
+        typedef int GLsizeiptr;
     #endif
+#endif
 
+#ifndef GL_ARB_vertex_buffer_object
+    #define GL_ARB_vertex_buffer_object
+    
+    typedef GLintptr GLintptrARB;
+    typedef GLsizeiptr GLsizeiptrARB;
+    
     #define GL_ARRAY_BUFFER_ARB               0x8892
     #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
     #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
@@ -70,21 +85,9 @@
     #define GL_BUFFER_ACCESS_ARB              0x88BB
     #define GL_BUFFER_MAPPED_ARB              0x88BC
     #define GL_BUFFER_MAP_POINTER_ARB         0x88BD
-
 #endif
 
 #ifndef GL_VERSION_1_5
-    #if defined(_WIN64)
-        typedef __int64 GLintptr;
-        typedef __int64 GLsizeiptr;
-    #elif defined(__ia64__) || defined(__x86_64__) || defined(ANDROID)
-        typedef long int GLintptr;
-        typedef long int GLsizeiptr;
-    #else
-        typedef int GLintptr;
-        typedef int GLsizeiptr;
-    #endif
-
     #define GL_STREAM_DRAW                    0x88E0
     #define GL_STREAM_READ                    0x88E1
     #define GL_STREAM_COPY                    0x88E2

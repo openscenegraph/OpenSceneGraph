@@ -19,10 +19,11 @@ public:
         TEXT_LINE            // A text line, e.g. recording array elements
     };
     
-    XmlOutputIterator( std::ostream* ostream )
+    XmlOutputIterator( std::ostream* ostream, int precision )
     :   _readLineType(FIRST_LINE), _prevReadLineType(FIRST_LINE), _hasSubProperty(false)
     {
         _out = ostream;
+        if (precision>0) _sstream.precision(precision);
         _root = new osgDB::XmlNode;
         _root->type = osgDB::XmlNode::GROUP;
     }

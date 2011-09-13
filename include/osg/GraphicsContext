@@ -261,7 +261,7 @@ class OSG_EXPORT GraphicsContext : public Object
         void removeAllOperations();
 
         /** Run the operations. */
-        void runOperations();
+        virtual void runOperations();
 
         typedef std::list< ref_ptr<Operation> > GraphicsOperationQueue;
         

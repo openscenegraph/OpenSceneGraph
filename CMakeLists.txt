@@ -479,7 +479,9 @@ ENDIF()
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
 
-IF(NOT ANDROID)
+OPTION(OSG_USE_QT "Enable to use Qt (build Qt-dependent libraries, plugins and examples)" ON)
+
+IF(OSG_USE_QT AND NOT ANDROID)
 # To select a specific version of QT define DESIRED_QT_VERSION
 # via cmake -DDESIRED_QT_VERSION=4
     IF  (DESIRED_QT_VERSION)
@@ -499,7 +501,8 @@ IF(NOT ANDROID)
         ENDIF()
 
     ENDIF()
-ENDIF(NOT ANDROID)
+ENDIF()
+
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
 

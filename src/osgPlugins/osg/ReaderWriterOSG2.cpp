@@ -71,15 +71,29 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
 
 OutputIterator* writeOutputIterator( std::ostream& fout, const Options* options )
 {
+    // Read precision parameter, for text & XML formats
+    int precision(-1);
+    if ( options ) {
+        std::istringstream iss(options->getOptionString());
+        std::string opt;
+        while (iss >> opt)
+        {
+            if(opt=="PRECISION" || opt=="precision") 
+            {
+                iss >> precision;
+            }
+        }
+    }
+
     if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
     {
         fout << std::string("#Ascii") << ' ';
-        return new AsciiOutputIterator(&fout);
+        return new AsciiOutputIterator(&fout, precision);
     }
     else if ( options && options->getOptionString().find("XML")!=std::string::npos )
     {
         fout << std::string("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>") << std::endl;
-        return new XmlOutputIterator(&fout);
+        return new XmlOutputIterator(&fout, precision);
     }
     else
     {

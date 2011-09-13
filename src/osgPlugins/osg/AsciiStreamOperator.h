@@ -7,8 +7,12 @@
 class AsciiOutputIterator : public osgDB::OutputIterator
 {
 public:
-    AsciiOutputIterator( std::ostream* ostream )
-    : _readyForIndent(false), _indent(0) { _out = ostream; }
+    AsciiOutputIterator( std::ostream* ostream, int precision )
+    : _readyForIndent(false), _indent(0)
+    {
+        _out = ostream;
+        if (precision>0) _out->precision(precision);
+    }
     
     virtual ~AsciiOutputIterator() {}
     

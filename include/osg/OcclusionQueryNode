@@ -60,7 +60,7 @@ public:
 
 // QueryGeometry -- A Drawable that performs an occlusion query,
 //   using its geometric data as the query geometry.
-class QueryGeometry : public osg::Geometry
+class OSG_EXPORT QueryGeometry : public osg::Geometry
 {
 public:
     QueryGeometry( const std::string& oqnName=std::string("") );
@@ -140,6 +140,10 @@ public:
     void setQueryStateSet( osg::StateSet* ss );
     osg::StateSet* getQueryStateSet();
     const osg::StateSet* getQueryStateSet() const;
+
+    // Get the QueryGeometry object used for occlusion query. Returns 0 if no QueryGeometry is created.
+    osg::QueryGeometry* getQueryGeometry();
+    const osg::QueryGeometry* getQueryGeometry() const;
 
     // Set and get the StateSet used by the OcclusionQueryNode
     //   when rendering the debug query geometry (see setDebugDisplay).

@@ -754,5 +754,25 @@ void OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
     QueryGeometry::discardDeletedQueryObjects( contextID );
 }
 
+osg::QueryGeometry* OcclusionQueryNode::getQueryGeometry()
+{
+    if (_queryGeode && _queryGeode->getDrawable( 0 ))
+    {
+        QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
+        return qg;
+    }
+    return 0;
+}
+
+const osg::QueryGeometry* OcclusionQueryNode::getQueryGeometry() const
+{
+    if (_queryGeode && _queryGeode->getDrawable( 0 ))
+    {
+        QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
+        return qg;
+    }
+    return 0;
+}
+
 
 }

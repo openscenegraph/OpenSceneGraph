@@ -217,7 +217,8 @@ class OSG_EXPORT CullSettings
         /** Get the LOD bias.*/
         float getLODScale() const { return _LODScale; }
 
-        /** Set the Small Feature Culling Pixel Size.*/
+        /** Threshold at which small features are culled.
+        \param value Boulding volume size in screen space. Default is 2.0. */
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; applyMaskAction(SMALL_FEATURE_CULLING_PIXEL_SIZE); }
 
         /** Get the Small Feature Culling Pixel Size.*/

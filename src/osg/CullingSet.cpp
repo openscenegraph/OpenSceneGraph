@@ -18,7 +18,7 @@ CullingSet::CullingSet()
 {
     _mask = ENABLE_ALL_CULLING;
     _pixelSizeVector.set(0,0,0,1);
-    _smallFeatureCullingPixelSize=1.0f;
+    _smallFeatureCullingPixelSize=2.0f;
 }
 
 CullingSet::~CullingSet()

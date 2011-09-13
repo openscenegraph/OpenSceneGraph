@@ -252,7 +252,10 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
     double epsilon = 1e-6;
     if (zfar<znear-epsilon)
     {
-        OSG_INFO<<"_clampProjectionMatrix not applied, invalid depth range, znear = "<<znear<<"  zfar = "<<zfar<<std::endl;
+        if (zfar != -FLT_MAX || znear != FLT_MAX)
+        {
+            OSG_INFO<<"_clampProjectionMatrix not applied, invalid depth range, znear = "<<znear<<"  zfar = "<<zfar<<std::endl;
+        }
         return false;
     }
     

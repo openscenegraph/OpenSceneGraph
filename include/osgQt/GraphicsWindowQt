@@ -14,8 +14,13 @@
 #ifndef OSGVIEWER_GRAPHICSWINDOWQT
 #define OSGVIEWER_GRAPHICSWINDOWQT
 
-#include <osgViewer/GraphicsWindow>
+#include <QtCore/QMutex>
+#include <QtCore/QEvent>
+#include <QtCore/QQueue>
+#include <QtCore/QSet>
 #include <QtOpenGL/QGLWidget>
+
+#include <osgViewer/GraphicsWindow>
 #include <osgQt/Export>
 
 class QInputEvent;
@@ -46,6 +51,7 @@ void OSGQT_EXPORT setViewer( osgViewer::ViewerBase *viewer );
 class OSGQT_EXPORT GLWidget : public QGLWidget
 {
     typedef QGLWidget inherited;
+
 public:
 
     GLWidget( QWidget* parent = NULL, const QGLWidget* shareWidget = NULL, Qt::WindowFlags f = 0, bool forwardKeyEvents = false );
@@ -71,8 +77,36 @@ public:
     virtual void wheelEvent( QWheelEvent* event );
 
 protected:
+
+    int getNumDeferredEvents()
+    {
+        QMutexLocker lock(&_deferredEventQueueMutex);
+        return _deferredEventQueue.count();
+    }
+    void enqueueDeferredEvent(QEvent::Type eventType, QEvent::Type removeEventType = QEvent::None)
+    {
+        QMutexLocker lock(&_deferredEventQueueMutex);
+
+        if (removeEventType != QEvent::None)
+        {
+            if (_deferredEventQueue.removeOne(removeEventType))
+                _eventCompressor.remove(eventType);
+        }
+
+        if (_eventCompressor.find(eventType) == _eventCompressor.end())
+        {
+            _deferredEventQueue.enqueue(eventType);
+            _eventCompressor.insert(eventType);
+        }    
+    }
+    void processDeferredEvents();
+    
     friend class GraphicsWindowQt;
     GraphicsWindowQt* _gw;
+
+    QMutex _deferredEventQueueMutex;
+    QQueue<QEvent::Type> _deferredEventQueue;
+    QSet<QEvent::Type> _eventCompressor;
 
     bool _forwardKeyEvents;
 
@@ -96,8 +130,8 @@ public:
     inline GLWidget* getGraphWidget() { return _widget; }
     /// deprecated
     inline const GLWidget* getGraphWidget() const { return _widget; }
-
-struct WindowData : public osg::Referenced
+    
+    struct WindowData : public osg::Referenced
     {
         WindowData( GLWidget* widget = NULL, GLWidget* parent = NULL ): _widget(widget), _parent(parent) {}
         GLWidget* _widget;
@@ -129,12 +163,13 @@ struct WindowData : public osg::Referenced
     virtual bool makeCurrentImplementation();
     virtual bool releaseContextImplementation();
     virtual void swapBuffersImplementation();
-
+    virtual void runOperations();
+    
     virtual void requestWarpPointer( float x, float y );
 
 protected:
-    friend class GLWidget;
 
+    friend class GLWidget;
     GLWidget* _widget;
     bool _ownsWidget;
     QCursor _currentCursor;

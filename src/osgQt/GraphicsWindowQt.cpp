@@ -126,8 +126,6 @@ void timerEvent( QTimerEvent *event );
 
 static HeartBeat heartBeat;
 
-
-
 GLWidget::GLWidget( QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f, bool forwardKeyEvents )
 : QGLWidget(parent, shareWidget, f),
 _gw( NULL ),
@@ -162,18 +160,65 @@ GLWidget::~GLWidget()
     }
 }
 
+void GLWidget::processDeferredEvents()
+{
+    QQueue<QEvent::Type> deferredEventQueueCopy;
+    {
+        QMutexLocker lock(&_deferredEventQueueMutex);
+        deferredEventQueueCopy = _deferredEventQueue;
+        _eventCompressor.clear();
+        _deferredEventQueue.clear();
+    }
+
+    while (!deferredEventQueueCopy.isEmpty())
+    {
+        QEvent event(deferredEventQueueCopy.dequeue());
+        QGLWidget::event(&event);
+    }
+}
+
 bool GLWidget::event( QEvent* event )
 {
-    if( event->type() == QEvent::Hide )
+
+    // QEvent::Hide
+    //
+    // workaround "Qt-workaround" that does glFinish before hiding the widget
+    // (the Qt workaround was seen at least in Qt 4.6.3 and 4.7.0)
+    //
+    // Qt makes the context current, performs glFinish, and releases the context.
+    // This makes the problem in OSG multithreaded environment as the context
+    // is active in another thread, thus it can not be made current for the purpose
+    // of glFinish in this thread.
+
+    // QEvent::ParentChange
+    //
+    // Reparenting GLWidget may create a new underlying window and a new GL context.
+    // Qt will then call doneCurrent on the GL context about to be deleted. The thread
+    // where old GL context was current has no longer current context to render to and
+    // we cannot make new GL context current in this thread.
+
+    // We workaround above problems by deferring execution of problematic event requests.
+    // These events has to be enqueue and executed later in a main GUI thread (GUI operations
+    // outside the main thread are not allowed) just before makeCurrent is called from the 
+    // right thread. The good place for doing that is right after swap in a swapBuffersImplementation.
+        
+    if (event->type() == QEvent::Hide)
     {
-        // workaround "Qt-workaround" that does glFinish before hiding the widget
-        // (the Qt workaround was seen at least in Qt 4.6.3 and 4.7.0)
-        //
-        // Qt makes the context current, performs glFinish, and releases the context.
-        // This makes the problem in OSG multithreaded environment as the context
-        // is active in another thread, thus it can not be made current for the purpose
-        // of glFinish in this thread. We workaround it by skiping QGLWidget::event() code.
-        return QWidget::event( event );
+        // enqueue only the last of QEvent::Hide and QEvent::Show
+        enqueueDeferredEvent(QEvent::Hide, QEvent::Show);
+        return true;
+    }
+    else if (event->type() == QEvent::Show)
+    {
+        // enqueue only the last of QEvent::Show or QEvent::Hide
+        enqueueDeferredEvent(QEvent::Show, QEvent::Hide);
+        return true;
+    }
+    else if (event->type() == QEvent::ParentChange)
+    {
+        // enqueue only the last QEvent::ParentChange
+        enqueueDeferredEvent(QEvent::ParentChange);
+        return true;
     }
 
     // perform regular event handling
@@ -482,9 +527,13 @@ bool GraphicsWindowQt::setWindowDecorationImplementation( bool windowDecoration 
         flags |= Qt::WindowTitleHint|Qt::WindowMinMaxButtonsHint|Qt::WindowSystemMenuHint;
     _traits->windowDecoration = windowDecoration;
 
-    // FIXME: Calling setWindowFlags or reparent widget will recreate the window handle,
-    // which makes QGLContext no longer work...How to deal with that?
-    //if ( _widget ) _widget->setWindowFlags( flags );
+    if ( _widget )
+    {
+        _widget->setWindowFlags( flags );
+        
+        return true;
+    }
+    
     return false;
 }
 
@@ -622,9 +671,26 @@ void GraphicsWindowQt::closeImplementation()
     _realized = false;
 }
 
+void GraphicsWindowQt::runOperations()
+{ 
+    // While in graphics thread this is last chance to do something useful before
+    // graphics thread will execute its operations. 
+    if (_widget->getNumDeferredEvents() > 0)
+        _widget->processDeferredEvents();
+
+    if (QGLContext::currentContext() != _widget->context())
+        _widget->makeCurrent();
+
+    GraphicsWindow::runOperations();
+}
+
 bool GraphicsWindowQt::makeCurrentImplementation()
 {
+    if (_widget->getNumDeferredEvents() > 0)
+        _widget->processDeferredEvents();
+
     _widget->makeCurrent();
+
     return true;
 }
 
@@ -637,6 +703,18 @@ bool GraphicsWindowQt::releaseContextImplementation()
 void GraphicsWindowQt::swapBuffersImplementation()
 {
     _widget->swapBuffers();
+
+    // FIXME: the processDeferredEvents should really be executed in a GUI (main) thread context but
+    // I couln't find any reliable way to do this. For now, lets hope non of *GUI thread only operations* will
+    // be executed in a QGLWidget::event handler. On the other hand, calling GUI only operations in the
+    // QGLWidget event handler is an indication of a Qt bug.
+    if (_widget->getNumDeferredEvents() > 0)
+        _widget->processDeferredEvents();
+
+    // We need to call makeCurrent here to restore our previously current context
+    // which may be changed by the processDeferredEvents function.
+    if (QGLContext::currentContext() != _widget->context())
+        _widget->makeCurrent();
 }
 
 void GraphicsWindowQt::requestWarpPointer( float x, float y )

@@ -848,8 +848,11 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
         fitr!=faceList.end();
         ++fitr)
     {
-
         Lib3dsFace& face = m->faces[*fitr];
+
+        if (face.index[0]>=orig2NewMapping.size() ||
+            face.index[1]>=orig2NewMapping.size() ||
+            face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
 
         if (orig2NewMapping[face.index[0]]<0)
             orig2NewMapping[face.index[0]] = noVertex++;
@@ -931,6 +934,11 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
             ++fitr)
         {
             Lib3dsFace& face = m->faces[*fitr];
+
+            if (face.index[0]>=orig2NewMapping.size() ||
+                face.index[1]>=orig2NewMapping.size() ||
+                face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
+
             osg::Vec3f osgNormal( copyLib3dsVec3ToOsgVec3(normals[*fitr]) );
             if (matrix) osgNormal = osg::Matrix::transform3x3(osgNormal, *matrix);
             osgNormal.normalize();
@@ -976,6 +984,11 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
         ++fitr)
     {
         Lib3dsFace& face = m->faces[*fitr];
+
+        if (face.index[0]>=orig2NewMapping.size() ||
+            face.index[1]>=orig2NewMapping.size() ||
+            face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
+
         *(index_itr++) = orig2NewMapping[face.index[0]];
         *(index_itr++) = orig2NewMapping[face.index[1]];
         *(index_itr++) = orig2NewMapping[face.index[2]];

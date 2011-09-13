@@ -514,7 +514,7 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum t
 {
     unsigned int pixelSize = computePixelSizeInBits(pixelFormat,type);
     int widthInBits = width*pixelSize;
-    int packingInBits = packing*8;
+    int packingInBits = packing!=0 ? packing*8 : 8;
     //OSG_INFO << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }

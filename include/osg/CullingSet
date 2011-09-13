@@ -161,6 +161,8 @@ class OSG_EXPORT CullingSet : public Referenced
         Vec4& getPixelSizeVector() { return _pixelSizeVector; }
         const Vec4& getPixelSizeVector() const { return _pixelSizeVector; }
 
+        /** Threshold at which small features are culled.
+        \param value Boulding volume size in screen space. Default is 2.0. */
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
         
         float& getSmallFeatureCullingPixelSize() { return _smallFeatureCullingPixelSize; }

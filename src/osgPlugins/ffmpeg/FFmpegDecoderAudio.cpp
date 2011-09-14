@@ -72,7 +72,27 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 
         m_frequency = m_context->sample_rate;
         m_nb_channels = m_context->channels;
-        m_sample_format = osg::AudioStream::SampleFormat(m_context->sample_fmt);
+        switch (m_context->sample_fmt) 
+        {
+        case AV_SAMPLE_FMT_NONE:
+            throw std::runtime_error("invalid audio format AV_SAMPLE_FMT_NONE");
+        case AV_SAMPLE_FMT_U8:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_U8;
+            break;
+        case AV_SAMPLE_FMT_S16:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_S16;
+            break;
+        case AV_SAMPLE_FMT_S32:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_S32;
+            break;
+        case AV_SAMPLE_FMT_FLT:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_F32;
+            break;
+        case AV_SAMPLE_FMT_DBL:
+            throw std::runtime_error("unhandled audio format AV_SAMPLE_FMT_DBL");
+        default:
+            throw std::runtime_error("unknown audio format");
+        }
 
         // Check stream sanity
         if (m_context->codec_id == CODEC_ID_NONE)

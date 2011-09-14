@@ -38,6 +38,7 @@ class Transform;
 class Node;
 class Switch;
 class Geode;
+class Camera;
 
 /** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
 typedef std::vector< Node* > NodePath;

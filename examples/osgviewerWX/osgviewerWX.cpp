@@ -45,7 +45,7 @@ bool wxOsgApp::OnInit()
     // create osg canvas
     //    - initialize
 
-    int *attributes = new int[7];
+    int attributes[7];
     attributes[0] = int(WX_GL_DOUBLEBUFFER);
     attributes[1] = WX_GL_RGBA;
     attributes[2] = WX_GL_DEPTH_SIZE;

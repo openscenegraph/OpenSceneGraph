@@ -105,6 +105,15 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
 
+
+        /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<Camera*>(this).*/
+        virtual Camera* asCamera() { return 0; }
+        /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<const Camera*>(this).*/
+        virtual const Camera* asCamera() const { return 0; }
+
+
         /** Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0.
           * Equivalent to dynamic_cast<Switch*>(this).*/
         virtual Switch* asSwitch() { return 0; }

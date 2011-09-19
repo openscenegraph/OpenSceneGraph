@@ -20,7 +20,6 @@
 #include "DarwinUtils.h"
 
 //#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
-
 #define DEBUG_OUT(s) ;
 
 static bool s_quit_requested = false;
@@ -568,110 +567,82 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 }
 
 
-- (void) doLeftMouseButtonDown:(NSEvent*)theEvent
+- (void)doSingleOrDoubleButtonPress:(NSEvent*)event forButton:(int)button
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    
-    if([theEvent clickCount] == 1)
+    if (!_win)
     {
-        _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
+        return;
+    }
+
+    NSPoint convertedPoint = [self getLocalPoint:event];
+    if ([event clickCount] == 1)
+    {
+        _win->getEventQueue()->mouseButtonPress(convertedPoint.x, convertedPoint.y, button);
     }
     else
     {
-        _win->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 1);
+        _win->getEventQueue()->mouseDoubleButtonPress(convertedPoint.x, convertedPoint.y, button);
     }
+
+    //[self setNeedsDisplay:YES];
+}
+
+- (void)doButtonRelease:(NSEvent*)event forButton:(int)button
+{
+    if (!_win)
+    {
+        return;
+    }
+
+    NSPoint convertedPoint = [self getLocalPoint:event];
+    _win->getEventQueue()->mouseButtonRelease(convertedPoint.x, convertedPoint.y, button);
+    //[self setNeedsDisplay:YES];
+}
+
+
+// Left mouse button
+- (void) doLeftMouseButtonDown:(NSEvent*)theEvent
+{
+    [self doSingleOrDoubleButtonPress:theEvent forButton:1];
 }
 
 - (void) doLeftMouseButtonUp:(NSEvent*)theEvent
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    
-    _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
-
+    [self doButtonRelease:theEvent forButton:1];
 }
 
+// Right mouse button
 - (void) doRightMouseButtonDown:(NSEvent*)theEvent
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    if([theEvent clickCount] == 1)
-    {
-        _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 3);
-    }
-    else
-    {
-        _win->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 3);
-    }
-
+    [self doSingleOrDoubleButtonPress:theEvent forButton:3];
 }
-
 
 - (void) doRightMouseButtonUp:(NSEvent*)theEvent
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];    
-    _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
+    [self doButtonRelease:theEvent forButton:3];
 }
 
+// Middle mouse button
 - (void) doMiddleMouseButtonDown:(NSEvent*)theEvent
 {
-    if (!_win) return;
-    
-    DEBUG_OUT("middleMouseDown ");
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    
-    if([theEvent clickCount] == 1)
-    {
-        _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 2);
-    }
-    else
-    {
-        _win->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 2);
-    }
+    [self doSingleOrDoubleButtonPress:theEvent forButton:2];
 }
-
-- (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number
-{
-    if (!_win) return;
-    
-    DEBUG_OUT("extraMouseDown btn: " << button_number);
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    if([theEvent clickCount] == 1)
-    {
-        _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, button_number+1);
-    }
-    else
-    {
-        _win->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, button_number+1);
-    }
-}
-
 
 - (void) doMiddleMouseButtonUp:(NSEvent*)theEvent
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 2);
+    [self doButtonRelease:theEvent forButton:2];
+}
 
+// Extra mouse buttons
+- (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number
+{
+    [self doButtonRelease:theEvent forButton:(button_number+1)];
 }
 
 - (void) doExtraMouseButtonUp:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
-    if (!_win) return;
-    
-    NSPoint converted_point = [self getLocalPoint: theEvent];
-    _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
+    [self doButtonRelease:theEvent forButton:(button_number+1)];
 }
-
 
 
 - (void) scrollWheel:(NSEvent*)theEvent
@@ -1367,15 +1338,13 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
     
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
     CGDisplayErr err = kCGErrorSuccess;
-    switch (cursorOn)
-    {
-        case true:
-            err = CGDisplayShowCursor(displayId);
-            break;
-        case false:
-            err = CGDisplayHideCursor(displayId);
-            break;
+
+    if (cursorOn) {
+        err = CGDisplayShowCursor(displayId);
+    } else {
+        err = CGDisplayHideCursor(displayId);
     }
+
     if (err != kCGErrorSuccess) {
         OSG_WARN << "GraphicsWindowCocoa::useCursor failed with " << err << std::endl;
     }

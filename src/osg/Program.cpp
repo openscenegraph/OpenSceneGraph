@@ -34,6 +34,8 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+#include <string.h>
+
 using namespace osg;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -732,6 +734,15 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         {
             _extensions->glGetActiveUniform( _glProgramHandle,
                     i, maxLen, 0, &size, &type, name );
+
+            int pos = strlen(name);
+            if (pos>0 && name[pos-1]==']')
+            {
+                // need to trim [..] from end of name as some drivers append this causing problems with look up.
+                --pos;
+                while(pos>0 && name[pos]!='[') { --pos; }
+                name[pos] = 0;
+            }
 
             GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
             

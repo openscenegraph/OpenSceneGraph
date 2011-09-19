@@ -2565,7 +2565,6 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
         case WM_SETFOCUS :
         ///////////////////
-
             // Check keys and send a message if the key is pressed when the
             // focus comes back to the window.
             // I don't really like this hard-coded loop, but the key codes
@@ -2573,8 +2572,32 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             // ok. See winuser.h for the key codes.
             for (unsigned int i = 0x08; i < 0xFF; i++)
             {
-                if ((::GetAsyncKeyState(i) & 0x8000) != 0)
-                    ::SendMessage(hwnd, WM_KEYDOWN, i, 0);
+                // Wojciech Lewandowski: 2011/09/12 
+                // Skip CONTROL | MENU | SHIFT tests because we are polling exact left or right keys 
+                // above return press for both right and left so we may end up with incosistent
+                // modifier mask if we report left control & right control while only right was pressed
+                LONG rightSideCode = 0;
+                switch( i )
+                {
+                    case VK_CONTROL:
+                    case VK_SHIFT:
+                    case VK_MENU:
+                        continue;
+
+                    case VK_RCONTROL:
+                    case VK_RSHIFT:
+                    case VK_RMENU:
+                        rightSideCode = 0x01000000;
+                }
+                if ((::GetAsyncKeyState(i) & 0x8000) != 0) 
+                {                    
+                    // Compute lParam because subsequent adaptKey will rely on correct lParam
+                    UINT scanCode = ::MapVirtualKeyEx( i, 0, ::GetKeyboardLayout(0));
+                    // Set Extended Key bit + Scan Code + 30 bit to indicate key was set before sending message
+                    // See Windows SDK help on WM_KEYDOWN for explanation
+                    LONG lParam = rightSideCode | ( ( scanCode & 0xFF ) << 16 ) | (1 << 30);
+                    ::SendMessage(hwnd, WM_KEYDOWN, i, lParam );
+                }
             }
             break;
 

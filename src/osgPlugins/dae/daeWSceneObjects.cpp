@@ -289,7 +289,7 @@ void daeWriter::apply( osg::LOD &node )
         domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
         teq->setProfile( "OpenSceneGraph" );
 
-        if (node.getCenterMode()==osg::LOD::USER_DEFINED_CENTER)
+        if ((node.getCenterMode()==osg::LOD::USER_DEFINED_CENTER)||(node.getCenterMode()==osg::LOD::UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED))
         {
             domAny *center = (domAny*)teq->add("Center");
             center->setValue(toString(node.getCenter()).c_str());

@@ -61,7 +61,8 @@ class OSG_EXPORT LOD : public Group
         enum CenterMode
         {
             USE_BOUNDING_SPHERE_CENTER,
-            USER_DEFINED_CENTER
+            USER_DEFINED_CENTER,
+            UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED
         };
 
         /** Set how the center of object should be determined when computing which child is active.*/
@@ -72,10 +73,10 @@ class OSG_EXPORT LOD : public Group
 
         /** Sets the object-space point which defines the center of the osg::LOD.  
             center is affected by any transforms in the hierarchy above the osg::LOD.*/
-        inline void setCenter(const vec_type& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
+        inline void setCenter(const vec_type& center) { if (_centerMode!=UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED) { _centerMode=USER_DEFINED_CENTER; } _userDefinedCenter = center; }
         
         /** return the LOD center point. */
-        inline const vec_type& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
+        inline const vec_type& getCenter() const { if ((_centerMode==USER_DEFINED_CENTER)||(_centerMode==UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED)) return _userDefinedCenter; else return getBound().center(); }
 
 
         /** Set the object-space reference radius of the volume enclosed by the LOD. 
@@ -84,8 +85,6 @@ class OSG_EXPORT LOD : public Group
         
         /** Get the object-space radius of the volume enclosed by the LOD.*/
         inline value_type getRadius() const { return _radius; }
-
-
 
         /** Modes that control how the range values should be interpreted when computing which child is active.*/
         enum RangeMode

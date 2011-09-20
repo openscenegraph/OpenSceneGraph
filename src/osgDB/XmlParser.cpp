@@ -197,6 +197,26 @@ bool XmlNode::read(Input& input)
 
             return true;
         }
+        else if (input.match("<!DOCTYPE"))
+        {
+            XmlNode* commentNode = new XmlNode;
+            commentNode->type = XmlNode::INFORMATION;
+            children.push_back(commentNode);
+
+            ++input;
+            XmlNode::Input::size_type end = input.find(">");
+            commentNode->contents = input.substr(0, end);
+            if (end!=std::string::npos)
+            {
+                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                input += (end+2);
+            }
+            else
+            {
+                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                input += end;
+            }
+        }
         else if (input.match("<?"))
         {
             XmlNode* commentNode = new XmlNode;
@@ -241,11 +261,33 @@ bool XmlNode::read(Input& input)
                 input.skipWhiteSpace();
                 std::string option;
                 std::string value;
-                while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ')
+
+                if (input[0]=='"')
                 {
-                    option.push_back(c);
+                    option.push_back(input[0]);
+                    ++input;
+                    while((c=input[0])>=0 && c!='"')
+                    {
+                        if (c=='&')
+                            readAndReplaceControl(option, input);
+                        else
+                        {
+                            option.push_back(c);
+                            ++input;
+                        }
+                    }
+                    option.push_back(input[0]);
                     ++input;
                 }
+                else
+                {
+                    while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ')
+                    {
+                        option.push_back(c);
+                        ++input;
+                    }
+                }
+
                 input.skipWhiteSpace();
                 if (input[0]=='=')
                 {
@@ -296,7 +338,7 @@ bool XmlNode::read(Input& input)
 
                 if (prev_pos == input.currentPosition())
                 {
-                    OSG_NOTICE<<"Error, parser iterator note advanced, position: "<<input.substr(0,50)<<std::endl;
+                    OSG_NOTICE<<"Error, parser iterator not advanced, position: "<<input.substr(0,50)<<std::endl;
                     ++input;
                 }
 

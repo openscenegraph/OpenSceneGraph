@@ -1148,7 +1148,8 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     }
     else
     {
-        OSG_NOTICE<<"Warning: unreconginized key sequence '"<<key<<"'"<<std::endl;
+        OSG_NOTICE<<"Warning: invalid key used in <key>"<<key<<"</key>, ignoring tag."<<std::endl;
+        return false;
     }
 
     keyPosition.set(keyValue,x,y);

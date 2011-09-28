@@ -14,6 +14,7 @@
 #include <osg/GLU>
 
 #include <osg/Notify>
+#include <osg/io_utils>
 #include <osgUtil/Tessellator>
 
 using namespace osg;
@@ -63,12 +64,19 @@ void Tessellator::addVertex(osg::Vec3* vertex)
 {
     if (_tobj)
     {
-        Vec3d* data = new Vec3d;
-        _coordData.push_back(data);
-        (*data)._v[0]=(*vertex)[0];
-        (*data)._v[1]=(*vertex)[1];
-        (*data)._v[2]=(*vertex)[2];
-        gluTessVertex(_tobj,data->_v,vertex);
+        if (vertex && vertex->valid())
+        {
+            Vec3d* data = new Vec3d;
+            _coordData.push_back(data);
+            (*data)._v[0]=(*vertex)[0];
+            (*data)._v[1]=(*vertex)[1];
+            (*data)._v[2]=(*vertex)[2];
+            gluTessVertex(_tobj,data->_v,vertex);
+        }
+        else
+        {
+            OSG_INFO<<"Tessellator::addVertex("<<*vertex<<") detected NaN, ignoring vertex."<<std::endl;
+        }
     }
 }
 

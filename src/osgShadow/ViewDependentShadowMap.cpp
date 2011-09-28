@@ -1383,6 +1383,7 @@ struct ConvexHull
 struct RenderLeafBounds
 {
     RenderLeafBounds():
+        computeRatios(false),
         numRenderLeaf(0),
         n(0.0),
         previous_modelview(0),
@@ -1400,9 +1401,22 @@ struct RenderLeafBounds
         //OSG_NOTICE<<std::endl<<"RenderLeafBounds"<<std::endl;
     }
 
-    void set(const osg::Matrixd& vp, osg::Vec3d& e_ls, double nr)
+    void set(const osg::Matrixd& p)
     {
-        light_vp = vp;
+        computeRatios = false;
+        light_p = p;
+        clip_min_x = -DBL_MAX; clip_max_x = DBL_MAX;
+        clip_min_y = -DBL_MAX; clip_max_y = DBL_MAX;
+        clip_min_z = -DBL_MAX; clip_max_z = DBL_MAX;
+        min_x = DBL_MAX; max_x = -DBL_MAX;
+        min_y = DBL_MAX; max_y = -DBL_MAX;
+        min_z = DBL_MAX; max_z = -DBL_MAX;
+    }
+
+    void set(const osg::Matrixd& p, osg::Vec3d& e_ls, double nr)
+    {
+        computeRatios = true;
+        light_p = p;
         eye_ls = e_ls;
         n = nr;
     }
@@ -1416,25 +1430,25 @@ struct RenderLeafBounds
             previous_modelview = renderLeaf->_modelview.get();
             if (previous_modelview)
             {
-                light_mvp.mult(*renderLeaf->_modelview, light_vp);
+                light_mvp.mult(*renderLeaf->_modelview, light_p);
             }
             else
             {
                 // no modelview matrix (such as when LightPointNode is in the scene graph) so assume
                 // that modelview matrix is indentity.
-                light_mvp = light_vp;
+                light_mvp = light_p;
             }
-            OSG_INFO<<"Computing new light_mvp "<<light_mvp<<std::endl;
+            // OSG_INFO<<"Computing new light_mvp "<<light_mvp<<std::endl;
         }
         else
         {
-            OSG_INFO<<"Reusing light_mvp "<<light_mvp<<std::endl;
+            // OSG_INFO<<"Reusing light_mvp "<<light_mvp<<std::endl;
         }
 
         const osg::BoundingBox& bb = renderLeaf->_drawable->getBound();
         if (bb.valid())
         {
-            OSG_INFO<<"checked extents of "<<renderLeaf->_drawable->getName()<<std::endl;
+            // OSG_NOTICE<<"checked extents of "<<renderLeaf->_drawable->getName()<<std::endl;
             handle(osg::Vec3d(bb.xMin(),bb.yMin(),bb.zMin()));
             handle(osg::Vec3d(bb.xMax(),bb.yMin(),bb.zMin()));
             handle(osg::Vec3d(bb.xMin(),bb.yMax(),bb.zMin()));
@@ -1453,24 +1467,30 @@ struct RenderLeafBounds
     void handle(const osg::Vec3d& v)
     {
         osg::Vec3d ls = v * light_mvp;
-        osg::Vec3d delta = ls-eye_ls;
-        
-        double x_ratio, z_ratio;
-        if (delta.y()>n)
-        {
-            x_ratio = delta.x()/delta.y();
-            z_ratio = delta.z()/delta.y();
-        }
-        else
-        {
-            x_ratio = delta.x()/n;
-            z_ratio = delta.z()/n;
-        }
 
-        if (x_ratio<min_x_ratio) min_x_ratio = x_ratio;
-        if (x_ratio>max_x_ratio) max_x_ratio = x_ratio;
-        if (z_ratio<min_z_ratio) min_z_ratio = z_ratio;
-        if (z_ratio>max_z_ratio) max_z_ratio = z_ratio;
+        // OSG_NOTICE<<"   corner v="<<v<<", ls="<<ls<<std::endl;
+
+        if (computeRatios)
+        {
+            osg::Vec3d delta = ls-eye_ls;
+
+            double x_ratio, z_ratio;
+            if (delta.y()>n)
+            {
+                x_ratio = delta.x()/delta.y();
+                z_ratio = delta.z()/delta.y();
+            }
+            else
+            {
+                x_ratio = delta.x()/n;
+                z_ratio = delta.z()/n;
+            }
+
+            if (x_ratio<min_x_ratio) min_x_ratio = x_ratio;
+            if (x_ratio>max_x_ratio) max_x_ratio = x_ratio;
+            if (z_ratio<min_z_ratio) min_z_ratio = z_ratio;
+            if (z_ratio>max_z_ratio) max_z_ratio = z_ratio;
+        }
         
         // clip to the light space
         if (ls.x()<clip_min_x) ls.x()=clip_min_x;
@@ -1490,9 +1510,11 @@ struct RenderLeafBounds
 
     }
 
+    bool                computeRatios;
+
     unsigned int        numRenderLeaf;
 
-    osg::Matrixd        light_vp;
+    osg::Matrixd        light_p;
     osg::Vec3d          eye_ls;
     double              n;
     
@@ -1582,8 +1604,37 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double yMax = osg::minimum(1.0,convexHull.max(1));
     double zMin = osg::maximum(-1.0,convexHull.min(2));
     double zMax = osg::minimum(1.0,convexHull.max(2));
+    
+    if (renderStage)
+    {
+#if 0
+        osg::ElapsedTime timer;
+#endif
 
-#if 1    
+        RenderLeafTraverser<RenderLeafBounds> rli;
+        rli.set(light_p);
+        rli.traverse(renderStage);
+
+        if (rli.numRenderLeaf==0)
+        {
+            return false;
+        }
+#if 0
+        OSG_NOTICE<<"New Time for RenderLeafTraverser "<<timer.elapsedTime_m()<<"ms, number of render leaves "<<rli.numRenderLeaf<<std::endl;
+        OSG_NOTICE<<"   scene bounds min_x="<<rli.min_x<<", max_x="<<rli.max_x<<std::endl;
+        OSG_NOTICE<<"   scene bounds min_y="<<rli.min_y<<", max_y="<<rli.max_y<<std::endl;
+        OSG_NOTICE<<"   scene bounds min_z="<<rli.min_z<<", max_z="<<rli.max_z<<std::endl;
+#endif
+
+        xMin = osg::maximum(-1.0, rli.min_x);
+        xMax = osg::minimum(1.0, rli.max_x);
+        yMin = osg::maximum(-1.0, rli.min_y);
+        yMax = osg::minimum(1.0, rli.max_y);
+        zMin = osg::maximum(-1.0, rli.min_z);
+        zMax = osg::minimum(1.0, rli.max_z);       
+    }
+
+#if 1
     // we always want the lightspace to include the computed near plane.
     zMin = -1.0;
     if (xMin!=-1.0 || yMin!=-1.0 || zMin!=-1.0 ||
@@ -1602,7 +1653,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         light_p.postMult(m);
         light_vp = light_v * light_p;
 
-#if 0        
+#if 0
         OSG_NOTICE<<"Adjusting projection matrix "<<m<<std::endl;
         convexHull.output(osg::notify(osg::NOTICE));
 #endif
@@ -1691,7 +1742,10 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
 #if 1
     if (renderStage)
     {
+#if 0
         osg::ElapsedTime timer;
+#endif
+
         RenderLeafTraverser<RenderLeafBounds> rli;
         rli.set(light_p, virtual_eye, n);
         rli.traverse(renderStage);
@@ -1709,8 +1763,11 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
         OSG_NOTICE<<"min_x_ratio="<<rli.min_x_ratio<<", max_x_ratio="<<rli.max_x_ratio<<std::endl;
         OSG_NOTICE<<"min_z_ratio="<<rli.min_z_ratio<<", max_z_ratio="<<rli.max_z_ratio<<std::endl;
 #endif
-        if (rli.max_z_ratio>max_z_ratio) max_z_ratio = rli.max_z_ratio;
+        if (rli.min_x_ratio>min_x_ratio) min_x_ratio = rli.min_x_ratio;
+        if (rli.max_x_ratio<max_x_ratio) max_x_ratio = rli.max_x_ratio;
+
         if (rli.min_z_ratio<min_z_ratio) min_z_ratio = rli.min_z_ratio;
+        if (rli.max_z_ratio>max_z_ratio) max_z_ratio = rli.max_z_ratio;
     }
 #endif
     double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));

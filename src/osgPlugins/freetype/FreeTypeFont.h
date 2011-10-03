@@ -41,6 +41,10 @@ public:
 
     virtual bool hasVertical() const;
 
+    virtual bool getVerticalSize(float & ascender, float & descender) const;
+
+    float getCoordScale() const;
+    
 protected:
 
     void init();

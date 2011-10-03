@@ -801,7 +801,7 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
         if (light)
         {
             // is LightNum matched to that defined in settings
-            if (settings && settings->getLightNum()>=0 && light->getLightNum()!=settings->getLightNum()) break;
+            if (settings && settings->getLightNum()>=0 && light->getLightNum()!=settings->getLightNum()) continue;
             
             LightDataList::iterator pll_itr = pll.begin();
             for(; pll_itr != pll.end(); ++pll_itr)

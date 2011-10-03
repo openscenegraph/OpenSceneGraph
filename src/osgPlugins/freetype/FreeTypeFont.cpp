@@ -554,7 +554,7 @@ bool FreeTypeFont::hasVertical() const
 bool FreeTypeFont::getVerticalSize(float & ascender, float & descender) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
-#if 1
+#if 0
     if(_face->units_per_EM != 0)
     {
         float coord_scale = 1.0f/static_cast<float>(_face->units_per_EM);

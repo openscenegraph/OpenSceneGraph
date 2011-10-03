@@ -299,7 +299,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     setFontResolution(fontRes);
 
-    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
+    float coord_scale = getCoordScale();
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being  
@@ -394,13 +394,15 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     glyph->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
 
 #if 0
-    OSG_NOTICE<<"getGlyph("<<charcode<<", "<<char(charcode)<<")"<<std::endl;
+    OSG_NOTICE<<"getGlyph("<<charcode<<", "<<char(charcode)<<") _face="<<_face<<", _filename="<<_filename<<std::endl;
     OSG_NOTICE<<"   height="<<glyph->getHeight()<<std::endl;
     OSG_NOTICE<<"   width="<<glyph->getWidth()<<std::endl;
     OSG_NOTICE<<"   horizontalBearing="<<glyph->getHorizontalBearing()<<std::endl;
     OSG_NOTICE<<"   horizontalAdvance="<<glyph->getHorizontalAdvance()<<std::endl;
     OSG_NOTICE<<"   verticalBearing="<<glyph->getHorizontalBearing()<<std::endl;
     OSG_NOTICE<<"   verticalAdvance="<<glyph->getVerticalAdvance()<<std::endl;
+    OSG_NOTICE<<"   coord_scale = "<<coord_scale<<std::endl;
+    OSG_NOTICE<<"   _face->units_per_EM = "<<_face->units_per_EM<<", scale="<<1.0f/float(_face->units_per_EM)<<std::endl;
 #endif
     
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
@@ -440,9 +442,7 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
         return 0;
     }
 
-    //float coord_scale = _freetype_scale/64.0f;
-    //float coord_scale = (1.0f/float(fontDPI))/64.0f;
-    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
+    float coord_scale = getCoordScale();
 
     // ** init FreeType to describe the glyph
     FreeType::Char3DInfo char3d(_facade->getNumberCurveSamples());
@@ -540,9 +540,7 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
         return osg::Vec2(0.0f,0.0f);
     }
 
-    //float coord_scale = _freetype_scale/64.0f;
-    //float coord_scale = 1.0f/64.0f;
-    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
+    float coord_scale = getCoordScale();
 
     return osg::Vec2((float)kerning.x*coord_scale,(float)kerning.y*coord_scale);
 }
@@ -551,4 +549,35 @@ bool FreeTypeFont::hasVertical() const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
     return FT_HAS_VERTICAL(_face)!=0;
+}
+
+bool FreeTypeFont::getVerticalSize(float & ascender, float & descender) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+#if 1
+    if(_face->units_per_EM != 0)
+    {
+        float coord_scale = 1.0f/static_cast<float>(_face->units_per_EM);
+        ascender = static_cast<float>(_face->ascender) * coord_scale;
+        descender = static_cast<float>(_face->descender) * coord_scale;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+#else
+    float coord_scale = getCoordScale();
+    ascender = static_cast<float>(_face->ascender) * coord_scale;
+    descender = static_cast<float>(_face->descender) * coord_scale;
+    return true;
+#endif
+} 
+
+float FreeTypeFont::getCoordScale() const
+{
+    //float coord_scale = _freetype_scale/64.0f;
+    //float coord_scale = 1.0f/64.0f;
+    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
+    return coord_scale;
 }

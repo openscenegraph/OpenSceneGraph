@@ -104,7 +104,11 @@ public:
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
 
-    /** Set the margin around each glyph, 
+    /** Get the ascender and descender sizes of the font where supported by the FontImplementation,
+     *  return true on success, return false when not supported.*/
+    virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
+
+    /** Set the margin around each glyph,
       * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
       * Default margin is 1 texels.*/    
     void setGlyphImageMargin(unsigned int margin);
@@ -236,6 +240,8 @@ public:
         }
 
         Font* _facade;
+
+        virtual bool getVerticalSize(float & ascender, float & descender) const { return false; }
     };
 
 

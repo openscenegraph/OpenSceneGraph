@@ -36,14 +36,14 @@ static const char fragmentShaderSource_withBaseTexture[] =
 #else
 static const char fragmentShaderSource_withBaseTexture[] =
         "uniform sampler2D baseTexture;                                          \n"
-        "uniform int baseTextureUnit;                                          \n"
+        "uniform int baseTextureUnit;                                            \n"
         "uniform sampler2DShadow shadowTexture;                                  \n"
         "uniform int shadowTextureUnit;                                          \n"
         "                                                                        \n"
         "void main(void)                                                         \n"
         "{                                                                       \n"
         "  vec4 colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor;     \n"
-        "  vec4 color = texture2D( baseTexture, gl_TexCoord[baseTextureUnit].xy );                                                            \n"
+        "  vec4 color = texture2D( baseTexture, gl_TexCoord[baseTextureUnit].xy );                                              \n"
         "  color *= mix( colorAmbientEmissive, gl_Color, shadow2DProj( shadowTexture, gl_TexCoord[shadowTextureUnit] ).r );     \n"
         "  gl_FragColor = color;                                                                                                \n"
         "} \n";
@@ -316,8 +316,8 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     // the shadow comparison should fail if object is outside the texture
     _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
     _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-    //_texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    _texture->setBorderColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+    _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    //_texture->setBorderColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
     
     // set up the camera
     _camera = new osg::Camera;
@@ -1916,7 +1916,7 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
 
         OSG_INFO<<"   ShadowData for "<<sd._textureUnit<<std::endl;
 
-        stateset->setTextureAttributeAndModes(sd._textureUnit, sd._texture.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        stateset->setTextureAttributeAndModes(sd._textureUnit, sd._texture.get(), osg::StateAttribute::ON/* | osg::StateAttribute::OVERRIDE*/);
 
         stateset->setTextureMode(sd._textureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         stateset->setTextureMode(sd._textureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);

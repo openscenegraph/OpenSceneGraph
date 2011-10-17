@@ -993,7 +993,7 @@ int main(int argc, char** argv)
         msm->setBaseTextureUnit( baseTexUnit );
     }
 
-    OSG_NOTICE<<"shadowedScene->getShadowTechnique()="<<shadowedScene->getShadowTechnique()<<std::endl;
+    OSG_INFO<<"shadowedScene->getShadowTechnique()="<<shadowedScene->getShadowTechnique()<<std::endl;
 
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())

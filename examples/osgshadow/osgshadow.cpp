@@ -931,6 +931,10 @@ int main(int argc, char** argv)
         double n=0.0;
         if (arguments.read("-n",n)) settings->setMinimumShadowMapNearFarRatio(n);
 
+        int mapres = 1024;
+        while (arguments.read("--mapres", mapres))
+            settings->setTextureSize(osg::Vec2s(mapres,mapres));
+
         osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
         shadowedScene->setShadowTechnique(vdsm.get());
     }

@@ -18,8 +18,9 @@ using namespace osgShadow;
 ShadowSettings::ShadowSettings():
     _lightNum(-1),
     _baseShadowTextureUnit(1),
+    _useShadowMapTextureOverride(true),
     _textureSize(2048,2048),
-    _minimumShadowMapNearFarRatio(0.01),
+    _minimumShadowMapNearFarRatio(0.05),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _perspectiveShadowMapCutOffAngle(2.0),
     _shaderHint(NO_SHADERS),
@@ -32,6 +33,7 @@ ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copy
     Object(ss,copyop),
     _lightNum(ss._lightNum),
     _baseShadowTextureUnit(ss._baseShadowTextureUnit),
+    _useShadowMapTextureOverride(ss._useShadowMapTextureOverride),
     _textureSize(ss._textureSize),
     _minimumShadowMapNearFarRatio(ss._minimumShadowMapNearFarRatio),
     _shadowMapProjectionHint(ss._shadowMapProjectionHint),

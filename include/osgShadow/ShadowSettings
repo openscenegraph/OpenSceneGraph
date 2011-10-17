@@ -36,7 +36,14 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         void setBaseShadowTextureUnit(unsigned int unit) { _baseShadowTextureUnit = unit; }
         unsigned int getBaseShadowTextureUnit() const { return _baseShadowTextureUnit; }
-        
+
+        /** Set whether to use osg::StateAttribute::OVERRIDE for the shadow map texture. 
+         * Enabling override will force the shadow map texture to override any texture set on the shadow maps texture unit.*/
+        void setUseOverrideForShadowMapTexture(bool useOverride) { _useShadowMapTextureOverride = useOverride; }
+
+        /** Get whether to use osg::StateAttribute::OVERRIDE for the shadow map texture. */
+        bool getUseOverrideForShadowMapTexture() const { return _useShadowMapTextureOverride; }
+
 
         /** Set the size of the shadow map textures.*/
         void setTextureSize(const osg::Vec2s& textureSize) { _textureSize = textureSize; }
@@ -84,6 +91,7 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         int                                     _lightNum;
         unsigned int                            _baseShadowTextureUnit;
+        bool                                    _useShadowMapTextureOverride;
         osg::Vec2s                              _textureSize;
 
         double                                  _minimumShadowMapNearFarRatio;

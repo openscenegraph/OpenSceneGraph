@@ -162,12 +162,12 @@ float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODSca
 
 void CullVisitor::computeNearPlane()
 {
-    //OSG_NOTICE<<"CullVisitor::computeNearPlane()"<<std::endl;
+    //OSG_NOTICE<<"CullVisitor::computeNearPlane() _computed_znear="<<_computed_znear<<", _computed_zfar="<<_computed_zfar<<std::endl;
     if (!_nearPlaneCandidateMap.empty())
-    { 
-    
-        //osg::Timer_t start_t = osg::Timer::instance()->tick();
-        
+    {
+#if 0
+        osg::Timer_t start_t = osg::Timer::instance()->tick();
+#endif   
         // update near from defferred list of drawables
         unsigned int numTests = 0;
         for(DistanceMatrixDrawableMap::iterator itr=_nearPlaneCandidateMap.begin();
@@ -175,18 +175,21 @@ void CullVisitor::computeNearPlane()
             ++itr)
         {
             ++numTests;
-            // OSG_WARN<<"testing computeNearestPointInFrustum with d_near = "<<itr->first<<std::endl;
             value_type d_near = computeNearestPointInFrustum(itr->second._matrix, itr->second._planes,*(itr->second._drawable));
+            //OSG_NOTICE<<"  testing computeNearestPointInFrustum with, drawable"<<itr->second._drawable<<", "<<itr->first<<", d_near = "<<d_near<<std::endl;
             if (d_near<_computed_znear)
             {
                 _computed_znear = d_near;
-                // OSG_WARN<<"updating znear to "<<_computed_znear<<std::endl;
+#if 0
+                OSG_NOTICE<<"   updating znear to "<<d_near<<std::endl;
+#endif          
             }
         } 
 
-        //osg::Timer_t end_t = osg::Timer::instance()->tick();
-        //OSG_NOTICE<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
-
+#if 0
+        osg::Timer_t end_t = osg::Timer::instance()->tick();
+        OSG_NOTICE<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
+#endif
         _nearPlaneCandidateMap.clear();
     }
 
@@ -207,7 +210,7 @@ void CullVisitor::computeNearPlane()
             if (d_far>_computed_zfar)
             {
                 _computed_zfar = d_far;
-                // OSG_WARN<<"updating znear to "<<_computed_znear<<std::endl;
+                // OSG_WARN<<"updating zfar to "<<_computed_zfar<<std::endl;
             }
         }
 
@@ -216,7 +219,9 @@ void CullVisitor::computeNearPlane()
 
         _farPlaneCandidateMap.clear();
     }
-    
+#if 0
+    OSG_NOTICE<<"  result _computed_znear="<<_computed_znear<<", _computed_zfar="<<_computed_zfar<<std::endl;
+#endif    
 }
 
 void CullVisitor::popProjectionMatrix()
@@ -683,7 +688,7 @@ CullVisitor::value_type CullVisitor::computeNearestPointInFrustum(const osg::Mat
     // OSG_NOTICE<<"CullVisitor::computeNearestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<std::endl;
 
     osg::TemplatePrimitiveFunctor<ComputeNearestPointFunctor> cnpf;
-    cnpf.set(_computed_znear, matrix, &planes);
+    cnpf.set(FLT_MAX, matrix, &planes);
     
     drawable.accept(cnpf);
 
@@ -695,7 +700,7 @@ CullVisitor::value_type CullVisitor::computeFurthestPointInFrustum(const osg::Ma
     //OSG_NOTICE<<"CullVisitor::computeFurthestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<")"<<std::endl;
 
     osg::TemplatePrimitiveFunctor<ComputeFurthestPointFunctor> cnpf;
-    cnpf.set(_computed_zfar, matrix, &planes);
+    cnpf.set(-FLT_MAX, matrix, &planes);
 
     drawable.accept(cnpf);
 
@@ -834,44 +839,29 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
             osg::Polytope& frustum = getCurrentCullingSet().getFrustum();
             if (frustum.getResultMask())
             {
+                MatrixPlanesDrawables mpd;
                 if (isBillboard)
                 {
                     // OSG_WARN<<"Adding billboard into deffered list"<<std::endl;
-                
-                    // insert drawable into the deferred list of drawables which will be handled at the popProjectionMatrix().
-
                     osg::Polytope transformed_frustum;
                     transformed_frustum.setAndTransformProvidingInverse(getProjectionCullingStack().back().getFrustum(),matrix);
-                    MatrixPlanesDrawables mpd(matrix,&drawable,transformed_frustum);
-                
-                    if (d_near<_computed_znear)
-                    {
-                        _nearPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_near,mpd) );
-                    }
-
-                    if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
-                    {
-                        if (d_far>_computed_zfar)
-                        {
-                            _farPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_far,mpd) );
-                        }
-                    }
+                    mpd.set(matrix,&drawable,transformed_frustum);
                 }
                 else
                 {
-                    // insert drawable into the deferred list of drawables which will be handled at the popProjectionMatrix().
-                    MatrixPlanesDrawables mpd(matrix,&drawable,frustum);
-                    if (d_near<_computed_znear)
-                    {
-                        _nearPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_near,mpd) );
-                    }
+                    mpd.set(matrix,&drawable,frustum);
+                }
 
-                    if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+                if (d_near<_computed_znear)
+                {
+                    _nearPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_near,mpd) );
+                }
+
+                if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
+                {
+                    if (d_far>_computed_zfar)
                     {
-                        if (d_far>_computed_zfar)
-                        {
-                            _farPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_far,mpd) );
-                        }
+                        _farPlaneCandidateMap.insert(DistanceMatrixDrawableMap::value_type(d_far,mpd) );
                     }
                 }
                 
@@ -879,7 +869,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                 // while the final computation for this drawable is deferred.
                 if (d_far>=0.0 && d_far<_computed_znear)
                 {
-                    _computed_znear = d_far;
+                    //_computed_znear = d_far;
                 }
 
                 if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
@@ -888,7 +878,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                     // while the final computation for this drawable is deferred.
                     if (d_near>=0.0 && d_near>_computed_zfar)
                     {
-                        _computed_zfar = d_near;
+                        // _computed_zfar = d_near;
                     }
                 }
                 else // computing zfar using bounding sphere

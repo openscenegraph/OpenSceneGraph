@@ -346,10 +346,17 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         struct MatrixPlanesDrawables
         {
-            MatrixPlanesDrawables(const osg::Matrix& matrix, const osg::Drawable* drawable, const osg::Polytope& frustum):
-                _matrix(matrix),
-                _drawable(drawable)
+            MatrixPlanesDrawables():
+                _drawable(0)
             {
+            }
+            
+            void set(const osg::Matrix& matrix, const osg::Drawable* drawable, const osg::Polytope& frustum)
+            {
+                _matrix = matrix;
+                _drawable = drawable;
+                if (!_planes.empty()) _planes.clear();
+                
                 // create a new list of planes from the active walls of the frustum.
                 osg::Polytope::ClippingMask result_mask = frustum.getResultMask();
                 osg::Polytope::ClippingMask selector_mask = 0x1;

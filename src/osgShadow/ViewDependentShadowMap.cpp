@@ -330,7 +330,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     _camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
     //_camera->setComputeNearFarMode(osg::Camera::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
 
-    // swtich off small feature culling as this can cull out geometry that will still be large enough once perspective correction takes effect.
+    // switch off small feature culling as this can cull out geometry that will still be large enough once perspective correction takes effect.
     _camera->setCullingMode(_camera->getCullingMode() & ~osg::CullSettings::SMALL_FEATURE_CULLING);
     
     // set viewport

@@ -20,7 +20,7 @@ REGISTER_DOTOSGWRAPPER(PropertyAdjustmentCallback_Proxy)
 (
     new osgVolume::PropertyAdjustmentCallback,
     "PropertyAdjustmentCallback",
-    "Object NodeCallback PropertyAdjustmentCallback",
+    "osg::Object osg::NodeCallback osgVolume::PropertyAdjustmentCallback",
     PropertyAdjustmentCallback_readLocalData,
     PropertyAdjustmentCallback_writeLocalData
 );

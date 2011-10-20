@@ -21,7 +21,10 @@ if(COMMAND cmake_policy)
     cmake_policy(SET CMP0005 NEW)
 
     # tell CMake to prefer CMake's own CMake modules when available
-    cmake_policy(SET CMP0017 NEW)
+    # only available from cmake-2.8.4
+    if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 3)
+        cmake_policy(SET CMP0017 NEW)
+    endif()
 
     # cmake-2.6.1 introduces policy cmp0008 decide how to treat full path libraries that do not appear to be valid library file names
     # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
@@ -37,7 +40,7 @@ SET(OPENSCENEGRAPH_MINOR_VERSION 1)
 SET(OPENSCENEGRAPH_PATCH_VERSION 0)
 SET(OPENSCENEGRAPH_SOVERSION 90)
 
-# set to 0 when not a release candidate, non zero means that any generated 
+# set to 0 when not a release candidate, non zero means that any generated
 # svn tags will be treated as release candidates of given number
 SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
 
@@ -75,16 +78,16 @@ IF(OSG_BUILD_PLATFORM_ANDROID)
     INCLUDE(OsgAndroidMacroUtils)
     SET(ANDROID TRUE)
     SET(ANDROID_PLATFORM 5)
-    FIND_PACKAGE(AndroidNDK REQUIRED)    
+    FIND_PACKAGE(AndroidNDK REQUIRED)
 
     SET(OSG_ANDROID_TEMPLATES "${CMAKE_SOURCE_DIR}/PlatformSpecifics/Android")
-    
+
     SET(J  "4" CACHE STRING "how many processes for make -j <J>")
 
     ADD_CUSTOM_COMMAND(
         OUTPUT    Android-OpenSceneGraph
         DEPENDS   ${CMAKE_BINARY_DIR}/Android.mk
-        COMMAND   "${ANDROID_NDK}/ndk-build" 
+        COMMAND   "${ANDROID_NDK}/ndk-build"
         ARGS      --directory=${CMAKE_BINARY_DIR} NDK_APPLICATION_MK=Application.mk -j${J} NDK_LOG=1
     )
 
@@ -180,7 +183,7 @@ IF (OSG_MAINTAINER)
         COMMAND ${SVNCOMMAND} update
         COMMAND ${GENERATELOGS} ${SVNSOURCEDIR}
     )
-    
+
 ENDIF(OSG_MAINTAINER)
 
 IF(NOT ANDROID)
@@ -820,8 +823,8 @@ IF(APPLE)
             # independently of OS X versions.)
             # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
             IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-                # 64-bit compiles are not supported with Carbon. We should enable 
-                # 64-bit compilation by default once osgviewer has been 
+                # 64-bit compiles are not supported with Carbon. We should enable
+                # 64-bit compilation by default once osgviewer has been
                 # rewritten with Cocoa.
                 #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
@@ -870,7 +873,7 @@ IF(BUILD_DOCUMENTATION)
     ELSE()
         SET(HAVE_DOT NO)
     ENDIF()
-    
+
     # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
     SET(GENERATE_HTMLHELP "NO")
     IF(DOCUMENTATION_HTML_HELP)
@@ -882,7 +885,7 @@ IF(BUILD_DOCUMENTATION)
         # this var sets a proper value in .doxygen files when coniguring them below
         SET(GENERATE_HTMLHELP "YES")
     endif()
-  
+
     # This processes our doxyfile.cmake and substitutes paths to generate
     # a final Doxyfile
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/doxyfile.cmake
@@ -918,7 +921,7 @@ IF(BUILD_DOCUMENTATION)
         ${PROJECT_BINARY_DIR}/doc/auto_Doxyfile)
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/core_Doxyfile
         ${PROJECT_BINARY_DIR}/doc/core_Doxyfile)
-    
+
     # This creates a new target to build documentation.
     # It runs ${DOXYGEN} which is the full path and executable to
     # Doxygen on your system, set by the FindDoxygen.cmake module
@@ -929,7 +932,7 @@ IF(BUILD_DOCUMENTATION)
         ${PROJECT_BINARY_DIR}/doc/openscenegraph.doxyfile
     )
     SET_TARGET_PROPERTIES(doc_openscenegraph PROPERTIES FOLDER "Documentation")
-    
+
     ADD_CUSTOM_TARGET(doc_openthreads ${DOXYGEN}
         ${PROJECT_BINARY_DIR}/doc/openthreads.doxyfile
     )
@@ -1006,7 +1009,7 @@ IF(REQUIRES_LIBPATH_MESSAGE)
             CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
                 ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
             )
-            ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different 
+            ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different
                 ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
                 /etc/ld.so.conf.d/openscenegraph.conf
                 COMMAND ldconfig

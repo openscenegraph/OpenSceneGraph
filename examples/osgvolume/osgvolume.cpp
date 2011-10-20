@@ -829,6 +829,10 @@ int main( int argc, char **argv )
         {
             images.push_back(image);
         }
+        else
+        {
+            OSG_NOTICE<<"Unable to create 3D image from source files."<<std::endl;
+        }
     }
 
 
@@ -889,7 +893,7 @@ int main( int argc, char **argv )
 
     if (images.empty())
     {
-        std::cout<<"No model loaded, please specify and volumetric image file on the command line."<<std::endl;
+        std::cout<<"No model loaded, please specify a volumetric image file on the command line."<<std::endl;
         return 1;
     }
 

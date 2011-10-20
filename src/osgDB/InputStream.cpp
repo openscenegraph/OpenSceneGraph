@@ -692,6 +692,8 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     if ( !_in )
         throwException( "InputStream: Null stream specified." );
     if ( getException() ) return type;
+
+    _in->setInputStream(this);
     
     // Check OSG header information
     unsigned int version = 0;

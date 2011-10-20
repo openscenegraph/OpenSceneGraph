@@ -20,6 +20,9 @@ if(COMMAND cmake_policy)
     # statements.
     cmake_policy(SET CMP0005 NEW)
 
+    # tell CMake to prefer CMake's own CMake modules when available
+    cmake_policy(SET CMP0017 NEW)
+
     # cmake-2.6.1 introduces policy cmp0008 decide how to treat full path libraries that do not appear to be valid library file names
     # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
     if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
@@ -462,7 +465,6 @@ ELSE()
     FIND_PACKAGE(Performer)
     FIND_PACKAGE(GDAL)
     FIND_PACKAGE(CURL)
-    FIND_PACKAGE(ITK)
     FIND_PACKAGE(LibVNCServer)
     FIND_PACKAGE(OurDCMTK)
     FIND_PACKAGE(OpenAL)
@@ -474,6 +476,10 @@ ELSE()
     FIND_PACKAGE(GtkGl)
     FIND_PACKAGE(DirectInput)
     FIND_PACKAGE(NVTT)
+ENDIF()
+
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 8)
+    FIND_PACKAGE(ITK)
 ENDIF()
 
 # Include macro utilities here

@@ -1181,6 +1181,39 @@ void Image::flipVertical()
     dirty();
 }
 
+void Image::flipDepth()
+{
+    if (_data==NULL)
+    {
+        OSG_WARN << "Error Image::flipVertical() do not succeed : cannot flip NULL image."<<std::endl;
+        return;
+    }
+
+    if (_r==1)
+    {
+        return;
+    }
+
+    if (!_mipmapData.empty() && _r>1)
+    {
+        OSG_WARN << "Error Image::flipVertical() do not succeed : flipping of mipmap 3d textures not yet supported."<<std::endl;
+        return;
+    }
+
+    unsigned int sizeOfSlice = getImageSizeInBytes();
+
+    int r_top = 0;
+    int r_bottom = _r-1;
+    for(; r_top<r_bottom; ++r_top,--r_bottom)
+    {
+        unsigned char* top_slice = data(0,0,r_top);
+        unsigned char* bottom_slice = data(0,0,r_bottom);
+        for(unsigned int i=0; i<sizeOfSlice; ++i, ++top_slice, ++bottom_slice)
+        {
+            std::swap(*top_slice, *bottom_slice);
+        }
+    }
+}
 
 
 void Image::ensureValidSizeForTexturing(GLint maxTextureSize)

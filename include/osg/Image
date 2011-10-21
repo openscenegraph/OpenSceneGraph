@@ -282,12 +282,14 @@ class OSG_EXPORT Image : public BufferData
         Vec4 getColor(const Vec3& texcoord) const;
 
 
-        /** Flip the image horizontally. */
+        /** Flip the image horizontally, around s dimension. */
         void flipHorizontal();
         
-        /** Flip the image vertically. */
+        /** Flip the image vertically, around t dimension. */
         void flipVertical();
 
+        /** Flip the image around the r dimension. Only relevent for 3D textures. */
+        void flipDepth();
 
         /** Ensure image dimensions are a power of two.
           * Mipmapped textures require the image dimensions to be

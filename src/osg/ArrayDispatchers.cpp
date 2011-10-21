@@ -429,6 +429,7 @@ void ArrayDispatchers::init()
     _useGLBeginEndAdapter = false;
 
     _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
+    _vertexDispatchers->assignGLBeginEnd<GLdouble>(Array::Vec3dArrayType, &GLBeginEndAdapter::Vertex3dv, 3);
     _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
     _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);

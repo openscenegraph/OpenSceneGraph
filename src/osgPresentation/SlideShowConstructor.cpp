@@ -1750,9 +1750,11 @@ bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& com
     }
 }
 
-void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData)
+void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& in_positionData, const VolumeData& volumeData)
 {
     // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
+
+    PositionData positionData(in_positionData);
 
     std::string foundFile = filename;
     osg::ref_ptr<osg::Image> image;
@@ -1820,6 +1822,30 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     }
     
     if (!image && !volume) return;
+
+    if (positionData.scale.x()<0.0)
+    {
+        image->flipHorizontal();
+        positionData.scale.x() = fabs(positionData.scale.x());
+
+        OSG_INFO<<"addVolume(..) image->flipHorizontal();"<<std::endl;
+    }
+
+    if (positionData.scale.y()<0.0)
+    {
+        image->flipVertical();
+        positionData.scale.y() = fabs(positionData.scale.y());
+
+        OSG_INFO<<"addVolume(..) image->flipVertical();"<<std::endl;
+    }
+
+    if (positionData.scale.z()<0.0)
+    {
+        image->flipDepth();
+        positionData.scale.z() = fabs(positionData.scale.z());
+
+        OSG_INFO<<"addVolume(..) image->flipDepth();"<<std::endl;
+    }
 
     if (volume.valid())
     {

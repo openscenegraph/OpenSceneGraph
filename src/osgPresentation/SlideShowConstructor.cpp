@@ -1529,18 +1529,19 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
             subgraph = specularHighlights;
         }
     }
+
     
     if (positionData.frame==SLIDE)
     {
         osg::Vec3 pos = convertSlideToModel(positionData.position);
      
         const osg::BoundingSphere& bs = subgraph->getBound();
-        float model_scale = positionData.scale.x()*_slideHeight*(1.0f-positionData.position.z())*0.7f/bs.radius();
+        float slide_scale = _slideHeight*(1.0f-positionData.position.z())*0.7f/bs.radius();
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
         transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::translate(-bs.center())*
-                             osg::Matrix::scale(model_scale,model_scale,model_scale)*
+                             osg::Matrix::scale(positionData.scale.x()*slide_scale, positionData.scale.y()*slide_scale ,positionData.scale.z()*slide_scale)*
                              osg::Matrix::rotate(osg::DegreesToRadians(positionData.rotate[0]),positionData.rotate[1],positionData.rotate[2],positionData.rotate[3])*
                              osg::Matrix::translate(pos));
 
@@ -1553,7 +1554,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     }
     else
     {
-        osg::Matrix matrix(osg::Matrix::scale(1.0f/positionData.scale.x(),1.0f/positionData.scale.x(),1.0f/positionData.scale.x())*
+        osg::Matrix matrix(osg::Matrix::scale(1.0f/positionData.scale.x(),1.0f/positionData.scale.y(),1.0f/positionData.scale.z())*
                            osg::Matrix::rotate(osg::DegreesToRadians(positionData.rotate[0]),positionData.rotate[1],positionData.rotate[2],positionData.rotate[3])*
                            osg::Matrix::translate(positionData.position));
 

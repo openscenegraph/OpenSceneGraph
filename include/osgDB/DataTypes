@@ -16,6 +16,7 @@
 #define OSGDB_DATATYPES
 
 #include <string>
+#include <osg/GL>
 
 namespace osgDB
 {

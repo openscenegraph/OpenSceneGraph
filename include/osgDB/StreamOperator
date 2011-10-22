@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <osg/Referenced>
+#include <osgDB/Export>
 #include <osgDB/DataTypes>
 
 namespace osgDB

@@ -827,6 +827,19 @@ int main( int argc, char **argv )
         viewerInitialized = true;
     }
 
+    // pass the model to the slide event handler so it knows which to manipulate.
+    seh->set(loadedModel.get());
+    seh->selectSlide(0);
+
+    seh->home();
+
+    if (!outputFileName.empty())
+    {
+        osgDB::writeNodeFile(*loadedModel,outputFileName);
+        return 0;
+    }
+    
+
     if (!cursorFileName.empty())
     {
         // have to add a frame in here to avoid problems with X11 threading issue on switching off the cursor
@@ -845,18 +858,6 @@ int main( int argc, char **argv )
         }
     }
 
-    // pass the model to the slide event handler so it knows which to manipulate.
-    seh->set(loadedModel.get());
-    seh->selectSlide(0);
-
-    seh->home();
-
-    if (!outputFileName.empty())
-    {
-        osgDB::writeNodeFile(*loadedModel,outputFileName);
-        return 0;
-    }
-    
     osg::Timer_t startOfFrameTick = osg::Timer::instance()->tick();
     double targetFrameTime = 1.0/targetFrameRate;
     

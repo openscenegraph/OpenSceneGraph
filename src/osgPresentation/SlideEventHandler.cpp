@@ -1188,7 +1188,7 @@ bool SlideEventHandler::previousSlide()
 
 bool SlideEventHandler::nextLayer()
 {
-    LayerAttributes* la = (_slideSwitch.valid() && _activeLayer>=0) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
+    LayerAttributes* la = (_slideSwitch.valid() && _activeLayer<static_cast<int>(_slideSwitch->getNumChildren())) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
     if (la)
     {
         la->callLeaveCallbacks(_slideSwitch->getChild(_activeLayer));

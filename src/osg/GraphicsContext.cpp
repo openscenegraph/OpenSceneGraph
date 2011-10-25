@@ -165,7 +165,12 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
             blue(8),
             green(8),
             alpha(0),
+#ifdef __APPLE__
+            // OSX versions + ATI/AMD hardware are dropping back to 16bit depth buffer when asked for a 24bit depth buffer, so use 32bit as default
+            depth(32), 
+#else
             depth(24),
+#endif
             stencil(0),
             sampleBuffers(0),
             samples(0),

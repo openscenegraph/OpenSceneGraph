@@ -52,8 +52,10 @@ class LibVncImage : public osgWidget::VncImage
         static void passwordCheck(rfbClient* client,const char* encryptedPassWord,int len);
         static char* getPassword(rfbClient* client);
 
+        std::string                 _optionString;
         std::string                 _username;
         std::string                 _password;
+        
         double                      _timeOfLastUpdate;
         double                      _timeOfLastRender;
 
@@ -277,7 +279,7 @@ void LibVncImage::close()
 
 rfbBool LibVncImage::resizeImage(rfbClient* client) 
 {
-    osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
+    LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
     
     int width = client->width;
     int height = client->height;
@@ -286,14 +288,22 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     OSG_NOTICE<<"resize "<<width<<", "<<height<<", "<<depth<<" image = "<<image<<std::endl;
     PrintPixelFormat(&(client->format));
 
-#ifdef __APPLE__
-    // feedback is that Mac's have an endian swap even though the PixelFormat results see under OSX are identical.
-    bool swap = true;
-#else
     bool swap = client->format.redShift!=0;
-#endif
 
+    if (!image->_optionString.empty())
+    {
+        if (image->_optionString.find("swap")!=std::string::npos) swap = true;
+    }
+    
     GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
+
+    if (!image->_optionString.empty())
+    {
+        if (image->_optionString.find("RGB")!=std::string::npos) gl_pixelFormat = GL_RGBA;
+        if (image->_optionString.find("RGBA")!=std::string::npos) gl_pixelFormat = GL_RGBA;
+        if (image->_optionString.find("BGR")!=std::string::npos) gl_pixelFormat = GL_BGRA;
+        if (image->_optionString.find("BGRA")!=std::string::npos) gl_pixelFormat = GL_BGRA;
+    }
 
     image->allocateImage(width, height, 1, gl_pixelFormat, GL_UNSIGNED_BYTE);
     image->setInternalTextureFormat(GL_RGBA);
@@ -391,6 +401,11 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
 
                 image->_username = details->username;
                 image->_password = details->password;
+            }
+
+            if (options && !options->getOptionString().empty())
+            {
+                image->_optionString = options->getOptionString();
             }
 
             if (!image->connect(hostname))

@@ -222,10 +222,10 @@ public:
 
     struct ModelData
     {
-        ModelData():
-            effect("") {}
+        ModelData() {}
             
         std::string effect;
+        std::string options;
     };
 
     struct ImageData
@@ -239,7 +239,8 @@ public:
             loopingMode(osg::ImageStream::NO_LOOPING),
             page(-1),
             backgroundColor(1.0f,1.0f,1.0f,1.0f) {}
-            
+
+        std::string                     options;
         float                           width;
         float                           height;
         osg::Vec4                       region;
@@ -274,6 +275,7 @@ public:
             region[3] = region[4] = region[5] = 1.0f;
         }
 
+        std::string                             options;
         ShadingModel                            shadingModel;
         osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
         bool                                    useTabbedDragger;
@@ -393,7 +395,7 @@ public:
 
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
 
-    void addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData);
+    void addGraph(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password);
     void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData);

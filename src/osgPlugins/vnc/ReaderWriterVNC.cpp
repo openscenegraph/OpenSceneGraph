@@ -49,6 +49,11 @@ class LibVncImage : public osgWidget::VncImage
         
         static void updateImage(rfbClient* client,int x,int y,int w,int h);
         
+        static void passwordCheck(rfbClient* client,const char* encryptedPassWord,int len);
+        static char* getPassword(rfbClient* client);
+
+        std::string                 _username;
+        std::string                 _password;
         double                      _timeOfLastUpdate;
         double                      _timeOfLastRender;
 
@@ -137,7 +142,6 @@ LibVncImage::LibVncImage():
     // setPixelBufferObject(new osg::PixelBufferObject(this);
 
     _inactiveBlock = new osg::RefBlock;
-
 }
 
 LibVncImage::~LibVncImage()
@@ -197,6 +201,18 @@ static rfbBool rfbInitConnection(rfbClient* client)
   return TRUE;
 }
 
+void LibVncImage::passwordCheck(rfbClient* client,const char* encryptedPassWord,int len)
+{
+    OSG_NOTICE<<"LibVncImage::passwordCheck"<<std::endl;
+}
+
+char* LibVncImage::getPassword(rfbClient* client)
+{
+    LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
+    OSG_NOTICE<<"LibVncImage::getPassword "<<image->_password<<std::endl;
+    return strdup(image->_password.c_str());
+}
+
 
 bool LibVncImage::connect(const std::string& hostname)
 {
@@ -210,6 +226,9 @@ bool LibVncImage::connect(const std::string& hostname)
     _client->GotFrameBufferUpdate = updateImage;
     _client->HandleKeyboardLedState = 0;
     _client->HandleTextChat = 0;
+
+    // provide the password if we have one assigned
+    if (!_password.empty())  _client->GetPassword = getPassword;
 
     rfbClientSetClientData(_client, 0, this);
     
@@ -267,7 +286,13 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     OSG_NOTICE<<"resize "<<width<<", "<<height<<", "<<depth<<" image = "<<image<<std::endl;
     PrintPixelFormat(&(client->format));
 
+#ifdef __APPLE__
+    // feedback is that Mac's have an endian swap even though the PixelFormat results see under OSX are identical.
+    bool swap = true;
+#else
     bool swap = client->format.redShift!=0;
+#endif
+
     GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
 
     image->allocateImage(width, height, 1, gl_pixelFormat, GL_UNSIGNED_BYTE);
@@ -348,9 +373,25 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             OSG_NOTICE<<"Hostname = "<<hostname<<std::endl;
 
             osg::ref_ptr<LibVncImage> image = new LibVncImage;
-            image->setDataVariance(osg::Object::DYNAMIC);
-            
+            image->setDataVariance(osg::Object::DYNAMIC);           
             image->setOrigin(osg::Image::TOP_LEFT);
+
+            const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ?
+                    options->getAuthenticationMap() :
+                    osgDB::Registry::instance()->getAuthenticationMap();
+
+            const osgDB::AuthenticationDetails* details = authenticationMap ?
+                authenticationMap->getAuthenticationDetails(hostname) :
+                0;
+
+            // configure authentication if required.
+            if (details)
+            {
+                OSG_NOTICE<<"Passing in password = "<<details->password<<std::endl;
+
+                image->_username = details->username;
+                image->_password = details->password;
+            }
 
             if (!image->connect(hostname))
             {

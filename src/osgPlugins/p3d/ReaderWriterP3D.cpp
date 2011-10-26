@@ -1313,9 +1313,14 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
+            std::string password;
+            getProperty(cur, "password", password);
+
             constructor.addVNC(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
-                                    imageData);
+                                    imageData,
+                                    password
+                              );
         }
         else if (cur->name == "browser")
         {

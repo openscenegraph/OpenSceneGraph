@@ -394,7 +394,7 @@ public:
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
 
     void addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData);
-    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password);
     void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);

@@ -1277,8 +1277,15 @@ void SlideShowConstructor::addGraph(const std::string& contents,const std::strin
 }
 
 
-void SlideShowConstructor::addVNC(const std::string& hostname, const PositionData& positionData, const ImageData& imageData)
+void SlideShowConstructor::addVNC(const std::string& hostname, const PositionData& positionData, const ImageData& imageData, const std::string& password)
 {
+    if (!password.empty())
+    {
+        OSG_NOTICE<<"Setting password"<<std::endl;
+        if (!osgDB::Registry::instance()->getAuthenticationMap()) osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
+        osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(hostname, new osgDB::AuthenticationDetails("", password));
+    }
+    
     addInteractiveImage(hostname+".vnc", positionData, imageData);
 }
 

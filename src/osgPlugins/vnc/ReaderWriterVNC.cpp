@@ -89,7 +89,7 @@ class LibVncImage : public osgWidget::VncImage
 
                         if(i)
                         {
-                            OSG_NOTICE<<"Handling "<<i<<" messages"<<std::endl;
+                            OSG_INFO<<"VNC Handling "<<i<<" messages"<<std::endl;
                         
                             if(!HandleRFBServerMessage(_client))
                             return;
@@ -260,13 +260,20 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
 {
     osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
     
-    int width=client->width;
-    int height=client->height;
-    int depth=client->format.bitsPerPixel;
+    int width = client->width;
+    int height = client->height;
+    int depth = client->format.bitsPerPixel;
 
     OSG_NOTICE<<"resize "<<width<<", "<<height<<", "<<depth<<" image = "<<image<<std::endl;
+    PrintPixelFormat(&(client->format));
 
-    image->allocateImage(width,height,1,GL_RGBA,GL_UNSIGNED_BYTE);
+    bool swap = client->format.redShift!=0;
+    GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
+
+    image->allocateImage(width, height, 1, gl_pixelFormat, GL_UNSIGNED_BYTE);
+    image->setInternalTextureFormat(GL_RGBA);
+
+
     
     client->frameBuffer= (uint8_t*)(image->data());
     

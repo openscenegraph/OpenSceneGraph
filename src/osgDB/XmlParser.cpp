@@ -136,9 +136,9 @@ void XmlNode::Input::readAllDataIntoBuffer()
 
 void XmlNode::Input::skipWhiteSpace()
 {
-    while(_currentPos<_buffer.size() && (_buffer[_currentPos]==' ' || _buffer[_currentPos]=='\t'))
+    while(_currentPos<_buffer.size() && (_buffer[_currentPos]==' ' || _buffer[_currentPos]=='\t' || _buffer[_currentPos]=='\n' || _buffer[_currentPos]=='\r'))
     {
-        // OSG_NOTICE<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<_buffer[_currentPos]<<std::endl;
+        //OSG_NOTICE<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<int(_buffer[_currentPos])<<std::endl;
         ++_currentPos;
     }
     //OSG_NOTICE<<"done"<<std::endl;
@@ -248,7 +248,7 @@ bool XmlNode::read(Input& input)
             input.skipWhiteSpace();
 
             int c = 0;
-            while ((c=input[0])>=0 && c!=' ' && c!='>' && c!='/')
+            while ((c=input[0])>=0 && c!=' ' && c!='\n' && c!='\r' && c!='>' && c!='/')
             {
                 childNode->name.push_back(c);
                 ++input;
@@ -281,7 +281,7 @@ bool XmlNode::read(Input& input)
                 }
                 else
                 {
-                    while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ')
+                    while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ' && c!='\n' && c!='\r')
                     {
                         option.push_back(c);
                         ++input;
@@ -328,7 +328,7 @@ bool XmlNode::read(Input& input)
                     else
                     {
                         ++input;
-                        while((c=input[0])>=0 && c!=' ' && c!='"' && c!='\'' && c!='>')
+                        while((c=input[0])>=0 && c!=' ' && c!='\n' && c!='\r' && c!='"' && c!='\'' && c!='>')
                         {
                             value.push_back(c);
                             ++input;

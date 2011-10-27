@@ -292,7 +292,7 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
 
     if (!image->_optionString.empty())
     {
-        if (image->_optionString.find("swap")!=std::string::npos) swap = true;
+        if (image->_optionString.find("swap")!=std::string::npos || image->_optionString.find("swop")!=std::string::npos) swap = true;
     }
     
     GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
@@ -362,6 +362,13 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
         ReaderWriterVNC()
         {
             supportsExtension("vnc","VNC plugin");
+            
+            supportsOption("swap","Swaps the pixel format order, exchanging the red and blue channels.");
+            supportsOption("swop","American spelling, same effect as swap.");
+            supportsOption("RGB","Use RGBA pixel format for the vnc image");
+            supportsOption("RGBA","Use RGBA pixel format for the vnc image");
+            supportsOption("BGR","Use BGRA pixel format for the vnc image");
+            supportsOption("BGRA","Use BGRA pixel format for the vnc image");
         }
         
         virtual const char* className() const { return "VNC plugin"; }

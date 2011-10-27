@@ -503,82 +503,41 @@ public:
         
     void apply(osg::Node& node)
     {
-        if (node.getStateSet()) 
-        {
-            apply(*node.getStateSet());
-        }
-        
         traverse(node);
     }
     
     void apply(osg::LightSource& lightsource)
     {
-        if (lightsource.getStateSet()) 
-        {
-            apply(*lightsource.getStateSet());
-        }
-    
         if (lightsource.getLight())
         {
-            OSG_INFO<<"Adjusting light"<<std::endl;
-
-            osg::Light* light = lightsource.getLight();
-
-            float azim = _currentX*osg::PI;
-            float elevation = _currentY*osg::PI_2;
-            osg::Vec3 direction(sin(azim)*cos(elevation),sin(elevation),cos(azim)*cos(elevation));
-            
             if (lightsource.getReferenceFrame()==osg::LightSource::RELATIVE_RF)
             {
-                OSG_INFO<<"Relative to absolute"<<std::endl;
+                apply( osg::Matrix::identity(), lightsource.getLight());
             }
             else
             {
-                osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
-                OSG_INFO<<"ModelView"<<matrix<<std::endl;
-
-                //direction = osg::Matrixd::transform3x3(matrix,direction);
-                //direction.normalize();
-
-                //direction = direction*matrix;
-                //direction.normalize();
-
+                apply(osg::computeEyeToLocal(_viewMatrix,_nodePath), lightsource.getLight());
             }
-
-            light->setPosition(osg::Vec4(direction,0.0f));
-
         }
         
         traverse(lightsource);
     }
 
-    void apply(osg::StateSet& stateset)
+    void apply(const osg::Matrixd& matrix, osg::Light* light)
     {
-        osg::TexEnvCombine* texenvcombine = dynamic_cast<osg::TexEnvCombine*>(stateset.getTextureAttribute(0,osg::StateAttribute::TEXENV));
-        if (texenvcombine)
-        {
-            apply(*texenvcombine);
-        }
-    }
-       
-    void apply(osg::TexEnvCombine& texenv)
-    {
-        OSG_INFO<<"Adjusting tex env combine"<<std::endl;
+        // compute direction of light based on a projecting onto a hemi-sphere.
+        float sum_x2_y2 = _currentX*_currentX + _currentY*_currentY;
+        osg::Vec3 direction;
+        if (sum_x2_y2<1.0) direction.set(_currentX, _currentY, sqrtf(1.0-sum_x2_y2));
+        else direction.set(_currentX, _currentY, 0.0);
         
-        osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
+        direction.normalize();
         
-        OSG_INFO<<"ModelView"<<matrix<<std::endl;
-
-        float azim = _currentX*osg::PI;
-        float elevation = _currentY*osg::PI_2;
-        osg::Vec3 direction(sin(azim)*cos(elevation),sin(elevation),cos(azim)*cos(elevation));
-
-        direction = osg::Matrixd::transform3x3(matrix,direction);
+        direction = osg::Matrixd::transform3x3(matrix, direction);
         direction.normalize();
 
-        texenv.setConstantColor(osg::Vec4((direction.x()+1.0f)*0.5f,(direction.y()+1.0f)*0.5f,(direction.z()+1.0f)*0.5f,1.0f));
+        light->setPosition(osg::Vec4(direction,0.0f));
     }
-
 
     osg::Matrixd    _viewMatrix;
     float           _currentX, _currentY;
@@ -975,17 +934,17 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 */
             else if (ea.getKey()=='u')
             {
-                updateAlpha(true,false,ea.getX(),ea.getY());
+                updateAlpha(true,false,ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
             else if (ea.getKey()=='i')
             {
-                updateAlpha(false,true,ea.getX(),ea.getY());
+                updateAlpha(false,true,ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
             else if (ea.getKey()=='k')
             {
-                updateLight(ea.getX(),ea.getY());
+                updateLight(ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
 
@@ -1232,8 +1191,7 @@ void SlideEventHandler::updateOperators()
 
     if (_viewer.valid())
     {
-        UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),0.0f,0.0f);
-        _viewer->getSceneData()->accept(uav);
+        updateLight(0.0f,0.0f);
     }
 }
 
@@ -1288,6 +1246,19 @@ void SlideEventHandler::updateLight(float x, float y)
 
     UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),x,y);
     _viewer->getSceneData()->accept(uav);
+
+    if (_viewer->getLightingMode()!= osg::View::NO_LIGHT && _viewer->getLight())
+    {
+        if (_viewer->getLightingMode()== osg::View::SKY_LIGHT)
+        {
+            uav.apply(_viewer->getCamera()->getViewMatrix(), _viewer->getLight());
+        }
+        else if (_viewer->getLightingMode()== osg::View::HEADLIGHT)
+        {
+            uav.apply(osg::Matrix::identity(), _viewer->getLight());
+        }
+    }
+
 }
 
 void SlideEventHandler::compileSlide(unsigned int slideNum)

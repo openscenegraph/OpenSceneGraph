@@ -69,9 +69,9 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
         }
     }
 
-    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->depth="<<traits->depth<<std::endl;
-    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->samples="<<traits->samples<<std::endl;
-    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->sampleBuffers="<<traits->sampleBuffers<<std::endl;
+    OSG_INFO<<"ReaderWriterCFG buildTrait traits->depth="<<traits->depth<<std::endl;
+    OSG_INFO<<"ReaderWriterCFG buildTrait traits->samples="<<traits->samples<<std::endl;
+    OSG_INFO<<"ReaderWriterCFG buildTrait traits->sampleBuffers="<<traits->sampleBuffers<<std::endl;
 
     
     traits->hostName = rs.getHostName();

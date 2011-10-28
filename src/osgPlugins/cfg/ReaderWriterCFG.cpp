@@ -69,6 +69,8 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
         }
     }
 
+    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->depth="<<traits->depth<<std::endl;
+
     OSG_INFO<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
 
     

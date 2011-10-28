@@ -65,13 +65,13 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
             case(VisualChooser::AccumBlueSize):    break; // no present mapping
             case(VisualChooser::AccumAlphaSize):   break; // no present mapping
             case(VisualChooser::Samples):          traits->samples = it->_parameter; break;
-            case(VisualChooser::SampleBuffers):    traits->sampleBuffers = it->_parameter; break;
+            case(VisualChooser::SampleBuffers):    traits->sampleBuffers = 1; break;
         }
     }
 
     OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->depth="<<traits->depth<<std::endl;
-
-    OSG_INFO<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
+    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->samples="<<traits->samples<<std::endl;
+    OSG_NOTICE<<"ReaderWriterCFG buildTrait traits->sampleBuffers="<<traits->sampleBuffers<<std::endl;
 
     
     traits->hostName = rs.getHostName();

@@ -256,6 +256,10 @@ bool CompositeViewer::checkNeedToDoFrame()
             // set so that the updates show up
             if (view->getDatabasePager()->requiresUpdateSceneGraph() ||
                 view->getDatabasePager()->getRequestsInProgress()) return true;
+
+            // if there update callbacks then we need to do frame.
+            if (view->getCamera()->getUpdateCallback()) return true;
+            if (view->getSceneData()!=0 && view->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
         }
     }
 

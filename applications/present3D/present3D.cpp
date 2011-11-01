@@ -653,8 +653,8 @@ int main( int argc, char **argv )
         osgDB::getNameLessExtension(screenCaptureFilename),
         osgDB::getFileExtension(screenCaptureFilename) );
     osg::ref_ptr<osgViewer::ScreenCaptureHandler> screenCaptureHandler = new osgViewer::ScreenCaptureHandler(writeFile.get());
-    screenCaptureHandler->setKeyEventTakeScreenShot(osgGA::GUIEventAdapter::KEY_Print);
-    screenCaptureHandler->setKeyEventToggleContinuousCapture('m');
+    screenCaptureHandler->setKeyEventTakeScreenShot('m');//osgGA::GUIEventAdapter::KEY_Print);
+    screenCaptureHandler->setKeyEventToggleContinuousCapture('M');
     viewer.addEventHandler(screenCaptureHandler.get());
 
     // osg::DisplaySettings::instance()->setSplitStereoAutoAjustAspectRatio(false);

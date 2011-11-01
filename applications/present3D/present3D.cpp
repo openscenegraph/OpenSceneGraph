@@ -645,7 +645,18 @@ int main( int argc, char **argv )
     // register the handler for modifying the point size
     PointsEventHandler* peh = new PointsEventHandler;
     viewer.addEventHandler(peh);
-    
+
+    // add the screen capture handler
+    std::string screenCaptureFilename = "screen_short.jpg";
+    while(arguments.read("--screenshot", screenCaptureFilename)) {}
+    osg::ref_ptr<osgViewer::ScreenCaptureHandler::WriteToFile> writeFile = new osgViewer::ScreenCaptureHandler::WriteToFile(
+        osgDB::getNameLessExtension(screenCaptureFilename),
+        osgDB::getFileExtension(screenCaptureFilename) );
+    osg::ref_ptr<osgViewer::ScreenCaptureHandler> screenCaptureHandler = new osgViewer::ScreenCaptureHandler(writeFile.get());
+    screenCaptureHandler->setKeyEventTakeScreenShot(osgGA::GUIEventAdapter::KEY_Print);
+    screenCaptureHandler->setKeyEventToggleContinuousCapture('m');
+    viewer.addEventHandler(screenCaptureHandler.get());
+
     // osg::DisplaySettings::instance()->setSplitStereoAutoAjustAspectRatio(false);
 
     float width = osg::DisplaySettings::instance()->getScreenWidth();

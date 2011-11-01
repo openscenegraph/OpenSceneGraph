@@ -385,6 +385,11 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
                 OSG_INFO<<"Setting sample density to "<<v4<<std::endl;
                 cpv._sampleDensityProperty->setValue(v4);
             }
+            if (_updateSampleDensity && cpv._sampleDensityWhenMovingProperty.valid())
+            {
+                OSG_INFO<<"Setting sample density when moving to "<<v4<<std::endl;
+                cpv._sampleDensityWhenMovingProperty->setValue(v4);
+            }
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {

@@ -518,7 +518,73 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         }
 
 
+        struct SeriesIdentifier
+        {
+            std::string SeriesInstanceUID;
+            std::string SeriesDescription;
+            double Orientation[6];
 
+            SeriesIdentifier()
+            {
+                Orientation[0] = 1.0;
+                Orientation[1] = 0.0;
+                Orientation[2] = 0.0;
+                Orientation[3] = 0.0;
+                Orientation[4] = 1.0;
+                Orientation[5] = 0.0;
+            }
+
+            void set(DcmDataset* dataset)
+            {
+                OFString seriesInstanceUIDStr;
+                if (dataset->findAndGetOFString(DCM_SeriesInstanceUID, seriesInstanceUIDStr).good())
+                {
+                    SeriesInstanceUID = seriesInstanceUIDStr.c_str();
+                }
+
+                OFString seriesDescriptionStr;
+                if (dataset->findAndGetOFString(DCM_SeriesInstanceUID, seriesDescriptionStr).good())
+                {
+                    SeriesDescription = seriesDescriptionStr.c_str();
+                }
+
+                for(int i=0; i<6; ++i)
+                {
+                    double value = 0.0;
+                    if (dataset->findAndGetFloat64(DCM_ImageOrientationPatient, value,i).good())
+                    {
+                        Orientation[i] = value;
+                    }
+                }
+            }
+
+            bool operator == (const SeriesIdentifier& rhs) const
+            {
+                if (SeriesInstanceUID != rhs.SeriesInstanceUID) return false;
+                if (SeriesDescription != rhs.SeriesDescription) return false;
+
+                for(unsigned int i=0; i<6; ++i)
+                {
+                    if (Orientation[i] != rhs.Orientation[i]) return false;
+                }
+                return true;
+            }
+            
+            bool operator < (const SeriesIdentifier& rhs) const
+            {
+                if (SeriesInstanceUID < rhs.SeriesInstanceUID) return true;
+                if (rhs.SeriesInstanceUID < SeriesInstanceUID) return false;
+
+                if (SeriesDescription < rhs.SeriesDescription) return true;
+                if (rhs.SeriesDescription < SeriesDescription) return false;
+
+                for(unsigned int i=0; i<6; ++i)
+                {
+                    if (Orientation[i] >= rhs.Orientation[i]) return false;
+                }
+                return true;
+            }
+        };
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
@@ -569,9 +635,11 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             typedef std::list<FileInfo> FileInfoList;
             FileInfoList fileInfoList;
 
+            SeriesIdentifier seriesIdentifier;
+
             typedef std::map<double, FileInfo> DistanceFileInfoMap;
-            typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
-            OrientationFileInfoMap orientationFileInfoMap;
+            typedef std::map<SeriesIdentifier, DistanceFileInfoMap> SeriesFileInfoMap;
+            SeriesFileInfoMap seriesFileInfoMap;
 
             typedef std::map<std::string, ReadResult> ErrorMap;
             ErrorMap errorMap;
@@ -592,6 +660,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 FileInfo fileInfo;
                 fileInfo.filename = *itr;
 
+                SeriesIdentifier seriesIdentifier;
+                seriesIdentifier.set(fileformat.getDataset());
+                
                 // code for reading the intercept and scale that is required to convert to Hounsfield units.
                 bool rescaling = false;
                 double rescaleIntercept = 0.0;
@@ -606,6 +677,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
 
                 }
+
+
 
                 rescaling = fileformat.getDataset()->findAndGetFloat64(DCM_RescaleIntercept, rescaleIntercept).good();
                 rescaling &= fileformat.getDataset()->findAndGetFloat64(DCM_RescaleSlope, rescaleSlope).good();
@@ -670,7 +743,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                 if (fileformat.getDataset()->findAndGetUint16(DCM_NumberOfSlices, numOfSlices).good())
                 {
-                    fileInfo.numSlices = numOfSlices;
+                    //fileInfo.numSlices = numOfSlices;
                     info()<<"Read number of slices = "<<numOfSlices<<std::endl;
                 }
 
@@ -725,17 +798,17 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 info()<<"dist = "<<fileInfo.distance<<std::endl;
                 info()<<std::endl;
 
-                (orientationFileInfoMap[fileInfo.dirZ])[fileInfo.distance] = fileInfo;
+                (seriesFileInfoMap[seriesIdentifier])[fileInfo.distance] = fileInfo;
 
             }
 
-            if (orientationFileInfoMap.empty()) return 0;
+            if (seriesFileInfoMap.empty()) return 0;
 
-            for(OrientationFileInfoMap::iterator itr = orientationFileInfoMap.begin();
-                itr != orientationFileInfoMap.end();
+            for(SeriesFileInfoMap::iterator itr = seriesFileInfoMap.begin();
+                itr != seriesFileInfoMap.end();
                 ++itr)
             {
-                info()<<"Orientation = "<<itr->first<<std::endl;
+                notice()<<"Description = "<<itr->first.SeriesDescription<<", Orientation = "<<itr->first.Orientation<<std::endl;
 
                 unsigned int totalNumSlices = 0;
 
@@ -746,7 +819,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 {
                     FileInfo& fileInfo = ditr->second;
                     totalNumSlices += fileInfo.numSlices;
-                    info()<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<std::endl;
+                    info()<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<" fileInfo.numSlices="<<fileInfo.numSlices<<std::endl;
                 }
 
                 if (dfim.empty()) continue;

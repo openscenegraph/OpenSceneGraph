@@ -543,7 +543,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
 
                 OFString seriesDescriptionStr;
-                if (dataset->findAndGetOFString(DCM_SeriesInstanceUID, seriesDescriptionStr).good())
+                if (dataset->findAndGetOFString(DCM_SeriesDescription, seriesDescriptionStr).good())
                 {
                     SeriesDescription = seriesDescriptionStr.c_str();
                 }

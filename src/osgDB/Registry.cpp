@@ -1111,7 +1111,12 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
     {
         ReaderWriter::ReadResult rr = readFunctor.doRead(*aaitr);
         if (readFunctor.isValid(rr)) return rr;
-        else results.push_back(rr);
+        else
+        {
+            // don't pass on FILE_NOT_FOUND results as we don't want to prevent non archive plugins that haven't been
+            // loaded yet from getting a chance to test for the presence of the file.
+            if (rr.status()!=ReaderWriter::ReadResult::FILE_NOT_FOUND) results.push_back(rr);
+        }
     }
 
 

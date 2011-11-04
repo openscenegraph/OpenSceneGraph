@@ -1653,6 +1653,13 @@ void Registry::removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp)
         
 }
 
+void Registry::removeFromObjectCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    ObjectCache::iterator itr = _objectCache.find(fileName);
+    if (itr!=_objectCache.end()) _objectCache.erase(itr);
+}
+
 void Registry::clearObjectCache()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);

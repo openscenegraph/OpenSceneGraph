@@ -645,6 +645,19 @@ void CompositeViewer::advance(double simulationTime)
         ++vitr)
     {
         View* view = vitr->get();
+
+        osgGA::GUIEventAdapter* eventState = view->getEventQueue()->getCurrentEventState();
+        if (view->getCamera()->getViewport())
+        {
+            osg::Viewport* viewport = view->getCamera()->getViewport();
+            eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+        }
+        else
+        {
+            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+        }
+
+
         view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
     }
 

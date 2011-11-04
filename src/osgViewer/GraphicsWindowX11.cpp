@@ -1200,6 +1200,8 @@ void GraphicsWindowX11::checkEvents()
     double eventTime = baseTime;
     double resizeTime = eventTime;
     _timeOfLastCheckEvents = getEventQueue()->getTime();
+    if (baseTime>_timeOfLastCheckEvents) baseTime = _timeOfLastCheckEvents;
+    
 
     // OSG_NOTICE<<"GraphicsWindowX11::checkEvents() : getEventQueue()->getCurrentEventState()->getGraphicsContext()="<<getEventQueue()->getCurrentEventState()->getGraphicsContext()<<std::endl;
 

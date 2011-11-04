@@ -251,8 +251,12 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
 
             if(node)
             {
+
                 if (node->getName().empty()) node->setName( arguments[pos] );
                 nodeList.push_back(node);
+
+                // make sure that this presentation isn't cached
+                osgDB::Registry::instance()->removeFromObjectCache( arguments[pos] );
             }
         }
     }

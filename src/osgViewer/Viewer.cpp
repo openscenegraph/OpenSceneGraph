@@ -562,6 +562,16 @@ void Viewer::realize()
         }
     }
 
+    osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
+    if (getCamera()->getViewport())
+    {
+        osg::Viewport* viewport = getCamera()->getViewport();
+        eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+    }
+    else
+    {
+        eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+    }
 }
 
 
@@ -588,6 +598,17 @@ void Viewer::advance(double simulationTime)
 
     if (_eventQueue.valid())
     {
+        osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
+        if (getCamera()->getViewport())
+        {
+            osg::Viewport* viewport = getCamera()->getViewport();
+            eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+        }
+        else
+        {
+            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+        }
+
         _eventQueue->frame( getFrameStamp()->getReferenceTime() );
     }
 
@@ -637,11 +658,6 @@ void Viewer::eventTraversal()
     {
         osg::Viewport* viewport = getCamera()->getViewport();
         masterCameraVPW *= viewport->computeWindowMatrix();
-        eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
-    }
-    else
-    {
-        eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
     }
 
 

@@ -620,7 +620,8 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _tickAtLastSlideOrLayerChange(0),
     _timeDelayOnNewSlideWithMovies(0.25f),
     _minimumTimeBetweenKeyPresses(0.25),
-    _timeLastKeyPresses(-1.0)
+    _timeLastKeyPresses(-1.0),
+    _requestReload(false)
 {
     s_seh = this;
 }
@@ -639,6 +640,10 @@ void SlideEventHandler::set(osg::Node* model)
     aucv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
     model->accept(aucv);
 #endif
+    _firstSlideOrLayerChange = true;
+    _tickAtFirstSlideOrLayerChange = 0;
+    _tickAtLastSlideOrLayerChange = 0;
+    _timeLastKeyPresses = -1;
 
     ActiveOperators operators;
     operators.collect(model, osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
@@ -740,7 +745,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         home();
         OSG_NOTICE<<"Assigned viewer. to SlideEventHandler"<<std::endl;
     }
-    // else  OSG_NOTICE<<"SlideEventHandler::handle()"<<std::endl;
+    //else  OSG_NOTICE<<"SlideEventHandler::handle() "<<ea.getTime()<<std::endl;
 
 
     if (ea.getHandled()) return false;
@@ -957,6 +962,11 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 _hold = false;
                 return true;
             }
+            else if (ea.getKey()=='u')
+            {
+                setRequestReload(true);
+                return true;
+            }
             return false;
         }
         default:
@@ -985,6 +995,11 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
     OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
     
+    if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren()))
+    {
+        slideNum = LAST_POSITION;
+    }
+
     if (slideNum==LAST_POSITION && _presentationSwitch->getNumChildren()>0)
     {
         slideNum = _presentationSwitch->getNumChildren()-1;
@@ -1072,6 +1087,11 @@ bool SlideEventHandler::selectLayer(int layerNum)
 {
     if (!_slideSwitch) return false;
 
+    if (layerNum>=static_cast<int>(_slideSwitch->getNumChildren()))
+    {
+        layerNum = LAST_POSITION;
+    }
+
     if (layerNum==LAST_POSITION && _slideSwitch->getNumChildren()>0)
     {
         layerNum = _slideSwitch->getNumChildren()-1;
@@ -1091,18 +1111,21 @@ bool SlideEventHandler::selectLayer(int layerNum)
 
 bool SlideEventHandler::nextLayerOrSlide()
 {
+    OSG_INFO<<"nextLayerOrSlide()"<<std::endl;
     if (nextLayer()) return true;
     else return nextSlide();
 }
 
 bool SlideEventHandler::previousLayerOrSlide()
 {
+    OSG_INFO<<"previousLayerOrSlide()"<<std::endl;
     if (previousLayer()) return true;
     else return previousSlide();
 }
 
 bool SlideEventHandler::nextSlide()
 {
+    OSG_INFO<<"nextSlide()"<<std::endl;
     LayerAttributes* la = _slideSwitch.valid() ? dynamic_cast<LayerAttributes*>(_slideSwitch->getUserData()) : 0;
     if (la && la->requiresJump())
     {
@@ -1132,6 +1155,7 @@ bool SlideEventHandler::nextSlide()
 
 bool SlideEventHandler::previousSlide()
 {
+    OSG_INFO<<"previousSlide()"<<std::endl;
 #if 1
     // start position when doing previous slide set to top of slide
     if (_activeSlide>0) return selectSlide(_activeSlide-1);
@@ -1147,6 +1171,8 @@ bool SlideEventHandler::previousSlide()
 
 bool SlideEventHandler::nextLayer()
 {
+    OSG_INFO<<"nextLayer()"<<std::endl;
+    
     LayerAttributes* la = (_slideSwitch.valid() && _activeLayer<static_cast<int>(_slideSwitch->getNumChildren())) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
     if (la)
     {
@@ -1179,6 +1205,7 @@ bool SlideEventHandler::nextLayer()
 
 bool SlideEventHandler::previousLayer()
 {
+    OSG_INFO<<"previousLayer()"<<std::endl;
     if (_activeLayer>0) return selectLayer(_activeLayer-1);
     else return false;
 }
@@ -1294,11 +1321,9 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
 
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
-    OSG_INFO<<" keyPosition._key "<<keyPosition._key<<" "<<keyPosition._x<<" "<<keyPosition._y<<std::endl;
-
     osgGA::EventQueue* eq = _viewer->getEventQueue();
 
-    // reset the time of the last key press to ensure thatthe event is disgarded as a key repeat.
+    // reset the time of the last key press to ensure that the event is disgarded as a key repeat.
     _timeLastKeyPresses = -1.0;
     
     if (keyPosition._x!=FLT_MAX)
@@ -1309,7 +1334,10 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
     
     if (keyPosition._y!=FLT_MAX)
     {
-        float yRescaled = eq->getCurrentEventState()->getYmin() + (keyPosition._y+1.0f)*0.5f*(eq->getCurrentEventState()->getXmax()-eq->getCurrentEventState()->getYmin());
+        float y = (eq->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS) ?
+                   keyPosition._y : -keyPosition._y;
+            
+        float yRescaled = eq->getCurrentEventState()->getYmin() + (y+1.0f)*0.5f*(eq->getCurrentEventState()->getYmax()-eq->getCurrentEventState()->getYmin());
         eq->getCurrentEventState()->setY(yRescaled);
     }
 
@@ -1318,4 +1346,8 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 }
 
 
+void SlideEventHandler::setRequestReload(bool flag)
+{
+    _requestReload = flag;
+}
 

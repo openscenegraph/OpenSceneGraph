@@ -263,6 +263,10 @@ public:
 
     void dispatchEvent(const KeyPosition& keyPosition);
 
+    void setRequestReload(bool flag);
+    bool getRequestReload() const { return _requestReload; }
+
+    
 protected:
 
     ~SlideEventHandler() {}
@@ -313,6 +317,8 @@ protected:
     ActiveOperators                         _activeOperators;
     
     osg::ref_ptr<CompileSlideCallback>      _compileSlideCallback;
+
+    bool                                    _requestReload;
 
     void updateOperators();
         

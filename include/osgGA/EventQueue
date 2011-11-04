@@ -196,11 +196,13 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         void frame(double time);
         
 
-        void setStartTick(osg::Timer_t tick) { _startTick = tick; }
+        void setStartTick(osg::Timer_t tick) { _startTick = tick; clear(); }
         osg::Timer_t getStartTick() const { return _startTick; }
 
         double getTime() const { return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()); }
 
+        /** clear all events from queue. */
+        void clear();
 
         /** convenience method for create an event ready to fill in.  Clones the getCurrentEventState() to produce a up to date event state. */
         GUIEventAdapter* createEvent();

@@ -353,43 +353,14 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
     osgVolume::CollectPropertiesVisitor cpv;
     property->accept(cpv);
 
+    bool passOnUpdates = false;
+    
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::MOVE):
         case(osgGA::GUIEventAdapter::DRAG):
         {
-            float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
-            float v2 = v*v;
-            float v4 = v2*v2;
-
-            if (_updateAlphaCutOff && cpv._isoProperty.valid())
-            {
-                OSG_INFO<<"Setting isoProperty to "<<v<<std::endl;
-                cpv._isoProperty->setValue(v);
-            }
-
-            if (_updateAlphaCutOff && cpv._afProperty.valid())
-            {
-                OSG_INFO<<"Setting afProperty to "<<v2<<std::endl;
-                cpv._afProperty->setValue(v2);
-            }
-
-            if (_updateTransparency && cpv._transparencyProperty.valid())
-            {
-                OSG_INFO<<"Setting transparency to "<<v2<<std::endl;
-                cpv._transparencyProperty->setValue(1.0f-v2);
-            }
-
-            if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
-            {
-                OSG_INFO<<"Setting sample density to "<<v4<<std::endl;
-                cpv._sampleDensityProperty->setValue(v4);
-            }
-            if (_updateSampleDensity && cpv._sampleDensityWhenMovingProperty.valid())
-            {
-                OSG_INFO<<"Setting sample density when moving to "<<v4<<std::endl;
-                cpv._sampleDensityWhenMovingProperty->setValue(v4);
-            }
+            passOnUpdates = true;
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
@@ -403,9 +374,9 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
                     tile->init();
                 }
             }
-            else if (ea.getKey()==_transparencyKey) _updateTransparency = true;
-            else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = true;
-            else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = true;
+            else if (ea.getKey()==_transparencyKey) _updateTransparency = passOnUpdates = true;
+            else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = passOnUpdates = true;
+            else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = passOnUpdates = true;
             break;
         }
         case(osgGA::GUIEventAdapter::KEYUP):
@@ -418,6 +389,46 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         default:
             break;
     }
+
+    if (passOnUpdates)
+    {
+        float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
+        if (ea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS) v = 1.0f-v;
+        
+        float v2 = v*v;
+        float v4 = v2*v2;
+
+        if (_updateAlphaCutOff && cpv._isoProperty.valid())
+        {
+            OSG_INFO<<"Setting isoProperty to "<<v<<std::endl;
+            cpv._isoProperty->setValue(v);
+        }
+
+        if (_updateAlphaCutOff && cpv._afProperty.valid())
+        {
+            OSG_INFO<<"Setting afProperty to "<<v2<<std::endl;
+            cpv._afProperty->setValue(v2);
+        }
+
+        if (_updateTransparency && cpv._transparencyProperty.valid())
+        {
+            OSG_INFO<<"Setting transparency to "<<v2<<std::endl;
+            cpv._transparencyProperty->setValue(1.0f-v2);
+        }
+
+        if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
+        {
+            OSG_INFO<<"Setting sample density to "<<v4<<std::endl;
+            cpv._sampleDensityProperty->setValue(v4);
+        }
+        if (_updateSampleDensity && cpv._sampleDensityWhenMovingProperty.valid())
+        {
+            OSG_INFO<<"Setting sample density when moving to "<<v4<<std::endl;
+            cpv._sampleDensityWhenMovingProperty->setValue(v4);
+        }
+    }
+
+
     return false;
 }
 

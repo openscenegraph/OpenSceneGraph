@@ -319,6 +319,8 @@ void RayTracedTechnique::init()
         else if (shadingModel==Isosurface)
         {
 
+            enableBlending = true;
+
             stateset->addUniform(cpv._isoProperty->getUniform());
 
             if (tf)

@@ -876,7 +876,7 @@ int main( int argc, char **argv )
     }
     else
     {
-        ExportHTML::write(seh, viewer, exportName);
+        ExportHTML::write(seh.get(), viewer, exportName);
     }
     
     return 0;

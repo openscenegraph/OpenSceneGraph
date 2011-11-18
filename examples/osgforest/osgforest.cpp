@@ -140,6 +140,9 @@ public:
 
     osg::Node* createShaderGraph(Cell* cell,osg::StateSet* stateset);
 
+    osg::Node* createGeometryShaderGraph(Cell* cell, osg::StateSet* stateset);
+    void CollectTreePositions(Cell* cell, std::vector< osg::Vec3 >& positions);
+
     osg::Node* createHUDWithText(const std::string& text);
 
     osg::Node* createScene(unsigned int numTreesToCreates);
@@ -201,8 +204,8 @@ bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAc
                 return true;
             }
             else if (ea.getKey()=='p' ||
-                    ea.getKey()==osgGA::GUIEventAdapter::KEY_Left ||
-                    ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Left ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
             {
                 _ForestTechniqueManager->advanceToNextTechnique(-1);
                 return true;
@@ -260,11 +263,11 @@ bool ForestTechniqueManager::Cell::divide(unsigned int maxNumTreesPerCell)
             (*citr)->divide(maxNumTreesPerCell);
         }
         return true;
-    }
-    else
-    {
-            return false;
-    }
+   }
+   else
+   {
+        return false;
+   }
 }
 
 bool ForestTechniqueManager::Cell::divide(bool xAxis, bool yAxis, bool zAxis)
@@ -845,6 +848,165 @@ class ShaderGeometry : public osg::Drawable
 
 osg::Geometry* shared_geometry = 0;
 
+osg::Program* createGeometryShader()
+{
+    static const char* vertSource = {
+    "#version 120\n"
+    "#extension GL_EXT_geometry_shader4 : enable\n"
+    "varying vec2 texcoord;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_Vertex;\n"
+    "    texcoord = gl_MultiTexCoord0.st;\n"
+    "}\n"
+    };
+
+    static const char* geomSource = {
+    "#version 120\n"
+    "#extension GL_EXT_geometry_shader4 : enable\n"
+    "varying vec2 texcoord;\n"
+    "varying float intensity; \n"
+    "varying float red_intensity; \n"
+    "void main(void)\n"
+    "{\n"
+    "    vec4 v = gl_PositionIn[0];\n"
+    "    vec4 info = gl_PositionIn[1];\n"
+    "    intensity = info.y;\n"
+    "    red_intensity = info.z;\n"
+    "\n"
+    "    float h = info.x;\n"
+    "    float w = h*0.35;\n"
+    "    vec4 e;\n"
+    "    e = v + vec4(-w,0.0,0.0,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e; texcoord = vec2(0.0,0.0); EmitVertex();\n"
+    "    e = v + vec4(w,0.0,0.0,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(1.0,0.0); EmitVertex();\n"
+    "    e = v + vec4(-w,0.0,h,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(0.0,1.0); EmitVertex();\n"
+    "    e = v + vec4(w,0.0,h,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(1.0,1.0); EmitVertex();\n"
+    "    EndPrimitive();\n"
+    "    e = v + vec4(0.0,-w,0.0,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e; texcoord = vec2(0.0,0.0); EmitVertex();\n"
+    "    e = v + vec4(0.0,w,0.0,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(1.0,0.0); EmitVertex();\n"
+    "    e = v + vec4(0.0,-w,h,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(0.0,1.0); EmitVertex();\n"
+    "    e = v + vec4(0.0,w,h,0.0);  gl_Position = gl_ModelViewProjectionMatrix * e;  texcoord = vec2(1.0,1.0); EmitVertex();\n"
+    "    EndPrimitive();\n"
+    "}\n"
+    };
+
+
+    static const char* fragSource = {
+        "uniform sampler2D baseTexture; \n"
+        "varying vec2 texcoord; \n"
+        "varying float intensity; \n"
+        "varying float red_intensity; \n"
+        "\n"
+        "void main(void) \n"
+        "{ \n"
+        "   vec4 finalColor = texture2D( baseTexture, texcoord); \n"
+        "   vec4 color = finalColor * intensity;\n"
+        "   color.w = finalColor.w;\n"
+        "   color.x *= red_intensity;\n"
+        "   gl_FragColor = color;\n"
+        "}\n"
+    };
+
+
+    osg::Program* pgm = new osg::Program;
+    pgm->setName( "osgshader2 demo" );
+
+    pgm->addShader( new osg::Shader( osg::Shader::VERTEX,   vertSource ) );
+    pgm->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) );
+
+    pgm->addShader( new osg::Shader( osg::Shader::GEOMETRY, geomSource ) );
+    pgm->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 8 );
+    pgm->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_LINES );
+    pgm->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP);
+
+    return pgm;
+}
+
+void ForestTechniqueManager::CollectTreePositions(Cell* cell, std::vector< osg::Vec3 >& positions)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needTrees = !(cell->_trees.empty());
+
+    if (needTrees)
+    {
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr)
+        {
+            Tree& tree = **itr;
+            positions.push_back(tree._position);
+        }
+    }
+
+    if (needGroup)
+    {
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            CollectTreePositions(itr->get(),positions);
+        }
+
+    }
+}
+
+osg::Node* ForestTechniqueManager::createGeometryShaderGraph(Cell* cell, osg::StateSet* dstate)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needTrees = !(cell->_trees.empty());
+
+    osg::Geode* geode = 0;
+    osg::Group* group = 0;
+
+    if (needTrees)
+    {
+        geode = new osg::Geode;
+        geode->setStateSet(dstate);
+
+        osg::Geometry* geometry = new osg::Geometry;
+        geode->addDrawable(geometry);
+
+        osg::Vec3Array* v = new osg::Vec3Array;
+
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr)
+        {
+            Tree& tree = **itr;
+            v->push_back(tree._position);
+            v->push_back(osg::Vec3(/*tree._height*/30.0,(double)random(0.75f,1.15f),(double)random(1.0f,1.250f)));
+        }
+        geometry->setVertexArray( v );
+        geometry->addPrimitiveSet( new osg::DrawArrays( GL_LINES, 0, v->size() ) );
+
+        osg::StateSet* sset = geode->getOrCreateStateSet();
+        sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+        sset->setAttribute( createGeometryShader() );
+
+        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+        sset->addUniform(baseTextureSampler);
+
+    }
+
+    if (needGroup)
+    {
+        group = new osg::Group;
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            group->addChild(createGeometryShaderGraph(itr->get(),dstate));
+        }
+
+        if (geode) group->addChild(geode);
+
+    }
+    if (group) return group;
+    else return geode;
+}
+
+
+
 osg::Node* ForestTechniqueManager::createShaderGraph(Cell* cell,osg::StateSet* stateset)
 {
     if (shared_geometry==0)
@@ -991,7 +1153,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         std::cout<<"Creating osg::Billboard based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createBillboardGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select OpenGL shader based forest\nPress right cursor key to select double quad based forest"));
+        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram shader based forest\nPress right cursor key to select double quad based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
@@ -1132,7 +1294,20 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         }
 
         group->addChild(createShaderGraph(cell.get(),stateset));
-        group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::Vertex/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
+        group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::Vertex/FragmentProgram based forest\nPress right cursor key to select osg::Vertex/Geometry/FragmentProgram based forest"));
+        _techniqueSwitch->addChild(group);
+        std::cout<<"done."<<std::endl;
+    }
+
+    {
+        std::cout<<"Creating Geometry Shader based forest...";
+
+        osg::StateSet* stateset = new osg::StateSet(*dstate, osg::CopyOp::DEEP_COPY_ALL);
+
+        osg::Group* group = new osg::Group;
+        group->addChild(createGeometryShaderGraph(cell.get(), stateset));
+        group->addChild(createHUDWithText("Using osg::Vertex/Geometry/FragmentProgram to create a forest\n\nPress left cursor key to select OpenGL Shader based forest\nPress right cursor key to select osg::Billboard based forest"));
+
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }

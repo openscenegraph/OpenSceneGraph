@@ -72,6 +72,20 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         void setPerspectiveShadowMapCutOffAngle(double angle) { _perspectiveShadowMapCutOffAngle = angle; }
         double getPerspectiveShadowMapCutOffAngle() const { return _perspectiveShadowMapCutOffAngle; }
 
+        
+        void setNumShadowMapsPerLight(unsigned int numShadowMaps) { _numShadowMapsPerLight = numShadowMaps; }
+        unsigned int getNumShadowMapsPerLight() const { return _numShadowMapsPerLight; }
+
+        enum MultipleShadowMapHint
+        {
+            PARALLEL_SPLIT,
+            CASCADED
+        };
+
+        void setMultipleShadowMapHint(MultipleShadowMapHint hint) { _multipleShadowMapHint = hint; }
+        MultipleShadowMapHint getMultipleShadowMapHint() const { return _multipleShadowMapHint; }
+        
+
         enum ShaderHint
         {
             NO_SHADERS,
@@ -97,6 +111,10 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         double                                  _minimumShadowMapNearFarRatio;
         ShadowMapProjectionHint                 _shadowMapProjectionHint;
         double                                  _perspectiveShadowMapCutOffAngle;
+
+        unsigned int                            _numShadowMapsPerLight;
+        MultipleShadowMapHint                   _multipleShadowMapHint;
+        
         ShaderHint                              _shaderHint;
         bool                                    _debugDraw;
 

@@ -23,7 +23,9 @@ ShadowSettings::ShadowSettings():
     _minimumShadowMapNearFarRatio(0.05),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _perspectiveShadowMapCutOffAngle(2.0),
-    _shaderHint(NO_SHADERS),
+    _numShadowMapsPerLight(1),
+    _multipleShadowMapHint(PARALLEL_SPLIT),
+   _shaderHint(NO_SHADERS),
 //    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
 {
@@ -38,6 +40,8 @@ ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copy
     _minimumShadowMapNearFarRatio(ss._minimumShadowMapNearFarRatio),
     _shadowMapProjectionHint(ss._shadowMapProjectionHint),
     _perspectiveShadowMapCutOffAngle(ss._perspectiveShadowMapCutOffAngle),
+    _numShadowMapsPerLight(ss._numShadowMapsPerLight),
+    _multipleShadowMapHint(ss._multipleShadowMapHint),
     _shaderHint(ss._shaderHint),
     _debugDraw(ss._debugDraw)
 {

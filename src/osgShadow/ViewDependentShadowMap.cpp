@@ -254,6 +254,8 @@ public:
     ComputeLightSpaceBounds(osg::Viewport* viewport, const osg::Matrixd& projectionMatrix, osg::Matrixd& viewMatrix):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
     {
+        setCullingMode(osg::CullSettings::VIEW_FRUSTUM_CULLING);
+        
         pushViewport(viewport);
         pushProjectionMatrix(new osg::RefMatrix(projectionMatrix));
         pushModelViewMatrix(new osg::RefMatrix(viewMatrix),osg::Transform::ABSOLUTE_RF);
@@ -262,13 +264,22 @@ public:
     void apply(osg::Node& node)
     {
         if (isCulled(node)) return;
+        
+        // push the culling mode.
+        pushCurrentMask();
 
-        traverse(node);        
+        traverse(node);
+
+        // pop the culling mode.
+        popCurrentMask();
     }
 
     void apply(osg::Geode& node)
     {
         if (isCulled(node)) return;
+
+        // push the culling mode.
+        pushCurrentMask();
 
         for(unsigned int i=0; i<node.getNumDrawables();++i)
         {
@@ -277,6 +288,9 @@ public:
                 updateBound(node.getDrawable(i)->getBound());
             }
         }
+
+        // pop the culling mode.
+        popCurrentMask();
     }
 
     void apply(osg::Billboard&)
@@ -295,16 +309,24 @@ public:
     {
         if (isCulled(transform)) return;
 
+        // push the culling mode.
+        pushCurrentMask();
+
         // absolute transforms won't affect a shadow map so their subgraphs should be ignored.
-        if (transform.getReferenceFrame()==osg::Transform::ABSOLUTE_RF) return;
+        if (transform.getReferenceFrame()==osg::Transform::RELATIVE_RF)
+        {
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(*getModelViewMatrix());
+            transform.computeLocalToWorldMatrix(*matrix,this);
+            pushModelViewMatrix(matrix.get(), transform.getReferenceFrame());
 
-        osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(*getModelViewMatrix());
-        transform.computeLocalToWorldMatrix(*matrix,this);
-        pushModelViewMatrix(matrix.get(), transform.getReferenceFrame());
+            traverse(transform);
 
-        traverse(transform);
-
-        popModelViewMatrix();
+            popModelViewMatrix();
+        }
+        
+        // pop the culling mode.
+        popCurrentMask();
+        
     }
 
     void apply(osg::Camera&)
@@ -336,14 +358,12 @@ public:
             //OSG_NOTICE<<"discarding("<<v<<")"<<std::endl;
             return;
         }
-        
         float x = v.x();
         if (x<-1.0f) x=-1.0f;
         if (x>1.0f) x=1.0f;
         float y = v.y();
         if (y<-1.0f) y=-1.0f;
         if (y>1.0f) y=1.0f;
-
         _bb.expandBy(osg::Vec3(x,y,v.z()));
     }
 
@@ -837,7 +857,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
         // if we are using multiple shadow maps and CastShadowTraversalMask is being used
         // traverse the scene to compute the extents of the objects
-        if (numShadowMapsPerLight>1 && _shadowedScene->getCastsShadowTraversalMask()!=0xffffffff)
+        if (/*numShadowMapsPerLight>1 &&*/ _shadowedScene->getCastsShadowTraversalMask()!=0xffffffff)
         {
             // osg::ElapsedTime timer;
             
@@ -852,7 +872,6 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             osg::CullingSet& cs = clsb.getProjectionCullingStack().back();
             cs.setFrustum(local_polytope);
-
             clsb.pushCullingSet();
 
             _shadowedScene->accept(clsb);
@@ -864,7 +883,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             {
                 // OSG_NOTICE<<"Need to clamp projection matrix"<<std::endl;
 
-#if 0
+#if 1
                 double xMid = (clsb._bb.xMin()+clsb._bb.xMax())*0.5f;
                 double xRange = clsb._bb.xMax()-clsb._bb.xMin();
 #else

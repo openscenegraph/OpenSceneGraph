@@ -1052,7 +1052,14 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             // pass on shadow data to ShadowDataList
             sd->_textureUnit = textureUnit;
             
-            sdl.push_back(sd);
+            if (textureUnit >= 8)
+            {
+                OSG_NOTICE<<"Shadow texture unit is invalid for texgen, will not be used."<<std::endl;
+            }
+            else
+            {
+                sdl.push_back(sd);
+            }
             
             // increment counters.
             ++textureUnit;
@@ -1095,7 +1102,7 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
         ++itr)
     {
         const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
-        if (light)
+        if (light && light->getLightNum() >= 0)
         {
             // is LightNum matched to that defined in settings
             if (settings && settings->getLightNum()>=0 && light->getLightNum()!=settings->getLightNum()) continue;

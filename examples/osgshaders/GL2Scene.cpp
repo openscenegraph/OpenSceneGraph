@@ -43,73 +43,11 @@
 #include <osg/Program>
 #include <osg/Shader>
 #include <osg/Uniform>
+#include <osgUtil/PerlinNoise>
 
 #include <iostream>
 
 #include "GL2Scene.h"
-#include "Noise.h"
-
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-
-static osg::Image*
-make3DNoiseImage(int texSize)
-{
-    osg::Image* image = new osg::Image;
-    image->setImage(texSize, texSize, texSize,
-            4, GL_RGBA, GL_UNSIGNED_BYTE,
-            new unsigned char[4 * texSize * texSize * texSize],
-            osg::Image::USE_NEW_DELETE);
-
-    const int startFrequency = 4;
-    const int numOctaves = 4;
-
-    int f, i, j, k, inc;
-    double ni[3];
-    double inci, incj, inck;
-    int frequency = startFrequency;
-    GLubyte *ptr;
-    double amp = 0.5;
-
-    osg::notify(osg::INFO) << "creating 3D noise texture... ";
-
-    for (f = 0, inc = 0; f < numOctaves; ++f, frequency *= 2, ++inc, amp *= 0.5)
-    {
-        SetNoiseFrequency(frequency);
-        ptr = image->data();
-        ni[0] = ni[1] = ni[2] = 0;
-
-        inci = 1.0 / (texSize / frequency);
-        for (i = 0; i < texSize; ++i, ni[0] += inci)
-        {
-            incj = 1.0 / (texSize / frequency);
-            for (j = 0; j < texSize; ++j, ni[1] += incj)
-            {
-                inck = 1.0 / (texSize / frequency);
-                for (k = 0; k < texSize; ++k, ni[2] += inck, ptr += 4)
-                {
-                    *(ptr+inc) = (GLubyte) (((noise3(ni) + 1.0) * amp) * 128.0);
-                }
-            }
-        }
-    }
-
-    osg::notify(osg::INFO) << "DONE" << std::endl;
-    return image;        
-}
-
-static osg::Texture3D*
-make3DNoiseTexture(int texSize )
-{
-    osg::Texture3D* noiseTexture = new osg::Texture3D;
-    noiseTexture->setFilter(osg::Texture3D::MIN_FILTER, osg::Texture3D::LINEAR);
-    noiseTexture->setFilter(osg::Texture3D::MAG_FILTER, osg::Texture3D::LINEAR);
-    noiseTexture->setWrap(osg::Texture3D::WRAP_S, osg::Texture3D::REPEAT);
-    noiseTexture->setWrap(osg::Texture3D::WRAP_T, osg::Texture3D::REPEAT);
-    noiseTexture->setWrap(osg::Texture3D::WRAP_R, osg::Texture3D::REPEAT);
-    noiseTexture->setImage( make3DNoiseImage(texSize) );
-    return noiseTexture;
-}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -281,7 +219,7 @@ class AnimateCallback: public osg::Uniform::Callback
 osg::ref_ptr<osg::Group>
 GL2Scene::buildScene()
 {
-    osg::Texture3D* noiseTexture = make3DNoiseTexture( 32 /*128*/ );
+    osg::Texture3D* noiseTexture = osgUtil::create3DNoiseTexture( 32 /*128*/ );
     osg::Texture1D* sineTexture = make1DSineTexture( 32 /*1024*/ );
 
     // the root of our scenegraph.

@@ -153,7 +153,10 @@ extern OSG_EXPORT osg::Image* createImage3DWithAlpha(const ImageList& imageList,
             int r_maximumImageSize = 1024,
             bool resizeToPowerOfTwo = false);
 
-    
+/** create a 2D osg::Image that provides a point at the center of the image.
+ *  The colour across th image is computed from a balance between the center color and the background color controlled by the power of the radius from the center.*/
+extern OSG_EXPORT osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power);
+
 }
 
 

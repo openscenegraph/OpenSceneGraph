@@ -44,7 +44,7 @@ Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
 
 Terrain::~Terrain()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
 
     for(TerrainTileSet::iterator itr = _terrainTileSet.begin();
         itr != _terrainTileSet.end();
@@ -96,7 +96,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
             typedef std::list< osg::ref_ptr<TerrainTile> >  TerrainTileList;
             TerrainTileList tiles;
             {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+                OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
                 std::copy(_updateTerrainTileSet.begin(), _updateTerrainTileSet.end(), std::back_inserter(tiles));
                 _updateTerrainTileSet.clear();
             }
@@ -116,14 +116,14 @@ void Terrain::traverse(osg::NodeVisitor& nv)
 
 void Terrain::updateTerrainTileOnNextFrame(TerrainTile* terrainTile)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
     _updateTerrainTileSet.insert(terrainTile);
 }
 
 
 TerrainTile* Terrain::getTile(const TileID& tileID)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
 
     // OSG_NOTICE<<"Terrain::getTile("<<tileID.level<<", "<<tileID.x<<", "<<tileID.y<<")"<<std::endl;
 
@@ -135,7 +135,7 @@ TerrainTile* Terrain::getTile(const TileID& tileID)
 
 const TerrainTile* Terrain::getTile(const TileID& tileID) const
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
 
     TerrainTileMap::const_iterator itr = _terrainTileMap.find(tileID);
     if (itr == _terrainTileMap.end()) return 0;
@@ -145,8 +145,7 @@ const TerrainTile* Terrain::getTile(const TileID& tileID) const
 
 void Terrain::dirtyRegisteredTiles(int dirtyMask)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
     for(TerrainTileSet::iterator itr = _terrainTileSet.begin();
         itr != _terrainTileSet.end();
         ++itr)
@@ -160,7 +159,7 @@ void Terrain::registerTerrainTile(TerrainTile* tile)
 {
     if (!tile) return;
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
 
     if (tile->getTileID().valid())
     {
@@ -179,7 +178,7 @@ void Terrain::unregisterTerrainTile(TerrainTile* tile)
 {
     if (!tile) return;
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
 
     if (tile->getTileID().valid())
     {

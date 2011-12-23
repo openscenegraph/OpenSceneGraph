@@ -1357,8 +1357,11 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
 
 void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 {
-    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
+    if (_currentCursor == mouseCursor) {
+      return;
+    }
     
+    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
     switch (mouseCursor) 
     {
 
@@ -1367,6 +1370,7 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
             break;
     
         case LeftArrowCursor:
+        case RightArrowCursor:
             [[NSCursor arrowCursor] set];
             break;
         
@@ -1379,9 +1383,14 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
             break;
         
         default:
-            OSG_INFO << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl;    
+            OSG_INFO << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl; 
     }
     
+    if (_currentCursor == NoCursor) {
+      [NSCursor unhide];
+    }
+    
+    _currentCursor = mouseCursor;
     [localPool release];
 }
 

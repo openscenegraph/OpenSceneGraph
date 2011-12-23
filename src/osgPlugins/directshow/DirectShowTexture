@@ -58,6 +58,7 @@ public:
     void rewind();
     osg::ImageStream::StreamStatus getStatus();
     void seek(double time);
+    double getCurrentTime() const;
     double getLength() const;
     double getFrameRate() const;
     void setTimeMultiplier(double rate);

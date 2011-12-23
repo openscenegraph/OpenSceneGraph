@@ -1809,6 +1809,29 @@ void DirectShowImageStream::seek(double time)
     }
 
 }
+
+double DirectShowImageStream::getCurrentTime() const 
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    double currentTime = -1;
+    if (_renderer.valid() && _renderer->_mediaSeeking)
+    {      
+       
+       LONGLONG curTimeLL = 0;
+       HRESULT hr = _renderer->_mediaSeeking->GetCurrentPosition(&curTimeLL);
+       if (FAILED(hr))
+       {
+            OSG_NOTICE << this << " " << getErrorMessage(hr) << std::endl;            
+       } 
+       else 
+       {
+           currentTime = static_cast<double>(curTimeLL);
+           currentTime = currentTime * (100.0 * 1e-9); // default unit in directshow IMediaSeeking 
+       }
+    }
+    return currentTime;
+}
+
 void DirectShowImageStream::setOptions(const Options& map)
 {
     for (Options::const_iterator it = map.begin(); it != map.end(); it++)

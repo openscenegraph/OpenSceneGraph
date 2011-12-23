@@ -262,6 +262,13 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         void setDraggerActive(bool active) { _draggerActive = active; }
         bool getDraggerActive() const { return _draggerActive; }
 
+        /**
+         * Set/Get the traversal mask used by this dragger when looking for intersections during event handling.
+         * This is usefull to "hide" some geometry during event handling.
+         */
+        virtual void setIntersectionMask(osg::Node::NodeMask intersectionMask) { _intersectionMask = intersectionMask; }
+        osg::Node::NodeMask getIntersectionMask() const { return _intersectionMask; }
+
     protected:
 
         Dragger();
@@ -285,6 +292,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         osg::ref_ptr<DraggerCallback>   _selfUpdater;
         Constraints                     _constraints;
         DraggerCallbacks                _draggerCallbacks;
+        osg::Node::NodeMask             _intersectionMask;
 
 };
 
@@ -316,6 +324,8 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
         const Dragger* getDragger(unsigned int i) const { return _draggerList[i].get(); }
         bool containsDragger(const Dragger* dragger) const;
         DraggerList::iterator findDragger(const Dragger* dragger);
+
+        virtual void setIntersectionMask(osg::Node::NodeMask intersectionMask);
 
     protected:
 

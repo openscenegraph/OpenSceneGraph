@@ -129,7 +129,8 @@ Dragger::Dragger() :
     _activationModKeyMask(0),
     _activationKeyEvent(0),
     _activationPermittedByModKeyMask(false),
-    _activationPermittedByKeyEvent(false)
+    _activationPermittedByKeyEvent(false),
+    _intersectionMask(0xffffffff)
 {
     _parentDragger = this;
     getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
@@ -145,7 +146,8 @@ Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
     _activationModKeyMask(rhs._activationModKeyMask),
     _activationKeyEvent(rhs._activationKeyEvent),
     _activationPermittedByModKeyMask(false),
-    _activationPermittedByKeyEvent(false)
+    _activationPermittedByKeyEvent(false),
+    _intersectionMask(0xffffffff)
 {
     OSG_NOTICE<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
@@ -307,7 +309,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
 
                 _pointer.reset();
 
-                if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
+                if (view->computeIntersections(ea.getX(),ea.getY(),intersections, _intersectionMask))
                 {
                     for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
                         hitr != intersections.end();
@@ -479,6 +481,15 @@ void CompositeDragger::setParentDragger(Dragger* dragger)
         (*itr)->setParentDragger(dragger);
     }
     Dragger::setParentDragger(dragger);
+}
+
+void CompositeDragger::setIntersectionMask(osg::Node::NodeMask intersectionMask)
+{
+    Dragger::setIntersectionMask(intersectionMask);
+    for (DraggerList::iterator itr = _draggerList.begin(); itr != _draggerList.end(); ++itr)
+    {
+        (*itr)->setIntersectionMask(intersectionMask);
+    }
 }
 
 class ForceCullCallback : public osg::Drawable::CullCallback

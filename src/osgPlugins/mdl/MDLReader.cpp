@@ -28,6 +28,69 @@ using namespace osg;
 using namespace osgDB;
 
 
+namespace
+{
+    // Turn any '\' into '/', so that the path is usable on Windows and Unix.
+    void sanitizePath(std::string& path)
+    {
+        size_t pos = 0;
+        while ((pos = path.find_first_of("\\", pos)) != std::string::npos)
+        {
+            path[pos] = '/';
+            ++pos;
+        }
+    }
+
+    // Try to find 'searchPath'/'filename'.'extension' in 'materials' directory.
+    std::string findFileInPath(const std::string& searchPath,
+            const std::string& filename,
+            const std::string& extension)
+    {
+        std::string filepath;
+
+        if ((filename[0] == '\\') || (filename[0] == '/'))
+        {
+            filepath = searchPath + filename + extension;
+        }
+        else
+        {
+            filepath = searchPath + "/" + filename + extension;
+        }
+
+        // Look for the texture at this location
+        //std::cerr << "findFileInPath trying '" << filepath << "'\n";
+        filepath = findDataFile(filepath, CASE_INSENSITIVE);
+        //std::cerr << "findFileInPath found '" << filepath << "'\n";
+
+        return filepath;
+    }
+
+    // Try to find 'searchPath'/'path'/'filename'.'extension' in 'materials' directory.
+    std::string findFileInPath(const std::string& searchPath,
+            const std::string& path,
+            const std::string& filename,
+            const std::string& extension)
+    {
+        std::string filepath;
+
+        if ((path[0] == '\\') || (path[0] == '/'))
+        {
+            filepath = searchPath + path + filename + extension;
+        }
+        else
+        {
+            filepath = searchPath + "/" + path + filename + extension;
+        }
+
+        // Look for the texture at this location
+        //std::cerr << "findFileInPath trying '" << filepath << "'\n";
+        filepath = findDataFile(filepath, CASE_INSENSITIVE);
+        //std::cerr << "findFileInPath found '" << filepath << "'\n";
+
+        return filepath;
+    }
+}
+
 MDLReader::MDLReader()
 {
     // Start with no root node
@@ -98,13 +161,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
     if (texPath.empty())
     {
         // Check for a leading slash and concatenate appropriately
-        if ((textureName[0] == '\\') || (textureName[0] == '/'))
-            texFile = "materials" + std::string(textureName) + ".vtf";
-        else
-            texFile = "materials/" + std::string(textureName) + ".vtf";
-
-        // Look for the texture at this location
-        texPath = findDataFile(texFile, CASE_INSENSITIVE);
+        texPath = findFileInPath("materials", textureName, ".vtf");
 
         // Check up one directory if we don't find it here (the map file is 
         // usually located in the "maps" directory, adjacent to the materials
@@ -112,13 +169,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         if (texPath.empty())
         {
             // Check for a leading slash and concatenate appropriately
-            if ((textureName[0] == '\\') || (textureName[0] == '/'))
-                texFile = "../materials" + std::string(textureName) + ".vtf";
-            else
-                texFile = "../materials/" + std::string(textureName) + ".vtf";
-
-            // Look for the texture at this location
-            texPath = findDataFile(texFile, CASE_INSENSITIVE);
+            texPath = findFileInPath("../materials", textureName, ".vtf");
         }
     }
 
@@ -155,8 +206,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         else
         {
             // We were unable to find the texture file
-            OSG_WARN << "Couldn't find texture " << textureName;
-            OSG_WARN << std::endl;
+            OSG_WARN << "Couldn't find texture " << textureName << std::endl;
 
             // No texture
             texture = NULL;
@@ -165,8 +215,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
     else
     {
         // We were unable to find the texture file
-        OSG_WARN << "Couldn't find texture " << textureName;
-        OSG_WARN << std::endl;
+        OSG_WARN << "Couldn't find texture " << textureName << std::endl;
 
         // No texture
         texture = NULL;
@@ -207,21 +256,16 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
         searchItr = texture_paths.begin();
         while ((mtlPath.empty()) && (searchItr != texture_paths.end()))
         {
+            std::string path = *searchItr;
+            sanitizePath(path);
+
             // The search paths assume that materials are always located in
             // a "materials" subdirectory.  Also, check to see if there is
             // a leading slash and concatenate appropriately
-            if (((*searchItr)[0] == '\\') || ((*searchItr)[0] == '/'))
-                mtlFileName = "materials" + *searchItr +
-                    std::string(materialName) + ".vmt";
-            else
-                mtlFileName = "materials/" + *searchItr +
-                    std::string(materialName) + ".vmt";
-
-            // Try to find the file in this path
-            mtlPath = findDataFile(mtlFileName, CASE_INSENSITIVE);
+            mtlPath = findFileInPath("materials", path, materialName, ".vmt");
 
             // Next path
-            searchItr++;
+            ++searchItr;
         }
 
         // If we still haven't found it, check up one directory level (the
@@ -232,21 +276,16 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
             searchItr = texture_paths.begin();
             while ((mtlPath.empty()) && (searchItr != texture_paths.end()))
             {
+                std::string path = *searchItr;
+                sanitizePath(path);
+
                 // The search paths assume that materials are always located in
                 // a "materials" subdirectory, but this time try going up one
                 // level first
-                if (((*searchItr)[0] == '\\') || ((*searchItr)[0] == '/'))
-                    mtlFileName = "../materials" + *searchItr +
-                        std::string(materialName) + ".vmt";
-                else
-                    mtlFileName = "../materials/" + *searchItr +
-                        std::string(materialName) + ".vmt";
-
-                // Try to find the file in this path
-                mtlPath = findDataFile(mtlFileName, CASE_INSENSITIVE);
+                mtlPath = findFileInPath("../materials", path, materialName, ".vmt");
 
                 // Next path
-                searchItr++;
+                ++searchItr;
             }
         }
     }
@@ -289,8 +328,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     if (!found)
     {
         mtlFile->close();
-        OSG_WARN << "Material " << materialName << " isn't valid.";
-        OSG_WARN << std::endl;
+        OSG_WARN << "Material " << materialName << " isn't valid." << std::endl;
         return NULL;
     }
 
@@ -384,8 +422,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            OSG_WARN << "No base texture for material " << materialName;
-            OSG_WARN << std::endl;
+            OSG_WARN << "No base texture for material " << materialName << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
 
@@ -445,8 +482,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            OSG_WARN << "No base texture for material " << materialName;
-            OSG_WARN << std::endl;
+            OSG_WARN << "No base texture for material " << materialName << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
     }
@@ -582,8 +618,7 @@ bool MDLReader::readFile(const std::string & file)
     // Make sure the file is a valid Valve MDL file
     if (header.magic_number != MDL_MAGIC_NUMBER)
     {
-        OSG_NOTICE << "This is not a valid .mdl file";
-        OSG_NOTICE << std::endl;
+        OSG_NOTICE << "This is not a valid .mdl file" << std::endl;
 
         // Close the file before we quit
         mdlFile->close();

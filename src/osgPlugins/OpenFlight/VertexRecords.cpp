@@ -68,8 +68,13 @@ class VertexC : public Record
             // color
             if (flags & PACKED_COLOR)
                 vertex.setColor(packedColor);                                             // Packed color
-            else if (colorIndex >= 0)
+            else if( ( (flags & NO_COLOR) == 0 ) &&
+                     ( colorIndex >= 0 ) )
+            {
+                // Only use the color index if the NO_COLOR bit is _not_ set
+                // and the index isn't negative.
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
+            }
 
             if (_parent.valid())
                 _parent->addVertex(vertex);
@@ -108,8 +113,13 @@ class VertexCN : public Record
             // color
             if (flags & PACKED_COLOR)
                 vertex.setColor(packedColor);                                               // Packed color
-            else if (colorIndex >= 0)
+            else if( ( (flags & NO_COLOR) == 0 ) &&
+                     ( colorIndex >= 0 ) )
+            {
+                // Only use the color index if the NO_COLOR bit is _not_ set
+                // and the index isn't negative.
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
+            }
 
             if (_parent.valid())
                 _parent->addVertex(vertex);
@@ -148,8 +158,13 @@ class VertexCT : public Record
             // color
             if (flags & PACKED_COLOR)
                 vertex.setColor(packedColor);                                               // Packed color
-            else if (colorIndex >= 0)
+            else if( ( (flags & NO_COLOR) == 0 ) &&
+                     ( colorIndex >= 0 ) )
+            {
+                // Only use the color index if the NO_COLOR bit is _not_ set
+                // and the index isn't negative.
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
+            }
 
             if (_parent.valid())
                 _parent->addVertex(vertex);
@@ -206,8 +221,13 @@ class VertexCNT : public Record
             // color
             if (flags & PACKED_COLOR)
                 vertex.setColor(packedColor);                                               // Packed color
-            else if (colorIndex >= 0)
+            else if( ( (flags & NO_COLOR) == 0 ) &&
+                     ( colorIndex >= 0 ) )
+            {
+                // Only use the color index if the NO_COLOR bit is _not_ set
+                // and the index isn't negative.
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
+            }
 
             if (_parent.valid())
                 _parent->addVertex(vertex);

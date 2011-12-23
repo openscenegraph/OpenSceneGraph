@@ -296,7 +296,7 @@ class OSG_EXPORT Node : public Object
         *
         * The most common use of these is during traversal of the scene graph.
         * For instance, when traversing the scene graph the osg::NodeVisitor does a bitwise
-        * AND of its TraversalMask with the Node#s NodeMask to
+        * AND of its TraversalMask with the Node's NodeMask to
         * determine if the Node should be processed/traversed.
         *
         * For example, if a Node has a NodeMask value of 0x02 (only 2nd bit set)

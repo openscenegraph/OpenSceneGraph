@@ -315,10 +315,6 @@ void OutputStream::writeImage( const osg::Image* img )
 
     if (newID)
     {
-        *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
-        *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
-        if ( getException() ) return;
-
         int decision = IMAGE_EXTERNAL;
         switch ( _writeImageHint )
         {
@@ -334,18 +330,29 @@ void OutputStream::writeImage( const osg::Image* img )
             break;
         }
 
-        *this << decision << std::endl;
+
+        std::string imageFileName = img->getFileName();
         if ( decision==IMAGE_WRITE_OUT || _writeImageHint==WRITE_EXTERNAL_FILE )
         {
-            bool result = osgDB::writeImageFile( *img, img->getFileName() );
-            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file "
-                                    << img->getFileName() << std::endl;
+            if (imageFileName.empty())
+            {
+                OSG_NOTICE<<"Empty Image::FileName resetting to image.dds"<<std::endl;
+                imageFileName = "image.dds";
+            }
+
+            bool result = osgDB::writeImageFile( *img, imageFileName );
+            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << imageFileName << std::endl;
             if ( !result )
             {
-                OSG_WARN << "OutputStream::writeImage(): Failed to write "
-                                    << img->getFileName() << std::endl;
+                OSG_WARN << "OutputStream::writeImage(): Failed to write " << img->getFileName() << std::endl;
             }
         }
+
+        *this << PROPERTY("FileName"); writeWrappedString(imageFileName); *this << std::endl;
+        *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
+        if ( getException() ) return;
+
+        *this << decision << std::endl;
 
         switch ( decision )
         {

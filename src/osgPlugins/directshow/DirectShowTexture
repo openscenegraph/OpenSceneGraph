@@ -65,6 +65,8 @@ public:
     double getTimeMultiplier() const;
     void quit(bool /*waitForThreadToExit*/ = true);
     void stop();
+    void setVolume(float);
+    float getVolume() const;
 };
 
 
@@ -76,8 +78,9 @@ class CTextureRenderer : public CBaseVideoRenderer, public osg::Referenced
 public:
     IGraphBuilder*  _graphBuilder;          // GraphBuilder
     IMediaControl*  _mediaControl;          // Media Control
-    IMediaSeeking*    _mediaSeeking;          // Media seeking
+    IMediaSeeking*  _mediaSeeking;          // Media seeking
     IMediaEvent*    _mediaEvent;          // Media Event
+    IBasicAudio*    _basicAudio;
     IBaseFilter*    _videoCaptureDevice;
     IBaseFilter*    _fileSource;
     IBaseFilter*    _soundOutputDevice;

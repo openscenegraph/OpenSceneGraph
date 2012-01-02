@@ -31,7 +31,7 @@ Sequence::Sequence() :
     _end(-1),
     _speed(0),
     _nreps(-1),
-    _nrepsRemain(0),
+    _nrepsRemain(-1),
     _step(0),
     _defaultTime(1.),
     _lastFrameTime(0.),

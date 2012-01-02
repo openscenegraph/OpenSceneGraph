@@ -92,11 +92,15 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * method. Lines can be commented out with an initial '#' character.*/
         bool readPluginAliasConfigurationFile( const std::string& file );
 
+        typedef std::map< std::string, std::string> MimeTypeExtensionMap;
+
         /** Registers a mapping of a mime-type to an extension. A process fetching data
           * over HTTP can use this facility to determine the proper ReaderWriter to use
           * when there is no filename extension to rely upon.
           */
         void addMimeTypeExtensionMapping(const std::string fromMimeType, const std::string toExt);
+        MimeTypeExtensionMap& getMimeTypeExtensionMap() { return _mimeTypeExtMap; }
+        const MimeTypeExtensionMap& getMimeTypeExtensionMap() const { return _mimeTypeExtMap; }
 
         void addReaderWriter(ReaderWriter* rw);
         void removeReaderWriter(ReaderWriter* rw);
@@ -505,7 +509,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
-        typedef std::map< std::string, std::string>                     MimeTypeExtensionMap;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;

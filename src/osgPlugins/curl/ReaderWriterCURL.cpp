@@ -20,6 +20,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <string.h>
+
 #include <curl/curl.h>
 
 #if LIBCURL_VERSION_NUM < 0x071503
@@ -38,8 +40,9 @@ using namespace osg_curl;
 //
 //  StreamObject
 //    
-EasyCurl::StreamObject::StreamObject(std::ostream* stream1, const std::string& cacheFileName):
-    _stream1(stream1),
+EasyCurl::StreamObject::StreamObject(std::ostream* outputStream, std::istream* inputStream, const std::string& cacheFileName):
+    _outputStream(outputStream),
+    _inputStream(inputStream),
     _cacheFileName(cacheFileName)
 {
     _foutOpened = false;
@@ -47,7 +50,7 @@ EasyCurl::StreamObject::StreamObject(std::ostream* stream1, const std::string& c
 
 void EasyCurl::StreamObject::write(const char* ptr, size_t realsize)
 {
-    if (_stream1) _stream1->write(ptr, realsize);
+    if (_outputStream) _outputStream->write(ptr, realsize);
 
     if (!_cacheFileName.empty())
     {
@@ -65,9 +68,56 @@ void EasyCurl::StreamObject::write(const char* ptr, size_t realsize)
     }
 }
 
+size_t EasyCurl::StreamObject::read(char* ptr, size_t maxsize)
+{
+    if (!_inputStream) return 0;
+    _inputStream->read(ptr, maxsize);
+    size_t realsize = _inputStream->gcount();
+    return realsize;
+}
+
 std::string EasyCurl::getResultMimeType(const StreamObject& sp) const
 {
     return sp._resultMimeType;
+}
+
+std::string EasyCurl::getMimeTypeForExtension(const std::string& ext) const
+{
+    const osgDB::Registry::MimeTypeExtensionMap& mimeMap = osgDB::Registry::instance()->getMimeTypeExtensionMap();
+    osgDB::Registry::MimeTypeExtensionMap::const_iterator i;
+    for (i = mimeMap.begin(); i != mimeMap.end(); ++i)
+    {
+        if (ext == i->second) return i->first;
+    }
+    return "application/octet-stream"; // unknown mime type
+}
+
+std::string EasyCurl::getFileNameFromURL(const std::string& url)
+{
+    // If the URL has query parameter "filename", return its value,
+    // otherwise just return url assuming it has a filename at the end.
+    // Typically, uploading will require cooperation with a server side
+    // script that requires parameters such as filename and/or session 
+    // and/or authentication information, so in general the filename 
+    // can not be assumed to be at the tail of the URL.
+    std::string::size_type pos = url.find('?');
+    if (pos == std::string::npos) return url;
+    std::string params = url.substr(pos + 1);
+    const char* filenameKey = "filename=";
+    pos = params.find(filenameKey);
+    if (pos == std::string::npos)
+    {
+        // No filename param, so just chop off parameters on the url.
+        return url.substr(0, url.find('?'));
+    }
+    std::string fileName = params.substr(pos + strlen(filenameKey));
+    pos = fileName.find("&");
+    if (pos != std::string::npos)
+    {
+        // Chop off next url parameter
+        fileName = fileName.substr(0, pos);
+    }
+    return fileName;
 }
     
 size_t EasyCurl::StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
@@ -109,8 +159,79 @@ EasyCurl::~EasyCurl()
     _curl = 0;
 }
 
-
 osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options)
+{
+    setOptions(proxyAddress, fileName, sp, options);
+
+    CURLcode responseCode = curl_easy_perform(_curl);
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
+
+    return processResponse(responseCode, proxyAddress, fileName, sp);
+}
+
+osgDB::ReaderWriter::WriteResult EasyCurl::write(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options)
+{
+    setOptions(proxyAddress, fileName, sp, options);
+
+    char* postedContent = NULL;
+
+    // Copy data from istream into buffer.
+    int contentLength = 0;
+    const int bufferSize = 4096;
+    while(true)
+    {
+        postedContent = (char *)realloc(postedContent, contentLength + bufferSize);
+        size_t gotBytes = sp.read(postedContent + contentLength, bufferSize);
+        if (gotBytes == 0) break;
+        contentLength += gotBytes;
+    };
+
+    // Extract name and mime type of buffer to upload.
+    std::string uploadFileName = getFileNameFromURL(fileName);
+    std::string ext = osgDB::getLowerCaseFileExtension(uploadFileName);
+    std::string mimeType = getMimeTypeForExtension(ext);
+
+    // Construct "multipart/form-data" (RFC 1867) form elements for file upload.
+    struct curl_httppost* post = NULL;  
+    struct curl_httppost* last = NULL;  
+    curl_formadd(&post, &last, 
+        CURLFORM_COPYNAME, "upload", 
+        CURLFORM_CONTENTTYPE, mimeType.c_str(),
+        CURLFORM_BUFFER, uploadFileName.c_str(), 
+        CURLFORM_BUFFERPTR, postedContent, 
+        CURLFORM_BUFFERLENGTH, contentLength, 
+        CURLFORM_END); 
+
+    // Tell curl to use HTTP POST to send the form data.
+    curl_easy_setopt(_curl, CURLOPT_HTTPPOST, post);
+
+    CURLcode responseCode = curl_easy_perform(_curl);
+
+    if (post) curl_formfree(post); 
+    if (postedContent) free(postedContent);
+    curl_easy_setopt(_curl, CURLOPT_HTTPPOST, (void *)0);
+    curl_easy_setopt(_curl, CURLOPT_HTTPGET, 1);
+
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
+
+    if (processResponse(responseCode, proxyAddress, fileName, sp).success())
+    {
+        osgDB::ReaderWriter::WriteResult result(osgDB::ReaderWriter::WriteResult::FILE_SAVED);
+        std::stringstream* ss = dynamic_cast<std::stringstream*>(sp._outputStream);
+        if (ss)
+        {
+            // Put the server response in the message part of the result object.
+            result.message() = ss->str();
+        }
+        return result;
+    }
+    else
+    {
+        return osgDB::ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
+    }
+}
+
+void EasyCurl::setOptions(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options)
 {
     const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ? 
             options->getAuthenticationMap() :
@@ -175,11 +296,10 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
 
     curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
     curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)&sp);
+}
 
-    CURLcode res = curl_easy_perform(_curl);
-
-    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
-
+osgDB::ReaderWriter::ReadResult EasyCurl::processResponse(CURLcode res, const std::string& proxyAddress, const std::string& fileName, StreamObject& sp)
+{
     if (res==0)
     {
 
@@ -268,6 +388,52 @@ ReaderWriterCURL::~ReaderWriterCURL()
     //OSG_NOTICE<<"ReaderWriterCURL::~ReaderWriterCURL()"<<std::endl;
 }
 
+osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, osgDB::ReaderWriter* rw, std::ostream& fout, const osgDB::ReaderWriter::Options *options) const
+{
+    const osg::HeightField* heightField = dynamic_cast<const osg::HeightField*>(&obj);
+    if (heightField) return rw->writeHeightField(*heightField, fout, options);
+
+    const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
+    if (node) return rw->writeNode(*node, fout, options);
+
+    const osg::Image* image = dynamic_cast<const osg::Image*>(&obj);
+    if (image) return rw->writeImage(*image, fout, options);
+
+    return rw->writeObject(obj, fout, options);
+}
+
+osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, const std::string& fullFileName, const Options *options) const
+{
+    if (!osgDB::containsServerAddress(fullFileName))
+    {
+        return WriteResult::FILE_NOT_HANDLED;
+    }
+
+    std::stringstream requestBuffer; // Buffer to be filled then output via http request.
+    std::stringstream responseBuffer; // Buffer to contain content of http response.
+
+    // Serialize obj into an std::stringstream buffer which will be uploaded via HTTP post request.
+    std::string fileName = EasyCurl::getFileNameFromURL(fullFileName);
+    std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+    osgDB::ReaderWriter* writer = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
+    if (!writer) return WriteResult::FILE_NOT_HANDLED;
+    osgDB::ReaderWriter::WriteResult result = writeFile(obj, writer, requestBuffer, options);
+    if (!result.success()) return result;
+
+    // Configure curl connection options.
+    std::string proxyAddress;
+    long connectTimeout = 0;
+    long timeout = 0;
+    getConnectionOptions(options, proxyAddress, connectTimeout, timeout);
+    EasyCurl::StreamObject sp(&responseBuffer, &requestBuffer, std::string());
+    EasyCurl& easyCurl = getEasyCurl();
+    easyCurl.setConnectionTimeout(connectTimeout);
+    easyCurl.setTimeout(timeout);
+    
+    // Output requestBuffer via curl, and return responseBuffer in message of result.
+    return easyCurl.write(proxyAddress, fullFileName, sp, options);
+}
+
 osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType, osgDB::ReaderWriter* rw, std::istream& fin, const osgDB::ReaderWriter::Options *options) const
 {
     switch(objectType)
@@ -280,6 +446,48 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     default: break;
     }
     return ReadResult::FILE_NOT_HANDLED;
+}
+
+void ReaderWriterCURL::getConnectionOptions(const osgDB::ReaderWriter::Options *options, std::string& proxyAddress, long& connectTimeout, long& timeout) const
+{
+    if (options)
+    {
+        std::istringstream iss(options->getOptionString());
+        std::string opt, optProxy, optProxyPort;
+        while (iss >> opt) 
+        {
+            int index = opt.find( "=" );
+            if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
+                optProxy = opt.substr( index+1 );
+            else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
+                optProxyPort = opt.substr( index+1 );
+            else if( opt.substr( 0, index ) == "OSG_CURL_CONNECTTIMEOUT" )
+                connectTimeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
+            else if( opt.substr( 0, index ) == "OSG_CURL_TIMEOUT" )
+                timeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
+        }
+
+        //Setting Proxy by OSG Options
+        if(!optProxy.empty())
+        {
+            if(!optProxyPort.empty())
+                proxyAddress = optProxy + ":" + optProxyPort;
+            else
+                proxyAddress = optProxy + ":8080"; //Port not found, using default
+        }
+    }
+
+    const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
+    if (proxyEnvAddress) //Env Proxy Settings
+    {
+        const char* proxyEnvPort = getenv("OSG_CURL_PROXYPORT"); //Searching Proxy Port on Env
+
+        if(proxyEnvPort)
+            proxyAddress = std::string(proxyEnvAddress) + ":" + std::string(proxyEnvPort);
+        else
+            proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
+    }
+
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType, const std::string& fullFileName, const osgDB::ReaderWriter::Options *options) const
@@ -314,37 +522,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     OSG_INFO<<"ReaderWriterCURL::readFile("<<fullFileName<<")"<<std::endl;
 
-    std::string proxyAddress, optProxy, optProxyPort;
+    std::string proxyAddress;
     long connectTimeout = 0;
     long timeout = 0;
-    
-    if (options)
-    {
-        std::istringstream iss(options->getOptionString());
-        std::string opt;
-        while (iss >> opt) 
-        {
-            int index = opt.find( "=" );
-            if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
-                optProxy = opt.substr( index+1 );
-            else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
-                optProxyPort = opt.substr( index+1 );
-            else if( opt.substr( 0, index ) == "OSG_CURL_CONNECTTIMEOUT" )
-                connectTimeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
-            else if( opt.substr( 0, index ) == "OSG_CURL_TIMEOUT" )
-                timeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
-        }
-
-        //Setting Proxy by OSG Options
-        if(!optProxy.empty())
-        {
-            if(!optProxyPort.empty())
-                proxyAddress = optProxy + ":" + optProxyPort;
-            else
-                proxyAddress = optProxy + ":8080"; //Port not found, using default
-        }
-    }
-
+    getConnectionOptions(options, proxyAddress, connectTimeout, timeout);
     
     bool uncompress = false;
     
@@ -374,23 +555,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
         OSG_INFO<<"CURL: assuming file type "<<ext<<std::endl;
     }
-
-
-
-    const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
-    if (proxyEnvAddress) //Env Proxy Settings
-    {
-        const char* proxyEnvPort = getenv("OSG_CURL_PROXYPORT"); //Searching Proxy Port on Env
-
-        if(proxyEnvPort)
-            proxyAddress = std::string(proxyEnvAddress) + ":" + std::string(proxyEnvPort);
-        else
-            proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
-    }
     
     std::stringstream buffer;
 
-    EasyCurl::StreamObject sp(&buffer, std::string());
+    EasyCurl::StreamObject sp(&buffer, NULL, std::string());
     EasyCurl& easyCurl = getEasyCurl();
     
     // setup the timeouts:

@@ -1087,8 +1087,11 @@ bool SlideEventHandler::selectLayer(int layerNum)
 {
     if (!_slideSwitch) return false;
 
+    bool withinSlide = true;
+
     if (layerNum>=static_cast<int>(_slideSwitch->getNumChildren()))
     {
+        withinSlide = false;
         layerNum = LAST_POSITION;
     }
 
@@ -1106,14 +1109,19 @@ bool SlideEventHandler::selectLayer(int layerNum)
 
     OSG_INFO<<"Selected layer '"<<_slideSwitch->getChild(_activeLayer)->getName()<<"' num="<<_activeLayer<< std::endl;
 
-    return true;
+    return withinSlide;
 }
 
 bool SlideEventHandler::nextLayerOrSlide()
 {
-    OSG_INFO<<"nextLayerOrSlide()"<<std::endl;
-    if (nextLayer()) return true;
-    else return nextSlide();
+    if (nextLayer())
+    {
+        return true;
+    }
+    else
+    {
+        return nextSlide();
+    }
 }
 
 bool SlideEventHandler::previousLayerOrSlide()
@@ -1171,8 +1179,6 @@ bool SlideEventHandler::previousSlide()
 
 bool SlideEventHandler::nextLayer()
 {
-    OSG_INFO<<"nextLayer()"<<std::endl;
-    
     LayerAttributes* la = (_slideSwitch.valid() && _activeLayer<static_cast<int>(_slideSwitch->getNumChildren())) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
     if (la)
     {
@@ -1200,6 +1206,7 @@ bool SlideEventHandler::nextLayer()
         }
     }
 
+    OSG_INFO<<"nextLayer() calling selectLayer("<<_activeLayer+1<<")"<<std::endl;
     return selectLayer(_activeLayer+1);
 }
 

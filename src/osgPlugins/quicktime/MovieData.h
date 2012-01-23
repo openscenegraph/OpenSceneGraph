@@ -39,27 +39,27 @@
              * @param fileName the movie to open
              * @param startTime the starttime to begin with
              */
-            void load(osg::Image* image, std::string fileName, float startTime = 0.0f);
+            void load(osg::Image* image, std::string fileName, double startTime = 0.0);
             
             /** @return the duration for this movie in seconds */
-            inline float getMovieDuration() { return GetMovieDuration(_movie)/(float)_timescale;}
+            inline double getMovieDuration() { return GetMovieDuration(_movie)/_timescale;}
             
             /** @return the current position for this movie in seconds */
-            inline float getMovieTime()  {return GetMovieTime(_movie,NULL)/(float)_timescale; }
+            inline double getMovieTime()  {return GetMovieTime(_movie,NULL)/_timescale; }
             
             /** stes the movietime */
-            void setMovieTime(float atime);
+            void setMovieTime(double atime);
                         
             /** @return the Movie-handle, to use it with other quicktime-calls */
             inline Movie &getMovie() { return _movie; }
             
             /** @return the current movieRate */
-            inline float getMovieRate() { return Fix2X(GetMovieRate(_movie)); }
+            inline double getMovieRate() { return Fix2X(GetMovieRate(_movie)); }
             /** @return returns the cached movierate, may differ to the real movierate */
-            inline float getCachedMovieRate() { return _movieRate; }
+            inline double getCachedMovieRate() { return _movieRate; }
             
             /** sets the MovieRate for this movie */
-            void setMovieRate(float rate);
+            void setMovieRate(double rate);
             
             /** sets the volume for the soundtrack of this movie */
             void setVolume(float volume) { SetMovieVolume(_movie,(short)(ceil(volume*255.0f)));}
@@ -103,9 +103,9 @@
             GWorldPtr       _gw;
             
             unsigned int    _movieWidth, _movieHeight, _textureWidth, _textureHeight;
-            float           _timescale;
+            double          _timescale;
             bool            _fError;
-            float           _movieRate;
+            double          _movieRate;
             bool            _preRolled;
             bool            _isLooping;
             

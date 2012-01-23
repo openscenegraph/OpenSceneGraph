@@ -78,7 +78,7 @@ QuicktimeImageStream::~QuicktimeImageStream()
 
 
 // Set command
-void QuicktimeImageStream::setCmd(ThreadCommand cmd, float rate)
+void QuicktimeImageStream::setCmd(ThreadCommand cmd, double rate)
 {
    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -112,7 +112,7 @@ void QuicktimeImageStream::load(std::string fileName)
    _movieData->load(this, fileName);
 
    _len = _movieData->getMovieDuration();
-   _current = 0;
+   _current = 0.0;
 }
 
 void QuicktimeImageStream::quit(bool wiatForThreadToExit)
@@ -160,7 +160,7 @@ void QuicktimeImageStream::run()
             switch (cmd) {
                     case THREAD_START: // Start or continue stream
                        applyLoopingMode();    
-                       _movieData->setMovieRate(1.0f);
+                       _movieData->setMovieRate(1.0);
 
                        playing = true;
                        break;
@@ -172,12 +172,12 @@ void QuicktimeImageStream::run()
                        break;
 
                     case THREAD_REWIND:
-                       SetMovieRate(_movieData->getMovie(),0);
+                       SetMovieRate(_movieData->getMovie(),0.0);
                        GoToBeginningOfMovie(_movieData->getMovie());
                        break;
 
                     case THREAD_FORWARD:
-                       SetMovieRate(_movieData->getMovie(),0);
+                       SetMovieRate(_movieData->getMovie(),0.0);
                        GoToEndOfMovie(_movieData->getMovie());
                        break;
 
@@ -188,15 +188,15 @@ void QuicktimeImageStream::run()
 
                     case THREAD_SETRATE:
                        _movieData->setMovieRate(_currentRate);
-                       playing = (_currentRate != 0.0f);
+                       playing = (_currentRate != 0.0);
                        break;
 
                     case THREAD_CLOSE:
-                       _movieData->setMovieRate(0);
+                       _movieData->setMovieRate(0.0);
                        break;
 
                     case THREAD_QUIT: // TODO
-                       _movieData->setMovieRate(0);
+                       _movieData->setMovieRate(0.0);
                        OSG_INFO << "QT-ImageStream: quit" << std::endl;
                        //playing = false;
                        done = true;

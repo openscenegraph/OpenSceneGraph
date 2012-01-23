@@ -36,7 +36,7 @@ MovieData::~MovieData()
    
     
     
-void MovieData::load(osg::Image* image, std::string afilename, float startTime)
+void MovieData::load(osg::Image* image, std::string afilename, double startTime)
 {
     bool isUrl( osgDB::containsServerAddress(afilename) );
     
@@ -110,7 +110,7 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
     _movieWidth = bounds.right;
     _movieHeight = bounds.bottom;
     
-    _timescale = (float)GetMovieTimeScale(_movie);
+    _timescale = GetMovieTimeScale(_movie);
 
     _initImage(image);
     if (!_fError) _initGWorldStuff(image);
@@ -118,7 +118,7 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
         
     if (!_fError) {
     
-        if ( startTime == 0.0f)
+        if ( startTime == 0.0)
             GoToBeginningOfMovie(_movie);
         else {
             TimeValue t = (TimeValue) (startTime*_timescale);
@@ -126,7 +126,7 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
         }
             
         UpdateMovie(_movie);
-        SetMovieRate(_movie,0);
+        SetMovieRate(_movie,0.0);
         SetMovieActive(_movie, true);
         UpdateMovie(_movie);
         MoviesTask(_movie,0);
@@ -219,8 +219,8 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
 
 }
 
-void MovieData::setMovieTime(float atime) {
-    float time = (atime > getMovieDuration()) ? getMovieDuration() : atime;
+void MovieData::setMovieTime(double atime) {
+    double time = (atime > getMovieDuration()) ? getMovieDuration() : atime;
     
     TimeValue t = (TimeValue) (time * _timescale);
     SetMovieTimeValue(_movie,t);
@@ -231,7 +231,7 @@ void MovieData::setMovieTime(float atime) {
         
 }
 
-void MovieData::setMovieRate(float rate) { 
+void MovieData::setMovieRate(double rate) {
     // OSG_ALWAYS << "new movierate: " << rate << " current: " << getMovieRate() << std::endl;
     _movieRate = rate;
     if ((rate != 0) && (_preRolled == false)) {

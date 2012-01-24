@@ -111,7 +111,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
          * or NO_OPERATION. NO_OPERATION is the default. Per BarrierOperation::operator()(),
          * a glFlush() command, glFinish() command, or no additional OpenGL command will be
          * issued before entering the end barrier. */
-        void setEndBarrierOperation(const osg::BarrierOperation::PreBlockOp& op) { _endBarrierOperation = op; }
+        void setEndBarrierOperation(osg::BarrierOperation::PreBlockOp op);
         
         /** Get the end barrier operation. */
         osg::BarrierOperation::PreBlockOp getEndBarrierOperation() const { return _endBarrierOperation; }

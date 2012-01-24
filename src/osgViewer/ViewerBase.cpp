@@ -179,6 +179,16 @@ void ViewerBase::setEndBarrierPosition(BarrierPosition bp)
     if (_threadingModel!=SingleThreaded) startThreading();
 }
 
+void ViewerBase::setEndBarrierOperation(osg::BarrierOperation::PreBlockOp op)
+{
+    if (_endBarrierOperation == op) return;
+
+    if (_threadsRunning) stopThreading();
+
+    _endBarrierOperation = op;
+
+    if (_threadingModel!=SingleThreaded) startThreading();
+}
 
 void ViewerBase::stopThreading()
 {

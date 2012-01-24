@@ -147,7 +147,7 @@ EasyCurl::EasyCurl()
 
     curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
     curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, StreamMemoryCallback);
-    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
 }
 
 EasyCurl::~EasyCurl()
@@ -176,7 +176,7 @@ osgDB::ReaderWriter::WriteResult EasyCurl::write(const std::string& proxyAddress
     char* postedContent = NULL;
 
     // Copy data from istream into buffer.
-    int contentLength = 0;
+    long contentLength = 0;
     const int bufferSize = 4096;
     while(true)
     {
@@ -210,7 +210,7 @@ osgDB::ReaderWriter::WriteResult EasyCurl::write(const std::string& proxyAddress
     if (post) curl_formfree(post); 
     if (postedContent) free(postedContent);
     curl_easy_setopt(_curl, CURLOPT_HTTPPOST, (void *)0);
-    curl_easy_setopt(_curl, CURLOPT_HTTPGET, 1);
+    curl_easy_setopt(_curl, CURLOPT_HTTPGET, 1L);
 
     curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
 

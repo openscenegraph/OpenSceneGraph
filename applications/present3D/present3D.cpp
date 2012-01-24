@@ -221,8 +221,8 @@ osg::Node* createCursorSubgraph(const std::string& filename, float size)
     if (image)
     {
         osg::StateSet* stateset = geom->getOrCreateStateSet();
-        stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image),osg::StateAttribute::ON);
-        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image),osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
         // stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         stateset->setRenderBinDetails(1000, "DepthSortedBin");
     }

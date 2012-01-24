@@ -106,6 +106,15 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the end barrier position.*/
         BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
+        
+        /** Set the end barrier operation. \c op may be one of GL_FLUSH, GL_FINISH,
+         * or NO_OPERATION. NO_OPERATION is the default. Per BarrierOperation::operator()(),
+         * a glFlush() command, glFinish() command, or no additional OpenGL command will be
+         * issued before entering the end barrier. */
+        void setEndBarrierOperation(const osg::BarrierOperation::PreBlockOp& op) { _endBarrierOperation = op; }
+        
+        /** Get the end barrier operation. */
+        osg::BarrierOperation::PreBlockOp getEndBarrierOperation() const { return _endBarrierOperation; }
 
 
 
@@ -309,6 +318,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
 
         BarrierPosition                                     _endBarrierPosition;
+        osg::BarrierOperation::PreBlockOp                   _endBarrierOperation;
 
         osg::ref_ptr<osg::BarrierOperation>                 _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation>                 _endRenderingDispatchBarrier;

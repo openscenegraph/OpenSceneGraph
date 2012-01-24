@@ -536,8 +536,50 @@ public:
         _prevTime(0.0)
     {
 
+#if 1        
+        osg::ref_ptr<osg::Image> originalImage = osgDB::readImageFile("Images/dog_left_eye.jpg");
+
+        osg::ref_ptr<osg::Image> subImage = new osg::Image;
+        subImage->setUserData(originalImage.get()); // attach the originalImage as user data to prevent it being deleted.
+
+        // now assign the appropriate portion data from the originalImage
+        subImage->setImage(originalImage->s()/2, originalImage->t()/2, originalImage->r(), // half the width and height
+                           originalImage->getInternalTextureFormat(), // same internal texture format
+                           originalImage->getPixelFormat(),originalImage->getDataType(), // same pixel foramt and data type
+                           originalImage->data(originalImage->s()/4,originalImage->t()/4), // offset teh start point to 1/4 into the image
+                           osg::Image::NO_DELETE, // don't attempt to delete the image data, leave this to the originalImage
+                           originalImage->getPacking(), // use the the same packing
+                           originalImage->s()); // use the width of the original image as the row width
+
+
+        subImage->setPixelBufferObject(new osg::PixelBufferObject(subImage.get()));
+
+#if 0
+        OSG_NOTICE<<"orignalImage iterator"<<std::endl;
+        for(osg::Image::DataIterator itr(originalImage.get()); itr.valid(); ++itr)
+        {
+            OSG_NOTICE<<"  "<<(void*)itr.data()<<", "<<itr.size()<<std::endl;
+        }
+
+        OSG_NOTICE<<"subImage iterator, size "<<subImage->s()<<", "<<subImage->t()<<std::endl;
+        unsigned int i=0;
+        for(osg::Image::DataIterator itr(subImage.get()); itr.valid(); ++itr, ++i)
+        {
+            OSG_NOTICE<<"  "<<i<<", "<<(void*)itr.data()<<", "<<itr.size()<<std::endl;
+
+            for(unsigned char* d=const_cast<unsigned char*>(itr.data()); d<(itr.data()+itr.size()); ++d)
+            {
+                *d = 255-*d;
+            }
+        }
+#endif   
+
         
+        _imageList.push_back(subImage.get());
+
+#else
         _imageList.push_back(osgDB::readImageFile("Images/dog_left_eye.jpg"));
+#endif
         _textList.push_back("Subloaded Image 1 - dog_left_eye.jpg");
         
         _imageList.push_back(osgDB::readImageFile("Images/dog_right_eye.jpg"));
@@ -584,6 +626,7 @@ public:
 
 protected:
 
+    
     typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
     typedef std::vector<std::string>                TextList;
 

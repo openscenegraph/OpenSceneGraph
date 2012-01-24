@@ -114,6 +114,9 @@ class OSG_EXPORT Image : public BufferData
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Image"; }
 
+        virtual osg::Image* asImage() { return this; }
+        virtual const osg::Image* asImage() const { return this; }
+
         virtual const GLvoid*   getDataPointer() const { return data(); }
         virtual unsigned int    getTotalDataSize() const { return getTotalSizeInBytesIncludingMipmaps(); }
 
@@ -157,7 +160,7 @@ class OSG_EXPORT Image : public BufferData
                       GLenum pixelFormat,GLenum type,
                       unsigned char* data,
                       AllocationMode mode,
-                      int packing=1);
+                      int packing=1, int rowLength=0);
             
         /** Read pixels from current frame buffer at specified position and size, using glReadPixels.
           * Create memory for storage if required, reuse existing pixel coords if possible.
@@ -213,6 +216,9 @@ class OSG_EXPORT Image : public BufferData
         
         /** Depth of image. */
         inline int r() const { return _r; }
+
+        void setRowLength(int length) { _rowLength = length; }
+        inline int getRowLength() const { return _rowLength; }
         
         void setInternalTextureFormat(GLint internalFormat);
         inline GLint getInternalTextureFormat() const { return _internalTextureFormat; }
@@ -241,9 +247,17 @@ class OSG_EXPORT Image : public BufferData
         /** Return the number of bytes each row of pixels occupies once it has been packed. */
         inline unsigned int getRowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
 
+        /** Return the number of bytes between each successive row.
+          * Note, getRowSizeInBytes() will only equal getRowStepInBytes() when isDataContiguous() return true. */
+        inline unsigned int getRowStepInBytes() const { return computeRowWidthInBytes(_rowLength==0?_s:_rowLength,_pixelFormat,_dataType,_packing); }
+
         /** Return the number of bytes each image (_s*_t) of pixels occupies. */
         inline unsigned int getImageSizeInBytes() const { return getRowSizeInBytes()*_t; }
         
+        /** Return the number of bytes between each successive image. 
+          * Note, getImageSizeInBytes() will only equal getImageStepInBytes() when isDataContiguous() return true. */
+        inline unsigned int getImageStepInBytes() const { return getRowStepInBytes()*_t; }
+
         /** Return the number of bytes the whole row/image/volume of pixels occupies. */
         inline unsigned int getTotalSizeInBytes() const { return getImageSizeInBytes()*_r; }
 
@@ -253,24 +267,63 @@ class OSG_EXPORT Image : public BufferData
         /** Return true if the Image represent a valid and usable imagery.*/
         bool valid() const { return _s!=0 && _t!=0 && _r!=0 && _data!=0 && _dataType!=0; }
 
-        /** Raw image data. */
+        /** Raw image data.
+          * Note, data in successive rows may not be contiguous, isDataContiguous() return false then you should
+          * take care to access the data per row rather than treating the whole data as a single block. */
         inline unsigned char* data() { return _data; }
         
-        /** Raw const image data. */
+        /** Raw const image data.
+          * Note, data in successive rows may not be contiguous, isDataContiguous() return false then you should
+          * take care to access the data per row rather than treating the whole data as a single block. */
         inline const unsigned char* data() const { return _data; }
-
 
         inline unsigned char* data(int column, int row=0,int image=0)
         {
             if (!_data) return NULL;
-            return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
+            return _data+(column*getPixelSizeInBits())/8+row*getRowStepInBytes()+image*getImageSizeInBytes();
         }
         
         inline const unsigned char* data(int column, int row=0,int image=0) const
         {
             if (!_data) return NULL;
-            return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
+            return _data+(column*getPixelSizeInBits())/8+row*getRowStepInBytes()+image*getImageSizeInBytes();
         }
+
+        /** return true if the data stored in the image is a contiguous block of data.*/
+        bool isDataContiguous() const { return _rowLength==0 || _rowLength==_s; }
+
+        /** Convenience class for assisting the copying of image data when the image data isn't contiguous.*/
+        class OSG_EXPORT DataIterator
+        {
+        public:
+            DataIterator(const Image* image);
+            DataIterator(const DataIterator& ri);
+            ~DataIterator() {}
+
+            /** advance iterator to next block of data.*/
+            void operator ++ ();
+
+            /** is iterator valid.*/
+            bool valid() const { return _currentPtr!=0; }
+
+            /** data pointer of current block to copy.*/
+            const unsigned char* data() const { return _currentPtr; }
+
+            /** Size of current block to copy.*/
+            unsigned int size() const { return _currentSize; }
+
+        protected:
+
+            
+            void assign();
+            
+            const osg::Image*                   _image;
+            int                                 _rowNum;
+            int                                 _imageNum;
+            unsigned int                        _mipmapNum;
+            const unsigned char*                _currentPtr;
+            unsigned int                        _currentSize;
+        };
 
         /** Get the color value for specified texcoord.*/
         Vec4 getColor(unsigned int s,unsigned t=0,unsigned r=0) const;
@@ -301,9 +354,11 @@ class OSG_EXPORT Image : public BufferData
         static bool isPackedType(GLenum type);
         static GLenum computePixelFormat(GLenum pixelFormat);
         static GLenum computeFormatDataType(GLenum pixelFormat);
+        static unsigned int computeBlockSize(GLenum pixelFormat, GLenum packing);
         static unsigned int computeNumComponents(GLenum pixelFormat);
         static unsigned int computePixelSizeInBits(GLenum pixelFormat,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);
+        static unsigned int computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing);
         static int computeNearestPowerOfTwo(int s,float bias=0.5f);
         static int computeNumberOfMipmapLevels(int s,int t = 1, int r = 1);
 
@@ -340,12 +395,6 @@ class OSG_EXPORT Image : public BufferData
         {
            return _data+getMipmapOffset(mipmapLevel);
         }
-
-        /*inline const unsigned char* getMipmapData(unsigned int row, unsigned int column, unsigned int mipmapLevel) const
-        {
-           if (!_data) return NULL;
-           return getMipmapData(mipmapLevel) + (column*getPixelSizeInBits())/8+row*getRowSizeInBytes();
-        }*/
 
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         virtual bool isImageTranslucent() const;
@@ -399,6 +448,7 @@ class OSG_EXPORT Image : public BufferData
         Origin _origin;
 
         int _s, _t, _r;
+        int _rowLength;
         GLint _internalTextureFormat;
         GLenum _pixelFormat;
         GLenum _dataType;

@@ -101,8 +101,7 @@ ReaderWriterPOV::writeNode( const Node& node, const string& fileName,
    string ext = osgDB::getLowerCaseFileExtension( fileName );
    if( !acceptsExtension( ext ) )  return WriteResult::FILE_NOT_HANDLED;
 
-   notify( NOTICE ) << "ReaderWriterPOV::writeNode() Writing file "
-                    << fileName.data() << endl;
+   notify( NOTICE ) << "ReaderWriterPOV::writeNode() Writing file " << fileName << endl;
 
    osgDB::ofstream fout( fileName.c_str(), ios::out | ios::trunc );
    if( !fout )

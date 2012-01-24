@@ -620,6 +620,15 @@ class OSG_EXPORT BufferData : public Object
         virtual const GLvoid*   getDataPointer() const = 0;
         virtual unsigned int    getTotalDataSize() const = 0;
 
+        virtual osg::Array* asArray() { return 0; }
+        virtual const osg::Array* asArray() const { return 0; }
+
+        virtual osg::PrimitiveSet* asPrimitiveSet() { return 0; }
+        virtual const osg::PrimitiveSet* asPrimitiveSet() const { return 0; }
+
+        virtual osg::Image* asImage() { return 0; }
+        virtual const osg::Image* asImage() const { return 0; }
+
         void setBufferObject(BufferObject* bufferObject);
         BufferObject* getBufferObject() { return _bufferObject.get(); }
         const BufferObject* getBufferObject() const { return _bufferObject.get(); }

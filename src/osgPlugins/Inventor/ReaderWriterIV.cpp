@@ -142,7 +142,7 @@ ReaderWriterIV::readNodeFromSoInput(SoInput &input,
         if (fileName.length())
         {
             OSG_NOTICE << "osgDB::ReaderWriterIV::readNode() "
-                      << "File " << fileName.data()
+                      << "File " << fileName
                       << " loaded successfully." << std::endl;
         }
         else
@@ -154,7 +154,7 @@ ReaderWriterIV::readNodeFromSoInput(SoInput &input,
         if (fileName.length())
         {
             OSG_WARN << "osgDB::ReaderWriterIV::readNode() "
-                      << "Failed to load file " << fileName.data()
+                      << "Failed to load file " << fileName
                       << "." << std::endl;
         }
         else

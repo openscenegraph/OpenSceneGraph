@@ -353,6 +353,12 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+            if (!img.isDataContiguous())
+            {
+                OSG_WARN<<"Warning: Writing of image data, that is non contiguous, is not supported by JPEG2000 plugin."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
             jas_image_cmptparm_t cmptparms[4];
             jas_image_cmptparm_t *cmptparm;
 
@@ -429,6 +435,12 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
         WriteResult writeImage(const osg::Image& img, std::ostream& fout, const Options* options) const
         {
+            if (!img.isDataContiguous())
+            {
+                OSG_WARN<<"Warning: Writing of image data, that is non contiguous, is not supported by JPEG2000 plugin."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
             jas_image_cmptparm_t cmptparms[4];
             jas_image_cmptparm_t *cmptparm;
 

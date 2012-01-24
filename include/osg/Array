@@ -104,6 +104,10 @@ class OSG_EXPORT Array : public BufferData
         Type                    getType() const { return _arrayType; }
         GLint                   getDataSize() const { return _dataSize; }
         GLenum                  getDataType() const { return _dataType; }
+
+        virtual osg::Array* asArray() { return this; }
+        virtual const osg::Array* asArray() const { return this; }
+
         virtual const GLvoid*   getDataPointer() const = 0;
         virtual unsigned int    getTotalDataSize() const = 0;
         virtual unsigned int    getNumElements() const = 0;

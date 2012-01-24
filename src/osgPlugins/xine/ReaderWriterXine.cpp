@@ -192,29 +192,13 @@ class XineImageStream : public osg::ImageStream
 
             GLenum pixelFormat = GL_BGRA;
 
-        #if 0   
-            if (!imageStream->_ready)
-            {
-                imageStream->allocateImage(width,height,1,pixelFormat,GL_UNSIGNED_BYTE,1);
-                imageStream->setInternalTextureFormat(GL_RGBA);
-            }
-
-            osg::Timer_t start_tick = osg::Timer::instance()->tick();
-
-            memcpy(imageStream->data(),data,imageStream->getTotalSizeInBytes());
-
-            OSG_INFO<<"image memcpy size="<<imageStream->getTotalSizeInBytes()<<" time="<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
-
-
-            imageStream->dirty();
-        #else
-             imageStream->setImage(width,height,1,
+            imageStream->setImage(width,height,1,
                               GL_RGB,
                               pixelFormat,GL_UNSIGNED_BYTE,
                               (unsigned char *)data,
                               osg::Image::NO_DELETE,
                               1);
-        #endif
+
             imageStream->_ready = true;
         }
 

@@ -197,6 +197,10 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         virtual const char* className() const { return "PrimitiveSet"; }
         
         Type                    getType() const { return _primitiveType; }
+
+        virtual osg::PrimitiveSet* asPrimitiveSet() { return this; }
+        virtual const osg::PrimitiveSet* asPrimitiveSet() const { return this; }
+
         virtual const GLvoid*   getDataPointer() const { return 0; }
         virtual unsigned int    getTotalDataSize() const { return 0; }
         virtual bool            supportsBufferObject() const { return false; }

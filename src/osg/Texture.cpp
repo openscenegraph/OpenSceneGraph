@@ -1842,6 +1842,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    unsigned int rowLength = image->getRowLength();
 
     bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
     if (useClientStorage)
@@ -1891,6 +1892,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
         PixelStorageModes psm;
         psm.pack_alignment = image->getPacking();
+        psm.pack_row_length = image->getRowLength();
         psm.unpack_alignment = image->getPacking();
 
         // rescale the image to the correct size.
@@ -1899,6 +1901,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                         inwidth,inheight,image->getDataType(),
                         dataPtr);
 
+        rowLength = 0;
     }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
@@ -1910,6 +1913,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        rowLength = 0;
 #ifdef DO_TIMING
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -1918,6 +1922,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         pbo = 0;
     }
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
@@ -2108,6 +2114,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    unsigned int rowLength = image->getRowLength();
     
     unsigned char* dataPtr = (unsigned char*)image->data();
 
@@ -2147,6 +2154,8 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),
                       dataPtr);
+
+        rowLength = 0;
     }
 
 
@@ -2159,6 +2168,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        rowLength = 0;
 #ifdef DO_TIMING
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -2167,6 +2177,8 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo = 0;
     }
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {

@@ -1199,6 +1199,11 @@ public:
 
     WriteResult writeImageStream(const osg::Image& osg_image, std::ostream& fout, const osgDB::ReaderWriter::Options* the_options) const
     {
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
 
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromDataStream(fout, the_options);
@@ -1235,6 +1240,12 @@ public:
 
     WriteResult writeImageFile(const osg::Image& osg_image, const std::string& full_file_name, const osgDB::ReaderWriter::Options* the_options) const
     {
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
+        WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
         // Call ImageIO to load the image.
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromFile(full_file_name.c_str(), the_options);
@@ -1268,6 +1279,12 @@ public:
         std::string ext = osgDB::getFileExtension(file_name);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
+        WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
 #if 1
         // FIXME: Something may need to provide a proper writable location for the files.
         std::string full_file_name;

@@ -527,7 +527,7 @@ static bool bmp_save(const osg::Image& img, std::ostream& fout)
     std::vector<unsigned char> rowBuffer(bytesPerRowAlign);
     for (int y = 0; y < img.t(); ++y)
     {
-        const unsigned char* imgp = img.data() + img.s() * y * channelsPerPixel;
+        const unsigned char* imgp = img.data(0, y);
         for (int x = 0; x < img.s(); ++x)
         {
             // RGB -> BGR

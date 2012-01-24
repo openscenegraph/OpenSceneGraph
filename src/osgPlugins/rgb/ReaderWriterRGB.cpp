@@ -660,11 +660,33 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
         virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options*) const
         {
+            if (img.isCompressed())
+            {
+                OSG_NOTICE<<"Warning: RGB plugin does not supporting writing compressed imagery."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+            if (!img.isDataContiguous())
+            {
+                OSG_NOTICE<<"Warning: RGB plugin does not supporting writing non contiguous imagery."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+            
             return writeRGBStream(img,fout,"");
         }
 
         virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
         {
+            if (img.isCompressed())
+            {
+                OSG_NOTICE<<"Warning: RGB plugin does not supporting writing compressed imagery."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+            if (!img.isDataContiguous())
+            {
+                OSG_NOTICE<<"Warning: RGB plugin does not supporting writing non contiguous imagery."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 

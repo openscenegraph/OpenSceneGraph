@@ -276,9 +276,9 @@ protected:
          //If texture is half format
          if (dataType == GL_HALF_FLOAT_ARB)
          {    
-             half* pOut = (half*) img.data();
              for (long i = height-1; i >= 0; i--)
              {
+                half* pOut = (half*) img.data(0,i);
                  for (long j = 0 ; j < width; j++)
                  {
                      outPixels[i][j].r = (*pOut);

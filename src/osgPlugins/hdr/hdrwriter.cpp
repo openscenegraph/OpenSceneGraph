@@ -36,19 +36,15 @@
 #include <ctype.h>
 
 
-bool HDRWriter::writeRLE(const osg::Image *img, std::ostream& fout)
-{
-    return writePixelsRLE(fout,(float*) img->data(), img->s(), img->t());
-}
-
 bool HDRWriter::writeRAW(const osg::Image *img, std::ostream& fout)
 {
-    return writePixelsRAW(fout,(unsigned char*) img->data(), img->s() * img->t());
+    bool result = true;
+    for(int row=0; result && row<img->t(); ++row)
+    {
+        result = writePixelsRAW(fout,(unsigned char*) img->data(0, row), img->s());
+    }
+    return result;
 }
-
-
-
-
 
 /* number of floats per pixel */
 #define RGBE_DATA_SIZE   3
@@ -86,21 +82,26 @@ bool HDRWriter::writeHeader(const osg::Image *img, std::ostream& fout)
 /* simple write routine that does not use run length encoding */
 /* These routines can be made faster by allocating a larger buffer and
    fread-ing and fwrite-ing the data in larger chunks */
-bool HDRWriter::writePixelsNoRLE( std::ostream& fout, float* data, int numpixels)
+bool HDRWriter::writeNoRLE( std::ostream& fout, const osg::Image* img)
 {
   unsigned char rgbe[4];
 
-  while (numpixels-- > 0)
+  for(int row=0; row<img->t(); ++row)
   {
-    float2rgbe(
+    float* data = (float*)img->data(0,row);
+    for(int column=0; column<img->s(); ++column)
+    {
+      float2rgbe(
         rgbe,
         data[R],
         data[G],
         data[B]
         );
-    data += RGBE_DATA_SIZE;
-    fout.write(reinterpret_cast<const char*>(rgbe), sizeof(rgbe)); //img->getTotalSizeInBytesIncludingMipmaps()
+      data += RGBE_DATA_SIZE;
+      fout.write(reinterpret_cast<const char*>(rgbe), sizeof(rgbe));
+    }
   }
+
   return true;
 }
 
@@ -183,23 +184,27 @@ bool HDRWriter::writeBytesRLE(std::ostream& fout, unsigned char *data, int numby
 #undef MINRUNLENGTH
 }
 
-bool HDRWriter::writePixelsRLE( std::ostream& fout, float* data, int scanline_width, int num_scanlines )
-
+bool HDRWriter::writeRLE( const osg::Image* img, std::ostream& fout)
 {
+    int scanline_width = img->s();
+    int num_scanlines = img->t();
+
     unsigned char rgbe[4];
     unsigned char *buffer;
 
     if ((scanline_width < MINELEN)||(scanline_width > MAXELEN))
         // run length encoding is not allowed so write flat
-        return writePixelsNoRLE(fout,data,scanline_width*num_scanlines);
+        return writeNoRLE(fout,img);
 
     buffer = (unsigned char *)malloc(sizeof(unsigned char)*4*scanline_width);
     if (buffer == NULL) 
         // no buffer space so write flat
-        return writePixelsNoRLE(fout,data,scanline_width*num_scanlines);
+        return writeNoRLE(fout,img);
 
-    while(num_scanlines-- > 0)
+    for(int row = 0; row<num_scanlines; ++row)
     {
+        float* data = (float*) img->data(0, row);
+        
         rgbe[0] = 2;
         rgbe[1] = 2;
         rgbe[2] = scanline_width >> 8;

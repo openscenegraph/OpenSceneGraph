@@ -369,15 +369,33 @@ void OutputStream::writeImage( const osg::Image* img )
 
                 // _data
                 unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
-                writeSize(size); writeCharArray( (char*)img->data(), size );
+                writeSize(size);
+
+                for(osg::Image::DataIterator img_itr(img); img_itr.valid(); ++img_itr)
+                {
+                    writeCharArray( (char*)img_itr.data(), img_itr.size() );
+                }
 
                 // _mipmapData
-                const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
-                writeSize(levels.size());
-                for ( osg::Image::MipmapDataType::const_iterator itr=levels.begin();
-                    itr!=levels.end(); ++itr )
+                unsigned int numMipmaps = img->getNumMipmapLevels()-1;
+                writeSize(numMipmaps);
+                int s = img->s();
+                int t = img->t();
+                int r = img->r();
+                unsigned int offset = 0;
+                for (unsigned int i=0; i<numMipmaps; ++i)
                 {
-                    *this << *itr;
+                    unsigned int size = osg::Image::computeImageSizeInBytes(s,t,r,img->getPixelFormat(),img->getDataType(),img->getPacking());
+                    offset += size;
+                    
+                    *this << offset;
+
+                    s >>= 1;
+                    t >>= 1;
+                    r >>= 1;
+                    if (s<1) s=1;
+                    if (t<1) t=1;
+                    if (r<1) r=1;                    
                 }
             }
             break;

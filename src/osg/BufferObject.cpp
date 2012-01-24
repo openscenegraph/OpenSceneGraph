@@ -204,7 +204,21 @@ void GLBufferObject::compileBuffer()
             // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) downloading BufferEntry "<<&entry<<std::endl;
             entry.modifiedCount = entry.dataSource->getModifiedCount();
 
-            _extensions->glBufferSubData(_profile._target, (GLintptrARB)entry.offset, (GLsizeiptrARB)entry.dataSize, entry.dataSource->getDataPointer());
+            const osg::Image* image = entry.dataSource->asImage();
+            if (image && !(image->isDataContiguous()))
+            {                
+                unsigned int offset = entry.offset;
+                for(osg::Image::DataIterator img_itr(image); img_itr.valid(); ++img_itr)
+                {
+                    //OSG_NOTICE<<"Copying to buffer object using DataIterator, offset="<<offset<<", size="<<img_itr.size()<<", data="<<(void*)img_itr.data()<<std::endl;
+                    _extensions->glBufferSubData(_profile._target, (GLintptrARB)offset, (GLsizeiptrARB)img_itr.size(), img_itr.data());
+                    offset += img_itr.size();
+                }
+            }
+            else
+            {            
+                _extensions->glBufferSubData(_profile._target, (GLintptrARB)entry.offset, (GLsizeiptrARB)entry.dataSize, entry.dataSource->getDataPointer());
+            }
 
         }
     }

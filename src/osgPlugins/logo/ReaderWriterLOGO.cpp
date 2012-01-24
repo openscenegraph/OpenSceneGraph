@@ -152,6 +152,8 @@ class Logos: public osg::Drawable
                     for( p = _logos[i].begin(); p != _logos[i].end(); p++ )
                     {
                         osg::Image *img = (*p).get();
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, img->getPacking());
+                        glPixelStorei(GL_UNPACK_ROW_LENGTH, img->getRowLength());
                         x = place[i][0] + xi * img->s();
                         if( i == Center || i == UpperLeft || i == UpperRight || i == UpperCenter)
                             y += yi * img->t();

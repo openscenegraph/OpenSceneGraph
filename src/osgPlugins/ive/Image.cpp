@@ -72,7 +72,10 @@ void Image::write(DataOutputStream* out)
         unsigned int size = getTotalSizeInBytesIncludingMipmaps();
         out->writeInt(size);
         // Write the data
-        out->writeCharArray((char*)data(), size);
+        for(osg::Image::DataIterator itr(this); itr.valid(); ++itr)
+        {
+            out->writeCharArray((char*)itr.data(), itr.size());
+        }
     }
 
 }

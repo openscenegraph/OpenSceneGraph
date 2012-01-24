@@ -48,12 +48,164 @@ void Image::UpdateCallback::operator () (osg::StateAttribute* attr, osg::NodeVis
     }
 }
 
+Image::DataIterator::DataIterator(const Image* image):
+    _image(image),
+    _rowNum(0),
+    _imageNum(0),
+    _mipmapNum(0),
+    _currentPtr(0),
+    _currentSize(0)
+{
+    assign();
+}
+
+Image::DataIterator::DataIterator(const DataIterator& ri):
+    _image(ri._image),
+    _rowNum(ri._rowNum),
+    _imageNum(ri._imageNum),
+    _mipmapNum(ri._mipmapNum),
+    _currentPtr(0),
+    _currentSize(0)
+{
+    assign();
+}
+
+void Image::DataIterator::operator ++ ()
+{
+    if (!_image || _image->isDataContiguous())
+    {
+        // for contiguous image data we never need more than one block of data
+        _currentPtr = 0;
+        _currentSize = 0;
+        return;
+    }
+
+    if (_image->isMipmap())
+    {
+        // advance to next row
+        ++_rowNum;
+
+        if (_rowNum>=_image->t())
+        {
+            // moved over end of current image so move to next
+            _rowNum = 0;
+            ++_imageNum;
+
+            if (_imageNum>=_image->r())
+            {
+                // move to next mipmap
+                _imageNum = 0;
+                ++_mipmapNum;
+
+                if (_mipmapNum>=_image->getNumMipmapLevels())
+                {
+                    _currentPtr = 0;
+                    _currentSize = 0;
+                    return;
+                }
+            }
+        }
+    }
+    else
+    {
+        // advance to next row
+        ++_rowNum;
+        
+        if (_rowNum>=_image->t())
+        {
+            // moved over end of current image so move to next
+            _rowNum = 0;
+            ++_imageNum;
+
+            if (_imageNum>=_image->r())
+            {
+                // we've moved off the end of the osg::Image so reset to null
+                _currentPtr = 0;
+                _currentSize = 0;
+                return;
+            }
+        }
+    }
+   
+    assign();
+}
+
+void Image::DataIterator::assign()
+{
+    //OSG_NOTICE<<"DataIterator::assign A"<<std::endl;
+    if (!_image)
+    {
+        _currentPtr = 0;
+        _currentSize = 0;
+        return;
+    }
+    
+    //OSG_NOTICE<<"DataIterator::assign B"<<std::endl;
+
+    if (_image->isDataContiguous())
+    {
+        _currentPtr = _image->data();
+        _currentSize = _image->getTotalSizeInBytesIncludingMipmaps();
+
+        //OSG_NOTICE<<"   _currentPtr="<<(void*)_currentPtr<<std::endl;
+        //OSG_NOTICE<<"   _currentSize="<<_currentSize<<std::endl;
+
+        return;
+    }
+    
+    //OSG_NOTICE<<"DataIterator::assign C"<<std::endl;
+
+    if (_image->isMipmap())
+    {
+        //OSG_NOTICE<<"DataIterator::assign D"<<std::endl;
+
+        if (_mipmapNum>=_image->getNumMipmapLevels())
+        {
+            _currentPtr = 0;
+            _currentSize = 0;
+            return;
+        }
+        const unsigned char* ptr = _image->getMipmapData(_mipmapNum);
+        
+        int rowLength = _image->getRowLength()>>_mipmapNum;
+        if (rowLength==0) rowLength = 1;
+        
+        int imageHeight = _image->t()>>_mipmapNum;
+        if (imageHeight==0) imageHeight = 1;
+        
+        unsigned int rowWidthInBytes = Image::computeRowWidthInBytes(rowLength,_image->getPixelFormat(),_image->getDataType(),_image->getPacking());
+        unsigned int imageSizeInBytes = rowWidthInBytes*imageHeight;
+        
+        _currentPtr = ptr + rowWidthInBytes*_rowNum + imageSizeInBytes*_imageNum;
+        _currentSize = rowWidthInBytes;
+    }
+    else
+    {
+        //OSG_NOTICE<<"DataIterator::assign E"<<std::endl;
+
+        if (_imageNum>=_image->r() || _rowNum>=_image->t())
+        {
+            _currentPtr = 0;
+            _currentSize = 0;
+            return;
+        }
+
+        //OSG_NOTICE<<"DataIterator::assign F"<<std::endl;
+
+        _currentPtr = _image->data(0, _rowNum, _imageNum);
+        _currentSize = _image->getRowSizeInBytes();
+        return;
+    }
+}
+
+
 Image::Image()
     :BufferData(),
     _fileName(""),
     _writeHint(NO_PREFERENCE),
     _origin(BOTTOM_LEFT),
     _s(0), _t(0), _r(0),
+    _rowLength(0),
     _internalTextureFormat(0),
     _pixelFormat(0),
     _dataType(0),
@@ -71,6 +223,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _writeHint(image._writeHint),
     _origin(image._origin),
     _s(image._s), _t(image._t), _r(image._r),
+    _rowLength(0),
     _internalTextureFormat(image._internalTextureFormat),
     _pixelFormat(image._pixelFormat),
     _dataType(image._dataType),
@@ -84,7 +237,12 @@ Image::Image(const Image& image,const CopyOp& copyop):
     {
         int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
-        memcpy(_data,image._data,size);
+        unsigned char* dest_ptr = _data;
+        for(DataIterator itr(&image); itr.valid(); ++itr)
+        {
+            memcpy(dest_ptr, itr.data(), itr.size());
+            dest_ptr += itr.size();
+        }
     }
 }
 
@@ -510,6 +668,34 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
+unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
+{
+    switch(pixelFormat)
+    {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+            return osg::maximum(8u,packing); // block size of 8
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_ETC1_RGB8_OES):
+            return osg::maximum(16u,packing); // block size of 16
+        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
+        case(GL_COMPRESSED_RED_RGTC1_EXT):
+            return osg::maximum(8u,packing); // block size of 8
+            break;
+        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
+        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+            return osg::maximum(16u,packing); // block size of 16
+        default:
+            break;
+    }
+    return packing;
+}
+
 unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing)
 {
     unsigned int pixelSize = computePixelSizeInBits(pixelFormat,type);
@@ -517,6 +703,16 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum t
     int packingInBits = packing!=0 ? packing*8 : 8;
     //OSG_INFO << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
+}
+
+unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing)
+{
+    if (width==0 || height==0 || depth==0) return 0;
+    
+    return osg::maximum(
+            Image::computeRowWidthInBytes(width,pixelFormat,type,packing)*height*depth,
+            computeBlockSize(pixelFormat, packing)
+        );
 }
 
 int Image::computeNearestPowerOfTwo(int s,float bias)
@@ -581,51 +777,21 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
     int s = _s;
     int t = _t;
     int r = _r;
-    
-    unsigned int maxValue = 0;
-    for(unsigned int i=0;i<_mipmapData.size() && _mipmapData[i];++i)
+    unsigned int totalSize = 0;
+    for(unsigned int i=0;i<_mipmapData.size()+1;++i)
     {
+        totalSize += computeImageSizeInBytes(s, t, r, _pixelFormat, _dataType, _packing);
+        
         s >>= 1;
         t >>= 1;
         r >>= 1;
-        maxValue = maximum(maxValue,_mipmapData[i]);
-   }
-   
-   if (s==0) s=1;
-   if (t==0) t=1;
-   if (r==0) r=1;
-   
-   unsigned int sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t;
-   switch(_pixelFormat)
-   {
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
-           sizeOfLastMipMap = maximum(sizeOfLastMipMap, 8u); // block size of 8
-           break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
-        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
-        case(GL_ETC1_RGB8_OES):
-           sizeOfLastMipMap = maximum(sizeOfLastMipMap, 16u); // block size of 16
-           break;
-        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
-        case(GL_COMPRESSED_RED_RGTC1_EXT):
-            sizeOfLastMipMap = maximum(sizeOfLastMipMap, 8u); // block size of 8
-            break;
-        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
-        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
-            sizeOfLastMipMap = maximum(sizeOfLastMipMap, 16u); // block size of 8
-            break;
-        default: break;
+
+        if (s<1) s=1;
+        if (t<1) t=1;
+        if (r<1) r=1;
    }
 
-   // OSG_INFO<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
-
-   return maxValue+sizeOfLastMipMap;
-
+   return totalSize;
 }
 
 
@@ -685,6 +851,7 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = format;
         _dataType = type;
         _packing = packing;
+        _rowLength = 0;
         
         // preserve internalTextureFormat if already set, otherwise
         // use the pixelFormat as the source for the format.
@@ -700,6 +867,7 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = 0;
         _dataType = 0;
         _packing = 0;
+        _rowLength = 0;
         
         // commenting out reset of _internalTextureFormat as we are changing
         // policy so that allocateImage honours previous settings of _internalTextureFormat.
@@ -714,7 +882,8 @@ void Image::setImage(int s,int t,int r,
                      GLenum format,GLenum type,
                      unsigned char *data,
                      AllocationMode mode,
-                     int packing)
+                     int packing,
+                     int rowLength)
 {
     _mipmapData.clear();
 
@@ -729,6 +898,7 @@ void Image::setImage(int s,int t,int r,
     setData(data,mode);
 
     _packing = packing;
+    _rowLength = rowLength;
         
     dirty();
 
@@ -740,6 +910,7 @@ void Image::readPixels(int x,int y,int width,int height,
     allocateImage(width,height,1,format,type);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
+    glPixelStorei(GL_PACK_ROW_LENGTH,_rowLength);
 
     glReadPixels(x,y,width,height,format,type,_data);
 }
@@ -775,6 +946,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     GLint height;
     GLint depth;
     GLint packing;
+    GLint rowLength;
 
     GLint numMipMaps = 0;
     if (copyMipMapsIfAvailable)
@@ -856,6 +1028,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_DEPTH, &depth);
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &packing);
         glPixelStorei(GL_PACK_ALIGNMENT, packing);
+        glGetIntegerv(GL_UNPACK_ROW_LENGTH, &rowLength);
+        glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
 
         _data = data;
         _s = width;
@@ -868,7 +1042,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _mipmapData = mipMapData;
         _allocationMode=USE_NEW_DELETE;
         _packing = packing;
-        
+        _rowLength = rowLength;
+
         for(i=0;i<numMipMaps;++i)
         {
             extensions->glGetCompressedTexImage(textureMode, i, getMipmapData(i));
@@ -886,6 +1061,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &packing);
         glPixelStorei(GL_PACK_ALIGNMENT, packing);
+        glGetIntegerv(GL_UNPACK_ROW_LENGTH, &rowLength);
+        glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
 
         unsigned int total_size = 0;
         GLint i;
@@ -927,6 +1104,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _mipmapData = mipMapData;
         _allocationMode=USE_NEW_DELETE;
         _packing = packing;
+        _rowLength = rowLength;
         
         for(i=0;i<numMipMaps;++i)
         {
@@ -969,6 +1147,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 
     PixelStorageModes psm;
     psm.pack_alignment = _packing;
+    psm.pack_row_length = _rowLength;
     psm.unpack_alignment = _packing;
 
     GLint status = gluScaleImage(&psm, _pixelFormat,
@@ -987,6 +1166,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         // free old image.
         _s = s;
         _t = t;
+        _rowLength = 0;
         _dataType = newDataType;
         setData(newData,USE_NEW_DELETE);
     }
@@ -1034,8 +1214,9 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
 
     PixelStorageModes psm;
     psm.pack_alignment = _packing;
-    psm.pack_row_length = _s;
-    psm.unpack_alignment = _packing;
+    psm.pack_row_length = _rowLength!=0 ? _rowLength : _s;
+    psm.unpack_alignment = source->getPacking();
+    psm.unpack_row_length = source->getRowLength();
 
     GLint status = gluScaleImage(&psm, _pixelFormat,
         source->s(),
@@ -1046,8 +1227,6 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
         source->t(),
         _dataType,
         data_destination);
-
-    glPixelStorei(GL_PACK_ROW_LENGTH,0);
 
     if (status!=0)
     {
@@ -1067,12 +1246,14 @@ void Image::flipHorizontal()
 
     if (_mipmapData.empty())
     {
-
+        unsigned int rowStepInBytes = getRowStepInBytes();
+        unsigned int imageStepInBytes = getImageStepInBytes();
+        
         for(int r=0;r<_r;++r)
         {
             for (int t=0; t<_t; ++t)
             {
-                unsigned char* rowData = _data+t*getRowSizeInBytes()+r*getImageSizeInBytes();
+                unsigned char* rowData = _data + t*rowStepInBytes + r*imageStepInBytes;
                 unsigned char* left  = rowData ;
                 unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
 
@@ -1097,17 +1278,20 @@ void Image::flipHorizontal()
     dirty();
 }
 
-void flipImageVertical(unsigned char* top, unsigned char* bottom, unsigned int rowSize)
+void flipImageVertical(unsigned char* top, unsigned char* bottom, unsigned int rowSize, unsigned int rowStep)
 {
     while(top<bottom)
     {
-        for(unsigned int i=0;i<rowSize;++i, ++top,++bottom)
+        unsigned char* t = top;
+        unsigned char* b = bottom;
+        for(unsigned int i=0;i<rowSize;++i, ++t,++b)
         {
-            unsigned char temp=*top;
-            *top = *bottom;
-            *bottom = temp;
+            unsigned char temp=*t;
+            *t = *b;
+            *b = temp;
         }
-        bottom -= 2*rowSize;
+        top += rowStep;
+        bottom -= rowStep;
     }
 }
 
@@ -1126,6 +1310,9 @@ void Image::flipVertical()
         return;
     }
 
+    unsigned int rowSize = getRowSizeInBytes();
+    unsigned int rowStep = getRowStepInBytes();
+
     if (_mipmapData.empty())
     {
         // no mipmaps,
@@ -1135,12 +1322,10 @@ void Image::flipVertical()
             if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
             {
                 // its not a compressed image, so implement flip oursleves.
-                
-                unsigned int rowSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing);
                 unsigned char* top = data(0,0,r);
-                unsigned char* bottom = top + (_t-1)*rowSize;
+                unsigned char* bottom = top + (_t-1)*rowStep;
                     
-                flipImageVertical(top, bottom, rowSize);
+                flipImageVertical(top, bottom, rowSize, rowStep);
             }
         }
     }
@@ -1149,11 +1334,10 @@ void Image::flipVertical()
         if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
         {
             // its not a compressed image, so implement flip oursleves.
-            unsigned int rowSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing);
             unsigned char* top = data(0,0,0);
-            unsigned char* bottom = top + (_t-1)*rowSize;
+            unsigned char* bottom = top + (_t-1)*rowStep;
 
-            flipImageVertical(top, bottom, rowSize);
+            flipImageVertical(top, bottom, rowSize, rowStep);
         }
 
         int s = _s;
@@ -1169,11 +1353,10 @@ void Image::flipVertical()
             if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
             {
                 // its not a compressed image, so implement flip oursleves.
-                unsigned int rowSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing);
                 unsigned char* top = _data+_mipmapData[i];
-                unsigned char* bottom = top + (t-1)*rowSize;
+                unsigned char* bottom = top + (t-1)*rowStep;
 
-                flipImageVertical(top, bottom, rowSize);
+                flipImageVertical(top, bottom, rowSize, rowStep);
             }
        }
     }   
@@ -1200,17 +1383,20 @@ void Image::flipDepth()
         return;
     }
 
-    unsigned int sizeOfSlice = getImageSizeInBytes();
+    unsigned int sizeOfRow = getRowSizeInBytes();
 
-    int r_top = 0;
-    int r_bottom = _r-1;
-    for(; r_top<r_bottom; ++r_top,--r_bottom)
+    int r_front = 0;
+    int r_back = _r-1;
+    for(; r_front<r_back; ++r_front,--r_back)
     {
-        unsigned char* top_slice = data(0,0,r_top);
-        unsigned char* bottom_slice = data(0,0,r_bottom);
-        for(unsigned int i=0; i<sizeOfSlice; ++i, ++top_slice, ++bottom_slice)
-        {
-            std::swap(*top_slice, *bottom_slice);
+        for(int row=0; row<_t; ++row)
+        {        
+            unsigned char* front = data(0, row, r_front);
+            unsigned char* back = data(0, row, r_back);
+            for(unsigned int i=0; i<sizeOfRow; ++i, ++front, ++back)
+            {
+                std::swap(*front, *back);
+            }
         }
     }
 }
@@ -1425,7 +1611,8 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             dstate->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
             dstate->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
-            // set up the geoset.
+            // set up the geoset.                unsigned int rowSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing);
+
             Geometry* geom = new Geometry;
             geom->setStateSet(dstate);
 

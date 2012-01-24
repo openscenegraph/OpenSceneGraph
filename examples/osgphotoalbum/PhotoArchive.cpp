@@ -222,6 +222,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             osg::PixelStorageModes psm;
             psm.pack_alignment = image->getPacking();
+            psm.pack_row_length = image->getRowLength();
             psm.unpack_alignment = image->getPacking();
 
             GLint status = osg::gluScaleImage(&psm, image->getPixelFormat(),
@@ -289,6 +290,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             osg::PixelStorageModes psm;
             psm.pack_alignment = image->getPacking();
+            psm.pack_row_length = image->getRowLength();
             psm.unpack_alignment = image->getPacking();
 
             GLint status = osg::gluScaleImage(&psm, image->getPixelFormat(),

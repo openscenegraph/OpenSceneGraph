@@ -46,10 +46,10 @@ protected:
     };
 
     // Convert RGBA to BGRA : nvtt only accepts BGRA pixel format
-    void convertRGBAToBGRA( std::vector<unsigned char>& outputData, const unsigned char* inputData );
+    void convertRGBAToBGRA( std::vector<unsigned char>& outputData, const osg::Image& image );
 
     // Convert RGB to BGRA : nvtt only accepts BGRA pixel format
-    void convertRGBToBGRA( std::vector<unsigned char>& outputData, const unsigned char* inputData );
+    void convertRGBToBGRA( std::vector<unsigned char>& outputData, const osg::Image& image );
 
 };
 
@@ -175,27 +175,38 @@ bool NVTTProcessor::OSGImageOutputHandler::writeData(const void * data, int size
 }
 
 // Convert RGBA to BGRA : nvtt only accepts BGRA pixel format
-void NVTTProcessor::convertRGBAToBGRA( std::vector<unsigned char>& outputData, const unsigned char* inputData )
+void NVTTProcessor::convertRGBAToBGRA( std::vector<unsigned char>& outputData, const osg::Image& image )
 {
-    for (unsigned n=0; n<outputData.size(); n += 4)
+    unsigned int n=0;
+    for(int row=0; row<image.t(); ++row)
     {
-        outputData[n] = inputData[n+2];
-        outputData[n+1] = inputData[n+1];
-        outputData[n+2] = inputData[n];
-        outputData[n+3] = inputData[n+3];
+        const unsigned char* data = image.data(0,row);
+        for(int column=0; column<image.s(); ++column)
+        {
+            outputData[n] = data[column*4+2];
+            outputData[n+1] = data[column*4+1];
+            outputData[n+2] = data[column*4+n];
+            outputData[n+3] = data[column*4+3];
+            n+=4;
+        }
     }
 }
 
 // Convert RGB to BGRA : nvtt only accepts BGRA pixel format
-void NVTTProcessor::convertRGBToBGRA( std::vector<unsigned char>& outputData, const unsigned char* inputData )
+void NVTTProcessor::convertRGBToBGRA( std::vector<unsigned char>& outputData, const osg::Image& image )
 {
-    unsigned int numberOfPixels = outputData.size()/4;
-    for (unsigned n=0; n<numberOfPixels; n++)
+    unsigned int n=0;
+    for(int row=0; row<image.t(); ++row)
     {
-        outputData[4*n] = inputData[3*n+2];
-        outputData[4*n+1] = inputData[3*n+1];
-        outputData[4*n+2] = inputData[3*n];
-        outputData[4*n+3] = 255;
+        const unsigned char* data = image.data(0,row);
+        for(int column=0; column<image.s(); ++column)
+        {
+            outputData[n] = data[column*3+2];
+            outputData[n+1] = data[column*3+1];
+            outputData[n+2] = data[column*3+n];
+            outputData[n+3] = 255;
+            n+=4;
+        }
     }
 }
 
@@ -227,11 +238,11 @@ void NVTTProcessor::process( osg::Image& image, nvtt::Format format, bool genera
     std::vector<unsigned char> imageData( image.s() * image.t() * 4 );
     if (image.getPixelFormat() == GL_RGB)
     {
-        convertRGBToBGRA( imageData, image.data() );
+        convertRGBToBGRA( imageData, image );
     }
     else
     {
-        convertRGBAToBGRA( imageData, image.data() );
+        convertRGBAToBGRA( imageData, image );
     }
     inputOptions.setMipmapData(&imageData[0],image.s(),image.t());
 

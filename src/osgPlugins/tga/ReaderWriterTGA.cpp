@@ -545,6 +545,8 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         
         bool saveTGAStream(const osg::Image& image, std::ostream& fout) const
         {
+            if (!image.data()) return false;
+
             // At present, I will only save the image to unmapped RGB format
             // Other data types can be added soon with different options
             // The format description can be found at:
@@ -553,8 +555,6 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             int width = image.s(), height = image.t();
             int numPerPixel = image.computeNumComponents(pixelFormat);
             int pixelMultiplier = (image.getDataType()==GL_FLOAT ? 255 : 1);
-            const unsigned char* data = image.data();
-            if ( !data ) return false;
             
             // Headers
             fout.put(0);  // Identification field size
@@ -581,7 +581,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             // Data
             for (int y=0; y<height; ++y)
             {
-                const unsigned char* ptr = data + y * width * numPerPixel;
+                const unsigned char* ptr = image.data(0,y);
                 for (int x=0; x<width; ++x)
                 {
                     int off = x * numPerPixel;

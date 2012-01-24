@@ -878,8 +878,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         return false;
     }
 
-    int size = img->getTotalSizeInBytes();
-
     // set even more flags
     if( !img->isMipmap() ) {
 
@@ -896,8 +894,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         
         ddsd.dwMipMapCount = img->getNumMipmapLevels();
 
-        size = img->getTotalSizeInBytesIncludingMipmaps();
-
         OSG_INFO<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
     }
 
@@ -913,7 +909,11 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     // Write DDS file
     fout.write("DDS ", 4); /* write FOURCC */
     fout.write(reinterpret_cast<char*>(&ddsd), sizeof(ddsd)); /* write file header */
-    fout.write(reinterpret_cast<const char*>(img->data()), size );
+
+    for(osg::Image::DataIterator itr(img); itr.valid(); ++itr)
+    {
+        fout.write(reinterpret_cast<const char*>(itr.data()), itr.size() );
+    }
 
     // Check for correct saving
     if ( fout.fail() )

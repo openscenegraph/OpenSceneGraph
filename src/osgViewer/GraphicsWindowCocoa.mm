@@ -748,7 +748,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 // the window-delegate, handles moving/resizing of the window etc.
 // ----------------------------------------------------------------------------------------------------------
 
-@interface GraphicsWindowCocoaDelegate : NSObject
+@interface GraphicsWindowCocoaDelegate : NSObject <NSWindowDelegate>
 {
     @private
         osgViewer::GraphicsWindowCocoa* _win;
@@ -1302,21 +1302,29 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
 // requestWarpPointer
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::requestWarpPointer(float x,float y)
-{
-
-    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
-    if (wsi == NULL) {
-        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
-        return;
-    }
-
-    CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
-
+{    
     CGPoint point;
     point.x = x + _traits->x;
     point.y = y + _traits->y;
+    
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+    CGEventRef warpEvent = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, point, kCGMouseButtonLeft);
+    CGEventPost(kCGHIDEventTap, warpEvent);
+    CFRelease(warpEvent);
+    
+#else
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    
+    if (wsi == NULL) {
+        osg::notify(osg::WARN) << "GraphicsWindowCocoa::useCursor :: could not get OSXCocoaWindowingSystemInterface" << std::endl;
+        return;
+    }
+    
+    CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
+    CGSetLocalEventsSuppressionInterval(0);
     CGDisplayMoveCursorToPoint(displayId, point);
-
+#endif
+    
     getEventQueue()->mouseWarped(x,y);
 }
 

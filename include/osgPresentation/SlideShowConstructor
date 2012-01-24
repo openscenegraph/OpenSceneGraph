@@ -387,6 +387,8 @@ public:
     void layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
     void layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
 
+    void addToCurrentLayer(osg::Node* subgraph);
+    
     void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
     
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
@@ -511,6 +513,10 @@ protected:
     
     osg::ref_ptr<FilePathData>      _filePathData;
     
+    osg::ref_ptr<osg::Group>                _layerToApplyEventCallbackTo;
+    osg::ref_ptr<osgGA::GUIEventHandler>    _currentEventCallbackToApply;
+
+
     std::string findFileAndRecordPath(const std::string& filename);
     
     void recordOptionsFilePath(const osgDB::Options* options);

@@ -190,6 +190,9 @@ SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _autoSteppingActive = false;
 
     _slideBackgroundAsHUD = false;
+
+    _layerToApplyEventCallbackTo = 0;
+    _currentEventCallbackToApply = 0;
 }
 
 void SlideShowConstructor::setPresentationAspectRatio(float aspectRatio)
@@ -436,11 +439,11 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             {
                 HUDTransform* hudTransform = new HUDTransform(_hudSettings.get());
                 hudTransform->addChild(background);
-                _currentLayer->addChild(hudTransform);
+                addToCurrentLayer(hudTransform);
             }
             else
             {
-                _currentLayer->addChild(background);
+                addToCurrentLayer(background);
             }
         }
         
@@ -466,7 +469,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
 
             geode->addDrawable(text);
 
-            _currentLayer->addChild(decorateSubgraphForPosition(geode, _titlePositionData));
+            addToCurrentLayer(decorateSubgraphForPosition(geode, _titlePositionData));
         }
         
     }
@@ -475,7 +478,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
         // copy previous layer's children across into new layer.
         for(unsigned int i=0;i<_previousLayer->getNumChildren();++i)
         {
-            _currentLayer->addChild(_previousLayer->getChild(i));
+            addToCurrentLayer(_previousLayer->getChild(i));
         }
     }
 
@@ -517,90 +520,53 @@ void SlideShowConstructor::setLayerDuration(double duration)
     }
 }
 
-void SlideShowConstructor::layerClickToDoOperation(Operation operation, bool relativeJump, int slideNum, int layerNum)
+void SlideShowConstructor::addToCurrentLayer(osg::Node* subgraph)
 {
-    if (!_currentLayer) addLayer();
+    if (!subgraph) return;
     
-    if (_currentLayer.valid())
+    if (!_currentLayer) addLayer();
+
+    if (_currentEventCallbackToApply.valid())
     {
-        if (_previousLayer==_currentLayer)
+        if (subgraph->getEventCallback()==0)
         {
-            if (_currentLayer->getNumChildren()>0)
+            if (_layerToApplyEventCallbackTo==0 || _currentLayer==_layerToApplyEventCallbackTo)
             {
-                OSG_INFO<<"creating new group within layer"<<std::endl;
-                osg::Group* group = new osg::Group;
-                _currentLayer->addChild(group);
-                _currentLayer = group;
+                OSG_INFO<<"Assigning event callback."<<std::endl;
+                subgraph->setEventCallback(_currentEventCallbackToApply.get());
+            }
+            else
+            {
+                OSG_INFO<<"Ignoring event callback from previous layer."<<std::endl;
             }
         }
         else
         {
-            OSG_INFO<<"creating secondary group within layer"<<std::endl;
-            osg::Group* group = new osg::Group;
-            _previousLayer->addChild(group);
-            _currentLayer = group;
-        }                
-        _currentLayer->setEventCallback(new PickEventHandler(operation, relativeJump, slideNum, layerNum));
+            OSG_NOTICE<<"Warning: subgraph already has event callback assigned, cannot add second event callback."<<std::endl;
+        }
+        _currentEventCallbackToApply = 0;
     }
-    
+    _currentLayer->addChild(subgraph);
+}
+
+void SlideShowConstructor::layerClickToDoOperation(Operation operation, bool relativeJump, int slideNum, int layerNum)
+{
+    _layerToApplyEventCallbackTo = _currentLayer;
+    _currentEventCallbackToApply = new PickEventHandler(operation, relativeJump, slideNum, layerNum);
 }
 
 
 void SlideShowConstructor::layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump, int slideNum, int layerNum)
-{
-    if (!_currentLayer) addLayer();
-    
-    if (_currentLayer.valid())
-    {
-        if (_previousLayer==_currentLayer)
-        {
-            if (_currentLayer->getNumChildren()>0)
-            {
-                OSG_INFO<<"creating new group within layer"<<std::endl;
-                osg::Group* group = new osg::Group;
-                _currentLayer->addChild(group);
-                _currentLayer = group;
-            }
-        }
-        else
-        {
-            OSG_INFO<<"creating secondary group within layer"<<std::endl;
-            osg::Group* group = new osg::Group;
-            _previousLayer->addChild(group);
-            _currentLayer = group;
-        }                
-        _currentLayer->setEventCallback(new PickEventHandler(command, operation, relativeJump, slideNum, layerNum));
-    }
-    
+{    
+    _layerToApplyEventCallbackTo = _currentLayer;
+    _currentEventCallbackToApply = new PickEventHandler(command, operation, relativeJump, slideNum, layerNum);
 }
 
 
 void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump, int slideNum, int layerNum)
 {
-    if (!_currentLayer) addLayer();
-    
-    if (_currentLayer.valid())
-    {
-        if (_previousLayer==_currentLayer)
-        {
-            if (_currentLayer->getNumChildren()>0)
-            {
-                OSG_INFO<<"creating new group within layer"<<std::endl;
-                osg::Group* group = new osg::Group;
-                _currentLayer->addChild(group);
-                _currentLayer = group;
-            }
-        }
-        else
-        {
-            OSG_INFO<<"creating secondary group within layer"<<std::endl;
-            osg::Group* group = new osg::Group;
-            _previousLayer->addChild(group);
-            _currentLayer = group;
-        }                
-        _currentLayer->setEventCallback(new PickEventHandler(keyPos, relativeJump, slideNum, layerNum));
-    }
-    
+    _layerToApplyEventCallbackTo = _currentLayer;
+    _currentEventCallbackToApply = new PickEventHandler(keyPos, relativeJump, slideNum, layerNum);
 }
 
 
@@ -638,8 +604,6 @@ osg::Node* SlideShowConstructor::decorateSubgraphForPosition(osg::Node* node, Po
 
 void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData)
 {
-    if (!_currentLayer) addLayer();
-
     osg::Geode* geode = new osg::Geode;
 
     osgText::Text* text = new osgText::Text;
@@ -677,7 +641,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
     
     geode->addDrawable(text);
     
-    _currentLayer->addChild( decorateSubgraphForPosition(geode, positionData) );
+    addToCurrentLayer( decorateSubgraphForPosition(geode, positionData) );
 
     bool needToApplyPosition = (_textPositionData.position == positionData.position);
     if (needToApplyPosition)
@@ -688,8 +652,6 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
 void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData)
 {
-    if (!_currentLayer) addLayer();
-
     osg::Geode* geode = new osg::Geode;
 
     osg::Vec3 localPosition = computePositionInModelCoords(positionData);
@@ -726,7 +688,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     geode->addDrawable(text);
     
-    _currentLayer->addChild( decorateSubgraphForPosition(geode, positionData) );
+    addToCurrentLayer( decorateSubgraphForPosition(geode, positionData) );
 
     bool needToApplyPosition = (_textPositionData.position == positionData.position);
     if (needToApplyPosition)
@@ -877,8 +839,6 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
 
 void SlideShowConstructor::addImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
 {
-    if (!_currentLayer) addLayer();
-
     osg::ref_ptr<osgDB::Options> options = _options;
     if (!imageData.options.empty())
     {
@@ -1016,13 +976,11 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         subgraph = hudTransform;
     }
 
-    _currentLayer->addChild(subgraph);
+    addToCurrentLayer(subgraph);
 }
 
 void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight, const ImageData& imageDataRight,const PositionData& positionData)
 {
-    if (!_currentLayer) addLayer();
-
     osg::ref_ptr<osgDB::Options> optionsLeft = _options;
     if (!imageDataLeft.options.empty())
     {
@@ -1226,7 +1184,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
         subgraph = hudTransform;
     }
 
-    _currentLayer->addChild(subgraph);
+    addToCurrentLayer(subgraph);
 }
 
 void SlideShowConstructor::addGraph(const std::string& contents, const PositionData& positionData, const ImageData& imageData)
@@ -1345,8 +1303,6 @@ public:
 
 osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
 {
-    if (!_currentLayer) addLayer();
-
     osg::ref_ptr<osgDB::Options> options = _options;
     if (!imageData.options.empty())
     {
@@ -1468,7 +1424,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
         subgraph = hudTransform;
     }
 
-    _currentLayer->addChild(subgraph);
+    addToCurrentLayer(subgraph);
 
     osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image);
     if (pdfImage && imageData.page>=0)
@@ -1723,7 +1679,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
 
     findImageStreamsAndAddCallbacks(subgraph);
 
-    _currentLayer->addChild(subgraph);
+    addToCurrentLayer(subgraph);
 }
 
 class DraggerVolumeTileCallback : public osgManipulator::DraggerCallback

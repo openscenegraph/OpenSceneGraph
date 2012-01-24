@@ -1246,7 +1246,7 @@ public:
         }
 
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
-        WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
+
         // Call ImageIO to load the image.
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromFile(full_file_name.c_str(), the_options);
         if (NULL == cg_dest_ref) return WriteResult::ERROR_IN_WRITING_FILE;

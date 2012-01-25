@@ -434,7 +434,9 @@ int main( int argc, char **argv )
     }
 
     // add the state manipulator
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    osg::ref_ptr<osgGA::StateSetManipulator> ssManipulator = new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet());
+    ssManipulator->setKeyEventToggleTexturing('e');
+    viewer.addEventHandler( ssManipulator.get() );
 
     // add the state manipulator
     viewer.addEventHandler( new osgViewer::StatsHandler() );

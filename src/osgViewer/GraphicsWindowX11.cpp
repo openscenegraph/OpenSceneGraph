@@ -1255,7 +1255,7 @@ void GraphicsWindowX11::checkEvents()
                 OSG_INFO<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
 
                 if (windowX != ev.xconfigure.x ||
-                    windowX != ev.xconfigure.y ||
+                    windowY != ev.xconfigure.y ||
                     windowWidth != ev.xconfigure.width ||
                     windowHeight != ev.xconfigure.height)
                 {

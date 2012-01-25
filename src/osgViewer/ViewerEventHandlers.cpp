@@ -922,6 +922,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
             {
                 return _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
             }          
+            break;
         }
         case (osgGA::GUIEventAdapter::RESIZE):
         {
@@ -932,6 +933,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
                 resize(ea.getWindowWidth(), ea.getWindowHeight());
                 return true;
             }
+            break;
         }
 
         default:

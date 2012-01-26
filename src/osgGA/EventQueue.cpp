@@ -96,7 +96,7 @@ bool EventQueue::takeEvents(Events& events, double cutOffTime)
         {
             if ((*itr)->getTime() > previousTime)
             {
-                OSG_NOTICE<<"Reset event time from "<<(*itr)->getTime()<<" to "<<previousTime<<std::endl;
+                OSG_INFO<<"Reset event time from "<<(*itr)->getTime()<<" to "<<previousTime<<std::endl;
                 (*itr)->setTime(previousTime);
             }
             else

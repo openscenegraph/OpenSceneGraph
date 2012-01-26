@@ -3,10 +3,15 @@
 
 #include <iostream>
 #include <sstream>
+#include <osg/Referenced>
+#include <osgDB/Export>
 #include <osgDB/DataTypes>
 
 namespace osgDB
 {
+
+// forward declare
+class InputStream;
 
 class OSGDB_EXPORT OutputIterator : public osg::Referenced
 {
@@ -44,18 +49,36 @@ public:
     virtual void flush() { _out->flush(); }
     
 protected:
+    // Return true if the manipulator is std::endl
+    bool isEndl( std::ostream& (*fn)(std::ostream&) )
+    {
+#ifdef __sun
+        // What a mess, but solaris does not like taking the address below
+        std::stringstream ss;
+        ss << fn;
+        std::string s = ss.str();
+        return !s.empty() && s[0] == '\n';
+#else
+        return fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl);
+#endif
+    }
+
     std::ostream* _out;
 };
 
 class OSGDB_EXPORT InputIterator : public osg::Referenced
 {
 public:
-    InputIterator() : _in(0), _failed(false) {}
+    InputIterator() : _in(0), _inputStream(0), _failed(false) {}
     virtual ~InputIterator() {}
     
     void setStream( std::istream* istream ) { _in = istream; }
     std::istream* getStream() { return _in; }
     const std::istream* getStream() const { return _in; }
+
+    void setInputStream( InputStream* inputStream) { _inputStream = inputStream; }
+    InputStream* getInputStream() { return _inputStream; }
+    const InputStream* getInputStream() const { return _inputStream; }
     
     void checkStream() const { if (_in->rdstate()&_in->failbit) _failed = true; }
     bool isFailed() const { return _failed; }
@@ -86,9 +109,12 @@ public:
     
     virtual bool matchString( const std::string& /*str*/ ) { return false; }
     virtual void advanceToCurrentEndBracket() {}
-    
+
+    void throwException( const std::string& msg );
+
 protected:
-    std::istream* _in;
+    std::istream*       _in;
+    osgDB::InputStream* _inputStream;
     mutable bool _failed;
 };
 

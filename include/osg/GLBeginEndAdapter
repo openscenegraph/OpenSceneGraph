@@ -65,6 +65,9 @@ class OSG_EXPORT GLBeginEndAdapter
         void Vertex3f(GLfloat x, GLfloat y, GLfloat z);
         void Vertex3fv(const GLfloat* v) { Vertex3f(v[0], v[1], v[2]); }
 
+        void Vertex3dv(GLdouble x, GLdouble y, GLdouble z) { Vertex3f(x,y,z); }
+        void Vertex3dv(const GLdouble* v) { Vertex3f(v[0], v[1], v[2]); }
+
         void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
         {
             _colorAssigned = true;

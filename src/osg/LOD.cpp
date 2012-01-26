@@ -90,6 +90,14 @@ BoundingSphere LOD::computeBound() const
     {
         return BoundingSphere(_userDefinedCenter,_radius);
     }
+    else if (_centerMode==UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED && _radius>=0.0f)
+    {
+        BoundingSphere bs = BoundingSphere(_userDefinedCenter,_radius);
+        bs.expandBy(Group::computeBound());
+        //alternative (used in TxpPagedLOD)
+        // bs.expandRadiusBy(Group::computeBound());
+        return bs;
+    }
     else
     {
         return Group::computeBound();

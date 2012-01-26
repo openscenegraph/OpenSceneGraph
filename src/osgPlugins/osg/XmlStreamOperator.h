@@ -19,10 +19,11 @@ public:
         TEXT_LINE            // A text line, e.g. recording array elements
     };
     
-    XmlOutputIterator( std::ostream* ostream )
+    XmlOutputIterator( std::ostream* ostream, int precision )
     :   _readLineType(FIRST_LINE), _prevReadLineType(FIRST_LINE), _hasSubProperty(false)
     {
         _out = ostream;
+        if (precision>0) _sstream.precision(precision);
         _root = new osgDB::XmlNode;
         _root->type = osgDB::XmlNode::GROUP;
     }
@@ -66,10 +67,10 @@ public:
     
     virtual void writeString( const std::string& s )
     { addToCurrentNode( s, true ); }
-    
+
     virtual void writeStream( std::ostream& (*fn)(std::ostream&) )
     {
-        if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
+        if ( isEndl( fn ) )
         {
             if ( _readLineType==PROP_LINE || _readLineType==END_BRACKET_LINE )
             {
@@ -161,7 +162,7 @@ public:
             else if ( ch=='\\' ) realStr += '\\';
             realStr += ch;
         }
-        realStr.insert( 0, 1, '\"' );
+        realStr.insert( std::string::size_type(0), 1, '\"' );
         realStr += '\"';
         addToCurrentNode( realStr );
     }
@@ -349,28 +350,28 @@ public:
     }
     
     virtual void readShort( short& s )
-    { if ( prepareStream() ) _sstream >> s; }
+    { std::string str; if (prepareStream()) _sstream >> str; s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUShort( unsigned short& s )
-    { if ( prepareStream() ) _sstream >> s; }
+    { std::string str; if (prepareStream()) _sstream >> str; s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readInt( int& i )
-    { if ( prepareStream() ) _sstream >> i; }
+    { std::string str; if (prepareStream()) _sstream >> str; i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUInt( unsigned int& i )
-    { if ( prepareStream() ) _sstream >> i; }
+    { std::string str; if (prepareStream()) _sstream >> str; i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readLong( long& l )
-    { if ( prepareStream() ) _sstream >> l; }
+    { std::string str; if (prepareStream()) _sstream >> str; l = strtol(str.c_str(), NULL, 0); }
     
     virtual void readULong( unsigned long& l )
-    { if ( prepareStream() ) _sstream >> l; }
+    { std::string str; if (prepareStream()) _sstream >> str; l = strtoul(str.c_str(), NULL, 0); }
     
     virtual void readFloat( float& f )
-    { if ( prepareStream() ) _sstream >> f; }
+    { std::string str; if (prepareStream()) _sstream >> str; f = osg::asciiToFloat(str.c_str()); }
     
     virtual void readDouble( double& d )
-    { if ( prepareStream() ) _sstream >> d; }
+    { std::string str; if (prepareStream()) _sstream >> str; d = osg::asciiToDouble(str.c_str()); }
     
     virtual void readString( std::string& s )
     {

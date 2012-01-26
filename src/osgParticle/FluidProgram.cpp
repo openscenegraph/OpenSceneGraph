@@ -35,7 +35,6 @@ void osgParticle::FluidProgram::execute(double dt)
             osg::Vec3 accel_gravity = _acceleration * ((particle->getMass() - _density*Volume) * particle->getMassInv());
             
             // compute force due to friction
-            osg::Vec3 velBefore = particle->getVelocity();
             osg::Vec3 relative_wind = particle->getVelocity()-_wind;            
             osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficient*relative_wind.length());
             osg::Vec3 wind_accel = wind_force * particle->getMassInv();

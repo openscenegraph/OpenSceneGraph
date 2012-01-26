@@ -327,6 +327,7 @@ class OSG_EXPORT Geometry : public Drawable
         /** Get whether fast paths should be used when supported. */
         bool getFastPathHint() const { return _fastPathHint; }
 
+
         /** Return true if OpenGL fast paths will be used with drawing this Geometry.
           * Fast paths directly use vertex arrays, and glDrawArrays/glDrawElements so have low CPU overhead.
           * With Slow paths the osg::Geometry::drawImplementation has to dynamically assemble OpenGL
@@ -348,6 +349,8 @@ class OSG_EXPORT Geometry : public Drawable
 
         void computeCorrectBindingsAndArraySizes();
 
+        /** check whether the arrays, indices, bindings and primitives all match correctly, return false is .*/
+        bool verifyArrays(std::ostream& out) const;
 
         bool suitableForOptimization() const;
 

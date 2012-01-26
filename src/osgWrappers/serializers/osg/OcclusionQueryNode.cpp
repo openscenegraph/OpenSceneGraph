@@ -10,6 +10,6 @@ REGISTER_OBJECT_WRAPPER( OcclusionQueryNode,
 {
     ADD_BOOL_SERIALIZER( QueriesEnabled, true );  // _enabled
     ADD_UINT_SERIALIZER( VisibilityThreshold, 0 );  // _visThreshold
-    ADD_INT_SERIALIZER( QueryFrameCount, 0 );  // _queryFrameCount
+    ADD_UINT_SERIALIZER( QueryFrameCount, 0 );  // _queryFrameCount
     ADD_BOOL_SERIALIZER( DebugDisplay, false );  // _debugBB
 }

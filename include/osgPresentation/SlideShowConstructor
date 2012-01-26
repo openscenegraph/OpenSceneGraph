@@ -32,6 +32,44 @@
 namespace osgPresentation
 {
 
+class OSGPRESENTATION_EXPORT HUDSettings : public osg::Referenced
+{
+    public:
+        HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask);
+
+        virtual bool getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        virtual bool getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        double          _slideDistance;
+        double          _eyeOffset;
+        unsigned int    _leftMask;
+        unsigned int    _rightMask;
+
+protected:
+
+        virtual ~HUDSettings();
+};
+
+
+class OSGPRESENTATION_EXPORT HUDTransform : public osg::Transform
+{
+    public:
+
+        HUDTransform(HUDSettings* hudSettings);
+
+        virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
+
+        virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const;
+
+protected:
+
+        virtual ~HUDTransform();
+
+        osg::ref_ptr<HUDSettings> _hudSettings;
+
+};
+
 class OSGPRESENTATION_EXPORT SlideShowConstructor
 {
 public:
@@ -129,8 +167,12 @@ public:
             path_loop_mode(osg::AnimationPath::NO_LOOPING),
             animation_material_time_offset(0.0),
             animation_material_time_multiplier(1.0),
-            animation_material_loop_mode(AnimationMaterial::NO_LOOPING) {}
-    
+            animation_material_loop_mode(AnimationMaterial::NO_LOOPING),
+            autoRotate(false),
+            autoScale(false),
+            hud(false) {}
+
+
         bool requiresPosition() const
         {
             return (position[0]!=0.0f || position[1]!=1.0f || position[2]!=1.0f);
@@ -173,14 +215,17 @@ public:
         AnimationMaterial::LoopMode             animation_material_loop_mode;
         std::string                             animation_material_filename;
         std::string                             fade;
+        bool                                    autoRotate;
+        bool                                    autoScale;
+        bool                                    hud;
     };
 
     struct ModelData
     {
-        ModelData():
-            effect("") {}
+        ModelData() {}
             
         std::string effect;
+        std::string options;
     };
 
     struct ImageData
@@ -194,7 +239,8 @@ public:
             loopingMode(osg::ImageStream::NO_LOOPING),
             page(-1),
             backgroundColor(1.0f,1.0f,1.0f,1.0f) {}
-            
+
+        std::string                     options;
         float                           width;
         float                           height;
         osg::Vec4                       region;
@@ -222,12 +268,14 @@ public:
             region_in_pixel_coords(false),
             alphaValue(1.0),
             cutoffValue(0.1),
-            sampleDensityValue(0.005)
+            sampleDensityValue(0.005),
+            sampleDensityWhenMovingValue(0.0)
         {
             region[0] = region[1] = region[2] = 0.0f;
             region[3] = region[4] = region[5] = 1.0f;
         }
 
+        std::string                             options;
         ShadingModel                            shadingModel;
         osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
         bool                                    useTabbedDragger;
@@ -237,6 +285,7 @@ public:
         float                                   alphaValue;
         float                                   cutoffValue;
         float                                   sampleDensityValue;
+        float                                   sampleDensityWhenMovingValue;
     };
 
 
@@ -247,19 +296,21 @@ public:
             layout(osgText::Text::LEFT_TO_RIGHT),
             alignment(osgText::Text::LEFT_BASE_LINE),
             axisAlignment(osgText::Text::XZ_PLANE),
+            characterSizeMode(osgText::Text::OBJECT_COORDS),
             characterSize(0.04f),
             maximumHeight(1.0f),
             maximumWidth(1.0f),
             color(1.0f,1.0f,1.0f,1.0f) {}
 
-        std::string                     font;
-        osgText::Text::Layout           layout;
-        osgText::Text::AlignmentType    alignment;
-        osgText::Text::AxisAlignment    axisAlignment;
-        float                           characterSize;
-        float                           maximumHeight;
-        float                           maximumWidth;
-        osg::Vec4                       color;
+        std::string                         font;
+        osgText::Text::Layout               layout;
+        osgText::Text::AlignmentType        alignment;
+        osgText::Text::AxisAlignment        axisAlignment;
+        osgText::Text::CharacterSizeMode    characterSizeMode;
+        float                               characterSize;
+        float                               maximumHeight;
+        float                               maximumWidth;
+        osg::Vec4                           color;
     };
 
 
@@ -294,6 +345,7 @@ public:
         _slideTitle = name;
     }
 
+    void setSlideBackgrondHUD(bool hud) { _slideBackgroundAsHUD = hud; }
     void setSlideBackground(const std::string& name) { _slideBackgroundImageFileName = name; }
     
     void setSlideDuration(double duration);
@@ -335,6 +387,8 @@ public:
     void layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
     void layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
 
+    void addToCurrentLayer(osg::Node* subgraph);
+    
     void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
     
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
@@ -343,8 +397,8 @@ public:
 
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
 
-    void addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData);
-    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addGraph(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password);
     void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
@@ -370,6 +424,10 @@ public:
 
     void setAutoSteppingActive(bool flag = true) { _autoSteppingActive = flag; }
     bool getAutoSteppingActive() const { return _autoSteppingActive; }
+
+    void setHUDSettings(HUDSettings* hudSettings) { _hudSettings = hudSettings; }
+    HUDSettings* getHUDSettings() { return _hudSettings.get(); }
+    const HUDSettings* getHUDSettings() const { return _hudSettings.get(); }
 
 
 protected:
@@ -398,14 +456,20 @@ protected:
         return stateset;
     }
 
+    osg::Node* decorateSubgraphForPosition(osg::Node* node, PositionData& positionData);
+
     osg::ref_ptr<osgDB::Options> _options;
 
     osg::Vec3   _slideOrigin;
     osg::Vec3   _eyeOrigin;
-    float       _slideWidth;
-    float       _slideHeight;
-    float       _slideDistance;
+    double      _slideWidth;
+    double      _slideHeight;
+    double      _slideDistance;
+    unsigned int _leftEyeMask;
+    unsigned int _rightEyeMask;
 
+    osg::ref_ptr<HUDSettings> _hudSettings;
+    
     // title settings
     FontData        _titleFontData;
     FontData        _titleFontDataDefault;
@@ -442,12 +506,17 @@ protected:
     osg::ref_ptr<osg::Switch>       _slide;
     std::string                     _slideTitle;
     std::string                     _slideBackgroundImageFileName;
+    bool                            _slideBackgroundAsHUD;
     
     osg::ref_ptr<osg::Group>        _previousLayer;
     osg::ref_ptr<osg::Group>        _currentLayer;
     
     osg::ref_ptr<FilePathData>      _filePathData;
     
+    osg::ref_ptr<osg::Group>                _layerToApplyEventCallbackTo;
+    osg::ref_ptr<osgGA::GUIEventHandler>    _currentEventCallbackToApply;
+
+
     std::string findFileAndRecordPath(const std::string& filename);
     
     void recordOptionsFilePath(const osgDB::Options* options);

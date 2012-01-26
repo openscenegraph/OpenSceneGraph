@@ -24,8 +24,8 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
 
     _animationPath = new osg::AnimationPath;
     _animationPath->setLoopMode(osg::AnimationPath::LOOP);
-    _timeOffset = 0.0f;
-    _timeScale = 1.0f;
+    _timeOffset = 0.0;
+    _timeScale = 1.0;
     _isPaused = false;
 
 
@@ -85,7 +85,6 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
             if (ea.getKey()==' ')
             {
                 _isPaused = false;
-                _timeScale = 1.0;
                 
                 home(ea,us);
                 us.requestRedraw();
@@ -149,45 +148,47 @@ void AnimationPathManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("AnimationPath: Space","Reset the viewing position to start of animation");
     usage.addKeyboardMouseBinding("AnimationPath: p","Pause/resume animation.");
-    usage.addKeyboardMouseBinding("AnimationPath: <","Slow down animation speed.");
-    usage.addKeyboardMouseBinding("AnimationPath: <","Speed up animation speed.");
+    usage.addKeyboardMouseBinding("AnimationPath: (","Slow down animation speed.");
+    usage.addKeyboardMouseBinding("AnimationPath: )","Speed up animation speed.");
 }
 
 void AnimationPathManipulator::handleFrame( double time )
 {
     osg::AnimationPath::ControlPoint cp;
-    
+
     double animTime = (time+_timeOffset)*_timeScale;
     _animationPath->getInterpolatedControlPoint( animTime, cp );
 
     if (_numOfFramesSinceStartOfTimedPeriod==-1)
-    {    
+    {
         _realStartOfTimedPeriod = time;
         _animStartOfTimedPeriod = animTime;
 
     }
-    
+
     ++_numOfFramesSinceStartOfTimedPeriod;
-    
-    if (_printOutTimingInfo)
+
+    double animDelta = (animTime-_animStartOfTimedPeriod);
+    if (animDelta>=_animationPath->getPeriod())
     {
-        double animDelta = (animTime-_animStartOfTimedPeriod);
-        if (animDelta>=_animationPath->getPeriod())
+        if (_animationCompletedCallback.valid())
         {
+            _animationCompletedCallback->completed(this);
+        }
 
+        if (_printOutTimingInfo)
+        {
             double delta = time-_realStartOfTimedPeriod;
-
             double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
             OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
             OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
-
-            // reset counters for next loop.
-            _realStartOfTimedPeriod = time;
-            _animStartOfTimedPeriod = animTime;
-
-            _numOfFramesSinceStartOfTimedPeriod = 0;  
         }
+
+        // reset counters for next loop.
+        _realStartOfTimedPeriod = time;
+        _animStartOfTimedPeriod = animTime;
+        _numOfFramesSinceStartOfTimedPeriod = 0;
     }
-    
+
     cp.getMatrix( _matrix );
 }

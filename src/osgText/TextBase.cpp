@@ -93,14 +93,6 @@ void TextBase::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
 
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
-
-    if (getStateSet() == previousFontStateSet)
-    {
-        setStateSet( newFontStateSet );
-    }
-
     _font = font;
 
     computeGlyphRepresentation();
@@ -284,27 +276,40 @@ osg::BoundingBox TextBase::computeBound() const
     {
         for(unsigned int i=0;i<_autoTransformCache.size();++i)
         {
-            if (_autoTransformCache[i]._traversalNumber<0 && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
+            if (_autoTransformCache[i]._traversalNumber>=0)
             {
-                // _autoTransformCache is not valid so don't take it into accoumt when compute bounding volume.
-#if 0
-                // so fallback to estimating the bounding box size by assuming a scale of 1
-                // but might cause problems due to small feature culling...
-                osg::Matrix matrix;
-                matrix.makeTranslate(_position);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
-#endif
-            }
-            else
-            {            
                 osg::Matrix& matrix = _autoTransformCache[i]._matrix;
                 bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
                 bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
             }
         }
+
+
+        if (!bbox.valid())
+        {
+            // Provide a fallback in cases where no bounding box has been been setup so far.
+            // Note, assume a scaling of 1.0 for _characterSizeMode!=OBJECT_COORDS as the
+            // for screen space coordinates size modes we don't know what scale will be used until
+            // the text is actually rendered, but we haven't to assume something otherwise the
+            // text label will be culled by view or small feature culling on first frame.
+            if (_autoRotateToScreen)
+            {
+                // use bounding sphere encompassing the maximum size of the text centered on the _position
+                double radius = _textBB.radius();
+                osg::Vec3 diagonal(radius, radius, radius);
+                bbox.set(_position-diagonal, _position+diagonal);
+            }
+            else
+            {
+                osg::Matrix matrix;
+                matrix.makeTranslate(_position);
+                matrix.preMultRotate(_rotation);
+                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+            }
+        }
     }
-    
+
     return bbox;
 }
 

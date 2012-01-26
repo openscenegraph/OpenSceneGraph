@@ -165,14 +165,11 @@ void scene::addQuads(const std::string & l, unsigned short color, std::vector<Ve
                 n.normalize();
                 short cindex = correctedColorIndex(l, color);
                 ly->_quadnorms[cindex].push_back( n );
-                MapVList mvl = ly->_quads;
-                VList vl = mvl[cindex];
+                VList& vl = ly->_quads[cindex];
                 vl.push_back(addVertex(*a));
                 vl.push_back(addVertex(*b));
                 vl.push_back(addVertex(*c));
                 vl.push_back(addVertex(*d));
-                mvl[cindex] = vl;
-                ly->_quads = mvl;
             }
     }
 }    

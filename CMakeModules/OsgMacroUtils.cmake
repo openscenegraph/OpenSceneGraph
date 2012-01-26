@@ -92,6 +92,7 @@ MACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
     IF(OPENSCENEGRAPH_SONAMES)
       SET_TARGET_PROPERTIES(${CORELIB_NAME} PROPERTIES VERSION ${OPENSCENEGRAPH_VERSION} SOVERSION ${OPENSCENEGRAPH_SOVERSION})
     ENDIF(OPENSCENEGRAPH_SONAMES)
+    
 ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 
 
@@ -110,7 +111,7 @@ ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 MACRO(SETUP_LINK_LIBRARIES)
     ######################################################################
     #
-    # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plagins
+    # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plugins
     # kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
     # they are combined in a single list checked for unicity 
     # the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
@@ -197,7 +198,55 @@ MACRO(SET_OUTPUT_DIR_PROPERTY_260 TARGET_TARGETNAME RELATIVE_OUTDIR)
 ENDMACRO(SET_OUTPUT_DIR_PROPERTY_260 TARGET_TARGETNAME RELATIVE_OUTDIR)
 
 
+
+#######################################################################################################
+#  macro for common setup of libraries it expect some variables to be set:
+#  either within the local CMakeLists or higher in hierarchy
+#  LIB_NAME  is the name of the target library
+#  TARGET_SRC  are the sources of the target
+#  TARGET_H are the eventual headers of the target
+#  TARGET_H_NO_MODULE_INSTALL are headers that belong to target but shouldn't get installed by the ModuleInstall script
+#  TARGET_LIBRARIES are the libraries to link to that are internal to the project and have d suffix for debug
+#  TARGET_EXTERNAL_LIBRARIES are external libraries and are not differentiated with d suffix
+#  TARGET_LABEL is the label IDE should show up for targets
+##########################################################################################################
+
+MACRO(SETUP_LIBRARY LIB_NAME)
+    IF(ANDROID)
+        SETUP_ANDROID_LIBRARY(${LIB_NAME}) 
+    ELSE()
+        SET(TARGET_NAME ${LIB_NAME} )
+        SET(TARGET_TARGETNAME ${LIB_NAME} )
+        ADD_LIBRARY(${LIB_NAME}
+            ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
+            ${TARGET_H}
+            ${TARGET_H_NO_MODULE_INSTALL}
+            ${TARGET_SRC}
+        )
+        SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES FOLDER "OSG Core")
+        IF(TARGET_LABEL)
+            SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
+        ENDIF(TARGET_LABEL)
+    
+        IF(TARGET_LIBRARIES)
+            LINK_INTERNAL(${LIB_NAME} ${TARGET_LIBRARIES})
+        ENDIF()
+        IF(TARGET_EXTERNAL_LIBRARIES)
+            LINK_EXTERNAL(${LIB_NAME} ${TARGET_EXTERNAL_LIBRARIES})
+        ENDIF()
+        IF(TARGET_LIBRARIES_VARS)
+            LINK_WITH_VARIABLES(${LIB_NAME} ${TARGET_LIBRARIES_VARS})
+        ENDIF(TARGET_LIBRARIES_VARS)
+        LINK_CORELIB_DEFAULT(${LIB_NAME})
+    
+    ENDIF()
+    INCLUDE(ModuleInstall OPTIONAL)
+ENDMACRO(SETUP_LIBRARY LIB_NAME)
+
 MACRO(SETUP_PLUGIN PLUGIN_NAME)
+    IF(ANDROID)
+        SETUP_ANDROID_LIBRARY(${TARGET_DEFAULT_PREFIX}${PLUGIN_NAME}) 
+    ELSE()
 
     SET(TARGET_NAME ${PLUGIN_NAME} )
 
@@ -267,7 +316,8 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ENDIF(NOT MSVC)
 
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
- 
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Plugins")
+
     SETUP_LINK_LIBRARIES()
 
 #the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
@@ -282,6 +332,7 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
             ARCHIVE DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} COMPONENT libopenscenegraph-dev
             LIBRARY DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} COMPONENT ${PACKAGE_COMPONENT})
     ENDIF(WIN32)
+    ENDIF()
 ENDMACRO(SETUP_PLUGIN)
 
 
@@ -362,6 +413,8 @@ MACRO(SETUP_APPLICATION APPLICATION_NAME)
             
         SETUP_EXE(${IS_COMMANDLINE_APP})
         
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Applications")
+        
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin BUNDLE DESTINATION bin)
         ELSE(APPLE)
@@ -388,6 +441,8 @@ MACRO(SETUP_EXAMPLE EXAMPLE_NAME)
         ENDIF(${ARGC} GREATER 1)
             
         SETUP_EXE(${IS_COMMANDLINE_APP})
+        
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Examples")
         
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin BUNDLE DESTINATION share/OpenSceneGraph/bin )            

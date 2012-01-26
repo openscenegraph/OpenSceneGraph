@@ -9,7 +9,7 @@
 REGISTER_OBJECT_WRAPPER( osgVolume_PropertyAdjustmentCallback,
                          new osgVolume::PropertyAdjustmentCallback,
                          osgVolume::PropertyAdjustmentCallback,
-                         "osg::Object osgVolume::PropertyAdjustmentCallback" )
+                         "osg::Object osg::NodeCallback osgVolume::PropertyAdjustmentCallback" )
 {
     ADD_INT_SERIALIZER( KeyEventCycleForward, 'v' );  // _cyleForwardKey
     ADD_INT_SERIALIZER( KeyEventCycleBackward, 'V' );  // _cyleBackwardKey

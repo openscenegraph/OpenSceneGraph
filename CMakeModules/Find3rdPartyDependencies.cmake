@@ -59,7 +59,7 @@ ENDMACRO(FIND_DEPENDENCY DEPNAME INCLUDEFILE LIBRARY_NAMES_BASE SEARCHPATHLIST D
 
 MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
         FIND_DEPENDENCY(TIFF tiff.h libtiff ${OSG_3RDPARTY_BIN} "D" "_i")
-        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype2311MT;freetype234;freetype234MT;freetype235;freetype237;freetype238;" ${OSG_3RDPARTY_BIN} "d" "")
+        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype2311MT;freetype234;freetype234MT;freetype235;freetype237;freetype238;freetype244;" ${OSG_3RDPARTY_BIN} "d" "")
         IF(FREETYPE_FOUND)
             #forcing subsequent FindFreeType stuff to not search for other variables.... kind of a hack 
             SET(FREETYPE_INCLUDE_DIR_ft2build ${FREETYPE_INCLUDE_DIR} CACHE PATH "" FORCE)
@@ -79,7 +79,7 @@ MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
         FIND_DEPENDENCY(GIFLIB gif_lib.h "ungif;libungif;giflib" ${OSG_3RDPARTY_BIN} "D" "")
         FIND_DEPENDENCY(ZLIB zlib.h "z;zlib;zlib1" ${OSG_3RDPARTY_BIN} "D" "")
         IF(ZLIB_FOUND)
-            FIND_DEPENDENCY(PNG png.h "libpng;libpng13" ${OSG_3RDPARTY_BIN} "D" "")
+            FIND_DEPENDENCY(PNG png.h "libpng;libpng13;libpng15" ${OSG_3RDPARTY_BIN} "D" "")
             IF(PNG_FOUND)
                 #forcing subsequent FindPNG stuff to not search for other variables.... kind of a hack 
                 SET(PNG_PNG_INCLUDE_DIR ${PNG_INCLUDE_DIR} CACHE FILEPATH "")
@@ -92,6 +92,8 @@ MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
             SET(LIBXML2_LIBRARIES ${LIBXML2_LIBRARY} CACHE FILEPATH "" FORCE)
             SET(LIBXML2_XMLLINT_EXECUTABLE ${OSG_3RDPARTY_BIN}/bin/xmllint.exe CACHE FILEPATH "Path to xmllint executable" FORCE)
         ENDIF(LIBXML2_FOUND)
+        #FIND_DEPENDENCY(DEPNAME INCLUDEFILE LIBRARY_NAMES_BASE SEARCHPATHLIST DEBUGSUFFIX EXSUFFIX)
+        FIND_Package(NVTT)  
 #luigi#INCLUDE(FindOSGDepends.cmake)
 ENDMACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
 
@@ -99,24 +101,42 @@ ENDMACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
 
 
 ################################################################################################
-# this is code for handling optional 3DPARTY usage
+# this is code for handling optional 3RDPARTY usage
 ################################################################################################
 
-OPTION(USE_3DPARTY_BIN "Set to ON to use Mike prebuilt dependencies situated side of OpenSceneGraph source.  Use OFF for avoiding." ON)
-IF(USE_3DPARTY_BIN)
+OPTION(USE_3RDPARTY_BIN "Set to ON to use Mike prebuilt dependencies situated side of OpenSceneGraph source.  Use OFF for avoiding." ON)
+IF(USE_3RDPARTY_BIN)
+
+    # Check Architecture
+    IF( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+        MESSAGE( STATUS "32 bit architecture detected" )
+        SET(DESTINATION_ARCH "x86")
+    ENDIF()
+    IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        MESSAGE( STATUS "64 bit architecture detected" )
+        SET(DESTINATION_ARCH "x64")
+    ENDIF()
+
     GET_FILENAME_COMPONENT(PARENT_DIR ${PROJECT_SOURCE_DIR} PATH)
-    SET(TEST_3DPARTY_DIR "${PARENT_DIR}/3rdparty")
-    IF(NOT EXISTS ${TEST_3DPARTY_DIR})
-        IF(MSVC71)
-            SET(TEST_3DPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs71")
+    SET(TEST_3RDPARTY_DIR "${PARENT_DIR}/3rdparty")
+    IF(NOT EXISTS ${TEST_3RDPARTY_DIR})
+        SET(3RDPARTY_DIR_BY_ENV $ENV{OSG_3RDPARTY_DIR})
+        IF(3RDPARTY_DIR_BY_ENV)
+            MESSAGE( STATUS "3rdParty-Package ENV variable found:${3RDPARTY_DIR_BY_ENV}/${DESTINATION_ARCH}" )
+            SET(TEST_3RDPARTY_DIR "${3RDPARTY_DIR_BY_ENV}/${DESTINATION_ARCH}")
+        ELSEIF(MSVC71)
+            SET(TEST_3RDPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs71")
         ELSEIF(MSVC80)
-            SET(TEST_3DPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs80sp1")
+            SET(TEST_3RDPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs80sp1")
         ELSEIF(MSVC90)
-            SET(TEST_3DPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs90sp1")
+            SET(TEST_3RDPARTY_DIR "${PARENT_DIR}/3rdParty_win32binaries_vs90sp1")
         ENDIF()
-    ENDIF(NOT EXISTS ${TEST_3DPARTY_DIR})
-    SET(ACTUAL_3DPARTY_DIR "${TEST_3DPARTY_DIR}" CACHE PATH "Location of 3rdparty dependencies")
-    IF(EXISTS ${ACTUAL_3DPARTY_DIR})
-        SEARCH_3RDPARTY(${ACTUAL_3DPARTY_DIR})
-    ENDIF(EXISTS ${ACTUAL_3DPARTY_DIR})
-ENDIF(USE_3DPARTY_BIN)
+    ENDIF(NOT EXISTS ${TEST_3RDPARTY_DIR})
+    
+    SET(ACTUAL_3RDPARTY_DIR "${TEST_3RDPARTY_DIR}" CACHE PATH "Location of 3rdparty dependencies")
+    SET(ACTUAL_3DPARTY_DIR "${ACTUAL_3RDPARTY_DIR}")  # kept for backcompatibility
+    IF(EXISTS ${ACTUAL_3RDPARTY_DIR})
+        SET (3rdPartyRoot ${ACTUAL_3RDPARTY_DIR})
+        SEARCH_3RDPARTY(${ACTUAL_3RDPARTY_DIR})
+    ENDIF(EXISTS ${ACTUAL_3RDPARTY_DIR})
+ENDIF(USE_3RDPARTY_BIN)

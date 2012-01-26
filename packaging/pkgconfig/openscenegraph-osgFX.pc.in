@@ -10,5 +10,5 @@ Description: Special effects library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgFX
+Libs: -L${libdir} -losgFX@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

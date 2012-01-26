@@ -190,7 +190,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         int processStateSet(osg::StateSet* stateset);
 
-        std::string getUniqueName(const std::string& defaultvalue="", const std::string & defaultPrefix = "", bool nameIsPath = false);
+        std::string getUniqueName(const std::string& defaultvalue, bool isNodeName, const std::string & defaultPrefix = "", int currentPrefixLen = -1);
         std::string export3DSTexture(const osg::Image * image, const std::string & fileName);
 
         typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
@@ -204,8 +204,12 @@ class WriterNodeVisitor: public osg::NodeVisitor
         Lib3dsFile *                        _file3ds;
         StateSetStack                       _stateSetStack;
         osg::ref_ptr<osg::StateSet>         _currentStateSet;
-        std::map<std::string, unsigned int> _mapPrefix;            ///< List of next number to use in unique name generation, for each prefix
-        std::set<std::string>                _nameMap;
+        typedef std::map<std::string, unsigned int> PrefixMap;
+        PrefixMap                           _nodePrefixMap;            ///< List of next number to use in unique name generation, for each prefix
+        PrefixMap                           _imagePrefixMap;
+        typedef std::set<std::string> NameMap;
+        NameMap                             _nodeNameMap;
+        NameMap                             _imageNameMap;
         MaterialMap                         _materialMap;
         unsigned int                        _lastMaterialIndex;
         unsigned int                        _lastMeshIndex;
@@ -213,7 +217,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         const osgDB::ReaderWriter::Options* _options;
         unsigned int                        _imageCount;
         bool                                _extendedFilePaths;
-        std::set<osg::Image *>              _imageSet;
+        typedef std::map<osg::Image*, std::string> ImageSet;
+        ImageSet                            _imageSet;                 ///< Map used to avoid renaming and writing twice an image
 };
 
 // end namespace plugin3ds

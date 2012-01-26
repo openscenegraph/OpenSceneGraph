@@ -25,7 +25,7 @@ StencilTwoSided::StencilTwoSided()
     _func[FRONT] = _func[BACK] = ALWAYS;
     _funcRef[FRONT] = _funcRef[BACK] = 0;
     _funcMask[FRONT] = _funcMask[BACK] = ~0u;
-        
+
     // set up same defaults as glStencilOp.
     _sfail[FRONT] = _sfail[BACK] = KEEP;
     _zfail[FRONT] = _zfail[BACK] = KEEP;
@@ -106,13 +106,13 @@ void StencilTwoSided::apply(State& state) const
         return;
     }
 
-    // try to use two sided stencil extension
+    // try to use GL_EXT_stencil_two_side extension
     if (extensions->isStencilTwoSidedSupported())
     {
         // enable two sided stenciling
         glEnable(GL_STENCIL_TEST_TWO_SIDE);
 
-        // back face        
+        // back face
         extensions->glActiveStencilFace(GL_BACK);
         glStencilOp((GLenum)_sfail[BACK],(GLenum)_zfail[BACK],(GLenum)_zpass[BACK]);
         glStencilMask(_writeMask[BACK]);
@@ -126,6 +126,35 @@ void StencilTwoSided::apply(State& state) const
 
         return;
     }
+
+    // try to use GL_ATI_separate_stencil extension
+    if (extensions->isSeparateStencilSupported())
+    {
+        if( _writeMask[FRONT] != _writeMask[BACK] ||
+            _funcRef[FRONT] != _funcRef[BACK] ||
+            _funcMask[FRONT] != _funcMask[BACK] )
+        {
+            OSG_WARN << "StencilTwoSided uses GL_ATI_separate_stencil and there are different\n"
+                        "   write mask, functionRef or functionMask values for the front and back\n"
+                        "   faces. This is not supported by the extension. Using front values only." << std::endl;
+        }
+
+        glStencilMask(_writeMask[FRONT]);
+
+        // front face
+        extensions->glStencilOpSeparate(GL_FRONT, (GLenum)_sfail[FRONT], (GLenum)_zfail[FRONT], (GLenum)_zpass[FRONT]);
+        extensions->glStencilFuncSeparateATI((GLenum)_func[FRONT], (GLenum)_func[BACK], _funcRef[FRONT], _funcMask[FRONT]);
+
+        // back face
+        extensions->glStencilOpSeparate(GL_BACK, (GLenum)_sfail[BACK], (GLenum)_zfail[BACK], (GLenum)_zpass[BACK]);
+        extensions->glStencilFuncSeparateATI((GLenum)_func[FRONT], (GLenum)_func[BACK], _funcRef[FRONT], _funcMask[FRONT]);
+
+        return;
+    }
+
+    OSG_WARN << "StencilTwoSided failed as the required graphics capabilities were\n"
+                "   not found (contextID " << contextID << "). OpenGL 2.0 or one of extensions\n"
+                "   GL_EXT_stencil_two_side or GL_ATI_separate_stencil is required." << std::endl;
 }
 
 
@@ -195,6 +224,26 @@ void StencilTwoSided::Extensions::setupGLExtensions(unsigned int contextID)
     if (!_glStencilMaskSeparate) _isOpenGL20Supported = false;
     if (!_glStencilFuncSeparate) _isOpenGL20Supported = false;
     if (!_glStencilFuncSeparateATI) _isSeparateStencilSupported = false;
+
+    // notify
+    if( _isOpenGL20Supported )
+    {
+       OSG_INFO << "StencilTwoSided is going to use OpenGL 2.0 API (contextID " << contextID << ")." << std::endl;
+    }
+    else if( _isStencilTwoSidedSupported )
+    {
+       OSG_INFO << "StencilTwoSided is going to use GL_EXT_stencil_two_side extension (contextID " << contextID << ")." << std::endl;
+    }
+    else if( _isSeparateStencilSupported )
+    {
+       OSG_INFO << "StencilTwoSided is going to use GL_ATI_separate_stencil extension (contextID " << contextID << ")." << std::endl;
+    }
+    else
+    {
+       OSG_INFO << "StencilTwoSided did not found required graphics capabilities\n"
+                   "   (contextID " << contextID << "). OpenGL 2.0 or one of extensions\n"
+                   "   GL_EXT_stencil_two_side or GL_ATI_separate_stencil is required." << std::endl;
+    }
 }
 
 void StencilTwoSided::Extensions::glActiveStencilFace(GLenum face) const

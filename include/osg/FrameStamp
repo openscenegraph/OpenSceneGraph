@@ -40,8 +40,8 @@ class OSG_EXPORT FrameStamp : public Referenced
         
         FrameStamp& operator = (const FrameStamp& fs);
         
-        void setFrameNumber(int fnum) { _frameNumber = fnum; }
-        int getFrameNumber() const { return _frameNumber; }
+        void setFrameNumber(unsigned int fnum) { _frameNumber = fnum; }
+        unsigned int getFrameNumber() const { return _frameNumber; }
         
         void setReferenceTime(double refTime) { _referenceTime = refTime; }
         double getReferenceTime() const { return _referenceTime; }
@@ -63,9 +63,9 @@ class OSG_EXPORT FrameStamp : public Referenced
         // via a simple memory copy or within a data packet across
         // the network.
     
-        int     _frameNumber;
-        double  _referenceTime;
-        double  _simulationTime;        
+        unsigned int    _frameNumber;
+        double          _referenceTime;
+        double          _simulationTime;        
         
         // member variables of time.h's tm structure, copied here to
         // ensure that all data is not dynamic. The tm structure itself

@@ -666,7 +666,6 @@ int main(int argc, char** argv)
 
     osg::Texture::FilterMode filter = osg::Texture::LINEAR;
 
-    bool readParameter = false;
     float minValue, maxValue;
     float scale = 1.0f;
     float offset = 0.0f;
@@ -674,13 +673,11 @@ int main(int argc, char** argv)
     int pos = 1;
     while(pos<arguments.argc())
     {
-        readParameter = false;
         std::string filename;
         
         if (arguments.read(pos, "--layer",layerNum)) 
         {
             osg::notify(osg::NOTICE)<<"Set layer number to "<<layerNum<<std::endl;
-            readParameter = true;
         }
 
         else if (arguments.read(pos, "-b"))
@@ -693,13 +690,11 @@ int main(int argc, char** argv)
             // define the extents.
             locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
             locator->setTransformAsExtents(x,y,x+w,y+h);
-            readParameter = true;
         }
 
         else if (arguments.read(pos, "--transform",offset, scale) || arguments.read(pos, "-t",offset, scale))
         {
             // define the extents.
-            readParameter = true;
         }
 
         else if (arguments.read(pos, "--cartesian",x,y,w,h))
@@ -711,8 +706,6 @@ int main(int argc, char** argv)
 
         else if (arguments.read(pos, "--hf",filename))
         {
-            readParameter = true;
-            
             osg::notify(osg::NOTICE)<<"--hf "<<filename<<std::endl;
 
             osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(filename);
@@ -748,7 +741,6 @@ int main(int argc, char** argv)
 
         else if (arguments.read(pos, "-d",filename) || arguments.read(pos, "--elevation-image",filename))
         {
-            readParameter = true;
             osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<std::endl;
 
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
@@ -783,7 +775,6 @@ int main(int argc, char** argv)
         
         else if (arguments.read(pos, "-c",filename) || arguments.read(pos, "--image",filename))
         {
-            readParameter = true;
             osg::notify(osg::NOTICE)<<"--image "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;
 
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
@@ -818,8 +809,6 @@ int main(int argc, char** argv)
 
         else if (arguments.read(pos, "--filter",filterName))
         {
-            readParameter = true;
-            
             if (filterName=="NEAREST")
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
@@ -844,8 +833,6 @@ int main(int argc, char** argv)
 
         else if (arguments.read(pos, "--tf",minValue, maxValue))
         {
-            readParameter = true;
-
             osg::ref_ptr<osg::TransferFunction1D> tf = new osg::TransferFunction1D;
             
             unsigned int numCells = 6;

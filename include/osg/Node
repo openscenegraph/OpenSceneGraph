@@ -23,14 +23,22 @@
 #include <string>
 #include <vector>
 
+
+// forward declare osgTerrrain::Terrain to enable declaration of asTerrain() method.
+namespace osgTerrain {
+class Terrain;
+}
+
 namespace osg {
 
+// forcing declare classes to enable declaration of as*() methods.
 class NodeVisitor;
 class Group;
 class Transform;
 class Node;
 class Switch;
 class Geode;
+class Camera;
 
 /** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
 typedef std::vector< Node* > NodePath;
@@ -98,6 +106,15 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
 
+
+        /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<Camera*>(this).*/
+        virtual Camera* asCamera() { return 0; }
+        /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<const Camera*>(this).*/
+        virtual const Camera* asCamera() const { return 0; }
+
+
         /** Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0.
           * Equivalent to dynamic_cast<Switch*>(this).*/
         virtual Switch* asSwitch() { return 0; }
@@ -113,6 +130,15 @@ class OSG_EXPORT Node : public Object
         /** convert 'const this' into a const Geode pointer if Node is a Geode, otherwise return 0.
           * Equivalent to dynamic_cast<const Geode*>(this).*/
         virtual const Geode* asGeode() const { return 0; }
+
+        /** Convert 'this' into a Transform pointer if Node is a Terrain, otherwise return 0.
+          * Equivalent to dynamic_cast<Terrrain*>(this).*/
+        virtual osgTerrain::Terrain* asTerrain() { return 0; }
+
+        /** convert 'const this' into a const Terrain pointer if Node is a Terrain, otherwise return 0.
+          * Equivalent to dynamic_cast<const Terrain*>(this).*/
+        virtual const osgTerrain::Terrain* asTerrain() const { return 0; }
+
 
         /** Visitor Pattern : calls the apply method of a NodeVisitor with this node's type.*/
         virtual void accept(NodeVisitor& nv);
@@ -270,7 +296,7 @@ class OSG_EXPORT Node : public Object
         *
         * The most common use of these is during traversal of the scene graph.
         * For instance, when traversing the scene graph the osg::NodeVisitor does a bitwise
-        * AND of its TraversalMask with the Node#s NodeMask to
+        * AND of its TraversalMask with the Node's NodeMask to
         * determine if the Node should be processed/traversed.
         *
         * For example, if a Node has a NodeMask value of 0x02 (only 2nd bit set)
@@ -288,31 +314,6 @@ class OSG_EXPORT Node : public Object
 
 
 
-        /** A vector of std::string's which are used to describe the object.*/
-        typedef std::vector<std::string> DescriptionList;
-
-        /** Set the description list of the node.*/        
-        inline void setDescriptions(const DescriptionList& descriptions) { _descriptions=descriptions; }
-
-        /** Get the description list of the node.*/        
-        inline DescriptionList& getDescriptions() { return _descriptions; }
-
-        /** Get the const description list of the const node.*/        
-        inline const DescriptionList& getDescriptions() const { return _descriptions; }
-
-        /** Get a single const description of the const node.*/
-        inline const std::string& getDescription(unsigned int i) const { return _descriptions[i]; }
-
-        /** Get a single description of the node.*/
-        inline std::string& getDescription(unsigned int i) { return _descriptions[i]; }
-
-        /** Get the number of descriptions of the node.*/
-        inline unsigned int getNumDescriptions() const { return static_cast<unsigned int>(_descriptions.size()); }
-
-        /** Add a description string to the node.*/
-        void addDescription(const std::string& desc) { _descriptions.push_back(desc); }
-
-
         /** Set the node's StateSet.*/
         void setStateSet(osg::StateSet* stateset);
 
@@ -326,6 +327,33 @@ class OSG_EXPORT Node : public Object
 
         /** Return the node's const StateSet. Returns NULL if a stateset is not attached.*/
         inline const osg::StateSet* getStateSet() const { return _stateset.get(); }
+
+
+        /** A vector of std::string's which are used to describe the object.*/
+        typedef std::vector<std::string> DescriptionList;
+
+        /** Set the list of string descriptions.*/
+        void setDescriptions(const DescriptionList& descriptions);
+
+        /** Get the description list of the node.*/
+        DescriptionList& getDescriptions();
+
+        /** Get the const description list of the const node.*/
+        const DescriptionList& getDescriptions() const;
+
+
+        /** Get a single const description of the const node.*/
+        const std::string& getDescription(unsigned int i) const;
+
+        /** Get a single description of the node.*/
+        std::string& getDescription(unsigned int i);
+
+        /** Get the number of descriptions of the node.*/
+        unsigned int getNumDescriptions() const;
+
+        /** Add a description string to the node.*/
+        void addDescription(const std::string& desc);
+        
 
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         void setInitialBound(const osg::BoundingSphere& bsphere) { _initialBound = bsphere; dirtyBound(); }
@@ -437,8 +465,6 @@ class OSG_EXPORT Node : public Object
         void setNumChildrenWithOccluderNodes(unsigned int num);
 
         NodeMask _nodeMask;
-        
-        DescriptionList _descriptions;
 
         ref_ptr<StateSet> _stateset;
 

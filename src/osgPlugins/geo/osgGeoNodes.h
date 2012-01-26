@@ -131,12 +131,8 @@ class geoHeaderGeo: public geoHeader {
 	// including animation variables.
 public:
 	geoHeaderGeo();
-	~geoHeaderGeo() { color_palette->clear();	}
-	geoHeaderGeo(const geoHeaderGeo &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) :
-		geoHeader(geo,copyop){ 
-			intVars=new internalVars(*geo.intVars); useVars=new userVars(*geo.useVars);
-			extVars=new userVars(*geo.extVars);
-		}
+	geoHeaderGeo(const geoHeaderGeo &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
 	void addInternalVars(const georecord &gr) { intVars->addInternalVars(gr);}
 	internalVars *getInternalVars(void) const { return intVars;}
 	const std::string getVarname(const unsigned fid) const {
@@ -174,14 +170,18 @@ public:
 	}
 	void addColour(unsigned char *cpal) {(*color_palette).push_back(cpal);}
 	inline colourPalette *getColorPalette() const { return color_palette;}
+
+protected:
+        virtual ~geoHeaderGeo();
+
 private:
-	osg::Timer_t _lastFrameTick,_initialTick;
-	osg::Timer   _timer;
-	internalVars *intVars;
-	userVars *useVars;
-	userVars *extVars;
-	void moveit(const double t);
-    colourPalette *color_palette; // the colour palette - used in colour animations
+        void moveit(const double t);
+        osg::Timer_t _lastFrameTick,_initialTick;
+        osg::Timer   _timer;
+        internalVars *intVars;
+        userVars *useVars;
+        userVars *extVars;
+        colourPalette *color_palette; // the colour palette - used in colour animations
 };
 
 #endif

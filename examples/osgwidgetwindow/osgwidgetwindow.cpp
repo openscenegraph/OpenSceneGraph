@@ -157,8 +157,7 @@ int main(int argc, char** argv) {
     boxCopy->resizePercent(100.0f, 0.0f);
 
     // Here we demonstrate the use of osgWidget/io_utils. This is really only useful for
-    // debugging at the moment, but later I'll make it more generic for .osg and .ive
-    // creation.
+    // debugging at the moment.
     // std::cout << *box << std::endl << *boxCopy << std::endl;
 
     // Setup our OSG objects for our scene; note the use of the utility function
@@ -169,7 +168,7 @@ int main(int argc, char** argv) {
     // some of the other examples to see this in action...
     osg::Group*  group  = new osg::Group();
     osg::Camera* camera = osgWidget::createOrthoCamera(1280.0f, 1024.0f);
-    osg::Node*   model  = osgDB::readNodeFile("cow.osg");
+    osg::Node*   model  = osgDB::readNodeFile("cow.osgt");
 
     // Add our event handler; is this better as a MatrixManipulator? Add a few other
     // helpful ViewerEventHandlers.

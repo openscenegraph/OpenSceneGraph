@@ -548,7 +548,10 @@ GifImageStream** obj)
 
     // Delete the last allocated buffer to avoid memory leaks if we using GifImageStream
     if ( obj && *obj )
+    {
         delete [] buffer;
+	buffer = 0;
+    }
 
     delete [] rowdata;
     *width_ret = giffile->SWidth;

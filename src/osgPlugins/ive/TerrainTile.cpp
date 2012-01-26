@@ -16,7 +16,9 @@
 #include "Group.h"
 #include "Layer.h"
 
+#include <osgDB/Options>
 #include <osgTerrain/GeometryTechnique>
+#include <osgTerrain/Terrain>
 
 using namespace ive;
 
@@ -131,6 +133,15 @@ void TerrainTile::read(DataInputStream* in)
     }
         
     setTerrainTechnique(readTerrainTechnique(in));
+
+    if (in->getOptions())
+    {
+        osg::ref_ptr<osg::Node> node;
+        if (in->getOptions()->getTerrain().lock(node))
+        {
+            setTerrain(node->asTerrain());
+        }
+    }
 
     if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
         osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(this, in->getOptions());

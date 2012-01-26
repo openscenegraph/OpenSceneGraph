@@ -44,7 +44,7 @@ ENDIF()
 
 SET(LIB_NAME osgDB)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/DataTypes
     ${HEADER_PATH}/StreamOperator
     ${HEADER_PATH}/Serializer
@@ -60,12 +60,14 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/DotOsgWrapper
     ${HEADER_PATH}/DynamicLibrary
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/ExternalFileWriter
     ${HEADER_PATH}/FileCache
     ${HEADER_PATH}/FileNameUtils
     ${HEADER_PATH}/FileUtils
     ${HEADER_PATH}/fstream
     ${HEADER_PATH}/ImageOptions
     ${HEADER_PATH}/ImagePager
+    ${HEADER_PATH}/ImageProcessor
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/Options
@@ -80,10 +82,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/XmlParser
 )
 
-# FIXME: For OS X, need flag for Framework or dylib
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     ObjectWrapper.cpp
     InputStream.cpp
     OutputStream.cpp
@@ -96,6 +95,7 @@ ADD_LIBRARY(${LIB_NAME}
     DatabaseRevisions.cpp
     DotOsgWrapper.cpp
     DynamicLibrary.cpp
+    ExternalFileWriter.cpp
     Field.cpp
     FieldReader.cpp
     FieldReaderIterator.cpp
@@ -114,6 +114,7 @@ ADD_LIBRARY(${LIB_NAME}
     ReadFile.cpp
     Registry.cpp
     SharedStateManager.cpp
+    StreamOperator.cpp
     Version.cpp
     WriteFile.cpp
     XmlParser.cpp
@@ -121,8 +122,10 @@ ADD_LIBRARY(${LIB_NAME}
 )
 
 IF(APPLE)
-    # Needs CoreFoundation calls and a Carbon function
-    SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
+    IF(NOT OSG_BUILD_PLATFORM_IPHONE AND NOT OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+        # Needs CoreFoundation calls and a Carbon function
+        SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
+    ENDIF()
  
     SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "standard image plugin for os x, options are quicktime, imageio")
 
@@ -157,17 +160,13 @@ ENDIF()
 
 ADD_DEFINITIONS(-DOSG_PLUGIN_EXTENSION=${CMAKE_SHARED_MODULE_SUFFIX})
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES     
     osg
     osgUtil
     OpenThreads
 )
-LINK_EXTERNAL(${LIB_NAME} ${OSGDB_PLATFORM_SPECIFIC_LIBRARIES} ${DL_LIBRARY})
-LINK_WITH_VARIABLES(${LIB_NAME} ${COMPRESSION_LIBRARIES})
-LINK_CORELIB_DEFAULT(${LIB_NAME})
+SET(TARGET_EXTERNAL_LIBRARIES ${OSGDB_PLATFORM_SPECIFIC_LIBRARIES} ${DL_LIBRARY})
+SET(TARGET_LIBRARIES_VARS  ${COMPRESSION_LIBRARIES})
 
-IF( ZLIB_FOUND )
-    SET( TARGET_LIBRARIES_VARS ZLIB_LIBRARY )
-ENDIF( ZLIB_FOUND )
+SETUP_LIBRARY(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)

@@ -132,7 +132,6 @@ void View::setCamera(osg::Camera* camera)
     if (_camera.valid())
     {
         _camera->setView(this);
-        
         _camera->setRenderer(createRenderer(camera));
     }
 }
@@ -141,23 +140,22 @@ void View::updateSlaves()
 {
     for(unsigned int i=0; i<_slaves.size(); ++i)
     {
-        updateSlave(i);
+        Slave& slave = _slaves[i];
+        slave.updateSlave(*this);
     }
 }
 
-void View::updateSlave(unsigned int i)
+void View::Slave::updateSlaveImplementation(View& view)
 {
-    if (i >= _slaves.size() || !_camera) return;
+    if (!view.getCamera()) return;
 
-    Slave& slave = _slaves[i];
-
-    if (slave._camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+    if (_camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
     {
-        slave._camera->setProjectionMatrix(_camera->getProjectionMatrix() * slave._projectionOffset);
-        slave._camera->setViewMatrix(_camera->getViewMatrix() * slave._viewOffset);
+        _camera->setProjectionMatrix(view.getCamera()->getProjectionMatrix() * _projectionOffset);
+        _camera->setViewMatrix(view.getCamera()->getViewMatrix() * _viewOffset);
     }
-    
-    slave._camera->inheritCullSettings(*_camera, slave._camera->getInheritanceMask());
+
+    _camera->inheritCullSettings(*(view.getCamera()), _camera->getInheritanceMask());
 }
 
 bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffset, bool useMastersSceneData)
@@ -183,7 +181,7 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
 
     _slaves.push_back(Slave(camera, projectionOffset, viewOffset, useMastersSceneData));
 
-    updateSlave(i);
+    _slaves[i].updateSlave(*this);
     
     camera->setRenderer(createRenderer(camera));    
 

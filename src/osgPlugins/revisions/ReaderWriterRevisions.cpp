@@ -5,10 +5,10 @@
 #include <osgDB/DatabaseRevisions>
 #include <osg/Notify>
 
-class ReaderWriterFreeType : public osgDB::ReaderWriter
+class ReaderWriterRevisions : public osgDB::ReaderWriter
 {
     public:
-        ReaderWriterFreeType()
+        ReaderWriterRevisions()
         {
             supportsExtension("revisions","list of revision files");
             supportsExtension("added","revision file containing list of added files");
@@ -16,7 +16,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             supportsExtension("modified","revision file containing list of modified files");
         }
 
-        virtual const char* className() const { return "FreeType Font Reader/Writer"; }
+        virtual const char* className() const { return "Revisions Font Reader/Writer"; }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
@@ -212,4 +212,4 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-REGISTER_OSGPLUGIN(freetype, ReaderWriterFreeType)
+REGISTER_OSGPLUGIN(revisions, ReaderWriterRevisions)

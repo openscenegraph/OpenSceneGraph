@@ -161,10 +161,21 @@ void PickEventHandler::doOperation()
 
             }
 #endif
+
+            bool commandRunsInBackground = (_command.find("&")!=std::string::npos);
+
             int result = system(_command.c_str());
 
             OSG_INFO<<"system("<<_command<<") result "<<result<<std::endl;
 
+            if (commandRunsInBackground)
+            {
+                // Sleep breifly while command runs in background to give it a chance to open
+                // a window and obscure this present3D's window avoiding this present3D from
+                // rendering anything new before the new window opens.
+                OpenThreads::Thread::microSleep(500000); // half second sleep.
+            }
+            
             break;
         }
         case(osgPresentation::LOAD):

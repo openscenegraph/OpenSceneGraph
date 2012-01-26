@@ -2,11 +2,16 @@
 #define READERWRITERFBX_H
 
 #include <osgDB/ReaderWriter>
+#include <fbxfilesdk/fbxfilesdk_version.h>
 
 ///////////////////////////////////////////////////////////////////////////
 // OSG reader plugin for the ".fbx" format.
-// See http://usa.autodesk.com/adsk/servlet/index?siteID=123112&id=6837478
-// This plugin requires the FBX SDK version 2011.2
+// See http://www.autodesk.com/fbx
+// This plugin requires the FBX SDK version 2012.1
+
+#if FBXSDK_VERSION_MAJOR != 2012 || FBXSDK_VERSION_MINOR != 1
+#error Wrong FBX SDK version
+#endif
 
 class ReaderWriterFBX : public osgDB::ReaderWriter
 {

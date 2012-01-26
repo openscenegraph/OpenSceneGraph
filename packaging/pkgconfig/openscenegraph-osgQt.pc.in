@@ -10,5 +10,5 @@ Description: osgQt utility library.
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgWidget openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgQt
+Libs: -L${libdir} -losgQt@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

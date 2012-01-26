@@ -93,8 +93,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
         {
             if (_toggleFullscreen == true && ea.getKey() == _keyEventToggleFullscreen)
             {
-                osgViewer::Viewer::Windows    windows;
 
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
+                osgViewer::Viewer::Windows windows;
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();
@@ -108,9 +112,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionUp)
             {
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
                 // Increase resolution
                 osgViewer::Viewer::Windows    windows;
-
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();
@@ -124,9 +131,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionDown)
             {
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
                 // Decrease resolution
                 osgViewer::Viewer::Windows    windows;
-
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();
@@ -367,11 +377,11 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                 {
                 case(osgViewer::Viewer::BeforeSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
-                    OSG_NOTICE<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading end of frame barrier position 'AfterSwapBuffers' selected."<<std::endl;
                     break;
                 case(osgViewer::Viewer::AfterSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
-                    OSG_NOTICE<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading end of frame barrier position 'BeforeSwapBuffers' selected."<<std::endl;
                     break;
                 }
 
@@ -397,8 +407,6 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, fl
     _animStartTime(0),
     _lastFrameTime(osg::Timer::instance()->tick())
 {
-    _animPath = new osg::AnimationPath();
-
     const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
     if (str)
     {
@@ -436,7 +444,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
         // If our internal _delta is finally large enough to warrant a ControlPoint
         // insertion, do so now. Be sure and reset the internal _delta, so we can start
         // calculating when the next insert should happen.
-        if (_currentlyRecording && _delta >= _interval)
+        if (_animPath.valid() && _currentlyRecording && _delta >= _interval)
         {
             const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
             double animationPathTime = osg::Timer::instance()->delta_s(_animStartTime, time);            
@@ -469,7 +477,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                 {
                     _currentlyRecording = true;
                     _animStartTime = osg::Timer::instance()->tick();
-                    _animPath->clear();
+                    _animPath = new osg::AnimationPath();
                     
                     if (!_filename.empty())
                     {
@@ -520,31 +528,41 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     _currentlyRecording = false;
                     _delta = 0.0f;
 
-                    // In the future this will need to be written continuously, rather
-                    // than all at once.
-                    osgDB::ofstream out(_filename.c_str());
-                    OSG_NOTICE<<"Writing camera file: "<<_filename<<std::endl;
-                    _animPath->write(out);
-                    out.close();
+                    if (_animPath.valid() && !_animPath->empty())
+                    {
+                        // In the future this will need to be written continuously, rather
+                        // than all at once.
+                        osgDB::ofstream out(_filename.c_str());
+                        OSG_NOTICE<<"Writing camera file: "<<_filename<<std::endl;
+                        _animPath->write(out);
+                        out.close();
+                    }
+                    else
+                    {
+                        OSG_NOTICE<<"No animation path to write out."<<std::endl;
+                    }
                 }
 
                 // The user has requested to BEGIN playback.
                 if (!_currentlyPlaying)
                 {
-                    _animPathManipulator = new osgGA::AnimationPathManipulator(_animPath.get());
-                    _animPathManipulator->home(ea,aa);
+                     if (_animPath.valid() && !_animPath->empty())
+                     {                    
+                        _animPathManipulator = new osgGA::AnimationPathManipulator(_animPath.get());
+                        _animPathManipulator->home(ea,aa);
 
 
-                    // If we successfully found our _filename file, set it and keep a copy
-                    // around of the original CameraManipulator to restore later.
-                    if (_animPathManipulator.valid() && _animPathManipulator->valid())
-                    {
-                        _oldManipulator = view->getCameraManipulator();
-                        view->setCameraManipulator(_animPathManipulator.get());
-                        _currentlyPlaying = true;
-                    }
+                        // If we successfully found our _filename file, set it and keep a copy
+                        // around of the original CameraManipulator to restore later.
+                        if (_animPathManipulator.valid() && _animPathManipulator->valid())
+                        {
+                            _oldManipulator = view->getCameraManipulator();
+                            view->setCameraManipulator(_animPathManipulator.get());
+                            _currentlyPlaying = true;
+                        }
+                     }
                 }
-
+                
                 // The user has requested to STOP playback.
                 else
                 {
@@ -625,6 +643,66 @@ void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
         usage.addKeyboardMouseBinding(ostr.str(),"Decrease LODScale.");
     }
 }
+
+ToggleSyncToVBlankHandler::ToggleSyncToVBlankHandler():
+    _keyEventToggleSyncToVBlank('v')
+{
+}
+
+bool ToggleSyncToVBlankHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+{
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+    
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
+
+    if (viewer == NULL)
+    {
+        return false;
+    }
+    
+    if (ea.getHandled()) return false;
+
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (ea.getKey() == _keyEventToggleSyncToVBlank)
+            {
+                // Increase resolution
+                osgViewer::Viewer::Windows    windows;
+
+                viewer->getWindows(windows);
+                for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+                    itr != windows.end();
+                    ++itr)
+                {
+                    (*itr)->setSyncToVBlank( !(*itr)->getSyncToVBlank() );
+                }
+
+                aa.requestRedraw();
+                return true;
+            }
+
+            break;
+        }
+    default:
+        break;
+    }
+
+    return false;
+}
+
+
+void ToggleSyncToVBlankHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    {
+        std::ostringstream ostr;
+        ostr<<char(_keyEventToggleSyncToVBlank);
+        usage.addKeyboardMouseBinding(ostr.str(),"Toggle SyncToVBlank.");
+    }
+}
+
 
 InteractiveImageHandler::InteractiveImageHandler(osg::Image* image) :
     _image(image),
@@ -738,7 +816,6 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
 
     if (foundIntersection)
     {
-
         osg::Vec2 tc(0.5f,0.5f);
 
         // use the nearest intersection                 
@@ -773,42 +850,42 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
                     tc = tc1*r1 + tc2*r2 + tc3*r3;
                 }
             }
+
+            osg::TexMat* activeTexMat = 0;
+            osg::Texture* activeTexture = 0;
+
+            if (drawable->getStateSet())
+            {
+                osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
+                if (texMat) activeTexMat = texMat;
+
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+                if (texture) activeTexture = texture;
+            }
+
+            if (activeTexMat)
+            {
+                osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), 0.0f,0.0f) * activeTexMat->getMatrix();
+                tc.x() = tc_transformed.x();
+                tc.y() = tc_transformed.y();
+            }
+
+            if (dynamic_cast<osg::TextureRectangle*>(activeTexture))
+            {
+                x = int( tc.x() );
+                y = int( tc.y() );
+            }
+            else if (_image.valid())
+            {
+                x = int( float(_image->s()) * tc.x() );
+                y = int( float(_image->t()) * tc.y() );
+            }
+
+            return true;
         }
 
-        osg::TexMat* activeTexMat = 0;
-        osg::Texture* activeTexture = 0;
-        
-        if (geometry->getStateSet())
-        {
-            osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
-            if (texMat) activeTexMat = texMat;
-
-            osg::Texture* texture = dynamic_cast<osg::Texture*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
-            if (texture) activeTexture = texture;
-        }
-
-        if (activeTexMat)
-        {
-            osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), 0.0f,0.0f) * activeTexMat->getMatrix();
-            tc.x() = tc_transformed.x();
-            tc.y() = tc_transformed.y();
-        }
-
-        if (dynamic_cast<osg::TextureRectangle*>(activeTexture))
-        {
-            x = int( tc.x() );
-            y = int( tc.y() );
-        }
-        else if (_image.valid())
-        {
-            x = int( float(_image->s()) * tc.x() );
-            y = int( float(_image->t()) * tc.y() );
-        }
-
-
-        return true;
     }
-    
+
     return false;
 }
 
@@ -845,6 +922,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
             {
                 return _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
             }          
+            break;
         }
         case (osgGA::GUIEventAdapter::RESIZE):
         {
@@ -855,6 +933,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
                 resize(ea.getWindowWidth(), ea.getWindowHeight());
                 return true;
             }
+            break;
         }
 
         default:

@@ -121,7 +121,9 @@ osg::Node* createSpotLightNode(const osg::Vec3& position, const osg::Vec3& direc
     osg::TexGen* texgen = texgenNode->getTexGen();
     texgen->setMode(osg::TexGen::EYE_LINEAR);
     texgen->setPlanesFromMatrix(osg::Matrixd::lookAt(position, position+direction, up)*
-                                osg::Matrixd::perspective(angle,1.0,0.1,100));
+                                osg::Matrixd::perspective(angle,1.0,0.1,100)*
+                                osg::Matrixd::translate(1.0,1.0,1.0)*
+                                osg::Matrixd::scale(0.5,0.5,0.5));
 
     
     group->addChild(texgenNode);
@@ -226,7 +228,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
     osg::Group* model = new osg::Group;
  
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();

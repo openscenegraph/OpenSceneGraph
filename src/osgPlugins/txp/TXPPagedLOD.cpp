@@ -30,7 +30,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
-    int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
+    unsigned int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
 
     // set the frame number of the traversal so that external nodes can find out how active this
     // node is.
@@ -105,7 +105,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
                     //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
                     nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,
-                                                                    this,
+                                                                    nv.getNodePath(),
                                                                     priority,
                                                                     nv.getFrameStamp(),
                                                                     _perRangeDataList[numChildren]._databaseRequest);

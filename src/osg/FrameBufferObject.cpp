@@ -284,6 +284,36 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
     return objectID;
 }
 
+void RenderBuffer::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _objectID.resize(maxSize);
+    _dirty.resize(maxSize);
+}
+
+void RenderBuffer::releaseGLObjects(osg::State* state) const
+{
+    if (state)
+    {
+        unsigned int contextID = state->getContextID();
+        if (_objectID[contextID])
+        {
+            deleteRenderBuffer(contextID, _objectID[contextID]);
+            _objectID[contextID] = 0;
+        }
+    }
+    else
+    {
+        for(unsigned i=0; i<_objectID.size(); ++i)
+        {
+            if (_objectID[i])
+            {
+                deleteRenderBuffer(i, _objectID[i]);
+                _objectID[i] = 0;
+            }
+        }
+    }
+}
+
 /**************************************************************************
  * FrameBufferAttachment
  **************************************************************************/
@@ -469,15 +499,20 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
                 format = attachment._internalFormat;
             _ximpl = new Pimpl(Pimpl::RENDERBUFFER);
             _ximpl->renderbufferTarget = new osg::RenderBuffer(image->s(), image->t(), format);
+            return;
         }
         else
         {
             OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
         }
-        return;
+    }
+    else
+    {
+        OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
     }
 
-    OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
+    // provide all fallback
+    _ximpl = new Pimpl();
 }
 
 
@@ -745,6 +780,37 @@ FrameBufferObject::~FrameBufferObject()
     for(unsigned i=0; i<_fboID.size(); ++i)
     {
         if (_fboID[i]) deleteFrameBufferObject(i, _fboID[i]);
+    }
+}
+
+void FrameBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _fboID.resize(maxSize);
+    _unsupported.resize(maxSize);
+    _fboID.resize(maxSize);
+}
+
+void FrameBufferObject::releaseGLObjects(osg::State* state) const
+{
+    if (state)
+    {
+        unsigned int contextID = state->getContextID();
+        if (_fboID[contextID])
+        {
+            deleteFrameBufferObject(contextID, _fboID[contextID]);
+            _fboID[contextID] = 0;
+        }
+    }
+    else
+    {
+        for(unsigned int i=0; i<_fboID.size(); ++i)
+        {
+            if (_fboID[i])
+            {
+                deleteFrameBufferObject(i, _fboID[i]);
+                _fboID[i] = 0;
+            }
+        }
     }
 }
 

@@ -648,3 +648,16 @@ unsigned int RenderBin::computeNumberOfDynamicRenderLeaves() const
     
     return count;
 }
+
+
+void RenderBin::releaseGLObjects(osg::State* state) const
+{
+    if (_stateset) _stateset->releaseGLObjects(state);
+
+    for(RenderBinList::const_iterator itr = _bins.begin();
+        itr != _bins.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+}

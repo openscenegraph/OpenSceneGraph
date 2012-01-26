@@ -17,13 +17,16 @@
 #include <osg/Referenced>
 #include <osg/CopyOp>
 #include <osg/ref_ptr>
+#include <osg/Notify>
 
 #include <string>
+#include <vector>
 
 namespace osg {
 
 // forward declare
 class State;
+class UserDataContainer;
 
 #define _ADDQUOTES(def) #def
 #define ADDQUOTES(def) _ADDQUOTES(def)
@@ -39,21 +42,6 @@ class State;
         virtual const char* libraryName() const { return #library; }\
         virtual const char* className() const { return #name; }
 
-template<typename T>
-T* clone(const T* t, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
-{
-    return dynamic_cast<T*>(t->clone(copyop)); 
-}
-
-
-template<typename T>
-T* clone(const T* t, const std::string& name, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
-{
-    T* newObject = dynamic_cast<T*>(t->clone(copyop)); 
-    newObject->setName(name);
-    return newObject;
-}
-
 /** Base class/standard interface for objects which require IO support, 
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.
@@ -67,9 +55,9 @@ class OSG_EXPORT Object : public Referenced
             and therefore cannot be constructed on its own, only derived
             classes which override the clone and className methods are
             concrete classes and can be constructed.*/
-        inline Object():Referenced(),_dataVariance(UNSPECIFIED) {}
+        inline Object():Referenced(),_dataVariance(UNSPECIFIED), _userDataContainer(0) {}
 
-        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(UNSPECIFIED) {}
+        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(UNSPECIFIED),_userDataContainer(0) {}
 
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
@@ -93,7 +81,10 @@ class OSG_EXPORT Object : public Referenced
         /** return the name of the object's class type. Must be defined
             by derived classes.*/
         virtual const char* className() const = 0;
-        
+
+
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
 
         /** Set the name of object using C++ style string.*/
         virtual void setName( const std::string& name ) { _name = name; }
@@ -130,20 +121,48 @@ class OSG_EXPORT Object : public Referenced
         virtual void computeDataVariance() {}
 
 
+        /** set the UserDataContainer object.*/
+        void setUserDataContainer(osg::UserDataContainer* udc);
+
+        /** get the UserDataContainer attached to this object.*/
+        osg::UserDataContainer* getUserDataContainer() { return _userDataContainer; }
+
+        /** get the const UserDataContainer attached to this object.*/
+        const osg::UserDataContainer* getUserDataContainer() const { return _userDataContainer; }
+
+        /** Convinience method that returns the UserDataContainer, and if one doesn't already exist creates and assigns
+         * a DefaultUserDataContainer to the Object and then return this new UserDataContainer.*/
+        osg::UserDataContainer* getOrCreateUserDataContainer();
+
+
         /**
          * Set user data, data must be subclassed from Referenced to allow
          * automatic memory handling.  If your own data isn't directly 
          * subclassed from Referenced then create an adapter object
          * which points to your own object and handles the memory addressing.
          */
-        inline void setUserData(Referenced* obj) { _userData = obj; }
-        
-        /** Get user data.*/
-        inline Referenced* getUserData() { return _userData.get(); }
-        
-        /** Get const user data.*/
-        inline const Referenced* getUserData() const { return _userData.get(); }
+        virtual void setUserData(Referenced* obj);
 
+        /** Get user data.*/
+        virtual Referenced* getUserData();
+
+        /** Get const user data.*/
+        virtual const Referenced* getUserData() const;
+        
+
+
+        /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
+          * To use this template method you need to include the osg/ValueObject header.*/
+        template<typename T>
+        bool getUserValue(const std::string& name, T& value) const;
+
+        /** Convinience method that creates the osg::TemplateValueObject<T> to store the
+          * specified value and adds it as a named UserObject.
+          * To use this template method you need to include the osg/ValueObject header. */
+        template<typename T>
+        void setUserValue(const std::string& name, const T& value);
+
+        
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
 
@@ -151,6 +170,7 @@ class OSG_EXPORT Object : public Referenced
            * the specified graphics context. Otherwise, releases OpenGL objects
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const {}
+
 
     protected:
 
@@ -161,11 +181,12 @@ class OSG_EXPORT Object : public Referenced
             Nodes cannot be created on stack i.e Node node will not compile,
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
-        virtual ~Object() {}
+        virtual ~Object();
         
         std::string _name;
         DataVariance _dataVariance;
-        ref_ptr<Referenced> _userData;
+
+        osg::UserDataContainer* _userDataContainer;
 
     private:
 
@@ -173,6 +194,74 @@ class OSG_EXPORT Object : public Referenced
         Object& operator = (const Object&) { return *this; }
 };
 
+template<typename T>
+T* clone(const T* t, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
+{
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->clone(copyop);
+
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+
+template<typename T>
+T* clone(const T* t, const std::string& name, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
+{
+    T* newObject = osg::clone(t, copyop);
+    if (newObject)
+    {
+        newObject->setName(name);
+        return newObject;
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, const std::string&, const osg::CopyOp) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+
+template<typename T>
+T* cloneType(const T* t)
+{
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->cloneType();
+
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::cloneType(const T*) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::cloneType(const T*) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+    
 }
 
 #endif

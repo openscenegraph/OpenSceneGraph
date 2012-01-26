@@ -163,7 +163,6 @@ class TemplateTargetAttributeDispatch : public AttributeDispatch
             _functionPtr(_target, &(_array[pos * _stride]));
         }
 
-        GLBeginEndAdapter*      _glBeginEndAdapter;
         F                       _functionPtr;
         I                       _target;
         unsigned int            _stride;
@@ -379,6 +378,7 @@ ArrayDispatchers::ArrayDispatchers():
     _colorDispatchers(0),
     _secondaryColorDispatchers(0),
     _fogCoordDispatchers(0),
+    _useVertexAttribAlias(false),
     _useGLBeginEndAdapter(false)
 {
 
@@ -429,6 +429,7 @@ void ArrayDispatchers::init()
     _useGLBeginEndAdapter = false;
 
     _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
+    _vertexDispatchers->assignGLBeginEnd<GLdouble>(Array::Vec3dArrayType, &GLBeginEndAdapter::Vertex3dv, 3);
     _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
     _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
@@ -575,6 +576,7 @@ void ArrayDispatchers::reset()
 {
     if (!_initialized) init();
 
+    _useVertexAttribAlias = false;
     _useGLBeginEndAdapter = false;
 
     for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();

@@ -130,13 +130,14 @@ public:
                 break;
         }
     }
-    
+
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
     {
         if (indices==0 || count==0) return;
 
-        typedef const GLubyte* IndexPointer;
-    
+        typedef GLubyte Index;
+        typedef const Index* IndexPointer;
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -180,7 +181,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                unsigned int first = *iptr;
+                Index first = *iptr;
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -202,7 +203,8 @@ public:
     {
         if (indices==0 || count==0) return;
 
-        typedef const GLushort* IndexPointer;
+        typedef GLushort Index;
+        typedef const Index* IndexPointer;
     
         switch(mode)
         {
@@ -247,7 +249,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                unsigned int first = *iptr;
+                Index first = *iptr;
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -269,7 +271,8 @@ public:
     {
         if (indices==0 || count==0) return;
     
-        typedef const GLuint* IndexPointer;
+        typedef GLuint Index;
+        typedef const Index* IndexPointer;
     
         switch(mode)
         {
@@ -314,7 +317,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                unsigned int first = *iptr;
+                Index first = *iptr;
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {

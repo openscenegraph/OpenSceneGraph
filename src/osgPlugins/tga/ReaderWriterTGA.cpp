@@ -545,15 +545,16 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         
         bool saveTGAStream(const osg::Image& image, std::ostream& fout) const
         {
+            if (!image.data()) return false;
+
             // At present, I will only save the image to unmapped RGB format
             // Other data types can be added soon with different options
             // The format description can be found at:
             // http://local.wasp.uwa.edu.au/~pbourke/dataformats/tga/
+            unsigned int pixelFormat = image.getPixelFormat();
             int width = image.s(), height = image.t();
-            int numPerPixel = image.computeNumComponents(image.getPixelFormat());
+            int numPerPixel = image.computeNumComponents(pixelFormat);
             int pixelMultiplier = (image.getDataType()==GL_FLOAT ? 255 : 1);
-            const unsigned char* data = image.data();
-            if ( !data ) return false;
             
             // Headers
             fout.put(0);  // Identification field size
@@ -569,22 +570,30 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             fout.put(numPerPixel * 8);  // Image pixel size
             fout.put(0);  // Image descriptor
             
+            // Swap red/blue channels for BGR images
+            int r = 0, g = 1, b = 2;
+            if( pixelFormat == GL_BGR || pixelFormat == GL_BGRA )
+            {
+                r = 2;
+                b = 0;
+            }
+
             // Data
             for (int y=0; y<height; ++y)
             {
-                const unsigned char* ptr = data + y * width * numPerPixel;
+                const unsigned char* ptr = image.data(0,y);
                 for (int x=0; x<width; ++x)
                 {
                     int off = x * numPerPixel;
                     switch ( numPerPixel )
                     {
                     case 3:  // BGR
-                        fout.put(ptr[off+2] * pixelMultiplier); fout.put(ptr[off+1] * pixelMultiplier);
-                        fout.put(ptr[off+0] * pixelMultiplier);
+                        fout.put(ptr[off+b] * pixelMultiplier); fout.put(ptr[off+g] * pixelMultiplier);
+                        fout.put(ptr[off+r] * pixelMultiplier);
                         break;
                     case 4:  // BGRA
-                        fout.put(ptr[off+2] * pixelMultiplier); fout.put(ptr[off+1] * pixelMultiplier);
-                        fout.put(ptr[off+0] * pixelMultiplier); fout.put(ptr[off+3] * pixelMultiplier);
+                        fout.put(ptr[off+b] * pixelMultiplier); fout.put(ptr[off+g] * pixelMultiplier);
+                        fout.put(ptr[off+r] * pixelMultiplier); fout.put(ptr[off+3] * pixelMultiplier);
                         break;
                     default:
                         return false;

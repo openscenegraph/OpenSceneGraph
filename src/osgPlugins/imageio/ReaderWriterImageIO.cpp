@@ -388,8 +388,10 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         int i, j;
         GLubyte *pixels = (GLubyte *)image_data;
         for (i = the_height * the_width; i--; ) {
-            GLuint *value = (GLuint *)pixels;
+            
 #if __BIG_ENDIAN__
+            // That value is a temporary one and only needed for endianess conversion
+            GLuint *value = (GLuint *)pixels;
             // 
             // swap endian of each pixel for avoiding weird colors on ppc macs
             // by Tatsuhiro Nishioka
@@ -1197,6 +1199,11 @@ public:
 
     WriteResult writeImageStream(const osg::Image& osg_image, std::ostream& fout, const osgDB::ReaderWriter::Options* the_options) const
     {
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
 
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromDataStream(fout, the_options);
@@ -1233,7 +1240,13 @@ public:
 
     WriteResult writeImageFile(const osg::Image& osg_image, const std::string& full_file_name, const osgDB::ReaderWriter::Options* the_options) const
     {
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
+
         // Call ImageIO to load the image.
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromFile(full_file_name.c_str(), the_options);
         if (NULL == cg_dest_ref) return WriteResult::ERROR_IN_WRITING_FILE;
@@ -1266,6 +1279,12 @@ public:
         std::string ext = osgDB::getFileExtension(file_name);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+        if (!osg_image.isDataContiguous())
+        {
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
+        WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
 #if 1
         // FIXME: Something may need to provide a proper writable location for the files.
         std::string full_file_name;
@@ -1285,7 +1304,3 @@ public:
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(imageio, ReaderWriterImageIO)
-
-
-
-

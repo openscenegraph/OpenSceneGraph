@@ -178,6 +178,9 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
             face(0),
             mipMapGeneration(false),
             vsync(true),
+            swapGroupEnabled(false),
+            swapGroup(0),
+            swapBarrier(0),
             useMultiThreadedOpenGLEngine(false),
             useCursor(true),
             glContextVersion("1.0"),
@@ -192,7 +195,7 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
     {
         alpha = ds->getMinimumNumAlphaBits();
         stencil = ds->getMinimumNumStencilBits();
-        sampleBuffers = ds->getMultiSamples();
+        if (ds->getMultiSamples()!=0) sampleBuffers = 1;
         samples = ds->getNumMultiSamples();
         if (ds->getStereo())
         {
@@ -576,12 +579,12 @@ void GraphicsContext::close(bool callCloseImplementation)
 
 bool GraphicsContext::makeCurrent()
 {
+    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+
     bool result = makeCurrentImplementation();
     
     if (result)
     {
-        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
-
         // initialize extension process, not only initializes on first
         // call, will be a non-op on subsequent calls.        
         getState()->initializeExtensionProcs();

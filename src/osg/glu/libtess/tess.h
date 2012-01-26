@@ -37,8 +37,18 @@
 
 // #include <GL/glu.h>
 #include <osg/GLU>
- 
-#define GLAPIENTRY GL_APIENTRY 
+
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable: structure was padded due to __declspec(align())
+    #pragma warning( disable : 4324 )
+
+    // disable: warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+    #pragma warning( disable :  4611)
+#endif
+
+#ifndef GLAPIENTRY
+    #define GLAPIENTRY GL_APIENTRY 
+#endif
 
 #include <setjmp.h>
 #include "mesh.h"

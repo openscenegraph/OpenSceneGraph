@@ -455,6 +455,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     }    
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 
     bool useHardwareMipmapGeneration = 
         !image->isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
@@ -708,7 +709,10 @@ void Texture2DArray::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Texture2DArray::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isTexture3DSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
+    _isTexture3DSupported = OSG_GL3_FEATURES ||
+                            isGLExtensionSupported(contextID,"GL_EXT_texture3D") ||
+                            strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+
     _isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
 
     _max2DSize = 0;

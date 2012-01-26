@@ -10,5 +10,5 @@ Description: Manipulator library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgUtil openscenegraph-osgGA openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgManipulator
+Libs: -L${libdir} -losgManipulator@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

@@ -124,7 +124,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
     float maximumWidth = _maximumWidth;
 
     float hr = 1.0f;
-    float wr = 1.0f/getCharacterAspectRatio();
+    float wr = 1.0f;
 
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
@@ -140,76 +140,53 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
         {
             const osg::BoundingBox & bb = glyph->getBoundingBox();
 
+            if (_layout==RIGHT_TO_LEFT)
+            {
+                cursor.x() -= glyph->getHorizontalAdvance() * wr;
+            }
+
             // adjust cursor position w.r.t any kerning.
-            if (previous_charcode)
+            if (kerning && previous_charcode)
             {
-
-                if (_layout == RIGHT_TO_LEFT)
+                switch(_layout)
                 {
-                    cursor.x() -= glyph->getHorizontalAdvance() * wr;
-                }
-
-                if (kerning)
-                {
-                    switch (_layout)
-                    {
-                        case LEFT_TO_RIGHT:
-                        {
-                            osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
-                            cursor.x() += delta.x() * wr;
-                            cursor.y() += delta.y() * hr;
-                            break;
-                        }
-                        case RIGHT_TO_LEFT:
-                        {
-                            osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
-                            cursor.x() -= delta.x() * wr;
-                            cursor.y() -= delta.y() * hr;
-                            break;
-                        }
-                        case VERTICAL:
-                            break; // no kerning when vertical.
-                    }
+                  case LEFT_TO_RIGHT:
+                  {
+                    osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
+                    cursor.x() += delta.x() * wr;
+                    cursor.y() += delta.y() * hr;
+                    break;
+                  }
+                  case RIGHT_TO_LEFT:
+                  {
+                    osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
+                    cursor.x() -= delta.x() * wr;
+                    cursor.y() -= delta.y() * hr;
+                    break;
+                  }
+                  case VERTICAL:
+                    break; // no kerning when vertical.
                 }
             }
-            else
-            {
-                switch (_layout)
-                {
-                    case LEFT_TO_RIGHT:
-                    {
-                        cursor.x() -= glyph->getHorizontalBearing().x() * wr;
-                        break;
-                    }
-                    case RIGHT_TO_LEFT:
-                    {
-                        cursor.x() -= bb.xMax() * wr;
-                        break;
-                    }
-                    case VERTICAL:
-                        break;
-                }
 
-            }
-
-
+            osg::Vec2 local = cursor;
 
             switch(_layout)
             {
               case LEFT_TO_RIGHT:
               {
-                if (maximumWidth>0.0f && cursor.x()+bb.xMax()>maximumWidth) outOfSpace=true;
-                if(maximumHeight>0.0f && cursor.y()<-maximumHeight) outOfSpace=true;
+                if (maximumWidth>0.0f && local.x()+bb.xMax()>maximumWidth) outOfSpace=true;
+                if(maximumHeight>0.0f && local.y()<-maximumHeight) outOfSpace=true;
                 break;
               }
               case RIGHT_TO_LEFT:
               {
-                if (maximumWidth>0.0f && cursor.x()+bb.xMin()<-maximumWidth) outOfSpace=true;
-                if(maximumHeight>0.0f && cursor.y()<-maximumHeight) outOfSpace=true;
+                if (maximumWidth>0.0f && local.x()+bb.xMin()<-maximumWidth) outOfSpace=true;
+                if(maximumHeight>0.0f && local.y()<-maximumHeight) outOfSpace=true;
                 break;
               }
               case VERTICAL:
-                if (maximumHeight>0.0f && cursor.y()<-maximumHeight) outOfSpace=true;
+                if (maximumHeight>0.0f && local.y()<-maximumHeight) outOfSpace=true;
                 break;
             }
 
@@ -287,7 +264,7 @@ void Text3D::computeGlyphRepresentation()
 
 
     float hr = 1.0f;
-    float wr = 1.0f/getCharacterAspectRatio();
+    float wr = 1.0f;
 
     osg::Vec2 startOfLine_coords(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine_coords);
@@ -299,8 +276,6 @@ void Text3D::computeGlyphRepresentation()
     bool kerning = true;
 
     unsigned int lineNumber = 0;
-
-
 
     for(String::iterator itr=_text.begin(); itr!=_text.end(); )
     {
@@ -329,69 +304,36 @@ void Text3D::computeGlyphRepresentation()
                 {
                     const osg::BoundingBox & bb = glyph->getBoundingBox();
 
-                    // adjust cursor position w.r.t any kerning.
-                    if (previous_charcode)
+                    if (_layout==RIGHT_TO_LEFT)
                     {
-                        if (_layout == RIGHT_TO_LEFT)
-                        {
-                            cursor.x() -= glyph->getHorizontalAdvance() * wr;
-                        }
-
-                        if (kerning)
-                        {
-                            switch (_layout)
-                            {
-                                case LEFT_TO_RIGHT:
-                                {
-                                    osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
-                                    cursor.x() += delta.x() * wr;
-                                    cursor.y() += delta.y() * hr;
-                                    break;
-                                }
-                                case RIGHT_TO_LEFT:
-                                {
-                                    osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
-                                    cursor.x() -= delta.x() * wr;
-                                    cursor.y() -= delta.y() * hr;
-                                    break;
-                                }
-                                case VERTICAL:
-                                    break; // no kerning when vertical.
-                            }
-                        }
+                        cursor.x() -= glyph->getHorizontalAdvance() * wr;
                     }
-                    else
-                    {
-                        switch (_layout)
-                        {
-                            case LEFT_TO_RIGHT:
-                            {
-                                cursor.x() -= glyph->getHorizontalBearing().x() * wr;
-                                break;
-                            }
-                            case RIGHT_TO_LEFT:
-                            {
-                                cursor.x() -= bb.xMax() * wr;
-                                break;
-                            }
-                            case VERTICAL:
-                            {
-//                                cursor.y() += glyph->getVerticalBearing().y();
-                                break;
-                            }
-                        }
 
+                    // adjust cursor position w.r.t any kerning.
+                    if (kerning && previous_charcode)
+                    {
+                        switch(_layout)
+                        {
+                          case LEFT_TO_RIGHT:
+                          {
+                            osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
+                            cursor.x() += delta.x() * wr;
+                            cursor.y() += delta.y() * hr;
+                            break;
+                          }
+                          case RIGHT_TO_LEFT:
+                          {
+                            osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
+                            cursor.x() -= delta.x() * wr;
+                            cursor.y() -= delta.y() * hr;
+                            break;
+                          }
+                          case VERTICAL:
+                            break; // no kerning when vertical.
+                        }
                     }
 
                     local = cursor;
-
-                    if (_layout==VERTICAL)
-                    {
-                        local.x() += -glyph->getVerticalBearing().x() * wr;
-                        local.y() += -glyph->getVerticalBearing().y() * hr;
-                    }
-
-
 
                     // move the cursor onto the next character.
                     // also expand bounding box
@@ -400,12 +342,12 @@ void Text3D::computeGlyphRepresentation()
                         case LEFT_TO_RIGHT:
                             _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMin()*wr, cursor.y() + bb.yMin()*hr, 0.0f)); //lower left corner
                             _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMax()*wr, cursor.y() + bb.yMax()*hr, 0.0f)); //upper right corner
-                            cursor.x() += glyph->getHorizontalAdvance();
+                            cursor.x() += glyph->getHorizontalAdvance() * wr;
                             break;
                         case VERTICAL:
                             _textBB.expandBy(osg::Vec3(cursor.x(), cursor.y(), 0.0f)); //upper left corner
                             _textBB.expandBy(osg::Vec3(cursor.x() + glyph->getWidth()*wr, cursor.y() - glyph->getHeight()*hr, 0.0f)); //lower right corner
-                            cursor.y() -= glyph->getVerticalAdvance();
+                            cursor.y() -= glyph->getVerticalAdvance() * hr;
                             break;
                         case RIGHT_TO_LEFT:
                             _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMax()*wr, cursor.y() + bb.yMax()*hr, 0.0f)); //upper right corner
@@ -534,9 +476,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     osg::State & state = *renderInfo.getState();
     unsigned int contextID = state.getContextID();
 
-    state.disableColorPointer();
-    state.Color(_color.r(),_color.g(),_color.b(),_color.a());
-
     // ** save the previous modelview matrix
     osg::Matrix previous(state.getModelViewMatrix());
 
@@ -555,6 +494,8 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         if (_textBB.valid())
         {
+            gl.Color4fv(_color.ptr());
+
             osg::Vec3 c000(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMax()));
             osg::Vec3 c100(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMax()));
             osg::Vec3 c110(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax()));
@@ -604,6 +545,8 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z()));
         osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z()));
 
+        gl.Color4fv(_color.ptr());
+
         gl.Begin(GL_LINES);
             gl.Vertex3fv(hl.ptr());
             gl.Vertex3fv(hr.ptr());
@@ -615,6 +558,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
     if (_drawMode & TEXT)
     {
+        state.disableColorPointer();
+        state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+
         renderInfo.getState()->disableAllVertexArrays();
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
@@ -638,6 +584,17 @@ void Text3D::renderPerGlyph(osg::State & state) const
 {
     osg::Matrix original_modelview = state.getModelViewMatrix();
 
+    const osg::StateSet* frontStateSet = getStateSet();
+    const osg::StateSet* wallStateSet = getWallStateSet();
+    const osg::StateSet* backStateSet = getBackStateSet();
+    bool applyMainColor = false;
+
+    if (wallStateSet==0) wallStateSet = frontStateSet;
+    else if (wallStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
+    if (backStateSet==0) backStateSet = frontStateSet;
+    else if (backStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
     // ** for each line, do ...
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -659,6 +616,11 @@ void Text3D::renderPerGlyph(osg::State & state) const
 
             state.applyDisablingOfVertexAttributes();
 
+            if (frontStateSet!=backStateSet)
+            {
+                state.apply(frontStateSet);
+                if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+            }
 
             osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
@@ -666,11 +628,19 @@ void Text3D::renderPerGlyph(osg::State & state) const
                 (*itr)->draw(state, false);
             }
 
+            if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
+
             // ** render the wall face of the glyph
             osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
+            }
+
+            if (backStateSet!=wallStateSet)
+            {
+                state.apply(backStateSet);
+                if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
             }
 
             osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
@@ -689,6 +659,18 @@ void Text3D::renderPerFace(osg::State & state) const
     // ** render all front faces
     state.Normal(0.0f,0.0f,1.0f);
 #endif
+
+    const osg::StateSet* frontStateSet = getStateSet();
+    const osg::StateSet* wallStateSet = getWallStateSet();
+    const osg::StateSet* backStateSet = getBackStateSet();
+    bool applyMainColor = false;
+
+    if (wallStateSet==0) wallStateSet = frontStateSet;
+    else if (wallStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
+    if (backStateSet==0) backStateSet = frontStateSet;
+    else if (backStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
 
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -713,6 +695,7 @@ void Text3D::renderPerFace(osg::State & state) const
         }
     }
 
+    if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
 
     // ** render all wall face of the text
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -741,6 +724,13 @@ void Text3D::renderPerFace(osg::State & state) const
     // ** render all back face of the text
     state.Normal(0.0f,0.0f,-1.0f);
 #endif
+
+    if (backStateSet!=wallStateSet)
+    {
+        state.apply(backStateSet);
+        if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+    }
+
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
@@ -775,9 +765,13 @@ void Text3D::setThreadSafeRefUnref(bool threadSafe)
 
 void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
 {
+    OSG_INFO<<"Text3D::resizeGLObjectBuffers("<<maxSize<<")"<<std::endl;
+
     TextBase::resizeGLObjectBuffers(maxSize);
 
     if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
+
+    TextBase::computePositions();
 }
 
 void Text3D::releaseGLObjects(osg::State* state) const

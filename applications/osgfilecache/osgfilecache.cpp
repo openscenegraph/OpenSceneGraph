@@ -14,6 +14,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/CoordinateSystemNode>
 #include <osg/Geometry>
+#include <osg/PagedLOD>
 #include <osg/io_utils>
 
 #include <osgTerrain/TerrainTile>
@@ -128,6 +129,40 @@ struct Extents
     osg::Vec2d      _min;
     osg::Vec2d      _max;
 };
+
+class CheckValidVisitor : public osg::NodeVisitor
+{
+public:
+
+    CheckValidVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _numInvalidGeometries(0) {}
+
+    void apply(osg::Geode& geode)
+    {
+        unsigned int local_numInvalidGeometries = 0;
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+            if (geometry)
+            {
+                if (!geometry->verifyArrays(_errorReports)) ++local_numInvalidGeometries;
+            }
+        }
+        if (local_numInvalidGeometries)
+        {
+            _errorReports<<"Geode "<<geode.getName()<<" contains problem geometries"<<std::endl;
+            _numInvalidGeometries += local_numInvalidGeometries;
+        }
+    }
+
+    bool valid() const { return _numInvalidGeometries==0; }
+
+    unsigned int _numInvalidGeometries;
+    std::stringstream _errorReports;
+    
+};
+
 
 class LoadDataVisitor : public osg::NodeVisitor
 {
@@ -273,35 +308,47 @@ public:
     
     osg::Node* readNodeFileAndWriteToCache(const std::string& filename)
     {
-        
+        osg::Node* node = 0;
         if (_fileCache.valid() && osgDB::containsServerAddress(filename))
         {
             if (_fileCache->existsInCache(filename))
             {
                 osg::notify(osg::NOTICE)<<"reading from FileCache: "<<filename<<std::endl;
-                return _fileCache->readNode(filename, osgDB::Registry::instance()->getOptions()).takeNode();
+                node = _fileCache->readNode(filename, osgDB::Registry::instance()->getOptions()).takeNode();
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
 
-                osg::Node* node = osgDB::readNodeFile(filename);
+                node = osgDB::readNodeFile(filename);
                 if (node)
                 {
                     osg::notify(osg::NOTICE)<<"write to FileCache : "<<filename<<std::endl;
 
                     _fileCache->writeNode(*node, filename, osgDB::Registry::instance()->getOptions());
                 }
-                return node;
             }
         }
         else
         {
             osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
-            return osgDB::readNodeFile(filename);
+            node = osgDB::readNodeFile(filename);
         }
+
+        if (node)
+        {
+            CheckValidVisitor cvv;
+            node->accept(cvv);
+            if (!cvv.valid())
+            {
+                OSG_NOTICE<<"Warning, errors in geometry found in file "<<filename<<std::endl;
+                OSG_NOTICE<<cvv._errorReports.str()<<std::endl;
+            }
+        }
+        return node;
     }
-    
+
+
 protected:
 
     inline void pushMatrix(osg::Matrix& matrix) { _matrixStack.push_back(matrix); }
@@ -404,7 +451,7 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of seperate files into a single archive file that can be later read in OSG applications..");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of separate files into a single archive file that can be later read in OSG applications..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-l level","Read down to level across the whole database.");
     arguments.getApplicationUsage()->addCommandLineOption("-e level minX minY maxX maxY","Read down to <level> across the extents minX, minY to maxY, maxY.  Note, for geocentric datase X and Y are longitude and latitude respectively.");

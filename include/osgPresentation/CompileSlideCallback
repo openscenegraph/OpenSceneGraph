@@ -35,7 +35,7 @@ class OSGPRESENTATION_EXPORT CompileSlideCallback : public osg::Camera::DrawCall
         virtual ~CompileSlideCallback() {}
         
         mutable bool                _needCompile;
-        mutable int                 _frameNumber;
+        mutable unsigned int        _frameNumber;
         osg::ref_ptr<osg::Node>     _sceneToCompile;
 
 };

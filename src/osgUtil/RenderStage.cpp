@@ -234,6 +234,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
     osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
 
+    _bufferAttachmentMap.clear();
 
     // compute the required dimensions
     int width = static_cast<int>(_viewport->x() + _viewport->width());
@@ -627,7 +628,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             bool colorAttached = false;
             bool depthAttached = false;
-            bool stencilAttached = false;
             for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
                 itr != bufferAttachments.end();
                 ++itr)
@@ -646,7 +646,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     case(osg::Camera::STENCIL_BUFFER):
                     {
                         traits->stencil = 8;
-                        stencilAttached = true;
                         break;
                     }
                     case(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER):
@@ -654,7 +653,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         traits->depth = 24;
                         depthAttached = true;
                         traits->stencil = 8;
-                        stencilAttached = true;
                     }
                     case(osg::Camera::COLOR_BUFFER):
                     {
@@ -953,7 +951,8 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebuffer)
     {
         GLbitfield blitMask = 0;
-
+        bool needToBlitColorBuffers = false;
+        
         //find which buffer types should be copied
         for (FrameBufferObject::AttachmentMap::const_iterator
             it = _resolveFbo->getAttachmentMap().begin(),
@@ -969,8 +968,12 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 break;
             case Camera::PACKED_DEPTH_STENCIL_BUFFER:
                 blitMask |= GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-            default:
+                break;
+            case Camera::COLOR_BUFFER:
                 blitMask |= GL_COLOR_BUFFER_BIT;
+                break;
+            default:
+                needToBlitColorBuffers = true;
                 break;
             }
         }
@@ -979,15 +982,44 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         _fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
         _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
 
-        // Blit to the resolve framebuffer.
-        // Note that (with nvidia 175.16 windows drivers at least) if the read
-        // framebuffer is multisampled then the dimension arguments are ignored
-        // and the whole framebuffer is always copied.
-        fbo_ext->glBlitFramebuffer(
-            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-            blitMask, GL_NEAREST);
+        if (blitMask)
+        {
+            // Blit to the resolve framebuffer.
+            // Note that (with nvidia 175.16 windows drivers at least) if the read
+            // framebuffer is multisampled then the dimension arguments are ignored
+            // and the whole framebuffer is always copied.
+            fbo_ext->glBlitFramebuffer(
+                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                blitMask, GL_NEAREST);
+        }
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        if (needToBlitColorBuffers)
+        {
+            for (FrameBufferObject::AttachmentMap::const_iterator
+                it = _resolveFbo->getAttachmentMap().begin(),
+                end =_resolveFbo->getAttachmentMap().end(); it != end; ++it)
+            {
+                osg::Camera::BufferComponent attachment = it->first;
+                if (attachment >=osg::Camera::COLOR_BUFFER0)
+                {
+                    glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                    glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+
+                    fbo_ext->glBlitFramebuffer(
+                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                }
+            }
+            // reset the read and draw buffers?  will comment out for now with the assumption that
+            // the buffers will be set explictly when needed elsewhere.
+            // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+            // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+        }
+#endif
+        
         apply_read_fbo = true;
         read_fbo = _resolveFbo.get();
 
@@ -1492,4 +1524,36 @@ void RenderStage::clearReferencesToDependentCameras()
     }
 
     _dependentCameras.clear();
+}
+
+void RenderStage::releaseGLObjects(osg::State* state) const
+{
+    RenderBin::releaseGLObjects(state);
+
+    for(RenderStageList::const_iterator itr = _preRenderList.begin();
+        itr != _preRenderList.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
+    for(RenderStageList::const_iterator itr = _postRenderList.begin();
+        itr != _postRenderList.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
+    for(Cameras::const_iterator itr = _dependentCameras.begin();
+        itr != _dependentCameras.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+
+    if (_texture.valid()) _texture->releaseGLObjects(state);
+
+    if (_fbo.valid()) _fbo->releaseGLObjects(state);
+    if (_resolveFbo.valid()) _resolveFbo->releaseGLObjects(state);
+    if (_graphicsContext.valid())  _graphicsContext->releaseGLObjects(state);
 }

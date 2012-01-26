@@ -34,7 +34,8 @@ public:
 
 protected:
     cOSG* mOSG;
-    HANDLE mThreadHandle;
+    //HANDLE mThreadHandle;
+    CRenderingThread* mThreadHandle;
 
 // Generated message map functions
 protected:

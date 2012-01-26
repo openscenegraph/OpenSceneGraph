@@ -441,11 +441,13 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             // See if we're already at the top level of the filesystem
             if ((parentPath.empty()) && (!lastElement.empty()))
             {
+                std::string directoryStringToUse = (realDirName[0]=='/' || realDirName[0]=='\\') ? std::string("/") : std::string(".");
+
                 // Search for the first path element (ignoring case) in
                 // the top-level directory
-                realDirName = findFileInDirectory(lastElement, "/",
+                realDirName = findFileInDirectory(lastElement, directoryStringToUse,
                                                   CASE_INSENSITIVE);
-      
+
                 dc = osgDB::getDirectoryContents(realDirName);
                 needFollowingBackslash = true;
                 needDirectoryName = true;
@@ -553,7 +555,7 @@ osgDB::DirectoryContents osgDB::expandWildcardsInFilename(const std::string& fil
     osgDB::DirectoryContents contents;
 
     std::string dir = osgDB::getFilePath(filename);
-    std::string filenameOnly = filename.substr(dir.length(), std::string::npos);
+    std::string filenameOnly = dir.empty() ? filename : filename.substr(dir.length()+1, std::string::npos);
     std::string left = filenameOnly.substr(0, filenameOnly.find('*'));
     std::string right = filenameOnly.substr(filenameOnly.find('*')+1, std::string::npos);
 

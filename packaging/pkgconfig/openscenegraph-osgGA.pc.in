@@ -10,5 +10,5 @@ Description: GUI event library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgGA
+Libs: -L${libdir} -losgGA@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

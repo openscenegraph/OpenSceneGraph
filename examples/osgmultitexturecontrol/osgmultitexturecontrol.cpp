@@ -91,7 +91,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
         typedef std::vector<double> Elevations;
 
         ElevationLayerBlendingCallback(osgFX::MultiTextureControl* mtc, const Elevations& elevations, float animationTime=4.0f):
-            _previousFrame(-1),
+            _previousFrame(0),
             _previousTime(0.0),
             _animationTime(animationTime),
             _currentElevation(0.0),
@@ -105,7 +105,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
             {
 
                 float deltaTime = 0.01f;
-                if (_previousFrame!=-1)
+                if (_previousFrame!=0)
                 {
                     deltaTime = float(nv->getFrameStamp()->getReferenceTime() - _previousTime);
                 }
@@ -171,7 +171,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
             traverse(node,nv);
         }
 
-        int                                             _previousFrame;
+        unsigned int                                    _previousFrame;
         double                                          _previousTime;
         float                                           _animationTime;
         double                                          _currentElevation;

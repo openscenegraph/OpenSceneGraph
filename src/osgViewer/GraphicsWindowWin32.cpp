@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * This file is Copyright (C) 2007 - André Garneau (andre@pixdev.com) and licensed under OSGPL.
@@ -401,62 +401,62 @@ class Win32KeyboardMap
             _keymap[VK_F10          ] = osgGA::GUIEventAdapter::KEY_F10;
             _keymap[VK_F11          ] = osgGA::GUIEventAdapter::KEY_F11;
             _keymap[VK_F12          ] = osgGA::GUIEventAdapter::KEY_F12;
-            _keymap[0xc0            ] = '`';
-            _keymap['0'             ] = '0';
-            _keymap['1'             ] = '1';
-            _keymap['2'             ] = '2';
-            _keymap['3'             ] = '3';
-            _keymap['4'             ] = '4';
-            _keymap['5'             ] = '5';
-            _keymap['6'             ] = '6';
-            _keymap['7'             ] = '7';
-            _keymap['8'             ] = '8';
-            _keymap['9'             ] = '9';
-            _keymap[0xbd            ] = '-';
-            _keymap[0xbb            ] = '=';
+            _keymap[0xc0            ] = osgGA::GUIEventAdapter::KEY_Backquote;
+            _keymap['0'             ] = osgGA::GUIEventAdapter::KEY_0;
+            _keymap['1'             ] = osgGA::GUIEventAdapter::KEY_1;
+            _keymap['2'             ] = osgGA::GUIEventAdapter::KEY_2;
+            _keymap['3'             ] = osgGA::GUIEventAdapter::KEY_3;
+            _keymap['4'             ] = osgGA::GUIEventAdapter::KEY_4;
+            _keymap['5'             ] = osgGA::GUIEventAdapter::KEY_5;
+            _keymap['6'             ] = osgGA::GUIEventAdapter::KEY_6;
+            _keymap['7'             ] = osgGA::GUIEventAdapter::KEY_7;
+            _keymap['8'             ] = osgGA::GUIEventAdapter::KEY_8;
+            _keymap['9'             ] = osgGA::GUIEventAdapter::KEY_9;
+            _keymap[0xbd            ] = osgGA::GUIEventAdapter::KEY_Minus;
+            _keymap[0xbb            ] = osgGA::GUIEventAdapter::KEY_Equals;
             _keymap[VK_BACK         ] = osgGA::GUIEventAdapter::KEY_BackSpace;
             _keymap[VK_TAB          ] = osgGA::GUIEventAdapter::KEY_Tab;
-            _keymap['A'             ] = 'A';
-            _keymap['B'             ] = 'B';
-            _keymap['C'             ] = 'C';
-            _keymap['D'             ] = 'D';
-            _keymap['E'             ] = 'E';
-            _keymap['F'             ] = 'F';
-            _keymap['G'             ] = 'G';
-            _keymap['H'             ] = 'H';
-            _keymap['I'             ] = 'I';
-            _keymap['J'             ] = 'J';
-            _keymap['K'             ] = 'K';
-            _keymap['L'             ] = 'L';
-            _keymap['M'             ] = 'M';
-            _keymap['N'             ] = 'N';
-            _keymap['O'             ] = 'O';
-            _keymap['P'             ] = 'P';
-            _keymap['Q'             ] = 'Q';
-            _keymap['R'             ] = 'R';
-            _keymap['S'             ] = 'S';
-            _keymap['T'             ] = 'T';
-            _keymap['U'             ] = 'U';
-            _keymap['V'             ] = 'V';
-            _keymap['W'             ] = 'W';
-            _keymap['X'             ] = 'X';
-            _keymap['Y'             ] = 'Y';
-            _keymap['Z'             ] = 'Z';
-            _keymap[0xdb            ] = '[';
-            _keymap[0xdd            ] = ']';
-            _keymap[0xdc            ] = '\\';
+            _keymap['A'             ] = osgGA::GUIEventAdapter::KEY_A;
+            _keymap['B'             ] = osgGA::GUIEventAdapter::KEY_B;
+            _keymap['C'             ] = osgGA::GUIEventAdapter::KEY_C;
+            _keymap['D'             ] = osgGA::GUIEventAdapter::KEY_D;
+            _keymap['E'             ] = osgGA::GUIEventAdapter::KEY_E;
+            _keymap['F'             ] = osgGA::GUIEventAdapter::KEY_F;
+            _keymap['G'             ] = osgGA::GUIEventAdapter::KEY_G;
+            _keymap['H'             ] = osgGA::GUIEventAdapter::KEY_H;
+            _keymap['I'             ] = osgGA::GUIEventAdapter::KEY_I;
+            _keymap['J'             ] = osgGA::GUIEventAdapter::KEY_J;
+            _keymap['K'             ] = osgGA::GUIEventAdapter::KEY_K;
+            _keymap['L'             ] = osgGA::GUIEventAdapter::KEY_L;
+            _keymap['M'             ] = osgGA::GUIEventAdapter::KEY_M;
+            _keymap['N'             ] = osgGA::GUIEventAdapter::KEY_N;
+            _keymap['O'             ] = osgGA::GUIEventAdapter::KEY_O;
+            _keymap['P'             ] = osgGA::GUIEventAdapter::KEY_P;
+            _keymap['Q'             ] = osgGA::GUIEventAdapter::KEY_Q;
+            _keymap['R'             ] = osgGA::GUIEventAdapter::KEY_R;
+            _keymap['S'             ] = osgGA::GUIEventAdapter::KEY_S;
+            _keymap['T'             ] = osgGA::GUIEventAdapter::KEY_T;
+            _keymap['U'             ] = osgGA::GUIEventAdapter::KEY_U;
+            _keymap['V'             ] = osgGA::GUIEventAdapter::KEY_V;
+            _keymap['W'             ] = osgGA::GUIEventAdapter::KEY_W;
+            _keymap['X'             ] = osgGA::GUIEventAdapter::KEY_X;
+            _keymap['Y'             ] = osgGA::GUIEventAdapter::KEY_Y;
+            _keymap['Z'             ] = osgGA::GUIEventAdapter::KEY_Z;
+            _keymap[0xdb            ] = osgGA::GUIEventAdapter::KEY_Leftbracket;
+            _keymap[0xdd            ] = osgGA::GUIEventAdapter::KEY_Rightbracket;
+            _keymap[0xdc            ] = osgGA::GUIEventAdapter::KEY_Backslash;
             _keymap[VK_CAPITAL      ] = osgGA::GUIEventAdapter::KEY_Caps_Lock;
-            _keymap[0xba            ] = ';';
-            _keymap[0xde            ] = '\'';
+            _keymap[0xba            ] = osgGA::GUIEventAdapter::KEY_Semicolon;
+            _keymap[0xde            ] = osgGA::GUIEventAdapter::KEY_Quote;
             _keymap[VK_RETURN       ] = osgGA::GUIEventAdapter::KEY_Return;
             _keymap[VK_LSHIFT       ] = osgGA::GUIEventAdapter::KEY_Shift_L;
-            _keymap[0xbc            ] = ',';
-            _keymap[0xbe            ] = '.';
-            _keymap[0xbf            ] = '/';
+            _keymap[0xbc            ] = osgGA::GUIEventAdapter::KEY_Comma;
+            _keymap[0xbe            ] = osgGA::GUIEventAdapter::KEY_Period;
+            _keymap[0xbf            ] = osgGA::GUIEventAdapter::KEY_Slash;
             _keymap[VK_RSHIFT       ] = osgGA::GUIEventAdapter::KEY_Shift_R;
             _keymap[VK_LCONTROL     ] = osgGA::GUIEventAdapter::KEY_Control_L;
             _keymap[VK_LWIN         ] = osgGA::GUIEventAdapter::KEY_Super_L;
-            _keymap[VK_SPACE        ] = ' ';
+            _keymap[VK_SPACE        ] = osgGA::GUIEventAdapter::KEY_Space;
             _keymap[VK_LMENU        ] = osgGA::GUIEventAdapter::KEY_Alt_L;
             _keymap[VK_RMENU        ] = osgGA::GUIEventAdapter::KEY_Alt_R;
             _keymap[VK_RWIN         ] = osgGA::GUIEventAdapter::KEY_Super_R;
@@ -599,7 +599,7 @@ Win32WindowingSystem::~Win32WindowingSystem()
         osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
         osg::Referenced::getDeleteHandler()->flushAll();
     }
-    
+
     unregisterWindowClasses();
 }
 
@@ -707,10 +707,10 @@ bool Win32WindowingSystem::getSampleOpenGLContext( OpenGLContext& context, HDC w
                                  osgGraphicsWindowWithoutCursorClass.c_str(),
                                  NULL,
                                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_DISABLED,
-                                 windowOriginX, 
-                                 windowOriginY, 
-                                 1, 
-                                 1, 
+                                 windowOriginX,
+                                 windowOriginY,
+                                 1,
+                                 1,
                                  NULL,
                                  NULL,
                                  ::GetModuleHandle(NULL),
@@ -783,7 +783,7 @@ bool Win32WindowingSystem::getSampleOpenGLContext( OpenGLContext& context, HDC w
     return true;
 }
 
-unsigned int Win32WindowingSystem::getNumScreens( const osg::GraphicsContext::ScreenIdentifier& si ) 
+unsigned int Win32WindowingSystem::getNumScreens( const osg::GraphicsContext::ScreenIdentifier& si )
 {
     return si.displayNum==0 ? ::GetSystemMetrics(SM_CMONITORS) : 0;
 }
@@ -923,7 +923,7 @@ bool Win32WindowingSystem::setScreenSettings( const osg::GraphicsContext::Screen
         deviceMode.dmFields     |= DM_BITSPERPEL;
         deviceMode.dmBitsPerPel  = static_cast<DWORD>(resolution.colorDepth);
     }
-    
+
     return changeScreenSettings(si, displayDevice, deviceMode);
 }
 
@@ -1056,7 +1056,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
     else setCursor(NoCursor);
 
     init();
-    
+
     if (valid())
     {
         setState( new osg::State );
@@ -1065,7 +1065,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
         if (_traits.valid() && _traits->sharedContext)
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
-            incrementContextIDUsageCount( getState()->getContextID() );   
+            incrementContextIDUsageCount( getState()->getContextID() );
         }
         else
         {
@@ -1098,10 +1098,10 @@ void GraphicsWindowWin32::init()
     _valid       = _initialized;
 
     // 2008/10/03
-    // Few days ago NVidia released WHQL certified drivers ver 178.13. 
-    // These drivers (as well as former beta ver 177.92) were free from the bug described below. 
+    // Few days ago NVidia released WHQL certified drivers ver 178.13.
+    // These drivers (as well as former beta ver 177.92) were free from the bug described below.
     // So it looks like its high time to make the workaround inactive by default.
-    // If you happen to still use earlier drivers and have problems consider changing to new ones or 
+    // If you happen to still use earlier drivers and have problems consider changing to new ones or
     // activate OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND macro def through CMake advanced vars.
 #ifdef OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND
 
@@ -1109,14 +1109,14 @@ void GraphicsWindowWin32::init()
     // Workaround for Bugs in NVidia drivers for windows XP / multithreaded / dualview / multicore CPU
     // affects GeForce 6x00, 7x00, 8x00 boards (others were not tested) driver versions 174.xx - 175.xx
     // pre 174.xx had other issues so reverting is not an option (statitistics, fbo)
-    // drivers release 175.16 is the latest currently available 
-    // 
+    // drivers release 175.16 is the latest currently available
+    //
     // When using OpenGL in threaded app ( main thread sets up context / renderer thread draws using it )
-    // first wglMakeCurrent seems to not work right and screw OpenGL context driver data: 
-    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans 
+    // first wglMakeCurrent seems to not work right and screw OpenGL context driver data:
+    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans
     // 2: weird behaviour of FramBufferObjects (glGenFramebuffer generates already generated ids ...)
     // Looks like repeating wglMakeCurrent call fixes all these issues
-    // wglMakeCurrent call can impact performance so I try to minimize number of 
+    // wglMakeCurrent call can impact performance so I try to minimize number of
     // wglMakeCurrent calls by checking current HDC and GL context
     // and repeat wglMakeCurrent only when they change for current thread
 
@@ -1157,10 +1157,10 @@ bool GraphicsWindowWin32::createWindow()
                                                   Win32WindowingSystem::osgGraphicsWindowWithoutCursorClass.c_str(),
                              _traits->windowName.c_str(),
                              windowStyle,
-                             _windowOriginXToRealize, 
-                             _windowOriginYToRealize, 
-                             _windowWidthToRealize, 
-                             _windowHeightToRealize, 
+                             _windowOriginXToRealize,
+                             _windowOriginYToRealize,
+                             _windowWidthToRealize,
+                             _windowHeightToRealize,
                              NULL,
                              NULL,
                              ::GetModuleHandle(NULL),
@@ -1252,7 +1252,7 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
         return false;
     }
 
-    _hglrc = ::wglCreateContext(_hdc);
+    _hglrc = createContextImplementation();
     if (_hglrc==0)
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
@@ -1289,7 +1289,7 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
 {
     if (_destroying) return;
     _destroying = true;
-   
+
     if (_graphicsThread && _graphicsThread->isRunning())
     {
         // find all the viewers that might own use this graphics context
@@ -1298,7 +1298,7 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
         {
             osgViewer::View* view = dynamic_cast<osgViewer::View*>((*it)->getView());
             osgViewer::ViewerBase* viewerBase = view ? view->getViewerBase() : 0;
-            if (viewerBase && viewerBase->areThreadsRunning()) 
+            if (viewerBase && viewerBase->areThreadsRunning())
             {
                 viewerBase->stopThreading();
             }
@@ -1489,9 +1489,9 @@ static void PreparePixelFormatSpecifications( const osg::GraphicsContext::Traits
             case osg::DisplaySettings::SWAP_DEFAULT:
                 // Wojtek Lewandowski 2010-09-28:
                 // Keep backward compatibility if no method is selected via traits
-                // and let wglSwapExchangeARB flag select swap method. 
-                // However, I would rather remove this flag because its 
-                // now redundant to Traits::swapMethod and it looks like 
+                // and let wglSwapExchangeARB flag select swap method.
+                // However, I would rather remove this flag because its
+                // now redundant to Traits::swapMethod and it looks like
                 // WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
                 // To be precise: At least on Windows 7 and Nvidia it seems to be a default.
                 if ( allowSwapExchangeARB )
@@ -1521,28 +1521,28 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
     {
         // = openGLContext.getTraits()
         reportErrorForScreen("ChooseMatchingPixelFormat() - wglChoosePixelFormatARB extension not found, trying GDI", screenNum, ::GetLastError());
-        PIXELFORMATDESCRIPTOR pixelFormat = { 
-            sizeof(PIXELFORMATDESCRIPTOR),  //  size of this pfd 
-            1,                     // version number 
-            PFD_DRAW_TO_WINDOW |   // support window 
-            PFD_SUPPORT_OPENGL |   // support OpenGL 
-            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?            
+        PIXELFORMATDESCRIPTOR pixelFormat = {
+            sizeof(PIXELFORMATDESCRIPTOR),  //  size of this pfd
+            1,                     // version number
+            PFD_DRAW_TO_WINDOW |   // support window
+            PFD_SUPPORT_OPENGL |   // support OpenGL
+            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?
             (_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : NULL) |
             (_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : NULL),
-            PFD_TYPE_RGBA,         // RGBA type 
+            PFD_TYPE_RGBA,         // RGBA type
             _traits->red + _traits->green + _traits->blue,                // color depth
-            _traits->red ,0, _traits->green ,0, _traits->blue, 0,          // shift bits ignored 
+            _traits->red ,0, _traits->green ,0, _traits->blue, 0,          // shift bits ignored
             _traits->alpha,          // alpha buffer ?
-            0,                     // shift bit ignored 
-            0,                     // no accumulation buffer 
-            0, 0, 0, 0,            // accum bits ignored 
+            0,                     // shift bit ignored
+            0,                     // no accumulation buffer
+            0, 0, 0, 0,            // accum bits ignored
             _traits->depth,          // 32 or 16 bit z-buffer ?
             _traits->stencil,        // stencil buffer ?
-            0,                     // no auxiliary buffer 
-            PFD_MAIN_PLANE,        // main layer 
-            0,                     // reserved 
-            0, 0, 0                // layer masks ignored 
-        }; 
+            0,                     // no auxiliary buffer
+            PFD_MAIN_PLANE,        // main layer
+            0,                     // reserved
+            0, 0, 0                // layer masks ignored
+        };
         int pixelFormatIndex = ::ChoosePixelFormat(hdc, &pixelFormat);
         if (pixelFormatIndex == 0)
         {
@@ -1801,7 +1801,7 @@ bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
     //
 
     ::InvalidateRect(NULL, NULL, TRUE);
-    
+
     return true;
 }
 
@@ -1815,7 +1815,7 @@ bool GraphicsWindowWin32::realizeImplementation()
         if (!_initialized) return false;
     }
 
-    if (_traits.valid() && (_traits->sharedContext /*|| _traits->vsync*/))
+    if (_traits.valid() && (_traits->sharedContext || _traits->vsync || _traits->swapGroupEnabled))
     {
         // make context current so we can test capabilities and set up context sharing
         struct RestoreContext
@@ -1827,13 +1827,10 @@ bool GraphicsWindowWin32::realizeImplementation()
             }
             ~RestoreContext()
             {
-                if (_hdc)
-                {
-                    wglMakeCurrent(_hdc,_hglrc);
-                }
+                wglMakeCurrent(_hdc,_hglrc);
             }
         protected:
-            HDC        _hdc;
+            HDC      _hdc;
             HGLRC    _hglrc;
         } restoreContext;
 
@@ -1862,6 +1859,12 @@ bool GraphicsWindowWin32::realizeImplementation()
         {
             setSyncToVBlank(_traits->vsync);
         }
+
+        // If the swap group is active then enable it.
+        if (_traits->swapGroupEnabled)
+        {
+            setSwapGroup(_traits->swapGroupEnabled, _traits->swapGroup, _traits->swapBarrier);
+        }
     }
 
     if (_ownsWindow)
@@ -1885,7 +1888,7 @@ bool GraphicsWindowWin32::realizeImplementation()
             reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to show window", _traits->screenNum, ::GetLastError());
             return false;
         }
- 
+
         if (!::UpdateWindow(_hwnd))
         {
             reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to update window", _traits->screenNum, ::GetLastError());
@@ -1909,8 +1912,8 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
     if( _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues )
     {
         if( ::wglGetCurrentDC() != _hdc ||
-            ::wglGetCurrentContext() != _hglrc ) 
-        { 
+            ::wglGetCurrentContext() != _hglrc )
+        {
             if (!::wglMakeCurrent(_hdc, _hglrc))
             {
                 reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());
@@ -2050,7 +2053,7 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
         return;
     }
 #endif
-   
+
     getEventQueue()->mouseWarped(x,y);
 }
 
@@ -2099,11 +2102,12 @@ void GraphicsWindowWin32::setWindowName( const std::string & name )
 
 void GraphicsWindowWin32::useCursor( bool cursorOn )
 {
-    _traits->useCursor = cursorOn;
-    if (_traits->useCursor == false)
-    {
-       setCursor(NoCursor);
-    }    
+    if (_traits.valid())
+        _traits->useCursor = cursorOn;
+
+    // note, we are using setCursorImpl to set the cursor, so we can use 
+    // _appMouseCursor to cache the current mouse-cursor
+    setCursorImpl(cursorOn ? _appMouseCursor : NoCursor);
 }
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
@@ -2119,10 +2123,10 @@ void GraphicsWindowWin32::setCursorImpl( MouseCursor mouseCursor )
         _mouseCursor = mouseCursor;
         HCURSOR newCursor = getOrCreateCursor( mouseCursor);
         if (newCursor == _currentCursor) return;
-    
+
         _currentCursor = newCursor;
         _traits->useCursor = (_currentCursor != NULL) && (_mouseCursor != NoCursor);
-    
+
         if (_mouseCursor != InheritCursor)
             ::SetCursor(_currentCursor);
     }
@@ -2203,8 +2207,38 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
     default:
         break;
     }
-    
+
     return _mouseCursorMap[mouseCursor];
+}
+
+void GraphicsWindowWin32::setSwapGroup(bool on, GLuint group, GLuint barrier)
+{
+    if (_traits.valid())
+    {
+        _traits->swapGroupEnabled = on;
+        _traits->swapGroup        = group;
+        _traits->swapBarrier      = barrier;
+    }
+
+    typedef BOOL (GL_APIENTRY *PFNWGLJOINSWAPGROUPNVPROC) (HDC hDC, GLuint group);
+    PFNWGLJOINSWAPGROUPNVPROC wglJoinSwapGroupNV = (PFNWGLJOINSWAPGROUPNVPROC)wglGetProcAddress( "wglJoinSwapGroupNV" );
+
+    typedef BOOL (GL_APIENTRY *PFNWGLBINDSWAPBARRIERNVPROC) (GLuint group, GLuint barrier);
+    PFNWGLBINDSWAPBARRIERNVPROC wglBindSwapBarrierNV = (PFNWGLBINDSWAPBARRIERNVPROC)wglGetProcAddress( "wglBindSwapBarrierNV" );
+
+    if ((!wglJoinSwapGroupNV) || (!wglBindSwapBarrierNV))
+    {
+        OSG_INFO << "GraphicsWindowWin32::wglJoinSwapGroupNV(bool, GLuint, GLuint) not supported" << std::endl;
+        return;
+    }
+
+    int swapGroup = (on ? group : 0);
+    BOOL resultJoin = wglJoinSwapGroupNV(_hdc, swapGroup);
+    OSG_INFO << "GraphicsWindowWin32::wglJoinSwapGroupNV (" << swapGroup << ") returned " << resultJoin << std::endl;
+
+    int swapBarrier = (on ? barrier : 0);
+    BOOL resultBind = wglBindSwapBarrierNV(swapGroup, swapBarrier);
+    OSG_INFO << "GraphicsWindowWin32::wglBindSwapBarrierNV (" << swapGroup << ", " << swapBarrier << ") returned " << resultBind << std::endl;
 }
 
 void GraphicsWindowWin32::setSyncToVBlank( bool on )
@@ -2214,7 +2248,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
         _traits->vsync = on;
     }
 
-#if 0
+//#if 0
     // we ought to properly check if the extension is listed as supported rather than just
     // if the function pointer resolves through wglGetProcAddress, but in practice everything
     // supports this extension
@@ -2232,12 +2266,12 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
     {
         OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not supported" << std::endl;
     }
-#else
-    OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
-#endif
+//#else
+//    OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
+//#endif
 }
 
-void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
+void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol)
 {
     modifierMask = 0;
 
@@ -2303,7 +2337,10 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
     {
         keySymbol = osgGA::GUIEventAdapter::KEY_KP_Enter;
     }
-    else if ((keySymbol & 0xff00)==0) 
+
+    unmodifiedKeySymbol = keySymbol;
+
+    if ((keySymbol & 0xff00)==0)
     {
         char asciiKey[2];
         int numChars = ::ToAscii(wParam, (lParam>>16)&0xff, keyState, reinterpret_cast<WORD*>(asciiKey), 0);
@@ -2331,13 +2368,13 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
     switch(uMsg)
     {
-        // Wojtek Lewandowski 2010-09-28: 
-        // All web docs on Windows Aero and OpenGL compatibiltiy 
+        // Wojtek Lewandowski 2010-09-28:
+        // All web docs on Windows Aero and OpenGL compatibiltiy
         // suggest WM_ERASEBKGND should be handled with non NULL value return.
-        // This sugesstion may be irrelevant for our window class 
-        // as default brush pattern is not set so erase flag is forwarded to WM_PAINT 
+        // This sugesstion may be irrelevant for our window class
+        // as default brush pattern is not set so erase flag is forwarded to WM_PAINT
         // and gets ignored when WM_PAINT is handled.
-        // But it will certainly be safer and not make things worse 
+        // But it will certainly be safer and not make things worse
         // if we handle this message to be sure everything is done as suggested.
         case WM_ERASEBKGND :
             return TRUE;
@@ -2352,6 +2389,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 PAINTSTRUCT paint;
                 ::BeginPaint(hwnd, &paint);
                 ::EndPaint(hwnd, &paint);
+                requestRedraw();
             }
             break;
 
@@ -2394,7 +2432,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         case WM_MBUTTONUP   :
         case WM_RBUTTONUP   :
         /////////////////////
-            
+
             {
                 ::ReleaseCapture();
 
@@ -2464,10 +2502,15 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int windowWidth = (clientRect.right == 0) ? 1 : clientRect.right ;
                 int windowHeight = (clientRect.bottom == 0) ? 1 : clientRect.bottom;;
 
+                // send resize event if window position or size was changed
                 if (windowX!=_traits->x || windowY!=_traits->y || windowWidth!=_traits->width || windowHeight!=_traits->height)
                 {
-                    resized(windowX, windowY, windowWidth, windowHeight); 
+                    resized(windowX, windowY, windowWidth, windowHeight);
                     getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
+
+                    // request redraw if window size was changed
+                    if (windowWidth!=_traits->width || windowHeight!=_traits->height)
+                        requestRedraw();
                 }
             }
             break;
@@ -2479,11 +2522,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
             {
                 int keySymbol = 0;
+                int unmodifiedKeySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = true;
+                adaptKey(wParam, lParam, keySymbol, modifierMask, unmodifiedKeySymbol);
+                _keyMap[std::make_pair(keySymbol,unmodifiedKeySymbol)] = true;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyPress(keySymbol, eventTime);
+                getEventQueue()->keyPress(keySymbol, eventTime, unmodifiedKeySymbol);
             }
             break;
 
@@ -2494,11 +2538,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
             {
                 int keySymbol = 0;
+                int unmodifiedKeySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = false;
+                adaptKey(wParam, lParam, keySymbol, modifierMask, unmodifiedKeySymbol);
+                _keyMap[std::make_pair(keySymbol, unmodifiedKeySymbol)] = false;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyRelease(keySymbol, eventTime);
+                getEventQueue()->keyRelease(keySymbol, eventTime, unmodifiedKeySymbol);
             }
             break;
 
@@ -2509,7 +2554,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             //InheritCursor.  InheritCursor lets the user manage the cursor externally.
             if (_mouseCursor != InheritCursor)
             {
-                if (_traits->useCursor) 
+                if (_traits->useCursor)
                     ::SetCursor( _currentCursor);
                 else
                     ::SetCursor(NULL);
@@ -2520,16 +2565,39 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
         case WM_SETFOCUS :
         ///////////////////
-
-            // Check keys and send a message if the key is pressed when the 
+            // Check keys and send a message if the key is pressed when the
             // focus comes back to the window.
             // I don't really like this hard-coded loop, but the key codes
             // (VK_* constants) seem to go from 0x08 to 0xFE so it should be
             // ok. See winuser.h for the key codes.
             for (unsigned int i = 0x08; i < 0xFF; i++)
             {
-                if ((::GetAsyncKeyState(i) & 0x8000) != 0)
-                    ::SendMessage(hwnd, WM_KEYDOWN, i, 0);
+                // Wojciech Lewandowski: 2011/09/12 
+                // Skip CONTROL | MENU | SHIFT tests because we are polling exact left or right keys 
+                // above return press for both right and left so we may end up with incosistent
+                // modifier mask if we report left control & right control while only right was pressed
+                LONG rightSideCode = 0;
+                switch( i )
+                {
+                    case VK_CONTROL:
+                    case VK_SHIFT:
+                    case VK_MENU:
+                        continue;
+
+                    case VK_RCONTROL:
+                    case VK_RSHIFT:
+                    case VK_RMENU:
+                        rightSideCode = 0x01000000;
+                }
+                if ((::GetAsyncKeyState(i) & 0x8000) != 0) 
+                {                    
+                    // Compute lParam because subsequent adaptKey will rely on correct lParam
+                    UINT scanCode = ::MapVirtualKeyEx( i, 0, ::GetKeyboardLayout(0));
+                    // Set Extended Key bit + Scan Code + 30 bit to indicate key was set before sending message
+                    // See Windows SDK help on WM_KEYDOWN for explanation
+                    LONG lParam = rightSideCode | ( ( scanCode & 0xFF ) << 16 ) | (1 << 30);
+                    ::SendMessage(hwnd, WM_KEYDOWN, i, lParam );
+                }
             }
             break;
 
@@ -2538,12 +2606,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
 
             // Release all keys that were pressed when the window lost focus.
-            for (std::map<int, bool>::iterator key = _keyMap.begin();
+            for (std::map<std::pair<int, int>, bool>::iterator key = _keyMap.begin();
                  key != _keyMap.end(); ++key)
             {
                 if (key->second)
                 {
-                    getEventQueue()->keyRelease(key->first);
+                    getEventQueue()->keyRelease(key->first.first, key->first.second);
                     key->second = false;
                 }
             }
@@ -2666,7 +2734,7 @@ static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy
 
 
 // declare C entry point for static compilation.
-extern "C" void graphicswindow_Win32(void)
+extern "C" void OSGVIEWER_EXPORT graphicswindow_Win32(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
 }

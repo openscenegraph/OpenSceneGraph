@@ -27,83 +27,13 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osg/Timer>
+#include <osg/ImageUtils>
 
 using namespace osgParticle;
 
 #define USE_LOCAL_SHADERS
 
 static float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
-
-static void fillSpotLightImage(unsigned char* ptr, const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
-{
-    if (size==1)
-    {
-        float r = 0.5f;
-        osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);
-        *ptr++ = (unsigned char)((color[0])*255.0f);
-        *ptr++ = (unsigned char)((color[1])*255.0f);
-        *ptr++ = (unsigned char)((color[2])*255.0f);
-        *ptr++ = (unsigned char)((color[3])*255.0f);
-        return;
-    }
-
-    float mid = (float(size)-1.0f)*0.5f;
-    float div = 2.0f/float(size);
-    for(unsigned int r=0;r<size;++r)
-    {
-        //unsigned char* ptr = image->data(0,r,0);
-        for(unsigned int c=0;c<size;++c)
-        {
-            float dx = (float(c) - mid)*div;
-            float dy = (float(r) - mid)*div;
-            float r = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
-            if (r<0.0f) r=0.0f;
-            osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);
-            *ptr++ = (unsigned char)((color[0])*255.0f);
-            *ptr++ = (unsigned char)((color[1])*255.0f);
-            *ptr++ = (unsigned char)((color[2])*255.0f);
-            *ptr++ = (unsigned char)((color[3])*255.0f);
-        }
-    }
-}
-
-static osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
-{
-
-#if 0
-    osg::Image* image = new osg::Image;
-    unsigned char* ptr = image->data(0,0,0);
-    fillSpotLightImage(ptr, centerColour, backgroudColour, size, power);
-
-    return image;
-#else
-    osg::Image* image = new osg::Image;
-    osg::Image::MipmapDataType mipmapData;
-    unsigned int s = size;
-    unsigned int totalSize = 0;
-    unsigned i;
-    for(i=0; s>0; s>>=1, ++i)
-    {
-        if (i>0) mipmapData.push_back(totalSize);
-        totalSize += s*s*4;
-    }
-
-    unsigned char* ptr = new unsigned char[totalSize];
-    image->setImage(size, size, size, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, ptr, osg::Image::USE_NEW_DELETE,1);
-
-    image->setMipmapLevels(mipmapData);
-
-    s = size;
-    for(i=0; s>0; s>>=1, ++i)
-    {
-        fillSpotLightImage(ptr, centerColour, backgroudColour, s, power);
-        ptr += s*s*4;
-    }
-
-    return image;
-#endif    
-}
-
 
 PrecipitationEffect::PrecipitationEffect():
     _previousFrameTime(FLT_MAX)

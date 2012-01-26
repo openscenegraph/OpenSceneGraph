@@ -72,6 +72,10 @@ public:
         _alignmentMap["RIGHT_BASE_LINE"] = osgText::Text::RIGHT_BASE_LINE;
         _alignmentMap["BASE_LINE"] = osgText::Text::LEFT_BASE_LINE;
 
+        _characterSizeModeMap["OBJECT_COORDS"] = osgText::Text::OBJECT_COORDS;
+        _characterSizeModeMap["SCREEN_COORDS"] = osgText::Text::SCREEN_COORDS;
+        _characterSizeModeMap["OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT"] = osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT;
+
         _stringKeyMap["Home"]=' ';
         _stringKeyMap["Start"]= osgGA::GUIEventAdapter::KEY_Home;
         _stringKeyMap["Next"]= osgGA::GUIEventAdapter::KEY_Page_Down;
@@ -185,6 +189,7 @@ public:
     bool getTrimmedProperty(osgDB::XmlNode*cur, const char* token, std::string& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::Layout& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::AlignmentType& value) const;
+    bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::CharacterSizeMode& value) const;
     
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::PositionData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::FontData& value) const;
@@ -198,15 +203,17 @@ public:
     typedef std::map<std::string,osg::Vec4> ColorMap;
     typedef std::map<std::string,osgText::Text::Layout> LayoutMap;
     typedef std::map<std::string,osgText::Text::AlignmentType> AlignmentMap;
+    typedef std::map<std::string,osgText::Text::CharacterSizeMode> CharacterSizeModeMap;
     typedef std::map<std::string, unsigned int> StringKeyMap;
 
     std::string expandEnvVarsInFileName(const std::string& filename) const; 
 
 
-    ColorMap            _colorMap;
-    LayoutMap           _layoutMap;
-    AlignmentMap        _alignmentMap;
-    StringKeyMap        _stringKeyMap;
+    ColorMap                _colorMap;
+    LayoutMap               _layoutMap;
+    AlignmentMap            _alignmentMap;
+    CharacterSizeModeMap    _characterSizeModeMap;
+    StringKeyMap            _stringKeyMap;
     
     typedef std::map<std::string, osg::ref_ptr<osgDB::XmlNode> > TemplateMap;
     mutable TemplateMap _templateMap;
@@ -459,6 +466,20 @@ bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, osgT
     return true;
 }
 
+bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::CharacterSizeMode& value) const
+{
+    osgDB::XmlNode::Properties::iterator pitr = cur->properties.find(token);
+    if (pitr==cur->properties.end()) return false;
+
+    const std::string& str = pitr->second;
+    CharacterSizeModeMap::const_iterator itr = _characterSizeModeMap.find(str);
+    if (itr!=_characterSizeModeMap.end())
+    {
+        value = itr->second;
+    }
+    return true;
+}
+
 bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::PositionData& value) const
 {
     bool propertiesRead=false;    
@@ -698,6 +719,28 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
+    if (getProperty(cur, "billboard", str))
+    {
+        value.autoRotate = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"billboard, str="<<str<<", autoRotate="<<value.autoRotate<<std::endl;
+        propertiesRead = true;
+    }
+
+    if (getProperty(cur, "scale_to_screen",str))
+    {
+        value.autoScale = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"scale-to-screen, str="<<str<<", autoRotate="<<value.autoScale<<std::endl;
+        propertiesRead = true;
+    }
+
+    if (getProperty(cur, "hud", str))
+    {
+        value.hud = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"hud, str="<<str<<", hud="<<value.hud<<std::endl;
+        propertiesRead = true;
+    }
+
+
     return propertiesRead;
 }
 
@@ -719,17 +762,24 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read height \""<<value.characterSize<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "character_size_mode", value.characterSizeMode))
+    {
+        propertiesRead = true;
+
+        OSG_NOTIFY(_notifyLevel)<<"read character_size_mode \""<<value.characterSizeMode<<"\""<<std::endl;
+    }
+
     if (getProperty(cur, "layout", value.layout))
     {
         propertiesRead = true;
-        
+
         OSG_NOTIFY(_notifyLevel)<<"read layout \""<<value.layout<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "alignment", value.alignment))
     {
         propertiesRead = true;
-        
+
         OSG_NOTIFY(_notifyLevel)<<"read alignment \""<<value.alignment<<"\""<<std::endl;
     }
 
@@ -748,6 +798,12 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read effect \""<<value.effect<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "options", value.options))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read options \""<<value.options<<"\""<<std::endl;
+    }
+
     return propertiesRead;
 }
 
@@ -761,6 +817,12 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     {
         propertiesRead = true;
         OSG_NOTIFY(_notifyLevel)<<"read page \""<<value.page<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "options", value.options))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read options \""<<value.options<<"\""<<std::endl;
     }
 
     osg::Vec4 bgColour;
@@ -880,28 +942,48 @@ osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std:
     std::string foundFile = osgDB::findDataFile(filename);
     if (foundFile.empty())
     {
-        std::cout<<"Error: could not find transfer function file : "<<filename<<std::endl;
+        OSG_NOTICE<<"Error: could not find transfer function file : "<<filename<<std::endl;
         return 0;
     }
 
-    std::cout<<"Reading transfer function "<<filename<<std::endl;
+    OSG_NOTICE<<"Reading transfer function "<<filename<<std::endl;
 
     osg::TransferFunction1D::ColorMap colorMap;
     osgDB::ifstream fin(foundFile.c_str());
     while(fin)
     {
-        float value, red, green, blue, alpha;
-        fin >> value >> red >> green >> blue >> alpha;
-        if (fin)
+        char readline[4096];
+        *readline = 0;
+        fin.getline(readline, sizeof(readline));
+
+        if (*readline!=0)
         {
-            std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            std::stringstream str(readline);
+
+            float value, red, green, blue, alpha;
+            str >> value >> red >> green >> blue >> alpha;
+
+            *readline = 0;
+            str.getline(readline, sizeof(readline));
+
+            char* comment = readline;
+            while(*comment==' ' || *comment=='\t' ) ++comment;
+
+            if (*comment!=0)
+            {
+                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<") comment = ["<<comment<<"]"<<std::endl;
+            }
+            else
+            {
+                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            }
             colorMap[value] = osg::Vec4(red*scale,green*scale,blue*scale,alpha*scale);
         }
     }
 
     if (colorMap.empty())
     {
-        std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
+        OSG_NOTICE<<"Error: No values read from transfer function file: "<<filename<<std::endl;
         return 0;
     }
 
@@ -934,6 +1016,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
     if (getProperty(cur, "region", 6, volumeData.region)) {}
     if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
+    if (getProperty(cur, "sampleDensityWhenMoving", volumeData.sampleDensityWhenMovingValue)) {}
 
     // check for any transfer function required
     std::string transferFunctionFile;
@@ -947,6 +1030,8 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile, 1.0/255.0);
     }
 
+    if (getProperty(cur, "options", volumeData.options)) {}
+    
     // check for draggers required
     std::string dragger;
     if (getProperty(cur, "dragger", dragger))
@@ -1077,7 +1162,8 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     }
     else
     {
-        OSG_NOTICE<<"Warning: unreconginized key sequence '"<<key<<"'"<<std::endl;
+        OSG_NOTICE<<"Warning: invalid key used in <key>"<<key<<"</key>, ignoring tag."<<std::endl;
+        return false;
     }
 
     keyPosition.set(keyValue,x,y);
@@ -1229,7 +1315,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             std::string options;
             getProperty(cur, "options", options);
 
-            constructor.addGraph(cur->getTrimmedContents(), options,
+            constructor.addGraph(cur->getTrimmedContents(), 
                                  positionRead ? positionData : constructor.getImagePositionData(),
                                  imageData);
         }
@@ -1241,9 +1327,14 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
+            std::string password;
+            getProperty(cur, "password", password);
+
             constructor.addVNC(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
-                                    imageData);
+                                    imageData,
+                                    password
+                              );
         }
         else if (cur->name == "browser")
         {
@@ -1480,6 +1571,14 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             else if (cur->name == "background")
             {
                 constructor.setSlideBackground(cur->contents);
+
+                std::string str;
+                if (getProperty(cur, "hud", str))
+                {
+                    bool hud = (str != "off" && str != "Off" && str != "OFF");
+                    OSG_NOTIFY(_notifyLevel)<<"background hud, str="<<str<<", hud="<<hud<<std::endl;
+                    constructor.setSlideBackgrondHUD(hud);
+                }
             }
             else if (cur->name == "bgcolor")
             {
@@ -2039,8 +2138,6 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
 
     osgDB::FilePathList previousPaths = osgDB::getDataFilePathList();
 
-    bool readSlide = false;
-
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
         ++itr)
@@ -2163,13 +2260,11 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (readOnlyHoldingPage && cur->name == "holding_slide")
         {
-            readSlide = true;
             constructor.addSlide();
             parseSlide (constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "slide")
         {
-            readSlide = true;
             constructor.addSlide();
 
             std::string inherit;
@@ -2187,7 +2282,6 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (!readOnlyHoldingPage && cur->name == "modify_slide")
         {
-            readSlide = true;
             int slideNum;
             if (getProperty(cur, "slide", slideNum))
             {            
@@ -2201,17 +2295,14 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (!readOnlyHoldingPage && cur->name == "page")
         {
-            readSlide = true;
             parsePage (constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "pdf_document")
         {
-            readSlide = true;
             parsePdfDocument(constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "template_slide")
         {
-            readSlide = true;
             std::string name;
             if (getProperty(cur, "name", name))
             {            

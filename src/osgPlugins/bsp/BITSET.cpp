@@ -9,6 +9,7 @@
 #include "memory.h"
 #include "BITSET.h"
 
+#include <cstring>
 
 bool BITSET::Init(int numberOfBits)
 {

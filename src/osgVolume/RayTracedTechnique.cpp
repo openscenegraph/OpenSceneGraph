@@ -269,16 +269,6 @@ void RayTracedTechnique::init()
             osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
             tf_texture->setImage(tf->getImage());
 
-#if 1
-            osgDB::writeImageFile(*(tf->getImage()),"tf.png");
-            OSG_NOTICE<<"imageLayer->getTexelOffset()[3]="<<imageLayer->getTexelOffset()[3]<<std::endl;
-            OSG_NOTICE<<"imageLayer->getTexelScale()[3]="<<imageLayer->getTexelScale()[3]<<std::endl;
-            OSG_NOTICE<<"tfOffset="<<tfOffset<<std::endl;
-            OSG_NOTICE<<"tfScale="<<tfScale<<std::endl;
-            OSG_NOTICE<<"tf->getMinimum()="<<tf->getMinimum()<<std::endl;
-            OSG_NOTICE<<"tf->getMaximum()="<<tf->getMaximum()<<std::endl;
-#endif
-
             tf_texture->setResizeNonPowerOfTwoHint(false);
             tf_texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
             tf_texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
@@ -328,6 +318,8 @@ void RayTracedTechnique::init()
         }
         else if (shadingModel==Isosurface)
         {
+
+            enableBlending = true;
 
             stateset->addUniform(cpv._isoProperty->getUniform());
 
@@ -534,6 +526,11 @@ void RayTracedTechnique::init()
 
     } 
 
+    if (cpv._sampleDensityWhenMovingProperty.valid())
+    {
+        _whenMovingStateSet = new osg::StateSet;
+        _whenMovingStateSet->addUniform(cpv._sampleDensityWhenMovingProperty->getUniform(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+    }
 }
 
 void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
@@ -543,8 +540,40 @@ void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
 
 void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    //OSG_NOTICE<<"RayTracedTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
-    if (_transform.valid())
+    if (!_transform.valid()) return;
+
+    if (_whenMovingStateSet.valid())
+    {
+        bool moving = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
+            if (itr!=_modelViewMatrixMap.end())
+            {
+                osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
+                osg::Matrix& previousModelViewMatrix = itr->second;
+                moving = (newModelViewMatrix != previousModelViewMatrix);
+
+                previousModelViewMatrix = newModelViewMatrix;
+            }
+            else
+            {
+                _modelViewMatrixMap[cv->getIdentifier()] = *(cv->getModelViewMatrix());
+            }
+        }
+
+        if (moving)
+        {
+            cv->pushStateSet(_whenMovingStateSet.get());
+            _transform->accept(*cv);
+            cv->popStateSet();
+        }
+        else
+        {
+            _transform->accept(*cv);
+        }
+    }
+    else
     {
         _transform->accept(*cv);
     }

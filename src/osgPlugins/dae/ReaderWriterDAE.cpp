@@ -18,6 +18,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
+#include <osgDB/ConvertUTF>
 
 #include <OpenThreads/ScopedLock>
 
@@ -40,8 +41,27 @@ ReaderWriterDAE::readNode(const std::string& fname,
     bool bOwnDAE = false;
     DAE* pDAE = NULL;
 
-    if ( options )
+    // Process options
+    osgDAE::daeReader::Options pluginOptions;
+    if( options )
+    {
         pDAE = (DAE*)options->getPluginData("DAE");
+
+        pluginOptions.precisionHint = options->getPrecisionHint();
+
+        std::istringstream iss( options->getOptionString() );
+        std::string opt;
+        while (iss >> opt)
+        {
+            if( opt == "StrictTransparency") pluginOptions.strictTransparency = true;
+            else if (opt == "daeTessellateNone")              pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_NONE;
+            else if (opt == "daeTessellatePolygonsAsTriFans") pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS_AS_TRIFAN;
+            else if (opt == "daeTessellatePolygons")          pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS;
+            else if (opt == "daeUsePredefinedTextureUnits") pluginOptions.usePredefinedTextureUnits = true;
+            else if (opt == "daeUseSequencedTextureUnits")  pluginOptions.usePredefinedTextureUnits = false;
+        }
+    }
+
 
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
@@ -56,8 +76,9 @@ ReaderWriterDAE::readNode(const std::string& fname,
         bOwnDAE = true;
         pDAE = new DAE;
     }
+    std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 
-    osgDAE::daeReader daeReader(pDAE, options && options->getOptionString().find("StrictTransparency") != std::string::npos ) ;
+    osgDAE::daeReader daeReader(pDAE, &pluginOptions);
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fileName);
@@ -82,9 +103,6 @@ ReaderWriterDAE::readNode(const std::string& fname,
             *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.getAssetUpAxis();
     }
 
-    if (bOwnDAE)
-        delete pDAE;
-
     osg::Node* rootNode( daeReader.getRootNode() );
     return rootNode;
 }
@@ -104,15 +122,21 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
     // Process options
-    bool usePolygon(false);   // Use plugin option "polygon" to enable
-    bool googleMode(false);   // Use plugin option "GoogleMode" to enable
-    bool writeExtras(true);   // Use plugin option "NoExtras" to disable
-    bool earthTex(false);     // Use plugin option "DaeEarthTex" to enable
-    bool zUpAxis(false);      // Use plugin option "ZUpAxis" to enable
-    bool forceTexture(false); // Use plugin option "ForceTexture" to enable
+    osgDAE::daeWriter::Options pluginOptions;
+    std::string srcDirectory( osgDB::getFilePath(node.getName().empty() ? fname : node.getName()) );        // Base dir when relativising images paths
     if( options )
     {
         pDAE = (DAE*)options->getPluginData("DAE");
+
+        const std::string & baseDir = options->getPluginStringData("baseImageDir");        // Rename "srcModelPath" (and call getFilePath() on it)?
+        if (!baseDir.empty()) srcDirectory = baseDir;
+
+        const std::string & relativiseImagesPathNbUpDirs = options->getPluginStringData("DAE-relativiseImagesPathNbUpDirs");
+        if (!relativiseImagesPathNbUpDirs.empty()) {
+            std::istringstream iss(relativiseImagesPathNbUpDirs);
+            iss >> pluginOptions.relativiseImagesPathNbUpDirs;
+        }
+
         // Sukender's note: I don't know why DAE seems to accept comma-sparated options instead of space-separated options as other ReaderWriters. However, to avoid breaking compatibility, here's a workaround:
         std::string optString( options->getOptionString() );
         for(std::string::iterator it=optString.begin(); it!=optString.end(); ++it) {
@@ -121,30 +145,21 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         std::istringstream iss( optString );
         std::string opt;
 
-        bool unrecognizedOption = false;
         //while (iss >> opt)
         while( std::getline( iss, opt, ',' ) )
         {
-            if( opt == "polygon")  usePolygon = true;
-            else if (opt == "GoogleMode") googleMode = true;
-            else if (opt == "NoExtras") writeExtras = false;
-            else if (opt == "DaeEarthTex") earthTex = true;
-            else if (opt == "ZUpAxis") zUpAxis = true;
-            else if (opt == "ForceTexture") forceTexture = true;
-            else
+            if( opt == "polygon") pluginOptions.usePolygons = true;
+            else if (opt == "GoogleMode") pluginOptions.googleMode = true;
+            else if (opt == "NoExtras") pluginOptions.writeExtras = false;
+            else if (opt == "daeEarthTex") pluginOptions.earthTex = true;
+            else if (opt == "daeZUpAxis") {}    // Nothing (old option)
+            else if (opt == "daeLinkOriginalTexturesNoForce") { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = false; }
+            else if (opt == "daeLinkOriginalTexturesForce")   { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = true; }
+            else if (opt == "daeNamesUseCodepage") pluginOptions.namesUseCodepage = true;
+            else if (!opt.empty())
             {
-                OSG_NOTICE
-                    << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
-                unrecognizedOption = true;
+                OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
             }
-        }
-        if (unrecognizedOption) {
-            // TODO Remove this or make use of supportedOptions()
-            OSG_NOTICE
-                << "comma-delimited options:" <<  std::endl <<  std::endl 
-                << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
-                << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 
-                << "example: osgviewer -O polygon bar.dae" <<  std::endl << std::endl;
         }
     }
 
@@ -153,13 +168,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         bOwnDAE = true;
         pDAE = new DAE;
     }
+    std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fname);
 
-    osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
+    osg::NodeVisitor::TraversalMode traversalMode = pluginOptions.writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
 
-    osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, forceTexture);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), srcDirectory, options, traversalMode, &pluginOptions);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
@@ -181,17 +197,75 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         }
     }
 
-    if (bOwnDAE)
-        delete pDAE;
-
     return retVal;
+}
+
+static void replace(std::string & str, const char from, const std::string & to)
+{
+    // Replace for all occurences
+    for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos=str.find(from))
+    {
+        str.replace(pos, 1, to);
+    }
+}
+
+static void replace(std::string & str, const std::string & from, const std::string & to)
+{
+    // Replace for all occurences
+    std::size_t lenFrom = from.size();
+    std::size_t lenTo = to.size();
+    for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos = str.find(from, pos+lenTo))
+    {
+        str.replace(pos, lenFrom, to);
+    }
 }
 
 std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
 {
-    return cdom::nativePathToUri(FilePath);
+#ifdef OSG_USE_UTF8_FILENAME
+    std::string path( cdom::nativePathToUri( FilePath ) );
+#else
+    std::string path( cdom::nativePathToUri( osgDB::convertStringFromCurrentCodePageToUTF8(FilePath) ) );
+#endif
+
+    // Unfortunately, cdom::nativePathToUri() does not convert '#' characters to "%23" as expected.
+    // So having /a/#b/c will generate a wrong conversion, as '#' will be misinterpreted as an URI fragment.
+    // Here are listed all special chars, but only # was found problematic. I (Sukender) tested #{}^~[]`;@=&$ under Windows.
+    // Uncomment lines if you find issues with some other special characters.
+
+    //replace(path, '%', "%25");        // % at first
+    //replace(path, ' ', "%20");
+    replace(path, '#', "%23");
+    //replace(path, '<', "%3C");
+    //replace(path, '>', "%3E");
+    //replace(path, '{', "%7B");
+    //replace(path, '}', "%7D");
+    //replace(path, '|', "%7C");
+    //replace(path, '^', "%5E");
+    //replace(path, '~', "%7E");
+    //replace(path, '[', "%5B");
+    //replace(path, '}', "%5D");
+    //replace(path, '`', "%60");
+    //replace(path, ';', "%3B");
+    //replace(path, '?', "%3F");
+    //replace(path, '@', "%40");
+    //replace(path, '=', "%3D");
+    //replace(path, '&', "%26");
+    //replace(path, '$', "%24");
+    return path;
 }
 
+std::string ReaderWriterDAE::ConvertColladaCompatibleURIToFilePath(const std::string& uri)
+{
+    // Reciprocal of ConvertFilePathToColladaCompatibleURI()
+#ifdef OSG_USE_UTF8_FILENAME
+    std::string path( cdom::uriToNativePath( uri ) );
+#else
+    std::string path( osgDB::convertStringFromCurrentCodePageToUTF8( cdom::uriToNativePath(uri) ) );
+#endif
+    replace(path, "%23", "#");
+    return path;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Add ourself to the Registry to instantiate the reader/writer.

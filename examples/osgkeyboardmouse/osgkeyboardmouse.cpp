@@ -142,8 +142,8 @@ public:
                 }                
                 else if (ea.getKey()=='o')
                 {
-                    osg::notify(osg::NOTICE)<<"Saved model to file 'saved_model.osg'"<<std::endl;
-                    osgDB::writeNodeFile(*(viewer->getSceneData()), "saved_model.osg");
+                    osg::notify(osg::NOTICE)<<"Saved model to file 'saved_model.osgt'"<<std::endl;
+                    osgDB::writeNodeFile(*(viewer->getSceneData()), "saved_model.osgt");
                 }
                 else if (ea.getKey()=='p')
                 {
@@ -325,8 +325,8 @@ public:
         
         if (cmtsv._group->getNumChildren()>0)
         {
-            std::cout<<"Writing selected compoents to 'selected_model.osg'"<<std::endl;
-            osgDB::writeNodeFile(*cmtsv._group, "selected_model.osg");
+            std::cout<<"Writing selected compoents to 'selected_model.osgt'"<<std::endl;
+            osgDB::writeNodeFile(*cmtsv._group, "selected_model.osgt");
         }
     }
 
@@ -345,7 +345,7 @@ int main( int argc, char **argv )
     if (argc>1) loadedModel = osgDB::readNodeFile(argv[1]);
     
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osgt");
     
     if (!loadedModel) 
     {

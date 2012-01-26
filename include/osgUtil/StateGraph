@@ -100,7 +100,9 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
         const osg::Referenced* getUserData() const { return _userData.get(); }
-        
+
+        void setStateSet(const osg::StateSet* stateset) { _stateset = stateset; }
+
 #ifdef OSGUTIL_RENDERBACKEND_USE_REF_PTR
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
 #else

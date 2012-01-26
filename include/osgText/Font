@@ -104,7 +104,11 @@ public:
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
 
-    /** Set the margin around each glyph, 
+    /** Get the ascender and descender sizes of the font where supported by the FontImplementation,
+     *  return true on success, return false when not supported.*/
+    virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
+
+    /** Set the margin around each glyph,
       * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
       * Default margin is 1 texels.*/    
     void setGlyphImageMargin(unsigned int margin);
@@ -161,13 +165,15 @@ public:
 
     typedef OpenThreads::Mutex FontMutex;
     
+    typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
+    GlyphTextureList& getGlyphTextureList() { return _glyphTextureList; }
+    
 protected:
 
     virtual ~Font();
 
     void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
 
-    typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph3D> >  Glyph3DMap;
@@ -214,6 +220,8 @@ public:
     
         virtual std::string getFileName() const = 0;
 
+        virtual bool supportsMultipleFontResolutions() const = 0;
+
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
         virtual Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode) = 0;
 
@@ -232,6 +240,8 @@ public:
         }
 
         Font* _facade;
+
+        virtual bool getVerticalSize(float & ascender, float & descender) const { return false; }
     };
 
 

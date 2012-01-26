@@ -1,5 +1,6 @@
 #include <osgWidget/VncClient>
 
+#include <osgDB/Registry>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -46,10 +47,23 @@ int main(int argc,char** argv)
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
+    std::string password;
+    while(arguments.read("--password",password))
+    {
+    }
+
     for(int i=1; i<arguments.argc(); ++i)
     {
         if (!arguments.isOption(i))
         {
+            std::string hostname = arguments[i];
+
+            if (!password.empty())
+            {
+                if (!osgDB::Registry::instance()->getAuthenticationMap()) osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
+                osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(hostname, new osgDB::AuthenticationDetails("", password));
+            }
+
             osg::ref_ptr<osgWidget::VncClient> vncClient = new osgWidget::VncClient;
             if (vncClient->connect(arguments[i], hints))
             {            

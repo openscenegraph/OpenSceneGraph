@@ -42,7 +42,7 @@ NodeVisitor::NodeVisitor(TraversalMode tm):
         Referenced(true)
 {
     _visitorType = NODE_VISITOR;
-    _traversalNumber = -1;
+    _traversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
 
     _traversalMode = tm;
     _traversalMask = 0xffffffff;
@@ -53,7 +53,7 @@ NodeVisitor::NodeVisitor(VisitorType type,TraversalMode tm):
     Referenced(true)
 {
     _visitorType = type;
-    _traversalNumber = -1;
+    _traversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
 
     _traversalMode = tm;
     _traversalMask = 0xffffffff;

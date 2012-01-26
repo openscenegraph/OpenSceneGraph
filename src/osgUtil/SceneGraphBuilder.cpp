@@ -40,7 +40,8 @@ SceneGraphBuilder::SceneGraphBuilder():
     _colorSet(false),
     _color(1.0f,1.0f,1.0f,1.0f),
     _maxNumTexCoordComponents(0),
-    _texCoord(0.f,0.0f,0.0f,1.0f)
+    _texCoord(0.f,0.0f,0.0f,1.0f),
+    _primitiveMode(0)
 {
 }
 

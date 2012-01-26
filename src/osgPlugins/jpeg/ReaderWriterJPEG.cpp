@@ -9,6 +9,11 @@
 
 #include <sstream>
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable "structure was padded due to __declspec(align())
+    #pragma warning( disable : 4324 )
+#endif
+
 /****************************************************************************
  *
  * Follows is code extracted from the simage library.  Original Authors:
@@ -429,6 +434,17 @@ my_error_exit (j_common_ptr cinfo)
     longjmp(myerr->setjmp_buffer, 1);
 }
 
+static void
+my_output_message (j_common_ptr cinfo)
+{
+  char buffer[JMSG_LENGTH_MAX];
+
+  /* Create the message */
+  (*cinfo->err->format_message) (cinfo, buffer);
+
+  OSG_WARN<<buffer<<std::endl;
+}
+
 
 int
 simage_jpeg_identify(const char *,
@@ -494,6 +510,7 @@ int *numComponents_ret)
     /* We set up the normal JPEG error routines, then override error_exit. */
     cinfo.err = jpeg_std_error(&jerr.pub);
     jerr.pub.error_exit = my_error_exit;
+    jerr.pub.output_message = my_output_message;
     /* Establish the setjmp return context for my_error_exit to use. */
     if (setjmp(jerr.setjmp_buffer))
     {
@@ -630,10 +647,19 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
         WriteResult::WriteStatus write_JPEG_file (std::ostream &fout, const osg::Image &img, int quality = 100) const
         {
+            if (!img.isDataContiguous())
+            {
+                OSG_WARN<<"Warning: Writing of image data, that is non contiguous, is not supported by JPEG plugin."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
             int image_width = img.s();
             int image_height = img.t();
             if ( (image_width == 0) || (image_height == 0) )
+            {
+                OSG_DEBUG << "ReaderWriterJPEG::write_JPEG_file - Error no size" << std::endl;
                 return WriteResult::ERROR_IN_WRITING_FILE;
+            }
 
             J_COLOR_SPACE image_color_space = JCS_RGB;
             int image_components = 3;
@@ -650,7 +676,11 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
                   image_components = 3;
                   break;
               }
-              default: return WriteResult::ERROR_IN_WRITING_FILE; break;              
+              default:
+              {
+                  OSG_DEBUG << "ReaderWriterJPEG::write_JPEG_file - Error pixel format non supported" << std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE; break;              
+              }
             }
 
             JSAMPLE* image_buffer = (JSAMPLE*)(img.data());

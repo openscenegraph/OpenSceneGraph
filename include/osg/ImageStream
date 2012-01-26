@@ -79,6 +79,7 @@ class OSG_EXPORT ImageStream : public Image
         virtual double getCreationTime() const { return HUGE_VAL; }
         virtual double getLength() const { return 0.0; }
         virtual double getFrameRate() const { return 0.0; } 
+        virtual double getCurrentTime() const { return 0.0; }
 
         virtual void setReferenceTime(double) {}
         virtual double getReferenceTime() const { return 0.0; }

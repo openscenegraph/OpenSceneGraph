@@ -93,12 +93,12 @@ public:
    }
 
    /// jumps to a specific position 
-   void jumpTo(float pos) {
+   void jumpTo(double pos) {
       setCmd(THREAD_SEEK, pos);
    }
 
    /// returns the current playing position
-   inline float getCurrentTime() const { return _current; }
+   virtual double getCurrentTime() const { return _current; }
 
    /// @return the current moviedata-object
    MovieData* getMovieData() { return _movieData; }
@@ -112,7 +112,7 @@ public:
    /// Go to a specific position in the stream.
    virtual void setReferenceTime(double time)
    {
-     jumpTo(float(time));
+     jumpTo(time);
    }
    /// Return the current position in the stream.
    virtual double getReferenceTime() const
@@ -124,8 +124,9 @@ public:
    // slow down, or go normal speed.
    virtual void setTimeMultiplier(double multiplier)
    {
-     setMovieRate(float(multiplier));
+     setMovieRate(multiplier);
    }
+   
    virtual double getTimeMultiplier()
    { 
      return 0.0;
@@ -143,10 +144,10 @@ protected:
    virtual ~QuicktimeImageStream();
 
 private:
-   float _lastUpdate;
-   float _len;
-   float _current;
-   float _currentRate;
+   double _lastUpdate;
+   double _len;
+   double _current;
+   double _currentRate;
 
    MovieData* _movieData;
 
@@ -162,13 +163,13 @@ private:
       THREAD_QUIT
    };
    ThreadCommand _cmd[NUM_CMD_INDEX];
-   float _rates[NUM_CMD_INDEX];
+   double _rates[NUM_CMD_INDEX];
    int _wrIndex, _rdIndex;
 
    OpenThreads::Mutex _mutex;
 
    /// Set command.
-   void setCmd(ThreadCommand cmd, float rate = 0.0f);
+   void setCmd(ThreadCommand cmd, double rate = 0.0);
 
    /// Get command.
    ThreadCommand getCmd();

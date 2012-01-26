@@ -134,8 +134,6 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 
             //std::cout<<"   found " << tileMapper._tileMap.size() << std::endl;
             
-            tileMapper->checkValidityOfAllVisibleTiles();
-            
             cv->setUserData(tileMapper.get());
 
 #ifdef PRINT_TILEMAPP_TIMEINFO        
@@ -332,10 +330,10 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y)
     }
     else
     {
-    _nodesToAdd.push_back(pagedLOD);
-    
-    return pagedLOD;
-}
+        _nodesToAdd.push_back(pagedLOD);
+
+        return pagedLOD;
+    }
 }
 
 void TXPNode::updateSceneGraph()

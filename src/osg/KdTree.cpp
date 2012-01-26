@@ -812,7 +812,8 @@ void KdTreeBuilder::apply(osg::Geode& geode)
             osg::KdTree* previous = dynamic_cast<osg::KdTree*>(geom->getShape());
             if (previous) continue;
 
-            osg::ref_ptr<osg::KdTree> kdTree = dynamic_cast<osg::KdTree*>(_kdTreePrototype->cloneType());
+            osg::ref_ptr<osg::Object> obj = _kdTreePrototype->cloneType();
+            osg::ref_ptr<osg::KdTree> kdTree = dynamic_cast<osg::KdTree*>(obj.get());
 
             if (kdTree->build(_buildOptions, geom))
             {

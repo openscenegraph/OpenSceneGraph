@@ -77,6 +77,12 @@ REGISTER_OBJECT_WRAPPER( Node,
     ADD_OBJECT_SERIALIZER( CullCallback, osg::NodeCallback, NULL );  // _cullCallback
     ADD_BOOL_SERIALIZER( CullingActive, true );  // _cullingActive
     ADD_HEXINT_SERIALIZER( NodeMask, 0xffffffff );  // _nodeMask
-    ADD_USER_SERIALIZER( Descriptions );  // _descriptions
+    
+    ADD_USER_SERIALIZER( Descriptions );  // _descriptions, deprecated
+    UPDATE_TO_VERSION( 77 )
+    {
+        REMOVE_SERIALIZER( Descriptions );
+    }
+    
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
 }

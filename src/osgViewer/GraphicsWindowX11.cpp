@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -15,6 +15,9 @@
  * a guide to use of X11/GLX and copying directly in the case of setBorder().
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
+
+// TODO:
+// implement http://www.opengl.org/registry/specs/OML/glx_swap_method.txt
 
 #include <osgViewer/api/X11/GraphicsWindowX11>
 #include <osgViewer/api/X11/PixelBufferX11>
@@ -269,12 +272,12 @@ Display* GraphicsWindowX11::getDisplayToUse() const
     {
         return _display;
     }
-    
-    if (OpenThreads::Thread::CurrentThread()==_threadOfLastMakeCurrent) 
+
+    if (OpenThreads::Thread::CurrentThread()==_threadOfLastMakeCurrent)
     {
         return _display;
     }
-    else 
+    else
     {
         return _eventDisplay;
     }
@@ -317,45 +320,87 @@ bool GraphicsWindowX11::createVisualInfo()
 
         typedef std::vector<int> Attributes;
         Attributes attributes;
-        
+
         attributes.push_back(GLX_USE_GL);
-        
+
         attributes.push_back(GLX_RGBA);
-        
+
         if (_traits->doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
-        
+
         if (_traits->quadBufferStereo) attributes.push_back(GLX_STEREO);
-        
+
         attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->red);
         attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->green);
         attributes.push_back(GLX_BLUE_SIZE); attributes.push_back(_traits->blue);
         attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->depth);
-        
+
         if (_traits->alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
-        
+
         if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
-    
+
         #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
-        
+
             if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
-            if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
-        
+            if (_traits->samples) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
+
         #endif
         // TODO
         //  GLX_AUX_BUFFERS
         //  GLX_ACCUM_RED_SIZE
         //  GLX_ACCUM_GREEN_SIZE
-        //  GLX_SAMPLE_BUFFERS
-        //  GLX_SAMPLES
-        
+
         attributes.push_back(None);
-        
+
         _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
     #endif
     }
 
     return _visualInfo != 0;
 }
+
+bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, int x, int y, int width, int height, bool windowDecoration)
+{
+    osg::GraphicsContext::WindowingSystemInterface *wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (wsi == NULL)
+    {
+        OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
+        return false;
+    }
+
+    unsigned int    screenWidth;
+    unsigned int    screenHeight;
+
+    wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
+    bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !windowDecoration;
+
+    if (isFullScreen) {
+        resized(x, y, width, height);
+        getEventQueue()->windowResize(x, y, width, height, getEventQueue()->getTime());
+    }
+
+    Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
+    Atom netWMStateFullscreenAtom = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", True);
+
+    if (netWMStateAtom != None && netWMStateFullscreenAtom != None)
+    {
+        XEvent xev;
+        xev.xclient.type = ClientMessage;
+        xev.xclient.serial = 0;
+        xev.xclient.send_event = True;
+        xev.xclient.window = _window;
+        xev.xclient.message_type = netWMStateAtom;
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = isFullScreen ? 1 : 0;
+        xev.xclient.data.l[1] = netWMStateFullscreenAtom;
+        xev.xclient.data.l[2] = 0;
+
+        XSendEvent(display, RootWindow(display, DefaultScreen(display)),
+                    False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+        return true;
+    }
+    return false;
+}
+
 #define MWM_HINTS_FUNCTIONS   (1L << 0)
 #define MWM_HINTS_DECORATIONS (1L << 1)
 #define MWM_HINTS_INPUT_MODE  (1L << 2)
@@ -375,44 +420,6 @@ bool GraphicsWindowX11::createVisualInfo()
 #define MWM_FUNC_MINIMIZE     (1L<<3)
 #define MWM_FUNC_MAXIMIZE     (1L<<4)
 #define MWM_FUNC_CLOSE        (1L<<5)
-
-
-bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, int x, int y, int width, int height, bool windowDecoration)
-{
-  osg::GraphicsContext::WindowingSystemInterface *wsi = osg::GraphicsContext::getWindowingSystemInterface();
-  if (wsi == NULL) {
-    OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
-    return false;
-  }
-
-  unsigned int    screenWidth;
-  unsigned int    screenHeight;
-
-  wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
-  bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !windowDecoration;
-
-  Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
-  Atom netWMStateFullscreenAtom = XInternAtom(display,
-                                              "_NET_WM_STATE_FULLSCREEN", True);
-
-  if (netWMStateAtom != None && netWMStateFullscreenAtom != None) {
-    XEvent xev;
-    xev.xclient.type = ClientMessage;
-    xev.xclient.serial = 0;
-    xev.xclient.send_event = True;
-    xev.xclient.window = _window;
-    xev.xclient.message_type = netWMStateAtom;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = isFullScreen ? 1 : 0;
-    xev.xclient.data.l[1] = netWMStateFullscreenAtom;
-    xev.xclient.data.l[2] = 0;
-
-    XSendEvent(display, RootWindow(display, DefaultScreen(display)),
-               False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-    return true;
-  }
-  return false;
-}
 
 bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 {
@@ -434,29 +441,35 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
     bool result = false;
     if( (atom = XInternAtom( display, "_MOTIF_WM_HINTS", 0 )) != None )
     {
-        
-        wmHints.flags = 0;
-        wmHints.functions = MWM_FUNC_ALL;
-        wmHints.decorations = MWM_DECOR_ALL;
-        wmHints.inputMode = 0;
-        wmHints.status = 0;        
-        
-        if (!flag)
+
+        if (flag)
         {
-            wmHints.flags = MWM_HINTS_DECORATIONS;
-            wmHints.decorations = 0;
+            wmHints.flags = MWM_HINTS_DECORATIONS | MWM_HINTS_FUNCTIONS;
+            wmHints.functions = MWM_FUNC_ALL;
+            wmHints.decorations = MWM_DECOR_ALL;
+            wmHints.inputMode = 0;
+            wmHints.status = 0;
+
+            // if traits says not resize we want to set the functions to exlude MWM_FUNC_RESIZE,
+            // but this bitmask needs to be set if the MWM_FUNC_ALL bit is already set in order to toggle it off.
+            if (_traits.valid() && !_traits->supportsResize) wmHints.functions = wmHints.functions | MWM_FUNC_RESIZE;
+            
         }
         else
         {
-            wmHints.flags |= MWM_HINTS_FUNCTIONS;
-            if (_traits.valid() && !_traits->supportsResize) wmHints.functions |= MWM_FUNC_RESIZE;
+            wmHints.flags = MWM_HINTS_DECORATIONS;
+            wmHints.functions = 0;
+            wmHints.decorations = 0;
+            wmHints.inputMode = 0;
+            wmHints.status = 0;
         }
+        
         XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
         result = true;
     }
     else
     {
-        OSG_NOTICE<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
+        OSG_NOTICE<<"Error: GraphicsWindowX11::setWindowDecorationImplementation(" << flag << ") - couldn't change decorations." << std::endl;
         result = false;
     }
 
@@ -472,22 +485,22 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
     if (!_initialized) return false;
-    
+
     Display* display = getDisplayToUse();
-    
-    XMoveResizeWindow(display, _window, x, y, width, height);
-    
-    XFlush(display);
-    XSync(display, 0);
 
     checkAndSendEventFullScreenIfNeeded(display, x, y, width, height, _traits->windowDecoration);
 
+    XMoveResizeWindow(display, _window, x, y, width, height);
+
+    XFlush(display);
+    XSync(display, 0);
+    
     // add usleep here to give window manager a chance to handle the request, if
     // we don't add this sleep then any X11 calls right afterwards can produce
     // X11 errors.
     usleep(100000);
 
-    
+
     return true;
 }
 
@@ -507,7 +520,7 @@ void GraphicsWindowX11::setWindowName(const std::string& name)
     XStoreName( display, _window, name.c_str() );
     XSetIconName( display, _window, name.c_str() );
 
-    XFlush(display); 
+    XFlush(display);
     XSync(display,0);
 
     _traits->windowName = name;
@@ -680,17 +693,17 @@ void GraphicsWindowX11::init()
             return;
         }
     #endif
-    
+
     // OSG_NOTICE<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
 
     if (!createVisualInfo())
     {
-        _traits->red /= 2; 
-        _traits->green /= 2; 
-        _traits->blue /= 2; 
-        _traits->alpha /= 2; 
-        _traits->depth /= 2; 
-        
+        _traits->red /= 2;
+        _traits->green /= 2;
+        _traits->blue /= 2;
+        _traits->alpha /= 2;
+        _traits->depth /= 2;
+
         OSG_INFO<<"Relaxing traits"<<std::endl;
 
         if (!createVisualInfo())
@@ -700,7 +713,7 @@ void GraphicsWindowX11::init()
             _display = 0;
             _valid = false;
             return;
-        }    
+        }
     }
 
     // get any shared GLX contexts
@@ -711,36 +724,46 @@ void GraphicsWindowX11::init()
 
         _valid = _ownsWindow ? createWindow() : setWindow(windowHandle);
 
-        if (!_valid) 
+        if (!_valid)
         {
             XCloseDisplay( _display );
             _display = 0;
             return;
         }
-        
+
         OSG_NOTICE<<"GraphicsWindowX11::init() - window created ="<<_valid<<std::endl;
 
+        eglBindAPI(EGL_OPENGL_ES_API);
+
         EGLConfig eglConfig = 0;
-        
+
         #if defined(OSG_GLES2_AVAILABLE)
             #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES2_BIT
         #else
             #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES_BIT
         #endif
+
+        typedef std::vector<EGLint> Attributes;
+        Attributes attributes;
+
+        attributes.push_back(EGL_RED_SIZE); attributes.push_back(_traits->red);
+        attributes.push_back(EGL_GREEN_SIZE); attributes.push_back(_traits->green);
+        attributes.push_back(EGL_BLUE_SIZE); attributes.push_back(_traits->blue);
+        attributes.push_back(EGL_DEPTH_SIZE); attributes.push_back(_traits->depth);
+
+        if (_traits->alpha) { attributes.push_back(EGL_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
+        if (_traits->stencil) { attributes.push_back(EGL_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
+
+        if (_traits->sampleBuffers) { attributes.push_back(EGL_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
+        if (_traits->samples) { attributes.push_back(EGL_SAMPLES); attributes.push_back(_traits->samples); }
+
+        attributes.push_back(EGL_RENDERABLE_TYPE); attributes.push_back(OSG_EGL_OPENGL_TARGET_BIT);
         
-        EGLint configAttribs[] = {
-                EGL_SAMPLE_BUFFERS, 0,
-                EGL_SAMPLES, 0,
-                EGL_RED_SIZE, 1,
-                EGL_GREEN_SIZE, 1,
-                EGL_BLUE_SIZE, 1,
-                EGL_DEPTH_SIZE, 1,
-                EGL_RENDERABLE_TYPE, OSG_EGL_OPENGL_TARGET_BIT,
-                EGL_NONE
-        };
+        attributes.push_back(EGL_NONE);
+        attributes.push_back(EGL_NONE);
 
         int numConfigs;
-        if (!eglChooseConfig(_eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
+        if (!eglChooseConfig(_eglDisplay, &(attributes.front()), &eglConfig, 1, &numConfigs) || (numConfigs != 1))
         {
             OSG_NOTICE<<"GraphicsWindowX11::init() - eglChooseConfig() failed."<<std::endl;
             XCloseDisplay( _display );
@@ -749,7 +772,6 @@ void GraphicsWindowX11::init()
             return;
         }
 
-        eglBindAPI(EGL_OPENGL_ES_API);
 
         _eglSurface = eglCreateWindowSurface(_eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
         if (_eglSurface == EGL_NO_SURFACE)
@@ -782,13 +804,13 @@ void GraphicsWindowX11::init()
         }
 
         _initialized = true;
-            
+
         checkEGLError("after eglCreateContext()");
 
     #else
-        
+
         _context = glXCreateContext( _display, _visualInfo, sharedContext, True );
-    
+
         if (!_context)
         {
             OSG_NOTICE<<"Error: Unable to create OpenGL graphics context."<<std::endl;
@@ -802,11 +824,20 @@ void GraphicsWindowX11::init()
         _valid = _initialized;
 
     #endif
-    
+
     if (_valid == false)
     {
-        XCloseDisplay( _display );
-        _display = 0;
+        if (_display)
+        {
+            XCloseDisplay( _display );
+            _display = 0;
+        }
+
+        if (_eventDisplay)
+        {
+            XCloseDisplay( _eventDisplay );
+            _eventDisplay = 0;
+        }
     }
 
 
@@ -837,16 +868,60 @@ bool GraphicsWindowX11::createWindow()
     {
         swatt.override_redirect = true;
         mask |= CWOverrideRedirect;
-        
+
         OSG_INFO<<"Setting override redirect"<<std::endl;
     }
 
+
+    osg::GraphicsContext::WindowingSystemInterface *wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (wsi == NULL) {
+    OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
+    return false;
+    }
+
+    int x = _traits->x;
+    int y = _traits->y;
+    int width = _traits->width;
+    int height = _traits->height;
+
+
+    unsigned int screenWidth;
+    unsigned int screenHeight;
+    wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
+
+    bool doFullSceenWorkAround = false;
+    bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !_traits->windowDecoration;
+    if (isFullScreen && !_traits->overrideRedirect)
+    {
+        // follows is hack to get around problems with toggling off full screen with modern X11 window
+        // managers that try to be too clever when toggling off full screen and ignore the window size
+        // calls made by the OSG when the initial window size is full screen.
+
+        Atom netWMStateAtom = XInternAtom(_display, "_NET_WM_STATE", True);
+        Atom netWMStateFullscreenAtom = XInternAtom(_display, "_NET_WM_STATE_FULLSCREEN", True);
+
+        // we have a modern X11 server so assume we need the do the full screen hack.
+        if (netWMStateAtom != None && netWMStateFullscreenAtom != None)
+        {
+            // artifically reduce the initial window size so that the windowing
+            // system has a size to go back to when toggling off full screen,
+            // we don't have to worry about the window being initially smaller as the
+            // setWindowDecoration(..) implementation with enable full screen for us
+            x = width/4;
+            y = height/4;
+            width /= 2;
+            height /= 2;
+
+            doFullSceenWorkAround = true;
+        }
+    }
+    
     _window = XCreateWindow( _display, _parent,
-                             _traits->x,
-                             _traits->y,
-                             _traits->width, _traits->height, 0,
+                             x,
+                             y,
+                             width, height, 0,
                              _visualInfo->depth, InputOutput,
-                             _visualInfo->visual, mask, &swatt );                          
+                             _visualInfo->visual, mask, &swatt );
 
     if (!_window)
     {
@@ -877,10 +952,11 @@ bool GraphicsWindowX11::createWindow()
 
     setWindowDecoration(_traits->windowDecoration);
 
+    
     useCursor(_traits->useCursor);
 
     _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
-    XSetWMProtocols(_display, _window, &_deleteWindow, 1); 
+    XSetWMProtocols(_display, _window, &_deleteWindow, 1);
 
 
     XFlush( _display );
@@ -888,17 +964,29 @@ bool GraphicsWindowX11::createWindow()
 
     // now update the window dimensions to account for any size changes made by the window manager,
     XGetWindowAttributes( _display, _window, &watt );
-    
+
     if (_traits->x != watt.x || _traits->y != watt.y
         ||_traits->width != watt.width || _traits->height != watt.height)
     {
+
+        if (doFullSceenWorkAround)
+        {
+            OSG_INFO<<"Full Screen failed, resizing manually"<<std::endl;
+            XMoveResizeWindow(_display, _window, _traits->x, _traits->y, _traits->width, _traits->height);
+
+            XFlush(_display);
+            XSync(_display, 0);
+
+            XGetWindowAttributes( _display, _window, &watt );
+        }
+
         resized( watt.x, watt.y, watt.width, watt.height );
     }
-        
+
     //OSG_NOTICE<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
 
-    XSelectInput( _eventDisplay, _window, ExposureMask | StructureNotifyMask | 
+    XSelectInput( _eventDisplay, _window, ExposureMask | StructureNotifyMask |
                                      KeyPressMask | KeyReleaseMask |
                                      PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
                                      KeymapStateMask | FocusChangeMask | EnterWindowMask );
@@ -917,13 +1005,13 @@ bool GraphicsWindowX11::setWindow(Window window)
         OSG_NOTICE << "GraphicsWindowX11::setWindow() - Window already created; it cannot be changed";
         return false;
     }
-    
+
     if (window==0)
     {
         OSG_NOTICE << "GraphicsWindowX11::setWindow() - Invalid window handle passed ";
         return false;
     }
-    
+
     _window = window;
     if (_window==0)
     {
@@ -962,14 +1050,14 @@ bool GraphicsWindowX11::realizeImplementation()
     }
 
     if (!_initialized) init();
-    
+
     if (!_initialized) return false;
-    
+
     XMapWindow( _display, _window );
-    
+
 //    Window temp = _window;
 //    XSetWMColormapWindows( _display, _window, &temp, 1);
-    
+
     _realized = true;
 
     return true;
@@ -1030,7 +1118,7 @@ void GraphicsWindowX11::closeImplementation()
             glXDestroyContext( _display, _context );
         #endif
         }
-    
+
         if (_window && _ownsWindow)
         {
             XDestroyWindow(_display, _window);
@@ -1039,7 +1127,7 @@ void GraphicsWindowX11::closeImplementation()
         XFlush( _display );
         XSync( _display,0 );
     }
-    
+
     _window = 0;
     _parent = 0;
     _context = 0;
@@ -1048,7 +1136,7 @@ void GraphicsWindowX11::closeImplementation()
     {
         #ifdef OSG_USE_EGL
             delete _visualInfo;
-        #else        
+        #else
             XFree(_visualInfo);
         #endif
         _visualInfo = 0;
@@ -1117,7 +1205,9 @@ void GraphicsWindowX11::checkEvents()
     double eventTime = baseTime;
     double resizeTime = eventTime;
     _timeOfLastCheckEvents = getEventQueue()->getTime();
+    if (baseTime>_timeOfLastCheckEvents) baseTime = _timeOfLastCheckEvents;
     
+
     // OSG_NOTICE<<"GraphicsWindowX11::checkEvents() : getEventQueue()->getCurrentEventState()->getGraphicsContext()="<<getEventQueue()->getCurrentEventState()->getGraphicsContext()<<std::endl;
 
     int windowX = _traits->x;
@@ -1125,10 +1215,8 @@ void GraphicsWindowX11::checkEvents()
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
 
-    bool destroyWindowRequested = false;
-    
     Time firstEventTime = 0;
-     
+
     // OSG_NOTICE<<"Check events"<<std::endl;
     while( XPending(display) )
     {
@@ -1144,12 +1232,13 @@ void GraphicsWindowX11::checkEvents()
                 {
                     OSG_NOTICE<<"DeleteWindow event received"<<std::endl;
                     // FIXME only do if _ownsWindow ?
-                    destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
                 }
+                break;
             }
             case Expose :
                 OSG_INFO<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
+                requestRedraw();
                 break;
 
             case GravityNotify :
@@ -1165,13 +1254,13 @@ void GraphicsWindowX11::checkEvents()
                 _realized =  false;
                 _valid = false;
                 break;
-                
+
             case ConfigureNotify :
             {
                 OSG_INFO<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
 
-                if (windowX != ev.xconfigure.x || 
-                    windowX != ev.xconfigure.y ||
+                if (windowX != ev.xconfigure.x ||
+                    windowY != ev.xconfigure.y ||
                     windowWidth != ev.xconfigure.width ||
                     windowHeight != ev.xconfigure.height)
                 {
@@ -1185,7 +1274,7 @@ void GraphicsWindowX11::checkEvents()
 
                 break;
             }
-            
+
             case MapNotify :
             {
                 OSG_INFO<<"MapNotify"<<std::endl;
@@ -1193,7 +1282,7 @@ void GraphicsWindowX11::checkEvents()
                 do
                     XGetWindowAttributes(display, _window, &watt );
                 while( watt.map_state != IsViewable );
-                
+
                 OSG_INFO<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
 
                 if (windowWidth != watt.width || windowHeight != watt.height)
@@ -1297,7 +1386,7 @@ void GraphicsWindowX11::checkEvents()
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
-           
+
                 int  wx, wy;
                 Window win = 0L;
                 if( ev.xmotion.same_screen )
@@ -1341,7 +1430,7 @@ void GraphicsWindowX11::checkEvents()
                     wx += (screenOrigin_x - dest_x_return);
                     wy += (screenOrigin_y - dest_y_return);
                 }
-                
+
 
                 float mx = wx;
                 float my = wy;
@@ -1352,7 +1441,7 @@ void GraphicsWindowX11::checkEvents()
 
                 break;
             }
-            
+
             case ButtonPress :
             {
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
@@ -1376,7 +1465,7 @@ void GraphicsWindowX11::checkEvents()
                 }
                 break;
             }
-            
+
             case ButtonRelease :
             {
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
@@ -1400,7 +1489,7 @@ void GraphicsWindowX11::checkEvents()
                 }
                 break;
             }
-            
+
             case KeyPress:
             {
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
@@ -1410,22 +1499,23 @@ void GraphicsWindowX11::checkEvents()
                 _modifierState = ev.xkey.state;
                 keyMapSetKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
-                adaptKey(ev.xkey, keySymbol);
+                int unmodifiedKeySymbol = 0;
+                adaptKey(ev.xkey, keySymbol, unmodifiedKeySymbol);
 
-                getEventQueue()->keyPress(keySymbol, eventTime);
+                getEventQueue()->keyPress(keySymbol, eventTime, unmodifiedKeySymbol);
                 break;
             }
-            
+
             case KeyRelease:
             {
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
-#if 1                
+#if 1
                 // Check for following KeyPress events and see if
                 // the pair are the result of auto-repeat. If so, drop
                 // this one on the floor, to be consistent with
-                // Windows and Mac ports. The idea comes from libSDL sources. 
+                // Windows and Mac ports. The idea comes from libSDL sources.
                 XEvent nextev;
                 if (XPending(display))
                 {
@@ -1441,35 +1531,37 @@ void GraphicsWindowX11::checkEvents()
                 _modifierState = ev.xkey.state;
                 keyMapClearKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
-                adaptKey(ev.xkey, keySymbol);
-                
-                getEventQueue()->keyRelease(keySymbol, eventTime);
+                int unmodifiedKeySymbol = 0;
+                adaptKey(ev.xkey, keySymbol, unmodifiedKeySymbol);
+
+                getEventQueue()->keyRelease(keySymbol, eventTime, unmodifiedKeySymbol);
                 break;
             }
-            
+
             default:
                 OSG_NOTICE<<"Other event "<<ev.type<<std::endl;
                 break;
-                
+
         }
         _lastEventType = ev.type;
     }
 
-    if (windowX != _traits->x || 
+    // send window resize event if window position or size was changed
+    if (windowX != _traits->x ||
         windowY != _traits->y ||
         windowWidth != _traits->width ||
         windowHeight != _traits->height)
     {
-        resized(windowX, windowY, windowWidth, windowHeight); 
+        resized(windowX, windowY, windowWidth, windowHeight);
         getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
+
+        // request window repaint if window size was changed
+        if (windowWidth != _traits->width ||
+            windowHeight != _traits->height)
+        {
+            requestRedraw();
+        }
     }
-    
-#if 0
-    if (destroyWindowRequested)
-    {
-        close();
-    }
-#endif
 }
 
 void GraphicsWindowX11::grabFocus()
@@ -1477,7 +1569,7 @@ void GraphicsWindowX11::grabFocus()
     Display* display = getDisplayToUse();
 
     XSetInputFocus( display, _window, RevertToNone, CurrentTime );
-    XFlush(display); 
+    XFlush(display);
     XSync(display,0);
 }
 
@@ -1498,7 +1590,7 @@ void GraphicsWindowX11::grabFocusIfPointerInWindow()
         {
             grabFocus();
         }
-#else        
+#else
         grabFocus();
 #endif
     }
@@ -1514,7 +1606,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
     }
 }
 
-void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol)
+void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, int& unmodifiedKeySymbol)
 {
     unsigned char buffer_return[32];
     int bytes_buffer = 32;
@@ -1526,6 +1618,8 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol)
     {
         keySymbol = buffer_return[0];
     }
+
+    unmodifiedKeySymbol = XKeycodeToKeysym(keyevent.display, keyevent.keycode, 0);
 }
 
 // Function to inject artificial key presses/releases.
@@ -1549,18 +1643,19 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
     event.same_screen = True;
 
     int keySymbol = 0;
+    int unmodifiedKeySymbol = 0;
     if (state)
     {
         event.type = KeyPress;
-        adaptKey(event, keySymbol);
-        getEventQueue()->keyPress(keySymbol, time);
+        adaptKey(event, keySymbol, unmodifiedKeySymbol);
+        getEventQueue()->keyPress(keySymbol, time, unmodifiedKeySymbol);
         keyMapSetKey(_keyMap, key);
     }
     else
     {
         event.type = KeyRelease;
-        adaptKey(event, keySymbol);
-        getEventQueue()->keyRelease(keySymbol, time);
+        adaptKey(event, keySymbol, unmodifiedKeySymbol);
+        getEventQueue()->keyRelease(keySymbol, time, unmodifiedKeySymbol);
         keyMapClearKey(_keyMap, key);
     }
 }
@@ -1648,19 +1743,19 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
 
     Display* display = _eventDisplay; // getDisplayToUse();
 
-    XWarpPointer( display, 
+    XWarpPointer( display,
                   None,
-                  _window, 
+                  _window,
                   0, 0, 0, 0,
                   static_cast<int>(x), static_cast<int>(y) );
 
     XFlush(display);
     XSync(display, 0);
-    
+
     getEventQueue()->mouseWarped(x,y);
 }
 
-extern "C" 
+extern "C"
 {
 
 typedef int (*X11ErrorHandler)(Display*, XErrorEvent*);
@@ -1709,7 +1804,7 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
             OSG_NOTICE << "X11WindowingSystemInterface::_setScreen() is not fully implemented (missing depth)."<<std::endl;
 
         Display* display = XOpenDisplay(si.displayName().c_str());
-        
+
         if(display)
         {
             XRRScreenConfiguration* sc = XRRGetScreenInfo(display, RootWindow(display, si.screenNum));
@@ -1726,7 +1821,7 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
             bool     okay       = false;
 
             XRRConfigRotations(sc, &currentRot);
-            
+
             // If the width or height are zero, use our defaults.
             if(!width || !height)
             {
@@ -1743,7 +1838,7 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
                 {
                     short* rates     = XRRConfigRates(sc, i, &numRates);
                     bool   rateFound = false;
-                    
+
                     // Search for our rate in the list of acceptable rates given to us by Xrandr.
                     // If it's not found, rateFound will still be false and the call will never
                     // be made to XRRSetScreenConfigAndRate since the rate will be invalid.
@@ -1771,9 +1866,9 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
                     }
                 }
             }
-    
+
             XRRFreeScreenConfigInfo(sc);
-    
+
             return okay;
         }
         else
@@ -1786,7 +1881,7 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
 
 protected:
     bool _errorHandlerSet;
-    
+
 
 public:
     X11WindowingSystemInterface()
@@ -1795,10 +1890,10 @@ public:
 
 
         // Install an X11 error handler, if the application has not already done so.
-        
+
         // Set default handler, and get pointer to current handler.
         X11ErrorHandler currentHandler = XSetErrorHandler(NULL);
-        
+
         // Set our handler, and get pointer to default handler.
         X11ErrorHandler defHandler = XSetErrorHandler(X11ErrorHandling);
 
@@ -1815,7 +1910,7 @@ public:
             _errorHandlerSet = 0;
             XSetErrorHandler(currentHandler);
         }
-    
+
 #if 0
         if (XInitThreads() == 0)
         {
@@ -1826,7 +1921,7 @@ public:
         {
             OSG_INFO << "X11WindowingSystemInterface, xInitThreads() multi-threaded X support initialized.\n";
         }
-#endif        
+#endif
 
     }
 
@@ -1860,12 +1955,12 @@ public:
         }
     }
 
-    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
+    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si)
     {
         Display* display = XOpenDisplay(si.displayName().c_str());
         if(display)
         {
-            unsigned int numScreens = ScreenCount(display); 
+            unsigned int numScreens = ScreenCount(display);
             XCloseDisplay(display);
 
             return numScreens;
@@ -1901,8 +1996,23 @@ public:
             resolution.width = DisplayWidth(display, si.screenNum);
             resolution.height = DisplayHeight(display, si.screenNum);
             resolution.colorDepth = DefaultDepth(display, si.screenNum);
+
             resolution.refreshRate = 0;            // Missing call. Need a X11 expert.
-            
+
+
+#ifdef OSGVIEWER_USE_XRANDR
+           if (supportsRandr(display))
+           {
+
+               XRRScreenConfiguration* screenConfig = XRRGetScreenInfo ( display, RootWindow(display, si.screenNum) );
+
+               resolution.refreshRate = XRRConfigCurrentRate ( screenConfig );
+
+               XRRFreeScreenConfigInfo( screenConfig );
+           }
+#endif
+
+
             XCloseDisplay(display);
         }
         else
@@ -1952,7 +2062,7 @@ public:
                             for(int j=0; j<nrates; ++j)
                             {
                                 OSG_INFO<<"   rates "<<rates[j]<<std::endl;
-                                
+
                                 resolutionList.push_back(osg::GraphicsContext::ScreenSettings(
                                     screenSizes[i].width,
                                     screenSizes[i].height,
@@ -1972,7 +2082,7 @@ public:
                     }
                 }
             }
-#endif            
+#endif
             XCloseDisplay(display);
         }
 
@@ -2047,7 +2157,7 @@ void GraphicsWindowX11::raiseWindow()
     unsigned int nchildren, i=0;
     XTextProperty windowName;
     bool xraise = false;
-    
+
 
     XQueryTree(display, _parent, &root_return, &parent_return, &children, &nchildren);
     while (!xraise &&  i<nchildren)
@@ -2056,13 +2166,13 @@ void GraphicsWindowX11::raiseWindow()
         if ((windowName.nitems != 0) && (strcmp(_traits->windowName.c_str(),(const char *)windowName.value) == 0)) xraise = true;
     }
     if (xraise) XRaiseWindow(display,_window);
-    else 
+    else
     {
     XGetWindowAttributes(display, _window, &winAttrib);
     XReparentWindow(display, _window, _parent, winAttrib.x, winAttrib.y);
     }
     XFree(children);
 
-    XFlush(display); 
+    XFlush(display);
     XSync(display,0);
 }

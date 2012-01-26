@@ -31,7 +31,7 @@ namespace osgTerrain {
 extern OSGTERRAIN_EXPORT void extractSetNameAndFileName(const std::string& compoundstring, std::string& setname, std::string& filename);
 
 /** Create a compound string in the form set:setname:filename, or just filename if setname is "".*/
-extern OSGTERRAIN_EXPORT std::string createCompondSetNameAndFileName(const std::string& setname, const std::string& filename);
+extern OSGTERRAIN_EXPORT std::string createCompoundSetNameAndFileName(const std::string& setname, const std::string& filename);
 
 class OSGTERRAIN_EXPORT Layer : public osg::Object
 {
@@ -44,7 +44,10 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         META_Object(osgTerrain, Layer);
         
+        /** Set the name of this layer. */
         void setSetName(const std::string& setname) { setName(setname); }
+
+        /** Get the name of this layer. */
         const std::string& getSetName() const { return getName(); }
 
         /** Set the file name of the data associated with this layer. */
@@ -54,41 +57,49 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         virtual const std::string& getFileName() const { return _filename; }
 
         /** Return the compound name of the layer in the form set::name::filename string.*/
-        std::string getCompoundName() const { return createCompondSetNameAndFileName(getName(), getFileName()); }
+        std::string getCompoundName() const { return createCompoundSetNameAndFileName(getName(), getFileName()); }
 
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
-        
+ 
         void setMinLevel(unsigned int minLevel) { _minLevel = minLevel; }
         unsigned int getMinLevel() const { return _minLevel; }
 
         void setMaxLevel(unsigned int maxLevel) { _maxLevel = maxLevel; }
         unsigned int getMaxLevel() const { return _maxLevel; }
 
+        /** Set the data validation operator. */
         void setValidDataOperator(ValidDataOperator* validDataOp) { _validDataOperator = validDataOp; }
+
+        /** Get the data validation operator. */
         ValidDataOperator* getValidDataOperator() { return _validDataOperator.get(); }
+
+        /** Get the const data validation operator. */
         const ValidDataOperator* getValidDataOperator() const { return _validDataOperator.get(); }
 
 
+        /** Get the number of columns. */
         virtual unsigned int getNumColumns() const { return 0; }
+
+        /** Get the number of rows. */
         virtual unsigned int getNumRows() const { return 0; }
 
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
         
 
-        /** Set the minification texture filter to use when do texture associated with this layer.*/
+        /** Set the minification texture filter to use when a texture is associated with this layer.*/
         void setMinFilter(osg::Texture::FilterMode filter) { _minFilter = filter; }
 
-        /** Get the minification texture filter to use when do texture associated with this layer.*/
+        /** Get the minification texture filter to use when a texture is associated with this layer.*/
         osg::Texture::FilterMode getMinFilter() const { return _minFilter; }
 
 
-        /** Set the magniification texture filter to use when do texture associated with this layer.*/
+        /** Set the magnification texture filter to use when a texture is associated with this layer.*/
         void setMagFilter(osg::Texture::FilterMode filter) { _magFilter = filter; }
 
-        /** Get the magnification texture filter to use when do texture associated with this layer.*/
+        /** Get the magnification texture filter to use when a texture is associated with this layer.*/
         osg::Texture::FilterMode getMagFilter() const { return _magFilter; }
 
 
@@ -102,7 +113,13 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         virtual bool transform(float /*offset*/, float /*scale*/) { return false; }
 
-
+        /**
+         * Get the layer value at position i,j.
+         * @param[in] i X-axis (or column) index.
+         * @param[in] j Y-axis (or row) index.
+         * @param[out] value Returned layer value.
+         * @return true if value is valid, else false
+         */
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec3& /*value*/) const { return false; }
@@ -133,6 +150,15 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         }
 
 
+        /**
+         * Compute column,row indices from normalized coordinates.
+         * @param[in] ndc_x Normalized X-axis coordinate.
+         * @param[in] ndc_y Normalized Y-axis coordinate.
+         * @param[out] i Returned X-axis (or column) index.
+         * @param[out] j Returned Y-axis (or row) index.
+         * @param[out] ir Returned X-axis fraction.
+         * @param[out] jr Returned Y-axis fraction.
+         */
         inline void computeIndices(double ndc_x, double ndc_y, unsigned int& i, unsigned int& j, double& ir, double& jr)
         {
             ndc_x *= double(getNumColumns()-1);
@@ -143,7 +169,13 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             jr = ndc_y - double(j);
         } 
 
-
+        /**
+         * Calculate the interpolated layer value at the given normalized coordinates.
+         * @param[in] ndc_x Normalized X-axis coordinate.
+         * @param[in] ndc_y Normalized Y-axis coordinate.
+         * @param[out] value Returned layer value.
+         * @return true if value is valid, else false
+         */
         inline bool getInterpolatedValue(double ndc_x, double ndc_y, float& value)
         {
             unsigned int i,j;
@@ -186,7 +218,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
                 value /= div;
                 return true;
             }
-            
+
             value = 0.0;
             return false;
         }
@@ -239,10 +271,10 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         }
 
         /** increment the modified count."*/
-        virtual void dirty() {};
+        virtual void dirty() {}
 
         /** Set the modified count value.  */
-        virtual void setModifiedCount(unsigned int /*value*/) {};
+        virtual void setModifiedCount(unsigned int /*value*/) {}
 
         /** Get modified count value. */
         virtual unsigned int getModifiedCount() const { return 0; }
@@ -467,13 +499,16 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
 
         void clear();
 
-        void setSetName(const std::string& setname) { setName(setname); }
-        const std::string& getSetName() const { return getName(); }
-
+        /** Set the set name of layer 'i'. */
         void setSetName(unsigned int i, const std::string& setname) { _layers[i].setname = setname; if (_layers[i].layer.valid()) _layers[i].layer->setName(setname); }
+
+        /** Get the set name of layer 'i'. */
         const std::string& getSetName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getName() : _layers[i].setname; }
 
+        /** Set the file name of the data associated with layer 'i'. */
         void setFileName(unsigned int i, const std::string& filename) { _layers[i].filename = filename; if (_layers[i].layer.valid()) _layers[i].layer->setFileName(filename); }
+
+        /** Get the file name of the data associated with layer 'i'. */
         const std::string& getFileName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getFileName() : _layers[i].filename; }
 
         void setCompoundName(unsigned int i, const std::string& compoundname);

@@ -178,33 +178,26 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
     if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
 
-    // convert possible Windows backslashes to Unix slashes
-    // OpenVRML doesn't like backslashes, even on Windows
-    std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
-
-#ifdef WIN32
-    if(unixFileName[1] == ':') // absolute path
-    fileName = "file:///" + unixFileName;
-#else
-    if (unixFileName[0] == '/') // absolute path
-        fileName = "file://" + unixFileName;
-#endif
-    else
-        // relative path
-        fileName = unixFileName;
-
     std::fstream null;
     resource_fetcher fetcher;
     openvrml::browser *b = new openvrml::browser(fetcher, null, null);
 
     osgDB::ifstream vrml_stream(fileName.c_str());
+    if (!vrml_stream.is_open())
+    {
+        OSG_INFO << "ReaderWriterVRML2: Could not open \"" << fileName << "\"" << std::endl;
+        return ReadResult::FILE_NOT_FOUND;
+    }
 
     try
     {
         const std::vector< boost::intrusive_ptr< openvrml::node > > & mfn = b->create_vrml_from_stream(vrml_stream);
 
         if(mfn.empty())
+        {
+            OSG_INFO << "ReaderWriterVRML2: OpenVRML library did not return any vrml nodes." << std::endl;
             return ReadResult::FILE_NOT_HANDLED;
+        }
         else
         {
             osg::ref_ptr<osg::MatrixTransform> osg_root = new osg::MatrixTransform(osg::Matrix( 1, 0, 0, 0,
@@ -212,19 +205,27 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
                                                                                                 0, -1, 0, 0,
                                                                                                 0, 0, 0, 1));
 
-            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(unixFileName));
+            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(fileName));
             for (unsigned i = 0; i < mfn.size(); i++)
             {
                 openvrml::node *vrml_node = mfn[i].get();
-                osg_root->addChild(convertFromVRML(vrml_node).get());
+                osg_root->addChild(convertFromVRML(vrml_node));
             }
             osgDB::getDataFilePathList().pop_front();
             return osg_root.get();
         }
     }
 
-    catch (openvrml::invalid_vrml) { return ReadResult::FILE_NOT_HANDLED; }
-    catch (std::invalid_argument)  { return ReadResult::FILE_NOT_HANDLED; }
+    catch (const openvrml::invalid_vrml& e)
+    {
+        OSG_INFO << "ReaderWriterVRML2: Invalid VRML in line " << e.line << " at column " << e.column << ": \"" << e.what() << "\"" << std::endl;
+        return ReadResult::FILE_NOT_HANDLED;
+    }
+    catch (const std::invalid_argument& e)
+    {
+        OSG_INFO << "ReaderWriterVRML2: Invalid argument: \"" << e.what() << "\"" << std::endl;
+        return ReadResult::FILE_NOT_HANDLED;
+    }
 }
 
 osgDB::ReaderWriter::WriteResult ReaderWriterVRML2::writeNode(const osg::Node& root,const std::string& filename, const osgDB::ReaderWriter::Options *options) const
@@ -242,7 +243,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterVRML2::writeNode(const osg::Node& r
 
 
 
-osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
+osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {
     //static int osgLightNum = 0; //light
 
@@ -276,7 +277,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             // no children
         }
 
-        return osg_group.get();
+        return osg_group.release();
 
     }
 
@@ -302,7 +303,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_m->addChild(convertFromVRML(node).get());
+                    osg_m->addChild(convertFromVRML(node));
                 }
             }
         }
@@ -311,7 +312,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             // no children
         }
 
-        return osg_m.get();
+        return osg_m.release();
 
     }
 
@@ -329,28 +330,30 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 const openvrml::sfnode * sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
                 openvrml::sfnode::value_type node_ptr = sfn->value();
 
-                // is it indexed_face_set_node ?
-                if (node_ptr->type().id()=="IndexedFaceSet")
-                    osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
-
-                else if (node_ptr->type().id()=="IndexedLineSet")
-                    osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Box")
-                    osg_geom = convertVRML97Box(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Sphere")
-                    osg_geom = convertVRML97Sphere(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Cone")
-                    osg_geom = convertVRML97Cone(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Cylinder")
-                    osg_geom = convertVRML97Cylinder(node_ptr.get());
-
-                else
-                {
-                    // other geometry types not handled yet
+                if (node_ptr.get()) {
+                    // is it indexed_face_set_node ?
+                    if (node_ptr->type().id()=="IndexedFaceSet")
+                        osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
+                    
+                    else if (node_ptr->type().id()=="IndexedLineSet")
+                        osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Box")
+                        osg_geom = convertVRML97Box(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Sphere")
+                        osg_geom = convertVRML97Sphere(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Cone")
+                        osg_geom = convertVRML97Cone(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Cylinder")
+                        osg_geom = convertVRML97Cylinder(node_ptr.get());
+                    
+                    else
+                    {
+                        // other geometry types not handled yet
+                    }
                 }
             }
         }
@@ -503,7 +506,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             }
         }
 
-        return osg_geode.get();
+        return osg_geode.release();
     }
     else
     {

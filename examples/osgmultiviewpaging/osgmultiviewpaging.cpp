@@ -40,8 +40,6 @@
 
 #include <osgViewer/CompositeViewer>
 
-#include <osgFX/Scribe>
-
 #include <osg/io_utils>
 
 class MyPager : public osgDB::DatabasePager

@@ -183,6 +183,8 @@ class Document
         bool getPreserveFace() const { return _preserveFace; }
         void setPreserveObject(bool flag) { _preserveObject = flag; }
         bool getPreserveObject() const { return _preserveObject; }
+        void setReplaceDoubleSidedPolys(bool flag) { _replaceDoubleSidedPolys = flag; }
+        bool getReplaceDoubleSidedPolys() const { return _replaceDoubleSidedPolys; }
         void setDefaultDOFAnimationState(bool state) { _defaultDOFAnimationState = state; }
         bool getDefaultDOFAnimationState() const { return _defaultDOFAnimationState; }
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
@@ -207,6 +209,7 @@ class Document
         bool                        _replaceClampWithClampToEdge;
         bool                        _preserveFace;
         bool                        _preserveObject;
+        bool                        _replaceDoubleSidedPolys;
         bool                        _defaultDOFAnimationState;
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _useBillboardCenter;

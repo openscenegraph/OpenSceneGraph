@@ -91,8 +91,8 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
                 if (_occluders.valid())
                 {
                     
-                    if (osgDB::writeNodeFile(*_occluders,"saved_occluders.osg"))
-                        std::cout<<"saved occluders to 'saved_occluders.osg'"<<std::endl;
+                    if (osgDB::writeNodeFile(*_occluders,"saved_occluders.osgt"))
+                        std::cout<<"saved occluders to 'saved_occluders.osgt'"<<std::endl;
                 }
                 else
                 {
@@ -315,7 +315,7 @@ int main( int argc, char **argv )
     osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
     
     // if not loaded assume no arguments passed in, try using default mode instead.
-    if (!loadedmodel) loadedmodel = osgDB::readNodeFile("glider.osg");
+    if (!loadedmodel) loadedmodel = osgDB::readNodeFile("glider.osgt");
     
     if (!loadedmodel)
     {

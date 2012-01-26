@@ -18,119 +18,474 @@
 #include <osg/GLObjects>
 #include <osg/Depth>
 #include <osg/ColorMask>
+#include <osg/ApplicationUsage>
 
 #include <OpenThreads/ScopedLock>
 
 #include <algorithm>
-#include <stdlib.h>
 #include <iterator>
+#include <stdlib.h>
+#include <string.h>
 
 namespace osgUtil 
 {
 
 
+// TODO
+// priority of CompileSets
+// isCompiled
+// time estimation
+// early completion
+// needs compile given time slot
+// custom CompileData elements
+// pruneOldRequestsAndCheckIfEmpty()
+// Use? :
+//                     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+//                        GLint p;
+//                        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
+//                    #endif
+
+static osg::ApplicationUsageProxy ICO_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
+static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
+static osg::ApplicationUsageProxy UCO_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FORCE_TEXTURE_DOWNLOAD <ON/OFF>","should the texture compiles be forced to download using a dummy Geometry.");
+
 /////////////////////////////////////////////////////////////////
 //
-// CompileStats
+// CollectStateToCompile
 //
-CompileStats::CompileStats()
+StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode):
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _mode(mode),
+    _assignPBOToImages(false)
 {
 }
 
-void CompileStats::add(const std::string& name,double size, double time)
+void StateToCompile::apply(osg::Node& node)
 {
-    Values& values = _statsMap[name];
-    values.add(size,time);
+    if (node.getStateSet())
+    {
+        apply(*(node.getStateSet()));
+    }
+
+    traverse(node);
 }
 
-double CompileStats::estimateTime(const std::string& name, double size) const
+void StateToCompile::apply(osg::Geode& node)
 {
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime(size) : 0.0;
+    if (node.getStateSet())
+    {
+        apply(*(node.getStateSet()));
+    }
+
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
+    {
+        osg::Drawable* drawable = node.getDrawable(i);
+        if (drawable)
+        {
+            apply(*drawable);
+            if (drawable->getStateSet())
+            {
+                apply(*(drawable->getStateSet()));
+            }
+        }
+    }
 }
 
-double CompileStats::estimateTime2(const std::string& name, double size) const
+void StateToCompile::apply(osg::Drawable& drawable)
 {
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime2(size) : 0.0;
+    if (_drawablesHandled.count(&drawable)!=0) return;
+
+    _drawablesHandled.insert(&drawable);
+
+    if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
+    {
+        drawable.setUseDisplayList(false);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
+    {
+        drawable.setUseDisplayList(true);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(true);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(false);
+    }
+
+    if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
+        (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
+    {
+        _drawables.insert(&drawable);
+    }
 }
 
-double CompileStats::estimateTime3(const std::string& name, double size) const
+void StateToCompile::apply(osg::StateSet& stateset)
 {
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime3(size) : 0.0;
+    if (_statesetsHandled.count(&stateset)!=0) return;
+
+    _statesetsHandled.insert(&stateset);
+
+    if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
+    {
+        osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
+        if (program)
+        {
+            _programs.insert(program);
+        }
+
+        osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+
+#if 0
+        if (tal.size()>1)
+        {
+            tal.erase(tal.begin()+1,tal.end());
+        }
+#endif
+        for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
+            itr != tal.end();
+            ++itr)
+        {
+            osg::StateSet::AttributeList& al = *itr;
+            osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
+            osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
+            if (texItr != al.end())
+            {
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());
+                if (texture)
+                {
+                    if (_textures.count(texture)==0)
+                    {
+                        apply(*texture);
+                    }
+                }
+            }
+        }
+    }
 }
 
-double CompileStats::estimateTime4(const std::string& name, double size) const
+void StateToCompile::apply(osg::Texture& texture)
 {
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime4(size) : 0.0;
+    if (_assignPBOToImages)
+    {
+        unsigned int numRequringPBO = 0;
+        osg::ref_ptr<osg::PixelBufferObject> pbo = 0;
+        for(unsigned int i=0; i<texture.getNumImages(); ++i)
+        {
+            osg::Image* image = texture.getImage(i);
+            if (image)
+            {
+                if (image->getPixelBufferObject())
+                {
+                    pbo = image->getPixelBufferObject();
+                }
+                else
+                {
+                    ++numRequringPBO;
+                }
+            }
+        }
+        if (numRequringPBO>0)
+        {
+            // assign pbo
+            if (!pbo)
+            {
+                if (!_pbo) _pbo = new osg::PixelBufferObject;
+                pbo = _pbo;
+            }
+
+            for(unsigned int i=0; i<texture.getNumImages(); ++i)
+            {
+                osg::Image* image = texture.getImage(i);
+                if (image)
+                {
+                    if (!image->getPixelBufferObject())
+                    {
+                        //OSG_NOTICE<<"Assigning PBO"<<std::endl;
+                        pbo->setCopyDataAndReleaseGLBufferObject(true);
+                        pbo->setUsage(GL_DYNAMIC_DRAW_ARB);
+                        image->setPixelBufferObject(pbo.get());
+                    }
+                }
+            }
+        }
+    }
+
+    _textures.insert(&texture);
 }
 
-double CompileStats::averageTime(const std::string& name) const
+/////////////////////////////////////////////////////////////////
+//
+// CompileOps
+//
+IncrementalCompileOperation::CompileDrawableOp::CompileDrawableOp(osg::Drawable* drawable):
+    _drawable(drawable)
 {
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.averageTime() : 0.0;
 }
 
-void CompileStats::print(std::ostream& out) const
+double IncrementalCompileOperation::CompileDrawableOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    for(StatsMap::const_iterator itr = _statsMap.begin();
-        itr != _statsMap.end();
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
+    osg::Geometry* geometry = _drawable->asGeometry();
+    if (gce && geometry)
+    {
+        return gce->estimateCompileCost(geometry).first;
+    }
+    else return 0.0;
+}
+
+bool IncrementalCompileOperation::CompileDrawableOp::compile(CompileInfo& compileInfo)
+{
+    //OSG_NOTICE<<"CompileDrawableOp::compile(..)"<<std::endl;
+    _drawable->compileGLObjects(compileInfo);
+    return true;
+}
+
+IncrementalCompileOperation::CompileTextureOp::CompileTextureOp(osg::Texture* texture):
+    _texture(texture)
+{
+}
+
+double IncrementalCompileOperation::CompileTextureOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
+{
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
+    if (gce) return gce->estimateCompileCost(_texture.get()).first;
+    else return 0.0;
+}
+
+bool IncrementalCompileOperation::CompileTextureOp::compile(CompileInfo& compileInfo)
+{
+    //OSG_NOTICE<<"CompileTextureOp::compile(..)"<<std::endl;
+    osg::Geometry* forceDownloadGeometry = compileInfo.incrementalCompileOperation->getForceTextureDownloadGeometry();
+    if (forceDownloadGeometry)
+    {
+
+        //OSG_NOTICE<<"Force texture download"<<std::endl;
+        if (forceDownloadGeometry->getStateSet())
+        {
+            compileInfo.getState()->apply(forceDownloadGeometry->getStateSet());
+        }
+
+        compileInfo.getState()->applyTextureMode(0, _texture->getTextureTarget(), true);
+        compileInfo.getState()->applyTextureAttribute(0, _texture.get());
+
+        forceDownloadGeometry->draw(compileInfo);
+    }
+    else
+    {
+        _texture->apply(*compileInfo.getState());
+    }
+    return true;
+}
+
+IncrementalCompileOperation::CompileProgramOp::CompileProgramOp(osg::Program* program):
+    _program(program)
+{
+}
+
+double IncrementalCompileOperation::CompileProgramOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
+{
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
+    if (gce) return gce->estimateCompileCost(_program.get()).first;
+    else return 0.0;
+}
+
+bool IncrementalCompileOperation::CompileProgramOp::compile(CompileInfo& compileInfo)
+{
+    //OSG_NOTICE<<"CompileProgramOp::compile(..)"<<std::endl;
+    _program->apply(*compileInfo.getState());
+    return true;
+}
+
+IncrementalCompileOperation::CompileInfo::CompileInfo(osg::GraphicsContext* context, IncrementalCompileOperation* ico):
+    compileAll(false),
+    maxNumObjectsToCompile(0),
+    allocatedTime(0)
+{
+    setState(context->getState());
+    incrementalCompileOperation = ico;
+}
+
+
+/////////////////////////////////////////////////////////////////
+//
+// CompileList
+//
+IncrementalCompileOperation::CompileList::CompileList()
+{
+}
+
+IncrementalCompileOperation::CompileList::~CompileList()
+{
+}
+
+void IncrementalCompileOperation::CompileList::add(CompileOp* compileOp)
+{
+    _compileOps.push_back(compileOp);
+}
+
+double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(CompileInfo& compileInfo) const
+{
+    double estimateTime = 0.0;
+    for(CompileOps::const_iterator itr = _compileOps.begin();
+        itr != _compileOps.begin();
         ++itr)
     {
-        const Values& values = itr->second;
-        out<<itr->first<<" : averageTime "<<values.averageTime()<<", a="<<values.a<<" b="<<values.b<<std::endl;
+        estimateTime += (*itr)->estimatedTimeForCompile(compileInfo);
     }
+    return estimateTime;
 }
 
-void CompileStats::Values::add(double size, double time)
+bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 {
-    if (totalNum==0.0)
+//#define USE_TIME_ESTIMATES
+    
+    for(CompileOps::iterator itr = _compileOps.begin();
+        itr != _compileOps.end() && compileInfo.okToCompile();
+    )
     {
-        minSize = size;
-        minTime = time;
-    }
-    else
-    {
-        if (size<minSize) minSize = size;
-        if (time<minTime) minTime = time;
-    }
+        #ifdef USE_TIME_ESTIMATES
+        double estimatedCompileCost = (*itr)->estimatedTimeForCompile(compileInfo);
+        #endif
 
-    totalSize += size;
-    totalTime += time;
-    totalNum += 1.0;
+        --compileInfo.maxNumObjectsToCompile;
 
-    m += time/(size*size); // sum of yi/xi^2
-    n += time/size; // sum of yi/xi
-    o += 1.0/(size*size); // sum of 1/xi^2
-    p += 1.0/size; // sum of 1/xi
+        #ifdef USE_TIME_ESTIMATES
+        osg::ElapsedTime timer;
+        #endif
 
-    double d = o + p*p;
-    if (d!=0.0)
-    {
-        a = (n*p - m)/d;
-        b = (n*o - m*p)/d;
+        CompileOps::iterator saved_itr(itr);
+        ++itr;
+        if ((*saved_itr)->compile(compileInfo))
+        {
+            _compileOps.erase(saved_itr);
+        }
+
+        #ifdef USE_TIME_ESTIMATES
+        double actualCompileCost = timer.elapsedTime();
+        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile = "<<estimatedCompileCost*1000.0<<"ms, actual = "<<actualCompileCost*1000.0<<"ms";
+        if (estimatedCompileCost>0.0) OSG_NOTICE<<", ratio="<<(actualCompileCost/estimatedCompileCost);
+        OSG_NOTICE<<std::endl;
+        #endif
     }
-    else
-    {
-        a = time;
-        b = 0.0;
-    }
+    return empty();
 }
-
 
 /////////////////////////////////////////////////////////////////
 //
-// CompileOperator
+// CompileSet
 //
-CompileOperator::CompileOperator():
-    _timingTestsCompleted(false)
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, StateToCompile& stc)
 {
-    _compileStats = new CompileStats;
+    if (contexts.empty() || stc.empty()) return;
+
+    if (stc.empty()) return;
+
+    for(ContextSet::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        // increment the number of compile lists that will need to compile
+        ++_numberCompileListsToCompile;
+
+        CompileList& cl = _compileMap[*itr];
+        for(StateToCompile::DrawableSet::iterator ditr = stc._drawables.begin();
+            ditr != stc._drawables.end();
+            ++ditr)
+        {
+            cl.add(*ditr);
+        }
+
+        for(StateToCompile::TextureSet::iterator titr = stc._textures.begin();
+            titr != stc._textures.end();
+            ++titr)
+        {
+            cl.add(*titr);
+        }
+
+        for(StateToCompile::ProgramSet::iterator pitr = stc._programs.begin();
+            pitr != stc._programs.end();
+            ++pitr)
+        {
+            cl.add(*pitr);
+        }
+    }
 }
 
-void CompileOperator::assignForceTextureDownloadGeometry()
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode)
+{
+    if (contexts.empty() || !_subgraphToCompile) return;
+
+    StateToCompile stc(mode);
+    _subgraphToCompile->accept(stc);
+
+    buildCompileMap(contexts, stc);
+}
+
+bool IncrementalCompileOperation::CompileSet::compile(CompileInfo& compileInfo)
+{
+    CompileList& compileList = _compileMap[compileInfo.getState()->getGraphicsContext()];
+    if (!compileList.empty())
+    {
+        if (compileList.compile(compileInfo))
+        {
+            --_numberCompileListsToCompile;
+            return _numberCompileListsToCompile==0;
+        }
+    }
+    return _numberCompileListsToCompile==0;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// IncrementalCompileOperation
+//
+IncrementalCompileOperation::IncrementalCompileOperation():
+    osg::GraphicsOperation("IncrementalCompileOperation",true),
+    _flushTimeRatio(0.5),
+    _conservativeTimeRatio(0.5),
+    _currentFrameNumber(0),
+    _compileAllTillFrameNumber(0)
+{
+    _targetFrameRate = 100.0;
+    _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
+    _maximumNumOfObjectsToCompilePerFrame = 20;
+    const char* ptr = 0;
+    if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
+    {
+        _minimumTimeAvailableForGLCompileAndDeletePerFrame = osg::asciiToDouble(ptr);
+    }
+
+    if( (ptr = getenv("OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME")) != 0)
+    {
+        _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
+    }
+
+    bool useForceTextureDownload = false;
+    if( (ptr = getenv("OSG_FORCE_TEXTURE_DOWNLOAD")) != 0)
+    {
+        useForceTextureDownload = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
+                                  strcmp(ptr,"on")==0 || strcmp(ptr,"ON")==0;
+
+        OSG_NOTICE<<"OSG_FORCE_TEXTURE_DOWNLOAD set to "<<useForceTextureDownload<<std::endl;
+    }
+
+    if (useForceTextureDownload)
+    {
+        assignForceTextureDownloadGeometry();
+    }
+
+}
+
+IncrementalCompileOperation::~IncrementalCompileOperation()
+{
+}
+
+void IncrementalCompileOperation::assignForceTextureDownloadGeometry()
 {
     osg::Geometry* geometry = new osg::Geometry;
 
@@ -155,327 +510,6 @@ void CompileOperator::assignForceTextureDownloadGeometry()
     stateset->setAttribute(colorMask);
 
     _forceTextureDownloadGeometry = geometry;
-}
-
-double CompileOperator::timeCompile(osg::RenderInfo& renderInfo, osg::Geometry* geometry) const
-{
-    osg::ElapsedTime timer;
-    geometry->compileGLObjects(renderInfo);
-    return timer.elapsedTime();
-}
-
-double CompileOperator::timeCompile(osg::RenderInfo& renderInfo, osg::StateSet* stateset) const
-{
-    osg::ElapsedTime timer;
-    stateset->compileGLObjects(*renderInfo.getState());
-    return timer.elapsedTime();
-}
-
-osg::Geometry* CompileOperator::createTestGeometry(unsigned int numVertices, bool vbo)  const
-{
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(numVertices);
-    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array(numVertices);
-    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array(numVertices);
-    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array(numVertices);
-
-    geometry->setVertexArray(vertices.get());
-    geometry->setNormalArray(normals.get());
-    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-    geometry->setTexCoordArray(0, texcoords.get());
-
-    for(unsigned int i=0; i<numVertices; ++i)
-    {
-        (*vertices)[i] = osg::Vec3(0.0f,0.0f,0.0f);
-        (*normals)[i] = osg::Vec3(0.0f,0.0f,0.0f);
-        (*colours)[i] = osg::Vec4(1.0f,1.0f,1.0f,1.0f);
-        (*texcoords)[i] = osg::Vec2(0.0f,0.0f);
-    }
-
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0,numVertices));
-
-    geometry->setUseDisplayList(true);
-    geometry->setUseVertexBufferObjects(vbo);
-
-    return geometry.release();
-}
-
-osg::StateSet* CompileOperator::createTestStateSet(unsigned int imageSize, bool mipmapped)  const
-{
-    return 0;
-}
-
-void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
-{
-    _timingTestsCompleted = true;
-
-    return;
-
-    OSG_NOTICE<<"runTimingTests()"<<std::endl;
-
-    unsigned int mx = 18;
-    double Mbsec = 1.0/(1024.0*1024.0);
-    for(unsigned int j=0; j<4; ++j)
-    {
-        OSG_NOTICE<<"Using display lists"<<std::endl;
-        bool useVBO = false;
-        for(unsigned int i=0; i<mx; ++i)
-        {
-            unsigned int numVertices = pow(2.0,double(i));
-            osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
-            double size = geometry->getGLObjectSizeHint();
-            double time = timeCompile(renderInfo, geometry.get());
-            OSG_NOTICE<<"   numVertices = "<<numVertices<<" size = "<<size<<", time = "<<time*1000.0<<"ms rate= "<<(size/time)*Mbsec<<"Mb/sec"<<std::endl;
-        }
-    }
-    for(unsigned int j=0; j<4; ++j)
-    {
-        OSG_NOTICE<<"Using VBOs"<<std::endl;
-        bool useVBO = true;
-        for(unsigned int i=0; i<mx; ++i)
-        {
-            unsigned int numVertices = pow(2.0,double(i));
-            osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
-            double size = geometry->getGLObjectSizeHint();
-            double time = timeCompile(renderInfo, geometry.get());
-            OSG_NOTICE<<"   numVertices = "<<numVertices<<" size = "<<size<<", time = "<<time*1000.0<<"ms rate= "<<(size/time)*Mbsec<<"Mb/sec"<<std::endl;
-        }
-    }
-}
-
-
-bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsigned int& maxNumObjectsToCompile, double& compileTime)
-{
-    osg::Timer_t startTick = osg::Timer::instance()->tick();
-
-    if (!_timingTestsCompleted)
-    {
-        runTimingTests(renderInfo);
-    }
-
-    osg::NotifySeverity level = osg::INFO;
-
-    unsigned int totalDataSizeCompiled = 0;
-    unsigned int drawablesCompiled = 0;
-    unsigned int texturesCompiled = 0;
-    unsigned int programsCompiled = 0;
-
-    if (!cd.empty() && compileTime>0.0)
-    {
-
-        osg::Timer_t previousTick = osg::Timer::instance()->tick();
-
-        const std::string vboDrawablesName("VBO Drawables");
-        const std::string dlDawablesName("DisplayList Drawables");
-
-        while(!cd._drawables.empty() &&
-                maxNumObjectsToCompile>0 &&
-                osg::Timer::instance()->delta_s(startTick, previousTick) < compileTime)
-        {
-            CompileData::Drawables::iterator itr = cd._drawables.begin();
-            const osg::Drawable* drawable = itr->get();
-            unsigned int size = drawable->getGLObjectSizeHint();
-            const std::string& nameOfDrawableType = drawable->getUseVertexBufferObjects() ? vboDrawablesName : dlDawablesName;
-
-#if 0
-            double estimatedTime = _compileStats->estimateTime(nameOfDrawableType, double(size));
-            double estimatedTime2 = _compileStats->estimateTime2(nameOfDrawableType, double(size));
-            double estimatedTime3 = _compileStats->estimateTime3(nameOfDrawableType, double(size));
-            double estimatedTime4 = _compileStats->estimateTime4(nameOfDrawableType, double(size));
-#endif
-            drawable->compileGLObjects(renderInfo);
-            osg::Timer_t currTick = osg::Timer::instance()->tick();
-            double timeForCompile = osg::Timer::instance()->delta_s(previousTick, currTick);
-            previousTick = currTick;
-
-#if 0
-            OSG_NOTIFY(level)<<"Drawable size = "<<size<<std::endl;
-            OSG_NOTIFY(level)<<"  Estimated time   ="<<estimatedTime<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime<<std::endl;
-            OSG_NOTIFY(level)<<"  Estimated time2="<<estimatedTime2<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime2<<std::endl;
-            OSG_NOTIFY(level)<<"  Estimated time3="<<estimatedTime3<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime3<<std::endl;
-            OSG_NOTIFY(level)<<"  Estimated time4="<<estimatedTime4<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime4<<std::endl;
-#endif
-            _compileStats->add(nameOfDrawableType, double(size), timeForCompile);
-
-
-            totalDataSizeCompiled += size;
-            // OSG_NOTIFY(level)<<"Compiled drawable, getGLObjectSizeHint()="<<(*itr)->getGLObjectSizeHint()<<std::endl;
-
-            ++drawablesCompiled;
-            --maxNumObjectsToCompile;
-            cd._drawables.erase(itr);
-
-
-        }
-
-        while(!cd._textures.empty() &&
-                maxNumObjectsToCompile>0 &&
-                osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < compileTime)
-        {
-            CompileData::Textures::iterator itr = cd._textures.begin();
-
-            osg::Texture* texture = itr->get();
-
-            osg::Texture::FilterMode minFilter = texture->getFilter(osg::Texture::MIN_FILTER);
-            bool textureMipmapped = (minFilter!=osg::Texture::LINEAR && minFilter!=osg::Texture::NEAREST);
-            bool textureCompressedFormat = texture->isCompressedInternalFormat();
-            bool needtoBuildMipmaps = false;
-            bool needtoCompress = false;
-
-            OSG_NOTIFY(level)<<"  texture->isCompressedInternalFormat()="<<textureCompressedFormat<<std::endl;
-
-            for(unsigned int i=0; i<texture->getNumImages();++i)
-            {
-                osg::Image* image = texture->getImage(i);
-                if (image)
-                {
-                    totalDataSizeCompiled += texture->getImage(i)->getTotalSizeInBytesIncludingMipmaps();
-                    if (textureMipmapped && !image->isMipmap()) needtoBuildMipmaps = true;
-                    if (textureCompressedFormat && !image->isCompressed()) needtoCompress = true;
-                }
-            }
-
-
-            OSG_NOTIFY(level)<<"compiling texture, textureMipmapped="<<textureMipmapped<<", needtoBuildMipmaps="<<needtoBuildMipmaps<<std::endl;
-            OSG_NOTIFY(level)<<"                   textureCompressedFormat="<<textureCompressedFormat<<", needtoCompress="<<needtoCompress<<std::endl;
-
-            // if (needtoBuildMipmaps) texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-
-
-            if (_forceTextureDownloadGeometry.get())
-            {
-
-                if (_forceTextureDownloadGeometry->getStateSet())
-                {
-                    renderInfo.getState()->apply(_forceTextureDownloadGeometry->getStateSet());
-                }
-
-                renderInfo.getState()->applyTextureMode(0, texture->getTextureTarget(), true);
-                renderInfo.getState()->applyTextureAttribute(0, texture);
-
-                _forceTextureDownloadGeometry->draw(renderInfo);
-            }
-            else
-            {
-                texture->apply(*renderInfo.getState());
-            }
-
-            ++texturesCompiled;
-            --maxNumObjectsToCompile;
-
-            cd._textures.erase(itr);
-        }
-
-
-        if (!cd._programs.empty())
-        {
-            osg::GL2Extensions* extensions = osg::GL2Extensions::Get(renderInfo.getState()->getContextID(), true);
-            if (extensions && extensions->isGlslSupported())
-            {
-                // compile programs
-                while(!cd._programs.empty() &&
-                    maxNumObjectsToCompile>0 &&
-                    osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < compileTime)
-                {
-                    CompileData::Programs::iterator itr = cd._programs.begin();
-                    (*itr)->apply(*renderInfo.getState());
-
-                    ++programsCompiled;
-                    --maxNumObjectsToCompile;
-
-                    cd._programs.erase(itr);
-                }
-
-#if 0
-
-// what shall we do about uniforms???
-
-        osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program) {
-            if( program->isFixedFunction() )
-                _lastCompiledProgram = NULL; // It does not make sense to apply uniforms on fixed pipe
-            else
-                _lastCompiledProgram = program;
-        }
-
-        if (_lastCompiledProgram.valid() && !stateset.getUniformList().empty())
-        {
-            osg::Program::PerContextProgram* pcp = _lastCompiledProgram->getPCP(_renderInfo.getState()->getContextID());
-            if (pcp)
-            {
-                pcp->useProgram();
-
-                _renderInfo.getState()->setLastAppliedProgramObject(pcp);
-
-                osg::StateSet::UniformList& ul = stateset.getUniformList();
-                for(osg::StateSet::UniformList::iterator itr = ul.begin();
-                    itr != ul.end();
-                    ++itr)
-                {
-                    pcp->apply(*(itr->second.first));
-                }
-            }
-        }
-        else if(_renderInfo.getState()->getLastAppliedProgramObject()){
-
-            osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
-            extensions->glUseProgram(0);
-            _renderInfo.getState()->setLastAppliedProgramObject(0);
-        }
-
-#endif
-
-                // switch off Program,
-                extensions->glUseProgram(0);
-                renderInfo.getState()->setLastAppliedProgramObject(0);
-            }
-        }
-    }
-
-    double timeUsed = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
-
-    OSG_NOTIFY(level)<<"compile time, texturesCompiled="<<texturesCompiled<<", drawablesCompiled="<<drawablesCompiled<<", programsCompiled="<<programsCompiled<<", timeUsed="<<timeUsed*1000.0<<" totalDataSizeCompiled="<<totalDataSizeCompiled<<" bytes, download rate="<<double(totalDataSizeCompiled)/(1024.0*1024*timeUsed)<<"Mb/sec"<<std::endl;
-
-    compileTime -= timeUsed;
-
-    return cd.empty();
-}
-
-/////////////////////////////////////////////////////////////////
-//
-// IncrementalCompileOperation
-//
-IncrementalCompileOperation::IncrementalCompileOperation():
-    osg::GraphicsOperation("IncrementalCompileOperation",true),
-    _flushTimeRatio(0.5),
-    _conservativeTimeRatio(0.5)
-{
-    _targetFrameRate = 100.0;
-    _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
-    _maximumNumOfObjectsToCompilePerFrame = 20;
-    const char* ptr = 0;
-    if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
-    {
-        _minimumTimeAvailableForGLCompileAndDeletePerFrame = osg::asciiToDouble(ptr);
-    }
-
-    if( (ptr = getenv("OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME")) != 0)
-    {
-        _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
-    }
-
-    _compileOperator = new CompileOperator;
-}
-
-IncrementalCompileOperation::~IncrementalCompileOperation()
-{
-}
-
-void IncrementalCompileOperation::assignForceTextureDownloadGeometry()
-{
-    _compileOperator->assignForceTextureDownloadGeometry();
 }
 
 void IncrementalCompileOperation::assignContexts(Contexts& contexts)
@@ -519,6 +553,11 @@ void IncrementalCompileOperation::removeGraphicsContext(osg::GraphicsContext* gc
     }
 }
 
+bool IncrementalCompileOperation::requiresCompile(StateToCompile& stateToCompile)
+{
+    return isActive() && !stateToCompile.empty();
+}
+
 void IncrementalCompileOperation::add(osg::Node* subgraphToCompile)
 {
     OSG_INFO<<"IncrementalCompileOperation::add("<<subgraphToCompile<<")"<<std::endl;
@@ -551,172 +590,75 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
     _toCompile.push_back(compileSet);
 }
 
-void IncrementalCompileOperation::mergeCompiledSubgraphs()
+void IncrementalCompileOperation::remove(CompileSet* compileSet)
+{
+    // OSG_NOTICE<<"IncrementalCompileOperation::remove(CompileSet* compileSet)"<<std::endl;
+    
+    if (!compileSet) return;
+
+    // remove CompileSet from _toCompile list if it's present.
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_toCompileMutex);
+        for(CompileSets::iterator itr = _toCompile.begin();
+            itr != _toCompile.end();
+            ++itr)
+        {
+            if (*itr == compileSet)
+            {
+                _toCompile.erase(itr);
+                return;
+            }
+        }
+    }
+
+    // remove CompileSet from _compiled list if it's present.
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_compiledMutex);
+        for(CompileSets::iterator itr = _compiled.begin();
+            itr != _compiled.end();
+            ++itr)
+        {
+            if (*itr == compileSet)
+            {
+                _toCompile.erase(itr);
+                return;
+            }
+        }
+    }
+}
+
+
+void IncrementalCompileOperation::mergeCompiledSubgraphs(const osg::FrameStamp* frameStamp)
 {
     // OSG_INFO<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
-    
-    for(CompileSets::iterator itr = _compiled.begin(); 
+
+    if (frameStamp) _currentFrameNumber = frameStamp->getFrameNumber();
+
+    for(CompileSets::iterator itr = _compiled.begin();
         itr != _compiled.end();
         ++itr)
     {
         CompileSet* cs = itr->get();
-        if (cs->_attachmentPoint.valid())
+        osg::ref_ptr<osg::Group> group;
+        if (cs->_attachmentPoint.lock(group))
         {
-            cs->_attachmentPoint->addChild(cs->_subgraphToCompile.get());
+            group->addChild(cs->_subgraphToCompile.get());
         }
     }
     
     _compiled.clear();
 }
 
-class IncrementalCompileOperation::CollectStateToCompile : public osg::NodeVisitor
-{
-public:
-
-    CollectStateToCompile(GLObjectsVisitor::Mode mode):
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _mode(mode) {}
-    
-    GLObjectsVisitor::Mode _mode;
-
-    typedef std::set<osg::Drawable*> DrawableSet;
-    typedef std::set<osg::StateSet*> StateSetSet;
-    typedef std::set<osg::Texture*> TextureSet;
-    typedef std::set<osg::Program*> ProgramSet;
-
-    DrawableSet _drawablesHandled;
-    StateSetSet _statesetsHandled;
-    
-    DrawableSet _drawables;
-    TextureSet _textures;
-    ProgramSet _programs;
-
-    void apply(osg::Node& node)
-    {
-        if (node.getStateSet())
-        {
-            apply(*(node.getStateSet()));
-        }
-
-        traverse(node);
-    }
-
-    void apply(osg::Geode& node)
-    {
-        if (node.getStateSet())
-        {
-            apply(*(node.getStateSet()));
-        }
-
-        for(unsigned int i=0;i<node.getNumDrawables();++i)
-        {
-            osg::Drawable* drawable = node.getDrawable(i);
-            if (drawable)
-            {
-                apply(*drawable);
-                if (drawable->getStateSet())
-                {
-                    apply(*(drawable->getStateSet()));
-                }
-            }
-        }
-    }
-
-    void apply(osg::Drawable& drawable)
-    {
-        if (_drawablesHandled.count(&drawable)!=0) return;
-
-        _drawablesHandled.insert(&drawable);
-
-        if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
-        {
-            drawable.setUseDisplayList(false);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
-        {
-            drawable.setUseDisplayList(true);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
-        {
-            drawable.setUseVertexBufferObjects(true);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
-        {
-            drawable.setUseVertexBufferObjects(false);
-        }
-
-        if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
-            (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
-        {
-            _drawables.insert(&drawable);
-        }
-
-    }
-
-    void apply(osg::StateSet& stateset)
-    {
-        if (_statesetsHandled.count(&stateset)!=0) return;
-
-        _statesetsHandled.insert(&stateset);
-
-        if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
-        {
-            osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-            if (program)
-            {
-                _programs.insert(program);
-            }
-
-            osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
-            for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
-                itr != tal.end();
-                ++itr)
-            {
-                osg::StateSet::AttributeList& al = *itr;
-                osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
-                osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
-                if (texItr != al.end())
-                {
-                    osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());
-                    if (texture) _textures.insert(texture);
-                }
-            }
-        }
-    }
-    
-};
-
-
-void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode)
-{
-    if (contexts.empty() || !_subgraphToCompile) return;
-    
-    CollectStateToCompile cstc(mode);
-    _subgraphToCompile->accept(cstc);
-    
-    if (cstc._textures.empty() &&  cstc._programs.empty() && cstc._drawables.empty()) return;
-    
-    for(ContextSet::iterator itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        CompileData& cd = _compileMap[*itr];
-        cd._drawables.insert(cstc._drawables.begin(), cstc._drawables.end());
-        cd._textures.insert(cstc._textures.begin(), cstc._textures.end());
-        cd._programs.insert(cstc._programs.begin(), cstc._programs.end());
-    }
-    
-}
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
     osg::NotifySeverity level = osg::INFO;
 
+    //glFinish();
+    //glFlush();
+    
     double targetFrameRate = _targetFrameRate;
     double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
 
@@ -727,8 +669,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     double currentElapsedFrameTime = context->getTimeSinceLastClear();
     
-    OSG_NOTIFY(level)<<"currentTime = "<<currentTime<<std::endl;
-    OSG_NOTIFY(level)<<"currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
+    OSG_NOTIFY(level)<<"IncrementalCompileOperation()"<<std::endl;
+    OSG_NOTIFY(level)<<"    currentTime = "<<currentTime<<std::endl;
+    OSG_NOTIFY(level)<<"    currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
     
     double _flushTimeRatio(0.5);
     double _conservativeTimeRatio(0.5);
@@ -738,26 +681,19 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     double flushTime = availableTime * _flushTimeRatio;
     double compileTime = availableTime - flushTime;
-    unsigned int maxNumOfObjectsToCompilePerFrame = _maximumNumOfObjectsToCompilePerFrame;
 
 #if 1
-    OSG_NOTIFY(level)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    OSG_NOTIFY(level)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    OSG_NOTIFY(level)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    availableTime = "<<availableTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    flushTime     = "<<flushTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
-    osg::flushDeletedGLObjects(context->getState()->getContextID(), currentTime, flushTime);
+    //level = osg::NOTICE;
 
-    // if any time left over from flush add this to compile time.        
-    if (flushTime>0.0) compileTime += flushTime;
-
-#if 1
-    OSG_NOTIFY(level)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
-#endif
-
-
-    osg::RenderInfo renderInfo;
-    renderInfo.setState(context->getState());
+    CompileInfo compileInfo(context, this);
+    compileInfo.maxNumObjectsToCompile = _maximumNumOfObjectsToCompilePerFrame;
+    compileInfo.allocatedTime = compileTime;
+    compileInfo.compileAll = (_compileAllTillFrameNumber > _currentFrameNumber);
 
     CompileSets toCompileCopy;
     {
@@ -765,51 +701,79 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
         std::copy(_toCompile.begin(),_toCompile.end(),std::back_inserter<CompileSets>(toCompileCopy));
     }
 
-    for(CompileSets::iterator itr = toCompileCopy.begin();
-        itr != toCompileCopy.end() && compileTime>0.0;
-        ++itr)
+    if (!toCompileCopy.empty())
+    {
+        compileSets(toCompileCopy, compileInfo);
+    }
+
+    osg::flushDeletedGLObjects(context->getState()->getContextID(), currentTime, flushTime);
+
+    if (!toCompileCopy.empty() && compileInfo.maxNumObjectsToCompile>0)
+    {
+        compileInfo.allocatedTime += flushTime;
+
+        // if any time left over from flush add on this remaining time to a second pass of compiling.
+        if (compileInfo.okToCompile())
+        {
+            OSG_NOTIFY(level)<<"    Passing on "<<flushTime<<" to second round of compileSets(..)"<<std::endl;
+            compileSets(toCompileCopy, compileInfo);
+        }
+    }
+    
+    //glFush();
+    //glFinish();
+}
+
+void IncrementalCompileOperation::compileSets(CompileSets& toCompile, CompileInfo compileInfo)
+{
+    osg::NotifySeverity level = osg::INFO;
+
+    for(CompileSets::iterator itr = toCompile.begin();
+        itr != toCompile.end() && compileInfo.okToCompile();
+        )
     {
         CompileSet* cs = itr->get();
-        CompileMap& cm = cs->_compileMap;
-        CompileData& cd = cm[context];
-
-        if (_compileOperator->compile(renderInfo, cd, maxNumOfObjectsToCompilePerFrame, compileTime))
+        if (cs->compile(compileInfo))
         {
-            bool csCompleted = false;
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex>  toCompile_lock(_toCompileMutex);
 
-                if (cs->compileCompleted())
-                {                    
-                    CompileSets::iterator cs_itr = std::find(_toCompile.begin(), _toCompile.end(), *itr);
-                    if (cs_itr != _toCompile.end())
-                    {
-                        OSG_NOTIFY(level)<<"Erasing from list"<<std::endl;
+                CompileSets::iterator cs_itr = std::find(_toCompile.begin(), _toCompile.end(), *itr);
+                if (cs_itr != _toCompile.end())
+                {
+                    OSG_NOTIFY(level)<<"    Erasing from list"<<std::endl;
 
-                        // remove from the _toCompile list, note cs won't be deleted here as the tempoary
-                        // toCompile_Copy list will retain a reference.
-                        _toCompile.erase(cs_itr);
-
-                        // signal that we need to do clean up operations/pass cs on to _compile list.
-                        csCompleted = true;
-                    }
+                    // remove from the _toCompile list, note cs won't be deleted here as the tempoary
+                    // toCompile_Copy list will retain a reference.
+                    _toCompile.erase(cs_itr);
                 }
             }
-
-            if (csCompleted)
+            if (cs->_compileCompletedCallback.valid() && cs->_compileCompletedCallback->compileCompleted(cs))
             {
-                if (cs->_compileCompletedCallback.valid() && cs->_compileCompletedCallback->compileCompleted(cs))
-                {
-                    // callback will handle merging of subgraph so no need to place CompileSet in merge.
-                }
-                else
-                {
-                    OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
-                    _compiled.push_back(cs);
-                }
+                // callback will handle merging of subgraph so no need to place CompileSet in merge.
             }
+            else
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
+                _compiled.push_back(cs);
+            }
+
+            // remove entry from list.
+            itr = toCompile.erase(itr);
+        }
+        else
+        {
+            ++itr;
         }
     }
+
 }
+
+        
+void IncrementalCompileOperation::compileAllForNextFrame(unsigned int numFramesToDoCompileAll)
+{
+    _compileAllTillFrameNumber = _currentFrameNumber+numFramesToDoCompileAll;
+}
+
 
 } // end of namespace osgUtil

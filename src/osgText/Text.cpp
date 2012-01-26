@@ -64,6 +64,21 @@ Text::~Text()
 {
 }
 
+void Text::setFont(osg::ref_ptr<Font> font)
+{
+    if (_font==font) return;
+
+    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
+    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
+
+    if (getStateSet() == previousFontStateSet)
+    {
+        setStateSet( newFontStateSet );
+    }
+
+    TextBase::setFont(font);
+}
+
 
 Font* Text::getActiveFont()
 {
@@ -80,7 +95,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     Font* activefont = getActiveFont();
     if (!activefont) return last;
 
-    float hr = _characterHeight/getFontHeight();
+    float hr = _characterHeight;
     float wr = hr/getCharacterAspectRatio();
 
     bool kerning = true;
@@ -101,12 +116,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
         if (glyph)
         {
 
-           float width = (float)(glyph->s()) * wr;
-           //float height = (float)(glyph->t()) * hr;
-           #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
-           if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
-           //if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
-           #endif
+           float width = (float)(glyph->getWidth()) * wr;
 
             if (_layout==RIGHT_TO_LEFT)
             {
@@ -167,7 +177,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
               case RIGHT_TO_LEFT: break; // nop.
             }
 
-        previous_charcode = charcode;
+            previous_charcode = charcode;
 
         }
 
@@ -243,7 +253,7 @@ void Text::computeGlyphRepresentation()
     
     unsigned int lineNumber = 0;
 
-    float hr = _characterHeight/getFontHeight();
+    float hr = _characterHeight;
     float wr = hr/getCharacterAspectRatio();
 
     for(String::iterator itr=_text.begin();
@@ -369,13 +379,8 @@ void Text::computeGlyphRepresentation()
                 Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
                 if (glyph)
                 {
-                    float width = (float)(glyph->s()) * wr;
-                    float height = (float)(glyph->t()) * hr;
-
-                    #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
-                    if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
-                    if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
-                    #endif
+                    float width = (float)(glyph->getWidth()) * wr;
+                    float height = (float)(glyph->getHeight()) * hr;
 
                     if (_layout==RIGHT_TO_LEFT)
                     {
@@ -421,10 +426,12 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 mintc = glyph->getMinTexCoord();
                     osg::Vec2 maxtc = glyph->getMaxTexCoord();
                     osg::Vec2 vDiff = maxtc - mintc;
+
                     float fHorizTCMargin = 1.0f / glyph->getTexture()->getTextureWidth();
                     float fVertTCMargin = 1.0f / glyph->getTexture()->getTextureHeight();
                     float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
                     float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
+
                     mintc.x() -= fHorizTCMargin;
                     mintc.y() -= fVertTCMargin;
                     maxtc.x() += fHorizTCMargin;
@@ -746,6 +753,8 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     // Since we tend to loop over contextID, we should cache this value some how
     // instead of recomputing it each time.
     is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
+
+    if (!is_valid_size) return;
     
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
@@ -1202,16 +1211,17 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     unsigned int contextID = state.getContextID();
 
     state.applyMode(GL_BLEND,true);
-#if 1   
-    state.applyTextureMode(0,GL_TEXTURE_2D,true);
+#if 1
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
 #else
-    state.applyTextureMode(0,GL_TEXTURE_2D,false);
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
 #endif
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
-
+#endif
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {
-        int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
+        unsigned int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
         AutoTransformCache& atc = _autoTransformCache[contextID];
         const osg::Matrix& modelview = state.getModelViewMatrix();
         const osg::Matrix& projection = state.getProjectionMatrix();
@@ -1340,12 +1350,14 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
     }    
 
-#if 1   
-    state.applyTextureMode(0,GL_TEXTURE_2D,true);
+#if 1
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
 #else
-    state.applyTextureMode(0,GL_TEXTURE_2D,false);
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
 #endif
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
+#endif
 
     if (_drawMode & TEXT)
     {
@@ -1589,6 +1601,12 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 void Text::renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+    // If depth testing is disabled, then just render text as normal
+    if( !state.getLastAppliedMode(GL_DEPTH_TEST) ) {
+        drawTextWithBackdrop(state,colorMultiplier);
+        return;
+    }
+
     //glPushAttrib( _enableDepthWrites ? (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) : GL_DEPTH_BUFFER_BIT);
     // Render to color buffer without writing to depth buffer.
     glDepthMask(GL_FALSE);

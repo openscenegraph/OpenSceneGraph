@@ -58,7 +58,72 @@ public:
         enum KeySymbol
         {
             KEY_Space           = 0x20,
-            
+
+            KEY_0               = '0',
+            KEY_1               = '1',
+            KEY_2               = '2',
+            KEY_3               = '3',
+            KEY_4               = '4',
+            KEY_5               = '5',
+            KEY_6               = '6',
+            KEY_7               = '7',
+            KEY_8               = '8',
+            KEY_9               = '9',
+            KEY_A               = 'a',
+            KEY_B               = 'b',
+            KEY_C               = 'c',
+            KEY_D               = 'd',
+            KEY_E               = 'e',
+            KEY_F               = 'f',
+            KEY_G               = 'g',
+            KEY_H               = 'h',
+            KEY_I               = 'i',
+            KEY_J               = 'j',
+            KEY_K               = 'k',
+            KEY_L               = 'l',
+            KEY_M               = 'm',
+            KEY_N               = 'n',
+            KEY_O               = 'o',
+            KEY_P               = 'p',
+            KEY_Q               = 'q',
+            KEY_R               = 'r',
+            KEY_S               = 's',
+            KEY_T               = 't',
+            KEY_U               = 'u',
+            KEY_V               = 'v',
+            KEY_W               = 'w',
+            KEY_X               = 'x',
+            KEY_Y               = 'y',
+            KEY_Z               = 'z',
+
+            KEY_Exclaim         = 0x21,
+            KEY_Quotedbl        = 0x22,
+            KEY_Hash            = 0x23,
+            KEY_Dollar          = 0x24,
+            KEY_Ampersand       = 0x26,
+            KEY_Quote           = 0x27,
+            KEY_Leftparen       = 0x28,
+            KEY_Rightparen      = 0x29,
+            KEY_Asterisk        = 0x2A,
+            KEY_Plus            = 0x2B,
+            KEY_Comma           = 0x2C,
+            KEY_Minus           = 0x2D,
+            KEY_Period          = 0x2E,
+            KEY_Slash           = 0x2F,
+            KEY_Colon           = 0x3A,
+            KEY_Semicolon       = 0x3B,
+            KEY_Less            = 0x3C,
+            KEY_Equals          = 0x3D,
+            KEY_Greater         = 0x3E,
+            KEY_Question        = 0x3F,
+            KEY_At              = 0x40,
+            KEY_Leftbracket     = 0x5B,
+            KEY_Backslash       = 0x5C,
+            KEY_Rightbracket    = 0x5D,
+            KEY_Caret           = 0x5E,
+            KEY_Underscore      = 0x5F,
+            KEY_Backquote       = 0x60,
+
             KEY_BackSpace       = 0xFF08,        /* back space, back char */
             KEY_Tab             = 0xFF09,
             KEY_Linefeed        = 0xFF0A,        /* Linefeed, LF */
@@ -374,6 +439,12 @@ public:
         /** get key pressed, return -1 if inappropriate for this GUIEventAdapter. */
         virtual int getKey() const { return _key; }
 
+        /** set virtual key pressed. */
+        void setUnmodifiedKey(int key) { _unmodifiedKey = key; }
+        
+        /** get virtual key pressed. */
+        int getUnmodifiedKey() const { return _unmodifiedKey; }
+        
         /** set button pressed/released.*/
         void setButton(int button) { _button = button; }
 
@@ -519,6 +590,7 @@ public:
         int _windowWidth;
         int _windowHeight;
         int _key;
+        int _unmodifiedKey;
         int _button;
         float _Xmin,_Xmax;
         float _Ymin,_Ymax;

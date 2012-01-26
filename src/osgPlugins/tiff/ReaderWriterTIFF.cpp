@@ -177,32 +177,62 @@ toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
 {
     std::ostream *fout = (std::ostream*)fd;
 
-    toff_t ret;
+    toff_t pos_required = 0;
+    toff_t stream_end = 0;
     switch(i)
     {
         case SEEK_SET:
-            fout->seekp(off,std::ios::beg);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
-            break;
+        {
+            if (off==0)
+            {
+                std::streampos checkEmpty = fout->tellp();
+                if(checkEmpty < 0)
+                {
+                    return 0;
+                }
+            }
+            pos_required = off;
 
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            break;
+        }
         case SEEK_CUR:
-            fout->seekp(off,std::ios::cur);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
-            break;
+        {
+            toff_t stream_curr = fout->tellp();
+            pos_required = stream_curr + off;
 
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            break;
+        }
         case SEEK_END:
-            fout->seekp(off,std::ios::end);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
+        {
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            pos_required = stream_end + off;
             break;
+        }
         default:
-            ret = 0;
             break;
+    }
+
+    if (pos_required>stream_end)
+    {
+        // position required past the end of the stream so we need to insert extra characters to
+        // ensure the stream is big enough to encompass the new the position.
+        fout->seekp(0, std::ios::end);
+        for(toff_t i=stream_end; i<pos_required; ++i)
+        {
+            fout->put(char(0));
+        }
+    }
+
+    fout->seekp(pos_required,std::ios::beg);
+    toff_t ret = fout->tellp();
+    if (fout->bad())
+    {
+        ret = 0;
     }
     return ret;
 }
@@ -217,6 +247,9 @@ simage_tiff_error(char * buffer, int buflen)
         case ERR_OPEN:
             strncpy(buffer, "TIFF loader: Error opening file", buflen);
             break;
+        case ERR_READ:
+            strncpy(buffer, "TIFF loader: Error reding/decoding file", buflen);
+            break;
         case ERR_MEM:
             strncpy(buffer, "TIFF loader: Out of memory error", buflen);
             break;
@@ -226,28 +259,65 @@ simage_tiff_error(char * buffer, int buflen)
         case ERR_TIFFLIB:
             strncpy(buffer, "TIFF loader: Illegal tiff file", buflen);
             break;
+        default:
+            strncpy(buffer, "TIFF loader: unknown error", buflen);
+            break;
     }
     return tifferror;
 }
 
 
+/// Generates a std::string from a printf format string and a va_list.
+/// Took & adapted from the man page of printf.
+///\todo Externalize this function to make is useable for all OSG?
+std::string doFormat(const char* fmt, va_list ap) {
+    static const int MSG_BUFSIZE = 256;            // Initial size of the buffer used for formatting
+    static const int MAX_BUFSIZE = 256*1024;    // Maximum size of the buffer used for formatting
+    for(int size=MSG_BUFSIZE; size<MAX_BUFSIZE; )
+    {
+        // Sukender: Here we could try/catch(std::bad_alloc &), but this is clearly an and-of-all-things condition knowing the fact 'size' is kept small.
+        //           Hence the commented code, to avoid the burden.
+        //try {
+        char * p = new char[size];
+        //} catch (std::bad_alloc &) {
+        //    return std::string();
+        //}
 
+        /* Try to print in the allocated space. */
+        int n = vsnprintf (p, size, fmt, ap);
+        // Now reset the state of the va_list (TIFF calling method will call
 
-
+        /* If that worked, return the string. */
+        if (n >= 0 && n < size) {
+            std::string res(p);
+            delete[] p;
+            return res;
+        }
+        /* Else try again with more space. */
+        if (n > 0)      /* glibc 2.1 */
+            size = n+1; /* precisely what is needed */
+        else            /* glibc 2.0 */
+            size *= 2;  /* twice the old size */
+        delete[] p;
+    }
+    return std::string(fmt, fmt+MSG_BUFSIZE) + "...";        // Fallback: Message is not formatted and truncated, but that's better than no message
+}
 
 static void
-tiff_error(const char*, const char*, va_list)
+tiff_error(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: store error message ? */
+    OSG_WARN << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
 }
 
 
 static void
-tiff_warn(const char *, const char *, va_list)
+tiff_warn(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: notify? */
+    OSG_NOTICE << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
 }
 
 

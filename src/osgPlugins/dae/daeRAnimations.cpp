@@ -577,7 +577,7 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
                 {
                     if (!strcmp("TIME", domParams[0]->getName()))
                     {
-                        pOsgTimesArray = sources[input_source].getFloatArray();
+                        pOsgTimesArray = sources[input_source].getArray<osg::FloatArray>();
                     }
                     else
                     {
@@ -604,10 +604,13 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
         }
     }
 
+    //const bool readDoubleKeyframes = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_KEYFRAMES) != 0;
+    static const bool readDoubleKeyframes = false;
+
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_OUTPUT, output_source, &tmp);
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_IN_TANGENT, output_intangent_source, &tmp);
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_OUT_TANGENT, output_outtangent_source, &tmp);
-    domSourceReader::ArrayType arrayType = sources[output_source].getArrayType();
+    domSourceReader::ArrayType arrayType = sources[output_source].getArrayType(readDoubleKeyframes);
 
     struct InterpTypeName
     {
@@ -685,37 +688,58 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
     {
     case domSourceReader::Float:
         keyframes = makeKeyframes<float>(pOsgTimesArray,
-            sources[output_source].getFloatArray(),
-            sources[output_intangent_source].getFloatArray(),
-            sources[output_outtangent_source].getFloatArray(),
+            sources[output_source].getArray<osg::FloatArray>(),
+            sources[output_intangent_source].getArray<osg::FloatArray>(),
+            sources[output_outtangent_source].getArray<osg::FloatArray>(),
             interpolationType);
         break;
     case domSourceReader::Vec2:
         keyframes = makeKeyframes<osg::Vec2>(pOsgTimesArray,
-            sources[output_source].getVec2Array(),
-            sources[output_intangent_source].getVec2Array(),
-            sources[output_outtangent_source].getVec2Array(),
+            sources[output_source].getArray<osg::Vec2Array>(),
+            sources[output_intangent_source].getArray<osg::Vec2Array>(),
+            sources[output_outtangent_source].getArray<osg::Vec2Array>(),
             interpolationType);
         break;
     case domSourceReader::Vec3:
         keyframes = makeKeyframes<osg::Vec3>(pOsgTimesArray,
-            sources[output_source].getVec3Array(),
-            sources[output_intangent_source].getVec3Array(),
-            sources[output_outtangent_source].getVec3Array(),
+            sources[output_source].getArray<osg::Vec3Array>(),
+            sources[output_intangent_source].getArray<osg::Vec3Array>(),
+            sources[output_outtangent_source].getArray<osg::Vec3Array>(),
             interpolationType);
         break;
     case domSourceReader::Vec4:
         keyframes = makeKeyframes<osg::Vec4>(pOsgTimesArray,
-            sources[output_source].getVec4Array(),
-            sources[output_intangent_source].getVec4Array(),
-            sources[output_outtangent_source].getVec4Array(),
+            sources[output_source].getArray<osg::Vec4Array>(),
+            sources[output_intangent_source].getArray<osg::Vec4Array>(),
+            sources[output_outtangent_source].getArray<osg::Vec4Array>(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec2d:
+        keyframes = makeKeyframes<osg::Vec2d>(pOsgTimesArray,
+            sources[output_source].getArray<osg::Vec2dArray>(),
+            sources[output_intangent_source].getArray<osg::Vec2dArray>(),
+            sources[output_outtangent_source].getArray<osg::Vec2dArray>(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec3d:
+        keyframes = makeKeyframes<osg::Vec3d>(pOsgTimesArray,
+            sources[output_source].getArray<osg::Vec3dArray>(),
+            sources[output_intangent_source].getArray<osg::Vec3dArray>(),
+            sources[output_outtangent_source].getArray<osg::Vec3dArray>(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec4d:
+        keyframes = makeKeyframes<osg::Vec4d>(pOsgTimesArray,
+            sources[output_source].getArray<osg::Vec4dArray>(),
+            sources[output_intangent_source].getArray<osg::Vec4dArray>(),
+            sources[output_outtangent_source].getArray<osg::Vec4dArray>(),
             interpolationType);
         break;
     case domSourceReader::Matrix:
         keyframes = makeKeyframes<osg::Matrixf>(pOsgTimesArray,
-            sources[output_source].getMatrixArray(),
-            sources[output_intangent_source].getMatrixArray(),
-            sources[output_outtangent_source].getMatrixArray(),
+            sources[output_source].getArray<osg::MatrixfArray>(),
+            sources[output_intangent_source].getArray<osg::MatrixfArray>(),
+            sources[output_outtangent_source].getArray<osg::MatrixfArray>(),
             interpolationType);
         break;
     default:

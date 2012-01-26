@@ -125,6 +125,25 @@ void Texture2D::setImage(Image* image)
     }
 }
 
+bool Texture2D::textureObjectValid(State& state) const
+{
+    TextureObject* textureObject = getTextureObject(state.getContextID());
+    if (!textureObject) return false;
+
+    // return true if image isn't assigned as we won't be override the value.
+    if (!_image) return true;
+
+    // compute the internal texture format, this set the _internalFormat to an appropriate value.
+    computeInternalFormat();
+
+    GLsizei new_width, new_height, new_numMipmapLevels;
+
+    // compute the dimensions of the texture.
+    computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
+
+    return textureObject->match(GL_TEXTURE_2D, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth);
+}
+
 
 void Texture2D::apply(State& state) const
 {
@@ -141,25 +160,24 @@ void Texture2D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-
     if (textureObject)
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        bool textureObjectInvalidated = false;
+        if (_subloadCallback.valid())
         {
-            // compute the internal texture format, this set the _internalFormat to an appropriate value.
-            computeInternalFormat();
+            textureObjectInvalidated = !_subloadCallback->textureObjectValid(*this, state);
+        }
+        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        {
+            textureObjectInvalidated = !textureObjectValid(state);
+        }
 
-            GLsizei new_width, new_height, new_numMipmapLevels;
-
-            // compute the dimensions of the texture.
-            computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
-
-            if (!textureObject->match(GL_TEXTURE_2D, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
-            {
-                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
-                _textureObjectBuffer[contextID] = 0;
-                textureObject = 0;
-            }
+        if (textureObjectInvalidated)
+        {
+            // OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
+            Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+            _textureObjectBuffer[contextID] = 0;
+            textureObject = 0;
         }
     }
 
@@ -288,7 +306,7 @@ void Texture2D::apply(State& state) const
         glBindTexture( GL_TEXTURE_2D, 0 );
     }
 
-    // if texture object is now valid and we have to allocate mipmap levels, then
+        // if texture object is now valid and we have to allocate mipmap levels, then
     if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
     {
         generateMipmap(state);
@@ -337,13 +355,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
     // switch off mip-mapping.
     //
-    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
-
-    textureObject->bind();
-    
-    applyTexParameters(GL_TEXTURE_2D,state);
-
-
+  
     bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
     bool hardwareMipMapOn = false;
     if (needHardwareMipMap)
@@ -357,12 +369,6 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
             _min_filter = LINEAR;
         }
     }
-    
-    GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
-
-    glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
-
-    mipmapAfterTexImage(state, mipmapResult);
 
     _textureWidth = width;
     _textureHeight = height;
@@ -373,7 +379,20 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
         for(int s=1; s<width || s<height; s <<= 1, ++_numMipmapLevels) {}
     }
 
-    textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+
+    textureObject->bind();
+    
+    applyTexParameters(GL_TEXTURE_2D,state);
+
+    
+    GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
+
+    glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
+
+    mipmapAfterTexImage(state, mipmapResult);
+
+    textureObject->setAllocated(true);
 
     // inform state that this texture is the current one bound.
     state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);

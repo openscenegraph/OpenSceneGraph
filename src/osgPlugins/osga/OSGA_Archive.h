@@ -44,14 +44,18 @@ class OSGA_Archive : public osgDB::Archive
         /** close the archive.*/
         virtual void close();
 
-        /** return true if file exists in archive.*/        
-        virtual bool fileExists(const std::string& filename) const;
+        /** Get the file name which represents the archived file.*/
+        virtual std::string getArchiveFileName() const { return _archiveFileName; }
         
         /** Get the file name which represents the master file recorded in the Archive.*/
         virtual std::string getMasterFileName() const;
         
-        typedef std::vector<std::string> FileNameList;
-        
+        /** return true if file exists in archive.*/
+        virtual bool fileExists(const std::string& filename) const;
+
+        /** return type of file. */
+        virtual osgDB::FileType getFileType(const std::string& filename) const;
+
         /** Get the full list of file names available in the archive.*/
         virtual bool getFileNames(FileNameList& fileNameList) const;
 
@@ -68,6 +72,9 @@ class OSGA_Archive : public osgDB::Archive
         /** Read an osg::Node of specified file name from the Archive.*/
         virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL) const;
 
+        /** Read an osg::Shader of specified file name from the Archive.*/
+        virtual ReadResult readShader(const std::string& fileName,const Options* options=NULL) const;
+
         /** Write an osg::Object with specified file name to the Archive.*/
         virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const;
 
@@ -79,6 +86,9 @@ class OSGA_Archive : public osgDB::Archive
 
         /** Write an osg::Node with specified file name to the Archive.*/
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) const;
+
+        /** Write an osg::Shader with specified file name to the Archive.*/
+        virtual WriteResult writeShader(const osg::Shader& shader,const std::string& fileName,const Options* options=NULL) const;
         
         #if defined(_MSC_VER)
         typedef __int64 pos_type;
@@ -182,12 +192,14 @@ class OSGA_Archive : public osgDB::Archive
         struct ReadImageFunctor;
         struct ReadHeightFieldFunctor;
         struct ReadNodeFunctor;
+        struct ReadShaderFunctor;
 
 
         struct WriteObjectFunctor;
         struct WriteImageFunctor;
         struct WriteHeightFieldFunctor;
         struct WriteNodeFunctor;
+        struct WriteShaderFunctor;
 
 
         osgDB::ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
@@ -206,7 +218,8 @@ class OSGA_Archive : public osgDB::Archive
         ArchiveStatus       _status;
         osgDB::ifstream     _input;
         osgDB::fstream      _output;
-        
+
+        std::string         _archiveFileName;
         std::string         _masterFileName;
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;

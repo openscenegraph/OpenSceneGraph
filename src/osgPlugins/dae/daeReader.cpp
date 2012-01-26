@@ -22,16 +22,25 @@
 
 using namespace osgDAE;
 
-daeReader::daeReader(DAE *dae_, bool strictTransparency) : 
+daeReader::Options::Options() :
+    strictTransparency(false),
+    precisionHint(0),
+    usePredefinedTextureUnits(true),
+    tessellateMode(TESSELLATE_POLYGONS_AS_TRIFAN)   // Use old tessellation behaviour as default
+{
+}
+
+daeReader::daeReader(DAE *dae_, const Options * pluginOptions) :
                   _dae(dae_),
                   _rootNode(NULL),
+                  _document(NULL),
                   _visualScene(NULL),
                   _numlights(0),
                   _currentInstance_effect(NULL),
                   _currentEffect(NULL),
                   _authoringTool(UNKNOWN),
-                  _strictTransparency(strictTransparency),
                   _invertTransparency(false),
+                  _pluginOptions(pluginOptions ? *pluginOptions : Options()),
                   _assetUnitName("meter"),
                   _assetUnitMeter(1.0),
                   _assetUp_axis(UPAXISTYPE_Y_UP)
@@ -543,7 +552,12 @@ osg::Node* daeReader::processNode( domNode *node, bool skeleton)
 
     if (resultNode->getName().empty())
     {
-        resultNode->setName( node->getId() ? node->getId() : "" );
+        std::string name = "";
+        if (node->getId())
+            name = node->getId();
+        if (node->getName())
+            name = node->getName();
+        resultNode->setName( name );
     }
 
     osg::Group* attachTo = resultNode;

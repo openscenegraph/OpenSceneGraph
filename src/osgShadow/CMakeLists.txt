@@ -7,7 +7,7 @@ ENDIF()
 
 SET(LIB_NAME osgShadow)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/OccluderGeometry
     ${HEADER_PATH}/ShadowMap
@@ -15,10 +15,10 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ShadowTexture
     ${HEADER_PATH}/ShadowVolume
     ${HEADER_PATH}/ShadowedScene
+    ${HEADER_PATH}/ShadowSettings
     ${HEADER_PATH}/SoftShadowMap
     ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
-
     ${HEADER_PATH}/ConvexPolyhedron
     ${HEADER_PATH}/DebugShadowMap
     ${HEADER_PATH}/LightSpacePerspectiveShadowMap
@@ -28,18 +28,18 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ProjectionShadowMap
     ${HEADER_PATH}/StandardShadowMap
     ${HEADER_PATH}/ViewDependentShadowTechnique
+    ${HEADER_PATH}/ViewDependentShadowMap
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     OccluderGeometry.cpp
     ShadowMap.cpp
     ShadowTechnique.cpp
     ShadowTexture.cpp
     ShadowVolume.cpp
     ShadowedScene.cpp
+    ShadowSettings.cpp
     SoftShadowMap.cpp
     ParallelSplitShadowMap.cpp
     Version.cpp
@@ -51,15 +51,16 @@ ADD_LIBRARY(${LIB_NAME}
     MinimalShadowMap.cpp
     StandardShadowMap.cpp
     ViewDependentShadowTechnique.cpp
+    ViewDependentShadowMap.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES
     osgUtil
     osgDB
     osg
     OpenThreads
 )
-LINK_CORELIB_DEFAULT(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
+

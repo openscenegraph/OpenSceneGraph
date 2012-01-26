@@ -27,7 +27,8 @@ Bevel::Bevel()
     flatBevel();
 }
 
-Bevel::Bevel(const Bevel& bevel, const osg::CopyOp&):
+Bevel::Bevel(const Bevel& bevel, const osg::CopyOp& copyop):
+    osg::Object(bevel, copyop),
     _thickness(bevel._thickness),
     _vertices(bevel._vertices)
 {
@@ -155,12 +156,15 @@ bool Style::operator == (const Style& rhs) const
 
         if (!(*_bevel == *rhs._bevel)) return false;
     }
-    if (rhs._bevel.valid()) return false;
+    else
+    {
+        if (rhs._bevel.valid()) return false;
+    }
 
     if (_widthRatio != rhs._widthRatio) return false;
     if (_thicknessRatio != rhs._thicknessRatio) return false;
     if (_outlineRatio != rhs._outlineRatio) return false;
     if (_sampleDensity != rhs._sampleDensity) return false;
 
-    return false;
+    return true;
 }

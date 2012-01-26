@@ -312,6 +312,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     computeInternalFormat();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 
     bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
     if (useClientStorage)
@@ -392,6 +393,8 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     computeInternalFormat();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+    unsigned int rowLength = image->getRowLength();
+    
 
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
@@ -403,11 +406,13 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     {
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        rowLength = 0;
 #ifdef DO_TIMING
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
     }
-    
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 
     if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexSubImage2DSupported())
     {

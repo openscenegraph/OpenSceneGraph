@@ -22,7 +22,7 @@ TransformCallback::TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axi
     _axis = axis;
     _angular_velocity = angularVelocity;
     
-    _previousTraversalNumber = -1;
+    _previousTraversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
     _previousTime = -1.0;
     
     _pause = false;

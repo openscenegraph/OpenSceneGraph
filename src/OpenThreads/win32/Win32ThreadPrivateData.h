@@ -36,7 +36,7 @@ namespace OpenThreads {
 
 private:
 
-    Win32ThreadPrivateData() {};
+    Win32ThreadPrivateData();
     ~Win32ThreadPrivateData();
 
     size_t stackSize;

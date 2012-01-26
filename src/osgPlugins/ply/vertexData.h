@@ -36,6 +36,7 @@ namespace ply
     public:
         // Default constructor
         VertexData();
+
         
         // Reads ply file and convert in to osg::Node and returns the same
         osg::Node* readPlyFile( const char* file, const bool ignoreColors = false );
@@ -44,10 +45,22 @@ namespace ply
         void useInvertedFaces() { _invertFaces = true; }
         
     private:
+
+        enum VertexFields
+        {
+          NONE = 0,
+          XYZ = 1,
+          NORMALS = 2,
+          RGB = 4,
+          AMBIENT = 8,
+          DIFFUSE = 16,
+          SPECULAR = 32
+        };
+
         // Function which reads all the vertices and colors if color info is
         // given and also if the user wants that information
         void readVertices( PlyFile* file, const int nVertices, 
-                           const bool readColors );
+                           const int vertexFields );
 
         // Reads the triangle indices from the ply file
         void readTriangles( PlyFile* file, const int nFaces );
@@ -63,6 +76,10 @@ namespace ply
         osg::ref_ptr<osg::Vec3Array>   _vertices;
         // Color array in osg format
         osg::ref_ptr<osg::Vec4Array>   _colors;
+        osg::ref_ptr<osg::Vec4Array>   _ambient;
+        osg::ref_ptr<osg::Vec4Array>   _diffuse;
+        osg::ref_ptr<osg::Vec4Array>   _specular;
+
         // Normals in osg format
         osg::ref_ptr<osg::Vec3Array> _normals;
         // The indices of the faces in premitive set

@@ -93,7 +93,8 @@ XBaseParser::XBaseParser(const std::string fileName):
 #endif
         {
             perror( fileName.c_str() );
-            return ;
+            if (fd) close( fd );
+            return;
         }
     }
     

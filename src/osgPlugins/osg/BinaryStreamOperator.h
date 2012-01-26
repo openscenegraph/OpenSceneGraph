@@ -145,10 +145,14 @@ public:
     virtual void readString( std::string& s )
     {
         int size = 0; readInt( size );
-        if ( size )
+        if ( size>0 )
         {
             s.resize( size );
             _in->read( (char*)s.c_str(), size );
+        }
+        else if ( size<0 ) 
+        {
+            throwException( "InputStream::readString() error, negative string size read." );
         }
     }
     

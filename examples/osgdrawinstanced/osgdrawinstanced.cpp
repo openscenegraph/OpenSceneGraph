@@ -142,7 +142,7 @@ int main( int argc, char **argv )
     osg::ref_ptr< osg::StateSet > ss = createStateSet();
     geode->setStateSet( ss.get() );
 
-    // osgDB::writeNodeFile(*geode, "instanced.osg");
+    // osgDB::writeNodeFile(*geode, "instanced.osgt");
 
     osgViewer::Viewer viewer(arguments);
     viewer.setSceneData( geode.get() );

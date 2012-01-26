@@ -10,5 +10,5 @@ Description: Windowing system setup, thread scene manager library for Opensceneg
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgText openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osgGA openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgViewer
+Libs: -L${libdir} -losgViewer@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

@@ -40,7 +40,8 @@ const char* validNames[] =
 {
     "de",
     "den",
-    "van"
+    "van",
+    "von"
 };
 
 const char* invalidNames[] =
@@ -201,6 +202,7 @@ const char* invalidNames[] =
     "TessellationHints",
     "TestManipulator",
     "TestSupportCallback",
+    "Text",
     "TexEnv",
     "TexMat(Matrix",
     "Texture",
@@ -239,7 +241,13 @@ const char* invalidNames[] =
     "ImageLayer",
     "Xml",
     "Y",
-    "UpdateSkeleton"
+    "UpdateSkeleton",
+    "IncementalCompileOperation",
+    "Billboard",
+    "UpdateSkeleton",
+    "Vec3",
+    "Plugin",
+    "Get"
 };
 
 
@@ -251,6 +259,7 @@ struct TypoCorrection
 
 TypoCorrection typoCorrections[] =
 {
+    {"Alaxandre",      "Alexandre"},
     {"Aderian",        "Adrian"},
     {"Adndre",         "Andre"},
     {"Adrain",         "Adrian"},
@@ -306,10 +315,13 @@ TypoCorrection typoCorrections[] =
     {"Hooper",         "Hopper"},
     {"Inverson",       "Iverson"},
     {"Iversion",       "Iverson"},
-    {"Jean-Sebastein", "Jean-Sebastien"},
-    {"Jean-Sebastian", "Jean-Sebastien"},
-    {"Jean-Sebastirn", "Jean-Sebastien"},
-    {"Jea-Sebastien",  "Jean-Sebastien"},
+    {"Jean-Sebastein", "Jean-Sébastien"},
+    {"Jean-Sebastian", "Jean-Sébastien"},
+    {"Jean-Sebastirn", "Jean-Sébastien"},
+    {"Jea-Sebastien",  "Jean-Sébastien"},
+    {"Jean-Sebasien",  "Jean-Sébastien"},
+    {"Jean-Sebastien", "Jean-Sébastien"},
+    {"Jean-Sebestien", "Jean-Sébastien"},
     {"Johhansen",      "Johansen"},
     {"Johnansen",      "Johansen"},
     {"Johnasen",       "Johansen"},
@@ -336,11 +348,13 @@ TypoCorrection typoCorrections[] =
     {"Lownman",        "Lowman"},
     {"Lugi",           "Luigi"},
     {"Lweandowski",    "Lewandowski"},
+    {"Lavingotte",     "Lavignotte"},
     {"Maceij",         "Maciej"},
     {"Machler",        "Mächler"},
     {"Macro",          "Marco"},
     {"Maechler",       "Mächler"},
     {"Mahai",          "Mihai"},
+    {"Magnes",          "Magnus"},
     {"Mammond",        "Marmond"},
     {"March",          "Marco"},
     {"Martsz",         "Martz"},
@@ -418,7 +432,15 @@ TypoCorrection typoCorrections[] =
     {"Gurhrie",        "Guthrie"},
     {"Byran",          "Bryan"},
     {"Fielder",        "Fiedler"},
-    {"Mathia",         "Mathias"}
+    {"Mathia",         "Mathias"},
+    {"Halgarth",       "Hogarth"},
+    {"Katherina",      "Katharina"},
+    {"Biyfarguine",    "Boufarguine"},
+    {"Dickenson",       "Dickinson"},
+    {"Jahannes","Johannes"},
+    {"Eskland","Ekstrand"},
+    {"Baeuerele","Baeuerle"},
+    {"Bauerle","Baeuerle"}
 };
 
 
@@ -432,6 +454,30 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Philip","Lamp",
+     "Philip", "Lamb"},
+    {"Dimi","Christop",
+     "Dimi", "Christopoulos"},
+    {"Jorge","Ciges",
+     "Jorge", "Izquierdo"},
+    {"Rafa","Gata",
+     "Rafa", "Gaitan"},
+    {"Sukender","I",
+     "Sukender", ""},
+    {"Sukender","Here",
+     "Sukender", ""},
+    {"Ewe","Woessner",
+     "Uwe", "Woessner"},
+    {"Martin","von",
+     "Martin", "von Gargern"},
+    {"Alexandre","Irion",
+     "Alexander", "Irion"},
+    {"WojciechLewandowski","",
+     "Wojciech", "Lewandowski"},
+    {"Marin",          "Platings",
+     "Michael",        "Platings"},
+    {"Tomas",          "Holgarth",
+     "Thomas",         "Hogarth"},
     {"Marin",          "Lavery",
      "Martin",         "Lavery"},
     {"Nguyen",         "Van",
@@ -455,7 +501,7 @@ NameCorrection nameCorrections[] =
     {"Time",            "Moore",
      "Tim",            "Moore"},
     {"Jean",           "Sebastien",
-     "Jean-Sebastien", "Guay"},
+     "Jean-Sébastien", "Guay"},
     {"Michale",        "Platings",
      "Michael",        "Platings"},
     {"Mick",           "",

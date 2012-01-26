@@ -476,8 +476,9 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
     return primitive.release();
 }
 
-osg::Image* InputStream::readImage()
+osg::Image* InputStream::readImage(bool readFromExternal) 
 {
+
     std::string className="osg::Image";
     unsigned int id = 0;
 
@@ -497,7 +498,7 @@ osg::Image* InputStream::readImage()
     if ( getException() ) return NULL;
 
     osg::ref_ptr<osg::Image> image = NULL;
-    bool readFromExternal = true;
+    
     switch ( decision )
     {
     case IMAGE_INLINE_DATA:
@@ -548,8 +549,10 @@ osg::Image* InputStream::readImage()
             {
                 char* data = new char[size];
                 if ( !data )
+                {
                     throwException( "InputStream::readImage(): Out of memory." );
-                if ( getException() ) return NULL;
+                    if ( getException() ) return NULL;
+                }
                 readCharArray( data, size );
                 
                 std::string ext = osgDB::getFileExtension( name );
@@ -617,7 +620,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Object> obj = readObjectFields( className );
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className, existingObj );
 
     _identifierMap[id] = obj;
 
@@ -689,6 +692,8 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     if ( !_in )
         throwException( "InputStream: Null stream specified." );
     if ( getException() ) return type;
+
+    _in->setInputStream(this);
     
     // Check OSG header information
     unsigned int version = 0;

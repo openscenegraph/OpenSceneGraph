@@ -60,7 +60,7 @@ public:
 
 // QueryGeometry -- A Drawable that performs an occlusion query,
 //   using its geometric data as the query geometry.
-class QueryGeometry : public osg::Geometry
+class OSG_EXPORT QueryGeometry : public osg::Geometry
 {
 public:
     QueryGeometry( const std::string& oqnName=std::string("") );
@@ -74,8 +74,8 @@ public:
 
     unsigned int getNumPixels( const osg::Camera* cam );
 
-
-    void releaseGLObjects( osg::State* state = 0 );
+    virtual void releaseGLObjects( osg::State* state = 0 ) const;
+    
     static void deleteQueryObject( unsigned int contextID, GLuint handle );
     static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
     static void discardDeletedQueryObjects( unsigned int contextID );
@@ -122,8 +122,8 @@ public:
     unsigned int getVisibilityThreshold() const { return _visThreshold; }
 
     // Specifies how many frames to wait before issuing another query.
-    void setQueryFrameCount( int frames ) { _queryFrameCount = frames; }
-    int getQueryFrameCount() const { return _queryFrameCount; }
+    void setQueryFrameCount( unsigned int frames ) { _queryFrameCount = frames; }
+    unsigned int getQueryFrameCount() const { return _queryFrameCount; }
 
     // Indicate whether or not the bounding box used in the occlusion query test
     //   should be rendered. Handy for debugging and development.
@@ -140,6 +140,10 @@ public:
     void setQueryStateSet( osg::StateSet* ss );
     osg::StateSet* getQueryStateSet();
     const osg::StateSet* getQueryStateSet() const;
+
+    // Get the QueryGeometry object used for occlusion query. Returns 0 if no QueryGeometry is created.
+    osg::QueryGeometry* getQueryGeometry();
+    const osg::QueryGeometry* getQueryGeometry() const;
 
     // Set and get the StateSet used by the OcclusionQueryNode
     //   when rendering the debug query geometry (see setDebugDisplay).
@@ -179,7 +183,7 @@ protected:
 
     // Tracks the last frame number that we performed a query.
     // User can set how many times  (See setQueryFrameCount).
-    typedef std::map< const osg::Camera*, int > FrameCountMap;
+    typedef std::map< const osg::Camera*, unsigned int > FrameCountMap;
     FrameCountMap _frameCountMap;
     mutable OpenThreads::Mutex _frameCountMutex;
 
@@ -188,7 +192,7 @@ protected:
 
     // User-settable variables
     unsigned int _visThreshold;
-    int _queryFrameCount;
+    unsigned int _queryFrameCount;
     bool _debugBB;
 
 

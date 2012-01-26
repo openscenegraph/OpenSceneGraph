@@ -40,7 +40,7 @@ class OSGUTIL_EXPORT TransformCallback : public osg::NodeCallback
         osg::Vec3           _pivot;
         osg::Vec3           _axis;
 
-        int                 _previousTraversalNumber;
+        unsigned int        _previousTraversalNumber;
         double              _previousTime;
         bool                _pause;
 

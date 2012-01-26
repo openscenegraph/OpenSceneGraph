@@ -7,6 +7,7 @@
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
+    #pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 #include <fbxfilesdk/fbxfilesdk_nsuse.h>
@@ -344,7 +345,7 @@ void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
     }
     else
     {
-        char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
+        const char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
 
         fbxDouble3 fbxPropValue = pNode->LclRotation.Get();
         fbxPropValue[0] = osg::DegreesToRadians(fbxPropValue[0]);
@@ -472,9 +473,8 @@ std::string OsgFbxReader::readFbxAnimation(KFbxNode* pNode, const char* targetNa
         for (int j = 0; j < nbAnimLayers; j++)
         {
             KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
-
-            if (osgAnimation::Animation* pAnimation = ::readFbxAnimation(
-                pNode, pAnimLayer, pTakeName, targetName, pAnimationManager))
+            osgAnimation::Animation* pAnimation = ::readFbxAnimation(pNode, pAnimLayer, pTakeName, targetName, pAnimationManager);
+            if (pAnimation)
             {
                 result = targetName;
             }

@@ -41,6 +41,9 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Take the entire event queue leaving the EventQueue' event queue empty.*/
         bool takeEvents(Events& events);
 
+        /** Take the events that were recorded before with specified time queue.*/
+        bool takeEvents(Events& events, double cutOffTime);
+
         /** Take a copy the entire event queue leaving the EventQueue' event queue intact.*/
         bool copyEvents(Events& events) const;
 
@@ -146,17 +149,17 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyPress(int key) { keyPress(key, getTime()); }
+        void keyPress(int key, int unmodifiedKey = 0) { keyPress(key, getTime(), unmodifiedKey); }
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
-        void keyPress(int key, double time);
+        void keyPress(int key, double time, int unmodifiedKey = 0);
 
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyRelease(int key) { keyRelease(key, getTime()); }
+        void keyRelease(int key, int unmodifiedKey = 0) { keyRelease(key, getTime(), unmodifiedKey); }
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
-        void keyRelease(int key, double time);
+        void keyRelease(int key, double time, int unmodifiedKey = 0);
             
         GUIEventAdapter* touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time);
         GUIEventAdapter*  touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase,  float x, float y) {
@@ -193,11 +196,13 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         void frame(double time);
         
 
-        void setStartTick(osg::Timer_t tick) { _startTick = tick; }
+        void setStartTick(osg::Timer_t tick) { _startTick = tick; clear(); }
         osg::Timer_t getStartTick() const { return _startTick; }
 
         double getTime() const { return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()); }
 
+        /** clear all events from queue. */
+        void clear();
 
         /** convenience method for create an event ready to fill in.  Clones the getCurrentEventState() to produce a up to date event state. */
         GUIEventAdapter* createEvent();

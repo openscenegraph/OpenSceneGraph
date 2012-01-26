@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     while (arguments.read("--testOcclusion")) { testOcclusion = true; }
 
     // load outlined object
-    std::string modelFilename = arguments.argc() > 1 ? arguments[1] : "dumptruck.osg";
+    std::string modelFilename = arguments.argc() > 1 ? arguments[1] : "dumptruck.osgt";
     osg::ref_ptr<osg::Node> outlineModel = osgDB::readNodeFile(modelFilename);
     if (!outlineModel)
     {
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     if (testOcclusion)
     {
         // load occluder
-        std::string occludedModelFilename = "cow.osg";
+        std::string occludedModelFilename = "cow.osgt";
         osg::ref_ptr<osg::Node> occludedModel = osgDB::readNodeFile(occludedModelFilename);
         if (!occludedModel)
         {

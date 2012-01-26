@@ -63,7 +63,7 @@ void ProxyNode::traverse(NodeVisitor& nv)
     {
         for(unsigned int i=_children.size(); i<_filenameList.size(); ++i)
         {
-            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i].first, this, 1.0f, nv.getFrameStamp(), _filenameList[i].second, _databaseOptions.get());
+            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i].first, nv.getNodePath(), 1.0f, nv.getFrameStamp(), _filenameList[i].second, _databaseOptions.get());
         }
     }
     else
@@ -109,6 +109,14 @@ BoundingSphere ProxyNode::computeBound() const
     if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
     {
         return BoundingSphere(_userDefinedCenter,_radius);
+    }
+    else if (_centerMode==UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED && _radius>=0.0f)
+    {
+        BoundingSphere bs = BoundingSphere(_userDefinedCenter,_radius);
+        bs.expandBy(Group::computeBound());
+        //alternative (used in TxpPagedLOD)
+        // bs.expandRadiusBy(Group::computeBound());
+        return bs;
     }
     else
     {

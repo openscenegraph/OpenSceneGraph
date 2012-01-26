@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content">
+  
+  <TextView
+  	android:id="@+id/uiTextEntryText"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:layout_marginLeft="20dip"
+  	android:layout_marginRight="20dip"
+  	android:text="@string/uiTextEntryText"
+  	android:gravity="left"
+  	/>
+  <EditText
+  	android:id="@+id/uiEditTextInput"
+  	android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_marginLeft="20dip"
+    android:layout_marginRight="20dip"
+    android:scrollHorizontally="true"
+    android:autoText="false"
+    android:capitalize="none"
+    android:gravity="fill_horizontal"
+    />
+  	
+</LinearLayout>

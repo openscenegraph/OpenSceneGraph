@@ -15,6 +15,7 @@
 
 #include <string.h>
 
+
 double osg::asciiToDouble(const char* str)
 {
     const char* ptr = str;
@@ -112,3 +113,20 @@ double osg::asciiToDouble(const char* str)
     }
 }
 
+double osg::findAsciiToDouble(const char* str)
+{
+   const char* ptr = str;
+   double value = 0.0;
+
+   while(*ptr != 0) {
+
+       if(*ptr>='0' && *ptr<='9') {
+           value = asciiToDouble(ptr);
+           return value;
+       }
+
+       ++ptr;
+   }
+
+   return 0.0;
+}

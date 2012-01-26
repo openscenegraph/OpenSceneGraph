@@ -30,8 +30,10 @@ ELSEIF(MINGW)
     SET(COLLADA_BUILDNAME "mingw")
 ELSEIF(MSVC90)
     SET(COLLADA_BUILDNAME "vc9")
-ELSE(APPLE)
+ELSEIF(MSVC80)
     SET(COLLADA_BUILDNAME "vc8")
+ELSE(APPLE)
+  SET(COLLADA_BUILDNAME "linux")
 ENDIF(APPLE)
 
 
@@ -44,8 +46,10 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /opt/local/Library/Frameworks #macports
     /usr/local/include
     /usr/local/include/colladadom
+    /usr/local/include/collada-dom
     /usr/include/
     /usr/include/colladadom
+    /usr/include/collada-dom
     /sw/include # Fink
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
@@ -101,7 +105,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY 
-    NAMES libcollada14dom21-s  libcollada14dom22-s
+    NAMES libcollada14dom21-s  libcollada14dom22-s libcollada14dom.a
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4
@@ -124,7 +128,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG 
-    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd libcollada14dom22-sd
+    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd libcollada14dom22-sd libcollada14dom-d.a
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4-d

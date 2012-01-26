@@ -1,4 +1,5 @@
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 IF(WIN32)
     CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6 FATAL_ERROR)
@@ -19,6 +20,12 @@ if(COMMAND cmake_policy)
     # statements.
     cmake_policy(SET CMP0005 NEW)
 
+    # tell CMake to prefer CMake's own CMake modules when available
+    # only available from cmake-2.8.4
+    if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 3)
+        cmake_policy(SET CMP0017 NEW)
+    endif()
+
     # cmake-2.6.1 introduces policy cmp0008 decide how to treat full path libraries that do not appear to be valid library file names
     # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
     if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
@@ -28,12 +35,12 @@ endif()
 
 PROJECT(OpenSceneGraph)
 
-SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
-SET(OPENSCENEGRAPH_MINOR_VERSION 9)
-SET(OPENSCENEGRAPH_PATCH_VERSION 10)
-SET(OPENSCENEGRAPH_SOVERSION 68)
+SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
+SET(OPENSCENEGRAPH_MINOR_VERSION 1)
+SET(OPENSCENEGRAPH_PATCH_VERSION 0)
+SET(OPENSCENEGRAPH_SOVERSION 90)
 
-# set to 0 when not a release candidate, non zero means that any generated 
+# set to 0 when not a release candidate, non zero means that any generated
 # svn tags will be treated as release candidates of given number
 SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
 
@@ -62,6 +69,46 @@ SET(OpenThreads_SOURCE_DIR ${OpenSceneGraph_SOURCE_DIR})
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
+## Option to enable Android build using AndroidNDK
+OPTION(OSG_BUILD_PLATFORM_ANDROID OFF)
+IF(OSG_BUILD_PLATFORM_ANDROID)
+
+    CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0 FATAL_ERROR)
+
+    INCLUDE(OsgAndroidMacroUtils)
+    SET(ANDROID TRUE)
+    SET(ANDROID_PLATFORM 5)
+    FIND_PACKAGE(AndroidNDK REQUIRED)
+
+    SET(OSG_ANDROID_TEMPLATES "${CMAKE_SOURCE_DIR}/PlatformSpecifics/Android")
+
+    SET(J  "4" CACHE STRING "how many processes for make -j <J>")
+
+    ADD_CUSTOM_COMMAND(
+        OUTPUT    Android-OpenSceneGraph
+        DEPENDS   ${CMAKE_BINARY_DIR}/Android.mk
+        COMMAND   "${ANDROID_NDK}/ndk-build"
+        ARGS      --directory=${CMAKE_BINARY_DIR} NDK_APPLICATION_MK=Application.mk -j${J} NDK_LOG=1
+    )
+
+    ADD_CUSTOM_TARGET(ndk ALL echo
+          DEPENDS Android-OpenSceneGraph
+    )
+    install(DIRECTORY include/ DESTINATION include/
+        PATTERN ".svn" EXCLUDE
+    )
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION include/
+    )
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/obj/ DESTINATION obj/
+        PATTERN ".svn" EXCLUDE
+        PATTERN "objs" EXCLUDE
+    )
+
+    ADD_DEFINITIONS(-DANDROID)
+
+ENDIF()
+
+
 
 # Okay, here's the problem: On some platforms, linking against OpenThreads
 # is not enough and explicit linking to the underlying thread library
@@ -74,7 +121,9 @@ SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_
 # cases. With IRIX, we're going to hope explicit linking to the underlying
 # library is not necessary. We currently don't case for pthreads on Windows
 # which might be an issue on things like Cygwin. This may need to be fixed.
-FIND_PACKAGE(Threads)
+IF(NOT ANDROID)
+    FIND_PACKAGE(Threads)
+ENDIF()
 IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
@@ -134,14 +183,10 @@ IF (OSG_MAINTAINER)
         COMMAND ${SVNCOMMAND} update
         COMMAND ${GENERATELOGS} ${SVNSOURCEDIR}
     )
-    
+
 ENDIF(OSG_MAINTAINER)
 
-
-# Find OpenGL
-FIND_PACKAGE(OpenGL)
-
-
+IF(NOT ANDROID)
 IF(APPLE)
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
@@ -169,20 +214,27 @@ IF(APPLE)
             SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneSimulator.platform/Developer")
             SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneSimulator${IPHONE_SDKVER}.sdk")
         ENDIF()
-    ENDIF ()
 
-    FIND_LIBRARY(CARBON_LIBRARY Carbon)
-    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-
-   IF(OSG_BUILD_PLATFORM_IPHONE)
+        # Apple iOS: Find OpenGLES
         FIND_LIBRARY(OPENGLES_LIBRARY OpenGLES)
-    ENDIF()
+    ELSE ()
+        FIND_LIBRARY(CARBON_LIBRARY Carbon)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+
+        # Apple OS X: Find OpenGL and AGL
+        FIND_PACKAGE(OpenGL)
+        FIND_LIBRARY(AGL_LIBRARY AGL)
+    ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
+ELSE()
+    # Non-Apple: Find OpenGL
+    FIND_PACKAGE(OpenGL)
+ENDIF()
 ENDIF()
 
-IF(UNIX)
+IF(UNIX AND NOT ANDROID)
     # Not sure what this will do on Cygwin and Msys
     # Also, remember OS X X11 is a user installed option so it may not exist.
     FIND_PACKAGE(X11)
@@ -215,7 +267,7 @@ ENDIF()
 # Platform specific definitions
 
 
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
 
     IF(MSVC)
         # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
@@ -294,7 +346,7 @@ IF(WIN32)
             ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
         ENDIF()
     ENDIF(MSVC)
-ENDIF(WIN32)
+ENDIF(WIN32 AND NOT ANDROID)
 
 ########################################################################################################
 ##### these were settings located in SetupCommon.cmake used in Luigi builds.... find out what are useful
@@ -329,8 +381,10 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 
-OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
-MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)
+IF (WIN32)
+    OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
+    MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)
+ENDIF()
 
 OPTION(OSG_DISABLE_MSVC_WARNINGS "Set to OFF to not disable MSVC warnings generated by OSG headers." ON)
 MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
@@ -394,60 +448,72 @@ OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 
 ################################################################################
 # 3rd Party Dependency Stuff
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
     INCLUDE(Find3rdPartyDependencies)
 ENDIF()
 
-# Common to all platforms:
-FIND_PACKAGE(FreeType)
-FIND_PACKAGE(Inventor)
-FIND_PACKAGE(Jasper)
-FIND_PACKAGE(OpenEXR)
-FIND_PACKAGE(COLLADA)
-FIND_PACKAGE(FBX)
-FIND_PACKAGE(ZLIB)
-FIND_PACKAGE(Xine)
-FIND_PACKAGE(OpenVRML)
-FIND_PACKAGE(Performer)
-FIND_PACKAGE(GDAL)
-FIND_PACKAGE(CURL)
-FIND_PACKAGE(ITK)
-FIND_PACKAGE(LibVNCServer)
-FIND_PACKAGE(OurDCMTK)
-FIND_PACKAGE(OpenAL)
-FIND_PACKAGE(XUL)
-FIND_PACKAGE(FFmpeg)
-FIND_PACKAGE(DirectShow)
-FIND_PACKAGE(SDL)
-FIND_PACKAGE(Poppler-glib)
-FIND_PACKAGE(RSVG)
-FIND_PACKAGE(GtkGl)
+IF(ANDROID)
+    ANDROID_3RD_PARTY()
+ELSE()
+# Common to all platforms except android:
+    FIND_PACKAGE(FreeType)
+    FIND_PACKAGE(Inventor)
+    FIND_PACKAGE(Jasper)
+    FIND_PACKAGE(OpenEXR)
+    FIND_PACKAGE(COLLADA)
+    FIND_PACKAGE(FBX)
+    FIND_PACKAGE(ZLIB)
+    FIND_PACKAGE(Xine)
+    FIND_PACKAGE(OpenVRML)
+    FIND_PACKAGE(Performer)
+    FIND_PACKAGE(GDAL)
+    FIND_PACKAGE(CURL)
+    FIND_PACKAGE(LibVNCServer)
+    FIND_PACKAGE(OurDCMTK)
+    FIND_PACKAGE(OpenAL)
+    FIND_PACKAGE(FFmpeg)
+    FIND_PACKAGE(DirectShow)
+    FIND_PACKAGE(SDL)
+    FIND_PACKAGE(Poppler-glib)
+    FIND_PACKAGE(RSVG)
+    FIND_PACKAGE(GtkGl)
+    FIND_PACKAGE(DirectInput)
+    FIND_PACKAGE(NVTT)
+ENDIF()
+
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 8)
+    FIND_PACKAGE(ITK)
+ENDIF()
 
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
 
+OPTION(OSG_USE_QT "Enable to use Qt (build Qt-dependent libraries, plugins and examples)" ON)
+
+IF(OSG_USE_QT AND NOT ANDROID)
 # To select a specific version of QT define DESIRED_QT_VERSION
 # via cmake -DDESIRED_QT_VERSION=4
-IF  (DESIRED_QT_VERSION)
+    IF  (DESIRED_QT_VERSION)
 
-    IF  (DESIRED_QT_VERSION MATCHES 4)
-      FIND_PACKAGE(Qt4)
+        IF  (DESIRED_QT_VERSION MATCHES 4)
+              FIND_PACKAGE(Qt4)
+        ELSE()
+              FIND_PACKAGE(Qt3)
+        ENDIF()
+
     ELSE()
-      FIND_PACKAGE(Qt3)
+
+        FIND_PACKAGE(Qt4)
+
+        IF  (NOT QT4_FOUND)
+            FIND_PACKAGE(Qt3)
+        ENDIF()
+
     ENDIF()
-
-ELSE()
-
-    FIND_PACKAGE(Qt4)
-
-    IF  (NOT QT4_FOUND)
-        FIND_PACKAGE(Qt3)
-    ENDIF()
-
 ENDIF()
 
 #optional example related dependencies
-IF   (BUILD_OSG_EXAMPLES)
+IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
 
     FIND_PACKAGE(FLTK)
@@ -457,7 +523,7 @@ IF   (BUILD_OSG_EXAMPLES)
     SET(wxWidgets_USE_LIBS base core gl net)
     FIND_PACKAGE(wxWidgets)
 
-ENDIF(BUILD_OSG_EXAMPLES)
+ENDIF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
 
 # Platform specific:
@@ -474,21 +540,23 @@ ENDIF(BUILD_OSG_EXAMPLES)
 
 # Image readers/writers depend on 3rd party libraries except for OS X which
 # can use Quicktime.
-IF(NOT APPLE)
-    FIND_PACKAGE(GIFLIB)
-    FIND_PACKAGE(JPEG)
-    FIND_PACKAGE(PNG)
-    FIND_PACKAGE(TIFF)
+IF(NOT ANDROID)
+    IF(NOT APPLE)
+        FIND_PACKAGE(GIFLIB)
+        FIND_PACKAGE(JPEG)
+        FIND_PACKAGE(PNG)
+        FIND_PACKAGE(TIFF)
 
-    # QuickTime is required for OS X, but optional for Windows.
-    IF(WIN32)
+        # QuickTime is required for OS X, but optional for Windows.
+        IF(WIN32)
+            FIND_PACKAGE(QuickTime)
+        ENDIF()
+
+    ELSE()
         FIND_PACKAGE(QuickTime)
+        FIND_PACKAGE(QTKit)
+        FIND_PACKAGE(CoreVideo)
     ENDIF()
-
-ELSE()
-    FIND_PACKAGE(QuickTime)
-    FIND_PACKAGE(QTKit)
-    FIND_PACKAGE(CoreVideo)
 ENDIF()
 
 ################################################################################
@@ -506,6 +574,19 @@ SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows")
 SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windows")
 SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually empty on windows")
 SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on windows")
+
+# Set the build postfix extension according to what configuration is being built.
+IF (CMAKE_BUILD_TYPE MATCHES "Release")
+    SET(CMAKE_BUILD_POSTFIX "${CMAKE_RELEASE_POSTFIX}")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    SET(CMAKE_BUILD_POSTFIX "${CMAKE_MINSIZEREL_POSTFIX}")
+ELSEIF(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+    SET(CMAKE_BUILD_POSTFIX "${CMAKE_RELWITHDEBINFO_POSTFIX}")
+ELSEIF(CMAKE_BUILD_TYPE MATCHES "Debug")
+    SET(CMAKE_BUILD_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
+ELSE()
+    SET(CMAKE_BUILD_POSTFIX "")
+ENDIF()
 
 IF(UNIX AND NOT WIN32)
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
@@ -688,7 +769,7 @@ ENDIF()
 # OSG Core
 ADD_SUBDIRECTORY(src)
 
-IF   (BUILD_OSG_APPLICATIONS)
+IF   (BUILD_OSG_APPLICATIONS AND NOT ANDROID)
     ADD_SUBDIRECTORY(applications)
 ENDIF()
 
@@ -708,8 +789,8 @@ IF(APPLE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ELSE()
             #simulator uses i386 architectures
-            SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for iOS Simulator" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch i386 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "Build architectures for iOS Simulator" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-thumb -arch i386 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ENDIF()
 
         #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
@@ -720,7 +801,7 @@ IF(APPLE)
 
         #use the IPhone windowing system
         SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Forced IPhone windowing system on iOS"  FORCE)
-        SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio " CACHE STRING "Forced imageio default image plugin for iOS" FORCE)
+        SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for iOS" FORCE)
 
         #I think this or similar will be required for IPhone apps
         OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" ON)
@@ -742,8 +823,8 @@ IF(APPLE)
             # independently of OS X versions.)
             # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
             IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-                # 64-bit compiles are not supported with Carbon. We should enable 
-                # 64-bit compilation by default once osgviewer has been 
+                # 64-bit compiles are not supported with Carbon. We should enable
+                # 64-bit compilation by default once osgviewer has been
                 # rewritten with Cocoa.
                 #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
@@ -792,7 +873,7 @@ IF(BUILD_DOCUMENTATION)
     ELSE()
         SET(HAVE_DOT NO)
     ENDIF()
-    
+
     # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
     SET(GENERATE_HTMLHELP "NO")
     IF(DOCUMENTATION_HTML_HELP)
@@ -804,7 +885,7 @@ IF(BUILD_DOCUMENTATION)
         # this var sets a proper value in .doxygen files when coniguring them below
         SET(GENERATE_HTMLHELP "YES")
     endif()
-  
+
     # This processes our doxyfile.cmake and substitutes paths to generate
     # a final Doxyfile
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/doxyfile.cmake
@@ -840,7 +921,7 @@ IF(BUILD_DOCUMENTATION)
         ${PROJECT_BINARY_DIR}/doc/auto_Doxyfile)
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/core_Doxyfile
         ${PROJECT_BINARY_DIR}/doc/core_Doxyfile)
-    
+
     # This creates a new target to build documentation.
     # It runs ${DOXYGEN} which is the full path and executable to
     # Doxygen on your system, set by the FindDoxygen.cmake module
@@ -850,9 +931,12 @@ IF(BUILD_DOCUMENTATION)
     ADD_CUSTOM_TARGET(doc_openscenegraph ${DOXYGEN}
         ${PROJECT_BINARY_DIR}/doc/openscenegraph.doxyfile
     )
+    SET_TARGET_PROPERTIES(doc_openscenegraph PROPERTIES FOLDER "Documentation")
+
     ADD_CUSTOM_TARGET(doc_openthreads ${DOXYGEN}
         ${PROJECT_BINARY_DIR}/doc/openthreads.doxyfile
     )
+    SET_TARGET_PROPERTIES(doc_openthreads PROPERTIES FOLDER "Documentation")
 ENDIF(BUILD_DOCUMENTATION)
 
 OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph" OFF)
@@ -925,7 +1009,7 @@ IF(REQUIRES_LIBPATH_MESSAGE)
             CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
                 ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
             )
-            ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different 
+            ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different
                 ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
                 /etc/ld.so.conf.d/openscenegraph.conf
                 COMMAND ldconfig
@@ -964,3 +1048,12 @@ CONFIGURE_FILE(
   IMMEDIATE @ONLY)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+
+#
+IF(ANDROID)
+    message(STATUS "Creating Android Makefile Master files" )
+    configure_file("${OSG_ANDROID_TEMPLATES}/Android.mk.master.in" "${CMAKE_BINARY_DIR}/Android.mk")
+    configure_file("${OSG_ANDROID_TEMPLATES}/Application.mk.master.in" "${CMAKE_BINARY_DIR}/Application.mk")
+    configure_file("${OSG_ANDROID_TEMPLATES}/AndroidManifest.xml.master.in" "${CMAKE_BINARY_DIR}/AndroidManifest.xml")
+ENDIF(ANDROID)
+

@@ -62,6 +62,7 @@
 #include "Light.h"
 #include "PolygonStipple.h"
 
+#include "Node.h"
 #include "Group.h"
 #include "MatrixTransform.h"
 #include "Camera.h"
@@ -1410,7 +1411,16 @@ void DataOutputStream::writeNode(const osg::Node* node)
             ((ive::LightPointNode*)(node))->write(this);
         }
         else
-            throwException("Unknown node in Group::write()");
+        {
+            if (typeid(node)!=typeid(osg::Node))
+            {
+                OSG_WARN<<"Unknown node in Group::write(), className()="<<node->className()<<std::endl;
+            }
+
+            ((ive::Node*)(node))->write(this);
+
+            // throwException(std::string("Unknown node in Group::write(), className()=")+node->className());
+        }
 
         if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
     }

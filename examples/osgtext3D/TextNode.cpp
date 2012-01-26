@@ -77,13 +77,11 @@ void Layout::layout(TextNode& text) const
     }
 
     float characterWidthScale = 1.0f;
-    float characterHeightScale = 1.0f;
 
     bool textIs3D = (style && style->getThicknessRatio()!=0.0);
     if (!textIs3D)
     {
         characterWidthScale = 1.0f/static_cast<float>(resolution.first);
-        characterHeightScale = 1.0f/static_cast<float>(resolution.second);
     }
 
     osgText::KerningType kerningType = osgText::KERNING_DEFAULT;
@@ -112,7 +110,7 @@ void Layout::layout(TextNode& text) const
             {
                 osg::Vec3 local_scale( size );
                 technique->addCharacter(pos, local_scale, glyph, style);
-                pos += osg::Vec3(size.x()*glyph->getHorizontalWidth(), 0.0f ,0.0f);
+                pos += osg::Vec3(size.x()*glyph->getWidth(), 0.0f ,0.0f);
             }
         }
 
@@ -227,7 +225,7 @@ void TextTechnique::finish()
 void TextTechnique::traverse(osg::NodeVisitor& nv)
 {
     // OSG_NOTICE<<"TextTechnique::traverse()"<<std::endl;
-    if (_textNode) _textNode->Group::traverse(nv);
+    if (_textNode) _textNode->osg::Group::traverse(nv);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

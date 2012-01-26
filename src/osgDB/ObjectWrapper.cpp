@@ -265,12 +265,19 @@ RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::strin
 {
     _wrapper = new ObjectWrapper( proto, name, associates );
     if ( func ) (*func)( _wrapper.get() );
-    Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
+
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
+    }
 }
 
 RegisterWrapperProxy::~RegisterWrapperProxy()
 {
-    Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -402,7 +409,12 @@ ObjectWrapperManager::ObjectWrapperManager()
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT1_EXT", GL_COMPRESSED_RGBA_S3TC_DXT1_EXT );
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT", GL_COMPRESSED_RGBA_S3TC_DXT3_EXT );
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT", GL_COMPRESSED_RGBA_S3TC_DXT5_EXT );
-
+    glTable.add( "GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG",GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG );
+    glTable.add( "GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG",GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG );
+    glTable.add( "GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG",GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG );
+    glTable.add( "GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG",GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG );
+    glTable.add( "GL_ETC1_RGB8_OES",GL_ETC1_RGB8_OES );
+    
     // Texture source types
     glTable.add( "GL_BYTE", GL_BYTE );
     glTable.add( "GL_SHORT", GL_SHORT );
@@ -609,10 +621,16 @@ RegisterCompressorProxy::RegisterCompressorProxy( const std::string& name, BaseC
     _compressor(compressor)
 {
     _compressor->setName( name );
-    Registry::instance()->getObjectWrapperManager()->addCompressor( _compressor.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->addCompressor( _compressor.get() );
+    }
 }
 
 RegisterCompressorProxy::~RegisterCompressorProxy()
 {
-    Registry::instance()->getObjectWrapperManager()->removeCompressor( _compressor.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->removeCompressor( _compressor.get() );
+    }
 }

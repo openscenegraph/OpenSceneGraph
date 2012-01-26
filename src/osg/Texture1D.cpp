@@ -286,6 +286,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 
     static MyCompressedTexImage1DArbProc glCompressedTexImage1D_ptr = 
         convertPointerType<MyCompressedTexImage1DArbProc, void*>(getGLExtensionFuncPtr("glCompressedTexImage1DARB"));

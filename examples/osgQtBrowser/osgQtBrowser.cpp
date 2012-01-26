@@ -86,8 +86,9 @@ int main(int argc, char **argv)
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
-    bool useFrameLoopThread = true;
+    bool useFrameLoopThread = false;
     if (arguments.read("--no-frame-thread")) useFrameLoopThread = false;
+    if (arguments.read("--frame-thread")) useFrameLoopThread = true;
 
     osg::ref_ptr<osgQt::QWebViewImage> image = new osgQt::QWebViewImage;
 

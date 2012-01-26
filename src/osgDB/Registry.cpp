@@ -111,6 +111,50 @@ protected:
 
 };
 
+class Registry::AvailableArchiveIterator
+{
+public:
+    AvailableArchiveIterator(Registry::ArchiveCache& archives, OpenThreads::ReentrantMutex& mutex):
+        _archives(archives),
+        _mutex(mutex) {}
+
+
+    Archive& operator * () { return *get(); }
+    Archive* operator -> () { return get(); }
+
+    bool valid() { return get()!=0; }
+
+    void operator ++()
+    {
+        _archivesUsed.insert(get());
+    }
+
+
+protected:
+
+    AvailableArchiveIterator& operator = (const AvailableArchiveIterator&) { return *this; }
+
+    Registry::ArchiveCache&         _archives;
+    OpenThreads::ReentrantMutex&    _mutex;
+
+    std::set<Archive*>              _archivesUsed;
+
+    Archive* get()
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
+        Registry::ArchiveCache::iterator itr=_archives.begin();
+        for(;itr!=_archives.end();++itr)
+        {
+            if (_archivesUsed.find(itr->second.get())==_archivesUsed.end())
+            {
+                return itr->second.get();
+            }
+        }
+        return 0;
+    }
+
+};
+
 #if 0
     // temporary test of autoregistering, not compiled by default.
     enum Methods
@@ -550,6 +594,71 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
 
 }
 
+ImageProcessor* Registry::getImageProcessor()
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            return _ipList.front().get();
+        }
+    }
+    return getImageProcessorForExtension("nvtt");
+}
+
+ImageProcessor* Registry::getImageProcessorForExtension(const std::string& ext)
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            return _ipList.front().get();
+        }
+    }
+
+    std::string libraryName = createLibraryNameForExtension(ext);
+    OSG_NOTICE << "Now checking for plug-in "<<libraryName<< std::endl;
+    if (loadLibrary(libraryName)==LOADED)
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            OSG_NOTICE << "Loaded plug-in "<<libraryName<<" and located ImageProcessor"<< std::endl;
+            return _ipList.front().get();
+        }
+    }
+    return 0;
+}
+
+void Registry::addImageProcessor(ImageProcessor* ip)
+{
+    if (ip==0L) return;
+
+    OSG_NOTIFY(NOTICE) << "osg::Registry::addImageProcessor("<<ip->className()<<")"<< std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
+    _ipList.push_back(ip);
+
+}
+
+
+void Registry::removeImageProcessor(ImageProcessor* ip)
+{
+    if (ip==0L) return;
+
+    OSG_NOTIFY(NOTICE) << "osg::Registry::removeImageProcessor();"<< std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
+    ImageProcessorList::iterator ipitr = std::find(_ipList.begin(),_ipList.end(),ip);
+    if (ipitr!=_ipList.end())
+    {
+        _ipList.erase(ipitr);
+    }
+
+}
+
 
 void Registry::addFileExtensionAlias(const std::string mapExt, const std::string toExt)
 {
@@ -971,13 +1080,18 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
             osgDB::Archive* archive = result.getArchive();
         
-            osg::ref_ptr<Options> options = new Options;
+            //if valid options were passed through the read functor clone them
+            //otherwise make new options
+            osg::ref_ptr<osgDB::ReaderWriter::Options> options = readFunctor._options ?
+                readFunctor._options->cloneOptions() :
+                new osgDB::ReaderWriter::Options;
+
             options->setDatabasePath(archiveName);
 
             return archive->readObject(fileName,options.get());
         }
     }
- 
+    
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
@@ -990,6 +1104,21 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         if (readFunctor.isValid(rr)) return rr;
         else results.push_back(rr);
     }
+
+    // check loaded archives.
+    AvailableArchiveIterator aaitr(_archiveCache, _archiveCacheMutex);
+    for(;aaitr.valid();++aaitr)
+    {
+        ReaderWriter::ReadResult rr = readFunctor.doRead(*aaitr);
+        if (readFunctor.isValid(rr)) return rr;
+        else
+        {
+            // don't pass on FILE_NOT_FOUND results as we don't want to prevent non archive plugins that haven't been
+            // loaded yet from getting a chance to test for the presence of the file.
+            if (rr.status()!=ReaderWriter::ReadResult::FILE_NOT_FOUND) results.push_back(rr);
+        }
+    }
+
 
     if (!results.empty())
     {
@@ -1158,8 +1287,8 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const Options* options)
 {
-    osgDB::Archive* archive = getFromArchiveCache(fileName);
-    if (archive) return archive;
+    osg::ref_ptr<osgDB::Archive> archive = getRefFromArchiveCache(fileName);
+    if (archive.valid()) return archive.get();
 
     ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, options),Options::CACHE_ARCHIVES);
 
@@ -1456,11 +1585,20 @@ void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* o
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
 }
+
 osg::Object* Registry::getFromObjectCache(const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     ObjectCache::iterator itr = _objectCache.find(fileName);
     if (itr!=_objectCache.end()) return itr->second.first.get();
+    else return 0;
+}
+
+osg::ref_ptr<osg::Object> Registry::getRefFromObjectCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    ObjectCache::iterator itr = _objectCache.find(fileName);
+    if (itr!=_objectCache.end()) return itr->second.first;
     else return 0;
 }
 
@@ -1515,6 +1653,13 @@ void Registry::removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp)
         
 }
 
+void Registry::removeFromObjectCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    ObjectCache::iterator itr = _objectCache.find(fileName);
+    if (itr!=_objectCache.end()) _objectCache.erase(itr);
+}
+
 void Registry::clearObjectCache()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
@@ -1546,6 +1691,14 @@ osgDB::Archive* Registry::getFromArchiveCache(const std::string& fileName)
     else return 0;
 }
 
+osg::ref_ptr<osgDB::Archive> Registry::getRefFromArchiveCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    ArchiveCache::iterator itr = _archiveCache.find(fileName);
+    if (itr!=_archiveCache.end()) return itr->second;
+    else return 0;
+}
+
 void Registry::clearArchiveCache()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
@@ -1562,6 +1715,11 @@ void Registry::releaseGLObjects(osg::State* state)
     {
         osg::Object* object = itr->second.first.get();
         object->releaseGLObjects(state);
+    }
+
+    if (_sharedStateManager.valid())
+    {
+      _sharedStateManager->releaseGLObjects( state );
     }
 }
 

@@ -17,6 +17,7 @@
 #include <osgDB/Export>
 
 #include <string>
+#include <vector>
 
 namespace osgDB {
 
@@ -36,6 +37,15 @@ extern OSGDB_EXPORT std::string getNameLessExtension(const std::string& fileName
 extern OSGDB_EXPORT std::string getNameLessAllExtensions(const std::string& fileName);
 /** Gets file name without last extension (Ex: /a/b/c.Ext => c ; file.ext1.ext2 => file.ext1). */
 extern OSGDB_EXPORT std::string getStrippedName(const std::string& fileName);
+/** If 'to' is in a subdirectory of 'from' then this function returns the subpath, otherwise it just returns the file name.
+  * The function does \b not automagically resolve paths as the system does, so be careful to give canonical paths.
+  * However, the function interprets slashes ('/') ans backslashes ('\') as they were equal.
+  */
+extern OSGDB_EXPORT std::string getPathRelative(const std::string& from, const std::string& to);
+/** Gets root part of a path ("/" or "C:"), or an empty string if none found. */
+extern OSGDB_EXPORT std::string getPathRoot(const std::string& path);
+/** Tests if path is absolute, as !getPathRoot(path).empty(). */
+extern OSGDB_EXPORT bool isAbsolutePath(const std::string& path);
 
 
 /** Converts forward slashes (/) to back slashes (\). */
@@ -68,6 +78,8 @@ extern OSGDB_EXPORT std::string concatPaths(const std::string& left, const std::
 /** Removes .. and . dirs in a path */
 extern OSGDB_EXPORT std::string getRealPath(const std::string& path);
 
+/** Splits a path into elements between separators (including Windows' root, if any). */
+extern OSGDB_EXPORT void getPathElements(const std::string& path, std::vector<std::string> & out_elements);
 
 }
 

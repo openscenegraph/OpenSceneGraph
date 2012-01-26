@@ -55,6 +55,19 @@ OperationQueue::~OperationQueue()
 {
 }
 
+bool OperationQueue::empty() 
+{ 
+
+  OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+  return _operations.empty(); 
+}
+
+unsigned int OperationQueue::getNumOperationsInQueue()
+{
+  OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+  return static_cast<unsigned int>(_operations.size()); 
+}
+
 ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
 {
     if (blockIfEmpty && _operations.empty())

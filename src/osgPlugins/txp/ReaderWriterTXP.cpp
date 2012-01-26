@@ -58,7 +58,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         //we will set our osgdb loader options on the archive and set the appropriate archive on 
         //the txpNode.
         int id = ++_archiveId;
-        osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(fileName));
+        osg::ref_ptr< TXPArchive > archive = createArchive(id,osgDB::getFilePath(fileName));
 
         if (archive != NULL)
         {
@@ -86,6 +86,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         unsigned int id;
         sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id);
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
+        if (archive == NULL)
+            return ReadResult::ERROR_IN_READING_FILE;
 
         // The way this is done a 'tile' should only be created for lod 0 only,
         // something is wrong if this is no the case
@@ -199,6 +201,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         unsigned int id;
         sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id);
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
+        if (archive == NULL)
+            return ReadResult::ERROR_IN_READING_FILE;
 
         int majorVersion, minorVersion;
         archive->GetVersion(majorVersion, minorVersion);
@@ -563,63 +567,82 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
 
 }
 
+std::string ReaderWriterTXP::getArchiveName(const std::string& dir)
+{
+#ifdef _WIN32
+    const char _PATHD = '\\';
+#elif defined(macintosh)
+    const char _PATHD = ':';
+#else
+    const char _PATHD = '/';
+#endif
+
+    return dir+_PATHD+"archive.txp";
+}
+
 osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string& dir)
 {
     osg::ref_ptr< TXPArchive > archive = NULL;
 
     std::map< int,osg::ref_ptr<TXPArchive> >::iterator iter = _archives.find(id);
     
-
     if (iter != _archives.end())
     {
         archive = iter->second.get();
     }
-
-    if (archive == NULL)
+    else
     {
-#ifdef _WIN32
-        const char _PATHD = '\\';
-#elif defined(macintosh)
-        const char _PATHD = ':';
-#else
-        const char _PATHD = '/';
-#endif
-        std::string archiveName = dir+_PATHD+"archive.txp";
-        archive = new TXPArchive;
-        if (archive->openFile(archiveName) == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadMaterials() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load materials from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadModels() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadLightAttributes() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load light attributes from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadTextStyles() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        archive->setId(id);
-
-        _archives[id] = archive;
+        std::string archiveName = getArchiveName(dir);
+        ReaderWriterTXPERROR("getArchive()") << "archive id " << id << " not found: \"" << archiveName << "\"" << std::endl;
     }
+    return archive;
+}
+
+osg::ref_ptr< TXPArchive > ReaderWriterTXP::createArchive(int id, const std::string& dir)
+{
+    std::string archiveName = getArchiveName(dir);
+
+    osg::ref_ptr< TXPArchive > archive = getArchive(id, dir);
+    if (archive != NULL)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "archive id " << id << " already exists: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    archive = new TXPArchive;
+    if (archive->openFile(archiveName) == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadMaterials() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load materials from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadModels() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadLightAttributes() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load light attributes from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadTextStyles() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    archive->setId(id);
+
+    _archives[id] = archive;
 
     return archive;
 }
@@ -627,7 +650,12 @@ osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string
 bool ReaderWriterTXP::removeArchive( int id )
 {
     OSG_INFO<<"ReaderWriterTXP::removeArchive(id="<<id<<")"<<std::endl;
-    return (_archives.erase(id) >= 1);
+    //return (_archives.erase(id) >= 1);
+    bool result=_archives.erase(id) >= 1;
+    OSG_WARN<<"remove archive " << id << " size " << _archives.size()
+        << " result " << result << std::endl;
+    return result;
+
 }
 
 class SeamFinder: public osg::NodeVisitor
@@ -642,16 +670,16 @@ public:
     {
         for (unsigned int i = 0; i < group.getNumChildren(); i++)
         {
-        osg::Node* child = group.getChild(i);
-        osg::Node* seam = seamReplacement(child);
-        if (child != seam)
-        {
-            group.replaceChild(child,seam);
-        }
-        else
-        {
-            child->accept(*this);
-        }
+            osg::Node* child = group.getChild(i);
+            osg::Node* seam = seamReplacement(child);
+            if (child != seam)
+            {
+                group.replaceChild(child,seam);
+            }
+            else
+            {
+                child->accept(*this);
+            }
         }
     }
 
@@ -664,6 +692,8 @@ protected:
     const TXPArchive::TileInfo& _info;
     TXPArchive *_archive;
 };
+
+#define equalDoubles(a, b) (fabs(a-b) < 0.001)
 
 osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 {
@@ -690,10 +720,10 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 
         bool nonSeamChild = true;
 
-    // looks like the problem is in here - likely due to seamLOD info
-    // not being adjusted properly in tiled databases
-        // seam center is outside the bounding box of the tile
-    osg::Vec3 lodCenter = lod->getCenter();
+        // looks like the problem is in here - likely due to seamLOD info
+        // not being adjusted properly in tiled databases
+            // seam center is outside the bounding box of the tile
+        osg::Vec3 lodCenter = lod->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -709,32 +739,40 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-        lodCenter += offset;
+            lodCenter += offset;
         }
 
         if (!_info.bbox.contains(lodCenter))
         {
-            // seams have center as the neighbour tile
-            osg::Vec3 d = _info.center - lodCenter;
-            if (((fabs(d.x())-_info.size.x()) > 0.0001) && ((fabs(d.y())-_info.size.y()) > 0.0001))
+            const osg::LOD::RangeList& rangeList = lod->getRangeList();
+            if (!rangeList.size())
             {
-                nonSeamChildren.push_back(lod);
+                // TODO: Warn here
                 continue;
             }
 
-            // low res seam has min/max ranges of lod+1 range/lod 0 range
-            if ((fabs((float)_info.minRange-lod->getMinRange(0))<0.001)&&(fabs((float)_info.lod0Range-lod->getMaxRange(0))<0.001))
+            TXPArchive::TileInfo lod_plus_one_info;
+            if (!this->_archive->getTileInfo(_x,_y,_lod+1,lod_plus_one_info))
             {
+                // TODO: Warn here
+                continue;
+            }
 
+            double lod_plus_oneSwitchInDistance =  lod_plus_one_info.maxRange;
+            double lod0SwitchInDistance =  _info.lod0Range;
+
+            // low res seam has min/max ranges of lod+1 range/lod 0 range
+            if (equalDoubles(lod_plus_oneSwitchInDistance,rangeList.at(0).first) && equalDoubles(lod0SwitchInDistance,rangeList.at(0).second))
+            {
                 if (loRes==0)
                 {
                     loRes = lod;
                     nonSeamChild = false;
                 }
             }
-
+            else
             // hi res seam has min/max ranges of 0 range/lod+1 range
-            if ((lod->getMinRange(0)==0.0f)&&(fabs(_info.minRange-lod->getMaxRange(0))<0.001))
+            if (rangeList.at(0).first==0.0 && equalDoubles(lod_plus_oneSwitchInDistance,rangeList.at(0).second))
             {
                 if (hiRes==0)
                 {
@@ -754,7 +792,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         int dx = 0;
         int dy = 0;
         int lod = _lod;
-    osg::Vec3 lodCenter = loRes->getCenter();
+        osg::Vec3 lodCenter = loRes->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -770,7 +808,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-        lodCenter += offset;
+            lodCenter += offset;
         }
 
         osg::Vec3 delta = lodCenter-_info.center;
@@ -790,7 +828,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         }
 
         TXPSeamLOD* seam = new TXPSeamLOD(_x, _y, lod, dx, dy);
-    seam->setCenter(loRes->getCenter());
+        seam->setCenter(loRes->getCenter());
         seam->addChild(loRes->getChild(0));        // low res
         if (hiRes) 
         {

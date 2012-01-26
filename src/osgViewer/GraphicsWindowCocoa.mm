@@ -743,12 +743,20 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 #pragma mark GraphicsWindowCocoaDelegate
 
+#ifndef MAC_OS_X_VERSION_10_6
+#define MAC_OS_X_VERSION_10_6 1060
+#endif
+
+
 
 // ----------------------------------------------------------------------------------------------------------
 // the window-delegate, handles moving/resizing of the window etc.
 // ----------------------------------------------------------------------------------------------------------
 
-@interface GraphicsWindowCocoaDelegate : NSObject <NSWindowDelegate>
+@interface GraphicsWindowCocoaDelegate : NSObject
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
+<NSWindowDelegate>
+#endif
 {
     @private
         osgViewer::GraphicsWindowCocoa* _win;

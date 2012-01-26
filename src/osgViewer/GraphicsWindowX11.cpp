@@ -373,6 +373,11 @@ bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, in
     wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
     bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !windowDecoration;
 
+    if (isFullScreen) {
+        resized(x, y, width, height);
+        getEventQueue()->windowResize(x, y, width, height, getEventQueue()->getTime());
+    }
+
     Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
     Atom netWMStateFullscreenAtom = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", True);
 

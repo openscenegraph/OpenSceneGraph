@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+    <name type="string" value="dark_bw"/>
+    <image type="string" value="dark_sw_widget_theme.png"/>
+	<defaults>
+		<sliderthrobbersize type="size" width="11" height="11" />
+		<buttonheight type="float" value="15" />
+		<sliderheight type="float" value="11" />
+		<checkboxsize type="size" width="11" height="11" />
+		<radiobuttonsize type="size" width="11" height="11" />
+	    <hsliderCaptionDelta type="vec2" x="3" y="2" />
+	    <hsliderValueDelta type="vec2" x="0" y="2" />
+	</defaults>
+    <items>
+        <checkbox> 
+            <rect type="rect" l="0" t="0" w="11" h="11"/>
+            <borderWidth type="float" value="0"/>
+            <borderHeight type="float" value="0"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol"
+                value="normal_disabled selected_disabled normal selected normal_over selected_over normal_down selected_down"/>
+            <font type="string" value="system.xml"/>
+            <fontsize type="string" value="8"/>
+            <textoffset type="point" x="15" y="0"/>
+            <disabledTextColor type="color" value="#aaaaaa"/>
+            <normalTextColor type="color" value="#cccccc"/>
+            <normalOverTextColor type="color" value="#ffffff"/>
+            <downTextColor type="color" value="#333333"/>
+            <selectedTextColor type="color" value="#cccccc"/>
+            <selectedOverTextColor type="color" value="#ffffff"/>
+            <uppercase type="boolean" value="1" />
+        </checkbox>
+        <radioButton>
+            <rect type="rect" l="0" t="11" w="11" h="11"/>
+            <borderWidth type="float" value="0"/>
+            <borderHeight type="float" value="0"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol"
+                value="normal_disabled selected_disabled normal selected normal_over selected_over normal_down selected_down"/>
+            <font type="string" value="system.xml"/>
+            <fontsize type="string" value="8"/>
+            <textoffset type="point" x="15" y="0"/>
+            <disabledTextColor type="color" value="#aaaaaa"/>
+            <normalTextColor type="color" value="#cccccc"/>
+            <normalOverTextColor type="color" value="#ffffff"/>
+            <downTextColor type="color" value="#333333"/>
+            <selectedTextColor type="color" value="#cccccc"/>
+            <selectedOverTextColor type="color" value="#ffffff"/>
+            <uppercase type="boolean" value="1" />
+        </radioButton>
+        <HorizontalSlider>
+            <rect type="rect" l="0" t="0" w="11" h="11"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="22" y="0"/>
+            <states type="symbol" value="normal_disabled normal normal_over"/>
+        </HorizontalSlider>
+        <VerticalSlider>
+            <rect type="rect" l="0" t="0" w="11" h="11"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="22" y="0"/>
+            <states type="symbol" value="normal_disabled normal normal_over"/>
+        </VerticalSlider>
+        <HorizontalSliderThrobber>
+            <rect type="rect" l="0" t="22" w="11" h="11"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="5"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol" value="normal_disabled normal normal_over normal_down"/>
+            <fixedThrobberSize type="boolean" value="false" />
+        </HorizontalSliderThrobber>
+        <VerticalSliderThrobber>
+            <rect type="rect" l="44" t="22" w="11" h="11"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="5"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol" value="normal_disabled normal normal_over normal_down"/>
+            <fixedThrobberSize type="boolean" value="false" />
+        </VerticalSliderThrobber>
+        <Button>
+            <rect type="rect" l="0" t="58" w="15" h="15"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="15" y="0"/>
+            <states type="symbol"
+                value="normal_disabled normal normal_down normal_over selected selected_over selected_down"
+            />
+        </Button>
+        <textButton>
+            <rect type="rect" l="0" t="58" w="15" h="15"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="15" y="0"/>
+            <states type="symbol"
+                value="normal_disabled normal normal_down normal_over selected selected_over selected_down"/>
+            <font type="string" value="system.xml"/>
+            <fontsize type="string" value="8"/>
+            <disabledTextColor type="color" value="#aaaaaa"/>
+            <normalTextColor type="color" value="#cccccc"/>
+            <normalOverTextColor type="color" value="#ffffff"/>
+            <downTextColor type="color" value="#000000"/>
+            <selectedTextColor type="color" value="#cccccc"/>
+            <selectedOverTextColor type="color" value="#ffffff"/>    
+            <uppercase type="boolean" value="1" />        
+        </textButton>
+        <greenButton>
+            <rect type="rect" l="0" t="73" w="15" h="15"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="15" y="0"/>
+            <states type="symbol"
+                value="normal_disabled normal normal_down normal_over selected selected_over selected_down"
+            />
+        </greenButton>
+
+        <ProgressBarBackground>
+            <rect type="rect" l="0" t="33" w="11" h="11"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol" value="normal_disabled normal"/>
+        </ProgressBarBackground>
+        <ProgressBarInner>
+            <rect type="rect" l="0" t="44" w="11" h="11"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="5"/>
+            <delta type="point" x="11" y="0"/>
+            <states type="symbol" value="normal_disabled normal"/>
+        </ProgressBarInner>
+        <ProgressBarInnerInfinite>
+            <rect type="rect" l="0" t="464" w="128" h="7"/>
+            <borderWidth type="float" value="0"/>
+            <borderHeight type="float" value="0"/>
+            <inset type="point" x="1" y="0.5"/>
+            <delta type="point" x="0" y="7"/>
+            <states type="symbol" value="1 2 3 4"/>
+        </ProgressBarInnerInfinite>
+        <drawer>
+            <rect type="rect" l="0" t="116" w="36" h="36"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="5"/>
+            <delta type="point" x="36" y="0"/>
+            <states type="symbol" value="normal normal_disabled"/>
+            <taboffset type="point" x="20" y="2"/>
+            <textoffset type="vector" x="3" y="2" z="0"/>
+            <fontname type="string" value="system.xml"/>
+            <textcolor type="color" value="#aaaaaa"/>
+            <fontsize type="float" value="0"/>
+            <tabheight type="float" value="10"/>
+        </drawer>
+        <drawerTab>
+            <rect type="rect" l="0" t="94" w="36" h="18"/>
+            <borderWidth type="float" value="14"/>
+            <borderHeight type="float" value="4"/>
+            <delta type="point" x="36" y="0"/>
+            <states type="symbol" value="normal normal_disabled"/>
+        </drawerTab>
+        <textwidget>
+            <fontname type="string" value="system.xml"/>
+            <fontsize type="float" value="0"/>
+            <color type="color" value="#cccccc"/>
+            <uppercase type="bool" value="true" />
+        </textwidget>
+        <boxwidget>
+            <rect type="rect" l="0" t="205" w="36" h="36"/>
+            <borderWidth type="float" value="6"/>
+            <borderHeight type="float" value="6"/>
+            <captiondelta type="vector" x="10" y="8"/>
+            <states type="symbol" value="normal normal_disabled"/>
+        </boxwidget>
+        <windowbackground>
+            <rect type="rect" l="0" t="152" w="36" h="36"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="5"/>
+            <delta type="point" x="36" y="0"/>
+            <states type="symbol" value="normal normal_disabled"/>
+			<includeTitlebar type="boolean" value="true"/>
+        </windowbackground>
+        <windowtitlebar>
+            <titlebarHeight type="float" value="10"/>
+            <titletextDelta type="vector" x="10" y="2" z="1"/>
+			<titlebarDelta type="vector" x="00" y="0" z="1"/>
+            <rect type="rect" l="72" t="116" w="36" h="11"/>
+            <borderWidth type="float" value="5"/>
+            <borderHeight type="float" value="1"/>
+            <delta type="point" x="0" y="12"/>
+            <states type="symbol" value="normal normal_over normal_down normal_disabled"/>
+        </windowtitlebar>
+        <windowtitlebardecoration>
+            <rect type="rect" l="0" t="492" w="128" h="10"/>
+            <borderWidth type="float" value="0"/>
+            <borderHeight type="float" value="0"/>
+            <delta type="point" x="0" y="10"/>
+            <inset type="point" x="4" y="0"/>
+            <states type="symbol" value="normal normal_down"/>
+        </windowtitlebardecoration>
+        <textinputwidgetback>
+            <rect type="rect" l="0" t="188" w="15" h="15"/>
+            <borderWidth type="float" value="3"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="15" y="0"/>
+			<states type="symbol" value="disabled normal normal_over selected selected_over"/>
+        </textinputwidgetback>
+        <textinputwidgetcursor>
+           <rect type="rect" l="75" t="188" w="3" h="15"/>
+            <borderWidth type="float" value="1"/>
+            <borderHeight type="float" value="3"/>
+            <delta type="point" x="3" y="0"/>
+            <states type="symbol" value="disabled normal"/>
+        </textinputwidgetcursor>
+        <textinputwidget>
+            <font type="string" value="system.xml"/>
+            <fontsize type="float" value="0"/>
+            <textcolor type="color" value="#ffffff"/>
+            <inset type="size" width="2" height="2"/>
+			<cursorWidth type="float" value="1" />
+        </textinputwidget>
+    </items>
+</theme>

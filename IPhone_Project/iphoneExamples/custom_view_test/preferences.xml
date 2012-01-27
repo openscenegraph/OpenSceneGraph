@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences>
+    <viewer>
+    <theme type="string" value="dark_sw_widget_theme.xml" />
+    </viewer>
+    <groupwidget>
+        <widgets>
+            <drawerWidget>
+                <caption type="string" value="SuperShapes"/>
+                <collapsedPosition type="vector" x="-640" y="0" z="100"/>
+                <expandedPosition type="vector" x="0" y="0" z="100"/>
+                <tabPosition type="string" value="right"/>
+                <size type="size" width="640" height="320"/>
+                <widgets>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_m"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="10" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_m"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_a"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="30" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_a"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_b"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="50" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_b"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_n1"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="80" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_n1"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_n2"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="100" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_n2"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss1_n3"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="120" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss1_n3"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_m"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="150" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_m"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_a"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="170" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_a"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_b"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="190" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_b"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_n1"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="220" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_n1"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_n2"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="240" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_n2"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="ss2_n3"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="260" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="-50" />
+                        <max type="float" value="50" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="ss2_n3"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                    <hSliderWithCaptionAndValueWidget>
+                        <caption type="string" value="resolution"/>
+                        <size type="size" width="620" height="11"/>
+                        <position type="vector" x="10" y="280" z="1"/>
+                        <throbbersize type="size" width="11" height="11"/>
+                        <min type="float" value="10" />
+                        <max type="float" value="300" />
+                        <value type="float" value="0" />
+                        <responder>
+                            <responder type="symbol" value="resolution"/>
+                        </responder>
+                    </hSliderWithCaptionAndValueWidget>
+                </widgets>
+            </drawerWidget>
+        </widgets>
+        <id type="string" value="widget_1"/>
+    </groupwidget>
+</preferences>

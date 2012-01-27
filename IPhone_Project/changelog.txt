@@ -1,0 +1,66 @@
+IPhone port changes, Thomas Hogarth
+
+Changes for IPhone build
+
+Added 'IPhone_Project' folder to the 'XCode/OpenSceneGraph' folder.
+
+IPhone_Project Folder contains
+
+- New XCode Project 'OSGIPhone.xcodeproj'
+
+- 'iphoneExamples' folder containing source for a two simple examples using osgViewer, 'simple' uses only osgViewer which also creates a window for us. 'iphoneViewer' passes an exiting window into the viewer to be used for rendering into.
+
+- 'osgPlugins' folder, contains any IPhone unique plugins
+
+
+- 'config' folder containing IPhone specific config file for OSG. Currently the project has had this path added to the header search (not sure if that is desirable).
+
+- 'build' folder contains the usual
+
+
+Changes made to OSG files (search OSG_IPHONE)
+
+- include/osg/gl
+	Added IPhone specific include path for gles 1 and 2, and added dummy implementation of glReadBuffer(GLenum) as IPhone doesn't support it and I am unsure if this is a general ES problem or not : Line 85 - 106
+
+- src/osgDB/FileUtils.cpp
+	Used #define COMPILE_COCOA_VERSION instead of COMPILE_CARBON_VERSION : Line 683
+
+	Added include and define of stat64 on IPhoneOS : Line 42 - 48
+
+	Also had to make the file compile as objectiveC, see http://discussions.apple.com/thread.jspa?threadID=1627188
+
+-include/osgViewer/GraphicsWindow
+	Added USE_GRAPHICS_WINDOW() macro for IPhone viewer : Line 263 - 270
+
+
+Notes
+
+All libs are compiled and linked staticly as Apple do not allow dynamic loading of libs. The example contains osgPlugins file which is used to declare any plugins that have been linked.
+
+Need to disable 'Compile for thumb' or osgUtil and others will throw 'brach out of range' error, doing this also give faster performing code but at cost of larger size.
+
+Added Iphone GraphicsWindow implementation, with support for basic multi touch input and use of an inherited window.
+
+Possible Compiler bug, when linking to osgText and osgdb_freetypes libs a strange link error occurs when using IPhoneSDK 3.1. Compiling with 2.2.1 is fine. Edit: newest build was fine using 3.1
+
+Freetype2 lib compiled for IPhone obtained from OpenFrameworks project http://www.openframeworks.cc
+
+Also added basic cocoa replacement for imageio plugin as a temporary fix for imageio using carbon.
+
+
+Changes to files for CMake:
+
+Changed root CMakeLists, added switches for generating iphone projects (OSG_BUILD_PLATFORM_IPHONE and OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+
+Added IPHONE_SDKVER to root CMakeLists.
+
+Search IPHONE_PORT@tom for changes.
+
+Moved a copy of the imageio plugin into the proper folder and added _iphone to the end, then altered imageIO's CMakeLists to pick the correct one (this is a temp fix till we merge the two versions)
+
+Changed osgViewer CMakeLists to pick the IPhone implementations.
+
+
+
+

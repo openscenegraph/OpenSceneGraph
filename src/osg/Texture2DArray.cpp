@@ -455,7 +455,9 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     }    
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
+#endif
 
     bool useHardwareMipmapGeneration = 
         !image->isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();

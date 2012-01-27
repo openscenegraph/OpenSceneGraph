@@ -1816,12 +1816,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         (((inwidth >> 2) << 2) != inwidth ||
          ((inheight >> 2) << 2) != inheight))
     {
-		#ifndef GL_RED
-			#define GL_RED 0x1903
-		#endif
-
-		
-		OSG_NOTICE<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
+        OSG_NOTICE<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
         switch(_internalFormat)
         {
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
@@ -1927,9 +1922,9 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         pbo = 0;
     }
-
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
-
+#endif
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
 
@@ -2182,9 +2177,9 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo = 0;
     }
-
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
-
+#endif
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
 

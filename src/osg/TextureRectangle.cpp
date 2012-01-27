@@ -312,7 +312,9 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     computeInternalFormat();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
+#endif
 
     bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
     if (useClientStorage)
@@ -412,7 +414,9 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 #endif
     }
 
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
+#endif
 
     if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexSubImage2DSupported())
     {

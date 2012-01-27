@@ -217,7 +217,7 @@ class OSG_EXPORT Image : public BufferData
         /** Depth of image. */
         inline int r() const { return _r; }
 
-        void setRowLength(int length) { _rowLength = length; }
+        void setRowLength(int length);
         inline int getRowLength() const { return _rowLength; }
         
         void setInternalTextureFormat(GLint internalFormat);

@@ -28,7 +28,8 @@ CompositeViewer::CompositeViewer()
 }
 
 CompositeViewer::CompositeViewer(const CompositeViewer& cv,const osg::CopyOp& copyop):
-    ViewerBase()
+    osg::Object(true),
+    ViewerBase(cv)
 {
     constructorInit();
 }
@@ -255,6 +256,10 @@ bool CompositeViewer::checkNeedToDoFrame()
             // set so that the updates show up
             if (view->getDatabasePager()->requiresUpdateSceneGraph() ||
                 view->getDatabasePager()->getRequestsInProgress()) return true;
+
+            // if there update callbacks then we need to do frame.
+            if (view->getCamera()->getUpdateCallback()) return true;
+            if (view->getSceneData()!=0 && view->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
         }
     }
 
@@ -514,7 +519,7 @@ void CompositeViewer::realize()
 
     if (_views.empty())
     {
-        OSG_NOTICE<<"CompositeViewer::realize() - not views to realize."<<std::endl;
+        OSG_NOTICE<<"CompositeViewer::realize() - No views to realize."<<std::endl;
         _done = true;
         return;
     }
@@ -635,6 +640,28 @@ void CompositeViewer::advance(double simulationTime)
         _frameStamp->setSimulationTime(simulationTime);
     }
 
+    for(RefViews::iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        View* view = vitr->get();
+
+        osgGA::GUIEventAdapter* eventState = view->getEventQueue()->getCurrentEventState();
+        if (view->getCamera()->getViewport())
+        {
+            osg::Viewport* viewport = view->getCamera()->getViewport();
+            eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+        }
+        else
+        {
+            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+        }
+
+
+        view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
+    }
+
+
     if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
@@ -676,6 +703,8 @@ void CompositeViewer::eventTraversal()
 
     if (_views.empty()) return;
 
+    double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
+    
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // OSG_NOTICE<<"CompositeViewer::frameEventTraversal()."<<std::endl;
@@ -716,7 +745,7 @@ void CompositeViewer::eventTraversal()
             gw->checkEvents();
 
             osgGA::EventQueue::Events gw_events;
-            gw->getEventQueue()->takeEvents(gw_events);
+            gw->getEventQueue()->takeEvents(gw_events, cutOffTime);
 
             osgGA::EventQueue::Events::iterator itr;
             for(itr = gw_events.begin();
@@ -895,8 +924,7 @@ void CompositeViewer::eventTraversal()
         ++vitr)
     {
         View* view = vitr->get();
-        view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
-        view->getEventQueue()->takeEvents(viewEventsMap[view]);
+        view->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
     }
 
 

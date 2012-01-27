@@ -47,6 +47,53 @@
 
 namespace osgDarwin {
 
+//
+// Lion replacement for CGDisplayBitsPerPixel(CGDirectDisplayID displayId)
+//
+size_t displayBitsPerPixel( CGDirectDisplayID displayId )
+{
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+    return CGDisplayBitsPerPixel(displayId);
+#else
+    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayId);
+    if (!mode)
+    {
+        OSG_WARN << "CGDisplayCopyDisplayMode returned NULL" << std::endl;
+        return 0;
+    }
+
+    CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+    if (!pixEnc)
+    {
+        OSG_WARN << "CGDisplayModeCopyPixelEncoding returned NULL" << std::endl;
+        CGDisplayModeRelease(mode);
+        return 0;
+    }
+
+    size_t depth = 0;
+    if (CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
+        depth = 32;
+    }
+    else if (CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
+        depth = 16;
+    }
+    else if (CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+    {
+        depth = 8;
+    }
+    else
+    {
+        OSG_WARN << "Unable to match pixel encoding '" << CFStringGetCStringPtr(pixEnc, kCFStringEncodingUTF8) << "'" << std::endl;
+    }
+
+    CGDisplayModeRelease(mode);
+    CFRelease(pixEnc);
+
+    return depth;
+#endif
+}
 
 static inline CGRect toCGRect(NSRect nsRect)
 {
@@ -313,7 +360,7 @@ void DarwinWindowingSystemInterface::getScreenSettings(const osg::GraphicsContex
     CGDirectDisplayID id = getDisplayID(si);
     resolution.width = CGDisplayPixelsWide(id);
     resolution.height = CGDisplayPixelsHigh(id);
-    resolution.colorDepth = CGDisplayBitsPerPixel(id);
+    resolution.colorDepth = displayBitsPerPixel(id);
     resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(id), kCGDisplayRefreshRate);        // Not tested
     if (resolution.refreshRate<0) resolution.refreshRate = 0;
 }
@@ -402,7 +449,7 @@ bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::Graphics
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
                         displayid, 
-                        CGDisplayBitsPerPixel(displayid), 
+                        displayBitsPerPixel(displayid), 
                         width, height,  
                         refresh,  
                         NULL);
@@ -432,7 +479,7 @@ bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::Graphic
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
                         displayid, 
-                        CGDisplayBitsPerPixel(displayid), 
+                        displayBitsPerPixel(displayid), 
                         width, height,  
                         refreshRate,  
                         &success);

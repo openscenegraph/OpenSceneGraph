@@ -17,6 +17,7 @@
 #include <osg/Math>
 #include <osg/Notify>
 #include <osg/ImageUtils>
+#include <osg/Texture>
 
 namespace osg
 {
@@ -112,7 +113,7 @@ bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::
 {
     if (!image) return false;
 
-    osg::modifyImage(image,osg::OffsetAndScaleOperator(offset, scale));
+    modifyImage(image,OffsetAndScaleOperator(offset, scale));
     
     return true;
 }
@@ -303,12 +304,12 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
                 writeOp._pos = 0;
             
                 // read the pixels into readOp's _colour array
-                osg::readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
+                readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
                                 
                 // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
                 writeOp._colours.swap(readOp._colours);
                 
-                osg::modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
+                modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
 
                 // return readOp's _colour array contents back to its rightful owner.
                 writeOp._colours.swap(readOp._colours);
@@ -363,7 +364,7 @@ unsigned int maximimNumOfComponents(const ImageList& imageList)
             pixelFormat==GL_BGR ||
             pixelFormat==GL_BGRA)
         {
-            max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
+            max_components = maximum(Image::computeNumComponents(pixelFormat), max_components);
         }
     }
     return max_components;
@@ -395,8 +396,8 @@ osg::Image* createImage3D(const ImageList& imageList,
             pixelFormat==GL_BGR ||
             pixelFormat==GL_BGRA)
         {
-            max_s = osg::maximum(image->s(), max_s);
-            max_t = osg::maximum(image->t(), max_t);
+            max_s = maximum(image->s(), max_s);
+            max_t = maximum(image->t(), max_t);
             total_r += image->r();
         }
         else
@@ -478,9 +479,9 @@ osg::Image* createImage3D(const ImageList& imageList,
             pixelFormat==GL_BGRA)
         {
             
-            int num_s = osg::minimum(image->s(), image_3d->s());
-            int num_t = osg::minimum(image->t(), image_3d->t());
-            int num_r = osg::minimum(image->r(), (image_3d->r() - curr_dest_r));
+            int num_s = minimum(image->s(), image_3d->s());
+            int num_t = minimum(image->t(), image_3d->t());
+            int num_r = minimum(image->r(), (image_3d->r() - curr_dest_r));
 
             unsigned int s_offset_dest = (image->s()<size_s) ? (size_s - image->s())/2 : 0;
             unsigned int t_offset_dest = (image->t()<size_t) ? (size_t - image->t())/2 : 0;
@@ -515,7 +516,7 @@ osg::Image* createImage3DWithAlpha(const ImageList& imageList,
     GLenum desiredPixelFormat = 0;
     bool modulateAlphaByLuminance = false;
 
-    unsigned int maxNumComponents = osg::maximimNumOfComponents(imageList);
+    unsigned int maxNumComponents = maximimNumOfComponents(imageList);
     if (maxNumComponents==3)
     {
         desiredPixelFormat = GL_RGBA;
@@ -532,7 +533,7 @@ osg::Image* createImage3DWithAlpha(const ImageList& imageList,
     {
         if (modulateAlphaByLuminance)
         {
-            osg::modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
+            modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
         }
         return image.release();
     }
@@ -542,6 +543,77 @@ osg::Image* createImage3DWithAlpha(const ImageList& imageList,
     }
 }
 
-    
+
+static void fillSpotLightImage(unsigned char* ptr, const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
+{
+    if (size==1)
+    {
+        float r = 0.5f;
+        osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);
+        *ptr++ = (unsigned char)((color[0])*255.0f);
+        *ptr++ = (unsigned char)((color[1])*255.0f);
+        *ptr++ = (unsigned char)((color[2])*255.0f);
+        *ptr++ = (unsigned char)((color[3])*255.0f);
+        return;
+    }
+
+    float mid = (float(size)-1.0f)*0.5f;
+    float div = 2.0f/float(size);
+    for(unsigned int r=0;r<size;++r)
+    {
+        //unsigned char* ptr = image->data(0,r,0);
+        for(unsigned int c=0;c<size;++c)
+        {
+            float dx = (float(c) - mid)*div;
+            float dy = (float(r) - mid)*div;
+            float r = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
+            if (r<0.0f) r=0.0f;
+            osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);
+            *ptr++ = (unsigned char)((color[0])*255.0f);
+            *ptr++ = (unsigned char)((color[1])*255.0f);
+            *ptr++ = (unsigned char)((color[2])*255.0f);
+            *ptr++ = (unsigned char)((color[3])*255.0f);
+        }
+    }
+}
+
+osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
+{
+
+#if 0
+    osg::Image* image = new osg::Image;
+    unsigned char* ptr = image->data(0,0,0);
+    fillSpotLightImage(ptr, centerColour, backgroudColour, size, power);
+
+    return image;
+#else
+    osg::Image* image = new osg::Image;
+    osg::Image::MipmapDataType mipmapData;
+    unsigned int s = size;
+    unsigned int totalSize = 0;
+    unsigned i;
+    for(i=0; s>0; s>>=1, ++i)
+    {
+        if (i>0) mipmapData.push_back(totalSize);
+        totalSize += s*s*4;
+    }
+
+    unsigned char* ptr = new unsigned char[totalSize];
+    image->setImage(size, size, size, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, ptr, osg::Image::USE_NEW_DELETE,1);
+
+    image->setMipmapLevels(mipmapData);
+
+    s = size;
+    for(i=0; s>0; s>>=1, ++i)
+    {
+        fillSpotLightImage(ptr, centerColour, backgroudColour, s, power);
+        ptr += s*s*4;
+    }
+
+    return image;
+#endif
+}
+
+
 }
 

@@ -309,7 +309,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
                 fbxString appName = pDocInfo->LastSaved_ApplicationName.Get();
 
-                for (int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
+                for (unsigned int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
                 {
                     if (0 ==
 #ifdef WIN32

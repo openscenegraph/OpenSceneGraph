@@ -670,16 +670,16 @@ public:
     {
         for (unsigned int i = 0; i < group.getNumChildren(); i++)
         {
-        osg::Node* child = group.getChild(i);
-        osg::Node* seam = seamReplacement(child);
-        if (child != seam)
-        {
-            group.replaceChild(child,seam);
-        }
-        else
-        {
-            child->accept(*this);
-        }
+            osg::Node* child = group.getChild(i);
+            osg::Node* seam = seamReplacement(child);
+            if (child != seam)
+            {
+                group.replaceChild(child,seam);
+            }
+            else
+            {
+                child->accept(*this);
+            }
         }
     }
 
@@ -720,10 +720,10 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 
         bool nonSeamChild = true;
 
-    // looks like the problem is in here - likely due to seamLOD info
-    // not being adjusted properly in tiled databases
-        // seam center is outside the bounding box of the tile
-    osg::Vec3 lodCenter = lod->getCenter();
+        // looks like the problem is in here - likely due to seamLOD info
+        // not being adjusted properly in tiled databases
+            // seam center is outside the bounding box of the tile
+        osg::Vec3 lodCenter = lod->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -739,7 +739,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-        lodCenter += offset;
+            lodCenter += offset;
         }
 
         if (!_info.bbox.contains(lodCenter))
@@ -764,7 +764,6 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             // low res seam has min/max ranges of lod+1 range/lod 0 range
             if (equalDoubles(lod_plus_oneSwitchInDistance,rangeList.at(0).first) && equalDoubles(lod0SwitchInDistance,rangeList.at(0).second))
             {
-
                 if (loRes==0)
                 {
                     loRes = lod;
@@ -793,7 +792,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         int dx = 0;
         int dy = 0;
         int lod = _lod;
-    osg::Vec3 lodCenter = loRes->getCenter();
+        osg::Vec3 lodCenter = loRes->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -809,7 +808,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-        lodCenter += offset;
+            lodCenter += offset;
         }
 
         osg::Vec3 delta = lodCenter-_info.center;
@@ -829,7 +828,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         }
 
         TXPSeamLOD* seam = new TXPSeamLOD(_x, _y, lod, dx, dy);
-    seam->setCenter(loRes->getCenter());
+        seam->setCenter(loRes->getCenter());
         seam->addChild(loRes->getChild(0));        // low res
         if (hiRes) 
         {

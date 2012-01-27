@@ -92,11 +92,15 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * method. Lines can be commented out with an initial '#' character.*/
         bool readPluginAliasConfigurationFile( const std::string& file );
 
+        typedef std::map< std::string, std::string> MimeTypeExtensionMap;
+
         /** Registers a mapping of a mime-type to an extension. A process fetching data
           * over HTTP can use this facility to determine the proper ReaderWriter to use
           * when there is no filename extension to rely upon.
           */
         void addMimeTypeExtensionMapping(const std::string fromMimeType, const std::string toExt);
+        MimeTypeExtensionMap& getMimeTypeExtensionMap() { return _mimeTypeExtMap; }
+        const MimeTypeExtensionMap& getMimeTypeExtensionMap() const { return _mimeTypeExtMap; }
 
         void addReaderWriter(ReaderWriter* rw);
         void removeReaderWriter(ReaderWriter* rw);
@@ -438,12 +442,17 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
 
+        /** Remove Object from cache.*/
+        void removeFromObjectCache(const std::string& fileName);
+
         /** Get an Object from the object cache*/
         osg::Object* getFromObjectCache(const std::string& fileName);
         
         /** Get an ref_ptr<Object> from the object cache*/
         osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName);
 
+
+        
         /** Add archive to archive cache so that future calls reference this archive.*/
         void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);
 
@@ -500,7 +509,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
-        typedef std::map< std::string, std::string>                     MimeTypeExtensionMap;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
@@ -572,6 +580,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         // forward declare helper class
         class AvailableReaderWriterIterator;
         friend class AvailableReaderWriterIterator;
+        class AvailableArchiveIterator;
+        friend class AvailableArchiveIterator;
 
 
         osg::ref_ptr<FindFileCallback>      _findFileCallback;
@@ -583,6 +593,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriterList            _rwList;
         ImageProcessorList          _ipList;
         DynamicLibraryList          _dlList;
+
+        OpenThreads::ReentrantMutex _archiveCacheMutex;
+        ArchiveCache                _archiveCache;
 
         bool _openingLibrary;
     
@@ -605,8 +618,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ObjectCache                             _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;
         
-        ArchiveCache                            _archiveCache;
-        OpenThreads::Mutex                      _archiveCacheMutex;
 
         ArchiveExtensionList                    _archiveExtList;
 

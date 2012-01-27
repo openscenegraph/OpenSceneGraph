@@ -194,7 +194,7 @@ osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool 
 
 // Here a scene consisting of a single quad is created. This scene is viewed by the screen camera.
 // The quad is textured using a shader and the multiple textures generated in the RTT stage.
-osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned int tex_height, bool useHDR, bool useImage)
+osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned int tex_height, bool useHDR, bool useImage, bool useMultiSample)
 {
     if (!cam_subgraph) return 0;
 
@@ -348,7 +348,12 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
 
         // attach the textures to use
         for (int i=0; i<NUM_TEXTURES; i++) {
-            camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0+i), textureRect[i]);
+            if (useMultiSample)
+                camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0+i), textureRect[i], 0, 0, false, 4, 4);
+            else
+                camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0+i), textureRect[i]);
+
+                
         }
      
         // we can also read back any of the targets as an image, modify this image and push it back
@@ -416,10 +421,13 @@ int main( int argc, char **argv )
     bool useImage = false;
     while (arguments.read("--image")) { useImage = true; }
 
+    bool useMultiSample = false;
+    while (arguments.read("--ms")) { useMultiSample = true; }
+
     osg::Group* subGraph = createRTTQuad(tex_width, tex_height, useHDR);
 
     osg::Group* rootNode = new osg::Group();
-    rootNode->addChild(createScene(subGraph, tex_width, tex_height, useHDR, useImage));
+    rootNode->addChild(createScene(subGraph, tex_width, tex_height, useHDR, useImage, useMultiSample));
 
     // add model to the viewer.
     viewer.setSceneData( rootNode );

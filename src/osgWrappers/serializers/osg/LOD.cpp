@@ -6,7 +6,7 @@
 // _userDefinedCenter, _radius
 static bool checkUserCenter( const osg::LOD& node )
 {
-    return node.getCenterMode()==osg::LOD::USER_DEFINED_CENTER;
+    return (node.getCenterMode()==osg::LOD::USER_DEFINED_CENTER)||(node.getCenterMode()==osg::LOD::UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED);
 }
 
 static bool readUserCenter( osgDB::InputStream& is, osg::LOD& node )
@@ -63,6 +63,7 @@ REGISTER_OBJECT_WRAPPER( LOD,
     BEGIN_ENUM_SERIALIZER( CenterMode, USE_BOUNDING_SPHERE_CENTER );
         ADD_ENUM_VALUE( USE_BOUNDING_SPHERE_CENTER );
         ADD_ENUM_VALUE( USER_DEFINED_CENTER );
+        ADD_ENUM_VALUE( UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED );
     END_ENUM_SERIALIZER();  // _centerMode
     
     ADD_USER_SERIALIZER( UserCenter );  // _userDefinedCenter, _radius

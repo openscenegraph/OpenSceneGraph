@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.16
+OpenSceneGraph Library 3.1.0
 
-461 Contributors:
+463 Contributors:
 
 Firstname Surname
 -----------------
@@ -11,7 +11,7 @@ Paul Martz
 Marco Jez
 Mathias Fröhlich
 Mike Weiblen
-Jean-Sebastien Guay
+Jean-Sébastien Guay
 Farshid Lashkari
 Eric Wing
 Ulrich Hertlein
@@ -34,13 +34,13 @@ Luigi Calori
 Mike Wittman
 Roland Smeenk
 Roger James
-Chris Hanson
 Jeremy Moles
+Chris Hanson
 Mattias Helsing
 Jason Beverage
+Jan Peciva
 Andy Skinner
 Paul Melis
-Jan Peciva
 J.P. Delport
 David Fries
 Tom Jolley
@@ -52,6 +52,7 @@ Norman Vine
 Art Tevs
 Alberto Luaces
 Serge Lages
+Magnus Kessler
 Laurens Voerman
 Alberto Farre
 Terry Welsh
@@ -59,7 +60,6 @@ Sherman Wilcox
 Robert Milharcic
 Olaf Flebbe
 Mathieu Marache
-Magnus Kessler
 André Garneau
 Adrian Egli
 Ruben Lopez
@@ -78,6 +78,7 @@ Daniel Sjölie
 Bryan Thrall
 Glenn Waldron
 Fabien Lavignotte
+Torben Dannhauer
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
@@ -92,7 +93,6 @@ David Guthrie
 Csaba Halasz
 Boris Bralo
 Yefei He
-Torben Dannhauer
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
@@ -114,6 +114,7 @@ Neil Groves
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
+Jorge Izquierdo
 John Shue
 Chuck Seberino
 Brad Colbert
@@ -151,7 +152,6 @@ Maria Ten
 Liang Aibin
 Leandro Motta Barros
 Katharina Plugge
-Jorge Ciges
 John Vidar Larring
 John Kelso
 John Ivar
@@ -217,6 +217,7 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
+Ryan Pavlik
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -245,6 +246,7 @@ Julen Garcia
 Joseph Winston
 John Aughey
 Joachim Pouderoux
+Jean-Christophe Lombardo
 Javier Taibo
 James Moliere
 Igor Kravtchenko
@@ -260,6 +262,7 @@ Ferdi Smit
 Eric Buehler
 Eduardo Poyart
 Edgar Ellis
+Dimi Christopoulos
 Dietmar Funck
 David Ergo
 Daniel Trstenjak
@@ -302,7 +305,6 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
-Ryan Pavlik
 Ruth Lang
 Ruben Smelik
 Ross Anderson
@@ -385,11 +387,11 @@ John Tan
 John Grant
 John Donovan
 John Davis
+John Cummings
 John Argentieri
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker
-Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
@@ -423,7 +425,6 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
-Dimi Christop
 Dean Iverson
 David Jung
 Danny Valente
@@ -452,6 +453,7 @@ Benjamin Wasty
 Ben van Basten
 Bart Gallet
 Axel Volley
+Anthousis Andreadis
 Andy Preece
 Andrew Reyonolds
 Andreas Roth

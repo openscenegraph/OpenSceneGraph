@@ -27,6 +27,7 @@ SET(TARGET_H
     ${HEADER_PATH}/MeshOptimizers
     ${HEADER_PATH}/OperationArrayFunctor
     ${HEADER_PATH}/Optimizer
+    ${HEADER_PATH}/PerlinNoise
     ${HEADER_PATH}/PlaneIntersector
     ${HEADER_PATH}/PolytopeIntersector
     ${HEADER_PATH}/PositionalStateContainer
@@ -68,6 +69,7 @@ SET(TARGET_SRC
     LineSegmentIntersector.cpp
     MeshOptimizers.cpp
     Optimizer.cpp
+    PerlinNoise.cpp
     PlaneIntersector.cpp
     PolytopeIntersector.cpp
     PositionalStateContainer.cpp

@@ -41,6 +41,7 @@ namespace osgFFmpeg
         virtual double getCreationTime() const;
         virtual double getLength() const;
         virtual double getReferenceTime () const; 
+        virtual double getCurrentTime() const;
         virtual double getFrameRate() const;
 
         virtual bool isImageTranslucent() const;

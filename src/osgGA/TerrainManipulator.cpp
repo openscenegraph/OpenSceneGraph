@@ -214,9 +214,7 @@ bool TerrainManipulator::performMovementMiddleMouseButton( const double eventTim
 
 
     // compute look vector.
-    Vec3d lookVector = -getUpVector(rotation_matrix);
     Vec3d sideVector = getSideVector(rotation_matrix);
-    Vec3d upVector = getFrontVector(rotation_matrix);
 
     // CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
     // Vec3d localUp = getUpVector(coordinateFrame);

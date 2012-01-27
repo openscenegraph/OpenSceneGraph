@@ -246,7 +246,8 @@ const char* invalidNames[] =
     "Billboard",
     "UpdateSkeleton",
     "Vec3",
-    "Plugin"
+    "Plugin",
+    "Get"
 };
 
 
@@ -314,10 +315,13 @@ TypoCorrection typoCorrections[] =
     {"Hooper",         "Hopper"},
     {"Inverson",       "Iverson"},
     {"Iversion",       "Iverson"},
-    {"Jean-Sebastein", "Jean-Sebastien"},
-    {"Jean-Sebastian", "Jean-Sebastien"},
-    {"Jean-Sebastirn", "Jean-Sebastien"},
-    {"Jea-Sebastien",  "Jean-Sebastien"},
+    {"Jean-Sebastein", "Jean-Sébastien"},
+    {"Jean-Sebastian", "Jean-Sébastien"},
+    {"Jean-Sebastirn", "Jean-Sébastien"},
+    {"Jea-Sebastien",  "Jean-Sébastien"},
+    {"Jean-Sebasien",  "Jean-Sébastien"},
+    {"Jean-Sebastien", "Jean-Sébastien"},
+    {"Jean-Sebestien", "Jean-Sébastien"},
     {"Johhansen",      "Johansen"},
     {"Johnansen",      "Johansen"},
     {"Johnasen",       "Johansen"},
@@ -430,11 +434,11 @@ TypoCorrection typoCorrections[] =
     {"Fielder",        "Fiedler"},
     {"Mathia",         "Mathias"},
     {"Halgarth",       "Hogarth"},
-    {"Jean-Sebasien",  "Jean-Sebastien"},
     {"Katherina",      "Katharina"},
     {"Biyfarguine",    "Boufarguine"},
     {"Dickenson",       "Dickinson"},
     {"Jahannes","Johannes"},
+    {"Eskland","Ekstrand"},
     {"Baeuerele","Baeuerle"},
     {"Bauerle","Baeuerle"}
 };
@@ -450,6 +454,12 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Philip","Lamp",
+     "Philip", "Lamb"},
+    {"Dimi","Christop",
+     "Dimi", "Christopoulos"},
+    {"Jorge","Ciges",
+     "Jorge", "Izquierdo"},
     {"Rafa","Gata",
      "Rafa", "Gaitan"},
     {"Sukender","I",
@@ -491,7 +501,7 @@ NameCorrection nameCorrections[] =
     {"Time",            "Moore",
      "Tim",            "Moore"},
     {"Jean",           "Sebastien",
-     "Jean-Sebastien", "Guay"},
+     "Jean-Sébastien", "Guay"},
     {"Michale",        "Platings",
      "Michael",        "Platings"},
     {"Mick",           "",

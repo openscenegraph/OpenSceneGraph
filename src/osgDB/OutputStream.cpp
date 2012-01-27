@@ -315,10 +315,6 @@ void OutputStream::writeImage( const osg::Image* img )
 
     if (newID)
     {
-        *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
-        *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
-        if ( getException() ) return;
-
         int decision = IMAGE_EXTERNAL;
         switch ( _writeImageHint )
         {
@@ -334,18 +330,29 @@ void OutputStream::writeImage( const osg::Image* img )
             break;
         }
 
-        *this << decision << std::endl;
+
+        std::string imageFileName = img->getFileName();
         if ( decision==IMAGE_WRITE_OUT || _writeImageHint==WRITE_EXTERNAL_FILE )
         {
-            bool result = osgDB::writeImageFile( *img, img->getFileName() );
-            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file "
-                                    << img->getFileName() << std::endl;
+            if (imageFileName.empty())
+            {
+                OSG_NOTICE<<"Empty Image::FileName resetting to image.dds"<<std::endl;
+                imageFileName = "image.dds";
+            }
+
+            bool result = osgDB::writeImageFile( *img, imageFileName );
+            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << imageFileName << std::endl;
             if ( !result )
             {
-                OSG_WARN << "OutputStream::writeImage(): Failed to write "
-                                    << img->getFileName() << std::endl;
+                OSG_WARN << "OutputStream::writeImage(): Failed to write " << img->getFileName() << std::endl;
             }
         }
+
+        *this << PROPERTY("FileName"); writeWrappedString(imageFileName); *this << std::endl;
+        *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
+        if ( getException() ) return;
+
+        *this << decision << std::endl;
 
         switch ( decision )
         {
@@ -362,15 +369,33 @@ void OutputStream::writeImage( const osg::Image* img )
 
                 // _data
                 unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
-                writeSize(size); writeCharArray( (char*)img->data(), size );
+                writeSize(size);
+
+                for(osg::Image::DataIterator img_itr(img); img_itr.valid(); ++img_itr)
+                {
+                    writeCharArray( (char*)img_itr.data(), img_itr.size() );
+                }
 
                 // _mipmapData
-                const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
-                writeSize(levels.size());
-                for ( osg::Image::MipmapDataType::const_iterator itr=levels.begin();
-                    itr!=levels.end(); ++itr )
+                unsigned int numMipmaps = img->getNumMipmapLevels()-1;
+                writeSize(numMipmaps);
+                int s = img->s();
+                int t = img->t();
+                int r = img->r();
+                unsigned int offset = 0;
+                for (unsigned int i=0; i<numMipmaps; ++i)
                 {
-                    *this << *itr;
+                    unsigned int size = osg::Image::computeImageSizeInBytes(s,t,r,img->getPixelFormat(),img->getDataType(),img->getPacking());
+                    offset += size;
+                    
+                    *this << offset;
+
+                    s >>= 1;
+                    t >>= 1;
+                    r >>= 1;
+                    if (s<1) s=1;
+                    if (t<1) t=1;
+                    if (r<1) r=1;                    
                 }
             }
             break;
@@ -389,8 +414,10 @@ void OutputStream::writeImage( const osg::Image* img )
                     {
                         char* data = new char[size];
                         if ( !data )
+                        {
                             throwException( "OutputStream::writeImage(): Out of memory." );
-                        if ( getException() ) return;
+                            if ( getException() ) return;
+                        }
 
                         infile.seekg( 0, std::ios::beg );
                         infile.read( data, size );

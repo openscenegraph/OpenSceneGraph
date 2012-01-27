@@ -549,8 +549,10 @@ osg::Image* InputStream::readImage(bool readFromExternal)
             {
                 char* data = new char[size];
                 if ( !data )
+                {
                     throwException( "InputStream::readImage(): Out of memory." );
-                if ( getException() ) return NULL;
+                    if ( getException() ) return NULL;
+                }
                 readCharArray( data, size );
                 
                 std::string ext = osgDB::getFileExtension( name );
@@ -690,6 +692,8 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     if ( !_in )
         throwException( "InputStream: Null stream specified." );
     if ( getException() ) return type;
+
+    _in->setInputStream(this);
     
     // Check OSG header information
     unsigned int version = 0;

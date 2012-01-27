@@ -474,6 +474,7 @@ void Glyph::subload() const
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,getRowLength());
 
     glTexSubImage2D(GL_TEXTURE_2D,0,
                     _texturePosX,_texturePosY,

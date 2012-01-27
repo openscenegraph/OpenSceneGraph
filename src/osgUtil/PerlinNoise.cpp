@@ -22,13 +22,18 @@
  *                                                                      *
  ************************************************************************/
 
+/* Adapted from osgshaders example by Robert Osfield for use as part of osgUtil.*/
+
 #include <math.h>
 #include <stdlib.h>
+
+#include <osgUtil/PerlinNoise>
+
+using namespace osgUtil;
 
 /* Coherent noise function over 1, 2 or 3 dimensions */
 /* (copyright Ken Perlin) */
 
-#define MAXB 0x100
 #define N 0x1000
 #define NP 12   /* 2^N */
 #define NM 0xfff
@@ -44,26 +49,20 @@
 #define at2(rx,ry) ( rx * q[0] + ry * q[1] )
 #define at3(rx,ry,rz) ( rx * q[0] + ry * q[1] + rz * q[2] )
 
-static void initNoise(void);
 
-static int p[MAXB + MAXB + 2];
-static double g3[MAXB + MAXB + 2][3];
-static double g2[MAXB + MAXB + 2][2];
-static double g1[MAXB + MAXB + 2];
-
-int start;
-int B;
-int BM;
-
-
-void SetNoiseFrequency(int frequency)
+PerlinNoise::PerlinNoise()
+{
+    SetNoiseFrequency(1);
+}
+        
+void PerlinNoise::SetNoiseFrequency(int frequency)
 {
         start = 1;
         B = frequency;
         BM = B-1;
 }
 
-double noise1(double arg)
+double PerlinNoise::noise1(double arg)
 {
    int bx0, bx1;
    double rx0, rx1, sx, t, u, v, vec[1];
@@ -83,7 +82,7 @@ double noise1(double arg)
    return(lerp(sx, u, v));
 }
 
-double noise2(double vec[2])
+double PerlinNoise::noise2(double vec[2])
 {
    int bx0, bx1, by0, by1, b00, b10, b01, b11;
    double rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
@@ -119,7 +118,7 @@ double noise2(double vec[2])
    return lerp(sy, a, b);
 }
 
-double noise3(double vec[3])
+double PerlinNoise::noise3(double vec[3])
 {
    int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
    double rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
@@ -171,7 +170,7 @@ double noise3(double vec[3])
    return lerp(sz, c, d);
 }
 
-void normalize2(double v[2])
+void PerlinNoise::normalize2(double v[2])
 {
    double s;
 
@@ -180,7 +179,7 @@ void normalize2(double v[2])
    v[1] = v[1] / s;
 }
 
-void normalize3(double v[3])
+void PerlinNoise::normalize3(double v[3])
 {
    double s;
 
@@ -190,7 +189,7 @@ void normalize3(double v[3])
    v[2] = v[2] / s;
 }
 
-void initNoise(void)
+void PerlinNoise::initNoise(void)
 {
    int i, j, k;
 
@@ -232,7 +231,7 @@ void initNoise(void)
    "beta" is the harmonic scaling/spacing, typically 2.
 */
 
-double PerlinNoise1D(double x,double alpha,double beta,int n)
+double PerlinNoise::PerlinNoise1D(double x,double alpha,double beta,int n)
 {
    int i;
    double val,sum = 0;
@@ -248,7 +247,7 @@ double PerlinNoise1D(double x,double alpha,double beta,int n)
    return(sum);
 }
 
-double PerlinNoise2D(double x,double y,double alpha,double beta,int n)
+double PerlinNoise::PerlinNoise2D(double x,double y,double alpha,double beta,int n)
 {
    int i;
    double val,sum = 0;
@@ -266,7 +265,7 @@ double PerlinNoise2D(double x,double y,double alpha,double beta,int n)
    return(sum);
 }
 
-double PerlinNoise3D(double x,double y,double z,double alpha,double beta,int n)
+double PerlinNoise::PerlinNoise3D(double x,double y,double z,double alpha,double beta,int n)
 {
    int i;
    double val,sum = 0;
@@ -285,3 +284,61 @@ double PerlinNoise3D(double x,double y,double z,double alpha,double beta,int n)
    }
    return(sum);
 }
+
+osg::Image* PerlinNoise::create3DNoiseImage(int texSize)
+{
+    osg::Image* image = new osg::Image;
+    image->setImage(texSize, texSize, texSize,
+            4, GL_RGBA, GL_UNSIGNED_BYTE,
+            new unsigned char[4 * texSize * texSize * texSize],
+            osg::Image::USE_NEW_DELETE);
+
+    const int startFrequency = 4;
+    const int numOctaves = 4;
+
+    int f, i, j, k, inc;
+    double ni[3];
+    double inci, incj, inck;
+    int frequency = startFrequency;
+    GLubyte *ptr;
+    double amp = 0.5;
+
+    osg::notify(osg::INFO) << "creating 3D noise texture... ";
+
+    for (f = 0, inc = 0; f < numOctaves; ++f, frequency *= 2, ++inc, amp *= 0.5)
+    {
+        SetNoiseFrequency(frequency);
+        ptr = image->data();
+        ni[0] = ni[1] = ni[2] = 0;
+
+        inci = 1.0 / (texSize / frequency);
+        for (i = 0; i < texSize; ++i, ni[0] += inci)
+        {
+            incj = 1.0 / (texSize / frequency);
+            for (j = 0; j < texSize; ++j, ni[1] += incj)
+            {
+                inck = 1.0 / (texSize / frequency);
+                for (k = 0; k < texSize; ++k, ni[2] += inck, ptr += 4)
+                {
+                    *(ptr+inc) = (GLubyte) (((noise3(ni) + 1.0) * amp) * 128.0);
+                }
+            }
+        }
+    }
+
+    osg::notify(osg::INFO) << "DONE" << std::endl;
+    return image;
+}
+
+osg::Texture3D* PerlinNoise::create3DNoiseTexture(int texSize )
+{
+    osg::Texture3D* noiseTexture = new osg::Texture3D;
+    noiseTexture->setFilter(osg::Texture3D::MIN_FILTER, osg::Texture3D::LINEAR);
+    noiseTexture->setFilter(osg::Texture3D::MAG_FILTER, osg::Texture3D::LINEAR);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_S, osg::Texture3D::REPEAT);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_T, osg::Texture3D::REPEAT);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_R, osg::Texture3D::REPEAT);
+    noiseTexture->setImage( create3DNoiseImage(texSize) );
+    return noiseTexture;
+}
+

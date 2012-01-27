@@ -384,6 +384,7 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
     if(src)
     {
         memcpy(image->data(), src, image->getTotalSizeInBytes());
+        
         ext->glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB);
     }
 

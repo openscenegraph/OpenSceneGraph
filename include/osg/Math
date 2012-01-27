@@ -37,6 +37,11 @@
     #if (__GNUC__ < 4)
         #define APPLE_PRE_10_2
     #endif
+
+    #if (MAC_OS_X_VERSION_MIN_REQUIRED <  MAC_OS_X_VERSION_10_6)
+        #define APPLE_PRE_10_6
+    #endif
+    
 #endif
 #endif
 
@@ -45,7 +50,7 @@
 #endif
 
 #if defined (sun) || \
-    defined (__APPLE__) || \
+    defined (APPLE_PRE_10_6) || \
     (defined (_AIX) && defined (__GNUC__))
 
     #include <float.h>

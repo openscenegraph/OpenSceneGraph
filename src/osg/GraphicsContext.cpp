@@ -195,7 +195,7 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
     {
         alpha = ds->getMinimumNumAlphaBits();
         stencil = ds->getMinimumNumStencilBits();
-        sampleBuffers = ds->getMultiSamples();
+        if (ds->getMultiSamples()!=0) sampleBuffers = 1;
         samples = ds->getNumMultiSamples();
         if (ds->getStereo())
         {

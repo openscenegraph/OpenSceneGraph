@@ -44,7 +44,7 @@ ViewerBase::ViewerBase():
     viewerBaseInit();
 }
 
-ViewerBase::ViewerBase(const ViewerBase& base):
+ViewerBase::ViewerBase(const ViewerBase&):
     osg::Object(true)
 {
     viewerBaseInit();
@@ -60,6 +60,7 @@ void ViewerBase::viewerBaseInit()
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
+    _endBarrierOperation = osg::BarrierOperation::NO_OPERATION;
     _requestRedraw = true;
     _requestContinousUpdate = false;
 
@@ -178,6 +179,16 @@ void ViewerBase::setEndBarrierPosition(BarrierPosition bp)
     if (_threadingModel!=SingleThreaded) startThreading();
 }
 
+void ViewerBase::setEndBarrierOperation(osg::BarrierOperation::PreBlockOp op)
+{
+    if (_endBarrierOperation == op) return;
+
+    if (_threadsRunning) stopThreading();
+
+    _endBarrierOperation = op;
+
+    if (_threadingModel!=SingleThreaded) startThreading();
+}
 
 void ViewerBase::stopThreading()
 {
@@ -355,7 +366,7 @@ void ViewerBase::startThreading()
 
     if (numThreadsOnEndBarrier>1)
     {
-        _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsOnEndBarrier, osg::BarrierOperation::NO_OPERATION);
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsOnEndBarrier, _endBarrierOperation);
     }
 
 

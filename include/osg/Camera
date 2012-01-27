@@ -45,6 +45,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         META_Node(osg, Camera);
 
+        virtual Camera* asCamera() { return this; }
+        virtual const Camera* asCamera() const { return this; }
+
         /** Set the View that this Camera is part of. */
         void setView(View* view) { _view = view; }
 

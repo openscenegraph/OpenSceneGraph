@@ -383,7 +383,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            std::ifstream fin(fileName.c_str());
+            std::ifstream fin(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
             if (!fin.good())
                 return ReadResult::ERROR_IN_READING_FILE;
 

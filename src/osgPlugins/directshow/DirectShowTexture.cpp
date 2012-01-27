@@ -806,6 +806,11 @@ bool CTextureRenderer::initBuildGraph()
     hr = _graphBuilder->AddFilter((IBaseFilter*)this, L"Sampler");
     if (!checkError(prefixForMessage, hr))
         return false;
+
+
+    hr = _graphBuilder->QueryInterface( IID_IBasicAudio, (void **)&_basicAudio);
+    checkError(prefixForMessage, hr); //May be no sound so dont effect return result
+    
     return true;
 }
 
@@ -1104,6 +1109,7 @@ bool CTextureRenderer::setupOutputSoundDevice(ICreateDevEnum* devs)
         if (_soundOutputDevice) _soundOutputDevice->Release(); _soundOutputDevice = 0;
         return false;
     }
+
     return true;
 }
 
@@ -1545,6 +1551,7 @@ void CTextureRenderer::releaseRessources()
     if (_mediaControl) _mediaControl->Release(); _mediaControl = 0;
     if (_mediaEvent) _mediaEvent->Release(); _mediaEvent = 0;
     if (_mediaSeeking) _mediaSeeking->Release(); _mediaSeeking = 0;
+    if (_basicAudio) _basicAudio->Release(); _basicAudio = 0;
     // remove filter outside because this is a filter too.
 }
 
@@ -1578,6 +1585,7 @@ CTextureRenderer::CTextureRenderer( DirectShowImageStream* is, HRESULT* valid)
     _videoCaptureDevice = 0;
     _soundOutputDevice = 0;
     _soundCaptureDevice = 0;
+    _basicAudio = 0;
 }
 
 
@@ -1809,6 +1817,29 @@ void DirectShowImageStream::seek(double time)
     }
 
 }
+
+double DirectShowImageStream::getCurrentTime() const 
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    double currentTime = -1;
+    if (_renderer.valid() && _renderer->_mediaSeeking)
+    {      
+       
+       LONGLONG curTimeLL = 0;
+       HRESULT hr = _renderer->_mediaSeeking->GetCurrentPosition(&curTimeLL);
+       if (FAILED(hr))
+       {
+            OSG_NOTICE << this << " " << getErrorMessage(hr) << std::endl;            
+       } 
+       else 
+       {
+           currentTime = static_cast<double>(curTimeLL);
+           currentTime = currentTime * (100.0 * 1e-9); // default unit in directshow IMediaSeeking 
+       }
+    }
+    return currentTime;
+}
+
 void DirectShowImageStream::setOptions(const Options& map)
 {
     for (Options::const_iterator it = map.begin(); it != map.end(); it++)
@@ -1857,6 +1888,26 @@ double DirectShowImageStream::getTimeMultiplier() const
     if (_renderer.valid() && _renderer->_mediaSeeking)
         _renderer->_mediaSeeking->GetRate(&rate);
     return rate; 
+}
+
+void DirectShowImageStream::setVolume(float vol) {  
+   OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);    
+   if (_renderer.valid() && _renderer->_basicAudio) 
+   {    
+     _renderer->_basicAudio->put_Volume(vol);     
+   }   
+}
+
+float DirectShowImageStream::getVolume() const {
+  OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);      
+  double vol = 0;  
+  if (_renderer.valid() && _renderer->_basicAudio) 
+  {   
+    long d = 0;
+    _renderer->_basicAudio->get_Volume(&d);    
+    vol = static_cast<double>(d);    
+  }    
+  return vol;
 }
 
 void DirectShowImageStream::stop()

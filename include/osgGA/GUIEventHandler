@@ -52,7 +52,9 @@ class OSGGA_EXPORT GUIEventHandler : public osg::NodeCallback, public osg::Drawa
 public:
 
         GUIEventHandler() : _ignoreHandledEventsMask(GUIEventAdapter::NONE) {}
-        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp&):
+        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop):
+            osg::NodeCallback(eh, copyop),
+            osg::Drawable::EventCallback(eh, copyop),
             _ignoreHandledEventsMask(eh._ignoreHandledEventsMask) {}
 
         META_Object(osgGA,GUIEventHandler);

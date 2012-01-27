@@ -114,6 +114,7 @@ SET(TARGET_SRC
     ReadFile.cpp
     Registry.cpp
     SharedStateManager.cpp
+    StreamOperator.cpp
     Version.cpp
     WriteFile.cpp
     XmlParser.cpp

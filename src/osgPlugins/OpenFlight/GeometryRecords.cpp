@@ -254,7 +254,10 @@ public:
             {
                 // Use face color if vertex color is -1 in a gouraud polygon.
                 // http://www.multigen-paradigm.com/ubb/Forum1/HTML/000967.html
-                colors->push_back(_primaryColor);
+                // Incorporate Face transparency per osg-users thread "Open Flight
+                // characteristic not reflected in the current OSG" (Sept/Oct 2011)
+                colors->push_back(osg::Vec4(_primaryColor.r(), _primaryColor.g(), 
+                    _primaryColor.b(), ( 1.0 - getTransparency() ) ));
             }
         }
 
@@ -366,7 +369,7 @@ protected:
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
-        osg::Vec4 secondaryPackedColor = in.readColor32();
+        /*osg::Vec4 secondaryPackedColor =*/ in.readColor32();
         // version >= VERSION_15_1
         /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);
@@ -939,7 +942,7 @@ protected:
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
-        osg::Vec4 secondaryPackedColor = in.readColor32();
+        /*osg::Vec4 secondaryPackedColor =*/ in.readColor32();
         // version >= VERSION_15_1
         /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);

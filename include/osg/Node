@@ -38,6 +38,7 @@ class Transform;
 class Node;
 class Switch;
 class Geode;
+class Camera;
 
 /** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
 typedef std::vector< Node* > NodePath;
@@ -104,6 +105,15 @@ class OSG_EXPORT Node : public Object
         /** convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0.
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
+
+
+        /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<Camera*>(this).*/
+        virtual Camera* asCamera() { return 0; }
+        /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<const Camera*>(this).*/
+        virtual const Camera* asCamera() const { return 0; }
+
 
         /** Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0.
           * Equivalent to dynamic_cast<Switch*>(this).*/
@@ -286,7 +296,7 @@ class OSG_EXPORT Node : public Object
         *
         * The most common use of these is during traversal of the scene graph.
         * For instance, when traversing the scene graph the osg::NodeVisitor does a bitwise
-        * AND of its TraversalMask with the Node#s NodeMask to
+        * AND of its TraversalMask with the Node's NodeMask to
         * determine if the Node should be processed/traversed.
         *
         * For example, if a Node has a NodeMask value of 0x02 (only 2nd bit set)

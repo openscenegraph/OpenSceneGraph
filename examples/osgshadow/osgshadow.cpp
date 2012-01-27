@@ -43,6 +43,9 @@
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
 #include <osgShadow/StandardShadowMap>
+#include <osgShadow/ViewDependentShadowMap>
+
+#include <osgUtil/Optimizer>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -134,6 +137,33 @@ public:
     }
 
     bool  _value;
+};
+
+
+class LightAnimationHandler : public osgGA::GUIEventHandler
+{
+public:
+    LightAnimationHandler(bool flag=true): _animating(flag) {}
+
+    void setAnimating(bool flag) { _animating = flag; }
+    bool getAnimating() const { return _animating; }
+
+    /** Deprecated, Handle events, return true if handled, false otherwise. */
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (ea.getKey() == 'p' )
+            {
+                _animating = !_animating;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool  _animating;
 };
 
 
@@ -423,7 +453,7 @@ namespace ModelTwo
 
         osg::Group* model = new osg::Group;
 
-        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+        osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
         if (cessna)
         {
             const osg::BoundingSphere& bs = cessna->getBound();
@@ -496,33 +526,39 @@ namespace ModelThree
         osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
         hints->setDetailRatio(2.0f);
         osg::ref_ptr<osg::ShapeDrawable> shape;
-
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, -2.0f), 10, 10.0f, 0.1f), hints.get());
         shape->setColor(osg::Vec4(0.5f, 0.5f, 0.7f, 1.0f));
+        shape->setName("base box");
         geode_1->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), radius * 2), hints.get());
         shape->setColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+        shape->setName("center sphere");
         geode_1->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(-3.0f, 0.0f, 0.0f), radius), hints.get());
         shape->setColor(osg::Vec4(0.6f, 0.8f, 0.8f, 1.0f));
+        shape->setName("cyan sphere");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f), 2 * radius), hints.get());
         shape->setColor(osg::Vec4(0.4f, 0.9f, 0.3f, 1.0f));
+        shape->setName("green box");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(0.0f, -3.0f, 0.0f), radius, height), hints.get());
         shape->setColor(osg::Vec4(0.2f, 0.5f, 0.7f, 1.0f));
+        shape->setName("blue cone");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 3.0f, 0.0f), radius, height), hints.get());
         shape->setColor(osg::Vec4(1.0f, 0.3f, 0.3f, 1.0f));
+        shape->setName("red cyclinder");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, 3.0f), 2.0f, 2.0f, 0.1f), hints.get());
         shape->setColor(osg::Vec4(0.8f, 0.8f, 0.4f, 1.0f));
+        shape->setName("rotating box");
         geode_3->addDrawable(shape.get());
 
         // material
@@ -548,6 +584,90 @@ namespace ModelThree
 }
 
 
+namespace ModelFive
+{
+    struct UseVBOVisitor : public osg::NodeVisitor
+    {
+        UseVBOVisitor():
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}            
+
+        virtual void apply(osg::Geode& geode)
+        {
+            for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+            {
+                osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+                if (geometry)
+                {
+                    geometry->setUseVertexBufferObjects(true);
+                }
+            }
+        }
+    };
+
+    
+    osg::AnimationPathCallback* createAnimationPathCallback( float radius, float time )
+    {
+        osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
+        path->setLoopMode( osg::AnimationPath::LOOP );
+
+        unsigned int numSamples = 32;
+        float delta_yaw = 2.0f * osg::PI/((float)numSamples - 1.0f);
+        float delta_time = time / (float)numSamples;
+        for ( unsigned int i=0; i<numSamples; ++i )
+        {
+            float yaw = delta_yaw * (float)i;
+            osg::Vec3 pos( sinf(yaw)*radius, cosf(yaw)*radius, 0.0f );
+            osg::Quat rot( -yaw, osg::Z_AXIS );
+            path->insert( delta_time * (float)i, osg::AnimationPath::ControlPoint(pos, rot) );
+        }
+
+        osg::ref_ptr<osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+        apcb->setAnimationPath( path.get() );
+        return apcb.release();
+    }
+
+    osg::Group* createModel(osg::ArgumentParser& arguments)
+    {
+        // Set the ground (only receives shadow)
+        osg::ref_ptr<osg::MatrixTransform> groundNode = new osg::MatrixTransform;
+        groundNode->addChild( osgDB::readNodeFile("lz.osg") );
+        groundNode->setMatrix( osg::Matrix::translate(200.0f, 200.0f,-200.0f) );
+        groundNode->setNodeMask( ReceivesShadowTraversalMask );
+
+        // Set the cessna (only casts shadow)
+        osg::ref_ptr<osg::MatrixTransform> cessnaNode = new osg::MatrixTransform;
+        cessnaNode->addChild( osgDB::readNodeFile("cessna.osg.0,0,90.rot") );
+        cessnaNode->addUpdateCallback( createAnimationPathCallback(50.0f, 6.0f) );
+        cessnaNode->setNodeMask( CastsShadowTraversalMask );
+
+        // cessna is really poorly optimized so fix this by optimizing the mesh and use VBO's.
+        osgUtil::Optimizer optimizer;
+        optimizer.optimize(cessnaNode.get(), osgUtil::Optimizer::INDEX_MESH |
+                                             osgUtil::Optimizer::VERTEX_POSTTRANSFORM |
+                                             osgUtil::Optimizer::VERTEX_PRETRANSFORM);
+
+        UseVBOVisitor useVBOVisitor;
+        cessnaNode->accept(useVBOVisitor);
+
+
+        osg::ref_ptr<osg::Group> shadowRoot = new osg::Group;
+        shadowRoot->addChild( groundNode.get() );
+        for ( unsigned int i=0; i<10; ++i )
+        {
+            for ( unsigned int j=0; j<10; ++j )
+            {
+                osg::ref_ptr<osg::MatrixTransform> cessnaInstance = new osg::MatrixTransform;
+                cessnaInstance->setMatrix( osg::Matrix::translate((float)i*50.0f-25.0f, (float)j*50.0f-25.0f, 0.0f) );
+                cessnaInstance->addChild( cessnaNode.get() );
+                shadowRoot->addChild( cessnaInstance.get() );
+            }
+        }
+
+
+        return shadowRoot.release();
+    }
+}
+
 osg::Node* createTestModel(osg::ArgumentParser& arguments)
 {
     if (arguments.read("-1"))
@@ -561,6 +681,10 @@ osg::Node* createTestModel(osg::ArgumentParser& arguments)
     else if (arguments.read("-4"))
     {
         return ModelFour::createModel(arguments);
+    }
+    else if (arguments.read("-5"))
+    {
+        return ModelFive::createModel(arguments);
     }
     else /*if (arguments.read("-3"))*/
     {
@@ -650,12 +774,17 @@ int main(int argc, char** argv)
     while (arguments.read("--fov",fov)) {}
 
     osg::Vec4 lightpos(0.0,0.0,1,0.0);
+    bool spotlight = false;
     while (arguments.read("--positionalLight")) { lightpos.set(0.5,0.5,1.5,1.0); }
     while (arguments.read("--directionalLight")) { lightpos.set(0.0,0.0,1,0.0); }
+    while (arguments.read("--spotLight")) { lightpos.set(0.5,0.5,1.5,1.0); spotlight = true; }
 
-    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z(), lightpos.w())) {}
-    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=1.0; }
-    while ( arguments.read("--light-dir", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=0.0; }
+    bool keepLightPos = false;
+    osg::Vec3 spotLookat(0.0,0.0,0.0);
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z(), lightpos.w())) { keepLightPos = true; }
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=1.0; keepLightPos = true; }
+    while ( arguments.read("--light-dir", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=0.0; keepLightPos = true; }
+    while ( arguments.read("--spot-lookat", spotLookat.x(), spotLookat.y(), spotLookat.z())) { }
 
 
     while (arguments.read("--castsShadowMask", CastsShadowTraversalMask ));
@@ -787,6 +916,35 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
         shadowedScene->setShadowTechnique(sm.get());
     }
+    else if( arguments.read("--vdsm") )
+    {
+        osgShadow::ShadowSettings* settings = new osgShadow::ShadowSettings;
+        shadowedScene->setShadowSettings(settings);
+
+        while( arguments.read("--debugHUD") ) settings->setDebugDraw( true );
+        if (arguments.read("--persp")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::PERSPECTIVE_SHADOW_MAP);
+        if (arguments.read("--ortho")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::ORTHOGRAPHIC_SHADOW_MAP);
+
+        unsigned int unit=1;
+        if (arguments.read("--unit",unit)) settings->setBaseShadowTextureUnit(unit);
+        
+        double n=0.0;
+        if (arguments.read("-n",n)) settings->setMinimumShadowMapNearFarRatio(n);
+
+        unsigned int numShadowMaps;
+        if (arguments.read("--num-sm",numShadowMaps)) settings->setNumShadowMapsPerLight(numShadowMaps);
+
+        if (arguments.read("--parallel-split") || arguments.read("--ps") ) settings->setMultipleShadowMapHint(osgShadow::ShadowSettings::PARALLEL_SPLIT);
+        if (arguments.read("--cascaded")) settings->setMultipleShadowMapHint(osgShadow::ShadowSettings::CASCADED);
+
+
+        int mapres = 1024;
+        while (arguments.read("--mapres", mapres))
+            settings->setTextureSize(osg::Vec2s(mapres,mapres));
+
+        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
+        shadowedScene->setShadowTechnique(vdsm.get());
+    }
     else if ( arguments.read("--lispsm") ) 
     {
         if( arguments.read( "--ViewBounds" ) )
@@ -818,8 +976,7 @@ int main(int argc, char** argv)
     if( msm )// Set common MSM & LISPSM arguments
     {
         shadowedScene->setShadowTechnique( msm.get() );
-        while( arguments.read("--debugHUD") )           
-            msm->setDebugDraw( true );
+        while( arguments.read("--debugHUD") ) msm->setDebugDraw( true );
 
         float minLightMargin = 10.f;
         float maxFarPlane = 0;
@@ -843,7 +1000,7 @@ int main(int argc, char** argv)
         msm->setBaseTextureUnit( baseTexUnit );
     }
 
-    OSG_NOTICE<<"shadowedScene->getShadowTechnique()="<<shadowedScene->getShadowTechnique()<<std::endl;
+    OSG_INFO<<"shadowedScene->getShadowTechnique()="<<shadowedScene->getShadowTechnique()<<std::endl;
 
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())
@@ -860,7 +1017,7 @@ int main(int argc, char** argv)
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
 
-    if (lightpos.w()==1.0)
+    if (lightpos.w()==1.0 && !keepLightPos)
     {
         lightpos.x() = bb.xMin()+(bb.xMax()-bb.xMin())*lightpos.x();
         lightpos.y() = bb.yMin()+(bb.yMax()-bb.yMin())*lightpos.y();
@@ -889,12 +1046,9 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
 
-    bool spotlight = false;
-    if (arguments.read("--spotLight"))
+    if (spotlight)
     {
-        spotlight = true;
-
-        osg::Vec3 center = bb.center();
+        osg::Vec3 center = spotLookat;
         osg::Vec3 lightdir = center - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z());
         lightdir.normalize();
         ls->getLight()->setDirection(lightdir);
@@ -958,8 +1112,11 @@ int main(int argc, char** argv)
         }
     }
 
+    osg::ref_ptr<LightAnimationHandler> lightAnimationHandler = updateLightPosition ? new LightAnimationHandler : 0;
+    if (lightAnimationHandler) viewer.addEventHandler(lightAnimationHandler.get());
 
-    // osgDB::writeNodeFile(*group,"test.osg");
+
+    // osgDB::writeNodeFile(*group,"test.osgt");
  
     while (!viewer.done())
     {
@@ -987,7 +1144,7 @@ int main(int argc, char** argv)
             }        
         }
 
-        if (updateLightPosition)
+        if (lightAnimationHandler.valid() && lightAnimationHandler ->getAnimating())
         {
             float t = viewer.getFrameStamp()->getSimulationTime();
 
@@ -1016,7 +1173,7 @@ int main(int argc, char** argv)
             static int dumpFileNo = 0;
             dumpFileNo ++;
             char filename[256];
-            std::sprintf( filename, "shadowDump%d.osg", dumpFileNo );
+            std::sprintf( filename, "shadowDump%d.osgt", dumpFileNo );
             
             osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
 

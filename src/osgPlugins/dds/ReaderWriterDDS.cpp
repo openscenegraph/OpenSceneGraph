@@ -311,13 +311,11 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         return NULL;
     }
 
-    bool is3dImage = false;
     int depth = 1;
 
     // Check for volume image
     if( ddsd.dwDepth > 0 && (ddsd.dwFlags & DDSD_DEPTH))
     {
-        is3dImage = true;
         depth = ddsd.dwDepth;
     }
 
@@ -718,7 +716,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     //unsigned int components     = osg::Image::computeNumComponents(pixelFormat);
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
     unsigned int imageSize      = img->getImageSizeInBytes();
-    bool is3dImage = false;
 
     ddsd.dwWidth  = img->s();
     ddsd.dwHeight = img->t();
@@ -726,7 +723,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 
     if(r > 1)  /* check for 3d image */
     {
-        is3dImage = true;
         ddsd.dwDepth = r;
         SD_flags    |= DDSD_DEPTH;
         CAPS_flags  |= DDSCAPS_COMPLEX;
@@ -776,6 +772,17 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             ddpf.dwRBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
             ddpf.dwBBitMask        = 0x00ff0000;  
+            PF_flags |= DDPF_RGB;
+            ddpf.dwRGBBitCount = pixelSize;
+            ddsd.lPitch = img->getRowSizeInBytes();
+            SD_flags |= DDSD_PITCH;
+        }
+        break;
+    case GL_BGR:
+        {
+            ddpf.dwBBitMask        = 0x000000ff;
+            ddpf.dwGBitMask        = 0x0000ff00;
+            ddpf.dwRBitMask        = 0x00ff0000;  
             PF_flags |= DDPF_RGB;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
@@ -871,8 +878,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         return false;
     }
 
-    int size = img->getTotalSizeInBytes();
-
     // set even more flags
     if( !img->isMipmap() ) {
 
@@ -889,8 +894,6 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         
         ddsd.dwMipMapCount = img->getNumMipmapLevels();
 
-        size = img->getTotalSizeInBytesIncludingMipmaps();
-
         OSG_INFO<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
     }
 
@@ -906,7 +909,11 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     // Write DDS file
     fout.write("DDS ", 4); /* write FOURCC */
     fout.write(reinterpret_cast<char*>(&ddsd), sizeof(ddsd)); /* write file header */
-    fout.write(reinterpret_cast<const char*>(img->data()), size );
+
+    for(osg::Image::DataIterator itr(img); itr.valid(); ++itr)
+    {
+        fout.write(reinterpret_cast<const char*>(itr.data()), itr.size() );
+    }
 
     // Check for correct saving
     if ( fout.fail() )

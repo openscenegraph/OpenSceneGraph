@@ -7,8 +7,12 @@
 class AsciiOutputIterator : public osgDB::OutputIterator
 {
 public:
-    AsciiOutputIterator( std::ostream* ostream )
-    : _readyForIndent(false), _indent(0) { _out = ostream; }
+    AsciiOutputIterator( std::ostream* ostream, int precision )
+    : _readyForIndent(false), _indent(0)
+    {
+        _out = ostream;
+        if (precision>0) _out->precision(precision);
+    }
     
     virtual ~AsciiOutputIterator() {}
     
@@ -139,7 +143,7 @@ public:
     virtual void readBool( bool& b )
     {
         std::string boolString;
-        *_in >> boolString;
+        readString( boolString );
         if ( boolString=="TRUE" ) b = true;
         else b = false;
     }
@@ -147,50 +151,58 @@ public:
     virtual void readChar( char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (char)s;
     }
     
     virtual void readSChar( signed char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (signed char)s;
     }
     
     virtual void readUChar( unsigned char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (unsigned char)s;
     }
     
     virtual void readShort( short& s )
-    { *_in >> s; }
+    { std::string str; readString(str); s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUShort( unsigned short& s )
-    { *_in >> s; }
+    { std::string str; readString(str); s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readInt( int& i )
-    { *_in >> i; }
+    { std::string str; readString(str); i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUInt( unsigned int& i )
-    { *_in >> i; }
+    { std::string str; readString(str); i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readLong( long& l )
-    { *_in >> l; }
+    { std::string str; readString(str); l = strtol(str.c_str(), NULL, 0); }
     
     virtual void readULong( unsigned long& l )
-    { *_in >> l; }
+    { std::string str; readString(str); l = strtoul(str.c_str(), NULL, 0); }
     
     virtual void readFloat( float& f )
-    { *_in >> f; }
+    { std::string str; readString(str); f = osg::asciiToFloat(str.c_str()); }
     
     virtual void readDouble( double& d )
-    { *_in >> d; }
+    { std::string str; readString(str); d = osg::asciiToDouble(str.c_str()); }
     
     virtual void readString( std::string& s )
-    { *_in >> s; }
+    {
+        if ( _preReadString.empty() )
+            *_in >> s;
+        else
+        {
+            s = _preReadString;
+            _preReadString.clear();
+        }
+    }
     
     virtual void readStream( std::istream& (*fn)(std::istream&) )
     { *_in >> fn; }
@@ -202,7 +214,7 @@ public:
     {
         GLenum e = 0;
         std::string enumString;
-        *_in >> enumString;
+        readString( enumString );
         e = osgDB::Registry::instance()->getObjectWrapperManager()->getValue("GL", enumString);
         value.set( e );
     }
@@ -211,7 +223,7 @@ public:
     {
         int value = 0;
         std::string enumString;
-        *_in >> enumString;
+        readString( enumString );
         if ( prop._mapProperty )
         {
             value = osgDB::Registry::instance()->getObjectWrapperManager()->getValue(prop._name, enumString);
@@ -231,7 +243,7 @@ public:
     virtual void readMark( osgDB::ObjectMark& mark )
     {
         std::string markString;
-        *_in >> markString;
+        readString( markString );
     }
     
     virtual void readCharArray( char* s, unsigned int size ) {}
@@ -239,28 +251,28 @@ public:
     virtual void readWrappedString( std::string& str )
     {
         char ch;
-        _in->get( ch ); checkStream();
+        getCharacter( ch );
 
         // skip white space
         while ( ch==' ' || (ch=='\n') || (ch=='\r'))
         {
-            _in->get( ch ); checkStream();
+            getCharacter( ch );
         }
 
         if (ch=='"')
         {
             // we have an "wrapped string"
-            _in->get( ch ); checkStream();
+            getCharacter( ch );
             while ( ch!='"' )
             {
                 if (ch=='\\')
                 {
-                    _in->get( ch ); checkStream();
+                    getCharacter( ch );
                     str += ch;
                 }
                 else str += ch;
 
-                _in->get( ch ); checkStream();
+                getCharacter( ch );
             }
         }
         else
@@ -269,16 +281,21 @@ public:
             while ( (ch!=' ') && (ch!=0) && (ch!='\n') )
             {
                 str += ch;
-                _in->get( ch ); checkStream();
+                getCharacter( ch );
             }
         }
     }
 
     virtual bool matchString( const std::string& str )
     {
-        std::string s; readString(s);
-        if ( s==str ) return true;
-        else _in->seekg( -(int)(s.length()), std::ios::cur );
+        if ( _preReadString.empty() )
+            *_in >> _preReadString;
+        
+        if ( _preReadString==str )
+        {
+            _preReadString.clear();
+            return true;
+        }
         return false;
     }
     
@@ -300,6 +317,23 @@ public:
                 blocks++;
         }
     }
+    
+protected:
+    void getCharacter( char& ch )
+    {
+        if ( !_preReadString.empty() )
+        {
+            ch = _preReadString[0];
+            _preReadString.erase( _preReadString.begin() );
+        }
+        else
+        {
+            _in->get( ch );
+            checkStream();
+        }
+    }
+    
+    std::string _preReadString;
 };
 
 #endif

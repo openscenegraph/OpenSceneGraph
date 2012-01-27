@@ -172,7 +172,7 @@ bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::St
         return false;
     }
     
-    osg::Vec3 eye_cp = nv->getEyePoint() - _controlPoint;
+    osg::Vec3 eye_cp = nv->getViewPoint() - _controlPoint;
     float radius = eye_cp.length();
     
     if (radius<_radius)

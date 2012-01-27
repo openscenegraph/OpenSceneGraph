@@ -174,7 +174,7 @@ void VisualChooser::setSimpleConfiguration( bool doublebuffer )
 {
     clear();
     addAttribute( RGBA );
-    addAttribute( DepthSize, 16 );
+    addAttribute( DepthSize, 24 );
     if (doublebuffer)
         addAttribute( DoubleBuffer );
 }

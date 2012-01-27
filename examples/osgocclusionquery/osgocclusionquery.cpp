@@ -537,10 +537,10 @@ public:
                 }
                 else if (ea.getKey()=='o')
                 {
-                    if (osgDB::writeNodeFile( _node, "saved_model.osg" ))
-                        osg::notify( osg::ALWAYS ) << "osgOQ: Wrote scene graph to \"saved_model.osg\"" << std::endl;
+                    if (osgDB::writeNodeFile( _node, "saved_model.osgt" ))
+                        osg::notify( osg::ALWAYS ) << "osgOQ: Wrote scene graph to \"saved_model.osgt\"" << std::endl;
                     else
-                        osg::notify( osg::ALWAYS ) << "osgOQ: Wrote failed for \"saved_model.osg\"" << std::endl;
+                        osg::notify( osg::ALWAYS ) << "osgOQ: Wrote failed for \"saved_model.osgt\"" << std::endl;
                     return true;
                 }
                 return false;
@@ -744,28 +744,35 @@ int main(int argc, char** argv)
     // add the help handler
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
+    bool optimize = arguments.read( "--opt" );
 
     // load the specified model
-    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles( arguments );
-    if (!root)
+    osg::ref_ptr<osg::Node> root = 0;
+
+    if (arguments.argc()>1)
     {
-        std::cout << arguments.getApplicationName() <<": No files specified, or can't load them." << std::endl;
+        root = osgDB::readNodeFiles( arguments );
+        if (root.valid())
+        {
+            // Run a NodeVisitor to insert OcclusionQueryNodes in the scene graph.
+            OcclusionQueryVisitor oqv;
+            root->accept( oqv );
+        }
+        else
+        {
+            std::cout << arguments.getApplicationName() <<": unable to load specified data." << std::endl;
+            return 1;
+        }
+    }
+    else
+    {
         root = createStockScene().get();
         if (!root)
         {
             std::cout << arguments.getApplicationName() <<": Failed to create stock scene." << std::endl;
             return 1;
         }
-        std::cout << "Using stock scene instead." << std::endl;
     }
-    else
-    {
-        // Run a NodeVisitor to insert OcclusionQueryNodes in the scene graph.
-        OcclusionQueryVisitor oqv;
-        root->accept( oqv );
-    }
-
-    bool optimize = arguments.read( "--opt" );
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();

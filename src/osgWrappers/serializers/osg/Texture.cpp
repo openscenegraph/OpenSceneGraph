@@ -84,7 +84,7 @@ REGISTER_OBJECT_WRAPPER( Texture,
     ADD_BOOL_SERIALIZER( UseHardwareMipMapGeneration, true );  // _useHardwareMipMapGeneration
     ADD_BOOL_SERIALIZER( UnRefImageDataAfterApply, false );  // _unrefImageDataAfterApply
     ADD_BOOL_SERIALIZER( ClientStorageHint, false );  // _clientStorageHint
-    ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, false );  // _resizeNonPowerOfTwoHint
+    ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, true );  // _resizeNonPowerOfTwoHint
     ADD_VEC4D_SERIALIZER( BorderColor, osg::Vec4d(0.0,0.0,0.0,0.0) );  // _borderColor
     ADD_GLINT_SERIALIZER( BorderWidth, 0 );  // _borderWidth
     
@@ -95,8 +95,13 @@ REGISTER_OBJECT_WRAPPER( Texture,
         ADD_ENUM_VALUE( USE_S3TC_DXT1_COMPRESSION );
         ADD_ENUM_VALUE( USE_S3TC_DXT3_COMPRESSION );
         ADD_ENUM_VALUE( USE_S3TC_DXT5_COMPRESSION );
+        ADD_ENUM_VALUE( USE_PVRTC_2BPP_COMPRESSION );
+        ADD_ENUM_VALUE( USE_PVRTC_4BPP_COMPRESSION );
+        ADD_ENUM_VALUE( USE_ETC_COMPRESSION );
         ADD_ENUM_VALUE( USE_RGTC1_COMPRESSION );
         ADD_ENUM_VALUE( USE_RGTC2_COMPRESSION );
+        ADD_ENUM_VALUE( USE_S3TC_DXT1c_COMPRESSION );
+        ADD_ENUM_VALUE( USE_S3TC_DXT1a_COMPRESSION );
     END_ENUM_SERIALIZER();  // _internalFormatMode
     
     ADD_USER_SERIALIZER( InternalFormat );  // _internalFormat

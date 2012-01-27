@@ -37,16 +37,17 @@ public:
                          ListTriangle&        listTriangles,
                          unsigned int         drawable_n,
                          unsigned int         material) :
+        _drawable_n(drawable_n),
+        _listTriangles(listTriangles),
+        _modeCache(0),
         _hasNormalCoords(geo->getNormalArray() != NULL),
         _hasTexCoords(geo->getTexCoordArray(0) != NULL),
         _geo(geo),
         _lastFaceIndex(0),
-        _listTriangles(listTriangles),
-        _drawable_n(drawable_n),
         _material(material),
-        //_iPrimitiveSet(iPrimitiveSet),
         _curNormalIndex(0),
-        _normalBinding(geo->getNormalBinding())
+        _normalBinding(geo->getNormalBinding()),
+        _mesh(0)
     {
         if (!geo->getNormalArray() || geo->getNormalArray()->getNumElements()==0)
         {
@@ -286,9 +287,9 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                                       KFbxSdkManager* pSdkManager,
                                       const osgDB::ReaderWriter::Options * options,
                                       int index) :
-    _index(index),
     _fbxMaterial(NULL),
     _fbxTexture(NULL),
+    _index(index),
     _osgImage(NULL)
 {
     osg::Vec4 diffuse(1,1,1,1),

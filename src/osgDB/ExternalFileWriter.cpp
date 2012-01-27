@@ -27,14 +27,13 @@ namespace osgDB
 ///    - "../../a/b/c/d/e" goes 2
 ///    - "../a/../b/../.." goes 2
 ///    - "a/b/../c" goes 0
-unsigned int countNbDirsUp(const std::string & path)
+static unsigned int countNbDirsUp(const std::string & path)
 {
     // Algorithm:
     //    - For each path component, count +1 for "..", 0 for ".", and -1 for anything else
     //    - Ignore everything after  the last ".." of the path.
-    if (osgDB::isAbsolutePath(path)) return 0;
+    if (isAbsolutePath(path)) return 0;
     int result(0), tempResult(0);
-    //for(osgDB::PathIterator it(path); it.valid(); ++it)
     std::vector<std::string> pathElems;
     getPathElements(path, pathElems);
     for(std::vector<std::string>::const_iterator it(pathElems.begin()), itEnd(pathElems.end()); it!=itEnd; ++it)
@@ -53,7 +52,7 @@ unsigned int countNbDirsUp(const std::string & path)
 
 /// Local hash function for a path.
 /// Does not canonize the given path, but is not confused with mixed separators.
-unsigned int pathHash(const std::string & s)
+static unsigned int pathHash(const std::string & s)
 {
     // This is based on the DJB hash algorithm
     // Note: SDBM Hash initializes at 0 and is
@@ -86,7 +85,7 @@ enum WriteType {
 };
 
 /// Default prefixes for unnamed objects.
-const char * const PREFIX[/*MAX_WRITE_TYPE*/] = {
+static const char * const FILE_PREFIX[/*MAX_WRITE_TYPE*/] = {
     "Object_",
     "Image_",
     "HF_",
@@ -94,6 +93,14 @@ const char * const PREFIX[/*MAX_WRITE_TYPE*/] = {
     "Shader_"
 };
 
+/// Default prefixes for unnamed objects.
+static const char * const FILE_EXTENSION[/*MAX_WRITE_TYPE*/] = {
+    ".osgb",
+    ".tga",
+    ".osgb",
+    ".osgb",
+    ".glsl"
+};
 
 //.frag
 //.vert
@@ -123,12 +130,12 @@ inline const std::string & getFileName(const osg::Object & obj, WriteType type)
 inline bool doWrite(const osg::Object & obj, WriteType type, const std::string& fileName, const Options * options)
 {
     switch(type) {
-        case WRITE_TYPE_IMAGE:        return osgDB::writeImageFile      (static_cast<const osg::Image       &>(obj), fileName, options);
-        case WRITE_TYPE_HEIGHT_FIELD: return osgDB::writeHeightFieldFile(static_cast<const osg::HeightField &>(obj), fileName, options);
-        case WRITE_TYPE_NODE:         return osgDB::writeNodeFile       (static_cast<const osg::Node        &>(obj), fileName, options);
-        case WRITE_TYPE_SHADER:       return osgDB::writeShaderFile     (static_cast<const osg::Shader      &>(obj), fileName, options);
-        default:        // WRITE_TYPE_OBJECT
-            return osgDB::writeObjectFile(obj, fileName, options);
+        case WRITE_TYPE_IMAGE:        return writeImageFile      (static_cast<const osg::Image       &>(obj), fileName, options);
+        case WRITE_TYPE_HEIGHT_FIELD: return writeHeightFieldFile(static_cast<const osg::HeightField &>(obj), fileName, options);
+        case WRITE_TYPE_NODE:         return writeNodeFile       (static_cast<const osg::Node        &>(obj), fileName, options);
+        case WRITE_TYPE_SHADER:       return writeShaderFile     (static_cast<const osg::Shader      &>(obj), fileName, options);
+        // WRITE_TYPE_OBJECT
+        default:                      return writeObjectFile(obj, fileName, options);
     }
 }
 
@@ -146,7 +153,7 @@ ExternalFileWriter::ExternalFileWriter(const std::string & destDirectory)
 {}
 
 
-bool ExternalFileWriter::write(const osg::Object & obj, const osgDB::Options * options, std::string * out_absolutePath, std::string * out_relativePath)
+bool ExternalFileWriter::write(const osg::Object & obj, const Options * options, std::string * out_absolutePath, std::string * out_relativePath)
 {
     ObjectsSet::iterator it( _objects.find(&obj) );
     if (it != _objects.end())
@@ -165,9 +172,9 @@ bool ExternalFileWriter::write(const osg::Object & obj, const osgDB::Options * o
     std::string absoluteSourcePath;
     if (_keepRelativePaths && !originalFileName.empty())        // if keepRelativePaths is false, absoluteSourcePath is not used, then we can skip this part
     {
-        if (osgDB::isAbsolutePath(originalFileName)) absoluteSourcePath = originalFileName;
-        else absoluteSourcePath = osgDB::concatPaths(_srcDirectory, originalFileName);
-        absoluteSourcePath = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle(absoluteSourcePath));      // getRealPath() here is only used to canonize the path, not to add current directory in front of relative paths, hence the "concatPaths(_srcDirectory, ...)" just above
+        if (isAbsolutePath(originalFileName)) absoluteSourcePath = originalFileName;
+        else absoluteSourcePath = concatPaths(_srcDirectory, originalFileName);
+        absoluteSourcePath = getRealPath(convertFileNameToNativeStyle(absoluteSourcePath));      // getRealPath() here is only used to canonize the path, not to add current directory in front of relative paths, hence the "concatPaths(_srcDirectory, ...)" just above
     }
 
     // Compute destination paths from the source path
@@ -184,23 +191,23 @@ bool ExternalFileWriter::write(const osg::Object & obj, const osgDB::Options * o
         if (_keepRelativePaths)
         {
             // We'll try to keep images relative path.
-            relativeDestinationPath = osgDB::getPathRelative(_srcDirectory, absoluteSourcePath);
+            relativeDestinationPath = getPathRelative(_srcDirectory, absoluteSourcePath);
             unsigned int nbDirsUp = countNbDirsUp(relativeDestinationPath);
             // TODO if nbDirsUp>nb dirs in _destDirectory, then issue a warning, and use simple file name
-            if (nbDirsUp > _allowUpDirs) relativeDestinationPath = osgDB::getSimpleFileName(absoluteSourcePath);
+            if (nbDirsUp > _allowUpDirs) relativeDestinationPath = getSimpleFileName(absoluteSourcePath);
         }
         else
         {
             // We keep only the simple file name.
-            relativeDestinationPath = osgDB::getSimpleFileName(absoluteSourcePath);
+            relativeDestinationPath = getSimpleFileName(absoluteSourcePath);
         }
-        absoluteDestinationPath = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle( osgDB::concatPaths(_destDirectory, relativeDestinationPath) ));
+        absoluteDestinationPath = getRealPath(convertFileNameToNativeStyle( concatPaths(_destDirectory, relativeDestinationPath) ));
         // TODO Check for absolute paths collisions between multiple objects
     }
 
     // Write object
     bool written(false);
-    if (!osgDB::makeDirectoryForFile(absoluteDestinationPath))
+    if (!makeDirectoryForFile(absoluteDestinationPath))
     {
         OSG_NOTICE << "Can't create directory for file '" << absoluteDestinationPath << "'. May fail creating the image file." << std::endl;
     }
@@ -211,7 +218,7 @@ bool ExternalFileWriter::write(const osg::Object & obj, const osgDB::Options * o
     else written = true;
 
     // Add entry
-    _objects.insert(ObjectsSet::value_type(&obj, ObjectData(absoluteDestinationPath, relativeDestinationPath, written))).first;
+    _objects.insert(ObjectsSet::value_type(&obj, ObjectData(absoluteDestinationPath, relativeDestinationPath, written)));
     _searchMap.insert(SearchMap::value_type(pathHash(absoluteDestinationPath), &obj));
 
     // Fill output strings
@@ -237,14 +244,12 @@ bool ExternalFileWriter::absoluteObjectPathExists(const std::string & path)
 void ExternalFileWriter::generateObjectName(std::string & out_relativePath, std::string & out_absolutePath, int type)
 {
     static const ObjectIndex MAX_NUMBER = UINT_MAX-1;        // -1 to allow doing +1 without an overflow
-    static const char * const IMAGE_EXT  = ".tga";     // Default extension (PNG would be preferable since widely used, but it requires libpng)
-    static const char * const SHADER_EXT = ".frag";    // Default extension
     for (ObjectIndex number=_lastGeneratedObjectIndex+1; number<MAX_NUMBER; ++number)
     {
         std::ostringstream oss;
-        oss << PREFIX[type] << number << IMAGE_EXT;
+        oss << FILE_PREFIX[type] << number << FILE_EXTENSION[type];
         out_relativePath = oss.str();
-        out_absolutePath = osgDB::concatPaths(_destDirectory, out_relativePath);
+        out_absolutePath = concatPaths(_destDirectory, out_relativePath);
 
         if (!absoluteObjectPathExists(out_absolutePath))
         {

@@ -30,6 +30,13 @@ EventQueue::~EventQueue()
 {
 }
 
+void EventQueue::clear()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
+    _eventQueue.clear();
+}
+
+
 void EventQueue::setEvents(Events& events)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
@@ -54,6 +61,53 @@ bool EventQueue::takeEvents(Events& events)
     if (!_eventQueue.empty())
     {
         events.splice(events.end(), _eventQueue);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool EventQueue::takeEvents(Events& events, double cutOffTime)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
+    if (!_eventQueue.empty())
+    {
+        // find last event if queue that came in before the cuttof.
+        Events::reverse_iterator ritr = _eventQueue.rbegin();
+        for(; ritr != _eventQueue.rend() && ((*ritr)->getTime() > cutOffTime); ++ritr) {}
+
+        if (ritr==_eventQueue.rend()) return false;
+        
+        for(Events::iterator itr = _eventQueue.begin();
+            itr != ritr.base();
+            ++itr)
+        {
+            events.push_back(*itr);
+        }
+
+        // make sure that the events are in ascending time order, and any out of out events
+        // have their time reset to the next valid time after them in the events list.
+        double previousTime = cutOffTime;
+        for(Events::reverse_iterator itr = events.rbegin();
+            itr != events.rend();
+            ++itr)
+        {
+            if ((*itr)->getTime() > previousTime)
+            {
+                OSG_INFO<<"Reset event time from "<<(*itr)->getTime()<<" to "<<previousTime<<std::endl;
+                (*itr)->setTime(previousTime);
+            }
+            else
+            {
+                previousTime = (*itr)->getTime();
+            }
+        }
+
+        // remove the events we are taking from the original event queue.
+        _eventQueue.erase(_eventQueue.begin(), ritr.base());
+
         return true;
     }
     else

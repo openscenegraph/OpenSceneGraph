@@ -79,7 +79,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
     osg::Group* model = new osg::Group;
 
-    osg::Node* glider = osgDB::readNodeFile("glider.osg");
+    osg::Node* glider = osgDB::readNodeFile("glider.osgt");
     if (glider)
     {
         const osg::BoundingSphere& bs = glider->getBound();
@@ -102,7 +102,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         model->addChild(xform);
     }
  
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();
@@ -316,7 +316,7 @@ public:
             {
                 // insert particle effects alongside the hit node, therefore able to track that nodes movement,
                 // however, this does require us to insert the ParticleSystem itself into the root of the scene graph
-                // seperately from the the main particle effects group which contains the emitters and programs.
+                // separately from the the main particle effects group which contains the emitters and programs.
                 // the follow code block implements this, note the path for handling particle effects which arn't attached to 
                 // moving models is easy - just a single line of code!
             

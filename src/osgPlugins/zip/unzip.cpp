@@ -128,6 +128,15 @@
 #endif
 #endif
 
+// workaround for Windows warnings.
+#if defined(_MSC_VER)
+    #define FILENO _fileno
+    #define GETCWD _getcwd
+#else
+    #define FILENO fileno
+    #define GETCWD getcwd
+#endif
+
 
 
 #define ZIP_HANDLE   1
@@ -188,7 +197,7 @@ typedef struct tm_unz_s
 // some windows<->linux portability things
 #ifdef ZIP_STD
 DWORD GetFilePosU(HANDLE hfout)
-{ struct stat st; fstat(fileno(hfout),&st);
+{ struct stat st; fstat(FILENO(hfout),&st);
   if ((st.st_mode&S_IFREG)==0) return 0xFFFFFFFF;
   return ftell(hfout);
 }
@@ -259,7 +268,12 @@ bool FileExists(const TCHAR *fn)
 
 // unz_global_info structure contain global data about the ZIPfile
 typedef struct unz_global_info_s
-{ unsigned long number_entry;         // total number of entries in the central dir on this disk
+{
+  unz_global_info_s():
+    number_entry(0),
+    size_comment(0) {}
+
+  unsigned long number_entry;         // total number of entries in the central dir on this disk
   unsigned long size_comment;         // size of the global comment of the zipfile
 } unz_global_info;
 
@@ -2736,6 +2750,9 @@ const char unz_copyright[] = " unzip 0.15 Copyright 1998 Gilles Vollant ";
 // unz_file_info_interntal contain internal info about a file in zipfile
 typedef struct unz_file_info_internal_s
 {
+    unz_file_info_internal_s():
+        offset_curfile(0) {}
+        
     uLong offset_curfile;// relative offset of local header 4 bytes
 } unz_file_info_internal;
 
@@ -2893,21 +2910,34 @@ typedef struct
 
 
 // unz_s contain internal information about the zipfile
-typedef struct
+typedef struct unz_ss
 {
-	LUFILE* file;               // io structore of the zipfile
-	unz_global_info gi;         // public global information
-	uLong byte_before_the_zipfile;// byte before the zipfile, (>0 for sfx)
-	uLong num_file;             // number of the current file in the zipfile
-	uLong pos_in_central_dir;   // pos of the current file in the central dir
-	uLong current_file_ok;      // flag about the usability of the current file
-	uLong central_pos;          // position of the beginning of the central dir
+    unz_ss():
+        file(0),
+        byte_before_the_zipfile(0),
+        num_file(0),
+        pos_in_central_dir(0),
+        current_file_ok(0),
+        central_pos(0),
+        size_central_dir(0),
+        offset_central_dir(0),
+        pfile_in_zip_read(0)
+    {
+    }
 
-	uLong size_central_dir;     // size of the central directory
-	uLong offset_central_dir;   // offset of start of central directory with respect to the starting disk number
+    LUFILE* file;               // io structore of the zipfile
+    unz_global_info gi;         // public global information
+    uLong byte_before_the_zipfile;// byte before the zipfile, (>0 for sfx)
+    uLong num_file;             // number of the current file in the zipfile
+    uLong pos_in_central_dir;   // pos of the current file in the central dir
+    uLong current_file_ok;      // flag about the usability of the current file
+    uLong central_pos;          // position of the beginning of the central dir
 
-	unz_file_info cur_file_info; // public info about the current file in zip
-	unz_file_info_internal cur_file_info_internal; // private info about it
+    uLong size_central_dir;     // size of the central directory
+    uLong offset_central_dir;   // offset of start of central directory with respect to the starting disk number
+
+    unz_file_info cur_file_info; // public info about the current file in zip
+    unz_file_info_internal cur_file_info_internal; // private info about it
     file_in_zip_read_info_s* pfile_in_zip_read; // structure about the current file if we are decompressing it
 } unz_s, *unzFile;
 
@@ -3090,7 +3120,7 @@ unzFile unzOpenInternal(LUFILE *fin)
   if (unz_copyright[0]!=' ') {lufclose(fin); return NULL;}
 
   int err=UNZ_OK;
-  unz_s us={0};
+  unz_s us;
   uLong central_pos=0,uL=0;
   central_pos = unzlocal_SearchCentralDir(fin);
   if (central_pos==0xFFFFFFFF) err=UNZ_ERRNO;
@@ -3138,17 +3168,18 @@ unzFile unzOpenInternal(LUFILE *fin)
 //  return UNZ_OK if there is no problem.
 int unzClose (unzFile file)
 {
-	unz_s* s;
-	if (file==NULL)
-		return UNZ_PARAMERROR;
-	s=(unz_s*)file;
+    
+    if (file==NULL)
+        return UNZ_PARAMERROR;
+
+    unz_s* s=(unz_s*)file;
 
     if (s->pfile_in_zip_read!=NULL)
         unzCloseCurrentFile(file);
 
-	lufclose(s->file);
-	if (s) zfree(s); // unused s=0;
-	return UNZ_OK;
+    lufclose(s->file);
+    zfree(s);
+    return UNZ_OK;
 }
 
 
@@ -3928,7 +3959,7 @@ ZRESULT TUnzip::Open(void *z,unsigned int len,DWORD flags)
 { if (uf!=0 || currentfile!=-1) return ZR_NOTINITED;
   //
 #ifdef ZIP_STD
-  char* buf = getcwd(rootdir,MAX_PATH-1);
+  char* buf = GETCWD(rootdir,MAX_PATH-1);
   if (buf==0) return ZR_NOFILE;
 #else
 #ifdef GetCurrentDirectory
@@ -4032,8 +4063,6 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   _tcsncpy_s(ze->name,MAX_PATH, sfn,MAX_PATH);
 #endif
 
-
-
   unsigned long a = ufi.external_fa;
   // zip has an 'attribute' 32bit value. Its lower half is windows stuff
   // its upper half is standard unix stat.st_mode. We'll start trying
@@ -4042,15 +4071,11 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   bool readonly=  (a&0x00800000)==0;
   //bool readable=  (a&0x01000000)!=0; // unused
   //bool executable=(a&0x00400000)!=0; // unused
-  bool hidden=false, system=false, archive=true;
   // but in normal hostmodes these are overridden by the lower half...
   int host = ufi.version>>8;
   if (host==0 || host==7 || host==11 || host==14)
   { readonly=  (a&0x00000001)!=0;
-    hidden=    (a&0x00000002)!=0;
-    system=    (a&0x00000004)!=0;
     isdir=     (a&0x00000010)!=0;
-    archive=   (a&0x00000020)!=0;
   }
   // readonly; hidden; system; isdir; archive;
   ze->attr=0;
@@ -4059,10 +4084,18 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   if (isdir) ze->attr |= S_IFDIR;
   if (readonly) ze->attr &= ~S_IWUSR;
 #else
+  bool hidden=false, system=false, archive=true;
+  if (host==0 || host==7 || host==11 || host==14)
+  {
+    hidden=    (a&0x00000002)!=0;
+    system=    (a&0x00000004)!=0;
+    archive=   (a&0x00000020)!=0;
+  }
+
   if (isdir) ze->attr |= FILE_ATTRIBUTE_DIRECTORY;
+  if (readonly) ze->attr|=FILE_ATTRIBUTE_READONLY;
   if (archive) ze->attr|=FILE_ATTRIBUTE_ARCHIVE;
   if (hidden) ze->attr|=FILE_ATTRIBUTE_HIDDEN;
-  if (readonly) ze->attr|=FILE_ATTRIBUTE_READONLY;
   if (system) ze->attr|=FILE_ATTRIBUTE_SYSTEM;
 #endif
   ze->comp_size = ufi.compressed_size;
@@ -4135,15 +4168,18 @@ ZRESULT TUnzip::Find(const TCHAR *tname,bool ic,int *index,ZIPENTRY *ze)
 void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
 { // first check that rootdir exists. nb. rootdir has a trailing slash
   if (rootdir!=0)
-  { TCHAR rd[MAX_PATH];
+  { TCHAR rd[MAX_PATH+1];
 
 #ifdef ZIP_STD
   strncpy(rd,rootdir,MAX_PATH);
 #else
   _tcsncpy_s(rd,MAX_PATH,rootdir,MAX_PATH);
-#endif     
+#endif
+
+    // make sure there rd is always null terminated
+    rd[MAX_PATH] = 0;
   
-  size_t len=_tcslen(rd);
+    size_t len=_tcslen(rd);
     if (len>0 && (rd[len-1]=='/' || rd[len-1]=='\\')) rd[len-1]=0;
 #ifdef ZIP_STD
     if (!FileExists(rd)) lumkdir(rd);

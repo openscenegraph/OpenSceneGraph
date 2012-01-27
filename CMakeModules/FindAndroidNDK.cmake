@@ -19,6 +19,11 @@ ENDIF()
 
 IF(NOT ANDROID_NDK)
     FIND_PATH(ANDROID_NDK ndk-build
+    # search for r5c
+        ~/android-ndk-r5c
+        ~/android_develop/android-ndk-r5c
+        ~/ndk-r5c
+        ~/android_develop/ndk-r5c
         # search for r5b
         ~/android-ndk-r5b
         ~/android_develop/android-ndk-r5b

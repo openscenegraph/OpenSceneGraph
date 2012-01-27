@@ -24,6 +24,7 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <iostream>
+#include <sstream>
 
 #include "CameraConfig.h"
 
@@ -632,7 +633,8 @@ bool CameraConfig::defaultConfig()
 
     for( unsigned int i = 0; i < numScreens; i++ )
     {
-      std::string name = "Screen" + i;
+      std::stringstream sstr; sstr<<"Screen"<<i;
+      std::string name = sstr.str();
       std::pair<std::map<std::string, osg::ref_ptr<Camera> >::iterator,bool> res = 
       _camera_map.insert(std::pair<std::string, osg::ref_ptr<Camera> >(name, new Camera));
 

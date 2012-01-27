@@ -152,7 +152,6 @@ public:
         uint32_t formatFlags = header.flags & PVR_TEXTURE_FLAG_TYPE_MASK;
         GLenum internalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
         uint32_t width, height;
-        bool hasAlpha;
         
         if(formatFlags == kPVRTextureFlagTypePVRTC_4 || formatFlags == kPVRTextureFlagTypePVRTC_2 ||
            formatFlags == kPVRTextureFlagTypeOGLPVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_2 ||
@@ -166,17 +165,19 @@ public:
             
             width = header.width;
             height = header.height;
+
+            osg::ref_ptr<osg::Image> image = new osg::Image;
+            if (!image) return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
             
-            if(header.bitmaskAlpha)
-                hasAlpha = true;
-            else
-                hasAlpha = false;
+            unsigned char *imageData = new unsigned char[header.dataLength];
+            if (!imageData) return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
             
-            osg::Image *image = new osg::Image;
-            unsigned char *imageData = new unsigned char[header.dataLength]; 
             fin.read((char*)imageData, header.dataLength);
             if(!fin.good())
+            {
+                delete [] imageData;
                 return ReadResult::ERROR_IN_READING_FILE;
+            }
             
             image->setImage(header.width, header.height, 1,
                             internalFormat,    internalFormat,
@@ -227,7 +228,7 @@ public:
             if(!mipmapdata.empty())
                 image->setMipmapLevels(mipmapdata);
             
-            return image;
+            return image.get();
         }
         
         osg::notify(osg::WARN) << "Failed to read pvr data." << std::endl;

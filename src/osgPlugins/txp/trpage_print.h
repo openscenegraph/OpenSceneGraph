@@ -41,7 +41,7 @@ public:
     virtual void IncreaseIndent(int amount=1);
     // Decreases the current indentation by the amount given (defaults to one)
     virtual void DecreaseIndent(int amount=1);
- protected:
+protected:
     void updateIndent(void);
     int curIndent;
     char indentStr[200];
@@ -51,7 +51,7 @@ public:
    debugging output to a file.
 */
 TX_EXDECL class TX_CLDECL trpgFilePrintBuffer : public trpgPrintBuffer {
- public:
+public:
     // This class can be constructed with either a FILE pointer or a file name
     trpgFilePrintBuffer(FILE *);
     trpgFilePrintBuffer(char *);
@@ -62,7 +62,7 @@ TX_EXDECL class TX_CLDECL trpgFilePrintBuffer : public trpgPrintBuffer {
 
     // For a file printer buffer, this writes a string out to a file
     bool prnLine(const char *str = NULL);
- protected:
+protected:
     bool valid;
     bool isMine;
     FILE *fp;
@@ -75,7 +75,7 @@ TX_EXDECL class TX_CLDECL trpgFilePrintBuffer : public trpgPrintBuffer {
 */
 TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
 {
- public:
+public:
     trpgPrintGraphParser(trpgr_Archive *,trpgrImageHelper *,trpgPrintBuffer *);
     virtual ~trpgPrintGraphParser(void) { };
 
@@ -96,15 +96,15 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     class ReadHelper : public trpgr_Callback
     {
     public:
-    // typedef std::vector<const trpgChildRef> ChildRefList;
-    // The const in the template parameter was removed because it causes GCC to
-    // freak out.  I am of the opinion that const doesn't make sense in a template
-    // parameter for std::vector anyway... const prevents you from changing the
-    // value, so what exactly is the point?  How does one add entries to the vector
-    // without giving them a value?  -ADS
-    typedef std::vector<trpgChildRef> ChildRefList;
+        // typedef std::vector<const trpgChildRef> ChildRefList;
+        // The const in the template parameter was removed because it causes GCC to
+        // freak out.  I am of the opinion that const doesn't make sense in a template
+        // parameter for std::vector anyway... const prevents you from changing the
+        // value, so what exactly is the point?  How does one add entries to the vector
+        // without giving them a value?  -ADS
+        typedef std::vector<trpgChildRef> ChildRefList;
 
-    ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf): pBuf(inBuf), parse(inPG) {}
+        ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf): pBuf(inBuf), parse(inPG) {}
         ~ReadHelper() { Reset();}
 
         void *Parse(trpgToken,trpgReadBuffer &buf);
@@ -121,15 +121,13 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     private:
 
         ChildRefList childRefList;
-
-
     };
 
     // Fetch the archive associated with this print
     trpgr_Archive *GetArchive() {return archive; };
     trpgrImageHelper *GetImageHelp() {return imageHelp; };
 
- protected:
+protected:
     bool StartChildren(void *);
     bool EndChildren(void *);
 

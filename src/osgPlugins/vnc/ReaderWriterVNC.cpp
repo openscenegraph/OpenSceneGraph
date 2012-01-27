@@ -49,6 +49,13 @@ class LibVncImage : public osgWidget::VncImage
         
         static void updateImage(rfbClient* client,int x,int y,int w,int h);
         
+        static void passwordCheck(rfbClient* client,const char* encryptedPassWord,int len);
+        static char* getPassword(rfbClient* client);
+
+        std::string                 _optionString;
+        std::string                 _username;
+        std::string                 _password;
+        
         double                      _timeOfLastUpdate;
         double                      _timeOfLastRender;
 
@@ -89,7 +96,7 @@ class LibVncImage : public osgWidget::VncImage
 
                         if(i)
                         {
-                            OSG_NOTICE<<"Handling "<<i<<" messages"<<std::endl;
+                            OSG_INFO<<"VNC Handling "<<i<<" messages"<<std::endl;
                         
                             if(!HandleRFBServerMessage(_client))
                             return;
@@ -137,7 +144,6 @@ LibVncImage::LibVncImage():
     // setPixelBufferObject(new osg::PixelBufferObject(this);
 
     _inactiveBlock = new osg::RefBlock;
-
 }
 
 LibVncImage::~LibVncImage()
@@ -197,6 +203,18 @@ static rfbBool rfbInitConnection(rfbClient* client)
   return TRUE;
 }
 
+void LibVncImage::passwordCheck(rfbClient* client,const char* encryptedPassWord,int len)
+{
+    OSG_NOTICE<<"LibVncImage::passwordCheck"<<std::endl;
+}
+
+char* LibVncImage::getPassword(rfbClient* client)
+{
+    LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
+    OSG_NOTICE<<"LibVncImage::getPassword "<<image->_password<<std::endl;
+    return strdup(image->_password.c_str());
+}
+
 
 bool LibVncImage::connect(const std::string& hostname)
 {
@@ -210,6 +228,9 @@ bool LibVncImage::connect(const std::string& hostname)
     _client->GotFrameBufferUpdate = updateImage;
     _client->HandleKeyboardLedState = 0;
     _client->HandleTextChat = 0;
+
+    // provide the password if we have one assigned
+    if (!_password.empty())  _client->GetPassword = getPassword;
 
     rfbClientSetClientData(_client, 0, this);
     
@@ -258,15 +279,36 @@ void LibVncImage::close()
 
 rfbBool LibVncImage::resizeImage(rfbClient* client) 
 {
-    osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
+    LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
     
-    int width=client->width;
-    int height=client->height;
-    int depth=client->format.bitsPerPixel;
+    int width = client->width;
+    int height = client->height;
+    int depth = client->format.bitsPerPixel;
 
     OSG_NOTICE<<"resize "<<width<<", "<<height<<", "<<depth<<" image = "<<image<<std::endl;
+    PrintPixelFormat(&(client->format));
 
-    image->allocateImage(width,height,1,GL_RGBA,GL_UNSIGNED_BYTE);
+    bool swap = client->format.redShift!=0;
+
+    if (!image->_optionString.empty())
+    {
+        if (image->_optionString.find("swap")!=std::string::npos || image->_optionString.find("swop")!=std::string::npos) swap = true;
+    }
+    
+    GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
+
+    if (!image->_optionString.empty())
+    {
+        if (image->_optionString.find("RGB")!=std::string::npos) gl_pixelFormat = GL_RGBA;
+        if (image->_optionString.find("RGBA")!=std::string::npos) gl_pixelFormat = GL_RGBA;
+        if (image->_optionString.find("BGR")!=std::string::npos) gl_pixelFormat = GL_BGRA;
+        if (image->_optionString.find("BGRA")!=std::string::npos) gl_pixelFormat = GL_BGRA;
+    }
+
+    image->allocateImage(width, height, 1, gl_pixelFormat, GL_UNSIGNED_BYTE);
+    image->setInternalTextureFormat(GL_RGBA);
+
+
     
     client->frameBuffer= (uint8_t*)(image->data());
     
@@ -320,6 +362,13 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
         ReaderWriterVNC()
         {
             supportsExtension("vnc","VNC plugin");
+            
+            supportsOption("swap","Swaps the pixel format order, exchanging the red and blue channels.");
+            supportsOption("swop","American spelling, same effect as swap.");
+            supportsOption("RGB","Use RGBA pixel format for the vnc image");
+            supportsOption("RGBA","Use RGBA pixel format for the vnc image");
+            supportsOption("BGR","Use BGRA pixel format for the vnc image");
+            supportsOption("BGRA","Use BGRA pixel format for the vnc image");
         }
         
         virtual const char* className() const { return "VNC plugin"; }
@@ -341,9 +390,30 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             OSG_NOTICE<<"Hostname = "<<hostname<<std::endl;
 
             osg::ref_ptr<LibVncImage> image = new LibVncImage;
-            image->setDataVariance(osg::Object::DYNAMIC);
-            
+            image->setDataVariance(osg::Object::DYNAMIC);           
             image->setOrigin(osg::Image::TOP_LEFT);
+
+            const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ?
+                    options->getAuthenticationMap() :
+                    osgDB::Registry::instance()->getAuthenticationMap();
+
+            const osgDB::AuthenticationDetails* details = authenticationMap ?
+                authenticationMap->getAuthenticationDetails(hostname) :
+                0;
+
+            // configure authentication if required.
+            if (details)
+            {
+                OSG_NOTICE<<"Passing in password = "<<details->password<<std::endl;
+
+                image->_username = details->username;
+                image->_password = details->password;
+            }
+
+            if (options && !options->getOptionString().empty())
+            {
+                image->_optionString = options->getOptionString();
+            }
 
             if (!image->connect(hostname))
             {

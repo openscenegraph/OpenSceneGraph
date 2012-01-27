@@ -15,6 +15,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ShadowTexture
     ${HEADER_PATH}/ShadowVolume
     ${HEADER_PATH}/ShadowedScene
+    ${HEADER_PATH}/ShadowSettings
     ${HEADER_PATH}/SoftShadowMap
     ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
@@ -27,6 +28,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ProjectionShadowMap
     ${HEADER_PATH}/StandardShadowMap
     ${HEADER_PATH}/ViewDependentShadowTechnique
+    ${HEADER_PATH}/ViewDependentShadowMap
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -37,6 +39,7 @@ SET(TARGET_SRC
     ShadowTexture.cpp
     ShadowVolume.cpp
     ShadowedScene.cpp
+    ShadowSettings.cpp
     SoftShadowMap.cpp
     ParallelSplitShadowMap.cpp
     Version.cpp
@@ -48,6 +51,7 @@ SET(TARGET_SRC
     MinimalShadowMap.cpp
     StandardShadowMap.cpp
     ViewDependentShadowTechnique.cpp
+    ViewDependentShadowMap.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

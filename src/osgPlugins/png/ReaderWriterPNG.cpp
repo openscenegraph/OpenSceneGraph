@@ -118,6 +118,8 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                 case(GL_LUMINANCE_ALPHA): color = PNG_COLOR_TYPE_GRAY_ALPHA ; break;
                 case(GL_RGB): color = PNG_COLOR_TYPE_RGB; break;
                 case(GL_RGBA): color = PNG_COLOR_TYPE_RGB_ALPHA; break;
+                case(GL_BGR): color = PNG_COLOR_TYPE_RGB; png_set_bgr(png); break;
+                case(GL_BGRA): color = PNG_COLOR_TYPE_RGB_ALPHA; png_set_bgr(png); break;
                 default: return WriteResult::ERROR_IN_WRITING_FILE; break;                
             }
 

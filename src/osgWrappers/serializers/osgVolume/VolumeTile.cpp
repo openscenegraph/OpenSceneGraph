@@ -28,6 +28,11 @@ REGISTER_OBJECT_WRAPPER( osgVolume_VolumeTile,
                          "osg::Object osg::Node osg::Group osgVolume::VolumeTile" )
 {
     ADD_OBJECT_SERIALIZER( Volume, osgVolume::Volume, NULL );  // _volume
+    UPDATE_TO_VERSION( 90 )
+    {
+        REMOVE_SERIALIZER( Volume ); 
+    }
+    
     ADD_BOOL_SERIALIZER( Dirty, false );  // _dirty
     ADD_USER_SERIALIZER( TileID );  // _tileID
     ADD_OBJECT_SERIALIZER( VolumeTechnique, osgVolume::VolumeTechnique, NULL );  // _volumeTechnique

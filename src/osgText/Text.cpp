@@ -753,6 +753,8 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     // Since we tend to loop over contextID, we should cache this value some how
     // instead of recomputing it each time.
     is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
+
+    if (!is_valid_size) return;
     
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
@@ -1599,6 +1601,12 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 void Text::renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+    // If depth testing is disabled, then just render text as normal
+    if( !state.getLastAppliedMode(GL_DEPTH_TEST) ) {
+        drawTextWithBackdrop(state,colorMultiplier);
+        return;
+    }
+
     //glPushAttrib( _enableDepthWrites ? (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) : GL_DEPTH_BUFFER_BIT);
     // Render to color buffer without writing to depth buffer.
     glDepthMask(GL_FALSE);

@@ -9,6 +9,11 @@
 
 #include <sstream>
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable "structure was padded due to __declspec(align())
+    #pragma warning( disable : 4324 )
+#endif
+
 /****************************************************************************
  *
  * Follows is code extracted from the simage library.  Original Authors:
@@ -642,6 +647,12 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
         WriteResult::WriteStatus write_JPEG_file (std::ostream &fout, const osg::Image &img, int quality = 100) const
         {
+            if (!img.isDataContiguous())
+            {
+                OSG_WARN<<"Warning: Writing of image data, that is non contiguous, is not supported by JPEG plugin."<<std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
             int image_width = img.s();
             int image_height = img.t();
             if ( (image_width == 0) || (image_height == 0) )

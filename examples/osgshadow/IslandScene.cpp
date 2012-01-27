@@ -11,6 +11,8 @@
 #include <osg/AlphaFunc>
 #include <osg/CullFace>
 
+#include <osgTerrain/TerrainTile>
+
 static unsigned int heightTexture[] = {
  0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00010101, 0x02000000, 0x00020809,
  0x00000000, 0x00000000, 0x00000000, 0x00000001, 0x00000001, 0x00000000, 0x00000000, 0x00000000,
@@ -422,8 +424,10 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
-    for( unsigned int x = 0; x < grid->getNumColumns() - 1; x++ ) {
-        for( unsigned int y = 0; y < grid->getNumRows() - 1; y++ ) {
+    for( unsigned int x = 0; x < grid->getNumColumns() - 1; x++ )
+    {
+        for( unsigned int y = 0; y < grid->getNumRows() - 1; y++ )
+        {
 
             float z00 = grid->getHeight( x,y );
             float z01 = grid->getHeight( x,y+1 );
@@ -435,10 +439,11 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
             if( z < 400 ) continue;
             if( z > 500 ) continue;
 
-            osg::Vec3 o( x * grid->getXInterval(), y * grid->getYInterval(), 0 );
+            osg::Vec3 o( float(x) * grid->getXInterval(), float(y) * grid->getYInterval(), 0.0f );
             o += grid->getOrigin();
 
-            for( unsigned int d = 0; d < density; d++  ) {
+            for( unsigned int d = 0; d < density; d++  )
+            {
                 osg::Vec3 p( float( rand() ) / RAND_MAX, float( rand() ) / RAND_MAX, 0 );
 
                 z = ( 1.f - p[0] ) * ( 1.f - p[1] ) * z00 + 
@@ -446,14 +451,12 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
                     ( p[0] ) * ( p[1] ) * z11 +
                     ( p[0] ) * ( 1.f - p[1] ) * z10;                
 
-                p.set( p[0] * grid->getXInterval(), p[1] * grid->getYInterval(), z - 2.0 );
-
-                p += o;                 
+                osg::Vec3 pos(o + osg::Vec3(p.x() * grid->getXInterval(), p.y() * grid->getYInterval(), z));
      
                 if( rand() % 3 > 0 )
-                    addTree( p, vertices, normals, texCoords );
+                    addTree( pos, vertices, normals, texCoords );
                 else 
-                    addHouse( p, vertices, normals, texCoords );
+                    addHouse( pos, vertices, normals, texCoords );
 
             }
         }
@@ -469,20 +472,17 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
 {
     float height = 1000;
 
-    osg::Geode* geode = new osg::Geode;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
-    // set up the texture of the base.
-    osg::StateSet* stateset = new osg::StateSet();
-    geode->setStateSet( stateset );
-
-    osg::Image * heightMap = new osg::Image();
+    osg::ref_ptr<osg::Image> heightMap = new osg::Image();
     heightMap->setImage( 64, 64, 1, 
                          GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE, 
                          orderBytes( heightTexture, sizeof( heightTexture ) ), 
                          osg::Image::NO_DELETE );
 
-    osg::Image* colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
-    if ( !colorMap ) {        
+    osg::ref_ptr<osg::Image> colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
+    if ( !colorMap )
+    {
         
         struct colorElevation 
         {
@@ -527,42 +527,53 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
         }
     }
 
-    if (colorMap)
-    {
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(colorMap);
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-    }
-
-    stateset->setAttributeAndModes( new osg::CullFace(), osg::StateAttribute::ON );
+    osg::Vec3 origin(center - osg::Vec3( radius, radius, 0 ));
+    origin.z() = 0.0;
 
     osg::HeightField* grid = new osg::HeightField;
     grid->allocate(heightMap->s(),heightMap->t());
-    grid->setOrigin( center - osg::Vec3( radius, radius, 0 ) );
-    grid->setXInterval(radius*2.0f/grid->getNumColumns() );
-    grid->setYInterval(radius*2.0f/grid->getNumRows());
+    grid->setOrigin( origin );
+    grid->setXInterval( radius*2.0f/(grid->getNumColumns()-1.0) );
+    grid->setYInterval( radius*2.0f/(grid->getNumRows()-1.0) );
 
     for( unsigned int r=0;r<grid->getNumRows()-0;++r)
     {
         for(unsigned int c=0;c<grid->getNumColumns()-0;++c)
         {
-            grid->setHeight( c, r, height * exp( *heightMap->data(c,r) / 255.f ) / exp( 1.0 ) );            
+            grid->setHeight( c, r, height * exp( *heightMap->data(c,r) / 255.f ) / exp( 1.0 ) );
         }
     }
-    osg::ShapeDrawable * sd  = new osg::ShapeDrawable(grid);
-    sd->setColor( osg::Vec4( 1.0, 1.0, 1.0, 1.0 ) );
 
-    geode->addDrawable(sd);
+    osg::ref_ptr<osgTerrain::TerrainTile> terrainTile = new osgTerrain::TerrainTile;
 
-    osg::Group* group = new osg::Group;
-    group->addChild(geode);
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
+    locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+    locator->setTransformAsExtents(center.x()-radius, center.y()-radius, center.x()+radius, center.y()+radius);
 
+    terrainTile->setLocator(locator.get());
+
+    osg::ref_ptr<osgTerrain::HeightFieldLayer> hfl = new osgTerrain::HeightFieldLayer;
+    hfl->setHeightField(grid);
+    hfl->setLocator(locator.get());
+    terrainTile->setElevationLayer(hfl.get());
+
+    osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
+    imageLayer->setImage(colorMap.get());
+    imageLayer->setLocator(locator.get());
+    terrainTile->setColorLayer(0, imageLayer.get());
+
+    osg::StateSet* stateset = terrainTile->getOrCreateStateSet();
+    stateset->setAttributeAndModes( new osg::CullFace(), osg::StateAttribute::ON );
+
+    group->addChild(terrainTile.get());
+    
     group->addChild( createObjects( grid, 1 ) );
 
-    return group;
+    return group.release();
 }
 ////////////////////////////////////////////////////////////////////////////////
-namespace ModelFour {
+namespace ModelFour
+{
     
 osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
 {

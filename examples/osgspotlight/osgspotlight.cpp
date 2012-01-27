@@ -228,7 +228,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
     osg::Group* model = new osg::Group;
  
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();

@@ -79,13 +79,13 @@ class OSG_EXPORT Referenced
         inline int ref() const;
         
         /** Decrement the reference count by one, indicating that 
-            a pointer to this object is referencing it.  If the
+            a pointer to this object is no longer referencing it.  If the
             reference count goes to zero, it is assumed that this object
             is no longer referenced and is automatically deleted.*/
         inline int unref() const;
         
         /** Decrement the reference count by one, indicating that 
-            a pointer to this object is referencing it.  However, do
+            a pointer to this object is no longer referencing it.  However, do
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 

@@ -114,7 +114,7 @@ protected:
     InventorState(const InventorState &s) : ivHead(s.ivHead), ivTexture(s.ivTexture), 
         ivMaterial(s.ivMaterial), osgMaterial(s.osgMaterial),
         osgTexture2Enabled(s.osgTexture2Enabled), osgTexture(s.osgTexture), osgTexEnv(s.osgTexEnv),
-        osgTexGenS(s.osgTexGenS), osgTexGenT(s.osgTexGenT), osgTexGen(osgTexGen),
+        osgTexGenS(s.osgTexGenS), osgTexGenT(s.osgTexGenT), osgTexGen(s.osgTexGen),
         osgLighting(s.osgLighting), osgTwoSided(s.osgTwoSided), osgFrontFace(s.osgFrontFace),
         osgCullFaceEnabled(s.osgCullFaceEnabled), osgCullFace(s.osgCullFace),
         osgBlendEnabled(s.osgBlendEnabled), osgBlendFunc(s.osgBlendFunc)  {}

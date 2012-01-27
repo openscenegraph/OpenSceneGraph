@@ -189,28 +189,27 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerFOX)
     ENDIF(FOX_FOUND)
 
-    IF   (wxWidgets_FOUND)
+    IF   (wxWidgets_FOUND AND (${CMAKE_BUILD_TYPE} STREQUAL "Release"))
         ADD_SUBDIRECTORY(osgviewerWX)
-    ENDIF(wxWidgets_FOUND)
+    ENDIF()
 
     IF   (QT_FOUND AND NOT OSG_GLES1_AVAILABLE AND NOT OSG_GLES2_AVAILABLE AND NOT OSG_GL3_AVAILABLE)
-        OPTION(BUILD_QT_EXAMPLES "Enable the build of the examples that depend on Qt" ON)
 
-        IF (BUILD_QT_EXAMPLES AND QT_QTOPENGL_LIBRARY)
+        IF (QT_QTOPENGL_LIBRARY)
             ADD_SUBDIRECTORY(osgviewerQt)
             ADD_SUBDIRECTORY(osgqfont)
         ENDIF()
 
-        IF (BUILD_QT_EXAMPLES AND QT4_FOUND AND QT_QTWEBKIT_FOUND)
+        IF (QT4_FOUND AND QT_QTWEBKIT_FOUND)
             ADD_SUBDIRECTORY(osgQtWidgets)
             ADD_SUBDIRECTORY(osgQtBrowser)
         ENDIF()
 
     ENDIF()
 
-    IF   (FLTK_FOUND)
+    IF   (FLTK_FOUND AND FT_GL_LIBRARY)
         ADD_SUBDIRECTORY(osgviewerFLTK)
-    ENDIF(FLTK_FOUND)
+    ENDIF()
 
     IF   (WIN32)
 

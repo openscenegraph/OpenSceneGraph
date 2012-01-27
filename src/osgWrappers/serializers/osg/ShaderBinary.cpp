@@ -25,7 +25,7 @@ static bool readData( osgDB::InputStream& is, osg::ShaderBinary& sb )
         is >> osgDB::END_BRACKET;
     }
     sb.assign( size, (unsigned char*)data );
-    delete data;
+    delete [] data;
     return true;
 }
 

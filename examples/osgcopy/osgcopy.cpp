@@ -234,17 +234,17 @@ int main( int argc, char **argv )
 
     // write out the various scene graphs so that they can be browsed, either
     // in an editor or using a graphics diff tool gdiff/xdiff/xxdiff.
-    std::cout << std::endl << "Writing out the original scene graph as 'original.osg'"<<std::endl;
-    osgDB::writeNodeFile(*rootnode,"original.osg");
+    std::cout << std::endl << "Writing out the original scene graph as 'original.osgt'"<<std::endl;
+    osgDB::writeNodeFile(*rootnode,"original.osgt");
 
-    std::cout << std::endl << "Writing out the graph preserving scene graph as 'graph_copy.osg'"<<std::endl;
-    osgDB::writeNodeFile(*graph_copy,"graph_copy.osg");
+    std::cout << std::endl << "Writing out the graph preserving scene graph as 'graph_copy.osgt'"<<std::endl;
+    osgDB::writeNodeFile(*graph_copy,"graph_copy.osgt");
 
-    std::cout << "Writing out the deep copied scene graph as 'deep_copy.osg'"<<std::endl;
-    osgDB::writeNodeFile(*deep_copy,"deep_copy.osg");
+    std::cout << "Writing out the deep copied scene graph as 'deep_copy.osgt'"<<std::endl;
+    osgDB::writeNodeFile(*deep_copy,"deep_copy.osgt");
 
-    std::cout << "Writing out the shallow copied scene graph as 'shallow_copy.osg'"<<std::endl;
-    osgDB::writeNodeFile(*shallow_copy,"shallow_copy.osg");
+    std::cout << "Writing out the shallow copied scene graph as 'shallow_copy.osgt'"<<std::endl;
+    osgDB::writeNodeFile(*shallow_copy,"shallow_copy.osgt");
 
 
     // You can use a bit mask to control which parts of the scene graph are shallow copied

@@ -555,7 +555,7 @@ osgDB::DirectoryContents osgDB::expandWildcardsInFilename(const std::string& fil
     osgDB::DirectoryContents contents;
 
     std::string dir = osgDB::getFilePath(filename);
-    std::string filenameOnly = filename.substr(dir.length(), std::string::npos);
+    std::string filenameOnly = dir.empty() ? filename : filename.substr(dir.length()+1, std::string::npos);
     std::string left = filenameOnly.substr(0, filenameOnly.find('*'));
     std::string right = filenameOnly.substr(filenameOnly.find('*')+1, std::string::npos);
 

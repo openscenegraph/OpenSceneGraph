@@ -1093,12 +1093,21 @@ static osgDB::ReaderWriter::Options* createOptions()
 
 static osg::Image* loadImage(const char *fileName, osgDB::ReaderWriter::Options *options)
 {
-    osg::Image *osgImage = osgDB::readImageFile(fileName, options);
+    osg::ref_ptr<osg::Image> osgImage = osgDB::readImageFile(fileName, options);
 
     if (!osgImage)
+    {
         OSG_WARN << NOTIFY_HEADER << "Could not read texture file '" << fileName << "'.";
+        return 0;
+    }
 
-    return osgImage;
+    if (!osgImage->isDataContiguous())
+    {
+        OSG_WARN << NOTIFY_HEADER << "Inventor cannot handle non contiguous image data found in texture file '" << fileName << "'.";
+        return 0;
+    }
+
+    return osgImage.release();
 }
 
 SbBool SoTexture2Osg::readInstance(SoInput *in, unsigned short flags)
@@ -1261,10 +1270,9 @@ SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
         // create options and read the file
         osgDB::ReaderWriter::Options *options = createOptions();
 
-        SbBool retval = TRUE;
-        if (url.getNum() && url[0].getLength()) {
+        if (url.getNum() && url[0].getLength())
+        {
             osg::ref_ptr<osg::Image> image = loadImage(url[0].getString(), options);
-            retval = image->valid();
             if (!image->valid())
             {
                 OSG_WARN << "Could not read texture file: " << url[0].getString() << std::endl;
@@ -1288,8 +1296,6 @@ SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
                 // We can safely ignore this as we are not going to render the scene graph.
             }
         }
-        else
-            retval = TRUE;
     }
 
     url.enableNotify(oldNotify);

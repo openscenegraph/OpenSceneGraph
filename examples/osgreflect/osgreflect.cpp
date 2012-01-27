@@ -340,7 +340,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cessna.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cessna.osgt");
 
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 
@@ -371,7 +371,7 @@ int main( int argc, char **argv )
     // hint to tell viewer to request stencil buffer when setting up windows
     osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
-    osgDB::writeNodeFile(*rootNode, "test.osg");
+    //osgDB::writeNodeFile(*rootNode, "test.osgt");
 
     return viewer.run();
 

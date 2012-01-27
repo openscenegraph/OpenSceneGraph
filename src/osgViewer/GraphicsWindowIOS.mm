@@ -265,6 +265,11 @@
         }else if(_win->getTraits()->depth == 24){
             glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT24_OES, _backingWidth, _backingHeight);
         }
+#if defined(OSG_GLES2_AVAILABLE)
+        else if(_win->getTraits()->depth == 32){
+            glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT32_OES, _backingWidth, _backingHeight);
+        }
+#endif
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _depthRenderbuffer);
     }
     

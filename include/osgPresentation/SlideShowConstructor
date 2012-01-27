@@ -222,10 +222,10 @@ public:
 
     struct ModelData
     {
-        ModelData():
-            effect("") {}
+        ModelData() {}
             
         std::string effect;
+        std::string options;
     };
 
     struct ImageData
@@ -239,7 +239,8 @@ public:
             loopingMode(osg::ImageStream::NO_LOOPING),
             page(-1),
             backgroundColor(1.0f,1.0f,1.0f,1.0f) {}
-            
+
+        std::string                     options;
         float                           width;
         float                           height;
         osg::Vec4                       region;
@@ -274,6 +275,7 @@ public:
             region[3] = region[4] = region[5] = 1.0f;
         }
 
+        std::string                             options;
         ShadingModel                            shadingModel;
         osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
         bool                                    useTabbedDragger;
@@ -385,6 +387,8 @@ public:
     void layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
     void layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
 
+    void addToCurrentLayer(osg::Node* subgraph);
+    
     void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
     
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
@@ -393,8 +397,8 @@ public:
 
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
 
-    void addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData);
-    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addGraph(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password);
     void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
     osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
@@ -509,6 +513,10 @@ protected:
     
     osg::ref_ptr<FilePathData>      _filePathData;
     
+    osg::ref_ptr<osg::Group>                _layerToApplyEventCallbackTo;
+    osg::ref_ptr<osgGA::GUIEventHandler>    _currentEventCallbackToApply;
+
+
     std::string findFileAndRecordPath(const std::string& filename);
     
     void recordOptionsFilePath(const osgDB::Options* options);

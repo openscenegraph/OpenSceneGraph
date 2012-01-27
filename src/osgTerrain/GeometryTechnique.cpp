@@ -774,9 +774,6 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
     float sampleRatio = terrain ? terrain->getSampleRatio() : 1.0f;
 
-    double i_sampleFactor = 1.0;
-    double j_sampleFactor = 1.0;
-
     // OSG_NOTICE<<"Sample ratio="<<sampleRatio<<std::endl;
 
     unsigned int minimumNumColumns = 16u;
@@ -789,9 +786,6 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     
         numColumns = std::max((unsigned int) (float(originalNumColumns)*sqrtf(sampleRatio)), minimumNumColumns);
         numRows = std::max((unsigned int) (float(originalNumRows)*sqrtf(sampleRatio)),minimumNumRows);
-
-        i_sampleFactor = double(originalNumColumns-1)/double(numColumns-1);
-        j_sampleFactor = double(originalNumRows-1)/double(numRows-1);
     }
     
     

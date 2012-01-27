@@ -87,5 +87,5 @@ int main(int argc, char** argv) {
 
     wm->addChild(canvas);
 
-    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
+    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osgt"));
 }

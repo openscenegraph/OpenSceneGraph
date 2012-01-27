@@ -23,17 +23,15 @@ bool colorWidgetLeave(osgWidget::Event& event) {
     return true;
 }
 
-bool windowMouseOver(osgWidget::Event& event) {
-    osgWidget::XYCoord xy = event.getWindow()->localXY(event.x, event.y);
-
+bool windowMouseOver(osgWidget::Event& /*event*/) {
+    //osgWidget::XYCoord xy = event.getWindow()->localXY(event.x, event.y);
     // osgWidget::warn() << "WINDOW " << xy.x() << " - " << xy.y() << std::endl;
 
     return true;
 }
 
-bool widgetMouseOver(osgWidget::Event& event) {
-    osgWidget::XYCoord xy = event.getWidget()->localXY(event.x, event.y);
-
+bool widgetMouseOver(osgWidget::Event& /*event*/) {
+    // osgWidget::XYCoord xy = event.getWidget()->localXY(event.x, event.y);
     // osgWidget::warn() << "WIDGET mouseOver " << xy.x() << " - " << xy.y() << std::endl;
 
     return true;

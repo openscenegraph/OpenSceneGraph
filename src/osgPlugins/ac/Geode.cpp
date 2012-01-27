@@ -784,28 +784,16 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                     // Check for a texture
                     if (theState)
                     {
-                    const osg::StateSet::TextureModeList& TextureModeList = theState->getTextureModeList();
                     const osg::StateSet::TextureAttributeList& TextureAttributeList = theState->getTextureAttributeList();
                     if (TextureAttributeList.size() > 0)
                     {
-                        // Dont yet know how to handle more than one texture
-                        assert(TextureAttributeList.size() == 1);
-                        assert(TextureModeList.size() == 1);
-                        const osg::StateSet::ModeList& ModeList = TextureModeList[0];
-                        assert(ModeList.size() == 1);
                         // Check for a single mode of GL_TEXTURE_2D and ON
-                                                osg::StateSet::ModeList::value_type ModeValuePair = *ModeList.begin();
-                        assert(ModeValuePair.first == GL_TEXTURE_2D);
-                        assert(ModeValuePair.second == osg::StateAttribute::ON);
                         const osg::StateSet::AttributeList& AttributeList = TextureAttributeList[0];
                         //                    assert(AttributeList.size() == 1);
                         const osg::Texture2D *pTexture2D = dynamic_cast<const osg::Texture2D*>(AttributeList.begin()->second.first.get());
                         //                    assert(NULL != pTexture2D);
                         if (NULL != pTexture2D)
                         {
-                            float fRep_s, fRep_t;
-                            float fOffset_s, fOffset_t;
-                            
                             pTexCoords = (const osg::Vec2*)pGeometry->getTexCoordArray(0)->getDataPointer();
                             
                             // OK now see if I can calcualate the repeats
@@ -828,8 +816,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                         if (pTexCoords[j][0] < fMin)
                                             fMin = pTexCoords[j][0];
                                     }
-                                    fRep_s = fMax - fMin;
-                                    fOffset_s = fMin;
                                     fMin = std::numeric_limits<float>::max();
                                     fMax = std::numeric_limits<float>::min();
                                     for (j = 0; j < iNumTexCoords; j++)
@@ -839,24 +825,9 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                         if (pTexCoords[j][1] < fMin)
                                             fMin = pTexCoords[j][1];
                                     }
-                                    fRep_t = fMax - fMin;
-                                    fOffset_t = fMin;
-                                }
-                                else
-                                {
-                                    fRep_s = 1.0;
-                                    fOffset_s = 0.0;
-                                    fRep_t = 1.0;
-                                    fOffset_t = 0.0;
                                 }
                             }
-                            else
-                            {
-                                fRep_s = 1.0;
-                                fOffset_s = 0.0;
-                                fRep_t = 1.0;
-                                fOffset_t = 0.0;
-                            }
+
                             { // replace back slash with / for ac3d convention GWM Sep 2003
                                 std::string fname=pTexture2D->getImage()->getFileName();
                                 unsigned int pos;
@@ -865,8 +836,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 }
                                 fout << "texture \"" << fname << "\"" << std::endl;
                             }
-//                            fout << "texrep " << fRep_s << " " << fRep_t << std::endl;
-//                            fout << "texoff " << fOffset_s << " " << fOffset_s << std::endl;
                             // Temp frig
                             fout << "texrep 1 1" << std::endl;
                             fout << "texoff 0 0" << std::endl;
@@ -929,27 +898,21 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                         const osg::PrimitiveSet* primitiveset = pItr->get();
                         GLenum mode=primitiveset->getMode();
                         
-                        unsigned int primLength;
                         unsigned int surfaceFlags = 0x00;
                         
                         switch(mode)
                         {
                         case(osg::PrimitiveSet::POINTS):
-                            primLength = 1;
                             surfaceFlags = 0x02;
                             break;
                         case(osg::PrimitiveSet::LINES):
-                            primLength = 2;
                             surfaceFlags = 0x02;
                             break;
                         case(osg::PrimitiveSet::TRIANGLES):
-                            primLength = 3;
                             break;
                         case(osg::PrimitiveSet::QUADS):
-                            primLength = 4;
                             break;
                         default:
-                            primLength = 0;
                             break; // compute later when =0.
                         }
                         
@@ -1027,25 +990,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 default:
                                     break; // unknown shape
                                 }
-        /*                        const osg::DrawArrayLengths* drawArrayLengths = static_cast<const osg::DrawArrayLengths*>(primitiveset);
-                                unsigned int vindex = drawArrayLengths->getFirst();
-                                for(osg::DrawArrayLengths::const_iterator primItr = drawArrayLengths->begin(); primItr !=drawArrayLengths->end(); ++primItr)
-                                {
-                                    unsigned int localPrimLength;
-                                    if (primLength == 0) localPrimLength = *primItr;
-                                    else localPrimLength = primLength;
-                                    
-                                    for(GLsizei primCount = 0; primCount < *primItr; ++primCount)
-                                    {
-                                        if ((primCount%localPrimLength)==0)
-                                        {
-                                            OutputSurfHead(iCurrentMaterial,surfaceFlags,localPrimLength, fout);
-                                        }
-                                        OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-                                        ++vindex;
-                                    }
-                                    
-                                }*/
                                 break;
                             }
                         case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
@@ -1074,24 +1018,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 default:
                                     break; // unknown shape
                                 }
-/*                                if (primLength == 0)
-                                    primLength = primitiveset->getNumIndices();
-                                
-                                const osg::DrawElementsUByte* drawElements = static_cast<const osg::DrawElementsUByte*>(primitiveset);
-                                
-                                unsigned int primCount = 0;
-                                for(osg::DrawElementsUByte::const_iterator primItr=drawElements->begin(); primItr!=drawElements->end(); ++primCount,++primItr)
-                                {
-                                    
-                                    if ((primCount%primLength) == 0)
-                                    {
-        OutputSurfHead(iCurrentMaterial,surfaceFlags,primLength, fout);
-                                    }
-                                    
-                                    unsigned int vindex=*primItr;
-                                    OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-                                }
-                                */
                                 
                                 break;
                             }

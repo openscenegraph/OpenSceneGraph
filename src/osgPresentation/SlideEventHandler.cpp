@@ -503,82 +503,41 @@ public:
         
     void apply(osg::Node& node)
     {
-        if (node.getStateSet()) 
-        {
-            apply(*node.getStateSet());
-        }
-        
         traverse(node);
     }
     
     void apply(osg::LightSource& lightsource)
     {
-        if (lightsource.getStateSet()) 
-        {
-            apply(*lightsource.getStateSet());
-        }
-    
         if (lightsource.getLight())
         {
-            OSG_INFO<<"Adjusting light"<<std::endl;
-
-            osg::Light* light = lightsource.getLight();
-
-            float azim = _currentX*osg::PI;
-            float elevation = _currentY*osg::PI_2;
-            osg::Vec3 direction(sin(azim)*cos(elevation),sin(elevation),cos(azim)*cos(elevation));
-            
             if (lightsource.getReferenceFrame()==osg::LightSource::RELATIVE_RF)
             {
-                OSG_INFO<<"Relative to absolute"<<std::endl;
+                apply( osg::Matrix::identity(), lightsource.getLight());
             }
             else
             {
-                osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
-                OSG_INFO<<"ModelView"<<matrix<<std::endl;
-
-                //direction = osg::Matrixd::transform3x3(matrix,direction);
-                //direction.normalize();
-
-                //direction = direction*matrix;
-                //direction.normalize();
-
+                apply(osg::computeEyeToLocal(_viewMatrix,_nodePath), lightsource.getLight());
             }
-
-            light->setPosition(osg::Vec4(direction,0.0f));
-
         }
         
         traverse(lightsource);
     }
 
-    void apply(osg::StateSet& stateset)
+    void apply(const osg::Matrixd& matrix, osg::Light* light)
     {
-        osg::TexEnvCombine* texenvcombine = dynamic_cast<osg::TexEnvCombine*>(stateset.getTextureAttribute(0,osg::StateAttribute::TEXENV));
-        if (texenvcombine)
-        {
-            apply(*texenvcombine);
-        }
-    }
-       
-    void apply(osg::TexEnvCombine& texenv)
-    {
-        OSG_INFO<<"Adjusting tex env combine"<<std::endl;
+        // compute direction of light based on a projecting onto a hemi-sphere.
+        float sum_x2_y2 = _currentX*_currentX + _currentY*_currentY;
+        osg::Vec3 direction;
+        if (sum_x2_y2<1.0) direction.set(_currentX, _currentY, sqrtf(1.0-sum_x2_y2));
+        else direction.set(_currentX, _currentY, 0.0);
         
-        osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
+        direction.normalize();
         
-        OSG_INFO<<"ModelView"<<matrix<<std::endl;
-
-        float azim = _currentX*osg::PI;
-        float elevation = _currentY*osg::PI_2;
-        osg::Vec3 direction(sin(azim)*cos(elevation),sin(elevation),cos(azim)*cos(elevation));
-
-        direction = osg::Matrixd::transform3x3(matrix,direction);
+        direction = osg::Matrixd::transform3x3(matrix, direction);
         direction.normalize();
 
-        texenv.setConstantColor(osg::Vec4((direction.x()+1.0f)*0.5f,(direction.y()+1.0f)*0.5f,(direction.z()+1.0f)*0.5f,1.0f));
+        light->setPosition(osg::Vec4(direction,0.0f));
     }
-
 
     osg::Matrixd    _viewMatrix;
     float           _currentX, _currentY;
@@ -661,7 +620,8 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _tickAtLastSlideOrLayerChange(0),
     _timeDelayOnNewSlideWithMovies(0.25f),
     _minimumTimeBetweenKeyPresses(0.25),
-    _timeLastKeyPresses(-1.0)
+    _timeLastKeyPresses(-1.0),
+    _requestReload(false)
 {
     s_seh = this;
 }
@@ -680,6 +640,10 @@ void SlideEventHandler::set(osg::Node* model)
     aucv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
     model->accept(aucv);
 #endif
+    _firstSlideOrLayerChange = true;
+    _tickAtFirstSlideOrLayerChange = 0;
+    _tickAtLastSlideOrLayerChange = 0;
+    _timeLastKeyPresses = -1;
 
     ActiveOperators operators;
     operators.collect(model, osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
@@ -781,7 +745,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         home();
         OSG_NOTICE<<"Assigned viewer. to SlideEventHandler"<<std::endl;
     }
-    // else  OSG_NOTICE<<"SlideEventHandler::handle()"<<std::endl;
+    //else  OSG_NOTICE<<"SlideEventHandler::handle() "<<ea.getTime()<<std::endl;
 
 
     if (ea.getHandled()) return false;
@@ -975,17 +939,17 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 */
             else if (ea.getKey()=='u')
             {
-                updateAlpha(true,false,ea.getX(),ea.getY());
+                updateAlpha(true,false,ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
             else if (ea.getKey()=='i')
             {
-                updateAlpha(false,true,ea.getX(),ea.getY());
+                updateAlpha(false,true,ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
             else if (ea.getKey()=='k')
             {
-                updateLight(ea.getX(),ea.getY());
+                updateLight(ea.getXnormalized(),ea.getYnormalized());
                 return true;
             }
 
@@ -996,6 +960,11 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             if (ea.getKey()=='h')
             {
                 _hold = false;
+                return true;
+            }
+            else if (ea.getKey()=='u')
+            {
+                setRequestReload(true);
                 return true;
             }
             return false;
@@ -1026,6 +995,11 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
     OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
     
+    if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren()))
+    {
+        slideNum = LAST_POSITION;
+    }
+
     if (slideNum==LAST_POSITION && _presentationSwitch->getNumChildren()>0)
     {
         slideNum = _presentationSwitch->getNumChildren()-1;
@@ -1113,6 +1087,14 @@ bool SlideEventHandler::selectLayer(int layerNum)
 {
     if (!_slideSwitch) return false;
 
+    bool withinSlide = true;
+
+    if (layerNum>=static_cast<int>(_slideSwitch->getNumChildren()))
+    {
+        withinSlide = false;
+        layerNum = LAST_POSITION;
+    }
+
     if (layerNum==LAST_POSITION && _slideSwitch->getNumChildren()>0)
     {
         layerNum = _slideSwitch->getNumChildren()-1;
@@ -1127,23 +1109,31 @@ bool SlideEventHandler::selectLayer(int layerNum)
 
     OSG_INFO<<"Selected layer '"<<_slideSwitch->getChild(_activeLayer)->getName()<<"' num="<<_activeLayer<< std::endl;
 
-    return true;
+    return withinSlide;
 }
 
 bool SlideEventHandler::nextLayerOrSlide()
 {
-    if (nextLayer()) return true;
-    else return nextSlide();
+    if (nextLayer())
+    {
+        return true;
+    }
+    else
+    {
+        return nextSlide();
+    }
 }
 
 bool SlideEventHandler::previousLayerOrSlide()
 {
+    OSG_INFO<<"previousLayerOrSlide()"<<std::endl;
     if (previousLayer()) return true;
     else return previousSlide();
 }
 
 bool SlideEventHandler::nextSlide()
 {
+    OSG_INFO<<"nextSlide()"<<std::endl;
     LayerAttributes* la = _slideSwitch.valid() ? dynamic_cast<LayerAttributes*>(_slideSwitch->getUserData()) : 0;
     if (la && la->requiresJump())
     {
@@ -1173,6 +1163,7 @@ bool SlideEventHandler::nextSlide()
 
 bool SlideEventHandler::previousSlide()
 {
+    OSG_INFO<<"previousSlide()"<<std::endl;
 #if 1
     // start position when doing previous slide set to top of slide
     if (_activeSlide>0) return selectSlide(_activeSlide-1);
@@ -1188,7 +1179,7 @@ bool SlideEventHandler::previousSlide()
 
 bool SlideEventHandler::nextLayer()
 {
-    LayerAttributes* la = (_slideSwitch.valid() && _activeLayer>=0) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
+    LayerAttributes* la = (_slideSwitch.valid() && _activeLayer<static_cast<int>(_slideSwitch->getNumChildren())) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
     if (la)
     {
         la->callLeaveCallbacks(_slideSwitch->getChild(_activeLayer));
@@ -1215,11 +1206,13 @@ bool SlideEventHandler::nextLayer()
         }
     }
 
+    OSG_INFO<<"nextLayer() calling selectLayer("<<_activeLayer+1<<")"<<std::endl;
     return selectLayer(_activeLayer+1);
 }
 
 bool SlideEventHandler::previousLayer()
 {
+    OSG_INFO<<"previousLayer()"<<std::endl;
     if (_activeLayer>0) return selectLayer(_activeLayer-1);
     else return false;
 }
@@ -1232,8 +1225,7 @@ void SlideEventHandler::updateOperators()
 
     if (_viewer.valid())
     {
-        UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),0.0f,0.0f);
-        _viewer->getSceneData()->accept(uav);
+        updateLight(0.0f,0.0f);
     }
 }
 
@@ -1288,6 +1280,19 @@ void SlideEventHandler::updateLight(float x, float y)
 
     UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),x,y);
     _viewer->getSceneData()->accept(uav);
+
+    if (_viewer->getLightingMode()!= osg::View::NO_LIGHT && _viewer->getLight())
+    {
+        if (_viewer->getLightingMode()== osg::View::SKY_LIGHT)
+        {
+            uav.apply(_viewer->getCamera()->getViewMatrix(), _viewer->getLight());
+        }
+        else if (_viewer->getLightingMode()== osg::View::HEADLIGHT)
+        {
+            uav.apply(osg::Matrix::identity(), _viewer->getLight());
+        }
+    }
+
 }
 
 void SlideEventHandler::compileSlide(unsigned int slideNum)
@@ -1323,11 +1328,9 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
 
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
-    OSG_INFO<<" keyPosition._key "<<keyPosition._key<<" "<<keyPosition._x<<" "<<keyPosition._y<<std::endl;
-
     osgGA::EventQueue* eq = _viewer->getEventQueue();
 
-    // reset the time of the last key press to ensure thatthe event is disgarded as a key repeat.
+    // reset the time of the last key press to ensure that the event is disgarded as a key repeat.
     _timeLastKeyPresses = -1.0;
     
     if (keyPosition._x!=FLT_MAX)
@@ -1338,7 +1341,10 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
     
     if (keyPosition._y!=FLT_MAX)
     {
-        float yRescaled = eq->getCurrentEventState()->getYmin() + (keyPosition._y+1.0f)*0.5f*(eq->getCurrentEventState()->getXmax()-eq->getCurrentEventState()->getYmin());
+        float y = (eq->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS) ?
+                   keyPosition._y : -keyPosition._y;
+            
+        float yRescaled = eq->getCurrentEventState()->getYmin() + (y+1.0f)*0.5f*(eq->getCurrentEventState()->getYmax()-eq->getCurrentEventState()->getYmin());
         eq->getCurrentEventState()->setY(yRescaled);
     }
 
@@ -1347,4 +1353,8 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 }
 
 
+void SlideEventHandler::setRequestReload(bool flag)
+{
+    _requestReload = flag;
+}
 

@@ -183,7 +183,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
 
     osg::Group* model = new osg::Group;
 
-    osg::Node* glider = osgDB::readNodeFile("glider.osg");
+    osg::Node* glider = osgDB::readNodeFile("glider.osgt");
     if (glider)
     {
         const osg::BoundingSphere& bs = glider->getBound();
@@ -236,7 +236,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
         model->addChild(xform);
     }
  
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();

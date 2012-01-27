@@ -94,7 +94,7 @@ void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
             // Update texture pool size
             _set->getParent()->getCurrTexturePoolSize() -= previousSize;
             _set->getParent()->getCurrTexturePoolSize() += _profile._size;
-       }
+        }
     }
 }
 
@@ -414,7 +414,7 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
         }
     }
 
-    if (_parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
+    if (_profile._size!=0 && _parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
     {
         // OSG_NOTICE<<"Plenty of space in TextureObject pool"<<std::endl;
         return;
@@ -431,7 +431,11 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
     unsigned int numDeleted = 0;
     unsigned int sizeRequired = _parent->getCurrTexturePoolSize() - _parent->getMaxTexturePoolSize();
-    unsigned int maxNumObjectsToDelete = static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size)));
+
+    unsigned int maxNumObjectsToDelete = _profile._size!=0 ?
+        static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size))):
+        _orphanedTextureObjects.size();
+        
     OSG_INFO<<"_parent->getCurrTexturePoolSize()="<<_parent->getCurrTexturePoolSize() <<" _parent->getMaxTexturePoolSize()="<< _parent->getMaxTexturePoolSize()<<std::endl;
     OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orhpans"<<std::endl;
 
@@ -1074,7 +1078,7 @@ Texture::Texture():
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
             _clientStorageHint(false),
-            _resizeNonPowerOfTwoHint(!OSG_GLES2_FEATURES && !OSG_GL3_FEATURES),
+            _resizeNonPowerOfTwoHint(true),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
@@ -1843,6 +1847,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    unsigned int rowLength = image->getRowLength();
 
     bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
     if (useClientStorage)
@@ -1892,6 +1897,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
         PixelStorageModes psm;
         psm.pack_alignment = image->getPacking();
+        psm.pack_row_length = image->getRowLength();
         psm.unpack_alignment = image->getPacking();
 
         // rescale the image to the correct size.
@@ -1900,6 +1906,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                         inwidth,inheight,image->getDataType(),
                         dataPtr);
 
+        rowLength = 0;
     }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
@@ -1911,6 +1918,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        rowLength = 0;
 #ifdef DO_TIMING
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -1919,6 +1927,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         pbo = 0;
     }
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
@@ -2109,6 +2119,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    unsigned int rowLength = image->getRowLength();
     
     unsigned char* dataPtr = (unsigned char*)image->data();
 
@@ -2148,6 +2159,8 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),
                       dataPtr);
+
+        rowLength = 0;
     }
 
 
@@ -2160,6 +2173,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        rowLength = 0;
 #ifdef DO_TIMING
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -2168,6 +2182,8 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo = 0;
     }
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 
     if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
@@ -2480,7 +2496,9 @@ Texture::Extensions::Extensions(unsigned int contextID)
                                    isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2f) || 
                                    isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f);
                                    
-    _isTextureBorderClampSupported = OSG_GL3_FEATURES || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f);
+
+    _isTextureBorderClampSupported = OSG_GL3_FEATURES ||
+                                     ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f));
     
     _isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
 

@@ -566,7 +566,6 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
             
         case osg::PrimitiveSet::TRIANGLE_FAN:
             {
-                osg::Vec3 ptest=(*constraintverts)[prset->index(0)];
                 if (prset->index(0)>=npts)
                 {
                     // this is an added point.
@@ -976,7 +975,6 @@ bool DelaunayTriangulator::triangulate()
                             // 2 points on the constraint
                             bool edgused=false;// first check for exact edge indices are used.
                             Triangle_list::iterator titr;
-                            const osg::Vec3 curp=(*vercon)[prset->index(i)];
                             int it=0;
                             for (titr=triangles.begin(); titr!=triangles.end() && !edgused; ++titr)
                             {
@@ -1160,7 +1158,14 @@ bool DelaunayTriangulator::triangulate()
             pt_indices.push_back(ti->c());
         }
     }
-
+    
+    // LF August 2011 fix crash when no triangle is created
+    if (!pt_indices.size())
+    {
+        OSG_WARN << "Warning: DelaunayTriangulator::triangulate(): no triangle generated" << std::endl;
+        return false;        
+    }    
+    
     prim_tris_ = new osg::DrawElementsUInt(GL_TRIANGLES, pt_indices.size(), &(pt_indices.front()));
 
     OSG_INFO << "DelaunayTriangulator: process done, " << prim_tris_->getNumPrimitives() << " triangles remain\n";

@@ -26,10 +26,13 @@
 #include <osgManipulator/TabBoxTrackballDragger>
 #include <osgManipulator/TabPlaneDragger>
 #include <osgManipulator/TabPlaneTrackballDragger>
+#include <osgManipulator/Scale1DDragger>
+#include <osgManipulator/Scale2DDragger>
 #include <osgManipulator/TrackballDragger>
 #include <osgManipulator/Translate1DDragger>
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslateAxisDragger>
+#include <osgManipulator/TranslatePlaneDragger>
 
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
@@ -80,6 +83,24 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     else if ("TranslateAxisDragger" == name)
     {
         osgManipulator::TranslateAxisDragger* d = new osgManipulator::TranslateAxisDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("TranslatePlaneDragger" == name)
+    {
+        osgManipulator::TranslatePlaneDragger* d = new osgManipulator::TranslatePlaneDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("Scale1DDragger" == name)
+    {
+        osgManipulator::Scale1DDragger* d = new osgManipulator::Scale1DDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("Scale2DDragger" == name)
+    {
+        osgManipulator::Scale2DDragger* d = new osgManipulator::Scale2DDragger();
         d->setupDefaultGeometry();
         dragger = d;
     }
@@ -305,7 +326,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
 
-    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger,TabPlaneTrackballDragger,TrackballDragger,Translate1DDragger,Translate2DDragger,TranslateAxisDragger,TabBoxDragger]");
+    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger, TabPlaneTrackballDragger, TrackballDragger, Translate1DDragger, Translate2DDragger, TranslateAxisDragger, TabBoxDragger, TranslatePlaneDragger, Scale1DDragger, Scale2DDragger]");
     arguments.getApplicationUsage()->addCommandLineOption("--fixedDraggerSize","Fix the size of the dragger geometry in the screen space");
     
     bool fixedSizeInScreen = false;

@@ -38,8 +38,44 @@
 #include <osg/MatrixTransform>
 #include <osg/Geometry>
 #include <osg/Material>
+#include <osg/io_utils>
 
 #include <iostream>
+
+class PlaneConstraint : public osgManipulator::Constraint
+{
+public:
+        PlaneConstraint() {}
+    
+        virtual bool constrain(osgManipulator::TranslateInLineCommand& command) const
+        {
+            OSG_NOTICE<<"TranslateInLineCommand "<<command.getTranslation()<<std::endl;
+            return true;            
+        }
+        virtual bool constrain(osgManipulator::TranslateInPlaneCommand& command) const
+        {
+            //command.setTranslation(osg::Vec3(0.0f,0.0f,0.0f));
+            OSG_NOTICE<<"TranslateInPlaneCommand "<<command.getTranslation()<<std::endl;
+            return true;
+        }
+        virtual bool constrain(osgManipulator::Scale1DCommand& command) const
+        {
+            //command.setScale(1.0f);
+            OSG_NOTICE<<"Scale1DCommand"<<command.getScale()<<std::endl;
+            return true;            
+        }
+        virtual bool constrain(osgManipulator::Scale2DCommand& command) const
+        {
+            //command.setScale(osg::Vec2d(1.0,1.0));
+            OSG_NOTICE<<"Scale2DCommand "<<command.getScale()<<std::endl;
+            return true;
+        }
+        virtual bool constrain(osgManipulator::ScaleUniformCommand& command) const
+        {
+            OSG_NOTICE<<"ScaleUniformCommand"<<command.getScale()<<std::endl;
+            return true;            
+        }
+};
 
 osgManipulator::Dragger* createDragger(const std::string& name)
 {
@@ -48,6 +84,7 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     {
         osgManipulator::TabPlaneDragger* d = new osgManipulator::TabPlaneDragger();
         d->setupDefaultGeometry();
+        d->addConstraint(new PlaneConstraint());
         dragger = d;
     }
     else if ("TabPlaneTrackballDragger" == name)

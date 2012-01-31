@@ -17,7 +17,7 @@
 #include <osg/Material>
 #include <osgGA/EventVisitor>
 #include <osgViewer/View>
-
+#include <osg/io_utils>
 using namespace osgManipulator;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +71,8 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         }
         case MotionCommand::MOVE:
         {
+            //OSG_NOTICE<<"MotionCommand::MOVE "<<command.getMotionMatrix()<<std::endl;
+            
             // Transform the command's motion matrix into local motion matrix.
             osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
                                             * command.getMotionMatrix()
@@ -394,18 +396,29 @@ void Dragger::dispatch(MotionCommand& command)
         itr != _constraints.end();
         ++itr)
     {
-        (*itr)->constrain(command);
+        command.accept(*(*itr));
+    }
+
+    // apply any constraints of parent dragger.
+    if (getParentDragger()!=this)
+    {
+        for(Constraints::iterator itr = getParentDragger()->getConstraints().begin();
+            itr != getParentDragger()->getConstraints().end();
+            ++itr)
+        {
+            command.accept(*(*itr));
+        }
     }
 
     // move self
     getParentDragger()->receive(command);
 
-
+    // pass on movement to any dragger callbacks
     for(DraggerCallbacks::iterator itr = getParentDragger()->getDraggerCallbacks().begin();
         itr != getParentDragger()->getDraggerCallbacks().end();
         ++itr)
     {
-        (*itr)->receive(command);
+        command.accept(*(*itr));
     }
 }
 

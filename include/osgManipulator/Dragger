@@ -40,28 +40,6 @@ class Rotate3DCommand;
 /** Computes the nodepath from the given node all the way upto the root. */
 extern OSGMANIPULATOR_EXPORT void computeNodePathToRoot(osg::Node& node, osg::NodePath& np);
 
-class DraggerCallback : virtual public osg::Object
-{
-    public:
-        DraggerCallback():
-            osg::Object(true) {}
-
-        DraggerCallback(const DraggerCallback&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
-            osg::Object(true) {}
-
-        META_Object(osgManipulator, DraggerCallback);
-
-        /**
-         * Receive motion commands. Returns true on success.
-         */
-        virtual bool receive(const MotionCommand&) { return false; }
-        virtual bool receive(const TranslateInLineCommand& command)  { return receive((MotionCommand&)command); }
-        virtual bool receive(const TranslateInPlaneCommand& command) { return receive((MotionCommand&)command); }
-        virtual bool receive(const Scale1DCommand& command)          { return receive((MotionCommand&)command); }
-        virtual bool receive(const Scale2DCommand& command)          { return receive((MotionCommand&)command); }
-        virtual bool receive(const ScaleUniformCommand& command)     { return receive((MotionCommand&)command); }
-        virtual bool receive(const Rotate3DCommand& command)         { return receive((MotionCommand&)command); }
-};
 
 class OSGMANIPULATOR_EXPORT DraggerTransformCallback : public DraggerCallback
 {

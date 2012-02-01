@@ -49,33 +49,35 @@ public:
     
         virtual bool constrain(osgManipulator::TranslateInLineCommand& command) const
         {
-            OSG_NOTICE<<"TranslateInLineCommand "<<command.getTranslation()<<std::endl;
+            OSG_NOTICE<<"PlaneConstraint TranslateInLineCommand "<<command.getTranslation()<<std::endl;
             return true;            
         }
         virtual bool constrain(osgManipulator::TranslateInPlaneCommand& command) const
         {
             //command.setTranslation(osg::Vec3(0.0f,0.0f,0.0f));
-            OSG_NOTICE<<"TranslateInPlaneCommand "<<command.getTranslation()<<std::endl;
+            OSG_NOTICE<<"PlaneConstraint TranslateInPlaneCommand "<<command.getTranslation()<<std::endl;
             return true;
         }
         virtual bool constrain(osgManipulator::Scale1DCommand& command) const
         {
             //command.setScale(1.0f);
-            OSG_NOTICE<<"Scale1DCommand"<<command.getScale()<<std::endl;
+            OSG_NOTICE<<"PlaneConstraint Scale1DCommand"<<command.getScale()<<std::endl;
             return true;            
         }
         virtual bool constrain(osgManipulator::Scale2DCommand& command) const
         {
             //command.setScale(osg::Vec2d(1.0,1.0));
-            OSG_NOTICE<<"Scale2DCommand "<<command.getScale()<<std::endl;
+            OSG_NOTICE<<"PlaneConstraint Scale2DCommand "<<command.getScale()<<std::endl;
             return true;
         }
         virtual bool constrain(osgManipulator::ScaleUniformCommand& command) const
         {
-            OSG_NOTICE<<"ScaleUniformCommand"<<command.getScale()<<std::endl;
+            OSG_NOTICE<<"PlaneConstraint ScaleUniformCommand"<<command.getScale()<<std::endl;
             return true;            
         }
 };
+
+
 
 osgManipulator::Dragger* createDragger(const std::string& name)
 {
@@ -234,7 +236,14 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
     dragger->setMatrix(osg::Matrix::scale(scale, scale, scale) *
                        osg::Matrix::translate(scene->getBound().center()));
 
-    dragger->addTransformUpdating(selection);
+    if (dynamic_cast<osgManipulator::TabPlaneDragger*>(dragger))
+    {
+        dragger->addTransformUpdating(selection, osgManipulator::DraggerTransformCallback::HANDLE_TRANSLATE_IN_LINE);
+    }
+    else
+    {
+        dragger->addTransformUpdating(selection);
+    }
 
     // we want the dragger to handle it's own events automatically
     dragger->setHandleEvents(true);

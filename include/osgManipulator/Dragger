@@ -45,15 +45,34 @@ class OSGMANIPULATOR_EXPORT DraggerTransformCallback : public DraggerCallback
 {
     public:
 
-        DraggerTransformCallback(osg::MatrixTransform* transform);
+        enum HandleCommandMask
+        {
+            HANDLE_TRANSLATE_IN_LINE    = 1<<0,
+            HANDLE_TRANSLATE_IN_PLANE   = 1<<1,
+            HANDLE_SCALED_1D            = 1<<2,
+            HANDLE_SCALED_2D            = 1<<3,
+            HANDLE_SCALED_UNIFORM       = 1<<4,
+            HANDLE_ROTATE_3D            = 1<<5,
+            HANDLE_ALL                  = 0x8ffffff
+        };
+
+        DraggerTransformCallback(osg::MatrixTransform* transform, int handleCommandMask = HANDLE_ALL);
 
         virtual bool receive(const MotionCommand&);
+        virtual bool receive(const TranslateInLineCommand& command);
+        virtual bool receive(const TranslateInPlaneCommand& command);
+        virtual bool receive(const Scale1DCommand& command);
+        virtual bool receive(const Scale2DCommand& command);
+        virtual bool receive(const ScaleUniformCommand& command);
+        virtual bool receive(const Rotate3DCommand& command);
 
         osg::MatrixTransform* getTransform() { return _transform.get(); }
         const osg::MatrixTransform* getTransform() const { return _transform.get(); }
 
     protected:
 
+        unsigned int _handleCommandMask;
+        
         osg::observer_ptr<osg::MatrixTransform> _transform;
         osg::Matrix _startMotionMatrix;
 
@@ -228,7 +247,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         DraggerCallbacks& getDraggerCallbacks() { return _draggerCallbacks; }
         const DraggerCallbacks& getDraggerCallbacks() const { return _draggerCallbacks; }
 
-        void addTransformUpdating(MatrixTransform* transform);
+        void addTransformUpdating(MatrixTransform* transform, int handleCommandMask = DraggerTransformCallback::HANDLE_ALL);
         void removeTransformUpdating(MatrixTransform* transform);
 
         /** Setup default geometry for dragger. */

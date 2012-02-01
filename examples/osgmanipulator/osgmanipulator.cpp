@@ -215,13 +215,13 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
 {
     scene->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
 
-    osg::MatrixTransform* selection = new osg::MatrixTransform;
-    selection->addChild(scene);
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
+    transform->addChild(scene);
 
     osgManipulator::Dragger* dragger = createDragger(name);
 
     osg::Group* root = new osg::Group;
-    root->addChild(selection);
+    root->addChild(transform);
 
     if ( fixedSizeInScreen )
     {
@@ -238,11 +238,11 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
 
     if (dynamic_cast<osgManipulator::TabPlaneDragger*>(dragger))
     {
-        dragger->addTransformUpdating(selection, osgManipulator::DraggerTransformCallback::HANDLE_TRANSLATE_IN_LINE);
+        dragger->addTransformUpdating(transform, osgManipulator::DraggerTransformCallback::HANDLE_TRANSLATE_IN_LINE);
     }
     else
     {
-        dragger->addTransformUpdating(selection);
+        dragger->addTransformUpdating(transform);
     }
 
     // we want the dragger to handle it's own events automatically

@@ -304,9 +304,9 @@ void GraphicsContext::incrementContextIDUsageCount(unsigned int contextID)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
     
-    OSG_INFO<<"GraphicsContext::incrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]._numContexts<<std::endl;
-
     s_contextIDMap[contextID].incrementUsageCount();
+
+    OSG_INFO<<"GraphicsContext::incrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]._numContexts<<std::endl;
 }
 
 void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
@@ -538,12 +538,21 @@ void GraphicsContext::close(bool callCloseImplementation)
 
         if (makeCurrent())
         {
-        
-            OSG_INFO<<"Doing delete of GL objects"<<std::endl;
+            if ( !sharedContextExists )
+            {
+                OSG_INFO<<"Doing delete of GL objects"<<std::endl;
 
-            osg::deleteAllGLObjects(_state->getContextID());
+                osg::deleteAllGLObjects(_state->getContextID());
 
-            OSG_INFO<<"Done delete of GL objects"<<std::endl;
+                OSG_INFO<<"Done delete of GL objects"<<std::endl;
+            }
+            else
+            {
+                // If the GL objects are shared with other contexts then only flush those
+                // which have already been deleted
+
+                osg::flushAllDeletedGLObjects(_state->getContextID());
+            }
 
             _state->reset();
 
@@ -561,7 +570,7 @@ void GraphicsContext::close(bool callCloseImplementation)
     // now discard any deleted deleted OpenGL objects that the are still hanging around - such as due to 
     // the the flushDelete*() methods not being invoked, such as when using GraphicContextEmbedded where makeCurrent
     // does not work.
-    if (_state.valid())
+    if ( !sharedContextExists && _state.valid())
     {
         OSG_INFO<<"Doing discard of deleted OpenGL objects."<<std::endl;
 

@@ -45,7 +45,8 @@ void osgManipulator::computeNodePathToRoot(osg::Node& node, osg::NodePath& np)
 //
 // DraggerTransformCallback
 //
-DraggerTransformCallback::DraggerTransformCallback(osg::MatrixTransform* transform):
+DraggerTransformCallback::DraggerTransformCallback(osg::MatrixTransform* transform,int handleCommandMask):
+    _handleCommandMask(handleCommandMask),
     _transform(transform)
 {
 }
@@ -91,6 +92,42 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         default:
             return false;
     }
+}
+
+bool DraggerTransformCallback::receive(const TranslateInLineCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_TRANSLATE_IN_LINE)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const TranslateInPlaneCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_TRANSLATE_IN_PLANE)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Scale1DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_1D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Scale2DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_2D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const ScaleUniformCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_UNIFORM)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Rotate3DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_ROTATE_3D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
 }
 
 
@@ -199,9 +236,9 @@ void Dragger::removeConstraint(Constraint* constraint)
     }
 }
 
-void Dragger::addTransformUpdating(osg::MatrixTransform* transform)
+void Dragger::addTransformUpdating(osg::MatrixTransform* transform, int handleCommandMask)
 {
-    addDraggerCallback(new DraggerTransformCallback(transform));
+    addDraggerCallback(new DraggerTransformCallback(transform, handleCommandMask));
 }
 
 void Dragger::removeTransformUpdating(osg::MatrixTransform* transform)

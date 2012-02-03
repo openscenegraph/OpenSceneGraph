@@ -69,6 +69,15 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             return new osg::Shader( shader->getType(), code );
         }
 
+        virtual ReadResult readObject(std::istream& fin,const Options* options) const
+        {
+            return readShader(fin, options);
+        }
+
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readShader(file, options);
+        }
 
         virtual ReadResult readShader(std::istream& fin,const Options* options) const
         {

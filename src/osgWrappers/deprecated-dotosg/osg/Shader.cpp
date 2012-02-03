@@ -8,6 +8,7 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 #include "osgDB/FileUtils"
+#include "osgDB/ReadFile"
 #include "osgDB/WriteFile"
 
 using namespace osg;
@@ -44,15 +45,12 @@ bool Shader_readLocalData(Object& obj, Input& fr)
     
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s") )
     {
-        std::string fileName = osgDB::findDataFile(fr[1].getStr());
-        if (!fileName.empty())
-        {
-            shader.loadShaderSourceFromFile( fileName.c_str() );
-        }
+
+        osg::ref_ptr<Shader> s = osgDB::readShaderFile(fr[1].getStr(), fr.getOptions());
+        if(s.get())
+            shader.setShaderSource(s->getShaderSource());
         else
-        {
-            osg::notify(osg::NOTICE)<<"Warning: could not find shader file \""<<fr[1].getStr()<<"\""<<std::endl;
-        }
+            shader.loadShaderSourceFromFile( osgDB::findDataFile(fr[1].getStr()) );
         
         fr += 2;
         iteratorAdvanced = true;

@@ -548,6 +548,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             virtual bool isValid(ReaderWriter::ReadResult& readResult) const = 0;
             virtual bool isValid(osg::Object* object) const = 0;
 
+            virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const = 0;
+
             std::string _filename;
             const Options* _options;
         };

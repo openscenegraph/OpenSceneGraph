@@ -24,6 +24,8 @@ EventQueue::EventQueue(GUIEventAdapter::MouseYOrientation mouseYOrientation)
 
     _accumulateEventState = new GUIEventAdapter();
     _accumulateEventState->setMouseYOrientation(mouseYOrientation);
+    
+    _firstTouchEmulatesMouse = true;
 }
 
 EventQueue::~EventQueue()
@@ -403,11 +405,14 @@ void EventQueue::keyRelease(int key, double time, int unmodifiedKey)
 
 GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
 {
-    // emulate left mouse button press
-    
-    _accumulateEventState->setButtonMask((1) | _accumulateEventState->getButtonMask());
-    _accumulateEventState->setX(x);
-    _accumulateEventState->setY(y);
+    if(_firstTouchEmulatesMouse) 
+    {
+        // emulate left mouse button press
+        
+        _accumulateEventState->setButtonMask((1) | _accumulateEventState->getButtonMask());
+        _accumulateEventState->setX(x);
+        _accumulateEventState->setY(y);
+    }
     
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::PUSH);
@@ -422,9 +427,11 @@ GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::Touch
         
 GUIEventAdapter*  EventQueue::touchMoved(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
 {
-    _accumulateEventState->setX(x);
-    _accumulateEventState->setY(y);
-
+    if(_firstTouchEmulatesMouse)
+    {
+        _accumulateEventState->setX(x);
+        _accumulateEventState->setY(y);
+    }
     
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::DRAG);
@@ -437,9 +444,12 @@ GUIEventAdapter*  EventQueue::touchMoved(unsigned int id, GUIEventAdapter::Touch
 
 GUIEventAdapter*  EventQueue::touchEnded(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, unsigned int tap_count, double time)
 {
-    _accumulateEventState->setButtonMask(~(1) & _accumulateEventState->getButtonMask());
-    _accumulateEventState->setX(x);
-    _accumulateEventState->setY(y);
+    if (_firstTouchEmulatesMouse) 
+    {
+        _accumulateEventState->setButtonMask(~(1) & _accumulateEventState->getButtonMask());
+        _accumulateEventState->setX(x);
+        _accumulateEventState->setY(y);
+    }
     
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::RELEASE);

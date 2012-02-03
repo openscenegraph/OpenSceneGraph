@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <set>
+#include <memory>
 
 #include <stdlib.h>
 
@@ -251,6 +252,7 @@ Registry::Registry()
 
     // add default osga archive extension
     _archiveExtList.push_back("osga");
+    _archiveExtList.push_back("zip");
     
     initFilePathLists();
 
@@ -899,6 +901,8 @@ struct Registry::ReadObjectFunctor : public Registry::ReadFunctor
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readObject(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validObject(); }
     virtual bool isValid(osg::Object* object) const { return object!=0;  }
+
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadObjectFunctor(filename, options); }
 };
 
 struct Registry::ReadImageFunctor : public Registry::ReadFunctor
@@ -908,6 +912,8 @@ struct Registry::ReadImageFunctor : public Registry::ReadFunctor
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.readImage(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validImage(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Image*>(object)!=0;  }
+
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadImageFunctor(filename, options); }
 };
 
 struct Registry::ReadHeightFieldFunctor : public Registry::ReadFunctor
@@ -917,6 +923,8 @@ struct Registry::ReadHeightFieldFunctor : public Registry::ReadFunctor
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readHeightField(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validHeightField(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::HeightField*>(object)!=0;  }
+
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadHeightFieldFunctor(filename, options); }
 };
 
 struct Registry::ReadNodeFunctor : public Registry::ReadFunctor
@@ -927,6 +935,7 @@ struct Registry::ReadNodeFunctor : public Registry::ReadFunctor
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validNode(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Node*>(object)!=0;  }
 
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadNodeFunctor(filename, options); }
 };
 
 struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
@@ -943,6 +952,7 @@ struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validArchive(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osgDB::Archive*>(object)!=0;  }
 
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadArchiveFunctor(filename, _status, _indexBlockSizeHint, options); }
 };
 
 struct Registry::ReadShaderFunctor : public Registry::ReadFunctor
@@ -952,6 +962,8 @@ struct Registry::ReadShaderFunctor : public Registry::ReadFunctor
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.readShader(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validShader(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Shader*>(object)!=0;  }
+
+    virtual ReadFunctor* cloneType(const std::string& filename, const Options* options) const { return new ReadShaderFunctor(filename, options); }
 };
 
 void Registry::addArchiveExtension(const std::string ext)
@@ -1088,7 +1100,16 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
             options->setDatabasePath(archiveName);
 
-            return archive->readObject(fileName,options.get());
+            std::auto_ptr<ReadFunctor> rf(readFunctor.cloneType(fileName, options));
+            
+            result = rf->doRead(*archive);
+
+            if (rf->isValid(result))
+            {
+                OSG_INFO<<"Read object from archive"<<std::endl;
+                return result;
+            }
+            OSG_INFO<<"Failed to read object from archive"<<std::endl;
         }
     }
     

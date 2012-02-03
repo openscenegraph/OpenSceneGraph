@@ -44,7 +44,8 @@ void Constraint::computeLocalToWorldAndWorldToLocal() const
 {
     if (!_refNode)
     {
-        OSG_INFO<<"osgManipulator::Constraint::computeLocalToWorldAndWorldToLocal() error, _refNode is null"<<std::endl;
+        _localToWorld.makeIdentity();
+        _worldToLocal.makeIdentity();
         return;
     }
 

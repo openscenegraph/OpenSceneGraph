@@ -26,17 +26,58 @@
 #include <osgManipulator/TabBoxTrackballDragger>
 #include <osgManipulator/TabPlaneDragger>
 #include <osgManipulator/TabPlaneTrackballDragger>
+#include <osgManipulator/Scale1DDragger>
+#include <osgManipulator/Scale2DDragger>
 #include <osgManipulator/TrackballDragger>
 #include <osgManipulator/Translate1DDragger>
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslateAxisDragger>
+#include <osgManipulator/TranslatePlaneDragger>
 
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
 #include <osg/Geometry>
 #include <osg/Material>
+#include <osg/io_utils>
 
 #include <iostream>
+
+class PlaneConstraint : public osgManipulator::Constraint
+{
+public:
+        PlaneConstraint() {}
+    
+        virtual bool constrain(osgManipulator::TranslateInLineCommand& command) const
+        {
+            OSG_NOTICE<<"PlaneConstraint TranslateInLineCommand "<<command.getTranslation()<<std::endl;
+            return true;            
+        }
+        virtual bool constrain(osgManipulator::TranslateInPlaneCommand& command) const
+        {
+            //command.setTranslation(osg::Vec3(0.0f,0.0f,0.0f));
+            OSG_NOTICE<<"PlaneConstraint TranslateInPlaneCommand "<<command.getTranslation()<<std::endl;
+            return true;
+        }
+        virtual bool constrain(osgManipulator::Scale1DCommand& command) const
+        {
+            //command.setScale(1.0f);
+            OSG_NOTICE<<"PlaneConstraint Scale1DCommand"<<command.getScale()<<std::endl;
+            return true;            
+        }
+        virtual bool constrain(osgManipulator::Scale2DCommand& command) const
+        {
+            //command.setScale(osg::Vec2d(1.0,1.0));
+            OSG_NOTICE<<"PlaneConstraint Scale2DCommand "<<command.getScale()<<std::endl;
+            return true;
+        }
+        virtual bool constrain(osgManipulator::ScaleUniformCommand& command) const
+        {
+            OSG_NOTICE<<"PlaneConstraint ScaleUniformCommand"<<command.getScale()<<std::endl;
+            return true;            
+        }
+};
+
+
 
 osgManipulator::Dragger* createDragger(const std::string& name)
 {
@@ -45,6 +86,7 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     {
         osgManipulator::TabPlaneDragger* d = new osgManipulator::TabPlaneDragger();
         d->setupDefaultGeometry();
+        d->addConstraint(new PlaneConstraint());
         dragger = d;
     }
     else if ("TabPlaneTrackballDragger" == name)
@@ -80,6 +122,24 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     else if ("TranslateAxisDragger" == name)
     {
         osgManipulator::TranslateAxisDragger* d = new osgManipulator::TranslateAxisDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("TranslatePlaneDragger" == name)
+    {
+        osgManipulator::TranslatePlaneDragger* d = new osgManipulator::TranslatePlaneDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("Scale1DDragger" == name)
+    {
+        osgManipulator::Scale1DDragger* d = new osgManipulator::Scale1DDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("Scale2DDragger" == name)
+    {
+        osgManipulator::Scale2DDragger* d = new osgManipulator::Scale2DDragger();
         d->setupDefaultGeometry();
         dragger = d;
     }
@@ -155,13 +215,13 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
 {
     scene->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
 
-    osg::MatrixTransform* selection = new osg::MatrixTransform;
-    selection->addChild(scene);
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
+    transform->addChild(scene);
 
     osgManipulator::Dragger* dragger = createDragger(name);
 
     osg::Group* root = new osg::Group;
-    root->addChild(selection);
+    root->addChild(transform);
 
     if ( fixedSizeInScreen )
     {
@@ -176,7 +236,14 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
     dragger->setMatrix(osg::Matrix::scale(scale, scale, scale) *
                        osg::Matrix::translate(scene->getBound().center()));
 
-    dragger->addTransformUpdating(selection);
+    if (dynamic_cast<osgManipulator::TabPlaneDragger*>(dragger))
+    {
+        dragger->addTransformUpdating(transform, osgManipulator::DraggerTransformCallback::HANDLE_TRANSLATE_IN_LINE);
+    }
+    else
+    {
+        dragger->addTransformUpdating(transform);
+    }
 
     // we want the dragger to handle it's own events automatically
     dragger->setHandleEvents(true);
@@ -305,7 +372,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
 
-    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger,TabPlaneTrackballDragger,TrackballDragger,Translate1DDragger,Translate2DDragger,TranslateAxisDragger,TabBoxDragger]");
+    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger, TabPlaneTrackballDragger, TrackballDragger, Translate1DDragger, Translate2DDragger, TranslateAxisDragger, TabBoxDragger, TranslatePlaneDragger, Scale1DDragger, Scale2DDragger]");
     arguments.getApplicationUsage()->addCommandLineOption("--fixedDraggerSize","Fix the size of the dragger geometry in the screen space");
     
     bool fixedSizeInScreen = false;

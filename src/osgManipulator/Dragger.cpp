@@ -17,7 +17,7 @@
 #include <osg/Material>
 #include <osgGA/EventVisitor>
 #include <osgViewer/View>
-
+#include <osg/io_utils>
 using namespace osgManipulator;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,8 @@ void osgManipulator::computeNodePathToRoot(osg::Node& node, osg::NodePath& np)
 //
 // DraggerTransformCallback
 //
-DraggerTransformCallback::DraggerTransformCallback(osg::MatrixTransform* transform):
+DraggerTransformCallback::DraggerTransformCallback(osg::MatrixTransform* transform,int handleCommandMask):
+    _handleCommandMask(handleCommandMask),
     _transform(transform)
 {
 }
@@ -71,6 +72,8 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         }
         case MotionCommand::MOVE:
         {
+            //OSG_NOTICE<<"MotionCommand::MOVE "<<command.getMotionMatrix()<<std::endl;
+            
             // Transform the command's motion matrix into local motion matrix.
             osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
                                             * command.getMotionMatrix()
@@ -89,6 +92,42 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         default:
             return false;
     }
+}
+
+bool DraggerTransformCallback::receive(const TranslateInLineCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_TRANSLATE_IN_LINE)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const TranslateInPlaneCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_TRANSLATE_IN_PLANE)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Scale1DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_1D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Scale2DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_2D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const ScaleUniformCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_SCALED_UNIFORM)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
+}
+
+bool DraggerTransformCallback::receive(const Rotate3DCommand& command)
+{
+    if ((_handleCommandMask&HANDLE_ROTATE_3D)!=0) return receive(static_cast<const MotionCommand&>(command));
+    return false;
 }
 
 
@@ -197,9 +236,9 @@ void Dragger::removeConstraint(Constraint* constraint)
     }
 }
 
-void Dragger::addTransformUpdating(osg::MatrixTransform* transform)
+void Dragger::addTransformUpdating(osg::MatrixTransform* transform, int handleCommandMask)
 {
-    addDraggerCallback(new DraggerTransformCallback(transform));
+    addDraggerCallback(new DraggerTransformCallback(transform, handleCommandMask));
 }
 
 void Dragger::removeTransformUpdating(osg::MatrixTransform* transform)
@@ -394,18 +433,29 @@ void Dragger::dispatch(MotionCommand& command)
         itr != _constraints.end();
         ++itr)
     {
-        (*itr)->constrain(command);
+        command.accept(*(*itr));
+    }
+
+    // apply any constraints of parent dragger.
+    if (getParentDragger()!=this)
+    {
+        for(Constraints::iterator itr = getParentDragger()->getConstraints().begin();
+            itr != getParentDragger()->getConstraints().end();
+            ++itr)
+        {
+            command.accept(*(*itr));
+        }
     }
 
     // move self
     getParentDragger()->receive(command);
 
-
+    // pass on movement to any dragger callbacks
     for(DraggerCallbacks::iterator itr = getParentDragger()->getDraggerCallbacks().begin();
         itr != getParentDragger()->getDraggerCallbacks().end();
         ++itr)
     {
-        (*itr)->receive(command);
+        command.accept(*(*itr));
     }
 }
 

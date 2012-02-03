@@ -60,7 +60,12 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
             _checkForEvents(true),
             _ownsWindow(true),
             _currentCursor(RightArrowCursor),
-            _window(NULL)
+            _window(NULL),
+            _view(NULL),
+            _context(NULL),
+            _pixelformat(NULL),
+            _updateContext(false),
+            _multiTouchEnabled(false)
         {
             _traits = traits;
 
@@ -134,11 +139,12 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         class WindowData : public osg::Referenced
         {
             public:
-                enum Options { CreateOnlyView = 1, CheckForEvents = 2, PoseAsStandaloneApp = 4};
+                enum Options { CreateOnlyView = 1, CheckForEvents = 2, PoseAsStandaloneApp = 4, EnableMultiTouch = 8};
                 WindowData(unsigned int options)
-                :    _createOnlyView(options & CreateOnlyView),
+                :   _createOnlyView(options & CreateOnlyView),
                     _checkForEvents(options & CheckForEvents),
                     _poseAsStandaloneApp(options & PoseAsStandaloneApp),
+                    _multiTouchEnabled(options & EnableMultiTouch),
                     _view(NULL)
                 {
                 }
@@ -147,12 +153,13 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
                 bool createOnlyView() const { return _createOnlyView; }
                 bool checkForEvents() const { return _checkForEvents; }
                 bool poseAsStandaloneApp() const { return _poseAsStandaloneApp; }
+                bool isMultiTouchEnabled() const { return _multiTouchEnabled; }
             
             protected:
                 inline void setCreatedNSView(NSView* view) { _view = view; }
             
             private:
-                bool         _createOnlyView, _checkForEvents, _poseAsStandaloneApp;
+                bool         _createOnlyView, _checkForEvents, _poseAsStandaloneApp, _multiTouchEnabled;
                 NSView*         _view;
             
             friend class GraphicsWindowCocoa;
@@ -167,6 +174,9 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         
         /** adapts a resize / move of the window, coords in global screen space */
         void adaptResize(int x, int y, int w, int h);
+        
+        bool isMultiTouchEnabled();
+        void setMultiTouchEnabled(bool b);
         
     protected:
     
@@ -195,7 +205,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         GraphicsWindowCocoaGLView*      _view;
         NSOpenGLContext*                _context;
         NSOpenGLPixelFormat*            _pixelformat;
-        bool                            _updateContext;
+        bool                            _updateContext, _multiTouchEnabled;
 };
 
 }

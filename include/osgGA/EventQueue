@@ -218,6 +218,8 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Method for adapting user defined events with specified event time */
         void userEvent(osg::Referenced* userEventData, double time);
 
+        void setFirstTouchEmulatesMouse(bool b) { _firstTouchEmulatesMouse = b; }
+        bool getFirstTouchEmulatesMouse() const { return _firstTouchEmulatesMouse; }
 
     protected:
 
@@ -233,6 +235,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         osg::Timer_t                _startTick;
         mutable OpenThreads::Mutex  _eventQueueMutex;
         Events                      _eventQueue;
+        bool                        _firstTouchEmulatesMouse;
     
 };
 

@@ -132,40 +132,6 @@ private:
   * per-face colors and normals.
   */
 namespace {
-
-    static const osg::Vec3 myVertices[] = { osg::Vec3(-1.,-1.,-1.),
-                                            osg::Vec3( 1.,-1.,-1.),
-                                            osg::Vec3(-1., 1.,-1.),
-                                            osg::Vec3( 1., 1.,-1.),
-                                            osg::Vec3(-1.,-1., 1.),
-                                            osg::Vec3( 1.,-1., 1.),
-                                            osg::Vec3(-1., 1., 1.),
-                                            osg::Vec3( 1., 1., 1.) 
-                                          };
-
-    static const osg::Vec3 myNormals[] = { osg::Vec3( 0., 0., 1.),
-                                           osg::Vec3( 1., 0., 0.),
-                                           osg::Vec3( 0., 0.,-1.),
-                                           osg::Vec3(-1., 0., 0.),
-                                           osg::Vec3( 0., 1., 0.),
-                                           osg::Vec3( 0.,-1., 0.) 
-                                         };
-    
-    static const osg::Vec4 myColors[] = { osg::Vec4( 1., 0., 0., 1.),
-                                          osg::Vec4( 0., 1., 0., 1.),
-                                          osg::Vec4( 1., 1., 0., 1.),
-                                          osg::Vec4( 0., 0., 1., 1.),
-                                          osg::Vec4( 1., 0., 1., 1.),
-                                          osg::Vec4( 0., 1., 1., 1.) 
-                                        };
-
-    static const unsigned short myIndices[] = { 4, 5, 7, 6,
-                                                5, 1, 3, 7,
-                                                1, 0, 2, 3,
-                                                0, 4, 6, 2,
-                                                6, 7, 3, 2,
-                                                0, 1, 5, 4
-                                              };
 }
 
 /** Create a Geode that describes a cube using our own 
@@ -194,6 +160,40 @@ namespace {
   */
 osg::Geode* createGeometry()
 {
+    const osg::Vec3 myVertices[] = { osg::Vec3(-1.,-1.,-1.),
+                                     osg::Vec3( 1.,-1.,-1.),
+                                     osg::Vec3(-1., 1.,-1.),
+                                     osg::Vec3( 1., 1.,-1.),
+                                     osg::Vec3(-1.,-1., 1.),
+                                     osg::Vec3( 1.,-1., 1.),
+                                     osg::Vec3(-1., 1., 1.),
+                                     osg::Vec3( 1., 1., 1.)
+                                   };
+
+    const osg::Vec3 myNormals[] = { osg::Vec3( 0., 0., 1.),
+                                    osg::Vec3( 1., 0., 0.),
+                                    osg::Vec3( 0., 0.,-1.),
+                                    osg::Vec3(-1., 0., 0.),
+                                    osg::Vec3( 0., 1., 0.),
+                                    osg::Vec3( 0.,-1., 0.)
+                                  };
+
+    const osg::Vec4 myColors[] = { osg::Vec4( 1., 0., 0., 1.),
+                                   osg::Vec4( 0., 1., 0., 1.),
+                                   osg::Vec4( 1., 1., 0., 1.),
+                                   osg::Vec4( 0., 0., 1., 1.),
+                                   osg::Vec4( 1., 0., 1., 1.),
+                                   osg::Vec4( 0., 1., 1., 1.)
+                                 };
+
+    const unsigned short myIndices[] = { 4, 5, 7, 6,
+                                        5, 1, 3, 7,
+                                        1, 0, 2, 3,
+                                        0, 4, 6, 2,
+                                        6, 7, 3, 2,
+                                        0, 1, 5, 4
+                                       };
+
     osg::Geode* geode = new osg::Geode();
 
     // create Geometry

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,9 +32,9 @@
 namespace osgUtil {
 
 /**
- * Statistics base class. Used to extract primitive information from 
+ * Statistics base class. Used to extract primitive information from
  * the renderBin(s).  Add a case of getStats(osgUtil::Statistics *stat)
- * for any new drawable (or drawable derived class) that you generate 
+ * for any new drawable (or drawable derived class) that you generate
  * (eg see Geometry.cpp).  There are 20 types of drawable counted - actually only
  * 14 cases can occur in reality.  these represent sets of GL_POINTS, GL_LINES
  * GL_LINESTRIPS, LOOPS, TRIANGLES, TRI-fans, tristrips, quads, quadstrips etc
@@ -42,7 +42,7 @@ namespace osgUtil {
  * each triangle = 1 triangle (number of vertices/3)
  * each quad = 2 triangles (nverts/2)
  * each trifan or tristrip = (length-2) triangles and so on.
- */
+*/
 
 class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
 {
@@ -58,19 +58,19 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         enum StatsType
         {
             STAT_NONE, // default
-            STAT_FRAMERATE, 
+            STAT_FRAMERATE,
             STAT_GRAPHS,
-            STAT_PRIMS, 
-            STAT_PRIMSPERVIEW, 
+            STAT_PRIMS,
+            STAT_PRIMSPERVIEW,
             STAT_PRIMSPERBIN,
             STAT_DC,
             STAT_RESTART // hint to restart the stats
         };
-        
+
         void reset();
 
-        void setType(StatsType t) {stattype=t;}
-        
+        void setType(StatsType t) { stattype=t; }
+
         virtual void setVertexArray(unsigned int count,const osg::Vec3*) { _vertexCount += count; }
         virtual void setVertexArray(unsigned int count,const osg::Vec2*) { _vertexCount += count; }
         virtual void setVertexArray(unsigned int count,const osg::Vec4*) { _vertexCount += count; }
@@ -85,13 +85,13 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
 
         virtual void begin(GLenum mode);
 
-        inline void vertex() 
-        { 
-            PrimitivePair& prim = _primitiveCount[_currentPrimitiveFunctorMode]; 
-            ++prim.second; 
-           _number_of_vertexes++;
+        inline void vertex()
+        {
+            PrimitivePair& prim = _primitiveCount[_currentPrimitiveFunctorMode];
+            ++prim.second;
+        _number_of_vertexes++;
         }
-        
+
         virtual void vertex(float,float,float) { vertex(); }
         virtual void vertex(const osg::Vec3&)  { vertex(); }
         virtual void vertex(const osg::Vec2&)  { vertex(); }
@@ -100,7 +100,7 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         virtual void vertex(float,float,float,float)  { vertex(); }
 
         virtual void end();
-        
+
         void addDrawable() { numDrawables++;}
         void addFastDrawable() { numFastDrawables++;}
         void addMatrix() { nummat++;}
@@ -113,14 +113,14 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         void setBinNo(int n) { _binNo=n;}
         void addStateGraphs(int n) { numStateGraphs += n; }
         void addOrderedLeaves(int n) { numOrderedLeaves += n; }
-        
+
         void add(const Statistics& stats);
-                
+
     public:
-                
+
         PrimitiveCountMap& getPrimitiveCountMap() { return _primitives_count; }
         const PrimitiveCountMap& getPrimitiveCountMap() const { return _primitives_count; }
-        
+
         PrimitiveValueMap& getPrimitiveValueMap() { return _primitiveCount; }
         const PrimitiveValueMap& getPrimitiveValueMap() const { return _primitiveCount; }
 
@@ -138,7 +138,7 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         StatsType stattype;
         int nimpostor; // number of impostors rendered
         int numOrderedLeaves;   // leaves from RenderBin fine grain ordering
-        
+
         unsigned int        _vertexCount;
         PrimitiveValueMap    _primitiveCount;
         GLenum              _currentPrimitiveFunctorMode;
@@ -156,16 +156,16 @@ inline unsigned int Statistics::_calculate_primitives_number_by_mode(GLenum mode
 {
     switch (mode)
     {
-        case GL_POINTS: 
+        case GL_POINTS:
         case GL_LINE_LOOP:
-        case GL_POLYGON:  return count; 
-        case GL_LINES: return count / 2; 
-        case GL_LINE_STRIP: return count - 1; 
-        case GL_TRIANGLES: return count / 3; 
+        case GL_POLYGON:  return count;
+        case GL_LINES: return count / 2;
+        case GL_LINE_STRIP: return count - 1;
+        case GL_TRIANGLES: return count / 3;
         case GL_TRIANGLE_STRIP:
-        case GL_TRIANGLE_FAN: return count - 2; 
-        case GL_QUADS: return count / 4; 
-        case GL_QUAD_STRIP: return count / 2 - 1; 
+        case GL_TRIANGLE_FAN: return count - 2;
+        case GL_QUADS: return count / 4;
+        case GL_QUAD_STRIP: return count / 2 - 1;
         default: return 0;
     }
 }
@@ -180,29 +180,23 @@ public:
     typedef std::set<osg::StateSet*> StateSetSet;
 
     StatsVisitor();
-        
+
     META_NodeVisitor("osgUtil","StatsVisitor")
 
     void reset();
-    
+
     void apply(osg::Node& node);
-
     void apply(osg::Group& node);
-
     void apply(osg::Transform& node);
-
     void apply(osg::LOD& node);
-
     void apply(osg::Switch& node);
-
     void apply(osg::Geode& node);
-
     void apply(osg::Drawable& drawable);
 
     void totalUpStats();
-    
+
     void print(std::ostream& out);
-    
+
     unsigned int _numInstancedGroup;
     unsigned int _numInstancedSwitch;
     unsigned int _numInstancedLOD;

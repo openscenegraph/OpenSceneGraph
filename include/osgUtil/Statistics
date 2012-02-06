@@ -89,7 +89,7 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         {
             PrimitivePair& prim = _primitiveCount[_currentPrimitiveFunctorMode];
             ++prim.second;
-        _number_of_vertexes++;
+           _number_of_vertexes++;
         }
 
         virtual void vertex(float,float,float) { vertex(); }
@@ -183,19 +183,20 @@ public:
 
     META_NodeVisitor("osgUtil","StatsVisitor")
 
-    void reset();
+    virtual void reset();
 
-    void apply(osg::Node& node);
-    void apply(osg::Group& node);
-    void apply(osg::Transform& node);
-    void apply(osg::LOD& node);
-    void apply(osg::Switch& node);
-    void apply(osg::Geode& node);
-    void apply(osg::Drawable& drawable);
+    virtual void apply(osg::Node& node);
+    virtual void apply(osg::Group& node);
+    virtual void apply(osg::Transform& node);
+    virtual void apply(osg::LOD& node);
+    virtual void apply(osg::Switch& node);
+    virtual void apply(osg::Geode& node);
+    virtual void apply(osg::Drawable& drawable);
+    virtual void apply(osg::StateSet& ss);
 
-    void totalUpStats();
+    virtual void totalUpStats();
 
-    void print(std::ostream& out);
+    virtual void print(std::ostream& out);
 
     unsigned int _numInstancedGroup;
     unsigned int _numInstancedSwitch;

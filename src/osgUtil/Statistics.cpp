@@ -119,7 +119,6 @@ void Statistics::add(const Statistics& stats)
     numOrderedLeaves += stats.numOrderedLeaves;
 
     _vertexCount += stats._vertexCount;
-    // _primitiveCount += stats._primitiveCount;
     for(PrimitiveValueMap::const_iterator pitr = stats._primitiveCount.begin();
         pitr != stats._primitiveCount.end();
         ++pitr)
@@ -184,9 +183,9 @@ void StatsVisitor::apply(osg::Node& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
+
     traverse(node);
 }
 
@@ -194,12 +193,12 @@ void StatsVisitor::apply(osg::Group& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
 
     ++_numInstancedGroup;
     _groupSet.insert(&node);
+
     traverse(node);
 }
 
@@ -207,12 +206,12 @@ void StatsVisitor::apply(osg::Transform& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
 
     ++_numInstancedTransform;
     _transformSet.insert(&node);
+
     traverse(node);
 }
 
@@ -220,12 +219,12 @@ void StatsVisitor::apply(osg::LOD& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
 
     ++_numInstancedLOD;
     _lodSet.insert(&node);
+
     traverse(node);
 }
 
@@ -233,12 +232,12 @@ void StatsVisitor::apply(osg::Switch& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
 
     ++_numInstancedSwitch;
     _switchSet.insert(&node);
+
     traverse(node);
 }
 
@@ -246,8 +245,7 @@ void StatsVisitor::apply(osg::Geode& node)
 {
     if (node.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(node.getStateSet());
+        apply(*node.getStateSet());
     }
 
     ++_numInstancedGeode;
@@ -265,8 +263,7 @@ void StatsVisitor::apply(osg::Drawable& drawable)
 {
     if (drawable.getStateSet())
     {
-        ++_numInstancedStateSet;
-        _statesetSet.insert(drawable.getStateSet());
+        apply(*drawable.getStateSet());
     }
 
     ++_numInstancedDrawable;
@@ -287,6 +284,12 @@ void StatsVisitor::apply(osg::Drawable& drawable)
             _fastGeometrySet.insert(geometry);
         }
     }
+}
+
+void StatsVisitor::apply(osg::StateSet& stateSet)
+{
+   ++_numInstancedStateSet;
+   _statesetSet.insert(&stateSet);
 }
 
 void StatsVisitor::totalUpStats()

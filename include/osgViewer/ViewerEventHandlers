@@ -149,6 +149,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 protected:
 
         void setUpHUDCamera(osgViewer::ViewerBase* viewer);
+        void setWindowSize(int width, int height);
 
         osg::Geometry* createBackgroundRectangle(const osg::Vec3& pos, const float width, const float height, osg::Vec4& color);
 

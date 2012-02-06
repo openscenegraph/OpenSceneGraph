@@ -235,6 +235,9 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                 return true;
             }
         }
+        case(osgGA::GUIEventAdapter::RESIZE):
+            setWindowSize(ea.getWindowWidth(), ea.getWindowHeight());
+            break;
         default: break;
     }
 
@@ -315,13 +318,11 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 
     _camera->setGraphicsContext(context);
 
-    _camera->setViewport(0, 0, context->getTraits()->width, context->getTraits()->height);
-    
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
-    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,_statsWidth,0.0,_statsHeight));
     _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     _camera->setViewMatrix(osg::Matrix::identity());
+    setWindowSize(context->getTraits()->width, context->getTraits()->height);
 
     // only clear the depth buffer
     _camera->setClearMask(0);
@@ -329,6 +330,22 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setRenderer(new Renderer(_camera.get()));
 
     _initialized = true;
+}
+
+void StatsHandler::setWindowSize(int width, int height)
+{
+    if (width <= 0 || height <= 0)
+        return;
+
+    _camera->setViewport(0, 0, width, height);
+    if (fabs(height*_statsWidth) <= fabs(width*_statsHeight))
+    {
+        _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,width*_statsHeight/height,0.0,_statsHeight));
+    }
+    else
+    {
+        _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,_statsWidth,_statsHeight-height*_statsWidth/width,_statsHeight));
+    }
 }
 
 // Drawcallback to draw averaged attribute

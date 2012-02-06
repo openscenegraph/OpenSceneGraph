@@ -27,6 +27,12 @@ namespace osgDot {
   BaseDotVisitor::BaseDotVisitor()
   {
     _rankdir = "rankdir = LR;";
+    // Set the locale used by the _nodes and _edges streams to the
+    //   classic or "C" locale. This is needed because most of the
+    //   Graphviz tools are not locale sensitive and get confused 
+    //   by id numbers containing commas or periods.
+    _nodes.imbue(std::locale("C"));
+    _edges.imbue(std::locale("C"));  
   }
 
   BaseDotVisitor::~BaseDotVisitor() {

@@ -2,6 +2,8 @@
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
+#include <osgDB/FileNameUtils>
+#include <osgDB/ReadFile>
 
 // _filenameList
 static bool checkFileNames( const osg::ProxyNode& node )
@@ -97,6 +99,30 @@ static bool writeUserCenter( osgDB::OutputStream& os, const osg::ProxyNode& node
     return true;
 }
 
+struct ProxyNodeFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
+{
+    virtual void objectRead(osgDB::InputStream& is, osg::Object& obj)
+    {
+        osg::ProxyNode& proxyNode = static_cast<osg::ProxyNode&>(obj);
+    
+        if (proxyNode.getLoadingExternalReferenceMode() == osg::ProxyNode::LOAD_IMMEDIATELY)
+        {
+            for(unsigned int i=0; i<proxyNode.getNumFileNames(); i++)
+            {
+                if(i >= proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
+                {                    
+                    osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)is.getOptions())->getDatabasePathList();
+                    fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
+                    osg::Node* node = osgDB::readNodeFile(proxyNode.getFileName(i), is.getOptions());
+                    fpl.pop_front();
+                    if(node)
+                        proxyNode.insertChild(i, node);
+                }
+            }
+        }
+    }
+};
+
 REGISTER_OBJECT_WRAPPER( ProxyNode,
                          new osg::ProxyNode,
                          osg::ProxyNode,
@@ -121,4 +147,6 @@ REGISTER_OBJECT_WRAPPER( ProxyNode,
     END_ENUM_SERIALIZER();  // _centerMode
     
     ADD_USER_SERIALIZER( UserCenter );  // _userDefinedCenter, _radius
+
+    wrapper->addFinishedObjectReadCallback(new ProxyNodeFinishedObjectReadCallback());
 }

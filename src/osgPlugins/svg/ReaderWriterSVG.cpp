@@ -102,7 +102,7 @@ class ReaderWriterSVG : public osgDB::ReaderWriter
                 rsvg_handle_render_cairo(handle, cr);
                         
                 cairo_destroy(cr);
-                free(cairo_surface);
+                cairo_surface_destroy(cairo_surface);
 
                 image->flipVertical();
                 return image;

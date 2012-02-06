@@ -515,7 +515,6 @@ Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):
 
 void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
 {
-    GlyphGeometries _glyphGeometries;
     for(GlyphGeometries::iterator itr = _glyphGeometries.begin();
         itr != _glyphGeometries.end();
         ++itr)

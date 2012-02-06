@@ -223,10 +223,15 @@ void DefaultFont::constructGlyphs()
             (*data++)=((*ptr)&1)?value_on:value_off;
         }
 
-        glyph->setHorizontalBearing(osg::Vec2(0.0f,0.0f)); // bottom left.
-        glyph->setHorizontalAdvance(1.0f);
+        float coord_scale = 1.0f/float(sourceHeight);
+
+        glyph->setWidth(sourceWidth*coord_scale);
+        glyph->setHeight(sourceHeight*coord_scale);
+
+        glyph->setHorizontalBearing(osg::Vec2(0.0f,-2*coord_scale)); // bottom left.
+        glyph->setHorizontalAdvance(sourceWidth*coord_scale);
         glyph->setVerticalBearing(osg::Vec2(0.5f,1.0f)); // top middle.
-        glyph->setVerticalAdvance(1.0f);
+        glyph->setVerticalAdvance(sourceHeight*coord_scale);
 
         addGlyph(fontRes,i,glyph.get());
     }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -48,7 +48,7 @@ void Statistics::reset()
     numOrderedLeaves=0;
 
     _vertexCount=0;
-    _primitiveCount.clear();            
+    _primitiveCount.clear();
 
     _currentPrimitiveFunctorMode=0;
 
@@ -57,53 +57,53 @@ void Statistics::reset()
     _number_of_vertexes=0;
 }
 
-void Statistics::drawArrays(GLenum mode,GLint,GLsizei count) 
-{ 
-    PrimitivePair& prim = _primitiveCount[mode]; 
-    ++prim.first; 
-    prim.second+=count; 
+void Statistics::drawArrays(GLenum mode,GLint,GLsizei count)
+{
+    PrimitivePair& prim = _primitiveCount[mode];
+    ++prim.first;
+    prim.second+=count;
     _primitives_count[mode] += _calculate_primitives_number_by_mode(mode, count);
-} 
+}
 
-void Statistics::drawElements(GLenum mode,GLsizei count,const GLubyte*) 
-{ 
-    PrimitivePair& prim = _primitiveCount[mode]; 
-    ++prim.first; 
-    prim.second+=count; 
+void Statistics::drawElements(GLenum mode,GLsizei count,const GLubyte*)
+{
+    PrimitivePair& prim = _primitiveCount[mode];
+    ++prim.first;
+    prim.second+=count;
     _primitives_count[mode] += _calculate_primitives_number_by_mode(mode, count);
-} 
+}
 
 void Statistics::drawElements(GLenum mode,GLsizei count,const GLushort*)
-{ 
-    PrimitivePair& prim = _primitiveCount[mode]; 
-    ++prim.first; 
-    prim.second+=count; 
+{
+    PrimitivePair& prim = _primitiveCount[mode];
+    ++prim.first;
+    prim.second+=count;
     _primitives_count[mode] += _calculate_primitives_number_by_mode(mode, count);
-} 
+}
 
 void Statistics::drawElements(GLenum mode,GLsizei count,const GLuint*)
-{ 
-    PrimitivePair& prim = _primitiveCount[mode]; 
-    ++prim.first; 
-    prim.second+=count; 
+{
+    PrimitivePair& prim = _primitiveCount[mode];
+    ++prim.first;
+    prim.second+=count;
     _primitives_count[mode] += _calculate_primitives_number_by_mode(mode, count);
-} 
+}
 
 
-void Statistics::begin(GLenum mode) 
-{ 
-    _currentPrimitiveFunctorMode=mode; 
-    PrimitivePair& prim = _primitiveCount[mode]; 
-    ++prim.first; 
+void Statistics::begin(GLenum mode)
+{
+    _currentPrimitiveFunctorMode=mode;
+    PrimitivePair& prim = _primitiveCount[mode];
+    ++prim.first;
     _number_of_vertexes = 0;
 }
 
-void Statistics::end() 
+void Statistics::end()
 {
-   _primitives_count[_currentPrimitiveFunctorMode] += 
-    _calculate_primitives_number_by_mode(_currentPrimitiveFunctorMode, _number_of_vertexes);
+    _primitives_count[_currentPrimitiveFunctorMode] +=
+        _calculate_primitives_number_by_mode(_currentPrimitiveFunctorMode, _number_of_vertexes);
 
-   _vertexCount += _number_of_vertexes;
+    _vertexCount += _number_of_vertexes;
 }
 
 void Statistics::add(const Statistics& stats)
@@ -119,7 +119,7 @@ void Statistics::add(const Statistics& stats)
     numOrderedLeaves += stats.numOrderedLeaves;
 
     _vertexCount += stats._vertexCount;
-    // _primitiveCount += stats._primitiveCount;   
+    // _primitiveCount += stats._primitiveCount;
     for(PrimitiveValueMap::const_iterator pitr = stats._primitiveCount.begin();
         pitr != stats._primitiveCount.end();
         ++pitr)
@@ -178,11 +178,11 @@ void StatsVisitor::reset()
 
     _uniqueStats.reset();
     _instancedStats.reset();
-}    
+}
 
 void StatsVisitor::apply(osg::Node& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -192,7 +192,7 @@ void StatsVisitor::apply(osg::Node& node)
 
 void StatsVisitor::apply(osg::Group& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -205,7 +205,7 @@ void StatsVisitor::apply(osg::Group& node)
 
 void StatsVisitor::apply(osg::Transform& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -218,7 +218,7 @@ void StatsVisitor::apply(osg::Transform& node)
 
 void StatsVisitor::apply(osg::LOD& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -231,7 +231,7 @@ void StatsVisitor::apply(osg::LOD& node)
 
 void StatsVisitor::apply(osg::Switch& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -244,7 +244,7 @@ void StatsVisitor::apply(osg::Switch& node)
 
 void StatsVisitor::apply(osg::Geode& node)
 {
-    if (node.getStateSet()) 
+    if (node.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(node.getStateSet());
@@ -263,7 +263,7 @@ void StatsVisitor::apply(osg::Geode& node)
 
 void StatsVisitor::apply(osg::Drawable& drawable)
 {
-    if (drawable.getStateSet()) 
+    if (drawable.getStateSet())
     {
         ++_numInstancedStateSet;
         _statesetSet.insert(drawable.getStateSet());
@@ -274,7 +274,7 @@ void StatsVisitor::apply(osg::Drawable& drawable)
     drawable.accept(_instancedStats);
 
     _drawableSet.insert(&drawable);
-    
+
     osg::Geometry* geometry = drawable.asGeometry();
     if (geometry)
     {
@@ -303,7 +303,6 @@ void StatsVisitor::totalUpStats()
 
 void StatsVisitor::print(std::ostream& out)
 {
-
     unsigned int unique_primitives = 0;
     osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;
     for(pcmitr = _uniqueStats.GetPrimitivesBegin();
@@ -336,4 +335,4 @@ void StatsVisitor::print(std::ostream& out)
     out << std::setw(12) << "Vertices   " << std::setw(10) << _uniqueStats._vertexCount << std::setw(10) << _instancedStats._vertexCount << std::endl;
     out << std::setw(12) << "Primitives " << std::setw(10) << unique_primitives         << std::setw(10) << instanced_primitives << std::endl;
 }
-    
+

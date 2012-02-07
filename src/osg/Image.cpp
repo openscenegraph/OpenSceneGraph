@@ -443,7 +443,8 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
         case GL_RGBA:
         case GL_RGB:
         case GL_LUMINANCE:
-        case GL_LUMINANCE_ALPHA: return GL_UNSIGNED_BYTE;
+        case GL_LUMINANCE_ALPHA:
+        case GL_ALPHA: return GL_UNSIGNED_BYTE;
 
         default: 
         {

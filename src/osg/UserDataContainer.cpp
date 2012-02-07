@@ -56,7 +56,7 @@ DefaultUserDataContainer::DefaultUserDataContainer(const DefaultUserDataContaine
         itr != udc._objectList.end();
         ++itr)
     {
-        _objectList.push_back(copyop(*itr));
+        _objectList.push_back(copyop(itr->get()));
     }
 }
 

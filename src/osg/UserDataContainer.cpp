@@ -52,6 +52,12 @@ DefaultUserDataContainer::DefaultUserDataContainer(const DefaultUserDataContaine
 {
     _userData = udc._userData;
     _descriptionList = udc._descriptionList;
+    for(ObjectList::const_iterator itr = udc._objectList.begin();
+        itr != udc._objectList.end();
+        ++itr)
+    {
+        _objectList.push_back(copyop(*itr));
+    }
 }
 
 void DefaultUserDataContainer::setThreadSafeRefUnref(bool threadSafe)

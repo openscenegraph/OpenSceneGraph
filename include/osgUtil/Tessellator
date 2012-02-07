@@ -86,8 +86,6 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 
         osg::Geometry::PrimitiveSetList  getContours() { return _Contours;}
 
-        typedef std::vector<osg::Vec3*> VertexPointList;
-        
         struct Prim : public osg::Referenced
         {
             Prim(GLenum mode):_mode(mode) {}
@@ -101,9 +99,16 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         void beginTessellation();
         
         void beginContour();
+
+        /** Add a vertex to the current contour, see gluTessVertex for details.
+        * Note the vertex pointer is returned at the end of tessellation and
+        * must not be left dangling or be overwritten until all results are
+        * collected.
+        */
         void addVertex(osg::Vec3* vertex);
+
         void endContour();
-        
+
         void endTessellation();
 
         typedef std::vector< osg::ref_ptr<Prim> > PrimList;
@@ -114,7 +119,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         
     protected:
 
-        /** remove unused parts of the array, eg for wehn retessellating
+        /** remove unused parts of the array, eg for when retessellating
          * tessellation can introduce extra vertices for concave or crossing boundaries,
          * these will leak memory if not removed when retessellating. */
         void reduceArray(osg::Array * cold, const unsigned int nnu);

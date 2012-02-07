@@ -219,7 +219,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                     }
 
-                    for(unsigned int i = viewer->getViewerStats()->getEarliestFrameNumber(); i<= viewer->getViewerStats()->getLatestFrameNumber()-1; ++i)
+                    for(unsigned int i = viewer->getViewerStats()->getEarliestFrameNumber(); i< viewer->getViewerStats()->getLatestFrameNumber(); ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
                             itr != statsList.end();

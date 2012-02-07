@@ -1563,7 +1563,7 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
     else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
         blockSize = 16;
     else if (internalFormat == GL_ETC1_RGB8_OES)
-        blockSize = 16;
+        blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RED_RGTC1_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_RGTC1_EXT)
         blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RED_GREEN_RGTC2_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT)

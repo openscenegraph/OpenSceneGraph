@@ -24,13 +24,8 @@ using namespace osgUtil;
 
 namespace PolytopeIntersectorUtils
 {
-#ifdef OSG_USE_FLOAT_PLANE
-    typedef float value_type;
-    typedef osg::Vec3f Vec3_type;
-#else
-    typedef double value_type;
-    typedef osg::Vec3d Vec3_type;
-#endif
+    typedef osg::Plane::Vec3_type Vec3_type;
+    typedef Vec3_type::value_type value_type;
     typedef osg::Polytope::ClippingMask PlaneMask;
     typedef std::vector<std::pair<PlaneMask,Vec3_type> > CandList_t;
 
@@ -63,7 +58,7 @@ namespace PolytopeIntersectorUtils
         value_type    _maxDistance;    ///< maximum distance of intersection points from reference plane
         unsigned int    _index;         ///< primitive index
         unsigned int    _numPoints;
-        osg::Vec3       _points[MaxNumIntesections];
+        Vec3_type       _points[MaxNumIntesections];
     }; // class PolytopeIntersection
 
     typedef std::vector<PolytopeIntersection> Intersections;
@@ -590,12 +585,12 @@ void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawa
         hit.drawable = drawable;
         hit.matrix = iv.getModelMatrix();
 
-        osg::Vec3 center;
+        PolytopeIntersectorUtils::Vec3_type center;
         for (unsigned int i=0; i<intersection._numPoints; ++i)
         {
             center += intersection._points[i];
         }
-        center /= float(intersection._numPoints);
+        center /= PolytopeIntersectorUtils::value_type(intersection._numPoints);
         hit.localIntersectionPoint = center;
 
         hit.numIntersectionPoints = intersection._numPoints;

@@ -129,6 +129,9 @@ extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename,Case
 /** convert a string containing a list of paths delimited either with ';' (Windows) or ':' (All other platforms) into FilePath representation.*/
 extern OSGDB_EXPORT void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
 
+/** Return true if FilePathList contains a filepath that is significies checking of the current working directory.*/
+extern OSGDB_EXPORT bool containsCurrentWorkingDirectoryReference(const FilePathList& paths);
+
 extern OSGDB_EXPORT void appendPlatformSpecificLibraryFilePaths(FilePathList& filepath);
 extern OSGDB_EXPORT void appendPlatformSpecificResourceFilePaths(FilePathList& filepath);
 

@@ -985,27 +985,50 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
     // if data file contains a server address then we can't find it in local directories so return empty string.
     if (containsServerAddress(filename)) return std::string();
 
-    if (osgDB::isAbsolutePath(filename) && fileExists(filename))
+    bool absolutePath = osgDB::isAbsolutePath(filename);
+
+    if (absolutePath && fileExists(filename))
     {
         OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
         return filename;
     }
 
     std::string fileFound;
+    bool pathsContainsCurrentWorkingDirectory = false;
 
     if (options && !options->getDatabasePathList().empty())
     {
         fileFound = findFileInPath(filename, options->getDatabasePathList(), caseSensitivity);
         if (!fileFound.empty()) return fileFound;
+
+        if (osgDB::containsCurrentWorkingDirectoryReference(options->getDatabasePathList()))
+        {
+            pathsContainsCurrentWorkingDirectory = true;
+        }
+
     }
 
-    const FilePathList& filepath = Registry::instance()->getDataFilePathList();
-    if (!filepath.empty())
+    const FilePathList& filepaths = Registry::instance()->getDataFilePathList();
+    if (!filepaths.empty())
     {
-        fileFound = findFileInPath(filename, filepath,caseSensitivity);
+        fileFound = findFileInPath(filename, filepaths, caseSensitivity);
         if (!fileFound.empty()) return fileFound;
+
+        if (!pathsContainsCurrentWorkingDirectory && osgDB::containsCurrentWorkingDirectoryReference(filepaths))
+        {
+            pathsContainsCurrentWorkingDirectory = true;
+        }        
     }
 
+    if (!absolutePath && !pathsContainsCurrentWorkingDirectory)
+    {
+        // check current working directory
+        if (fileExists(filename))
+        {
+            return filename;
+        }
+    }
+    
 
     // if a directory is included in the filename, get just the (simple) filename itself and try that
     std::string simpleFileName = getSimpleFileName(filename);
@@ -1024,9 +1047,9 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
             if (!fileFound.empty()) return fileFound;
         }
 
-        if (!filepath.empty())
+        if (!filepaths.empty())
         {
-            fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
+            fileFound = findFileInPath(simpleFileName, filepaths,caseSensitivity);
             if (!fileFound.empty()) return fileFound;
         }
 

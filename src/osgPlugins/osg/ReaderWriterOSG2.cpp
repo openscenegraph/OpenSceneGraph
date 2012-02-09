@@ -16,6 +16,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osgDB/ObjectWrapper>
+#include <stdlib.h>
 #include "AsciiStreamOperator.h"
 #include "BinaryStreamOperator.h"
 #include "XmlStreamOperator.h"

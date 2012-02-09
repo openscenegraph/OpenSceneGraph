@@ -223,7 +223,16 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
     if ((scale.x() != 1) || (scale.y() != 1) || (scale.z() != 1))
     {
         osg::StateSet* ss = resultNode->getOrCreateStateSet();
-        ss->setMode(GL_RESCALE_NORMAL, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        if (scale.x() == scale.y() && scale.y() == scale.z())
+        {
+            // This mode may be quicker than GL_NORMALIZE, but ONLY works if x, y & z components of scale are the same.
+            ss->setMode(GL_RESCALE_NORMAL, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        }
+        else
+        {
+            // This mode may be slower than GL_RESCALE_NORMAL, but does work if x, y & z components of scale are not the same.
+            ss->setMode(GL_NORMALIZE, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        }
     }
 
     return resultNode;

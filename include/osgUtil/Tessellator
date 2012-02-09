@@ -96,7 +96,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
             VecList _vertices;
         };
         
-        void beginTessellation();
+        virtual void beginTessellation();
         
         void beginContour();
 

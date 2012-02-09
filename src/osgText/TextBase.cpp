@@ -302,8 +302,9 @@ osg::BoundingBox TextBase::computeBound() const
             else
             {
                 osg::Matrix matrix;
-                matrix.makeTranslate(_position);
-                matrix.preMultRotate(_rotation);
+                matrix.makeTranslate(-_offset);
+                matrix.postMultRotate(_rotation);
+                matrix.postMultTranslate(_position);
                 bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
                 bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
             }

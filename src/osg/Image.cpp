@@ -795,6 +795,17 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    return totalSize;
 }
 
+void Image::setRowLength(int length) 
+{ 
+    _rowLength = length;
+    #if defined(OSG_GLES1_FEATURES) || defined(OSG_GLES2_FEATURES)
+    if (length > 0) 
+    {
+        OSG_WARN << "Image::setRowLength is not supported on this platform, ignoring" << std::endl;
+    }
+    #endif
+
+}
 
 void Image::setInternalTextureFormat(GLint internalFormat)
 {

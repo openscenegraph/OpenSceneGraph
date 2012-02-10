@@ -380,7 +380,9 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         image->ensureValidSizeForTexturing(extensions->maxTexture3DSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
+#endif
 
     bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
 

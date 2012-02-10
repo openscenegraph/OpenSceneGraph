@@ -85,6 +85,8 @@
 // custom UIView-class handling creation and display of frame/render buffers plus receives touch input
 // ----------------------------------------------------------------------------------------------------------
 
+typedef std::map<void*, unsigned int> TouchPointsIdMapping;
+
 @interface GraphicsWindowIOSGLView : UIView
 {
     @private
@@ -107,6 +109,11 @@
         
         // for multisampled antialiased rendering
         GLuint _msaaFramebuffer, _msaaRenderBuffer, _msaaDepthBuffer;
+        
+        TouchPointsIdMapping* _touchPointsIdMapping;
+        unsigned int _lastTouchPointId;
+
+
     
 }
 
@@ -155,12 +162,72 @@
 
 }
 
+
+- (unsigned int)computeTouchId: (UITouch*) touch 
+{
+    unsigned int result(0);
+    
+    if (!_touchPointsIdMapping) {
+        _lastTouchPointId = 0;
+        _touchPointsIdMapping = new TouchPointsIdMapping();
+    }
+    
+    switch([touch phase])
+    {
+    
+        case UITouchPhaseBegan:
+            {
+                TouchPointsIdMapping::iterator itr = _touchPointsIdMapping->find(touch);
+                // std::cout << "new: " << touch << " num: " << _touchPointsIdMapping->size() << " found: " << (itr != _touchPointsIdMapping->end()) << std::endl;
+                 
+                if (itr == _touchPointsIdMapping->end()) 
+                {
+                    (*_touchPointsIdMapping)[touch] = result = _lastTouchPointId;
+                    _lastTouchPointId++;
+                    break;
+                }
+               
+            }
+            // missing "break" by intention!
+        
+        case UITouchPhaseMoved:
+        case UITouchPhaseStationary:
+            {
+                result = (*_touchPointsIdMapping)[touch];
+            }
+            break;
+       
+        case UITouchPhaseEnded:
+        case UITouchPhaseCancelled:
+            {
+                TouchPointsIdMapping::iterator itr = _touchPointsIdMapping->find(touch);
+                // std::cout<< "remove: " << touch << " num: " << _touchPointsIdMapping->size() << " found: " << (itr != _touchPointsIdMapping->end()) << std::endl;
+                
+                if (itr != _touchPointsIdMapping->end()) {
+                    result = itr->second;
+                    _touchPointsIdMapping->erase(itr);
+                }
+                if(_touchPointsIdMapping->size() == 0) {
+                    _lastTouchPointId = 0;
+                }
+                // std::cout<< "remove: " << touch << " num: " << _touchPointsIdMapping->size() << std::endl;
+            }
+            break;
+            
+        default:
+            break;
+    }
+        
+    return result;
+}
+
+
 - (osg::Vec2) convertPointToPixel: (osg::Vec2) point
 {
     //get the views contentscale factor and multiply the point by it
     float scale = 1.0f;
     
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     scale = self.contentScaleFactor;
 #endif
     return osg::Vec2(point.x()*scale, point.y()*scale);
@@ -170,6 +237,8 @@
 -(void) setGraphicsWindow: (osgViewer::GraphicsWindowIOS*) win
 {
     _win = win;
+    _touchPointsIdMapping = new TouchPointsIdMapping();
+    _lastTouchPointId = 0;
 }
 
 - (osgViewer::GraphicsWindowIOS*) getGraphicsWindow {
@@ -222,7 +291,9 @@
 - (void) dealloc
 {
     OSG_INFO << "GraphicsWindowIOSGLView::dealloc" << std::endl;
-    
+    if(_touchPointsIdMapping) 
+        delete _touchPointsIdMapping;
+    _touchPointsIdMapping = NULL;
     [super dealloc];
 }
 
@@ -283,7 +354,7 @@
     
     //MSAA only available for >= 4.0 sdk
     
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     
     if(_win->getTraits()->sampleBuffers > 0) 
     {
@@ -364,7 +435,7 @@
 - (void)swapBuffers {
 
 
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)    
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)    
     if(_msaaFramebuffer) 
     {
         glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);
@@ -389,7 +460,7 @@
     //re bind the frame buffer for next frames renders
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     if (_msaaFramebuffer)
         glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);;
 #endif
@@ -403,7 +474,7 @@
     //bind the frame buffer
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     if (_msaaFramebuffer)
         glBindFramebufferOES(GL_READ_FRAMEBUFFER_APPLE, _msaaFramebuffer);
 #endif
@@ -440,11 +511,12 @@
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
         CGPoint pos = [touch locationInView:touch.view];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
+        unsigned int touch_id = [self computeTouchId: touch];
         
         if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchBegan(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+            osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         } else {
-            osg_event->addTouchPoint(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         }
     }
     
@@ -461,11 +533,12 @@
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
         CGPoint pos = [touch locationInView:touch.view];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
-        
+        unsigned int touch_id = [self computeTouchId: touch];
+
         if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchMoved(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+            osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         } else {
-            osg_event->addTouchPoint(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         }
 
 
@@ -484,16 +557,20 @@
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
         CGPoint pos = [touch locationInView:touch.view];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
-        
+        unsigned int touch_id = [self computeTouchId: touch];
         if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchEnded(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
+            osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
         } else {
-            osg_event->addTouchPoint(i, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
         }
 
     }
 }
 
+-(void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event 
+{
+    [self touchesEnded: touches withEvent:event];
+}
 
 @end
 
@@ -730,7 +807,7 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     //Apply our content scale factor to our view, this is what converts the views points
     //size to our desired context size.
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     theView.contentScaleFactor = _viewContentScaleFactor;
 #endif    
     [theView setGraphicsWindow: this];

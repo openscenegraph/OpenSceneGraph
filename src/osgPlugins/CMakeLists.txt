@@ -100,6 +100,9 @@ IF(GDAL_FOUND)
     ADD_SUBDIRECTORY(gdal)
     ADD_SUBDIRECTORY(ogr)
 ENDIF()
+IF(GTA_FOUND AND OSG_CPP_EXCEPTIONS_AVAILABLE)
+    ADD_SUBDIRECTORY(gta)
+ENDIF()
 
 
 ############################################################

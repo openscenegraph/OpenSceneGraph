@@ -443,7 +443,8 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
         case GL_RGBA:
         case GL_RGB:
         case GL_LUMINANCE:
-        case GL_LUMINANCE_ALPHA: return GL_UNSIGNED_BYTE;
+        case GL_LUMINANCE_ALPHA:
+        case GL_ALPHA: return GL_UNSIGNED_BYTE;
 
         default: 
         {
@@ -794,6 +795,17 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    return totalSize;
 }
 
+void Image::setRowLength(int length) 
+{ 
+    _rowLength = length;
+    #if defined(OSG_GLES1_FEATURES) || defined(OSG_GLES2_FEATURES)
+    if (length > 0) 
+    {
+        OSG_WARN << "Image::setRowLength is not supported on this platform, ignoring" << std::endl;
+    }
+    #endif
+
+}
 
 void Image::setInternalTextureFormat(GLint internalFormat)
 {

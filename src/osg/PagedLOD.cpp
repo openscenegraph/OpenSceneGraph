@@ -22,6 +22,8 @@ using namespace osg;
 PagedLOD::PerRangeData::PerRangeData():
     _priorityOffset(0.0f),
     _priorityScale(1.0f),
+    _minExpiryTime(0.0),
+    _minExpiryFrames(0),
     _timeStamp(0.0f),
     _frameNumber(0),
     _frameNumberOfLastReleaseGLObjects(0) {}
@@ -30,6 +32,8 @@ PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
     _filename(prd._filename),
     _priorityOffset(prd._priorityOffset),
     _priorityScale(prd._priorityScale),
+    _minExpiryTime(prd._minExpiryTime),
+    _minExpiryFrames(prd._minExpiryFrames),
     _timeStamp(prd._timeStamp),
     _frameNumber(prd._frameNumber),
     _frameNumberOfLastReleaseGLObjects(prd._frameNumberOfLastReleaseGLObjects),
@@ -45,6 +49,8 @@ PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& 
     _frameNumber = prd._frameNumber;
     _frameNumberOfLastReleaseGLObjects = prd._frameNumberOfLastReleaseGLObjects;
     _databaseRequest = prd._databaseRequest;
+    _minExpiryTime = prd._minExpiryTime;
+    _minExpiryFrames = prd._minExpiryFrames;
     return *this;
 }
 
@@ -290,8 +296,8 @@ bool PagedLOD::removeExpiredChildren(double expiryTime, unsigned int expiryFrame
     {
         unsigned cindex = _children.size() - 1;
         if (!_perRangeDataList[cindex]._filename.empty() &&
-            _perRangeDataList[cindex]._timeStamp<expiryTime &&
-            _perRangeDataList[cindex]._frameNumber<expiryFrame)
+            _perRangeDataList[cindex]._timeStamp + _perRangeDataList[cindex]._minExpiryTime < expiryTime &&
+            _perRangeDataList[cindex]._frameNumber + _perRangeDataList[cindex]._minExpiryFrames < expiryFrame)
         {            
             osg::Node* nodeToRemove = _children[cindex].get();
             removedChildren.push_back(nodeToRemove);

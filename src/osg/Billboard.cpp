@@ -35,7 +35,10 @@ Billboard::Billboard(const Billboard& billboard,const CopyOp& copyop):
         _normal(billboard._normal),
         _positionList(billboard._positionList),
         _cachedMode(billboard._cachedMode),
-        _side(billboard._side) {}
+        _side(billboard._side)
+{
+    setNormal(_normal);
+}
 
 Billboard::~Billboard()
 {

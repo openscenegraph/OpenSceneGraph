@@ -66,7 +66,7 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a utility for converting between various input and output databases formats.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a utility for converting glsl shader files into char arrays that can be compiled into applications.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("--shader <filename>","Shader file to create a .cpp file for.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");

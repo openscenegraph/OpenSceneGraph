@@ -652,6 +652,19 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
 }
 
 
+bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
+{
+    const std::string cwd(".");
+    for(FilePathList::const_iterator itr = paths.begin();
+        itr != paths.end();
+        ++itr)
+    {
+        if (itr->empty()) return true;
+        if (*itr==cwd) return true;
+    }
+    return false;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Implementation of appendPlatformSpecificLibraryFilePaths(..)
@@ -1224,9 +1237,5 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     {
     }
 #endif
-
-
-
-
 
 

@@ -133,9 +133,9 @@ public:
     
     struct WindowData : public osg::Referenced
     {
-        WindowData( GLWidget* widget = NULL, GLWidget* parent = NULL ): _widget(widget), _parent(parent) {}
+        WindowData( GLWidget* widget = NULL, QWidget* parent = NULL ): _widget(widget), _parent(parent) {}
         GLWidget* _widget;
-        GLWidget* _parent;
+        QWidget* _parent;
     };
 
     bool init( QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f );

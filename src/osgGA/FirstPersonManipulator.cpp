@@ -342,14 +342,14 @@ void FirstPersonManipulator::moveForward( const Quat& rotation, const double dis
 /// Move camera right by distance parameter.
 void FirstPersonManipulator::moveRight( const double distance )
 {
-   assert( 0 && "Not implemented yet." );
+   _eye += _rotation * Vec3d( distance, 0., 0. );
 }
 
 
 /// Move camera up by distance parameter.
 void FirstPersonManipulator::moveUp( const double distance )
 {
-   assert( 0 && "Not implemented yet." );
+   _eye += _rotation * Vec3d( 0., distance, 0. );
 }
 
 

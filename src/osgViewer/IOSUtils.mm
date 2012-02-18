@@ -72,7 +72,7 @@ void IOSWindowingSystemInterface::getScreenSettings(const osg::GraphicsContext::
         //internal display supports only one mode, UiScreenMode reports wrong sizes for internal display at least for iOS 3.2
         float scale = 1.0f;
         
-        #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+        #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
             scale = [screen scale];
         #endif
         
@@ -123,7 +123,7 @@ void IOSWindowingSystemInterface::enumerateScreenSettings(const osg::GraphicsCon
         osg::GraphicsContext::ScreenSettings resolution;
         
         float scale = 1.0f;
-        #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+        #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
             scale = [screen scale];
         #endif
         
@@ -256,7 +256,7 @@ bool IOSWindowingSystemInterface::getScreenContentScaleFactor(const osg::Graphic
     if(screen != nil)
     {
         scaleFactor = 1.0f;
-#ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
         CGFloat scale = [screen scale];
         scaleFactor = scale;
 #endif

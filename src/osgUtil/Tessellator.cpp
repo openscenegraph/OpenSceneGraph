@@ -26,7 +26,15 @@ Tessellator::Tessellator() :
     _ttype(TESS_TYPE_POLYGONS),
     _boundaryOnly(false), _numberVerts(0) 
 {
-    _tobj = 0;
+    _tobj = gluNewTess();
+    if (_tobj)
+    {
+        gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) vertexCallback);
+        gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLU_TESS_CALLBACK) beginCallback);
+        gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLU_TESS_CALLBACK) endCallback);
+        gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLU_TESS_CALLBACK) combineCallback);
+        gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLU_TESS_CALLBACK) errorCallback);
+    }
     _errorCode = 0;
     _index=0;
 }
@@ -34,22 +42,25 @@ Tessellator::Tessellator() :
 Tessellator::~Tessellator()
 {
     reset();
+    if (_tobj)
+    {
+        gluDeleteTess(_tobj);
+    }
 }
 
 void Tessellator::beginTessellation()
 {
     reset();
 
-    if (!_tobj) _tobj = gluNewTess();
-    
-    gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) vertexCallback);
-    gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLU_TESS_CALLBACK) beginCallback);
-    gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLU_TESS_CALLBACK) endCallback);
-    gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLU_TESS_CALLBACK) combineCallback);
-    gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLU_TESS_CALLBACK) errorCallback);
-    if (tessNormal.length()>0.0) gluTessNormal(_tobj, tessNormal.x(), tessNormal.y(), tessNormal.z());
+    if (_tobj)
+    {
+        gluTessProperty(_tobj, GLU_TESS_WINDING_RULE, _wtype);
+        gluTessProperty(_tobj, GLU_TESS_BOUNDARY_ONLY, _boundaryOnly);
+        
+        if (tessNormal.length()>0.0) gluTessNormal(_tobj, tessNormal.x(), tessNormal.y(), tessNormal.z());
 
-    gluTessBeginPolygon(_tobj,this);
+        gluTessBeginPolygon(_tobj,this);
+    }
 }    
     
 void Tessellator::beginContour()
@@ -93,8 +104,6 @@ void Tessellator::endTessellation()
     if (_tobj)
     {
         gluTessEndPolygon(_tobj);
-        gluDeleteTess(_tobj);
-        _tobj = 0;
         
         if (_errorCode!=0)
         {
@@ -106,12 +115,6 @@ void Tessellator::endTessellation()
 
 void Tessellator::reset()
 {
-    if (_tobj)
-    {
-        gluDeleteTess(_tobj);
-        _tobj = 0;
-    }
-
     for (Vec3dList::iterator i = _coordData.begin(); i != _coordData.end(); ++i)
     {
         delete (*i);
@@ -222,8 +225,6 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
     // occurs around the whole set of contours.
     if (_ttype==TESS_TYPE_GEOMETRY) {
         beginTessellation();
-        gluTessProperty(_tobj, GLU_TESS_WINDING_RULE, _wtype);
-        gluTessProperty(_tobj, GLU_TESS_BOUNDARY_ONLY , _boundaryOnly);
     }
     // process all the contours into the Tessellator
     int noContours = _Contours.size();

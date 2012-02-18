@@ -261,7 +261,7 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
             // perform zoom
             zoomModel( -_wheelZoomFactor, true );
             us.requestRedraw();
-            us.requestContinuousUpdate( false );
+            us.requestContinuousUpdate( isAnimating() || _thrown );
             return true;
         }
 

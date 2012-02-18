@@ -70,6 +70,8 @@ class OSG_EXPORT PagedLOD : public LOD
             std::string                     _filename;
             float                           _priorityOffset;
             float                           _priorityScale;
+            double                          _minExpiryTime;
+            unsigned int                    _minExpiryFrames;
             double                          _timeStamp;
             unsigned int                    _frameNumber;
             unsigned int                    _frameNumberOfLastReleaseGLObjects;
@@ -90,6 +92,16 @@ class OSG_EXPORT PagedLOD : public LOD
         void setPriorityScale(unsigned int childNo, float priorityScale) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._priorityScale=priorityScale; }
         float getPriorityScale(unsigned int childNo) const { return _perRangeDataList[childNo]._priorityScale; }
         unsigned int getNumPriorityScales() const { return _perRangeDataList.size(); }
+
+        /** Sets the minimum amount of time, in seconds, that must pass without a child being traversed before it can be expired. */
+        void setMinimumExpiryTime(unsigned int childNo, double minTime) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._minExpiryTime=minTime; }
+        double getMinimumExpiryTime(unsigned int childNo) const { return _perRangeDataList[childNo]._minExpiryTime; }
+        unsigned int getNumMinimumExpiryTimes() const { return _perRangeDataList.size(); }
+
+         /** Sets the minimum number of frames that must be rendered without a child being traversed before it can be expired. */
+        void setMinimumExpiryFrames(unsigned int childNo, unsigned int minFrames) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._minExpiryFrames=minFrames; }
+        unsigned int getMinimumExpiryFrames(unsigned int childNo) const { return _perRangeDataList[childNo]._minExpiryFrames; }
+        unsigned int getNumMinimumExpiryFrames() const { return _perRangeDataList.size(); }
 
 
         void setTimeStamp(unsigned int childNo, double timeStamp) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._timeStamp=timeStamp; }

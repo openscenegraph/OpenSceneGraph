@@ -3492,35 +3492,36 @@ static void closestFit(GLenum target, GLint width, GLint height,
                 * that we will never be aware of when this happens
                 * since it will silently branch out.
                 */
-              *newWidth= 0;
-              *newHeight= 0;
-              return;
+              break;
             }
             widthPowerOf2= widthAtLevelOne;
             heightPowerOf2= heightAtLevelOne;
          }
          /* else it does fit */
       } while (proxyWidth == 0);
-      /* loop must terminate! */
 
       /* return the width & height at level 0 that fits */
-      *newWidth= widthPowerOf2;
-      *newHeight= heightPowerOf2;
+      if ( proxyWidth > 0 )
+      {
+        *newWidth= widthPowerOf2;
+        *newHeight= heightPowerOf2;
 /*printf("Proxy Textures\n");*/
+        return;
+      }
    } /* if gluCheckExtension() */
-   else
 #endif // end of #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-   {                        /* no texture extension, so do this instead */
-      GLint maxsize;
 
-      glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxsize);
-      /* clamp user's texture sizes to maximum sizes, if necessary */
-      *newWidth = nearestPower(width);
-      if (*newWidth > maxsize) *newWidth = maxsize;
-      *newHeight = nearestPower(height);
-      if (*newHeight > maxsize) *newHeight = maxsize;
+   /* no texture extension, or proxy textures not working, so do this instead */
+
+   GLint maxsize;
+
+   glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxsize);
+   /* clamp user's texture sizes to maximum sizes, if necessary */
+   *newWidth = nearestPower(width);
+   if (*newWidth > maxsize) *newWidth = maxsize;
+   *newHeight = nearestPower(height);
+   if (*newHeight > maxsize) *newHeight = maxsize;
 /*printf("NO proxy textures\n");*/
-   }
 } /* closestFit() */
 
 GLint GLAPIENTRY

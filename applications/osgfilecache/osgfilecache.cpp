@@ -309,7 +309,7 @@ public:
     osg::Node* readNodeFileAndWriteToCache(const std::string& filename)
     {
         osg::Node* node = 0;
-        if (_fileCache.valid() && osgDB::containsServerAddress(filename))
+        if (_fileCache.valid() )
         {
             if (_fileCache->existsInCache(filename))
             {

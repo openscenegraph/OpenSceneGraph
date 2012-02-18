@@ -189,7 +189,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             jas_cleanup();
         }
 
-        virtual const char* className() const { return "RGB Image Reader/Writer"; }
+        virtual const char* className() const { return "JPEG 2000 Image Reader/Writer"; }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
@@ -217,7 +217,15 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 return img;
             }
 
-            jas_stream_t* in = jas_stream_fopen(fileName.c_str(), "rb");
+            FILE * fileHandle = osgDB::fopen(fileName.c_str(), "rb");
+            if (!fileHandle) {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
+            jas_stream_t* in = jas_stream_freopen(fileName.c_str(), "rb", fileHandle);        // Replacement for jas_stream_fopen() to be able to support UTF8
+            if (!in) {
+                fclose(fileHandle);
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
 
             char* opt = 0;
             if(options)
@@ -242,6 +250,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             jas_image_destroy(jimage);
             jas_stream_close(in);
+            fclose(fileHandle);
 
             unsigned int pixelFormat =
                 internalFormat == 1 ? GL_LUMINANCE :
@@ -412,9 +421,15 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             getdata(mem, jimage);
 
-            jas_stream_t* out = jas_stream_fopen(fileName.c_str(), "wb");
-            if (!out) 
+            FILE * fileHandle = osgDB::fopen(fileName.c_str(), "wb");
+            if (!fileHandle) {
                 return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+            jas_stream_t* out = jas_stream_freopen(fileName.c_str(), "wb", fileHandle);        // Replacement for jas_stream_fopen() to be able to support UTF8
+            if (!out) {
+                fclose(fileHandle);
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
 
             char* opt = 0;
             if(options)
@@ -429,6 +444,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             jas_stream_close(out);
             jas_image_destroy(jimage);
+            fclose(fileHandle);
 
             return WriteResult::FILE_SAVED;
         }
@@ -495,7 +511,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             getdata(mem, jimage);
 
             jas_stream_t* out = jas_stream_memopen(0, 0);
-//            jas_stream_t* out = jas_stream_fopen(fileName.c_str(), "wb");
             if (!out) 
                 return WriteResult::ERROR_IN_WRITING_FILE;
 

@@ -665,7 +665,7 @@ simage_tiff_load(std::istream& fin,
                     tifferror = ERR_READ;
                     break;
                 }
-                invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE, bitspersample);
+                invert_row(currPtr, inbuf, samplesperpixel*w, photometric == PHOTOMETRIC_MINISWHITE, bitspersample);
                 currPtr -= format*w;
             }
             break;

@@ -1184,7 +1184,6 @@
 		90AF63F810C343F40041F6A7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AF63F210C343F40041F6A7 /* main.m */; };
 		90AF63F910C343F40041F6A7 /* osgAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 90AF63F310C343F40041F6A7 /* osgAppDelegate.h */; };
 		90AF63FA10C343F40041F6A7 /* osgAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 90AF63F410C343F40041F6A7 /* osgAppDelegate.mm */; };
-		90AF63FB10C343F40041F6A7 /* osgIPhoneExample-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 90AF63F510C343F40041F6A7 /* osgIPhoneExample-Info.plist */; };
 		90AF63FC10C343F40041F6A7 /* osgPlugins.h in Headers */ = {isa = PBXBuildFile; fileRef = 90AF63F610C343F40041F6A7 /* osgPlugins.h */; };
 		90AF642F10C346F00041F6A7 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 90AF642D10C346F00041F6A7 /* Default.png */; };
 		90AF643010C346F00041F6A7 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90AF642E10C346F00041F6A7 /* Icon.png */; };
@@ -1200,7 +1199,6 @@
 		90AF651910C348A70041F6A7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B90CA510B38FF200E10618 /* UIKit.framework */; };
 		90AF651A10C348A70041F6A7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B90CBA10B3925800E10618 /* QuartzCore.framework */; };
 		90AF651B10C348A70041F6A7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90EEDF4D10B9FCA1007F0292 /* CoreGraphics.framework */; };
-		90AF653210C3493D0041F6A7 /* osgIPhoneViewer-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 90AF653110C3493D0041F6A7 /* osgIPhoneViewer-Info.plist */; };
 		90B908A610B36BC900E10618 /* AlphaFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B9078810B36AE900E10618 /* AlphaFunc.cpp */; };
 		90B908A710B36BC900E10618 /* AnimationPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B9078910B36AE900E10618 /* AnimationPath.cpp */; };
 		90B908A810B36BC900E10618 /* ApplicationUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B9078A10B36AE900E10618 /* ApplicationUsage.cpp */; };
@@ -6965,6 +6963,9 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "OSGIPhone" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -7020,7 +7021,6 @@
 				90AF643B10C347DB0041F6A7 /* hog.osg in Resources */,
 				90AF644110C347DB0041F6A7 /* Default.png in Resources */,
 				90AF644210C347DB0041F6A7 /* Icon.png in Resources */,
-				90AF653210C3493D0041F6A7 /* osgIPhoneViewer-Info.plist in Resources */,
 				90CAB9E810C3992A00F8B606 /* arial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7029,7 +7029,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90AF63FB10C343F40041F6A7 /* osgIPhoneExample-Info.plist in Resources */,
 				90AF642F10C346F00041F6A7 /* Default.png in Resources */,
 				90AF643010C346F00041F6A7 /* Icon.png in Resources */,
 				D4C0F8BA1312A39500BE4A39 /* skydome.ive in Resources */,
@@ -8348,7 +8347,6 @@
 				DEAD_CODE_STRIPPING = YES;
 				DSTROOT = /tmp/osg.dst;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -8397,7 +8395,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -8415,7 +8412,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -8434,7 +8430,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgAnimation;
 			};
 			name = Debug;
@@ -8445,14 +8440,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgAnimation;
 				ZERO_LINK = NO;
 			};
@@ -8471,7 +8464,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgShadow;
 			};
 			name = Debug;
@@ -8482,14 +8474,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgShadow;
 				ZERO_LINK = NO;
 			};
@@ -8508,7 +8498,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgWidget;
 			};
 			name = Debug;
@@ -8519,14 +8508,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgWidget;
 				ZERO_LINK = NO;
 			};
@@ -8545,7 +8532,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgManipulator;
 			};
 			name = Debug;
@@ -8556,14 +8542,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgManipulator;
 				ZERO_LINK = NO;
 			};
@@ -8582,7 +8566,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgPresentation;
 			};
 			name = Debug;
@@ -8593,14 +8576,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgPresentation;
 				ZERO_LINK = NO;
 			};
@@ -8627,7 +8608,6 @@
 					"\"$(SRCROOT)/3rdParty\"",
 					"\"$(SRCROOT)/3rdParty/lib\"",
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_freetype;
 			};
 			name = Debug;
@@ -8638,7 +8618,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
@@ -8651,7 +8630,6 @@
 					"\"$(SRCROOT)/lib/3rdParty\"",
 					"\"$(SRCROOT)/3rdParty/lib\"",
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_freetype;
 				ZERO_LINK = NO;
 			};
@@ -8673,7 +8651,6 @@
 				LD_GENERATE_MAP_FILE = NO;
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = osgdb_obj;
@@ -8686,14 +8663,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgdb_obj;
 				ZERO_LINK = NO;
@@ -8713,7 +8688,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgdb_ive;
 			};
@@ -8725,14 +8699,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgdb_ive;
 				ZERO_LINK = NO;
@@ -8752,7 +8724,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgFX;
 			};
@@ -8764,14 +8735,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgFX;
 				ZERO_LINK = NO;
@@ -8791,7 +8760,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgText;
 			};
@@ -8803,14 +8771,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgText;
 				ZERO_LINK = NO;
@@ -8830,7 +8796,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgSim;
 			};
@@ -8842,14 +8807,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgSim;
 				ZERO_LINK = NO;
@@ -8869,7 +8832,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgGA;
 			};
@@ -8881,14 +8843,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgGA;
 				ZERO_LINK = NO;
@@ -8908,7 +8868,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgParticle;
 			};
@@ -8920,14 +8879,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgParticle;
 				ZERO_LINK = NO;
@@ -8947,7 +8904,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgTerrain;
 			};
@@ -8959,14 +8915,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgTerrain;
 				ZERO_LINK = NO;
@@ -8986,7 +8940,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgVolume;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -8999,14 +8952,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgVolume;
 				ZERO_LINK = NO;
@@ -9029,7 +8980,6 @@
 					../src/osgUtil/tristripper/include,
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgUtil;
 			};
@@ -9041,7 +8991,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
@@ -9049,7 +8998,6 @@
 					../src/osgUtil/tristripper/include,
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgUtil;
 				ZERO_LINK = NO;
@@ -9070,7 +9018,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgDB;
 			};
@@ -9082,14 +9029,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgDB;
 				ZERO_LINK = NO;
@@ -9109,7 +9054,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_osg;
 			};
 			name = Debug;
@@ -9120,14 +9064,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_osg;
 				ZERO_LINK = NO;
 			};
@@ -9164,7 +9106,6 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgViewer;
 			};
 			name = Debug;
@@ -9176,7 +9117,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
@@ -9200,7 +9140,6 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgViewer;
 				ZERO_LINK = NO;
 			};
@@ -9219,7 +9158,6 @@
 					./config,
 					../include,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OpenThreads;
 			};
 			name = Debug;
@@ -9230,13 +9168,11 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = OpenThreads;
 				ZERO_LINK = NO;
@@ -9268,7 +9204,6 @@
 				LD_GENERATE_MAP_FILE = YES;
 				LD_OPENMP_FLAGS = "-fopenmp";
 				LINKER_DISPLAYS_MANGLED_NAMES = YES;
-				PREBINDING = NO;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = osg;
 			};
@@ -9281,7 +9216,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
@@ -9294,7 +9228,6 @@
 				);
 				INFOPLIST_FILE = "./iphoneExamples/simple/osgIPhoneExample-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				PREBINDING = NO;
 				PRODUCT_NAME = osg;
 				ZERO_LINK = NO;
 			};
@@ -9314,7 +9247,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgViewer;
 			};
 			name = Debug;
@@ -9325,14 +9257,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgViewer;
 				ZERO_LINK = NO;
 			};
@@ -9351,7 +9281,6 @@
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_imageio;
 			};
 			name = Debug;
@@ -9362,14 +9291,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_THUMB_SUPPORT = NO;
 				HEADER_SEARCH_PATHS = (
 					./config,
 					../include,
 					../config/openthreads,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = osgdb_imageio;
 				ZERO_LINK = NO;
 			};
@@ -9398,7 +9325,6 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = viewtest;
 				SDKROOT = iphoneos;
 			};
@@ -9411,7 +9337,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -9427,7 +9352,6 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = viewtest;
 				SDKROOT = iphoneos;
 				ZERO_LINK = NO;
@@ -9449,7 +9373,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = "osg core";
 				ZERO_LINK = NO;
 			};
@@ -9470,7 +9393,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = "osg plugins";
 				ZERO_LINK = NO;
 			};
@@ -9491,7 +9413,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = ALL;
 				ZERO_LINK = NO;
 			};

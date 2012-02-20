@@ -247,7 +247,7 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        if (textureObject->isAllocated())
+        if (textureObject->isAllocated() && image->supportsTextureSubloading())
         {
             //OSG_NOTICE<<"Reusing texture object"<<std::endl;
             applyTexImage2D_subload(state,GL_TEXTURE_2D,image.get(),

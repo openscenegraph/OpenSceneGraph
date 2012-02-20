@@ -1431,6 +1431,17 @@ void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
     }
 }
 
+bool Image::supportsTextureSubloading() const
+{
+    switch(_internalTextureFormat)
+    {
+        case GL_ETC1_RGB8_OES:
+            return false;
+        default:
+            return true;
+    }
+}
+
 
 template <typename T>    
 bool _findLowerAlphaValueInRow(unsigned int num, T* data,T value, unsigned int delta)

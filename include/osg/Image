@@ -92,6 +92,10 @@
     #define GL_UNPACK_IMAGE_HEIGHT  0x806E
 #endif
 
+#ifndef GL_OES_compressed_ETC1_RGB8_texture
+    #define GL_ETC1_RGB8_OES        0x8D64   
+#endif
+
 namespace osg {
 
 // forward declare
@@ -395,6 +399,9 @@ class OSG_EXPORT Image : public BufferData
         {
            return _data+getMipmapOffset(mipmapLevel);
         }
+
+        /** returns false for texture formats that do not support texture subloading */
+        bool supportsTextureSubloading() const;
 
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         virtual bool isImageTranslucent() const;

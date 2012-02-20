@@ -345,7 +345,7 @@ static unsigned char* bmp_load(std::istream& fin,
     else
     {
         bytesPerPixel = 1;
-        bytesPerRow = (unsigned int) (dib.width * (dib.bitsPerPixel / 8.0f));
+        bytesPerRow = (unsigned int) ceilf(dib.width * (dib.bitsPerPixel / 8.0f));
     }
     const unsigned int bytesPerRowAlign = (unsigned int) ceilf(bytesPerRow / 4.0f) * 4;
     //printf("bytesPerPixel=%u bytesPerRow=%u bytesPerRowAlign=%u\n", bytesPerPixel, bytesPerRow, bytesPerRowAlign);

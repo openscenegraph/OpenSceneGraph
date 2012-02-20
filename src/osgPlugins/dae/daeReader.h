@@ -347,7 +347,7 @@ private:
                                         domCommon_float_or_param_type *pTransparency, 
                                         osg::StateSet*,
                                         osg::Material *material,
-                                        xsNCName diffuseTextureName );
+                                        unsigned int diffuseTextureUnit );
     bool GetFloat4Param(xsNCName Reference, domFloat4 &f4) const;
     bool GetFloatParam(xsNCName Reference, domFloat &f) const;
 

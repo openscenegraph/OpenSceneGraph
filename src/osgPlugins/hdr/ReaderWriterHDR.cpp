@@ -167,13 +167,8 @@ public:
             {
                 internalFormat = GL_RGBA8;
                 pixelFormat = GL_RGBA;
-            } else {
-                // In a perfect world it should be GL_RGB32F_ARB,
-                // but by default it works fine as GL_RGB8. You
-                // can set it as GL_RGB32F_ARB in the method
-                // setInternalFormat of osg::Texture{xD, Rectangle
-                // and CubeMap} if your GPU support it.
-                internalFormat = GL_RGB8;
+            } else {                
+                internalFormat = GL_RGB32F_ARB;
                 pixelFormat = GL_RGB;
             }
 

@@ -1670,31 +1670,19 @@ void Registry::removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp)
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
-    typedef std::vector<std::string> ObjectsToRemove;
-    ObjectsToRemove objectsToRemove;
-
-    // first collect all the expired entries in the ObjectToRemove list.
-    for(ObjectCache::iterator oitr=_objectCache.begin();
-        oitr!=_objectCache.end();
-        ++oitr)
+    // Remove expired entries from object cache
+    ObjectCache::iterator oitr = _objectCache.begin();
+    while(oitr != _objectCache.end())
     {
         if (oitr->second.second<=expiryTime)
         {
-            // record the filename of the entry to use as key for deleting
-            // afterwards/
-            objectsToRemove.push_back(oitr->first);
+            _objectCache.erase(oitr++);
+        }
+        else
+        {
+            ++oitr;
         }
     }
-    
-    // remove the entries from the _objectCaache.
-    for(ObjectsToRemove::iterator ritr=objectsToRemove.begin();
-        ritr!=objectsToRemove.end();
-        ++ritr)
-    {
-        // std::cout<<"Removing from Registry object cache '"<<*ritr<<"'"<<std::endl;
-        _objectCache.erase(*ritr);
-    }
-        
 }
 
 void Registry::removeFromObjectCache(const std::string& fileName)

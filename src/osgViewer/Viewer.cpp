@@ -954,7 +954,7 @@ void Viewer::eventTraversal()
             hitr != _eventHandlers.end();
             ++hitr)
         {
-            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, _eventVisitor);
+            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, _eventVisitor.get());
         }
 
     }

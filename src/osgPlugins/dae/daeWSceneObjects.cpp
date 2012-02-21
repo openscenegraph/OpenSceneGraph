@@ -359,7 +359,7 @@ void daeWriter::apply( osg::LightSource &node )
     osg::Vec3 direction = pOsgLight->getDirection();
     osg::Vec4 ambientColor = pOsgLight->getAmbient();
     osg::Vec4 diffuseColor = pOsgLight->getDiffuse();
-    osg::Vec4 specularColor = pOsgLight->getSpecular();
+    //osg::Vec4 specularColor = pOsgLight->getSpecular();
 
     if (position.w() == 0)
     {

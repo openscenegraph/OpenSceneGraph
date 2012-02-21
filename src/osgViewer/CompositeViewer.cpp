@@ -1037,7 +1037,7 @@ void CompositeViewer::eventTraversal()
                 hitr != view->getEventHandlers().end();
                 ++hitr)
             {
-                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, _eventVisitor);
+                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, _eventVisitor.get());
             }
         }
     }

@@ -1004,7 +1004,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
 
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg_vertices->reserve(m->nvertices);
-    geom->setVertexArray(osg_vertices);
+    geom->setVertexArray(osg_vertices.get());
 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
     osg_normals->reserve(m->nvertices);

@@ -1922,7 +1922,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         pbo = 0;
     }
-#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 #endif
     if( !mipmappingRequired || useHardwareMipMapGeneration)
@@ -2177,7 +2177,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo = 0;
     }
-#if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 #endif
     if( !mipmappingRequired || useHardwareMipMapGeneration)

@@ -798,7 +798,7 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
 void Image::setRowLength(int length) 
 { 
     _rowLength = length;
-    #if defined(OSG_GLES1_FEATURES) || defined(OSG_GLES2_FEATURES)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     if (length > 0) 
     {
         OSG_WARN << "Image::setRowLength is not supported on this platform, ignoring" << std::endl;
@@ -1428,6 +1428,17 @@ void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
         else { OSG_NOTICE << "Scaling image from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<std::endl; }
 
         scaleImage(new_s,new_t,_r);
+    }
+}
+
+bool Image::supportsTextureSubloading() const
+{
+    switch(_internalTextureFormat)
+    {
+        case GL_ETC1_RGB8_OES:
+            return false;
+        default:
+            return true;
     }
 }
 

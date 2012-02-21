@@ -307,7 +307,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
     }
 
-    xsNCName DiffuseTextureName = NULL;
     osg::ref_ptr< osg::Material > mat = new osg::Material();
     // <blinn>
     // elements:
@@ -364,9 +363,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = b->getDiffuse()->getTexture()->getTexture();
         }
         else
         {
@@ -384,7 +380,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
         }
 
-        processTransparencySettings(b->getTransparent(), b->getTransparency(), ss, mat.get(), DiffuseTextureName );
+        processTransparencySettings(b->getTransparent(), b->getTransparency(), ss, mat.get(), _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0 );
     }
     // <phong>
     // elements:
@@ -441,9 +437,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = p->getDiffuse()->getTexture()->getTexture();
         }
         else
         {
@@ -461,7 +454,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
         }
 
-        processTransparencySettings(p->getTransparent(), p->getTransparency(), ss, mat.get(), DiffuseTextureName );
+        processTransparencySettings(p->getTransparent(), p->getTransparency(), ss, mat.get(), _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0 );
     }
     // <lambert>
     // elements:
@@ -516,9 +509,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = l->getDiffuse()->getTexture()->getTexture();
         }
         else
         {
@@ -526,7 +516,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
-        processTransparencySettings(l->getTransparent(), l->getTransparency(), ss, mat.get(), DiffuseTextureName );
+        processTransparencySettings(l->getTransparent(), l->getTransparency(), ss, mat.get(), _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0 );
     }
     // <constant>
     // elements:
@@ -551,7 +541,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         // Use the emission colour as the main colour in transparency calculations
         mat->setDiffuse(osg::Material::FRONT_AND_BACK, mat->getEmission(osg::Material::FRONT_AND_BACK));
 
-        processTransparencySettings(c->getTransparent(), c->getTransparency(), ss, mat.get(), NULL );
+        processTransparencySettings(c->getTransparent(), c->getTransparency(), ss, mat.get(), _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0 );
 
         // Kill the lighting
         mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0, 0.0, 0.0, 1.0));
@@ -1181,7 +1171,7 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
                                             domCommon_float_or_param_type *pTransparency,
                                             osg::StateSet *ss,
                                             osg::Material *material,
-                                            xsNCName diffuseTextureName  )
+                                            unsigned int diffuseTextureUnit  )
 {
     if (ss == NULL)
         return;
@@ -1259,7 +1249,7 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
         if (!strictTransparency)
         {
             const osg::Texture* pMainTexture = dynamic_cast<osg::Texture*>(
-                ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE));
+                ss->getTextureAttribute(diffuseTextureUnit, osg::StateAttribute::TEXTURE));
             bool haveTranslucentTexture = pMainTexture &&
                 pMainTexture->getImage(0) && pMainTexture->getImage(0)->isImageTranslucent();
             strictTransparency = !haveTranslucentTexture;

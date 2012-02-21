@@ -475,7 +475,7 @@ void Glyph::subload() const
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
     
-    #if !defined(OSG_GLES1_FEATURES) && !defined(OSG_GLES2_FEATURES)
+    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,getRowLength());
     #endif
 

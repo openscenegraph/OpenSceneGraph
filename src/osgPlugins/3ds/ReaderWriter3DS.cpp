@@ -10,6 +10,7 @@
 #include <osg/MatrixTransform>
 #include <osg/BlendFunc>
 #include <osg/TexEnvCombine>
+#include <osg/CullFace>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -206,11 +207,10 @@ protected:
 
         osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
         StateSetInfo createStateSet(Lib3dsMaterial *materials);
-        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi);
+        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi, bool smoothVertexNormals);
 
         std::string _directory;
         bool _useSmoothingGroups;
-        bool _usePerVertexNormals;
 
         // MIKEC
         osg::Node* processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, const osg::Matrix * matrix);
@@ -265,7 +265,6 @@ ReaderWriter3DS::ReaderWriter3DS()
 
 ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* options) :
     _useSmoothingGroups(true),
-    _usePerVertexNormals(true),
     options(options),
     noMatrixTransforms(false),
     checkForEspilonIdentityMatrices(false),
@@ -388,6 +387,11 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             flitr!=faceList.end();
             ++flitr)
         {
+            // ChrisD: Worth bearing in mind that this splitting up of
+            // faces into smoothing groups is only correct for faces
+            // belonging to a single smoothing group. The smoothing group
+            // value is actually a bitmask for all the smoothing groups that 
+            // a face may belong to. 
             smoothingFaceMap[mesh->faces[*flitr].smoothing_group].push_back(*flitr);
         }
 
@@ -395,11 +399,15 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             sitr!=smoothingFaceMap.end();
             ++sitr)
         {
+            // We only compute smoothed vertex normals for faces with non-zero smoothing group value.
+            const unsigned int smoothing_group = sitr->first;
+            bool smoothVertexNormals = (smoothing_group != 0);
+
             // each smoothing group to have its own geom
             // to ensure the vertices on adjacent groups
             // don't get shared.
-            FaceList& smoothFaceMap = sitr->second;
-            osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,smoothFaceMap,matrix,ssi);
+            FaceList& smoothFaceList = sitr->second;
+            osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh, smoothFaceList, matrix, ssi, smoothVertexNormals);
             if (drawable.valid())
             {
                 if (ssi.stateset)
@@ -410,7 +418,9 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
     }
     else // ignore smoothing groups.
     {
-        osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,faceList,matrix,ssi);
+        // Create drawable with no smoothing of normals.
+        bool smoothVertexNormals = false;
+        osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh, faceList, matrix, ssi, smoothVertexNormals);
         if (drawable.valid())
         {
             if (ssi.stateset)
@@ -830,168 +840,249 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     return group;
 }
 
-/**
-use matrix to pretransform geometry, or NULL to do nothing
-*/
-osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi)
+struct RemappedFace
 {
-    osg::Geometry * geom = new osg::Geometry;
-    unsigned int i;
+    Lib3dsFace* face;        // Original face definition.
+    osg::Vec3f normal;
+    unsigned short index[3]; // Indices to OSG vertex/normal/texcoord arrays.
+};
 
-    std::vector<int> orig2NewMapping;
-    orig2NewMapping.reserve(m->nvertices);
-    for(i=0;i<m->nvertices;++i) orig2NewMapping.push_back(-1);
+struct VertexParams
+{
+    VertexParams() : matrix(NULL), smoothNormals(false), scaleUV(1.f, 1.f), offsetUV(0.f, 0.f) { }
+    const osg::Matrix* matrix; 
+    bool smoothNormals;
+    osg::Vec2f scaleUV;
+    osg::Vec2f offsetUV;
+};
 
-    unsigned int noVertex=0;
-    FaceList::iterator fitr;
-    for (fitr=faceList.begin();
-        fitr!=faceList.end();
-        ++fitr)
+static bool isFaceValid(const Lib3dsMesh* mesh, const Lib3dsFace* face)
+{
+    return 
+        face->index[0] < mesh->nvertices &&
+        face->index[1] < mesh->nvertices &&
+        face->index[2] < mesh->nvertices;
+}
+
+/* ChrisD: addVertex handles the averaging of normals and spltting of vertices
+   required to implement normals for smoothing groups. When a shared
+   vertex is encountered when smoothing is required, normals are added
+   and normalized. When a shared vertex is encountered when smoothing is
+   not required, we must split the vertex if a different normal is required.
+   For example if we are processing a cube mesh with no smoothing group
+   made from 12 triangles and 8 vertices, the resultant mesh should have
+   24 vertices to accomodate the 3 different normals at each vertex.
+  */
+static void addVertex(
+    const Lib3dsMesh* mesh, 
+    RemappedFace& remappedFace, 
+    unsigned short int i,
+    osg::Geometry* geometry,
+    std::vector<int>& origToNewMapping,
+    std::vector<int>& splitVertexChain, 
+    const VertexParams& params)
+{
+    osg::Vec3Array* vertices = (osg::Vec3Array*)geometry->getVertexArray();
+    osg::Vec3Array* normals = (osg::Vec3Array*)geometry->getNormalArray();
+    osg::Vec2Array* texCoords = (osg::Vec2Array*)geometry->getTexCoordArray(0);
+
+    unsigned short int index = remappedFace.face->index[i];
+    if (origToNewMapping[index] == -1)
     {
-        Lib3dsFace& face = m->faces[*fitr];
+        int newIndex = vertices->size();
+        remappedFace.index[i] = newIndex;
+        origToNewMapping[index] = newIndex;
 
-        if (face.index[0]>=orig2NewMapping.size() ||
-            face.index[1]>=orig2NewMapping.size() ||
-            face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
+        // Add the vertex position
+        osg::Vec3 vertex = copyLib3dsVec3ToOsgVec3(mesh->vertices[index]);
+        if (params.matrix) vertex = vertex * (*params.matrix);
+        vertices->push_back(vertex);
 
-        if (orig2NewMapping[face.index[0]]<0)
-            orig2NewMapping[face.index[0]] = noVertex++;
+        // Add the vertex normal
+        normals->push_back(remappedFace.normal);
 
-        if (orig2NewMapping[face.index[1]]<0)
-            orig2NewMapping[face.index[1]] = noVertex++;
-
-        if (orig2NewMapping[face.index[2]]<0)
-            orig2NewMapping[face.index[2]] = noVertex++;
-
-    }
-
-    // create vertices.
-
-    osg::ref_ptr<osg::Vec3Array> osg_coords = new osg::Vec3Array(noVertex);
-    geom->setVertexArray(osg_coords.get());
-
-    for (i=0; i<m->nvertices; ++i)
-    {
-        if (orig2NewMapping[i]>=0)
+        // Add the texture coordinate.
+        if (texCoords)
         {
-            if (matrix)
-            {
-                (*osg_coords)[orig2NewMapping[i]].set( copyLib3dsVec3ToOsgVec3(m->vertices[i]) * (*matrix) );
-            }
-            else
-            {
-                // original no transform code.
-                (*osg_coords)[orig2NewMapping[i]].set( copyLib3dsVec3ToOsgVec3(m->vertices[i]) );
-            }
-        }
-    }
-
-    // create texture coords if needed.
-    if (m->texcos)
-    {
-        osg::ref_ptr<osg::Vec2Array> osg_tcoords = new osg::Vec2Array(noVertex);
-        geom->setTexCoordArray(0, osg_tcoords.get());
-
-        // Texture 0 parameters (only one texture supported for now)
-        float scaleU(1.f), scaleV(1.f);
-        float offsetU(0.f), offsetV(0.f);
-        if (ssi.lib3dsmat && *(ssi.lib3dsmat->texture1_map.name))     // valid texture = name not empty
-        {
-            Lib3dsTextureMap & tex3ds = ssi.lib3dsmat->texture1_map;
-            scaleU = tex3ds.scale[0];
-            scaleV = tex3ds.scale[1];
-            offsetU = tex3ds.offset[0];
-            offsetV = tex3ds.offset[1];
-            if (tex3ds.rotation != 0) OSG_NOTICE << "3DS texture rotation not supported yet" << std::endl;
-            //TODO: tint_1, tint_2, tint_r, tint_g, tint_b
+            osg::Vec2f texCoord(mesh->texcos[index][0], mesh->texcos[index][1]);
+            texCoord = componentMultiply(texCoord, params.scaleUV);
+            texCoord += params.offsetUV;
+            texCoords->push_back(texCoord);
         }
 
-        for (i=0; i<m->nvertices; ++i)
-        {
-            if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texcos[i][0]*scaleU + offsetU, m->texcos[i][1]*scaleV + offsetV);
-        }
-    }
-
-    // create normals
-    // Sukender: 3DS file format doesn't store normals (that is to say they're recomputed each time).
-    // When using per vertex normals, we could use either vertex computation, or face computation (and copy the normal to each vertex). Here we use the latter one.
-    if (_usePerVertexNormals)
-    {
-        //Lib3dsVector * normals = new Lib3dsVector[m->nfaces*3];
-        //lib3ds_mesh_calculate_vertex_normals(m, normals);
-        scoped_array<Lib3dsVector> normals( new Lib3dsVector[m->nfaces] );        // Temporary array
-        lib3ds_mesh_calculate_face_normals(m, normals.get());
-        osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array(noVertex);
-
-        // initialize normal list to zero's.
-        for (i=0; i<noVertex; ++i)
-        {
-            (*osg_normals)[i].set(0.0f,0.0f,0.0f);
-        }
-
-        for (fitr=faceList.begin();
-            fitr!=faceList.end();
-            ++fitr)
-        {
-            Lib3dsFace& face = m->faces[*fitr];
-
-            if (face.index[0]>=orig2NewMapping.size() ||
-                face.index[1]>=orig2NewMapping.size() ||
-                face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
-
-            osg::Vec3f osgNormal( copyLib3dsVec3ToOsgVec3(normals[*fitr]) );
-            if (matrix) osgNormal = osg::Matrix::transform3x3(osgNormal, *matrix);
-            osgNormal.normalize();
-            (*osg_normals)[orig2NewMapping[face.index[0]]] = osgNormal;
-            (*osg_normals)[orig2NewMapping[face.index[1]]] = osgNormal;
-            (*osg_normals)[orig2NewMapping[face.index[2]]] = osgNormal;
-        }
-
-        geom->setNormalArray(osg_normals.get());
-        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        // New vertex, so not split yet.
+        splitVertexChain.push_back(-1);
     }
     else
     {
-        scoped_array<Lib3dsVector> normals ( new Lib3dsVector[m->nfaces] );
-        lib3ds_mesh_calculate_face_normals(m, normals.get());
-        osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array(faceList.size());
-        osg::Vec3Array::iterator normal_itr = osg_normals->begin();
-        for (fitr=faceList.begin();
-            fitr!=faceList.end();
-            ++fitr)
+        int newIndex = origToNewMapping[index];
+        if (params.smoothNormals)
         {
-            osg::Vec3f osgNormal( copyLib3dsVec3ToOsgVec3(normals[*fitr]) );
-            if (matrix) osgNormal = osg::Matrix::transform3x3(osgNormal, *matrix);
-            osgNormal.normalize();
-            *(normal_itr++) = osgNormal;
+            // Average the normals on the shared vertex.
+            remappedFace.index[i] = newIndex;
+            osg::Vec3f normal = (*normals)[newIndex];
+            normal += remappedFace.normal;
+            normal.normalize();
+            (*normals)[newIndex] = normal;
         }
-        geom->setNormalArray(osg_normals.get());
-        geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        else
+        {
+            // Find a split vertex chained from newIndex which has the 'same' normal.
+            int sharedVertexIndex = newIndex;
+            do
+            {
+                osg::Vec3f normal = (*normals)[sharedVertexIndex];
+                float normalDifference = (remappedFace.normal - normal).length2();
+                if (normalDifference < 1e-6) break;
+                sharedVertexIndex = splitVertexChain[sharedVertexIndex];
+            } while (sharedVertexIndex != -1);
+
+            if (sharedVertexIndex == -1)
+            {
+                // When different normals on a shared vertex required, split the vertex.
+                int splitVertexIndex = vertices->size();
+                remappedFace.index[i] = splitVertexIndex;
+                vertices->push_back((*vertices)[newIndex]);
+                normals->push_back(remappedFace.normal);
+                if (texCoords)
+                {
+                    texCoords->push_back((*texCoords)[newIndex]);
+                }
+                splitVertexChain[newIndex] = splitVertexIndex;
+                splitVertexChain.push_back(-1);
+            }
+            else
+            {
+                // When normals on shared vertex are identical (or very similar), keep it shared.
+                remappedFace.index[i] = sharedVertexIndex;
+            }
+        }
+    }
+}
+
+static bool addFace(
+    const Lib3dsMesh* mesh, 
+    RemappedFace& remappedFace, 
+    osg::Geometry* geometry, 
+    std::vector<int>& origToNewMapping, 
+    std::vector<int>& splitVertexChain, 
+    const VertexParams& params)
+{
+    if (isFaceValid(mesh, remappedFace.face))
+    {
+        addVertex(mesh, remappedFace, 0, geometry, origToNewMapping, splitVertexChain, params);
+        addVertex(mesh, remappedFace, 1, geometry, origToNewMapping, splitVertexChain, params);
+        addVertex(mesh, remappedFace, 2, geometry, origToNewMapping, splitVertexChain, params);
+        return true;
+    }
+    else
+    {
+        // Avoids crash with corrupted files.
+        remappedFace.face = NULL;
+        return false;
+    }
+}
+
+/**
+use matrix to pretransform geometry, or NULL to do nothing
+*/
+osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi, bool smoothVertexNormals)
+{
+    // Avoid creating geoms for empty face list because otherwise osg asserts/crashes during render traversal.
+    if (faceList.empty()) return NULL;
+
+    osg::Geometry * geom = new osg::Geometry;
+
+    VertexParams params;
+    params.matrix = matrix;
+    params.smoothNormals = smoothVertexNormals;
+
+    std::vector<RemappedFace> remappedFaces(faceList.size());
+
+    scoped_array<Lib3dsVector> normals( new Lib3dsVector[m->nfaces] );        // Temporary array
+    lib3ds_mesh_calculate_face_normals(m, normals.get());
+
+    osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+    osg_vertices->reserve(m->nvertices);
+    geom->setVertexArray(osg_vertices);
+
+    osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
+    osg_normals->reserve(m->nvertices);
+    geom->setNormalArray(osg_normals.get());
+    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    osg::ref_ptr<osg::Vec2Array> osg_texCoords = NULL;
+
+    if (m->texcos)
+    {
+        osg_texCoords = new osg::Vec2Array();
+        osg_texCoords->reserve(m->nvertices);
+        geom->setTexCoordArray(0, osg_texCoords.get());
+ 
+        // Texture 0 parameters (only one texture supported for now)
+        if (ssi.lib3dsmat && *(ssi.lib3dsmat->texture1_map.name))     // valid texture = name not empty
+        {
+            Lib3dsTextureMap & tex3ds = ssi.lib3dsmat->texture1_map;
+            params.scaleUV = osg::Vec2f(tex3ds.scale[0], tex3ds.scale[1]);
+            params.offsetUV = osg::Vec2f(tex3ds.offset[0], tex3ds.offset[1]);
+            if (tex3ds.rotation != 0) OSG_NOTICE << "3DS texture rotation not supported yet" << std::endl;
+            //TODO: tint_1, tint_2, tint_r, tint_g, tint_b
+        }   
     }
 
+    // The map between lib3ds mesh vertex indices and remapped osg vertices.
+    std::vector<int> origToNewMapping(m->nvertices, -1);
+
+    // If osg vertices need to be split to hold a different vertex normal,
+    // splitVertexChain allows us to look them up.
+    std::vector<int> splitVertexChain;
+    splitVertexChain.reserve(m->nvertices);
+
+    unsigned int faceIndex = 0;
+    unsigned int faceCount = 0;
+    for (FaceList::iterator itr = faceList.begin();
+        itr != faceList.end();
+        ++itr, ++faceIndex)
+    {        
+        osg::Vec3 normal = copyLib3dsVec3ToOsgVec3(normals[*itr]);
+        if (matrix) normal = osg::Matrix::transform3x3(normal, *(params.matrix));
+        normal.normalize();
+
+        Lib3dsFace& face = m->faces[*itr];
+        remappedFaces[faceIndex].face = &face;
+        remappedFaces[faceIndex].normal = normal; 
+        if (addFace(m, remappedFaces[faceIndex], geom, origToNewMapping, splitVertexChain, params))
+        {
+            ++faceCount;
+        }
+    }
+
+    // 'Shrink to fit' all vertex arrays because potentially faceList refers to fewer vertices than the whole mesh. 
+    // This will almost certainly be the case where mesh has been broken down into smoothing groups.
+    if (osg_vertices.valid() && osg_vertices->size() < osg_vertices->capacity()) osg_vertices->trim();
+    if (osg_normals.valid() && osg_normals->size() < osg_normals->capacity()) osg_normals->trim();
+    if (osg_texCoords.valid() && osg_texCoords->size() < osg_texCoords->capacity()) osg_texCoords->trim();
+
+    // Set geometry color to white. 
     osg::ref_ptr<osg::Vec4ubArray> osg_colors = new osg::Vec4ubArray(1);
     (*osg_colors)[0].set(255,255,255,255);
     geom->setColorArray(osg_colors.get());
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    // create primitives
-    int numIndices = faceList.size()*3;
-    osg::ref_ptr<DrawElementsUShort> elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES,numIndices);
+    // Create triangle primitives.
+    int numIndices = faceCount * 3;
+    osg::ref_ptr<DrawElementsUShort> elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES, numIndices);
     DrawElementsUShort::iterator index_itr = elements->begin();
 
-    for (fitr=faceList.begin();
-        fitr!=faceList.end();
-        ++fitr)
+    for (unsigned int i = 0; i < remappedFaces.size(); ++i)
     {
-        Lib3dsFace& face = m->faces[*fitr];
-
-        if (face.index[0]>=orig2NewMapping.size() ||
-            face.index[1]>=orig2NewMapping.size() ||
-            face.index[2]>=orig2NewMapping.size()) continue;     // Avoids crash with corrupted files
-
-        *(index_itr++) = orig2NewMapping[face.index[0]];
-        *(index_itr++) = orig2NewMapping[face.index[1]];
-        *(index_itr++) = orig2NewMapping[face.index[2]];
+        RemappedFace& remappedFace = remappedFaces[i];
+        if (remappedFace.face != NULL)
+        {
+            *(index_itr++) = remappedFace.index[0];
+            *(index_itr++) = remappedFace.index[1];
+            *(index_itr++) = remappedFace.index[2];
+        }
     }
 
     geom->addPrimitiveSet(elements.get());
@@ -1194,6 +1285,16 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
         //stateset->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    }
+
+    // Set back face culling state if single sided material applied.
+    // This seems like a reasonable assumption given that the backface cull option 
+    // doesn't appear to be encoded directly in the 3DS format, and also because
+    // it mirrors the effect of code in 3DS writer which uses the the face culling
+    // attribute to determine the state of the 'two_sided' 3DS material being written.
+    if (!mat->two_sided)
+    {
+        stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
     }
 
 /*

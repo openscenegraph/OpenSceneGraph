@@ -307,7 +307,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
     }
 
-    xsNCName DiffuseTextureName = NULL;
     osg::ref_ptr< osg::Material > mat = new osg::Material();
     // <blinn>
     // elements:
@@ -364,9 +363,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = b->getDiffuse()->getTexture()->getTexture();
         }
         else
         {
@@ -441,9 +437,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = p->getDiffuse()->getTexture()->getTexture();
         }
         else
         {
@@ -516,9 +509,6 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
                 ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
-
-            // Save the texture name for later
-            DiffuseTextureName = l->getDiffuse()->getTexture()->getTexture();
         }
         else
         {

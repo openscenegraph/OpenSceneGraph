@@ -822,15 +822,18 @@ IF(APPLE)
             # This is really fragile, but CMake doesn't provide the OS system
             # version information we need. (Darwin versions can be changed
             # independently of OS X versions.)
-            # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
-            IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-                # 64-bit compiles are not supported with Carbon. We should enable
-                # 64-bit compilation by default once osgviewer has been
-                # rewritten with Cocoa.
-                #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            IF (${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.7.sdk")
+                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+                # 64 Bit Works, PPC is not supported any more
+                SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.7 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ELSEIF(${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.5.sdk" OR ${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.6.sdk") 
+                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+                # 64-bit compiles are not supported with Carbon. 
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
             ELSEIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
+                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
             ELSE()

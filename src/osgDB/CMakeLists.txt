@@ -127,8 +127,6 @@ IF(APPLE)
         SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
     ENDIF()
  
-    SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "standard image plugin for os x, options are quicktime, imageio")
-
     IF(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX STREQUAL "quicktime")
         ADD_DEFINITIONS(-DDARWIN_QUICKTIME)
     ELSE()

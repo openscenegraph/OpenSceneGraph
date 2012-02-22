@@ -115,7 +115,7 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
 
             osgAnimation::FloatCubicBezier key(
                 val * scalar,
-                (val + leftTangent.mDerivative / 3.0) * scalar,
+                (val - leftTangent.mDerivative / 3.0) * scalar,
                 (val + rightTangent.mDerivative / 3.0) * scalar);
 
             curveTimeMap[nCurve][fTime] = key;
@@ -385,8 +385,8 @@ void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
                     }
                     osgAnimation::FloatCubicBezier key(
                         osg::DegreesToRadians(angle),
-                        osg::DegreesToRadians(angle + leftTangent.mDerivative / 3.0),
-                        osg::DegreesToRadians(angle - rightTangent.mDerivative / 3.0));
+                        osg::DegreesToRadians(angle - leftTangent.mDerivative / 3.0),
+                        osg::DegreesToRadians(angle + rightTangent.mDerivative / 3.0));
 
                     pKeyFrameCntr->push_back(osgAnimation::FloatCubicBezierKeyframe(
                         fTime,

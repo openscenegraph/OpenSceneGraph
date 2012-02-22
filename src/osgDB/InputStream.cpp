@@ -599,9 +599,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         image->setWriteHint( (osg::Image::WriteHint)writeHint );
     }
 
-    image = static_cast<osg::Image*>( readObjectFields(className, image.get()) );
-
-   _identifierMap[id] = image;
+    image = static_cast<osg::Image*>( readObjectFields(className, id, image.get()) );
 
    return image.release();
 }
@@ -620,16 +618,14 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Object> obj = readObjectFields( className, existingObj );
-
-    _identifierMap[id] = obj;
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className, id, existingObj );
 
     advanceToCurrentEndBracket();
 
     return obj.release();
 }
 
-osg::Object* InputStream::readObjectFields( const std::string& className, osg::Object* existingObj )
+osg::Object* InputStream::readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj )
 {
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
@@ -641,6 +637,7 @@ osg::Object* InputStream::readObjectFields( const std::string& className, osg::O
     _fields.push_back( className );
     
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
+    _identifierMap[id] = obj;
     if ( obj.valid() )
     {
         const StringList& associates = wrapper->getAssociates();

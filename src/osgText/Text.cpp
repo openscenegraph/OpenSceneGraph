@@ -1211,12 +1211,8 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     unsigned int contextID = state.getContextID();
 
     state.applyMode(GL_BLEND,true);
-#if 1
-    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
-#else
-    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-#endif
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
 #endif
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
@@ -1350,12 +1346,8 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
     }    
 
-#if 1
-    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
-#else
-    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-#endif
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+    state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
 #endif
 

@@ -140,6 +140,9 @@ public:
     osg::Object* readObject( osg::Object* existingObj=0 );
     osg::Object* readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj=0);
 
+    void setByteSwap(int byteSwap) { _byteSwap = byteSwap; }
+    int getByteSwap() const { return _byteSwap; }
+    
     /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.
     void setInputIterator( InputIterator* ii ) { _in = ii; }
 

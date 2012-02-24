@@ -683,6 +683,9 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
 {
     _fields.clear();
     _fields.push_back( "Start" );
+
+    OSG_INFO<<"InputStream::start( InputIterator* inIterator ) calling setByteSwap("<<inIterator->getByteSwap()<<")"<<std::endl;
+    setByteSwap(inIterator->getByteSwap());
     
     ReadType type = READ_UNKNOWN;
     _in = inIterator;

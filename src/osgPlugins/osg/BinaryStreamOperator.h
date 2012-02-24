@@ -3,6 +3,14 @@
 
 #include <osgDB/StreamOperator>
 
+#if defined(_MSC_VER)
+typedef unsigned __int32 uint32_t;
+typedef __int32 int32_t;
+#else
+#include <stdint.h>
+#endif
+
+
 class BinaryOutputIterator : public osgDB::OutputIterator
 {
 public:
@@ -33,10 +41,18 @@ public:
     { _out->write( (char*)&i, osgDB::INT_SIZE ); }
     
     virtual void writeLong( long l )
-    { _out->write( (char*)&l, osgDB::LONG_SIZE ); }
-    
+    {
+        // On 64-bit systems a long may not be the same size as the file value
+        int32_t value=(int32_t)l;
+        _out->write( (char*)&value, osgDB::LONG_SIZE );
+    }
+
     virtual void writeULong( unsigned long l )
-    { _out->write( (char*)&l, osgDB::LONG_SIZE ); }
+    {
+        // On 64-bit systems a long may not be the same size as the file value
+        uint32_t value=(int32_t)l;
+        _out->write( (char*)&value, osgDB::LONG_SIZE );
+    }
     
     virtual void writeFloat( float f )
     { _out->write( (char*)&f, osgDB::FLOAT_SIZE ); }
@@ -73,9 +89,14 @@ public:
 class BinaryInputIterator : public osgDB::InputIterator
 {
 public:
-    BinaryInputIterator( std::istream* istream, bool byteSwap ) : _byteSwap(byteSwap) { _in = istream; }
-    virtual ~BinaryInputIterator() {}
+    BinaryInputIterator( std::istream* istream, int byteSwap )
+    {
+        _in = istream;
+        setByteSwap(byteSwap);
+    }
     
+    virtual ~BinaryInputIterator() {}
+
     virtual bool isBinary() const { return true; }
     
     virtual void readBool( bool& b )
@@ -120,14 +141,19 @@ public:
     
     virtual void readLong( long& l )
     {
-        _in->read( (char*)&l, osgDB::LONG_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, osgDB::LONG_SIZE );
+        // On 64-bit systems a long may not be the same size as the file value
+        int32_t value;
+        _in->read( (char*)&value, osgDB::LONG_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&value, osgDB::LONG_SIZE );
+        l = (long)value;
     }
     
     virtual void readULong( unsigned long& l )
     {
-        _in->read( (char*)&l, osgDB::LONG_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, osgDB::LONG_SIZE );
+        uint32_t value;
+        _in->read( (char*)&value, osgDB::LONG_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&value, osgDB::LONG_SIZE );
+        l = (unsigned long)value;
     }
     
     virtual void readFloat( float& f )
@@ -144,7 +170,8 @@ public:
     
     virtual void readString( std::string& s )
     {
-        int size = 0; readInt( size );
+        int size = 0;
+        readInt( size );
         if ( size>0 )
         {
             s.resize( size );
@@ -188,7 +215,6 @@ public:
     { readString( str ); }
     
 protected:
-    bool _byteSwap;
 };
 
 #endif

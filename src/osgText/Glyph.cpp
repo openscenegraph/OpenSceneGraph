@@ -155,6 +155,23 @@ void GlyphTexture::apply(osg::State& state) const
     
     bool newTextureObject = (textureObject == 0);
 
+    #if defined(OSG_GLES2_AVAILABLE)
+    bool requiresGenerateMipmapCall = false;
+
+    // need to look to see generate mip map call is required.
+    switch(_min_filter)
+    {
+    case NEAREST_MIPMAP_NEAREST:
+    case NEAREST_MIPMAP_LINEAR:
+    case LINEAR_MIPMAP_NEAREST:
+    case LINEAR_MIPMAP_LINEAR:
+        requiresGenerateMipmapCall = generateMipMapSupported;
+        break;
+    default:
+        break;
+    }
+    #endif
+
     if (newTextureObject)
     {
         GLint maxTextureSize = 256;
@@ -176,7 +193,6 @@ void GlyphTexture::apply(osg::State& state) const
 
 
         applyTexParameters(GL_TEXTURE_2D,state);
-
         
         // need to look at generate mip map extension if mip mapping required.
         switch(_min_filter)
@@ -187,7 +203,9 @@ void GlyphTexture::apply(osg::State& state) const
         case LINEAR_MIPMAP_LINEAR:
             if (generateMipMapSupported)
             {
+            #if !defined(OSG_GLES2_AVAILABLE)
                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+            #endif
             }
             else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
             break;
@@ -274,7 +292,13 @@ void GlyphTexture::apply(osg::State& state) const
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-        if (!s_subloadAllGlyphsTogether)
+        bool subloadAllGlyphsTogether = s_subloadAllGlyphsTogether;
+
+        #if defined(OSG_GLES2_AVAILABLE)
+        if (requiresGenerateMipmapCall) subloadAllGlyphsTogether = true;
+        #endif
+
+        if (!subloadAllGlyphsTogether)
         {
             if (newTextureObject)
             {
@@ -348,6 +372,10 @@ void GlyphTexture::apply(osg::State& state) const
                     getTextureWidth(),
                     getTextureHeight(),
                     GL_ALPHA, GL_UNSIGNED_BYTE, local_data );
+
+            #if defined(OSG_GLES2_AVAILABLE)
+            if (requiresGenerateMipmapCall) glGenerateMipmap(GL_TEXTURE_2D);
+            #endif
 
             delete [] local_data;
 

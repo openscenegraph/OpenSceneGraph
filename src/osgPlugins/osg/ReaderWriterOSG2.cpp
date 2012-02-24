@@ -46,12 +46,12 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
         if ( headerLow==OSG_HEADER_LOW && headerHigh==OSG_HEADER_HIGH )
         {
             OSG_INFO<<"Reading OpenSceneGraph binary file with the same endian as this computer."<<std::endl;
-            return new BinaryInputIterator(&fin, false); // endian the same so no byte swap required
+            return new BinaryInputIterator(&fin, 0); // endian the same so no byte swap required
         }
         else if ( headerLow==OSG_REVERSE(OSG_HEADER_LOW) && headerHigh==OSG_REVERSE(OSG_HEADER_HIGH) )
         {
             OSG_INFO<<"Reading OpenSceneGraph binary file with the different endian to this computer, doing byte swap."<<std::endl;
-            return new BinaryInputIterator(&fin, true); // endian different so byte swap required
+            return new BinaryInputIterator(&fin, 1); // endian different so byte swap required
         }
         
         fin.seekg( 0, std::ios::beg );

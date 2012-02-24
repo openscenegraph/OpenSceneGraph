@@ -26,6 +26,8 @@ using namespace osgDB;
 #define CATCH_EXCEPTION(s) \
     if (s.getException()) return (s.getException()->getError() + " At " + s.getException()->getField());
 
+#define OSG_REVERSE(value) ( ((value & 0x000000ff)<<24) | ((value & 0x0000ff00)<<8) | ((value & 0x00ff0000)>>8) | ((value & 0xff000000)>>24) )
+
 InputIterator* readInputIterator( std::istream& fin, const Options* options )
 {
     bool extensionIsAscii = false, extensionIsXML = false;
@@ -43,8 +45,15 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
         fin.read( (char*)&headerHigh, INT_SIZE );
         if ( headerLow==OSG_HEADER_LOW && headerHigh==OSG_HEADER_HIGH )
         {
-            return new BinaryInputIterator(&fin);
+            OSG_INFO<<"Reading OpenSceneGraph binary file with the same endian as this computer."<<std::endl;
+            return new BinaryInputIterator(&fin, false); // endian the same so no byte swap required
         }
+        else if ( headerLow==OSG_REVERSE(OSG_HEADER_LOW) && headerHigh==OSG_REVERSE(OSG_HEADER_HIGH) )
+        {
+            OSG_INFO<<"Reading OpenSceneGraph binary file with the different endian to this computer, doing byte swap."<<std::endl;
+            return new BinaryInputIterator(&fin, true); // endian different so byte swap required
+        }
+        
         fin.seekg( 0, std::ios::beg );
     }
     

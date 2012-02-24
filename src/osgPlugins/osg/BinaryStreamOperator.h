@@ -73,7 +73,7 @@ public:
 class BinaryInputIterator : public osgDB::InputIterator
 {
 public:
-    BinaryInputIterator( std::istream* istream ) : _byteSwap(0) { _in = istream; }
+    BinaryInputIterator( std::istream* istream, bool byteSwap ) : _byteSwap(byteSwap) { _in = istream; }
     virtual ~BinaryInputIterator() {}
     
     virtual bool isBinary() const { return true; }
@@ -188,7 +188,7 @@ public:
     { readString( str ); }
     
 protected:
-    int _byteSwap;
+    bool _byteSwap;
 };
 
 #endif

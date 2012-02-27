@@ -887,6 +887,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
 {
     if (fin)
     {
+        fin.imbue(std::locale::classic());
+
         obj::Model model;
         model.readOBJ(fin, options);
         

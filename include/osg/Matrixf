@@ -28,6 +28,7 @@ class OSG_EXPORT Matrixf
     public:
     
         typedef float value_type;
+        typedef double other_value_type;
 
         inline Matrixf() { makeIdentity(); }
         inline Matrixf( const Matrixf& mat) { set(mat.ptr()); }
@@ -144,12 +145,18 @@ class OSG_EXPORT Matrixf
                        double zNear,  double zFar);
 
         /** Get the orthographic settings of the orthographic projection matrix.
-          * Note, if matrix is not an orthographic matrix then invalid values 
+          * Note, if matrix is not an orthographic matrix then invalid values
           * will be returned.
         */
         bool getOrtho(double& left,   double& right,
                       double& bottom, double& top,
                       double& zNear,  double& zFar) const;
+
+        /** float version of getOrtho(..) */
+        bool getOrtho(float& left,   float& right,
+                      float& bottom, float& top,
+                      float& zNear,  float& zFar) const;
+
 
         /** Set to a 2D orthographic projection.
           * See glOrtho2D for further details.
@@ -176,6 +183,11 @@ class OSG_EXPORT Matrixf
                         double& bottom, double& top,
                         double& zNear,  double& zFar) const;
 
+        /** float version of getFrustum(..) */
+        bool getFrustum(float& left,   float& right,
+                        float& bottom, float& top,
+                        float& zNear,  float& zFar) const;
+
         /** Set to a symmetrical perspective projection.
           * See gluPerspective for further details.
           * Aspect ratio is defined as width/height.
@@ -186,7 +198,7 @@ class OSG_EXPORT Matrixf
         /** Get the frustum settings of a symmetric perspective projection
           * matrix.
           * Return false if matrix is not a perspective matrix,
-          * where parameter values are undefined. 
+          * where parameter values are undefined.
           * Note, if matrix is not a symmetric perspective matrix then the
           * shear will be lost.
           * Asymmetric matrices occur when stereo, power walls, caves and
@@ -195,6 +207,10 @@ class OSG_EXPORT Matrixf
         */
         bool getPerspective(double& fovy,  double& aspectRatio,
                             double& zNear, double& zFar) const;
+
+        /** float version of getPerspective(..) */
+        bool getPerspective(float& fovy,  float& aspectRatio,
+                            float& zNear, float& zFar) const;
 
         /** Set the position and orientation to be a view matrix,
           * using the same convention as gluLookAt.

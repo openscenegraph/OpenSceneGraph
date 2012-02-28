@@ -4390,8 +4390,8 @@ void Optimizer::TextureAtlasVisitor::optimize()
         {
             // safe to convert into CLAMP wrap mode.
             OSG_INFO<<"Changing wrap mode to CLAMP"<<std::endl;
-            texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP);
-            texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
+            texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
+            texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
         }
     }
     //typedef std::list<osg::Texture2D *> SourceListTmp;

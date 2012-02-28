@@ -823,9 +823,9 @@ void Matrix_implementation::makeOrtho(double left, double right,
     SET_ROW(3,               tx,                ty,                 tz, 1.0 )
 }
 
-bool Matrix_implementation::getOrtho(double& left, double& right,
-                      double& bottom, double& top,
-                      double& zNear, double& zFar) const
+bool Matrix_implementation::getOrtho(Matrix_implementation::value_type& left, Matrix_implementation::value_type& right,
+                                     Matrix_implementation::value_type& bottom, Matrix_implementation::value_type& top,
+                                     Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=0.0 || _mat[3][3]!=1.0) return false;
 
@@ -841,6 +841,26 @@ bool Matrix_implementation::getOrtho(double& left, double& right,
     return true;
 }            
 
+bool Matrix_implementation::getOrtho(Matrix_implementation::other_value_type& left, Matrix_implementation::other_value_type& right,
+                                     Matrix_implementation::other_value_type& bottom, Matrix_implementation::other_value_type& top,
+                                     Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar;
+    if (getOrtho(temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar))
+    {
+        left = temp_left;
+        right = temp_right;
+        bottom = temp_bottom;
+        top = temp_top;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 void Matrix_implementation::makeFrustum(double left, double right,
                          double bottom, double top,
@@ -857,17 +877,17 @@ void Matrix_implementation::makeFrustum(double left, double right,
     SET_ROW(3,                    0.0,                    0.0,   D,  0.0 )
 }
 
-bool Matrix_implementation::getFrustum(double& left, double& right,
-                                       double& bottom, double& top,
-                                       double& zNear, double& zFar) const
+bool Matrix_implementation::getFrustum(Matrix_implementation::value_type& left, Matrix_implementation::value_type& right,
+                                       Matrix_implementation::value_type& bottom, Matrix_implementation::value_type& top,
+                                       Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0)
         return false;
 
     // note: near and far must be used inside this method instead of zNear and zFar
     // because zNear and zFar are references and they may point to the same variable.
-    double temp_near = _mat[3][2] / (_mat[2][2]-1.0);
-    double temp_far = _mat[3][2] / (1.0+_mat[2][2]);
+    Matrix_implementation::value_type temp_near = _mat[3][2] / (_mat[2][2]-1.0);
+    Matrix_implementation::value_type temp_far = _mat[3][2] / (1.0+_mat[2][2]);
 
     left = temp_near * (_mat[2][0]-1.0) / _mat[0][0];
     right = temp_near * (1.0+_mat[2][0]) / _mat[0][0];
@@ -881,6 +901,26 @@ bool Matrix_implementation::getFrustum(double& left, double& right,
     return true;
 }                 
 
+bool Matrix_implementation::getFrustum(Matrix_implementation::other_value_type& left, Matrix_implementation::other_value_type& right,
+                                       Matrix_implementation::other_value_type& bottom, Matrix_implementation::other_value_type& top,
+                                       Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar;
+    if (getFrustum(temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar))
+    {
+        left = temp_left;
+        right = temp_right;
+        bottom = temp_bottom;
+        top = temp_top;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
                                             double zNear, double zFar)
@@ -894,18 +934,18 @@ void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
     makeFrustum(left,right,bottom,top,zNear,zFar);
 }
 
-bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
-                                           double& zNear, double& zFar) const
+bool Matrix_implementation::getPerspective(Matrix_implementation::value_type& fovy, Matrix_implementation::value_type& aspectRatio,
+                                           Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
-    double right  =  0.0;
-    double left   =  0.0;
-    double top    =  0.0;
-    double bottom =  0.0;
+    Matrix_implementation::value_type right  =  0.0;
+    Matrix_implementation::value_type left   =  0.0;
+    Matrix_implementation::value_type top    =  0.0;
+    Matrix_implementation::value_type bottom =  0.0;
 
     // note: near and far must be used inside this method instead of zNear and zFar
     // because zNear and zFar are references and they may point to the same variable.
-    double temp_near   =  0.0;
-    double temp_far    =  0.0;
+    Matrix_implementation::value_type temp_near   =  0.0;
+    Matrix_implementation::value_type temp_far    =  0.0;
 
     // get frustum and compute results
     bool r = getFrustum(left,right,bottom,top,temp_near,temp_far);
@@ -917,6 +957,24 @@ bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
     zNear = temp_near;
     zFar = temp_far;
     return r;
+}
+
+bool Matrix_implementation::getPerspective(Matrix_implementation::other_value_type& fovy, Matrix_implementation::other_value_type& aspectRatio,
+                                           Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_fovy, temp_aspectRatio, temp_zNear, temp_zFar;
+    if (getPerspective(temp_fovy, temp_aspectRatio, temp_zNear, temp_zFar))
+    {
+        fovy = temp_fovy;
+        aspectRatio = temp_aspectRatio;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Matrix_implementation::makeLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)

@@ -209,8 +209,8 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
         OSG_INFO<<"RTT Projection matrix "<<projection<<std::endl;
 
-        double left, right, bottom, top, zNear, zFar;
-        double epsilon = 1e-6;
+        osg::Matrix::value_type left, right, bottom, top, zNear, zFar;
+        osg::Matrix::value_type epsilon = 1e-6;
         if (fabs(projection(0,3))<epsilon  && fabs(projection(1,3))<epsilon  && fabs(projection(2,3))<epsilon )
         {
             projection.getOrtho(left, right,
@@ -533,8 +533,8 @@ ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv, double minZNe
 
     if (cv->getComputeNearFarMode()!=osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
     {
-        double zNear = osg::maximum(static_cast<double>(cv->getCalculatedNearPlane()),minZNear);
-        double zFar = osg::minimum(static_cast<double>(cv->getCalculatedFarPlane()),maxZFar);
+        osg::Matrix::value_type zNear = osg::maximum<osg::Matrix::value_type>(cv->getCalculatedNearPlane(),minZNear);
+        osg::Matrix::value_type zFar = osg::minimum<osg::Matrix::value_type>(cv->getCalculatedFarPlane(),maxZFar);
 
         cv->clampProjectionMatrix(projectionMatrix, zNear, zFar);
 

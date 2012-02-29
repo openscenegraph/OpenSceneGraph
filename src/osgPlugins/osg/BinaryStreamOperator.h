@@ -209,8 +209,8 @@ public:
     virtual void readMark( osgDB::ObjectMark& mark ) {}
     
     virtual void readCharArray( char* s, unsigned int size )
-    { if ( size>0 ) _in->read( s, size ); }
-    
+    { if ( size>0 ) _in->read( s, size ); }   
+
     virtual void readWrappedString( std::string& str )
     { readString( str ); }
     

@@ -16,6 +16,28 @@
 
 using namespace osgDB;
 
+void InputIterator::readComponentArray( char* s, unsigned int numElements, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes)
+{
+    unsigned int size = numElements * numComponentsPerElements * componentSizeInBytes;
+    if ( size>0 )
+    {
+        readCharArray( s, size);
+
+        if (_byteSwap && componentSizeInBytes>1)
+        {
+            char* ptr = s;
+            for(unsigned int i=0; i<numElements; ++i)
+            {
+                for(unsigned int j=0; j<numComponentsPerElements; ++j)
+                {
+                    osg::swapBytes( ptr, componentSizeInBytes );
+                    ptr += componentSizeInBytes;
+                }
+            }
+        }
+    }
+}
+
 void InputIterator::throwException( const std::string& msg )
 {
     if (_inputStream) _inputStream->throwException(msg);

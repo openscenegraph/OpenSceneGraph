@@ -445,7 +445,8 @@ TypoCorrection typoCorrections[] =
     {"Jahannes","Johannes"},
     {"Eskland","Ekstrand"},
     {"Baeuerele","Baeuerle"},
-    {"Bauerle","Baeuerle"}
+    {"Bauerle","Baeuerle"},
+    {"Baeurele","Baeuerle"}
 };
 
 

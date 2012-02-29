@@ -1,3 +1,409 @@
+2012-02-29 10:22  robert
+
+	* include/osgDB/InputStream, include/osgDB/StreamOperator,
+	  src/osgDB/InputStream.cpp, src/osgDB/StreamOperator.cpp,
+	  src/osgPlugins/osg/BinaryStreamOperator.h: Improved the handling
+	  of endian swap of osg::Array
+
+2012-02-29 10:22  robert
+
+	* src/osgPlugins/zip/ZipArchive.cpp,
+	  src/osgPlugins/zip/ZipArchive.h: From Glenn Waldron, "Attached
+	  are modifications to ZipArchive to make it safe for
+	  mutli-threaded access.
+	  Here's a summary:
+	  
+	  * Uses a separate ZIP file handle per thread
+	  * Maintains a single shared (read-only) index, created the first
+	  time through
+	  * Stress-tested with the DatabasePager using 24 threads under
+	  osgEarth
+	  
+	  I also updated the member variables to use OSG's
+	  leading-underscore convention."
+
+2012-02-28 12:03  robert
+
+	* src/osgUtil/Optimizer.cpp: From Guillaume Millet, "When using the
+	  texture Atlas builder, it will convert from REPEAT to
+	  CLAMP all textures using only texcoord between [-0.001 1.001] to
+	  give a
+	  chance to create an Atlas.
+	  If the atlas creation failed for other reason (texture size, only
+	  one
+	  compatible texture, ...) the texture remain modified in CLAMP
+	  mode.
+	  
+	  But if you use texcoords between [0.0 1.0] using CLAMP mode
+	  instead
+	  REPEAT it is not safe because you will have a blend to the border
+	  color
+	  at extremities.
+	  If we want to have exactly the same rendering after changing mode
+	  from
+	  REPEAT to CLAMP we should use the CLAMP_TO_EDGE mode instead of
+	  CLAMP to
+	  avoid blending to border color at extremities.
+	  
+	  Please find as attachment the proposed patch against latest svn
+	  version.
+	  "
+
+2012-02-28 11:37  robert
+
+	* include/osg/Matrixd, include/osg/Matrixf,
+	  src/osg/Matrix_implementation.cpp,
+	  src/osgShadow/ViewDependentShadowMap.cpp: Added build problem
+	  with using float Matrix.
+
+2012-02-28 10:21  robert
+
+	* src/osgViewer/GraphicsWindowIOS.mm: From Thomas Hogarth, build
+	  fix for IOS build
+
+2012-02-27 09:50  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Added
+	  fin.imbue(std::locale::classic()); to avoid problems with parsing
+	  of .obj files
+
+2012-02-24 21:07  robert
+
+	* include/osgDB/InputStream, include/osgDB/StreamOperator,
+	  src/osgDB/InputStream.cpp,
+	  src/osgPlugins/osg/BinaryStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp: Added s/getByteSwap to
+	  teh InputStreamOperator base class and use of this method in the
+	  InputStream::start(InputStreamOperator*) method to ensure the
+	  bytes are swapped consistently.
+
+2012-02-24 12:15  robert
+
+	* src/osgText/Glyph.cpp: Added support for using glGenerateMipmap
+	  instead of GL_GENERATE_MIPMAP_SGIS on GLES2
+
+2012-02-24 11:43  robert
+
+	* src/osgPlugins/osg/BinaryStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp: Added support for
+	  checking the possible endian reversal the OSG_HEADER_LOW and
+	  OSG_HEADER_HIGH when reading binary files written out from
+	  systems that have a different endian to the system reading it.
+
+2012-02-24 10:56  robert
+
+	* examples/CMakeLists.txt: Cleaned up CMake warning
+
+2012-02-23 17:51  robert
+
+	* src/osgText/Text.cpp: Moved the
+	  
+	  state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
+	  
+	  into the #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE) block to
+	  solve problems under GLES and GL3.x/GL4.x
+
+2012-02-23 15:55  robert
+
+	* src/osgDB/Registry.cpp: From Mathieu Marache, "I was trying to
+	  play with the configuratiion files from the data but
+	  couldn't load them with osgviewer's -c CLI switch, this
+	  correction
+	  should make the alias work :-)
+	  "
+
+2012-02-22 10:50  robert
+
+	* src/osgPlugins/fbx/fbxRAnimation.cpp: From Sergey Polischuk, "In
+	  and Out control points were computed incorrectly for some
+	  animation channels with cubic bezier interpolation"
+
+2012-02-22 10:46  robert
+
+	* include/osgDB/InputStream, src/osgDB/InputStream.cpp: From Miha
+	  Ravsel, "While trying to create my custom serializer class, i
+	  created some dummy data which accidentally popped-up bug in
+	  InputStream readObjectFields function.
+	  
+	  Bug description:
+	  Let's say we have class A
+	  namespace Bug
+	  {
+	  class A : public osg::Object
+	  {
+	  public:
+	  //...
+	  typedef std::vector<osg::ref_ptr<A> > AList;
+	  
+	  protected:
+	  AList _alist;
+	  //...
+	  }
+	  }
+	  
+	  REGISTER_OBJECT_WRAPPER( A,
+	  new Bug::A,
+	  Bug::A,
+	  "osg::Object Bug::A" )
+	  {
+	  ADD_LIST_SERIALIZER(A,Bug::A::AList);
+	  }
+	  
+	  
+	  Bug:
+	  We create say 3 instances of class A: A1,A2,A3 and then we add A2
+	  and A3 and A1 as child instances of A1 so we get next structure:
+	  A1
+	  |- A2,A3,A1
+	  
+	  we call osgDB::writeObjectFile(A1,"/data/a.osgt") -> saved
+	  correctly( third element in list is saved as unique id that
+	  references parentClass
+	  
+	  now we call
+	  A1 = osgDB::readObjectFile("/data/a.osgt");
+	  
+	  Everything is deserialized correctely except last element in list
+	  which should be same instance as parent A1.
+	  
+	  The attached code resolves this issue by passing UniqueID in
+	  readObjectFields method and saving object in _identifierMap as
+	  soon as we have valid object instance so we can make reference to
+	  parent object from any child instance.
+	  "
+
+2012-02-21 17:20  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp: From
+	  Paul Martz, "The attached fixes a few issues that are present
+	  when ref_ptr implicit casting is disabled."
+
+2012-02-21 11:30  robert
+
+	* CMakeLists.txt, src/osgDB/CMakeLists.txt,
+	  src/osgViewer/CMakeLists.txt: From Olaf Flebbe, "Macos X cleanup:
+	  I added AFAIK proper defaults for several Macos X Version API
+	  targets.
+	  
+	  * In order to determine which defaults to apply, consult the
+	  CMAKE_OSX_SYSROOT variable pointing to the used SDK, not the pure
+	  existence of an SDK.
+	  
+	  * Defaults are now:
+	  10.7: Support Intel 32 and 64 Bit Cocoa with imageio picture
+	  reader
+	  10.6 + 10.5: Support Cocoa with imageio on Intel and PowerPC
+	  10.4: Carbon, Quicktime and PowerPC
+	  
+	  Now OSG compiles out of the box for MacOSX 10.7. , tested with
+	  gcc and clang with FlightGear."
+
+2012-02-21 11:13  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Chris Denham,
+	  "ReaderWriter3DS smoothing group handling corrections"
+
+2012-02-21 10:42  robert
+
+	* src/osgPlugins/dae/daeRMaterials.cpp,
+	  src/osgPlugins/dae/daeWSceneObjects.cpp: Fixed warnings
+
+2012-02-21 10:38  robert
+
+	* src/osg/Image.cpp, src/osg/Texture.cpp,
+	  src/osg/Texture2DArray.cpp, src/osg/Texture3D.cpp,
+	  src/osg/TextureRectangle.cpp, src/osgText/Glyph.cpp: Fixed
+	  erroneous use #if !defined(OSG_GLES1_FEATURES) &&
+	  !defined(OSG_GLES2_FEATURES) which should have been #if
+	  !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+
+2012-02-20 16:00  robert
+
+	* src/osgPlugins/dae/daeRMaterials.cpp,
+	  src/osgPlugins/dae/daeReader.h: From Luc Frauciel, "When dae
+	  plugin is used with daeUseSequencedTextureUnitsoption, the
+	  transparency processing is done with the wrong texture unit
+	  I've remplaced the unused parameter diffuseColorName by the
+	  diffuseTextureUnit effectively used."
+
+2012-02-20 12:36  robert
+
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp: From Alexander
+	  Sinditskiy, "Fix loading small monochrome bmp images"
+
+2012-02-20 12:33  robert
+
+	* include/osgDB/DatabasePager: From Dietmar Funck, "in order to use
+	  a customized database thread it's necessary to use a customized
+	  database pager, which creates such customized database threads,
+	  too.
+	  I think the best way to achieve this is to overwrite the
+	  DatabasePager::addDatabaseThread() method within the customized
+	  database pager. However this method is not 'virtual' yet, so I
+	  propose to make the method 'virtual'."
+
+2012-02-20 12:23  robert
+
+	* src/osgDB/Registry.cpp: From Farshid Lashkari, "I've attached a
+	  small optimization to
+	  osgDB::Registry::removeExpiredObjectsInCache that removes the
+	  expired items while iterating over the cache, instead of saving
+	  to a temporary vector and then removing."
+
+2012-02-20 12:18  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp: From
+	  Riccardo Corsi, Added passing of EventVisitor pointer to event
+	  handlers.
+
+2012-02-20 12:12  robert
+
+	* src/osgPlugins/hdr/ReaderWriterHDR.cpp: From Riccardo Corsi,
+	  "please find attached a small patch for HDR plugin,
+	  which simply set by default the internal pixel format to
+	  GL_RGB32F_ARB where appropriate.
+	  
+	  In the current version there's a comment saying that the plugin
+	  set it to GL_RGB8 (even when reading from float) to support old
+	  graphics cards,
+	  but the comment dates back to 2004...
+	  What's more I believe that it's correct to expect a floating
+	  texture format if you're loading an hdr image.
+	  It was quite troublesome for us to discover why our background
+	  image wasn't showing hdr data...
+	  
+	  In case you accept the submission, I've removed the comment as it
+	  would be misleading to leave it there."
+
+2012-02-20 12:03  robert
+
+	* include/osg/Image, src/osg/Image.cpp, src/osg/Texture2D.cpp: From
+	  Johannes Baeurele, "The osg::Image class now contains a
+	  'supportsTextureSubloading()' method that is used inside the
+	  Texture2D::apply method. For now it only checks for the etc1
+	  format in which case it returns 'false'. All other formats lead
+	  to a return value of 'true'.
+	  
+	  Without the change the application does not work properly. First
+	  I get the notification that an OpenGL error occured. After some
+	  more of this error messages I see broken textures on the screen.
+	  With the changes attached to this message my application works as
+	  intended."
+	  
+	  Note from Robert Osfield, changed the
+	  Image::supportsTextureSubloading() to be const and to be
+	  implemented in the .cpp rather than inline.
+
+2012-02-17 16:51  robert
+
+	* examples/osg2cpp/osg2cpp.cpp: From Kim Bale, "The application
+	  description for osg2cpp was cut and pasted from osgconv and not
+	  changed.
+	  
+	  I've added a more relevant description."
+
+2012-02-17 16:45  robert
+
+	* CMakeLists.txt, CMakeModules/FindGTA.cmake,
+	  src/osgPlugins/CMakeLists.txt, src/osgPlugins/gta,
+	  src/osgPlugins/gta/CMakeLists.txt,
+	  src/osgPlugins/gta/ReaderWriterGTA.cpp: From Martin Lambers, "It
+	  adds a new ReaderWriter plugin for the GTA file format
+	  (http://gta.nongnu.org). This allows to read and write floating
+	  point
+	  image data. Unlike other formats, GTA also allows very good
+	  compression
+	  ratios for floating point data. The compression method can be
+	  selected
+	  with the COMPRESSION option of the plugin.
+	  "
+
+2012-02-17 16:13  robert
+
+	* src/osgPlugins/CMakeLists.txt: Added usage of
+	  OSG_CPP_EXCEPTIONS_AVAILABLE for plugins that use
+	  std::exceptions.
+
+2012-02-10 17:24  robert
+
+	* src/osgViewer/GraphicsWindowIOS.mm, src/osgViewer/IOSUtils.mm:
+	  From Stephan Huber, "
+	  Here's another small submission for IOS, which adds unique ids to
+	  the
+	  touchpoints, so the ids stay the same during a touch-sequence.
+	  
+	  (and some minor code enhancements)"
+
+2012-02-10 17:20  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: From Colin McDonald, "Upgrading
+	  to OpenSceneGraph 3.0.1, texture mip mapping stopped
+	  working on some junk low-end graphics cards which I still have to
+	  support. They worked ok with osg 2.8 and earlier.
+	  
+	  The problem turned out to be with gl proxy textures, which are
+	  unreliable on those devices. Proxy textures are used by the glu
+	  mipmap build routines to determine if a texture size is
+	  supported. The external glu library had a nice fallback
+	  behaviour, so that if proxy textures didn't work then the mipmap
+	  texture was still created. But in the work on the new embedded
+	  glu routines that fallback behaviour has been inadvertently
+	  lost. I have restored the fallback in
+	  src/osg/glu/libutil/mipmap.cpp. It doesn't add any extra
+	  complexity."
+
+2012-02-10 16:12  robert
+
+	* src/osgGA/FirstPersonManipulator.cpp: From Domenico Mangieri,
+	  "Implementation for MoveRight and MoveUp methods in
+	  FirstPersonManipulator is missing.
+	  
+	  I'm using the manipulator, so I added it."
+
+2012-02-10 15:57  robert
+
+	* include/osg/Image, src/osg/Image.cpp, src/osg/Texture.cpp,
+	  src/osg/Texture2DArray.cpp, src/osg/Texture3D.cpp,
+	  src/osg/TextureRectangle.cpp, src/osgText/Glyph.cpp: From Stephan
+	  Huber, attached you'll find a compile fix for the new introduced
+	  rowlength-feature on IOS/OpenGL ES builds
+
+2012-02-09 18:10  robert
+
+	* include/osgUtil/Tessellator: From Luc Frauciel, "osgUtil
+	  Tessellator : beginTessellation() made virtual to allow
+	  configuration of tessellation:
+	  
+	  The initialisation of glu low level tessellator is done in
+	  osgUtil::Tessellator::beginTessellation()
+	  This function is not virtual, preventing any customization of the
+	  tesselation.
+	  In particular, there in an option in glu tesselator that force
+	  the generated primitives to be triangles and that I'd like to use
+	  (GLU_TESS_EDGE_FLAG).
+	  "
+
+2012-02-09 17:52  robert
+
+	* applications/osgfilecache/osgfilecache.cpp,
+	  src/osgDB/FileCache.cpp: From Torben Dannhauer, "Modification to
+	  osgfilecache: Now source data can also be local.:
+	  
+	  find attached my modifications to osgfilecache.
+	  
+	  It now allows also the caching of LOCAL terrain databases. In
+	  combination with the extends and level cmd parameter it allows to
+	  extract parts of terrain databases and write it in a new "Sub
+	  database".
+	  I also modified osgDB::FileCache to create correct filenames if
+	  the data source is local."
+
+2012-02-09 17:45  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated ChangeLog, AUTHORS and Contriburos.cpp files
+
 2012-02-09 16:42  robert
 
 	* src/osgPlugins/xine/video_out_rgb.c: From Martin von Gagern, "The

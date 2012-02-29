@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.1.0
 
-477 Contributors:
+480 Contributors:
 
 Firstname Surname
 -----------------
@@ -12,8 +12,8 @@ Mathias Fröhlich
 Marco Jez
 Jean-Sébastien Guay
 Mike Weiblen
-Ulrich Hertlein
 Farshid Lashkari
+Ulrich Hertlein
 Wang Rui
 Eric Wing
 Cedric Pinson
@@ -51,44 +51,44 @@ Jason Daly
 Robert Milharcic
 Philip Lowman
 Per Fahlberg
+Olaf Flebbe
 Norman Vine
 Laurens Voerman
 Brad Christiansen
 Art Tevs
 Terry Welsh
 Serge Lages
-Olaf Flebbe
-Alberto Farre
-Sherman Wilcox
 Mathieu Marache
 Chris Denham
+Alberto Farre
+Sherman Wilcox
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
 Mourad Boufarguine
+Luc Frauciel
+Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
-Luc Frauciel
 Joakim Simonsson
-Glenn Waldron
 David Spilling
 Daniel Sjölie
 Bryan Thrall
+Torben Dannhauer
 Lionel Lagarde
 Fabien Lavignotte
-Torben Dannhauer
 Melchior Franz
+Johannes Baeuerle
 Jan Ciger
 Rafa Gaitan
 Neil Hughes
 Mike Connell
 Martin Beckett
 Joran Jessurun
-Johannes Baeuerle
 Gino van den Bergen
 Frederic Marmond
 David Guthrie
@@ -109,6 +109,7 @@ Carlo Camporesi
 Ben Discoe
 Thibault Genessay
 Sasa Bistrovic
+Riccardo Corsi
 Ravi Mathur
 Ralf Habacker
 Neil Groves
@@ -145,11 +146,11 @@ Corbin Holtz
 Blasius Czink
 Alexander Irion
 Toshiyuki Takahei
+Thomas Hogarth
 Sebastien Grignard
 Ryan Kawicki
 Rudolf Wiedemann
 Romano Magacho
-Riccardo Corsi
 Mikhail Izmestev
 Maria Ten
 Liang Aibin
@@ -159,6 +160,7 @@ John Kelso
 John Ivar
 Gustav Haapalahti
 Emmanuel Roche
+Domenico Mangieri
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
@@ -170,7 +172,6 @@ Alan Dickinson
 Vladimir Shabanov
 Tugkan Calapoglu
 Tim Daoust
-Thomas Hogarth
 Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
@@ -198,7 +199,7 @@ Erik den Dekker
 Doug McCorkle
 Donald Cipperly
 Don Leich
-Domenico Mangieri
+Dietmar Funck
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -206,6 +207,7 @@ Andrew Bettison
 Anders Backman
 Ali Botorabi
 Alexander Wiebel
+Alexander Sinditskiy
 Zach Deedler
 Yuzhong Shen
 Warren Macchi
@@ -237,6 +239,7 @@ Mathias Fiedler
 Mathew May
 Martin von Gargern
 Martin Spott
+Martin Lambers
 Martijn Kragtwijk
 Marius Heise
 Marcin Hajder
@@ -258,6 +261,7 @@ He Sicong
 Guy Volckaert
 Gustavo Wagner
 Guillaume Taze
+Guillaume Millet
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
@@ -266,7 +270,6 @@ Eric Buehler
 Eduardo Poyart
 Edgar Ellis
 Dimi Christopoulos
-Dietmar Funck
 David Ergo
 Daniel Trstenjak
 Craig Bosma
@@ -277,7 +280,6 @@ Aric Aumann
 Andrew Sampson
 Andrew Lorino
 Alexandre Amalric
-Alexander Sinditskiy
 Alessandro Terenzi
 Zbigniew Sroczynski
 Yuri Vilmanis
@@ -312,6 +314,7 @@ Simon Buckley
 Sid Byce
 Shuxing Xiao
 Shane Arnott
+Sergey Polischuk
 Sebastien Kuntz
 Ruth Lang
 Ruben Smelik
@@ -354,6 +357,7 @@ Mojtaba Fathi
 Mirko Viviani
 Mikkel GjÃ¸l
 Mike Garrity
+Miha Ravsel
 Michael Polak
 Michael Morrison
 Michael Logan
@@ -368,7 +372,6 @@ Mathias Walker
 Mathias Goldau
 Mason Menninger
 Martin Scheffler
-Martin Lambers
 Martin Innus
 Martin Beck
 Marius Kintel
@@ -387,6 +390,7 @@ Kristopher Bixler
 Kristofer Tingdahl
 Konstantin Matveyev
 Kim Seokhwan
+Kim Bale
 Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
@@ -414,7 +418,6 @@ Henrique Bucher
 Hautio Jari
 Hartmut Seichter
 Gunter Huber
-Guillaume Millet
 Gregory Jaegy
 Graeme Harkness
 Gian Lorenzetto

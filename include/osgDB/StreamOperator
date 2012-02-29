@@ -22,7 +22,7 @@ public:
     void setStream( std::ostream* ostream ) { _out = ostream; }
     std::ostream* getStream() { return _out; }
     const std::ostream* getStream() const { return _out; }
-    
+
     virtual bool isBinary() const = 0;
     
     virtual void writeBool( bool b ) = 0;
@@ -114,6 +114,8 @@ public:
     virtual void advanceToCurrentEndBracket() {}
 
     void throwException( const std::string& msg );
+
+    void readComponentArray( char* s, unsigned int numElements, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes);
 
 protected:
     std::istream*       _in;

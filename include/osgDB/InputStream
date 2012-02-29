@@ -129,6 +129,7 @@ public:
     void advanceToCurrentEndBracket() { _in->advanceToCurrentEndBracket(); }
     void readWrappedString( std::string& str ) { _in->readWrappedString(str); checkStream(); }
     void readCharArray( char* s, unsigned int size ) { _in->readCharArray(s, size); }
+    void readComponentArray( char* s, unsigned int numElements, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes) { _in->readComponentArray( s, numElements, numComponentsPerElements, componentSizeInBytes); }
 
     // readSize() use unsigned int for all sizes.
     unsigned int readSize() { unsigned int size; *this>>size; return size; }
@@ -140,9 +141,6 @@ public:
     osg::Object* readObject( osg::Object* existingObj=0 );
     osg::Object* readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj=0);
 
-    void setByteSwap(int byteSwap) { _byteSwap = byteSwap; }
-    int getByteSwap() const { return _byteSwap; }
-    
     /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.
     void setInputIterator( InputIterator* ii ) { _in = ii; }
 
@@ -164,13 +162,12 @@ protected:
     void setWrapperSchema( const std::string& name, const std::string& properties );
     
     template<typename T>
-    void readArrayImplementation( T* a, int read_size, bool useByteSwap=false );
+    void readArrayImplementation( T* a, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes );
     
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;
     
     int _fileVersion;
-    int _byteSwap;
     bool _useSchemaData;
     bool _forceReadingImage;
     std::vector<std::string> _fields;

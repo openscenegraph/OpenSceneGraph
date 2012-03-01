@@ -168,7 +168,8 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), 
             _fout(fout), 
             _currentStateSet(new osg::StateSet()),
-            _firstPass(true)
+            _firstPass(true),
+            _writeTriangleAs3DFace(true)
         {
                         
             
@@ -271,6 +272,8 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
         std::vector<Layer>       _layers;        
         bool                     _firstPass;
         Layer                    _layer;
+
+        bool                     _writeTriangleAs3DFace;
         
         AcadColor                _acadColor;
         

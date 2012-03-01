@@ -14,6 +14,7 @@
 
 
 #include <osg/io_utils>
+#include <osg/PolygonMode>
 #include <iomanip>
 
 #include "DXFWriterNodeVisitor.h"
@@ -61,13 +62,15 @@ class ValueVisitor : public osg::ValueVisitor {
 class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
     
     public:
-        DxfPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo,const Layer &layer,AcadColor &acad,const osg::Matrix& m = osg::Matrix::identity()) : 
+        DxfPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo,const Layer &layer,AcadColor &acad,
+                                const osg::Matrix& m = osg::Matrix::identity(),bool writeTriangleAs3DFace = true) : 
             osg::PrimitiveIndexFunctor(), 
             _fout(fout),            
             _geo(geo),
             _layer(layer),
             _acad(acad),
-            _m(m)
+            _m(m),
+            _writeTriangleAs3DFace(writeTriangleAs3DFace)
         {
             
         }
@@ -91,52 +94,53 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             _fout <<c+10<<"\n "<<point.x()<<"\n"<<20+c<<"\n "<<point.y()<<"\n"<<30+c<<"\n "<<point.z()<<"\n";                        
         }
 
-        // operator for facets - need to distinguish from triangles
-        void writeFace(unsigned int i1, unsigned int i2, unsigned int i3)
-         {                     
-            _fout << "0 \n3DFACE\n 8\n"<<_layer._name<<"\n";
-            if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
-            } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                
-                // Acad2000 supports 24bit color but most dxf importers don't
-                //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";                
-            }
-            write(i1,0);
-            write(i2,1);
-            write(i3,2);
-            write(i1,0); // yes you have to write the first point again
-        }
-
         // operator for triangles 
         void writeTriangle(unsigned int i1, unsigned int i2, unsigned int i3)
-         {                    
-            _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
-            if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
-            } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                                
-            }
-            write(i1,0);
-            write(i2,1);
+         {    
+           if (_writeTriangleAs3DFace)
+           {
+                _fout << "0 \n3DFACE\n 8\n"<<_layer._name<<"\n";
+                if ( _layer._color ) {
+                    _fout << "62\n"<<_layer._color<<"\n";                
+                } else {
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                
+                    // Acad2000 supports 24bit color but most dxf importers don't
+                    //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";                
+                }
+                write(i1,0);
+                write(i2,1);
+                write(i3,2);
+                write(i1,3); // yes you have to write the first point again 
+           }
+           else
+           {
+                _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
+                if ( _layer._color ) {
+                    _fout << "62\n"<<_layer._color<<"\n";                
+                } else {
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                                
+                }
+                write(i1,0);
+                write(i2,1);
 
-            _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
-            if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
-            } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i2))<<"\n";                                
-            }
-            write(i2,0);
-            write(i3,1);
+                _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
+                if ( _layer._color ) {
+                    _fout << "62\n"<<_layer._color<<"\n";                
+                } else {
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i2))<<"\n";                                
+                }
+                write(i2,0);
+                write(i3,1);
 
-            _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
-            if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
-            } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i3))<<"\n";                                
-            }
-            write(i3,0);
-            write(i1,1);
+                _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
+                if ( _layer._color ) {
+                    _fout << "62\n"<<_layer._color<<"\n";                
+                } else {
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i3))<<"\n";                                
+                }
+                write(i3,0);
+                write(i1,1);
+           }
 
         }
 
@@ -314,14 +318,16 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 
         DxfPrimitiveIndexWriter& operator = (const DxfPrimitiveIndexWriter&) { return *this; }
 
-        std::ostream&         _fout;
+        std::ostream&        _fout;
         GLenum               _modeCache;
         std::vector<GLuint>  _indexCache;        
-        osg::Geometry*         _geo;        
+        osg::Geometry*       _geo;        
         
         Layer        _layer;
         AcadColor    _acad; // needed to lookup new colors
-        osg::Matrix        _m;
+        osg::Matrix  _m;
+
+        bool         _writeTriangleAs3DFace;
 };
 
 
@@ -443,7 +449,9 @@ std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue)
             break;
         }
     }
-    
+    //empty layer name is forbidden
+    if (layerName.empty())  layerName = "0";
+
     return layerName;
 
 }
@@ -467,7 +475,12 @@ std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue)
 void DXFWriterNodeVisitor::processStateSet(osg::StateSet* ss) 
 {
     // anything to do if no material/texture?   
-    // could detect polygon mode and output in that form?
+
+    osg::PolygonMode * pm = dynamic_cast<osg::PolygonMode *>(ss->getAttribute(osg::StateAttribute::POLYGONMODE));
+    if (pm)
+    {
+        if (pm->getMode(osg::PolygonMode::FRONT)==osg::PolygonMode::LINE) _writeTriangleAs3DFace = false;
+    }
 }
 
 void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) 
@@ -501,7 +514,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
                 for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) 
                 {        
                     osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
-                    DxfPrimitiveIndexWriter pif(_fout, geo,_layer,_acadColor,m);
+                    DxfPrimitiveIndexWriter pif(_fout, geo,_layer,_acadColor,m,_writeTriangleAs3DFace);
                     ps->accept(pif);
                 }            
             } else {                            

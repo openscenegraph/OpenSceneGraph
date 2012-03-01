@@ -268,13 +268,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 void resetAppliedUniforms() const
                 {
-                    for(LastAppliedUniformList::iterator itr=_lastAppliedUniformList.begin();
-                        itr!=_lastAppliedUniformList.end();
-                        ++itr)
-                    {
-                        (*itr).first = 0;
-                        (*itr).second = 0;
-                    }
+                    _lastAppliedUniformList.clear();
                 }
 
 
@@ -283,7 +277,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
                     GLint location = getUniformLocation(uniform.getNameID());
                     if (location>=0)
                     {
-                        if ((unsigned int)location>=_lastAppliedUniformList.size()) _lastAppliedUniformList.resize(location+1);
                         const Uniform* lastAppliedUniform = _lastAppliedUniformList[location].first.get();
                         if (lastAppliedUniform != &uniform)
                         {
@@ -352,7 +345,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 UniformBlockMap _uniformBlockMap;
 
                 typedef std::pair<osg::ref_ptr<const osg::Uniform>, unsigned int> UniformModifiedCountPair;
-                typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;
+                typedef std::map<unsigned int, UniformModifiedCountPair> LastAppliedUniformList;
                 mutable LastAppliedUniformList _lastAppliedUniformList;
 
                 typedef std::vector< ref_ptr<Shader> > ShaderList;

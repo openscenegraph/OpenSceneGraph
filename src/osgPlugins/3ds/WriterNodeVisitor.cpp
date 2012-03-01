@@ -836,7 +836,7 @@ WriterNodeVisitor::calcVertices(osg::Geode & geo)
     for (unsigned int i = 0; i < geo.getNumDrawables(); ++i)
     {
         osg::Geometry *g = geo.getDrawable( i )->asGeometry();
-        if (g->getVertexArray()) numVertice += g->getVertexArray()->getNumElements();
+        if (g!=NULL && g->getVertexArray()) numVertice += g->getVertexArray()->getNumElements();
     }
     return numVertice;
 }

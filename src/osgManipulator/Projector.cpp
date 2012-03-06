@@ -16,6 +16,11 @@
 
 using namespace osgManipulator;
 
+// When the squared magnitude (length2) of the cross product of 2
+// angles is less than this tolerance, they are considered parallel.
+// osg::Vec3 a, b; (a ^ b).length2()
+#define CROSS_PRODUCT_ANGLE_TOLERANCE 1.0e-1
+
 namespace
 {
 
@@ -194,27 +199,45 @@ osg::Plane computePlaneThruPointAndOrientedToEye(const osg::Vec3d& eyeDir, const
     return plane;
 }
 
-osg::Plane computePlaneParallelToAxisAndOrientedToEye(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld,
-                                                      const osg::Vec3d& axisDir, double radius,
-                                                      osg::Vec3d& planeLineStart, osg::Vec3d& planeLineEnd,
-                                                      bool front)
+// Computes a plane to be used as a basis for determining a displacement.  When eyeDir is close
+// to the cylinder axis, then the plane will be set to be perpendicular to the cylinder axis.
+// Otherwise it will be set to be parallel to the cylinder axis and oriented towards eyeDir.
+osg::Plane computeIntersectionPlane(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld,
+                                    const osg::Vec3d& axisDir, const osg::Cylinder& cylinder,
+                                    osg::Vec3d& planeLineStart, osg::Vec3d& planeLineEnd,
+                                    bool& parallelPlane, bool front)
 {
-    osg::Vec3d perpDir = axisDir ^ getLocalEyeDirection(eyeDir, localToWorld);
+    osg::Plane plane;
+
+    osg::Vec3d unitAxisDir = axisDir;
+    unitAxisDir.normalize();
+    osg::Vec3d perpDir = unitAxisDir ^ getLocalEyeDirection(eyeDir, localToWorld);
+
+    // Check to make sure eye and cylinder axis are not too close
+    if(perpDir.length2() < CROSS_PRODUCT_ANGLE_TOLERANCE)
+    {
+        // Too close, so instead return plane perpendicular to cylinder axis.
+        plane.set(unitAxisDir, cylinder.getCenter());
+        parallelPlane = false;
+        return plane;
+    }
+
+    // Otherwise compute plane along axisDir oriented towards eye
     osg::Vec3d planeDir = perpDir ^ axisDir;
     planeDir.normalize();
     if (! front)
         planeDir = -planeDir;
 
-    osg::Vec3d planePoint = planeDir * radius + axisDir;
-    osg::Plane plane;
+    osg::Vec3d planePoint = planeDir * cylinder.getRadius() + axisDir;
     plane.set(planeDir, planePoint);
 
     planeLineStart = planePoint;
     planeLineEnd = planePoint + axisDir;
+    parallelPlane = true;
     return plane;
 }
 
-}
+} // namespace
 
 
 Projector::Projector() : _worldToLocalDirty(false)
@@ -563,86 +586,20 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projecte
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
-    // Find the intersection of the sphere with the line.
-    osg::Vec3d cylIntersection;
-    bool hitCylinder = false;
-    if (_front)
-    {
-        osg::Vec3d dontCare;
-        hitCylinder = getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, cylIntersection, dontCare);
-    }
-    else
-    {
-        osg::Vec3d dontCare;
-        hitCylinder = getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, dontCare, cylIntersection);
-    }
+    // Computes either a plane parallel to cylinder axis oriented to the eye or the plane
+    // perpendicular to the cylinder axis if the eye-cylinder angle is close.
+    _plane = computeIntersectionPlane(pi.getEyeDir(), getLocalToWorld(), _cylinderAxis,
+                                      *_cylinder, _planeLineStart, _planeLineEnd,
+                                     _parallelPlane, _front);
 
-    // Compute plane oriented to the eye.
-    _plane = computePlaneParallelToAxisAndOrientedToEye(pi.getEyeDir(), getLocalToWorld(), _cylinderAxis,
-                                                        getCylinder()->getRadius(), _planeLineStart, _planeLineEnd,
-                                   _front);
-
-    // Find the intersection on the plane.
-    osg::Vec3d planeIntersection;
-    getPlaneLineIntersection(_plane.asVec4(), objectNearPoint, objectFarPoint, planeIntersection);
-
-    if (hitCylinder)
-    {
-        osg::Vec3d projectIntersection;
-        getPlaneLineIntersection(_plane.asVec4(), cylIntersection, cylIntersection + _plane.getNormal(), projectIntersection);
-
-        osg::Vec3d closestPointToCylAxis;
-        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
-                                  projectIntersection, closestPointToCylAxis);
-
-        // Distance from the plane intersection point to the closest point on the cylinder axis.
-        double dist = (projectIntersection - closestPointToCylAxis).length();
-
-        if (dist < getCylinder()->getRadius())
-        {
-            if (!hitCylinder) return false;
-            projectedPoint = cylIntersection;
-            _onCylinder = true;
-        }
-        else
-        {
-            projectedPoint = planeIntersection;
-            _onCylinder = false;
-        }
-    }
-    else
-    {
-        projectedPoint = planeIntersection;
-        _onCylinder = false;
-    }
-
+    // Now find the point of intersection on our newly-calculated plane.
+    getPlaneLineIntersection(_plane.asVec4(), objectNearPoint, objectFarPoint, projectedPoint);
     return true;
 }
 
 osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnCyl, const osg::Vec3d& p2, bool p2OnCyl) const
 {
-    if (p1OnCyl && p2OnCyl)
-    {
-        osg::Vec3d closestPointToCylAxis1, closestPointToCylAxis2;
-        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
-                                  p1, closestPointToCylAxis1);
-        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
-                                  p2, closestPointToCylAxis2);
-
-        osg::Vec3d v1 = p1 - closestPointToCylAxis1;
-        osg::Vec3d v2 = p2 - closestPointToCylAxis2;
-
-        double cosAngle = v1 * v2 / (v1.length() * v2.length());
-
-        if (cosAngle > 1.0 || cosAngle < -1.0)
-            return osg::Quat();
-
-        double angle = acosf(cosAngle);
-        osg::Vec3d rotAxis = v1 ^ v2;
-
-        return osg::Quat(angle, rotAxis);
-    }
-    else if (!p1OnCyl && !p2OnCyl)
+    if(_parallelPlane)
     {
         osg::Vec3d closestPointToPlaneLine1, closestPointToPlaneLine2;
         computeClosestPointOnLine(_planeLineStart, _planeLineEnd,
@@ -656,32 +613,28 @@ osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnCyl
         osg::Vec3d diff = v2 - v1;
         double d = diff.length();
 
+        // The amount of rotation is inversely proportional to the size of the cylinder
         double angle = (getCylinder()->getRadius() == 0.0) ? 0.0 : (d / getCylinder()->getRadius());
         osg::Vec3d rotAxis = _plane.getNormal() ^ v1;
 
         if (v2.length() > v1.length())
-            return osg::Quat(angle, rotAxis);
+           return osg::Quat(angle, rotAxis);
         else
-            return osg::Quat(-angle, rotAxis);
-
+           return osg::Quat(-angle, rotAxis);
     }
     else
     {
-        osg::Vec3d offCylinderPt = (p1OnCyl) ? p2 : p1;
+        osg::Vec3d v1 = p1 - getCylinder()->getCenter();
+        osg::Vec3d v2 = p2 - getCylinder()->getCenter();
 
-        osg::Vec3d linePtNearest;
-        computeClosestPointOnLine(_planeLineStart, _planeLineEnd,
-                                  offCylinderPt, linePtNearest);
-        osg::Vec3d dirToOffCylinderPt = offCylinderPt - linePtNearest;
-        dirToOffCylinderPt.normalize();
+        double cosAngle = v1 * v2 / (v1.length() * v2.length());
 
-        osg::Vec3d ptOnCylinder = linePtNearest + dirToOffCylinderPt * getCylinder()->getRadius();
+        if (cosAngle > 1.0 || cosAngle < -1.0)
+            return osg::Quat();
 
-        if (p1OnCyl)
-            return (getRotation(p1, true, ptOnCylinder, true) *
-                    getRotation(ptOnCylinder, false, p2, false));
-        else
-            return (getRotation(p1, false, ptOnCylinder, false) *
-                    getRotation(ptOnCylinder, true, p2, true));
+        double angle = acosf(cosAngle);
+        osg::Vec3d rotAxis = v1 ^ v2;
+
+        return osg::Quat(angle, rotAxis);
     }
 }

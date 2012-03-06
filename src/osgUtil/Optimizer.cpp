@@ -4409,7 +4409,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
         bool t_repeat = texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
                         texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR;
 
-        if (!s_repeat && !t_repeat)
+        if (texture->getImage() && !s_repeat && !t_repeat)
         {
             _builder.addSource(*titr);
         }

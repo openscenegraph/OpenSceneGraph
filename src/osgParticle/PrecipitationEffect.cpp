@@ -635,7 +635,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    gl_PointSize = ceil(pointSize);\n"
             "    \n"
             "    colour.a = 0.05+(pointSize*pointSize)/(gl_PointSize*gl_PointSize);\n"
-            "    gl_ClipVertex = v_current;\n"
+            "    gl_ClipVertex = gl_ModelViewMatrix * v_current;\n"
             "}\n";
 
         char fragmentShaderSource[] = 

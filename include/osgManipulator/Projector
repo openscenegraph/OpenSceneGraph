@@ -295,6 +295,7 @@ class OSGMANIPULATOR_EXPORT CylinderPlaneProjector : public CylinderProjector
         mutable osg::Plane _plane;
         mutable bool       _onCylinder;
         mutable osg::Vec3d _planeLineStart, _planeLineEnd;
+        mutable bool       _parallelPlane;
 };
 
 }

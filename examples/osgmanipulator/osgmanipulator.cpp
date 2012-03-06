@@ -33,6 +33,7 @@
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslateAxisDragger>
 #include <osgManipulator/TranslatePlaneDragger>
+#include <osgManipulator/RotateCylinderDragger>
 
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
@@ -140,6 +141,18 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     else if ("Scale2DDragger" == name)
     {
         osgManipulator::Scale2DDragger* d = new osgManipulator::Scale2DDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("RotateCylinderDragger" == name)
+    {
+        osgManipulator::RotateCylinderDragger* d = new osgManipulator::RotateCylinderDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("RotateSphereDragger" == name)
+    {
+        osgManipulator::RotateSphereDragger* d = new osgManipulator::RotateSphereDragger();
         d->setupDefaultGeometry();
         dragger = d;
     }
@@ -372,7 +385,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
 
-    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger, TabPlaneTrackballDragger, TrackballDragger, Translate1DDragger, Translate2DDragger, TranslateAxisDragger, TabBoxDragger, TranslatePlaneDragger, Scale1DDragger, Scale2DDragger]");
+    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger, TabPlaneTrackballDragger, TrackballDragger, Translate1DDragger, Translate2DDragger, TranslateAxisDragger, TabBoxDragger, TranslatePlaneDragger, Scale1DDragger, Scale2DDragger, RotateCylinderDragger, RotateSphereDragger]");
     arguments.getApplicationUsage()->addCommandLineOption("--fixedDraggerSize","Fix the size of the dragger geometry in the screen space");
     
     bool fixedSizeInScreen = false;

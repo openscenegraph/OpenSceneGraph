@@ -29,6 +29,78 @@
 #include <sstream>
 #include <windowsx.h>
 
+#if(WINVER < 0x0601)
+// Provide Declarations for Multitouch
+
+#define WM_TOUCH                        0x0240
+
+/*
+ * Touch Input defines and functions
+ */
+
+/*
+ * Touch input handle
+ */
+DECLARE_HANDLE(HTOUCHINPUT);
+
+typedef struct tagTOUCHINPUT {
+    LONG x;
+    LONG y;
+    HANDLE hSource;
+    DWORD dwID;
+    DWORD dwFlags;
+    DWORD dwMask;
+    DWORD dwTime;
+    ULONG_PTR dwExtraInfo;
+    DWORD cxContact;
+    DWORD cyContact;
+} TOUCHINPUT, *PTOUCHINPUT;
+typedef TOUCHINPUT const * PCTOUCHINPUT;
+
+
+/*
+ * Conversion of touch input coordinates to pixels
+ */
+#define TOUCH_COORD_TO_PIXEL(l)         ((l) / 100)
+
+/*
+ * Touch input flag values (TOUCHINPUT.dwFlags)
+ */
+#define TOUCHEVENTF_MOVE            0x0001
+#define TOUCHEVENTF_DOWN            0x0002
+#define TOUCHEVENTF_UP              0x0004
+#define TOUCHEVENTF_INRANGE         0x0008
+#define TOUCHEVENTF_PRIMARY         0x0010
+#define TOUCHEVENTF_NOCOALESCE      0x0020
+#define TOUCHEVENTF_PEN             0x0040
+#define TOUCHEVENTF_PALM            0x0080
+
+#endif
+
+typedef
+BOOL
+(WINAPI GetTouchInputInfoFunc)(
+    HTOUCHINPUT hTouchInput,               // input event handle; from touch message lParam
+    UINT cInputs,                          // number of elements in the array
+    PTOUCHINPUT pInputs,  // array of touch inputs
+    int cbSize);                           // sizeof(TOUCHINPUT)
+
+typedef
+BOOL
+(WINAPI CloseTouchInputHandleFunc(
+    HTOUCHINPUT hTouchInput));                   // input event handle; from touch message lParam
+
+typedef
+BOOL
+(WINAPI RegisterTouchWindowFunc(
+    HWND hwnd,
+    ULONG ulFlags));
+
+// Declared static in order to get Header File clean
+static RegisterTouchWindowFunc *registerTouchWindowFunc = NULL;
+static CloseTouchInputHandleFunc *closeTouchInputHandleFunc = NULL;
+static GetTouchInputInfoFunc *getTouchInputInfoFunc = NULL;
+
 using namespace osgViewer;
 
 namespace osgViewer
@@ -590,6 +662,22 @@ std::string Win32WindowingSystem::osgGraphicsWindowWithoutCursorClass;
 Win32WindowingSystem::Win32WindowingSystem()
 : _windowClassesRegistered(false)
 {
+  // Detect presence of runtime support for multitouch
+    HMODULE hModule = LoadLibrary("user32");
+    if (hModule)
+    {
+        registerTouchWindowFunc = (RegisterTouchWindowFunc *) GetProcAddress( hModule, "RegisterTouchWindow");
+        closeTouchInputHandleFunc = (CloseTouchInputHandleFunc *) GetProcAddress( hModule, "CloseTouchInputHandle");
+        getTouchInputInfoFunc = (GetTouchInputInfoFunc *)  GetProcAddress( hModule, "GetTouchInputInfo");
+
+        if (!(registerTouchWindowFunc && closeTouchInputHandleFunc && getTouchInputInfoFunc))
+        {
+            registerTouchWindowFunc = NULL;
+            closeTouchInputHandleFunc = NULL;
+            getTouchInputInfoFunc = NULL;
+            FreeLibrary( hModule);
+        }
+    }
 }
 
 Win32WindowingSystem::~Win32WindowingSystem()
@@ -1207,6 +1295,9 @@ bool GraphicsWindowWin32::createWindow()
     }
 
     Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
+
+    if (registerTouchWindowFunc)
+        (*registerTouchWindowFunc)( _hwnd, 0);
     return true;
 }
 
@@ -2689,6 +2780,51 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
             _closeWindow = true;
             return wParam;
+
+        //////////////
+        case WM_TOUCH:
+        /////////////
+            {
+                unsigned int numInputs = (unsigned int) wParam;
+                TOUCHINPUT* ti = new TOUCHINPUT[numInputs];
+                osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
+                if(getTouchInputInfoFunc && (*getTouchInputInfoFunc)((HTOUCHINPUT)lParam, numInputs, ti, sizeof(TOUCHINPUT)))
+                {
+                    // For each contact, dispatch the message to the appropriate message handler.
+                    for(unsigned int i=0; i< numInputs; ++i)
+                    {
+                        if(ti[i].dwFlags & TOUCHEVENTF_DOWN)
+                        {
+                            if (!osg_event) {
+                                osg_event = getEventQueue()->touchBegan( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, ti[i].x / 100 , ti[i].y/100);
+                            } else {
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, ti[i].x / 100, ti[i].y/100);
+                            }
+                        }
+                        else if(ti[i].dwFlags & TOUCHEVENTF_MOVE)
+                        {
+                            if (!osg_event) {
+                                osg_event = getEventQueue()->touchMoved(  ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, ti[i].x/ 100, ti[i].y/ 100);
+                            } else {
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, ti[i].x / 100, ti[i].y/100);
+                            }
+                        }
+                        else if(ti[i].dwFlags & TOUCHEVENTF_UP)
+                        {
+                            // No double tap detection with RAW TOUCH Events, sorry.
+                            if (!osg_event) {
+                                osg_event = getEventQueue()->touchEnded( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, ti[i].x/ 100, ti[i].y/ 100, 1);
+                            } else {
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, ti[i].x / 100, ti[i].y/100);
+                            }
+                        }
+                    }
+                }
+                if (closeTouchInputHandleFunc)
+                    (*closeTouchInputHandleFunc)((HTOUCHINPUT)lParam);
+                delete [] ti;
+            }
+            break;
 
         /////////////////
         default         :

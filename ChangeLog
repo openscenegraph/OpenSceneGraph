@@ -1,3 +1,168 @@
+2012-03-08 16:05  robert
+
+	* include/osg/Image, src/osg/Image.cpp: From Farshid Lashkari,
+	  "I've added support for reading contents of cubemap textures to
+	  the osg::Image::readImageFromCurrentTexture method. I added a new
+	  parameter to the method for specifying which face of the cubemap
+	  to read."
+
+2012-03-07 09:32  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Olaf Flebbe,
+	  "Appended now a bugfixed proposition for the Win7 Multitouch
+	  Support.
+	  
+	  Now examples/osgmultitouch really works ;-)
+	  
+	  Based on yesterdays trunk.
+	  
+	  * It should now work with all Visual Studio Versions.
+	  * WIN_VER is left as-is
+	  * I added the missing declarations from a recent SDK, if not
+	  supplied by the SDK
+	  * If someone chooses to update WIN_VER, the declarations should
+	  not break.
+	  * All API Calls are runtime detected.
+	  * No CMake Variable, Support is enabled automatically ."
+
+2012-03-06 10:35  robert
+
+	* src/osgUtil/Optimizer.cpp: From Guillaume Millet, "Please find a
+	  small fix to avoid crash of texture Atlas builder in case of
+	  textures with NULL image.
+	  
+	  If an object is comming with texture and NULL image, the texture
+	  atlas builder crash when sorting textures according to texture
+	  height.
+	  The fix is to skip textures with NULL image when inserting
+	  textures in the builder texture list.
+	  "
+
+2012-03-06 10:33  robert
+
+	* src/osgParticle/PrecipitationEffect.cpp: From Farshild Laskari,
+	  "The vertex shader for the point stateset of PrecipitationEffect
+	  was not properly computing the clip vertex. It needed to apply a
+	  modelview transformation to the clip vertex. Attached is the
+	  fix."
+
+2012-03-06 10:29  robert
+
+	* examples/CMakeLists.txt, examples/osgsimpleshaders,
+	  examples/osgsimpleshaders/CMakeLists.txt,
+	  examples/osgsimpleshaders/osgsimpleshaders.cpp: From Christian
+	  Buchner, "The attached openscenegraph example is much simpler
+	  than
+	  osgshaders.cpp and demonstrates the use of GLSL vertex and
+	  fragment
+	  shaders with a simple animation callback. I found the
+	  osgshaders.cpp
+	  too complex to serve as a starting point for GLSL programming"
+
+2012-03-06 10:08  robert
+
+	* include/osgManipulator/Projector,
+	  src/osgManipulator/Projector.cpp: From Chuck Seberino, "Here is a
+	  fix for the RotateCylinderDragger. This patch fixes the case
+	  where the picking direction is close to the cylinder axis. The
+	  current behavior is this:
+	  
+	  * If the eyepoint and cylinder axis are close to parallel (given
+	  some tolerance), then it uses a plane perpendicular to the
+	  cylinder axis.
+	  * Otherwise it uses a plane parallel to the cylinder axis
+	  oriented towards the eyepoint (previous behavior). This gives
+	  decent behavior and is the only path that was taken in the
+	  previous code. I kept with previous behavior and that allowed a
+	  good bit of code to be removed, simplifying things. There is now
+	  no need for the _onCylinder flag, but since there is a public
+	  accessor, I wasn't sure how to handle it for backwards
+	  compatibility, so I left it in. NOTE - there is no default
+	  initialized value, so if it is kept in, it should be set to
+	  'false' to keep same behavior as before. I am not quite sure how
+	  the _onCylinder case was supposed to behave as even forcing that
+	  path gave undesirable behavior, even with carefully controlled
+	  dragging.
+	  "
+
+2012-03-06 10:06  robert
+
+	* examples/osgmanipulator/osgmanipulator.cpp: Added
+	  RotateCylinderDragger and RotateSphereDragger to list of
+	  manipulators for testing purposes
+
+2012-03-05 14:17  robert
+
+	* examples/osgsimplegl3/osgsimplegl3.cpp: From Paul Martz, "Just a
+	  minor update and typo fix.
+	  "
+
+2012-03-01 11:33  robert
+
+	* src/osgPlugins/dxf/DXFWriterNodeVisitor.cpp,
+	  src/osgPlugins/dxf/DXFWriterNodeVisitor.h: From Luc Frauciel,
+	  "I've modified dxf writer :
+	  
+	  - correction to writeFace : the fourth point was defined with an
+	  incorrect code
+	  (http://www.autodesk.com/techpubs/autocad/acad2000/dxf/3dface_dxf_06.htm)
+	  - if no layer name was found, an empty string was used, with is
+	  incorrect according to dxf specifications and was rejected by
+	  Autodesk DWG TrueView
+	  - the plugin was writting polygons and triangles as LINE, as if
+	  PolygonMode GL_LINE was active, and didn't use 3DFACE primitive.
+	  I changed this behaviour to write 3DFACE as default, and LINE
+	  when PolygonMode GL_LINE is active.
+	  when reading back the file with osg, the result is now consistent
+	  with the source
+	  
+	  Tested with osg plugin, FME (Safe software), Autodesk DWG
+	  TrueView
+	  "
+
+2012-03-01 11:03  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.cpp: From Luc Frauciel, "In
+	  3ds plugin, asGeometry() is used on a drawable but the resulting
+	  pointer is not tested for nullity.
+	  It leads to a crash when writing osgText::Text or Shapes"
+
+2012-03-01 10:38  robert
+
+	* include/osg/Program: From David Callu, "I found a bug in
+	  osg::Program.
+	  
+	  in osg::Program::PerContextProgram :
+	  
+	  typedef std::vector<UniformModifiedCountPair>
+	  LastAppliedUniformList;
+	  should be
+	  typedef std::map<unsigned int, UniformModifiedCountPair>
+	  LastAppliedUniformList;
+	  
+	  Intel driver can use index uniform value > 200000.
+	  With a std::vector, this index uniform value generate an out of
+	  memory error
+	  
+	  Nothing in OpenGL or GLSL specification define index uniform
+	  value rules.
+	  And all other implementation that deal with uniform index in
+	  osg::Program
+	  use a std::map.
+	  This fix could have a little performance impact but this is the
+	  cost
+	  to pay to work with
+	  all driver."
+
+2012-03-01 10:14  robert
+
+	* include/osg/Program: Removed redudent spaces at ends of lines
+
+2012-02-29 14:01  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated ChangeLog and AUTHORS for dev release
+
 2012-02-29 10:22  robert
 
 	* include/osgDB/InputStream, include/osgDB/StreamOperator,

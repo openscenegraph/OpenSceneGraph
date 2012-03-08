@@ -24,6 +24,7 @@
 #include <osg/Texture2D>
 #include <osg/Texture3D>
 #include <osg/Texture2DArray>
+#include <osg/TextureCubeMap>
 #include <osg/Light>
 
 #include <string.h>
@@ -928,7 +929,7 @@ void Image::readPixels(int x,int y,int width,int height,
 }
 
 
-void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type)
+void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type, unsigned int face)
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // OSG_NOTICE<<"Image::readImageFromCurrentTexture()"<<std::endl;
@@ -938,11 +939,12 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     const osg::Texture2DArray::Extensions* extensions2DArray = osg::Texture2DArray::getExtensions(contextID,true);
 
     
-    GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE;
+    GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE, bindingCubeMap = GL_FALSE;
 
     glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
     glGetBooleanv(GL_TEXTURE_BINDING_2D, &binding2D);
     glGetBooleanv(GL_TEXTURE_BINDING_3D, &binding3D);
+    glGetBooleanv(GL_TEXTURE_BINDING_CUBE_MAP, &bindingCubeMap);
 
     if (extensions2DArray->isTexture2DArraySupported())
     {
@@ -950,6 +952,30 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     }
 
     GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
+    if (bindingCubeMap)
+    {
+        switch (face)
+        {
+            case TextureCubeMap::POSITIVE_X:
+                textureMode = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                break;
+            case TextureCubeMap::NEGATIVE_X:
+                textureMode = GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
+                break;
+            case TextureCubeMap::POSITIVE_Y:
+                textureMode = GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+                break;
+            case TextureCubeMap::NEGATIVE_Y:
+                textureMode = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
+                break;
+            case TextureCubeMap::POSITIVE_Z:
+                textureMode = GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
+                break;
+            case TextureCubeMap::NEGATIVE_Z:
+                textureMode = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
+                break;
+        }
+    }
     
     if (textureMode==0) return;
 

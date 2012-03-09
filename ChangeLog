@@ -1,3 +1,8 @@
+2012-03-08 16:33  robert
+
+	* CMakeLists.txt, ChangeLog, include/osg/Version: Updated version
+	  number for 3.1.1 dev release
+
 2012-03-08 16:05  robert
 
 	* include/osg/Image, src/osg/Image.cpp: From Farshid Lashkari,

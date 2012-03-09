@@ -1,3 +1,21 @@
+2012-03-09 10:20  robert
+
+	* ChangeLog, include/osgManipulator/Projector,
+	  include/osgManipulator/RotateCylinderDragger,
+	  src/osgManipulator/Projector.cpp,
+	  src/osgManipulator/RotateCylinderDragger.cpp: From Chuck
+	  Seberino, "Attached are modified versions of
+	  RotateCylinderDragger and Projector files that clean up the use
+	  of _onCylinder / isProjectionOnCylinder().
+	  
+	  I have also made changes to the RotateCylinderDragger to provide
+	  a cylinder ring with a thickness. It is totally optional, but
+	  IMHO makes the default behavior work better than a solid cylinder
+	  (which typically obscures the geometry you are trying to drag).
+	  Gives it a bit more to grab, especially in the case where
+	  eyepoint and cylinder axis are near parallel.
+	  "
+
 2012-03-08 16:33  robert
 
 	* CMakeLists.txt, ChangeLog, include/osg/Version: Updated version

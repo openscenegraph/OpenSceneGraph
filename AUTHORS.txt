@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.1.0
+OpenSceneGraph Library 3.1.1
 
 480 Contributors:
 
@@ -24,8 +24,8 @@ Michael Platings
 Geoff Michel
 Wojciech Lewandowski
 Eric Sokolowsky
-Trajce Nikolov
 David Callu
+Trajce Nikolov
 Tim Moore
 Martin Lavery
 Colin McDonald
@@ -46,12 +46,12 @@ David Fries
 Tom Jolley
 Pavel Moloshtan
 Alberto Luaces
+Olaf Flebbe
 Magnus Kessler
 Jason Daly
 Robert Milharcic
 Philip Lowman
 Per Fahlberg
-Olaf Flebbe
 Norman Vine
 Laurens Voerman
 Brad Christiansen
@@ -59,6 +59,7 @@ Art Tevs
 Terry Welsh
 Serge Lages
 Mathieu Marache
+Luc Frauciel
 Chris Denham
 Alberto Farre
 Sherman Wilcox
@@ -67,7 +68,6 @@ Adrian Egli
 Ruben Lopez
 Randall Hopper
 Mourad Boufarguine
-Luc Frauciel
 Glenn Waldron
 Gideon May
 Don Tidrow
@@ -94,6 +94,7 @@ Frederic Marmond
 David Guthrie
 Csaba Halasz
 Cory Riddell
+Chuck Seberino
 Boris Bralo
 Andreas Ekstrand
 Yefei He
@@ -118,7 +119,6 @@ Loic Dachary
 Joseph Steel
 Jorge Izquierdo
 John Shue
-Chuck Seberino
 Brad Colbert
 Vivek Rajan
 Uwe Woessner
@@ -191,6 +191,7 @@ Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
 James French
+Guillaume Millet
 Gary Quinn
 Garrett Potts
 Gabor Dorka
@@ -261,7 +262,6 @@ He Sicong
 Guy Volckaert
 Gustavo Wagner
 Guillaume Taze
-Guillaume Millet
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
@@ -275,6 +275,7 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
+Christian Buchner
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -453,7 +454,6 @@ Chuck Sembroski
 Christopher Blaesius
 Christian Kaser
 Christian Ehrlicher
-Christian Buchner
 Chris McGlone
 Carlos Garcea
 Bryce Eldridge

@@ -59,7 +59,6 @@ class OSGMANIPULATOR_EXPORT RotateCylinderDragger : public Dragger
         osg::ref_ptr<CylinderPlaneProjector> _projector;
 
         osg::Vec3d  _prevWorldProjPt;
-        bool        _prevPtOnCylinder;
         osg::Matrix _startLocalToWorld, _startWorldToLocal;
         osg::Quat   _prevRotation;
 

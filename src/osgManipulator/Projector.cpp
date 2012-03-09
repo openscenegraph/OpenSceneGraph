@@ -560,7 +560,7 @@ CylinderPlaneProjector::CylinderPlaneProjector()
 {
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder) : CylinderProjector(cylinder)
+CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder) : CylinderProjector(cylinder), _parallelPlane(false)
 {
 }
 
@@ -597,7 +597,7 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projecte
     return true;
 }
 
-osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnCyl, const osg::Vec3d& p2, bool p2OnCyl) const
+osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3d& p1, const osg::Vec3d& p2) const
 {
     if(_parallelPlane)
     {

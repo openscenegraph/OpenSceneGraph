@@ -28,7 +28,7 @@ namespace osgAnimation
         StackedTransform();
         StackedTransform(const StackedTransform&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        void update();
+        void update(float t = 0.0);
         const osg::Matrix& getMatrix() const;
 
     protected:

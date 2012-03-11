@@ -36,7 +36,7 @@ namespace osgAnimation
         void applyToMatrix(osg::Matrix& matrix) const;
         osg::Matrix getAsMatrix() const;
         bool isIdentity() const { return (_angle == 0); }
-        void update();
+        void update(float t = 0.0);
 
         const osg::Vec3& getAxis() const;
         double getAngle() const;

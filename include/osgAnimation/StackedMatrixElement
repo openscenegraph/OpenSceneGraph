@@ -39,7 +39,7 @@ namespace osgAnimation
         const osg::Matrix& getMatrix() const { return _matrix;}
         void setMatrix(const osg::Matrix& matrix) { _matrix = matrix;}
         bool isIdentity() const { return _matrix.isIdentity(); }
-        void update();
+        void update(float t = 0.0);
         virtual Target* getOrCreateTarget();
         virtual Target* getTarget() {return _target.get();}
         virtual const Target* getTarget() const {return _target.get();}

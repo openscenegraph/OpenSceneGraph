@@ -31,7 +31,7 @@ namespace osgAnimation
         virtual void applyToMatrix(osg::Matrix& matrix) const = 0;
         virtual osg::Matrix getAsMatrix() const = 0;
         virtual bool isIdentity() const = 0;
-        virtual void update() = 0;
+        virtual void update(float t) = 0;
         virtual Target* getOrCreateTarget() {return 0;}
         virtual Target* getTarget() {return 0;}
         virtual const Target* getTarget() const {return 0;}

@@ -18,15 +18,15 @@ using namespace osgViewer;
 
 typedef std::vector< osg::observer_ptr<Scene> >  SceneCache;
 
+static SceneCache s_sceneCache;
 static SceneCache& getSceneCache()
 {
-    static SceneCache s_sceneCache;
     return s_sceneCache;
 }
 
+static OpenThreads::Mutex s_sceneCacheMutex;
 static OpenThreads::Mutex& getSceneCacheMutex()
 {
-    static OpenThreads::Mutex s_sceneCacheMutex;
     return s_sceneCacheMutex;
 }
 

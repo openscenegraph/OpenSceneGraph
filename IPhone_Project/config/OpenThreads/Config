@@ -4,7 +4,8 @@
 #include <AvailabilityMacros.h>
 
 //#define _OPENTHREADS_ATOMIC_USE_GCC_BUILTINS
-#define _OPENTHREADS_ATOMIC_USE_MUTEX
+//#define _OPENTHREADS_ATOMIC_USE_MUTEX
+#define _OPENTHREADS_ATOMIC_USE_BSD_ATOMIC
 //static link required on IPhone
 #define OT_LIBRARY_STATIC
 

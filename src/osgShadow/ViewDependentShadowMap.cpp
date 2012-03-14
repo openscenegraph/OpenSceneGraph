@@ -353,7 +353,7 @@ public:
 
     void update(const osg::Vec3& v)
     {
-        if (v.z()<0.0f)
+        if (v.z()<-1.0f)
         {
             //OSG_NOTICE<<"discarding("<<v<<")"<<std::endl;
             return;
@@ -1464,7 +1464,7 @@ bool ViewDependentShadowMap::computeShadowCameraSettings(Frustum& frustum, Light
         else
         {
             projectionMatrix.makeOrtho(xMin,xMax, yMin, yMax,0.0,zMax-zMin);
-            viewMatrix.makeLookAt(frustum.center+positionedLight.lightDir*zMin, frustum.center, lightUp);
+            viewMatrix.makeLookAt(frustum.center+positionedLight.lightDir*zMin, frustum.center+positionedLight.lightDir*zMax, lightUp);
         }
     }
     else

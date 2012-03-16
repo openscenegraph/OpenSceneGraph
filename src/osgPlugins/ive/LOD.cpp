@@ -36,7 +36,7 @@ void LOD::write(DataOutputStream* out){
     out->writeInt(getCenterMode());
     out->writeVec3(getCenter());
 
-        out->writeInt(getRangeMode());
+    out->writeInt(getRangeMode());
 
     // Write rangelist
     int size = getNumRanges();
@@ -66,12 +66,14 @@ void LOD::read(DataInputStream* in){
                 if ( in->getVersion() > VERSION_0002 )
                     setRadius(in->readFloat());
 
-        // Read centermode
-        setCenterMode((osg::LOD::CenterMode)in->readInt());
-        setCenter(in->readVec3());
+        // Read centermode and center
+        osg::LOD::CenterMode centerMode = (osg::LOD::CenterMode)in->readInt();
+        osg::Vec3 center = in->readVec3();
+        setCenter(center);
+        setCenterMode(centerMode);
 
-                if ( in->getVersion() > VERSION_0002 )
-                    setRangeMode((RangeMode)in->readInt());
+        if ( in->getVersion() > VERSION_0002 )
+            setRangeMode((RangeMode)in->readInt());
 
         // Read rangelist
         int size = in->readInt();;

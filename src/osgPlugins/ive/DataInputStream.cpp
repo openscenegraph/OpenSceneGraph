@@ -20,6 +20,7 @@
 #include "AlphaFunc.h"
 #include "BlendColor.h"
 #include "Stencil.h"
+#include "StencilTwoSided.h"
 #include "BlendFunc.h"
 #include "BlendEquation.h"
 #include "Depth.h"
@@ -58,7 +59,6 @@
 #include "Fog.h"
 #include "Light.h"
 #include "PolygonStipple.h"
-
 
 #include "Node.h"
 #include "Group.h"
@@ -1506,6 +1506,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVESTENCIL){
         attribute = new osg::Stencil();
         ((ive::Stencil*)(attribute.get()))->read(this);
+    }
+    else if(attributeID == IVESTENCILTWOSIDED){
+        attribute = new osg::StencilTwoSided();
+        ((ive::StencilTwoSided*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEFOG){
         attribute = new osg::Fog();

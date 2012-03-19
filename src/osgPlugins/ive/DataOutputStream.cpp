@@ -21,6 +21,7 @@
 #include "AlphaFunc.h"
 #include "BlendColor.h"
 #include "Stencil.h"
+#include "StencilTwoSided.h"
 #include "BlendFunc.h"
 #include "BlendEquation.h"
 #include "Material.h"
@@ -999,6 +1000,9 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::Stencil*>(attribute)){
             ((ive::Stencil*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::StencilTwoSided*>(attribute)){
+            ((ive::StencilTwoSided*)(attribute))->write(this);
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);

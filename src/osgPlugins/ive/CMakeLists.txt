@@ -99,6 +99,7 @@ SET(TARGET_SRC
     SpecularHighlights.cpp
     StateSet.cpp
     Stencil.cpp
+    StencilTwoSided.cpp
     Switch.cpp
     SwitchLayer.cpp
     Terrain.cpp
@@ -229,6 +230,7 @@ SET(TARGET_H
     SpecularHighlights.h
     StateSet.h
     Stencil.h
+    StencilTwoSided.h
     Switch.h
     SwitchLayer.h
     Terrain.h

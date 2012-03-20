@@ -407,7 +407,7 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
 
         if ((_flag & 64 /*i.e. polymesh*/) && 
             (cv._groupCode == 70 /*i.e. vertex flag*/) && 
-            (cv._int && 128 /*i.e. vertex is actually a face*/))
+            (cv._int & 128 /*i.e. vertex is actually a face*/))
             _indices.push_back(_currentVertex); // Add the index only if _currentvertex is actually an index
     } else {
         double d = cv._double;

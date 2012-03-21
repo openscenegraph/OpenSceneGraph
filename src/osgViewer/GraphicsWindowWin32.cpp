@@ -1767,7 +1767,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
                 int attribs[ 16 ];
 
                 unsigned int major = 1, minor = 0;
-                if( !_traitrs->getContextVersion(major, minor) || major<3 )
+                if( !_traits->getContextVersion(major, minor) || major<3 )
                 {
                     OSG_NOTIFY( osg::WARN ) << "GL3: Non-GL3 version number: " << _traits->glContextVersion << std::endl;
                 }
@@ -2660,8 +2660,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             // ok. See winuser.h for the key codes.
             for (unsigned int i = 0x08; i < 0xFF; i++)
             {
-                // Wojciech Lewandowski: 2011/09/12 
-                // Skip CONTROL | MENU | SHIFT tests because we are polling exact left or right keys 
+                // Wojciech Lewandowski: 2011/09/12
+                // Skip CONTROL | MENU | SHIFT tests because we are polling exact left or right keys
                 // above return press for both right and left so we may end up with incosistent
                 // modifier mask if we report left control & right control while only right was pressed
                 LONG rightSideCode = 0;
@@ -2677,8 +2677,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                     case VK_RMENU:
                         rightSideCode = 0x01000000;
                 }
-                if ((::GetAsyncKeyState(i) & 0x8000) != 0) 
-                {                    
+                if ((::GetAsyncKeyState(i) & 0x8000) != 0)
+                {
                     // Compute lParam because subsequent adaptKey will rely on correct lParam
                     UINT scanCode = ::MapVirtualKeyEx( i, 0, ::GetKeyboardLayout(0));
                     // Set Extended Key bit + Scan Code + 30 bit to indicate key was set before sending message

@@ -9,18 +9,18 @@
 	-------------------------------------------------------------------------
 
 
-PROPRIETARY RIGHTS NOTICE:      
-	
-	This software contains proprietary information and trade secrets of Carbon
-	Graphics LLC. No part or all of this software may be reproduced in any 
-	form, without the written permission of Carbon Graphics LLC. 
+PROPRIETARY RIGHTS NOTICE:
 
-	This software file can only be used in conjunction with the Geo SDK & 
-	libraries to create Plugin modules for the Geo 3D Modeling & Animation 
+	This software contains proprietary information and trade secrets of Carbon
+	Graphics LLC. No part or all of this software may be reproduced in any
+	form, without the written permission of Carbon Graphics LLC.
+
+	This software file can only be used in conjunction with the Geo SDK &
+	libraries to create Plugin modules for the Geo 3D Modeling & Animation
 	package.
 
-COPYRIGHT NOTICE: 
-   
+COPYRIGHT NOTICE:
+
 	Copyright © 1998-2001 Carbon Graphics Llc, ALL RIGHTS RESERVED
 
 \*===========================================================================*/
@@ -35,7 +35,7 @@ COPYRIGHT NOTICE:
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Constants for the GEO_LIB_LEVEL_VERSION 
+// Constants for the GEO_LIB_LEVEL_VERSION
 ///////////////////////////////////////////////////////////////////////////////
 
 /** Signifies a pre-alpha version of the software */
@@ -55,7 +55,7 @@ const unsigned char		GEO_FULL_RELEASE		= 14;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Constants to identify the Geo version 
+// Constants to identify the Geo version
 ///////////////////////////////////////////////////////////////////////////////
 
 /** this constant specifies the Geo Major release number */

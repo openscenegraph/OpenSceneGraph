@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * Texture2DMultisample codes Copyright (C) 2010 Marcin Hajder
@@ -21,7 +21,7 @@
 
 namespace osg {
 
- /** Texture2DMultisample state class which encapsulates OpenGL 2D multisampled texture functionality. 
+ /** Texture2DMultisample state class which encapsulates OpenGL 2D multisampled texture functionality.
  * Multisampled texture were introduced with OpenGL 3.1 and extension GL_ARB_texture_multisample.
  * See http://www.opengl.org/registry/specs/ARB/texture_multisample.txt for more info.
  */
@@ -29,22 +29,22 @@ namespace osg {
 class OSG_EXPORT Texture2DMultisample : public Texture
 {
     public :
-        
+
         Texture2DMultisample();
 
         Texture2DMultisample(GLsizei numSamples, GLboolean fixedsamplelocations);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture2DMultisample(const Texture2DMultisample& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-        
+
         META_StateAttribute(osg, Texture2DMultisample,TEXTURE);
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual GLenum getTextureTarget() const 
-        { 
-          return GL_TEXTURE_2D_MULTISAMPLE; 
+        virtual GLenum getTextureTarget() const
+        {
+          return GL_TEXTURE_2D_MULTISAMPLE;
         }
 
         /** Sets the texture width and height. If width or height are zero,

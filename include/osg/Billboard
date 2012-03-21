@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,7 +34,7 @@ class OSG_EXPORT Billboard : public Geode
         };
 
         Billboard();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Billboard(const Billboard&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -64,13 +64,13 @@ class OSG_EXPORT Billboard : public Geode
 
         /** Type definition for pivot point position list. */
         typedef std::vector<Vec3> PositionList;
-        
+
         /** Set the list of pivot point positions. */
         inline void setPositionList(PositionList& pl)       { _positionList=pl; }
 
         /** Get the list of pivot point positions. */
         inline PositionList& getPositionList()              { return _positionList; }
-        
+
         /** Get a const list of pivot point positions. */
         inline const PositionList& getPositionList() const  { return _positionList; }
 
@@ -93,7 +93,7 @@ class OSG_EXPORT Billboard : public Geode
           * remove its pivot point position. and return true.
           * Otherwise, return false. */
         virtual bool removeDrawable( Drawable *gset );
-                
+
 
         bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
 
@@ -118,7 +118,7 @@ class OSG_EXPORT Billboard : public Geode
         Vec3                                _normal;
         Matrix                              _rotateNormalToZAxis;
         PositionList                        _positionList;
-        
+
         // used internally as cache of which what _axis is aligned to help
         // decide which method of rotation to use.
         int                                 _cachedMode;

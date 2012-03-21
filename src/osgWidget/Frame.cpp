@@ -71,7 +71,7 @@ bool Frame::Corner::mouseDrag(double x, double y, const WindowManager* wm)
     }
 
     parent->update();
-    
+
     return true;
 }
 
@@ -84,7 +84,7 @@ _border (border)
 
 Frame::Border::Border(const Border& border, const osg::CopyOp& co):
 Widget  (border, co),
-_border (border._border) 
+_border (border._border)
 {
 }
 
@@ -110,7 +110,7 @@ void Frame::Border::positioned()
     point_type h = getHeight();
 
     if(_border == BORDER_LEFT) setTexCoordRegion(w * 3, 0.0f, w, h);
-    
+
     else if(_border == BORDER_RIGHT) setTexCoordRegion(w * 4, 0.0f, w, h);
 
     else if(_border == BORDER_TOP) {
@@ -140,7 +140,7 @@ void Frame::Border::positioned()
 bool Frame::Border::mouseDrag(double x, double y, const WindowManager* wm)
 {
     Frame* parent = dynamic_cast<Frame*>(getParent());
-    
+
     if(!parent) return false;
 
     if(_border == BORDER_TOP && parent->canMove()) parent->addOrigin(x, y);
@@ -209,13 +209,13 @@ Frame* Frame::createSimpleFrame(
     Frame*             exFrame
 ) {
     Frame* frame = 0;
-    
+
     // Use an "existing frame" if we have it (for example, if you've in inherited from
     // Frame and want to use this stuff.
     if(!exFrame) frame = new Frame(name, flags);
 
     else frame = exFrame;
-    
+
     frame->addWidget(new Corner(CORNER_LOWER_LEFT,  cw, ch), 0, 0);
     frame->addWidget(new Border(BORDER_BOTTOM,      w,  ch), 0, 1);
     frame->addWidget(new Corner(CORNER_LOWER_RIGHT, cw, ch), 0, 2);
@@ -320,7 +320,7 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
 
         // frame->getEmbeddedWindow()->setTexCoordRegion(cw, ch, tw - (cw * 2.0f), th - (ch * 2.0f));
     }
-    else 
+    else
     {
         OSG_WARN << "createSimpleFrameWithSingleTexture with a null image, the frame " << name << " will be use texture" << std::endl;
     }
@@ -339,7 +339,7 @@ bool Frame::resizeFrame(point_type w, point_type h) {
     return resize(
         left->getWidth() + right->getWidth() + w,
         top->getHeight() + bottom->getHeight() + h
-    ); 
+    );
 }
 
 
@@ -359,7 +359,7 @@ Frame* Frame::createSimpleFrameFromTheme(
 
     frame = createSimpleFrameWithSingleTexture(name, natifImage.get(), width, height, flags, exFrame);
 
-    if (frame && image && natifImage.valid()) 
+    if (frame && image && natifImage.valid())
     {
         const unsigned int bpps = image->getPixelSizeInBits() / 8;
         const unsigned int one_third_s = image->s()/3;
@@ -388,10 +388,10 @@ template<typename T>
 void copyDataImpl(const osg::Image* source,
                   const unsigned int x1, const unsigned int y1,
                   const unsigned int x2, const unsigned int y2,
-                  osg::Image* destination, 
+                  osg::Image* destination,
                   const unsigned int xd = 0, const unsigned int yd = 0)
 {
-    if ((unsigned int)destination->s() >= xd + (x2 - x1) && 
+    if ((unsigned int)destination->s() >= xd + (x2 - x1) &&
         (unsigned int)destination->t() >= yd + (y2 - y1))
     {
         const unsigned int bpps =      source->getPixelSizeInBits() / (8 * sizeof(T));
@@ -403,7 +403,7 @@ void copyDataImpl(const osg::Image* source,
         {
             for (unsigned int x = 0; x < x2 - x1; ++x)
             {
-                for (unsigned int d = 0; d < bpps; d++) 
+                for (unsigned int d = 0; d < bpps; d++)
                 {
                     T v = srcdata[(y + y1) * source->s() * bpps + (x + x1) * bpps + d];
                     dstdata[(yd + y) * destination->s() * bpps + (xd + x) * bpps + d] = v;
@@ -415,21 +415,21 @@ void copyDataImpl(const osg::Image* source,
         assert(false && "copyDataImpl: Incorrect image dimensions.");
 }
 
-/** Copies a rectangle of corners (x1, y1), (x2, y2) from an image into 
+/** Copies a rectangle of corners (x1, y1), (x2, y2) from an image into
     another image starting at position (xd, yd). No scaling is done, the
-    pixels are just copied, so the destination image must be at least 
+    pixels are just copied, so the destination image must be at least
     (xd + (x2 - x1)) by (yd + (y2 - y1)) pixels. */
 void copyData(const osg::Image* source,
-              const unsigned int x1, const unsigned int y1, 
+              const unsigned int x1, const unsigned int y1,
               const unsigned int x2, const unsigned int y2,
-              osg::Image* destination, 
+              osg::Image* destination,
               const unsigned int xd, const unsigned int yd)
 {
     if (source->getDataType() == destination->getDataType())
     {
         if (source->getDataType() == GL_UNSIGNED_BYTE)
         {
-            copyDataImpl<unsigned char>(source, x1, y1, x2, y2, 
+            copyDataImpl<unsigned char>(source, x1, y1, x2, y2,
                                         destination, xd, yd);
         }
         else
@@ -541,7 +541,7 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
         OSG_WARN << "width and height are different, bad format theme image " << theme->getFileName() << std::endl;
         return 0;
     }
-    
+
     // check size
     int ceilvalue = static_cast<int>(ceil(s * 1.0 / 3));
     int intvalue = s/3;

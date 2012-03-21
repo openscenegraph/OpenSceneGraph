@@ -4,7 +4,7 @@
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,7 +27,7 @@
 #if (defined(GL_VERSION_ES_CM_1_0) && GL_VERSION_ES_CM_1_0 > 0) || \
     (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)
 
-    #define OPENGLES_1_1_FOUND 1  
+    #define OPENGLES_1_1_FOUND 1
 
 #endif
 
@@ -50,10 +50,10 @@
 
 #ifndef GL_ARB_vertex_buffer_object
     #define GL_ARB_vertex_buffer_object
-    
+
     typedef GLintptr GLintptrARB;
     typedef GLsizeiptr GLsizeiptrARB;
-    
+
     #define GL_ARRAY_BUFFER_ARB               0x8892
     #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
     #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
@@ -114,7 +114,7 @@
     #define GL_PIXEL_UNPACK_BUFFER_BINDING_ARB  0x88EF
 #endif
 
-namespace osg 
+namespace osg
 {
 
 class State;
@@ -226,7 +226,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         inline void bindBuffer();
 
         inline void unbindBuffer()
-        { 
+        {
             _extensions->glBindBuffer(_profile._target,0);
         }
 
@@ -321,9 +321,9 @@ class OSG_EXPORT GLBufferObject : public Referenced
         };
 
         /** Function to call to get the extension of a specified context.
-        * If the Extension object for that context has not yet been created  
+        * If the Extension object for that context has not yet been created
         * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-        * If 'createIfNotInitalized' is true then the Extensions object is 
+        * If 'createIfNotInitalized' is true then the Extensions object is
         * automatically created.  However, in this case the extension object is
         * only created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
@@ -723,7 +723,7 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
         ElementBufferObject(const ElementBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Object(osg,ElementBufferObject);
-        
+
         unsigned int addDrawElements(osg::DrawElements* PrimitiveSet);
         void removeDrawElements(osg::DrawElements* PrimitiveSet);
 
@@ -732,7 +732,7 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
         const DrawElements* getDrawElements(unsigned int i) const;
 
     protected:
-    
+
         virtual ~ElementBufferObject();
 };
 
@@ -756,7 +756,7 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         bool isPBOSupported(unsigned int contextID) const { return _glBufferObjects[contextID]->isPBOSupported(); }
 
     protected:
-    
+
         virtual ~PixelBufferObject();
 };
 
@@ -777,7 +777,7 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         //! Set new size of the buffer object. This will reallocate the memory on the next compile
         inline void setDataSize(unsigned int size) { _profile._size = size; dirty(); }
 
-        //! Get data size of the used buffer 
+        //! Get data size of the used buffer
         inline unsigned int getDataSize() const { return _profile._size; }
 
         //! Compile the buffer (reallocate the memory if buffer is dirty)
@@ -789,7 +789,7 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         //! Bind the buffer in write mode, which means following OpenGL instructions will write data into the buffer (note: GL_PIXEL_PACK_BUFFER_ARB)
         virtual void bindBufferInWriteMode(State& state);
 
-        //! Unbind the buffer 
+        //! Unbind the buffer
         virtual void unbindBuffer(unsigned int contextID) const;
 
         /** Resize any per context GLObject buffers to specified size. */
@@ -814,9 +814,9 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         virtual ~PixelDataBufferObject();
 
         typedef osg::buffered_value<unsigned int> ModeList;
-        
+
         mutable ModeList _mode;
-        
+
 };
 
 class OSG_EXPORT UniformBufferObject : public BufferObject

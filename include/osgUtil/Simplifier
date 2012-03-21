@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -50,7 +50,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         void setSmoothing(bool on) { _smoothing = on; }
         bool getSmoothing() const { return _smoothing; }
-        
+
         class ContinueSimplificationCallback : public osg::Referenced
         {
             public:
@@ -59,16 +59,16 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
                 {
                     return simplifier.continueSimplificationImplementation(nextError, numOriginalPrimitives, numRemainingPrimitives);
                 }
-            
+
             protected:
                 virtual ~ContinueSimplificationCallback() {}
         };
-        
+
         void setContinueSimplificationCallback(ContinueSimplificationCallback* cb) { _continueSimplificationCallback = cb; }
         ContinueSimplificationCallback* getContinueSimplificationCallback() { return _continueSimplificationCallback.get(); }
         const ContinueSimplificationCallback* getContinueSimplificationCallback() const { return _continueSimplificationCallback.get(); }
-        
-        
+
+
         bool continueSimplification(float nextError, unsigned int numOriginalPrimitives, unsigned int numRemainingPrimitives) const
         {
             if (_continueSimplificationCallback.valid()) return _continueSimplificationCallback->continueSimplification(*this, nextError, numOriginalPrimitives, numRemainingPrimitives);
@@ -96,7 +96,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         /** simply the geometry.*/
         void simplify(osg::Geometry& geometry);
-        
+
         typedef std::vector<unsigned int> IndexList; /// a list of point indices
 
         /** simply the geometry, whilst protecting key points from being modified.*/
@@ -104,15 +104,15 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
 
     protected:
-    
+
         double _sampleRatio;
         double _maximumError;
         double _maximumLength;
         bool  _triStrip;
         bool  _smoothing;
-        
+
         osg::ref_ptr<ContinueSimplificationCallback> _continueSimplificationCallback;
-    
+
 };
 
 

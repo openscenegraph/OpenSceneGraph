@@ -41,7 +41,7 @@
 /**************************************************************
  ***** Begin Callback functions for istream block reading *****
  **************************************************************/
- 
+
 // This callback reads some bytes from an istream and copies it
 // to a Quartz buffer (supplied by Apple framework).
 size_t MyProviderGetBytesCallback(void* istream_userdata, void* quartz_buffer, size_t the_count)
@@ -140,7 +140,7 @@ CGImageRef CreateCGImageFromDataStream(std::istream& fin)
         MyProviderRewindCallback,
         MyProviderReleaseInfoCallback
     };
-    
+
     CGDataProviderRef data_provider = CGDataProviderCreateSequential(&fin, &provider_callbacks);
 
 
@@ -153,7 +153,7 @@ CGImageRef CreateCGImageFromDataStream(std::istream& fin)
         MyProviderRewindCallback,
         MyProviderReleaseInfoCallback
     };
-    
+
     CGDataProviderRef data_provider = CGDataProviderCreate(&fin, &provider_callbacks);
 #endif
     // If we had a way of hinting at what the data type is, we could
@@ -169,7 +169,7 @@ CGImageRef CreateCGImageFromDataStream(std::istream& fin)
     }
 
     image_ref = CGImageSourceCreateImageAtIndex(source_ref, 0, NULL);
-    
+
     /* Don't need the SourceRef any more (error or not) */
     CFRelease(source_ref);
 
@@ -197,10 +197,10 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
         OSG_WARN << "CreateCGImageFromFile :: could not create CCFSTring" << std::endl;
         return NULL;
     }
- 
+
     /* Create a CFURL from a CFString */
     the_url = CFURLCreateWithFileSystemPath(
-        NULL, 
+        NULL,
         cf_string,
         kCFURLPOSIXPathStyle,
         false
@@ -208,14 +208,14 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
 
     /* Don't need the CFString any more (error or not) */
     CFRelease(cf_string);
-    
+
     if(!the_url)
     {
         OSG_WARN << "CreateCGImageFromFile :: could not create CFUrl" << std::endl;
         return NULL;
     }
 
-    
+
     source_ref = CGImageSourceCreateWithURL(the_url, NULL);
     /* Don't need the URL any more (error or not) */
     CFRelease(the_url);
@@ -232,7 +232,7 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
     if (!image_ref) {
         OSG_WARN << "CreateCGImageFromFile :: could not get Image" << std::endl;
     }
-    
+
     /* Don't need the SourceRef any more (error or not) */
     CFRelease(source_ref);
 
@@ -258,13 +258,13 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     size_t bytes_per_row = CGImageGetBytesPerRow(image_ref);
 //    size_t bits_per_component = CGImageGetBitsPerComponent(image_ref);
     size_t bits_per_component = 8;
-    
+
     CGImageAlphaInfo alpha_info = CGImageGetAlphaInfo(image_ref);
-    
+
     GLint internal_format;
     GLenum pixel_format;
     GLenum data_type;
-    
+
     void* image_data = calloc(the_width * 4, the_height);
 
     CGColorSpaceRef color_space;
@@ -288,7 +288,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
                 internal_format = GL_RGBA8;
                 pixel_format = GL_BGRA_EXT;
                 data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-                
+
                 bytes_per_row = the_width*4;
 //                color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
                 color_space = CGColorSpaceCreateDeviceRGB();
@@ -297,7 +297,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
                 bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
                 bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
-#endif 
+#endif
             }
             else
             {
@@ -324,13 +324,13 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
             bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
             bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
-#endif       
+#endif
             break;
         }
         //
         // Tatsuhiro Nishioka
         // 16 bpp grayscale (8 bit white and 8 bit alpha) causes invalid argument combination
-        // in CGBitmapContextCreate. 
+        // in CGBitmapContextCreate.
         // I guess it is safer to handle 16 bit grayscale image as 32-bit RGBA image.
         // It works at least on FlightGear
         //
@@ -341,7 +341,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
             internal_format = GL_RGBA8;
             pixel_format = GL_BGRA_EXT;
             data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-            
+
             bytes_per_row = the_width*4;
 //            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
@@ -351,7 +351,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
             bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
             bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
-#endif 
+#endif
             break;
         }
         default:
@@ -362,7 +362,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         }
 
     }
-    
+
     // Sets up a context to be drawn to with image_data as the area to be drawn to
     CGContextRef bitmap_context = CGBitmapContextCreate(
         image_data,
@@ -373,31 +373,31 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         color_space,
         bitmap_info
     );
-    
+
     // Draws the image into the context's image_data
     CGContextDrawImage(bitmap_context, the_rect, image_ref);
 
     CGContextRelease(bitmap_context);
 
-    // 
+    //
     // Reverse the premultiplied alpha for avoiding unexpected darker edges
     // by Tatsuhiro Nishioka (based on SDL's workaround on the similar issue)
     // http://bugzilla.libsdl.org/show_bug.cgi?id=868
-    // 
+    //
     if (bits_per_pixel > 8 && (bitmap_info & kCGBitmapAlphaInfoMask) == kCGImageAlphaPremultipliedFirst) {
         int i, j;
         GLubyte *pixels = (GLubyte *)image_data;
         for (i = the_height * the_width; i--; ) {
-            
+
 #if __BIG_ENDIAN__
             // That value is a temporary one and only needed for endianess conversion
             GLuint *value = (GLuint *)pixels;
-            // 
+            //
             // swap endian of each pixel for avoiding weird colors on ppc macs
             // by Tatsuhiro Nishioka
-            // FIXME: I've tried many combinations of pixel_format, internal_format, and data_type 
+            // FIXME: I've tried many combinations of pixel_format, internal_format, and data_type
             // but none worked well. Therefore I tried endian swapping, which seems working with gif,png,tiff,tga,and psd.
-            // (for grayscaled tga and non-power-of-two tga, I can't guarantee since test images (made with Gimp) 
+            // (for grayscaled tga and non-power-of-two tga, I can't guarantee since test images (made with Gimp)
             // get corrupted on Preview.app ...
             *value = ((*value) >> 24) | (((*value) << 8) & 0x00FF0000) | (((*value) >> 8) & 0x0000FF00) | ((*value) << 24);
 #endif
@@ -419,7 +419,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     //
     data_type = GL_UNSIGNED_BYTE;
     osg::Image* osg_image = new osg::Image;
-    
+
     osg_image->setImage(
         the_width,
         the_height,
@@ -459,7 +459,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
      * least `(width * bitsPerComponent * number of components + 7)/8' bytes.
      */
     size_t target_bytes_per_row;
-     
+
     CGColorSpaceRef color_space;
     CGBitmapInfo bitmap_info;
     /* From what I can figure out so far...
@@ -476,7 +476,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
      * we don't want to touch the data, so again we turn to the vImage framework
      * and invert the data.
      */
-    vImage_Buffer vimage_buffer_in = 
+    vImage_Buffer vimage_buffer_in =
     {
         (void*)osg_image.data(), // need to override const, but we don't modify the data so it's safe
         image_height,
@@ -491,7 +491,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         image_height,
         image_width,
         0 // will fill-in in switch
-    };    
+    };
     vImage_Error vimage_error_flag;
 
     // FIXME: Do I want to use format, type, or internalFormat?
@@ -506,9 +506,9 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             {
                 return NULL;
             }
-            
+
             //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);            
+            out_image_data = malloc(target_bytes_per_row * image_height);
             if(NULL == out_image_data)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
@@ -531,7 +531,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
-            }            
+            }
 
 
             break;
@@ -544,9 +544,9 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             // http://developer.apple.com/qa/qa2001/qa1037.html
             // colorSpace=NULL is for alpha only
             color_space = NULL;
-            
+
             //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);            
+            out_image_data = malloc(target_bytes_per_row * image_height);
             if(NULL == out_image_data)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
@@ -567,7 +567,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 OSG_WARN << "In CreateCGImageFromOSGData for GL_ALPHA, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 return NULL;
-            }            
+            }
 
 
             break;
@@ -590,9 +590,9 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
-            
+
             //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);            
+            out_image_data = malloc(target_bytes_per_row * image_height);
             if(NULL == out_image_data)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
@@ -630,8 +630,8 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
-            }            
-            
+            }
+
             break;
         }
         case GL_RGBA:
@@ -645,7 +645,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 return NULL;
             }
             //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);            
+            out_image_data = malloc(target_bytes_per_row * image_height);
             if(NULL == out_image_data)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
@@ -666,7 +666,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
-            }            
+            }
             break;
         }
         case GL_BGRA:
@@ -677,7 +677,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
                 bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
-#endif 
+#endif
             }
             else
             {
@@ -693,7 +693,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 return NULL;
             }
             //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);            
+            out_image_data = malloc(target_bytes_per_row * image_height);
             if(NULL == out_image_data)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
@@ -714,7 +714,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
-            }            
+            }
             break;
         }
         // FIXME: Handle other cases.
@@ -744,7 +744,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         free(out_image_data);
         return NULL;
     }
-    
+
 
     /* Make an image out of our bitmap; does a cheap vm_copy of the bitmap */
     CGImageRef image_ref = CGBitmapContextCreateImage(bitmap_context);
@@ -781,23 +781,23 @@ CGImageDestinationRef CreateCGImageDestinationFromFile(const char* the_path,  co
     {
         return NULL;
     }
-    
+
     /* Create a CFURL from a CFString */
     the_url = CFURLCreateWithFileSystemPath(
-        NULL, 
+        NULL,
         cf_string,
         kCFURLPOSIXPathStyle,
         false
     );
-    
+
     /* Don't need the CFString any more (error or not) */
     CFRelease(cf_string);
-    
+
     if(!the_url)
     {
         return NULL;
     }
-    
+
     if(the_options)
     {
         std::istringstream iss(the_options->getOptionString());
@@ -805,14 +805,14 @@ CGImageDestinationRef CreateCGImageDestinationFromFile(const char* the_path,  co
         while (iss >> opt)
         {
             // Not handled: The user could do something stupid and specify both PNG and JPEG options.
-            
+
             if(opt=="PNG_COMPRESSION")
             {
                 found_png_option = true;
                 // I don't see an option to set PNG compression levels in the API so this info is unused.
                 int level;
                 iss >> level;
-                                
+
             }
             else if(opt=="JPEG_QUALITY")
             {
@@ -826,7 +826,7 @@ CGImageDestinationRef CreateCGImageDestinationFromFile(const char* the_path,  co
             }
         }
     }
-    
+
 
     CFStringRef path_extension = CFURLCopyPathExtension(the_url);
     if(NULL == path_extension)
@@ -858,15 +858,15 @@ CGImageDestinationRef CreateCGImageDestinationFromFile(const char* the_path,  co
         CFRelease(path_extension);
     }
 
-                                                      
+
     dest_ref =  CGImageDestinationCreateWithURL(
-        the_url, 
-        uti_type, 
+        the_url,
+        uti_type,
         1, // image file will contain only one image
         NULL
     );
 
-    
+
     CFRelease(uti_type);
     CFRelease(the_url);
 
@@ -878,20 +878,20 @@ CGImageDestinationRef CreateCGImageDestinationFromFile(const char* the_path,  co
         CFStringRef the_keys[1];
         CFNumberRef the_values[1];
         CFDictionaryRef the_dict;
-                
+
         the_keys[0] = kCGImageDestinationLossyCompressionQuality;
         the_values[0] = CFNumberCreate(
             NULL,
             kCFNumberFloat32Type,
             &compression_quality
         );
-        
+
         the_dict = CFDictionaryCreate(NULL, (const void**)&the_keys, (const void**)&the_values, 1, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
         CFRelease(the_values[0]);
 
         // Now that we have the dict, actually set the property.
         CGImageDestinationSetProperties(dest_ref, the_dict);
-        
+
         CFRelease(the_dict);
     }
 
@@ -908,13 +908,13 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
     bool found_png_option = false;
     bool found_jpeg_option = false;
     float compression_quality = 1.0f;
-    
+
     CGDataConsumerCallbacks consumer_callbacks =
     {
         MyConsumerPutBytesCallback,
         MyConsumerReleaseInfoCallback
     };
-    
+
     CGDataConsumerRef data_consumer = CGDataConsumerCreate(&fout, &consumer_callbacks);
 
     if(the_options)
@@ -924,14 +924,14 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
         while (iss >> opt)
         {
             // Not handled: The user could do something stupid and specify both PNG and JPEG options.
-            
+
             if(opt=="PNG_COMPRESSION")
             {
                 found_png_option = true;
                 // I don't see an option to set PNG compression levels in the API so this info is unused.
                 int level;
                 iss >> level;
-                
+
             }
             else if(opt=="JPEG_QUALITY")
             {
@@ -945,7 +945,7 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
             }
         }
     }
-    
+
 
     if(found_jpeg_option)
     {
@@ -963,7 +963,7 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
             kUTTypeImage // "public.image"
         );
     }
-    
+
 
     // If we had a way of hinting at what the data type is, we could
     // pass this hint in the second parameter.
@@ -973,11 +973,11 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
         1, // image file will contain only one image
         NULL
     );
-    
+
     CGDataConsumerRelease(data_consumer);
     CFRelease(uti_type);
-    
-    
+
+
     // Not handled: The user could do something stupid and specify both PNG and JPEG options.
     if(found_jpeg_option)
     {
@@ -985,23 +985,23 @@ CGImageDestinationRef CreateCGImageDestinationFromDataStream(std::ostream& fout,
         CFStringRef the_keys[1];
         CFNumberRef the_values[1];
         CFDictionaryRef the_dict;
-        
+
         the_keys[0] = kCGImageDestinationLossyCompressionQuality;
         the_values[0] = CFNumberCreate(
                                        NULL,
                                        kCFNumberFloat32Type,
                                        &compression_quality
                                        );
-        
+
         the_dict = CFDictionaryCreate(NULL, (const void**)&the_keys, (const void**)&the_values, 1, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
         CFRelease(the_values[0]);
-        
+
         // Now that we have the dict, actually set the property.
         CGImageDestinationSetProperties(dest_ref, the_dict);
-        
+
         CFRelease(the_dict);
     }
-    
+
     return dest_ref;
 }
 /**************************************************************
@@ -1017,12 +1017,12 @@ public:
     ReaderWriterImageIO()
     {
 
-         supportsExtension("jpg",   "jpg image file"); 
+         supportsExtension("jpg",   "jpg image file");
          supportsExtension("jpeg",  "jpeg image file");
          supportsExtension("jpe",   "jpe image file");
          supportsExtension("jp2",   "jp2 image file");
-         supportsExtension("tiff",  "tiff image file"); 
-         supportsExtension("tif",   "tif image file");               
+         supportsExtension("tiff",  "tiff image file");
+         supportsExtension("tif",   "tif image file");
          supportsExtension("gif",   "gif image file");
          supportsExtension("png",   "png image file");
          supportsExtension("pict",  "pict image file");
@@ -1035,14 +1035,14 @@ public:
          supportsExtension("tga",   "tga image file");
          supportsExtension("targa", "targa image file");
          supportsExtension("psd",   "psd image file");
-         
+
          supportsExtension("pdf",   "pdf image file");
          supportsExtension("eps",   "eps image file");
          supportsExtension("epi",   "epi image file");
          supportsExtension("epsf",  "epsf image file");
          supportsExtension("epsi",  "epsi image file");
          supportsExtension("ps",    "postscript image file");
-         
+
          supportsExtension("dng",   "dng image file");
          supportsExtension("cr2",   "cr2 image file");
          supportsExtension("crw",   "crw image file");
@@ -1083,12 +1083,12 @@ public:
        // Apple's UTI guide:
        // http://developer.apple.com/documentation/Carbon/Conceptual/understanding_utis/utilist/chapter_4_section_1.html
       return
-         osgDB::equalCaseInsensitive(extension,"jpg") || 
+         osgDB::equalCaseInsensitive(extension,"jpg") ||
          osgDB::equalCaseInsensitive(extension,"jpeg") ||
          osgDB::equalCaseInsensitive(extension,"jpe") ||
          osgDB::equalCaseInsensitive(extension,"jp2") ||
-         osgDB::equalCaseInsensitive(extension,"tiff") || 
-         osgDB::equalCaseInsensitive(extension,"tif") ||               
+         osgDB::equalCaseInsensitive(extension,"tiff") ||
+         osgDB::equalCaseInsensitive(extension,"tif") ||
          osgDB::equalCaseInsensitive(extension,"gif") ||
          osgDB::equalCaseInsensitive(extension,"png") ||
          osgDB::equalCaseInsensitive(extension,"pict") ||
@@ -1101,14 +1101,14 @@ public:
          osgDB::equalCaseInsensitive(extension,"tga") ||
          osgDB::equalCaseInsensitive(extension,"targa") ||
          osgDB::equalCaseInsensitive(extension,"psd") ||
-         
+
          osgDB::equalCaseInsensitive(extension,"pdf") ||
          osgDB::equalCaseInsensitive(extension,"eps") ||
          osgDB::equalCaseInsensitive(extension,"epi") ||
          osgDB::equalCaseInsensitive(extension,"epsf") ||
          osgDB::equalCaseInsensitive(extension,"epsi") ||
          osgDB::equalCaseInsensitive(extension,"ps") ||
-         
+
          osgDB::equalCaseInsensitive(extension,"dng") ||
          osgDB::equalCaseInsensitive(extension,"cr2") ||
          osgDB::equalCaseInsensitive(extension,"crw") ||
@@ -1135,7 +1135,7 @@ public:
    }
 
 
-    
+
     ReadResult readImageStream(std::istream& fin) const
     {
         // Call ImageIO to load the image.
@@ -1144,7 +1144,7 @@ public:
 
         // Create an osg::Image from the CGImageRef.
         osg::Image* osg_image = CreateOSGImageFromCGImage(cg_image_ref);
-    
+
         CFRelease(cg_image_ref);
         return osg_image;
     }
@@ -1154,18 +1154,18 @@ public:
         ReadResult read_result = readImageStream(fin);
         return read_result;
     }
-    
+
     ReadResult readImageFile(const std::string& file_name) const
     {
         OSG_INFO << "imageio readImageFile: " << file_name << std::endl;
-        
+
         // Call ImageIO to load the image.
         CGImageRef cg_image_ref = CreateCGImageFromFile(file_name.c_str());
         if (NULL == cg_image_ref) return ReadResult::FILE_NOT_FOUND;
 
         // Create an osg::Image from the CGImageRef.
         osg::Image* osg_image = CreateOSGImageFromCGImage(cg_image_ref);
-    
+
         CFRelease(cg_image_ref);
 
         return osg_image;
@@ -1182,7 +1182,7 @@ public:
 #if 1
         ReadResult read_result = readImageFile(full_file_name);
 #else
-        // Only here to help test istream backend. The file version is better because 
+        // Only here to help test istream backend. The file version is better because
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
         osgDB::ifstream istream(full_file_name.c_str(), std::ios::in | std::ios::binary);
         if(!istream) return ReadResult::FILE_NOT_HANDLED;
@@ -1208,14 +1208,14 @@ public:
 
         CGImageDestinationRef cg_dest_ref = CreateCGImageDestinationFromDataStream(fout, the_options);
         if (NULL == cg_dest_ref) return WriteResult::ERROR_IN_WRITING_FILE;
-        
+
         CGImageRef cg_image_ref = CreateCGImageFromOSGData(osg_image);
         if(NULL == cg_image_ref)
         {
             CFRelease(cg_dest_ref);
             return WriteResult::ERROR_IN_WRITING_FILE;
         }
-        
+
         CGImageDestinationAddImage(cg_dest_ref, cg_image_ref, NULL);
         if(CGImageDestinationFinalize(cg_dest_ref))
         {
@@ -1225,13 +1225,13 @@ public:
         {
             ret_val = WriteResult::ERROR_IN_WRITING_FILE;
         }
-        
+
         CFRelease(cg_image_ref);
         CFRelease(cg_dest_ref);
-        
-        return WriteResult::FILE_SAVED;    
+
+        return WriteResult::FILE_SAVED;
     }
-        
+
     virtual WriteResult writeImage(const osg::Image& osg_image, std::ostream& fout, const osgDB::ReaderWriter::Options* the_options) const
     {
         WriteResult write_result = writeImageStream(osg_image, fout, the_options);
@@ -1267,10 +1267,10 @@ public:
         {
             ret_val = WriteResult::ERROR_IN_WRITING_FILE;
         }
-        
+
         CFRelease(cg_image_ref);
         CFRelease(cg_dest_ref);
-        
+
         return WriteResult::FILE_SAVED;
     }
 
@@ -1291,12 +1291,12 @@ public:
         full_file_name = file_name;
         return writeImageFile(osg_image, full_file_name, the_options);
 #else
-        // Only here to help test ostream backend. The file version is better because 
+        // Only here to help test ostream backend. The file version is better because
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
         osgDB::ofstream fout(file_name.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
         return writeImage(osg_image, fout, the_options);
-#endif        
+#endif
     }
 
 };

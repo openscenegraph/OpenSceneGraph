@@ -1,11 +1,11 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2008 Zebra Imaging
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -249,7 +249,7 @@ int Uniform::compareData(const Uniform& rhs) const
         return memcmp( _uintArray->getDataPointer(), rhs._uintArray->getDataPointer(),
             _uintArray->getTotalDataSize() );
     }
-    
+
     return -1;  // how got here?
 }
 
@@ -1496,13 +1496,13 @@ void Uniform::setUpdateCallback(Callback* uc)
     OSG_INFO<<"Uniform::Setting Update callbacks"<<std::endl;
 
     if (_updateCallback==uc) return;
-    
+
     int delta = 0;
     if (_updateCallback.valid()) --delta;
     if (uc) ++delta;
 
     _updateCallback = uc;
-    
+
     if (delta!=0)
     {
         OSG_INFO<<"Going to set Uniform parents"<<std::endl;
@@ -1522,19 +1522,19 @@ void Uniform::setEventCallback(Callback* ec)
     OSG_INFO<<"Uniform::Setting Event callbacks"<<std::endl;
 
     if (_eventCallback==ec) return;
-    
+
     int delta = 0;
     if (_eventCallback.valid()) --delta;
     if (ec) ++delta;
 
     _eventCallback = ec;
-    
+
     if (delta!=0)
     {
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
-        {            
+        {
             (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
         }
     }

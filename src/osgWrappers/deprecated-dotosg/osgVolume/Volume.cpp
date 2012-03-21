@@ -50,7 +50,7 @@ bool Volume_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     if (volume.getVolumeTechniquePrototype())
     {
         fw.writeObject(*volume.getVolumeTechniquePrototype());
-    }    
+    }
 
     return true;
 }

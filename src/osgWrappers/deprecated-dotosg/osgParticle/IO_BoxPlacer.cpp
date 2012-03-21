@@ -57,7 +57,7 @@ bool BoxPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgParticle::BoxPlacer &myobj = static_cast<const osgParticle::BoxPlacer &>(obj);
 
     osgParticle::rangef r;
-    
+
     r = myobj.getXRange();
     fw.indent() << "xRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getYRange();

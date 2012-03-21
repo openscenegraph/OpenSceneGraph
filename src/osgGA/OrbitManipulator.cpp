@@ -151,7 +151,7 @@ void OrbitManipulator::getTransformation( osg::Vec3d& eye, osg::Vec3d& center, o
 /** Sets the transformation by heading. Heading is given as an angle in radians giving a azimuth in xy plane.
     Its meaning is similar to longitude used in cartography and navigation.
     Positive number is going to the east direction.*/
-void OrbitManipulator::setHeading( double azimuth ) 
+void OrbitManipulator::setHeading( double azimuth )
 {
     CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
     Vec3d localUp = getUpVector( coordinateFrame );

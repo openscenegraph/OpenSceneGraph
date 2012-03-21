@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -28,7 +28,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
     public:
 
         Terrain();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Terrain(const Terrain&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -78,13 +78,13 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
 
         /** Get the const TerrainTile for a given TileID.*/
         const TerrainTile* getTile(const TileID& tileID) const;
-        
+
         /** Set the TerrainTechnique prototype from which TerrainTiles can clone the techniques from.*/
         void setTerrainTechniquePrototype(TerrainTechnique* technique) { _terrainTechnique = technique; }
 
         /** Get the TerrainTechnique prototype */
         TerrainTechnique* getTerrainTechniquePrototype() { return _terrainTechnique.get(); }
-        
+
         /** Get the const TerrainTechnique protype*/
         const TerrainTechnique* getTerrainTechniquePrototype() const { return _terrainTechnique.get(); }
 
@@ -94,9 +94,9 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
     protected:
 
         virtual ~Terrain();
-        
+
         friend class TerrainTile;
-        
+
         void dirtyRegisteredTiles(int dirtyMask = TerrainTile::ALL_DIRTY);
 
         void registerTerrainTile(TerrainTile* tile);

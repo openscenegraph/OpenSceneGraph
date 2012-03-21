@@ -68,7 +68,7 @@ namespace lwosg
 	protected:
 		inline void dirty_normal() { last_used_points_ = 0; }
 
-	private:		
+	private:
 		Index_list indices_;
 		Duplication_map dup_vertices_;
 

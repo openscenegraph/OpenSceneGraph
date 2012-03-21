@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
@@ -53,7 +53,7 @@ namespace osgParticle
     */
     class OSGPARTICLE_EXPORT ParticleSystem: public osg::Drawable {
     public:
-    
+
         enum Alignment {
             BILLBOARD,
             FIXED
@@ -63,25 +63,25 @@ namespace osgParticle
         ParticleSystem(const ParticleSystem& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, ParticleSystem);
-        
+
         /// Get the alignment type of particles.
         inline Alignment getParticleAlignment() const;
-        
+
         /// Set the alignment type of particles.
         inline void setParticleAlignment(Alignment a);
-        
+
         /// Get the X-axis alignment vector.
         inline const osg::Vec3& getAlignVectorX() const;
-        
+
         /// Set the X-axis alignment vector.
         inline void setAlignVectorX(const osg::Vec3& v);
 
         /// Get the Y-axis alignment vector.
         inline const osg::Vec3& getAlignVectorY() const;
-        
+
         /// Set the Y-axis alignment vector.
         inline void setAlignVectorY(const osg::Vec3& v);
-        
+
         /// Set the alignment vectors.
         inline void setAlignVectors(const osg::Vec3& X, const osg::Vec3& Y);
 
@@ -102,8 +102,8 @@ namespace osgParticle
 
 
         /// Get the default bounding box
-        inline const osg::BoundingBox& getDefaultBoundingBox() const;        
-        
+        inline const osg::BoundingBox& getDefaultBoundingBox() const;
+
         /**    Set the default bounding box.
             The default bounding box is used when a real bounding box cannot be computed, for example
             because no particles has been updated yet.
@@ -112,7 +112,7 @@ namespace osgParticle
 
         /// Return true if we use vertex arrays for rendering particles.
         bool getUseVertexArray() const { return _useVertexArray; }
-        
+
         /** Set to use vertex arrays for rendering particles.
             Lots of variables will be omitted: particles' shape, alive or not, visibility distance, and so on,
             so the rendering result is not as good as we wish (although it's fast than using glBegin/glEnd).
@@ -120,19 +120,19 @@ namespace osgParticle
             This method is called automatically by <CODE>setDefaultAttributesUsingShaders()</CODE>.
         */
         void setUseVertexArray(bool v) { _useVertexArray = v; }
-        
+
         /// Return true if shaders are required.
         bool getUseShaders() const { return _useShaders; }
-        
+
         /** Set to use GLSL shaders for rendering particles.
             Particles' parameters will be used as shader attribute arrays, and necessary variables, including
             the visibility distance, texture, etc, will be used and updated as uniforms.
         */
         void setUseShaders(bool v) { _useShaders = v; _dirty_uniforms = true; }
-        
+
         /// Get the double pass rendering flag.
         inline bool getDoublePassRendering() const;
-        
+
         /** Set the double pass rendering flag.
             Double pass rendering avoids overdraw problems between particle systems
             and other opaque objects. If you can render all the particle systems after
@@ -141,11 +141,11 @@ namespace osgParticle
             system will fall into a transparent bin.
         */
         inline void setDoublePassRendering(bool v);
-        
+
         /// Return true if the particle system is frozen.
         bool getFrozen() const { return _frozen; }
         inline bool isFrozen() const;
-        
+
         /**    Set or reset the <I>frozen</I> state.
             When the particle system is frozen, emitters and programs won't do anything on it.
         */
@@ -153,86 +153,86 @@ namespace osgParticle
 
         /// Get the number of allocated particles (alive + dead).
         inline int numParticles() const;
-        
+
         /// Get the number of dead particles.
         inline int numDeadParticles() const;
 
-        /// Get whether all particles are dead        
+        /// Get whether all particles are dead
         inline bool areAllParticlesDead() const { return numDeadParticles()==numParticles(); }
-        
+
         /// Get a pointer to the i-th particle.
         inline Particle* getParticle(int i);
-        
+
         /// Get a const pointer to the i-th particle.
         inline const Particle* getParticle(int i) const;
-        
+
         /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
         inline virtual Particle* createParticle(const Particle* ptemplate);
-        
+
         /// Destroy the i-th particle.
         inline virtual void destroyParticle(int i);
-        
+
         /// Reuse the i-th particle.
         inline virtual void reuseParticle(int i) { _deadparts.push(&(_particles[i])); }
 
         /// Get the last frame number.
         inline unsigned int getLastFrameNumber() const;
-        
+
         /// Get the unique delta time for emitters and updaters to use
         inline double& getDeltaTime( double currentTime );
 
         /// Get a reference to the default particle template.
         inline Particle& getDefaultParticleTemplate();
-        
+
         /// Get a const reference to the default particle template.
         inline const Particle& getDefaultParticleTemplate() const;
 
         /// Set the default particle template (particle is copied).
         inline void setDefaultParticleTemplate(const Particle& p);
-        
+
         /// Get whether the particle system can freeze when culled
         inline bool getFreezeOnCull() const;
-        
+
         /// Set whether the particle system can freeze when culled (default is true)
         inline void setFreezeOnCull(bool v);
-        
+
         /** A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
             If <CODE>texturefile</CODE> is empty, then texturing is turned off.
         */
         void setDefaultAttributes(const std::string& texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0);
-        
+
         /** A useful method to set the most common <CODE>StateAttribute</CODE> and use GLSL shaders to draw particles.
             At present, when enabling shaders in the particle system, user-defined shapes will not be usable.
             If <CODE>texturefile</CODE> is empty, then texturing is turned off.
         */
         void setDefaultAttributesUsingShaders(const std::string& texturefile = "", bool emissive_particles = true, int texture_unit = 0);
-        
+
         /// (<B>EXPERIMENTAL</B>) Get the level of detail.
         inline int getLevelOfDetail() const;
-        
+
         /** (<B>EXPERIMENTAL</B>) Set the level of detail. The total number of particles is divided by the detail value to
             get the actual number of particles to be drawn. This value must be greater than zero.
         */
         inline void setLevelOfDetail(int v);
-        
+
         enum SortMode
         {
             NO_SORT,
             SORT_FRONT_TO_BACK,
             SORT_BACK_TO_FRONT
         };
-        
+
         /// Get the sort mode.
         inline SortMode getSortMode() const;
-        
+
         /** Set the sort mode. It will force resorting the particle list by the Z direction of the view coordinates.
             This can be used for the purpose of transparent rendering or <CODE>setVisibilityDistance()</CODE>.
         */
         inline void setSortMode(SortMode mode);
-        
+
         /// Get the visibility distance.
         inline double getVisibilityDistance() const;
-        
+
         /** Set the visibility distance which allows the particles to be rendered only when depth is inside the distance.
             When using shaders, it can work well directly; otherwise the sort mode should also be set to pre-compute depth.
         */
@@ -244,7 +244,7 @@ namespace osgParticle
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
         virtual osg::BoundingBox computeBound() const;
-        
+
 #ifdef OSGPARTICLE_USE_ReadWriteMutex
         typedef OpenThreads::ReadWriteMutex ReadWriterMutex;
         typedef OpenThreads::ScopedReadLock ScopedReadLock;
@@ -272,18 +272,18 @@ namespace osgParticle
 
         Particle_vector _particles;
         Death_stack _deadparts;
-        
+
         osg::BoundingBox _def_bbox;
-        
+
         Alignment _alignment;
         osg::Vec3 _align_X_axis;
         osg::Vec3 _align_Y_axis;
         ParticleScaleReferenceFrame _particleScaleReferenceFrame;
-        
+
         bool _useVertexArray;
         bool _useShaders;
         bool _dirty_uniforms;
-        
+
         bool _doublepass;
         bool _frozen;
 
@@ -297,36 +297,36 @@ namespace osgParticle
         mutable unsigned int _last_frame;
         mutable bool _dirty_dt;
         bool _freeze_on_cull;
-        
+
         double _t0;
         double _dt;
-        
+
         int _detail;
         SortMode _sortMode;
         double _visibilityDistance;
-        
+
         mutable int _draw_count;
-        
+
         mutable ReadWriterMutex _readWriteMutex;
     };
-    
+
     // INLINE FUNCTIONS
-    
+
     inline ParticleSystem::Alignment ParticleSystem::getParticleAlignment() const
     {
         return _alignment;
     }
-    
+
     inline void ParticleSystem::setParticleAlignment(Alignment a)
     {
         _alignment = a;
     }
-    
+
     inline const osg::Vec3& ParticleSystem::getAlignVectorX() const
     {
         return _align_X_axis;
     }
-    
+
     inline void ParticleSystem::setAlignVectorX(const osg::Vec3& v)
     {
         _align_X_axis = v;
@@ -336,12 +336,12 @@ namespace osgParticle
     {
         return _align_Y_axis;
     }
-    
+
     inline void ParticleSystem::setAlignVectorY(const osg::Vec3& v)
     {
         _align_Y_axis = v;
     }
-    
+
     inline void ParticleSystem::setAlignVectors(const osg::Vec3& X, const osg::Vec3& Y)
     {
         _align_X_axis = X;
@@ -352,17 +352,17 @@ namespace osgParticle
     {
         return _frozen;
     }
-    
+
     inline void ParticleSystem::setFrozen(bool v)
     {
         _frozen = v;
     }
-    
+
     inline const osg::BoundingBox& ParticleSystem::getDefaultBoundingBox() const
     {
         return _def_bbox;
     }
-    
+
     inline void ParticleSystem::setDefaultBoundingBox(const osg::BoundingBox& bbox)
     {
         _def_bbox = bbox;
@@ -402,19 +402,19 @@ namespace osgParticle
     {
         _particles[i].kill();
     }
-    
+
     inline unsigned int ParticleSystem::getLastFrameNumber() const
     {
         return _last_frame;
     }
-    
+
     inline double& ParticleSystem::getDeltaTime( double currentTime )
     {
         if ( _dirty_dt )
         {
             _dt = currentTime - _t0;
             if ( _dt<0.0 ) _dt = 0.0;
-            
+
             _t0 = currentTime;
             _dirty_dt = false;
         }
@@ -435,7 +435,7 @@ namespace osgParticle
             if (p.y() + r > _bmax.y()) _bmax.y() = p.y() + r;
             if (p.z() + r > _bmax.z()) _bmax.z() = p.z() + r;
         }
-        if (!_bounds_computed) 
+        if (!_bounds_computed)
             _bounds_computed = true;
     }
 
@@ -453,51 +453,51 @@ namespace osgParticle
     {
         _def_ptemp = p;
     }
-    
+
     inline bool ParticleSystem::getFreezeOnCull() const
     {
         return _freeze_on_cull;
     }
-    
+
     inline void ParticleSystem::setFreezeOnCull(bool v)
     {
         _freeze_on_cull = v;
     }
-    
+
     inline int ParticleSystem::getLevelOfDetail() const
     {
         return _detail;
     }
-    
+
     inline void ParticleSystem::setLevelOfDetail(int v)
     {
         if (v < 1) v = 1;
         _detail = v;
     }
-    
+
     inline ParticleSystem::SortMode ParticleSystem::getSortMode() const
     {
         return _sortMode;
     }
-    
+
     inline void ParticleSystem::setSortMode(SortMode mode)
     {
         _sortMode = mode;
     }
-    
+
     inline double ParticleSystem::getVisibilityDistance() const
     {
         return _visibilityDistance;
     }
-    
+
     inline void ParticleSystem::setVisibilityDistance(double distance)
     {
         _visibilityDistance = distance;
         if (_useShaders) _dirty_uniforms = true;
     }
-    
-    // I'm not sure this function should be inlined... 
-    
+
+    // I'm not sure this function should be inlined...
+
     inline Particle* ParticleSystem::createParticle(const Particle* ptemplate)
     {
         // is there any dead particle?

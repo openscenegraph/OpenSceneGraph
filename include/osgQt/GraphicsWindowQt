@@ -97,10 +97,10 @@ protected:
         {
             _deferredEventQueue.enqueue(eventType);
             _eventCompressor.insert(eventType);
-        }    
+        }
     }
     void processDeferredEvents();
-    
+
     friend class GraphicsWindowQt;
     GraphicsWindowQt* _gw;
 
@@ -130,7 +130,7 @@ public:
     inline GLWidget* getGraphWidget() { return _widget; }
     /// deprecated
     inline const GLWidget* getGraphWidget() const { return _widget; }
-    
+
     struct WindowData : public osg::Referenced
     {
         WindowData( GLWidget* widget = NULL, QWidget* parent = NULL ): _widget(widget), _parent(parent) {}
@@ -164,7 +164,7 @@ public:
     virtual bool releaseContextImplementation();
     virtual void swapBuffersImplementation();
     virtual void runOperations();
-    
+
     virtual void requestWarpPointer( float x, float y );
 
 protected:

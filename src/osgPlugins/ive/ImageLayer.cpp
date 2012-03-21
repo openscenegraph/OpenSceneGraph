@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -49,7 +49,7 @@ void ImageLayer::read(DataInputStream* in)
     int id = in->peekInt();
     if (id != IVEIMAGELAYER)
         in_THROW_EXCEPTION("ImageLayer::read(): Expected ImageLayer identification.");
-    
+
     // Read Layer's identification.
     id = in->readInt();
 
@@ -61,12 +61,12 @@ void ImageLayer::read(DataInputStream* in)
         in_THROW_EXCEPTION("ImageLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
 
-    bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ? 
+    bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ?
         osgTerrain::TerrainTile::getTileLoadedCallback()->deferExternalLayerLoading() : false;
 
     // Should we read image data from stream
     IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
-    
+
     if (includeImg==IMAGE_REFERENCE_FILE && deferExternalLayerLoading)
     {
         setFileName(in->readString());

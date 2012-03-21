@@ -15,7 +15,7 @@ static bool readValues( osgDB::InputStream& is, osgSim::MultiSwitch& node )
     {
         is >> osgDB::PROPERTY("SwitchSet");
         unsigned int valueSize = is.readSize(); is >> osgDB::BEGIN_BRACKET;
-        
+
         osgSim::MultiSwitch::ValueList values;
         for ( unsigned int j=0; j<valueSize; ++j )
         {

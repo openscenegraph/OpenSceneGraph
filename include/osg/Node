@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -59,7 +59,7 @@ typedef std::vector< Matrix > MatrixList;
         virtual const char* className() const { return #name; } \
         virtual const char* libraryName() const { return #library; } \
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } } \
-        
+
 
 /** Base class for all internal nodes in the scene graph.
     Provides interface for most common node operations (Composite Pattern).
@@ -69,7 +69,7 @@ class OSG_EXPORT Node : public Object
     public:
 
         /** Construct a node.
-            Initialize the parent list to empty, node name to "" and 
+            Initialize the parent list to empty, node name to "" and
             bounding sphere dirty flag to true.*/
         Node();
 
@@ -145,7 +145,7 @@ class OSG_EXPORT Node : public Object
         /** Traverse upwards : calls parents' accept method with NodeVisitor.*/
         virtual void ascend(NodeVisitor& nv);
         /** Traverse downwards : calls children's accept method with NodeVisitor.*/
-        virtual void traverse(NodeVisitor& /*nv*/) {}       
+        virtual void traverse(NodeVisitor& /*nv*/) {}
 
         /** A vector of osg::Group pointers which is used to store the parent(s) of node.*/
         typedef std::vector<Group*> ParentList;
@@ -153,7 +153,7 @@ class OSG_EXPORT Node : public Object
         /** Get the parent list of node. */
         inline const ParentList& getParents() const { return _parents; }
 
-        /** Get the a copy of parent list of node. A copy is returned to 
+        /** Get the a copy of parent list of node. A copy is returned to
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
@@ -179,7 +179,7 @@ class OSG_EXPORT Node : public Object
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
         MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
-        
+
 
         /** Set update node callback, called during update traversal. */
         void setUpdateCallback(NodeCallback* nc);
@@ -285,7 +285,7 @@ class OSG_EXPORT Node : public Object
         /** Get the number of Children of this node which are or have OccluderNode's.*/
         inline unsigned int getNumChildrenWithOccluderNodes() const { return _numChildrenWithOccluderNodes; }
 
-        
+
         /** return true if this node is an OccluderNode or the subgraph below this node are OccluderNodes.*/
         bool containsOccluderNodes() const;
 
@@ -353,7 +353,7 @@ class OSG_EXPORT Node : public Object
 
         /** Add a description string to the node.*/
         void addDescription(const std::string& desc);
-        
+
 
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         void setInitialBound(const osg::BoundingSphere& bsphere) { _initialBound = bsphere; dirtyBound(); }
@@ -372,11 +372,11 @@ class OSG_EXPORT Node : public Object
             if(!_boundingSphereComputed)
             {
                 _boundingSphere = _initialBound;
-                if (_computeBoundCallback.valid()) 
+                if (_computeBoundCallback.valid())
                     _boundingSphere.expandBy(_computeBoundCallback->computeBound(*this));
                 else
                     _boundingSphere.expandBy(computeBound());
-                    
+
                 _boundingSphereComputed = true;
             }
             return _boundingSphere;
@@ -458,10 +458,10 @@ class OSG_EXPORT Node : public Object
         ref_ptr<NodeCallback> _cullCallback;
 
         bool _cullingActive;
-        unsigned int _numChildrenWithCullingDisabled;        
+        unsigned int _numChildrenWithCullingDisabled;
         void setNumChildrenWithCullingDisabled(unsigned int num);
 
-        unsigned int _numChildrenWithOccluderNodes;        
+        unsigned int _numChildrenWithOccluderNodes;
         void setNumChildrenWithOccluderNodes(unsigned int num);
 
         NodeMask _nodeMask;

@@ -30,7 +30,7 @@ bool LightSource_readLocalData(Object& obj, Input& fr)
     if (fr[0].matchWord("referenceFrame"))
     {
         bool cullingActiveBefore = lightsource.getCullingActive();
-    
+
         if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE"))
         {
             lightsource.setReferenceFrame(LightSource::ABSOLUTE_RF);
@@ -43,7 +43,7 @@ bool LightSource_readLocalData(Object& obj, Input& fr)
             fr += 2;
             iteratorAdvanced = true;
         }
-        
+
         // if culling wasn't before reset it to off.
         if (!cullingActiveBefore && lightsource.getCullingActive())
         {

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -218,7 +218,7 @@ protected:
         material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular,alpha));
         material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(emissive,alpha));
         material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
-        
+
         MaterialPool* mp = document.getOrCreateMaterialPool();
         (*mp)[index] = material;
     }
@@ -257,14 +257,14 @@ protected:
             /*uint32 flags =*/ in.readUInt32();
             std::string name = in.readString(12);
             in.forward(4*28);
-            
+
             osg::Material* material = new osg::Material;
             material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(ambient,alpha));
             material->setDiffuse (osg::Material::FRONT_AND_BACK,osg::Vec4(diffuse,alpha));
             material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular,alpha));
             material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(emissive,alpha));
             material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
-            
+
             MaterialPool* mp = document.getOrCreateMaterialPool();
             (*mp)[i] = material;
         }
@@ -283,7 +283,7 @@ public:
     TexturePalette() {}
 
     META_Record(TexturePalette)
-    
+
 protected:
 
     virtual ~TexturePalette() {}
@@ -557,7 +557,7 @@ public:
 
     META_Record(LightSourcePalette)
 
-    enum LightType 
+    enum LightType
     {
         INFINITE_LIGHT = 0,
         LOCAL_LIGHT = 1,
@@ -655,9 +655,9 @@ protected:
         appearance->materialCode = in.readInt16();
         appearance->featureID = in.readInt16();
 
-        int32 backColorIndex = in.readInt32();        
-        appearance->backColor = document.getColorPool() ? 
-                            document.getColorPool()->getColor(backColorIndex) : 
+        int32 backColorIndex = in.readInt32();
+        appearance->backColor = document.getColorPool() ?
+                            document.getColorPool()->getColor(backColorIndex) :
                             osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         appearance->displayMode = in.readInt32();
@@ -693,14 +693,14 @@ protected:
         appearance->fadeOutDuration = in.readFloat32();
         appearance->LODRangeRatio = in.readFloat32();
         appearance->LODScale = in.readFloat32();
-          
+
         if(document.version() > VERSION_15_8)
             appearance->texturePatternIndex = in.readInt16(-1);
         else
            appearance->texturePatternIndex = -1;
- 
+
         // The final short is reserved; don't bother reading it.
- 
+
         // Add to pool
         LightPointAppearancePool* lpaPool = document.getOrCreateLightPointAppearancePool();
         (*lpaPool)[appearance->index] = appearance.get();

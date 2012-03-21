@@ -546,12 +546,12 @@ static bool bmp_save(const osg::Image& img, std::ostream& fout)
 class ReaderWriterBMP : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterBMP()
         {
             supportsExtension("bmp","BMP Image format");
         }
-    
+
         const char* className() const { return "BMP Image Reader"; }
 
 
@@ -615,7 +615,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             int internalFormat;
 
             unsigned char *imageData = bmp_load(fin, s, t, internalFormat);
-            if (imageData == 0) return ReadResult::ERROR_IN_READING_FILE; 
+            if (imageData == 0) return ReadResult::ERROR_IN_READING_FILE;
 
             unsigned int pixelFormat;
             switch (internalFormat)

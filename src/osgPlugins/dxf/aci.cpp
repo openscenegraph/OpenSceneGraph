@@ -1,18 +1,18 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
 #include "aci.h"
 
-double aci::table[256*3] = 
+double aci::table[256*3] =
 {
   /*   dummy   */  0,0,0,
   /*   1   */  1,0,0,

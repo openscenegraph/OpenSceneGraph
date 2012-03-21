@@ -44,18 +44,18 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
         // post-May 2006 format (OSG versions > 1.0)
 
         ++fr;
-        
+
         if (fr.matchSequence("unsigned int"))
         {
             uniform.setType( Uniform::getTypeId( "unsigned int" ) );
             fr += 2;
         }
         else
-        {    
+        {
             uniform.setType( Uniform::getTypeId( fr[0].getStr() ) );
             ++fr;
         }
-        
+
         unsigned int numElements;
         fr[0].getUInt(numElements);
         uniform.setNumElements( numElements );
@@ -83,7 +83,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             case(osg::Uniform::FLOAT):
             {
                 float value;
-                if (fr[0].getFloat(value)) 
+                if (fr[0].getFloat(value))
                 {
                     uniform.set(value);
                     fr+=1;
@@ -94,7 +94,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             case(osg::Uniform::FLOAT_VEC2):
             {
                 osg::Vec2 value;
-                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1])) 
+                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]))
                 {
                     uniform.set(value);
                     fr+=2;
@@ -105,7 +105,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             case(osg::Uniform::FLOAT_VEC3):
             {
                 osg::Vec3 value;
-                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2])) 
+                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2]))
                 {
                     uniform.set(value);
                     fr+=3;
@@ -116,7 +116,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             case(osg::Uniform::FLOAT_VEC4):
             {
                 osg::Vec4 value;
-                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2]) && fr[3].getFloat(value[3])) 
+                if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2]) && fr[3].getFloat(value[3]))
                 {
                     uniform.set(value);
                     fr+=4;
@@ -127,7 +127,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             case(osg::Uniform::INT):
             {
                 int value;
-                if (fr[0].getInt(value)) 
+                if (fr[0].getInt(value))
                 {
                     uniform.set(value);
                     fr+=1;
@@ -172,7 +172,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             {
                 osg::Matrix2 value;
                 if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) &&
-                    fr[2].getFloat(value[2]) && fr[3].getFloat(value[3])) 
+                    fr[2].getFloat(value[2]) && fr[3].getFloat(value[3]))
                 {
                     uniform.set(value);
                     fr+=4;

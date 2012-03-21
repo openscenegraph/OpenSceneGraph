@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
@@ -33,9 +33,9 @@ class WriteValue : public osg::ConstValueVisitor
 {
     public:
         WriteValue(std::ostream& o):_o(o) {}
-        
+
         std::ostream& _o;
-               
+
         virtual void apply(const GLbyte& v) { _o << v; }
         virtual void apply(const GLshort& v) { _o << v; }
         virtual void apply(const GLint& v) { _o << v; }
@@ -49,7 +49,7 @@ class WriteValue : public osg::ConstValueVisitor
         virtual void apply(const Vec4& v) { _o << v; }
 
     protected:
-    
+
         WriteValue& operator = (const WriteValue&) { return *this; }
 };
 
@@ -73,7 +73,7 @@ struct VertexAttribComparitor
             add(geometry.getVertexAttribArray(i),geometry.getVertexAttribBinding(i));
         }
     }
-    
+
     void add(osg::Array* array, osg::Geometry::AttributeBinding binding)
     {
         if (binding==osg::Geometry::BIND_PER_VERTEX && array)
@@ -82,17 +82,17 @@ struct VertexAttribComparitor
                 itr!=_arrayList.end();
                 ++itr)
             {
-                if ((*itr) == array) 
+                if ((*itr) == array)
                     return;
             }
             _arrayList.push_back(array);
         }
     }
-    
+
     typedef std::vector<osg::Array*> ArrayList;
-    
+
     ArrayList _arrayList;
-    
+
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
         for(ArrayList::const_iterator itr=_arrayList.begin();
@@ -104,7 +104,7 @@ struct VertexAttribComparitor
             if (compare==1) return false;
         }
         return false;
-    }   
+    }
 
     int compare(unsigned int lhs, unsigned int rhs)
     {
@@ -116,9 +116,9 @@ struct VertexAttribComparitor
             if (compare==-1) return -1;
             if (compare==1) return 1;
         }
-//         
+//
 //         WriteValue wv(std::cout);
-//         
+//
 //         std::cout<<"Values equal"<<std::endl;
 //         for(ArrayList::iterator itr=_arrayList.begin();
 //             itr!=_arrayList.end();
@@ -128,11 +128,11 @@ struct VertexAttribComparitor
 //             std::cout<<"   rhs["<<rhs<<"]="; (*itr)->accept(rhs,wv);
 //             std::cout<<std::endl;
 //         }
-        
+
 
         return 0;
     }
-    
+
     void accept(osg::ArrayVisitor& av)
     {
         for(ArrayList::iterator itr=_arrayList.begin();
@@ -145,7 +145,7 @@ struct VertexAttribComparitor
 
 protected:
 
-    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }    
+    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }
 
 };
 
@@ -153,9 +153,9 @@ class RemapArray : public osg::ArrayVisitor
 {
     public:
         RemapArray(const IndexList& remapping):_remapping(remapping) {}
-        
+
         const IndexList& _remapping;
-        
+
         template<class T>
         inline void remap(T& array)
         {
@@ -168,7 +168,7 @@ class RemapArray : public osg::ArrayVisitor
             }
             array.erase(array.begin()+_remapping.size(),array.end());
         }
-        
+
         virtual void apply(osg::Array&) {}
         virtual void apply(osg::ByteArray& array) { remap(array); }
         virtual void apply(osg::ShortArray& array) { remap(array); }
@@ -220,7 +220,7 @@ void TriStripVisitor::stripify(Geometry& geom)
 
     if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
-    
+
     if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
@@ -260,15 +260,15 @@ void TriStripVisitor::stripify(Geometry& geom)
             default:
                 ++numNonSurfacePrimitives;
                 break;
-                
+
         }
     }
-    
+
     // nothitng to tri strip leave.
     if (!numSurfacePrimitives) return;
-    
+
     // compute duplicate vertices
-    
+
     typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
     IndexList indices(numVertices);
@@ -277,7 +277,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     {
         indices[i] = i;
     }
-    
+
     VertexAttribComparitor arrayComparitor(geom);
     std::sort(indices.begin(),indices.end(),arrayComparitor);
 
@@ -291,19 +291,19 @@ void TriStripVisitor::stripify(Geometry& geom)
             //std::cout<<"  found duplicate "<<indices[lastUnique]<<" and "<<indices[i]<<std::endl;
             ++numDuplicate;
         }
-        else 
+        else
         {
             //std::cout<<"  unique "<<indices[i]<<std::endl;
             lastUnique = i;
             ++numUnique;
         }
-        
+
     }
 //     std::cout<<"  Number of duplicates "<<numDuplicate<<std::endl;
 //     std::cout<<"  Number of unique "<<numUnique<<std::endl;
 //     std::cout<<"  Total number of vertices required "<<numUnique<<" vs original "<<numVertices<<std::endl;
 //     std::cout<<"  % size "<<(float)numUnique/(float)numVertices*100.0f<<std::endl;
-    
+
     IndexList remapDuplicatesToOrignals(numVertices);
     lastUnique = 0;
     for(i=1;i<numVertices;++i)
@@ -323,7 +323,7 @@ void TriStripVisitor::stripify(Geometry& geom)
             }
             lastUnique = i;
         }
-        
+
     }
     unsigned int min_index = indices[lastUnique];
     for(j=lastUnique+1;j<i;++j)
@@ -336,30 +336,30 @@ void TriStripVisitor::stripify(Geometry& geom)
     }
 
 
-    // copy the arrays.    
+    // copy the arrays.
     IndexList finalMapping(numVertices);
     IndexList copyMapping;
     copyMapping.reserve(numUnique);
     unsigned int currentIndex=0;
     for(i=0;i<numVertices;++i)
     {
-        if (remapDuplicatesToOrignals[i]==i) 
+        if (remapDuplicatesToOrignals[i]==i)
         {
             finalMapping[i] = currentIndex;
             copyMapping.push_back(i);
             currentIndex++;
         }
     }
-    
+
     for(i=0;i<numVertices;++i)
     {
-        if (remapDuplicatesToOrignals[i]!=i) 
+        if (remapDuplicatesToOrignals[i]!=i)
         {
             finalMapping[i] = finalMapping[remapDuplicatesToOrignals[i]];
         }
     }
-   
-    
+
+
     MyTriangleIndexFunctor taf;
     taf._remapIndices.swap(finalMapping);
 
@@ -386,13 +386,13 @@ void TriStripVisitor::stripify(Geometry& geom)
 
         }
     }
-    
+
     float minimum_ratio_of_indices_to_unique_vertices = 1;
     float ratio_of_indices_to_unique_vertices = ((float)taf._in_indices.size()/(float)numUnique);
 
     OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
     OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
-    
+
     // only tri strip if there is point in doing so.
     if (!taf._in_indices.empty() && ratio_of_indices_to_unique_vertices>=minimum_ratio_of_indices_to_unique_vertices)
     {
@@ -408,7 +408,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         // the largest indice is in_numVertices, but indices start at 0
         // so increment to give to the corrent number of verticies.
         ++in_numVertices;
-        
+
         // remap any shared vertex attributes
         RemapArray ra(copyMapping);
         arrayComparitor.accept(ra);
@@ -434,7 +434,7 @@ void TriStripVisitor::stripify(Geometry& geom)
             typedef std::multimap<unsigned int,prim_iterator> QuadMap;
             QuadMap quadMap;
 
-            // pick out quads and place them in the quadMap, and also look for the max 
+            // pick out quads and place them in the quadMap, and also look for the max
             for(pitr=outPrimitives.begin();
                 pitr!=outPrimitives.end();
                 ++pitr)
@@ -454,7 +454,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                 IndexList indices;
                 indices.reserve(4*quadMap.size());
 
-                // adds all the quads into the quad primitive, in ascending order 
+                // adds all the quads into the quad primitive, in ascending order
                 // and the QuadMap stores the quad's in ascending order.
                 for(QuadMap::iterator qitr=quadMap.begin();
                     qitr!=quadMap.end();
@@ -472,7 +472,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                     indices.push_back(pitr->Indices[(min_pos+1)%4]);
                     indices.push_back(pitr->Indices[(min_pos+2)%4]);
                     indices.push_back(pitr->Indices[(min_pos+3)%4]);
-                }            
+                }
 
                 bool inOrder = true;
                 unsigned int previousValue = indices.front();
@@ -506,10 +506,10 @@ void TriStripVisitor::stripify(Geometry& geom)
                         new_primitives.push_back(elements);
                     }
                 }
-            }    
-        }        
+            }
+        }
 
-        // handle non quad primitives    
+        // handle non quad primitives
         for(pitr=outPrimitives.begin();
             pitr!=outPrimitives.end();
             ++pitr)
@@ -553,8 +553,8 @@ void TriStripVisitor::stripify(Geometry& geom)
 
         geom.setPrimitiveSetList(new_primitives);
 
-        #if 0 
-        // debugging code for indentifying the tri-strips.       
+        #if 0
+        // debugging code for indentifying the tri-strips.
                 osg::Vec4Array* colors = new osg::Vec4Array(new_primitives.size());
                 for(i=0;i<colors->size();++i)
                 {
@@ -565,7 +565,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                 }
                 geom.setColorArray(colors);
                 geom.setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
-        #endif        
+        #endif
     }
     else
     {
@@ -581,7 +581,7 @@ void TriStripVisitor::stripify()
         ++itr)
     {
         stripify(*(*itr));
-        
+
         // osgUtil::SmoothingVisitor sv;
         // sv.smooth(*(*itr));
     }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
@@ -72,12 +72,12 @@ int Texture3D::compare(const StateAttribute& sa) const
             }
             else
             {
-                return 1; // valid lhs._image is greater than null. 
+                return 1; // valid lhs._image is greater than null.
             }
         }
-        else if (rhs._image.valid()) 
+        else if (rhs._image.valid())
         {
-            return -1; // valid rhs._image is greater than null. 
+            return -1; // valid rhs._image is greater than null.
         }
     }
 
@@ -153,11 +153,11 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
     if (width>extensions->maxTexture3DSize()) width = extensions->maxTexture3DSize();
     if (height>extensions->maxTexture3DSize()) height = extensions->maxTexture3DSize();
     if (depth>extensions->maxTexture3DSize()) depth = extensions->maxTexture3DSize();
-    
+
     inwidth = width;
     inheight = height;
     indepth = depth;
-    
+
     bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
@@ -184,14 +184,14 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
             width >>= 1;
             height >>= 1;
             depth >>= 1;
-        }    
+        }
     }
 }
 
 void Texture3D::apply(State& state) const
 {
 
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
@@ -200,7 +200,7 @@ void Texture3D::apply(State& state) const
     tom->getNumberApplied()++;
 
     const Extensions* extensions = getExtensions(contextID,true);
-                                        
+
     if (!extensions->isTexture3DSupported())
     {
         OSG_WARN<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
@@ -310,7 +310,7 @@ void Texture3D::apply(State& state) const
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 this, contextID,GL_TEXTURE_3D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_3D,state);
@@ -321,19 +321,19 @@ void Texture3D::apply(State& state) const
                      _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                     0);                
-                     
+                     0);
+
         if (_readPBuffer.valid())
         {
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
-        
+
     }
     else
     {
         glBindTexture( GL_TEXTURE_3D, 0 );
     }
-    
+
     // if texture object is now valid and we have to allocate mipmap levels, then
     if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
     {
@@ -343,7 +343,7 @@ void Texture3D::apply(State& state) const
 
 void Texture3D::computeInternalFormat() const
 {
-    if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    if (_image.valid()) computeInternalFormatWithImage(*_image);
     else computeInternalFormatType();
 }
 
@@ -353,10 +353,10 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     if (!image || !image->data())
         return;
 
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);    
+    const Extensions* extensions = getExtensions(contextID,true);
     const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
@@ -370,8 +370,8 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     {
         //OSG_WARN<<"Warning::cannot currently use compressed format with 3D textures."<<std::endl;
         //return;
-    }    
-    
+    }
+
     //Rescale if resize hint is set or NPOT not supported or dimensions exceed max size
     if( _resizeNonPowerOfTwoHint || !texExtensions->isNonPowerOfTwoTextureSupported(_min_filter)
         || inwidth > extensions->maxTexture3DSize()
@@ -389,7 +389,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
         bool hardwareMipMapOn = false;
-        if (_min_filter != LINEAR && _min_filter != NEAREST) 
+        if (_min_filter != LINEAR && _min_filter != NEAREST)
         {
             if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_3D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
             hardwareMipMapOn = true;
@@ -414,10 +414,10 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
             GLint blockSize, size;
             getCompressedSize(_internalFormat, inwidth, inheight, indepth, blockSize,size);
 
-            extensions->glCompressedTexImage3D(target, 0, _internalFormat, 
-                inwidth, inheight, indepth, 
+            extensions->glCompressedTexImage3D(target, 0, _internalFormat,
+                inwidth, inheight, indepth,
                 _borderWidth,
-                size, 
+                size,
                 image->data());
         }
 
@@ -472,7 +472,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     inwidth  = image->s();
     inheight = image->t();
     indepth  = image->r();
-    
+
 }
 
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
@@ -509,11 +509,11 @@ void Texture3D::allocateMipmap(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
         const Extensions* extensions = getExtensions(contextID,true);
-    
+
         // bind texture
         textureObject->bind();
 
@@ -527,7 +527,7 @@ void Texture3D::allocateMipmap(State& state) const
         width >>= 1;
         height >>= 1;
         depth >>= 1;
-                
+
         for( GLsizei k = 1; k < numMipmapLevels  && (width || height || depth); k++)
         {
             if (width == 0)
@@ -546,9 +546,9 @@ void Texture3D::allocateMipmap(State& state) const
             height >>= 1;
             depth >>= 1;
         }
-                
+
         // inform state that this texture is the current one bound.
-        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
     }
 }
 
@@ -608,7 +608,7 @@ void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
 
     if (_isTexture3DFast) _isTexture3DSupported = true;
     else _isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
-    
+
     _maxTexture3DSize = 0;
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &_maxTexture3DSize);
 

@@ -35,7 +35,7 @@ ShapeAttribute::ShapeAttribute(const char * name, int value) :
     _type(INTEGER),
     _integer(value)
 {}
-        
+
 ShapeAttribute::ShapeAttribute(const char * name, double value) :
     _name(name),
     _type(DOUBLE),
@@ -53,16 +53,16 @@ ShapeAttribute::ShapeAttribute(const ShapeAttribute & sa)
 {
     copy(sa);
 }
-    
-    
+
+
 ShapeAttribute::~ShapeAttribute()
 {
-    free(); 
+    free();
 }
 
 void ShapeAttribute::free()
 {
-    if ((_type == STRING) && (_string)) 
+    if ((_type == STRING) && (_string))
     {
         ::free(_string);
         _string = 0;
@@ -71,8 +71,8 @@ void ShapeAttribute::free()
 
 void ShapeAttribute::setValue(const char * value)
 {
-    free(); 
-    _type = STRING; 
+    free();
+    _type = STRING;
     _string = (value ? strdup(value) : 0);
 }
 
@@ -110,10 +110,10 @@ void ShapeAttribute::copy(const ShapeAttribute& sa)
 ShapeAttribute& ShapeAttribute::operator = (const ShapeAttribute& sa)
 {
     if (&sa == this) return *this;
-    
+
     free();
     copy(sa);
-    
+
     return *this;
 }
 
@@ -122,13 +122,13 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
 {
     if (_name<sa._name) return -1;
     if (sa._name<_name) return 1;
-    
+
     if (_type<sa._type) return -1;
     if (sa._type<_type) return 1;
-    
+
     if (_name<sa._name) return -1;
     if (sa._name<_name) return 1;
- 
+
     switch (_type)
     {
         case STRING:
@@ -157,11 +157,11 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
 int ShapeAttributeList::compare(const osgSim::ShapeAttributeList& sal) const
 {
     const_iterator salIt, thisIt, thisEnd = end();
-    
+
     int ret;
     for (thisIt = begin(), salIt = sal.begin(); thisIt!= thisEnd; ++thisIt, ++salIt)
-        if ((ret = thisIt->compare(*salIt)) != 0) return ret;        
-    
+        if ((ret = thisIt->compare(*salIt)) != 0) return ret;
+
     return 0;
 }
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/MatrixTransform>
@@ -21,10 +21,10 @@ TransformCallback::TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axi
     _pivot = pivot;
     _axis = axis;
     _angular_velocity = angularVelocity;
-    
+
     _previousTraversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
     _previousTime = -1.0;
-    
+
     _pause = false;
 }
 
@@ -33,10 +33,10 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
     osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);
     if (nv && transform)
     {
-        
+
         const osg::FrameStamp* fs = nv->getFrameStamp();
         if (!fs) return; // not frame stamp, no handle on the time so can't move.
-        
+
         double newTime = fs->getSimulationTime();
 
         // ensure that we do not operate on this node more than
@@ -53,11 +53,11 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
 
             // update the specified transform
             transform->preMult(mat);
-            
+
             _previousTraversalNumber = nv->getTraversalNumber();
         }
 
-        _previousTime = newTime; 
+        _previousTime = newTime;
 
     }
 

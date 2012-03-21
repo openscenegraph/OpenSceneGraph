@@ -1,8 +1,8 @@
-/*  
+/*
     vertexData.h
     Copyright (c) 2007, Tobias Wolf <twolf@access.unizh.ch>
-    All rights reserved.  
-    
+    All rights reserved.
+
     Header file of the VertexData class.
 */
 
@@ -28,7 +28,7 @@
 // defined elsewhere
 struct PlyFile;
 
-namespace ply 
+namespace ply
 {
     /*  Holds the flat data and offers routines to read, scale and sort it.  */
     class VertexData
@@ -37,13 +37,13 @@ namespace ply
         // Default constructor
         VertexData();
 
-        
+
         // Reads ply file and convert in to osg::Node and returns the same
         osg::Node* readPlyFile( const char* file, const bool ignoreColors = false );
-        
+
         // to set the flag for using inverted face
         void useInvertedFaces() { _invertFaces = true; }
-        
+
     private:
 
         enum VertexFields
@@ -59,7 +59,7 @@ namespace ply
 
         // Function which reads all the vertices and colors if color info is
         // given and also if the user wants that information
-        void readVertices( PlyFile* file, const int nVertices, 
+        void readVertices( PlyFile* file, const int nVertices,
                            const int vertexFields );
 
         // Reads the triangle indices from the ply file
@@ -69,7 +69,7 @@ namespace ply
         // if vertexNormals is true then computes normal per vertices
         // otherwise per triangle means per face
         void _calculateNormals( const bool vertexNormals = true );
-        
+
         bool        _invertFaces;
 
         // Vertex array in osg format

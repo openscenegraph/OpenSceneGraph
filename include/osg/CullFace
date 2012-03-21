@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,17 +20,17 @@
 namespace osg {
 
 /** Class to globally enable/disable OpenGL's polygon culling mode.
- */     
+ */
 class OSG_EXPORT CullFace : public StateAttribute
 {
     public :
-    
+
         enum Mode {
             FRONT = GL_FRONT,
             BACK = GL_BACK,
             FRONT_AND_BACK = GL_FRONT_AND_BACK
         };
-    
+
         CullFace(Mode mode=BACK):
             _mode(mode) {}
 
@@ -40,7 +40,7 @@ class OSG_EXPORT CullFace : public StateAttribute
             _mode(cf._mode) {}
 
         META_StateAttribute(osg, CullFace, CULLFACE);
-        
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {
@@ -63,13 +63,13 @@ class OSG_EXPORT CullFace : public StateAttribute
         inline void setMode(Mode mode) { _mode = mode; }
 
         inline Mode getMode() const { return _mode; }
-    
+
         virtual void apply(State& state) const;
-        
+
     protected:
-    
+
         virtual ~CullFace();
-        
+
         Mode _mode;
 
 };

@@ -109,7 +109,7 @@ REGISTER_OBJECT_WRAPPER( Uniform,
         ADD_ENUM_VALUE( UNSIGNED_INT_SAMPLER_BUFFER );
         ADD_ENUM_VALUE( UNDEFINED );
     END_ENUM_SERIALIZER();  // _type
-    
+
     ADD_UINT_SERIALIZER( NumElements, 0 );  // _numElements
     ADD_USER_SERIALIZER( Elements );  // _floatArray, _intArray, _uintArray
     ADD_OBJECT_SERIALIZER( UpdateCallback, osg::Uniform::Callback, NULL );  // _updateCallback

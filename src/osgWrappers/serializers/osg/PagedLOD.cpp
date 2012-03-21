@@ -53,13 +53,13 @@ static bool readRangeDataList( osgDB::InputStream& is, osg::PagedLOD& node )
         node.setFileName( i, name );
     }
     is >> osgDB::END_BRACKET;
-    
+
     size = 0; is >> osgDB::PROPERTY("PriorityList") >> size >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float offset, scale;
         is >> offset >> scale;
-        
+
         node.setPriorityOffset( i, offset );
         node.setPriorityScale( i, scale );
     }
@@ -77,7 +77,7 @@ static bool writeRangeDataList( osgDB::OutputStream& os, const osg::PagedLOD& no
         os << std::endl;
     }
     os << osgDB::END_BRACKET << std::endl;
-    
+
     size = node.getNumPriorityOffsets();
     os << osgDB::PROPERTY("PriorityList") << size << osgDB::BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
@@ -114,7 +114,7 @@ static bool writeChildren( osgDB::OutputStream& os, const osg::PagedLOD& node )
         if ( !node.getFileName(i).empty() )
             dynamicLoadedSize++;
     }
-    
+
     unsigned int realSize = size-dynamicLoadedSize; os << realSize;
     if ( realSize>0 )
     {
@@ -137,7 +137,7 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
                          "osg::Object osg::Node osg::LOD osg::PagedLOD" )
 {
     // Note: osg::Group is not in the list to prevent recording dynamic loaded children
-    
+
     ADD_USER_SERIALIZER( DatabasePath );  // _databasePath
     ADD_UINT_SERIALIZER( FrameNumberOfLastTraversal, 0 );  // _frameNumberOfLastTraversal, note, not required, removed from soversion 70 onwwards, see below
     ADD_UINT_SERIALIZER( NumChildrenThatCannotBeExpired, 0 );  // _numChildrenThatCannotBeExpired
@@ -147,9 +147,9 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
 
     UPDATE_TO_VERSION( 70 )
     {
-        REMOVE_SERIALIZER( FrameNumberOfLastTraversal ); 
+        REMOVE_SERIALIZER( FrameNumberOfLastTraversal );
     }
 
 
-    
+
 }

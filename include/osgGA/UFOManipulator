@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -24,9 +24,9 @@
   \class osgGA::UFOManipulator
   \brief A UFO manipulator driven with keybindings.
 
-  The UFOManipulator is better suited for applications that employ 
+  The UFOManipulator is better suited for applications that employ
   architectural walk-throughs, or situations where the eyepoint motion
-  model must move slowly, deliberately and well controlled.  
+  model must move slowly, deliberately and well controlled.
 
   The UFO Manipulator allows the following movements with the listed
   Key combinations:
@@ -65,7 +65,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::CameraManipulator
           */
         virtual const char* className() const;
 
-        /** Set the current position with a matrix 
+        /** Set the current position with a matrix
           \param matrix  A viewpoint matrix.
          */
         virtual void setByMatrix( const osg::Matrixd &matrix ) ;
@@ -92,7 +92,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::CameraManipulator
         /** Get the root node of the subgraph this manipulator is driving the eye through */
         virtual osg::Node* getNode();
 
-        /** Computes the home position based on the extents and scale of the 
+        /** Computes the home position based on the extents and scale of the
             scene graph rooted at node */
         virtual void computeHomePosition();
 

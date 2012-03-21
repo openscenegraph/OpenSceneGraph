@@ -66,7 +66,7 @@ bool MultiTextureControl_writeLocalData(const osg::Object &obj, osgDB::Output &f
 
     fw.indent() << "TextureWeights "<<mtc.getNumTextureWeights()<<" {"<< std::endl;
     fw.moveIn();
-    
+
     for(unsigned int i=0; i<mtc.getNumTextureWeights();++i)
     {
         fw.indent() << mtc.getTextureWeight(i)<<std::endl;

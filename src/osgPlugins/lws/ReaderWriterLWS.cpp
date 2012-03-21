@@ -36,13 +36,13 @@ public:
 
     virtual ReadResult readNode(const std::string &file, const osgDB::ReaderWriter::Options *options) const
     {
-        std::string ext = osgDB::getLowerCaseFileExtension(file);        
+        std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile(file, options);
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -61,7 +61,7 @@ public:
 
 protected:
 
-    
+
 
 };
 

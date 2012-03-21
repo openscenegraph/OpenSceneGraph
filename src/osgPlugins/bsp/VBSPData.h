@@ -183,7 +183,7 @@ protected:
 
     typedef std::vector<int>   SurfEdgeList;
     SurfEdgeList               surface_edge_list;
- 
+
     typedef std::vector<Face>   FaceList;
     FaceList                    face_list;
 
@@ -204,13 +204,13 @@ protected:
 
     typedef std::vector<std::string>   StaticPropModelList;
     StaticPropModelList                static_prop_model_list;
-   
+
     typedef std::vector<StaticProp>   StaticPropList;
     StaticPropList                    static_prop_list;
-   
+
     typedef std::vector< osg::ref_ptr<osg::StateSet> >  StateSetList;
     StateSetList                                        state_set_list;
-   
+
     virtual ~VBSPData();
 
 public:

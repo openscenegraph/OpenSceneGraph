@@ -9,7 +9,7 @@ namespace ive{
 #define THROW_EXCEPTION(str) { throwException(new Exception(str)); return; }
 #define in_THROW_EXCEPTION(str) { in->throwException(new Exception(str)); return; }
 #define out_THROW_EXCEPTION(str) { out->throwException(new Exception(str)); return; }
-    
+
 class Exception : public osg::Referenced
 {
 public:

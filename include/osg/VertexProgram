@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -150,11 +150,11 @@ class OSG_EXPORT VertexProgram : public StateAttribute
             return _vertexProgramIDList[contextID];
         }
 
-        
+
         /** Set the vertex program using a C style string. */
-        inline void setVertexProgram( const char* program ) 
-        { 
-            _vertexProgram = program; 
+        inline void setVertexProgram( const char* program )
+        {
+            _vertexProgram = program;
             dirtyVertexProgramObject();
         }
 
@@ -203,7 +203,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
         inline const MatrixList& getMatrices() const { return _matrixList; }
 
         /** Force a recompile on next apply() of associated OpenGL vertex program objects. */
-        void dirtyVertexProgramObject();        
+        void dirtyVertexProgramObject();
 
         /** Use deleteVertexProgramObject instead of glDeletePrograms to allow
           * OpenGL Vertex Program objects to cached until they can be deleted
@@ -238,7 +238,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
         virtual void releaseGLObjects(State* state=0) const;
 
         /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provide convenience wrappers to 
+          * associated function pointers, and provide convenience wrappers to
           * check for the extensions or use the associated functions.
         */
         class OSG_EXPORT Extensions : public osg::Referenced
@@ -247,9 +247,9 @@ class OSG_EXPORT VertexProgram : public StateAttribute
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+
                 void setupGLExtensions(unsigned int contextID);
 
                 void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
@@ -258,19 +258,19 @@ class OSG_EXPORT VertexProgram : public StateAttribute
                 void glBindProgram(GLenum target, GLuint id) const;
                 void glGenPrograms(GLsizei n, GLuint *programs) const;
                 void glDeletePrograms(GLsizei n, GLuint *programs) const;
-                void glProgramString(GLenum target, GLenum format, GLsizei len, const void *string) const; 
+                void glProgramString(GLenum target, GLenum format, GLsizei len, const void *string) const;
                 void glProgramLocalParameter4fv(GLenum target, GLuint index, const GLfloat *params) const;
 
             protected:
 
                 ~Extensions() {}
-                
+
                 bool _isVertexProgramSupported;
-                
+
                 typedef void (GL_APIENTRY * BindProgramProc) (GLenum target, GLuint id);
                 typedef void (GL_APIENTRY * GenProgramsProc) (GLsizei n, GLuint *programs);
                 typedef void (GL_APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
-                typedef void (GL_APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string); 
+                typedef void (GL_APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string);
                 typedef void (GL_APIENTRY * ProgramLocalParameter4fvProc) (GLenum target, GLuint index, const GLfloat *params);
 
                 BindProgramProc _glBindProgram;
@@ -278,9 +278,9 @@ class OSG_EXPORT VertexProgram : public StateAttribute
                 DeleteProgramsProc _glDeletePrograms;
                 ProgramStringProc _glProgramString;
                 ProgramLocalParameter4fvProc _glProgramLocalParameter4fv;
- 
+
         };
-        
+
         /** Function to call to get the extension of a specified context.
           * If the Extension object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.

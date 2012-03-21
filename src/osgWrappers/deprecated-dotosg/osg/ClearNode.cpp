@@ -55,8 +55,8 @@ bool ClearNode_readLocalData(Object& obj, Input& fr)
     }
 
     osg::Vec4 vec4(0.0f,0.0f,0.0f,1.0f);
-    
-    if (fr[0].matchWord("clearColor") && 
+
+    if (fr[0].matchWord("clearColor") &&
         fr[1].getFloat(vec4[0]) &&
         fr[2].getFloat(vec4[1]) &&
         fr[3].getFloat(vec4[2]) &&
@@ -96,7 +96,7 @@ bool ClearNode_writeLocalData(const Object& obj, Output& fw)
     {
         fw<<"FALSE"<< std::endl;
     }
-    
+
     fw.indent() << "clearColor "<<es.getClearColor()<< std::endl;
     fw.indent() << "clearMask "<<static_cast<unsigned int>(es.getClearMask())<< std::endl;
 

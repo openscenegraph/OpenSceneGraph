@@ -329,7 +329,7 @@ public:
             geometry->addPrimitiveSet(face.get());
         }
 
-        
+
         osg::DrawElementsUShort* bevel = new osg::DrawElementsUShort(GL_QUAD_STRIP);
         bevel->setName("bevel");
         bevel->reserve(count*2);
@@ -476,7 +476,7 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
             boundaryOuter.removeAllSegmentsAboveThickness(-shellThickness);
             boundaryOuter.newAddBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
         }
-        
+
     }
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(new_geometry->getVertexArray());
@@ -953,7 +953,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
                 front_indices[pi] = vertices->size();
                 vertices->push_back((*orig_vertices)[pi]+frontOffset);
             }
-            pi = front_indices[pi]; 
+            pi = front_indices[pi];
         }
 
         for(unsigned int i=0; i<front_strip->size()-1;)

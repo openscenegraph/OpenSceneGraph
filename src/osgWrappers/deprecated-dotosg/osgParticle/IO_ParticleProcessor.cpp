@@ -31,12 +31,12 @@ bool ParticleProcessor_readLocalData(osg::Object &obj, osgDB::Input &fr)
     bool itAdvanced = false;
 
     osg::ref_ptr<osgParticle::ParticleSystem> ps_proto = new osgParticle::ParticleSystem;
-    
+
     osgParticle::ParticleSystem *ps = static_cast<osgParticle::ParticleSystem *>(fr.readObjectOfType(*ps_proto));
     if (ps) {
         myobj.setParticleSystem(ps);
         itAdvanced = true;
-    } 
+    }
 
     if (fr[0].matchWord("enabled")) {
         if (fr[1].matchWord("TRUE")) {
@@ -121,7 +121,7 @@ bool ParticleProcessor_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     if (myobj.getParticleSystem()) fw.writeObject(*myobj.getParticleSystem());
 
     fw.indent() << "enabled ";
-    if (myobj.isEnabled()) 
+    if (myobj.isEnabled())
         fw << "TRUE" << std::endl;
     else
         fw << "FALSE" << std::endl;

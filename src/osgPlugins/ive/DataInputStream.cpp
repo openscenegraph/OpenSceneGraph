@@ -180,26 +180,26 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
     if(_version>VERSION){
         throwException("DataInputStream::DataInputStream(): The version found in the file is newer than this library can handle.");
     }
-    
+
     if (_version>=VERSION_0033)
     {
         int compressionLevel = readInt();
-        
+
         if (compressionLevel>0)
         {
             OSG_INFO<<"compressed ive stream"<<std::endl;
-            
+
             unsigned int maxSize = readUInt();
-            
+
             std::string data;
             data.reserve(maxSize);
-            
+
             if (!uncompress(*istream, data))
             {
                 throwException("Error in uncompressing .ive");
                 return;
             }
-            
+
             _istream = new std::stringstream(data);
             _owns_istream = true;
         }
@@ -229,7 +229,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
     z_stream strm;
     unsigned char in[CHUNK];
     unsigned char out[CHUNK];
-    
+
     /* allocate inflate state */
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -244,13 +244,13 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
         OSG_INFO<<"failed to init"<<std::endl;
         return ret != 0;
     }
-    
+
     /* decompress until deflate stream ends or end of file */
     do {
         //strm.avail_in = fin.readsome((char*)in, CHUNK);
         fin.read((char *)in, CHUNK);
         strm.avail_in = fin.gcount();
-        
+
         if (strm.avail_in == 0)
         {
             break;
@@ -273,7 +273,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
             have = CHUNK - strm.avail_out;
 
             destination.append((char*)out, have);
-            
+
         } while (strm.avail_out == 0);
 
         /* done when inflate() says it's done */
@@ -281,7 +281,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
 
     /* clean up and return */
     (void)inflateEnd(&strm);
-    
+
     return ret == Z_STREAM_END ? true : false;
 }
 #else
@@ -595,7 +595,7 @@ osg::Geometry::AttributeBinding DataInputStream::readBinding(){
         case 2: return osg::Geometry::BIND_PER_PRIMITIVE;
         case 3: return osg::Geometry::BIND_PER_PRIMITIVE_SET;
         case 4: return osg::Geometry::BIND_PER_VERTEX;
-        default: 
+        default:
             throwException("Unknown binding type in DataInputStream::readBinding()");
             return osg::Geometry::BIND_OFF;
     }
@@ -622,7 +622,7 @@ osg::Array* DataInputStream::readArray(){
         case 15:   return readVec2dArray();
         case 16:   return readVec3dArray();
         case 17:   return readVec4dArray();
-        default: 
+        default:
             throwException("Unknown array type in DataInputStream::readArray()");
             return 0;
     }
@@ -633,7 +633,7 @@ osg::IntArray* DataInputStream::readIntArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::IntArray> a = new osg::IntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -679,7 +679,7 @@ osg::UShortArray* DataInputStream::readUShortArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::UShortArray> a = new osg::UShortArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE*size);
@@ -705,7 +705,7 @@ osg::UIntArray* DataInputStream::readUIntArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::UIntArray> a = new osg::UIntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -731,7 +731,7 @@ osg::Vec4ubArray* DataInputStream::readVec4ubArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec4ubArray> a = new osg::Vec4ubArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -751,7 +751,7 @@ bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
 {
     int size = readInt();
 
-    a->resize(size);        
+    a->resize(size);
 
     if (size == 0)
         return true;
@@ -759,7 +759,7 @@ bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
     if (readBool())
     {
         float value = readFloat();
-        
+
         for(int i=0; i<size; ++i)
         {
             (*a)[i] = value;
@@ -768,7 +768,7 @@ bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
     else
     {
         int packingSize = readInt();
-        
+
         if (packingSize==1)
         {
             float minValue = readFloat();
@@ -805,9 +805,9 @@ bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
             {
                 (*a)[i] = readFloat();
             }
-        }        
+        }
     }
-    
+
     if (_istream->rdstate() & _istream->failbit)
     {
         throwException("DataInputStream::readFloatArray(): Failed to read float array.");
@@ -880,7 +880,7 @@ osg::Vec3Array* DataInputStream::readVec3Array()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec3Array> a = new osg::Vec3Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*3*size);
@@ -909,7 +909,7 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec4Array> a = new osg::Vec4Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*4*size);
@@ -936,7 +936,7 @@ osg::Vec2bArray* DataInputStream::readVec2bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec2bArray> a = new osg::Vec2bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 2 * size);
@@ -957,7 +957,7 @@ osg::Vec3bArray* DataInputStream::readVec3bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec3bArray> a = new osg::Vec3bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 3 * size);
@@ -978,7 +978,7 @@ osg::Vec4bArray* DataInputStream::readVec4bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec4bArray> a = new osg::Vec4bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 4 * size);
@@ -999,7 +999,7 @@ osg::Vec2sArray* DataInputStream::readVec2sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec2sArray> a = new osg::Vec2sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 2 * size);
@@ -1029,7 +1029,7 @@ osg::Vec3sArray* DataInputStream::readVec3sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec3sArray> a = new osg::Vec3sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 3 * size);
@@ -1060,7 +1060,7 @@ osg::Vec4sArray* DataInputStream::readVec4sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec4sArray> a = new osg::Vec4sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 4 * size);
@@ -1119,7 +1119,7 @@ osg::Vec3dArray* DataInputStream::readVec3dArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec3dArray> a = new osg::Vec3dArray(size);
 
     _istream->read((char*)&((*a)[0]), DOUBLESIZE*3*size);
@@ -1148,7 +1148,7 @@ osg::Vec4dArray* DataInputStream::readVec4dArray(){
     int size = readInt();
     if (size == 0)
         return NULL;
-    
+
     osg::ref_ptr<osg::Vec4dArray> a = new osg::Vec4dArray(size);
 
     _istream->read((char*)&((*a)[0]), DOUBLESIZE*4*size);
@@ -1339,7 +1339,7 @@ osg::StateSet* DataInputStream::readStateSet()
 
     // read its properties from stream
     ((ive::StateSet*)(stateset.get()))->read(this);
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -1527,7 +1527,7 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         throwException("Unknown StateAttribute in StateSet::read()");
         return 0;
     }
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -1554,7 +1554,7 @@ osg::Uniform* DataInputStream::readUniform()
 
     // read its properties from stream
     ((ive::Uniform*)(uniform.get()))->read(this);
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -1582,7 +1582,7 @@ osg::Shader* DataInputStream::readShader()
 
     // read its properties from stream
     ((ive::Shader*)(shader.get()))->read(this);
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -1938,7 +1938,7 @@ osgTerrain::Layer* DataInputStream::readLayer()
     else{
         throwException("Unknown layer identification in DataInputStream::readLayer()");
     }
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -2009,7 +2009,7 @@ osgVolume::Layer* DataInputStream::readVolumeLayer()
     else{
         throwException("Unknown layer identification in DataInputStream::readLayer()");
     }
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -2038,7 +2038,7 @@ osgVolume::Locator* DataInputStream::readVolumeLocator()
 
     // read its properties from stream
     ((ive::VolumeLocator*)(locator.get()))->read(this);
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
 
@@ -2115,10 +2115,10 @@ osgVolume::Property* DataInputStream::readVolumeProperty()
     else{
         throwException("Unknown layer identification in DataInputStream::readVolumeProperty()");
     }
-    
+
     // exit early if an exception has been set.
     if (getException()) return 0;
-    
+
     // and add it to the locator map,
     _volumePropertyMap[id] = property;
 
@@ -2131,10 +2131,10 @@ osg::Object* DataInputStream::readObject()
 {
     int id = readInt();
     if (id<0) return 0;
-    
+
     if (id==IVENODE)
     {
-        return readNode();        
+        return readNode();
     }
     else if (id==IVESTATESET)
     {
@@ -2158,7 +2158,7 @@ osg::Object* DataInputStream::readObject()
 
         return sal.release();
     }
-    
+
     return 0;
 }
 

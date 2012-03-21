@@ -63,20 +63,20 @@ class Operation : virtual public Referenced
         /** Get the human readable name of the operation.*/
         const std::string& getName() const { return _name; }
 
-        /** Set whether the operation should be kept once its been applied.*/ 
+        /** Set whether the operation should be kept once its been applied.*/
         void setKeep(bool keep) { _keep = keep; }
 
-        /** Get whether the operation should be kept once its been applied.*/ 
+        /** Get whether the operation should be kept once its been applied.*/
         bool getKeep() const { return _keep; }
 
         /** if this operation is a barrier then release it.*/
         virtual void release() {}
 
-        /** Do the actual task of this operation.*/ 
+        /** Do the actual task of this operation.*/
         virtual void operator () (Object*) = 0;
 
     protected:
-    
+
         Operation():
             Referenced(true),
             _keep(false) {}
@@ -97,23 +97,23 @@ class OperationThread;
 class OSG_EXPORT OperationQueue : public Referenced
 {
     public:
-    
+
         OperationQueue();
-        
-        /** Get the next operation from the operation queue. 
-          * Return null ref_ptr<> if no operations are left in queue. */  
+
+        /** Get the next operation from the operation queue.
+          * Return null ref_ptr<> if no operations are left in queue. */
         osg::ref_ptr<Operation> getNextOperation(bool blockIfEmpty = false);
 
         /** Return true if the operation queue is empty. */
         bool empty();
-        
+
         /** Return the num of pending operations that are sitting in the OperationQueue.*/
         unsigned int getNumOperationsInQueue();
 
-        /** Add operation to end of OperationQueue, this will be 
+        /** Add operation to end of OperationQueue, this will be
           * executed by the operation thread once this operation gets to the head of the queue.*/
         void add(Operation* operation);
-        
+
         /** Remove operation from OperationQueue.*/
         void remove(Operation* operation);
 
@@ -122,18 +122,18 @@ class OSG_EXPORT OperationQueue : public Referenced
 
         /** Remove all operations from OperationQueue.*/
         void removeAllOperations();
-        
+
         /** Run the operations. */
         void runOperations(Object* callingObject=0);
 
         /** Call release on all operations. */
-        void releaseAllOperations(); 
+        void releaseAllOperations();
 
         /** Release operations block that is used to block threads that are waiting on an empty operations queue.*/
         void releaseOperationsBlock();
 
         typedef std::set<OperationThread*> OperationThreads;
-        
+
         /** Get the set of OperationThreads that are sharing this OperationQueue. */
         const OperationThreads& getOperationThreads() const { return _operationThreads; }
 
@@ -142,10 +142,10 @@ class OSG_EXPORT OperationQueue : public Referenced
         virtual ~OperationQueue();
 
         friend class OperationThread;
-        
+
         void addOperationThread(OperationThread* thread);
         void removeOperationThread(OperationThread* thread);
-        
+
         typedef std::list< osg::ref_ptr<Operation> > Operations;
 
         OpenThreads::Mutex          _operationsMutex;
@@ -165,7 +165,7 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
         void setParent(Object* parent) { _parent = parent; }
 
         Object* getParent() { return _parent.get(); }
-        
+
         const Object* getParent() const { return _parent.get(); }
 
 
@@ -178,11 +178,11 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
         /** Get the const OperationQueue. */
         const OperationQueue* getOperationQueue() const { return _operationQueue.get(); }
 
-        
-        /** Add operation to end of OperationQueue, this will be 
+
+        /** Add operation to end of OperationQueue, this will be
           * executed by the graphics thread once this operation gets to the head of the queue.*/
         void add(Operation* operation);
-        
+
         /** Remove operation from OperationQueue.*/
         void remove(Operation* operation);
 
@@ -192,24 +192,24 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
         /** Remove all operations from OperationQueue.*/
         void removeAllOperations();
 
-        
+
         /** Get the operation currently being run.*/
         osg::ref_ptr<Operation> getCurrentOperation() { return _currentOperation; }
 
         /** Run does the opertion thread run loop.*/
         virtual void run();
-        
+
         void setDone(bool done);
-        
+
         bool getDone() const { return _done; }
 
-        /** Cancel this graphics thread.*/        
+        /** Cancel this graphics thread.*/
         virtual int cancel();
 
     protected:
-    
+
         virtual ~OperationThread();
-        
+
         observer_ptr<Object>            _parent;
 
         bool                            _done;

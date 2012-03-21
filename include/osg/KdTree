@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,31 +23,31 @@ namespace osg
 {
 
 /** Implementation of a kdtree for Geometry leaves, to enable fast intersection tests.*/
-class OSG_EXPORT KdTree : public osg::Shape 
+class OSG_EXPORT KdTree : public osg::Shape
 {
     public:
-    
-        
+
+
         KdTree();
-        
+
         KdTree(const KdTree& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Shape(osg, KdTree)
-        
+
         struct OSG_EXPORT BuildOptions
         {
             BuildOptions();
-                        
+
             unsigned int _numVerticesProcessed;
             unsigned int _targetNumTrianglesPerLeaf;
             unsigned int _maxNumLevels;
         };
-        
-        
+
+
         /** Build the kdtree from the specified source geometry object.
-          * retun true on success. */ 
+          * retun true on success. */
         virtual bool build(BuildOptions& buildOptions, osg::Geometry* geometry);
-        
+
         struct LineSegmentIntersection
         {
             LineSegmentIntersection():
@@ -77,11 +77,11 @@ class OSG_EXPORT KdTree : public osg::Shape
             float                           r2;
 
             unsigned int                    primitiveIndex;
-        };        
-        
+        };
+
 
         typedef std::vector<LineSegmentIntersection> LineSegmentIntersections;
-        
+
         /** compute the intersection of a line segment and the kdtree, return true if an intersection has been found.*/
         virtual bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersections& intersections) const;
 
@@ -100,15 +100,15 @@ class OSG_EXPORT KdTree : public osg::Shape
 
             osg::BoundingBox bb;
 
-            value_type first;    
+            value_type first;
             value_type second;
         };
-    
+
         struct Triangle
         {
             Triangle():
                 p0(0),p1(0),p2(0) {}
-        
+
             Triangle(unsigned int ip0, unsigned int ip1, unsigned int ip2):
                 p0(ip0), p1(ip1), p2(ip2) {}
 
@@ -131,14 +131,14 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         int addNode(const KdNode& node)
         {
-            int num = static_cast<int>(_kdNodes.size()); 
-            _kdNodes.push_back(node); 
+            int num = static_cast<int>(_kdNodes.size());
+            _kdNodes.push_back(node);
             return num;
         }
 
         KdNode& getNode(int nodeNum) { return _kdNodes[nodeNum]; }
         const KdNode& getNode(int nodeNum) const { return _kdNodes[nodeNum]; }
-        
+
         KdNodeList& getNodes() { return _kdNodes; }
         const KdNodeList& getNodes() const { return _kdNodes; }
 
@@ -170,9 +170,9 @@ class OSG_EXPORT KdTree : public osg::Shape
 class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor
 {
     public:
-    
+
         KdTreeBuilder();
-    
+
         KdTreeBuilder(const KdTreeBuilder& rhs);
 
         META_NodeVisitor("osg","KdTreeBuilder")
@@ -180,17 +180,17 @@ class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor
         virtual KdTreeBuilder* clone() { return new KdTreeBuilder(*this); }
 
         void apply(osg::Geode& geode);
-    
+
         KdTree::BuildOptions _buildOptions;
 
         osg::ref_ptr<osg::KdTree> _kdTreePrototype;
 
 
-                
+
     protected:
-    
+
         virtual ~KdTreeBuilder() {}
-        
+
 };
 
 }

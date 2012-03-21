@@ -10,7 +10,7 @@ using namespace osg;
 using namespace std;
 
 
-osg::Vec4        
+osg::Vec4
 sceneLayer::getColor(unsigned short color)
 {
     // you're supposed to have a correct color in hand
@@ -23,18 +23,18 @@ sceneLayer::getColor(unsigned short color)
 
 
 scene::scene(dxfLayerTable* lt) : _layerTable(lt)
-{ 
-    _m.makeIdentity(); 
-    _r.makeIdentity(); 
+{
+    _m.makeIdentity();
+    _r.makeIdentity();
 }
 
-void 
+void
 scene::setLayerTable(dxfLayerTable* lt)
-{ 
-    _layerTable = lt; 
+{
+    _layerTable = lt;
 }
 
-Vec3d scene::addVertex(Vec3d v) 
+Vec3d scene::addVertex(Vec3d v)
 {
     v += _t;
     v = preMultd(_r, v);
@@ -45,23 +45,23 @@ Vec3d scene::addVertex(Vec3d v)
     return a;
 }
 
-Vec3d scene::addNormal(Vec3d v) 
+Vec3d scene::addNormal(Vec3d v)
 {
     // to do: vertices are not always listed in order. find why.
     return v;
 }
-void 
-scene::addPoint(const std::string & l, unsigned short color, Vec3d & s) 
+void
+scene::addPoint(const std::string & l, unsigned short color, Vec3d & s)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
     sceneLayer* ly = findOrCreateSceneLayer(l);
     Vec3d a(addVertex(s));
-    ly->_points[correctedColorIndex(l, color)].push_back(a);    
+    ly->_points[correctedColorIndex(l, color)].push_back(a);
 }
 
-void 
-scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e) 
+void
+scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -70,7 +70,7 @@ scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e
     ly->_lines[correctedColorIndex(l, color)].push_back(a);
     ly->_lines[correctedColorIndex(l, color)].push_back(b);
 }
-void scene::addLineStrip(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices) 
+void scene::addLineStrip(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -82,7 +82,7 @@ void scene::addLineStrip(const std::string & l, unsigned short color, std::vecto
     }
     ly->_linestrips[correctedColorIndex(l, color)].push_back(converted);
 }
-void scene::addLineLoop(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices) 
+void scene::addLineLoop(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -97,7 +97,7 @@ void scene::addLineLoop(const std::string & l, unsigned short color, std::vector
 }
 
 
-void scene::addTriangles(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted) 
+void scene::addTriangles(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -115,7 +115,7 @@ void scene::addTriangles(const std::string & l, unsigned short color, std::vecto
                 a = itr++;
                 b = itr++;
                 c = itr++;
-            }            
+            }
             if (a != vertices.end() &&
                 b != vertices.end() &&
                 c != vertices.end()) {
@@ -128,11 +128,11 @@ void scene::addTriangles(const std::string & l, unsigned short color, std::vecto
             }
     }
 }
-void scene::addQuads(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted) 
+void scene::addQuads(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
-    
+
     sceneLayer* ly = findOrCreateSceneLayer(l);
     for (VList::iterator itr = vertices.begin();
         itr != vertices.end(); ) {
@@ -172,10 +172,10 @@ void scene::addQuads(const std::string & l, unsigned short color, std::vector<Ve
                 vl.push_back(addVertex(*d));
             }
     }
-}    
+}
 
 
-void scene::addText(const std::string & l, unsigned short color, Vec3d & point, osgText::Text *text) 
+void scene::addText(const std::string & l, unsigned short color, Vec3d & point, osgText::Text *text)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -193,13 +193,13 @@ void scene::addText(const std::string & l, unsigned short color, Vec3d & point, 
     Quat ro, so;
     qm.decompose( t, ro, s, so );
     text->setRotation( text->getRotation() * ro );
-    
+
     sceneLayer::textInfo ti( correctedColorIndex(l,color), pscene, text );
     ly->_textList.push_back(ti);
 }
 
 
-unsigned short 
+unsigned short
 scene::correctedColorIndex(const std::string & l, unsigned short color)
 {
     if (color >= aci::MIN && color <= aci::MAX)

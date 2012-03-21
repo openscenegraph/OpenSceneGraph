@@ -19,7 +19,7 @@ public:
 	~geoValue() {}
 	inline unsigned int getToken() const { return token;}
 	inline unsigned int getFID() const { return fid;}
-	inline double *getVar() { 
+	inline double *getVar() {
 		return &(val.d);} // address of variable
 	inline const double getVal() const { return (val.d);}
 	void setVal(double v) { val.d=v;
@@ -52,11 +52,11 @@ public:
 	internalVars() {   }
 	internalVars(const internalVars &iv) {
 		vars=iv.vars; }
-	~internalVars() { 
+	~internalVars() {
 		}
 	void addInternalVars(const georecord &gr);
 	void update(const osg::FrameStamp *_frameStamp);
-	double *getVar(const unsigned fid) { 
+	double *getVar(const unsigned fid) {
 		for (std::vector<geoValue>::iterator itr=vars.begin();
 		itr!=vars.end();
 		++itr)
@@ -92,13 +92,13 @@ public:
 	~userVars() {}
 	unsigned int number() { return vars.size();}
 	std::vector<geoValue> *getvars() { return &vars;}
-	double *getVar(const unsigned fid)  { 
+	double *getVar(const unsigned fid)  {
 		for (std::vector<geoValue>::iterator itr=vars.begin(); itr<vars.end(); itr++) {
 			if (itr->getFID() == fid) return (itr->getVar());
 		}
 		return NULL;
 	}
-	const geoValue *getGeoVar(const unsigned fid) const { 
+	const geoValue *getGeoVar(const unsigned fid) const {
 		for (std::vector<geoValue>::const_iterator itr=vars.begin(); itr<vars.end(); itr++) {
 			if (itr->getFID() == fid) return (&(*itr));
 		}
@@ -118,7 +118,7 @@ public:
     friend inline std::ostream& operator << (std::ostream& output, const pack_colour& pc)
     {
         output << " cpalette: " <<(int)pc.cr << " " <<(int)pc.cg << " " <<(int)pc.cb << " " <<(int)pc.ca;
-        return output;     // to enable cascading.. 
+        return output;     // to enable cascading..
     }
 private:
     unsigned char cr, cg, cb, ca;
@@ -132,7 +132,7 @@ class geoHeaderGeo: public geoHeader {
 public:
 	geoHeaderGeo();
 	geoHeaderGeo(const geoHeaderGeo &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
 	void addInternalVars(const georecord &gr) { intVars->addInternalVars(gr);}
 	internalVars *getInternalVars(void) const { return intVars;}
 	const std::string getVarname(const unsigned fid) const {

@@ -27,7 +27,7 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
-    
+
     std::string path;
     if (fr.read("DatabasePath",path))
     {
@@ -38,13 +38,13 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
         if (lod.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
         {
             const std::string& path = fr.getOptions()->getDatabasePathList().front();
-            if (!path.empty()) 
+            if (!path.empty())
             {
                 lod.setDatabasePath(path);
             }
-        } 
+        }
     }
-    
+
     unsigned int num;
     if (fr[0].matchWord("NumChildrenThatCannotBeExpired") && fr[1].getUInt(num))
     {
@@ -52,7 +52,7 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
     bool flag;
     if (fr.read("DisableExternalChildrenPaging", flag))
     {
@@ -82,7 +82,7 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
             {
                 if (fr[0].getStr()) lod.setFileName(i,fr[0].getStr());
                 else lod.setFileName(i,"");
-                
+
                 ++fr;
                 ++i;
             }
@@ -134,9 +134,9 @@ bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "FileNameList "<<lod.getNumFileNames()<<" {"<< std::endl;
     fw.moveIn();
-    
+
     unsigned int numChildrenToWriteOut = 0;
-    
+
     for(unsigned int i=0; i<lod.getNumFileNames();++i)
     {
         if (lod.getFileName(i).empty())
@@ -144,7 +144,7 @@ bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
             fw.indent() << "\"\"" << std::endl;
             ++numChildrenToWriteOut;
         }
-        else 
+        else
         {
             fw.indent() << lod.getFileName(i) << std::endl;
         }

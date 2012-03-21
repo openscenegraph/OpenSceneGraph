@@ -8,7 +8,7 @@
 // Design Workshop editor can be downloaded from www.artifice.com = Mac & Win95/98/NT versions are available.
 // DW Lite is completely free, produces textured 3D models
 // aimed mostly at the architectural world.  Flat polygons are generally produced
-// No ability to produce smooth shading, unfortunately.  
+// No ability to produce smooth shading, unfortunately.
 // But it is the best bangs per buck. (Anything/nothing = infinite value, and this is quite a lot/nothing)
 
 #include <osg/CullFace>
@@ -33,7 +33,7 @@
 using namespace osg;
 
 #ifndef WIN32
-    #define CALLBACK 
+    #define CALLBACK
 #endif
 
 class _dwobj; // predefine for later call
@@ -42,7 +42,7 @@ int dwfgets(char *clin, int max, FILE *fin); // , end of line= 13 as well as Cre
 class dwmaterial {// design workshop material, to be translated to OGL
 public:
     typedef enum {Properties,TiledTexture,FullFace, SpotLight,PointLight} mttype;
-    dwmaterial() { type=Properties; 
+    dwmaterial() { type=Properties;
         opacity=1; specular=0; specexp=0; fname="";TextureWidth=1; TextureHeight=1;
         ctx=NULL; tx=NULL; id=0; dstate=NULL;colour[0]=colour[1]=colour[2]=colour[3]=1;
         bright=halfIn=halfOut=falloff=0;atyp=NONE;
@@ -53,7 +53,7 @@ public:
         if (!dstate) dstate = new StateSet;
         if (isTextured()) { // shares common textures
             if (!ctx || !tx) { // new texture needed
-                if (fname.length()>0) { 
+                if (fname.length()>0) {
                     ctx=osgDB::readRefImageFile(fname.c_str(),options);
                     if (ctx.valid()) {
                         ctx->setFileName(fname);
@@ -111,7 +111,7 @@ public:
         TextureWidth=repx;
         TextureHeight=repy;
     }
-    inline float getRepWid() const { return TextureWidth;} 
+    inline float getRepWid() const { return TextureWidth;}
     inline float getRepHt() const { return TextureHeight;}
     inline int isFullFace() const { return  type==FullFace;}
     inline int getid() const { return  id;}
@@ -120,15 +120,15 @@ public:
     inline void setspecular(float o) { specular=o;}
     inline void setspecexp(float o) { specexp=o;}
     void setType(const char *buff) {
-        if (strncmp(buff,"Tiled_Texture",13)==0) 
+        if (strncmp(buff,"Tiled_Texture",13)==0)
             type=dwmaterial::TiledTexture;
-        else if (strncmp(buff,"Spot_Light",11)==0) 
+        else if (strncmp(buff,"Spot_Light",11)==0)
             type=dwmaterial::SpotLight;
-        else if (strncmp(buff,"Point_Light",11)==0) 
+        else if (strncmp(buff,"Point_Light",11)==0)
             type=dwmaterial::PointLight;
-        else if (strncmp(buff,"Properties",11)==0) 
+        else if (strncmp(buff,"Properties",11)==0)
             type=dwmaterial::Properties;
-        else if (strncmp(buff,"Full_Face_Texture",16)==0) 
+        else if (strncmp(buff,"Full_Face_Texture",16)==0)
             type=dwmaterial::FullFace;
     }
     void setfname(const char *buff) {
@@ -193,7 +193,7 @@ public:
     _face() { nVertStart=0; opening=NULL; idx=NULL; nv=0; nop=0; nset=0; nrm[0]=nrm[1]=nrm[2]=0;}
     ~_face() { delete [] idx;}
     void setnv(const int n){ nv=n; idx=new int[n];}
-    void addvtx(const int n){ 
+    void addvtx(const int n){
         if (nset < nv) {
             idx[nset]=n;
             nset++;
@@ -216,12 +216,12 @@ public:
         int i2=idx[1]; // second, must be non-coincident
         while (i2==i1 && ic<nv-1) {
             ic++;
-            i2=idx[ic]; 
+            i2=idx[ic];
         }
         int i3=idx[ic]; // third, must be non-coincident
         while (ic<nv-1 && (i3==i2 || i3==i1)) {
             ic++;
-            i3=idx[ic]; 
+            i3=idx[ic];
         }
         if(ic>=nv) {
             printf("Invalid vertices %d of %d. I1-3 %d %d %d.\n", ic, nv, i1, i2, i3);
@@ -237,9 +237,9 @@ public:
         getside12(side,s2, verts);
         norm(nrm, s2, side);
     }
-    void settrans(Matrix &mx, const Vec3 nrm, const std::vector<Vec3> verts, const dwmaterial *mat) const { 
+    void settrans(Matrix &mx, const Vec3 nrm, const std::vector<Vec3> verts, const dwmaterial *mat) const {
         // define the matrix perpendcular to normal for mapping textures
-        float wid=mat->getRepWid(); 
+        float wid=mat->getRepWid();
         float ht=mat->getRepHt();
         Vec3 r1, r2,r3; // 3 rows of rotation matrix
         if (mat->isFullFace()) { // set wid, ht from polygon
@@ -273,7 +273,7 @@ public:
             mx(0,j)=r1[j];
             mx(1,j)=r2[j];
             mx(2,j)=r3[j];
-        }        
+        }
         //        mx.postTrans(mx,0.5f,0.5f,0.0f);
         if (mat->isFullFace()) { // set offset such that mx*verts[idx[0]] -> uv=(0,0)
             Vec3 pos;
@@ -292,8 +292,8 @@ public:
         //        mx.postScale(mx,1.0f/themat->TextureWidth, 1.0f/themat->TextureHeight,1);
     }
     inline int setnvop(const unsigned short n) { // add a new hole in this face with n vertices
-        _face *oldop=opening; 
-        opening=new _face[nop+1]; 
+        _face *oldop=opening;
+        opening=new _face[nop+1];
         for (int i=0; i<nop; i++) opening[i].move(&oldop[i]);
         delete [] oldop;
         opening[nop].setnv(n);
@@ -327,9 +327,9 @@ public:
         poses.nrmv=nrm;
         poses.idx=idx[j];
     }
-    void tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat, 
+    void tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
           GLUtesselator *ts, _dwobj *dwob, const RefMatrix *tmat) const;
-          
+
     void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
     inline const int getidx(int i) const { return idx[i];}
 private:
@@ -371,34 +371,34 @@ public:
     }
     void End() { // tessellation is done
         int nverts=vertices->size()-nbegin;
-        osg::DrawArrays *drw=NULL;                                
+        osg::DrawArrays *drw=NULL;
             switch (primType) {
             case GL_TRIANGLES: //gset->setPrimType( osg::GeoSet::TRIANGLES );
                 //gset->setNumPrims( nload/3 );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             case GL_TRIANGLE_STRIP: //gset->setPrimType( osg::GeoSet::TRIANGLE_STRIP );
                 //gset->setPrimLengths( nuprimlengs );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             case GL_TRIANGLE_FAN: //gset->setPrimType( osg::GeoSet::TRIANGLE_FAN );
                 //gset->setPrimLengths( nuprimlengs );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             case GL_QUADS: //gset->setPrimType( osg::GeoSet::QUADS );
                 //gset->setNumPrims( nload/4 );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             case GL_QUAD_STRIP: //gset->setPrimType( osg::GeoSet::QUAD_STRIP );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             case GL_POLYGON: //gset->setPrimType( osg::GeoSet::POLYGON );
-                drw=new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nbegin,nverts);                                
+                drw=new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nbegin,nverts);
                 gset->addPrimitiveSet(drw);
                 break;
             }
@@ -407,17 +407,17 @@ public:
         primType=op;
         nbegin=vertices->size();
     }
-    void combine( GLdouble coords[3], avertex *d[4], 
+    void combine( GLdouble coords[3], avertex *d[4],
         GLfloat w[4], avertex **dataOut , _dwobj *dwob);
-    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, 
-        const _face *f1, const _face *f2, 
+    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat,
+        const _face *f1, const _face *f2,
         const int ipr[2], const int nv) {
         int gsidx[4];
         gsidx[0]=f1->getidx(ipr[1]); // vertex position index
         gsidx[1]=f1->getidx(ipr[0]); // vertex position index
         gsidx[2]=f2->getidx(nv-ipr[0]-1); // vertex position index
         gsidx[3]=f2->getidx(nv-ipr[1]-1); // vertex position index
-        
+
         Matrix mx; // texture matrix transform to plane
         Vec3 s1,s2;
         Vec3 nrm; // calculated normal to face
@@ -434,11 +434,11 @@ public:
             txcoords->push_back(uv);
             normals->push_back(nrm);
         }
-        osg::DrawArrays *drw=NULL;                                
+        osg::DrawArrays *drw=NULL;
         drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,n1,4);
         gset->addPrimitiveSet(drw);
     }
-    void tessellate(_face &fc, const std::vector<Vec3>& verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
+    void tessellate(_face &fc, const std::vector<Vec3>& verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob)
     {    // generates a set of primitives all of one type (eg tris, qstrip trifan...)
         fc.setNBegin(vertices->size());
         fc.tessellate(verts, themat, ts, dwob, tmat.get());
@@ -479,12 +479,12 @@ void CALLBACK myFaceEnd()
     prd->End();
 }
 void CALLBACK myVertex(void *pv)
-{// tess vertex call back with texture coord == void *pv1, 
+{// tess vertex call back with texture coord == void *pv1,
         prd->addv((avertex *)pv);
 }
-void CALLBACK combineCallback( GLdouble coords[3], avertex *d[4], 
-                         GLfloat w[4], avertex **dataOut , _dwobj *dwob) 
-{ 
+void CALLBACK combineCallback( GLdouble coords[3], avertex *d[4],
+                         GLfloat w[4], avertex **dataOut , _dwobj *dwob)
+{
     // dwob needed if there is a combine callback to add the new vertex to group
     prd->combine(coords, d, w, dataOut,dwob);
 }
@@ -522,10 +522,10 @@ class _dwobj {  // class for design workshop read of a single object
 public:
     _dwobj() { nverts=nfaces=0; openings=NULL;faces=NULL; tmat=NULL; edges=NULL;
         nopens=nfaceverts=0; fc1=fc2=NULL; colour[0]=colour[1]=colour[2]=colour[3]=1;
-    } 
+    }
     ~_dwobj() {/*delete verts; delete faces;delete openings;*/
         delete [] fc1;delete [] fc2;
-    } 
+    }
     int readOpenings(FILE *fp, const int nexpected)
     { // read up to nexpected openings, each opening may have a number of vertices
         char buff[256];
@@ -667,7 +667,7 @@ private:
     osg::ref_ptr<RefMatrix> mx; // current uvw transform for currently tessealting face
 };
 
-void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat, 
+void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
                GLUtesselator *ts, _dwobj *dwob, const RefMatrix * /*tmat*/) const {
     int nvall=getallverts();
     int nused=0;
@@ -675,7 +675,7 @@ void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
     Matrix mx; // texture matrix transform to plane
     settrans(mx, nrm, verts,themat);
     dwob->setmx(new RefMatrix(mx)); // may be used by combine callback to define txcoord
-    gluTessBeginPolygon(ts, dwob); 
+    gluTessBeginPolygon(ts, dwob);
     gluTessBeginContour(ts); /**/
     for (int j=0; j<nv; j++) {
         Vec3 uv;
@@ -686,7 +686,7 @@ void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
         gluTessVertex(ts, (double *)&(poses[nused]), (double *)(poses+nused));
         nused++;
     }
-    gluTessEndContour(ts); 
+    gluTessEndContour(ts);
     for (int k=0; k<nop; k++) { // now holes in the face
         gluTessBeginContour(ts);
         for (int j=0; j<opening[k].nv; j++) {
@@ -705,11 +705,11 @@ void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
     gluTessEndPolygon(ts);
     delete [] poses;
 }
-void prims::combine( GLdouble coords[3], avertex *d[4], 
+void prims::combine( GLdouble coords[3], avertex *d[4],
                     GLfloat w[4], avertex **dataOut , _dwobj *dwob) {
-    avertex *newv = new avertex(); // (avertex *)calloc(1, sizeof(avertex)); 
-    newv->pos[0] = coords[0]; 
-    newv->pos[1] = coords[1]; 
+    avertex *newv = new avertex(); // (avertex *)calloc(1, sizeof(avertex));
+    newv->pos[0] = coords[0];
+    newv->pos[1] = coords[1];
     newv->pos[2] = coords[2];
     newv->uv[0] = newv->uv[1] =0;
     newv->nrmv[0] = newv->nrmv[1] = newv->nrmv[2] =0;
@@ -749,13 +749,13 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
                 faces[i].setnorm(verts); // set its normal and any hole normals
                 nfnvf+=faces[i].getallverts(); // get total vertices in object, defines dimensions of NEW arrays
             }
-            
-            
+
+
             GLUtesselator* ts=gluNewTess();
-            gluTessCallback(ts, GLU_TESS_BEGIN, (GLU_TESS_CALLBACK) myFaceBegin);  
-            gluTessCallback(ts, GLU_TESS_VERTEX, (GLU_TESS_CALLBACK) myVertex);  
-            gluTessCallback(ts, GLU_TESS_END, (GLU_TESS_CALLBACK) myFaceEnd);  
-            gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);  
+            gluTessCallback(ts, GLU_TESS_BEGIN, (GLU_TESS_CALLBACK) myFaceBegin);
+            gluTessCallback(ts, GLU_TESS_VERTEX, (GLU_TESS_CALLBACK) myVertex);
+            gluTessCallback(ts, GLU_TESS_END, (GLU_TESS_CALLBACK) myFaceEnd);
+            gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);
             gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
             //  for (int nvf=0; nvf<6; nvf++) { // for each length of face
             // for Geometry we dont need to collect prim types individually
@@ -764,11 +764,11 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             prd->settmat(tmat.get());
             osg::Geometry *gset = new osg::Geometry;
             prd->setGeometry(gset);
-            StateSet *dstate=themat->make(options);            
+            StateSet *dstate=themat->make(options);
             gset->setStateSet( dstate );
             grp->addChild( geode ); // add to the world outside
             geode->addDrawable(gset);
-            
+
             // each face adds a primitive to the geometry, after it is tessellated
             for (i=0; i<nfaces; i++) { // for each face, collect up
                 prd->tessellate(faces[i],verts, themat, ts, this);
@@ -790,12 +790,12 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
 class ReaderWriterDW : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterDW()
         {
             supportsExtension("dw","Designer Workbench model format");
         }
-    
+
         virtual const char* className() const { return "Design Workshop Database Reader"; }
 
         virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options) const
@@ -832,7 +832,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             }
             Group *grp = new Group;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -851,7 +851,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         rdg=MATERIAL;
                         int id=atoi(buff);
                         matpalet[nmat].setid(id); // current material to be modified
-                        
+
                     } else if (strncmp(buff, "Phase:",6)==0) {
                     } else if (strncmp(buff, "CurrPhase:",10)==0) {
                     } else if (strncmp(buff, "numPhases:",10)==0) {
@@ -889,8 +889,8 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         if (end) *end='\0'; // removed
                         matpalet[nmat].setfname(buff);
                     } else if( strncmp(buff,"Extrusion:",10)==0 ||
-                        strncmp(buff,"Cube:",5)==0 || 
-                        strncmp(buff,"Polyline:",9)==0 || 
+                        strncmp(buff,"Cube:",5)==0 ||
+                        strncmp(buff,"Polyline:",9)==0 ||
                         strncmp(buff,"Polyhedron:",11)==0) {
                         rdg=OBJECT;
                         obj.buildDrawable(grp, options);
@@ -898,7 +898,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                     } else if( strncmp(buff,"Mat:",4)==0) {
                         int mt=atoi(buff+4);
                         for (int j=0; j<nmn; j++) {
-                            if (matpalet[j].getid() == mt) 
+                            if (matpalet[j].getid() == mt)
                                 obj.setmat(&(matpalet[j]));
                         }
                     } else if( strncmp(buff,"Color:",6)==0) {
@@ -936,7 +936,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                             &mx[0][0], &mx[0][1], &mx[0][2],
                             &mx[1][0], &mx[1][1], &mx[1][2],
                             &mx[2][0], &mx[2][1], &mx[2][2]);
-                        
+
                         obj.settmat(Matrix(mx[0][0],mx[0][1],mx[0][2],0.0,
                                            mx[1][0],mx[1][1],mx[1][2],0.0,
                                            mx[2][0],mx[2][1],mx[2][2],0.0,

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -30,17 +30,17 @@ void Locator::write(DataOutputStream* out)
         ((ive::Object*)(object))->write(out);
     else
         out_THROW_EXCEPTION("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
-        
+
     out->writeInt(getCoordinateSystemType());
     out->writeString(getFormat());
     out->writeString(getCoordinateSystem());
-    
+
     out->writeBool(getEllipsoidModel()!=0);
     if(getEllipsoidModel())
     {
         ((ive::EllipsoidModel*)(getEllipsoidModel()))->write(out);
     }
-    
+
     out->writeBool(getDefinedInFile());
     out->writeBool(getTransformScaledByResolution());
     out->writeMatrixd(getTransform());
@@ -54,7 +54,7 @@ void Locator::read(DataInputStream* in)
     {
         in_THROW_EXCEPTION("Locator::read(): Expected Locator identification.");
     }
-    
+
     // Read Locator's identification.
     id = in->readInt();
 
@@ -68,7 +68,7 @@ void Locator::read(DataInputStream* in)
     setCoordinateSystemType(static_cast<osgTerrain::Locator::CoordinateSystemType>(in->readInt()));
     setFormat(in->readString());
     setCoordinateSystem(in->readString());
-    
+
     bool readEllipsoidModel = in->readBool();
     if (readEllipsoidModel)
     {
@@ -76,7 +76,7 @@ void Locator::read(DataInputStream* in)
         ((ive::EllipsoidModel*)(em))->read(in);
         setEllipsoidModel(em);
     }
-    
+
     setDefinedInFile(in->readBool());
     setTransformScaledByResolution(in->readBool());
     setTransform(in->readMatrixd());

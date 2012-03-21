@@ -71,7 +71,7 @@ void Group::read(DataInputStream* in){
         // Read children.
         for(int i=0; i<size; i++)
         {
-            addChild(in->readNode());            
+            addChild(in->readNode());
         }
     }
     else{

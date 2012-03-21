@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,11 +23,11 @@
 namespace osg {
 
 /** Encapsulates OpenGL glAlphaFunc.
-*/     
+*/
 class OSG_EXPORT AlphaFunc : public StateAttribute
 {
     public :
-    
+
         enum ComparisonFunction {
             NEVER = GL_NEVER,
             LESS = GL_LESS,
@@ -41,7 +41,7 @@ class OSG_EXPORT AlphaFunc : public StateAttribute
 
 
         AlphaFunc();
-        
+
         AlphaFunc(ComparisonFunction func,float ref):
             _comparisonFunc(func),
             _referenceValue(ref) {}
@@ -51,9 +51,9 @@ class OSG_EXPORT AlphaFunc : public StateAttribute
             StateAttribute(af,copyop),
             _comparisonFunc(af._comparisonFunc),
             _referenceValue(af._referenceValue) {}
-        
+
         META_StateAttribute(osg, AlphaFunc,ALPHAFUNC);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -79,17 +79,17 @@ class OSG_EXPORT AlphaFunc : public StateAttribute
             _comparisonFunc = func;
             _referenceValue = ref;
         }
-        
+
         inline void setFunction(ComparisonFunction func) { _comparisonFunc=func; }
         inline ComparisonFunction getFunction() const { return _comparisonFunc; }
-        
+
         inline void setReferenceValue(float value) { _referenceValue=value; }
         inline float getReferenceValue() const { return _referenceValue; }
-        
+
         virtual void apply(State& state) const;
 
     protected:
-    
+
         virtual ~AlphaFunc();
 
         ComparisonFunction _comparisonFunc;

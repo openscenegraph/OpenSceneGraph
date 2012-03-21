@@ -63,7 +63,7 @@ REGISTER_OBJECT_WRAPPER( AnimationPath,
                          "osg::Object osg::AnimationPath" )
 {
     ADD_USER_SERIALIZER( TimeControlPointMap );  // _timeControlPointMap
-    
+
     BEGIN_ENUM_SERIALIZER( LoopMode, LOOP );
         ADD_ENUM_VALUE( SWING );
         ADD_ENUM_VALUE( LOOP );

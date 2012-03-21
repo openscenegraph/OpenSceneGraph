@@ -17,12 +17,12 @@ class ArrayHelper
             else _vec3farray = new osg::Vec3Array;
         }
 
-        osg::Array* get() { return _vec3farray.valid() ? 
-                static_cast<osg::Array*>(_vec3farray.get()) : 
+        osg::Array* get() { return _vec3farray.valid() ?
+                static_cast<osg::Array*>(_vec3farray.get()) :
                 static_cast<osg::Array*>(_vec3darray.get()); }
 
-        unsigned int size() { return _vec3farray.valid() ? 
-                _vec3farray->size() : 
+        unsigned int size() { return _vec3farray.valid() ?
+                _vec3farray->size() :
                 _vec3darray->size(); }
 
         void add(double x, double y, double z)
@@ -47,7 +47,7 @@ class ArrayHelper
         {
             osg::Vec3Array* vec3Array = dynamic_cast<osg::Vec3Array*>(array);
             if (vec3Array && index<vec3Array->size()) add((*vec3Array)[index]);
-            
+
             osg::Vec3dArray* vec3dArray = dynamic_cast<osg::Vec3dArray*>(array);
             if (vec3dArray && index<vec3dArray->size()) add((*vec3dArray)[index]);
         }
@@ -60,7 +60,7 @@ class ArrayHelper
 class ESRIShapeParser
 {
     public:
-    
+
         ESRIShapeParser( const std::string fileName, bool useDouble);
 
         osg::Geode *getGeode();
@@ -76,12 +76,12 @@ class ESRIShapeParser
 #endif
 
     private:
-    
-    
-    
+
+
+
         bool _valid;
         bool _useDouble;
-        
+
         osg::ref_ptr<osg::Geode> _geode;
 
         void _combinePointToMultipoint();

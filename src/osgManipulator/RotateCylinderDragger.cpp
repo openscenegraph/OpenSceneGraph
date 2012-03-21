@@ -119,9 +119,9 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
@@ -150,9 +150,9 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
                     _prevRotation = rotation;
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {

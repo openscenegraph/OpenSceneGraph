@@ -62,7 +62,7 @@ static bool writeChildren( osgDB::OutputStream& os, const osg::ProxyNode& node )
         if ( !node.getFileName(i).empty() )
             dynamicLoadedSize++;
     }
-    
+
     unsigned int realSize = size-dynamicLoadedSize; os << realSize;
     if ( realSize>0 )
     {
@@ -104,13 +104,13 @@ struct ProxyNodeFinishedObjectReadCallback : public osgDB::FinishedObjectReadCal
     virtual void objectRead(osgDB::InputStream& is, osg::Object& obj)
     {
         osg::ProxyNode& proxyNode = static_cast<osg::ProxyNode&>(obj);
-    
+
         if (proxyNode.getLoadingExternalReferenceMode() == osg::ProxyNode::LOAD_IMMEDIATELY)
         {
             for(unsigned int i=0; i<proxyNode.getNumFileNames(); i++)
             {
                 if(i >= proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
-                {                    
+                {
                     osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)is.getOptions())->getDatabasePathList();
                     fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
                     osg::Node* node = osgDB::readNodeFile(proxyNode.getFileName(i), is.getOptions());
@@ -129,23 +129,23 @@ REGISTER_OBJECT_WRAPPER( ProxyNode,
                          "osg::Object osg::Node osg::ProxyNode" )
 {
     // Note: osg::Group is not in the list to prevent recording dynamic loaded children
-    
+
     ADD_USER_SERIALIZER( FileNames );  // _filenameList
     ADD_USER_SERIALIZER( Children );  // _children (which are not loaded from external)
     ADD_STRING_SERIALIZER( DatabasePath, "" );  // _databasePath
-    
+
     BEGIN_ENUM_SERIALIZER( LoadingExternalReferenceMode, LOAD_IMMEDIATELY );
         ADD_ENUM_VALUE( LOAD_IMMEDIATELY );
         ADD_ENUM_VALUE( DEFER_LOADING_TO_DATABASE_PAGER );
         ADD_ENUM_VALUE( NO_AUTOMATIC_LOADING );
     END_ENUM_SERIALIZER();  // _loadingExtReference
-    
+
     BEGIN_ENUM_SERIALIZER( CenterMode, USE_BOUNDING_SPHERE_CENTER );
         ADD_ENUM_VALUE( USE_BOUNDING_SPHERE_CENTER );
         ADD_ENUM_VALUE( USER_DEFINED_CENTER );
         ADD_ENUM_VALUE( UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED );
     END_ENUM_SERIALIZER();  // _centerMode
-    
+
     ADD_USER_SERIALIZER( UserCenter );  // _userDefinedCenter, _radius
 
     wrapper->addFinishedObjectReadCallback(new ProxyNodeFinishedObjectReadCallback());

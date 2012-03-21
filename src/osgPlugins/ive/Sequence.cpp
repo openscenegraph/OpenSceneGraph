@@ -48,7 +48,7 @@ void Sequence::write(DataOutputStream* out)
     {
         out->writeFloat(getTime(i));
     }
-    
+
     if (out->getVersion() >= VERSION_0022)
     {
         // Write last frame time
@@ -117,7 +117,7 @@ void Sequence::read(DataInputStream* in)
         {
             setTime(i, in->readFloat());
         }
-    
+
         if (in->getVersion() >= VERSION_0022)
         {
             // Read last frame time

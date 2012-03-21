@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -73,11 +73,11 @@ void DriveManipulator::setNode(osg::Node* node)
         _modelScale = boundingSphere._radius;
         //_height = sqrtf(_modelScale)*0.03;
         //_buffer = sqrtf(_modelScale)*0.05;
-        
+
         _height = getHeightOfDriver();
         _buffer = _height*2.5;
     }
-    if (getAutoComputeHomePosition()) computeHomePosition();    
+    if (getAutoComputeHomePosition()) computeHomePosition();
 }
 
 
@@ -98,9 +98,9 @@ bool DriveManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end,
 
     osgUtil::IntersectionVisitor iv(lsi.get());
     iv.setTraversalMask(_intersectTraversalMask);
-    
+
     _node->accept(iv);
-    
+
     if (lsi->containsIntersections())
     {
         intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
@@ -184,9 +184,9 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     if (getAutoComputeHomePosition()) computeHomePosition();
 
     computePosition(_homeEye, _homeCenter, _homeUp);
-    
+
     _velocity = 0.0;
-    
+
     _pitch = 0.0;
 
     us.requestRedraw();
@@ -429,12 +429,12 @@ void DriveManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& c
     s.normalize();
     osg::Vec3d u(s^f);
     u.normalize();
-    
+
     osg::Matrixd rotation_matrix(s[0],     u[0],     -f[0],     0.0,
                                  s[1],     u[1],     -f[1],     0.0,
                                  s[2],     u[2],     -f[2],     0.0,
                                  0.0,       0.0,       0.0,     1.0);
-                   
+
     _eye = eye;
     _rotation = rotation_matrix.getRotate().inverse();
 }
@@ -452,7 +452,7 @@ bool DriveManipulator::calcMovement()
         OSG_INFO << "warning dt = "<<dt<< std::endl;
         dt = 0.0;
     }
-    
+
     double accelerationFactor = _height*10.0;
 
     switch(_speedMode)
@@ -494,7 +494,7 @@ bool DriveManipulator::calcMovement()
 
     osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
-    
+
     osg::Vec3d up = osg::Vec3d(0.0,1.0,0.0) * rotation_matrix;
     osg::Vec3d lv = osg::Vec3d(0.0,0.0,-1.0) * rotation_matrix;
     osg::Vec3d sv = osg::Vec3d(1.0,0.0,0.0) * rotation_matrix;
@@ -504,7 +504,7 @@ bool DriveManipulator::calcMovement()
 
     double yaw = -inDegrees(dx*50.0*dt);
 
-    
+
 #ifdef KEYBOARD_PITCH
     double pitch_delta = 0.5;
     if (_pitchUpKeyPressed) _pitch += pitch_delta*dt;
@@ -520,12 +520,12 @@ bool DriveManipulator::calcMovement()
     double dy = _ga_t0->getYnormalized();
     _pitch += dy*dt;
 #endif
-    
+
     osg::Quat yaw_rotation;
     yaw_rotation.makeRotate(yaw,up);
-    
+
     _rotation *= yaw_rotation;
-    
+
     rotation_matrix.makeRotate(_rotation);
 
     sv = osg::Vec3d(1.0,0.0,0.0) * rotation_matrix;
@@ -538,7 +538,7 @@ bool DriveManipulator::calcMovement()
         double signedBuffer;
         if (distanceToMove>=0.0) signedBuffer=_buffer;
         else signedBuffer=-_buffer;
-        
+
         // check to see if any obstruction in front.
         osg::Vec3d ip, np;
         if (intersect(_eye,_eye+lv*(signedBuffer+distanceToMove), ip, np))
@@ -574,7 +574,7 @@ bool DriveManipulator::calcMovement()
             return true;
 
         }
-        
+
         // no hit on the terrain found therefore resort to a fall under
         // under the influence of gravity.
         osg::Vec3d dp = lfp;
@@ -598,7 +598,7 @@ bool DriveManipulator::calcMovement()
         // no collision with terrain has been found therefore track horizontally.
 
         lv *= (_velocity*dt);
-        
+
         _eye += lv;
     }
 

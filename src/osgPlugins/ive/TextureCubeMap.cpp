@@ -107,7 +107,7 @@ void TextureCubeMap::read(DataInputStream* in)
             setImage(osg::TextureCubeMap::POSITIVE_Z,in->readImage(includeImg));
             setImage(osg::TextureCubeMap::NEGATIVE_Z,in->readImage(includeImg));
         }
-        
+
     }
     else{
         in_THROW_EXCEPTION("TextureCubeMap::read(): Expected TextureCubeMap identification.");

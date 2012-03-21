@@ -18,8 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -53,9 +53,9 @@ struct PointData
   Vec3 coord;
   Vec2 texcoord;
 
-  inline bool operator == (const PointData& p) const 
-  { 
-    return coord == p.coord && texcoord == p.texcoord; 
+  inline bool operator == (const PointData& p) const
+  {
+    return coord == p.coord && texcoord == p.texcoord;
   }
 
 };
@@ -108,5 +108,5 @@ class Lwo2Layer
   PolygonsList _polygons;
   vector< short > _polygons_tag;
 };
- 
+
 #endif

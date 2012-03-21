@@ -48,9 +48,9 @@ bool TexEnv_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(color[1]);
         fr[3].getFloat(color[2]);
         fr[4].getFloat(color[3]);
-    
+
         texenv.setColor(color);
-        
+
         fr+=5;
         iteratorAdvanced = true;
     }
@@ -63,7 +63,7 @@ bool TexEnv_writeLocalData(const Object& obj, Output& fw)
     const TexEnv& texenv = static_cast<const TexEnv&>(obj);
 
     fw.indent() << "mode " << TexEnv_getModeStr(texenv.getMode()) << std::endl;
-    
+
     switch(texenv.getMode())
     {
         case(TexEnv::DECAL):

@@ -36,7 +36,7 @@ void Material::write(DataOutputStream* out){
     out->writeBool(_ambientFrontAndBack);
     out->writeVec4(_ambientFront);
     out->writeVec4(_ambientBack);
-    // Write diffuse    
+    // Write diffuse
     out->writeBool(_diffuseFrontAndBack);
     out->writeVec4(_diffuseFront);
     out->writeVec4(_diffuseBack);

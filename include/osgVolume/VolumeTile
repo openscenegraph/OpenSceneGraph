@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,17 +29,17 @@ class Volume;
 class OSGVOLUME_EXPORT TileID
 {
     public:
-    
+
         TileID();
 
         TileID(int in_level, int in_x, int in_y, int in_z);
-            
-        bool operator == (const TileID& rhs) const        
+
+        bool operator == (const TileID& rhs) const
         {
             return (level==rhs.level) && (x==rhs.x) && (y==rhs.y) && (z==rhs.z);
         }
 
-        bool operator != (const TileID& rhs) const        
+        bool operator != (const TileID& rhs) const
         {
             return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y) || (z!=rhs.z);
         }
@@ -54,7 +54,7 @@ class OSGVOLUME_EXPORT TileID
             if (y>rhs.y) return false;
             return z<rhs.z;
         }
-        
+
         bool valid() const { return level>=0; }
 
         int level;
@@ -71,7 +71,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
     public:
 
         VolumeTile();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         VolumeTile(const VolumeTile&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -92,16 +92,16 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         /** Get the const Volume that this Volume tile is a member of.*/
         const Volume* getVolume() const { return _volume; }
 
-        
+
         /** Set the TileID (layer, x,y,z) of the VolumeTile.
-          * The TileID is used so it can be located by its neighbours 
+          * The TileID is used so it can be located by its neighbours
           * via the enclosing Volume node that manages a map of TileID to VolumeTiles.*/
         void setTileID(const TileID& tileID);
-        
+
         /** Get the TileID (layer, x,y,z) of the VolumeTile.*/
         const TileID& getTileID() const { return _tileID; }
-        
-        
+
+
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
@@ -118,7 +118,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 
         /** Get the VolumeTechnique that will be used to render this tile. */
         VolumeTechnique* getVolumeTechnique() { return _volumeTechnique.get(); }
-        
+
         /** Get the const VolumeTechnique that will be used to render this tile. */
         const VolumeTechnique* getVolumeTechnique() const { return _volumeTechnique.get(); }
 
@@ -139,15 +139,15 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         friend class Volume;
 
         Volume*                             _volume;
-        
+
         bool                                _dirty;
         bool                                _hasBeenTraversal;
-        
+
         TileID                              _tileID;
 
         osg::ref_ptr<VolumeTechnique>       _volumeTechnique;
 
-        osg::ref_ptr<Locator>               _locator;        
+        osg::ref_ptr<Locator>               _locator;
 
         osg::ref_ptr<Layer>                 _layer;
 };

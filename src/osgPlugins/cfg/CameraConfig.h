@@ -58,7 +58,7 @@ namespace osgProducer {
 class CameraConfig : public osg::Referenced
 {
     public :
-        CameraConfig(); 
+        CameraConfig();
 
         void beginVisual( void );
 
@@ -140,7 +140,7 @@ class CameraConfig : public osg::Referenced
                                 float xshear=0.0, float yshear=0.0 );
 
         void setCameraLensShear( osg::Matrix::value_type xshear, osg::Matrix::value_type yshear );
-        
+
         void setCameraShareLens( bool shared );
 
         void setCameraShareView( bool shared );
@@ -166,7 +166,7 @@ class CameraConfig : public osg::Referenced
         Camera *findCamera( const char *name );
 
         unsigned int getNumberOfCameras() const;
-        
+
         const Camera *getCamera( unsigned int n ) const;
 
         Camera *getCamera( unsigned int n );

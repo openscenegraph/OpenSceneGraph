@@ -59,7 +59,7 @@ _styleManager   (new StyleManager()) {
     // Setup our picking debug (is debug the right word here?) Window...
     if(_flags & WM_PICK_DEBUG) {
         _pickWindow = new Box("PickWindow", Box::VERTICAL);
-        
+
         Label* label = new Label("PickLabel");
 
         label->setFontSize(13);
@@ -113,7 +113,7 @@ WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):
 WindowManager::~WindowManager()
 {
     if(_flags & WM_USE_LUA) _lua->close();
-    
+
     if(_flags & WM_USE_PYTHON) _python->close();
 }
 
@@ -152,7 +152,7 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
             Window* topmostWindow = ev._window->getTopmostParent();
 
             setFocused(topmostWindow);
-            
+
             if(ev._widget) topmostWindow->setFocused(ev._widget);
         }
 
@@ -271,7 +271,7 @@ void WindowManager::childInserted(unsigned int i) {
 
     _styleManager->applyStyles(window);
 }
-    
+
 void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
     for (unsigned int i = start; i < start+numChildren; i++)
     {
@@ -280,7 +280,7 @@ void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
         if(!window) continue;
 
         if(_remove(window)) {
-        
+
             window->_index = 0;
             window->unmanaged(this);
         }
@@ -343,7 +343,7 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
     }
 
     if(_flags & WM_PICK_DEBUG) _updatePickWindow(0, x, y);
-    
+
     return false;
 }
 
@@ -383,7 +383,7 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
     for(WindowVector::iterator i = windows.begin(); i != windows.end(); i++) {
         warn() << "- " << i->get()->getName() << " " << i->get()->getOrCreateStateSet()->getBinNumber() << std::endl;
     }
-        
+
     warn() << std::endl;
 
     return false;
@@ -394,7 +394,7 @@ bool WindowManager::setFocused(Window* window) {
     Event ev(this);
 
     ev._window = window;
-    
+
     // Inform the previously focused Window that it is going to be unfocused.
     if(_focused.valid()) _focused->callMethodAndCallbacks(ev.makeType(EVENT_UNFOCUS));
 
@@ -414,7 +414,7 @@ bool WindowManager::setFocused(Window* window) {
         if(w->getStrata() == Window::STRATA_FOREGROUND) fg.push_back(w);
 
         else if(w->getStrata() == Window::STRATA_BACKGROUND) bg.push_back(w);
-        
+
         else focusable.push_back(w);
     }
 
@@ -450,14 +450,14 @@ bool WindowManager::setFocused(Window* window) {
 
     // Handled our special BACKGROUND Windows.
     for(Iterator w = bg.begin(); w != bg.end(); w++) w->get()->_z = -zRange * i;
-    
+
     // Handle our special FOREGOUND Windows.
     for(Iterator w = fg.begin(); w != fg.end(); w++) w->get()->_z = -zRange;
-    
+
     // Update every window, regardless.
     for(Iterator w = begin(); w != end(); w++) {
         Window* win = w->get();
-        
+
         win->_zRange = zRange;
 
         win->update();
@@ -477,7 +477,7 @@ void WindowManager::setPointerXY(float x, float y) {
     // If ydiff isn't NEAR 0 (floating point booleans aren't 100% reliable, but that
     // doesn't matter in our case), assume we have either up or down movement.
     if(ydiff != 0.0f) _lastVertical = ydiff > 0.0f ? PD_UP : PD_DOWN;
-        
+
     else _lastVertical = PD_NONE;
 
     // If xdiff isn't 0, assume we have either left or right movement.
@@ -508,7 +508,7 @@ void WindowManager::setStyleManager(StyleManager* sm) {
 void WindowManager::resizeAllWindows(bool visible) {
     for(Iterator i = begin(); i != end(); i++) if(i->valid()) {
         if(visible && !getValue(i->get()->_index)) continue;
-        
+
         i->get()->resize();
     }
 }
@@ -556,7 +556,7 @@ bool WindowManager::pointerMove(float x, float y) {
             Event evLeave(this);
 
             evLeave.makeMouse(x, y, EVENT_MOUSE_LEAVE);
-            
+
             setEventFromInterface(evLeave, _lastEvent);
 
             _lastEvent->callMethodAndCallbacks(evLeave);

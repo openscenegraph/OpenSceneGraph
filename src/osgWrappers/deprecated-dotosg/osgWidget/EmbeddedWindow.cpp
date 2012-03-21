@@ -10,14 +10,14 @@
 bool osgWidget_EmbeddedWindow_readData(osg::Object& /*obj*/, osgDB::Input& fr)
 {
 	osgWidget::warn() << "EmbeddedWindow read" << std::endl;
-	
+
 	return false;
 }
 
 bool osgWidget_EmbeddedWindow_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
 {
 	// const osgWidget::Window::EmbeddedWindow& model = static_cast<const osgWidget::Window::EmbeddedWindow&>(obj);
-	
+
 	fw.indent() << fw.wrapString("EmbeddedWindow stuff...") << std::endl;
 
 	return true;

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
@@ -81,7 +81,7 @@ bool osg::isExtensionInExtensionString(const char *extension, const char *extens
     }
     if (*startOfWord && strcmp(extension, startOfWord) == 0)
         return true;
-   
+
    return false;
 }
 
@@ -97,9 +97,9 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
     // first check to see if GL version number of recent enough.
     bool result = requiredGLVersion <= osg::getGLVersionNumber();
-    
+
     if (!result)
-    {    
+    {
         // if not already set up, initialize all the per graphic context values.
         if (!s_glInitializedList[contextID])
         {
@@ -187,7 +187,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             }
 
             if (wglextensions)
-            {    
+            {
                 const char* startOfWord = wglextensions;
                 const char* endOfWord;
                 while ((endOfWord = strchr(startOfWord, ' ')))
@@ -213,7 +213,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
         // true if extension found in extensionSet.
         result = extensionSet.find(extension)!=extensionSet.end();
     }
-    
+
     // now see if extension is in the extension disabled list
     bool extensionDisabled = false;
     if (result)
@@ -222,13 +222,13 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
         const std::string& disableString = getGLExtensionDisableString();
         if (!disableString.empty())
         {
-                    
+
             std::string::size_type pos=0;
             while ( pos!=std::string::npos && (pos=disableString.find(extension,pos))!=std::string::npos )
             {
                 std::string::size_type previousColon = disableString.find_last_of(':',pos);
                 std::string::size_type previousSemiColon = disableString.find_last_of(';',pos);
-                
+
                 std::string renderer = "";
                 if (previousColon!=std::string::npos)
                 {
@@ -238,7 +238,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
                 if (!renderer.empty())
                 {
-                
+
                     // remove leading spaces if they exist.
                     std::string::size_type leadingSpaces = renderer.find_first_not_of(' ');
                     if (leadingSpaces==std::string::npos) renderer = ""; // nothing but spaces
@@ -249,20 +249,20 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                     if (trailingSpaces!=std::string::npos) renderer.erase(trailingSpaces+1,std::string::npos);
 
                 }
-                            
+
                 if (renderer.empty())
                 {
                     extensionDisabled = true;
                     break;
                 }
-                
+
                 if (rendererString.find(renderer)!=std::string::npos)
                 {
                     extensionDisabled = true;
                     break;
-                    
+
                 }
-                
+
                 // move the position in the disable string along so that the same extension is found multiple times
                 ++pos;
             }

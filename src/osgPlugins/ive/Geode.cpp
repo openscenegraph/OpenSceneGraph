@@ -41,7 +41,7 @@ void Geode::write(DataOutputStream* out){
     // Write out every drawable.
         for(unsigned int i=0;i<getNumDrawables();i++){
         osg::Drawable* drawable = getDrawable(i);
-#if 0        
+#if 0
         if(dynamic_cast<osg::Geometry*>(drawable))
             ((ive::Geometry*)(drawable))->write(out);
         else{
@@ -72,11 +72,11 @@ void Geode::read(DataInputStream* in){
         int size = in->readInt();
         // Read the drawables.
         for(int i = 0; i<size; i++){
-#if 0        
+#if 0
             int id = in->peekInt();
             osg::Drawable* drawable;
             if(id == IVEGEOMETRY){
-                drawable = new osg::Geometry();                
+                drawable = new osg::Geometry();
                 ((Geometry*)(drawable))->read(in);
                 addDrawable(drawable);
             }
@@ -84,7 +84,7 @@ void Geode::read(DataInputStream* in){
                 in_THROW_EXCEPTION("Unknown drawable identification in Geode::read()");
 #else
             addDrawable(in->readDrawable());
-#endif        
+#endif
         }
     }
     else{

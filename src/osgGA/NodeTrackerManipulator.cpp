@@ -105,7 +105,7 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
                 OSG_NOTICE<<"     "<<(*itr)->className()<<std::endl;
             }
         }
-        
+
 
         OSG_INFO<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
         setTrackNodePath( nodePaths[0] );

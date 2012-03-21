@@ -27,7 +27,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
 {
     if ( !options ) return;
     _options = options;
-    
+
     if ( options->getPluginStringData("SchemaData")=="true" )
         _useSchemaData = true;
     if ( !options->getPluginStringData("SchemaFile").empty() )
@@ -156,7 +156,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << std::endl;
         return;
     }
-    
+
     switch ( a->getType() )
     {
     case osg::Array::ByteArrayType:
@@ -251,7 +251,7 @@ void OutputStream::writeArray( const osg::Array* a )
 void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
 {
     if ( !p ) return;
-    
+
     switch ( p->getType() )
     {
     case osg::PrimitiveSet::DrawArraysPrimitiveType:
@@ -387,7 +387,7 @@ void OutputStream::writeImage( const osg::Image* img )
                 {
                     unsigned int size = osg::Image::computeImageSizeInBytes(s,t,r,img->getPixelFormat(),img->getDataType(),img->getPacking());
                     offset += size;
-                    
+
                     *this << offset;
 
                     s >>= 1;
@@ -395,7 +395,7 @@ void OutputStream::writeImage( const osg::Image* img )
                     r >>= 1;
                     if (s<1) s=1;
                     if (t<1) t=1;
-                    if (r<1) r=1;                    
+                    if (r<1) r=1;
                 }
             }
             break;
@@ -500,7 +500,7 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
                 StringList properties;
                 std::vector<int> types;
                 assocWrapper->writeSchema( properties, types );
-                
+
                 unsigned int size = osg::minimum( properties.size(), types.size() );
                 if ( size>0 )
                 {
@@ -528,16 +528,16 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
 {
     _fields.clear();
     _fields.push_back( "Start" );
-    
+
     _out = outIterator;
     if ( !_out )
         throwException( "OutputStream: Null stream specified." );
     if ( getException() ) return;
-    
+
     if ( isBinary() )
     {
         *this << (unsigned int)type << (unsigned int)OPENSCENEGRAPH_SOVERSION;
-        
+
         bool useCompressSource = false;
         unsigned int attributes = 0;
 
@@ -547,7 +547,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
             useCompressSource = true;
         }
         *this << attributes;
-        
+
         if ( !_compressorName.empty() )
         {
             BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
@@ -564,7 +564,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         }
         if ( !_compressorName.empty() ) *this << _compressorName;
         else *this << std::string("0");  // No compressor
-        
+
         // Compressors and inbuilt schema use a new stream, which will be merged with the original one at the end.
         if ( useCompressSource )
         {
@@ -582,7 +582,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         case WRITE_OBJECT: typeString = "Object"; break;
         default: break;
         }
-        
+
         *this << typeString << std::endl;
         *this << PROPERTY("#Version") << (unsigned int)OPENSCENEGRAPH_SOVERSION << std::endl;
         *this << PROPERTY("#Generator") << std::string("OpenSceneGraph")
@@ -596,12 +596,12 @@ void OutputStream::compress( std::ostream* ostream )
 {
     _fields.clear();
     if ( !isBinary() ) return;
-    
+
     std::stringstream schemaSource;
     if ( _useSchemaData )
     {
         _fields.push_back( "SchemaData" );
-        
+
         std::string schemaData;
         for ( std::map<std::string, std::string>::iterator itr=_inbuiltSchemaMap.begin();
               itr!=_inbuiltSchemaMap.end(); ++itr )
@@ -610,15 +610,15 @@ void OutputStream::compress( std::ostream* ostream )
             schemaData += itr->second;
             schemaData += '\n';
         }
-        
+
         int size = schemaData.size();
         schemaSource.write( (char*)&size, INT_SIZE );
         schemaSource.write( schemaData.c_str(), size );
-        
+
         _inbuiltSchemaMap.clear();
         _fields.pop_back();
     }
-    
+
     if ( !_compressorName.empty() )
     {
         _fields.push_back( "Compression" );
@@ -628,7 +628,7 @@ void OutputStream::compress( std::ostream* ostream )
             _fields.pop_back();
             return;
         }
-        
+
         if ( !compressor->compress(*ostream, schemaSource.str() + _compressSource.str()) )
             throwException( "OutputStream: Failed to compress stream." );
         if ( getException() ) return;
@@ -650,11 +650,11 @@ void OutputStream::writeSchema( std::ostream& fout )
     {
         ObjectWrapper* wrapper = itr->second.get();
         fout << itr->first << " =";
-        
+
         StringList properties;
         std::vector<int> types;
         wrapper->writeSchema( properties, types );
-        
+
         std::string propertiesString;
         unsigned int size = osg::minimum( properties.size(), types.size() );
         for ( unsigned int i=0; i<size; ++i )

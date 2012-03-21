@@ -75,25 +75,25 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                 {
                     _scaleCenter.set(0.0,0.0);
 
-                    if (pointer.contains(_topLeftHandleNode.get())) 
+                    if (pointer.contains(_topLeftHandleNode.get()))
                     {
                         _referencePoint = _topLeftHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _bottomRightHandlePosition;
                     }
-                    else if (pointer.contains(_bottomLeftHandleNode.get())) 
+                    else if (pointer.contains(_bottomLeftHandleNode.get()))
                     {
                         _referencePoint = _bottomLeftHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _topRightHandlePosition;
                     }
-                    else if (pointer.contains(_bottomRightHandleNode.get())) 
+                    else if (pointer.contains(_bottomRightHandleNode.get()))
                     {
                         _referencePoint = _bottomRightHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _topLeftHandlePosition;
                     }
-                    else if (pointer.contains(_topRightHandleNode.get())) 
+                    else if (pointer.contains(_topRightHandleNode.get()))
                     {
                         _referencePoint = _topRightHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
@@ -115,7 +115,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
 
         // Pick move.
@@ -144,9 +144,9 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
@@ -189,7 +189,7 @@ void Scale2DDragger::setupDefaultGeometry()
 
         lineGeode->addDrawable(geometry);
     }
-    
+
     // Turn of lighting for line and set line width.
     lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     osg::LineWidth* linewidth = new osg::LineWidth();
@@ -207,7 +207,7 @@ void Scale2DDragger::setupDefaultGeometry()
         addChild(geode);
         setTopLeftHandleNode(*geode);
     }
-    
+
     // Create a bottom left box.
     {
         osg::Geode* geode = new osg::Geode;

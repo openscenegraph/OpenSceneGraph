@@ -154,7 +154,7 @@ static bool readChannels( osgDB::InputStream& is, osgAnimation::Animation& ani )
     {
         std::string type;
         is >> osgDB::PROPERTY("Type") >> type >> osgDB::BEGIN_BRACKET;
-        
+
         READ_CHANNEL_FUNC( DoubleStepChannel, osgAnimation::DoubleStepChannel, osgAnimation::DoubleKeyframeContainer, double );
         READ_CHANNEL_FUNC( FloatStepChannel, osgAnimation::FloatStepChannel, osgAnimation::FloatKeyframeContainer, float );
         READ_CHANNEL_FUNC( Vec2StepChannel, osgAnimation::Vec2StepChannel, osgAnimation::Vec2KeyframeContainer, osg::Vec2 );
@@ -224,7 +224,7 @@ static bool writeChannels( osgDB::OutputStream& os, const osgAnimation::Animatio
                                                      osgAnimation::Vec3CubicBezierKeyframeContainer );
         WRITE_CHANNEL_FUNC2( Vec4CubicBezierChannel, osgAnimation::Vec4CubicBezierChannel,
                                                      osgAnimation::Vec4CubicBezierKeyframeContainer );
-        
+
         os << osgDB::PROPERTY("Type") << std::string("UnknownChannel") << osgDB::BEGIN_BRACKET << std::endl;
         os << osgDB::END_BRACKET << std::endl;
     }
@@ -240,13 +240,13 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_Animation,
     ADD_DOUBLE_SERIALIZER( Duration, 0.0f );  // _duration
     ADD_FLOAT_SERIALIZER( Weight, 0.0f );  // _weight
     ADD_DOUBLE_SERIALIZER( StartTime, 0.0f );  // _startTime
-    
+
     BEGIN_ENUM_SERIALIZER( PlayMode, LOOP );
         ADD_ENUM_VALUE( ONCE );
         ADD_ENUM_VALUE( STAY );
         ADD_ENUM_VALUE( LOOP );
         ADD_ENUM_VALUE( PPONG );
     END_ENUM_SERIALIZER();  // _playmode
-    
+
     ADD_USER_SERIALIZER( Channels );  // _channels
 }

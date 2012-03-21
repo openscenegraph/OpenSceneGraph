@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,7 +33,7 @@ namespace osg {
 
 class Program;
 
-/** Simple class for wrapping up the data used in OpenGL ES 2's glShaderBinary calls.  
+/** Simple class for wrapping up the data used in OpenGL ES 2's glShaderBinary calls.
   * ShaderBinary is set up with the binary data then assigned to one or more osg::Shader. */
 class OSG_EXPORT ShaderBinary : public osg::Object
 {
@@ -114,7 +114,7 @@ class OSG_EXPORT Shader : public osg::Object
 
         /** Get the Shader type as a descriptive string. */
         const char* getTypename() const;
-        
+
 
         /** Set file name for the shader source code. */
         inline void setFileName(const std::string& fileName) { _shaderFileName = fileName; }
@@ -131,13 +131,13 @@ class OSG_EXPORT Shader : public osg::Object
 
 
         /** Set the Shader using a ShaderBinary. */
-        void setShaderBinary(ShaderBinary* shaderBinary) { _shaderBinary = shaderBinary; } 
-        
+        void setShaderBinary(ShaderBinary* shaderBinary) { _shaderBinary = shaderBinary; }
+
         /** Get the Shader's ShaderBinary, return NULL if none is assigned. */
-        ShaderBinary* getShaderBinary() { return _shaderBinary.get(); } 
+        ShaderBinary* getShaderBinary() { return _shaderBinary.get(); }
 
         /** Get the const Shader's ShaderBinary, return NULL if none is assigned. */
-        const ShaderBinary* getShaderBinary() const { return _shaderBinary.get(); } 
+        const ShaderBinary* getShaderBinary() const { return _shaderBinary.get(); }
 
 
         /** Read shader source from file and then constructor shader of specified type.
@@ -177,7 +177,7 @@ class OSG_EXPORT Shader : public osg::Object
 
         /** Mark our PCSs as needing recompilation.
           * Also mark Programs that depend on us as needing relink */
-        void dirtyShader();        
+        void dirtyShader();
 
         /** If needed, compile the PCS's glShader */
         void compileShader(osg::State& state) const;
@@ -267,7 +267,7 @@ class OSG_EXPORT Shader : public osg::Object
         osg::ref_ptr<ShaderBinary>      _shaderBinary;
 
         CodeInjectionMap                _codeInjectionMap;
-        
+
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;
         ProgramSet                      _programSet;

@@ -1,9 +1,9 @@
-/* 
+/*
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or (at
  * your option) any later version. The full license is in the LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -211,7 +211,7 @@ FltExportVisitor::writeGroup( const osg::Group& group,
 }
 
 
-// 
+//
 //  Since OpenFlight doesn't have 'Sequence' records---just Group records that
 //  may, optionally, be animated---this routine sets the animation-related
 //  parameters for a Group record and simply forwards to writeGroup()
@@ -219,14 +219,14 @@ FltExportVisitor::writeGroup( const osg::Group& group,
 void
 FltExportVisitor::writeSequence( const osg::Sequence& sequence )
 {
-    
+
     int32 flags = 0, loopCount = 0;
     float32 loopDuration = 0.0f, lastFrameDuration = 0.0f;
 
     osg::Sequence::LoopMode mode;
     int firstChildDisplayed, lastChildDisplayed;
     sequence.getInterval(mode, firstChildDisplayed, lastChildDisplayed);
-    
+
     if (firstChildDisplayed == 0)
     {
         flags |= FORWARD_ANIM;
@@ -422,7 +422,7 @@ FltExportVisitor::writeExternalReference( const osg::ProxyNode& proxy )
 
     // Selectively turn off overrides for resources we don't need
     const ParentPools* pp = dynamic_cast<const ParentPools*>(proxy.getUserData() );
-    
+
     if (pp && pp->getColorPool() )
       flags &= ~COLOR_PALETTE_OVERRIDE;
 
@@ -532,7 +532,7 @@ FltExportVisitor::writeSwitch( const osgSim::MultiSwitch* ms )
     int32 numMasks = ms->getSwitchSetList().size();
     int32 numWordsPerMask = ms->getNumChildren() / 32;
     if (ms->getNumChildren() % 32 != 0) ++numWordsPerMask;
-    
+
     uint16 length( 28 + numMasks * numWordsPerMask * sizeof(int32) );
     IdHelper id(*this, ms->getName() );
 
@@ -548,7 +548,7 @@ FltExportVisitor::writeSwitch( const osgSim::MultiSwitch* ms )
     for (int i = 0; i < numMasks; ++i)
     {
         // ... write out the set of 32-bit words comprising the mask
-        uint32 maskWord = 0; 
+        uint32 maskWord = 0;
         const osgSim::MultiSwitch::ValueList& maskBits = ms->getValueList(i);
 
         for (size_t j = 0; j < maskBits.size(); ++j)
@@ -566,7 +566,7 @@ FltExportVisitor::writeSwitch( const osgSim::MultiSwitch* ms )
         }
 
         // If the mask size wasn't a multiple of 32, need to write out
-        // the final word containing the 'remainder' bits 
+        // the final word containing the 'remainder' bits
         if (maskBits.size() % 32 != 0)
         {
             _records->writeUInt32(maskWord);
@@ -598,7 +598,7 @@ FltExportVisitor::writeSwitch( const osg::Switch* sw )
     _records->writeInt32( numWordsPerMask );
 
     // Bust the mask up into as many 32-bit words as are necessary to hold it
-    uint32 maskWord = 0; 
+    uint32 maskWord = 0;
     const osg::Switch::ValueList& maskBits = sw->getValueList();
 
     for (size_t i = 0; i < maskBits.size(); ++i)
@@ -616,7 +616,7 @@ FltExportVisitor::writeSwitch( const osg::Switch* sw )
     }
 
     // If the mask size wasn't a multiple of 32, need to write out
-    // the final word containing the 'remainder' bits 
+    // the final word containing the 'remainder' bits
     if (maskBits.size() % 32 != 0)
     {
         _records->writeUInt32(maskWord);

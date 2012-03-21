@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ struct TileIdentifier : public osg::Referenced
         y(ay),
         lod(alod)
     {}
-    
+
     TileIdentifier(const TileIdentifier& rhs):
         osg::Referenced(),
         x(rhs.x),
@@ -90,14 +90,14 @@ struct TileIdentifier : public osg::Referenced
 class TileMapper : public osg::NodeVisitor, public osg::CullStack
 {
 public:
-    
+
     typedef osg::Matrix::value_type value_type;
 
 
     TileMapper():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
 
-            
+
     virtual osg::Vec3 getEyePoint() const
     {
         return getEyeLocal();
@@ -109,17 +109,17 @@ public:
     virtual void apply(osg::Group& node);
     virtual void apply(osg::Geode& node);
     virtual void apply(osg::PagedLOD& node);
-    
+
     void insertTile(const TileIdentifier& tid);
-    
+
     bool isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx, int dy) const;
-    
+
 protected:
 
     typedef std::map< TileIdentifier, int>        TileMap;
     TileMap                                        _tileMap;
     bool                                        _containsGeode;
-    
+
 };
 
 } // namespace

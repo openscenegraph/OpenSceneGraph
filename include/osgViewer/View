@@ -49,7 +49,7 @@ struct OSGVIEWER_EXPORT DepthPartitionSettings : public osg::Referenced
     double _zFar;
 };
 
-    
+
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
 class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 {

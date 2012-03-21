@@ -18,6 +18,6 @@ REGISTER_OBJECT_WRAPPER( AlphaFunc,
         ADD_ENUM_VALUE( GEQUAL );
         ADD_ENUM_VALUE( ALWAYS );
     END_ENUM_SERIALIZER();  // _comparisonFunc
-    
+
     ADD_FLOAT_SERIALIZER( ReferenceValue, 1.0f );  // _referenceValue
 }

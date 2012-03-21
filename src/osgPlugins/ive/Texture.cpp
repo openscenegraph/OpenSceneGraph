@@ -42,7 +42,7 @@ void Texture::write(DataOutputStream* out){
     out->writeVec4(_borderColor);
 
     out->writeInt(_internalFormatMode);
-    
+
     if ( out->getVersion() >= VERSION_0008 )
     {
         out->writeInt(_internalFormat);
@@ -56,7 +56,7 @@ void Texture::write(DataOutputStream* out){
         out->writeBool(_clientStorageHint);
         out->writeBool(_resizeNonPowerOfTwoHint);
     }
-    
+
     if ( out->getVersion() >= VERSION_0014 )
     {
         out->writeInt(_sourceFormat);

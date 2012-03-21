@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -31,7 +31,7 @@ namespace osgPresentation {
 class OSGPRESENTATION_EXPORT AnimationMaterial : public virtual osg::Object
 {
     public:
-    
+
         AnimationMaterial():_loopMode(LOOP) {}
 
         AnimationMaterial(const AnimationMaterial& ap, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
@@ -42,45 +42,45 @@ class OSGPRESENTATION_EXPORT AnimationMaterial : public virtual osg::Object
         META_Object(osg,AnimationMaterial);
 
 
-        /** get the transformation matrix for a point in time.*/        
+        /** get the transformation matrix for a point in time.*/
         bool getMaterial(double time,osg::Material& material) const;
 
         void insert(double time,osg::Material* material);
-        
+
         double getFirstTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.begin()->first; else return 0.0;}
         double getLastTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.rbegin()->first; else return 0.0;}
         double getPeriod() const { return getLastTime()-getFirstTime();}
-        
+
         enum LoopMode
         {
             SWING,
             LOOP,
             NO_LOOPING
         };
-        
+
         void setLoopMode(LoopMode lm) { _loopMode = lm; }
-        
+
         LoopMode getLoopMode() const { return _loopMode; }
 
 
         typedef std::map<double, osg::ref_ptr<osg::Material> > TimeControlPointMap;
-        
+
         TimeControlPointMap& getTimeControlPointMap() { return _timeControlPointMap; }
-        
+
         const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
-        
+
         /** read the anumation path from a flat ascii file stream.*/
         void read(std::istream& in);
 
         /** write the anumation path to a flat ascii file stream.*/
         void write(std::ostream& out) const;
-        
+
         bool requiresBlending() const;
 
     protected:
-    
+
         virtual ~AnimationMaterial() {}
-        
+
         void interpolate(osg::Material& material, float r, const osg::Material& lhs,const osg::Material& rhs) const;
 
         TimeControlPointMap _timeControlPointMap;
@@ -100,7 +100,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
             _latestTime(0.0),
             _pause(false),
             _pauseTime(0.0) {}
-            
+
 
         AnimationMaterialCallback(const AnimationMaterialCallback& apc,const osg::CopyOp& copyop):
             osg::NodeCallback(apc,copyop),
@@ -113,7 +113,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
             _pause(apc._pause),
             _pauseTime(apc._pauseTime) {}
 
-        
+
         META_Object(osg,AnimationMaterialCallback);
 
         AnimationMaterialCallback(AnimationMaterial* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
@@ -125,16 +125,16 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
             _latestTime(0.0),
             _pause(false),
             _pauseTime(0.0) {}
-            
+
         void setAnimationMaterial(AnimationMaterial* path) { _animationMaterial = path; }
 
         AnimationMaterial* getAnimationMaterial() { return _animationMaterial.get(); }
 
         const AnimationMaterial* getAnimationMaterial() const { return _animationMaterial.get(); }
-        
+
         void setTimeOffset(double offset) { _timeOffset = offset; }
         double getTimeOffset() const { return _timeOffset; }
-        
+
         void setTimeMultiplier(double multiplier) { _timeMultiplier = multiplier; }
         double getTimeMultiplier() const { return _timeMultiplier; }
 
@@ -148,7 +148,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
 
         /** implements the callback*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
-        
+
         void update(osg::Node& node);
 
     public:
@@ -163,7 +163,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
         double                              _pauseTime;
 
     protected:
-    
+
         ~AnimationMaterialCallback(){}
 
 };

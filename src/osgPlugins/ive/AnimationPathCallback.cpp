@@ -61,7 +61,7 @@ void AnimationPathCallback::read(DataInputStream* in){
         }
         else
             in_THROW_EXCEPTION("AnimationPathCallback::read(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
-        
+
         // Read AnimationPathCallback's properties
         _pivotPoint = in->readVec3();
         _timeOffset = in->readDouble();

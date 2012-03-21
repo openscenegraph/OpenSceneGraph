@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GL>
@@ -111,7 +111,7 @@ void Image::DataIterator::operator ++ ()
     {
         // advance to next row
         ++_rowNum;
-        
+
         if (_rowNum>=_image->t())
         {
             // moved over end of current image so move to next
@@ -127,7 +127,7 @@ void Image::DataIterator::operator ++ ()
             }
         }
     }
-   
+
     assign();
 }
 
@@ -140,7 +140,7 @@ void Image::DataIterator::assign()
         _currentSize = 0;
         return;
     }
-    
+
     //OSG_NOTICE<<"DataIterator::assign B"<<std::endl;
 
     if (_image->isDataContiguous())
@@ -153,7 +153,7 @@ void Image::DataIterator::assign()
 
         return;
     }
-    
+
     //OSG_NOTICE<<"DataIterator::assign C"<<std::endl;
 
     if (_image->isMipmap())
@@ -167,16 +167,16 @@ void Image::DataIterator::assign()
             return;
         }
         const unsigned char* ptr = _image->getMipmapData(_mipmapNum);
-        
+
         int rowLength = _image->getRowLength()>>_mipmapNum;
         if (rowLength==0) rowLength = 1;
-        
+
         int imageHeight = _image->t()>>_mipmapNum;
         if (imageHeight==0) imageHeight = 1;
-        
+
         unsigned int rowWidthInBytes = Image::computeRowWidthInBytes(rowLength,_image->getPixelFormat(),_image->getDataType(),_image->getPacking());
         unsigned int imageSizeInBytes = rowWidthInBytes*imageHeight;
-        
+
         _currentPtr = ptr + rowWidthInBytes*_rowNum + imageSizeInBytes*_imageNum;
         _currentSize = rowWidthInBytes;
     }
@@ -215,7 +215,7 @@ Image::Image()
     _allocationMode(USE_NEW_DELETE),
     _data(0L)
 {
-    setDataVariance(STATIC); 
+    setDataVariance(STATIC);
 }
 
 Image::Image(const Image& image,const CopyOp& copyop):
@@ -287,7 +287,7 @@ int Image::compare(const Image& rhs) const
     if ((_data || rhs._data) && (_data == rhs._data)) return 0;
 
     // slowest comparison at the bottom!
-    COMPARE_StateAttribute_Parameter(getFileName())    
+    COMPARE_StateAttribute_Parameter(getFileName())
 
     return 0;
 }
@@ -322,7 +322,7 @@ bool Image::isPackedType(GLenum type)
         case(GL_UNSIGNED_INT_10_10_10_2):
         case(GL_UNSIGNED_INT_2_10_10_10_REV): return true;
         default: return false;
-    }    
+    }
 }
 
 
@@ -369,7 +369,7 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_INTENSITY8UI_EXT):
         case(GL_INTENSITY16UI_EXT):
         case(GL_INTENSITY32UI_EXT):
-            OSG_WARN<<"Image::computePixelFormat("<<std::hex<<format<<std::dec<<") intensity pixel format is not correctly specified, so assume GL_LUMINANCE_INTEGER."<<std::endl;            
+            OSG_WARN<<"Image::computePixelFormat("<<std::hex<<format<<std::dec<<") intensity pixel format is not correctly specified, so assume GL_LUMINANCE_INTEGER."<<std::endl;
             return GL_LUMINANCE_INTEGER_EXT;
         case(GL_LUMINANCE_ALPHA8I_EXT):
         case(GL_LUMINANCE_ALPHA16I_EXT):
@@ -403,11 +403,11 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
     switch (pixelFormat)
     {
         case GL_LUMINANCE32F_ARB:
-        case GL_LUMINANCE16F_ARB: 
+        case GL_LUMINANCE16F_ARB:
         case GL_LUMINANCE_ALPHA32F_ARB:
-        case GL_LUMINANCE_ALPHA16F_ARB: 
+        case GL_LUMINANCE_ALPHA16F_ARB:
         case GL_RGB32F_ARB:
-        case GL_RGB16F_ARB: 
+        case GL_RGB16F_ARB:
         case GL_RGBA32F_ARB:
         case GL_RGBA16F_ARB: return GL_FLOAT;
 
@@ -418,7 +418,7 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
 
         case GL_RGB16UI_EXT:
         case GL_RGBA16UI_EXT:
-        case GL_LUMINANCE16UI_EXT: 
+        case GL_LUMINANCE16UI_EXT:
         case GL_LUMINANCE_ALPHA16UI_EXT: return GL_UNSIGNED_SHORT;
 
         case GL_RGBA8UI_EXT:
@@ -426,7 +426,7 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
         case GL_LUMINANCE8UI_EXT:
         case GL_LUMINANCE_ALPHA8UI_EXT:  return GL_UNSIGNED_BYTE;
 
-        case GL_RGBA32I_EXT:  
+        case GL_RGBA32I_EXT:
         case GL_RGB32I_EXT:
         case GL_LUMINANCE32I_EXT:
         case GL_LUMINANCE_ALPHA32I_EXT: return GL_INT;
@@ -436,9 +436,9 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
         case GL_LUMINANCE16I_EXT:
         case GL_LUMINANCE_ALPHA16I_EXT: return GL_SHORT;
 
-        case GL_RGB8I_EXT: 
-        case GL_RGBA8I_EXT: 
-        case GL_LUMINANCE8I_EXT: 
+        case GL_RGB8I_EXT:
+        case GL_RGBA8I_EXT:
+        case GL_LUMINANCE8I_EXT:
         case GL_LUMINANCE_ALPHA8I_EXT: return GL_BYTE;
 
         case GL_RGBA:
@@ -447,7 +447,7 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
         case GL_LUMINANCE_ALPHA:
         case GL_ALPHA: return GL_UNSIGNED_BYTE;
 
-        default: 
+        default:
         {
             OSG_WARN<<"error computeFormatType = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
             return 0;
@@ -466,7 +466,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT): return 1;
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 1;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 2;
-        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 2;    
+        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 2;
         case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 3;
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 3;
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
@@ -563,7 +563,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
             OSG_WARN<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
             return 0;
         }
-    }        
+    }
 }
 
 
@@ -632,41 +632,41 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
     switch(type)
     {
-   
+
         case(GL_BITMAP): return computeNumComponents(format);
-        
+
         case(GL_BYTE):
         case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
-        
+
         case(GL_HALF_FLOAT_NV):
         case(GL_SHORT):
         case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
-        
+
         case(GL_INT):
         case(GL_UNSIGNED_INT):
         case(GL_FLOAT): return 32*computeNumComponents(format);
-    
-    
-        case(GL_UNSIGNED_BYTE_3_3_2): 
+
+
+        case(GL_UNSIGNED_BYTE_3_3_2):
         case(GL_UNSIGNED_BYTE_2_3_3_REV): return 8;
-        
+
         case(GL_UNSIGNED_SHORT_5_6_5):
         case(GL_UNSIGNED_SHORT_5_6_5_REV):
         case(GL_UNSIGNED_SHORT_4_4_4_4):
         case(GL_UNSIGNED_SHORT_4_4_4_4_REV):
         case(GL_UNSIGNED_SHORT_5_5_5_1):
         case(GL_UNSIGNED_SHORT_1_5_5_5_REV): return 16;
-        
+
         case(GL_UNSIGNED_INT_8_8_8_8):
         case(GL_UNSIGNED_INT_8_8_8_8_REV):
         case(GL_UNSIGNED_INT_10_10_10_2):
         case(GL_UNSIGNED_INT_2_10_10_10_REV): return 32;
-        default: 
+        default:
         {
             OSG_WARN<<"error type = "<<type<<std::endl;
             return 0;
         }
-    }    
+    }
 
 }
 
@@ -710,7 +710,7 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum t
 unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing)
 {
     if (width==0 || height==0 || depth==0) return 0;
-    
+
     return osg::maximum(
             Image::computeRowWidthInBytes(width,pixelFormat,type,packing)*height*depth,
             computeBlockSize(pixelFormat, packing)
@@ -757,7 +757,7 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
-        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): 
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
@@ -770,12 +770,12 @@ bool Image::isCompressed() const
 
 unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
 {
-    if (_mipmapData.empty()) 
+    if (_mipmapData.empty())
     {
         // no mips so just return size of main image
         return getTotalSizeInBytes();
     }
-    
+
     int s = _s;
     int t = _t;
     int r = _r;
@@ -783,7 +783,7 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
     for(unsigned int i=0;i<_mipmapData.size()+1;++i)
     {
         totalSize += computeImageSizeInBytes(s, t, r, _pixelFormat, _dataType, _packing);
-        
+
         s >>= 1;
         t >>= 1;
         r >>= 1;
@@ -796,11 +796,11 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    return totalSize;
 }
 
-void Image::setRowLength(int length) 
-{ 
+void Image::setRowLength(int length)
+{
     _rowLength = length;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    if (length > 0) 
+    if (length > 0)
     {
         OSG_WARN << "Image::setRowLength is not supported on this platform, ignoring" << std::endl;
     }
@@ -810,7 +810,7 @@ void Image::setRowLength(int length)
 
 void Image::setInternalTextureFormat(GLint internalFormat)
 {
-    // won't do any sanity checking right now, leave it to 
+    // won't do any sanity checking right now, leave it to
     // OpenGL to make the call.
     _internalTextureFormat = internalFormat;
 }
@@ -843,9 +843,9 @@ void Image::allocateImage(int s,int t,int r,
     _mipmapData.clear();
 
     unsigned int previousTotalSize = 0;
-    
+
     if (_data) previousTotalSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing)*_t*_r;
-    
+
     unsigned int newTotalSize = computeRowWidthInBytes(s,format,type,packing)*t*r;
 
     if (newTotalSize!=previousTotalSize)
@@ -865,14 +865,14 @@ void Image::allocateImage(int s,int t,int r,
         _dataType = type;
         _packing = packing;
         _rowLength = 0;
-        
+
         // preserve internalTextureFormat if already set, otherwise
         // use the pixelFormat as the source for the format.
         if (_internalTextureFormat==0) _internalTextureFormat = format;
     }
     else
     {
-    
+
         // failed to allocate memory, for now, will simply set values to 0.
         _s = 0;
         _t = 0;
@@ -881,12 +881,12 @@ void Image::allocateImage(int s,int t,int r,
         _dataType = 0;
         _packing = 0;
         _rowLength = 0;
-        
+
         // commenting out reset of _internalTextureFormat as we are changing
         // policy so that allocateImage honours previous settings of _internalTextureFormat.
         //_internalTextureFormat = 0;
     }
-    
+
     dirty();
 }
 
@@ -912,7 +912,7 @@ void Image::setImage(int s,int t,int r,
 
     _packing = packing;
     _rowLength = rowLength;
-        
+
     dirty();
 
 }
@@ -938,7 +938,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     const osg::Texture3D::Extensions* extensions3D = osg::Texture3D::getExtensions(contextID,true);
     const osg::Texture2DArray::Extensions* extensions2DArray = osg::Texture2DArray::getExtensions(contextID,true);
 
-    
+
     GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE, bindingCubeMap = GL_FALSE;
 
     glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
@@ -976,7 +976,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
                 break;
         }
     }
-    
+
     if (textureMode==0) return;
 
     GLint internalformat;
@@ -1002,10 +1002,10 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     {
         numMipMaps = 1;
     }
-    
+
     // OSG_NOTICE<<"Image::readImageFromCurrentTexture() : numMipMaps = "<<numMipMaps<<std::endl;
 
-        
+
     GLint compressed = 0;
 
     if (textureMode==GL_TEXTURE_2D)
@@ -1029,33 +1029,33 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
-    
-    
-        
+
+
+
     /* if the compression has been successful */
     if (compressed == GL_TRUE)
     {
 
         MipmapDataType mipMapData;
-        
+
         unsigned int total_size = 0;
         GLint i;
         for(i=0;i<numMipMaps;++i)
         {
             if (i>0) mipMapData.push_back(total_size);
-            
+
             GLint compressed_size;
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
-            
+
             total_size += compressed_size;
         }
-        
-        
+
+
         unsigned char* data = new unsigned char[total_size];
         if (!data)
         {
             OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
-            return; 
+            return;
         }
 
         deallocateData(); // and sets it to NULL.
@@ -1073,7 +1073,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _s = width;
         _t = height;
         _r = depth;
-        
+
         _pixelFormat = internalformat;
         _dataType = type;
         _internalTextureFormat = internalformat;
@@ -1088,7 +1088,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         }
 
         dirty();
-    
+
     }
     else
     {
@@ -1107,22 +1107,22 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         for(i=0;i<numMipMaps;++i)
         {
             if (i>0) mipMapData.push_back(total_size);
-            
+
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_WIDTH, &width);
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_HEIGHT, &height);
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_DEPTH, &depth);
-            
+
             unsigned int level_size = computeRowWidthInBytes(width,internalformat,type,packing)*height*depth;
 
             total_size += level_size;
         }
-        
-        
+
+
         unsigned char* data = new unsigned char[total_size];
         if (!data)
         {
             OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
-            return; 
+            return;
         }
 
         deallocateData(); // and sets it to NULL.
@@ -1135,7 +1135,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _s = width;
         _t = height;
         _r = depth;
-        
+
         _pixelFormat = computePixelFormat(internalformat);
         _dataType = type;
         _internalTextureFormat = internalformat;
@@ -1143,14 +1143,14 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _allocationMode=USE_NEW_DELETE;
         _packing = packing;
         _rowLength = rowLength;
-        
+
         for(i=0;i<numMipMaps;++i)
         {
             glGetTexImage(textureMode,i,_pixelFormat,_dataType,getMipmapData(i));
         }
 
         dirty();
-    }    
+    }
 #else
     OSG_NOTICE<<"Warning: Image::readImageFromCurrentTexture() not supported."<<std::endl;
 #endif
@@ -1286,7 +1286,7 @@ void Image::flipHorizontal()
     {
         unsigned int rowStepInBytes = getRowStepInBytes();
         unsigned int imageStepInBytes = getImageStepInBytes();
-        
+
         for(int r=0;r<_r;++r)
         {
             for (int t=0; t<_t; ++t)
@@ -1312,7 +1312,7 @@ void Image::flipHorizontal()
         OSG_WARN << "Error Image::flipHorizontal() did not succeed : cannot flip mipmapped image."<<std::endl;
         return;
     }
-        
+
     dirty();
 }
 
@@ -1362,7 +1362,7 @@ void Image::flipVertical()
                 // its not a compressed image, so implement flip oursleves.
                 unsigned char* top = data(0,0,r);
                 unsigned char* bottom = top + (_t-1)*rowStep;
-                    
+
                 flipImageVertical(top, bottom, rowSize, rowStep);
             }
         }
@@ -1397,7 +1397,7 @@ void Image::flipVertical()
                 flipImageVertical(top, bottom, rowSize, rowStep);
             }
        }
-    }   
+    }
 
     dirty();
 }
@@ -1428,7 +1428,7 @@ void Image::flipDepth()
     for(; r_front<r_back; ++r_front,--r_back)
     {
         for(int row=0; row<_t; ++row)
-        {        
+        {
             unsigned char* front = data(0, row, r_front);
             unsigned char* back = data(0, row, r_back);
             for(unsigned int i=0; i<sizeOfRow; ++i, ++front, ++back)
@@ -1444,10 +1444,10 @@ void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
 {
     int new_s = computeNearestPowerOfTwo(_s);
     int new_t = computeNearestPowerOfTwo(_t);
-    
+
     if (new_s>maxTextureSize) new_s = maxTextureSize;
     if (new_t>maxTextureSize) new_t = maxTextureSize;
-    
+
     if (new_s!=_s || new_t!=_t)
     {
         if (!_fileName.empty()) { OSG_NOTICE << "Scaling image '"<<_fileName<<"' from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<std::endl; }
@@ -1469,7 +1469,7 @@ bool Image::supportsTextureSubloading() const
 }
 
 
-template <typename T>    
+template <typename T>
 bool _findLowerAlphaValueInRow(unsigned int num, T* data,T value, unsigned int delta)
 {
     for(unsigned int i=0;i<num;++i)
@@ -1480,7 +1480,7 @@ bool _findLowerAlphaValueInRow(unsigned int num, T* data,T value, unsigned int d
     return false;
 }
 
-template <typename T>    
+template <typename T>
 bool _maskedFindLowerAlphaValueInRow(unsigned int num, T* data,T value, T mask, unsigned int delta)
 {
     for(unsigned int i=0;i<num;++i)
@@ -1591,7 +1591,7 @@ bool Image::isImageTranslucent() const
                                                         0x00000003u,
                                                         0x00000003u, 1))
                         return true;
-                    break;                    
+                    break;
                 case(GL_UNSIGNED_INT_2_10_10_10_REV):
                     if (_maskedFindLowerAlphaValueInRow(s(), (unsigned int*)d,
                                                         0xc0000000u,
@@ -1619,7 +1619,7 @@ Geode* osg::createGeodeForImage(osg::Image* image)
 }
 
 
-#include <osg/TextureRectangle> 
+#include <osg/TextureRectangle>
 
 
 Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
@@ -1704,7 +1704,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
     }
 }
 
-template <typename T>    
+template <typename T>
 Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
 {
     switch(pixelFormat)

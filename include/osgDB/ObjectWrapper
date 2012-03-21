@@ -47,11 +47,11 @@ class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 public:
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;
     typedef std::vector< osg::ref_ptr<FinishedObjectReadCallback> > FinishedObjectReadCallbackList;
-    
+
     ObjectWrapper( osg::Object* proto, const std::string& name,
                    const std::string& associates );
     void setUpdatedVersion( int ver ) { _version = ver; }
-    
+
     const osg::Object* getProto() const { return _proto.get(); }
     const std::string& getName() const { return _name; }
     const StringList& getAssociates() const { return _associates; }
@@ -68,7 +68,7 @@ public:
     void writeSchema( StringList& properties, std::vector<int>& types );
     void resetSchema()
     { if ( _backupSerializers.size()>0 ) _serializers = _backupSerializers; }
-    
+
 protected:
     ObjectWrapper() : _version(0) {}
     virtual ~ObjectWrapper() {}

@@ -29,7 +29,7 @@ class Camera;
 class OSG_EXPORT GraphicsContext : public Object
 {
     public:
-    
+
         struct OSG_EXPORT ScreenIdentifier
         {
             ScreenIdentifier();
@@ -37,16 +37,16 @@ class OSG_EXPORT GraphicsContext : public Object
             ScreenIdentifier(int in_screenNum);
 
             ScreenIdentifier(const std::string& in_hostName,int in_displayNum, int in_screenNum);
-            
-            /** Return the display name in the form hostName::displayNum:screenNum. */    
+
+            /** Return the display name in the form hostName::displayNum:screenNum. */
             std::string displayName() const;
-            
+
             /** Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly.
               * Note, if either of displayNum or screenNum are not defined then -1 is set respectively to
               * signify that this parameter has not been set. When parameters are undefined one can call
               * call setUndefinedScreenDetailsToDefaultScreen() after readDISPLAY() to ensure valid values. */
             void readDISPLAY();
-            
+
             /** Set the screenIndentifier from the displayName string.
               * Note, if either of displayNum or screenNum are not defined then -1 is set to
               * signify that this parameter has not been set. When parameters are undefined one can call
@@ -64,23 +64,23 @@ class OSG_EXPORT GraphicsContext : public Object
             int displayNum;
             int screenNum;
         };
-    
+
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
         struct OSG_EXPORT Traits : public osg::Referenced, public ScreenIdentifier
         {
             Traits(DisplaySettings* ds=0);
-                            
+
             // graphics context original and size
             int x;
             int y;
             int width;
             int height;
-            
+
             // window decoration and behaviour
             std::string windowName;
             bool        windowDecoration;
             bool        supportsResize;
-            
+
             // buffer depths, 0 equals off.
             unsigned int red;
             unsigned int blue;
@@ -104,10 +104,10 @@ class OSG_EXPORT GraphicsContext : public Object
             unsigned int    level;
             unsigned int    face;
             unsigned int    mipMapGeneration;
-            
+
             // V-sync
             bool            vsync;
-            
+
             // Swap Group
             bool            swapGroupEnabled;
             GLuint          swapGroup;
@@ -115,7 +115,7 @@ class OSG_EXPORT GraphicsContext : public Object
 
             // use multithreaded OpenGL-engine (OS X only)
             bool            useMultiThreadedOpenGLEngine;
-            
+
             // enable cursor
             bool            useCursor;
 
@@ -126,15 +126,15 @@ class OSG_EXPORT GraphicsContext : public Object
 
             /** return true if glContextVersion is set in the form major.minor, and assign the appropriate major and minor values to the associated parameters.*/
             bool getContextVersion(unsigned int& major, unsigned int& minor) const;
-            
+
             // shared context
             GraphicsContext* sharedContext;
-            
+
             osg::ref_ptr<osg::Referenced> inheritedWindowData;
-            
+
             // ask the GraphicsWindow implementation to set the pixel format of an inherited window
             bool setInheritedWindowPixelFormat;
-            
+
             // X11 hint whether to override the window managers window size/position redirection
             bool overrideRedirect;
 
@@ -177,7 +177,7 @@ class OSG_EXPORT GraphicsContext : public Object
             virtual void enumerateScreenSettings(const ScreenIdentifier& screenIdentifier, ScreenSettingsList & resolutionList) = 0;
 
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
-            
+
             virtual ~WindowingSystemInterface() {}
 
 
@@ -207,17 +207,17 @@ class OSG_EXPORT GraphicsContext : public Object
                 return setScreenSettings(screenIdentifier, settings);
             }
         };
-    
-    
+
+
         /** Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. */
         static void setWindowingSystemInterface(WindowingSystemInterface* wsInterface);
-        
+
         /** Get the WindowingSystemInterface*/
         static WindowingSystemInterface* getWindowingSystemInterface();
-    
+
         /** Create a graphics context for a specified set of traits.*/
         static GraphicsContext* createGraphicsContext(Traits* traits);
-        
+
         /** Create a contextID for a new graphics context, this contextID is used to set up the osg::State associate with context.
           * Automatically increments the usage count of the contextID to 1.*/
         static unsigned int createNewContextID();
@@ -230,29 +230,29 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Decrement the usage count associate with a contextID. Once the contextID goes to 0 the contextID is then free to be reused.*/
         static void decrementContextIDUsageCount(unsigned int contextID);
-    
+
         typedef std::vector<GraphicsContext*> GraphicsContexts;
-        
+
         /** Get all the registered graphics contexts.*/
         static GraphicsContexts getAllRegisteredGraphicsContexts();
-        
+
         /** Get all the registered graphics contexts associated with a specific contextID.*/
         static GraphicsContexts getRegisteredGraphicsContexts(unsigned int contextID);
-        
+
         /** Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID.*/
         static void setCompileContext(unsigned int contextID, GraphicsContext* gc);
 
         /** Get existing or create a new GraphicsContext to do background compilation for GraphicsContexts associated with specified contextID.*/
         static  GraphicsContext* getOrCreateCompileContext(unsigned int contextID);
-        
+
         /** Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID.*/
         static GraphicsContext* getCompileContext(unsigned int contextID);
 
     public:
-    
+
         /** Add operation to end of OperationQueue.*/
         void add(Operation* operation);
-        
+
         /** Remove operation from OperationQueue.*/
         void remove(Operation* operation);
 
@@ -266,7 +266,7 @@ class OSG_EXPORT GraphicsContext : public Object
         virtual void runOperations();
 
         typedef std::list< ref_ptr<Operation> > GraphicsOperationQueue;
-        
+
         /** Get the operations queue, not you must use the OperationsMutex when accessing the queue.*/
         GraphicsOperationQueue& getOperationsQueue() { return _operations; }
 
@@ -281,7 +281,7 @@ class OSG_EXPORT GraphicsContext : public Object
 
 
     public:
-    
+
         /** Get the traits of the GraphicsContext.*/
         inline const Traits* getTraits() const { return _traits.get(); }
 
@@ -291,10 +291,10 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Set the State object which tracks the current OpenGL state for this graphics context.*/
         inline void setState(State* state) { _state = state; }
-        
+
         /** Get the State object which tracks the current OpenGL state for this graphics context.*/
         inline State* getState() { return _state.get(); }
-        
+
         /** Get the const State object which tracks the current OpenGL state for this graphics context.*/
         inline const State* getState() const { return _state.get(); }
 
@@ -304,7 +304,7 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Returns the clear color. */
         inline const Vec4& getClearColor() const { return _clearColor; }
-        
+
         /** Set the clear mask used in glClear(..).
           * Defaults to 0 - so no clear is done by default by the GraphicsContext, instead the Cameras attached to the GraphicsContext will do the clear.
           * GraphicsContext::setClearMask() is useful for when the Camera Viewports don't cover the whole context, so the context will fill in the gaps. */
@@ -312,13 +312,13 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Get the clear mask.*/
         inline GLbitfield getClearMask() const { return _clearMask; }
-        
+
         /** Do an OpenGL clear of the full graphics context/window.
           * Note, must only be called from a thread with this context current.*/
         virtual void clear();
-        
+
         double getTimeSinceLastClear() const { return osg::Timer::instance()->delta_s(_lastClearTick, osg::Timer::instance()->tick()); }
-        
+
 
         /** Realize the GraphicsContext.*/
         bool realize();
@@ -338,19 +338,19 @@ class OSG_EXPORT GraphicsContext : public Object
 
 
         /** Make this graphics context current.
-          * Implemented by calling makeCurrentImplementation(). 
+          * Implemented by calling makeCurrentImplementation().
           * Returns true on success. */
         bool makeCurrent();
-        
+
         /** Make this graphics context current with specified read context.
           * Implemented by calling makeContextCurrentImplementation().
           * Returns true on success. */
         bool makeContextCurrent(GraphicsContext* readContext);
-        
+
         /** Release the graphics context.
           * Returns true on success. */
         bool releaseContext();
-        
+
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
 
@@ -372,7 +372,7 @@ class OSG_EXPORT GraphicsContext : public Object
         const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
 
 
-        /** Realize the GraphicsContext implementation, 
+        /** Realize the GraphicsContext implementation,
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool realizeImplementation() = 0;
 
@@ -387,7 +387,7 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeCurrentImplementation() = 0;
-        
+
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
@@ -407,7 +407,7 @@ class OSG_EXPORT GraphicsContext : public Object
           * GraphicsContext::swapBuffersImplementation(), allowing
           * developers to provide custom behavior for swap.
           * The callback must call
-          * GraphicsContext::swapBuffersImplementation() */  
+          * GraphicsContext::swapBuffersImplementation() */
         void setSwapCallback(SwapCallback* rc) { _swapCallback = rc; }
 
         /** Get the swap callback which overrides the GraphicsContext::swapBuffersImplementation().*/
@@ -467,10 +467,10 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Get the the const list of cameras associated with this graphics context.*/
         const Cameras& getCameras() const { return _cameras; }
-        
+
         /** set the default FBO-id, this id will be used when the rendering-backend is finished with RTT FBOs */
         void setDefaultFboId(GLuint i) { _defaultFboId = i; }
-        
+
         GLuint getDefaultFboId() const { return _defaultFboId; }
 
     public:
@@ -480,7 +480,7 @@ class OSG_EXPORT GraphicsContext : public Object
         virtual const char* className() const { return "GraphicsContext"; }
 
     protected:
-        
+
         GraphicsContext();
         GraphicsContext(const GraphicsContext&, const osg::CopyOp&);
 
@@ -498,31 +498,31 @@ class OSG_EXPORT GraphicsContext : public Object
 
         void addCamera(osg::Camera* camera);
         void removeCamera(osg::Camera* camera);
-        
+
         Cameras _cameras;
 
         friend class osg::Camera;
 
-        ref_ptr<Traits>         _traits;        
+        ref_ptr<Traits>         _traits;
         ref_ptr<State>          _state;
 
         Vec4                    _clearColor;
         GLbitfield              _clearMask;
 
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
-        
+
         OpenThreads::Mutex                  _operationsMutex;
         osg::ref_ptr<osg::RefBlock>         _operationsBlock;
         GraphicsOperationQueue              _operations;
         osg::ref_ptr<Operation>             _currentOperation;
 
         ref_ptr<GraphicsThread>             _graphicsThread;
-        
+
         ref_ptr<ResizedCallback>            _resizedCallback;
         ref_ptr<SwapCallback>               _swapCallback;
-        
+
         Timer_t                             _lastClearTick;
-        
+
         GLuint                              _defaultFboId;
 };
 

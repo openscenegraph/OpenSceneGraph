@@ -316,7 +316,7 @@ void HeightField::write(DataOutputStream* out)
     out->writeQuat(getRotation());
     out->writeFloat(getSkirtHeight());
     out->writeUInt(getBorderWidth());
-    
+
     unsigned int size = getHeightList().size();
     out->writeUInt(size);
     for(unsigned int i = 0; i < size; i++)
@@ -324,9 +324,9 @@ void HeightField::write(DataOutputStream* out)
         out->writeFloat((getHeightList())[i]);
     }
 
-    
-    
-    
+
+
+
 }
 
 void HeightField::read(DataInputStream* in)
@@ -349,17 +349,17 @@ void HeightField::read(DataInputStream* in)
         // Read HeightField's properties
         //setColor(in->readVec4());
         unsigned int col = in->readUInt();
-        unsigned int row = in->readUInt();        
+        unsigned int row = in->readUInt();
         allocate(col,row);
 
         setOrigin(in->readVec3());
         setXInterval(in->readFloat());
         setYInterval(in->readFloat());
         setRotation(in->readQuat());
-        
+
         setSkirtHeight(in->readFloat());
         setBorderWidth(in->readUInt());
-    
+
         unsigned int size = in->readUInt();
         in->_istream->read((char*)&(getHeightList()[0]), FLOATSIZE*size);
         if (in->_istream->rdstate() & in->_istream->failbit)

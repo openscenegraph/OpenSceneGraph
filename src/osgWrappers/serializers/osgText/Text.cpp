@@ -72,22 +72,22 @@ REGISTER_OBJECT_WRAPPER( osgText_Text,
         ADD_ENUM_VALUE( OUTLINE );
         ADD_ENUM_VALUE( NONE );
     END_ENUM_SERIALIZER();  // _backdropType
-    
+
     BEGIN_ENUM_SERIALIZER( BackdropImplementation, DEPTH_RANGE );
         ADD_ENUM_VALUE( POLYGON_OFFSET );
         ADD_ENUM_VALUE( NO_DEPTH_BUFFER );
         ADD_ENUM_VALUE( DEPTH_RANGE );
         ADD_ENUM_VALUE( STENCIL_BUFFER );
     END_ENUM_SERIALIZER();  // _backdropImplementation
-    
+
     ADD_USER_SERIALIZER( BackdropOffset );  // _backdropHorizontalOffset, _backdropVerticalOffset
     ADD_VEC4_SERIALIZER( BackdropColor, osg::Vec4() );  // _backdropColor
-    
+
     BEGIN_ENUM_SERIALIZER( ColorGradientMode, SOLID );
         ADD_ENUM_VALUE( SOLID );
         ADD_ENUM_VALUE( PER_CHARACTER );
         ADD_ENUM_VALUE( OVERALL );
     END_ENUM_SERIALIZER();  // _colorGradientMode
-    
+
     ADD_USER_SERIALIZER( ColorGradientCorners );  // _colorGradientTopLeft .. _colorGradientBottomRight
 }

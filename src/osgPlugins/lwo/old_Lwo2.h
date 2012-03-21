@@ -18,8 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -92,7 +92,7 @@ class Lwo2
   void _generate_statesets_from_surfaces();
 };
 
-// makes 4-byte integer tag from four chars 
+// makes 4-byte integer tag from four chars
 // used in IFF standard
 
 unsigned long make_id(const char* tag);

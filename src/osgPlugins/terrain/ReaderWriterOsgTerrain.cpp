@@ -22,19 +22,19 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
             supportsExtension("osgTerrain","OpenSceneGraph terrain extension to .osg ascii format");
             supportsExtension("terrain","OpenSceneGraph terrain ascii format");
         }
-        
+
         virtual const char* className() const { return "Terrain ReaderWriter"; }
 
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* opt) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            
+
             if (osgDB::equalCaseInsensitive(ext,"terrain"))
             {
-#if 0            
+#if 0
                 KeywordValueMap keywordValueMap;
                 parseTerrainString(osgDB::getNameLessExtension(file), keywordValueMap);
-            
+
                 for(KeywordValueMap::iterator itr = keywordValueMap.begin();
                     itr != keywordValueMap.end();
                     ++itr)
@@ -53,7 +53,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, opt );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -63,7 +63,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                 return readNode(fin, local_opt.get());
             }
             return 0L;
-                        
+
         }
 
         virtual osgDB::ReaderWriter::ReadResult readNode(std::istream& fin, const Options* options) const
@@ -119,7 +119,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
             {
                 pos = str.find_first_not_of(' ',pos);
                 if (pos == std::string::npos) break;
-                
+
                 std::string::size_type semicolon = str.find_first_of(';', pos);
                 std::string::size_type startstatement = pos;
                 std::string::size_type endstatement = std::string::npos;
@@ -133,7 +133,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                     endstatement = str.length()-1;
                     pos = std::string::npos;
                 }
-                
+
                 if (startstatement<endstatement) endstatement = str.find_last_not_of(' ',endstatement);
 
                 if (startstatement<=endstatement)
@@ -144,12 +144,12 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                     {
                         assignment = std::string::npos;
                     }
-                    
+
                     std::string::size_type startvariable = startstatement;
                     std::string::size_type endvariable = startstatement;
                     std::string::size_type startvalue = startstatement;
                     std::string::size_type endvalue = endstatement;
-                    
+
                     if (assignment!=std::string::npos)
                     {
                         endvariable = assignment-1;
@@ -165,30 +165,30 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                             ++endvariable;
                         }
                     }
-                    
+
 
                     if (startvalue<=endvalue)
                     {
                         startvalue = str.find_first_not_of(' ',startvalue);
                     }
-                    
+
                     if (startvalue<=endvalue)
                     {
                         if (startvariable<endvariable)
                         {
                             keywordValueMap[str.substr(startvariable, endvariable-startvariable)] = str.substr(startvalue, endvalue-startvalue+1);
                             success = true;
-                        } 
+                        }
                         else
                         {
                             keywordValueMap[""] = str.substr(startvalue, endvalue-startvalue+1);
                             success = true;
                         }
                     }
-                    
+
                 }
             }
-            
+
             return success;
         }
 

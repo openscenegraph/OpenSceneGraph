@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -183,7 +183,7 @@ int Program::compare(const osg::StateAttribute& sa) const
     // check the types are equal and then create the rhs variable
     // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Program,sa)
-    
+
     if( _shaderList.size() < rhs._shaderList.size() ) return -1;
     if( rhs._shaderList.size() < _shaderList.size() ) return 1;
 
@@ -272,7 +272,7 @@ void Program::releaseGLObjects(osg::State* state) const
     {
         unsigned int contextID = state->getContextID();
         _pcpList[contextID] = 0;
-    }   
+    }
 }
 
 bool Program::addShader( Shader* shader )
@@ -389,7 +389,7 @@ GLint Program::getParameter( GLenum pname ) const
         case GL_GEOMETRY_VERTICES_OUT_EXT: return _geometryVerticesOut;
         case GL_GEOMETRY_INPUT_TYPE_EXT:   return _geometryInputType;
         case GL_GEOMETRY_OUTPUT_TYPE_EXT:  return _geometryOutputType;
-        case GL_PATCH_VERTICES:            return _patchVertices; 
+        case GL_PATCH_VERTICES:            return _patchVertices;
     }
     OSG_WARN << "getParameter invalid param " << pname << std::endl;
     return 0;
@@ -651,10 +651,10 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            OSG_WARN << "Program \""<< _program->getName() << "\" " 
+            OSG_WARN << "Program \""<< _program->getName() << "\" "
                                       "infolog:\n" << infoLog << std::endl;
         }
-        
+
         return;
     }
     else
@@ -745,7 +745,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             }
 
             GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
-            
+
             if( loc != -1 )
             {
                 _uniformInfoMap[Uniform::getNameID(reinterpret_cast<const char*>(name))] = ActiveVarInfo(loc,type,size);
@@ -776,7 +776,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
                     i, maxLen, 0, &size, &type, name );
 
             GLint loc = _extensions->glGetAttribLocation( _glProgramHandle, name );
-            
+
             if( loc != -1 )
             {
                 _attribInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
@@ -810,7 +810,7 @@ bool Program::PerContextProgram::validateProgram()
         OSG_WARN << "infolog:\n" << infoLog << std::endl;
 
     OSG_WARN << std::endl;
-    
+
     return false;
 }
 

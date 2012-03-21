@@ -199,9 +199,9 @@ bool GLWidget::event( QEvent* event )
 
     // We workaround above problems by deferring execution of problematic event requests.
     // These events has to be enqueue and executed later in a main GUI thread (GUI operations
-    // outside the main thread are not allowed) just before makeCurrent is called from the 
+    // outside the main thread are not allowed) just before makeCurrent is called from the
     // right thread. The good place for doing that is right after swap in a swapBuffersImplementation.
-        
+
     if (event->type() == QEvent::Hide)
     {
         // enqueue only the last of QEvent::Hide and QEvent::Show
@@ -531,10 +531,10 @@ bool GraphicsWindowQt::setWindowDecorationImplementation( bool windowDecoration 
     if ( _widget )
     {
         _widget->setWindowFlags( flags );
-        
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -673,9 +673,9 @@ void GraphicsWindowQt::closeImplementation()
 }
 
 void GraphicsWindowQt::runOperations()
-{ 
+{
     // While in graphics thread this is last chance to do something useful before
-    // graphics thread will execute its operations. 
+    // graphics thread will execute its operations.
     if (_widget->getNumDeferredEvents() > 0)
         _widget->processDeferredEvents();
 

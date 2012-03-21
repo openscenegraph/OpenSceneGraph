@@ -227,10 +227,10 @@ public:
     void setAllColors(const osg::Vec4& c);
 
     META_Node(osgSim, SphereSegment);
-    
+
     /** A list of vertex arrays representing a list of lines.*/
     typedef std::vector< osg::ref_ptr<osg::Vec3Array> > LineList;
-    
+
     /** Compute the interesection lines between subgraph and this sphere segment.
       * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
       * The resulting intersections are in the coordinate frame of the sphere segment. */

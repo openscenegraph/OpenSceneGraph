@@ -70,12 +70,12 @@ class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub
 class ReaderWriterAC : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterAC()
         {
             supportsExtension("ac","AC3D Database format");
         }
-        
+
         virtual const char* className() const { return "AC3D Database Reader"; }
 
         virtual ReadResult readNode(const std::string& file,const Options* options) const
@@ -86,7 +86,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
             std::string fileName = osgDB::findDataFile( file, options );
             OSG_INFO << "osgDB ac3d reader: starting reading \"" << fileName << "\"" << std::endl;
-            
+
             // Anders Backmann - correct return if path not found
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
@@ -96,7 +96,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             if (!fin.is_open()) return ReadResult::FILE_NOT_FOUND;
 
             // code for setting up the database path so that internally referenced file are
-            // searched for on relative paths. 
+            // searched for on relative paths.
             osg::ref_ptr<Options> local_opt;
             if (options)
                 local_opt = static_cast<Options*>(options->clone(osg::CopyOp::DEEP_COPY_ALL));
@@ -162,7 +162,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             fout.close();
             return WriteResult::FILE_SAVED;
         }
-        
+
         virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout, const Options* opts) const
         {
             // write ac file.
@@ -177,7 +177,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             }
             else
                 OSG_WARN<<"File must start with a geode "<<std::endl;
-            
+
             fout.flush();
             return WriteResult::FILE_SAVED;
         }
@@ -220,10 +220,10 @@ readString(std::istream& stream)
     else
     {
         // look for quoted strings
-    
+
         // throw away the quote
         stream.get();
-    
+
         // extract characters until either an error happens or a quote is found
         while (stream.good())
         {
@@ -234,7 +234,7 @@ readString(std::istream& stream)
             s += c;
         }
     }
- 
+
     return s;
 }
 
@@ -787,12 +787,12 @@ class SurfaceBin : public PrimitiveBin {
         unsigned index;
     };
     std::vector<Ref> _refs;
-  
+
     struct TriangleData {
         VertexIndex index[3];
     };
     std::vector<TriangleData> _triangles;
-  
+
     struct QuadData {
         VertexIndex index[4];
     };
@@ -868,7 +868,7 @@ class SurfaceBin : public PrimitiveBin {
 
             weightedNormal += newNormal;
         }
-        
+
         if (needTessellation)
         {
             unsigned polygonIndex = _toTessellatePolygons.size();
@@ -947,7 +947,7 @@ class SurfaceBin : public PrimitiveBin {
         else
             shadeModel->setMode(osg::ShadeModel::FLAT);
         stateSet->setAttribute(shadeModel);
-        
+
         // Set up the arrays, allways store texture coords, may be we need them later ...
         osg::Geometry* geometry = new osg::Geometry;
         _geode->addDrawable(geometry);
@@ -1138,11 +1138,11 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
     osg::Vec2 textureRepeat(1, 1);
     float creaseAngle = 61;
     unsigned objectType = ObjectTypeGroup;
-    
+
     while (!stream.eof() && stream.good()) {
         std::string token;
         stream >> token;
-      
+
         if (token == "MATERIAL") {
             MaterialData mat;
             mat.readMaterial(stream);
@@ -1151,7 +1151,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
         else if (token == "OBJECT") {
             std::string type;
             stream >> type;
-            
+
             if (type == "group")
                 objectType = ObjectTypeGroup;
             else if (type == "light")
@@ -1203,12 +1203,12 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
         }
         else if (token == "numvert") {
             osg::Matrix currentTransform = transform*parentTransform;
-            
+
             unsigned num;
             stream >> num;
             if (num != 0) {
                 vertexSet->reserve(num);
-              
+
                 for (unsigned n = 0; n < num; ++n) {
                     osg::Vec3 p;
                     stream >> p[0] >> p[1] >> p[2];
@@ -1223,27 +1223,27 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 // list of materials required- generate one geode per material
                 std::vector<Bins> primitiveBins(fileData.getNumMaterials());
                 vertexSet->setCreaseAngle(creaseAngle);
-                
+
                 for (unsigned n = 0; n < num; ++n) {
                     std::string token;
                     stream >> token;
-                    
+
                     if (token != "SURF") {
                         OSG_FATAL << "osgDB ac3d reader: expected SURF line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
-                    
+
                     stream >> token;
                     unsigned flags = strtol(token.c_str(), NULL, 0);
-                    
+
                     stream >> token;
                     if (token != "mat") {
                         OSG_FATAL << "osgDB ac3d reader: expected mat line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
-                    
+
                     // read the material index
                     unsigned matIdx;
                     stream >> matIdx;
@@ -1252,7 +1252,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
-                    
+
                     // now get the correct PrimitiveBin
                     PrimitiveBin* primitiveBin = 0;
                     primitiveBin = primitiveBins[matIdx].getOrCreatePrimitiveBin(flags, vertexSet.get());
@@ -1261,7 +1261,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
-                    
+
                     // read the refs
                     stream >> token;
                     if (token != "refs") {
@@ -1269,7 +1269,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
-                    
+
                     unsigned nRefs = 0;
                     stream >> nRefs;
                     if (!stream) {
@@ -1277,7 +1277,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
-                    
+
                     // in case this is an invalid refs count for this primitive
                     // read further, but do not store that primitive
                     bool acceptPrimitive = primitiveBin->beginPrimitive(nRefs);
@@ -1291,7 +1291,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                                                     << group->getName() << "\"" << std::endl;
                             return group.release();
                         }
-                        
+
                         // Read the texture corrdinates
                         osg::Vec2 texCoord;
                         stream >> texCoord[0] >> texCoord[1];
@@ -1302,12 +1302,12 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                             std::string dummy;
                             std::getline(stream, dummy);
                         }
-                        
+
                         if (acceptPrimitive)
                         {
                             texCoord[0] = textureOffset[0] + texCoord[0]*textureRepeat[0];
                             texCoord[1] = textureOffset[1] + texCoord[1]*textureRepeat[1];
-                        
+
                             if (!primitiveBin->vertex(index, texCoord))
                             {
                                 return group.release();
@@ -1322,7 +1322,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                         }
                     }
                 }
-                
+
                 for (unsigned i = 0; i < primitiveBins.size(); ++i)
                     primitiveBins[i].finalize(group.get(), fileData.getMaterial(i), textureData);
             }
@@ -1345,7 +1345,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                             group->setCullingActive(false);
                             ls->setStateSetModes(*lightStateSet, osg::StateAttribute::ON);
                         }
-                        
+
                         group->addChild(k);
                     }
                 }
@@ -1358,19 +1358,19 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 ac3dLight->setAmbient(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
                 ac3dLight->setDiffuse(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
                 ac3dLight->setSpecular(osg::Vec4(1.0f,1.0f,0.5f,1.0f));
-                
+
                 osg::LightSource* ac3dLightSource = new osg::LightSource;
                 ac3dLightSource->setDataVariance(osg::Object::STATIC);
                 ac3dLightSource->setLight(ac3dLight);
                 ac3dLightSource->setLocalStateSetModes(osg::StateAttribute::ON);
-                
+
                 // for some mad reason, you need to set this so that the light works.  WHY?
                 return ac3dLightSource;
             }
             return group.release();
         }
     }
-    
+
     return group.release();
 }
 

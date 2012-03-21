@@ -34,11 +34,11 @@ namespace lwosg
             VertexMap_binding_map texturemap_bindings;
 
             Options()
-            :    csf(new LwoCoordFixer), 
-                max_tex_units(0), 
-                apply_light_model(true), 
-                use_osgfx(false), 
-                force_arb_compression(false), 
+            :    csf(new LwoCoordFixer),
+                max_tex_units(0),
+                apply_light_model(true),
+                use_osgfx(false),
+                force_arb_compression(false),
                 combine_geodes(false)
             {
             }

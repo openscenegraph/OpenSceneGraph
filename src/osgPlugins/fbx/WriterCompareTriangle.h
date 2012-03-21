@@ -18,7 +18,7 @@ public:
     WriterCompareTriangle(const osg::Geode& geode,
                           unsigned int nbVertices);
 
-    bool operator()(const std::pair<Triangle, int>& t1, 
+    bool operator()(const std::pair<Triangle, int>& t1,
                     const std::pair<Triangle, int>& t2) const;
 private:
     void // This function prevents the scene being cut into too many boxes
@@ -35,12 +35,12 @@ private:
     cutscene(int                     nbVertices,
              const osg::BoundingBox& sceneBox);
 
-    /** 
+    /**
     *  Find in which box those points are.
     *  \return the place of the box in the vector.
     *  \sa See cutScene() about the definition of the boxes for faces sorting.
     */
-    int inWhichBox(const osg::Vec3::value_type x, 
+    int inWhichBox(const osg::Vec3::value_type x,
                    const osg::Vec3::value_type y,
                    const osg::Vec3::value_type z) const;
 

@@ -39,7 +39,7 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
     for (int nCurve = 0; nCurve < 3; ++nCurve)
     {
         KFbxAnimCurve* pCurve = curves[nCurve];
-        
+
         int nKeys = pCurve ? pCurve->KeyGetCount() : 0;
 
         if (!nKeys)

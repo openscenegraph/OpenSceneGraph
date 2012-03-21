@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -22,7 +22,7 @@ using namespace osgSim;
 HeightAboveTerrain::HeightAboveTerrain()
 {
     _lowestHeight = -1000.0;
-    
+
     setDatabaseCacheReadCallback(new DatabaseCacheReadCallback);
 }
 
@@ -51,14 +51,14 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
     {
         if (em)
         {
-        
+
             osg::Vec3d start = itr->_point;
             osg::Vec3d upVector = em->computeLocalUpVector(start.x(), start.y(), start.z());
 
             double latitude, longitude, height;
             em->convertXYZToLatLongHeight(start.x(), start.y(), start.z(), latitude, longitude, height);
-            osg::Vec3d end = start - upVector * (height - _lowestHeight);            
-            
+            osg::Vec3d end = start - upVector * (height - _lowestHeight);
+
             itr->_hat = height;
 
             OSG_NOTICE<<"lat = "<<latitude<<" longitude = "<<longitude<<" height = "<<height<<std::endl;
@@ -70,9 +70,9 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
         {
             osg::Vec3d start = itr->_point;
             osg::Vec3d upVector (0.0, 0.0, 1.0);
-            
+
             double height = start.z();
-            osg::Vec3d end = start - upVector * (height - _lowestHeight);            
+            osg::Vec3d end = start - upVector * (height - _lowestHeight);
 
             itr->_hat = height;
 
@@ -80,13 +80,13 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
             intersectorGroup->addIntersector( intersector.get() );
         }
     }
-    
+
     _intersectionVisitor.reset();
     _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersectorGroup.get() );
-    
+
     scene->accept(_intersectionVisitor);
-    
+
     unsigned int index = 0;
     osgUtil::IntersectorGroup::Intersectors& intersectors = intersectorGroup->getIntersectors();
     for(osgUtil::IntersectorGroup::Intersectors::iterator intersector_itr = intersectors.begin();
@@ -106,7 +106,7 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
             }
         }
     }
-    
+
 }
 
 double HeightAboveTerrain::computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point, osg::Node::NodeMask traversalMask)

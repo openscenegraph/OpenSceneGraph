@@ -527,7 +527,7 @@ int inflateEnd (z_streamp strm);
 //   was inconsistent. In the error case, msg may be set but then points to a
 //   static string (which must not be deallocated).
 
-                        // Advanced functions 
+                        // Advanced functions
 
 //  The following functions are needed only in some special applications.
 
@@ -544,7 +544,7 @@ int inflateSetDictionary (z_streamp strm,
 //   if this call returned Z_NEED_DICT. The dictionary chosen by the compressor
 //   can be determined from the Adler32 value returned by this call of
 //   inflate. The compressor and decompressor must use exactly the same
-//   dictionary. 
+//   dictionary.
 //
 //     inflateSetDictionary returns Z_OK if success, Z_STREAM_ERROR if a
 //   parameter is invalid (such as NULL dictionary) or the stream state is
@@ -555,7 +555,7 @@ int inflateSetDictionary (z_streamp strm,
 
 
 int inflateSync (z_streamp strm);
-// 
+//
 //    Skips invalid compressed data until a full flush point can be found, or until all
 //  available input is skipped. No output is provided.
 //
@@ -646,7 +646,7 @@ const char * const z_errmsg[10] = { // indexed by 2-zlib_error
 
 #define ERR_RETURN(strm,err) \
   return (strm->msg = (char*)ERR_MSG(err), (err))
-// To be used only when the state is known to be valid 
+// To be used only when the state is known to be valid
 
         // common constants
 
@@ -654,21 +654,21 @@ const char * const z_errmsg[10] = { // indexed by 2-zlib_error
 #define STORED_BLOCK 0
 #define STATIC_TREES 1
 #define DYN_TREES    2
-// The three kinds of block type 
+// The three kinds of block type
 
 #define MIN_MATCH  3
 #define MAX_MATCH  258
-// The minimum and maximum match lengths 
+// The minimum and maximum match lengths
 
-#define PRESET_DICT 0x20 // preset dictionary flag in zlib header 
+#define PRESET_DICT 0x20 // preset dictionary flag in zlib header
 
-        // target dependencies 
+        // target dependencies
 
 #define OS_CODE  0x0b  // Window 95 & Windows NT
 
 
 
-         // functions 
+         // functions
 
 #define zmemzero(dest, len) memset(dest, 0, len)
 
@@ -813,71 +813,71 @@ typedef enum {
       IBM_DTREE,    // get length, distance trees for a dynamic block
       IBM_CODES,    // processing fixed or dynamic block
       IBM_DRY,      // output remaining window bytes
-      IBM_DONE,     // finished last block, done 
-      IBM_BAD}      // got a data error--stuck here 
+      IBM_DONE,     // finished last block, done
+      IBM_BAD}      // got a data error--stuck here
 inflate_block_mode;
 
-// inflate blocks semi-private state 
+// inflate blocks semi-private state
 struct inflate_blocks_state {
 
-  // mode 
-  inflate_block_mode  mode;     // current inflate_block mode 
+  // mode
+  inflate_block_mode  mode;     // current inflate_block mode
 
-  // mode dependent information 
+  // mode dependent information
   union {
-    uInt left;          // if STORED, bytes left to copy 
+    uInt left;          // if STORED, bytes left to copy
     struct {
-      uInt table;               // table lengths (14 bits) 
+      uInt table;               // table lengths (14 bits)
       uInt index;               // index into blens (or border)
       uInt *blens;             // bit lengths of codes
-      uInt bb;                  // bit length tree depth 
-      inflate_huft *tb;         // bit length decoding tree 
-    } trees;            // if DTREE, decoding info for trees 
+      uInt bb;                  // bit length tree depth
+      inflate_huft *tb;         // bit length decoding tree
+    } trees;            // if DTREE, decoding info for trees
     struct {
-      inflate_codes_statef 
+      inflate_codes_statef
          *codes;
-    } decode;           // if CODES, current state 
+    } decode;           // if CODES, current state
   } sub;                // submode
-  uInt last;            // true if this block is the last block 
+  uInt last;            // true if this block is the last block
 
-  // mode independent information 
-  uInt bitk;            // bits in bit buffer 
-  uLong bitb;           // bit buffer 
-  inflate_huft *hufts;  // single malloc for tree space 
-  Byte *window;        // sliding window 
-  Byte *end;           // one byte after sliding window 
-  Byte *read;          // window read pointer 
-  Byte *write;         // window write pointer 
-  check_func checkfn;   // check function 
-  uLong check;          // check on output 
+  // mode independent information
+  uInt bitk;            // bits in bit buffer
+  uLong bitb;           // bit buffer
+  inflate_huft *hufts;  // single malloc for tree space
+  Byte *window;        // sliding window
+  Byte *end;           // one byte after sliding window
+  Byte *read;          // window read pointer
+  Byte *write;         // window write pointer
+  check_func checkfn;   // check function
+  uLong check;          // check on output
 
 };
 
 
 // defines for inflate input/output
-//   update pointers and return 
+//   update pointers and return
 #define UPDBITS {s->bitb=b;s->bitk=k;}
 #define UPDIN {z->avail_in=n;z->total_in+=(uLong)(p-z->next_in);z->next_in=p;}
 #define UPDOUT {s->write=q;}
 #define UPDATE {UPDBITS UPDIN UPDOUT}
 #define LEAVE {UPDATE return inflate_flush(s,z,r);}
-//   get bytes and bits 
+//   get bytes and bits
 #define LOADIN {p=z->next_in;n=z->avail_in;b=s->bitb;k=s->bitk;}
 #define NEEDBYTE {if(n)r=Z_OK;else LEAVE}
 #define NEXTBYTE (n--,*p++)
 #define NEEDBITS(j) {while(k<(j)){NEEDBYTE;b|=((uLong)NEXTBYTE)<<k;k+=8;}}
 #define DUMPBITS(j) {b>>=(j);k-=(j);}
-//   output bytes 
+//   output bytes
 #define WAVAIL (uInt)(q<s->read?s->read-q-1:s->end-q)
 #define LOADOUT {q=s->write;m=(uInt)WAVAIL;}
 #define WRAP {if(q==s->end&&s->read!=s->window){q=s->window;m=(uInt)WAVAIL;}}
 #define FLUSH {UPDOUT r=inflate_flush(s,z,r); LOADOUT}
 #define NEEDOUT {if(m==0){WRAP if(m==0){FLUSH WRAP if(m==0) LEAVE}}r=Z_OK;}
 #define OUTBYTE(a) {*q++=(Byte)(a);m--;}
-//   load local pointers 
+//   load local pointers
 #define LOAD {LOADIN LOADOUT}
 
-// masks for lower bits (size given to avoid silly warnings with Visual C++) 
+// masks for lower bits (size given to avoid silly warnings with Visual C++)
 // And'ing with mask[n] masks the lower n bits
 const uInt inflate_mask[17] = {
     0x0000,
@@ -1048,11 +1048,11 @@ int inflate_flush(inflate_blocks_statef *s,z_streamp z,int r)
   Byte *p;
   Byte *q;
 
-  // local copies of source and destination pointers 
+  // local copies of source and destination pointers
   p = z->next_out;
   q = s->read;
 
-  // compute number of bytes to copy as far as end of window 
+  // compute number of bytes to copy as far as end of window
   n = (uInt)((q <= s->write ? s->write : s->end) - q);
   if (n > z->avail_out) n = z->avail_out;
   if (n && r == Z_BUF_ERROR) r = Z_OK;
@@ -1061,11 +1061,11 @@ int inflate_flush(inflate_blocks_statef *s,z_streamp z,int r)
   z->avail_out -= n;
   z->total_out += n;
 
-  // update check information 
+  // update check information
   if (s->checkfn != Z_NULL)
     z->adler = s->check = (*s->checkfn)(s->check, q, n);
 
-  // copy as far as end of window 
+  // copy as far as end of window
   if (n!=0)          // check for n!=0 to avoid waking up CodeGuard
   { memcpy(p, q, n);
     p += n;
@@ -1075,21 +1075,21 @@ int inflate_flush(inflate_blocks_statef *s,z_streamp z,int r)
   // see if more to copy at beginning of window
   if (q == s->end)
   {
-    // wrap pointers 
+    // wrap pointers
     q = s->window;
     if (s->write == s->end)
       s->write = s->window;
 
-    // compute bytes to copy 
+    // compute bytes to copy
     n = (uInt)(s->write - q);
     if (n > z->avail_out) n = z->avail_out;
     if (n && r == Z_BUF_ERROR) r = Z_OK;
 
-    // update counters 
+    // update counters
     z->avail_out -= n;
     z->total_out += n;
 
-    // update check information 
+    // update check information
     if (s->checkfn != Z_NULL)
       z->adler = s->check = (*s->checkfn)(s->check, q, n);
 
@@ -1114,42 +1114,42 @@ int inflate_flush(inflate_blocks_statef *s,z_streamp z,int r)
 #define exop word.what.Exop
 #define bits word.what.Bits
 
-typedef enum {        // waiting for "i:"=input, "o:"=output, "x:"=nothing 
-      START,    // x: set up for LEN 
-      LEN,      // i: get length/literal/eob next 
-      LENEXT,   // i: getting length extra (have base) 
-      DIST,     // i: get distance next 
-      DISTEXT,  // i: getting distance extra 
+typedef enum {        // waiting for "i:"=input, "o:"=output, "x:"=nothing
+      START,    // x: set up for LEN
+      LEN,      // i: get length/literal/eob next
+      LENEXT,   // i: getting length extra (have base)
+      DIST,     // i: get distance next
+      DISTEXT,  // i: getting distance extra
       COPY,     // o: copying bytes in window, waiting for space
-      LIT,      // o: got literal, waiting for output space 
-      WASH,     // o: got eob, possibly still output waiting 
-      END,      // x: got eob and all data flushed 
-      BADCODE}  // x: got error 
+      LIT,      // o: got literal, waiting for output space
+      WASH,     // o: got eob, possibly still output waiting
+      END,      // x: got eob and all data flushed
+      BADCODE}  // x: got error
 inflate_codes_mode;
 
 // inflate codes private state
 struct inflate_codes_state {
 
-  // mode 
-  inflate_codes_mode mode;      // current inflate_codes mode 
+  // mode
+  inflate_codes_mode mode;      // current inflate_codes mode
 
-  // mode dependent information 
+  // mode dependent information
   uInt len;
   union {
     struct {
-      const inflate_huft *tree;       // pointer into tree 
-      uInt need;                // bits needed 
-    } code;             // if LEN or DIST, where in tree 
-    uInt lit;           // if LIT, literal 
+      const inflate_huft *tree;       // pointer into tree
+      uInt need;                // bits needed
+    } code;             // if LEN or DIST, where in tree
+    uInt lit;           // if LIT, literal
     struct {
-      uInt get;                 // bits to get for extra 
-      uInt dist;                // distance back to copy from 
-    } copy;             // if EXT or COPY, where and how much 
+      uInt get;                 // bits to get for extra
+      uInt dist;                // distance back to copy from
+    } copy;             // if EXT or COPY, where and how much
   } sub;                // submode
 
-  // mode independent information 
-  Byte lbits;           // ltree bits decoded per branch 
-  Byte dbits;           // dtree bits decoder per branch 
+  // mode independent information
+  Byte lbits;           // ltree bits decoded per branch
+  Byte dbits;           // dtree bits decoder per branch
   const inflate_huft *ltree;          // literal/length/eob tree
   const inflate_huft *dtree;          // distance tree
 
@@ -1221,7 +1221,7 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       t = c->sub.code.tree + ((uInt)b & inflate_mask[j]);
       DUMPBITS(t->bits)
       e = (uInt)(t->exop);
-      if (e == 0)               // literal 
+      if (e == 0)               // literal
       {
         c->sub.lit = t->base;
         LuTracevv((stderr, t->base >= 0x20 && t->base < 0x7f ?
@@ -1230,30 +1230,30 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
         c->mode = LIT;
         break;
       }
-      if (e & 16)               // length 
+      if (e & 16)               // length
       {
         c->sub.copy.get = e & 15;
         c->len = t->base;
         c->mode = LENEXT;
         break;
       }
-      if ((e & 64) == 0)        // next table 
+      if ((e & 64) == 0)        // next table
       {
         c->sub.code.need = e;
         c->sub.code.tree = t + t->base;
         break;
       }
-      if (e & 32)               // end of block 
+      if (e & 32)               // end of block
       {
         LuTracevv((stderr, "inflate:         end of block\n"));
         c->mode = WASH;
         break;
       }
-      c->mode = BADCODE;        // invalid code 
+      c->mode = BADCODE;        // invalid code
       z->msg = (char*)"invalid literal/length code";
       r = Z_DATA_ERROR;
       LEAVE
-    case LENEXT:        // i: getting length extra (have base) 
+    case LENEXT:        // i: getting length extra (have base)
       j = c->sub.copy.get;
       NEEDBITS(j)
       c->len += (uInt)b & inflate_mask[j];
@@ -1262,40 +1262,40 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       c->sub.code.tree = c->dtree;
       LuTracevv((stderr, "inflate:         length %u\n", c->len));
       c->mode = DIST;
-    case DIST:          // i: get distance next 
+    case DIST:          // i: get distance next
       j = c->sub.code.need;
       NEEDBITS(j)
       t = c->sub.code.tree + ((uInt)b & inflate_mask[j]);
       DUMPBITS(t->bits)
       e = (uInt)(t->exop);
-      if (e & 16)               // distance 
+      if (e & 16)               // distance
       {
         c->sub.copy.get = e & 15;
         c->sub.copy.dist = t->base;
         c->mode = DISTEXT;
         break;
       }
-      if ((e & 64) == 0)        // next table 
+      if ((e & 64) == 0)        // next table
       {
         c->sub.code.need = e;
         c->sub.code.tree = t + t->base;
         break;
       }
-      c->mode = BADCODE;        // invalid code 
+      c->mode = BADCODE;        // invalid code
       z->msg = (char*)"invalid distance code";
       r = Z_DATA_ERROR;
       LEAVE
-    case DISTEXT:       // i: getting distance extra 
+    case DISTEXT:       // i: getting distance extra
       j = c->sub.copy.get;
       NEEDBITS(j)
       c->sub.copy.dist += (uInt)b & inflate_mask[j];
       DUMPBITS(j)
       LuTracevv((stderr, "inflate:         distance %u\n", c->sub.copy.dist));
       c->mode = COPY;
-    case COPY:          // o: copying bytes in window, waiting for space 
+    case COPY:          // o: copying bytes in window, waiting for space
       f = q - c->sub.copy.dist;
       while (f < s->window)             // modulo window size-"while" instead
-        f += s->end - s->window;        // of "if" handles invalid distances 
+        f += s->end - s->window;        // of "if" handles invalid distances
       while (c->len)
       {
         NEEDOUT
@@ -1306,18 +1306,18 @@ int inflate_codes(inflate_blocks_statef *s, z_streamp z, int r)
       }
       c->mode = START;
       break;
-    case LIT:           // o: got literal, waiting for output space 
+    case LIT:           // o: got literal, waiting for output space
       NEEDOUT
       OUTBYTE(c->sub.lit)
       c->mode = START;
       break;
-    case WASH:          // o: got eob, possibly more output 
-      if (k > 7)        // return unused byte, if any 
+    case WASH:          // o: got eob, possibly more output
+      if (k > 7)        // return unused byte, if any
       {
         //Assert(k < 16, "inflate_codes grabbed too many bytes")
         k -= 8;
         n++;
-        p--;            // can always return one 
+        p--;            // can always return one
       }
       FLUSH
       if (s->read != s->write)
@@ -1347,7 +1347,7 @@ void inflate_codes_free(inflate_codes_statef *c,z_streamp z)
 // Copyright (C) 1995-1998 Mark Adler
 // For conditions of distribution and use, see copyright notice in zlib.h
 
-//struct inflate_codes_state {int dummy;}; // for buggy compilers 
+//struct inflate_codes_state {int dummy;}; // for buggy compilers
 
 
 
@@ -1453,12 +1453,12 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
   Byte *p;             // input data pointer
   uInt n;               // bytes available there
   Byte *q;             // output window write pointer
-  uInt m;               // bytes to end of window or read pointer 
+  uInt m;               // bytes to end of window or read pointer
 
-  // copy input/output information to locals (UPDATE macro restores) 
+  // copy input/output information to locals (UPDATE macro restores)
   LOAD
 
-  // process input based on current state 
+  // process input based on current state
   for(;;) switch (s->mode)
   {
     case IBM_TYPE:
@@ -1467,15 +1467,15 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
       s->last = t & 1;
       switch (t >> 1)
       {
-        case 0:                         // stored 
+        case 0:                         // stored
           LuTracev((stderr, "inflate:     stored block%s\n",
                  s->last ? " (last)" : ""));
           DUMPBITS(3)
-          t = k & 7;                    // go to byte boundary 
+          t = k & 7;                    // go to byte boundary
           DUMPBITS(t)
           s->mode = IBM_LENS;               // get length of stored block
           break;
-        case 1:                         // fixed 
+        case 1:                         // fixed
           LuTracev((stderr, "inflate:     fixed codes block%s\n",
                  s->last ? " (last)" : ""));
           {
@@ -1493,7 +1493,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
           DUMPBITS(3)
           s->mode = IBM_CODES;
           break;
-        case 2:                         // dynamic 
+        case 2:                         // dynamic
           LuTracev((stderr, "inflate:     dynamic codes block%s\n",
                  s->last ? " (last)" : ""));
           DUMPBITS(3)
@@ -1517,7 +1517,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
         LEAVE
       }
       s->sub.left = (uInt)b & 0xffff;
-      b = k = 0;                      // dump bits 
+      b = k = 0;                      // dump bits
       LuTracev((stderr, "inflate:       stored length %u\n", s->sub.left));
       s->mode = s->sub.left ? IBM_STORED : (s->last ? IBM_DRY : IBM_TYPE);
       break;
@@ -1602,7 +1602,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
           DUMPBITS(t)
           s->sub.trees.blens[s->sub.trees.index++] = c;
         }
-        else // c == 16..18 
+        else // c == 16..18
         {
           i = c == 18 ? 7 : c - 14;
           j = c == 18 ? 11 : 3;
@@ -1634,7 +1634,7 @@ int inflate_blocks(inflate_blocks_statef *s, z_streamp z, int r)
         inflate_huft *tl, *td;
         inflate_codes_statef *c;
 
-        bl = 9;         // must be <= 9 for lookahead assumptions 
+        bl = 9;         // must be <= 9 for lookahead assumptions
         bd = 6;         // must be <= 9 for lookahead assumptions
         t = s->sub.trees.table;
         t = inflate_trees_dynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f),
@@ -1729,12 +1729,12 @@ int huft_build (
     const uInt *,      // list of base values for non-simple codes
     const uInt *,      // list of extra bits for non-simple codes
     inflate_huft **,// result: starting table
-    uInt *,            // maximum lookup bits (returns actual) 
-    inflate_huft *,     // space for trees 
-    uInt *,             // hufts used in space 
-    uInt * );         // space for values 
+    uInt *,            // maximum lookup bits (returns actual)
+    inflate_huft *,     // space for trees
+    uInt *,             // hufts used in space
+    uInt * );         // space for values
 
-// Tables for deflate from PKZIP's appnote.txt. 
+// Tables for deflate from PKZIP's appnote.txt.
 const uInt cplens[31] = { // Copy lengths for literal codes 257..285
         3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
         35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0};
@@ -1746,7 +1746,7 @@ const uInt cpdist[30] = { // Copy offsets for distance codes 0..29
         1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
         257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
         8193, 12289, 16385, 24577};
-const uInt cpdext[30] = { // Extra bits for distance codes 
+const uInt cpdext[30] = { // Extra bits for distance codes
         0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
         7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
         12, 12, 13, 13};
@@ -1784,7 +1784,7 @@ const uInt cpdext[30] = { // Extra bits for distance codes
 //
 
 
-// If BMAX needs to be larger than 16, then h and x[] should be uLong. 
+// If BMAX needs to be larger than 16, then h and x[] should be uLong.
 #define BMAX 15         // maximum bit length of any code
 
 int huft_build(
@@ -1806,28 +1806,28 @@ uInt *v)               // working area: values in order of bit length
 
   uInt a;                       // counter for codes of length k
   uInt c[BMAX+1];               // bit length count table
-  uInt f;                       // i repeats in table every f entries 
-  int g;                        // maximum code length 
-  int h;                        // table level 
-  register uInt i;              // counter, current code 
+  uInt f;                       // i repeats in table every f entries
+  int g;                        // maximum code length
+  int h;                        // table level
+  register uInt i;              // counter, current code
   register uInt j;              // counter
-  register int k;               // number of bits in current code 
-  int l;                        // bits per table (returned in m) 
-  uInt mask;                    // (1 << w) - 1, to avoid cc -O bug on HP 
+  register int k;               // number of bits in current code
+  int l;                        // bits per table (returned in m)
+  uInt mask;                    // (1 << w) - 1, to avoid cc -O bug on HP
   register uInt *p;            // pointer into c[], b[], or v[]
-  inflate_huft *q;              // points to current table 
-  struct inflate_huft_s r;      // table entry for structure assignment 
-  inflate_huft *u[BMAX];        // table stack 
-  register int w;               // bits before this table == (l * h) 
-  uInt x[BMAX+1];               // bit offsets, then code stack 
-  uInt *xp;                    // pointer into x 
-  int y;                        // number of dummy codes added 
-  uInt z;                       // number of entries in current table 
+  inflate_huft *q;              // points to current table
+  struct inflate_huft_s r;      // table entry for structure assignment
+  inflate_huft *u[BMAX];        // table stack
+  register int w;               // bits before this table == (l * h)
+  uInt x[BMAX+1];               // bit offsets, then code stack
+  uInt *xp;                    // pointer into x
+  int y;                        // number of dummy codes added
+  uInt z;                       // number of entries in current table
 
   // provide a default value
   r.base = 0;
 
-  // Generate counts for each bit length 
+  // Generate counts for each bit length
   p = c;
 #define C0 *p++ = 0;
 #define C2 C0 C0 C0 C0
@@ -1835,9 +1835,9 @@ uInt *v)               // working area: values in order of bit length
   C4;                           // clear c[]--assume BMAX+1 is 16
   p = b;  i = n;
   do {
-    c[*p++]++;                  // assume all entries <= BMAX 
+    c[*p++]++;                  // assume all entries <= BMAX
   } while (--i);
-  if (c[0] == n)                // null input--all zero length codes 
+  if (c[0] == n)                // null input--all zero length codes
   {
     *t = (inflate_huft *)Z_NULL;
     *m = 0;
@@ -1845,24 +1845,24 @@ uInt *v)               // working area: values in order of bit length
   }
 
 
-  // Find minimum and maximum length, bound *m by those 
+  // Find minimum and maximum length, bound *m by those
   l = *m;
   for (j = 1; j <= BMAX; j++)
     if (c[j])
       break;
-  k = j;                        // minimum code length 
+  k = j;                        // minimum code length
   if ((uInt)l < j)
     l = j;
   for (i = BMAX; i; i--)
     if (c[i])
       break;
-  g = i;                        // maximum code length 
+  g = i;                        // maximum code length
   if ((uInt)l > i)
     l = i;
   *m = l;
 
 
-  // Adjust last length count to fill out codes, if needed 
+  // Adjust last length count to fill out codes, if needed
   for (y = 1 << j; j < i; j++, y <<= 1)
     if ((y -= c[j]) < 0)
       return Z_DATA_ERROR;
@@ -1871,94 +1871,94 @@ uInt *v)               // working area: values in order of bit length
   c[i] += y;
 
 
-  // Generate starting offsets into the value table for each length 
+  // Generate starting offsets into the value table for each length
   x[1] = j = 0;
   p = c + 1;  xp = x + 2;
-  while (--i) {                 // note that i == g from above 
+  while (--i) {                 // note that i == g from above
     *xp++ = (j += *p++);
   }
 
 
-  // Make a table of values in order of bit lengths 
+  // Make a table of values in order of bit lengths
   p = b;  i = 0;
   do {
     if ((j = *p++) != 0)
       v[x[j]++] = i;
   } while (++i < n);
-  n = x[g];                     // set n to length of v 
+  n = x[g];                     // set n to length of v
 
 
-  // Generate the Huffman codes and for each, make the table entries 
-  x[0] = i = 0;                 // first Huffman code is zero 
-  p = v;                        // grab values in bit order 
-  h = -1;                       // no tables yet--level -1 
-  w = -l;                       // bits decoded == (l * h) 
-  u[0] = (inflate_huft *)Z_NULL;        // just to keep compilers happy 
-  q = (inflate_huft *)Z_NULL;   // ditto 
-  z = 0;                        // ditto 
+  // Generate the Huffman codes and for each, make the table entries
+  x[0] = i = 0;                 // first Huffman code is zero
+  p = v;                        // grab values in bit order
+  h = -1;                       // no tables yet--level -1
+  w = -l;                       // bits decoded == (l * h)
+  u[0] = (inflate_huft *)Z_NULL;        // just to keep compilers happy
+  q = (inflate_huft *)Z_NULL;   // ditto
+  z = 0;                        // ditto
 
-  // go through the bit lengths (k already is bits in shortest code) 
+  // go through the bit lengths (k already is bits in shortest code)
   for (; k <= g; k++)
   {
     a = c[k];
     while (a--)
     {
-      // here i is the Huffman code of length k bits for value *p 
-      // make tables up to required level 
+      // here i is the Huffman code of length k bits for value *p
+      // make tables up to required level
       while (k > w + l)
       {
         h++;
-        w += l;                 // previous table always l bits 
+        w += l;                 // previous table always l bits
 
         // compute minimum size table less than or equal to l bits
         z = g - w;
-        z = z > (uInt)l ? l : z;        // table size upper limit 
-        if ((f = 1 << (j = k - w)) > a + 1)     // try a k-w bit table 
-        {                       // too few codes for k-w bit table 
-          f -= a + 1;           // deduct codes from patterns left 
+        z = z > (uInt)l ? l : z;        // table size upper limit
+        if ((f = 1 << (j = k - w)) > a + 1)     // try a k-w bit table
+        {                       // too few codes for k-w bit table
+          f -= a + 1;           // deduct codes from patterns left
           xp = c + k;
           if (j < z)
-            while (++j < z)     // try smaller tables up to z bits 
+            while (++j < z)     // try smaller tables up to z bits
             {
               if ((f <<= 1) <= *++xp)
-                break;          // enough codes to use up j bits 
+                break;          // enough codes to use up j bits
               f -= *xp;         // else deduct codes from patterns
             }
         }
-        z = 1 << j;             // table entries for j-bit table 
+        z = 1 << j;             // table entries for j-bit table
 
-        // allocate new table 
-        if (*hn + z > MANY)     // (note: doesn't matter for fixed) 
-          return Z_DATA_ERROR;  // overflow of MANY 
+        // allocate new table
+        if (*hn + z > MANY)     // (note: doesn't matter for fixed)
+          return Z_DATA_ERROR;  // overflow of MANY
         u[h] = q = hp + *hn;
         *hn += z;
 
-        // connect to last table, if there is one 
+        // connect to last table, if there is one
         if (h)
         {
           x[h] = i;             // save pattern for backing up
-          r.bits = (Byte)l;     // bits to dump before this table 
-          r.exop = (Byte)j;     // bits in this table 
+          r.bits = (Byte)l;     // bits to dump before this table
+          r.exop = (Byte)j;     // bits in this table
           j = i >> (w - l);
-          r.base = (uInt)(q - u[h-1] - j);   // offset to this table 
-          u[h-1][j] = r;        // connect to last table 
+          r.base = (uInt)(q - u[h-1] - j);   // offset to this table
+          u[h-1][j] = r;        // connect to last table
         }
         else
-          *t = q;               // first table is returned result 
+          *t = q;               // first table is returned result
       }
 
-      // set up table entry in r 
+      // set up table entry in r
       r.bits = (Byte)(k - w);
       if (p >= v + n)
-        r.exop = 128 + 64;      // out of values--invalid code 
+        r.exop = 128 + 64;      // out of values--invalid code
       else if (*p < s)
       {
-        r.exop = (Byte)(*p < 256 ? 0 : 32 + 64);     // 256 is end-of-block 
-        r.base = *p++;          // simple code is just the value 
+        r.exop = (Byte)(*p < 256 ? 0 : 32 + 64);     // 256 is end-of-block
+        r.base = *p++;          // simple code is just the value
       }
       else
       {
-        r.exop = (Byte)(e[*p - s] + 16 + 64);// non-simple--look up in lists 
+        r.exop = (Byte)(e[*p - s] + 16 + 64);// non-simple--look up in lists
         r.base = d[*p++ - s];
       }
 
@@ -1967,13 +1967,13 @@ uInt *v)               // working area: values in order of bit length
       for (j = i >> w; j < z; j += f)
         q[j] = r;
 
-      // backwards increment the k-bit code i 
+      // backwards increment the k-bit code i
       for (j = 1 << (k - 1); i & j; j >>= 1)
         i ^= j;
       i ^= j;
 
-      // backup over finished tables 
-      mask = (1 << w) - 1;      // needed on HP, cc -O bug 
+      // backup over finished tables
+      mask = (1 << w) - 1;      // needed on HP, cc -O bug
       while ((i & mask) != x[h])
       {
         h--;                    // don't need to update q
@@ -1984,7 +1984,7 @@ uInt *v)               // working area: values in order of bit length
   }
 
 
-  // Return Z_BUF_ERROR if we were given an incomplete table 
+  // Return Z_BUF_ERROR if we were given an incomplete table
   return y != 0 && g != 1 ? Z_BUF_ERROR : Z_OK;
 }
 
@@ -1997,8 +1997,8 @@ inflate_huft *hp,       // space for trees
 z_streamp z)            // for messages
 {
   int r;
-  uInt hn = 0;          // hufts used in space 
-  uInt *v;             // work area for huft_build 
+  uInt hn = 0;          // hufts used in space
+  uInt *v;             // work area for huft_build
 
   if ((v = (uInt*)ZALLOC(z, 19, sizeof(uInt))) == Z_NULL)
     return Z_MEM_ERROR;
@@ -2028,14 +2028,14 @@ inflate_huft *hp,       // space for trees
 z_streamp z)            // for messages
 {
   int r;
-  uInt hn = 0;          // hufts used in space 
-  uInt *v;             // work area for huft_build 
+  uInt hn = 0;          // hufts used in space
+  uInt *v;             // work area for huft_build
 
-  // allocate work area 
+  // allocate work area
   if ((v = (uInt*)ZALLOC(z, 288, sizeof(uInt))) == Z_NULL)
     return Z_MEM_ERROR;
 
-  // build literal/length tree 
+  // build literal/length tree
   r = huft_build(c, nl, 257, cplens, cplext, tl, bl, hp, &hn, v);
   if (r != Z_OK || *bl == 0)
   {
@@ -2050,7 +2050,7 @@ z_streamp z)            // for messages
     return r;
   }
 
-  // build distance tree 
+  // build distance tree
   r = huft_build(c + nl, nd, 0, cpdist, cpdext, td, bd, hp, &hn, v);
   if (r != Z_OK || (*bd == 0 && nl > 257))
   {
@@ -2069,7 +2069,7 @@ z_streamp z)            // for messages
     return r;
   }
 
-  // done 
+  // done
   ZFREE(z, v);
   return Z_OK;
 }
@@ -2099,17 +2099,17 @@ z_streamp )             // for memory allocation
 //
 
 
-//struct inflate_codes_state {int dummy;}; // for buggy compilers 
+//struct inflate_codes_state {int dummy;}; // for buggy compilers
 
 
-// macros for bit input with no checking and for returning unused bytes 
+// macros for bit input with no checking and for returning unused bytes
 #define GRABBITS(j) {while(k<(j)){b|=((uLong)NEXTBYTE)<<k;k+=8;}}
 #define UNGRAB {c=z->avail_in-n;c=(k>>3)<c?k>>3:c;n+=c;p-=c;k-=c<<3;}
 
 // Called with number of bytes left to write in window at least 258
 // (the maximum string length) and number of input bytes available
 // at least ten.  The ten bytes are six bytes for the longest length/
-// distance pair plus four bytes for overloading the bit buffer. 
+// distance pair plus four bytes for overloading the bit buffer.
 
 int inflate_fast(
 uInt bl, uInt bd,
@@ -2118,31 +2118,31 @@ const inflate_huft *td, // need separate declaration for Borland C++
 inflate_blocks_statef *s,
 z_streamp z)
 {
-  const inflate_huft *t;      // temporary pointer 
-  uInt e;               // extra bits or operation 
-  uLong b;              // bit buffer 
-  uInt k;               // bits in bit buffer 
-  Byte *p;             // input data pointer 
-  uInt n;               // bytes available there 
-  Byte *q;             // output window write pointer 
-  uInt m;               // bytes to end of window or read pointer 
+  const inflate_huft *t;      // temporary pointer
+  uInt e;               // extra bits or operation
+  uLong b;              // bit buffer
+  uInt k;               // bits in bit buffer
+  Byte *p;             // input data pointer
+  uInt n;               // bytes available there
+  Byte *q;             // output window write pointer
+  uInt m;               // bytes to end of window or read pointer
   uInt ml;              // mask for literal/length tree
-  uInt md;              // mask for distance tree 
-  uInt c;               // bytes to copy 
-  uInt d;               // distance back to copy from 
-  Byte *r;             // copy source pointer 
+  uInt md;              // mask for distance tree
+  uInt c;               // bytes to copy
+  uInt d;               // distance back to copy from
+  Byte *r;             // copy source pointer
 
-  // load input, output, bit values 
+  // load input, output, bit values
   LOAD
 
-  // initialize masks 
+  // initialize masks
   ml = inflate_mask[bl];
   md = inflate_mask[bd];
 
-  // do until not enough input or output space for fast loop 
-  do {                          // assume called with m >= 258 && n >= 10 
-    // get literal/length code 
-    GRABBITS(20)                // max bits for literal/length code 
+  // do until not enough input or output space for fast loop
+  do {                          // assume called with m >= 258 && n >= 10
+    // get literal/length code
+    GRABBITS(20)                // max bits for literal/length code
     if ((e = (t = tl + ((uInt)b & ml))->exop) == 0)
     {
       DUMPBITS(t->bits)
@@ -2157,22 +2157,22 @@ z_streamp z)
       DUMPBITS(t->bits)
       if (e & 16)
       {
-        // get extra bits for length 
+        // get extra bits for length
         e &= 15;
         c = t->base + ((uInt)b & inflate_mask[e]);
         DUMPBITS(e)
         LuTracevv((stderr, "inflate:         * length %u\n", c));
 
-        // decode distance base of block to copy 
-        GRABBITS(15);           // max bits for distance code 
+        // decode distance base of block to copy
+        GRABBITS(15);           // max bits for distance code
         e = (t = td + ((uInt)b & md))->exop;
         for (;;) {
           DUMPBITS(t->bits)
           if (e & 16)
           {
-            // get extra bits to add to distance base 
+            // get extra bits to add to distance base
             e &= 15;
-            GRABBITS(e)         // get extra bits (up to 13) 
+            GRABBITS(e)         // get extra bits (up to 13)
             d = t->base + ((uInt)b & inflate_mask[e]);
             DUMPBITS(e)
             LuTracevv((stderr, "inflate:         * distance %u\n", d));
@@ -2594,7 +2594,7 @@ int inflateInit2(z_streamp z)
   }
   LuTracev((stderr, "inflate: allocated\n"));
 
-  // reset state 
+  // reset state
   inflateReset(z);
   return Z_OK;
 }
@@ -2639,7 +2639,7 @@ int inflate(z_streamp z, int f)
       {
         z->state->mode = IM_BAD;
         z->msg = (char*)"incorrect header check";
-        z->state->sub.marker = 5;       // can't try inflateSync 
+        z->state->sub.marker = 5;       // can't try inflateSync
         break;
       }
       LuTracev((stderr, "inflate: zlib header ok\n"));
@@ -2670,14 +2670,14 @@ int inflate(z_streamp z, int f)
     case IM_DICT0:
       z->state->mode = IM_BAD;
       z->msg = (char*)"need dictionary";
-      z->state->sub.marker = 0;       // can try inflateSync 
+      z->state->sub.marker = 0;       // can try inflateSync
       return Z_STREAM_ERROR;
     case IM_BLOCKS:
       r = inflate_blocks(z->state->blocks, z, r);
       if (r == Z_DATA_ERROR)
       {
         z->state->mode = IM_BAD;
-        z->state->sub.marker = 0;       // can try inflateSync 
+        z->state->sub.marker = 0;       // can try inflateSync
         break;
       }
       if (r == Z_OK)
@@ -2712,7 +2712,7 @@ int inflate(z_streamp z, int f)
       {
         z->state->mode = IM_BAD;
         z->msg = (char*)"incorrect data check";
-        z->state->sub.marker = 5;       // can't try inflateSync 
+        z->state->sub.marker = 5;       // can't try inflateSync
         break;
       }
       LuTracev((stderr, "inflate: zlib check ok\n"));
@@ -2752,7 +2752,7 @@ typedef struct unz_file_info_internal_s
 {
     unz_file_info_internal_s():
         offset_curfile(0) {}
-        
+
     uLong offset_curfile;// relative offset of local header 4 bytes
 } unz_file_info_internal;
 
@@ -2839,7 +2839,7 @@ long int luftell(LUFILE *stream)
 
 int lufseek(LUFILE *stream, long offset, int whence)
 { if (stream->is_handle && stream->canseek)
-  { 
+  {
 #ifdef ZIP_STD
     return fseek(stream->h,stream->initial_offset+offset,whence);
 #else
@@ -2863,7 +2863,7 @@ int lufseek(LUFILE *stream, long offset, int whence)
 size_t lufread(void *ptr,size_t size,size_t n,LUFILE *stream)
 { unsigned int toread = (unsigned int)(size*n);
   if (stream->is_handle)
-  { 
+  {
 #ifdef ZIP_STD
     return fread(ptr,size,n,stream->h);
 #else
@@ -3014,7 +3014,7 @@ int unzlocal_getLong (LUFILE *fin,uLong *pX)
 
     err = unzlocal_getByte(fin,&i);
     x = (uLong)i;
-    
+
     if (err==UNZ_OK)
         err = unzlocal_getByte(fin,&i);
     x += ((uLong)i)<<8;
@@ -3026,7 +3026,7 @@ int unzlocal_getLong (LUFILE *fin,uLong *pX)
     if (err==UNZ_OK)
         err = unzlocal_getByte(fin,&i);
     x += ((uLong)i)<<24;
-   
+
     if (err==UNZ_OK)
         *pX = x;
     else
@@ -3035,7 +3035,7 @@ int unzlocal_getLong (LUFILE *fin,uLong *pX)
 }
 
 
-// My own strcmpi / strcasecmp 
+// My own strcmpi / strcasecmp
 int strcmpcasenosensitive_internal (const char* fileName1,const char *fileName2)
 {
 	for (;;)
@@ -3068,7 +3068,7 @@ int strcmpcasenosensitive_internal (const char* fileName1,const char *fileName2)
 int unzStringFileNameCompare (const char*fileName1,const char*fileName2,int iCaseSensitivity)
 { if (iCaseSensitivity==1) return strcmp(fileName1,fileName2);
   else return strcmpcasenosensitive_internal(fileName1,fileName2);
-} 
+}
 
 #define BUFREADCOMMENT (0x400)
 
@@ -3168,7 +3168,7 @@ unzFile unzOpenInternal(LUFILE *fin)
 //  return UNZ_OK if there is no problem.
 int unzClose (unzFile file)
 {
-    
+
     if (file==NULL)
         return UNZ_PARAMERROR;
 
@@ -3185,7 +3185,7 @@ int unzClose (unzFile file)
 
 //  Write info about the ZipFile in the *pglobal_info structure.
 //  No preparation of the structure is needed
-//  return UNZ_OK if there is no problem. 
+//  return UNZ_OK if there is no problem.
 int unzGetGlobalInfo (unzFile file,unz_global_info *pglobal_info)
 {
 	unz_s* s;
@@ -4178,7 +4178,7 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
 
     // make sure there rd is always null terminated
     rd[MAX_PATH] = 0;
-  
+
     size_t len=_tcslen(rd);
     if (len>0 && (rd[len-1]=='/' || rd[len-1]=='\\')) rd[len-1]=0;
 #ifdef ZIP_STD
@@ -4197,24 +4197,24 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
     EnsureDirectory(rootdir,tmp);
     name++;
   }
-  TCHAR cd[MAX_PATH]; *cd=0; 
-  if (rootdir!=0) 
+  TCHAR cd[MAX_PATH]; *cd=0;
+  if (rootdir!=0)
 #ifdef ZIP_STD
   strncpy(cd,rootdir,MAX_PATH);
 #else
   _tcsncpy_s(cd,MAX_PATH,rootdir,MAX_PATH);
-#endif  
-  
+#endif
+
   cd[MAX_PATH-1]=0;
   size_t len=_tcslen(cd);
-  
+
 #ifdef ZIP_STD
   strncpy(cd+len,dir,MAX_PATH-len);
 #else
   _tcsncpy_s(cd+len,MAX_PATH-len,dir,MAX_PATH-len);
-#endif 
-  
-  
+#endif
+
+
   cd[MAX_PATH-1]=0;
 #ifdef ZIP_STD
   if (!FileExists(cd)) lumkdir(cd);
@@ -4239,7 +4239,7 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     }
     bool reached_eof;
     int res = unzReadCurrentFile(uf,dst,len,&reached_eof);
-    if (res<=0) 
+    if (res<=0)
     {
        unzCloseCurrentFile(uf); currentfile=-1;
     }
@@ -4292,32 +4292,32 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     // a malicious zip could unzip itself into c:\windows. Our solution is that GetZipItem (which
     // is how the user retrieve's the file's name within the zip) never returns absolute paths.
     const TCHAR *name=ufn; const TCHAR *c=name; while (*c!=0) {if (*c=='/' || *c=='\\') name=c+1; c++;}
-    TCHAR dir[MAX_PATH]; 
+    TCHAR dir[MAX_PATH];
 
 #ifdef ZIP_STD
   strncpy(dir,ufn,MAX_PATH);
 #else
   _tcsncpy_s(dir,MAX_PATH,ufn,MAX_PATH);
-#endif 
-	
+#endif
+
 
 	if (name==ufn) *dir=0; else dir[name-ufn]=0;
     bool isabsolute = (dir[0]=='/' || dir[0]=='\\' || (dir[0]!=0 && dir[1]==':'));
 
-    if (isabsolute) 
+    if (isabsolute)
 	{
-		
+
 #ifdef ZIP_STD
 		size_t dirlen=_tcslen(dir);
 		strncpy(fn,dir,MAX_PATH);
 		strncpy(fn+dirlen,name,MAX_PATH-dirlen);
 #else
 		_tsprintf(fn,MAX_PATH,_T("%s%s"),dir,name);
-#endif 
+#endif
 		EnsureDirectory(0,dir);
-	
+
 	}
-    else 
+    else
 	{
 #ifdef ZIP_STD
 		size_t rootdirlen=_tcslen(rootdir);
@@ -4340,7 +4340,7 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
   if (h==INVALID_HANDLE_VALUE) return ZR_NOFILE;
   unzOpenCurrentFile(uf,password);
   if (unzbuf==0) unzbuf=new char[16384]; DWORD haderr=0;
-  //  
+  //
 
   for (; haderr==0;)
   { bool reached_eof;
@@ -4414,11 +4414,11 @@ unsigned int FormatZipMessageU(ZRESULT code, TCHAR *buf,unsigned int len)
   strncpy(buf,msg,n);
 #else
   _tcsncpy_s(buf,_tcslen(buf),msg,n);
-#endif 
-  
-  
-  
-  
+#endif
+
+
+
+
   buf[n]=0;
   return mlen;
 }

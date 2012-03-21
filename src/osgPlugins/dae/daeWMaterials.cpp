@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeWriter.h"
@@ -77,7 +77,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
     }
     domEffect *effect = daeSafeCast< domEffect >( lib_effects->add( COLLADA_ELEMENT_EFFECT ) );
     std::string efName = name + "_effect";
-    
+
     effect->setId( efName.c_str() );
 
     url = "#" + efName;
@@ -142,12 +142,12 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
             np->setSid( sampName.c_str() );
             domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add( COLLADA_ELEMENT_SAMPLER2D ) );
             domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >( sampler->add( COLLADA_ELEMENT_SOURCE ) );
-            source->setValue( surfName.c_str() ); 
+            source->setValue( surfName.c_str() );
 
             //set sampler state
             domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >( sampler->add( COLLADA_ELEMENT_WRAP_S ) );
             osg::Texture::WrapMode wrap = tex->getWrap( osg::Texture::WRAP_S );
-            switch( wrap ) 
+            switch( wrap )
             {
             case osg::Texture::CLAMP:
             case osg::Texture::CLAMP_TO_EDGE:
@@ -169,7 +169,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
 
             domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >( sampler->add( COLLADA_ELEMENT_WRAP_T ) );
             wrap = tex->getWrap( osg::Texture::WRAP_T );
-            switch( wrap ) 
+            switch( wrap )
             {
             case osg::Texture::CLAMP:
             case osg::Texture::CLAMP_TO_EDGE:
@@ -272,7 +272,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         const osg::Vec4 &dCol = osgmat->getDiffuseFrontAndBack()?osgmat->getDiffuse( osg::Material::FRONT_AND_BACK ):osgmat->getDiffuse( osg::Material::FRONT );
         const osg::Vec4 &sCol = osgmat->getSpecularFrontAndBack()?osgmat->getSpecular( osg::Material::FRONT_AND_BACK ):osgmat->getSpecular( osg::Material::FRONT );
         float shininess = osgmat->getShininessFrontAndBack()?osgmat->getShininess( osg::Material::FRONT_AND_BACK ):osgmat->getShininess( osg::Material::FRONT );
-        
+
         domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_EMISSION ) );
         domCommon_color_or_texture_type_complexType::domColor *col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( COLLADA_ELEMENT_COLOR ) );
         col->getValue().append( eCol.r() );
@@ -287,7 +287,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         col->getValue().append( aCol.b() );
         col->getValue().append( aCol.a() );
 
-        
+
         //### check if we really have a texture
         if ( phong->getDiffuse() == NULL )
         {
@@ -301,7 +301,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         else
         {
             cot = phong->getDiffuse();
-            
+
             if (_pluginOptions.writeExtras)
             {
                 // Adds the following to a texture element
@@ -394,7 +394,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                 domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->add(COLLADA_ELEMENT_TRANSPARENT) );
                 ctt->setOpaque( FX_OPAQUE_ENUM_A_ONE );
                 domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE) );
-                
+
                 if (!_pluginOptions.earthTex)
                 {
                     std::string sampName = efName + "-sampler";
@@ -405,7 +405,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                     std::string iName = efName + "-image";
                     dtex->setTexture( iName.c_str() );
                 }
-                dtex->setTexcoord( "texcoord0" );           
+                dtex->setTexcoord( "texcoord0" );
             }
             else
             {

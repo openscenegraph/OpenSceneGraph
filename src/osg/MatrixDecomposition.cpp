@@ -45,14 +45,14 @@ namespace MatrixDecomposition
     typedef struct {double x, y, z, w;} Quat; // Quaternion
     enum QuatPart {X, Y, Z, W};
     typedef double _HMatrix[4][4];
-    typedef Quat HVect;   // Homogeneous 3D vector 
+    typedef Quat HVect;   // Homogeneous 3D vector
     typedef struct
     {
         osg::Vec4d t;     // Translation Component;
         Quat q;           // Essential Rotation
-        Quat  u;          //Stretch rotation      
-        HVect k;          //Sign of determinant 
-        double f;          // Sign of determinant 
+        Quat  u;          //Stretch rotation
+        HVect k;          //Sign of determinant
+        double f;          // Sign of determinant
     } _affineParts;
 
     HVect spectDecomp(_HMatrix S, _HMatrix U);
@@ -343,7 +343,7 @@ namespace MatrixDecomposition
         double det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
         int i, j;
 
-        mat_tpose(Mk,=,M,3); 
+        mat_tpose(Mk,=,M,3);
         M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
 
         do
@@ -352,21 +352,21 @@ namespace MatrixDecomposition
             det = vdot(Mk[0], MadjTk[0]);
             if (det==0.0)
             {
-                do_rank2(Mk, MadjTk, Mk); 
+                do_rank2(Mk, MadjTk, Mk);
                 break;
             }
 
-            MadjT_one = norm_one(MadjTk); 
+            MadjT_one = norm_one(MadjTk);
             MadjT_inf = norm_inf(MadjTk);
 
             gamma = sqrt(sqrt((MadjT_one*MadjT_inf)/(M_one*M_inf))/fabs(det));
             g1 = gamma*0.5;
             g2 = 0.5/(gamma*det);
-            matrixCopy(Ek,=,Mk,3); 
-            matBinop(Mk,=,g1*Mk,+,g2*MadjTk,3);        
+            matrixCopy(Ek,=,Mk,3);
+            matBinop(Mk,=,g1*Mk,+,g2*MadjTk,3);
             mat_copy(Ek,-=,Mk,3);
             E_one = norm_one(Ek);
-            M_one = norm_one(Mk);  
+            M_one = norm_one(Mk);
             M_inf = norm_inf(Mk);
 
         } while(E_one>(M_one*TOL));
@@ -374,7 +374,7 @@ namespace MatrixDecomposition
         mat_tpose(Q,=,Mk,3); mat_pad(Q);
         mat_mult(Mk, M, S);  mat_pad(S);
 
-        for (i=0; i<3; i++) 
+        for (i=0; i<3; i++)
             for (j=i; j<3; j++)
                 S[i][j] = S[j][i] = 0.5*(S[i][j]+S[j][i]);
         return (det);
@@ -456,14 +456,14 @@ namespace MatrixDecomposition
         ka[X] = k->x; ka[Y] = k->y; ka[Z] = k->z;
 
         if (ka[X]==ka[Y]) {
-            if (ka[X]==ka[Z]) 
-                turn = W; 
+            if (ka[X]==ka[Z])
+                turn = W;
             else turn = Z;
         }
         else {
-            if (ka[X]==ka[Z]) 
-                turn = Y; 
-            else if (ka[Y]==ka[Z]) 
+            if (ka[X]==ka[Z])
+                turn = Y;
+            else if (ka[Y]==ka[Z])
                 turn = X;
         }
         if (turn>=0) {
@@ -489,12 +489,12 @@ namespace MatrixDecomposition
             }
 
             if (mag[0]>mag[1]) {
-                if (mag[0]>mag[2]) 
-                    win = 0; 
+                if (mag[0]>mag[2])
+                    win = 0;
                 else win = 2;
             }
             else {
-                if (mag[1]>mag[2]) win = 1; 
+                if (mag[1]>mag[2]) win = 1;
                 else win = 2;
             }
 
@@ -508,7 +508,7 @@ namespace MatrixDecomposition
             t = sqrt(mag[win]+0.5);
             p = Qt_Mul(p, Qt_(0.0,0.0,-qp.z/t,qp.w/t));
             p = Qt_Mul(qtoz, Qt_Conj(p));
-        } 
+        }
         else {
             double qa[4], pa[4];
             unsigned int lo, hi;
@@ -524,10 +524,10 @@ namespace MatrixDecomposition
             }
 
             /* Find two largest components, indices in hi and lo */
-            if (qa[0]>qa[1]) lo = 0; 
+            if (qa[0]>qa[1]) lo = 0;
             else lo = 1;
 
-            if (qa[2]>qa[3]) hi = 2; 
+            if (qa[2]>qa[3]) hi = 2;
             else hi = 3;
 
             if (qa[lo]>qa[hi]) {
@@ -537,7 +537,7 @@ namespace MatrixDecomposition
                 else {
                     hi ^= lo; lo ^= hi; hi ^= lo;
                 }
-            } 
+            }
             else {
                 if (qa[hi^1]>qa[lo]) lo = hi^1;
             }
@@ -549,22 +549,22 @@ namespace MatrixDecomposition
                 if (all>big) {/*all*/
                     {int i; for (i=0; i<4; i++) pa[i] = sgn(neg[i], 0.5);}
                     cycle(ka,par);
-                } 
+                }
                 else {/*big*/ pa[hi] = sgn(neg[hi],1.0);}
             } else {
                 if (two>big) { /*two*/
-                    pa[hi] = sgn(neg[hi],SQRTHALF); 
+                    pa[hi] = sgn(neg[hi],SQRTHALF);
                     pa[lo] = sgn(neg[lo], SQRTHALF);
                     if (lo>hi) {
                         hi ^= lo; lo ^= hi; hi ^= lo;
                     }
                     if (hi==W) {
-                        hi = "\001\002\000"[lo]; 
+                        hi = "\001\002\000"[lo];
                         lo = 3-hi-lo;
                     }
                     swap(ka,hi,lo);
-                } 
-                else {/*big*/ 
+                }
+                else {/*big*/
                     pa[hi] = sgn(neg[hi],1.0);
                 }
             }
@@ -609,7 +609,7 @@ void osg::Matrixf::decompose(osg::Vec3d& t,
     MatrixDecomposition::decompAffine(hmatrix, &parts);
 
     double mul = 1.0;
-    if (parts.t[MatrixDecomposition::W] != 0.0) 
+    if (parts.t[MatrixDecomposition::W] != 0.0)
         mul = 1.0 / parts.t[MatrixDecomposition::W];
 
     t[0] = parts.t[MatrixDecomposition::X] * mul;
@@ -619,7 +619,7 @@ void osg::Matrixf::decompose(osg::Vec3d& t,
     r.set(parts.q.x, parts.q.y, parts.q.z, parts.q.w);
 
     mul = 1.0;
-    if (parts.k.w != 0.0) 
+    if (parts.k.w != 0.0)
         mul = 1.0 / parts.k.w;
 
     // mul be sign of determinant to support negative scales.
@@ -663,7 +663,7 @@ void osg::Matrixd::decompose(osg::Vec3d& t,
     MatrixDecomposition::decompAffine(hmatrix, &parts);
 
     double mul = 1.0;
-    if (parts.t[MatrixDecomposition::W] != 0.0) 
+    if (parts.t[MatrixDecomposition::W] != 0.0)
         mul = 1.0 / parts.t[MatrixDecomposition::W];
 
     t[0] = parts.t[MatrixDecomposition::X] * mul;
@@ -673,7 +673,7 @@ void osg::Matrixd::decompose(osg::Vec3d& t,
     r.set(parts.q.x, parts.q.y, parts.q.z, parts.q.w);
 
     mul = 1.0;
-    if (parts.k.w != 0.0) 
+    if (parts.k.w != 0.0)
         mul = 1.0 / parts.k.w;
 
     // mul be sign of determinant to support negative scales.

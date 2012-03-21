@@ -148,14 +148,14 @@ osg::Array* createVec4Array(bool doublePrecision)
 
 osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     std::vector<StateSetContent>& stateSetList,
-    GeometryType gt, 
-    unsigned int mti, 
-    bool bNormal, 
+    GeometryType gt,
+    unsigned int mti,
+    bool bNormal,
     bool useDiffuseMap,
     bool useOpacityMap,
     bool useEmissiveMap,
     // more here...
-    bool bColor, 
+    bool bColor,
     const osgDB::Options& options,
     bool lightmapTextures)
 {
@@ -224,7 +224,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
             if (lightmapTextures)
             {
                 double factor = ssc.diffuseFactor;
-                osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();    
+                osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();
                 texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
                 texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
                 texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
@@ -254,7 +254,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
             }
 
             // setup combiner to ignore RGB...
-            osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();    
+            osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();
             texenv->setCombine_RGB(osg::TexEnvCombine::REPLACE);
             texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
             stateSet->setTextureAttributeAndModes(StateSetContent::OPACITY_TEXTURE_UNIT, texenv.get(), osg::StateAttribute::ON);
@@ -276,7 +276,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
 
             // setup combiner for factor...
             double factor = ssc.reflectionFactor;
-            osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();    
+            osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();
             texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
             texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
             texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
@@ -517,7 +517,7 @@ const KFbxLayerElementUV* getUVElementForChannel(std::string uvChannelName,
         {
             return uv;
         }
-    }    
+    }
 
     return 0;
 }
@@ -746,7 +746,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
 
         osg::Geometry* pGeometry = getGeometry(pGeode, geometryMap,
             stateSetList, geomType, materialIndex,
-            pFbxNormals != 0, 
+            pFbxNormals != 0,
             pFbxUVs_diffuse != 0,
             pFbxUVs_opacity != 0,
             pFbxUVs_emissive != 0,

@@ -453,7 +453,7 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
             // if traits says not resize we want to set the functions to exlude MWM_FUNC_RESIZE,
             // but this bitmask needs to be set if the MWM_FUNC_ALL bit is already set in order to toggle it off.
             if (_traits.valid() && !_traits->supportsResize) wmHints.functions = wmHints.functions | MWM_FUNC_RESIZE;
-            
+
         }
         else
         {
@@ -463,7 +463,7 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
             wmHints.inputMode = 0;
             wmHints.status = 0;
         }
-        
+
         XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
         result = true;
     }
@@ -494,7 +494,7 @@ bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width
 
     XFlush(display);
     XSync(display, 0);
-    
+
     // add usleep here to give window manager a chance to handle the request, if
     // we don't add this sleep then any X11 calls right afterwards can produce
     // X11 errors.
@@ -758,7 +758,7 @@ void GraphicsWindowX11::init()
         if (_traits->samples) { attributes.push_back(EGL_SAMPLES); attributes.push_back(_traits->samples); }
 
         attributes.push_back(EGL_RENDERABLE_TYPE); attributes.push_back(OSG_EGL_OPENGL_TARGET_BIT);
-        
+
         attributes.push_back(EGL_NONE);
         attributes.push_back(EGL_NONE);
 
@@ -915,7 +915,7 @@ bool GraphicsWindowX11::createWindow()
             doFullSceenWorkAround = true;
         }
     }
-    
+
     _window = XCreateWindow( _display, _parent,
                              x,
                              y,
@@ -952,7 +952,7 @@ bool GraphicsWindowX11::createWindow()
 
     setWindowDecoration(_traits->windowDecoration);
 
-    
+
     useCursor(_traits->useCursor);
 
     _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
@@ -1206,7 +1206,7 @@ void GraphicsWindowX11::checkEvents()
     double resizeTime = eventTime;
     _timeOfLastCheckEvents = getEventQueue()->getTime();
     if (baseTime>_timeOfLastCheckEvents) baseTime = _timeOfLastCheckEvents;
-    
+
 
     // OSG_NOTICE<<"GraphicsWindowX11::checkEvents() : getEventQueue()->getCurrentEventState()->getGraphicsContext()="<<getEventQueue()->getCurrentEventState()->getGraphicsContext()<<std::endl;
 

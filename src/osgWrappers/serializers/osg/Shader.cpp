@@ -32,7 +32,7 @@ static bool writeShaderSource( osgDB::OutputStream& os, const osg::Shader& shade
     {
         lines.push_back( line );
     }
-    
+
     os.writeSize(lines.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( std::vector<std::string>::const_iterator itr=lines.begin();
           itr!=lines.end(); ++itr )
@@ -57,7 +57,7 @@ REGISTER_OBJECT_WRAPPER( Shader,
         ADD_ENUM_VALUE( GEOMETRY );
         ADD_ENUM_VALUE( UNDEFINED );
     END_ENUM_SERIALIZER();  // _type
-    
+
     ADD_USER_SERIALIZER( ShaderSource );  // _shaderSource
     ADD_OBJECT_SERIALIZER( ShaderBinary, osg::ShaderBinary, NULL );  // _shaderBinary
 }

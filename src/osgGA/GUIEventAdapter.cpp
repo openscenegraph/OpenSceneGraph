@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -84,12 +84,12 @@ void GUIEventAdapter::setWindowRectangle(int x, int y, int width, int height, bo
     _windowY = y;
     _windowWidth = width;
     _windowHeight = height;
-    
+
     if (updateMouseRange)
     {
         setInputRange(0, 0, width, height);
     }
-    
+
 }
 
 void GUIEventAdapter::setInputRange(float Xmin, float Ymin, float Xmax, float Ymax)
@@ -108,7 +108,7 @@ const osg::Matrix GUIEventAdapter::getPenOrientation() const
     osg::Matrix xrot = osg::Matrix::rotate ( xRad, osg::Vec3f(1.0f, 0.0f, 0.0f) );
     osg::Matrix yrot = osg::Matrix::rotate ( yRad, osg::Vec3f(0.0f, 0.0f, 1.0f) );
     osg::Matrix zrot = osg::Matrix::rotate ( zRad, osg::Vec3f(0.0f, 1.0f, 0.0f) );
-    
+
     return ( zrot * yrot * xrot );
 }
 
@@ -119,6 +119,6 @@ void GUIEventAdapter::addTouchPoint(unsigned int id, TouchPhase phase, float x, 
         setX(x);
         setY(y);
     }
-    
+
     _touchData->addTouchPoint(id, phase, x, y, tapCount);
 }

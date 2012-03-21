@@ -5,7 +5,7 @@
  *    DESCRIPTION:    Read/Write osg::Multisample in binary format to disk.
  *
  *    CREATED BY:     Nikolaus Hanekamp
- *                    
+ *
  *
  *    HISTORY:        Created 15.06.2007
  *

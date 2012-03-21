@@ -32,8 +32,8 @@ bool Program_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     Program& program = static_cast<Program&>(obj);
-    
-    if(fr.matchSequence("GeometryVerticesOut %i")) 
+
+    if(fr.matchSequence("GeometryVerticesOut %i"))
     {
         unsigned int verticesOut;
         fr[1].getUInt(verticesOut);
@@ -41,8 +41,8 @@ bool Program_readLocalData(Object& obj, Input& fr)
         fr += 2;
         iteratorAdvanced = true;
     }
-    
-    if(fr.matchSequence("GeometryInputType %w")) 
+
+    if(fr.matchSequence("GeometryInputType %w"))
     {
         std::string primitiveMode = fr[1].getStr();
         GLenum mode;
@@ -51,8 +51,8 @@ bool Program_readLocalData(Object& obj, Input& fr)
         fr += 2;
         iteratorAdvanced = true;
     }
-    
-    if(fr.matchSequence("GeometryOutputType %w")) 
+
+    if(fr.matchSequence("GeometryOutputType %w"))
     {
         std::string primitiveMode = fr[1].getStr();
         GLenum mode;
@@ -104,7 +104,7 @@ bool Program_readLocalData(Object& obj, Input& fr)
 bool Program_writeLocalData(const Object& obj,Output& fw)
 {
     const Program& program = static_cast<const Program&>(obj);
-    
+
     fw.indent() << "GeometryVerticesOut " << program.getParameter(GL_GEOMETRY_VERTICES_OUT_EXT) << std::endl;
     fw.indent() << "GeometryInputType " << Geometry_getPrimitiveModeStr(program.getParameter(GL_GEOMETRY_INPUT_TYPE_EXT)) << std::endl;
     fw.indent() << "GeometryOutputType " << Geometry_getPrimitiveModeStr(program.getParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT)) << std::endl;

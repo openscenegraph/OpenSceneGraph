@@ -202,7 +202,7 @@ TX_CPPDECL trpgEndian trpg_cpu_byte_order(void)
 {
     if (osg::getCpuByteOrder()==osg::BigEndian)
         return BigEndian;
-    else 
+    else
         return LittleEndian;
 }
 

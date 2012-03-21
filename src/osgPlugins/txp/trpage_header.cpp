@@ -43,7 +43,7 @@ trpgHeader::~trpgHeader()
 bool trpgHeader::isValid() const
 {
     // We also need to check that this is a 'master' archive here.
-    if((verMajor>=TRPG_NOMERGE_VERSION_MAJOR) && (verMinor>=TRPG_NOMERGE_VERSION_MINOR)) 
+    if((verMajor>=TRPG_NOMERGE_VERSION_MAJOR) && (verMinor>=TRPG_NOMERGE_VERSION_MINOR))
     {
         return true;
     }

@@ -492,7 +492,7 @@ void VBSPReader::processStaticProps(std::istream & str, int offset, int length,
 
     // Next, skip over the static prop leaf array
     str.read((char *) &sprpLeaves, sizeof(StaticPropLeaves));
-    str.seekg(sprpLeaves.num_leaf_entries * sizeof(unsigned short), 
+    str.seekg(sprpLeaves.num_leaf_entries * sizeof(unsigned short),
               std::istream::cur);
 
     // Finally, read in the static prop entries
@@ -575,7 +575,7 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
         texFile = "materials/" + std::string(textureName) + ".vtf";
         texPath = findDataFile(texFile, CASE_INSENSITIVE);
 
-        // Check up one directory if we don't find it here (the map file is 
+        // Check up one directory if we don't find it here (the map file is
         // usually located in the "maps" directory, adjacent to the materials
         // directory)
         if (texPath.empty())
@@ -785,7 +785,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
                    alpha = osg::asciiToDouble(token.c_str());
                 }
             }
- 
+
             // Try the next token
             token = getToken(line, " \t\n\r\"", start);
         }
@@ -1141,7 +1141,7 @@ bool VBSPReader::readFile(const std::string & file)
     // Load the bsp file lumps that we care about
     for (i = 0; i < MAX_LUMPS; i++)
     {
-        if ((header.lump_table[i].file_offset != 0) && 
+        if ((header.lump_table[i].file_offset != 0) &&
             (header.lump_table[i].lump_length != 0))
         {
             // Process the lump

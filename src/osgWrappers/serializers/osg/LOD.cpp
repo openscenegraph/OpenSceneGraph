@@ -65,13 +65,13 @@ REGISTER_OBJECT_WRAPPER( LOD,
         ADD_ENUM_VALUE( USER_DEFINED_CENTER );
         ADD_ENUM_VALUE( UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED );
     END_ENUM_SERIALIZER();  // _centerMode
-    
+
     ADD_USER_SERIALIZER( UserCenter );  // _userDefinedCenter, _radius
-    
+
     BEGIN_ENUM_SERIALIZER( RangeMode, DISTANCE_FROM_EYE_POINT );
         ADD_ENUM_VALUE( DISTANCE_FROM_EYE_POINT );
         ADD_ENUM_VALUE( PIXEL_SIZE_ON_SCREEN );
     END_ENUM_SERIALIZER();  // _rangeMode
-    
+
     ADD_USER_SERIALIZER( RangeList );  // _rangeList
 }

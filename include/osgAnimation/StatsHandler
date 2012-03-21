@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,7 +26,7 @@ namespace osgAnimation
 #if 0
     struct StatAction
     {
-        
+
         std::string _name;
         osg::ref_ptr<osg::Group> _group;
         osg::ref_ptr<osg::Geode> _label;
@@ -41,9 +41,9 @@ namespace osgAnimation
 #endif
 
 /** Event handler for adding on screen stats reporting to Viewers.*/
-    class OSGANIMATION_EXPORT StatsHandler : public osgGA::GUIEventHandler 
+    class OSGANIMATION_EXPORT StatsHandler : public osgGA::GUIEventHandler
     {
-    public: 
+    public:
 
         StatsHandler();
 
@@ -53,10 +53,10 @@ namespace osgAnimation
             FRAME_RATE = 1,
             LAST = 2
         };
-        
+
         void setKeyEventTogglesOnScreenStats(int key) { _keyEventTogglesOnScreenStats = key; }
         int getKeyEventTogglesOnScreenStats() const { return _keyEventTogglesOnScreenStats; }
-        
+
         void setKeyEventPrintsOutStats(int key) { _keyEventPrintsOutStats = key; }
         int getKeyEventPrintsOutStats() const { return _keyEventPrintsOutStats; }
 
@@ -83,11 +83,11 @@ namespace osgAnimation
         osg::Geometry* createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
 
         osg::Geometry* createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks);
-        
+
         osg::Node* createCameraTimeStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
 
         void setUpScene(osgViewer::Viewer* viewer);
-        
+
         int                                 _keyEventTogglesOnScreenStats;
         int                                 _keyEventPrintsOutStats;
 
@@ -95,14 +95,14 @@ namespace osgAnimation
 
         bool                                _initialized;
         osg::ref_ptr<osg::Camera>           _camera;
-        
+
         osg::ref_ptr<osg::Switch>           _switch;
         osg::ref_ptr<osg::Group>            _group;
-        
+
         unsigned int                        _frameRateChildNum;
         unsigned int                        _numBlocks;
         double                              _blockMultiplier;
-        
+
         float                               _statsWidth;
         float                               _statsHeight;
 

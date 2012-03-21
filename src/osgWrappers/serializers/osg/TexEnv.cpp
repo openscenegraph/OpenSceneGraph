@@ -15,6 +15,6 @@ REGISTER_OBJECT_WRAPPER( TexEnv,
         ADD_ENUM_VALUE( REPLACE );
         ADD_ENUM_VALUE( ADD );
     END_ENUM_SERIALIZER();  // _mode
-    
+
     ADD_VEC4_SERIALIZER( Color, osg::Vec4() );  // _color
 }

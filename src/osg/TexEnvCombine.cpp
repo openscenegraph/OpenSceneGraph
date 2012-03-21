@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
@@ -57,7 +57,7 @@ void TexEnvCombine::apply(State& state) const
     static bool s_isNVTexEnvCrossbarSupported =
         isGLExtensionSupported(contextID,"GL_NV_texture_env_combine4");
 
-    static bool s_isTexEnvDot3Supported = 
+    static bool s_isTexEnvDot3Supported =
         isGLExtensionSupported(contextID,"GL_ARB_texture_env_dot3");
 
 
@@ -73,7 +73,7 @@ void TexEnvCombine::apply(State& state) const
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
 
         glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, _combine_RGB);
-        
+
         if (_combine_RGB!=DOT3_RGBA)
             glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, _combine_Alpha);
 
@@ -141,7 +141,7 @@ void TexEnvCombine::setOperand1_Alpha(GLint op)
     _operand1_Alpha = Valid_Operand_Alpha(op,"setOperand1_Alpha");
 }
 void TexEnvCombine::setOperand2_Alpha(GLint op)
-{ 
+{
     _operand2_Alpha = Valid_Operand_Alpha(op,"setOperand2_Alpha");
 }
 

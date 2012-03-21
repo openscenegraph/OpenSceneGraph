@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ Volume::~Volume()
     {
         const_cast<VolumeTile*>(*itr)->_volume = 0;
     }
-    
+
     _volumeTileSet.clear();
     _volumeTileMap.clear();
 }
@@ -52,7 +52,7 @@ VolumeTile* Volume::getVolumeTile(const TileID& tileID)
 
     VolumeTileMap::iterator itr = _volumeTileMap.find(tileID);
     if (itr != _volumeTileMap.end()) return 0;
-    
+
     return itr->second;
 }
 
@@ -62,7 +62,7 @@ const VolumeTile* Volume::getVolumeTile(const TileID& tileID) const
 
     VolumeTileMap::const_iterator itr = _volumeTileMap.find(tileID);
     if (itr != _volumeTileMap.end()) return 0;
-    
+
     return itr->second;
 }
 
@@ -84,12 +84,12 @@ void Volume::registerVolumeTile(VolumeTile* volumeTile)
     if (!volumeTile) return;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    
+
     if (volumeTile->getTileID().valid())
     {
         _volumeTileMap[volumeTile->getTileID()] = volumeTile;
     }
-    
+
     _volumeTileSet.insert(volumeTile);
 
     if (_volumeTileSet.size() > s_maxNumVolumeTiles) s_maxNumVolumeTiles = _volumeTileSet.size();
@@ -107,7 +107,7 @@ void Volume::unregisterVolumeTile(VolumeTile* volumeTile)
     {
         _volumeTileMap.erase(volumeTile->getTileID());
     }
-    
+
     _volumeTileSet.erase(volumeTile);
 
     // OSG_NOTICE<<"Volume::unregisterVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;

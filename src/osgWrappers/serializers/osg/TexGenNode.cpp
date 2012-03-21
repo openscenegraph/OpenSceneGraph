@@ -10,7 +10,7 @@ REGISTER_OBJECT_WRAPPER( TexGenNode,
 {
     ADD_UINT_SERIALIZER( TextureUnit, 0 );  // _textureUnit
     ADD_OBJECT_SERIALIZER( TexGen, osg::TexGen, NULL );  // _texgen
-    
+
     BEGIN_ENUM_SERIALIZER( ReferenceFrame, RELATIVE_RF );
         ADD_ENUM_VALUE( RELATIVE_RF );
         ADD_ENUM_VALUE( ABSOLUTE_RF );

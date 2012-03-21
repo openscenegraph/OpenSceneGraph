@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -39,7 +39,7 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
 
         virtual float getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const;
         virtual float getDistanceToViewPoint(const Vec3& pos, bool withLODScale) const;
-        
+
         virtual float getDistanceFromEyePoint(const Vec3& pos, bool withLODScale) const;
 
         virtual void apply(osg::Node&);
@@ -81,7 +81,7 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
 
         /** Prevents unwanted copy operator. */
         CollectOccludersVisitor& operator = (const CollectOccludersVisitor&) { return *this; }
-        
+
         inline void handle_cull_callbacks_and_traverse(osg::Node& node)
         {
             /*osg::NodeCallback* callback = node.getCullCallback();

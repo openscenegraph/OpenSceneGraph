@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,17 +36,17 @@ Action::Callback* Action::getFrameCallback(unsigned int frame)
 void Action::removeCallback(Callback* cb)
 {
     std::vector<unsigned int> keyToRemove;
-    for (FrameCallback::iterator it = _framesCallback.begin(); it != _framesCallback.end(); ++it) 
+    for (FrameCallback::iterator it = _framesCallback.begin(); it != _framesCallback.end(); ++it)
     {
         if (it->second.get())
         {
-            if (it->second.get() == cb) 
+            if (it->second.get() == cb)
             {
                 it->second = it->second->getNestedCallback();
                 if (!it->second.valid())
                     keyToRemove.push_back(it->first);
             }
-            else 
+            else
             {
                 it->second->removeCallback(cb);
             }

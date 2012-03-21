@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -39,7 +39,7 @@ GlyphTexture::GlyphTexture():
     setWrap(WRAP_T, CLAMP_TO_EDGE);
 }
 
-GlyphTexture::~GlyphTexture() 
+GlyphTexture::~GlyphTexture()
 {
 }
 
@@ -56,7 +56,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
     int maxAxis = std::max(glyph->s(), glyph->t());
     int margin = _margin + (int)((float)maxAxis * _marginRatio);
-    
+
     int width = glyph->s()+2*margin;
     int height = glyph->t()+2*margin;
 
@@ -68,7 +68,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 
         // record the position in which the texture will be stored.
         posX = _partUsedX+margin;
-        posY = _usedY+margin;        
+        posY = _usedY+margin;
 
         // move used markers on.
         _partUsedX += width;
@@ -76,7 +76,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 
         return true;
     }
-    
+
     // start an new row.
     if (width <= getTextureWidth() &&
         height <= (getTextureHeight()-_partUsedY))
@@ -86,7 +86,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
         _usedY = _partUsedY;
 
         posX = _partUsedX+margin;
-        posY = _usedY+margin;        
+        posY = _usedY+margin;
 
         // move used markers on.
         _partUsedX += width;
@@ -121,7 +121,7 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 
 void GlyphTexture::apply(osg::State& state) const
 {
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
@@ -152,7 +152,7 @@ void GlyphTexture::apply(osg::State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     bool newTextureObject = (textureObject == 0);
 
     #if defined(OSG_GLES2_AVAILABLE)
@@ -183,7 +183,7 @@ void GlyphTexture::apply(osg::State& state) const
             OSG_WARN<<"         Please set OSG_MAX_TEXTURE_SIZE lenvironment variable to "<<maxTextureSize<<" and re-run application."<<std::endl;
             return;
         }
-        
+
         // being bound for the first time, need to allocate the texture
 
         _textureObjectBuffer[contextID] = textureObject = osg::Texture::generateTextureObject(
@@ -193,7 +193,7 @@ void GlyphTexture::apply(osg::State& state) const
 
 
         applyTexParameters(GL_TEXTURE_2D,state);
-        
+
         // need to look at generate mip map extension if mip mapping required.
         switch(_min_filter)
         {
@@ -213,14 +213,14 @@ void GlyphTexture::apply(osg::State& state) const
             // not mip mapping so no problems.
             break;
         }
-        
+
         unsigned int imageDataSize = getTextureHeight()*getTextureWidth();
         unsigned char* imageData = new unsigned char[imageDataSize];
         for(unsigned int i=0; i<imageDataSize; ++i)
         {
             imageData[i] = 0;
         }
-        
+
 
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
@@ -228,15 +228,15 @@ void GlyphTexture::apply(osg::State& state) const
                 GL_ALPHA,
                 GL_UNSIGNED_BYTE,
                 imageData );
-                
+
         delete [] imageData;
-    
+
     }
     else
     {
         // reuse texture by binding.
         textureObject->bind();
-        
+
         if (getTextureParameterDirty(contextID))
         {
             applyTexParameters(GL_TEXTURE_2D,state);
@@ -244,7 +244,7 @@ void GlyphTexture::apply(osg::State& state) const
 
 
     }
-    
+
     static const GLubyte* s_renderer = 0;
     static bool s_subloadAllGlyphsTogether = false;
     if (!s_renderer)
@@ -259,9 +259,9 @@ void GlyphTexture::apply(osg::State& state) const
             // subloading bugs by loading all at once.
             s_subloadAllGlyphsTogether = true;
         }
-        
-        if (s_renderer && 
-            ((strstr((const char*)s_renderer,"Radeon")!=0) || 
+
+        if (s_renderer &&
+            ((strstr((const char*)s_renderer,"Radeon")!=0) ||
             (strstr((const char*)s_renderer,"RADEON")!=0) ||
             (strstr((const char*)s_renderer,"ALL-IN-WONDER")!=0)))
         {
@@ -310,7 +310,7 @@ void GlyphTexture::apply(osg::State& state) const
                 }
             }
             else // just subload the new entries.
-            {            
+            {
                 // default way of subloading as required.
                 //std::cout<<"subloading"<<std::endl;
                 for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
@@ -320,10 +320,10 @@ void GlyphTexture::apply(osg::State& state) const
                     (*itr)->subload();
                 }
             }
-            
+
             // clear the list since we have now subloaded them.
             glyphsWereSubloading.clear();
-            
+
         }
         else
         {
@@ -352,7 +352,7 @@ void GlyphTexture::apply(osg::State& state) const
                     for( int s = 0; s < (*itr)->s(); s++ )
                     {
                         int sindex = (t*(*itr)->s()+s);
-                        int dindex =  
+                        int dindex =
                             ((((*itr)->getTexturePositionY()+t) * getTextureWidth()) +
                             ((*itr)->getTexturePositionX()+s));
 
@@ -368,7 +368,7 @@ void GlyphTexture::apply(osg::State& state) const
             glyphsWereSubloading.clear();
 
             // Subload the image once
-            glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 
+            glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0,
                     getTextureWidth(),
                     getTextureHeight(),
                     GL_ALPHA, GL_UNSIGNED_BYTE, local_data );
@@ -407,7 +407,7 @@ void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 
     unsigned int initialSize = _glyphsToSubload.size();
     _glyphsToSubload.resize(maxSize);
-    
+
     for(unsigned i=initialSize; i<_glyphsToSubload.size(); ++i)
     {
         for(GlyphRefList::iterator itr = _glyphs.begin();
@@ -502,7 +502,7 @@ void Glyph::subload() const
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
-    
+
     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,getRowLength());
     #endif
@@ -513,7 +513,7 @@ void Glyph::subload() const
                     (GLenum)getPixelFormat(),
                     (GLenum)getDataType(),
                     data());
-                    
+
     errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
@@ -529,7 +529,7 @@ void Glyph::subload() const
                                  "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
                                  "\t                0x"<<(GLenum)getDataType()<<std::endl<<
                                  "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
-    }                    
+    }
 }
 
 Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):

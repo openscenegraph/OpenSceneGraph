@@ -1,9 +1,9 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 2007 Cedric Pinson
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -38,11 +38,11 @@ using namespace osgProducer;
 static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
 {
     VisualChooser& vc = *rs.getVisualChooser();
-    
+
     osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
-    
-    for (std::vector<VisualChooser::VisualAttribute>::iterator it = vc._visual_attributes.begin(); 
-        it != vc._visual_attributes.end(); 
+
+    for (std::vector<VisualChooser::VisualAttribute>::iterator it = vc._visual_attributes.begin();
+        it != vc._visual_attributes.end();
         it++)
     {
         switch(it->_attribute)
@@ -51,7 +51,7 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
             case(VisualChooser::BufferSize):       break; // no present mapping
             case(VisualChooser::Level):            traits->level = it->_parameter; break;
             case(VisualChooser::RGBA):             break; // automatically set in osgViewer
-            case(VisualChooser::DoubleBuffer):     traits->doubleBuffer = true; break; 
+            case(VisualChooser::DoubleBuffer):     traits->doubleBuffer = true; break;
             case(VisualChooser::Stereo):           traits->quadBufferStereo = true; break;
             case(VisualChooser::AuxBuffers):       break; // no present mapping
             case(VisualChooser::RedSize):          traits->red = it->_parameter; break;
@@ -73,7 +73,7 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
     OSG_INFO<<"ReaderWriterCFG buildTrait traits->samples="<<traits->samples<<std::endl;
     OSG_INFO<<"ReaderWriterCFG buildTrait traits->sampleBuffers="<<traits->sampleBuffers<<std::endl;
 
-    
+
     traits->hostName = rs.getHostName();
     traits->displayNum = rs.getDisplayNum();
     traits->screenNum = rs.getScreenNum();
@@ -120,16 +120,16 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
         {
             osg::GraphicsContext::Traits* newtraits = buildTrait(*rs);
 
-#if 0            
+#if 0
             osg::GraphicsContext::ScreenIdentifier si;
             si.readDISPLAY();
 
             if (si.displayNum>=0) newtraits->displayNum = si.displayNum;
             if (si.screenNum>=0) newtraits->screenNum = si.screenNum;
 #endif
-    
+
             gc = osg::GraphicsContext::createGraphicsContext(newtraits);
-            
+
             surfaces[rs] = gc.get();
             traits = gc.valid() ? gc->getTraits() : 0;
         }
@@ -177,7 +177,7 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
             OSG_INFO<<"  GraphicsWindow has not been created successfully."<<std::endl;
             return 0;
         }
-        
+
     }
 
     // std::cout << "done" << std::endl;
@@ -187,7 +187,7 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
 //
 // OSG interface to read/write from/to a file.
 //
-class ReaderWriterProducerCFG : public osgDB::ReaderWriter 
+class ReaderWriterProducerCFG : public osgDB::ReaderWriter
 {
 public:
 

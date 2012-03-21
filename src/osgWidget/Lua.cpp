@@ -43,7 +43,7 @@ int newWindow(lua_State* L) {
 
 int newWidget(lua_State* L) {
     osg::ref_ptr<Widget> w = new Widget("testLUA", 0.0f, 0.0f);
-    
+
     lua_pushstring(L, w->getName().c_str());
 
     return 1;
@@ -94,7 +94,7 @@ bool LuaEngine::initialize() {
     _data->lua = lua_open();
 
     luaL_openlibs(_data->lua);
-    
+
     static const struct luaL_reg library[] = {
         {"newWindow", lua::newWindow},
         {"newWidget", lua::newWidget},

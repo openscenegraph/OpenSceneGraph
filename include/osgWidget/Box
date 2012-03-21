@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,7 +23,7 @@ namespace osgWidget {
 //! The Box object is a Window subclass that can be configured to uniformly (or
 //! non-uniformly) position it's children either vertically or horizontally. It
 //! is the most basic Window implementation, though there is some difficulty when
-//! positioning children such that each child object ends up pixel-aligned. 
+//! positioning children such that each child object ends up pixel-aligned.
 class OSGWIDGET_EXPORT Box: public Window
 {
     public:
@@ -35,7 +35,7 @@ class OSGWIDGET_EXPORT Box: public Window
         };
 
         META_Object(osgWidget, Box);
-        
+
         //! The main constructor; takes the string name, the BoxType orientation, and a
         //! boolean indicating whether or not all of the Box regions should be uniformly
         //! sized.

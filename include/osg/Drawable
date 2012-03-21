@@ -4,7 +4,7 @@
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -122,7 +122,7 @@ class OSG_EXPORT Drawable : public Object
           * Equivalent to dynamic_cast<Geometry*>(this).*/
         virtual Geometry* asGeometry() { return 0; }
 
-        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0. 
+        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
 
@@ -199,11 +199,11 @@ class OSG_EXPORT Drawable : public Object
             if(!_boundingBoxComputed)
             {
                 _boundingBox = _initialBound;
-                if (_computeBoundCallback.valid()) 
+                if (_computeBoundCallback.valid())
                     _boundingBox.expandBy(_computeBoundCallback->computeBound(*this));
                 else
                     _boundingBox.expandBy(computeBound());
-                    
+
                 _boundingBoxComputed = true;
             }
             return _boundingBox;
@@ -274,7 +274,7 @@ class OSG_EXPORT Drawable : public Object
         /** Return OpenGL display list for specified contextID. */
         inline GLuint& getDisplayList(unsigned int contextID) const { return _globjList[contextID]; }
 
-        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
+        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation
             method to use OpenGL vertex buffer objects for rendering.*/
         virtual void setUseVertexBufferObjects(bool flag);
 
@@ -425,7 +425,7 @@ class OSG_EXPORT Drawable : public Object
         /** drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
-          * and drawImplementation(RenderInfo&) handling the actual drawing itself.  
+          * and drawImplementation(RenderInfo&) handling the actual drawing itself.
           * @param renderInfo The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
         virtual void drawImplementation(RenderInfo& renderInfo) const = 0;
 
@@ -800,9 +800,9 @@ class OSG_EXPORT Drawable : public Object
         };
 
         /** Function to call to get the extension of a specified context.
-        * If the Extension object for that context has not yet been created  
+        * If the Extension object for that context has not yet been created
         * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-        * If 'createIfNotInitalized' is true then the Extensions object is 
+        * If 'createIfNotInitalized' is true then the Extensions object is
         * automatically created.  However, in this case the extension object is
         * only created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);

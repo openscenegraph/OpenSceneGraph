@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/LineSegment>
@@ -208,9 +208,9 @@ bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
     // check for zero length segment.
     if (a==0.0)
     {
-        // check if start point outside sphere radius    
+        // check if start point outside sphere radius
         if (c>0.0) return false;
-    
+
         // length segment within radius of bounding sphere but zero length
         // so return true, and set the ratio so the start point is the one
         // to be used.
@@ -254,9 +254,9 @@ bool LineSegment::intersect(const BoundingSphere& bs,double& r1,double& r2) cons
     // check for zero length segment.
     if (a==0.0)
     {
-        // check if start point outside sphere radius    
+        // check if start point outside sphere radius
         if (c>0.0) return false;
-    
+
         // length segment within radius of bounding sphere but zero length
         // so return true, and set the ratio so the start point is the one
         // to be used.

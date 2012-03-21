@@ -106,31 +106,31 @@ void StateSet::read(DataInputStream* in){
     if(id == IVESTATESET){
         // Code to read StateSet's properties.
         id = in->readInt();
-    
+
         // If the osg class is inherited by any other class we should also read this from file.
         osg::Object*  obj = dynamic_cast<osg::Object*>(this);
         if(obj){
             ((ive::Object*)(obj))->read(in);;
         }
         else
-            in_THROW_EXCEPTION("StateSet::read(): Could not cast this osg::StateSet to an osg::Object.");        
+            in_THROW_EXCEPTION("StateSet::read(): Could not cast this osg::StateSet to an osg::Object.");
 
         // Read render bin details.
         char c = in->readChar();
         int num = in->readInt();
         std::string name = in->readString();
         switch((int)c){
-            case 0:        
-                setRenderBinDetails(num, name, osg::StateSet::INHERIT_RENDERBIN_DETAILS); 
+            case 0:
+                setRenderBinDetails(num, name, osg::StateSet::INHERIT_RENDERBIN_DETAILS);
                 break;
-            case 1:        
-                setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS); 
+            case 1:
+                setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS);
                 break;
-            case 2:        
-                setRenderBinDetails(num, name, osg::StateSet::OVERRIDE_RENDERBIN_DETAILS); 
+            case 2:
+                setRenderBinDetails(num, name, osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
                 break;
-            case 3:        
-                setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS); 
+            case 3:
+                setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS);
                 break;
             default: in_THROW_EXCEPTION("Unknown RenderBinMode in StateSet::read()");
         }
@@ -144,13 +144,13 @@ void StateSet::read(DataInputStream* in){
             setMode((osg::StateAttribute::GLMode)mode, (osg::StateAttribute::GLModeValue)value);
         }
 
-        // Read state attributes 
+        // Read state attributes
         size = in->readInt();
         for(i=0;i<size;i++){
             osg::StateAttribute* attribute = in->readStateAttribute();
             setAttribute(attribute, (osg::StateAttribute::OverrideValue)in->readInt());
         }
-        
+
         // Read texture stateset mode.
         int nUnits = in->readInt();
         int unit;
@@ -177,7 +177,7 @@ void StateSet::read(DataInputStream* in){
 
         if ( in->getVersion() >= VERSION_0010 )
         {
-            // Read uniforms 
+            // Read uniforms
             size = in->readInt();
             for(i=0;i<size;i++)
             {

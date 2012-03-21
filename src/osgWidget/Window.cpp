@@ -12,7 +12,7 @@ bool callbackWindowMove(Event& ev) {
 
     ev.getWindow()->addOrigin(ev.x, ev.y);
     ev.getWindow()->update();
-    
+
     return true;
 }
 
@@ -21,7 +21,7 @@ bool callbackWindowRotate(Event& ev) {
 
     ev.getWindow()->addRotate(ev.y);
     ev.getWindow()->update();
-    
+
     return true;
 }
 
@@ -30,13 +30,13 @@ bool callbackWindowScale(Event& ev) {
 
     ev.getWindow()->addScale(ev.y);
     ev.getWindow()->update();
-    
+
     return true;
 }
 
 bool callbackWindowTabFocus(Event& ev) {
     if(!ev.getWindow() || ev.key != osgGA::GUIEventAdapter::KEY_Tab) return false;
-    
+
     return ev.getWindow()->setNextFocusable();
 }
 
@@ -64,7 +64,7 @@ void Window::EmbeddedWindow::parented(Window* parent) {
     else warn()
         << "EmbeddedWindow Widget [" << _name
         << "] cannot embed itself in Window [" << _window->getName()
-        << "], since it is already a child of [" << _window->_parent->getName() 
+        << "], since it is already a child of [" << _window->_parent->getName()
         << "]" << std::endl
     ;
 }
@@ -302,7 +302,7 @@ bool Window::resizePercent(point_type width, point_type height) {
         _wm->getWidth() * (width / 100.0f),
         _wm->getHeight() * (height / 100.0f)
     );
-    
+
     else return resize(
         _parent->getWidth() * (width / 100.0f),
         _parent->getHeight() * (height / 100.0f)
@@ -332,7 +332,7 @@ void Window::update() {
 
         xy.set(x, y);
     }
-    
+
     matrix_type z = _z;
 
     // We can't do proper scissoring until we have access to our parent WindowManager, and
@@ -412,11 +412,11 @@ void Window::_setWidthAndHeight() {
     if(_height.minimum < 0.0f) _setWidthAndHeightUnknownSizeError("minimum height", _height.minimum);
 
     if(hasDecimal(_width.current)) _setWidthAndHeightNotPAError("current width", _width.current);
-    
+
     if(hasDecimal(_width.minimum)) _setWidthAndHeightNotPAError("minimum width", _width.minimum);
-    
+
     if(hasDecimal(_height.current)) _setWidthAndHeightNotPAError("current height", _height.current);
-    
+
     if(hasDecimal(_height.minimum)) _setWidthAndHeightNotPAError("minimum height", _height.minimum);
 }
 
@@ -437,7 +437,7 @@ void Window::_removeFromGeode(Widget* widget) {
 bool Window::_setWidget(Widget* widget, int index) {
     if(!widget) {
         warn() << "Window [" << _name << "] called addWidget with NULL." << std::endl;
-        
+
         return false;
     }
 
@@ -480,7 +480,7 @@ bool Window::_setWidget(Widget* widget, int index) {
     widget->_index = geode->getNumDrawables();
 
     geode->addDrawable(widget);
-    
+
     _setParented(widget);
     _setManaged(widget);
     _setStyled(widget);
@@ -531,7 +531,7 @@ void Window::_setStyled(Widget* widget) {
 
 void Window::_setParented(Widget* widget, bool setUnparented) {
     if(!widget) return;
-    
+
     if(!setUnparented) {
         widget->_parent = this;
 
@@ -547,7 +547,7 @@ void Window::_setParented(Widget* widget, bool setUnparented) {
 
 void Window::_setManaged(Widget* widget, bool setUnmanaged) {
     if(!widget || !_wm) return;
-    
+
     // Tell the widget it's managed if it isn't already...
     if(!setUnmanaged) {
         if(widget->_isManaged) return;
@@ -675,7 +675,7 @@ bool Window::setFocused(const Widget* widget) {
 
         for(WindowList::iterator w = wl.begin(); w != wl.end(); w++) {
             ConstIterator ii = std::find(w->get()->begin(), w->get()->end(), widget);
-            
+
             if(ii != w->get()->end()) {
                 found = true;
                 i     = ii;
@@ -736,7 +736,7 @@ bool Window::setFocused(const std::string& name) {
     }
 
     _setFocused(w1);
-    
+
     return true;
 }
 
@@ -1021,7 +1021,7 @@ point_type Window::_getNumFill(int begin, int end, int add) const {
 
 Window::Sizes Window::_getWidthImplementation() const {
     osg::BoundingBox bb = getGeode()->getBoundingBox();
-    
+
     point_type w = osg::round(bb.xMax() - bb.xMin());
 
     return Sizes(w, 0.0f);

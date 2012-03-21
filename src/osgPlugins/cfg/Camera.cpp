@@ -22,7 +22,7 @@
 
 using namespace osgProducer;
 
-Camera::Camera( void ) 
+Camera::Camera( void )
 {
     _index = 0;
 
@@ -46,14 +46,14 @@ Camera::Camera( void )
     _lens = new Lens;
     _lens->setAutoAspect(true);
     _rs = new RenderSurface;
-    
+
     _clear_color[0] = 0.2f;
     _clear_color[1] = 0.2f;
     _clear_color[2] = 0.4f;
     _clear_color[3] = 1.0f;
-    
+
     _focal_distance = 1.0;
-    
+
     _shareLens = true;
     _shareView = true;
 
@@ -106,7 +106,7 @@ Camera::Lens::Lens( void )
 //     _right        =  0.5;
 //     _bottom       = -0.5;
 //     _top          =  0.5;
-    
+
     // Setting of the frustum which are appropriate for
     // a monitor which is 26cm high, 50cm distant from the
     // viewer and an horzintal/vetical aspect ratio of 1.25.
@@ -137,7 +137,7 @@ void Camera::Lens::setAspectRatio( double aspectRatio )
     _updateFOV();
 }
 
-void Camera::Lens::setPerspective( double hfov,   double vfov, 
+void Camera::Lens::setPerspective( double hfov,   double vfov,
                        double nearClip,   double farClip )
 {
     _hfov = osg::DegreesToRadians(hfov);
@@ -147,8 +147,8 @@ void Camera::Lens::setPerspective( double hfov,   double vfov,
     _nearClip = nearClip;
     _farClip  = farClip;
 
-    _left   = -_nearClip * tan(_hfov/2.0); 
-    _right  =  _nearClip * tan(_hfov/2.0); 
+    _left   = -_nearClip * tan(_hfov/2.0);
+    _right  =  _nearClip * tan(_hfov/2.0);
     _bottom = -_nearClip * tan(_vfov/2.0);
     _top    =  _nearClip * tan(_vfov/2.0);
 
@@ -156,8 +156,8 @@ void Camera::Lens::setPerspective( double hfov,   double vfov,
     setAutoAspect(false);
 }
 
-void Camera::Lens::setFrustum( double left,   double right, 
-                                  double bottom, double top, 
+void Camera::Lens::setFrustum( double left,   double right,
+                                  double bottom, double top,
                    double nearClip,   double farClip )
 {
     _left = left;
@@ -171,8 +171,8 @@ void Camera::Lens::setFrustum( double left,   double right,
     setAutoAspect(false);
 }
 
-void Camera::Lens::setOrtho( double left, double right, 
-               double bottom, double top, 
+void Camera::Lens::setOrtho( double left, double right,
+               double bottom, double top,
                double nearClip, double farClip )
 {
     _ortho_left = left;
@@ -201,7 +201,7 @@ bool Camera::Lens::getFrustum( double& left, double& right,
 
     zNear = _matrix[14] / (_matrix[10]-1.0);
     zFar = _matrix[14] / (1.0+_matrix[10]);
-    
+
     left = zNear * (_matrix[8]-1.0) / _matrix[0];
     right = zNear * (1.0+_matrix[8]) / _matrix[0];
 
@@ -220,7 +220,7 @@ bool Camera::Lens::getOrtho( double& left, double& right,
 
     zNear = (_matrix[14]+1.0) / _matrix[10];
     zFar = (_matrix[14]-1.0) / _matrix[10];
-    
+
     left = -(1.0+_matrix[12]) / _matrix[0];
     right = (1.0-_matrix[12]) / _matrix[0];
 
@@ -320,10 +320,10 @@ void Camera::Lens::getParams( double &left, double &right, double &bottom, doubl
 void Camera::setProjectionRectangle( const float left, const float right,
                     const float bottom, const float top )
 {
-    _projrectLeft   = left;    
-    _projrectRight  = right;    
-    _projrectBottom = bottom;    
-    _projrectTop    = top;    
+    _projrectLeft   = left;
+    _projrectRight  = right;
+    _projrectBottom = bottom;
+    _projrectTop    = top;
 }
 
 void Camera::getProjectionRectangle( float &left, float &right,
@@ -335,7 +335,7 @@ void Camera::getProjectionRectangle( float &left, float &right,
     top    = _projrectTop;
 }
 
-void Camera::setProjectionRectangle( int x, int y, unsigned int width, unsigned int height ) 
+void Camera::setProjectionRectangle( int x, int y, unsigned int width, unsigned int height )
 {
     int _x, _y;
     unsigned int _w, _h;
@@ -409,11 +409,11 @@ void Camera::getClearColor( float& red, float& green, float& blue, float& alpha)
 }
 
 
-void Camera::clear( void ) 
+void Camera::clear( void )
 {
 #if 0
     if( !_initialized ) _initialize();
-    int x, y; 
+    int x, y;
     unsigned int w, h;
     getProjectionRectangle( x, y, w, h );
     glViewport( x, y, w, h );
@@ -564,7 +564,7 @@ void Camera::Lens::generateMatrix(float xshear, float yshear, osg::Matrix::value
                 // It's not an orthographic matrix so just assume a perspective shear
                 matrix[ 8] += -xshear;
                 matrix[ 9] += -yshear;
-            } 
+            }
             else
             {
                  matrix[12] += xshear;
@@ -612,9 +612,9 @@ int Camera::cancel()
 #if 1
     _done = true;
 #endif
-    
+
     Thread::cancel();
-    return 0;    
+    return 0;
 }
 
 void Camera::advance()
@@ -640,7 +640,7 @@ void Camera::run( void )
         // printf("   Camera::run before frame block\n");
 
         _frameBarrier->block();
-        
+
         if (_done) break;
 
         // printf("   Camera::run after frame block\n");
@@ -659,7 +659,7 @@ void Camera::run( void )
 
         advance();
     }
-    
+
     // printf("Exiting Camera::run cleanly\n");
 }
 
@@ -675,12 +675,12 @@ bool Camera::removePostCullCallback( Callback *cb )
     return _removeCallback( postCullCallbacks, cb );
 }
 
-bool Camera::removePreDrawCallback( Callback *cb ) 
+bool Camera::removePreDrawCallback( Callback *cb )
 {
     return _removeCallback( preDrawCallbacks, cb );
 }
 
-bool Camera::removePostDrawCallback( Callback *cb ) 
+bool Camera::removePostDrawCallback( Callback *cb )
 {
     return _removeCallback( postDrawCallbacks, cb );
 }
@@ -743,12 +743,12 @@ void Camera::FrameTimeStampSet::beginPipeTimer( PipeStatsID id)
     if( !_initialized )
         _init();
 
-    PipeTimer::instance()->begin( _pipeStatsNames[id][_pipeStatsDoubleBufferIndex] ); 
-    _pipeStatsSetMask[_pipeStatsDoubleBufferIndex] |= (1<<id); 
+    PipeTimer::instance()->begin( _pipeStatsNames[id][_pipeStatsDoubleBufferIndex] );
+    _pipeStatsSetMask[_pipeStatsDoubleBufferIndex] |= (1<<id);
 }
 
-void Camera::FrameTimeStampSet::endPipeTimer() 
-{ 
+void Camera::FrameTimeStampSet::endPipeTimer()
+{
     if( !_initialized )
         return;
 
@@ -770,7 +770,7 @@ void Camera::FrameTimeStampSet::_init()
 }
 
 const Camera::FrameTimeStampSet &Camera::getFrameStats()
-{ 
-    return _frameStamps; 
+{
+    return _frameStamps;
 }
 #endif

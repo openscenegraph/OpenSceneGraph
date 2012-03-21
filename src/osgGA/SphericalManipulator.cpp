@@ -287,21 +287,21 @@ bool SphericalManipulator::calcMovement()
     {
         dy = _ga_t0->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_UP ? _zoomDelta : -_zoomDelta;
         buttonMask=GUIEventAdapter::SCROLL;
-    } 
-    else 
+    }
+    else
     {
 
         if (_ga_t1.get()==NULL) return false;
         dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
         dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
         float distance = sqrtf(dx*dx + dy*dy);
-        
+
         // return if movement is too fast, indicating an error in event values or change in screen.
         if (distance>0.5)
         {
             return false;
         }
-        
+
         // return if there is no movement.
         if (distance==0.0f)
         {
@@ -310,7 +310,7 @@ bool SphericalManipulator::calcMovement()
 
         buttonMask = _ga_t1->getButtonMask();
     }
-    
+
     double throwScale =  (_thrown && _ga_t0.valid() && _ga_t1.valid()) ?
         _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime()) : 1.0;
 
@@ -353,7 +353,7 @@ bool SphericalManipulator::calcMovement()
             {
                 _elevation-=throwScale*dy*osg::PI_4;
 
-                // Only allows vertical rotation of 180deg 
+                // Only allows vertical rotation of 180deg
                 if(_elevation < -osg::PI_2)
                     _elevation=-osg::PI_2;
                 else if(_elevation > osg::PI_2)

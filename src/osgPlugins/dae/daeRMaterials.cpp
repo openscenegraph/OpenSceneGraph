@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeReader.h"
@@ -127,7 +127,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
         osg::Drawable* drawable = geode->getDrawable(i);
         std::string materialName = drawable->getName();
         osg::Geometry *cachedGeometry = dynamic_cast<osg::Geometry*>(cachedGeode->getDrawable(i)->asGeometry());
-        
+
         domInstance_material_Array &ima = bm->getTechnique_common()->getInstance_material_array();
         std::string symbol;
         bool found = false;
@@ -135,7 +135,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
         {
             symbol = ima[j]->getSymbol();
             if (symbol.compare(materialName) == 0)
-            { 
+            {
                 found = true;
                 domMaterial *mat = daeSafeCast< domMaterial >(getElementFromURI( ima[j]->getTarget()));
                 if (mat)
@@ -167,7 +167,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                     }
                     clonedGeometry->getTexCoordArrayList().clear();
 
-                    // 2. For each possible texture unit find the correct texcoord array and 
+                    // 2. For each possible texture unit find the correct texcoord array and
                     // indices from the cached drawable and place in the cloned drawable
                     // in the correct texture unit slot
                     unsigned int textureUnit(0);
@@ -208,7 +208,7 @@ void    daeReader::processMaterial(osg::StateSet *ss, domMaterial *mat )
     if (effect)
     {
         processEffect(ss, effect);
-    
+
         //TODO: process all of the setParams that could happen here in the material. ESP. the textures
     }
     else
@@ -330,11 +330,11 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
             OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
 
         processColorOrTextureType(ss, b->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
-        
+
         processColorOrTextureType(ss, b->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if (DiffuseStateAttribute != NULL ) 
+        if (DiffuseStateAttribute != NULL )
         {
-            if (AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL )
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -366,7 +366,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if (NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  )
                 OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
@@ -402,13 +402,13 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         processColorOrTextureType(ss, p->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
             OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
-        
+
         processColorOrTextureType(ss, p->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
-        
+
         processColorOrTextureType(ss, p->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if (DiffuseStateAttribute != NULL ) 
+        if (DiffuseStateAttribute != NULL )
         {
-            if (AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL )
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -440,10 +440,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if (NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  )
                 OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
-        
+
         if (processColorOrTextureType(ss, p->getSpecular(), osg::Material::SPECULAR, mat.get(), p->getShininess() ) && (NULL != DiffuseStateAttribute) )
         {
             // Diffuse texture will defeat specular highlighting
@@ -474,13 +474,13 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         processColorOrTextureType(ss, l->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
             OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
-        
+
         processColorOrTextureType(ss, l->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute);
 
         processColorOrTextureType(ss, l->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if (DiffuseStateAttribute != NULL ) 
+        if (DiffuseStateAttribute != NULL )
         {
-            if (AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL )
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -512,7 +512,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if (NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  )
                 OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
@@ -530,7 +530,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
     {
         osg::Texture2D *sa = NULL;
         processColorOrTextureType(ss, c->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &sa );
-        if (sa != NULL ) 
+        if (sa != NULL )
         {
             unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0);
             ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
@@ -562,7 +562,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
 //        1        texcoord
 //        0..*    extra
 bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
-                                          domCommon_color_or_texture_type *cot, 
+                                          domCommon_color_or_texture_type *cot,
                                           osg::Material::ColorMode channel,
                                           osg::Material *mat,
                                           domCommon_float_or_param_type *fop,
@@ -605,7 +605,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
             }
             else
                 OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
-        }       
+        }
         else
         {
             OSG_WARN << "Missing <color>, <param> or <texture> in Emission channel " << std::endl;
@@ -768,7 +768,7 @@ bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4) const
         }
     }
 
-    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el );
     domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
     if ((cnp != NULL) && (NULL != cnp->getFloat4()))
     {
@@ -815,7 +815,7 @@ bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f) const
         }
     }
 
-    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el );
     domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
     if ((cnp != NULL) && (NULL != cnp->getFloat()))
     {
@@ -1005,7 +1005,7 @@ osg::Texture2D* daeReader::processTexture(
 
     std::string target = std::string("./") + std::string(tex->getTexture());
     OSG_NOTICE<<"processTexture("<<target<<")"<<std::endl;
-    
+
     daeSIDResolver res1( _currentEffect, target.c_str() );
     daeElement *el = res1.getElement();
 
@@ -1021,7 +1021,7 @@ osg::Texture2D* daeReader::processTexture(
     }
     else
     {
-        domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+        domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el );
         domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
 
         if (cnp != NULL )
@@ -1048,7 +1048,7 @@ osg::Texture2D* daeReader::processTexture(
             OSG_WARN << "Could not locate newparam for source " << sampler->getSource()->getValue() << std::endl;
             return NULL;
         }
-        cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+        cnp = daeSafeCast< domCommon_newparam_type >( el );
         npc = daeSafeCast< domFx_newparam_common >( el );
 
         if (cnp != NULL )
@@ -1164,7 +1164,7 @@ The <transparent> element’s opaque attribute now allows, in addition to A_ONE an
 • A_ZERO: Takes the transparency information from the color’s alpha channel, where the value 0.0 is opaque.
 • RGB_ONE: Takes the transparency information from the color’s red, green, and blue channels, where the value 1.0
 * is opaque, with each channel modulated independently.
-* When we update to a version of the dom using that schema we will need to modify the code below 
+* When we update to a version of the dom using that schema we will need to modify the code below
 */
 
 void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,

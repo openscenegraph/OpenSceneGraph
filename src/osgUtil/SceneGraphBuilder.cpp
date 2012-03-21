@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/SceneGraphBuilder>
@@ -59,7 +59,7 @@ void SceneGraphBuilder::PushMatrix()
 void SceneGraphBuilder::PopMatrix()
 {
     if (!_matrixStack.empty()) _matrixStack.pop_back();
-    
+
     matrixChanged();
 }
 
@@ -214,9 +214,9 @@ void SceneGraphBuilder::TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 void SceneGraphBuilder::Vertex3f(GLfloat x, GLfloat y, GLfloat z)
 {
     osg::Vec3 vertex(x,y,z);
-    
+
     vertex = vertex * _matrixStack.back();
-    
+
     if (_vertices.valid()) _vertices->push_back(vertex);
     if (_normal.valid()) _normals->push_back(_normal);
     if (_colors.valid()) _colors->push_back(_color);
@@ -228,7 +228,7 @@ void SceneGraphBuilder::Begin(GLenum mode)
     // reset geometry
     _primitiveMode = mode;
     _vertices = new osg::Vec3Array;
-    
+
     _normalSet = false;
     _normals = new osg::Vec3Array;
 
@@ -245,7 +245,7 @@ void SceneGraphBuilder::End()
     allocateGeometry();
 
     _geometry->setVertexArray(_vertices.get());
-    
+
     if (_colorSet)
     {
          _geometry->setColorArray(_colors.get());
@@ -255,11 +255,11 @@ void SceneGraphBuilder::End()
     {
          osg::Vec4Array* colors = new osg::Vec4Array;
          colors->push_back(_color);
-         
+
          _geometry->setColorArray(colors);
          _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
-    
+
     if (_normalSet)
     {
          _geometry->setNormalArray(_normals.get());
@@ -269,7 +269,7 @@ void SceneGraphBuilder::End()
     {
          _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
     }
-    
+
     if (_maxNumTexCoordComponents==1)
     {
         // convert Vec4Array into FloatArray
@@ -448,17 +448,17 @@ osg::Node* SceneGraphBuilder::getScene()
 osg::Node* SceneGraphBuilder::takeScene()
 {
     osg::ref_ptr<osg::Node> node;
-    
+
     if (_group.valid() && _group->getNumChildren()>0) node = _group.get();
     else if (_transform.valid() && _transform->getNumChildren()>0) node = _transform.get();
     else if (_geode.valid() && _geode->getNumDrawables()>0) node = _geode.get();
-    
+
     // reset all the pointers to properly release the scene graph
     _geometry = 0;
     _geode = 0;
     _transform = 0;
     _group = 0;
-        
+
     return node.release();
 }
 
@@ -495,7 +495,7 @@ void SceneGraphBuilder::addShape(osg::Shape* shape)
 {
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(shape);
     sd->setColor(_color);
-    
+
     addDrawable(sd);
 }
 
@@ -519,7 +519,7 @@ void SceneGraphBuilder::allocateStateSet()
         _stateset = dynamic_cast<osg::StateSet*>(_stateset->clone(osg::CopyOp::SHALLOW_COPY));
         _statesetAssigned = false;
     }
-    
+
     if (!_stateset) _stateset = new osg::StateSet;
 }
 

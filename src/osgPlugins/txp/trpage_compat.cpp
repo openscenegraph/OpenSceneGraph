@@ -21,7 +21,7 @@
    This file and the accompanying trpage_compat.h contain objects and procedures
    used to maintain compatibility between versions of TerraPage.  In particular, the
    ability to read older versions of TerraPage and newer applications.
-   
+
 */
 
 #include <trpage_geom.h>

@@ -61,10 +61,10 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
             osg::Matrixd projectionMatrix;
             osg::Matrixd modelViewMatrix;
-            
+
             typedef std::vector<osg::Vec3d> Vertices;
             Vertices corners;
-            
+
             typedef std::vector<unsigned int> Indices;
             typedef std::vector<Indices> Faces;
             Faces faces;
@@ -81,15 +81,15 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         // forward declare
         class ViewDependentData;
-        
+
         struct OSGSHADOW_EXPORT LightData : public osg::Referenced
         {
             LightData(ViewDependentData* vdd);
 
             virtual void setLightData(osg::RefMatrix* lm, const osg::Light* l, const osg::Matrixd& modelViewMatrix);
-            
+
             ViewDependentData*                  _viewDependentData;
-            
+
             osg::ref_ptr<osg::RefMatrix>        lightMatrix;
             osg::ref_ptr<const osg::Light>      light;
 
@@ -101,7 +101,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             typedef std::vector<unsigned int> ActiveTextureUnits;
             ActiveTextureUnits                   textureUnits;
         };
-        
+
         typedef std::list< osg::ref_ptr<LightData> > LightDataList;
 
         struct OSGSHADOW_EXPORT ShadowData : public osg::Referenced
@@ -111,7 +111,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             virtual void releaseGLObjects(osg::State* = 0) const;
 
             ViewDependentData*                  _viewDependentData;
-            
+
             unsigned int                        _textureUnit;
             osg::ref_ptr<osg::Texture2D>        _texture;
             osg::ref_ptr<osg::TexGen>           _texgen;
@@ -119,7 +119,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         };
 
         typedef std::list< osg::ref_ptr<ShadowData> > ShadowDataList;
-        
+
 
         class OSGSHADOW_EXPORT ViewDependentData : public osg::Referenced
         {
@@ -133,7 +133,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             ShadowDataList& getShadowDataList() { return _shadowDataList; }
 
             osg::StateSet* getStateSet() { return _stateset.get(); }
-            
+
             virtual void releaseGLObjects(osg::State* = 0) const;
 
         protected:
@@ -162,7 +162,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         virtual bool computeShadowCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Matrixd& projectionMatrix, osg::Matrixd& viewMatrix);
 
         virtual bool adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
-        
+
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 
         virtual void cullShadowReceivingScene(osgUtil::CullVisitor* cv) const;
@@ -185,7 +185,7 @@ protected:
         osg::ref_ptr<osg::PolygonOffset>        _polygonOffset;
         osg::ref_ptr<osg::Texture2D>            _fallbackBaseTexture;
         osg::ref_ptr<osg::Texture2D>            _fallbackShadowMapTexture;
-        
+
         typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
         Uniforms                                _uniforms;
         osg::ref_ptr<osg::Program>              _program;

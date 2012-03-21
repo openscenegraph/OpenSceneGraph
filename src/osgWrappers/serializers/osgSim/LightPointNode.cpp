@@ -17,11 +17,11 @@ static bool readLightPointList( osgDB::InputStream& is, osgSim::LightPointNode& 
         is >> osgDB::PROPERTY("LightPoint") >> osgDB::BEGIN_BRACKET;
         is >> osgDB::PROPERTY("Position") >> pt._position;
         is >> osgDB::PROPERTY("Color") >> pt._color;
-        
+
         int blendingMode = 0;
         is >> osgDB::PROPERTY("Attributes") >> pt._on >> blendingMode >> pt._intensity >> pt._radius;
         pt._blendingMode = (osgSim::LightPoint::BlendingMode)blendingMode;
-        
+
         bool hasObject = false; is >> osgDB::PROPERTY("Sector") >> hasObject;
         if ( hasObject )
         {

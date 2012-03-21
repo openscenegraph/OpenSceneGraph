@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -16,9 +16,9 @@
 
 #include <osg/Group>
 
-namespace osg 
+namespace osg
 {
-  
+
 /** Sequence is a Group node which allows automatic, time based
 switching between children.
 */
@@ -63,21 +63,21 @@ class OSG_EXPORT Sequence : public Group
 
         /** Get time for child. */
         double getTime(unsigned int frame) const;
-        
+
         /** Set the time list for children. */
         void setTimeList(const std::vector<double>& timeList) { _frameTime = timeList; }
-        
+
         /** Get the time list for children. */
         const std::vector<double>& getTimeList() const { return _frameTime; }
 
-        /** Set default time in seconds for new child. 
+        /** Set default time in seconds for new child.
             if t<0, t=0 */
         void setDefaultTime(double t) {_defaultTime = (t<0.?0.:t);}
 
         /** Get default time in seconds for new child. */
         double getDefaultTime(void) const {return _defaultTime;};
 
-        /** Set time of last frame of last loop, in seconds.  
+        /** Set time of last frame of last loop, in seconds.
             if t<= 0, then ignored */
         void setLastFrameTime(double t) {_lastFrameTime = (t<0.?0.:t);}
 
@@ -93,22 +93,22 @@ class OSG_EXPORT Sequence : public Group
             LOOP,
             SWING
         };
-        
+
         /** Set sequence mode. */
         void setLoopMode(LoopMode mode) { _loopMode = mode; _value = -1; }
-        
+
         /** Get sequence mode. */
         LoopMode getLoopMode() const { return _loopMode; }
-        
+
         /** Set interval beginning. */
         void setBegin(int begin) { _begin = begin; _value = -1; }
-        
+
         /** Get interval beginning. */
         int getBegin() const { return _begin; }
-        
+
         /** Set interval ending. */
         void setEnd(int end) { _end = end; _value = -1; }
-        
+
         /** Get interval ending. */
         int getEnd() const { return _end; }
 
@@ -122,16 +122,16 @@ class OSG_EXPORT Sequence : public Group
             begin = _begin;
             end = _end;
         }
-        
+
         /** Set speed. */
         void setSpeed(float speed) { _speed = speed; }
-        
+
         /** Get speed. */
         float getSpeed() const { return _speed; }
-        
+
         /** Set number of repeats. */
         void setNumRepeats(int nreps) { _nreps = (nreps<0?-1:nreps); _nrepsRemain = _nreps; }
-        
+
         /** Get number of repeats. */
         int getNumRepeats() const { return _nreps; }
 
@@ -217,7 +217,7 @@ class OSG_EXPORT Sequence : public Group
 
         // _nreps: how many times to repeat- default param is -1, repeat forever
         // init to 0, no repetitions
-        // _nrepsRemain: set to nreps and counts down every traversal, 
+        // _nrepsRemain: set to nreps and counts down every traversal,
         // stopping when it gets to zero.  init to 0
         int _nreps, _nrepsRemain;
 
@@ -246,7 +246,7 @@ class OSG_EXPORT Sequence : public Group
         bool _clearOnStop ;
 
 };
-  
+
 }
 
 #endif

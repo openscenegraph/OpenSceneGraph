@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -47,7 +47,7 @@ static Material::Map parseTextureMap( const std::string& ss, Material::Map::Text
     {
         if (s[0] != '-')
             break;
- 
+
         int n;
         if (s[1] == 's' || s[1] == 'o')
         {
@@ -136,7 +136,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
                 // OSG_NOTICE<<"We have dos line ending"<<std::endl;
                 if (skipNewline)
                 {
-                    skipNewline = false; 
+                    skipNewline = false;
                     *ptr++ = ' ';
                     continue;
                 }
@@ -146,7 +146,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
             // OSG_NOTICE<<"We have mac line ending"<<std::endl;
             if (skipNewline)
             {
-                skipNewline = false; 
+                skipNewline = false;
                 *ptr++ = ' ';
                 continue;
             }
@@ -166,7 +166,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
         else if (c=='\\' && (p=='\r' || p=='\n'))
         {
             // need to keep return;
-            skipNewline = true;   
+            skipNewline = true;
         }
         else if (c!=std::ifstream::traits_type::eof()) // don't copy eof.
         {
@@ -178,10 +178,10 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
                 *ptr++ = c;
             }
         }
-        
-        
+
+
     }
-    
+
     // strip trailing spaces
     while (ptr>line && *(ptr-1)==' ')
     {
@@ -189,16 +189,16 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
     }
 
     *ptr = 0;
-    
+
     if (changeTabsToSpaces)
     {
-        
+
         for(ptr = line; *ptr != 0; ++ptr)
         {
             if (*ptr == '\t') *ptr=' ';
         }
     }
-    
+
     return true;
 }
 
@@ -447,7 +447,7 @@ bool Model::readMTL(std::istream& fin)
                 }
                 // map_opacity doesn't exist in the spec, but was already in the plugin
                 // so leave it or plugin will break for some users
-                else if (strncmp(line,"map_opacity ",12)==0) 
+                else if (strncmp(line,"map_opacity ",12)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+12),Material::Map::OPACITY));
                 }
@@ -495,7 +495,7 @@ bool Model::readMTL(std::istream& fin)
             {
                 OSG_NOTICE <<"*** line not handled *** :"<<line<<std::endl;
             }
-        
+
         }
 
     }
@@ -562,7 +562,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                      strncmp(line,"f ",2)==0)
             {
                 char* ptr = line+2;
-                
+
                 Element* element = new Element( (line[0]=='p') ? Element::POINTS :
                                                 (line[0]=='l') ? Element::POLYLINE :
                                                 Element::POLYGON );
@@ -574,7 +574,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                 {
                     // skip white space
                     while(*ptr==' ') ++ptr;
-                    
+
                     if (sscanf(ptr, "%d/%d/%d", &vi, &ti, &ni) == 3)
                     {
                         // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<"/ni="<<ni<<std::endl;
@@ -602,19 +602,19 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
 
                     // skip to white space or end of line
                     while(*ptr!=' ' && *ptr!=0) ++ptr;
-                
+
                 }
-                
+
                 if (!element->normalIndices.empty() && element->normalIndices.size() != element->vertexIndices.size())
                 {
                     element->normalIndices.clear();
                 }
-                
+
                 if (!element->texCoordIndices.empty() && element->texCoordIndices.size() != element->vertexIndices.size())
                 {
                     element->texCoordIndices.clear();
                 }
-                
+
                 if (!element->vertexIndices.empty())
                 {
                     Element::CoordinateCombination coordateCombination = element->getCoordinateCombination();
@@ -704,7 +704,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                 int smoothingGroup=0;
                 if (strncmp(line+2,"off",3)==0) smoothingGroup = 0;
                 else sscanf(line+2,"%d",&smoothingGroup);
-                
+
                 if (currentElementState.smoothingGroup != smoothingGroup)
                 {
                     currentElementState.smoothingGroup = smoothingGroup;
@@ -715,7 +715,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             {
                 OSG_NOTICE <<"*** line not handled *** :"<<line<<std::endl;
             }
-        
+
         }
 
     }
@@ -725,7 +725,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
     OSG_NOTICE <<"texcoords :"<<texcoords.size()<<std::endl;
     OSG_NOTICE <<"materials :"<<materialMap.size()<<std::endl;
     OSG_NOTICE <<"elementStates :"<<elementStateMap.size()<<std::endl;
-    
+
     unsigned int pos=0;
     for(ElementStateMap::iterator itr=elementStateMap.begin();
         itr!=elementStateMap.end();
@@ -739,7 +739,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
         OSG_NOTICE<<"    es.materialName="<<es.materialName<<std::endl;
         OSG_NOTICE<<"    es.smoothGroup="<<es.smoothingGroup<<std::endl;
         OSG_NOTICE<<"    ElementList ="<<el.size()<<std::endl;
-        
+
     }
 #endif
     return true;
@@ -753,7 +753,7 @@ void Model::addElement(Element* element)
         currentElementList = & (elementStateMap[currentElementState]);
     }
     currentElementList->push_back(element);
-    
+
 }
 
 osg::Vec3 Model::averageNormal(const Element& element) const
@@ -766,7 +766,7 @@ osg::Vec3 Model::averageNormal(const Element& element) const
         normal += normals[*itr];
     }
     normal.normalize();
-    
+
     return normal;
 }
 
@@ -782,13 +782,13 @@ osg::Vec3 Model::computeNormal(const Element& element) const
         normal += localNormal;
     }
     normal.normalize();
-    
+
     return normal;
 }
 
 bool Model::needReverse(const Element& element) const
 {
     if (element.normalIndices.empty()) return false;
-    
+
     return computeNormal(element)*averageNormal(element) < 0.0f;
 }

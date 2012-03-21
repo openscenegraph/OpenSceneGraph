@@ -569,7 +569,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
                 return true;
             }
-            
+
             bool operator < (const SeriesIdentifier& rhs) const
             {
                 if (SeriesInstanceUID < rhs.SeriesInstanceUID) return true;
@@ -662,7 +662,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                 SeriesIdentifier seriesIdentifier;
                 seriesIdentifier.set(fileformat.getDataset());
-                
+
                 // code for reading the intercept and scale that is required to convert to Hounsfield units.
                 bool rescaling = false;
                 double rescaleIntercept = 0.0;

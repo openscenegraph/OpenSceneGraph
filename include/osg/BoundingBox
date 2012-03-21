@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ class BoundingBoxImpl
     public:
         typedef VT vec_type;
         typedef typename VT::value_type value_type;
-    
+
         /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
         vec_type _min;
         /** Maximum extent. (Greatest X, Y, and Z values of all coordinates.) */
@@ -50,7 +50,7 @@ class BoundingBoxImpl
                  -FLT_MAX,
                  -FLT_MAX)
         {}
-    
+
         /** Creates a bounding box initialized to the given extents. */
         inline BoundingBoxImpl(value_type xmin, value_type ymin, value_type zmin,
                            value_type xmax, value_type ymax, value_type zmax) :
@@ -58,7 +58,7 @@ class BoundingBoxImpl
                            _max(xmax,ymax,zmax) {}
 
         /** Creates a bounding box initialized to the given extents. */
-        inline BoundingBoxImpl(const vec_type& min,const vec_type& max) : 
+        inline BoundingBoxImpl(const vec_type& min,const vec_type& max) :
                     _min(min),
                     _max(max) {}
 
@@ -72,8 +72,8 @@ class BoundingBoxImpl
                      -FLT_MAX,
                      -FLT_MAX);
         }
-        
-        /** Returns true if the bounding box extents are valid, false otherwise. */              
+
+        /** Returns true if the bounding box extents are valid, false otherwise. */
         inline bool valid() const
         {
             return _max.x()>=_min.x() &&  _max.y()>=_min.y() &&  _max.z()>=_min.z();
@@ -97,19 +97,19 @@ class BoundingBoxImpl
 
         inline value_type& xMin() { return _min.x(); }
         inline value_type xMin() const { return _min.x(); }
- 
+
         inline value_type& yMin() { return _min.y(); }
         inline value_type yMin() const { return _min.y(); }
- 
+
         inline value_type& zMin() { return _min.z(); }
         inline value_type zMin() const { return _min.z(); }
 
         inline value_type& xMax() { return _max.x(); }
         inline value_type xMax() const { return _max.x(); }
- 
+
         inline value_type& yMax() { return _max.y(); }
         inline value_type yMax() const { return _max.y(); }
- 
+
         inline value_type& zMax() { return _max.z(); }
         inline value_type zMax() const { return _max.z(); }
 
@@ -202,7 +202,7 @@ class BoundingBoxImpl
             if(sh._center.z()-sh._radius<_min.z()) _min.z() = sh._center.z()-sh._radius;
             if(sh._center.z()+sh._radius>_max.z()) _max.z() = sh._center.z()+sh._radius;
         }
-        
+
 
         /** Returns the intersection of this bounding box and the specified bounding box. */
         BoundingBoxImpl intersect(const BoundingBoxImpl& bb) const
@@ -222,7 +222,7 @@ class BoundingBoxImpl
         /** Returns true if this bounding box contains the specified coordinate. */
         inline bool contains(const vec_type& v) const
         {
-            return valid() && 
+            return valid() &&
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&
                    (v.y()>=_min.y() && v.y()<=_max.y()) &&
                    (v.z()>=_min.z() && v.z()<=_max.z());

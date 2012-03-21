@@ -229,7 +229,7 @@ protected:
 
         //getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
     }
-    
+
     virtual osg::BoundingBox computeBound() const;
 
 private:
@@ -304,7 +304,7 @@ void SphereSegment::setArea(const osg::Vec3& v, float azRange, float elevRange)
     _elevMin = elev - elevRange;
     _elevMax = elev + elevRange;
 
-    // Calculate the azimuth range, cater for trig ambiguities    
+    // Calculate the azimuth range, cater for trig ambiguities
     float az = atan2(vec.x(), vec.y());
 
     azRange /= 2.0f;
@@ -908,7 +908,7 @@ struct ActivateTransparencyOnType
     }
 
     const std::type_info&  _t;
-    
+
 protected:
 
     ActivateTransparencyOnType& operator = (const ActivateTransparencyOnType&) { return *this; }
@@ -930,7 +930,7 @@ struct DeactivateTransparencyOnType
     }
 
     const std::type_info&  _t;
-    
+
 protected:
 
     DeactivateTransparencyOnType& operator = (const DeactivateTransparencyOnType&) { return *this; }
@@ -983,10 +983,10 @@ void SphereSegment::setAllColors(const osg::Vec4& c)
 class PolytopeVisitor : public osg::NodeVisitor
 {
     public:
-    
+
         typedef std::pair<osg::Matrix, osg::Polytope> MatrixPolytopePair;
         typedef std::vector<MatrixPolytopePair> PolytopeStack;
-    
+
         struct Hit
         {
             Hit(const osg::Matrix& matrix, osg::NodePath& nodePath, osg::Drawable* drawable):
@@ -998,7 +998,7 @@ class PolytopeVisitor : public osg::NodeVisitor
             osg::NodePath               _nodePath;
             osg::ref_ptr<osg::Drawable> _drawable;
         };
-    
+
         typedef std::vector<Hit> HitList;
 
 
@@ -1009,7 +1009,7 @@ class PolytopeVisitor : public osg::NodeVisitor
             _polytopeStack.back().first = matrix;
             _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, _polytopeStack.back().first);
         }
-        
+
         META_NodeVisitor("osgSim","PolytopeVisitor")
 
         void reset()
@@ -1017,7 +1017,7 @@ class PolytopeVisitor : public osg::NodeVisitor
             _polytopeStack.clear();
             _hits.clear();
         }
-            
+
         void apply(osg::Node& node)
         {
             if (_polytopeStack.back().second.contains(node.getBound()))
@@ -1034,13 +1034,13 @@ class PolytopeVisitor : public osg::NodeVisitor
 
                 osg::Matrix matrix = _polytopeStack.back().first;
                 transform.computeLocalToWorldMatrix(matrix, this);
-                
+
                 _polytopeStack.push_back(MatrixPolytopePair());
                 _polytopeStack.back().first = matrix;
                 _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, matrix);
 
                 traverse(transform);
-                
+
                 _polytopeStack.back();
             }
         }
@@ -1057,7 +1057,7 @@ class PolytopeVisitor : public osg::NodeVisitor
                     }
 
                 }
-            
+
                 traverse(node);
             }
         }
@@ -1065,7 +1065,7 @@ class PolytopeVisitor : public osg::NodeVisitor
         HitList& getHits() { return _hits; }
 
     protected:
-        
+
         PolytopeStack   _polytopeStack;
         HitList         _hits;
 
@@ -1075,21 +1075,21 @@ class PolytopeVisitor : public osg::NodeVisitor
 SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& transform, osg::Node* subgraph)
 {
     OSG_INFO<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
-    
+
     osg::BoundingBox bb = getBoundingBox();
 
     osg::Polytope polytope;
-    polytope.add(osg::Plane(1.0,0.0,0.0,-bb.xMin())); 
-    polytope.add(osg::Plane(-1.0,0.0,0.0,bb.xMax())); 
-    polytope.add(osg::Plane(0.0,1.0,0.0,-bb.yMin())); 
-    polytope.add(osg::Plane(0.0,-1.0,0.0,bb.yMax())); 
-    polytope.add(osg::Plane(0.0,0.0,1.0,-bb.zMin())); 
-    polytope.add(osg::Plane(0.0,0.0,-1.0,bb.zMax())); 
-    
+    polytope.add(osg::Plane(1.0,0.0,0.0,-bb.xMin()));
+    polytope.add(osg::Plane(-1.0,0.0,0.0,bb.xMax()));
+    polytope.add(osg::Plane(0.0,1.0,0.0,-bb.yMin()));
+    polytope.add(osg::Plane(0.0,-1.0,0.0,bb.yMax()));
+    polytope.add(osg::Plane(0.0,0.0,1.0,-bb.zMin()));
+    polytope.add(osg::Plane(0.0,0.0,-1.0,bb.zMax()));
+
     osg::Plane pl;
     pl.set(osg::Vec3(-1.0,0.0,0.0), bb.corner(0));
     PolytopeVisitor polytopeVisitor(transform, polytope);
-    
+
     subgraph->accept(polytopeVisitor);
 
     if (polytopeVisitor.getHits().empty())
@@ -1111,7 +1111,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
         SphereSegment::LineList lines = computeIntersection(itr->_matrix, itr->_drawable.get());
         all_lines.insert(all_lines.end(), lines.begin(), lines.end());
     }
-    
+
     // join all the lines that have ends that are close together..
 
     return all_lines;
@@ -1120,21 +1120,21 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
 osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& transform, osg::Node* subgraph)
 {
     OSG_INFO<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
-    
+
     osg::BoundingBox bb = getBoundingBox();
 
     osg::Polytope polytope;
-    polytope.add(osg::Plane(1.0,0.0,0.0,-bb.xMin())); 
-    polytope.add(osg::Plane(-1.0,0.0,0.0,bb.xMax())); 
-    polytope.add(osg::Plane(0.0,1.0,0.0,-bb.yMin())); 
-    polytope.add(osg::Plane(0.0,-1.0,0.0,bb.yMax())); 
-    polytope.add(osg::Plane(0.0,0.0,1.0,-bb.zMin())); 
-    polytope.add(osg::Plane(0.0,0.0,-1.0,bb.zMax())); 
-    
+    polytope.add(osg::Plane(1.0,0.0,0.0,-bb.xMin()));
+    polytope.add(osg::Plane(-1.0,0.0,0.0,bb.xMax()));
+    polytope.add(osg::Plane(0.0,1.0,0.0,-bb.yMin()));
+    polytope.add(osg::Plane(0.0,-1.0,0.0,bb.yMax()));
+    polytope.add(osg::Plane(0.0,0.0,1.0,-bb.zMin()));
+    polytope.add(osg::Plane(0.0,0.0,-1.0,bb.zMax()));
+
     osg::Plane pl;
     pl.set(osg::Vec3(-1.0,0.0,0.0), bb.corner(0));
     PolytopeVisitor polytopeVisitor(transform, polytope);
-    
+
     subgraph->accept(polytopeVisitor);
 
     if (polytopeVisitor.getHits().empty())
@@ -1155,7 +1155,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& transf
     {
         group->addChild(computeIntersectionSubgraph(itr->_matrix, itr->_drawable.get()));
     }
-    
+
     // join all the lines that have ends that are close together..
 
     return group;
@@ -1188,7 +1188,7 @@ namespace SphereSegmentIntersector
         VertexArray& _vertices;
 
     protected:
-    
+
         SortFunctor& operator = (const SortFunctor&) { return *this; }
     };
 
@@ -1375,7 +1375,7 @@ namespace SphereSegmentIntersector
                 double azimRange = (azimMax-azimMin)*0.5;
 
                 double rad2 = vertex.length2();
-                double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());        
+                double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());
                 double elevation = atan2((double)vertex.z(),length_xy);
 
                 // radius surface
@@ -1494,7 +1494,7 @@ namespace SphereSegmentIntersector
                 // if all the vertices on all the sides and inside then we are completely inside
                 if (_inside_radiusSurface==_numVertices &&
                     _inside_leftRightSurfaces==_numVertices &&
-                    _inside_topSurface==_numVertices && 
+                    _inside_topSurface==_numVertices &&
                     _inside_bottomSurface==_numVertices) return Region::INSIDE;
 
                 return Region::INTERSECTS;
@@ -1512,8 +1512,8 @@ namespace SphereSegmentIntersector
                 // if all the vertices on all the sides and inside then we are completely inside
                 if ((surfaceType!=RADIUS_SURFACE && _inside_radiusSurface!=0) &&
                     (surfaceType!=LEFT_SURFACE && _inside_leftSurface!=0) &&
-                    (surfaceType!=RIGHT_SURFACE && _inside_rightSurface!=0) && 
-                    (surfaceType!=TOP_SURFACE && _inside_topSurface!=0) && 
+                    (surfaceType!=RIGHT_SURFACE && _inside_rightSurface!=0) &&
+                    (surfaceType!=TOP_SURFACE && _inside_topSurface!=0) &&
                     (surfaceType!=BOTTOM_SURFACE && _inside_bottomSurface!=0)) return false;
 
                 return true;
@@ -1574,7 +1574,7 @@ namespace SphereSegmentIntersector
         EdgeSet         _edges;
 
         osg::Vec3       _centre;
-        double          _radius; 
+        double          _radius;
         double          _azMin, _azMax, _elevMin, _elevMax;
 
         unsigned int    _numOutside;
@@ -1614,7 +1614,7 @@ namespace SphereSegmentIntersector
             if (classification==Region::OUTSIDE)
             {
                 ++_numOutside;
-                return; 
+                return;
             }
 
             if (rc.numberOfIntersectingSurfaces()==0)
@@ -1789,7 +1789,7 @@ namespace SphereSegmentIntersector
             EdgeSet::iterator itr = _edges.find(edge);
             if (itr==_edges.end())
             {
-                edge->addTriangle(tri);            
+                edge->addTriangle(tri);
                 _edges.insert(edge);
                 return edge.get();
             }
@@ -1996,7 +1996,7 @@ namespace SphereSegmentIntersector
         }
 
 
-        // handle a paired of surfaces that work to enclose a convex region, which means that 
+        // handle a paired of surfaces that work to enclose a convex region, which means that
         // points can be inside either surface to be valid, and be outside both surfaces to be invalid.
         template<class I>
         void trim(SphereSegment::LineList& lineList, osg::Vec3Array* sourceLine, I intersector1, I intersector2)
@@ -2076,7 +2076,7 @@ namespace SphereSegmentIntersector
                                 possible1 = true;
                                 possible2 = false;
                             }
-                            else 
+                            else
                             {
                                 OSG_INFO<<"start point, 2 near to end than 1"<<std::endl;
                                 possible1 = false;
@@ -2139,7 +2139,7 @@ namespace SphereSegmentIntersector
                                     possible1 = true;
                                     possible2 = false;
                                 }
-                                else 
+                                else
                                 {
                                     OSG_INFO<<"end point, 2 near to end than 1"<<std::endl;
                                     possible1 = false;
@@ -2292,7 +2292,7 @@ namespace SphereSegmentIntersector
                             _neighbourLineEnd = _neighbourLine->size()-1;
                             _distance = distance;
                         }
-                    }               
+                    }
                 }
             };
 
@@ -2335,7 +2335,7 @@ namespace SphereSegmentIntersector
 
             while (unfusedLines.size()>=1)
             {
-                // generate a set of line pairs to establish which 
+                // generate a set of line pairs to establish which
                 // line pair has the minimum distance.
                 typedef std::multiset<LinePair> LinePairSet;
                 LinePairSet linePairs;
@@ -2352,7 +2352,7 @@ namespace SphereSegmentIntersector
                         linePairs.insert(linePair);
                     }
                 }
-                
+
                 if (linePairs.empty())
                 {
                     OSG_INFO<<"Line Pairs empty"<<std::endl;
@@ -2420,7 +2420,7 @@ namespace SphereSegmentIntersector
 
                     // copy across all but fuse end of line1
                     for(int i=openEnd1;
-                        i != fuseEnd1; 
+                        i != fuseEnd1;
                         i += direction1)
                     {
                         newline->push_back((*line1)[i]);
@@ -2441,7 +2441,7 @@ namespace SphereSegmentIntersector
 
                     // copy across from the next point in from fuseEnd2 to the openEnd2.
                     for(int j=fuseEnd2 + direction2;
-                        j != openEnd2 + direction2; 
+                        j != openEnd2 + direction2;
                         j += direction2)
                     {
                         newline->push_back((*line2)[j]);
@@ -2470,7 +2470,7 @@ namespace SphereSegmentIntersector
                 _generatedLines = fusedLines;
                 _generatedLines.insert(_generatedLines.end(), unfusedLines.begin(), unfusedLines.end());
 
-            }        
+            }
         }
 
     };
@@ -2555,7 +2555,7 @@ namespace SphereSegmentIntersector
             {
 
                 double div = d2-d1;
-                if (div==0.0) 
+                if (div==0.0)
                 {
                     edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
                     return false;
@@ -2586,7 +2586,7 @@ namespace SphereSegmentIntersector
             double d2 = _plane.distance(v2);
 
             double div = d2-d1;
-            if (div==0.0) 
+            if (div==0.0)
             {
                 return v1;
             }
@@ -2602,9 +2602,9 @@ namespace SphereSegmentIntersector
         {
             return _lowerOutside ? _plane.distance(v) : -_plane.distance(v) ;
         }
-    
+
     protected:
-        
+
         AzimPlaneIntersector& operator = (const AzimPlaneIntersector&) { return *this; }
     };
 
@@ -2743,9 +2743,9 @@ namespace SphereSegmentIntersector
 
             return _lowerOutside ? computedElev-_elev : _elev-computedElev ;
         }
-        
+
     protected:
-    
+
         ElevationIntersector& operator = (const ElevationIntersector&) { return *this; }
 
     };
@@ -2875,7 +2875,7 @@ namespace SphereSegmentIntersector
 
 
     protected:
-    
+
         RadiusIntersector& operator = (const RadiusIntersector&) { return *this; }
 
     };
@@ -2888,14 +2888,14 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     // cast to Geometry, return empty handed if Drawable not a Geometry.
     osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
     if (!geometry) return SphereSegment::LineList();
-    
+
     // get vertices from geometry, return empty handed if a Vec3Array not present.
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
     if (!vertices) return SphereSegment::LineList();
-    
+
     typedef osg::TriangleIndexFunctor<TriangleIntersectOperator> TriangleIntersectFunctor;
     TriangleIntersectFunctor tif;
- 
+
     tif._centre = _centre;
     tif._radius = _radius;
     tif._azMin = _azMin;
@@ -2904,10 +2904,10 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif._elevMax = _elevMax;
 
     tif.computePositionAndRegions(matrix, *vertices);
- 
+
     // traverse the triangles in the Geometry dedicating intersections
     geometry->accept(tif);
-    
+
     OSG_INFO<<"_numOutside = "<<tif._numOutside<<std::endl;
     OSG_INFO<<"_numInside = "<<tif._numInside<<std::endl;
     OSG_INFO<<"_numIntersecting = "<<tif._numIntersecting<<std::endl;
@@ -2915,8 +2915,8 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.removeDuplicateVertices();
     tif.removeDuplicateTriangles();
     tif.buildEdges();
-    
-    
+
+
     RadiusIntersector radiusIntersector(tif);
     AzimPlaneIntersector azMinIntersector(tif,_azMin, true);
     AzimPlaneIntersector azMinEndIntersector(tif,_azMin-osg::PI*0.5, true);
@@ -2956,12 +2956,12 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
 
         if (azimRange<=osg::PI)
         {
-            // trim the radius and elevation intersection lines by the azimMin 
+            // trim the radius and elevation intersection lines by the azimMin
             tif.trim(radiusLines, azMinIntersector);
             tif.trim(elevMinLines, azMinIntersector);
             tif.trim(elevMaxLines, azMinIntersector);
 
-            // trim the radius and elevation intersection lines by the azimMax 
+            // trim the radius and elevation intersection lines by the azimMax
             tif.trim(radiusLines, azMaxIntersector);
             tif.trim(elevMinLines, azMaxIntersector);
             tif.trim(elevMaxLines, azMaxIntersector);
@@ -2980,10 +2980,10 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.trim(elevMinLines,radiusIntersector);
     tif.trim(elevMaxLines,radiusIntersector);
 
-    // trim the radius and elevation intersection lines by the elevMin 
+    // trim the radius and elevation intersection lines by the elevMin
     tif.trim(radiusLines, elevMinIntersector);
 
-    // trim the radius and elevation intersection lines by the elevMax 
+    // trim the radius and elevation intersection lines by the elevMax
     tif.trim(radiusLines, elevMaxIntersector);
 
     // collect all lines together.
@@ -2992,7 +2992,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif._generatedLines.insert(tif._generatedLines.end(), azMaxLines.begin(), azMaxLines.end());
     tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
     tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
- 
+
     OSG_INFO<<"number of separate lines = "<<tif._generatedLines.size()<<std::endl;
 
     float fuseDistance = 1.0;
@@ -3006,7 +3006,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
 
     tif.joinEnds(joinDistance, false, true);
     OSG_INFO<<"number of separate lines after second join = "<<tif._generatedLines.size()<<std::endl;
- 
+
     return tif._generatedLines;
 }
 
@@ -3035,7 +3035,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
     for(unsigned int i=0; i<tif._originalVertices.size(); ++i)
     {
         osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(tif._originalVertices[i]+tif._centre,radius));
-        
+
         TriangleIntersectFunctor::RegionCounter rc;
         rc.add(tif._regions[i]);
 
@@ -3052,7 +3052,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
         {
             sd->setColor(osg::Vec4(1.0,1.0,1.0,1.0));
         }
-        
+
         geode->addDrawable(sd);
     }
 #endif

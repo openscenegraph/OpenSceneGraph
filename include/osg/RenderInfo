@@ -35,7 +35,7 @@ public:
     RenderInfo(State* state, View* view):
         _state(state),
         _view(view) {}
-        
+
     RenderInfo& operator = (const RenderInfo& rhs)
     {
         _state = rhs._state;
@@ -46,18 +46,18 @@ public:
     }
 
     unsigned int getContextID() const { return _state.valid() ? _state->getContextID() : 0; }
-    
+
     void setState(State* state) { _state = state; }
     State* getState() { return _state.get(); }
     const State* getState() const { return _state.get(); }
-    
+
     void setView(View* view) { _view = view; }
     View* getView() { return _view; }
     const View* getView() const { return _view; }
-    
-    void pushCamera(Camera* camera) { _cameras.push_back(camera); }    
+
+    void pushCamera(Camera* camera) { _cameras.push_back(camera); }
     void popCamera() { if (!_cameras.empty()) _cameras.pop_back(); }
-    
+
     Camera* getCurrentCamera() { return _cameras.empty() ? 0 : _cameras.back(); }
 
     void setUserData(Referenced* userData) { _userData = userData; }

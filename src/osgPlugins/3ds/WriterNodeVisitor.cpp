@@ -127,10 +127,10 @@ namespace plugin3ds
 class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor
 {
 public:
-      PrimitiveIndexWriter(osg::Geometry  *    geo, 
+      PrimitiveIndexWriter(osg::Geometry  *    geo,
                            ListTriangle  &    listTriangles,
                            unsigned int        drawable_n,
-                           unsigned int        material) : 
+                           unsigned int        material) :
           osg::PrimitiveIndexFunctor(),
           _drawable_n(drawable_n),
           _listTriangles(listTriangles),
@@ -445,8 +445,8 @@ std::string convertExt(const std::string & path, bool extendedFilePaths)
 }
 
 
-WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName, 
-                const osgDB::ReaderWriter::Options* options, 
+WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName,
+                const osgDB::ReaderWriter::Options* options,
                 const std::string & srcDirectory) :
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _succeeded(true),
@@ -597,7 +597,7 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, b
         // Tests if default name is valid and unique
         if (is3DSName(_defaultValue, _extendedFilePaths, isNodeName))
         {
-            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(_defaultValue) ); 
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(_defaultValue) );
             if (insertion.second) return _defaultValue;        // Return if element is newly inserted in the map (else there is a naming collision)
         }
 
@@ -653,7 +653,7 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, b
         const std::string strippedName( filename + ext );
         if (is3DSName(strippedName, _extendedFilePaths, isNodeName))
         {
-            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(strippedName) ); 
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(strippedName) );
             if (insertion.second) return strippedName;        // Return if element is newly inserted in the map (else there is a naming collision)
         }
 
@@ -739,7 +739,7 @@ int WriterNodeVisitor::processStateSet(osg::StateSet* ss)
     return -1;
 }
 
-/** 
+/**
 *  Add a vertice to the index and link it with the Triangle index and the drawable.
 *  \param index_vert is the map where the vertice are stored.
 *  \param index is the indice of the vertice's position in the vec3.
@@ -747,7 +747,7 @@ int WriterNodeVisitor::processStateSet(osg::StateSet* ss)
 *  \return the position of the vertice in the final mesh.
 */
 unsigned int
-WriterNodeVisitor::getMeshIndexForGeometryIndex(MapIndices & index_vert, 
+WriterNodeVisitor::getMeshIndexForGeometryIndex(MapIndices & index_vert,
                                                 unsigned int index,
                                                 unsigned int drawable_n)
 {
@@ -762,7 +762,7 @@ WriterNodeVisitor::getMeshIndexForGeometryIndex(MapIndices & index_vert,
 }
 
 
-void 
+void
 WriterNodeVisitor::buildMesh(osg::Geode        & geo,
                              const osg::Matrix & mat,
                              MapIndices        & index_vert,
@@ -829,7 +829,7 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
     lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(_cur3dsNode));
 }
 
-unsigned int 
+unsigned int
 WriterNodeVisitor::calcVertices(osg::Geode & geo)
 {
     unsigned int numVertice = 0;
@@ -923,8 +923,8 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
     }
 }
 
-void 
-WriterNodeVisitor::createListTriangle(osg::Geometry * geo, 
+void
+WriterNodeVisitor::createListTriangle(osg::Geometry * geo,
                                       ListTriangle  & listTriangles,
                                       bool          & texcoords,
                                       unsigned int  & drawable_n)
@@ -946,7 +946,7 @@ WriterNodeVisitor::createListTriangle(osg::Geometry * geo,
         texcoords = true;
     }
 
-    int material = processStateSet(_currentStateSet.get());    
+    int material = processStateSet(_currentStateSet.get());
 
     for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) //Fill the Triangle List
     {

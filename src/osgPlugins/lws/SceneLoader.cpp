@@ -43,10 +43,10 @@ namespace
 
     osg::Quat rotate_ypr(const osg::Vec3 &ypr, const osg::Vec3 pivot_rot = osg::Vec3(0, 0, 0))
     {
-        osg::Quat Q1(ypr.z(), osg::Vec3(0, -1, 0));            
+        osg::Quat Q1(ypr.z(), osg::Vec3(0, -1, 0));
         osg::Quat Q2(ypr.y(), osg::Vec3(-1, 0, 0));
         osg::Quat Q3(ypr.x(), osg::Vec3(0, 0, -1));
-        osg::Quat Q4(pivot_rot.z(), osg::Vec3(0, -1, 0));            
+        osg::Quat Q4(pivot_rot.z(), osg::Vec3(0, -1, 0));
         osg::Quat Q5(pivot_rot.y(), osg::Vec3(-1, 0, 0));
         osg::Quat Q6(pivot_rot.x(), osg::Vec3(0, 0, -1));
         return Q1 * Q2 * Q3 * Q4 * Q5 * Q6;
@@ -62,7 +62,7 @@ namespace
             //std::cout<<"    removing control character "<<(int)str[str.size()-1]<<std::endl;
             str.erase(str.size()-1);
         }
-        
+
     }
 
 }
@@ -223,13 +223,13 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
         std::ws(iss);
         std::string filename;
         std::getline(iss, filename);
-        
-        // trim any trailing control characters.        
+
+        // trim any trailing control characters.
         trim(filename);
 
-        if (!filename.empty()) 
+        if (!filename.empty())
         {
-        
+
 
             osg::ref_ptr<osg::Group> objnode;
 
@@ -258,7 +258,7 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
             oss << filename << "." << layer;
             so.name = oss.str();
             so.layer_node = objnode->getChild(layer-1);
-            if (so.layer_node.valid()) {            
+            if (so.layer_node.valid()) {
                 scene_objects_.push_back(so);
             }
         }
@@ -318,7 +318,7 @@ bool SceneLoader::parse_block(const std::string &name, const std::vector<std::st
 {
     if (name == "Envelope") {
         if (((capture_obj_motion_ && !scene_objects_.empty()) ||
-            (capture_cam_motion_ && !scene_cameras_.empty())) && 
+            (capture_cam_motion_ && !scene_cameras_.empty())) &&
             (data.size() >= 2)) {
 
             Motion_envelope::Key_map &keys = capture_obj_motion_ ? scene_objects_.back().motion.keys : scene_cameras_.back().motion.keys;

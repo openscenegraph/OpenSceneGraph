@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,7 +32,7 @@ typedef char TCHAR;
     #include <sys/types.h>
     #include <sys/stat.h>
     #include <direct.h> // for _mkdir
-    
+
     #define mkdir(x,y) _mkdir((x))
     #define stat64 _stati64
 
@@ -51,13 +51,13 @@ typedef char TCHAR;
     //>OSG_IOS
     //IOS includes
     #include "TargetConditionals.h"
-    
-    #if (TARGET_OS_IPHONE) 
+
+    #if (TARGET_OS_IPHONE)
         #include <Availability.h>
         // workaround a bug which appears when compiling for SDK < 4.0 and for the simulator
         #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
             #define stat64 stat
-        #else 
+        #else
             #if !TARGET_IPHONE_SIMULATOR
                 #define stat64 stat
             #endif
@@ -68,8 +68,8 @@ typedef char TCHAR;
     // 10.5 defines stat64 so we can't use this #define
     // By default, MAC_OS_X_VERSION_MAX_ALLOWED is set to the latest
     // system the headers know about. So I will use this as the control
-    // variable. (MIN_ALLOWED is set low by default so it is 
-    // unhelpful in this case.) 
+    // variable. (MIN_ALLOWED is set low by default so it is
+    // unhelpful in this case.)
     // Unfortunately, we can't use the label MAC_OS_X_VERSION_10_4
     // for older OS's like Jaguar, Panther since they are not defined,
     // so I am going to hardcode the number.
@@ -144,7 +144,7 @@ bool osgDB::makeDirectory( const std::string &path )
         OSG_DEBUG << "osgDB::makeDirectory(): cannot create an empty directory" << std::endl;
         return false;
     }
-    
+
     struct stat64 stbuf;
 #ifdef OSG_USE_UTF8_FILENAME
     if( _wstat64( OSGDB_STRING_TO_FILENAME(path).c_str(), &stbuf ) == 0 )
@@ -168,7 +168,7 @@ bool osgDB::makeDirectory( const std::string &path )
     {
         if( dir.empty() )
             break;
- 
+
 #ifdef OSG_USE_UTF8_FILENAME
         if( _wstat64( OSGDB_STRING_TO_FILENAME(dir).c_str(), &stbuf ) < 0 )
 #else
@@ -181,7 +181,7 @@ bool osgDB::makeDirectory( const std::string &path )
                 case ENOTDIR:
                     paths.push( dir );
                     break;
- 
+
                 default:
                     OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
                     return false;
@@ -193,7 +193,7 @@ bool osgDB::makeDirectory( const std::string &path )
     while( !paths.empty() )
     {
         std::string dir = paths.top();
- 
+
         #if defined(WIN32)
             //catch drive name
             if (dir.size() == 2 && dir.c_str()[1] == ':') {
@@ -210,7 +210,7 @@ bool osgDB::makeDirectory( const std::string &path )
         {
             OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
             return false;
-        } 
+        }
         paths.pop();
     }
     return true;
@@ -245,7 +245,7 @@ bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDire
         OSG_DEBUG << "osgDB::setCurrentWorkingDirectory(): called with empty string." << std::endl;
         return false;
     }
-    
+
 #ifdef OSG_USE_UTF8_FILENAME
     return _wchdir( OSGDB_STRING_TO_FILENAME(newCurrentWorkingDirectory).c_str()) == 0;
 #else
@@ -279,7 +279,7 @@ void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathL
         if (!lastPath.empty())
             filepath.push_back(lastPath);
     }
- 
+
 }
 
 bool osgDB::fileExists(const std::string& filename)
@@ -313,10 +313,10 @@ osgDB::FileType osgDB::fileType(const std::string& filename)
 
 std::string osgDB::findFileInPath(const std::string& filename, const FilePathList& filepath,CaseSensitivity caseSensitivity)
 {
-    if (filename.empty()) 
+    if (filename.empty())
         return filename;
 
-    if (!isFileNameNativeStyle(filename)) 
+    if (!isFileNameNativeStyle(filename))
         return findFileInPath(convertFileNameToNativeStyle(filename), filepath, caseSensitivity);
 
 
@@ -326,24 +326,24 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
     {
         OSG_DEBUG << "itr='" <<*itr<< "'\n";
         std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
-        
+
         path = getRealPath(path);
 
         OSG_DEBUG << "FindFileInPath() : trying " << path << " ...\n";
-        if(fileExists(path)) 
+        if(fileExists(path))
         {
             OSG_DEBUG << "FindFileInPath() : USING " << path << "\n";
             return path;
         }
-#ifndef WIN32 
+#ifndef WIN32
 // windows already case insensitive so no need to retry..
-        else if (caseSensitivity==CASE_INSENSITIVE) 
+        else if (caseSensitivity==CASE_INSENSITIVE)
         {
             std::string foundfile = findFileInDirectory(filename,*itr,CASE_INSENSITIVE);
             if (!foundfile.empty()) return foundfile;
         }
 #endif
-            
+
     }
 
     return std::string();
@@ -380,7 +380,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     #else
         bool win32 = false;
     #endif
-    
+
     // If the fileName contains extra path information, make that part of the
     // directory name instead
     if (fileName != getSimpleFileName(fileName))
@@ -458,7 +458,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
                 // in the parent path
                 realDirName = findFileInDirectory(lastElement, parentPath,
                                                   CASE_INSENSITIVE);
-      
+
                 dc = osgDB::getDirectoryContents(realDirName);
                 char lastChar = realDirName[realDirName.size()-1];
                 if (lastChar=='/') needFollowingBackslash = false;
@@ -723,18 +723,18 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
         convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",filepath);
     }
-    
+
 #elif defined(WIN32)
 
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {
         // See http://msdn2.microsoft.com/en-us/library/ms682586.aspx
 
-        // Safe DLL search mode changes the DLL search order to search for 
+        // Safe DLL search mode changes the DLL search order to search for
         // DLLs in the current directory after the system directories, instead
-        // of right after the application's directory. According to the article 
-        // linked above, on Windows XP and Windows 2000, Safe DLL search mode 
-        // is disabled by default. However, it is a good idea to enable it. We 
+        // of right after the application's directory. According to the article
+        // linked above, on Windows XP and Windows 2000, Safe DLL search mode
+        // is disabled by default. However, it is a good idea to enable it. We
         // will search as if it was enabled.
 
         // So if SafeDllSearchMode is enabled, the search order is as follows:
@@ -747,7 +747,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         if (retval != 0 && retval < size)
         {
             filenamestring pathstr(path);
-            filenamestring executableDir(pathstr, 0, 
+            filenamestring executableDir(pathstr, 0,
                                       pathstr.find_last_of(OSGDB_FILENAME_TEXT("\\/")));
             convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(executableDir), filepath);
         }
@@ -796,35 +796,35 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
             }
         #endif
 
-        //   3. The system directory. Use the GetSystemDirectory function to 
+        //   3. The system directory. Use the GetSystemDirectory function to
         //      get the path of this directory.
         filenamechar systemDir[(UINT)size];
         retval = OSGDB_WINDOWS_FUNCT(GetSystemDirectory)(systemDir, (UINT)size);
 
         if (retval != 0 && retval < size)
         {
-            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(systemDir), 
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(systemDir),
                                               filepath);
         }
         else
         {
             OSG_WARN << "Could not get system directory using "
                 "Win32 API, using default directory." << std::endl;
-            convertStringPathIntoFilePathList("C:\\Windows\\System32", 
+            convertStringPathIntoFilePathList("C:\\Windows\\System32",
                                               filepath);
         }
 
-        //   4. The 16-bit system directory. There is no function that obtains 
+        //   4. The 16-bit system directory. There is no function that obtains
         //      the path of this directory, but it is searched.
-        //   5. The Windows directory. Use the GetWindowsDirectory function to 
+        //   5. The Windows directory. Use the GetWindowsDirectory function to
         //      get the path of this directory.
         filenamechar windowsDir[(UINT)size];
         retval = OSGDB_WINDOWS_FUNCT(GetWindowsDirectory)(windowsDir, (UINT)size);
         if (retval != 0 && retval < size)
         {
-            convertStringPathIntoFilePathList(std::string(OSGDB_FILENAME_TO_STRING(windowsDir)) + 
+            convertStringPathIntoFilePathList(std::string(OSGDB_FILENAME_TO_STRING(windowsDir)) +
                                               "\\System", filepath);
-            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(windowsDir), 
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(windowsDir),
                                               filepath);
         }
         else
@@ -839,8 +839,8 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         //   6. The current directory.
         convertStringPathIntoFilePathList(".", filepath);
 
-        //   7. The directories that are listed in the PATH environment 
-        //      variable. Note that this does not include the per-application 
+        //   7. The directories that are listed in the PATH environment
+        //      variable. Note that this does not include the per-application
         //      path specified by the App Paths registry key.
         filenamechar* ptr;
 #ifdef OSG_USE_UTF8_FILENAME
@@ -858,7 +858,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
         appendInstallationLibraryFilePaths(filepath);
     }
-    
+
 #elif defined(__APPLE__)
 #if (TARGET_OS_IPHONE)
     #define COMPILE_COCOA_VERSION
@@ -875,7 +875,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         #include <Carbon/Carbon.h>
     #endif
     #include <iostream>
-    
+
     // These functions are local to FileUtils.cpp and not exposed to the API
     // returns the path string except for numToShorten directories stripped off the end
     std::string GetShortenedPath(std::string path, int numToShorten)
@@ -912,7 +912,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
             CFRelease(urlRef); // docs say we are responsible for releasing CFURLRef
         }
         return path;
-        
+
     }
 
     std::string GetApplicationParentPath(CFBundleRef mainBundle)
@@ -930,7 +930,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
             CFRelease(urlRef);
         }
         return path;
-        
+
     }
 
     std::string GetApplicationResourcesPath(CFBundleRef mainBundle)
@@ -947,17 +947,17 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
     // The Cocoa version is about 10 lines of code.
     // The Carbon version is noticably longer.
-    // Unfortunately, the Cocoa version requires -lobjc to be 
-    // linked in when creating an executable. 
+    // Unfortunately, the Cocoa version requires -lobjc to be
+    // linked in when creating an executable.
     // Rumor is that this will be done autmatically in gcc 3.5/Tiger,
     // but for now, this will cause a lot of headaches for people
-    // who aren't familiar with this concept, so the Carbon version 
+    // who aren't familiar with this concept, so the Carbon version
     // is preferable.
     // But for the curious, both implementations are here.
-    // Note that if the Cocoa version is used, the file should be 
+    // Note that if the Cocoa version is used, the file should be
     // renamed to use the .mm extension to denote Objective-C++.
     // And of course, you will need to link against Cocoa
-    // Update: There is a bug in the Cocoa version. Advanced users can remap 
+    // Update: There is a bug in the Cocoa version. Advanced users can remap
     // their systems so these paths go somewhere else. The Carbon calls
     // will catch this, but the hardcoded Cocoa code below will not.
 
@@ -968,26 +968,26 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
     // ~/Library/Application Support/OpenSceneGraph/PlugIns
     // /Library/Application Support/OpenSceneGraph/PlugIns
     // /Network/Library/Application Support/OpenSceneGraph/PlugIns
-    // 
-    // As a side effect of this function, if the application is not a 
+    //
+    // As a side effect of this function, if the application is not a
     // bundle, the first place searched becomes
     // YourProgram/PlugIns
     //
     // In principle, these other directories should be searched:
     // ~/Library/Application Support/YourProgram/PlugIns
     // /Library/Application Support/YourProgram/PlugIns
-    // /Network/Library/Application Support/TheProgram/PlugIns 
-    // But I'm not going to worry about it for now because the 
-    // bundle's PlugIns directory is supposed to be the preferred 
+    // /Network/Library/Application Support/TheProgram/PlugIns
+    // But I'm not going to worry about it for now because the
+    // bundle's PlugIns directory is supposed to be the preferred
     // place for this anyway.
     //
     // Another directory that might be worth considering is
     // the directory the program resides in,
     // but I'm worried about multiplatform distribution.
-    // Because .so is used by other platforms like Linux, we 
+    // Because .so is used by other platforms like Linux, we
     // could end up loading the wrong binary.
     // I'm not sure how robust the current code is for this case.
-    // Assuming the program doesn't crash, will OSG move on to the 
+    // Assuming the program doesn't crash, will OSG move on to the
     // next search directory, or just give up?
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {
@@ -1001,7 +1001,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
         // Since this is currently the only Objective-C code in the
         // library, we need an autoreleasepool for obj-c memory management.
-        // If more Obj-C is added, we might move this pool to another 
+        // If more Obj-C is added, we might move this pool to another
         // location so it can be shared. Pools seem to be stackable,
         // so I don't think there will be a problem if multiple pools
         // exist at a time.
@@ -1017,7 +1017,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
         // Now setup the other search paths
         // Cocoa has a nice method for tilde expansion.
-        // There's probably a better way of getting this directory, but I 
+        // There's probably a better way of getting this directory, but I
         // can't find the call.
         userSupportDir = [@"~/Library/Application Support/OpenSceneGraph/PlugIns" stringByExpandingTildeInPath];
 
@@ -1048,18 +1048,18 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
     // In principle, these other directories should be searched:
     // ~/Library/Application Support/YourProgram/PlugIns
     // /Library/Application Support/YourProgram/PlugIns
-    // /Network/Library/Application Support/TheProgram/PlugIns 
-    // But I'm not going to worry about it for now because the 
-    // bundle's PlugIns directory is supposed to be the preferred 
+    // /Network/Library/Application Support/TheProgram/PlugIns
+    // But I'm not going to worry about it for now because the
+    // bundle's PlugIns directory is supposed to be the preferred
     // place for this anyway.
     //
     // Another directory that might be worth considering is
     // the directory the program resides in,
     // but I'm worried about multiplatform distribution.
-    // Because .so is used by other platforms like Linux, we 
+    // Because .so is used by other platforms like Linux, we
     // could end up loading the wrong binary.
     // I'm not sure how robust the current code is for this case.
-    // Assuming the program doesn't crash, will OSG move on to the 
+    // Assuming the program doesn't crash, will OSG move on to the
     // next search directory, or just give up?
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {
@@ -1082,10 +1082,10 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         // Get the main bundle first. No need to retain or release it since
         //  we are not keeping a reference
         myBundle = CFBundleGetMainBundle();
-        
+
         if(myBundle != NULL)
         {
-            // CFBundleGetMainBundle will return a bundle ref even if 
+            // CFBundleGetMainBundle will return a bundle ref even if
             //  the application isn't part of a bundle, so we need to check
             //  if the path to the bundle ends in ".app" to see if it is a
             //  proper application bundle. If it is, the plugins path is added
@@ -1125,7 +1125,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            
+
             if(url)
             {
                 filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
@@ -1149,7 +1149,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            
+
             if(url)
             {
                 filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
@@ -1178,8 +1178,8 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         appendInstallationLibraryFilePaths(filepath);
     }
     #endif
-    
-#else   
+
+#else
 
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {
@@ -1210,18 +1210,18 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
     {
         // Get the main application bundle
         CFBundleRef mainBundle = CFBundleGetMainBundle();
-        
+
         if (mainBundle != NULL) {
             // Get the parent directory and the resources directory
             std::string bundlePath = GetApplicationBundlePath(mainBundle);
             std::string resourcesPath = GetApplicationResourcesPath(mainBundle);
-            
+
             // check if application is really part of a .app bundle
             if(bundlePath.substr(bundlePath.length() - 4, 4) == std::string(".app"))
             {
                 if(resourcesPath != std::string(""))
                     filepath.push_back( resourcesPath );
-                
+
                 std::string parentPath = GetShortenedPath(bundlePath, 1);
                 if(parentPath != std::string(""))
                     filepath.push_back( parentPath );

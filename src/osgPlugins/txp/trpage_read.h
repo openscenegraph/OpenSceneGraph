@@ -194,7 +194,7 @@ public:
     virtual bool ReadHeader(void);        // Read header (materials, tile table. etc..)
     //overload that lets you specify if you want to read all the blocks now,
     //or defer reading them for later.
-    virtual bool ReadHeader(bool readAllBlocks); 
+    virtual bool ReadHeader(bool readAllBlocks);
     bool ReadSubArchive(int row, int col, trpgEndian cpuNess);
     // In version 2.1, only tile at lod 0 are fetchable via the tile table
     virtual bool ReadTile(uint32 x, uint32 y, uint32 lod,trpgMemReadBuffer &);

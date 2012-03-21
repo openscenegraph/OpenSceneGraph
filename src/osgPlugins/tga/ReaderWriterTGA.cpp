@@ -468,12 +468,12 @@ int headerlen)
 class ReaderWriterTGA : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterTGA()
         {
             supportsExtension("tga","Tga Image format");
         }
-        
+
         virtual const char* className() const { return "TGA Image Reader"; }
 
         ReadResult readTGAStream(std::istream& fin) const
@@ -542,7 +542,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }
-        
+
         bool saveTGAStream(const osg::Image& image, std::ostream& fout) const
         {
             if (!image.data()) return false;
@@ -555,7 +555,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             int width = image.s(), height = image.t();
             int numPerPixel = image.computeNumComponents(pixelFormat);
             int pixelMultiplier = (image.getDataType()==GL_FLOAT ? 255 : 1);
-            
+
             // Headers
             fout.put(0);  // Identification field size
             fout.put(0);  // Color map type
@@ -569,7 +569,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             fout.put(height&0xff); fout.put((height&0xff00)>>8);  // Height of image
             fout.put(numPerPixel * 8);  // Image pixel size
             fout.put(0);  // Image descriptor
-            
+
             // Swap red/blue channels for BGR images
             int r = 0, g = 1, b = 2;
             if( pixelFormat == GL_BGR || pixelFormat == GL_BGRA )
@@ -602,7 +602,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             }
             return true;
         }
-        
+
         virtual WriteResult writeImage(const osg::Image& image, std::ostream& fout, const Options*) const
         {
             if (saveTGAStream(image, fout))
@@ -610,12 +610,12 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             else
                 return WriteResult::ERROR_IN_WRITING_FILE;
         }
-        
+
         virtual WriteResult writeImage(const osg::Image& image, const std::string& fileName, const Options* options) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-            
+
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
             return writeImage(image, fout, options);

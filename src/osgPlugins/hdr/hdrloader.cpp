@@ -57,11 +57,11 @@ bool HDRLoader::isHDRFile(const char *_fileName)
 
     char str[10];
     size_t numRead = fread(str, 10, 1, file);
-    
+
     fclose(file);
 
     if (numRead<1) return false;
-    
+
     if (memcmp(str, "#?RADIANCE", 10) && memcmp(str, "#?RGBE", 6))
         return false;
 
@@ -80,12 +80,12 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
 
     size_t numRead = fread(str, 10, 1, file);
 
-    if (numRead<1) 
+    if (numRead<1)
     {
         fclose(file);
         return false;
     }
-    
+
     if (memcmp(str, "#?RADIANCE", 10))
     {
         fseek(file, 0, SEEK_SET);

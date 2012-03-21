@@ -66,7 +66,7 @@ static osg::Camera::Attachment readBufferAttachment( osgDB::InputStream& is )
     }
     else
         return attachment;
-    
+
     is >> osgDB::PROPERTY("MultisampleSamples") >> attachment._multisampleSamples;
     is >> osgDB::PROPERTY("MultisampleColorSamples") >> attachment._multisampleColorSamples;
     return attachment;
@@ -99,7 +99,7 @@ static void writeBufferAttachment( osgDB::OutputStream& os, const osg::Camera::A
         os << (char)-1 << std::endl;
         return;
     }
-    
+
     os << osgDB::PROPERTY("MultisampleSamples") << attachment._multisampleSamples << std::endl;
     os << osgDB::PROPERTY("MultisampleColorSamples") << attachment._multisampleColorSamples << std::endl;
 }
@@ -191,7 +191,7 @@ static bool readBufferAttachmentMap( osgDB::InputStream& is, osg::Camera& node )
         is >> osgDB::BEGIN_BRACKET;
         osg::Camera::Attachment attachment = readBufferAttachment(is);
         is >> osgDB::END_BRACKET;
-        
+
         if ( attachment._internalFormat!=GL_NONE )
         {
             node.attach( bufferComponent, attachment._internalFormat );
@@ -241,24 +241,24 @@ REGISTER_OBJECT_WRAPPER( Camera,
     ADD_INT_SERIALIZER( ClearStencil, 0 );  // _clearStencil
     ADD_OBJECT_SERIALIZER( ColorMask, osg::ColorMask, NULL );  // _colorMask
     ADD_OBJECT_SERIALIZER( Viewport, osg::Viewport, NULL );  // _viewport
-    
+
     BEGIN_ENUM_SERIALIZER( TransformOrder, PRE_MULTIPLY );
         ADD_ENUM_VALUE( PRE_MULTIPLY );
         ADD_ENUM_VALUE( POST_MULTIPLY );
     END_ENUM_SERIALIZER();  // _transformOrder
-    
+
     BEGIN_ENUM_SERIALIZER( ProjectionResizePolicy, HORIZONTAL );
         ADD_ENUM_VALUE( FIXED );
         ADD_ENUM_VALUE( HORIZONTAL );
         ADD_ENUM_VALUE( VERTICAL );
     END_ENUM_SERIALIZER();  // _projectionResizePolicy
-    
+
     ADD_MATRIXD_SERIALIZER( ProjectionMatrix, osg::Matrixd() );  // _projectionMatrix
     ADD_MATRIXD_SERIALIZER( ViewMatrix, osg::Matrixd() );  // _viewMatrix
     ADD_USER_SERIALIZER( RenderOrder );  // _renderOrder & _renderOrderNum
     ADD_GLENUM_SERIALIZER( DrawBuffer, GLenum, GL_NONE );  // _drawBuffer
     ADD_GLENUM_SERIALIZER( ReadBuffer, GLenum, GL_NONE );  // _readBuffer
-    
+
     BEGIN_ENUM_SERIALIZER( RenderTargetImplementation, FRAME_BUFFER );
         ADD_ENUM_VALUE( FRAME_BUFFER_OBJECT );
         ADD_ENUM_VALUE( PIXEL_BUFFER_RTT );
@@ -266,7 +266,7 @@ REGISTER_OBJECT_WRAPPER( Camera,
         ADD_ENUM_VALUE( FRAME_BUFFER );
         ADD_ENUM_VALUE( SEPERATE_WINDOW );
     END_ENUM_SERIALIZER();  // _renderTargetImplementation
-    
+
     ADD_USER_SERIALIZER( BufferAttachmentMap );  // _bufferAttachmentMap
     ADD_OBJECT_SERIALIZER( InitialDrawCallback, osg::Camera::DrawCallback, NULL );  // _initialDrawCallback
     ADD_OBJECT_SERIALIZER( PreDrawCallback, osg::Camera::DrawCallback, NULL );  // _preDrawCallback

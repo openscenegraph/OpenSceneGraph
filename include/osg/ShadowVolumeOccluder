@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -27,8 +27,8 @@ class OSG_EXPORT ShadowVolumeOccluder
 {
 
     public:
-    
-    
+
+
         typedef std::vector<Polytope> HoleList;
 
         ShadowVolumeOccluder(const ShadowVolumeOccluder& svo):
@@ -42,18 +42,18 @@ class OSG_EXPORT ShadowVolumeOccluder
             _volume(0.0f) {}
 
 
-        bool operator < (const ShadowVolumeOccluder& svo) const { return getVolume()>svo.getVolume(); } // not greater volume first. 
+        bool operator < (const ShadowVolumeOccluder& svo) const { return getVolume()>svo.getVolume(); } // not greater volume first.
 
         /** compute the shadow volume occluder. */
         bool computeOccluder(const NodePath& nodePath,const ConvexPlanarOccluder& occluder,CullStack& cullStack,bool createDrawables=false);
-        
+
 
         inline void disableResultMasks();
-        
+
         inline void pushCurrentMask();
         inline void popCurrentMask();
-        
-        
+
+
         /** return true if the matrix passed in matches the projection matrix that this ShadowVolumeOccluder is
           * associated with.*/
         bool matchProjectionMatrix(const osg::Matrix& matrix) const
@@ -61,7 +61,7 @@ class OSG_EXPORT ShadowVolumeOccluder
             if (_projectionMatrix.valid()) return matrix==*_projectionMatrix;
             else return false;
         }
-        
+
 
         /** Set the NodePath which describes which node in the scene graph
           * that this occluder is attached to. */
@@ -70,22 +70,22 @@ class OSG_EXPORT ShadowVolumeOccluder
         inline const NodePath& getNodePath() const { return _nodePath; }
 
 
-        /** get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by 
+        /** get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by
           * the volume of the view frustum in eye coords.*/
         float getVolume() const { return _volume; }
-        
+
         /** return the occluder polytope.*/
         Polytope& getOccluder() { return _occluderVolume; }
-        
+
         /** return the const occluder polytope.*/
         const Polytope& getOccluder() const { return _occluderVolume; }
-        
+
         /** return the list of holes.*/
         HoleList& getHoleList() { return _holeList; }
-        
+
         /** return the const list of holes.*/
         const HoleList& getHoleList() const { return _holeList; }
-        
+
 
         /** return true if the specified vertex list is contained entirely
           * within this shadow occluder volume.*/
@@ -94,7 +94,7 @@ class OSG_EXPORT ShadowVolumeOccluder
         /** return true if the specified bounding sphere is contained entirely
           * within this shadow occluder volume.*/
         bool contains(const BoundingSphere& bound);
-        
+
         /** return true if the specified bounding box is contained entirely
           * within this shadow occluder volume.*/
         bool contains(const BoundingBox& bound);
@@ -109,7 +109,7 @@ class OSG_EXPORT ShadowVolumeOccluder
                 itr->transformProvidingInverse(matrix);
             }
         }
-        
+
 
     protected:
 
@@ -169,4 +169,4 @@ inline void ShadowVolumeOccluder::popCurrentMask()
 
 }    // end of namespace
 
-#endif 
+#endif

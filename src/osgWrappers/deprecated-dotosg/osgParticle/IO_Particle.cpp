@@ -134,7 +134,7 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                     itAdvanced = true;
                 }
             }
- 
+
 
             // interpolators
 

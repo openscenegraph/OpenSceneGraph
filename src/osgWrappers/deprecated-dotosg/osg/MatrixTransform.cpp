@@ -55,10 +55,10 @@ bool MatrixTransform_readLocalData(Object& obj, Input& fr)
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        
-    }   
-    
-    Matrix matrix; 
+
+    }
+
+    Matrix matrix;
     if (readMatrix(matrix,fr))
     {
         transform.setMatrix(matrix);

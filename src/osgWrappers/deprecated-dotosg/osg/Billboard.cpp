@@ -82,7 +82,7 @@ bool Billboard_readLocalData(Object& obj, Input& fr)
 
         Billboard::PositionList& positionList = billboard.getPositionList();
         positionList.clear();
-        
+
         if (matchFirst)
         {
             fr += 2;

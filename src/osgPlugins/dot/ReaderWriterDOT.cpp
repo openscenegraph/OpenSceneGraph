@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgDB/ReaderWriter>
@@ -20,7 +20,7 @@ class ReaderWriterDOT : public osgDB::ReaderWriter {
     virtual const char* className() const { return "DOT Writer"; }
     virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"dot"); }
 
-    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options = NULL) const { 
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options = NULL) const {
       std::string ext = osgDB::getFileExtension(fileName);
       if (!acceptsExtension(ext)) {
         return WriteResult::FILE_NOT_HANDLED;
@@ -33,7 +33,7 @@ class ReaderWriterDOT : public osgDB::ReaderWriter {
 
       return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
     }
-    
+
     virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options = NULL) const
     {
       osgDot::SimpleDotVisitor sdv;

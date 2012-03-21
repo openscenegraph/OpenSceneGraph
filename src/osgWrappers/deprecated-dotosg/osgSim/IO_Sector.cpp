@@ -77,7 +77,7 @@ bool ElevationSector_readLocalData(osg::Object &obj, osgDB::Input &fr)
         float minElevation;
         float maxElevation;
         float fadeAngle;
-        
+
         fr[1].getFloat(minElevation);
         fr[2].getFloat(maxElevation);
         fr[3].getFloat(fadeAngle);
@@ -138,7 +138,7 @@ bool AzimElevationSector_readLocalData(osg::Object &obj, osgDB::Input &fr)
         float minElevation;
         float maxElevation;
         float fadeAngle;
-        
+
         fr[1].getFloat(minElevation);
         fr[2].getFloat(maxElevation);
         fr[3].getFloat(fadeAngle);

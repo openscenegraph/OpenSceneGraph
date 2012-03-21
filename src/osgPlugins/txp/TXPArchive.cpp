@@ -91,13 +91,13 @@ void  TXPArchive::getExtents(osg::BoundingBox& extents)
     extents.set(sw.bbox._min, sw.bbox._max);
     extents.expandBy(ne.bbox);
 }
-    
+
 
 bool TXPArchive::openFile(const std::string& archiveName)
 {
     std::string path = osgDB::getFilePath(archiveName);
     std::string name = osgDB::getSimpleFileName(archiveName);
-    
+
     if(path.empty())
     {
         SetDirectory(".");
@@ -109,7 +109,7 @@ bool TXPArchive::openFile(const std::string& archiveName)
         osgDB::getDataFilePathList().push_front(path);
         SetDirectory(path.c_str());
     }
-    
+
     if (!OpenFile(name.c_str()))
     {
         TXPArchiveERROR("openFile()") << "couldn't open archive: " << archiveName << std::endl;
@@ -153,14 +153,14 @@ bool TXPArchive::loadMaterial(int ix)
     return true;
 
     osg::StateSet* osg_state_set = new osg::StateSet;
-            
+
     const trpgMaterial *mat;
     mat = materialTable.GetMaterialRef(0,i);
 
     // Set texture
     int numMatTex;
     mat->GetNumTexture(numMatTex);
-    
+
     // TODO : multitextuting
     // also note that multitexturing in terrapage can came from two sides
     // - multiple textures per material, and multiple materials per geometry
@@ -169,32 +169,32 @@ bool TXPArchive::loadMaterial(int ix)
     if( numMatTex )
     {
         osg::Material *osg_material     = new osg::Material;
-        
+
         float64 alpha;
         mat->GetAlpha(alpha);
-        
+
         trpgColor color;
         mat->GetAmbient(color);
-        osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
+        osg_material->setAmbient( osg::Material::FRONT_AND_BACK ,
                   osg::Vec4(color.red, color.green, color.blue, alpha));
         mat->GetDiffuse(color);
-        osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
+        osg_material->setDiffuse(osg::Material::FRONT_AND_BACK ,
                  osg::Vec4(color.red, color.green, color.blue, alpha));
-        
+
         mat->GetSpecular(color);
-        osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
+        osg_material->setSpecular(osg::Material::FRONT_AND_BACK ,
                   osg::Vec4(color.red, color.green, color.blue, alpha));
         mat->GetEmission(color);
-        osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
+        osg_material->setEmission(osg::Material::FRONT_AND_BACK ,
                   osg::Vec4(color.red, color.green, color.blue, alpha));
 
         float64 shinines;
         mat->GetShininess(shinines);
         osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
-        
+
         osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
         osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
-        
+
         SetUserDataToMaterialAttributes(*osg_state_set, *mat);
 
         if( alpha < 1.0f )
@@ -202,7 +202,7 @@ bool TXPArchive::loadMaterial(int ix)
             osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
             osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
         }
-        
+
         int alphaFunc;
         mat->GetAlphaFunc(alphaFunc);
         if( alphaFunc>=GL_NEVER && alphaFunc<=GL_ALWAYS)
@@ -213,13 +213,13 @@ bool TXPArchive::loadMaterial(int ix)
             osg_alpha_func->setFunction((osg::AlphaFunc::ComparisonFunction)alphaFunc,(float)ref);
             osg_state_set->setAttributeAndModes(osg_alpha_func, osg::StateAttribute::ON);
         }
-        
+
         for (int ntex = 0; ntex < numMatTex; ntex ++ )
         {
             int texId;
             trpgTextureEnv texEnv;
             mat->GetTexture(ntex,texId,texEnv);
-        
+
             // Set up texture environment
             osg::TexEnv       *osg_texenv       = new osg::TexEnv();
             int32 te_mode;
@@ -239,10 +239,10 @@ bool TXPArchive::loadMaterial(int ix)
                 osg_texenv->setMode(osg::TexEnv::MODULATE);
                 break;
             }
-        
+
             osg_state_set->setTextureAttribute(ntex,osg_texenv);
 
-            int wrap_s, wrap_t;   
+            int wrap_s, wrap_t;
             texEnv.GetWrap(wrap_s, wrap_t);
 
             loadTexture(texId);
@@ -302,20 +302,20 @@ bool TXPArchive::loadMaterial(int ix)
                     break;
                 }
 
-                // pass on to the stateset.                
+                // pass on to the stateset.
                 osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, osg::StateAttribute::ON);
 
                 if(osg_texture->getImage() &&  osg_texture->getImage()->isImageTranslucent())
-                { 
+                {
                     osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
                     osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
                 }
-            }        
+            }
         }
-        
+
         int cullMode;
         mat->GetCullMode(cullMode);
-        
+
         // Culling mode in txp means opposite from osg i.e. Front-> show front face
         if( cullMode != trpgMaterial::FrontAndBack)
         {
@@ -345,8 +345,8 @@ bool TXPArchive::loadMaterials()
 bool TXPArchive::loadTexture(int i)
 {
     if (GetTexMapEntry(i).get())
-    return true;        
-        
+    return true;
+
     bool separateGeo = false;
     int majorVer,minorVer;
     GetVersion(majorVer,minorVer);
@@ -358,7 +358,7 @@ bool TXPArchive::loadTexture(int i)
 
     const trpgTexture *tex;
     tex = texTable.GetTextureRef(i);
-    if (!tex) 
+    if (!tex)
     return false;
 
     trpgTexture::ImageMode mode;
@@ -372,9 +372,9 @@ bool TXPArchive::loadTexture(int i)
         // Create a texture by name.
         osg::ref_ptr<osg::Texture2D> osg_texture = new osg::Texture2D();
 
-        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.
         osg_texture->setUnRefImageDataAfterApply(true);
-        
+
         // Load Texture and Create Texture State
         std::string filename = osgDB::getSimpleFileName(texName);
         std::string path(getDir());
@@ -385,11 +385,11 @@ bool TXPArchive::loadTexture(int i)
 #else
         const char _PATHD = '/';
 #endif
-        if( path == "." ) 
+        if( path == "." )
             path = "";
         else
             path += _PATHD ;
-        
+
         std::string theFile = path + filename ;
         osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(theFile);
         if (image.valid())
@@ -450,7 +450,7 @@ bool TXPArchive::loadModel(int ix)
   trpgMemReadBuffer buf(GetEndian());
   mod->Read(buf);
   Group *osg_model = parse->ParseScene(buf, m_gstates , m_models);
-  m_models.push_back(osg_model);  
+  m_models.push_back(osg_model);
   }
 */
     return true;
@@ -506,7 +506,7 @@ bool TXPArchive::loadLightAttributes()
         //osgPoint->setSize(perfAttr.actualSize);
         osgPoint->setSize(5);
         osgPoint->setMaxSize(perfAttr.maxPixelSize);
-        osgPoint->setMinSize(perfAttr.minPixelSize);    
+        osgPoint->setMinSize(perfAttr.minPixelSize);
         osgPoint->setFadeThresholdSize(perfAttr.transparentFallofExp);
         //numbers that are going to appear are "experimental"
         osgPoint->setDistanceAttenuation(osg::Vec3(0.0001, 0.0005, 0.00000025));
@@ -519,7 +519,7 @@ bool TXPArchive::loadLightAttributes()
         stateSet->setAttributeAndModes(new osg::BlendFunc, osg::StateAttribute::ON);
 
         osgLight->setMaxPixelSize(perfAttr.maxPixelSize);
-        osgLight->setMinPixelSize(perfAttr.minPixelSize);    
+        osgLight->setMinPixelSize(perfAttr.minPixelSize);
 
 //        float64 clamp;
 //        ref->GetPerformerTpClamp(clamp);
@@ -567,7 +567,7 @@ bool TXPArchive::loadLightAttributes()
             back->setElevationRange(0,tmp, tmpfade);
             lp._sector = back;
             osgLight->addLightPoint(lp);
-        } 
+        }
     else
     {
             osgLight->addLightPoint(lp);
@@ -625,15 +625,15 @@ bool TXPArchive::loadTextStyles()
     }
     else
     {
-    OSG_NOTICE << "txp:: No font map file found: " << fmapfname << std::endl;        
-    OSG_NOTICE << "txp:: All fonts defaulted to arial.ttf" << std::endl;        
+    OSG_NOTICE << "txp:: No font map file found: " << fmapfname << std::endl;
+    OSG_NOTICE << "txp:: All fonts defaulted to arial.ttf" << std::endl;
     }
 
     const trpgTextStyleTable::StyleMapType *smap = textStyleTable->getStyleMap();
     trpgTextStyleTable::StyleMapType::const_iterator itr = smap->begin();
     for (  ; itr != smap->end(); itr++)
     {
-    const trpgTextStyle *textStyle = &itr->second; 
+    const trpgTextStyle *textStyle = &itr->second;
     if ( !textStyle )
         continue;
 
@@ -722,7 +722,7 @@ bool TXPArchive::getTileInfo(const TileLocationInfo& loc, TileInfo& info)
     info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length() * 1.3;
 
     return true;
-   
+
 }
 
 bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
@@ -739,8 +739,8 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
 
 osg::Group* TXPArchive::getTileContent(
     int x, int y, int lod,
-    double realMinRange, 
-    double realMaxRange, 
+    double realMinRange,
+    double realMaxRange,
     double usedMaxRange,
     osg::Vec3& tileCenter,
     std::vector<TileLocationInfo>& childInfoList)
@@ -777,7 +777,7 @@ public:
         _archive(archive), _tileInfo(loc)
     {
     }
-    
+
     virtual void apply(osg::MatrixTransform& xform)
     {
         const trpgHeader* header = _archive->GetHeader();
@@ -816,14 +816,14 @@ public:
 
 osg::Group* TXPArchive::getTileContent(
     const TileLocationInfo& loc,
-    double realMinRange, 
-    double realMaxRange, 
+    double realMinRange,
+    double realMaxRange,
     double usedMaxRange,
     osg::Vec3& tileCenter,
     std::vector<TileLocationInfo>& childInfoList)
 {
 
-    if (_parser.get() == 0) 
+    if (_parser.get() == 0)
     {
         _parser = new TXPParser();
         _parser->setArchive(this);
@@ -861,12 +861,12 @@ osg::Group* TXPArchive::getTileContent(
     tileCenter = _parser->getTileCenter();
 
     int nbChild = _parser->GetNbChildrenRef();
-    
+
     childInfoList.clear();
     for(int idx = 0; idx < nbChild; idx++)
     {
     const trpgChildRef *childRef = _parser->GetChildRef(idx);
-       
+
     if(childRef)
     {
         TileLocationInfo loc;
@@ -891,10 +891,10 @@ osg::Group* TXPArchive::getTileContent(
     {
         // unreference it.
             itr->second = NULL;
-            
+
             OSGStatesMapType::iterator toRemove = itr;
             ++itr;
-            
+
         // remove it from the map
             _statesMap.erase( toRemove );
         }
@@ -912,10 +912,10 @@ osg::Group* TXPArchive::getTileContent(
     {
         // unreference it.
             mitr->second = NULL;
-            
+
             OSGTexMapType::iterator toRemove = mitr;
             ++mitr;
-            
+
         // remove it from the map
             _texmap.erase( toRemove );
     }
@@ -940,6 +940,6 @@ bool TXPArchive::getLODSize(int lod, int& x, int& y)
         x = size.x;
         y = size.y;
     }
-    
+
     return true;
 }

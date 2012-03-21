@@ -38,10 +38,10 @@ public:
     typedef int Value;
     typedef std::map<std::string, Value> StringToValue;
     typedef std::map<Value, std::string> ValueToString;
-    
+
     IntLookup() {}
     unsigned int size() const { return _stringToValue.size(); }
-    
+
     void add( const char* str, Value value )
     {
         if ( _valueToString.find(value)!=_valueToString.end() )
@@ -53,7 +53,7 @@ public:
         _valueToString[value] = str;
         _stringToValue[str] = value;
     }
-    
+
     Value getValue( const char* str )
     {
         StringToValue::iterator itr = _stringToValue.find(str);
@@ -67,7 +67,7 @@ public:
         }
         return itr->second;
     }
-    
+
     const std::string& getString( Value value )
     {
         ValueToString::iterator itr = _valueToString.find(value);
@@ -81,7 +81,7 @@ public:
         }
         return itr->second;
     }
-    
+
 protected:
     StringToValue _stringToValue;
     ValueToString _valueToString;
@@ -92,7 +92,7 @@ class UserLookupTableProxy
 public:
     typedef void (*AddValueFunc)( IntLookup* lookup );
     UserLookupTableProxy( AddValueFunc func ) { if ( func ) (*func)(&_lookup); }
-    
+
     IntLookup _lookup;
 };
 
@@ -145,10 +145,10 @@ public:
     typedef bool (*Checker)( const C& );
     typedef bool (*Reader)( InputStream&, C& );
     typedef bool (*Writer)( OutputStream&, const C& );
-    
+
     UserSerializer( const char* name, Checker cf, Reader rf, Writer wf )
     : BaseSerializer(), _name(name), _checker(cf), _reader(rf), _writer(wf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -164,7 +164,7 @@ public:
         }
         return (*_reader)(is, object);
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -181,13 +181,13 @@ public:
         }
         return (*_writer)(os, object);
     }
-    
+
     virtual const std::string& getName() const { return _name; }
-    
+
 protected:
     std::string _name;
     Checker _checker;
-    
+
 public:
     Reader _reader;
     Writer _writer;
@@ -217,10 +217,10 @@ public:
     typedef TemplateSerializer<P> ParentType;
     typedef P (C::*Getter)() const;
     typedef void (C::*Setter)( P );
-    
+
     PropByValSerializer( const char* name, P def, Getter gf, Setter sf, bool useHex=false )
     : ParentType(name, def), _getter(gf), _setter(sf), _useHex(useHex) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -240,7 +240,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -259,11 +259,11 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
-    
+
 protected:
     bool _useHex;
 };
@@ -276,10 +276,10 @@ public:
     typedef const P& CP;
     typedef CP (C::*Getter)() const;
     typedef void (C::*Setter)( CP );
-    
+
     PropByRefSerializer( const char* name, CP def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -297,7 +297,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -312,7 +312,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -325,10 +325,10 @@ public:
     typedef TemplateSerializer<osg::Matrix> ParentType;
     typedef const osg::Matrix& (C::*Getter)() const;
     typedef void (C::*Setter)( const osg::Matrix& );
-    
+
     MatrixSerializer( const char* name, const osg::Matrix& def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -346,7 +346,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
 
@@ -362,7 +362,7 @@ public:
         }
         return true;
     }
-    
+
 protected:
     void readMatrixImplementation( InputStream& is, osg::Matrix& matrix )
     {
@@ -381,7 +381,7 @@ protected:
         }
 #endif
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -394,10 +394,10 @@ public:
     typedef TemplateSerializer<P> ParentType;
     typedef P (C::*Getter)() const;
     typedef void (C::*Setter)( P );
-    
+
     GLenumSerializer( const char* name, P def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -414,7 +414,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -429,7 +429,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -442,10 +442,10 @@ public:
     typedef TemplateSerializer<std::string> ParentType;
     typedef const std::string& (C::*Getter)() const;
     typedef void (C::*Setter)( const std::string& );
-    
+
     StringSerializer( const char* name, const std::string& def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -464,7 +464,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -481,7 +481,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -494,10 +494,10 @@ public:
     typedef TemplateSerializer<P*> ParentType;
     typedef const P* (C::*Getter)() const;
     typedef void (C::*Setter)( P* );
-    
+
     ObjectSerializer( const char* name, P* def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -526,7 +526,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -550,7 +550,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -563,10 +563,10 @@ public:
     typedef TemplateSerializer<P*> ParentType;
     typedef const P* (C::*Getter)() const;
     typedef void (C::*Setter)( P* );
-    
+
     ImageSerializer( const char* name, P* def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -595,7 +595,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -619,7 +619,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
@@ -632,19 +632,19 @@ public:
     typedef TemplateSerializer<P> ParentType;
     typedef P (C::*Getter)() const;
     typedef B (C::*Setter)( P );
-    
+
     EnumSerializer( const char* name, P def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
-    
+
     void add( const char* str, P value )
     { _lookup.add(str, static_cast<IntLookup::Value>(value)); }
-    
+
     P getValue( const char* str )
     { return static_cast<P>(_lookup.getValue(str)); }
-    
+
     const std::string& getString( P value )
     { return _lookup.getString(static_cast<IntLookup::Value>(value)); }
-    
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -662,7 +662,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( osgDB::OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -677,11 +677,11 @@ public:
         }
         return true;
     }
-    
+
 public:
     Getter _getter;
     Setter _setter;
-    
+
 protected:
     IntLookup _lookup;
 };
@@ -695,10 +695,10 @@ public:
     typedef typename P::const_iterator ConstIterator;
     typedef const P& (C::*Getter)() const;
     typedef void (C::*Setter)( const P& );
-    
+
     ListSerializer( const char* name, Getter gf, Setter sf )
     : _name(name), _getter(gf), _setter(sf) {}
-    
+
     virtual const std::string& getName() const { return _name; }
 
     virtual bool read( InputStream& is, osg::Object& obj )
@@ -735,7 +735,7 @@ public:
         }
         return true;
     }
-    
+
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
@@ -763,7 +763,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     std::string _name;
     Getter _getter;
@@ -809,7 +809,7 @@ public:
 #define ADD_UINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned int >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UINT )
-        
+
 #define ADD_GLINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, GLint >( \
         #PROP, ((int)(DEF)), &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_INT )

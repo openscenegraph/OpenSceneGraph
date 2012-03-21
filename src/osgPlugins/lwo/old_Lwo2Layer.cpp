@@ -18,8 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -56,7 +56,7 @@ Lwo2Layer::notify(NotifySeverity severity)
     {
       OSG_NOTIFY(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
     }
-  
+
   // polygons
   OSG_NOTIFY(severity) << "  polygons:\t" << _polygons.size() << endl;
   OSG_NOTIFY(severity) << "\tcoord\t\t\t\ttexcoord" <<  endl;
@@ -89,7 +89,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
   // variable used to track using textures
   bool have_texture_coords;
-  
+
   // create diffirent geomerty for each tag
   for (short current_tag = 0; current_tag < tags_count; current_tag++)
     {
@@ -150,12 +150,12 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
                   (*coords).push_back((*itr).coord);
                   (*texcoords).push_back((*itr).texcoord);
 
-                  if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+                  if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f)
                     {
                       have_texture_coords = true;
                     }
                 }
-          
+
               unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
               unsigned int points_count = (*polygon_iterator).size();
               if (points_count == 3)
@@ -166,7 +166,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
                 {
                   geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS, points_start, points_count));
                 }
-              else 
+              else
                 {
                   geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::POLYGON, points_start, points_count));
                 }
@@ -187,12 +187,12 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
               (*coords).push_back((*itr).coord);
               (*texcoords).push_back((*itr).texcoord);
 
-              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f)
                 {
                   have_texture_coords = true;
                 }
             }
-          
+
           unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
           unsigned int points_count = (*polygon_iterator).size();
           geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN, points_start, points_count));
@@ -212,19 +212,19 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
               (*coords).push_back((*itr).coord);
               (*texcoords).push_back((*itr).texcoord);
 
-              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f)
                 {
                   have_texture_coords = true;
                 }
             }
-          
+
           unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
           unsigned int points_count = (*polygon_iterator).size();
           geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP, points_start, points_count));
         }
 
       // add geometry if it contains any points
-      if (coords->size() != 0) 
+      if (coords->size() != 0)
         {
           geometry->setVertexArray(coords.get());
 
@@ -246,12 +246,12 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
     }
 }
 
-bool 
+bool
 Lwo2Layer::_find_triangle_fans(PolygonsList& polygons, PolygonsList& triangle_fans)
 {
   bool found = false;
 
-  while (_find_triangle_fan(polygons, triangle_fans)) 
+  while (_find_triangle_fan(polygons, triangle_fans))
     {
       found = true;
     }
@@ -264,12 +264,12 @@ Lwo2Layer::_find_triangle_fans(PolygonsList& polygons, PolygonsList& triangle_fa
   return found;
 }
 
-bool 
+bool
 Lwo2Layer::_find_triangle_strips(PolygonsList& polygons, PolygonsList& triangle_strips)
 {
   bool found = false;
 
-  while (_find_triangle_strip(polygons, triangle_strips)) 
+  while (_find_triangle_strip(polygons, triangle_strips))
     {
       found = true;
     }
@@ -282,7 +282,7 @@ Lwo2Layer::_find_triangle_strips(PolygonsList& polygons, PolygonsList& triangle_
   return found;
 }
 
-bool 
+bool
 Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fans)
 {
   bool found = false;
@@ -297,7 +297,7 @@ Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fan
           PointData c = points_list[2];
 
           int next_polygon_index = _find_triangle_begins_with(polygons, a, c);
-          while (next_polygon_index >= 0) 
+          while (next_polygon_index >= 0)
             {
               found = true;
               PointData d = polygons[next_polygon_index][2];
@@ -325,7 +325,7 @@ Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fan
 
                   c = d;
                 }
-              
+
               triangle_fans.push_back(point_list);
             }
         }
@@ -334,7 +334,7 @@ Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fan
   return found;
 }
 
-bool 
+bool
 Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_strips)
 {
   bool found = false;
@@ -351,7 +351,7 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
 
           int next_polygon_index = _find_triangle_begins_with(polygons, c, b);
 
-          while (next_polygon_index >= 0) 
+          while (next_polygon_index >= 0)
             {
               found = true;
               PointData d = polygons[next_polygon_index][2];
@@ -381,7 +381,7 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
                     {
                       strip_a = d;
                     }
-                  else 
+                  else
                     {
                       strip_b = d;
                     }
@@ -390,7 +390,7 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
                   // delete next triangle (mark as deleted)
                   (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
                 }
-              
+
               triangle_strips.push_back(point_list);
             }
         }
@@ -400,7 +400,7 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
   return found;
 }
 
-int 
+int
 Lwo2Layer::_find_triangle_begins_with(PolygonsList& polygons, PointData& a, PointData& b)
 {
   int result = -1;

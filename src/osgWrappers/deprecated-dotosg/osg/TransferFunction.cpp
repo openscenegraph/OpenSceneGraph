@@ -38,7 +38,7 @@ bool TransferFunction1D_readLocalData(osg::Object& obj, osgDB::Input &fr)
         tf.allocate(numCells);
         itrAdvanced = true;
     }
-    
+
     if (fr.matchSequence("Colours {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -60,7 +60,7 @@ bool TransferFunction1D_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 ++fr;
             }
         }
-        
+
         tf.assign(colorMap);
 
         itrAdvanced = true;
@@ -74,7 +74,7 @@ bool TransferFunction1D_writeLocalData(const osg::Object& obj, osgDB::Output& fw
 {
     const osg::TransferFunction1D& tf = static_cast<const osg::TransferFunction1D&>(obj);
     const osg::TransferFunction1D::ColorMap& colorMap = tf.getColorMap();
-    
+
     fw.indent()<<"NumberImageCells "<<tf.getNumberImageCells()<<std::endl;
     fw.indent()<<"Colours {"<<std::endl;
 
@@ -85,7 +85,7 @@ bool TransferFunction1D_writeLocalData(const osg::Object& obj, osgDB::Output& fw
     {
         const osg::Vec4& c = itr->second;
         fw.indent()<<itr->first<<" "<<c.r()<<" "<<c.g()<<" "<<c.b()<<" "<<c.a()<<std::endl;
-    }        
+    }
     fw.moveOut();
     fw.indent()<<"}"<<std::endl;
 

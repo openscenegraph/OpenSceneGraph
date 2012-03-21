@@ -34,7 +34,7 @@ bool DampingOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     float low = 0.0f, high = FLT_MAX;
     if (fr[0].matchWord("cutoff")) {
         if (fr[1].getFloat(low) && fr[2].getFloat(high)) {
@@ -52,7 +52,7 @@ bool DampingOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgParticle::DampingOperator &dp = static_cast<const osgParticle::DampingOperator &>(obj);
     osg::Vec3 a = dp.getDamping();
     fw.indent() << "damping " << a.x() << " " << a.y() << " " << a.z() << std::endl;
-    
+
     float low = dp.getCutoffLow(), high = dp.getCutoffHigh();
     fw.indent() << "cutoff " << low << " " << high << std::endl;
     return true;

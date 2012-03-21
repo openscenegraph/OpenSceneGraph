@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,14 +25,14 @@ void osgTerrain::extractSetNameAndFileName(const std::string& compoundstring, st
         filename = compoundstring;
         return;
     }
-    
+
     if (compoundstring.size()==4)
     {
         setname = "";
         filename = "";
         return;
     }
-    
+
     std::string::size_type secondcolonpos = compoundstring.find_first_of(':', setcolonpos+4);
     if (secondcolonpos==std::string::npos)
     {
@@ -78,7 +78,7 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
 {
     osg::BoundingSphere bs;
     if (!getLocator()) return bs;
-    
+
     if (treatAsElevationLayer)
     {
         osg::BoundingBox bb;
@@ -90,10 +90,10 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
             {
                 float value = 0.0f;
                 bool validValue = getValidValue(c,r, value);
-                if (validValue) 
+                if (validValue)
                 {
                     osg::Vec3d ndc, v;
-                    ndc.x() = ((double)c)/(double)(numColumns-1), 
+                    ndc.x() = ((double)c)/(double)(numColumns-1),
                     ndc.y() = ((double)r)/(double)(numRows-1);
                     ndc.z() = value;
 
@@ -108,7 +108,7 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
     }
     else
     {
-    
+
         osg::Vec3d v;
         if (getLocator()->convertLocalToModel(osg::Vec3d(0.5,0.5,0.0), v))
         {
@@ -121,7 +121,7 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
         }
 
     }
-        
+
     return bs;
 }
 
@@ -146,7 +146,7 @@ void ImageLayer::setImage(osg::Image* image)
     _image = image;
 }
 
-template <typename T, class O>    
+template <typename T, class O>
 void _processRow(unsigned int num, GLenum pixelFormat, T* data,const O& operation)
 {
     switch(pixelFormat)
@@ -161,7 +161,7 @@ void _processRow(unsigned int num, GLenum pixelFormat, T* data,const O& operatio
     }
 }
 
-template <class O>    
+template <class O>
 void processRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const O& operation)
 {
     switch(dataType)
@@ -176,11 +176,11 @@ void processRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned 
     }
 }
 
-template <class O>    
+template <class O>
 void processImage(osg::Image* image, const O& operation)
 {
     if (!image) return;
-    
+
     for(int r=0;r<image->r();++r)
     {
         for(int t=0;t<image->t();++t)
@@ -203,7 +203,7 @@ struct TransformOperator
     inline void operator() (short& v) const { v = (short)(_offset + (float)v * _scale); }
     inline void operator() (int& v) const { v = (int)(_offset + (float)v * _scale); }
     inline void operator() (float& v) const { v = _offset + v * _scale; }
-    
+
     float _offset, _scale;
 };
 
@@ -215,7 +215,7 @@ bool ImageLayer::transform(float offset, float scale)
     OSG_INFO<<"ImageLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
     processImage(_image.get(), TransformOperator(offset,scale));
-    
+
     dirty();
 
     return true;
@@ -226,11 +226,11 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
     const unsigned char* data = _image->data(i,j);
     switch(_image->getDataType())
     {
-        case(GL_BYTE): 
-            value = *((const char*)data); 
+        case(GL_BYTE):
+            value = *((const char*)data);
             // OSG_NOTICE<<"byte "<<value<<std::endl;
             break;
-        case(GL_UNSIGNED_BYTE): 
+        case(GL_UNSIGNED_BYTE):
             value = *data;
             // OSG_NOTICE<<"Unsigned byte "<<value<<std::endl;
             break;
@@ -254,8 +254,8 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
             // OSG_NOTICE<<"Float "<<value<<std::endl;
             value = *((const float*)data);
             break;
-        default: 
-            value = _defaultValue.x(); 
+        default:
+            value = _defaultValue.x();
             return false;
     }
 
@@ -437,7 +437,7 @@ bool HeightFieldLayer::transform(float offset, float scale)
 
     osg::FloatArray* heights = _heightField->getFloatArray();
     if (!heights) return false;
-    
+
     OSG_INFO<<"HeightFieldLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
     for(osg::FloatArray::iterator itr = heights->begin();
@@ -446,7 +446,7 @@ bool HeightFieldLayer::transform(float offset, float scale)
     {
         *itr = offset + (*itr) * scale;
     }
-    
+
     dirty();
 
     return true;
@@ -613,7 +613,7 @@ void CompositeLayer::setCompoundName(unsigned int i, const std::string& compound
     std::string setname;
     std::string filename;
     extractSetNameAndFileName(compoundname, setname, filename);
-    
+
     _layers[i].setname = setname;
     _layers[i].filename = filename;
 }

@@ -34,7 +34,7 @@ void PrimitiveSet::write(DataOutputStream* out){
     {
         out->writeInt(getNumInstances());
     }
- 
+
     // Write PrimitiveSet's properties.
     out->writeInt(getMode());
 }

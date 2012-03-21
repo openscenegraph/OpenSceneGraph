@@ -32,8 +32,8 @@ void ImageSequence::write(DataOutputStream* out)
     else
         out_THROW_EXCEPTION("ImageSequence::write(): Could not cast this osg::ImageSequence to an osg::Object.");
     // Write ImageSequence's properties.
-    
-    
+
+
     out->writeInt(getMode());
     out->writeDouble(getLength());
 
@@ -77,7 +77,7 @@ void ImageSequence::read(DataInputStream* in)
 
         setMode((osg::ImageSequence::Mode)(in->readInt()));
         setLength(in->readDouble());
-        
+
         unsigned int numFileNames = in->readUInt();
         if (numFileNames>0)
         {
@@ -94,7 +94,7 @@ void ImageSequence::read(DataInputStream* in)
                 addImage(in->readImage());
             }
         }
-        
+
     }
     else{
         in_THROW_EXCEPTION("ImageSequence::read(): Expected ImageSequence identification.");

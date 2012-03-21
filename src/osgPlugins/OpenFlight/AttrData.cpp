@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -51,22 +51,22 @@ AttrData::AttrData() :
 
     useLodScale(0),
     lod0(0.0f),
-    scale0(1.0f), 
+    scale0(1.0f),
     lod1(0.0f),
-    scale1(1.0f), 
-    lod2(0.0f), 
-    scale2(1.0f), 
+    scale1(1.0f),
+    lod2(0.0f),
+    scale2(1.0f),
     lod3(0.0f),
     scale3(1.0f),
     lod4(0.0f),
     scale4(1.0f),
     lod5(0.0f),
     scale5(1.0f),
-    lod6(0.0f), 
+    lod6(0.0f),
     scale6(1.0f),
-    lod7(0.0f), 
+    lod7(0.0f),
     scale7(1.0f),
-    
+
     clamp(0),
     magFilterAlpha(2),             //    2 = None
     magFilterColor(2),             //    2 = None

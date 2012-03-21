@@ -81,7 +81,7 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
 
                 terrainTile.setElevationLayer(proxyLayer);
-            
+
                 fr += 2;
 
                 localAdvanced = true;
@@ -114,7 +114,7 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
         unsigned int layerNum = 0;
         if (firstMatched)
         {
-            fr[1].getUInt(layerNum);        
+            fr[1].getUInt(layerNum);
             ++fr;
         }
 
@@ -152,8 +152,8 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
                     if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
 
                     terrainTile.setColorLayer(layerNum, proxyLayer);
-                }                
-            
+                }
+
                 fr += 2;
 
                 localAdvanced = true;
@@ -197,7 +197,7 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
         }
     }
 
-    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
+    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid())
         osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(&terrainTile, fr.getOptions());
 
     return itrAdvanced;
@@ -228,7 +228,7 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
         fw.indent()<<"ElevationLayer {"<<std::endl;
 
         fw.moveIn();
-        
+
         const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(terrainTile.getElevationLayer());
         if (proxyLayer)
         {
@@ -243,12 +243,12 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                 if (proxyLayer->getMinLevel()!=0)
                 {
                     fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
-                } 
+                }
 
                 if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
                 {
                     fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
-                } 
+                }
 
                 fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
             }
@@ -278,7 +278,7 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
             }
 
             fw.moveIn();
-            
+
             const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(layer);
             if (proxyLayer)
             {
@@ -291,12 +291,12 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                 if (proxyLayer->getMinLevel()!=0)
                 {
                     fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
-                } 
+                }
 
                 if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
                 {
                     fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
-                } 
+                }
 
                 if (!proxyLayer->getFileName().empty()) fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
             }
@@ -314,9 +314,9 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     if (terrainTile.getTerrainTechnique())
     {
         fw.writeObject(*terrainTile.getTerrainTechnique());
-    }    
+    }
 
     fw.precision(prec);
-    
+
     return true;
 }

@@ -11,12 +11,12 @@ osgParticle::ModularEmitter::ModularEmitter()
     _shooter(new RadialShooter)
 {
 }
-    
+
 osgParticle::ModularEmitter::ModularEmitter(const ModularEmitter& copy, const osg::CopyOp& copyop):
     Emitter(copy, copyop),
     _numParticleToCreateMovementCompensationRatio(copy._numParticleToCreateMovementCompensationRatio),
-    _counter(static_cast<Counter *>(copyop(copy._counter.get()))), 
-    _placer(static_cast<Placer *>(copyop(copy._placer.get()))), 
+    _counter(static_cast<Counter *>(copyop(copy._counter.get()))),
+    _placer(static_cast<Placer *>(copyop(copy._placer.get()))),
     _shooter(static_cast<Shooter *>(copyop(copy._shooter.get())))
 {
 }
@@ -51,7 +51,7 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
             osg::Vec3d currentPosition = controlPosition * ltw;
             float distance = (currentPosition-previousPosition).length();
 
-            float size = getUseDefaultTemplate() ? 
+            float size = getUseDefaultTemplate() ?
                         getParticleSystem()->getDefaultParticleTemplate().getSizeRange().minimum :
                         getParticleTemplate().getSizeRange().minimum;
 
@@ -61,7 +61,7 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
 
             n = osg::maximum(n, int(rounded_down) +  (((float) rand() < remainder * (float)RAND_MAX) ? 1 : 0));
         }
-        
+
         for (int i=0; i<n; ++i)
         {
             Particle* P = getParticleSystem()->createParticle(getUseDefaultTemplate()? 0: &getParticleTemplate());
@@ -69,14 +69,14 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
             {
                 _placer->place(P);
                 _shooter->shoot(P);
-                
+
                 // Now need to transform the position and velocity because we having a moving model.
                 float r = ((float)rand()/(float)RAND_MAX);
                 P->transformPositionVelocity(emitterToPs, prevEmitterToPs, r);
                 //P->transformPositionVelocity(ltw);
-                
+
                 if (cps) P->setUpTexCoordsAsPartOfConnectedParticleSystem(cps);
-                
+
             }
             else
             {

@@ -297,7 +297,7 @@ void geoDiscreteBehaviour::doaction(osg::Node *) { // do math operation
     if (in && out) {
         float v=*in;
         *out=rangelist.begin()->getVal();
-        for (std::vector<geoRange>::const_iterator itr=rangelist.begin(); 
+        for (std::vector<geoRange>::const_iterator itr=rangelist.begin();
         itr<rangelist.end(); itr++) {
             if (v>=itr->getMin() && v<=itr->getMax()) *out=itr->getVal();
         }
@@ -356,7 +356,7 @@ void geoMoveBehaviour::doaction(osg::Node *node) {
             break;
         case DB_DSK_ROTATE_ACTION:
             //std::cout << node->getName() << " v: " << getVar() << " rotion " << DEG2RAD(getValue()) << std::endl;
-            mtr->preMult( osg::Matrix::translate(-centre)* 
+            mtr->preMult( osg::Matrix::translate(-centre)*
                 osg::Matrix::rotate(DEG2RAD(getValue()),axis)* // nov 2003 negative rotation convention
                 osg::Matrix::translate(centre));
             break;
@@ -393,7 +393,7 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
                 ok=true;
             }
         }
-    } else if (act==DB_DSK_TRANSLATE_ACTION) {            
+    } else if (act==DB_DSK_TRANSLATE_ACTION) {
         const geoField *gfd=grec->getField(GEO_DB_TRANSLATE_ACTION_INPUT_VAR);
         if (gfd) {
             unsigned fid= gfd->getUInt(); // field identifier
@@ -413,7 +413,7 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
                 ok=true;
             }
         }
-    } else if (act==DB_DSK_SCALE_ACTION) {     // Nov 2002 not yet implemented in the modeller!       
+    } else if (act==DB_DSK_SCALE_ACTION) {     // Nov 2002 not yet implemented in the modeller!
     }
     return ok;
 }
@@ -429,8 +429,8 @@ void geoMoveVertexBehaviour::doaction(osg::Matrix *mtr) {
                 break;
             case DB_DSK_ROTATE_ACTION:
                 //std::cout << dr->getName() << " v: " << getVar() << " rotion " << DEG2RAD(getValue()) << std::endl;
-                *mtr = (*mtr)*osg::Matrix::translate(-getCentre())* 
-                    osg::Matrix::rotate(DEG2RAD(getValue()),getAxis())* 
+                *mtr = (*mtr)*osg::Matrix::translate(-getCentre())*
+                    osg::Matrix::rotate(DEG2RAD(getValue()),getAxis())*
                     osg::Matrix::translate(getCentre());
                 break;
             }
@@ -463,7 +463,7 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
                 ok=true;
             }
         }
-    } else if (act==DB_DSK_TRANSLATE_ACTION) {            
+    } else if (act==DB_DSK_TRANSLATE_ACTION) {
         const geoField *gfd=grec->getField(GEO_DB_TRANSLATE_ACTION_INPUT_VAR);
         if (gfd) {
             unsigned fid= gfd->getUInt(); // field identifier
@@ -483,7 +483,7 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
                 ok=true;
             }
         }
-    } else if (act==DB_DSK_SCALE_ACTION) {     // Nov 2002 not yet implemented in the modeller!       
+    } else if (act==DB_DSK_SCALE_ACTION) {     // Nov 2002 not yet implemented in the modeller!
     }
     return ok;
 }
@@ -547,7 +547,7 @@ void geoColourBehaviour::doaction(osg::Drawable *dr)
     }
 }
 
-void geoStrContentBehaviour::doaction(osg::Drawable* /*node*/) 
+void geoStrContentBehaviour::doaction(osg::Drawable* /*node*/)
 { // do new text
 #ifdef USETEXT // buggy text feb 2003
     osgText::Text *txt=dynamic_cast<osgText::Text *>(node);
@@ -687,7 +687,7 @@ void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
                         newpos=true;
                     }
                 }
-            } 
+            }
             if (newpos) {
                 osg::Vec3Array* vtxa = dynamic_cast<osg::Vec3Array*>(gm->getVertexArray());
                 (*vtxa)[prevvtr]=pos*mtr;

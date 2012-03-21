@@ -168,7 +168,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
     if (_options.get())
     {
         std::string optionsString = _options->getOptionString();
-    
+
         if(optionsString.find("noTexturesInIVEFile")!=std::string::npos) {
             setIncludeImageMode(IMAGE_REFERENCE_FILE);
         } else if(optionsString.find("includeImageFileInIVEFile")!=std::string::npos) {
@@ -198,7 +198,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
         {
             std::string::size_type endOfToken = optionsString.find_first_of('=', terrainErrorPos);
             std::string::size_type endOfNumber = optionsString.find_first_of(' ', endOfToken);
-            std::string::size_type numOfCharInNumber = (endOfNumber != std::string::npos) ? 
+            std::string::size_type numOfCharInNumber = (endOfNumber != std::string::npos) ?
                     endOfNumber-endOfToken-1 :
                     optionsString.size()-endOfToken-1;
 
@@ -206,7 +206,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
             {
                 std::string numberString = optionsString.substr(endOfToken+1, numOfCharInNumber);
                 _maximumErrorToSizeRatio = osg::asciiToDouble(numberString.c_str());
-                
+
                 OSG_DEBUG<<"TerrainMaximumErrorToSizeRatio = "<<_maximumErrorToSizeRatio<<std::endl;
             }
             else
@@ -234,25 +234,25 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
 
     writeUInt(ENDIAN_TYPE) ;
     writeUInt(getVersion());
-    
+
     writeInt(_compressionLevel);
 
     if (_compressionLevel>0)
     {
-    
-        _ostream = &_compressionStream;        
+
+        _ostream = &_compressionStream;
     }
 }
 
 DataOutputStream::~DataOutputStream()
 {
     if (_compressionLevel>0)
-    { 
+    {
         _ostream = _output_ostream;
 
         std::string compressionString(_compressionStream.str());
         writeUInt(compressionString.size());
-        
+
         compress(*_output_ostream, compressionString);
     }
 }
@@ -268,7 +268,7 @@ bool DataOutputStream::compress(std::ostream& fout, const std::string& source) c
     unsigned have;
     z_stream strm;
     unsigned char out[CHUNK];
-    
+
     int level = 6;
     int stategy = Z_DEFAULT_STRATEGY; // looks to be the best for .osg/.ive files
     //int stategy = Z_FILTERED;
@@ -279,7 +279,7 @@ bool DataOutputStream::compress(std::ostream& fout, const std::string& source) c
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
-    ret = deflateInit2(&strm, 
+    ret = deflateInit2(&strm,
                        level,
                        Z_DEFLATED,
                        15+16, // +16 to use gzip encoding
@@ -307,7 +307,7 @@ bool DataOutputStream::compress(std::ostream& fout, const std::string& source) c
         have = CHUNK - strm.avail_out;
 
         if (have>0) fout.write((const char*)out, have);
-        
+
         if (fout.fail())
         {
             (void)deflateEnd(&strm);
@@ -659,15 +659,15 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
     int size = a->getNumElements();
     writeInt(size);
     if (size==0) return;
-    
+
     float minValue = (*a)[0];
-    float maxValue = minValue;    
+    float maxValue = minValue;
     for(int i=1; i<size; ++i)
     {
         if ((*a)[i]<minValue) minValue = (*a)[i];
         if ((*a)[i]>maxValue) maxValue = (*a)[i];
     }
-    
+
     if (minValue==maxValue)
     {
         OSG_DEBUG<<"Writing out "<<size<<" same values "<<minValue<<std::endl;
@@ -678,11 +678,11 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
     }
 
     writeBool(false);
-    
+
     int packingSize = 4;
     if (maxError>0.0f)
     {
-    
+
         //float byteError = 0.0f;
         float byteMultiplier = 255.0f/(maxValue-minValue);
         float byteInvMultiplier = 1.0f/byteMultiplier;
@@ -723,10 +723,10 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
     if (packingSize==1)
     {
         writeInt(1);
-        
+
         writeFloat(minValue);
         writeFloat(maxValue);
-        
+
         float byteMultiplier = 255.0f/(maxValue-minValue);
 
         for(int i=0; i<size; ++i)
@@ -741,7 +741,7 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
 
         writeFloat(minValue);
         writeFloat(maxValue);
-        
+
         float shortMultiplier = 65535.0f/(maxValue-minValue);
 
         for(int i=0; i<size; ++i)
@@ -751,14 +751,14 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
         }
     }
     else
-    {            
+    {
         writeInt(4);
 
         for(int i=0; i<size; ++i)
         {
             writeFloat((*a)[i]);
         }
-        
+
     }
 
     if (_verboseOutput) std::cout<<"read/writePackedFloatArray() ["<<size<<"]"<<std::endl;
@@ -1434,11 +1434,11 @@ IncludeImageMode DataOutputStream::getIncludeImageMode(const osg::Image* image) 
 {
     if (image)
     {
-        if (image->getWriteHint()==osg::Image::STORE_INLINE) 
+        if (image->getWriteHint()==osg::Image::STORE_INLINE)
         {
             return IMAGE_INCLUDE_DATA;
         }
-        else if (image->getWriteHint()==osg::Image::EXTERNAL_FILE) 
+        else if (image->getWriteHint()==osg::Image::EXTERNAL_FILE)
         {
             return IMAGE_REFERENCE_FILE;
         }
@@ -1450,7 +1450,7 @@ IncludeImageMode DataOutputStream::getIncludeImageMode(const osg::Image* image) 
 void DataOutputStream::writeImage(osg::Image *image)
 {
     IncludeImageMode mode = getIncludeImageMode(image);
-    
+
     if ( getVersion() >= VERSION_0029)
     {
         osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(image);
@@ -1853,7 +1853,7 @@ void DataOutputStream::writeVolumeProperty(const osgVolume::Property* property)
 void DataOutputStream::writeObject(const osg::Object* object)
 {
     const osg::Node* node = dynamic_cast<const osg::Node*>(object);
-    if (node) 
+    if (node)
     {
         writeInt(IVENODE);
         writeNode(node);
@@ -1861,7 +1861,7 @@ void DataOutputStream::writeObject(const osg::Object* object)
     }
 
     const osg::StateSet* stateset = dynamic_cast<const osg::StateSet*>(object);
-    if (stateset) 
+    if (stateset)
     {
         writeInt(IVESTATESET);
         writeStateSet(stateset);
@@ -1869,7 +1869,7 @@ void DataOutputStream::writeObject(const osg::Object* object)
     }
 
     const osg::StateAttribute* sa = dynamic_cast<const osg::StateAttribute*>(object);
-    if (sa) 
+    if (sa)
     {
         writeInt(IVESTATEATTRIBUTE);
         writeStateAttribute(sa);
@@ -1877,7 +1877,7 @@ void DataOutputStream::writeObject(const osg::Object* object)
     }
 
     const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
-    if (drawable) 
+    if (drawable)
     {
         writeInt(IVEDRAWABLE);
         writeDrawable(drawable);
@@ -1885,7 +1885,7 @@ void DataOutputStream::writeObject(const osg::Object* object)
     }
 
     const osgSim::ShapeAttributeList* sal = dynamic_cast<const osgSim::ShapeAttributeList*>(object);
-    if (sal) 
+    if (sal)
     {
         writeInt(IVESHAPEATTRIBUTELIST);
         ((ive::ShapeAttributeList*)sal)->write(this);
@@ -1905,10 +1905,10 @@ std::string DataOutputStream::getTextureFileNameForOutput()
         o << '_' << _textureFileNameNumber;
         fileName += o.str();
     }
-    
+
     fileName += ".dds";
     ++_textureFileNameNumber;
-    
+
     return fileName;
 }
 

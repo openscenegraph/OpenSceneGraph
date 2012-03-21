@@ -48,7 +48,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return archive.get();
         }
 
-        /** open an archive for reading.*/ 
+        /** open an archive for reading.*/
         virtual ReadResult openArchive(std::istream& fin, const Options* options) const
         {
             osg::ref_ptr<ZipArchive> archive = new ZipArchive;

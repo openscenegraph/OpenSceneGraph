@@ -1,14 +1,14 @@
-/* -*- mode: c++; c-default-style: k&r; tab-width: 4; c-basic-offset: 4; -*- 
+/* -*- mode: c++; c-default-style: k&r; tab-width: 4; c-basic-offset: 4; -*-
  * Copyright (C) 2007 Cedric Pinson - mornifle@plopbyte.net
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,9 +36,9 @@
 #include <ogr_feature.h>
 #include <ogrsf_frmts.h>
 
-#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
-void CPL_STDCALL CPLOSGErrorHandler( CPLErr eErrClass, int nError, 
+void CPL_STDCALL CPLOSGErrorHandler( CPLErr eErrClass, int nError,
                              const char * pszErrorMsg )
 {
     if( eErrClass == CE_Debug )
@@ -66,7 +66,7 @@ static osg::Material* createDefaultMaterial()
     return mat;
 }
 
-struct TriangulizeFunctor 
+struct TriangulizeFunctor
 {
     osg::Vec3Array* _vertexes;
 
@@ -80,7 +80,7 @@ struct TriangulizeFunctor
 
 static osg::Vec3Array* triangulizeGeometry(osg::Geometry* src)
 {
-    if (src->getNumPrimitiveSets() == 1 && 
+    if (src->getNumPrimitiveSets() == 1 &&
         src->getPrimitiveSet(0)->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType &&
         src->getVertexArray() &&
         src->getVertexArray()->getType() == osg::Array::Vec3ArrayType)
@@ -108,17 +108,17 @@ public:
 
     virtual ~ReaderWriterOGR()
     {
-        CPLSetErrorHandler(oldHandler); 
+        CPLSetErrorHandler(oldHandler);
     }
-    
+
     virtual const char* className() const { return "OGR file reader"; }
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         OSG_INFO<<"OGR::readNode("<<file<<")"<<std::endl;
-        
+
         if (file.empty()) return ReadResult::FILE_NOT_FOUND;
-    
+
         if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"ogr"))
         {
             OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
@@ -144,7 +144,7 @@ public:
 
         bool useRandomColorByFeature = false;
         bool addGroupPerFeature = false;
-        if (options) 
+        if (options)
         {
             if (options->getOptionString().find("UseRandomColorByFeature") != std::string::npos)
                 useRandomColorByFeature = true;
@@ -156,7 +156,7 @@ public:
 
         osg::Group* group = new osg::Group;
 
-        for (int i = 0; i < file->GetLayerCount(); i++) 
+        for (int i = 0; i < file->GetLayerCount(); i++)
         {
             osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature, addGroupPerFeature);
             if (node)
@@ -176,7 +176,7 @@ public:
         ogrLayer->ResetReading();
 
         OGRFeature* ogrFeature = NULL;
-        while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL) 
+        while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL)
         {
             osg::Geode* feature = readFeature(ogrFeature, useRandomColorByFeature);
             if (feature)
@@ -227,7 +227,7 @@ public:
         osg::Geometry* contourGeom = new osg::Geometry();
         osg::Vec3Array* vertices = new osg::Vec3Array();
         OGRPoint point;
-        for(int j = 0; j < lineString->getNumPoints(); j++) 
+        for(int j = 0; j < lineString->getNumPoints(); j++)
         {
             lineString->getPoint(j, &point);
             vertices->push_back(osg::Vec3(point.getX(), point.getY(), point.getZ()));
@@ -244,9 +244,9 @@ public:
 
         osg::Geometry* pointGeom = new osg::Geometry();
         osg::Vec3Array* vertices = new osg::Vec3Array();
-        
+
         vertices->reserve(mpoint->getNumGeometries());
-        for (int i = 0; i < mpoint->getNumGeometries(); i++ ) 
+        for (int i = 0; i < mpoint->getNumGeometries(); i++ )
         {
             OGRGeometry* ogrGeom = mpoint->getGeometryRef(i);
             OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
@@ -255,13 +255,13 @@ public:
                 continue; // skip
 
             OGRPoint* points = static_cast<OGRPoint*>(ogrGeom);
-        
+
             vertices->push_back(osg::Vec3(points->getX(), points->getY(), points->getZ()));
         }
-        
+
         pointGeom->setVertexArray(vertices);
         pointGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, vertices->size()));
-        
+
         if (pointGeom->getVertexArray())
         {
             OSG_INFO << "osgOgrFeature::multiPointToDrawable " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
@@ -274,7 +274,7 @@ public:
     {
         osg::Geometry* geom = new osg::Geometry;
 
-        for (int i = 0; i < mpolygon->getNumGeometries(); i++ ) 
+        for (int i = 0; i < mpolygon->getNumGeometries(); i++ )
         {
             OGRGeometry* ogrGeom = mpolygon->getGeometryRef(i);
             OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
@@ -285,31 +285,31 @@ public:
             OGRPolygon* polygon = static_cast<OGRPolygon*>(ogrGeom);
             osg::ref_ptr<osg::Drawable> drw = polygonToDrawable(polygon);
             osg::ref_ptr<osg::Geometry> geometry = drw->asGeometry();
-            if (geometry.valid() && geometry->getVertexArray() && 
-                geometry->getVertexArray()->getNumElements() && 
+            if (geometry.valid() && geometry->getVertexArray() &&
+                geometry->getVertexArray()->getNumElements() &&
                 geometry->getNumPrimitiveSets() &&
-                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType ) 
+                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType )
             {
 
-                if (!geom->getVertexArray()) 
+                if (!geom->getVertexArray())
                 { // no yet data we put the first in
                     geom->setVertexArray(geometry->getVertexArray());
                     geom->setPrimitiveSetList(geometry->getPrimitiveSetList());
 
-                } 
-                else 
+                }
+                else
                 { // already a polygon then append
                     int size = geom->getVertexArray()->getNumElements();
                     osg::Vec3Array* arrayDst = static_cast<osg::Vec3Array*>(geom->getVertexArray());
                     osg::ref_ptr<osg::Vec3Array> triangulized = triangulizeGeometry(geometry.get());
-                    if (triangulized.valid()) 
+                    if (triangulized.valid())
                     {
                         arrayDst->insert(arrayDst->end(), triangulized->begin(), triangulized->end());
-                        // shift index 
+                        // shift index
                         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, size, triangulized->size()));
                     }
                 }
-            } 
+            }
             else
             {
                 OSG_WARN << "Warning something wrong with a polygon in a multi polygon" << std::endl;
@@ -340,13 +340,13 @@ public:
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, 0, vertices->size()));
         }
 
-        if (polygon->getNumInteriorRings()) 
+        if (polygon->getNumInteriorRings())
         {
             for (int i = 0; i < polygon->getNumInteriorRings(); i++)
             {
                 OGRLinearRing *ring = polygon->getInteriorRing(i);
                 OGRPoint point;
-                for (int j = 0; j < ring->getNumPoints(); j++) 
+                for (int j = 0; j < ring->getNumPoints(); j++)
                 {
                     ring->getPoint(j, &point);
                     vertices->push_back(osg::Vec3(point.getX(), point.getY(), point.getZ()));
@@ -363,14 +363,14 @@ public:
         geom->setVertexArray(array);
         geom->removePrimitiveSet(0,geom->getNumPrimitiveSets());
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, array->size()));
-  
+
         return geom;
     }
     osg::Geometry* multiLineStringToDrawable(OGRMultiLineString* mlineString) const
     {
         osg::Geometry* geom = new osg::Geometry;
 
-        for (int i = 0; i < mlineString->getNumGeometries(); i++ ) 
+        for (int i = 0; i < mlineString->getNumGeometries(); i++ )
         {
             OGRGeometry* ogrGeom = mlineString->getGeometryRef(i);
             OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
@@ -380,10 +380,10 @@ public:
 
             OGRLineString* lineString = static_cast<OGRLineString*>(ogrGeom);
             osg::ref_ptr<osg::Geometry> geometry = lineStringToDrawable(lineString);
-            if (geometry.valid() && 
-                geometry->getVertexArray() && 
+            if (geometry.valid() &&
+                geometry->getVertexArray() &&
                 geometry->getNumPrimitiveSets() &&
-                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType) 
+                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType)
             {
 
                 if (!geom->getVertexArray())
@@ -391,15 +391,15 @@ public:
                     geom->setVertexArray(geometry->getVertexArray());
                     geom->setPrimitiveSetList(geometry->getPrimitiveSetList());
 
-                } 
-                else 
+                }
+                else
                 {
                     int size = geom->getVertexArray()->getNumElements();
 
                     osg::Vec3Array* arraySrc = static_cast<osg::Vec3Array*>(geometry->getVertexArray());
                     osg::Vec3Array* arrayDst = static_cast<osg::Vec3Array*>(geom->getVertexArray());
                     arrayDst->insert(arrayDst->end(), arraySrc->begin(), arraySrc->end());
-                    // shift index 
+                    // shift index
                     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, size, arraySrc->size()));
                 }
             }
@@ -412,7 +412,7 @@ public:
 
         if (!ogrFeature || !ogrFeature->GetGeometryRef())
             return 0;
-          
+
         osg::Geometry* drawable = 0;
         bool disableCulling = false;
 
@@ -423,7 +423,7 @@ public:
             // point to drawable
             drawable = pointsToDrawable(static_cast<OGRPoint *>(ogrFeature->GetGeometryRef()));
             disableCulling = true;
-            break; 
+            break;
 
         case wkbLinearRing:
             drawable = linearRingToDrawable(static_cast<OGRLinearRing *>(ogrFeature->GetGeometryRef()));

@@ -18,7 +18,7 @@ REGISTER_OBJECT_WRAPPER( BlendEquation,
         ADD_ENUM_VALUE( FUNC_SUBTRACT );
         ADD_ENUM_VALUE( FUNC_REVERSE_SUBTRACT );
     END_ENUM_SERIALIZER();  // _equationRGB
-    
+
     BEGIN_ENUM_SERIALIZER2( EquationAlpha, osg::BlendEquation::Equation, FUNC_ADD );
         ADD_ENUM_VALUE( RGBA_MIN );
         ADD_ENUM_VALUE( RGBA_MAX );

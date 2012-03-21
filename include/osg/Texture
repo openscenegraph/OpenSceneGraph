@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -72,7 +72,7 @@
 #endif
 
 #ifndef GL_OES_compressed_ETC1_RGB8_texture
-    #define GL_ETC1_RGB8_OES                            0x8D64   
+    #define GL_ETC1_RGB8_OES                            0x8D64
 #endif
 
 #ifndef GL_ARB_INTERNAL_TEXTURE_FORMAT
@@ -164,7 +164,7 @@
 #endif
 
 #ifndef GL_CLAMP
-    #define GL_CLAMP                          0x2900  
+    #define GL_CLAMP                          0x2900
 #endif
 
 #ifndef GL_CLAMP_TO_BORDER_ARB
@@ -326,7 +326,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
         virtual Texture* asTexture() { return this; }
-        
+
         /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
         virtual const Texture* asTexture() const { return this; }
 
@@ -376,7 +376,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Sets the border width. */
         void setBorderWidth(GLint width) { _borderWidth = width; dirtyTextureParameters(); }
-        
+
         GLint getBorderWidth() const { return _borderWidth; }
 
         enum FilterParameter {
@@ -406,7 +406,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * value of 1.0. Valid range is 1.0f upwards.  The maximum value
           * depends on the graphics system. */
         void setMaxAnisotropy(float anis);
-        
+
         /** Gets the maximum anisotropy value. */
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
@@ -421,7 +421,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * data. If enabled, and the image data is only referenced by this
           * Texture, apply() will delete the image data. */
         inline void setUnRefImageDataAfterApply(bool flag) { _unrefImageDataAfterApply = flag; }
-        
+
         /** Gets whether or not apply() unreferences image data. */
         inline bool getUnRefImageDataAfterApply() const { return _unrefImageDataAfterApply; }
 
@@ -434,7 +434,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets whether to use client storage for the texture. */
         inline bool getClientStorageHint() const { return _clientStorageHint; }
 
-        /** Sets whether to force the texture to resize images that have dimensions 
+        /** Sets whether to force the texture to resize images that have dimensions
           * that are not a power of two. If enabled, NPOT images will be resized,
           * whether or not NPOT textures are supported by the hardware. If disabled,
           * NPOT images will not be resized if supported by hardware. */
@@ -481,7 +481,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Gets the internal texture format. */
         inline GLint getInternalFormat() const { if (_internalFormat==0) computeInternalFormat(); return _internalFormat; }
-        
+
         /** Return true if the internal format is one of the compressed formats.*/
         bool isCompressedInternalFormat() const;
 
@@ -512,10 +512,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             //! Unsigned integer value (see EXT_texture_integer)
             UNSIGNED_INTEGER = 0x4
         };
-        
+
         /** Get the internal texture format type. */
         inline InternalFormatType getInternalFormatType() const { return _internalFormatType; }
-        
+
         class TextureObject;
 
         /** Returns a pointer to the TextureObject for the current context. */
@@ -563,7 +563,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. */
         void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
         bool getShadowComparison() const { return _use_shadow_comparison; }
-        
+
         enum ShadowCompareFunc {
             NEVER = GL_NEVER,
             LESS = GL_LESS,
@@ -593,7 +593,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt. */
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() const { return _shadow_ambient; }
-        
+
 
         /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
@@ -633,7 +633,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
@@ -644,7 +644,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
-                
+
                 void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
 
@@ -653,10 +653,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setTextureCompressionPVRTC2BPPSupported(bool flag) { _isTextureCompressionPVRTC2BPPSupported=flag; }
                 bool isTextureCompressionPVRTC2BPPSupported() const { return _isTextureCompressionPVRTC2BPPSupported; }
-                
+
                 void setTextureCompressionPVRTC4BPPSupported(bool flag) { _isTextureCompressionPVRTC4BPPSupported=flag; }
                 bool isTextureCompressionPVRTC4BPPSupported() const { return _isTextureCompressionPVRTC4BPPSupported; }
-                
+
                 void setTextureCompressionETCSupported(bool flag) { _isTextureCompressionETCSupported=flag; }
                 bool isTextureCompressionETCSupported() const { return _isTextureCompressionETCSupported; }
 
@@ -698,12 +698,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
                 bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
-                
+
                 bool isClientStorageSupported() const { return _isClientStorageSupported; }
 
                 bool isNonPowerOfTwoTextureSupported(GLenum filter) const
                 {
-                    return (filter==GL_LINEAR || filter==GL_NEAREST) ? 
+                    return (filter==GL_LINEAR || filter==GL_NEAREST) ?
                             _isNonPowerOfTwoTextureNonMipMappedSupported :
                             _isNonPowerOfTwoTextureMipMappedSupported;
                 }
@@ -744,7 +744,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             protected:
 
                 ~Extensions() {}
-                
+
                 typedef void (GL_APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
                 typedef void (GL_APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
                 typedef void (GL_APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
@@ -785,7 +785,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;
         };
-        
+
         /** Gets the extension for the specified context. Creates the
           * Extensions object for that context if it doesn't exist.
           * Returns NULL if the Extensions object for the context doesn't
@@ -800,7 +800,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Determine whether the given internalFormat is a compressed
           * image format. */
         static bool isCompressedInternalFormat(GLint internalFormat);
-        
+
         /** Determine the size of a compressed image, given the internalFormat,
           * the width, the height, and the depth of the image. The block size
           * and the size are output parameters. */
@@ -811,7 +811,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * texture binding. Note: Don't call this method directly unless
           * you're implementing a subload callback. */
         void applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height,GLsizei numMipmapLevels) const;
-        
+
         /** Helper method. Subloads images into the texture, but doesn't set
           * or use a texture binding. Note: Don't call this method directly
           * unless you're implementing a subload callback. */
@@ -832,13 +832,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         virtual ~Texture();
 
         virtual void computeInternalFormat() const = 0;
-        
+
         /** Computes the internal format from Image parameters. */
         void computeInternalFormatWithImage(const osg::Image& image) const;
 
         /** Computes the texture dimension for the given Image. */
         void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
-        
+
         /** Computes the internal format type. */
         void computeInternalFormatType() const;
 

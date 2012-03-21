@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -106,7 +106,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
         unsigned int charcode = *lastChar;
-        
+
         if (charcode=='\n')
         {
             return lastChar;
@@ -165,7 +165,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                 if (_maximumHeight>0.0f && cursor.y()<-_maximumHeight) outOfSpace=true;
                 break;
             }
-            
+
             // => word boundary detection & wrapping
             if (outOfSpace) break;
 
@@ -226,17 +226,17 @@ void Text::computeGlyphRepresentation()
 {
     Font* activefont = getActiveFont();
     if (!activefont) return;
-    
+
     _textureGlyphQuadMap.clear();
     _lineCount = 0;
-    
-    if (_text.empty()) 
+
+    if (_text.empty())
     {
         _textBB.set(0,0,0,0,0,0);//no size text
         TextBase::computePositions(); //to reset the origin
         return;
     }
-    
+
     //OpenThreads::ScopedLock<Font::FontMutex> lock(*(activefont->getSerializeFontCallsMutex()));
 
     // initialize bounding box, it will be expanded during glyph position calculation
@@ -245,12 +245,12 @@ void Text::computeGlyphRepresentation()
     osg::Vec2 startOfLine_coords(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine_coords);
     osg::Vec2 local(0.0f,0.0f);
-    
+
     unsigned int previous_charcode = 0;
     unsigned int linelength = 0;
     bool horizontal = _layout!=VERTICAL;
     bool kerning = true;
-    
+
     unsigned int lineNumber = 0;
 
     float hr = _characterHeight;
@@ -485,8 +485,8 @@ void Text::computeGlyphRepresentation()
         {
             ++itr;
         }
-                                
-                
+
+
         // move to new line.
         switch(_layout)
         {
@@ -516,11 +516,11 @@ void Text::computeGlyphRepresentation()
           }
           break;
         }
-        
+
         ++lineNumber;
 
     }
-   
+
     TextBase::computePositions();
     computeBackdropBoundingBox();
     computeBoundingBoxMargin();
@@ -529,7 +529,7 @@ void Text::computeGlyphRepresentation()
 
 // Returns false if there are no glyphs and the width/height values are invalid.
 // Also sets avg_width and avg_height to 0.0f if the value is invalid.
-// This method is used several times in a loop for the same object which will produce the same values. 
+// This method is used several times in a loop for the same object which will produce the same values.
 // Further optimization may try saving these values instead of recomputing them.
 bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const
 {
@@ -543,10 +543,10 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
     unsigned int i;
     bool is_valid_size = true;
     // This section is going to try to compute the average width and height
-    // for a character among the text. The reason I shift by an 
-    // average amount per-character instead of shifting each character 
-    // by its per-instance amount is because it may look strange to see 
-    // the individual backdrop text letters not space themselves the same 
+    // for a character among the text. The reason I shift by an
+    // average amount per-character instead of shifting each character
+    // by its per-instance amount is because it may look strange to see
+    // the individual backdrop text letters not space themselves the same
     // way the foreground text does. Using one value gives uniformity.
     // Note: This loop is repeated for each context. I think it may produce
     // the same values regardless of context. This code be optimized by moving
@@ -599,12 +599,12 @@ void Text::computePositions(unsigned int contextID) const
     case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
     case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
     case RIGHT_BASE_LINE:  _offset.set(_textBB.xMax(),0.0f,0.0f); break;
-    
+
     case LEFT_BOTTOM_BASE_LINE:  _offset.set(0.0f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
     case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
     case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
     }
-    
+
     AutoTransformCache& atc = _autoTransformCache[contextID];
     osg::Matrix& matrix = atc._matrix;
 
@@ -613,8 +613,8 @@ void Text::computePositions(unsigned int contextID) const
 
         matrix.makeTranslate(-_offset);
 
-        osg::Matrix rotate_matrix; 
-        if (_autoRotateToScreen) 
+        osg::Matrix rotate_matrix;
+        if (_autoRotateToScreen)
         {
             osg::Vec3d trans(atc._modelview.getTrans());
             atc._modelview.setTrans(0.0f,0.0f,0.0f);
@@ -633,9 +633,9 @@ void Text::computePositions(unsigned int contextID) const
             M.postMultTranslate(_position);
             M.postMult(atc._modelview);
             osg::Matrix& P = atc._projection;
-            
+
             // compute the pixel size vector.
-                        
+
             // pre adjust P00,P20,P23,P33 by multiplying them by the viewport window matrix.
             // here we do it in short hand with the knowledge of how the window matrix is formed
             // note P23,P33 are multiplied by an implicit 1 which would come from the window matrix.
@@ -686,7 +686,7 @@ void Text::computePositions(unsigned int contextID) const
 
         }
 
-        if (_autoRotateToScreen) 
+        if (_autoRotateToScreen)
         {
             matrix.postMult(rotate_matrix);
         }
@@ -712,13 +712,13 @@ void Text::computePositions(unsigned int contextID) const
         GlyphQuads& glyphquad = titr->second;
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
         GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-        
+
         unsigned int numCoords = coords2.size();
         if (numCoords!=transformedCoords.size())
         {
             transformedCoords.resize(numCoords);
         }
-        
+
         for(unsigned int i=0;i<numCoords;++i)
         {
             transformedCoords[i] = osg::Vec3(coords2[i].x(),coords2[i].y(),0.0f)*matrix;
@@ -730,7 +730,7 @@ void Text::computePositions(unsigned int contextID) const
     _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);
     _normal.normalize();
 
-    const_cast<Text*>(this)->dirtyBound();    
+    const_cast<Text*>(this)->dirtyBound();
 }
 
 // Presumes the atc matrix is already up-to-date
@@ -745,7 +745,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     float avg_height = 0.0f;
     unsigned int i;
     bool is_valid_size;
-    
+
     AutoTransformCache& atc = _autoTransformCache[contextID];
     osg::Matrix& matrix = atc._matrix;
 
@@ -755,7 +755,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
 
     if (!is_valid_size) return;
-    
+
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -831,7 +831,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
                             horizontal_shift_direction = 0.0f;
                             vertical_shift_direction = 1.0f;
                             break;
-                        }                                
+                        }
                     case DROP_SHADOW_BOTTOM_LEFT:
                         {
                             horizontal_shift_direction = -1.0f;
@@ -862,7 +862,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     }
 }
 
-// This method adjusts the bounding box to account for the expanded area caused by the backdrop. 
+// This method adjusts the bounding box to account for the expanded area caused by the backdrop.
 // This assumes that the bounding box has already been computed for the text without the backdrop.
 void Text::computeBackdropBoundingBox() const
 {
@@ -874,7 +874,7 @@ void Text::computeBackdropBoundingBox() const
     float avg_width = 0.0f;
     float avg_height = 0.0f;
     bool is_valid_size;
-    
+
     // FIXME: OPTIMIZE: It is possible that this value has already been computed before
     // from previous calls to this function. This might be worth optimizing.
     is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
@@ -886,7 +886,7 @@ void Text::computeBackdropBoundingBox() const
     {
         return;
     }
-    
+
     // Finally, we have one more issue to deal with.
     // Now that the text takes more space, we need
     // to adjust the size of the bounding box.
@@ -951,7 +951,7 @@ void Text::computeBackdropBoundingBox() const
                     _textBB.zMax()
                 );
                 break;
-            }                                
+            }
         case DROP_SHADOW_BOTTOM_LEFT:
             {
                 _textBB.set(
@@ -1006,7 +1006,7 @@ void Text::computeBackdropBoundingBox() const
     }
 }
 
-// This method expands the bounding box to a settable margin when a bounding box drawing mode is active. 
+// This method expands the bounding box to a settable margin when a bounding box drawing mode is active.
 void Text::computeBoundingBoxMargin() const
 {
     if(_drawMode & (BOUNDINGBOX | FILLEDBOUNDINGBOX)){
@@ -1057,7 +1057,7 @@ void Text::computeColorGradientsOverall() const
         const GlyphQuads::Coords2& coords2 = glyphquad._coords;
 
         for(i=0;i<coords2.size();++i)
-        {  
+        {
             // Min and Max are needed for color gradients
             if(coords2[i].x() > max_x)
             {
@@ -1074,7 +1074,7 @@ void Text::computeColorGradientsOverall() const
             if(coords2[i].y() < min_y)
             {
                 min_y = coords2[i].y();
-            }        
+            }
 
         }
     }
@@ -1133,7 +1133,7 @@ void Text::computeColorGradientsOverall() const
                 _colorGradientBottomRight[2],
                 _colorGradientTopRight[2]
             );
-            // Alpha does not convert to HSV            
+            // Alpha does not convert to HSV
             float alpha = bilinearInterpolate(
                 min_x,
                 max_x,
@@ -1145,7 +1145,7 @@ void Text::computeColorGradientsOverall() const
                 _colorGradientTopLeft[3],
                 _colorGradientBottomRight[3],
                 _colorGradientTopRight[3]
-            );                                    
+            );
 
             colorCoords[i] = osg::Vec4(red,green,blue,alpha);
         }
@@ -1250,23 +1250,23 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                 doUpdate = true;
             }
         }
-        
+
         atc._traversalNumber = frameNumber;
         atc._width = width;
         atc._height = height;
-        
+
         if (doUpdate)
-        {    
+        {
             atc._transformedPosition = newTransformedPosition;
             atc._projection = projection;
             atc._modelview = modelview;
 
             computePositions(contextID);
         }
-        
+
     }
-    
-    
+
+
     // Ensure that the glyph coordinates have been transformed for
     // this context id.
 
@@ -1344,7 +1344,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             OSG_NOTICE<<"Warning: Text::drawImplementation() fillMode FILLEDBOUNDINGBOX not supported"<<std::endl;
         #endif
         }
-    }    
+    }
 
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
@@ -1401,7 +1401,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
             osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
 
-        
+
             gl.Color4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
             gl.Begin(GL_LINE_LOOP);
                 gl.Vertex3fv(c00.ptr());
@@ -1426,15 +1426,15 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z())*matrix);
 
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-        
+
         gl.Begin(GL_LINES);
             gl.Vertex3fv(hl.ptr());
             gl.Vertex3fv(hr.ptr());
             gl.Vertex3fv(vt.ptr());
             gl.Vertex3fv(vb.ptr());
         gl.End();
-        
-    }    
+
+    }
 }
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
@@ -1459,9 +1459,9 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
 
         pf.setVertexArray(glyphquad._transformedCoords[0].size(),&(glyphquad._transformedCoords[0].front()));
         pf.drawArrays(GL_QUADS,0,glyphquad._transformedCoords[0].size());
-            
+
     }
-    
+
 }
 
 
@@ -1475,7 +1475,7 @@ void Text::setThreadSafeRefUnref(bool threadSafe)
 void Text::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);
-    
+
     getActiveFont()->resizeGLObjectBuffers(maxSize);
 }
 
@@ -1556,7 +1556,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     unsigned int contextID = state.getContextID();
 
     const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-    if (!transformedCoords.empty()) 
+    if (!transformedCoords.empty())
     {
         state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
@@ -1654,7 +1654,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
             for( ; backdrop_index < max_backdrop_index; backdrop_index++)
             {
                 const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-                if (!transformedBackdropCoords.empty()) 
+                if (!transformedBackdropCoords.empty())
                 {
                     state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                     state.drawQuads(0,transformedBackdropCoords.size());
@@ -1710,7 +1710,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty()) 
+            if (!transformedBackdropCoords.empty())
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
@@ -1730,7 +1730,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
     OSG_NOTICE<<"Warning: Text::renderWithPolygonOffset(..) not implemented."<<std::endl;
 #endif
 }
-    
+
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
@@ -1769,7 +1769,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty()) 
+            if (!transformedBackdropCoords.empty())
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 state.drawQuads(0,transformedBackdropCoords.size());
@@ -1825,7 +1825,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty()) 
+            if (!transformedBackdropCoords.empty())
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 double offset = double(max_backdrop_index-backdrop_index)*0.0001;
@@ -1864,7 +1864,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
      */
     unsigned int contextID = state.getContextID();
     TextureGlyphQuadMap::iterator titr; // Moved up here for VC6
-    
+
     glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_STENCIL_TEST);
 
     // It seems I can get away without calling this here
@@ -1879,7 +1879,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // write only to the stencil buffer if we pass the depth test
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    // Disable writing to the color buffer so we only write to the stencil 
+    // Disable writing to the color buffer so we only write to the stencil
     // buffer and the depth buffer
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
@@ -1890,11 +1890,11 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
     // Arrrgh! Why does the code only seem to work correctly if I call this?
     glDepthMask(GL_FALSE);
-    
+
 
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
-    
+
     for(titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
@@ -1923,7 +1923,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty()) 
+            if (!transformedBackdropCoords.empty())
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 state.drawQuads(0,transformedBackdropCoords.size());
@@ -1932,7 +1932,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         // Draw the foreground text
         const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-        if (!transformedCoords.empty()) 
+        if (!transformedCoords.empty())
         {
             state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
             state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
@@ -1991,7 +1991,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty()) 
+            if (!transformedBackdropCoords.empty())
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 state.drawQuads(0,transformedBackdropCoords.size());

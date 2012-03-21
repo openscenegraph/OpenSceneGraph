@@ -276,10 +276,10 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
                                       src_width, src_height, (PixelFormat) dst_pix_fmt,
                                       /*SWS_BILINEAR*/ SWS_BICUBIC, NULL, NULL, NULL);
     }
-    
+
 
     OSG_INFO<<"Using sws_scale ";
-    
+
     int result =  sws_scale(m_swscale_ctx,
                             (src->data), (src->linesize), 0, src_height,
                             (dst->data), (dst->linesize));

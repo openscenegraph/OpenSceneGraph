@@ -208,5 +208,5 @@ public:
 }
 
 
-#endif  // Q3BSPLOAD_H 
+#endif  // Q3BSPLOAD_H
 

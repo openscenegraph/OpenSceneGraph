@@ -114,7 +114,7 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("useVertexBufferObjects"))
     {
         if (fr[1].matchWord("TRUE"))
@@ -143,7 +143,7 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     {
         fw.writeObject(*drawable.getStateSet());
     }
-    
+
     if (drawable.getShape())
     {
         fw.writeObject(*drawable.getShape());
@@ -168,20 +168,20 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     {
         fw.writeObject(*drawable.getDrawCallback());
     }
-    
-    
+
+
     if (drawable.getInitialBound().valid())
     {
         const osg::BoundingBox& bb = drawable.getInitialBound();
         fw.indent()<<"initialBound "<<bb.xMin()<<" "<<bb.yMin()<<" "<<bb.zMin()<<" "
                                     <<bb.xMax()<<" "<<bb.yMax()<<" "<<bb.zMax()<<std::endl;
     }
-    
+
     if (drawable.getComputeBoundingBoxCallback())
     {
         fw.writeObject(*drawable.getComputeBoundingBoxCallback());
     }
-    
+
 
     if (!drawable.getSupportsDisplayList())
     {
@@ -197,6 +197,6 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"useVertexBufferObjects ";
     if (drawable.getUseVertexBufferObjects()) fw << "TRUE" << std::endl;
     else fw << "FALSE" << std::endl;
-    
+
     return true;
 }

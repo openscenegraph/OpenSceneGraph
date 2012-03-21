@@ -12,7 +12,7 @@
 
 #include <string>
 
-namespace lwo2 
+namespace lwo2
 {
 
 // basic types
@@ -26,7 +26,7 @@ struct ID4
         id[2] = 0;
         id[3] = 0;
     }
-    
+
     char id[4];
 };
 

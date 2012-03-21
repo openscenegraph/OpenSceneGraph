@@ -70,7 +70,7 @@ class OSG_EXPORT StateSet : public Object
         /** Get the parent list of this StateSet. */
         inline const ParentList& getParents() const { return _parents; }
 
-        /** Get the a copy of parent list of node. A copy is returned to 
+        /** Get the a copy of parent list of node. A copy is returned to
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
@@ -277,7 +277,7 @@ class OSG_EXPORT StateSet : public Object
 
         /** Set this StateSet to contain specified uniform and override flag.*/
         void addUniform(Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON);
-        
+
         /** remove uniform of specified name from StateSet.*/
         void removeUniform(const std::string& name);
 
@@ -405,7 +405,7 @@ class OSG_EXPORT StateSet : public Object
         /** Get the number of Objects of this StateSet which require Update traversal,
           * since they have an Update Callback attached to them or their children.*/
         inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
-        
+
         /** Run the update callbacks attached directly to this StateSet or to its children.*/
         void runUpdateCallbacks(osg::NodeVisitor* nv);
 
@@ -425,7 +425,7 @@ class OSG_EXPORT StateSet : public Object
         /** Get the number of Objects of this StateSet which require Event traversal,
           * since they have an Eevnt Callback attached to them or their children.*/
         inline unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
-        
+
         /** Run the event callbacks attached directly to this StateSet or to its children.*/
         void runEventCallbacks(osg::NodeVisitor* nv);
 
@@ -461,7 +461,7 @@ class OSG_EXPORT StateSet : public Object
         friend class osg::Drawable;
         friend class osg::Uniform;
         friend class osg::StateAttribute;
-    
+
         ModeList                            _modeList;
         AttributeList                       _attributeList;
 
@@ -502,7 +502,7 @@ class OSG_EXPORT StateSet : public Object
         int                                 _binNum;
         std::string                         _binName;
         bool                                _nestRenderBins;
-        
+
         ref_ptr<Callback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;
         void setNumChildrenRequiringUpdateTraversal(unsigned int num);

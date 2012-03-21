@@ -188,33 +188,33 @@
 #endif
 
 #ifdef OSG_GL1_AVAILABLE
-    #define OSG_GL1_FEATURES 1
+    #define OSG_GL1_FEATURES true
 #else 
-    #define OSG_GL1_FEATURES 0
+    #define OSG_GL1_FEATURES false
 #endif
 
 #ifdef OSG_GL2_AVAILABLE
-    #define OSG_GL2_FEATURES 1
+    #define OSG_GL2_FEATURES true
 #else 
-    #define OSG_GL2_FEATURES 0
+    #define OSG_GL2_FEATURES false
 #endif
 
 #ifdef OSG_GL3_AVAILABLE
-    #define OSG_GL3_FEATURES 1
+    #define OSG_GL3_FEATURES true
 #else 
-    #define OSG_GL3_FEATURES 0
+    #define OSG_GL3_FEATURES false
 #endif
 
 #ifdef OSG_GLES1_AVAILABLE
-    #define OSG_GLES1_FEATURES 1
+    #define OSG_GLES1_FEATURES true
 #else 
-    #define OSG_GLES1_FEATURES 0
+    #define OSG_GLES1_FEATURES false
 #endif
 
 #ifdef OSG_GLES2_AVAILABLE
-    #define OSG_GLES2_FEATURES 1
+    #define OSG_GLES2_FEATURES true
 #else 
-    #define OSG_GLES2_FEATURES 0
+    #define OSG_GLES2_FEATURES false
 #endif
 
 

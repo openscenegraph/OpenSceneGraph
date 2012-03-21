@@ -22,7 +22,7 @@ bool Canvas::addWidget(Widget* widget, point_type x, point_type y) {
     if(!widget) return false;
 
     widget->setOrigin(x, y);
-    
+
     return Window::addWidget(widget);
 }
 

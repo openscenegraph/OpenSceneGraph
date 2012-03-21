@@ -266,8 +266,8 @@ void StatsHandler::reset()
     _camera->removeChildren( 0, _camera->getNumChildren() );
 }
 
-void StatsHandler::addUserStatsLine(const std::string& label, const osg::Vec4& textColor, const osg::Vec4& barColor, 
-                                    const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace, 
+void StatsHandler::addUserStatsLine(const std::string& label, const osg::Vec4& textColor, const osg::Vec4& barColor,
+                                    const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace,
                                     const std::string& beginTimeName, const std::string& endTimeName, float maxValue)
 {
     _userStatsLines.push_back(UserStatsLine(label, textColor, barColor, timeTakenName, multiplier, average, averageInInverseSpace, beginTimeName, endTimeName, maxValue));
@@ -1226,16 +1226,16 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             pos.x() = _leftPos;
 
             UserStatsLine& line = _userStatsLines[i];
-            createTimeStatsLine(line.label, pos, line.textColor, line.barColor, viewer->getViewerStats(), viewer->getViewerStats(), 
+            createTimeStatsLine(line.label, pos, line.textColor, line.barColor, viewer->getViewerStats(), viewer->getViewerStats(),
                 line.timeTakenName, line.multiplier, line.average, line.averageInInverseSpace, line.beginTimeName, line.endTimeName);
-        
+
             pos.y() -= _characterSize*_lineHeight;
         }
 
         {
             pos.x() = _leftPos;
 
-            createTimeStatsLine("Event", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(), 
+            createTimeStatsLine("Event", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(),
                 "Event traversal time taken", 1000.0, true, false, "Event traversal begin time", "Event traversal end time");
 
             pos.y() -= _characterSize*_lineHeight;
@@ -1244,7 +1244,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         {
             pos.x() = _leftPos;
 
-            createTimeStatsLine("Update", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(), 
+            createTimeStatsLine("Update", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(),
                 "Update traversal time taken", 1000.0, true, false, "Update traversal begin time", "Update traversal end time");
 
             pos.y() -= _characterSize*_lineHeight;
@@ -1617,9 +1617,9 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 }
 
 void StatsHandler::createTimeStatsLine(const std::string& lineLabel,
-                                       osg::Vec3 pos, const osg::Vec4& textColor, const osg::Vec4& barColor, 
-                                       osg::Stats* viewerStats, osg::Stats* stats, 
-                                       const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace, 
+                                       osg::Vec3 pos, const osg::Vec4& textColor, const osg::Vec4& barColor,
+                                       osg::Stats* viewerStats, osg::Stats* stats,
+                                       const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace,
                                        const std::string& beginTimeName, const std::string& endTimeName)
 {
     osg::ref_ptr<osgText::Text> label = new osgText::Text;
@@ -1678,7 +1678,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
     {
         pos.x() = _leftPos;
 
-        createTimeStatsLine("Cull", pos, colorCull, colorCullAlpha, viewerStats, stats, 
+        createTimeStatsLine("Cull", pos, colorCull, colorCullAlpha, viewerStats, stats,
             "Cull traversal time taken", 1000.0, true, false, "Cull traversal begin time", "Cull traversal end time");
 
         pos.y() -= _characterSize*_lineHeight;
@@ -1687,7 +1687,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
     {
         pos.x() = _leftPos;
 
-        createTimeStatsLine("Draw", pos, colorDraw, colorDrawAlpha, viewerStats, stats, 
+        createTimeStatsLine("Draw", pos, colorDraw, colorDrawAlpha, viewerStats, stats,
             "Draw traversal time taken", 1000.0, true, false, "Draw traversal begin time", "Draw traversal end time");
 
         pos.y() -= _characterSize*_lineHeight;
@@ -1697,7 +1697,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
     {
         pos.x() = _leftPos;
 
-        createTimeStatsLine("GPU", pos, colorGPU, colorGPUAlpha, viewerStats, stats, 
+        createTimeStatsLine("GPU", pos, colorGPU, colorGPUAlpha, viewerStats, stats,
             "GPU draw time taken", 1000.0, true, false, "GPU draw begin time", "GPU draw end time");
 
         pos.y() -= _characterSize*_lineHeight;

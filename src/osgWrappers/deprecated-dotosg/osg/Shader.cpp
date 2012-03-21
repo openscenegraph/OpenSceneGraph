@@ -42,7 +42,7 @@ bool Shader_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s") )
     {
 
@@ -51,7 +51,7 @@ bool Shader_readLocalData(Object& obj, Input& fr)
             shader.setShaderSource(s->getShaderSource());
         else
             shader.loadShaderSourceFromFile( osgDB::findDataFile(fr[1].getStr()) );
-        
+
         fr += 2;
         iteratorAdvanced = true;
     }
@@ -94,18 +94,18 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
         {
             fileName = fw.getShaderFileNameForOutput();
         }
-        
+
         osgDB::writeShaderFile(shader, fileName);
 
         if (!fileName.empty())
-        {    
+        {
             fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
         }
 
     }
-    else // no need to write shaders to external files, hence embed it 
+    else // no need to write shaders to external files, hence embed it
     {
-        
+
         // split source text into individual lines
         std::vector<std::string> lines;
         std::istringstream iss(shader.getShaderSource());
@@ -116,12 +116,12 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
 
         fw.indent() << "code {\n";
         fw.moveIn();
-    
+
         std::vector<std::string>::const_iterator j;
         for (j=lines.begin(); j!=lines.end(); ++j) {
             fw.indent() << fw.wrapString(*j) << "\n";
         }
-    
+
         fw.moveOut();
         fw.indent() << "}\n";
     }

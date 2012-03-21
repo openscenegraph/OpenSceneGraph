@@ -208,7 +208,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         /// Set Vertices, normals, and UVs
         void setControlPointAndNormalsAndUV(const osg::Geode& geo,
                                             MapIndices&       index_vert,
-                                            bool              texcoords,       
+                                            bool              texcoords,
                                             KFbxMesh*         fbxMesh);
 
         /**
@@ -228,7 +228,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
         typedef std::map<osg::ref_ptr<const osg::StateSet>, Material, CompareStateSet> MaterialMap;
-       
+
         ///We need this for every new Node we create.
         KFbxSdkManager* _pSdkManager;
 

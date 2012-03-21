@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
@@ -23,7 +23,7 @@
 
 using namespace osg;
 
-// static cache of deleted fragment programs which can only 
+// static cache of deleted fragment programs which can only
 // by completely deleted once the appropriate OpenGL context
 // is set.
 typedef std::list<GLuint> FragmentProgramObjectList;
@@ -69,7 +69,7 @@ void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,
             elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
-        
+
     availableTime -= elapsedTime;
 }
 
@@ -91,13 +91,13 @@ FragmentProgram::FragmentProgram(const FragmentProgram& vp,const CopyOp& copyop)
 {
     _fragmentProgram = vp._fragmentProgram;
 
-    for( LocalParamList::const_iterator itr = vp._programLocalParameters.begin(); 
+    for( LocalParamList::const_iterator itr = vp._programLocalParameters.begin();
         itr != vp._programLocalParameters.end(); ++itr )
     {
         _programLocalParameters[itr->first] = itr->second;
     }
 
-    for( MatrixList::const_iterator mitr = vp._matrixList.begin(); 
+    for( MatrixList::const_iterator mitr = vp._matrixList.begin();
         mitr != vp._matrixList.end(); ++mitr )
     {
         _matrixList[mitr->first] = mitr->second;
@@ -278,7 +278,7 @@ void FragmentProgram::Extensions::glBindProgram(GLenum target, GLuint id) const
     else
     {
         OSG_WARN<<"Error: glBindProgram not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void FragmentProgram::Extensions::glGenPrograms(GLsizei n, GLuint *programs) const
@@ -309,7 +309,7 @@ void FragmentProgram::Extensions::glProgramString(GLenum target, GLenum format, 
 {
     if (_glProgramString)
     {
-        _glProgramString(target,format, len, string); 
+        _glProgramString(target,format, len, string);
     }
     else
     {

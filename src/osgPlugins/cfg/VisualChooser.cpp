@@ -165,9 +165,9 @@ void VisualChooser::setSampleBuffers( unsigned int size )
     addAttribute( SampleBuffers, size );
 }
 
-void VisualChooser::setVisualID( unsigned int id ) 
-{ 
-    _visual_id = id; 
+void VisualChooser::setVisualID( unsigned int id )
+{
+    _visual_id = id;
 }
 
 void VisualChooser::setSimpleConfiguration( bool doublebuffer )
@@ -179,7 +179,7 @@ void VisualChooser::setSimpleConfiguration( bool doublebuffer )
         addAttribute( DoubleBuffer );
 }
 
-void VisualChooser::clear() 
+void VisualChooser::clear()
 {
     _visual_attributes.clear();
     resetVisualInfo();
@@ -241,7 +241,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
       GLint val;
       if((*_vinfo) && (aglDescribePixelFormat(*_vinfo, AGL_NO_RECOVERY, &val))) return _vinfo;
     }
-    else 
+    else
     {
       // Use malloc() since new() causes a bus error
       _vinfo = (VisualInfo*)malloc(sizeof(VisualInfo*));
@@ -284,7 +284,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     if(*_vinfo == NULL)
     {
       std::cerr<< "aglChoosePixelFormat failed: " << aglGetError() << std::endl;
-      for(i=va.begin(); i!=va.end(); ++i) 
+      for(i=va.begin(); i!=va.end(); ++i)
       {
         std::cerr << (*i) << ", ";
       }
@@ -341,7 +341,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     {
       // If VisualInfo exists, then we may be able to reuse it
       GLint val;
-      if(!CGLDescribePixelFormat(*_vinfo, 0L, kCGLPFANoRecovery, &val)) 
+      if(!CGLDescribePixelFormat(*_vinfo, 0L, kCGLPFANoRecovery, &val))
         return _vinfo;
     }
 
@@ -372,7 +372,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     {
       std::cerr<< "CGLChoosePixelFormat failed: " << CGLErrorString(err) << std::endl;
       std::vector<int>::iterator i;
-      for(i=va.begin(); i!=va.end(); ++i) 
+      for(i=va.begin(); i!=va.end(); ++i)
       {
         std::cerr << (*i) << ", ";
       }
@@ -469,13 +469,13 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     else
     {
         p = _visual_attributes.end() - 1;
-    
+
         while( _vinfo == NULL && va.size() > 0)
         {
             _vinfo = glXChooseVisual( dpy, screen, &(va.front()) );
         if( _vinfo == NULL && va.size() > 0 )
         {
-            
+
                 // should we report an message that we're relaxing constraints here?
                 // std::cout << "Popping attributes"<<std::endl;
 
@@ -514,7 +514,7 @@ void VisualChooser::applyAttribute(const VisualAttribute &va, std::vector<int> &
         attribs.push_back(WGL_SUPPORT_OPENGL_ARB);
         attribs.push_back(1);
         attribs.push_back(WGL_ACCELERATION_ARB);
-        attribs.push_back(WGL_FULL_ACCELERATION_ARB);        
+        attribs.push_back(WGL_FULL_ACCELERATION_ARB);
         return;
     }
 
@@ -535,8 +535,8 @@ void VisualChooser::applyAttribute(const VisualAttribute &va, std::vector<int> &
 
     switch (va.attribute())
     {
-        case Level:          return;    
-        case BufferSize:     attr.first = WGL_COLOR_BITS_ARB; break;        
+        case Level:          return;
+        case BufferSize:     attr.first = WGL_COLOR_BITS_ARB; break;
         case RGBA:           attr.first = WGL_PIXEL_TYPE_ARB; attr.second = WGL_TYPE_RGBA_ARB; break;
         case Stereo:         attr.first = WGL_STEREO_ARB; attr.second = 1;  break;
         case AuxBuffers:     attr.first = WGL_AUX_BUFFERS_ARB; break;
@@ -569,7 +569,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     if (_visual_attributes.empty())
         setSimpleConfiguration();
 
-    int vid;    
+    int vid;
     bool failed = false;
 
     WGLExtensions *ext = WGLExtensions::instance();
@@ -586,13 +586,13 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
             failed = !ext->wglChoosePixelFormat(*dpy, &attribs.front(), 0, 1, &vid, &num_formats) || num_formats == 0;
             if (failed)
             {
-                // **** DRIVER BUG? It seems that some ATI cards don't support 
+                // **** DRIVER BUG? It seems that some ATI cards don't support
                 // **** the WGL_SWAP_METHOD_ARB attribute. Now we try to remove
                 // **** it from the attribute list and choose a pixel format again.
                 for (std::vector<int>::iterator k=attribs.begin(); k!=attribs.end(); ++k)
                 {
                     if (*k == WGL_SWAP_METHOD_ARB)
-                    {   
+                    {
                         // attribute come in sequential attribute,parameter pairs
                         // as WGL specifications so we need to delete two entries
                         attribs.erase(k,k+2);
@@ -655,7 +655,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
             if ( vid != 0 )
             {
               // Is this additional check neccessary ?
-              // Did anyone encountered a situation where 
+              // Did anyone encountered a situation where
               // ChoosePixelFormat returned PXIELFORMAT worse than required ?
               _visual_id = static_cast<unsigned int>(vid);
               VisualInfo pfd;
@@ -681,9 +681,9 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
                   if (i->attribute() == AuxBuffers)        boolOK &= pfd.cAuxBuffers >= i->parameter();
               }
               if ( !boolOK )
-                vid = 0;             
+                vid = 0;
             }
-            
+
             if( vid == 0 )
             {
                 failed = true;
@@ -695,7 +695,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
             }
 
         } while (failed);
-        
+
     }
 
     if (failed)
@@ -710,7 +710,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
     // because the pixel format is usually chosen by visual ID rather
     // than by descriptor.
     _vinfo = new VisualInfo;
-    DescribePixelFormat(*dpy, _visual_id, sizeof(PIXELFORMATDESCRIPTOR), _vinfo); 
+    DescribePixelFormat(*dpy, _visual_id, sizeof(PIXELFORMATDESCRIPTOR), _vinfo);
 
     return _vinfo;
 }
@@ -737,7 +737,7 @@ void VisualChooser::setStrictAdherence(bool strictAdherence)
 bool VisualChooser::isDoubleBuffer() const
 {
     for (std::vector<VisualAttribute>::const_iterator i=_visual_attributes.begin(); i!=_visual_attributes.end(); ++i)
-        if (i->attribute() == DoubleBuffer) 
+        if (i->attribute() == DoubleBuffer)
             return true;
 
     return false;

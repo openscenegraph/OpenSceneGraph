@@ -23,7 +23,7 @@ namespace
 {
 
     using osg::NodeVisitor;
-    
+
      // this is a visitor class that prepares all geometries in a subgraph
     // by calling prepareGeometry() which in turn generates tangent-space
     // basis vectors
@@ -137,8 +137,8 @@ namespace
     // matrix.
     class ViewMatrixExtractor: public osg::StateAttribute {
     public:
-    
-    
+
+
         ViewMatrixExtractor()
         :    osg::StateAttribute(),
             _vp(0),
@@ -184,7 +184,7 @@ namespace
                     osg::Matrix M = state.getInitialInverseViewMatrix();
                     for (int i=0; i<4; ++i) {
                         _vp->setProgramLocalParameter(_param+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
-                    }                
+                    }
                 }
             }
         }
@@ -225,7 +225,7 @@ namespace
         }
 
         META_Technique(
-            "FullArbTechnique", 
+            "FullArbTechnique",
             "Single-pass technique, requires ARB_vertex_program and ARB_fragment_program."
         );
 
@@ -337,7 +337,7 @@ namespace
                 "    DP3 R0.x, R6.xyzx, R5.xyzx;"
                 "    MUL result.color.front.primary.w, c5.y, R0.x;"
                 "END\n";
-         
+
             // fragment program
             std::ostringstream fp_oss;
             fp_oss <<
@@ -411,7 +411,7 @@ namespace
 {
 
     // "ARB Vp" technique uses ARB vertex program and DOT3 texture environment.
-    // Ambient and specular components are not handled. A texture for the diffuse 
+    // Ambient and specular components are not handled. A texture for the diffuse
     // component is required as well as a normal map texture.
     class ArbVpTechnique: public Technique {
     public:
@@ -510,7 +510,7 @@ namespace
             }
 
             // second pass, self-shadowing
-            bool selfShadowing = false; 
+            bool selfShadowing = false;
             if (selfShadowing)
             {
                 std::ostringstream vp_oss;
@@ -545,7 +545,7 @@ namespace
                 ss->setAttributeAndModes(vp.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 osg::ref_ptr<osg::BlendFunc> bf = new osg::BlendFunc;
-                bf->setFunction(osg::BlendFunc::DST_COLOR, osg::BlendFunc::ZERO);                
+                bf->setFunction(osg::BlendFunc::DST_COLOR, osg::BlendFunc::ZERO);
                 ss->setAttributeAndModes(bf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 ss->setTextureMode(_diffuse_unit, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);

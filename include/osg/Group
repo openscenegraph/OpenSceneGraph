@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,7 +31,7 @@ class OSG_EXPORT Group : public Node
 
 
         Group();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Group(const Group&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -53,13 +53,13 @@ class OSG_EXPORT Group : public Node
         /** Insert Node to Group at specific location.
           * The new child node is inserted into the child list
           * before the node at the specified index. No nodes
-          * are removed from the group with this operation. 
+          * are removed from the group with this operation.
         */
         virtual bool insertChild( unsigned int index, Node *child );
 
         /** Remove Node from Group.
           * If Node is contained in Group then remove it from the child
-          * list, decrement its reference count, and dirty the 
+          * list, decrement its reference count, and dirty the
           * bounding sphere to force it to recompute on next getBound() and
           * return true for success. If Node is not found then return false
           * and do not change the reference count of the Node.
@@ -74,7 +74,7 @@ class OSG_EXPORT Group : public Node
 
         /** Remove Node from Group.
           * If Node is contained in Group then remove it from the child
-          * list, decrement its reference count, and dirty the 
+          * list, decrement its reference count, and dirty the
           * bounding sphere to force it to recompute on next getBound() and
           * return true for success. If Node is not found then return false
           * and do not change the reference count of the Node.
@@ -104,7 +104,7 @@ class OSG_EXPORT Group : public Node
           * When Set can be successful applied, the algorithm is : decrement the reference count origNode and increment the
           * reference count of newNode, and dirty the bounding sphere
           * to force it to recompute on next getBound() and return true.
-          * If origNode is not found then return false and do not 
+          * If origNode is not found then return false and do not
           * add newNode. If newNode is NULL then return false and do
           * not remove origNode. Also returns false if newChild is a Scene node.
         */
@@ -119,7 +119,7 @@ class OSG_EXPORT Group : public Node
         /** Return true if node is contained within Group. */
         inline bool containsNode( const Node* node ) const
         {
-            
+
             for (NodeList::const_iterator itr=_children.begin();
                  itr!=_children.end();
                  ++itr)
@@ -154,7 +154,7 @@ class OSG_EXPORT Group : public Node
         virtual void releaseGLObjects(osg::State* = 0) const;
 
         virtual BoundingSphere computeBound() const;
-        
+
     protected:
 
         virtual ~Group();

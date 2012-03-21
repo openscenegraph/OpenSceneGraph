@@ -355,7 +355,7 @@ void trpgwAppFile::Init(trpgEndian inNess,const char *fileName,bool reuse)
         fseek(fp,0,SEEK_END);
         lengthSoFar = ftell(fp);
         valid = true;
-    }    
+    }
 }
 
 trpgwAppFile::~trpgwAppFile()
@@ -446,7 +446,7 @@ int64 trpgwAppFile::Pos() const
 {
     if (!isValid())
         return 0;
-    
+
     // Note: This means an appendable file is capped at 2GB
     long pos = ftell(fp);
 

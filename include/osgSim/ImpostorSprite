@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -44,7 +44,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         /** Clone an object of the same type as an ImpostorSprite. */
         virtual osg::Object* cloneType() const { return new ImpostorSprite(); }
 
-        /** Clone on ImpostorSprite just returns a clone of type, 
+        /** Clone on ImpostorSprite just returns a clone of type,
           * since it is not appropriate to share data of an ImpostorSprite.
         */
         virtual osg::Object* clone(const osg::CopyOp&) const { return new ImpostorSprite(); }
@@ -52,7 +52,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         virtual const char* libraryName() const { return "osgSim"; }
         virtual const char* className() const { return "ImpostorSprite"; }
 
-        /** Set the parent, which must be an Impostor. 
+        /** Set the parent, which must be an Impostor.
           * Unlike conventional Drawables, ImpostorSprites can only ever have
           * one parent.
         */
@@ -69,19 +69,19 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
 
         /** Get the eye point for when the ImpostorSprite was snapped. */
         inline const osg::Vec3& getStoredLocalEyePoint() const { return _storedLocalEyePoint; }
-        
+
         /** Set the frame number for when the ImpostorSprite was last used in rendering. */
         inline void setLastFrameUsed(unsigned int frameNumber) { _lastFrameUsed = frameNumber; }
-        
+
         /** Get the frame number for when the ImpostorSprite was last used in rendering. */
         inline unsigned int getLastFrameUsed() const { return _lastFrameUsed; }
-        
+
 
         /** Get the coordinates of the corners of the quad.
           * Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
         */
         inline osg::Vec3* getCoords() { return _coords; }
-        
+
         /** Get the const coordinates of the corners of the quad. */
         inline const osg::Vec3* getCoords() const { return _coords; }
 
@@ -91,7 +91,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
           * Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
         */
         inline osg::Vec2* getTexCoords() { return _texcoords; }
-        
+
         /** Get the const texture coordinates of the corners of the quad. */
         inline const osg::Vec2* getTexCoords() const { return _texcoords; }
 
@@ -108,7 +108,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
           * Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
         */
         inline osg::Vec3* getControlCoords() { return _controlcoords; }
-        
+
         /** Get the const control coordinates of the corners of the quad. */
         inline const osg::Vec3* getControlCoords() const { return _controlcoords; }
 
@@ -121,7 +121,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         void setTexture(osg::Texture2D* tex,int s,int t);
         osg::Texture2D* getTexture() { return _texture; }
         const osg::Texture2D* getTexture() const { return _texture; }
-    
+
         int s() const { return _s; }
         int t() const { return _t; }
 
@@ -150,7 +150,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         osg::Vec4 _color;
 
         virtual osg::BoundingBox computeBound() const;
-        
+
         /** Set the camera node to use for pre rendering the impostor sprite's texture.*/
         void setCamera(osg::Camera* camera) { _camera = camera; }
 
@@ -170,7 +170,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         Impostor* _parent;
 
         friend class osgSim::ImpostorSpriteManager;
-        
+
         // camera node for doing the pre rendering.
         osg::ref_ptr<osg::Camera> _camera;
 
@@ -179,45 +179,45 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         ImpostorSpriteManager*  _ism;
         ImpostorSprite*         _previous;
         ImpostorSprite*         _next;
-        
+
         unsigned int _lastFrameUsed;
 
         osg::Vec3 _storedLocalEyePoint;
-        
+
         osg::Vec3 _coords[4];
         osg::Vec2 _texcoords[4];
         osg::Vec3 _controlcoords[4];
-        
+
         osg::Texture2D* _texture;
         int _s;
         int _t;
-        
-        
+
+
 };
 
 /** Helper class for managing the reuse of ImpostorSprite resources. */
 class OSGSIM_EXPORT ImpostorSpriteManager : public osg::Referenced
 {
     public:
-    
+
         ImpostorSpriteManager();
-        
+
         bool empty() const { return _first==0; }
 
         ImpostorSprite* first() { return _first; }
-        
+
         ImpostorSprite* last() { return _last; }
-        
+
         void push_back(ImpostorSprite* is);
-        
+
         void remove(ImpostorSprite* is);
-        
+
         ImpostorSprite* createOrReuseImpostorSprite(int s,int t,unsigned int frameNumber);
 
         osg::StateSet* createOrReuseStateSet();
 
         void reset();
-    
+
     protected:
 
 
@@ -228,7 +228,7 @@ class OSGSIM_EXPORT ImpostorSpriteManager : public osg::Referenced
 
         ImpostorSprite*                 _first;
         ImpostorSprite*                 _last;
-        
+
         typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
         StateSetList                    _stateSetList;
         unsigned int                    _reuseStateSetIndex;

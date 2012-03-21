@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdio.h>
@@ -81,16 +81,16 @@ void Quat::makeRotate( value_type angle, const Vec3d& vec )
 }
 
 
-void Quat::makeRotate ( value_type angle1, const Vec3f& axis1, 
+void Quat::makeRotate ( value_type angle1, const Vec3f& axis1,
                         value_type angle2, const Vec3f& axis2,
                         value_type angle3, const Vec3f& axis3)
 {
     makeRotate(angle1,Vec3d(axis1),
                angle2,Vec3d(axis2),
                angle3,Vec3d(axis3));
-}                        
+}
 
-void Quat::makeRotate ( value_type angle1, const Vec3d& axis1, 
+void Quat::makeRotate ( value_type angle1, const Vec3d& axis1,
                         value_type angle2, const Vec3d& axis2,
                         value_type angle3, const Vec3d& axis3)
 {
@@ -99,7 +99,7 @@ void Quat::makeRotate ( value_type angle1, const Vec3d& axis1,
     Quat q3; q3.makeRotate(angle3,axis3);
 
     *this = q1*q2*q3;
-}                        
+}
 
 
 void Quat::makeRotate( const Vec3f& from, const Vec3f& to )
@@ -109,14 +109,14 @@ void Quat::makeRotate( const Vec3f& from, const Vec3f& to )
 
 /** Make a rotation Quat which will rotate vec1 to vec2
 
-This routine uses only fast geometric transforms, without costly acos/sin computations. 
+This routine uses only fast geometric transforms, without costly acos/sin computations.
 It's exact, fast, and with less degenerate cases than the acos/sin method.
 
-For an explanation of the math used, you may see for example: 
+For an explanation of the math used, you may see for example:
 http://logiciels.cnes.fr/MARMOTTES/marmottes-mathematique.pdf
 
-@note This is the rotation with shortest angle, which is the one equivalent to the 
-acos/sin transform method. Other rotations exists, for example to additionally keep 
+@note This is the rotation with shortest angle, which is the one equivalent to the
+acos/sin transform method. Other rotations exists, for example to additionally keep
 a local horizontal attitude.
 
 @author Nicolas Brodu
@@ -124,7 +124,7 @@ a local horizontal attitude.
 void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
 {
 
-    // This routine takes any vector as argument but normalized 
+    // This routine takes any vector as argument but normalized
     // vectors are necessary, if only for computing the dot product.
     // Too bad the API is that generic, it leads to performance loss.
     // Even in the case the 2 vectors are not normalized but same length,
@@ -133,7 +133,7 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
     // So, we have to test... in the hope of saving at least a sqrt
     Vec3d sourceVector = from;
     Vec3d targetVector = to;
-    
+
     value_type fromLen2 = from.length2();
     value_type fromLen;
     // normalize only when necessary, epsilon test
@@ -141,7 +141,7 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
         fromLen = sqrt(fromLen2);
         sourceVector /= fromLen;
     } else fromLen = 1.0;
-    
+
     value_type toLen2 = to.length2();
     // normalize only when necessary, epsilon test
     if ((toLen2 < 1.0-1e-7) || (toLen2 > 1.0+1e-7)) {
@@ -149,26 +149,26 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
         // re-use fromLen for case of mapping 2 vectors of the same length
         if ((toLen2 > fromLen2-1e-7) && (toLen2 < fromLen2+1e-7)) {
             toLen = fromLen;
-        } 
+        }
         else toLen = sqrt(toLen2);
         targetVector /= toLen;
     }
 
-    
+
     // Now let's get into the real stuff
     // Use "dot product plus one" as test as it can be re-used later on
     double dotProdPlus1 = 1.0 + sourceVector * targetVector;
-    
+
     // Check for degenerate case of full u-turn. Use epsilon for detection
     if (dotProdPlus1 < 1e-7) {
-    
+
         // Get an orthogonal vector of the given vector
         // in a plane with maximum vector coordinates.
         // Then use it as quaternion axis with pi angle
         // Trick is to realize one value at least is >0.6 for a normalized vector.
         if (fabs(sourceVector.x()) < 0.6) {
             const double norm = sqrt(1.0 - sourceVector.x() * sourceVector.x());
-            _v[0] = 0.0; 
+            _v[0] = 0.0;
             _v[1] = sourceVector.z() / norm;
             _v[2] = -sourceVector.y() / norm;
             _v[3] = 0.0;
@@ -186,7 +186,7 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
             _v[3] = 0.0;
         }
     }
-    
+
     else {
         // Find the shortest angle quaternion that transforms normalized vectors
         // into one other. Formula is still valid when vectors are colinear
@@ -211,14 +211,14 @@ void Quat::makeRotate_original( const Vec3d& from, const Vec3d& to )
 
     value_type length1  = from.length();
     value_type length2  = to.length();
-    
+
     // dot product vec1*vec2
     value_type cosangle = from*to/(length1*length2);
 
     if ( fabs(cosangle - 1) < epsilon )
     {
         OSG_INFO<<"*** Quat::makeRotate(from,to) with near co-linear vectors, epsilon= "<<fabs(cosangle-1)<<std::endl;
-    
+
         // cosangle is close to 1, so the vectors are close to being coincident
         // Need to generate an angle of zero with any vector we like
         // We'll choose (1,0,0)
@@ -235,13 +235,13 @@ void Quat::makeRotate_original( const Vec3d& from, const Vec3d& to )
             else tmp.set(0.0,0.0,1.0);
         else if (fabs(from.y())<fabs(from.z())) tmp.set(0.0,1.0,0.0);
         else tmp.set(0.0,0.0,1.0);
-        
+
         Vec3d fromd(from.x(),from.y(),from.z());
-        
+
         // find orthogonal axis.
         Vec3d axis(fromd^tmp);
         axis.normalize();
-        
+
         _v[0] = axis[0]; // sin of half angle of PI is 1.0.
         _v[1] = axis[1]; // sin of half angle of PI is 1.0.
         _v[2] = axis[2]; // sin of half angle of PI is 1.0.
@@ -309,15 +309,15 @@ void Quat::slerp( value_type t, const Quat& from, const Quat& to )
 {
     const double epsilon = 0.00001;
     double omega, cosomega, sinomega, scale_from, scale_to ;
-    
+
     osg::Quat quatTo(to);
     // this is a dot product
-    
+
     cosomega = from.asVec4() * to.asVec4();
-    
+
     if ( cosomega <0.0 )
-    { 
-        cosomega = -cosomega; 
+    {
+        cosomega = -cosomega;
         quatTo = -to;
     }
 
@@ -341,7 +341,7 @@ void Quat::slerp( value_type t, const Quat& from, const Quat& to )
     }
 
     *this = (from*scale_from) + (quatTo*scale_to);
-    
+
     // so that we get a Vec4
 }
 
@@ -357,32 +357,32 @@ void test_Quat_Eueler(value_type heading,value_type pitch,value_type roll)
 {
     osg::Quat q;
     q.makeRotate(heading,pitch,roll);
-    
+
     osg::Matrix q_m;
     q.get(q_m);
-    
+
     osg::Vec3 xAxis(1,0,0);
     osg::Vec3 yAxis(0,1,0);
     osg::Vec3 zAxis(0,0,1);
-    
+
     cout << "heading = "<<heading<<"  pitch = "<<pitch<<"  roll = "<<roll<<endl;
 
     cout <<"q_m = "<<q_m;
     cout <<"xAxis*q_m = "<<xAxis*q_m << endl;
     cout <<"yAxis*q_m = "<<yAxis*q_m << endl;
     cout <<"zAxis*q_m = "<<zAxis*q_m << endl;
-    
+
     osg::Matrix r_m = osg::Matrix::rotate(roll,0.0,1.0,0.0)*
                       osg::Matrix::rotate(pitch,1.0,0.0,0.0)*
                       osg::Matrix::rotate(-heading,0.0,0.0,1.0);
-                      
+
     cout << "r_m = "<<r_m;
     cout <<"xAxis*r_m = "<<xAxis*r_m << endl;
     cout <<"yAxis*r_m = "<<yAxis*r_m << endl;
     cout <<"zAxis*r_m = "<<zAxis*r_m << endl;
-    
+
     cout << endl<<"*****************************************" << endl<< endl;
-    
+
 }
 
 void test_Quat()

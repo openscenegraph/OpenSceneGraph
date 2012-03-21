@@ -34,41 +34,41 @@ FFmpegAudioStream::~FFmpegAudioStream()
 }
 
 void FFmpegAudioStream::setAudioSink(osg::AudioSink* audio_sink)
-{ 
+{
     OSG_NOTICE<<"FFmpegAudioStream::setAudioSink( "<<audio_sink<<")"<<std::endl;
-    m_decoder->audio_decoder().setAudioSink(audio_sink); 
+    m_decoder->audio_decoder().setAudioSink(audio_sink);
 }
 
 
 void FFmpegAudioStream::consumeAudioBuffer(void * const buffer, const size_t size)
-{ 
+{
     m_decoder->audio_decoder().fillBuffer(buffer, size);
 }
 
 double FFmpegAudioStream::duration() const
-{ 
-    return m_decoder->duration(); 
+{
+    return m_decoder->duration();
 }
 
 
 
-int FFmpegAudioStream::audioFrequency() const 
-{ 
-    return m_decoder->audio_decoder().frequency(); 
+int FFmpegAudioStream::audioFrequency() const
+{
+    return m_decoder->audio_decoder().frequency();
 }
 
 
 
-int FFmpegAudioStream::audioNbChannels() const 
-{ 
+int FFmpegAudioStream::audioNbChannels() const
+{
     return m_decoder->audio_decoder().nbChannels();
 }
 
 
 
-osg::AudioStream::SampleFormat FFmpegAudioStream::audioSampleFormat() const 
-{ 
-    return m_decoder->audio_decoder().sampleFormat(); 
+osg::AudioStream::SampleFormat FFmpegAudioStream::audioSampleFormat() const
+{
+    return m_decoder->audio_decoder().sampleFormat();
 }
 
 

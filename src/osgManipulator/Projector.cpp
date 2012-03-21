@@ -30,7 +30,7 @@ bool computeClosestPoints(const osg::LineSegment& l1, const osg::LineSegment& l2
     // Computes the closest points (p1 and p2 on line l1 and l2 respectively) between the two lines
     // An explanation of the algorithm can be found at
     // http://www.geometryalgorithms.com/Archive/algorithm_0106/algorithm_0106.htm
-    
+
     osg::LineSegment::vec_type u = l1.end() - l1.start(); u.normalize();
     osg::LineSegment::vec_type v = l2.end() - l2.start(); v.normalize();
 
@@ -74,8 +74,8 @@ bool computeClosestPointOnLine(const osg::Vec3d& lineStart, const osg::Vec3d& li
     return true;
 }
 
-bool getPlaneLineIntersection(const osg::Vec4d& plane, 
-                              const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+bool getPlaneLineIntersection(const osg::Vec4d& plane,
+                              const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd,
                               osg::Vec3d& isect)
 {
     const double deltaX = lineEnd.x() - lineStart.x();
@@ -94,8 +94,8 @@ bool getPlaneLineIntersection(const osg::Vec4d& plane,
     return true;
 }
 
-bool getSphereLineIntersection(const osg::Sphere& sphere, 
-                               const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+bool getSphereLineIntersection(const osg::Sphere& sphere,
+                               const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd,
                                osg::Vec3d& frontISect, osg::Vec3d& backISect)
 {
     osg::Vec3d lineDirection = lineEnd - lineStart;
@@ -104,7 +104,7 @@ bool getSphereLineIntersection(const osg::Sphere& sphere,
     osg::Vec3d v = lineStart - sphere.getCenter();
     double B = 2.0f * (lineDirection * v);
     double C = v * v - sphere.getRadius() * sphere.getRadius();
-    
+
     double discriminant = B * B - 4.0f * C;
 
     if (discriminant < 0.0f) // Line and sphere don't intersect.
@@ -120,7 +120,7 @@ bool getSphereLineIntersection(const osg::Sphere& sphere,
     return true;
 }
 
-bool getUnitCylinderLineIntersection(const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+bool getUnitCylinderLineIntersection(const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd,
                                      osg::Vec3d& isectFront, osg::Vec3d& isectBack)
 {
     osg::Vec3d dir = lineEnd - lineStart;
@@ -152,7 +152,7 @@ bool getUnitCylinderLineIntersection(const osg::Vec3d& lineStart, const osg::Vec
 }
 
 bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
-                                 const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+                                 const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd,
                                  osg::Vec3d& isectFront, osg::Vec3d& isectBack)
 {
     // Compute matrix transformation that takes the cylinder to a unit cylinder with Z-axis as it's axis and
@@ -161,7 +161,7 @@ bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
     osg::Matrix toUnitCylInZ = osg::Matrix::translate(-cylinder.getCenter())
                                * osg::Matrix::scale(oneOverRadius, oneOverRadius, oneOverRadius)
                                * osg::Matrix(cylinder.getRotation().inverse());
-                               
+
     // Transform the lineStart and lineEnd into the unit cylinder space.
     osg::Vec3d unitCylLineStart = lineStart * toUnitCylInZ;
     osg::Vec3d unitCylLineEnd   = lineEnd * toUnitCylInZ;
@@ -169,19 +169,19 @@ bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
     // Intersect line with unit cylinder.
     osg::Vec3d unitCylIsectFront, unitCylIsectBack;
     if (! getUnitCylinderLineIntersection(unitCylLineStart, unitCylLineEnd, unitCylIsectFront, unitCylIsectBack))
-        return false;    
+        return false;
 
     // Transform back from unit cylinder space.
     osg::Matrix invToUnitCylInZ(osg::Matrix::inverse(toUnitCylInZ));
     isectFront = unitCylIsectFront * invToUnitCylInZ;
-    isectBack = unitCylIsectBack * invToUnitCylInZ;    
+    isectBack = unitCylIsectBack * invToUnitCylInZ;
 
     return true;
 }
 
 osg::Vec3d getLocalEyeDirection(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld)
 {
-    // To take a normal from world to local you need to transform it by the transpose of the inverse of the 
+    // To take a normal from world to local you need to transform it by the transpose of the inverse of the
     // world to local matrix. Pre-multiplying is equivalent to doing a post-multiplication of the transpose.
     osg::Vec3d localEyeDir = localToWorld * eyeDir;
     localEyeDir.normalize();

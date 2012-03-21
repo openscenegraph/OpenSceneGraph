@@ -1,11 +1,11 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2008 Zebra Imaging
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -184,7 +184,7 @@ class OSG_EXPORT Uniform : public Object
             SAMPLER_CUBE = GL_SAMPLER_CUBE,
             SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
             SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
-            
+
             SAMPLER_1D_ARRAY  = GL_SAMPLER_1D_ARRAY_EXT,
             SAMPLER_2D_ARRAY  = GL_SAMPLER_2D_ARRAY_EXT,
             SAMPLER_1D_ARRAY_SHADOW = GL_SAMPLER_1D_ARRAY_SHADOW_EXT,
@@ -311,7 +311,7 @@ class OSG_EXPORT Uniform : public Object
         /** Get the parent list of this Uniform. */
         inline const ParentList& getParents() const { return _parents; }
 
-        /** Get the a copy of parent list of node. A copy is returned to 
+        /** Get the a copy of parent list of node. A copy is returned to
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
@@ -482,7 +482,7 @@ class OSG_EXPORT Uniform : public Object
 
 
     protected:
-    
+
         virtual ~Uniform();
         Uniform& operator=(const Uniform&) { return *this; }
 
@@ -509,7 +509,7 @@ class OSG_EXPORT Uniform : public Object
 
         ref_ptr<Callback>   _updateCallback;
         ref_ptr<Callback>   _eventCallback;
-        
+
         unsigned int        _modifiedCount;
 };
 

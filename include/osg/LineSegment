@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ class OSG_EXPORT LineSegment : public Referenced
         LineSegment& operator = (const LineSegment& seg) { _s = seg._s;  _e = seg._e; return *this; }
 
         inline void set(const vec_type& s,const vec_type& e) { _s=s; _e=e; }
-        
+
         inline vec_type& start() { return _s; }
         inline const vec_type& start() const { return _s; }
 
@@ -64,7 +64,7 @@ class OSG_EXPORT LineSegment : public Referenced
           * intersection ratio.
         */
         bool intersect(const BoundingSphere& bs,float& r1,float& r2) const;
-        
+
         /** return true if segment intersects BoundingSphere and return the
           * intersection ratio.
         */
@@ -89,7 +89,7 @@ class OSG_EXPORT LineSegment : public Referenced
     protected:
 
         virtual ~LineSegment();
-        
+
         static bool intersectAndClip(vec_type& s,vec_type& e,const BoundingBox& bb);
 
         vec_type _s;

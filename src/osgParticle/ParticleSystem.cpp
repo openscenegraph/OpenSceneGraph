@@ -30,7 +30,7 @@ static double distance(const osg::Vec3& coord, const osg::Matrix& matrix)
 }
 
 osgParticle::ParticleSystem::ParticleSystem()
-:    osg::Drawable(), 
+:    osg::Drawable(),
     _def_bbox(osg::Vec3(-10, -10, -10), osg::Vec3(10, 10, 10)),
     _alignment(BILLBOARD),
     _align_X_axis(1, 0, 0),
@@ -41,8 +41,8 @@ osgParticle::ParticleSystem::ParticleSystem()
     _dirty_uniforms(false),
     _doublepass(false),
     _frozen(false),
-    _bmin(0, 0, 0), 
-    _bmax(0, 0, 0), 
+    _bmin(0, 0, 0),
+    _bmax(0, 0, 0),
     _reset_bounds_flag(false),
     _bounds_computed(false),
     _def_ptemp(Particle()),
@@ -62,7 +62,7 @@ osgParticle::ParticleSystem::ParticleSystem()
 }
 
 osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const osg::CopyOp& copyop)
-:    osg::Drawable(copy, copyop), 
+:    osg::Drawable(copy, copyop),
     _def_bbox(copy._def_bbox),
     _alignment(copy._alignment),
     _align_X_axis(copy._align_X_axis),
@@ -73,8 +73,8 @@ osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const os
     _dirty_uniforms(copy._dirty_uniforms),
     _doublepass(copy._doublepass),
     _frozen(copy._frozen),
-    _bmin(copy._bmin), 
-    _bmax(copy._bmax), 
+    _bmin(copy._bmin),
+    _bmax(copy._bmax),
     _reset_bounds_flag(copy._reset_bounds_flag),
     _bounds_computed(copy._bounds_computed),
     _def_ptemp(copy._def_ptemp),
@@ -107,7 +107,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
         // At present, our lcoal shader implementation will ignore these particle props:
         //     _cur_tile, _s_coord, _t_coord, _prev_pos, _prev_angle and _angle
         osg::StateSet* stateset = getOrCreateStateSet();
-        
+
         if (_dirty_uniforms)
         {
             osg::Uniform* u_vd = stateset->getUniform("visibilityDistance");
@@ -115,7 +115,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
             _dirty_uniforms = false;
         }
     }
-    
+
     for(unsigned int i=0; i<_particles.size(); ++i)
     {
         Particle& particle = _particles[i];
@@ -131,7 +131,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
             }
         }
     }
-    
+
     if (_sortMode != NO_SORT)
     {
         // sort particles
@@ -151,7 +151,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
             std::sort<Particle_vector::iterator>(_particles.begin(), _particles.end());
         }
     }
-    
+
     // force recomputing of bounding box on next frame
     dirtyBound();
 }
@@ -165,19 +165,19 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     // update the frame count, so other objects can detect when
     // this particle system is culled
     _last_frame = state.getFrameStamp()->getFrameNumber();
-    
+
     // update the dirty flag of delta time, so next time a new request for delta time
     // will automatically cause recomputing
     _dirty_dt = true;
-    
+
     // get the current modelview matrix
     osg::Matrix modelview = state.getModelViewMatrix();
 
     // set up depth mask for first rendering pass
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-    glPushAttrib(GL_DEPTH_BUFFER_BIT); 
+    glPushAttrib(GL_DEPTH_BUFFER_BIT);
 #endif
-    
+
     glDepthMask(GL_FALSE);
 
     // render, first pass
@@ -192,7 +192,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 #endif
 
     // render, second pass
-    if (_doublepass) {    
+    if (_doublepass) {
         // set up color mask for second rendering pass
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         glPushAttrib(GL_COLOR_BUFFER_BIT);
@@ -236,7 +236,7 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& textur
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::MIRROR);
-        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::MIRROR);        
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::MIRROR);
         stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
 
         osg::TexEnv *texenv = new osg::TexEnv;
@@ -245,7 +245,7 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& textur
     }
 
     osg::BlendFunc *blend = new osg::BlendFunc;
-    if (emissive_particles) {    
+    if (emissive_particles) {
         blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE);
     } else {
         blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
@@ -262,16 +262,16 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
 {
     osg::StateSet *stateset = new osg::StateSet;
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    
+
     osg::PointSprite *sprite = new osg::PointSprite;
     stateset->setTextureAttributeAndModes(texture_unit, sprite, osg::StateAttribute::ON);
-    
+
     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         stateset->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
     #else
         OSG_NOTICE<<"Warning: ParticleSystem::setDefaultAttributesUsingShaders(..) not fully implemented."<<std::endl;
     #endif
-    
+
     if (!texturefile.empty())
     {
         osg::Texture2D *texture = new osg::Texture2D;
@@ -279,13 +279,13 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::MIRROR);
-        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::MIRROR);        
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::MIRROR);
         stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
     }
-    
+
     osg::BlendFunc *blend = new osg::BlendFunc;
     if (emissive_particles)
-    {    
+    {
         blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE);
     }
     else
@@ -293,7 +293,7 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
         blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
     }
     stateset->setAttributeAndModes(blend, osg::StateAttribute::ON);
-    
+
     osg::Program *program = new osg::Program;
 #ifdef USE_LOCAL_SHADERS
     char vertexShaderSource[] =
@@ -337,11 +337,11 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
     program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("shaders/particle.frag")));
 #endif
     stateset->setAttributeAndModes(program, osg::StateAttribute::ON);
-    
+
     stateset->addUniform(new osg::Uniform("visibilityDistance", (float)_visibilityDistance));
     stateset->addUniform(new osg::Uniform("baseTexture", texture_unit));
     setStateSet(stateset);
-    
+
     setUseVertexArray(true);
     setUseShaders(true);
 }
@@ -383,10 +383,10 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
             xScale = 1.0f/lengthX2;
             yScale = 1.0f/lengthY2;
         }
-        
+
         scaled_aligned_xAxis *= xScale;
         scaled_aligned_yAxis *= yScale;
-        
+
         xAxis *= xScale;
         yAxis *= yScale;
     }
@@ -403,15 +403,15 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
         // Enable writing depth mask when drawing user-defined particles
         glDepthMask(GL_TRUE);
     }
-    
+
     for(unsigned int i=0; i<_particles.size(); i+=_detail)
     {
         const Particle* currentParticle = &_particles[i];
-        
+
         bool insideDistance = true;
         if (_sortMode != NO_SORT && _visibilityDistance>0.0)
             insideDistance = (currentParticle->getDepth()>=0.0 && currentParticle->getDepth()<=_visibilityDistance);
-        
+
         if (currentParticle->isAlive() && insideDistance)
         {
             if (currentParticle->getShape() != startParticle->getShape())
@@ -428,7 +428,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
                     glDepthMask(GL_TRUE);
             }
             ++_draw_count;
-            
+
             if (currentParticle->getShape() == Particle::USER)
             {
                 if (requiresEndRender)
@@ -439,22 +439,22 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
                 currentParticle->render(renderInfo, currentParticle->getPosition(), currentParticle->getAngle());
                 continue;
             }
-            
+
             const osg::Vec3& angle = currentParticle->getAngle();
             bool requiresRotation = (angle.x()!=0.0f || angle.y()!=0.0f || angle.z()!=0.0f);
             if (requiresRotation)
             {
                 osg::Matrix R;
                 R.makeRotate(
-                    angle.x(), osg::Vec3(1, 0, 0), 
-                    angle.y(), osg::Vec3(0, 1, 0), 
+                    angle.x(), osg::Vec3(1, 0, 0),
+                    angle.y(), osg::Vec3(0, 1, 0),
                     angle.z(), osg::Vec3(0, 0, 1));
 
                 if (_alignment==BILLBOARD)
                 {
                     xAxis = osg::Matrix::transform3x3(R,scaled_aligned_xAxis);
                     xAxis = osg::Matrix::transform3x3(modelview,xAxis);
-                    
+
                     yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
                     yAxis = osg::Matrix::transform3x3(modelview,yAxis);
 
@@ -472,7 +472,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
             {
                 currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
             }
-        } 
+        }
     }
 
     if (requiresEndRender)
@@ -482,7 +482,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
 void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInfo) const
 {
     if (_particles.size() <= 0) return;
-    
+
     // Compute the pointer and offsets
     Particle_vector::const_iterator itr = _particles.begin();
     float* ptr = (float*)(&(*itr));
@@ -496,7 +496,7 @@ void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInf
     GLsizei colorOffset = (float*)(&(itr->_current_color)) - ptr;  // Color
     GLsizei velOffset = (float*)(&(itr->_velocity)) - ptr;         // Velocity
     GLsizei propOffset = (float*)(&(itr->_alive)) - ptr;       // Alive, size & alpha
-    
+
     // Draw particles as arrays
     osg::State& state = *renderInfo.getState();
     state.lazyDisablingOfVertexAttributes();
@@ -512,7 +512,7 @@ void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInf
 }
 
 osg::BoundingBox osgParticle::ParticleSystem::computeBound() const
-{ 
+{
     if (!_bounds_computed)
     {
         return _def_bbox;

@@ -95,7 +95,7 @@ class OSGGA_EXPORT SphericalManipulator : public CameraManipulator
         double getMinimumZoomScale() const { return _minimumZoomScale; }
 
         /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
-            center before the center is pushed forward.*/        
+            center before the center is pushed forward.*/
         void setMinimumZoomScale(double minimumZoomScale) {_minimumZoomScale=minimumZoomScale;}
 
 
@@ -159,7 +159,7 @@ class OSGGA_EXPORT SphericalManipulator : public CameraManipulator
         * This is used to compute the delta in translation/rotation during a thrown display update.
         * It allows us to match an delta in position/rotation independent of the rendering frame rate.
         */
-        double _delta_frame_time; 
+        double _delta_frame_time;
 
         /** The time the last frame started.
         * Used when _rate_sensitive is true so that we can match display update rate to rotation/translation rate.

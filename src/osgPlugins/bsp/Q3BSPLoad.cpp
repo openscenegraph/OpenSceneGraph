@@ -44,7 +44,7 @@ bool Q3BSPLoad::Load(const std::string& filename, int curveTessellation)
 
   //Load in faces
   LoadFaces(file, curveTessellation);
-  
+
   //Load textures
   LoadTextures(file);
 
@@ -179,7 +179,7 @@ void Q3BSPLoad::LoadLightmaps(std::ifstream& aFile)
             if(b > 1.0f && (temp = (1.0f/b)) < scale) scale=temp;
 
             // scale up color values
-            scale*=255.0f;      
+            scale*=255.0f;
             r*=scale;
             g*=scale;
             b*=scale;

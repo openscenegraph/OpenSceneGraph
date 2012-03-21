@@ -54,13 +54,13 @@ CameraConfig::CameraConfig() :
     _offset_shearx(0.0f),
     _offset_sheary(0.0f),
     _postmultiply(false)
-    
+
 {
     _offset_matrix[0] = 1.0; _offset_matrix[1] = 0.0; _offset_matrix[2] = 0.0; _offset_matrix[3] = 0.0;
     _offset_matrix[4] = 0.0; _offset_matrix[5] = 1.0; _offset_matrix[6] = 0.0; _offset_matrix[7] = 0.0;
     _offset_matrix[8] = 0.0; _offset_matrix[9] = 0.0; _offset_matrix[10] = 1.0; _offset_matrix[11] = 0.0;
     _offset_matrix[12] = 0.0; _offset_matrix[13] = 0.0; _offset_matrix[14] = 0.0; _offset_matrix[15] = 1.0;
-    
+
     _threadModelDirective = CameraGroup::getDefaultThreadModel();
 
 }
@@ -74,7 +74,7 @@ void CameraConfig::beginVisual( void )
 
 void CameraConfig::beginVisual( const char * name )
 {
-    std::pair<std::map<std::string,VisualChooser *>::iterator,bool> res = 
+    std::pair<std::map<std::string,VisualChooser *>::iterator,bool> res =
       _visual_map.insert(std::pair<std::string,VisualChooser *>(std::string(name), new VisualChooser));
     _current_visual_chooser = (res.first)->second;
     _can_add_visual_attributes = true;
@@ -103,7 +103,7 @@ void CameraConfig::setVisualByID( unsigned int id )
 void CameraConfig::addVisualAttribute( VisualChooser::AttributeName token, int param )
 {
      if( !_current_visual_chooser.valid() || _can_add_visual_attributes == false )
-     {     
+     {
          std::cerr << "CameraConfig::addVisualAttribute(token,param) : ERROR no current visual\n";
          return;
      }
@@ -157,9 +157,9 @@ VisualChooser *CameraConfig::findVisual( const char *name )
 
 void CameraConfig::beginRenderSurface( const char *name )
 {
-    std::pair<std::map<std::string,  osg::ref_ptr<RenderSurface> >::iterator,bool> res = 
+    std::pair<std::map<std::string,  osg::ref_ptr<RenderSurface> >::iterator,bool> res =
       _render_surface_map.insert(std::pair<std::string, osg::ref_ptr< RenderSurface> >(
-                                      std::string(name), 
+                                      std::string(name),
                                       new RenderSurface));
     _current_render_surface = (res.first)->second.get();
     _current_render_surface->setWindowName( std::string(name) );
@@ -275,13 +275,13 @@ unsigned int CameraConfig::getNumberOfRenderSurfaces()
 
 RenderSurface *CameraConfig::getRenderSurface( unsigned int index )
 {
-    if( index >= _render_surface_map.size() ) 
+    if( index >= _render_surface_map.size() )
             return NULL;
     std::map <std::string,  osg::ref_ptr<RenderSurface> >::iterator p;
 
     unsigned int i = 0;
     for( p = _render_surface_map.begin(); p != _render_surface_map.end(); p++ )
-        if( i++ == index ) 
+        if( i++ == index )
                 break;
     if(  p == _render_surface_map.end() )
             return NULL;
@@ -309,7 +309,7 @@ void CameraConfig::addCamera( std::string name, Camera *camera )
 void CameraConfig::beginCamera( std::string name )
 {
     Camera *camera = new Camera;
-    std::pair<std::map<std::string,  osg::ref_ptr<Camera> >::iterator,bool> res = 
+    std::pair<std::map<std::string,  osg::ref_ptr<Camera> >::iterator,bool> res =
       _camera_map.insert(std::pair<std::string, osg::ref_ptr<Camera> >(name, camera));
     _current_camera = (res.first)->second.get();
     _can_add_camera_attributes = true;
@@ -447,13 +447,13 @@ unsigned int CameraConfig::getNumberOfCameras() const
 
 const Camera *CameraConfig::getCamera( unsigned int n ) const
 {
-    if( n >= _camera_map.size() ) 
+    if( n >= _camera_map.size() )
             return NULL;
 
     unsigned int i;
     std::map <std::string,  osg::ref_ptr<Camera> >::const_iterator p;
     for( i = 0, p = _camera_map.begin(); p != _camera_map.end(); p++ )
-        if( i++ == n ) 
+        if( i++ == n )
                 break;
     if(  p == _camera_map.end() )
             return NULL;
@@ -462,13 +462,13 @@ const Camera *CameraConfig::getCamera( unsigned int n ) const
 
 Camera *CameraConfig::getCamera( unsigned int n )
 {
-    if( n >= _camera_map.size() ) 
+    if( n >= _camera_map.size() )
             return NULL;
 
     unsigned int i;
     std::map <std::string,  osg::ref_ptr<Camera> >::iterator p;
     for( i = 0, p = _camera_map.begin(); p != _camera_map.end(); p++ )
-        if( i++ == n ) 
+        if( i++ == n )
                 break;
     if(  p == _camera_map.end() )
             return NULL;
@@ -482,7 +482,7 @@ void CameraConfig::beginInputArea()
 }
 
 void CameraConfig::addInputAreaEntry( char *renderSurfaceName )
-{    
+{
     osgProducer::RenderSurface *rs = findRenderSurface( renderSurfaceName );
     if( rs == NULL )
     {
@@ -493,24 +493,24 @@ void CameraConfig::addInputAreaEntry( char *renderSurfaceName )
         _input_area->addRenderSurface( rs );
 }
 
-void CameraConfig::endInputArea() 
+void CameraConfig::endInputArea()
 {
     _can_add_input_area_entries = false;
 }
 
-void CameraConfig::setInputArea(InputArea *ia) 
-{ 
-    _input_area=ia; 
+void CameraConfig::setInputArea(InputArea *ia)
+{
+    _input_area=ia;
 }
 
-InputArea *CameraConfig::getInputArea() 
-{ 
-    return _input_area.get(); 
+InputArea *CameraConfig::getInputArea()
+{
+    return _input_area.get();
 }
 
-const InputArea *CameraConfig::getInputArea() const 
-{ 
-    return _input_area.get(); 
+const InputArea *CameraConfig::getInputArea() const
+{
+    return _input_area.get();
 }
 
 #if 0
@@ -531,13 +531,13 @@ void CameraConfig::addStereoSystemCommand( int screen, std::string stereoCmd, st
     _stereoSystemCommands.push_back(StereoSystemCommand( screen, stereoCmd, monoCmd ));
 }
 
-const std::vector<CameraConfig::StereoSystemCommand> &CameraConfig::getStereoSystemCommands() 
-{ 
-    return _stereoSystemCommands; 
+const std::vector<CameraConfig::StereoSystemCommand> &CameraConfig::getStereoSystemCommands()
+{
+    return _stereoSystemCommands;
 }
 
 
-CameraConfig::~CameraConfig() 
+CameraConfig::~CameraConfig()
 {
 }
 
@@ -546,7 +546,7 @@ CameraConfig::~CameraConfig()
 void CameraConfig::rotateCameraOffset( osg::Matrix::value_type deg, osg::Matrix::value_type x, osg::Matrix::value_type y, osg::Matrix::value_type z )
 {
   osg::Matrix m;
-  m.invert(osg::Matrix::rotate( osg::DegreesToRadians(deg), x,y,z)); 
+  m.invert(osg::Matrix::rotate( osg::DegreesToRadians(deg), x,y,z));
   m = m * osg::Matrix(_offset_matrix);
     memcpy( _offset_matrix, m.ptr(), sizeof( osg::Matrix::value_type[16] ));
 }
@@ -554,7 +554,7 @@ void CameraConfig::rotateCameraOffset( osg::Matrix::value_type deg, osg::Matrix:
 void CameraConfig::translateCameraOffset( osg::Matrix::value_type x, osg::Matrix::value_type y, osg::Matrix::value_type z )
 {
   osg::Matrix m;
-    m.invert(osg::Matrix::translate( x,y,z)); 
+    m.invert(osg::Matrix::translate( x,y,z));
     m = m * osg::Matrix(_offset_matrix);
     memcpy( _offset_matrix, m.ptr(), sizeof( osg::Matrix::value_type[16] ));
 }
@@ -577,23 +577,23 @@ std::string CameraConfig::findFile( std::string filename )
     if( ptr != NULL )
     {
          path = std::string(ptr) + '/' + filename;
-        if( osgDB::fileExists(path)) 
+        if( osgDB::fileExists(path))
             return path;
     }
 
     // Check standard location(s)
     //path.clear();
     path = std::string( "/usr/local/share/Producer/Config/") + filename;
-    if( osgDB::fileExists(path) ) 
+    if( osgDB::fileExists(path) )
         return path;
 
     //path.clear();
     path = std::string( "/usr/share/Producer/Config/") + filename;
-    if( osgDB::fileExists(path) ) 
+    if( osgDB::fileExists(path) )
         return path;
 
     // Check local directory
-    if(osgDB::fileExists(filename)) 
+    if(osgDB::fileExists(filename))
         return filename;
 
     // Fail
@@ -635,7 +635,7 @@ bool CameraConfig::defaultConfig()
     {
       std::stringstream sstr; sstr<<"Screen"<<i;
       std::string name = sstr.str();
-      std::pair<std::map<std::string, osg::ref_ptr<Camera> >::iterator,bool> res = 
+      std::pair<std::map<std::string, osg::ref_ptr<Camera> >::iterator,bool> res =
       _camera_map.insert(std::pair<std::string, osg::ref_ptr<Camera> >(name, new Camera));
 
       ((res.first)->second)->getRenderSurface()->setScreenNum( i );
@@ -650,7 +650,7 @@ bool CameraConfig::defaultConfig()
            ia->addRenderSurface(rs);
        }
 
-       _render_surface_map.insert(std::pair<std::string, 
+       _render_surface_map.insert(std::pair<std::string,
             osg::ref_ptr<RenderSurface> >( rs->getWindowName(), rs ));
 
       xshear -= 2.0;
@@ -659,5 +659,5 @@ bool CameraConfig::defaultConfig()
     _threadModelDirective = CameraGroup::getDefaultThreadModel();
 
     return true;
-}        
+}
 

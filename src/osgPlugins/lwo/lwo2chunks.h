@@ -59,7 +59,7 @@ namespace lwo2
 			};
 
 			typedef std::vector<mapping_type> Mapping_list;
-			Mapping_list mapping;		
+			Mapping_list mapping;
 		};
 
 		CHUNK (POLS) {
@@ -219,7 +219,7 @@ namespace lwo2
 			};
 
 			SUBCHUNK (NEGA) {
-				U2 enable;				
+				U2 enable;
 			};
 
 			SUBCHUNK (IFLT) {
@@ -592,7 +592,7 @@ namespace lwo2
 					U2 displacement_axis;
 				};
 
-			};			
+			};
 
 		};
 

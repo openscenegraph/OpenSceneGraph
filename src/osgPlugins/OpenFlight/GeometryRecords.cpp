@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -256,7 +256,7 @@ public:
                 // http://www.multigen-paradigm.com/ubb/Forum1/HTML/000967.html
                 // Incorporate Face transparency per osg-users thread "Open Flight
                 // characteristic not reflected in the current OSG" (Sept/Oct 2011)
-                colors->push_back(osg::Vec4(_primaryColor.r(), _primaryColor.g(), 
+                colors->push_back(osg::Vec4(_primaryColor.r(), _primaryColor.g(),
                     _primaryColor.b(), ( 1.0 - getTransparency() ) ));
             }
         }
@@ -644,7 +644,7 @@ protected:
 
                         billboard->getDrawable(i)->dirtyBound();
                     }
-                    
+
                     billboard->dirtyBound();
                 }
             }
@@ -1140,7 +1140,7 @@ protected:
 
                         billboard->getDrawable(i)->dirtyBound();
                     }
-                    
+
                     billboard->dirtyBound();
                 }
             }
@@ -1248,7 +1248,7 @@ protected:
                 {
                     osg::Vec2f uv = in.readVec2f();
                     vertex.setUV(layer,uv);
-                    
+
                     if (!uv.valid())
                     {
                         OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
@@ -1340,7 +1340,7 @@ protected:
                 index = in.readUInt32();
                 break;
             }
-            
+
             if (index < vertexList->size())
             {
                 Vertex& vertex = (*vertexList)[index];

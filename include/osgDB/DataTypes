@@ -90,16 +90,16 @@ class ObjectProperty
 public:
     ObjectProperty( const char* name, int value=0, bool useMap=false )
     : _name(name), _value(value), _mapProperty(useMap) {}
-    
+
     ObjectProperty( const ObjectProperty& copy )
     : _name(copy._name), _value(copy._value), _mapProperty(copy._mapProperty) {}
-    
+
     ObjectProperty& proto( const char* name )
     { _name = name; return *this; }
-    
+
     void set( int v ) { _value = v; }
     int get() const { return _value; }
-    
+
     std::string _name;
     int _value;
     bool _mapProperty;
@@ -119,10 +119,10 @@ class ObjectMark
 public:
     ObjectMark( const char* name, int delta=0 )
     : _name(name), _indentDelta(delta) {}
-    
+
     ObjectMark( const ObjectMark& copy )
     : _name(copy._name), _indentDelta(copy._indentDelta) {}
-    
+
     std::string _name;
     int _indentDelta;
 

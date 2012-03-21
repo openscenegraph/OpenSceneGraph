@@ -39,14 +39,14 @@ static bool writeValidDataOperator( osgDB::OutputStream& os, const osgTerrain::L
         os << (unsigned int)1 << ndv->getValue() << std::endl;
         return true;
     }
-    
+
     const osgTerrain::ValidRange* vr = dynamic_cast<const osgTerrain::ValidRange*>( layer.getValidDataOperator() );
     if ( vr )
     {
         os << (unsigned int)2 << vr->getMinValue() << vr->getMaxValue() << std::endl;
         return true;
     }
-    
+
     os << (unsigned int)0 << std::endl;
     return true;
 }

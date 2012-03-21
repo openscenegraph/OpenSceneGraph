@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeWriter.h"
@@ -70,7 +70,7 @@ void daeWriter::apply( osg::Group &node )
     debugPrint( node );
     updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
-    
+
     // If a multiswitch node, store it's data as extra "MultiSwitch" data in the "OpenSceneGraph" technique
     osgSim::MultiSwitch* multiswitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
     if (_pluginOptions.writeExtras && multiswitch)
@@ -128,7 +128,7 @@ void daeWriter::apply( osg::Group &node )
     }
 
     writeNodeExtra(node);
-    
+
     lastDepth = _nodePath.size();
 
     traverse( node );
@@ -175,7 +175,7 @@ void daeWriter::apply( osg::Switch &node )
     }
 
     writeNodeExtra(node);
-    
+
     lastDepth = _nodePath.size();
 
     // Process all children
@@ -214,7 +214,7 @@ void daeWriter::apply( osg::Sequence &node )
 
         domAny *frameTime = (domAny*)teq->add("FrameTime");
         std::stringstream fw;
-        for (unsigned int i = 0; i < node.getNumChildren(); i++) 
+        for (unsigned int i = 0; i < node.getNumChildren(); i++)
         {
             if (i > 0)
             {
@@ -237,7 +237,7 @@ void daeWriter::apply( osg::Sequence &node )
         intervalBegin->setValue(toString<int>(begin).c_str());
         domAny *intervalEnd = (domAny*)teq->add("IntervalEnd");
         intervalEnd->setValue(toString<int>(end).c_str());
-        
+
         // duration
         float speed;
         int nreps;
@@ -253,9 +253,9 @@ void daeWriter::apply( osg::Sequence &node )
     }
 
     writeNodeExtra(node);
-    
+
     lastDepth = _nodePath.size();
-    
+
     traverse( node );
 }
 
@@ -315,14 +315,14 @@ void daeWriter::apply( osg::LOD &node )
             valueList->setValue(fw.str().c_str());
         }
     }
-        
+
     writeNodeExtra(node);
 
     // Process all children
     traverse( node );
 }
 
-void daeWriter::apply( osg::ProxyNode &node ) 
+void daeWriter::apply( osg::ProxyNode &node )
 {
     OSG_WARN << "ProxyNode. Missing " << node.getNumChildren() << " children" << std::endl;
 }
@@ -347,7 +347,7 @@ void daeWriter::apply( osg::LightSource &node )
     }
     domLight *light = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
     light->setId( name.c_str() );
-    
+
     osg::Light* pOsgLight = node.getLight();
 
     domLight *pDomLight = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
@@ -387,7 +387,7 @@ void daeWriter::apply( osg::LightSource &node )
         domPoint->getLinear_attenuation()->setValue(pOsgLight->getLinearAttenuation());
         domPoint->add(COLLADA_ELEMENT_QUADRATIC_ATTENUATION);
         domPoint->getQuadratic_attenuation()->setValue(pOsgLight->getQuadraticAttenuation());
-        
+
         if ((position.x() != 0) || (position.y() != 0) || (position.z() != 0))
         {
             // TODO wrap instance_light in a transforming node to translate default light [0,0,0] into proper position
@@ -445,7 +445,7 @@ void daeWriter::apply( osg::LightSource &node )
 
         domLight *ambientDomLight = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
         ambientDomLight->setId(name.c_str());
-        
+
         domLight::domTechnique_common *ambientDomTechniqueCommon = daeSafeCast<domLight::domTechnique_common>(ambientDomLight->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
 
         // Ambient light
@@ -456,7 +456,7 @@ void daeWriter::apply( osg::LightSource &node )
         domAmbient->add(COLLADA_ELEMENT_COLOR);
         domAmbient->getColor()->setValue(color);
     }
-   
+
     traverse( node );
 }
 
@@ -513,15 +513,15 @@ void daeWriter::apply( osg::CameraView &node)
     domTargetableFloat *pYfov = NULL;
     switch(node.getFieldOfViewMode())
     {
-        case(osg::CameraView::UNCONSTRAINED): 
+        case(osg::CameraView::UNCONSTRAINED):
             pXfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_XFOV ) );
             pXfov->setValue(node.getFieldOfView());
             break;
-        case(osg::CameraView::HORIZONTAL): 
+        case(osg::CameraView::HORIZONTAL):
             pXfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_XFOV ) );
             pXfov->setValue(node.getFieldOfView());
             break;
-        case(osg::CameraView::VERTICAL): 
+        case(osg::CameraView::VERTICAL):
             pYfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_YFOV ) );
             pYfov->setValue(node.getFieldOfView());
             break;

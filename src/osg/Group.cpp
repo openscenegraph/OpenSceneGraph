@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -72,15 +72,15 @@ bool Group::addChild( Node *child )
 bool Group::insertChild( unsigned int index, Node *child )
 {
     if (!child) return false;
-    
-#if ENSURE_CHILD_IS_UNIQUE    
+
+#if ENSURE_CHILD_IS_UNIQUE
     if (containsNode(child))
     {
         OSG_WARN<<"Adding non unique child to osg::Group, ignoring call"<<std::endl;
         return false;
     }
 #endif
-    
+
     if (child)
     {
         // note ref_ptr<> automatically handles incrementing child's reference count.
@@ -95,7 +95,7 @@ bool Group::insertChild( unsigned int index, Node *child )
 
         // register as parent of child.
         child->addParent(this);
-        
+
         // tell any subclasses that a child has been inserted so that they can update themselves.
         childInserted(index);
 
@@ -185,7 +185,7 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
-        
+
         if (eventCallbackRemoved)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
@@ -195,14 +195,14 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
         {
             setNumChildrenWithCullingDisabled(getNumChildrenWithCullingDisabled()-numChildrenWithCullingDisabledRemoved);
         }
-        
+
         if (numChildrenWithOccludersRemoved)
         {
             setNumChildrenWithOccluderNodes(getNumChildrenWithOccluderNodes()-numChildrenWithOccludersRemoved);
         }
-        
+
         dirtyBound();
-        
+
         return true;
     }
     else return false;
@@ -226,9 +226,9 @@ bool Group::setChild( unsigned  int i, Node* newNode )
 {
     if (i<_children.size() && newNode)
     {
-    
+
         ref_ptr<Node> origNode = _children[i];
-    
+
         // first remove for origNode's parent list.
         origNode->removeParent(this);
 
@@ -297,7 +297,7 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         {
             ++delta_numChildrenWithCullingDisabled;
         }
-        
+
         if (delta_numChildrenWithCullingDisabled!=0)
         {
             setNumChildrenWithCullingDisabled(
@@ -318,7 +318,7 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         {
             ++delta_numChildrenWithOccluderNodes;
         }
-        
+
         if (delta_numChildrenWithOccluderNodes!=0)
         {
             setNumChildrenWithOccluderNodes(
@@ -335,7 +335,7 @@ bool Group::setChild( unsigned  int i, Node* newNode )
 BoundingSphere Group::computeBound() const
 {
     BoundingSphere bsphere;
-    if (_children.empty()) 
+    if (_children.empty())
     {
         return bsphere;
     }
@@ -358,7 +358,7 @@ BoundingSphere Group::computeBound() const
         }
     }
 
-    if (!bb.valid()) 
+    if (!bb.valid())
     {
         return bsphere;
     }

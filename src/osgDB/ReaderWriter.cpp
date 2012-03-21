@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ bool ReaderWriter::acceptsExtension(const std::string& extension) const
     // check for an exact match
     std::string lowercase_ext = convertToLowerCase(extension);
     if (_supportedExtensions.count(lowercase_ext)!=0) return true;
-    
+
     // if plugin supports wildcard extension then passthrough all types
     return (_supportedExtensions.count("*")!=0);
 }
@@ -95,22 +95,22 @@ ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features f
         const char *s;
     } FeatureStringList;
 
-    FeatureStringList list[] = { 
+    FeatureStringList list[] = {
         { FEATURE_READ_OBJECT, "readObject" },
-        { FEATURE_READ_IMAGE,  "readImage" },        
+        { FEATURE_READ_IMAGE,  "readImage" },
         { FEATURE_READ_HEIGHT_FIELD, "readHeightField" },
-        { FEATURE_READ_NODE, "readNode" },          
-        { FEATURE_READ_SHADER, "readShader" },        
+        { FEATURE_READ_NODE, "readNode" },
+        { FEATURE_READ_SHADER, "readShader" },
         { FEATURE_WRITE_OBJECT, "writeObject" },
-        { FEATURE_WRITE_IMAGE, "writeImage" },        
+        { FEATURE_WRITE_IMAGE, "writeImage" },
         { FEATURE_WRITE_HEIGHT_FIELD, "writeHeightField" },
-        { FEATURE_WRITE_NODE, "writeNode" },         
+        { FEATURE_WRITE_NODE, "writeNode" },
         { FEATURE_WRITE_SHADER, "writeShader" },
         { FEATURE_NONE,0 }
     };
 
-    FeatureList result; 
-    
+    FeatureList result;
+
     for(FeatureStringList *p=list; p->feature != 0; p++)
     {
         if ((feature & p->feature) != 0)

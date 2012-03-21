@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -34,7 +34,7 @@ RegisterEntityProxy<dxfLWPolyline> g_dxfLWPolyline;
 RegisterEntityProxy<dxfInsert> g_dxfInsert;
 RegisterEntityProxy<dxfText> g_dxfText;
 
-void 
+void
 dxfBasicEntity::assign(dxfFile* , codeValue& cv)
 {
     switch (cv._groupCode) {
@@ -70,7 +70,7 @@ dxf3DFace::assign(dxfFile* dxf, codeValue& cv)
         case 33:
             _vertices[cv._groupCode - 30].z() = d;
             break;
-            
+
         default:
             dxfBasicEntity::assign(dxf, cv);
             break;
@@ -103,7 +103,7 @@ dxfVertex::assign(dxfFile* dxf, codeValue& cv)
 {
     double d = cv._double;
     // 2005.12.13 pdr: learned today that negative indices mean something and were possible
-    
+
     int s = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
     if ( s < 0 ) s = -s;
     switch (cv._groupCode) {
@@ -128,7 +128,7 @@ dxfVertex::assign(dxfFile* dxf, codeValue& cv)
         case 74:
             _indice4 = s;
             break;
-            
+
         default:
             dxfBasicEntity::assign(dxf, cv);
             break;
@@ -179,25 +179,25 @@ dxfCircle::drawScene(scene* sc)
     double theta=5.0; // we generate polyline from "spokes" at theta degrees at arc's center
 
     if (_useAccuracy) {
-        // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc 
-        // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with 
+        // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc
+        // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with
         // one side=r-maxError, hypotenuse=r, and internal angle at center is half the angle we will step with:
-        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius. 
+        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
         double newtheta=acos( (_radius-maxError) / _radius);
-        newtheta=osg::RadiansToDegrees(newtheta)*2.0; 
-        
+        newtheta=osg::RadiansToDegrees(newtheta)*2.0;
+
         // Option to only use the new accuracy code when it would improve on the accuracy of the old method
         if (_improveAccuracyOnly) {
             theta=min(newtheta,theta);
         } else {
             theta=newtheta;
         }
-    } 
+    }
     theta=osg::DegreesToRadians(theta);
 
     // We create an anglestep<=theta so that the line's points are evenly distributed around the circle
     unsigned int numsteps=static_cast<unsigned int>(floor(osg::PI*2/theta));
-    if (numsteps<3) numsteps=3; // Sanity check: minimal representation of a circle is a tri 
+    if (numsteps<3) numsteps=3; // Sanity check: minimal representation of a circle is a tri
     double anglestep=osg::PI*2/numsteps;
 
     double angle1 = 0.0;
@@ -209,7 +209,7 @@ dxfCircle::drawScene(scene* sc)
         vlist.push_back(b);
     }
 
-    sc->addLineStrip(getLayer(), _color, vlist); // Should really add LineLoop implementation and save a vertex 
+    sc->addLineStrip(getLayer(), _color, vlist); // Should really add LineLoop implementation and save a vertex
     sc->ocs_clear();
 }
 
@@ -273,12 +273,12 @@ dxfArc::drawScene(scene* sc)
     double theta=5.0; // we generate polyline from "spokes" at theta degrees at arc's center
 
     if (_useAccuracy) {
-        // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc 
-        // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with 
+        // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc
+        // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with
         // one side=r-maxError, hypotenuse=r, and internal angle at center is half the angle we will step with:
-        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius. 
+        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
         double newtheta=acos( (_radius-maxError) / _radius);
-        newtheta=osg::RadiansToDegrees(newtheta)*2.0; 
+        newtheta=osg::RadiansToDegrees(newtheta)*2.0;
         //cout<<"r="<<_radius<<" _me="<<_maxError<<" (_radius-_maxError)="<<(_radius-_maxError)<<" newtheta="<<newtheta<<endl;
         // Option to only use the new accuracy code when it would improve on the accuracy of the old method
         if (_improveAccuracyOnly) {
@@ -286,10 +286,10 @@ dxfArc::drawScene(scene* sc)
         } else {
             theta=newtheta;
         }
-    } 
+    }
 
     double angle_step = DegreesToRadians(end - start);
-    int numsteps = (int)((end - start)/theta); 
+    int numsteps = (int)((end - start)/theta);
     //cout<<"arc theta="<<osg::RadiansToDegrees(theta)<<" end="<<end<<" start="<<start<<" numsteps="<<numsteps<<" e-s/theta="<<((end-start)/theta)<<" end-start="<<(end-start)<<endl;
     if (numsteps * theta < (end - start)) numsteps++;
     numsteps=max(numsteps,2); // Whatever else, minimum representation of an arc is a straightline
@@ -297,11 +297,11 @@ dxfArc::drawScene(scene* sc)
     end = DegreesToRadians((-_startAngle)+90.0);
     start = DegreesToRadians((-_endAngle)+90.0);
     double angle1 = start;
-    
+
     Vec3d a = _center;
     Vec3d b;
 
-    for (int r = 0; r <= numsteps; r++) 
+    for (int r = 0; r <= numsteps; r++)
     {
         b = a + Vec3d(_radius * (double) sin(angle1), _radius * (double) cos(angle1), 0);
         angle1 += angle_step;
@@ -393,7 +393,7 @@ dxfPoint::drawScene(scene* sc)
     sc->addPoint(getLayer(), _color,_a);
 }
 
-void 
+void
 dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
 {
     string s = cv._string;
@@ -405,8 +405,8 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
     } else if (_currentVertex) {
         _currentVertex->assign(dxf, cv);
 
-        if ((_flag & 64 /*i.e. polymesh*/) && 
-            (cv._groupCode == 70 /*i.e. vertex flag*/) && 
+        if ((_flag & 64 /*i.e. polymesh*/) &&
+            (cv._groupCode == 70 /*i.e. vertex flag*/) &&
             (cv._int & 128 /*i.e. vertex is actually a face*/))
             _indices.push_back(_currentVertex); // Add the index only if _currentvertex is actually an index
     } else {
@@ -427,9 +427,9 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
             case 71:
                 // Meaningful only when _surfacetype == 6, don' trust it for polymeshes.
                 // From the docs :
-                // "The 71 group specifies the number of vertices in the mesh, and the 72 group 
-                // specifies the number of faces. Although these counts are correct for all meshes 
-                // created with the PFACE command, applications are not required to place correct 
+                // "The 71 group specifies the number of vertices in the mesh, and the 72 group
+                // specifies the number of faces. Although these counts are correct for all meshes
+                // created with the PFACE command, applications are not required to place correct
                 // values in these fields.)"
                 // Amusing isn't it ?
                 _mcount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
@@ -437,9 +437,9 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
             case 72:
                 // Meaningful only when _surfacetype == 6, don' trust it for polymeshes.
                 // From the docs :
-                // "The 71 group specifies the number of vertices in the mesh, and the 72 group 
-                // specifies the number of faces. Although these counts are correct for all meshes 
-                // created with the PFACE command, applications are not required to place correct 
+                // "The 71 group specifies the number of vertices in the mesh, and the 72 group
+                // specifies the number of faces. Although these counts are correct for all meshes
+                // created with the PFACE command, applications are not required to place correct
                 // values in these fields.)"
                 // Amusing isn't it ?
                 _ncount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
@@ -487,11 +487,11 @@ dxfPolyline::drawScene(scene* sc)
         //dxfVertex* v = NULL;
         unsigned int ncount;
         unsigned int mcount;
-        if (_surfacetype == 6) { 
+        if (_surfacetype == 6) {
             // I dont have examples of type 5 and 8, but they may be the same as 6
             mcount = _mdensity;
             ncount = _ndensity;
-        } else { 
+        } else {
             mcount = _mcount;
             ncount = _ncount;
         }
@@ -618,7 +618,7 @@ dxfPolyline::drawScene(scene* sc)
         if (vlist.size())
             sc->addTriangles(getLayer(), _color, vlist, invert_order);
 
-    } else if (_flag & 64) { 
+    } else if (_flag & 64) {
         unsigned short _facetype = 3;
 
         for (unsigned int i = 0; i < _indices.size(); i++) {
@@ -678,7 +678,7 @@ dxfPolyline::drawScene(scene* sc)
     sc->ocs_clear();
 }
 
-void 
+void
 dxfLWPolyline::assign(dxfFile* dxf, codeValue& cv)
 {
     string s = cv._string;
@@ -796,10 +796,10 @@ dxfInsert::drawScene(scene* sc)
     // INSERTs can be nested. So pull the current matrix
     // and push it back after we fill our context
     // This is a snapshot in time. I will rewrite all this to be cleaner,
-    // but for now, it seems working fine 
+    // but for now, it seems working fine
     // (with the files I have, the results are equal to Voloview,
     // and better than Deep Exploration and Lightwave).
-    
+
     // sanity check (useful when no block remains after all unsupported entities have been filtered out)
     if (!_block)
         return;
@@ -839,7 +839,7 @@ dxfInsert::drawScene(scene* sc)
 
 }
 
-void 
+void
 dxfText::assign(dxfFile* dxf, codeValue& cv)
 {
     switch (cv._groupCode) {
@@ -912,17 +912,17 @@ dxfText::drawScene(scene* sc)
 
     _text->setCharacterSize( _height, 1.0/_xscale );
     _text->setFont("arial.ttf");
-      
+
     Quat qr( DegreesToRadians(_rotation), Z_AXIS );
-    
+
     if ( _flags & 2 ) qr = Quat( PI, Y_AXIS ) * qr;
     if ( _flags & 4 ) qr = Quat( PI, X_AXIS ) * qr;
-    
+
     _text->setAxisAlignment(osgText::Text::USER_DEFINED_ROTATION);
     _text->setRotation(qr);
-   
+
     if ( _hjustify != 0 || _vjustify !=0 ) _point1 = _point2;
-    
+
     switch (_vjustify) {
     case 3:
         switch (_hjustify) {
@@ -973,23 +973,23 @@ dxfText::drawScene(scene* sc)
         }
         break;
     }
-    
+
     _text->setAlignment(align);
-    
+
     sc->addText(getLayer(), _color, _point1, _text.get());
     sc->ocs_clear();
 }
 
 
 // static
-void 
+void
 dxfEntity::registerEntity(dxfBasicEntity* entity)
 {
     _registry[entity->name()] = entity;
 }
 
 // static
-void 
+void
 dxfEntity::unregisterEntity(dxfBasicEntity* entity)
 {
     map<string, ref_ptr<dxfBasicEntity > >::iterator itr = _registry.find(entity->name());
@@ -1006,14 +1006,14 @@ void dxfEntity::drawScene(scene* sc)
     }
 }
 
-void 
+void
 dxfEntity::assign(dxfFile* dxf, codeValue& cv)
 {
     string s = cv._string;
     if (cv._groupCode == 66 && !(_entity && string("TABLE") == _entity->name())) {
         // The funny thing here. Group code 66 has been called 'obsoleted'
         // for a POLYLINE. But not for an INSERT. Moreover, a TABLE
-        // can have a 66 for... an obscure bottom cell color value. 
+        // can have a 66 for... an obscure bottom cell color value.
         // I decided to rely on the presence of the 66 code for
         // the POLYLINE. If you find a better alternative,
         // contact me, or correct this code

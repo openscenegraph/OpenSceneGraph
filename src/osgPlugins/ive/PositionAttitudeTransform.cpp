@@ -29,7 +29,7 @@ void PositionAttitudeTransform::write(DataOutputStream* out){
     else
         out_THROW_EXCEPTION("PositionAttitudeTransform::write(): Could not cast this osg::PositionAttitudeTransform to an osg::Transform.");
     // Write PositionAttitudeTransform's properties.
-      
+
     out->writeVec3(getPosition());
     out->writeQuat(getAttitude());
     out->writeVec3(getScale());

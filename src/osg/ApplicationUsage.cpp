@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -100,7 +100,7 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
     unsigned int explanationWidth = fullWidth-explanationPos;
 
     std::string line;
-    
+
     for(citr=um.begin();
         citr!=um.end();
         ++citr)
@@ -135,7 +135,7 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                 currentEndPos =  0;
             }
         }
-        
+
         const std::string& explanation = citr->second;
         std::string::size_type pos = 0;
         std::string::size_type offset = 0;
@@ -175,7 +175,7 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                         ++extraSkip;
                         firstInLine = true;
                     }
-                    else if (slashn_pos==pos+width) 
+                    else if (slashn_pos==pos+width)
                     {
                         ++extraSkip;
                         firstInLine = true;
@@ -186,8 +186,8 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                 {
                     // now reduce width until we get a space or a return
                     // so that we ensure that whole words are printed.
-                    while (width>0 && 
-                           explanation[pos+width]!=' ' && 
+                    while (width>0 &&
+                           explanation[pos+width]!=' ' &&
                            explanation[pos+width]!='\n') --width;
 
                     if (width==0)
@@ -238,7 +238,7 @@ void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned i
         write(output,getCommandLineOptions(),widthOfOutput,showDefaults,getCommandLineOptionsDefaults());
         needspace = true;
     }
-    
+
     if ((type&ENVIRONMENTAL_VARIABLE) && !getEnvironmentalVariables().empty())
     {
         if (needspace) output << std::endl;
@@ -274,10 +274,10 @@ void ApplicationUsage::writeEnvironmentSettings(std::ostream& output)
         if (len == std::string::npos) len = citr->first.size();
         maxNumCharsInOptions = maximum( maxNumCharsInOptions,static_cast<unsigned int>(len));
     }
-    
+
     unsigned int optionPos = 2;
     std::string line;
-    
+
     for(citr=getEnvironmentalVariables().begin();
         citr!=getEnvironmentalVariables().end();
         ++citr)

@@ -37,7 +37,7 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
         if ( optionString.find("Ascii")!=std::string::npos ) extensionIsAscii = true;
         else if ( optionString.find("XML")!=std::string::npos ) extensionIsXML = true;
     }
-    
+
     if ( !extensionIsAscii && !extensionIsXML )
     {
         unsigned int headerLow = 0, headerHigh = 0;
@@ -53,10 +53,10 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
             OSG_INFO<<"Reading OpenSceneGraph binary file with the different endian to this computer, doing byte swap."<<std::endl;
             return new BinaryInputIterator(&fin, 1); // endian different so byte swap required
         }
-        
+
         fin.seekg( 0, std::ios::beg );
     }
-    
+
     if ( !extensionIsXML )
     {
         std::string header; fin >> header;
@@ -66,7 +66,7 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
         }
         fin.seekg( 0, std::ios::beg );
     }
-    
+
     if ( 1 )
     {
         std::string header; std::getline( fin, header );
@@ -88,7 +88,7 @@ OutputIterator* writeOutputIterator( std::ostream& fout, const Options* options 
         std::string opt;
         while (iss >> opt)
         {
-            if(opt=="PRECISION" || opt=="precision") 
+            if(opt=="PRECISION" || opt=="precision")
             {
                 iss >> precision;
             }
@@ -123,7 +123,7 @@ public:
         supportsExtension( "osgt", "OpenSceneGraph extendable ascii format" );
         supportsExtension( "osgb", "OpenSceneGraph extendable binary format" );
         supportsExtension( "osgx", "OpenSceneGraph extendable XML format" );
-        
+
         supportsOption( "Ascii", "Import/Export option: Force reading/writing ascii file" );
         supportsOption( "XML", "Import/Export option: Force reading/writing XML file" );
         supportsOption( "ForceReadingImage", "Import option: Load an empty image instead if required file missed" );
@@ -161,10 +161,10 @@ public:
         if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
         else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
         else mode |= std::ios::binary;
-        
+
         return local_opt.release();
     }
-    
+
     virtual ReadResult readObject( const std::string& file, const Options* options ) const
     {
         ReadResult result = ReadResult::FILE_LOADED;
@@ -176,7 +176,7 @@ public:
         osgDB::ifstream istream( fileName.c_str(), mode );
         return readObject( istream, local_opt );
     }
-    
+
     virtual ReadResult readObject( std::istream& fin, const Options* options ) const
     {
         osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
@@ -195,7 +195,7 @@ public:
         osg::Object* obj = is.readObject(); CATCH_EXCEPTION(is);
         return obj;
     }
-    
+
     virtual ReadResult readImage( const std::string& file, const Options* options ) const
     {
         ReadResult result = ReadResult::FILE_LOADED;
@@ -203,16 +203,16 @@ public:
         std::ios::openmode mode = std::ios::in;
         Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ifstream istream( fileName.c_str(), mode );
         return readImage( istream, local_opt );
     }
-    
+
     virtual ReadResult readImage( std::istream& fin, const Options* options ) const
     {
         osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
         if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
-        
+
         InputStream is( options );
         if ( is.start(ii.get())!=InputStream::READ_IMAGE )
         {
@@ -223,7 +223,7 @@ public:
         osg::Image* image = is.readImage(); CATCH_EXCEPTION(is);
         return image;
     }
-    
+
     virtual ReadResult readNode( const std::string& file, const Options* options ) const
     {
         ReadResult result = ReadResult::FILE_LOADED;
@@ -231,67 +231,67 @@ public:
         std::ios::openmode mode = std::ios::in;
         Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ifstream istream( fileName.c_str(), mode );
         return readNode( istream, local_opt );
     }
-    
+
     virtual ReadResult readNode( std::istream& fin, const Options* options ) const
     {
         osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
         if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
-        
+
         InputStream is( options );
         if ( is.start(ii.get())!=InputStream::READ_SCENE )
         {
             CATCH_EXCEPTION(is);
             return ReadResult::FILE_NOT_HANDLED;
         }
-        
+
         is.decompress(); CATCH_EXCEPTION(is);
         osg::Node* node = dynamic_cast<osg::Node*>(is.readObject()); CATCH_EXCEPTION(is);
         return node;
     }
-    
+
     Options* prepareWriting( WriteResult& result, const std::string& fileName, std::ios::openmode& mode, const Options* options ) const
     {
         std::string ext = osgDB::getFileExtension( fileName );
         if ( !acceptsExtension(ext) ) result = WriteResult::FILE_NOT_HANDLED;
-        
+
         osg::ref_ptr<Options> local_opt = options ?
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
         if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
         else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
         else mode |= std::ios::binary;
-        
+
         return local_opt.release();
     }
-    
+
     virtual WriteResult writeObject( const osg::Object& object, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
         std::ios::openmode mode = std::ios::out;
         osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
-        
+
         result = writeObject( object, fout, local_opt.get() );
         fout.close();
         return result;
     }
-    
+
     virtual WriteResult writeObject( const osg::Object& object, std::ostream& fout, const Options* options ) const
     {
         osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
-        
+
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_OBJECT ); CATCH_EXCEPTION(os);
         os.writeObject( &object ); CATCH_EXCEPTION(os);
         os.compress( &fout ); CATCH_EXCEPTION(os);
-        
+
         oi->flush();
         if ( !os.getSchemaName().empty() )
         {
@@ -299,35 +299,35 @@ public:
             if ( !schemaStream.fail() ) os.writeSchema( schemaStream );
             schemaStream.close();
         }
-        
+
         if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
         return WriteResult::FILE_SAVED;
     }
-    
+
     virtual WriteResult writeImage( const osg::Image& image, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
         std::ios::openmode mode = std::ios::out;
         osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
-        
+
         result = writeImage( image, fout, local_opt.get() );
         fout.close();
         return result;
     }
-    
+
     virtual WriteResult writeImage( const osg::Image& image, std::ostream& fout, const Options* options ) const
     {
         osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
-        
+
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_IMAGE ); CATCH_EXCEPTION(os);
         os.writeImage( &image ); CATCH_EXCEPTION(os);
         os.compress( &fout ); CATCH_EXCEPTION(os);
-        
+
         oi->flush();
         if ( !os.getSchemaName().empty() )
         {
@@ -335,35 +335,35 @@ public:
             if ( !schemaStream.fail() ) os.writeSchema( schemaStream );
             schemaStream.close();
         }
-        
+
         if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
         return WriteResult::FILE_SAVED;
     }
-    
+
     virtual WriteResult writeNode( const osg::Node& node, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
         std::ios::openmode mode = std::ios::out;
         osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
-        
+
         result = writeNode( node, fout, local_opt.get() );
         fout.close();
         return result;
     }
-    
+
     virtual WriteResult writeNode( const osg::Node& node, std::ostream& fout, const Options* options ) const
     {
         osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
-        
+
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_SCENE ); CATCH_EXCEPTION(os);
         os.writeObject( &node ); CATCH_EXCEPTION(os);
         os.compress( &fout ); CATCH_EXCEPTION(os);
-        
+
         oi->flush();
         if ( !os.getSchemaName().empty() )
         {
@@ -371,7 +371,7 @@ public:
             if ( !schemaStream.fail() ) os.writeSchema( schemaStream );
             schemaStream.close();
         }
-        
+
         if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
         return WriteResult::FILE_SAVED;
     }

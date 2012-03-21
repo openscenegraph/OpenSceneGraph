@@ -256,7 +256,7 @@ void VBSPData::addStaticProp(StaticPropV4 & newProp)
 {
     StaticProp newPropV5;
 
-    // Create a version 5 static prop and copy the data from the given 
+    // Create a version 5 static prop and copy the data from the given
     // version 4 prop into it
     memcpy(&newPropV5, &newProp, sizeof(StaticPropV4));
     newPropV5.forced_fade_scale = 1.0;

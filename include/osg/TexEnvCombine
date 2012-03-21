@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -63,7 +63,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
     public :
 
         TexEnvCombine();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexEnvCombine(const TexEnvCombine& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texenv,copyop),
@@ -140,7 +140,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
 
         GLint getCombine_RGB() const { return _combine_RGB; }
         GLint getCombine_Alpha() const { return _combine_Alpha; }
-        
+
         enum SourceParam
         {
             CONSTANT        = GL_CONSTANT_ARB,
@@ -156,11 +156,11 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
             TEXTURE6        = GL_TEXTURE0+6,
             TEXTURE7        = GL_TEXTURE0+7
         };
-        
+
         void setSource0_RGB(GLint sp);
         void setSource1_RGB(GLint sp);
         void setSource2_RGB(GLint sp);
-        
+
         void setSource0_Alpha(GLint sp);
         void setSource1_Alpha(GLint sp);
         void setSource2_Alpha(GLint sp);
@@ -168,7 +168,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
         GLint getSource0_RGB() const { return _source0_RGB; }
         GLint getSource1_RGB() const { return _source1_RGB; }
         GLint getSource2_RGB() const { return _source2_RGB; }
-        
+
         GLint getSource0_Alpha() const { return _source0_Alpha; }
         GLint getSource1_Alpha() const { return _source1_Alpha; }
         GLint getSource2_Alpha() const { return _source2_Alpha; }
@@ -180,11 +180,11 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
             SRC_ALPHA           = GL_SRC_ALPHA,
             ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA
         };
-        
+
         void setOperand0_RGB(GLint op);
         void setOperand1_RGB(GLint op);
         void setOperand2_RGB(GLint op);
-        
+
         void setOperand0_Alpha(GLint op);
         void setOperand1_Alpha(GLint op);
         void setOperand2_Alpha(GLint op);
@@ -192,7 +192,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
         GLint getOperand0_RGB() const { return _operand0_RGB; }
         GLint getOperand1_RGB() const { return _operand1_RGB; }
         GLint getOperand2_RGB() const { return _operand2_RGB; }
-        
+
         GLint getOperand0_Alpha() const { return _operand0_Alpha; }
         GLint getOperand1_Alpha() const { return _operand1_Alpha; }
         GLint getOperand2_Alpha() const { return _operand2_Alpha; }
@@ -245,22 +245,22 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
                                     needsTexEnvCombiner(_source2_RGB) ||
                                     needsTexEnvCombiner(_source0_Alpha) ||
                                     needsTexEnvCombiner(_source1_Alpha) ||
-                                    needsTexEnvCombiner(_source2_Alpha)); 
+                                    needsTexEnvCombiner(_source2_Alpha));
         }
-        
 
-        
+
+
 
 
         bool            _needsTexEnvCrossbar;
 
         GLint           _combine_RGB;
         GLint           _combine_Alpha;
-    
+
         GLint           _source0_RGB;
         GLint           _source1_RGB;
         GLint           _source2_RGB;
-        
+
         GLint           _source0_Alpha;
         GLint           _source1_Alpha;
         GLint           _source2_Alpha;
@@ -269,7 +269,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
         GLint           _operand0_RGB;
         GLint           _operand1_RGB;
         GLint           _operand2_RGB;
-        
+
         GLint           _operand0_Alpha;
         GLint           _operand1_Alpha;
         GLint           _operand2_Alpha;
@@ -277,7 +277,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
 
         float           _scale_RGB;
         float           _scale_Alpha;
-        
+
         osg::Vec4       _constantColor;
 
 };

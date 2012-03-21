@@ -59,8 +59,8 @@ bool LOD_readLocalData(Object& obj, Input& fr)
       fr+=2;
       iteratorAdvanced = true;
     }
-    
-    
+
+
 
     // For backwards compatibility with old style LOD's (pre October 2002).
     bool matchFirst = false;
@@ -154,10 +154,10 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
     else {
       fw.indent() << "RangeMode PIXEL_SIZE_ON_SCREEN"<<std::endl;
     }
-    
+
     fw.indent() << "RangeList "<<lod.getNumRanges()<<" {"<< std::endl;
     fw.moveIn();
-    
+
     for(unsigned int i=0; i<lod.getNumRanges();++i)
     {
         fw.indent() << lod.getMinRange(i) << " "<<lod.getMaxRange(i)<<std::endl;

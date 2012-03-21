@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -30,28 +30,28 @@ FireEffect::FireEffect(bool automaticSetup):
     ParticleEffect(automaticSetup)
 {
     setDefaults();
-    
+
     _position.set(0.0f,0.0f,0.0f);
     _scale = 1.0f;
     _intensity = 1.0f;
-     
+
     _emitterDuration = 60.0;
     _defaultParticleTemplate.setLifeTime(0.5+0.1*_scale);
-       
+
     if (_automaticSetup) buildEffect();
 }
 
 FireEffect::FireEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
-    
+
     _position = position;
     _scale = scale;
     _intensity = intensity;
-     
+
     _emitterDuration = 60.0;
     _defaultParticleTemplate.setLifeTime(0.5+0.1*_scale);
-       
+
     if (_automaticSetup) buildEffect();
 }
 
@@ -64,8 +64,8 @@ FireEffect::FireEffect(const FireEffect& copy, const osg::CopyOp& copyop):
 void FireEffect::setDefaults()
 {
     ParticleEffect::setDefaults();
-    
-    _textureFileName = "Images/smoke.rgb";    
+
+    _textureFileName = "Images/smoke.rgb";
     _emitterDuration = 60.0;
 
     // set up unit particle.
@@ -73,7 +73,7 @@ void FireEffect::setDefaults()
     _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
     _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
     _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
-                                            osg::Vec4(1, 0.8f, 0.2f, 1.0f), 
+                                            osg::Vec4(1, 0.8f, 0.2f, 1.0f),
                                             osg::Vec4(1, 0.3f, 0.2f, 0.0f)));
 }
 
@@ -92,12 +92,12 @@ void FireEffect::setUpEmitterAndProgram()
 
         osgParticle::Particle& ptemplate = _particleSystem->getDefaultParticleTemplate();
 
-        float radius = 0.25f*_scale; 
+        float radius = 0.25f*_scale;
         float density = 0.5f; // 0.5kg/m^3
 
         ptemplate.setLifeTime(_defaultParticleTemplate.getLifeTime());
 
-        // the following ranges set the envelope of the respective 
+        // the following ranges set the envelope of the respective
         // graphical properties in time.
         ptemplate.setSizeRange(osgParticle::rangef(radius*_defaultParticleTemplate.getSizeRange().minimum,
                                                    radius*_defaultParticleTemplate.getSizeRange().maximum));
@@ -157,10 +157,10 @@ void FireEffect::setUpEmitterAndProgram()
 
     // set up program.
     if (!_program)
-    {        
+    {
         _program = new osgParticle::FluidProgram;
     }
-    
+
     if (_program.valid())
     {
         _program->setParticleSystem(_particleSystem.get());

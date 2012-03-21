@@ -99,6 +99,6 @@ REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
         ADD_ENUM_VALUE( ENABLE_BLENDING );
         ADD_ENUM_VALUE( ENABLE_BLENDING_WHEN_ALPHA_PRESENT );
     END_ENUM_SERIALIZER();  // BlendingPolicy
-    
+
     wrapper->addFinishedObjectReadCallback( new TerrainTileFinishedObjectReadCallback() );
 }

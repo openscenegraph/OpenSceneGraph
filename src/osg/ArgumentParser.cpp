@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -57,7 +57,7 @@ bool ArgumentParser::isNumber(const char* str)
     int noZeroToNine = 0;
 
     const char* ptr = str;
-    
+
     // check if could be a hex number.
     if (strncmp(ptr,"0x",2)==0)
     {
@@ -67,17 +67,17 @@ bool ArgumentParser::isNumber(const char* str)
         while (
                *ptr!=0 &&
                ((*ptr>='0' && *ptr<='9') ||
-                (*ptr>='a' && *ptr<='f') ||  
+                (*ptr>='a' && *ptr<='f') ||
                 (*ptr>='A' && *ptr<='F'))
               )
         {
             ++ptr;
         }
-        
+
         // got to end of string without failure, therefore must be a hex integer.
         if (*ptr==0) return true;
     }
-    
+
     ptr = str;
 
     // check if a float or an int.
@@ -136,7 +136,7 @@ bool ArgumentParser::isNumber(const char* str)
     if (couldBeFloat && noZeroToNine>0) return true;
 
     return false;
-    
+
 }
 
 bool ArgumentParser::Parameter::valid(const char* str) const
@@ -186,12 +186,12 @@ ArgumentParser::ArgumentParser(int* argc,char **argv):
     _usage(ApplicationUsage::instance())
 {
 #ifdef __APPLE__
-    //On OSX, any -psn arguments need to be removed because they will 
+    //On OSX, any -psn arguments need to be removed because they will
     // confuse the application. -psn plus a concatenated argument are
     // passed by the finder to application bundles
     for(int pos=1;pos<this->argc();++pos)
     {
-        if (std::string(_argv[pos]).compare(0, 4, std::string("-psn")) == 0) 
+        if (std::string(_argv[pos]).compare(0, 4, std::string("-psn")) == 0)
         {
             remove(pos, 1);
         }
@@ -215,7 +215,7 @@ std::string ArgumentParser::getApplicationName() const
     return "";
 }
 
- 
+
 bool ArgumentParser::isOption(int pos) const
 {
     return pos<*_argc && isOption(_argv[pos]);
@@ -263,7 +263,7 @@ bool ArgumentParser::containsOptions() const
 void ArgumentParser::remove(int pos,int num)
 {
     if (num==0) return;
-    
+
     for(;pos+num<*_argc;++pos)
     {
         _argv[pos]=_argv[pos+num];
@@ -594,7 +594,7 @@ void ArgumentParser::reportError(const std::string& message,ErrorSeverity severi
 void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity)
 {
     std::set<std::string> options;
-    if (_usage.valid()) 
+    if (_usage.valid())
     {
         // parse the usage options to get all the option that the application can potential handle.
         for(ApplicationUsage::UsageMap::const_iterator itr=_usage->getCommandLineOptions().begin();
@@ -605,25 +605,25 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
             std::string::size_type prevpos = 0, pos = 0;
             while ((pos=option.find(' ',prevpos))!=std::string::npos)
             {
-                if (option[prevpos]=='-') 
+                if (option[prevpos]=='-')
                 {
                     options.insert(std::string(option,prevpos,pos-prevpos));
                 }
                 prevpos=pos+1;
             }
-            if (option[prevpos]=='-') 
+            if (option[prevpos]=='-')
             {
 
                 options.insert(std::string(option,prevpos,std::string::npos));
             }
         }
-        
+
     }
 
     for(int pos=1;pos<argc();++pos)
     {
         // if an option and havn't been previous querried for report as unrecognized.
-        if (isOption(pos) && options.find(_argv[pos])==options.end()) 
+        if (isOption(pos) && options.find(_argv[pos])==options.end())
         {
             reportError(std::string("unrecognized option ")+std::string(_argv[pos]),severity);
         }
@@ -642,7 +642,7 @@ void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity sever
     }
 }
 
-ApplicationUsage::Type ArgumentParser::readHelpType() 
+ApplicationUsage::Type ArgumentParser::readHelpType()
 {
     getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");

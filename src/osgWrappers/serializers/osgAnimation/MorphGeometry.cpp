@@ -45,7 +45,7 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_MorphGeometry,
         ADD_ENUM_VALUE( NORMALIZED );
         ADD_ENUM_VALUE( RELATIVE );
     END_ENUM_SERIALIZER();  // _method
-    
+
     ADD_USER_SERIALIZER( MorphTargets );  // _morphTargets
     ADD_BOOL_SERIALIZER( MorphNormals, true );  // _morphNormals
 }

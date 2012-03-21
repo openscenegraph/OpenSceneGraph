@@ -8,14 +8,14 @@
  * Modified by Robert Osfield to support per Drawable coord, normal and
  * texture coord arrays, bug fixes, and support for texture mapping.
  *
- * Writing support added 2007 by Stephan Huber, http://digitalmind.de, 
+ * Writing support added 2007 by Stephan Huber, http://digitalmind.de,
  * some ideas taken from the dae-plugin
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
- 
+
  #ifndef DXF_WRITER_NODE_VISITOR_HEADER__
  #define DXF_WRITER_NODE_VISITOR_HEADER__
 
@@ -58,7 +58,7 @@ public:
 class AcadColor
 {
 public:
-    AcadColor() 
+    AcadColor()
     {
         int index=10;
         for (int ii=10*3;ii<256*3; ) {
@@ -93,7 +93,7 @@ public:
 
 protected:
     // returns hue as an angle in range 0-360, saturation and value as 0-1
-    void hsv(unsigned int rgb,float &hue,float &sat,float &value) 
+    void hsv(unsigned int rgb,float &hue,float &sat,float &value)
     {
         int red = rgb>>16;
         int green = (0x0000ff00&rgb)>>8;
@@ -102,10 +102,10 @@ protected:
         int L=std::min(std::min(red,green),blue);
 
         value = (float)H/255.0f;  // note hsv and hsl define v differently!
-        sat=(float)(H-L)/(float)H;  
+        sat=(float)(H-L)/(float)H;
 
         if (H==L) {
-            hue=0.0;        
+            hue=0.0;
         }else if (H==red) {
             hue=360.0 + (60.0 * (float)(green-blue)/(float)(H-L));
             if ( hue > 360 ) { hue-=360; }
@@ -114,8 +114,8 @@ protected:
         } else if (H==blue) {
             hue=240.0 + (60.0 * (float)(red-green)/(float)(H-L));
         } else {
-            hue = 0.0;            
-        }                
+            hue = 0.0;
+        }
     }
 
     int  nearestColor(unsigned int rgb)
@@ -126,13 +126,13 @@ protected:
         float v;
         hsv(rgb,h,s,v);
 
-        // aci index format is 
+        // aci index format is
         // last digit odd = 50% sat, even=100%
         // last digit 0,1 = 100% value, 2,3=80%, 4,5=60% 6,7=50%, 8,9=30%
-        //  first two sigits are hue angle /1.5 but count starts at 10, first 9 values are dummy named colours                        
+        //  first two sigits are hue angle /1.5 but count starts at 10, first 9 values are dummy named colours
         int aci=10 + (int)(h/1.5);
         aci -= (aci%10); // ensure last digit is zero
-        
+
         if ( v < 0.3 ) {
             aci += 9;
         } else if ( v < 0.5 ) {
@@ -152,10 +152,10 @@ protected:
         return aci;
     }
 
-    
+
 
 protected:
-    
+
     typedef std::map<unsigned int, unsigned char> ColorMap;
     ColorMap _indexColors; // maps RGB to autocad index colour
     ColorMap _hueColors; // maps hue angle to autocad index colour
@@ -164,38 +164,38 @@ protected:
 class DXFWriterNodeVisitor: public osg::NodeVisitor {
 
     public:
-        DXFWriterNodeVisitor(std::ostream& fout) : 
-            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), 
-            _fout(fout), 
+        DXFWriterNodeVisitor(std::ostream& fout) :
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _fout(fout),
             _currentStateSet(new osg::StateSet()),
             _firstPass(true),
             _writeTriangleAs3DFace(true)
         {
-                        
-            
+
+
         }
-        
-        static unsigned int getNodeRGB(osg::Geometry *geo,unsigned int index=0) 
+
+        static unsigned int getNodeRGB(osg::Geometry *geo,unsigned int index=0)
         {
             osg::Vec4Array* data=static_cast<osg::Vec4Array*>(geo->getColorArray());
             if ( data && index<data->size() ) {
-                return (data->at(index).asABGR())>>8; 
+                return (data->at(index).asABGR())>>8;
             }
             return 0;
         }
 
-        
-        bool writeHeader(const osg::BoundingSphere &bound);// call after first pass to trigger draw pass        
+
+        bool writeHeader(const osg::BoundingSphere &bound);// call after first pass to trigger draw pass
         void writeFooter();
 
         void buildColorMap();
 
-        virtual void apply(osg::Geode &node);                              
-        
-         virtual void apply(osg::Group &node) 
-        {            
+        virtual void apply(osg::Geode &node);
+
+         virtual void apply(osg::Group &node)
+        {
             osg::NodeVisitor::traverse( node );
-            
+
         }
 
         void traverse (osg::Node &node)
@@ -212,10 +212,10 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
           if (NULL!=ss) {
             // Save our current stateset
             _stateSetStack.push(_currentStateSet.get());
-            
+
             // merge with node stateset
             _currentStateSet = static_cast<osg::StateSet*>(_currentStateSet->clone(osg::CopyOp::SHALLOW_COPY));
-            _currentStateSet->merge(*ss);    
+            _currentStateSet->merge(*ss);
           }
         }
 
@@ -228,9 +228,9 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
               _stateSetStack.pop();
             }
         }
-        
+
         int getNodeAcadColor(osg::Geometry *geo,int index=0) { return 0;}
-                
+
     protected:
         struct CompareStateSet
         {
@@ -240,9 +240,9 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
             }
         };
 
-    
+
     private:
-        
+
         DXFWriterNodeVisitor& operator = (const DXFWriterNodeVisitor&) { return *this; }
 
         // first pass get layer names and draw types
@@ -250,14 +250,14 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
 
         // second pass - output data
         void processGeometry(osg::Geometry* geo, osg::Matrix& m);
-        
+
 
         void processArray(osg::Array* array, const Layer& layer,const osg::Matrix& m = osg::Matrix::identity());
-        
+
         void processStateSet(osg::StateSet* stateset);
 
         std::string getLayerName(const std::string& defaultValue = "");
-        
+
         typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
 
 
@@ -269,14 +269,14 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
         osg::ref_ptr<osg::StateSet>                _currentStateSet;
 
         unsigned int             _count;
-        std::vector<Layer>       _layers;        
+        std::vector<Layer>       _layers;
         bool                     _firstPass;
         Layer                    _layer;
 
         bool                     _writeTriangleAs3DFace;
-        
+
         AcadColor                _acadColor;
-        
+
 
 };
 

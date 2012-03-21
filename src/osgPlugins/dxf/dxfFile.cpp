@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -22,12 +22,12 @@
 
 using namespace std;
 
-bool    
+bool
 dxfFile::parseFile()
 {
     if (_fileName == "") return false;
     _reader = new dxfReader;
-    
+
     if (_reader->openFile(_fileName)) {
         codeValue cv;
         while(_reader->nextGroupCode(cv)) {
@@ -45,8 +45,8 @@ dxfFile::parseFile()
     }
 }
 
-osg::Group* 
-dxfFile::dxf2osg() 
+osg::Group*
+dxfFile::dxf2osg()
 {
     if (!_entities) return NULL;
     if (!_tables) { // a dxfTable is needed to create undefined layers
@@ -62,7 +62,7 @@ dxfFile::dxf2osg()
     return g;
 }
 
-dxfBlock*    
+dxfBlock*
 dxfFile::findBlock(std::string name)
 {
     if (_blocks.get())
@@ -73,14 +73,14 @@ dxfFile::findBlock(std::string name)
 /// not used. if you want to know what a header variable
 /// contains, call this. pass the complete variable name
 /// including "$", for example: "$EXTMAX"
-VariableList 
+VariableList
 dxfFile::getVariable(std::string var)
 {
     return _header->getVariable(var);
 }
 
 /// parse the dxf sections
-short 
+short
 dxfFile::assign(codeValue& cv)
 {
     std::string s = cv._string;

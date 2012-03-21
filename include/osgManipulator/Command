@@ -40,7 +40,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
         {
             NONE,
             /** Click or pick start. */
-            START,  
+            START,
             /** Drag or pick move. */
             MOVE,
             /** Release or pick finish. */
@@ -54,7 +54,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
 
         /**
          * Gets the matrix for transforming the object being dragged. This matrix is in the
-         * command's coordinate systems. 
+         * command's coordinate systems.
          */
         virtual osg::Matrix getMotionMatrix() const = 0;
 
@@ -79,7 +79,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
 
         /**
          * Gets the matrix for transforming the command's world/object
-         * coordinate system to the command's local coordinate system. 
+         * coordinate system to the command's local coordinate system.
          */
         inline const osg::Matrix& getWorldToLocal() const { return _worldToLocal; }
 
@@ -89,7 +89,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
     protected:
 
         virtual ~MotionCommand();
-        
+
     private:
         osg::Matrix     _localToWorld;
         osg::Matrix     _worldToLocal;
@@ -121,7 +121,7 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
         inline void setTranslation(const osg::Vec3& t) { _translation = t; }
         inline const osg::Vec3d& getTranslation() const { return _translation; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
             return osg::Matrix::translate(_translation);
         }
@@ -161,7 +161,7 @@ class OSGMANIPULATOR_EXPORT TranslateInPlaneCommand : public MotionCommand
         inline void setReferencePoint(const osg::Vec3d& rp) { _referencePoint = rp; }
         inline const osg::Vec3d& getReferencePoint() const { return _referencePoint; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
             return osg::Matrix::translate(_translation);
         }
@@ -203,7 +203,7 @@ class OSGMANIPULATOR_EXPORT Scale1DCommand : public MotionCommand
         inline void  setMinScale(double min) { _minScale = min; }
         inline double getMinScale() const    { return _minScale; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
             return (osg::Matrix::translate(-_scaleCenter,0.0,0.0)
                     * osg::Matrix::scale(_scale,1.0,1.0)
@@ -248,7 +248,7 @@ class OSGMANIPULATOR_EXPORT Scale2DCommand : public MotionCommand
         inline void             setMinScale(const osg::Vec2d& min) { _minScale = min; }
         inline const osg::Vec2d& getMinScale() const               { return _minScale; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
             return (osg::Matrix::translate(-_scaleCenter[0],0.0,-_scaleCenter[1])
                     * osg::Matrix::scale(_scale[0],1.0,_scale[1])
@@ -286,9 +286,9 @@ class OSGMANIPULATOR_EXPORT ScaleUniformCommand : public MotionCommand
         inline void setScaleCenter(const osg::Vec3d& center) { _scaleCenter = center; }
         inline const osg::Vec3d& getScaleCenter() const { return _scaleCenter; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
-            return (osg::Matrix::translate(-_scaleCenter) 
+            return (osg::Matrix::translate(-_scaleCenter)
                     * osg::Matrix::scale(_scale,_scale,_scale)
                     * osg::Matrix::translate(_scaleCenter));
         }
@@ -319,7 +319,7 @@ class OSGMANIPULATOR_EXPORT Rotate3DCommand : public MotionCommand
         inline void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
         inline const osg::Quat& getRotation() const { return _rotation; }
 
-        virtual osg::Matrix getMotionMatrix() const 
+        virtual osg::Matrix getMotionMatrix() const
         {
             return osg::Matrix::rotate(_rotation);
         }

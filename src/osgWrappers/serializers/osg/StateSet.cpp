@@ -291,13 +291,13 @@ REGISTER_OBJECT_WRAPPER( StateSet,
     ADD_USER_SERIALIZER( TextureAttributeList );  // _textureAttributeList
     ADD_USER_SERIALIZER( UniformList );  // _uniformList
     ADD_INT_SERIALIZER( RenderingHint, osg::StateSet::DEFAULT_BIN );  // _renderingHint
-    
+
     BEGIN_ENUM_SERIALIZER( RenderBinMode, INHERIT_RENDERBIN_DETAILS );
         ADD_ENUM_VALUE( INHERIT_RENDERBIN_DETAILS );
         ADD_ENUM_VALUE( USE_RENDERBIN_DETAILS );
         ADD_ENUM_VALUE( OVERRIDE_RENDERBIN_DETAILS );
     END_ENUM_SERIALIZER();  // _binMode
-    
+
     ADD_INT_SERIALIZER( BinNumber, 0 );  // _binNum
     ADD_STRING_SERIALIZER( BinName, "" );  // _binName
     ADD_BOOL_SERIALIZER( NestRenderBins, true );  // _nestRenderBins

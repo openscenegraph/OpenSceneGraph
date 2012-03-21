@@ -1,19 +1,19 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
 #ifndef    OSGDB_SHAREDSTATEMANAGER
 #define OSGDB_SHAREDSTATEMANAGER 1
- 
+
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
@@ -29,7 +29,7 @@ namespace osgDB {
 
     class OSGDB_EXPORT SharedStateManager : public osg::NodeVisitor
     {
-    public: 
+    public:
 
         enum ShareMode
         {
@@ -49,9 +49,9 @@ namespace osgDB {
         SharedStateManager(unsigned int mode = SHARE_ALL);
 
         META_NodeVisitor("osgDB","SharedStateManager")
- 
+
         void setShareMode(unsigned int mode);
-        
+
         unsigned int getShareMode() { return _shareMode; }
 
         // Call right after each unload and before Registry cache prune.
@@ -108,7 +108,7 @@ namespace osgDB {
                 return lhs->compare(*rhs, true) < 0;
             }
         };
-        
+
         // Lists of shared objects
         typedef std::set< osg::ref_ptr<osg::StateAttribute>, CompareStateAttributes > TextureSet;
         TextureSet _sharedTextureList;
@@ -129,7 +129,7 @@ namespace osgDB {
         bool            _shareTexture[3];
         bool            _shareStateSet[3];
 
-        // Share connection mutex 
+        // Share connection mutex
 
         OpenThreads::Mutex *_mutex;
         // Mutex for doing isShared queries from other threads

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,7 +31,7 @@
 class ReaderWriterGZ : public osgDB::ReaderWriter
 {
     public:
-    
+
         enum ObjectType
         {
             OBJECT,
@@ -42,11 +42,11 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         };
 
         ReaderWriterGZ();
-      
+
         ~ReaderWriterGZ();
 
         virtual const char* className() const { return "HTTP Protocol Model Reader"; }
-                                                                                            
+
         virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const
         {
             if (status!=READ) return ReadResult(ReadResult::FILE_NOT_HANDLED);
@@ -57,7 +57,7 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         {
             return readFile(OBJECT,fileName,options);
         }
-                                                                                            
+
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             return readFile(IMAGE,fileName,options);
@@ -74,7 +74,7 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         }
 
         ReadResult readFile(ObjectType objectType, osgDB::ReaderWriter* rw, std::istream& fin, const osgDB::ReaderWriter::Options* options) const;
-        
+
         ReadResult readFile(ObjectType objectType, const std::string& fullFileName, const osgDB::ReaderWriter::Options* options) const;
 
 
@@ -83,7 +83,7 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         {
             return writeFile(OBJECT, &obj, fileName, options);
         }
-                                                                                            
+
         virtual WriteResult writeImage(const osg::Image& image, const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             return writeFile(IMAGE, &image, fileName, options);
@@ -100,13 +100,13 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         }
 
         WriteResult writeFile(ObjectType objectType, const osg::Object* object, osgDB::ReaderWriter* rw, std::ostream& fin, const osgDB::ReaderWriter::Options* options) const;
-        
+
         WriteResult writeFile(ObjectType objectType, const osg::Object* object, const std::string& fullFileName, const osgDB::ReaderWriter::Options* options) const;
 
 
         bool read(std::istream& fin, std::string& destination) const;
         bool write(std::ostream& fout, const std::string& source) const;
-        
+
 
 };
 
@@ -148,7 +148,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     osgDB::ReaderWriter* rw = 0;
 
     if (osgDB::equalCaseInsensitive(ext,"osgz"))
-    {  
+    {
         rw = osgDB::Registry::instance()->getReaderWriterForExtension("osg");
         OSG_INFO<<"osgz ReaderWriter "<<rw<<std::endl;
     }
@@ -159,7 +159,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     }
     else
     {
-        std::string baseFileName = osgDB::getNameLessExtension(fullFileName);        
+        std::string baseFileName = osgDB::getNameLessExtension(fullFileName);
         std::string baseExt = osgDB::getLowerCaseFileExtension(baseFileName);
         rw = osgDB::Registry::instance()->getReaderWriterForExtension(baseExt);
         OSG_INFO<<baseExt<<" ReaderWriter "<<rw<<std::endl;
@@ -169,13 +169,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     std::string fileName = osgDB::findDataFile( fullFileName, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+    // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
     osgDB::ifstream fin(fileName.c_str(), std::ios::binary|std::ios::in);
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
-    
+
 
     std::string dest;
     read(fin, dest);
@@ -207,7 +207,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterGZ::writeFile(ObjectType objectType
     osgDB::ReaderWriter* rw = 0;
 
     if (osgDB::equalCaseInsensitive(ext,"osgz"))
-    {  
+    {
         rw = osgDB::Registry::instance()->getReaderWriterForExtension("osg");
         OSG_NOTICE<<"osgz ReaderWriter "<<rw<<std::endl;
     }
@@ -218,19 +218,19 @@ osgDB::ReaderWriter::WriteResult ReaderWriterGZ::writeFile(ObjectType objectType
     }
     else
     {
-        std::string baseFileName = osgDB::getNameLessExtension(fullFileName);        
+        std::string baseFileName = osgDB::getNameLessExtension(fullFileName);
         std::string baseExt = osgDB::getLowerCaseFileExtension(baseFileName);
         rw = osgDB::Registry::instance()->getReaderWriterForExtension(baseExt);
         OSG_NOTICE<<baseExt<<" ReaderWriter "<<rw<<std::endl;
     }
-    
+
     std::stringstream strstream;
     osgDB::ReaderWriter::WriteResult writeResult = writeFile(objectType, object, rw, strstream, options);
-    
+
     osgDB::ofstream fout(fullFileName.c_str(), std::ios::binary|std::ios::out);
-    
+
     write(fout,strstream.str());
-    
+
     return writeResult;
 }
 
@@ -261,7 +261,7 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
 
         fin.read((char*)in, CHUNK);
         strm.avail_in = fin.gcount();
-        
+
         if (fin.bad())
         {
             (void)inflateEnd(&strm);
@@ -287,7 +287,7 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
             have = CHUNK - strm.avail_out;
 
             destination.append((char*)out, have);
-            
+
         } while (strm.avail_out == 0);
 
         /* done when inflate() says it's done */
@@ -304,7 +304,7 @@ bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
     unsigned have;
     z_stream strm;
     unsigned char out[CHUNK];
-    
+
     int level = 6;
     int stategy = Z_DEFAULT_STRATEGY; // looks to be the best for .osg/.ive files
     //int stategy = Z_FILTERED;
@@ -315,7 +315,7 @@ bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
-    ret = deflateInit2(&strm, 
+    ret = deflateInit2(&strm,
                        level,
                        Z_DEFLATED,
                        15+16, // +16 to use gzip encoding
@@ -343,7 +343,7 @@ bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
         have = CHUNK - strm.avail_out;
 
         if (have>0) fout.write((const char*)out, have);
-        
+
         if (fout.fail())
         {
             (void)deflateEnd(&strm);

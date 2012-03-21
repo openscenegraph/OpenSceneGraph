@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,8 +32,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
     public:
 
         /// default to traversing all children.
-        TriStripVisitor(Optimizer* optimizer=0) : 
-                BaseOptimizerVisitor( optimizer, Optimizer::TRISTRIP_GEOMETRY), 
+        TriStripVisitor(Optimizer* optimizer=0) :
+                BaseOptimizerVisitor( optimizer, Optimizer::TRISTRIP_GEOMETRY),
                 _cacheSize( 16 ),
                 _minStripSize( 2 ),
                 _generateFourPointPrimitivesQuads ( false)
@@ -55,29 +55,29 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
         {
             _cacheSize = size;
         }
-        
+
         inline unsigned int getCacheSize() const
         {
             return _cacheSize;
         }
-        
+
         inline void setMinStripSize( unsigned int size )
         {
             _minStripSize = size;
         }
-        
+
         inline unsigned int getMinStripSize() const
         {
             return _minStripSize;
         }
-        
-        
+
+
         void setGenerateFourPointPrimitivesQuads(bool flag) { _generateFourPointPrimitivesQuads = flag; }
         bool getGenerateFourPointPrimitivesQuads() const { return _generateFourPointPrimitivesQuads; }
-        
+
 
     private:
-    
+
         typedef std::set<osg::Geometry*> GeometryList;
 
         unsigned int _cacheSize;

@@ -55,14 +55,14 @@ void DrawElementsUShort::read(DataInputStream* in){
         int size = in->readInt();
         resize(size);
         in->readCharArray((char*)&front(), size * SHORTSIZE);
-        
+
         if (in->_byteswap)
         {
            for (int i = 0 ; i < size ; i++ )
            {
               osg::swapBytes((char *)&((*this)[i]),SHORTSIZE) ;
            }
-        }        
+        }
     }
     else{
         in_THROW_EXCEPTION("DrawElementsUShort::read(): Expected DrawElementsUShort identification.");

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -66,18 +66,18 @@ public:
     Style* getOrCreateStyle() { if (!_style) _style = new Style; return _style.get(); }
 
     /** Set the Font reference width and height resolution in texels.
-      * Note, the size may not be supported by current font, 
+      * Note, the size may not be supported by current font,
       * the closest supported font size will be selected.*/
     void setFontResolution(unsigned int width, unsigned int height);
 
     unsigned int getFontWidth() const { return _fontSize.first; }
     unsigned int getFontHeight() const { return _fontSize.second; }
-    
-    
+
+
     /** Set the text using a osgText::String.*/
     void setText(const String& text);
 
-    /** Set the text using a std::string, 
+    /** Set the text using a std::string,
       * which is converted to an internal TextString.*/
     void setText(const std::string& text);
 
@@ -85,19 +85,19 @@ public:
       * The encoding parameter specificies which Unicode encodeding is used in the std::string. */
     void setText(const std::string& text,String::Encoding encoding);
 
-    /** Set the text using a wchar_t string, 
+    /** Set the text using a wchar_t string,
       * which is converted to an internal TextString.*/
     void setText(const wchar_t* text);
-    
-    /** Get the text string. 
+
+    /** Get the text string.
       * Note, if you modify the string you must call Text::update() for
       * the internal glyph reprentation to be updated.*/
     String& getText() { return _text; }
 
     /** Get the const text string.*/
     const String& getText() const { return _text; }
-    
-    /** update internal glyph respresentation used for rendering, 
+
+    /** update internal glyph respresentation used for rendering,
       * and bounding volume.*/
     void update() { computeGlyphRepresentation(); }
 
@@ -120,32 +120,32 @@ public:
 
     /** Set how the CharacterSize value relates to the final rendered character.*/
     void setCharacterSizeMode(CharacterSizeMode mode) { _characterSizeMode = mode; }
-    
+
     /** Get the CharacterSizeMode.*/
     CharacterSizeMode getCharacterSizeMode() const { return _characterSizeMode; }
 
 
     /** Set the maximum width of the text box.
       * With horizontal layouts any characters which do not fit are wrapped around.
-      * 0 or negative values indicate that no maximum width is set, lines can be as long as 
+      * 0 or negative values indicate that no maximum width is set, lines can be as long as
       * they need be to fit thre required text*/
     void setMaximumWidth(float maximumWidth);
-    
+
     /** Get the maximim width of the text box.*/
     float getMaximumWidth() const { return _maximumWidth; }
 
     /** Set the maximum height of the text box.
       * With horizontal layouts any characters which do not fit are wrapped around.
-      * 0 or negative values indicate that no maximum height is set, lines can be as long as 
+      * 0 or negative values indicate that no maximum height is set, lines can be as long as
       * they need be to fit the required text*/
     void setMaximumHeight(float maximumHeight);
-    
+
     /** Get the maximum height of the text box.*/
     float getMaximumHeight() const { return _maximumHeight; }
 
     /** Set the line spacing of the text box, given as a percentage of
-      * the character height. The default value is 0 for backward 
-      * compatibility. For longer paragraphs of text, a value of at 
+      * the character height. The default value is 0 for backward
+      * compatibility. For longer paragraphs of text, a value of at
       * least 25% (i.e. set line spacing to 0.25) is recommended. */
     void setLineSpacing(float lineSpacing);
 
@@ -156,10 +156,10 @@ public:
 
     /** Set the position of text.*/
     void setPosition(const osg::Vec3& pos);
-    
+
     /** Get the position of text.*/
     const osg::Vec3& getPosition() const { return _position; }
-    
+
 
     enum AlignmentType
     {
@@ -174,19 +174,19 @@ public:
         RIGHT_TOP,
         RIGHT_CENTER,
         RIGHT_BOTTOM,
-        
+
         LEFT_BASE_LINE,
         CENTER_BASE_LINE,
         RIGHT_BASE_LINE,
-    
+
         LEFT_BOTTOM_BASE_LINE,
         CENTER_BOTTOM_BASE_LINE,
         RIGHT_BOTTOM_BASE_LINE,
-    
+
         BASE_LINE = LEFT_BASE_LINE /// default.
-    
+
     };
-    
+
     void setAlignment(AlignmentType alignment);
     AlignmentType getAlignment() const { return _alignment; }
 
@@ -205,7 +205,7 @@ public:
 
     void setAxisAlignment(AxisAlignment axis);
     AxisAlignment getAxisAlignment() const { return _axisAlignment; }
-    
+
     void setRotation(const osg::Quat& quat);
     const osg::Quat& getRotation() const { return _rotation; }
 
@@ -218,9 +218,9 @@ public:
         RIGHT_TO_LEFT,
         VERTICAL
     };
-    
+
     void setLayout(Layout layout);
-    
+
     Layout getLayout() const { return _layout; }
 
 
@@ -233,18 +233,18 @@ public:
     };
 
     void setDrawMode(unsigned int mode);
-    
+
     unsigned int getDrawMode() const { return _drawMode; }
 
     void setBoundingBoxMargin(float margin);
-    
+
     float getBoundingBoxMargin() const { return _textBBMargin; }
 
     void setBoundingBoxColor(const osg::Vec4& color){ _textBBColor = color; }
-    
+
     const osg::Vec4& getBoundingBoxColor() const { return _textBBColor; }
 
-    
+
     void setKerningType(KerningType kerningType) { _kerningType = kerningType; }
 
     KerningType getKerningType() const { return _kerningType; }
@@ -263,7 +263,7 @@ public:
       * for all graphics contexts. */
     virtual void releaseGLObjects(osg::State* state=0) const;
 
-    
+
     virtual osg::BoundingBox computeBound() const;
 
 protected:
@@ -277,8 +277,8 @@ protected:
 
     virtual void computePositions(unsigned int contextID) const = 0;
     virtual void computeGlyphRepresentation() = 0;
-    
-    
+
+
     // members which have public access.
     osg::Vec4                               _color;
     osg::ref_ptr<Font>                      _font;
@@ -303,17 +303,17 @@ protected:
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
 
-    
+
 
     // internal caches of the positioning of the text.
-    
+
     struct AutoTransformCache
-    {    
+    {
         AutoTransformCache():
             _traversalNumber(-1),
             _width(0),
             _height(0) {}
-    
+
         int         _traversalNumber;
         int         _width;
         int         _height;
@@ -322,7 +322,7 @@ protected:
         osg::Matrix _projection;
         osg::Matrix _matrix;
     };
-    
+
     mutable osg::buffered_object<AutoTransformCache>    _autoTransformCache;
     mutable osg::Vec3                                   _offset;
     mutable osg::Vec3                                   _normal;
@@ -333,4 +333,4 @@ protected:
 
 
 #endif
- 
+

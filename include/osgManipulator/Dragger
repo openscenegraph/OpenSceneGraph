@@ -72,7 +72,7 @@ class OSGMANIPULATOR_EXPORT DraggerTransformCallback : public DraggerCallback
     protected:
 
         unsigned int _handleCommandMask;
-        
+
         osg::observer_ptr<osg::MatrixTransform> _transform;
         osg::Matrix _startMotionMatrix;
 

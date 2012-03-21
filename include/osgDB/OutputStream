@@ -41,10 +41,10 @@ public:
             _field += " ";
         }
     }
-    
+
     const std::string& getField() const { return _field; }
     const std::string& getError() const { return _error; }
-    
+
 protected:
     std::string _field;
     std::string _error;
@@ -55,7 +55,7 @@ class OSGDB_EXPORT OutputStream
 public:
     typedef std::map<const osg::Array*, unsigned int> ArrayMap;
     typedef std::map<const osg::Object*, unsigned int> ObjectMap;
-    
+
     enum WriteType
     {
         WRITE_UNKNOWN = 0,
@@ -63,7 +63,7 @@ public:
         WRITE_IMAGE,
         WRITE_OBJECT
     };
-    
+
     enum WriteImageHint
     {
         WRITE_USE_IMAGE_HINT = 0,  /*!< Use image hint, write inline data or use external */
@@ -72,17 +72,17 @@ public:
         WRITE_INLINE_FILE,         /*!< Write the image file itself to stream */
         WRITE_EXTERNAL_FILE        /*!< Write Image::data() to disk and use it as external file */
     };
-    
+
     OutputStream( const osgDB::Options* options );
     virtual ~OutputStream();
-    
+
     bool isBinary() const { return _out->isBinary(); }
     const std::string& getSchemaName() const { return _schemaName; }
     const osgDB::Options* getOptions() const { return _options.get(); }
-    
+
     void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
     WriteImageHint getWriteImageHint() const { return _writeImageHint; }
-    
+
     // Serialization related functions
     OutputStream& operator<<( bool b ) { _out->writeBool(b); return *this; }
     OutputStream& operator<<( char c ) { _out->writeChar(c); return *this; }
@@ -99,11 +99,11 @@ public:
     OutputStream& operator<<( const char* s ) { _out->writeString(s); return *this; }
     OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) ) { _out->writeStream(fn); return *this; }
     OutputStream& operator<<( std::ios_base& (*fn)(std::ios_base&) ) { _out->writeBase(fn); return *this; }
-    
+
     OutputStream& operator<<( const ObjectGLenum& value ) { _out->writeGLenum(value); return *this; }
     OutputStream& operator<<( const ObjectProperty& prop ) { _out->writeProperty(prop); return *this; }
     OutputStream& operator<<( const ObjectMark& mark ) { _out->writeMark(mark); return *this; }
-    
+
     OutputStream& operator<<( const osg::Vec2b& v );
     OutputStream& operator<<( const osg::Vec3b& v );
     OutputStream& operator<<( const osg::Vec4b& v );
@@ -121,19 +121,19 @@ public:
     OutputStream& operator<<( const osg::Plane& p );
     OutputStream& operator<<( const osg::Matrixf& mat );
     OutputStream& operator<<( const osg::Matrixd& mat );
-    
+
     OutputStream& operator<<( const osg::Array* a ) { writeArray(a); return *this; }
     OutputStream& operator<<( const osg::Image* img ) { writeImage(img); return *this; }
     OutputStream& operator<<( const osg::PrimitiveSet* p ) { writePrimitiveSet(p); return *this; }
     OutputStream& operator<<( const osg::Object* obj ) { writeObject(obj); return *this; }
-    
+
     OutputStream& operator<<( const osg::ref_ptr<osg::Array>& ptr ) { writeArray(ptr.get()); return *this; }
     OutputStream& operator<<( const osg::ref_ptr<osg::Image>& ptr ) { writeImage(ptr.get()); return *this; }
     OutputStream& operator<<( const osg::ref_ptr<osg::PrimitiveSet>& ptr ) { writePrimitiveSet(ptr.get()); return *this; }
-    
+
     template<typename T> OutputStream& operator<<( const osg::ref_ptr<T>& ptr )
     { writeObject(ptr.get()); return *this; }
-    
+
     // Convenient methods for writing
     void writeWrappedString( const std::string& str ) { _out->writeWrappedString(str); }
     void writeCharArray( const char* s, unsigned int size ) { _out->writeCharArray(s, size); }
@@ -148,7 +148,7 @@ public:
     void writeImage( const osg::Image* img );
     void writeObject( const osg::Object* obj );
     void writeObjectFields( const osg::Object* obj );
-    
+
     /// set an output iterator, used directly when not using OutputStream with a traditional file releated stream.
     void setOutputIterator( OutputIterator* oi ) { _out = oi; }
 
@@ -156,24 +156,24 @@ public:
     void start( OutputIterator* outIterator, WriteType type );
 
     void compress( std::ostream* ostream );
-    
+
     // Schema handlers
     void writeSchema( std::ostream& fout );
-    
+
     // Exception handlers
     inline void throwException( const std::string& msg );
     const OutputException* getException() const { return _exception.get(); }
-    
+
 protected:
     template<typename T>
     void writeArrayImplementation( const T*, int write_size, unsigned int numInRow=1 );
-    
+
     unsigned int findOrCreateArrayID( const osg::Array* array, bool& newID );
     unsigned int findOrCreateObjectID( const osg::Object* obj, bool& newID );
-    
+
     ArrayMap _arrayMap;
     ObjectMap _objectMap;
-    
+
     WriteImageHint _writeImageHint;
     bool _useSchemaData;
     std::map<std::string, std::string> _inbuiltSchemaMap;

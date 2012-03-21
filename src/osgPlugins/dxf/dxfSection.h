@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -62,11 +62,11 @@ public:
     dxfTables() : _inLayerTable(false) {}
     virtual ~dxfTables() {}
     virtual void assign(dxfFile* dxf, codeValue& cv);
-    dxfLayerTable*    getOrCreateLayerTable() 
-    { 
+    dxfLayerTable*    getOrCreateLayerTable()
+    {
         if (!_layerTable.get())
             _layerTable = new dxfLayerTable;
-        return _layerTable.get(); 
+        return _layerTable.get();
     }
 
 protected:

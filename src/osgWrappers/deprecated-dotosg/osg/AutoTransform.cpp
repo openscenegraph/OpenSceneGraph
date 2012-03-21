@@ -35,7 +35,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
         fr[3].getFloat(pos[2]);
-        
+
         transform.setPosition(pos);
 
         fr += 4;
@@ -49,9 +49,9 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(att[1]);
         fr[3].getFloat(att[2]);
         fr[4].getFloat(att[3]);
-        
+
         transform.setRotation(att);
-        
+
         fr += 5;
         iteratorAdvanced = true;
     }
@@ -62,7 +62,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(scale[0]);
         fr[2].getFloat(scale[1]);
         fr[3].getFloat(scale[2]);
-        
+
         transform.setScale(scale);
 
         fr += 4;
@@ -73,7 +73,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
     {
         float scale;
         fr[1].getFloat(scale);
-        
+
         transform.setMinimumScale(scale);
 
         fr += 2;
@@ -84,7 +84,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
     {
         float scale;
         fr[1].getFloat(scale);
-        
+
         transform.setMaximumScale(scale);
 
         fr += 2;
@@ -97,9 +97,9 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pivot[0]);
         fr[2].getFloat(pivot[1]);
         fr[3].getFloat(pivot[2]);
-        
+
         transform.setPivotPoint(pivot);
-        
+
         fr += 4;
         iteratorAdvanced = true;
     }
@@ -127,7 +127,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
                 if (w=="ROTATE_TO_SCREEN") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
                 else if (w=="ROTATE_TO_CAMERA") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
                 else if (w=="NO_ROTATION") transform.setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
-                
+
         fr += 2;
         iteratorAdvanced = true;
     }
@@ -140,12 +140,12 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("autoScaleTransistionWidthRatio %f") || 
+    if (fr.matchSequence("autoScaleTransistionWidthRatio %f") ||
         fr.matchSequence("autoScaleTransitionWidthRatio %f"))
     {
         float ratio;
         fr[1].getFloat(ratio);
-        
+
         transform.setAutoScaleTransitionWidthRatio(ratio);
 
         fr += 2;
@@ -167,8 +167,8 @@ bool AutoTransform_writeLocalData(const Object& obj, Output& fw)
 
     if (transform.getMinimumScale()>0.0) fw.indent()<<"minimumScale "<<transform.getMinimumScale()<<std::endl;
     if (transform.getMaximumScale()<FLT_MAX) fw.indent()<<"maximumScale "<<transform.getMaximumScale()<<std::endl;
-    
-    
+
+
     fw.indent()<<"pivotPoint "<<transform.getPivotPoint()<<std::endl;
     fw.indent()<<"autoUpdateEyeMovementTolerance "<<transform.getAutoUpdateEyeMovementTolerance()<<std::endl;
     fw.indent()<<"autoRotateMode ";
@@ -181,11 +181,11 @@ bool AutoTransform_writeLocalData(const Object& obj, Output& fw)
     }
 
     fw.indent()<<"autoScaleToScreen "<<(transform.getAutoScaleToScreen()?"TRUE":"FALSE")<<std::endl;
-    
-    if (transform.getAutoScaleTransitionWidthRatio()!=0.25) 
+
+    if (transform.getAutoScaleTransitionWidthRatio()!=0.25)
     {
             fw.indent()<<"autoScaleTransitionWidthRatio "<<transform.getAutoScaleTransitionWidthRatio()<<std::endl;
     }
-    
+
     return true;
 }

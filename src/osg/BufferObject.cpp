@@ -206,7 +206,7 @@ void GLBufferObject::compileBuffer()
 
             const osg::Image* image = entry.dataSource->asImage();
             if (image && !(image->isDataContiguous()))
-            {                
+            {
                 unsigned int offset = entry.offset;
                 for(osg::Image::DataIterator img_itr(image); img_itr.valid(); ++img_itr)
                 {
@@ -216,7 +216,7 @@ void GLBufferObject::compileBuffer()
                 }
             }
             else
-            {            
+            {
                 _extensions->glBufferSubData(_profile._target, (GLintptrARB)entry.offset, (GLsizeiptrARB)entry.dataSize, entry.dataSource->getDataPointer());
             }
 
@@ -665,7 +665,7 @@ void GLBufferObjectSet::flushDeletedGLBufferObjects(double currentTime, double& 
         OSG_INFO<<"Plenty of space in GLBufferObject pool"<<std::endl;
         return;
     }
-    
+
     // if nothing to delete return
     if (_orphanedGLBufferObjects.empty()) return;
 
@@ -1598,7 +1598,7 @@ PixelDataBufferObject::~PixelDataBufferObject()
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::compileBuffer(State& state) const
 {
-    unsigned int contextID = state.getContextID();    
+    unsigned int contextID = state.getContextID();
     if ( _profile._size == 0) return;
 
     GLBufferObject* bo = getOrCreateGLBufferObject(contextID);
@@ -1612,7 +1612,7 @@ void PixelDataBufferObject::compileBuffer(State& state) const
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::bindBufferInReadMode(State& state)
 {
-    unsigned int contextID = state.getContextID();    
+    unsigned int contextID = state.getContextID();
 
     GLBufferObject* bo = getOrCreateGLBufferObject(contextID);
     if (!bo) return;
@@ -1627,7 +1627,7 @@ void PixelDataBufferObject::bindBufferInReadMode(State& state)
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::bindBufferInWriteMode(State& state)
 {
-    unsigned int contextID = state.getContextID();    
+    unsigned int contextID = state.getContextID();
 
     GLBufferObject* bo = getOrCreateGLBufferObject(contextID);
     if (!bo) return;
@@ -1641,7 +1641,7 @@ void PixelDataBufferObject::bindBufferInWriteMode(State& state)
 
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::unbindBuffer(unsigned int contextID) const
-{ 
+{
     GLBufferObject::Extensions* extensions = GLBufferObject::getExtensions(contextID,true);
 
     switch(_mode[contextID])

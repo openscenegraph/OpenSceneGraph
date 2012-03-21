@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -50,7 +50,7 @@ getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
     ax.normalize();
     ay = ocsaxis ^ ax;
     ay.normalize();
-    m = osg::Matrixd(    ax.x(), ax.y(), ax.z(), 0, 
+    m = osg::Matrixd(    ax.x(), ax.y(), ax.z(), 0,
                         ay.x(), ay.y(), ay.z(), 0,
                         ocsaxis.x(), ocsaxis.y(), ocsaxis.z(), 0,
                         0,0,0,1);
@@ -92,7 +92,7 @@ public:
     dxfCircle() : _radius(0), _ocs(0,0,1) {}
     virtual ~dxfCircle() {}
     virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
-        dxfBasicEntity* circle=new dxfCircle; 
+        dxfBasicEntity* circle=new dxfCircle;
         circle->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
         return circle;
     }
@@ -111,7 +111,7 @@ public:
     dxfArc() : _radius(0), _startAngle(0), _endAngle(360), _ocs(0,0,1) {}
     virtual ~dxfArc() {}
     virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
-        dxfBasicEntity* arc=new dxfArc; 
+        dxfBasicEntity* arc=new dxfArc;
         arc->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
         //std::cout<<"dxfArc::create with _useAccuracy="<<_useAccuracy<<" maxError="<<_maxError<<" improveAccuracyOnly="<<_improveAccuracyOnly<<std::endl;
         return arc;
@@ -160,7 +160,7 @@ protected:
 class dxf3DFace : public dxfBasicEntity
 {
 public:
-    dxf3DFace() 
+    dxf3DFace()
     {
         _vertices[0] = osg::Vec3d(0,0,0);
         _vertices[1] = osg::Vec3d(0,0,0);
@@ -199,12 +199,12 @@ protected:
 class dxfPolyline : public dxfBasicEntity
 {
 public:
-    dxfPolyline() : _currentVertex(NULL), 
-                    _elevation(0.0), 
-                    _flag(0), 
-                    _mcount(0), 
-                    _ncount(0), 
-                    _nstart(0), 
+    dxfPolyline() : _currentVertex(NULL),
+                    _elevation(0.0),
+                    _flag(0),
+                    _mcount(0),
+                    _ncount(0),
+                    _nstart(0),
                     _nend(0),
                     _ocs(osg::Vec3d(0,0,1)),
                     _mdensity(0),
@@ -238,10 +238,10 @@ protected:
 class dxfLWPolyline : public dxfBasicEntity
 {
 public:
-    dxfLWPolyline() : 
-        _elevation(0.0), 
-        _flag(0), 
-        _vcount(0), 
+    dxfLWPolyline() :
+        _elevation(0.0),
+        _flag(0),
+        _vcount(0),
         _ocs(osg::Vec3d(0,0,1)),
         _lastv(0,0,0)
         {}
@@ -265,9 +265,9 @@ protected:
 class dxfInsert : public dxfBasicEntity
 {
 public:
-    dxfInsert() : _block(NULL), 
-                    _done(false), 
-                    _rotation(0), 
+    dxfInsert() : _block(NULL),
+                    _done(false),
+                    _rotation(0),
                     _scale(1,1,1),
                     _point(osg::Vec3d(0,0,0)),
                     _ocs(osg::Vec3d(0,0,1)) {}
@@ -338,7 +338,7 @@ public:
     virtual bool done() { return !_seqend; }
     static void registerEntity(dxfBasicEntity*);
     static void unregisterEntity(dxfBasicEntity*);
-    static dxfBasicEntity* findByName(std::string s) 
+    static dxfBasicEntity* findByName(std::string s)
     {
         dxfBasicEntity* be = _registry[s].get();
         if (be)
@@ -381,9 +381,9 @@ class RegisterEntityProxy
         {
             dxfEntity::unregisterEntity(_rw.get());
         }
-        
+
         T* get() { return _rw.get(); }
-        
+
     protected:
         osg::ref_ptr<T> _rw;
 };

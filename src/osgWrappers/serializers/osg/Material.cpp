@@ -44,7 +44,7 @@ REGISTER_OBJECT_WRAPPER( Material,
         ADD_ENUM_VALUE( AMBIENT_AND_DIFFUSE );
         ADD_ENUM_VALUE( OFF );
     END_ENUM_SERIALIZER();  // _colorMode
-    
+
     ADD_USER_SERIALIZER( Ambient );  // _ambient
     ADD_USER_SERIALIZER( Diffuse );  // _diffuse
     ADD_USER_SERIALIZER( Specular );  // _specular

@@ -65,7 +65,7 @@ ref_ptr<Group> VTXReader::processBodyPart(std::istream * str, int offset,
         currentModel = currentPart->getModel(i);
 
         // Process the model
-        modelGroup = processModel(str, 
+        modelGroup = processModel(str,
                                   offset + part.model_offset +
                                   (i * sizeof(VTXModel)),
                                   currentModel);
@@ -400,7 +400,7 @@ bool VTXReader::readFile(const std::string & file)
         currentPart = mdl_root->getBodyPart(i);
 
         // Process the body part
-        partGroup = processBodyPart(vtxFile, 
+        partGroup = processBodyPart(vtxFile,
                                     header.body_part_offset +
                                         (i * sizeof(VTXBodyPart)),
                                     currentPart);

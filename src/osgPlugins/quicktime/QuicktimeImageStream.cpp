@@ -4,10 +4,10 @@
 * Copyright (C) 2004 Stephan Huber http://digitalmind.de
 *
 *
-* The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
-* real-time rendering of large 3D photo-realistic models. 
+* The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+* real-time rendering of large 3D photo-realistic models.
 * The OSG homepage is http://www.openscenegraph.org/
-* 
+*
 * This software is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
@@ -70,10 +70,10 @@ QuicktimeImageStream::~QuicktimeImageStream()
       quit(true);
    }
 
-   
+
    // clean up quicktime movies.
    delete _movieData;
-   
+
 }
 
 
@@ -152,14 +152,14 @@ void QuicktimeImageStream::run()
 
 
       ThreadCommand cmd = getCmd();
-      OSG_DEBUG << "movietime: " << _movieData->getMovieTime() << " rate: " << _movieData->getMovieRate() << " state " << cmd << " playing: " << playing << " done " << done << "  " << _wrIndex << "/" << _rdIndex << std::endl;        
-      // Handle commands               
+      OSG_DEBUG << "movietime: " << _movieData->getMovieTime() << " rate: " << _movieData->getMovieRate() << " state " << cmd << " playing: " << playing << " done " << done << "  " << _wrIndex << "/" << _rdIndex << std::endl;
+      // Handle commands
       {
          if (cmd != THREAD_IDLE) {
             OSG_DEBUG << "new cmd: " << cmd << std::endl;
             switch (cmd) {
                     case THREAD_START: // Start or continue stream
-                       applyLoopingMode();    
+                       applyLoopingMode();
                        _movieData->setMovieRate(1.0);
 
                        playing = true;
@@ -212,7 +212,7 @@ void QuicktimeImageStream::run()
       }
 
 
-      if (_lastUpdate!= _current) 
+      if (_lastUpdate!= _current)
       {
          // force the texture to update the image
          dirty();

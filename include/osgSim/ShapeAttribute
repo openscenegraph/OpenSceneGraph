@@ -25,7 +25,7 @@ namespace osgSim
 class OSGSIM_EXPORT ShapeAttribute
 {
     public:
-        /// ShapeAttribute data type. 
+        /// ShapeAttribute data type.
         enum Type
         {
             UNKNOWN,
@@ -33,21 +33,21 @@ class OSGSIM_EXPORT ShapeAttribute
             DOUBLE,
             STRING
         };
-      
+
         ShapeAttribute();
         ShapeAttribute(const char * name);
         ShapeAttribute(const char * name, int value);
         ShapeAttribute(const char * name, double value);
-        
+
         /** Note, ShapeAttribute takes a copy of both name and value, the calling code should manage its own clean up of the original strings.*/
         ShapeAttribute(const char * name, const char * value);
-        
+
         ShapeAttribute(const ShapeAttribute & sa);
-            
+
         ~ShapeAttribute();
-        
+
         ShapeAttribute& operator = (const ShapeAttribute& sa);
-        
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compare(const osgSim::ShapeAttribute& sa) const;
 
@@ -63,7 +63,7 @@ class OSGSIM_EXPORT ShapeAttribute
 
         /// Get the attribute data type.
         const Type getType() const { return _type; }
-        
+
         /// Get the attribute data as an int.
         int getInt() const { return _integer; }
 
@@ -72,7 +72,7 @@ class OSGSIM_EXPORT ShapeAttribute
 
         /// Get the attribute data as a string.
         const char * getString() const { return _string; }
-       
+
         /// Set an integer attribute data.
         void setValue(int value) { free(); _type = INTEGER; _integer = value; }
 
@@ -82,15 +82,15 @@ class OSGSIM_EXPORT ShapeAttribute
         /// Set a string attribute data.
         void setValue(const char * value);
 
-        
+
     private:
-    
+
         void free();
         void copy(const ShapeAttribute& sa);
-        
+
         std::string _name;
         Type _type;
-        
+
         union
         {
             int _integer;
@@ -103,11 +103,11 @@ class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public osg::MixinVe
 {
     public:
         META_Object(osgSim, ShapeAttributeList)
-    
+
         ShapeAttributeList():
             Object()
         {}
-        
+
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
         ShapeAttributeList(const ShapeAttributeList& sal,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
@@ -115,10 +115,10 @@ class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public osg::MixinVe
             osg::MixinVector<ShapeAttribute>(sal)
         {
         }
-    
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const osgSim::ShapeAttributeList& sal) const;
-        
+
     protected:
         virtual ~ShapeAttributeList() {}
 };

@@ -34,7 +34,7 @@ bool OrbitOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     float value = 0.0f;
     if (fr[0].matchWord("magnitude")) {
         if (fr[1].getFloat(value)) {
@@ -43,7 +43,7 @@ bool OrbitOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("epsilon")) {
         if (fr[1].getFloat(value)) {
             op.setEpsilon(value);
@@ -51,7 +51,7 @@ bool OrbitOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("maxRadius")) {
         if (fr[1].getFloat(value)) {
             op.setMaxRadius(value);
@@ -68,7 +68,7 @@ bool OrbitOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgParticle::OrbitOperator &op = static_cast<const osgParticle::OrbitOperator &>(obj);
     osg::Vec3 a = op.getCenter();
     fw.indent() << "center " << a.x() << " " << a.y() << " " << a.z() << std::endl;
-    
+
     fw.indent() << "magnitude " << op.getMagnitude() << std::endl;
     fw.indent() << "epsilon " << op.getEpsilon() << std::endl;
     fw.indent() << "maxRadius " << op.getMaxRadius() << std::endl;

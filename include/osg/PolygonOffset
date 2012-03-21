@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -16,7 +16,7 @@
 
 #include <osg/StateAttribute>
 
-#ifndef GL_POLYGON_OFFSET_LINE 
+#ifndef GL_POLYGON_OFFSET_LINE
     #define GL_POLYGON_OFFSET_LINE 0x2A02
     #define GL_POLYGON_OFFSET_POINT 0x2A01
 #endif
@@ -66,7 +66,7 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
 
         inline void setFactor(float factor) { _factor = factor; }
         inline float getFactor() const { return _factor; }
-        
+
         inline void setUnits(float units) { _units = units; }
         inline float getUnits() const { return _units; }
 
@@ -78,9 +78,9 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
 
         static void setUnitsMultiplier(float multiplier);
         static float getUnitsMultiplier();
-        
+
         static bool areFactorAndUnitsMultipliersSet();
-        
+
         /** Checks with the OpenGL driver to try and pick multiplier appropriate for the hardware.
             note, requires a valid graphics context to be current. */
         static void setFactorAndUnitsMultipliersUsingBestGuessForDriver();

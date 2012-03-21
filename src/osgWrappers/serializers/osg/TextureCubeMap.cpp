@@ -42,7 +42,7 @@ REGISTER_OBJECT_WRAPPER( TextureCubeMap,
     ADD_USER_SERIALIZER( NegY );
     ADD_USER_SERIALIZER( PosZ );
     ADD_USER_SERIALIZER( NegZ );  // _images
-    
+
     ADD_INT_SERIALIZER( TextureWidth, 0 );  // _textureWidth
     ADD_INT_SERIALIZER( TextureHeight, 0 );  // _textureHeight
 }

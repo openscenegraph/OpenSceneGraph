@@ -8,11 +8,11 @@
  * Modified by Robert Osfield to support per Drawable coord, normal and
  * texture coord arrays, bug fixes, and support for texture mapping.
  *
- * Writing support added 2007 by Stephan Huber, http://digitalmind.de, 
+ * Writing support added 2007 by Stephan Huber, http://digitalmind.de,
  * some ideas taken from the dae-plugin
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -78,54 +78,54 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
-    
-    virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const 
+
+    virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const
     {
         const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
         if (node)
             return writeNode(*node, fileName, options);
-        else 
-            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+        else
+            return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
-    
-    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const 
-    { 
+
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const
+    {
         if (!acceptsExtension(osgDB::getFileExtension(fileName)))
-            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
-            
+            return WriteResult(WriteResult::FILE_NOT_HANDLED);
+
         osgDB::ofstream f(fileName.c_str());
         std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
         OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile));
-        
+
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);
-        
+
         osgDB::ofstream mf(materialFile.c_str());
         nv.writeMaterials(mf);
-         
-        return WriteResult(WriteResult::FILE_SAVED); 
+
+        return WriteResult(WriteResult::FILE_SAVED);
     }
 
-    
-    virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL) const 
+
+    virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL) const
     {
         const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
         if (node)
             return writeNode(*node, fout, options);
-        else 
-            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+        else
+            return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
-    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* =NULL) const 
-    { 
+    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* =NULL) const
+    {
         // writing to a stream does not support materials
-        
+
         OBJWriterNodeVisitor nv(fout);
-        
+
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);
-    
-        return WriteResult(WriteResult::FILE_SAVED); 
+
+        return WriteResult(WriteResult::FILE_SAVED);
     }
 
 
@@ -145,16 +145,16 @@ protected:
     };
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
-    
+
     void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMapObj, ObjOptionsStruct& localOptions, const Options* options) const;
-    
+
     osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, ObjOptionsStruct& localOptions) const;
-    
+
     osg::Node* convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions, const Options* options) const;
 
     inline osg::Vec3 transformVertex(const osg::Vec3& vec, const bool rotate) const ;
     inline osg::Vec3 transformNormal(const osg::Vec3& vec, const bool rotate) const ;
- 
+
     ObjOptionsStruct parseOptions(const Options* options) const;
 
 
@@ -198,12 +198,12 @@ static void load_material_texture(    obj::Model &model,
     if (!filename.empty())
     {
         osg::ref_ptr< osg::Image > image;
-        if ( !model.getDatabasePath().empty() ) 
+        if ( !model.getDatabasePath().empty() )
         {
-            // first try with database path of parent. 
+            // first try with database path of parent.
             image = osgDB::readRefImageFile(model.getDatabasePath()+'/'+filename, options);
         }
-        
+
         if ( !image.valid() )
         {
             // if not already set then try the filename as is.
@@ -230,14 +230,14 @@ static void load_material_texture(    obj::Model &model,
             texture->setWrap(osg::Texture2D::WRAP_S, textureWrapMode);
             texture->setWrap(osg::Texture2D::WRAP_T, textureWrapMode);
             stateset->setTextureAttributeAndModes( texture_unit, texture,osg::StateAttribute::ON );
-            
+
             if ( map.type == obj::Material::Map::REFLECTION )
             {
                 osg::TexGen* texgen = new osg::TexGen;
                 texgen->setMode(osg::TexGen::SPHERE_MAP);
                 stateset->setTextureAttributeAndModes( texture_unit,texgen,osg::StateAttribute::ON );
             }
-            
+
             if  ( image->isImageTranslucent())
             {
                 OSG_INFO<<"Found transparent image"<<std::endl;
@@ -292,7 +292,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 ++numNotBlack;
             }
         }
-        
+
         if (numNotBlack==0 && numBlack!=0)
         {
             for(itr = model.materialMap.begin();
@@ -309,13 +309,13 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             }
         }
     }
-    
+
     for(obj::Model::MaterialMap::iterator itr = model.materialMap.begin();
         itr != model.materialMap.end();
         ++itr)
     {
         obj::Material& material = itr->second;
-       
+
         osg::ref_ptr< osg::StateSet > stateset = new osg::StateSet;
 
         bool isTransparent = false;
@@ -337,7 +337,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));
             }
             osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.Ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
-            
+
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||
                 material.specular[3]!=1.0||
@@ -347,8 +347,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 isTransparent = true;
             }
         }
-        
-        // If the user has explicitly set the required texture type to unit map via the options 
+
+        // If the user has explicitly set the required texture type to unit map via the options
         // string, then we load ONLY those textures that are in the map.
         if(localOptions.textureUnitAllocation.size()>0)
         {
@@ -395,7 +395,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 }
             }
         }
-      
+
         if (isTransparent)
         {
             stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
@@ -408,17 +408,17 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
 
 osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, ObjOptionsStruct& localOptions) const
 {
-    
+
     unsigned int numVertexIndices = 0;
     unsigned int numNormalIndices = 0;
     unsigned int numTexCoordIndices = 0;
-    
+
     unsigned int numPointElements = 0;
     unsigned int numPolylineElements = 0;
     unsigned int numPolygonElements = 0;
 
     obj::Model::ElementList::iterator itr;
-        
+
     if (localOptions.generateFacetNormals == true) {
         for(itr=elementList.begin();
                 itr!=elementList.end();
@@ -427,7 +427,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             obj::Element& element = *(*itr);
             if (element.dataType==obj::Element::POINTS || element.dataType==obj::Element::POLYLINE)
                 continue;
-                        
+
             if (element.normalIndices.size() == 0) {
                 // fill in the normals
                 int a = element.vertexIndices[0];
@@ -450,9 +450,9 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             }
         }
     }
-        
-        
-        
+
+
+
     for(itr=elementList.begin();
         itr!=elementList.end();
         ++itr)
@@ -470,27 +470,27 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     }
 
     if (numVertexIndices==0) return 0;
-    
+
     if (numNormalIndices!=0 && numNormalIndices!=numVertexIndices)
     {
         OSG_NOTICE<<"Incorrect number of normals, ignore them"<<std::endl;
         numNormalIndices = 0;
     }
-    
+
     if (numTexCoordIndices!=0 && numTexCoordIndices!=numVertexIndices)
     {
         OSG_NOTICE<<"Incorrect number of normals, ignore them"<<std::endl;
         numTexCoordIndices = 0;
     }
-    
+
     osg::Vec3Array* vertices = numVertexIndices ? new osg::Vec3Array : 0;
     osg::Vec3Array* normals = numNormalIndices ? new osg::Vec3Array : 0;
     osg::Vec2Array* texcoords = numTexCoordIndices ? new osg::Vec2Array : 0;
-    
+
     if (vertices) vertices->reserve(numVertexIndices);
     if (normals) normals->reserve(numNormalIndices);
     if (texcoords) texcoords->reserve(numTexCoordIndices);
-    
+
     osg::Geometry* geometry = new osg::Geometry;
     if (vertices) geometry->setVertexArray(vertices);
     if (normals)
@@ -502,7 +502,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     {
         geometry->setTexCoordArray(0,texcoords);
     }
-    
+
 
     if (numPointElements>0)
     {
@@ -546,7 +546,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
         osg::DrawArrays* drawArrays = new osg::DrawArrays(GL_POINTS,startPos,numPoints);
         geometry->addPrimitiveSet(drawArrays);
     }
-    
+
     if (numPolylineElements>0)
     {
         unsigned int startPos = vertices->size();
@@ -597,7 +597,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     if (numPolygonElements>0)
     {
         unsigned int startPos = vertices->size();
-        
+
         #ifdef USE_DRAWARRAYLENGTHS
             osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(GL_POLYGON,startPos);
             geometry->addPrimitiveSet(drawArrayLengths);
@@ -611,7 +611,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             if (element.dataType==obj::Element::POLYGON)
             {
 
-                
+
 
 
 
@@ -633,7 +633,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                     }
                 #endif
 
-            
+
                 if (model.needReverse(element))
                 {
                     // need to reverse so add to OSG arrays in same order as in OBJ, as OSG assume anticlockwise ordering.
@@ -697,7 +697,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
 
 
     }
-    
+
     return geometry;
 }
 
@@ -717,7 +717,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
         itr!=model.elementStateMap.end();
         ++itr)
     {
-    
+
         const obj::ElementState& es = itr->first;
         obj::Model::ElementList& el = itr->second;
 
@@ -733,21 +733,21 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
 
             osg::StateSet* stateset = materialToStateSetMap[es.materialName].get();
             geometry->setStateSet(stateset);
-        
+
             // tesseleate any large polygons
             if (!localOptions.noTesselateLargePolygons)
             {
                 osgUtil::Tessellator tessellator;
                 tessellator.retessellatePolygons(*geometry);
             }
-            
+
             // tri strip polygons to improve graphics peformance
             if (!localOptions.noTriStripPolygons)
             {
                 osgUtil::TriStripVisitor tsv;
                 tsv.stripify(*geometry);
             }
-            
+
             // if no normals present add them.
             if (localOptions.generateFacetNormals==false && (!geometry->getNormalArray() || geometry->getNormalArray()->getNumElements()==0))
             {
@@ -758,7 +758,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
 
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geometry);
-            
+
             if (es.objectName.empty())
             {
                 geode->setName(es.groupName);
@@ -804,7 +804,7 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             {
                 pre_equals = opt.substr(0,found);
                 post_equals = opt.substr(found+1);
-            } 
+            }
             else
             {
                 pre_equals = opt;
@@ -813,11 +813,11 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             if (pre_equals == "noRotation")
             {
                 localOptions.rotate = false;
-            }                
+            }
             else if (pre_equals == "noTesselateLargePolygons")
             {
                 localOptions.noTesselateLargePolygons = true;
-            }                
+            }
             else if (pre_equals == "noTriStripPolygons")
             {
                 localOptions.noTriStripPolygons = true;
@@ -827,8 +827,8 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
                 localOptions.generateFacetNormals = true;
             }
             else if (post_equals.length()>0)
-            {    
-                obj::Material::Map::TextureMapType type = obj::Material::Map::UNKNOWN;                        
+            {
+                obj::Material::Map::TextureMapType type = obj::Material::Map::UNKNOWN;
                 // Now we check to see if we have anything forcing a texture allocation
                 if        (pre_equals == "DIFFUSE")            type = obj::Material::Map::DIFFUSE;
                 else if (pre_equals == "AMBIENT")            type = obj::Material::Map::AMBIENT;
@@ -838,7 +838,7 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
                 else if (pre_equals == "BUMP")                type = obj::Material::Map::BUMP;
                 else if (pre_equals == "DISPLACEMENT")        type = obj::Material::Map::DISPLACEMENT;
                 else if (pre_equals == "REFLECTION")        type = obj::Material::Map::REFLECTION;
-                
+
                 if (type!=obj::Material::Map::UNKNOWN)
                 {
                     int unit = atoi(post_equals.c_str());    // (probably should use istringstream rather than atoi)
@@ -860,13 +860,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-    
-    
+
+
     osgDB::ifstream fin(fileName.c_str());
     if (fin)
     {
-    
-        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+
+        // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -879,7 +879,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         osg::Node* node = convertModelToSceneGraph(model, localOptions, options);
         return node;
     }
-    
+
     return ReadResult::FILE_NOT_HANDLED;
 }
 
@@ -891,12 +891,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
 
         obj::Model model;
         model.readOBJ(fin, options);
-        
+
         ObjOptionsStruct localOptions = parseOptions(options);
-        
+
         osg::Node* node = convertModelToSceneGraph(model, localOptions, options);
         return node;
     }
-    
+
     return ReadResult::FILE_NOT_HANDLED;
 }

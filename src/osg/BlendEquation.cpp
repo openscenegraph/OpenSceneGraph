@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/BlendEquation>
@@ -44,12 +44,12 @@ BlendEquation::~BlendEquation()
 void BlendEquation::apply(State& state) const
 {
 
-   // get the contextID (user defined ID of 0 upwards) for the 
+   // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    
+
     const Extensions* extensions = getExtensions(contextID,true);
-                                        
+
     if (!extensions->isBlendEquationSupported())
     {
         OSG_WARN<<"Warning: BlendEquation::apply(..) failed, BlendEquation is not support by OpenGL driver."<<std::endl;
@@ -125,12 +125,12 @@ void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
 void BlendEquation::Extensions::setupGLExtensions(unsigned int contextID)
 {
     bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
-    _isBlendEquationSupported = bultInSupport || 
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") || 
+    _isBlendEquationSupported = bultInSupport ||
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
         strncmp((const char*)glGetString(GL_VERSION), "1.2", 3) >= 0;
 
     _isBlendEquationSeparateSupported = bultInSupport ||
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") || 
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
         strncmp((const char*)glGetString(GL_VERSION), "2.0", 3) >= 0;
 
     _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");

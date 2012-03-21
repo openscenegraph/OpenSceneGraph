@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,14 +31,14 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         GeometryTechnique(const GeometryTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, GeometryTechnique);
-        
+
         virtual void init(int dirtyMask, bool assumeMultiThreaded);
-        
+
         virtual Locator* computeMasterLocator();
-        
-        
+
+
         virtual void update(osgUtil::UpdateVisitor* nv);
 
         virtual void cull(osgUtil::CullVisitor* nv);
@@ -50,21 +50,21 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         void setFilterBias(float filterBias);
         float getFilterBias() const { return _filterBias; }
-        
+
         void setFilterWidth(float filterWidth);
         float getFilterWidth() const { return _filterWidth; }
 
         void setFilterMatrix(const osg::Matrix3& matrix);
         osg::Matrix3& getFilterMatrix() { return _filterMatrix; }
         const osg::Matrix3& getFilterMatrix() const { return _filterMatrix; }
-        
+
         enum FilterType
         {
             GAUSSIAN,
             SMOOTH,
             SHARPEN
         };
-        
+
         void setFilterMatrixAs(FilterType filterType);
 
         /** If State is non-zero, this function releases any associated OpenGL objects for

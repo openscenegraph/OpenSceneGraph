@@ -26,11 +26,11 @@ bool OccluderNode_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     OccluderNode& occludernode = static_cast<OccluderNode&>(obj);
-    
+
     static ref_ptr<ConvexPlanarOccluder> s_occluder = new ConvexPlanarOccluder;
-    
+
     ConvexPlanarOccluder* tmpOccluder = static_cast<ConvexPlanarOccluder*>(fr.readObjectOfType(*s_occluder));
-    
+
     if (tmpOccluder)
     {
         occludernode.setOccluder(tmpOccluder);

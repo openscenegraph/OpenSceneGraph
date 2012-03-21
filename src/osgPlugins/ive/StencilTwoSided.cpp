@@ -29,17 +29,17 @@ void StencilTwoSided::write(DataOutputStream* out){
     else
         out_THROW_EXCEPTION("Stencil::write(): Could not cast this osg::Stencil to an osg::Object.");
     // Write Stencil's properties.
-    
+
     out->writeInt(getFunction(FRONT));
     out->writeInt(getFunctionRef(FRONT));
     out->writeUInt(getFunctionMask(FRONT));
-    
+
     out->writeInt(getStencilFailOperation(FRONT));
     out->writeInt(getStencilPassAndDepthFailOperation(FRONT));
     out->writeInt(getStencilPassAndDepthPassOperation(FRONT));
-    
+
     out->writeUInt(getWriteMask(FRONT));
-    
+
     out->writeInt(getFunction(BACK));
     out->writeInt(getFunctionRef(BACK));
     out->writeUInt(getFunctionMask(BACK));
@@ -69,11 +69,11 @@ void StencilTwoSided::read(DataInputStream* in){
         setFunction(FRONT, (Function)in->readInt());
         setFunctionRef(FRONT, in->readInt());
         setFunctionMask(FRONT, in->readUInt());
-        
+
         setStencilFailOperation(FRONT, (Operation)in->readInt());
         setStencilPassAndDepthFailOperation(FRONT, (Operation)in->readInt());
         setStencilPassAndDepthPassOperation(FRONT, (Operation)in->readInt());
-        
+
         setWriteMask(FRONT, in->readUInt());
 
         setFunction(BACK, (Function)in->readInt());

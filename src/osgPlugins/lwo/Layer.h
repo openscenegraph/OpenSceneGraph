@@ -22,7 +22,7 @@ namespace lwosg
 		inline Layer();
 
 		inline const lwo2::FORM::LAYR *get_layer_chunk() const;
-		inline void set_layer_chunk(const lwo2::FORM::LAYR *layr);	
+		inline void set_layer_chunk(const lwo2::FORM::LAYR *layr);
 
 		inline int number() const;
 

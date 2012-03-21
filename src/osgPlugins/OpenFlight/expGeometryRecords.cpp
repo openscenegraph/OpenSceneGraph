@@ -1,9 +1,9 @@
-/* 
+/*
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or (at
  * your option) any later version. The full license is in the LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -497,7 +497,7 @@ FltExportVisitor::writeVertexList( int first, unsigned int count )
 
     unsigned int idx;
     for( idx=0; idx<count; idx++)
-        // I'm imagining that 'first' will be a 0-based index into the 
+        // I'm imagining that 'first' will be a 0-based index into the
         //   'current' set of vertices held by the vertex palette manager.
         _records->writeInt32( _vertexPalette->byteOffset( first+idx ) );
 
@@ -512,7 +512,7 @@ FltExportVisitor::writeVertexList( const std::vector<unsigned int>& indices, uns
 
     unsigned int idx;
     for( idx=0; idx<count; idx++)
-        // I'm imagining that 'first' will be a 0-based index into the 
+        // I'm imagining that 'first' will be a 0-based index into the
         //   'current' set of vertices held by the vertex palette manager.
         _records->writeInt32( _vertexPalette->byteOffset( indices[ idx ] ) );
 

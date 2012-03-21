@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,7 +25,7 @@ LightPointDrawable::LightPointDrawable():
 {
 
     setSupportsDisplayList(false);
-    
+
     _depthOff = new osg::Depth;
     _depthOff->setWriteMask(false);
 
@@ -34,7 +34,7 @@ LightPointDrawable::LightPointDrawable():
 
     _blendOne = new osg::BlendFunc;
     _blendOne->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE);
-    
+
     _blendOneMinusSrcAlpha = new osg::BlendFunc;
     _blendOneMinusSrcAlpha->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
 
@@ -64,7 +64,7 @@ void LightPointDrawable::reset()
         if (!itr->empty())
             itr->erase(itr->begin(),itr->end());
     }
-    
+
     for(itr=_sizedAdditiveLightPointList.begin();
         itr!=_sizedAdditiveLightPointList.end();
         ++itr)
@@ -93,7 +93,7 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
     state.applyMode(GL_LIGHTING,false);
     state.applyTextureMode(0,GL_TEXTURE_1D,false);
     state.applyTextureMode(0,GL_TEXTURE_2D,false);
-    
+
     glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
 
     state.applyAttribute(_depthOn.get());
@@ -140,7 +140,7 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
 
-    state.applyAttribute(_blendOne.get());    
+    state.applyAttribute(_blendOne.get());
 
     for(pointsize=1,sitr=_sizedAdditiveLightPointList.begin();
         sitr!=_sizedAdditiveLightPointList.end();
@@ -159,14 +159,14 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
     glPointSize(1);
-    
+
     glHint(GL_POINT_SMOOTH_HINT,GL_FASTEST);
 
     state.haveAppliedAttribute(osg::StateAttribute::POINT);
-    
+
     state.dirtyAllVertexArrays();
     state.disableAllVertexArrays();
-    
+
     // restore the state afterwards.
     state.apply();
 #else

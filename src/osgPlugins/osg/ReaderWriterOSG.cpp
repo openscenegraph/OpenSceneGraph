@@ -155,20 +155,20 @@ class OSGReaderWriter : public ReaderWriter
         virtual ReadResult readObject(const std::string& file, const Options* opt) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-                        
+
             if (equalCaseInsensitive(ext,"osgs"))
-            {   
+            {
                 std::istringstream fin(osgDB::getNameLessExtension(file));
                 if (fin) return readNode(fin,opt);
                 return ReadResult::ERROR_IN_READING_FILE;
-            }            
-            
+            }
+
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::string fileName = osgDB::findDataFile( file, opt );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
@@ -178,7 +178,7 @@ class OSGReaderWriter : public ReaderWriter
                 return readObject(fin, local_opt.get());
             }
             return 0L;
-        }               
+        }
 
         virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
@@ -189,7 +189,7 @@ class OSGReaderWriter : public ReaderWriter
             Input fr;
             fr.attach(&fin);
             fr.setOptions(options);
-            
+
             typedef std::vector<osg::Object*> ObjectList;
             ObjectList objectList;
 
@@ -220,18 +220,18 @@ class OSGReaderWriter : public ReaderWriter
             std::string ext = osgDB::getLowerCaseFileExtension(file);
 
             if (equalCaseInsensitive(ext,"osgs"))
-            {   
+            {
                 std::istringstream fin(osgDB::getNameLessExtension(file));
                 if (fin) return readNode(fin,opt);
                 return ReadResult::ERROR_IN_READING_FILE;
-            }            
-            
+            }
+
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::string fileName = osgDB::findDataFile( file, opt );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
@@ -241,9 +241,9 @@ class OSGReaderWriter : public ReaderWriter
                 return readNode(fin, local_opt.get());
             }
             return 0L;
-                        
+
         }
-        
+
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
             loadWrappers();
@@ -253,7 +253,7 @@ class OSGReaderWriter : public ReaderWriter
             Input fr;
             fr.attach(&fin);
             fr.setOptions(options);
-            
+
             typedef std::vector<osg::Node*> NodeList;
             NodeList nodeList;
 
@@ -296,7 +296,7 @@ class OSGReaderWriter : public ReaderWriter
                 std::string opt;
                 while (iss >> opt)
                 {
-                    if(opt=="PRECISION" || opt=="precision") 
+                    if(opt=="PRECISION" || opt=="precision")
                     {
                         int prec;
                         iss >> prec;
@@ -312,7 +312,7 @@ class OSGReaderWriter : public ReaderWriter
                     }
                 }
             }
-        }            
+        }
 
         virtual WriteResult writeObject(const Object& obj, const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {

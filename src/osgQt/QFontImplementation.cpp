@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 2009-2010 Mathias Froehlich
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgQt/QFontImplementation>
@@ -44,7 +44,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
 {
     unsigned int fontSize = fontRes.second;
     _font.setPixelSize(fontSize);
-    
+
     float coord_scale = 1.0f/float(fontSize);
 
     QFontMetrics fontMetrics(_font);
@@ -87,7 +87,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
            data[x + y*imageWidth] = qAlpha(image.pixel(x, imageHeight - 1 - y));
         }
     }
-    
+
     // the glyph texture in osg
     glyph->setImage(imageWidth, imageHeight, 1,
                     GL_ALPHA,
@@ -96,7 +96,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
                     osg::Image::USE_NEW_DELETE,
                     1);
     glyph->setInternalTextureFormat(GL_ALPHA);
-    
+
     glyph->setWidth((float)imageWidth * coord_scale);
     glyph->setHeight((float)imageHeight * coord_scale);
 
@@ -114,10 +114,10 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
                         rectF.top() - margin);
     glyph->setVerticalBearing(topMiddle * coord_scale);
     glyph->setVerticalAdvance((rectF.height() + fontMetricsF.overlinePos() - fontMetricsF.xHeight()) * coord_scale);
-    
+
     // ... ready
     //addGlyph(fontRes, charcode, glyph.get());
-    
+
     return glyph.release();
 }
 

@@ -203,8 +203,8 @@ bool trpgTextStyle::operator == (const trpgTextStyle& in) const
     if (font != in.font)
         return false;
 
-    if (bold      != in.bold || 
-        italic    != in.italic || 
+    if (bold      != in.bold ||
+        italic    != in.italic ||
         underline != in.underline)
         return false;
 
@@ -238,7 +238,7 @@ bool trpgTextStyleTable::isValid() const
 {
     //for (int i=0;i<styles.size();i++)
     StyleMapType::const_iterator itr = styleMap.begin();
-    for (  ; itr != styleMap.end( ); itr++) 
+    for (  ; itr != styleMap.end( ); itr++)
         if (!itr->second.isValid())
             return false;
 
@@ -258,7 +258,7 @@ int trpgTextStyleTable::AddStyle(const trpgTextStyle &style)
 int trpgTextStyleTable::FindAddStyle(const trpgTextStyle &style)
 {
     StyleMapType::const_iterator itr = styleMap.begin();
-    for (  ; itr != styleMap.end( ); itr++) 
+    for (  ; itr != styleMap.end( ); itr++)
         if (itr->second == style)
             return itr->first;
 
@@ -504,7 +504,7 @@ int trpgSupportStyleTable::AddStyle(const trpgSupportStyle &style)
 int trpgSupportStyleTable::FindAddStyle(const trpgSupportStyle &style)
 {
     SupportStyleMapType::const_iterator itr = supportStyleMap.begin();
-    for (  ; itr != supportStyleMap.end( ); itr++) 
+    for (  ; itr != supportStyleMap.end( ); itr++)
         if (itr->second == style)
             return itr->first;
 
@@ -539,7 +539,7 @@ bool trpgSupportStyleTable::Write(trpgWriteBuffer &buf)
 
     // Write the styles
     SupportStyleMapType::iterator itr = supportStyleMap.begin();
-    for (  ; itr != supportStyleMap.end( ); itr++) 
+    for (  ; itr != supportStyleMap.end( ); itr++)
         itr->second.Write(buf);
 
     buf.End();

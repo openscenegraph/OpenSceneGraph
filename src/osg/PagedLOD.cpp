@@ -126,8 +126,8 @@ void PagedLOD::traverse(NodeVisitor& nv)
 {
     // set the frame number of the traversal so that external nodes can find out how active this
     // node is.
-    if (nv.getFrameStamp() && 
-        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) 
+    if (nv.getFrameStamp() &&
+        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
         setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
     }
@@ -298,7 +298,7 @@ bool PagedLOD::removeExpiredChildren(double expiryTime, unsigned int expiryFrame
         if (!_perRangeDataList[cindex]._filename.empty() &&
             _perRangeDataList[cindex]._timeStamp + _perRangeDataList[cindex]._minExpiryTime < expiryTime &&
             _perRangeDataList[cindex]._frameNumber + _perRangeDataList[cindex]._minExpiryFrames < expiryFrame)
-        {            
+        {
             osg::Node* nodeToRemove = _children[cindex].get();
             removedChildren.push_back(nodeToRemove);
             return Group::removeChildren(cindex,1);

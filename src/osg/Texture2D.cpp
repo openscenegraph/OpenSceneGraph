@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -66,12 +66,12 @@ int Texture2D::compare(const StateAttribute& sa) const
             }
             else
             {
-                return 1; // valid lhs._image is greater than null. 
+                return 1; // valid lhs._image is greater than null.
             }
         }
-        else if (rhs._image.valid()) 
+        else if (rhs._image.valid())
         {
-            return -1; // valid rhs._image is greater than null. 
+            return -1; // valid rhs._image is greater than null.
         }
     }
 
@@ -90,7 +90,7 @@ int Texture2D::compare(const StateAttribute& sa) const
     if (result!=0) return result;
 
     // compare each parameter in turn against the rhs.
-#if 1    
+#if 1
     if (_textureWidth != 0 && rhs._textureWidth != 0)
     {
         COMPARE_StateAttribute_Parameter(_textureWidth)
@@ -150,7 +150,7 @@ void Texture2D::apply(State& state) const
 
     //state.setReportGLErrors(true);
 
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
@@ -196,10 +196,10 @@ void Texture2D::apply(State& state) const
         {
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
- 
+
             // update the modified tag to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
-     
+
         }
         else if (_readPBuffer.valid())
         {
@@ -216,7 +216,7 @@ void Texture2D::apply(State& state) const
         applyTexParameters(GL_TEXTURE_2D,state);
 
         _subloadCallback->load(*this,state);
-        
+
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
         // in theory the following line is redundent, but in practice
@@ -277,13 +277,13 @@ void Texture2D::apply(State& state) const
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
         //glBindTexture( GL_TEXTURE_2D, handle );
-        
+
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_2D,state);
@@ -293,13 +293,13 @@ void Texture2D::apply(State& state) const
                      _textureWidth, _textureHeight, _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                     0);                
-                     
+                     0);
+
         if (_readPBuffer.valid())
         {
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
-        
+
     }
     else
     {
@@ -315,19 +315,19 @@ void Texture2D::apply(State& state) const
 
 void Texture2D::computeInternalFormat() const
 {
-    if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    if (_image.valid()) computeInternalFormatWithImage(*_image);
     else computeInternalFormatType();
 }
 
 void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    
+
     if (_internalFormat==0) _internalFormat=GL_RGBA;
 
     // get the globj for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject)
     {
         if (width==(int)_textureWidth && height==(int)_textureHeight)
@@ -340,28 +340,28 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
             return;
         }
         // the relevent texture object is not of the right size so
-        // needs to been deleted    
-        // remove previously bound textures. 
+        // needs to been deleted
+        // remove previously bound textures.
         dirtyTextureObject();
         // note, dirtyTextureObject() dirties all the texture objects for
         // this texture, is this right?  Perhaps we should dirty just the
         // one for this context.  Note sure yet will leave till later.
         // RO July 2001.
     }
-    
-    
+
+
     // remove any previously assigned images as these are nolonger valid.
     _image = NULL;
 
     // switch off mip-mapping.
     //
-  
+
     bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
     bool hardwareMipMapOn = false;
     if (needHardwareMipMap)
     {
         hardwareMipMapOn = isHardwareMipmapGenerationEnabled(state);
-        
+
         if (!hardwareMipMapOn)
         {
             // have to switch off mip mapping
@@ -382,10 +382,10 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
     _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
     textureObject->bind();
-    
+
     applyTexParameters(GL_TEXTURE_2D,state);
 
-    
+
     GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
 
     glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
@@ -406,12 +406,12 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject)
     {
         // we have a valid image
         textureObject->bind();
-        
+
         applyTexParameters(GL_TEXTURE_2D,state);
 
         bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
@@ -452,7 +452,7 @@ void Texture2D::allocateMipmap(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject && _textureWidth != 0 && _textureHeight != 0)
     {
         // bind texture
@@ -466,7 +466,7 @@ void Texture2D::allocateMipmap(State& state) const
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;
         height >>= 1;
-        
+
         for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
         {
             if (width == 0)
@@ -482,9 +482,9 @@ void Texture2D::allocateMipmap(State& state) const
             width >>= 1;
             height >>= 1;
         }
-                
+
         // inform state that this texture is the current one bound.
-        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
     }
 }
 

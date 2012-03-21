@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,7 +26,7 @@ class Matrixf;
 class OSG_EXPORT Matrixd
 {
     public:
-    
+
         typedef double value_type;
         typedef float other_value_type;
 
@@ -65,7 +65,7 @@ class OSG_EXPORT Matrixd
             set(rhs.ptr());
             return *this;
         }
-        
+
         Matrixd& operator = (const Matrixf& other);
 
         inline void set(const Matrixd& rhs) { set(rhs.ptr()); }
@@ -77,7 +77,7 @@ class OSG_EXPORT Matrixd
             value_type* local_ptr = (value_type*)_mat;
             for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
-        
+
         inline void set(double const * const ptr)
         {
             value_type* local_ptr = (value_type*)_mat;
@@ -88,7 +88,7 @@ class OSG_EXPORT Matrixd
                  value_type a10, value_type a11, value_type a12,value_type a13,
                  value_type a20, value_type a21, value_type a22,value_type a23,
                  value_type a30, value_type a31, value_type a32,value_type a33);
-                  
+
         value_type * ptr() { return (value_type*)_mat; }
         const value_type * ptr() const { return (const value_type *)_mat; }
 
@@ -101,39 +101,39 @@ class OSG_EXPORT Matrixd
         }
 
         void makeIdentity();
-        
+
         void makeScale( const Vec3f& );
         void makeScale( const Vec3d& );
         void makeScale( value_type, value_type, value_type );
-        
+
         void makeTranslate( const Vec3f& );
         void makeTranslate( const Vec3d& );
         void makeTranslate( value_type, value_type, value_type );
-        
+
         void makeRotate( const Vec3f& from, const Vec3f& to );
         void makeRotate( const Vec3d& from, const Vec3d& to );
         void makeRotate( value_type angle, const Vec3f& axis );
         void makeRotate( value_type angle, const Vec3d& axis );
         void makeRotate( value_type angle, value_type x, value_type y, value_type z );
         void makeRotate( const Quat& );
-        void makeRotate( value_type angle1, const Vec3f& axis1, 
+        void makeRotate( value_type angle1, const Vec3f& axis1,
                          value_type angle2, const Vec3f& axis2,
                          value_type angle3, const Vec3f& axis3);
-        void makeRotate( value_type angle1, const Vec3d& axis1, 
+        void makeRotate( value_type angle1, const Vec3d& axis1,
                          value_type angle2, const Vec3d& axis2,
                          value_type angle3, const Vec3d& axis3);
 
 
-        /** decompose the matrix into translation, rotation, scale and scale orientation.*/        
+        /** decompose the matrix into translation, rotation, scale and scale orientation.*/
         void decompose( osg::Vec3f& translation,
-                        osg::Quat& rotation, 
-                        osg::Vec3f& scale, 
+                        osg::Quat& rotation,
+                        osg::Vec3f& scale,
                         osg::Quat& so ) const;
 
-        /** decompose the matrix into translation, rotation, scale and scale orientation.*/        
+        /** decompose the matrix into translation, rotation, scale and scale orientation.*/
         void decompose( osg::Vec3d& translation,
-                        osg::Quat& rotation, 
-                        osg::Vec3d& scale, 
+                        osg::Quat& rotation,
+                        osg::Vec3d& scale,
                         osg::Quat& so ) const;
 
 
@@ -242,8 +242,8 @@ class OSG_EXPORT Matrixd
         /** full 4x4 matrix invert. */
         bool invert_4x4( const Matrixd& rhs);
 
-        /** ortho-normalize the 3x3 rotation & scale matrix */ 
-        void orthoNormalize(const Matrixd& rhs); 
+        /** ortho-normalize the 3x3 rotation & scale matrix */
+        void orthoNormalize(const Matrixd& rhs);
 
         // basic utility functions to create new matrices
         inline static Matrixd identity( void );
@@ -258,15 +258,15 @@ class OSG_EXPORT Matrixd
         inline static Matrixd rotate( value_type angle, value_type x, value_type y, value_type z);
         inline static Matrixd rotate( value_type angle, const Vec3f& axis);
         inline static Matrixd rotate( value_type angle, const Vec3d& axis);
-        inline static Matrixd rotate( value_type angle1, const Vec3f& axis1, 
+        inline static Matrixd rotate( value_type angle1, const Vec3f& axis1,
                                       value_type angle2, const Vec3f& axis2,
                                       value_type angle3, const Vec3f& axis3);
-        inline static Matrixd rotate( value_type angle1, const Vec3d& axis1, 
+        inline static Matrixd rotate( value_type angle1, const Vec3d& axis1,
                                       value_type angle2, const Vec3d& axis2,
                                       value_type angle3, const Vec3d& axis3);
         inline static Matrixd rotate( const Quat& quat);
         inline static Matrixd inverse( const Matrixd& matrix);
-        inline static Matrixd orthoNormal(const Matrixd& matrix); 
+        inline static Matrixd orthoNormal(const Matrixd& matrix);
         /** Create an orthographic projection matrix.
           * See glOrtho for further details.
         */
@@ -336,16 +336,16 @@ class OSG_EXPORT Matrixd
         void setTrans( value_type tx, value_type ty, value_type tz );
         void setTrans( const Vec3f& v );
         void setTrans( const Vec3d& v );
-        
-        inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); } 
-        
+
+        inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); }
+
         inline Vec3d getScale() const {
-          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]); 
-          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]); 
-          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]); 
-          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length()); 
+          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]);
+          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]);
+          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]);
+          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length());
         }
-        
+
         /** apply a 3x3 transform of v*M[0..2,0..2]. */
         inline static Vec3f transform3x3(const Vec3f& v,const Matrixd& m);
 
@@ -382,12 +382,12 @@ class OSG_EXPORT Matrixd
         /** Optimized version of postMult(rotate(q)); */
         inline void postMultRotate( const Quat& q );
 
-        inline void operator *= ( const Matrixd& other ) 
+        inline void operator *= ( const Matrixd& other )
         {    if( this == &other ) {
                 Matrixd temp(other);
                 postMult( temp );
             }
-            else postMult( other ); 
+            else postMult( other );
         }
 
         inline Matrixd operator * ( const Matrixd &m ) const
@@ -405,7 +405,7 @@ class OSG_EXPORT Matrixd
 class RefMatrixd : public Object, public Matrixd
 {
     public:
-    
+
         RefMatrixd():Object(false), Matrixd() {}
         RefMatrixd( const Matrixd& other) : Object(false), Matrixd(other) {}
         RefMatrixd( const Matrixf& other) : Object(false), Matrixd(other) {}
@@ -415,21 +415,21 @@ class RefMatrixd : public Object, public Matrixd
             Matrixd::value_type a10, Matrixd::value_type a11, Matrixd::value_type a12, Matrixd::value_type a13,
             Matrixd::value_type a20, Matrixd::value_type a21, Matrixd::value_type a22, Matrixd::value_type a23,
             Matrixd::value_type a30, Matrixd::value_type a31, Matrixd::value_type a32, Matrixd::value_type a33):
-            Object(false), 
+            Object(false),
             Matrixd(a00, a01, a02, a03,
                     a10, a11, a12, a13,
                     a20, a21, a22, a23,
                     a30, a31, a32, a33) {}
 
-        virtual Object* cloneType() const { return new RefMatrixd(); } 
+        virtual Object* cloneType() const { return new RefMatrixd(); }
         virtual Object* clone(const CopyOp&) const { return new RefMatrixd(*this); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const RefMatrixd*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Matrix"; }
-        
-        
+
+
     protected:
-    
+
         virtual ~RefMatrixd() {}
 };
 
@@ -498,7 +498,7 @@ inline Matrixd Matrixd::rotate(value_type angle, const Vec3d& axis )
     m.makeRotate(angle,axis);
     return m;
 }
-inline Matrixd Matrixd::rotate( value_type angle1, const Vec3f& axis1, 
+inline Matrixd Matrixd::rotate( value_type angle1, const Vec3f& axis1,
                                 value_type angle2, const Vec3f& axis2,
                                 value_type angle3, const Vec3f& axis3)
 {
@@ -506,7 +506,7 @@ inline Matrixd Matrixd::rotate( value_type angle1, const Vec3f& axis1,
     m.makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
     return m;
 }
-inline Matrixd Matrixd::rotate( value_type angle1, const Vec3d& axis1, 
+inline Matrixd Matrixd::rotate( value_type angle1, const Vec3d& axis1,
                                 value_type angle2, const Vec3d& axis2,
                                 value_type angle3, const Vec3d& axis3)
 {
@@ -538,7 +538,7 @@ inline Matrixd Matrixd::orthoNormal(const Matrixd& matrix)
 {
   Matrixd m;
   m.orthoNormalize(matrix);
-  return m; 
+  return m;
 }
 
 inline Matrixd Matrixd::ortho(double left,   double right,

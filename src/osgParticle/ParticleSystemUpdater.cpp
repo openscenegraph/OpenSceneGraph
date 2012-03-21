@@ -23,14 +23,14 @@ osgParticle::ParticleSystemUpdater::ParticleSystemUpdater(const ParticleSystemUp
 void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
 {
     osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(&nv);
-    if (cv) 
+    if (cv)
     {
         if (nv.getFrameStamp())
         {
             if( _frameNumber < nv.getFrameStamp()->getFrameNumber())
             {
                 _frameNumber = nv.getFrameStamp()->getFrameNumber();
-                
+
                 double t = nv.getFrameStamp()->getSimulationTime();
                 if (_t0 != -1.0)
                 {
@@ -38,9 +38,9 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
                     for (i=_psv.begin(); i!=_psv.end(); ++i)
                     {
                         ParticleSystem* ps = i->get();
-                        
+
                         ParticleSystem::ScopedWriteLock lock(*(ps->getReadWriteMutex()));
-    
+
                         if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
                         {
                             ps->update(t - _t0, nv);

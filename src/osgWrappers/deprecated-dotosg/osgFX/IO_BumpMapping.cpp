@@ -78,6 +78,6 @@ bool BumpMapping_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     if (myobj.getOverrideNormalMapTexture()) {
         fw.writeObject(*myobj.getOverrideNormalMapTexture());
     }
-    
+
     return true;
 }

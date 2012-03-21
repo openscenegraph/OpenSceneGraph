@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@
 
     #ifndef WIN32
 
-        // Required for compatibility with glext.h sytle function definitions of 
+        // Required for compatibility with glext.h sytle function definitions of
         // OpenGL extensions, such as in src/osg/Point.cpp.
         #ifndef APIENTRY
             #define APIENTRY
@@ -56,7 +56,7 @@
                  #define GLUT_APIENTRY_DEFINED
                  #define APIENTRY __stdcall
             #endif
-             // XXX This is from Win32's <windef.h> 
+             // XXX This is from Win32's <windef.h>
             #ifndef CALLBACK
                 #define CALLBACK __stdcall
             #endif
@@ -64,9 +64,9 @@
         #else // ! __CYGWIN__
 
             // Under Windows avoid including <windows.h>
-            // to avoid name space pollution, but Win32's <GL/gl.h> 
-            // needs APIENTRY and WINGDIAPI defined properly. 
-            // XXX This is from Win32's <windef.h> 
+            // to avoid name space pollution, but Win32's <GL/gl.h>
+            // needs APIENTRY and WINGDIAPI defined properly.
+            // XXX This is from Win32's <windef.h>
             #ifndef APIENTRY
                 #define GLUT_APIENTRY_DEFINED
                 #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
@@ -77,7 +77,7 @@
                 #endif
             #endif
 
-             // XXX This is from Win32's <windef.h> 
+             // XXX This is from Win32's <windef.h>
             #ifndef CALLBACK
                 #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
                     #define CALLBACK __stdcall
@@ -88,13 +88,13 @@
 
         #endif // __CYGWIN__
 
-        // XXX This is from Win32's <wingdi.h> and <winnt.h> 
+        // XXX This is from Win32's <wingdi.h> and <winnt.h>
         #ifndef WINGDIAPI
             #define GLUT_WINGDIAPI_DEFINED
             #define DECLSPEC_IMPORT __declspec(dllimport)
             #define WINGDIAPI DECLSPEC_IMPORT
         #endif
-        
+
         // XXX This is from Win32's <ctype.h>
         #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&((__GNUC__ == 3)||(__GNUC__ == 4)))
             typedef unsigned short wchar_t;
@@ -189,31 +189,31 @@
 
 #ifdef OSG_GL1_AVAILABLE
     #define OSG_GL1_FEATURES true
-#else 
+#else
     #define OSG_GL1_FEATURES false
 #endif
 
 #ifdef OSG_GL2_AVAILABLE
     #define OSG_GL2_FEATURES true
-#else 
+#else
     #define OSG_GL2_FEATURES false
 #endif
 
 #ifdef OSG_GL3_AVAILABLE
     #define OSG_GL3_FEATURES true
-#else 
+#else
     #define OSG_GL3_FEATURES false
 #endif
 
 #ifdef OSG_GLES1_AVAILABLE
     #define OSG_GLES1_FEATURES true
-#else 
+#else
     #define OSG_GLES1_FEATURES false
 #endif
 
 #ifdef OSG_GLES2_AVAILABLE
     #define OSG_GLES2_FEATURES true
-#else 
+#else
     #define OSG_GLES2_FEATURES false
 #endif
 

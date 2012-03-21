@@ -17,7 +17,7 @@ REGISTER_OBJECT_WRAPPER( osgShadow_ParallelSplitShadowMap,
     ADD_DOUBLE_SERIALIZER( MinNearDistanceForSplits, 5.0 );  // _split_min_near_dist
     ADD_OBJECT_SERIALIZER( UserLight, osg::Light, NULL );  // _userLight
     ADD_VEC2_SERIALIZER( AmbientBias, osg::Vec2() );  // _ambientBias
-    
+
     BEGIN_ENUM_SERIALIZER2( SplitCalculationMode, osgShadow::ParallelSplitShadowMap::SplitCalcMode, SPLIT_EXP );
         ADD_ENUM_VALUE( SPLIT_LINEAR );
         ADD_ENUM_VALUE( SPLIT_EXP );

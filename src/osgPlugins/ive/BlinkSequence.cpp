@@ -45,7 +45,7 @@ void BlinkSequence::write(DataOutputStream* out){
     // Write out SequenceGroup.
     if( getSequenceGroup() )
         out->writeDouble(getSequenceGroup()->_baseTime);
-    else 
+    else
         out->writeDouble( 0.0 );
 
 }
@@ -78,7 +78,7 @@ void BlinkSequence::read(DataInputStream* in){
         // Read in SequenceGroup
         double baseTime = in->readDouble();
         if (baseTime!=0.0) setSequenceGroup(new osgSim::SequenceGroup(baseTime));
-        
+
     }
     else{
         in_THROW_EXCEPTION("BlinkSequence::read(): Expected BlinkSequence identification.");

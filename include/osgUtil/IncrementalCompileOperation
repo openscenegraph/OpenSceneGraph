@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -72,17 +72,17 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
           * time to set aside  the faster databases will be paged in but with increased chance of frame drops,
           * the lower the amount of time the set aside the slower databases will paged it but with better
           * chance of avoid any frame drops.  The default values are chosen to achieve the later when running
-          * on a modern mid to high end  PC. 
+          * on a modern mid to high end  PC.
           * The way to compute the amount of available time use a scheme such as :
-          *    availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame). 
+          *    availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame).
           */
         void setTargetFrameRate(double tfr) { _targetFrameRate = tfr; }
 
         /** Get the target frame rate that the IncrementalCompileOperation should assume.*/
         double getTargetFrameRate() const { return _targetFrameRate; }
-        
+
         /** Set the minimum amount of time (in seconds) that should be made available for compiling and delete OpenGL objects per frame.
-          * Default value is 0.001 (1 millisecond). 
+          * Default value is 0.001 (1 millisecond).
           * For usage see notes in setTargetFrameRate.*/
         void setMinimumTimeAvailableForGLCompileAndDeletePerFrame(double ta) { _minimumTimeAvailableForGLCompileAndDeletePerFrame = ta; }
 
@@ -175,7 +175,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
             double                              allocatedTime;
             osg::ElapsedTime                    timer;
         };
-        
+
         struct CompileOp : public osg::Referenced
         {
             /** return an estimate for how many seconds the compile will take.*/
@@ -230,7 +230,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
 
         class CompileSet;
-        
+
         struct CompileCompletedCallback : public virtual osg::Referenced
         {
             /// return true if the callback assumes responsibility for merging any associated subgraphs with the main scene graph

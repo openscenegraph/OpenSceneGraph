@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -43,13 +43,13 @@ Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
 
     Particle* particle = ParticleSystem::createParticle(ptemplate);
     int particleIndex = (int)(particle - &_particles[0]);
-    
+
     if (particle)
     {
-    
+
         if (_startParticle == Particle::INVALID_INDEX)
         {
-            // we are the fisrt particle create, so start the connect particle list 
+            // we are the fisrt particle create, so start the connect particle list
             _startParticle = particleIndex;
         }
 
@@ -64,18 +64,18 @@ Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
 
         // set the new particle as the last particle created.
         _lastParticleCreated = particleIndex;
-        
+
     }
-    
+
     return particle;
 }
-        
+
 void ConnectedParticleSystem::reuseParticle(int particleIndex)
 {
     // OSG_NOTICE<<this<< " Reusing particle "<<particleIndex<<std::endl;
 
     if (particleIndex<0 || particleIndex>=(int)_particles.size()) return;
-    
+
     Particle* particle = &_particles[particleIndex];
     int previous = particle->getPreviousParticle();
     int next = particle->getNextParticle();
@@ -85,19 +85,19 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
     {
         _startParticle = particle->getNextParticle();
     }
-    
+
     if (_lastParticleCreated == particleIndex)
     {
         _lastParticleCreated = Particle::INVALID_INDEX;
     }
-    
+
     // join up the previous and next particles to account for
     // the deletion of the this particle
     if (previous != Particle::INVALID_INDEX)
     {
         _particles[previous].setNextParticle(next);
     }
-    
+
     if (next != Particle::INVALID_INDEX)
     {
         _particles[next].setPreviousParticle(previous);
@@ -106,7 +106,7 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
     // reset the next and previous particle entries of this particle
     particle->setPreviousParticle(Particle::INVALID_INDEX);
     particle->setNextParticle(Particle::INVALID_INDEX);
-    
+
     // put the particle on the death stack
     ParticleSystem::reuseParticle(particleIndex);
 
@@ -121,7 +121,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
 
     const Particle* particle = (_startParticle != Particle::INVALID_INDEX) ? &_particles[_startParticle] : 0;
     if (!particle) return;
-    
+
 
     osg::Vec4 pixelSizeVector = osg::CullingSet::computePixelSizeVector(*state.getCurrentViewport(),state.getProjectionMatrix(),state.getModelViewMatrix());
     float unitPixelSize = fabs(1.0/(particle->getPosition()*pixelSizeVector));
@@ -170,7 +170,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
     else
     {
 
-        // draw the connected particles as a quad stripped aligned to be orthogonal to the eye 
+        // draw the connected particles as a quad stripped aligned to be orthogonal to the eye
         osg::Matrix eyeToLocalTransform;
         eyeToLocalTransform.invert(state.getModelViewMatrix());
         osg::Vec3 eyeLocal = osg::Vec3(0.0f,0.0,0.0f)*eyeToLocalTransform;

@@ -126,22 +126,22 @@ bool Locator_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     switch(locator.getCoordinateSystemType())
     {
         case(osgTerrain::Locator::GEOCENTRIC):
-        {        
+        {
             fw<<"GEOCENTRIC"<<std::endl;
             break;
         }
         case(osgTerrain::Locator::GEOGRAPHIC):
-        {        
+        {
             fw<<"GEOGRAPHIC"<<std::endl;
             break;
         }
         case(osgTerrain::Locator::PROJECTED):
-        {        
+        {
             fw<<"PROJECTED"<<std::endl;
             break;
         }
-    }   
-    
+    }
+
     fw.indent()<<"TransformScaledByResolution " << (locator.getTransformScaledByResolution() ? "TRUE":"FALSE") <<std::endl;
 
     const osg::Matrixd& matrix = locator.getTransform();

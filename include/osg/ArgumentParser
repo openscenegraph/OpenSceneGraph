@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -40,7 +40,7 @@ class OSG_EXPORT ArgumentParser
                 UNSIGNED_INT_PARAMETER,
                 STRING_PARAMETER
             };
-        
+
             union ValueUnion
             {
                 bool*           _bool;
@@ -54,13 +54,13 @@ class OSG_EXPORT ArgumentParser
             Parameter(bool& value) { _type = BOOL_PARAMETER; _value._bool = &value; }
 
             Parameter(float& value) { _type = FLOAT_PARAMETER; _value._float = &value; }
-                
+
             Parameter(double& value) { _type = DOUBLE_PARAMETER; _value._double = &value; }
 
             Parameter(int& value) { _type = INT_PARAMETER; _value._int = &value; }
 
             Parameter(unsigned int& value)  { _type = UNSIGNED_INT_PARAMETER; _value._uint = &value; }
-            
+
             Parameter(std::string& value) { _type = STRING_PARAMETER; _value._string = &value; }
 
             Parameter(const Parameter& param) { _type = param._type; _value = param._value; }
@@ -71,7 +71,7 @@ class OSG_EXPORT ArgumentParser
             bool assign(const char* str);
 
         protected:
-        
+
             ParameterType   _type;
             ValueUnion      _value;
         };
@@ -79,11 +79,11 @@ class OSG_EXPORT ArgumentParser
         /** Return true if the specified string is an option in the form
           * -option or --option. */
         static bool isOption(const char* str);
-        
+
         /** Return true if string is non-NULL and not an option in the form
           * -option or --option. */
         static bool isString(const char* str);
-        
+
         /** Return true if specified parameter is a number. */
         static bool isNumber(const char* str);
 
@@ -120,20 +120,20 @@ class OSG_EXPORT ArgumentParser
         /** Return true if the specified parameter is an option in the form of
           * -option or --option. */
         bool isOption(int pos) const;
-        
+
         /** Return true if the specified parameter is a string not in
           * the form of an option. */
         bool isString(int pos) const;
-        
+
         /** Return true if the specified parameter is a number. */
         bool isNumber(int pos) const;
-        
+
         bool containsOptions() const;
 
         /** Remove one or more arguments from the argv argument list,
           * and decrement the argc respectively. */
         void remove(int pos,int num=1);
-        
+
         /** Return true if the specified argument matches the given string. */
         bool match(int pos, const std::string& str) const;
 
@@ -180,32 +180,32 @@ class OSG_EXPORT ArgumentParser
 
         /** For each remaining option, report it as unrecognized. */
         void reportRemainingOptionsAsUnrecognized(ErrorSeverity severity=BENIGN);
-        
+
         /** Return the error message, if any has occurred. */
         ErrorMessageMap& getErrorMessageMap() { return _errorMessageMap; }
-      
+
         /** Return the error message, if any has occurred. */
         const ErrorMessageMap& getErrorMessageMap() const { return _errorMessageMap; }
 
         /** Write error messages to the given ostream, if at or above the given severity. */
         void writeErrorMessages(std::ostream& output,ErrorSeverity sevrity=BENIGN);
 
-        
+
         /** This convenience method handles help requests on the command line.
           * Return the type(s) of help requested. The return value of this
           * function is suitable for passing into getApplicationUsage()->write().
-          * If ApplicationUsage::NO_HELP is returned then no help commandline option 
+          * If ApplicationUsage::NO_HELP is returned then no help commandline option
           * was found on the command line. */
         ApplicationUsage::Type readHelpType();
 
-  
+
   protected:
-        
+
         int*                            _argc;
         char**                          _argv;
         ErrorMessageMap                 _errorMessageMap;
         ref_ptr<ApplicationUsage>       _usage;
-        
+
 };
 
 }

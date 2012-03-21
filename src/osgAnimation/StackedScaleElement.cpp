@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -42,14 +42,14 @@ StackedScaleElement::StackedScaleElement()
     _scale = osg::Vec3(1,1,1);
 }
 
-void StackedScaleElement::update(float t) 
-{ 
+void StackedScaleElement::update(float t)
+{
     if (_target.valid())
         _scale = _target->getValue();
 }
 
 Target* StackedScaleElement::getOrCreateTarget()
-{    
+{
     if (!_target.valid())
         _target = new Vec3Target(_scale);
     return _target.get();

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -53,7 +53,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         };
 
         BlendEquation();
-        
+
         BlendEquation(Equation equation);
 
         BlendEquation(Equation equationRGB, Equation equationAlpha);
@@ -65,7 +65,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
             _equationAlpha(trans._equationAlpha){}
 
         META_StateAttribute(osg, BlendEquation,BLENDEQUATION);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -99,30 +99,30 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         virtual void apply(State& state) const;
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+
                 void setupGLExtensions(unsigned int contextID);
 
                 bool isBlendEquationSupported() const { return _isBlendEquationSupported; }
                 bool isBlendEquationSeparateSupported() const { return _isBlendEquationSeparateSupported; }
                 bool isSGIXMinMaxSupported() const { return _isSGIXMinMaxSupported; }
                 bool isLogicOpSupported() const { return _isLogicOpSupported; }
-                
+
                 void glBlendEquation(GLenum mode) const;
                 void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const;
 
             protected:
 
                 ~Extensions() {}
-                
+
                 typedef void (GL_APIENTRY * GLBlendEquationProc)(GLenum mode);
                 typedef void (GL_APIENTRY * GLBlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
 
@@ -130,11 +130,11 @@ class OSG_EXPORT BlendEquation : public StateAttribute
                 bool                _isBlendEquationSeparateSupported;
                 bool                _isSGIXMinMaxSupported;
                 bool                _isLogicOpSupported;
-                
+
                 GLBlendEquationProc _glBlendEquation;
                 GLBlendEquationSeparateProc _glBlendEquationSeparate;
         };
-        
+
         /** Returns the Extensions object for the given context.
           * If createIfNotInitalized is true and the Extensions object doesn't
           * exist, getExtensions() creates it on the given context.

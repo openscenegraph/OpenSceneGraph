@@ -82,17 +82,17 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                 fileName.c_str(), dirname, dirname,
                 fileName.c_str());
         #endif
- 
+
             OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
             int result = system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
-            
+
 
             osg::ref_ptr<osg::Group> grp = new osg::Group;
- 
+
             OSG_NOTICE<<"Done"<<std::endl;
- 
+
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
 
@@ -109,8 +109,8 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                 ++itr)
             {
                 std::string file_ext = osgDB::getFileExtension(*itr);
-                if (!acceptsExtension(file_ext) && 
-                    *itr!=std::string(".") && 
+                if (!acceptsExtension(file_ext) &&
+                    *itr!=std::string(".") &&
                     *itr!=std::string(".."))
                 {
                     osg::Node *node = osgDB::readNodeFile(*itr, local_options.get());

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -21,11 +21,11 @@ namespace osgDB {
 class OSGDB_EXPORT ImageOptions : public osgDB::Options
 {
     public:
-    
+
         ImageOptions();
-        
+
         ImageOptions(const std::string& str);
-            
+
         ImageOptions(const ImageOptions& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             osgDB::Options(options,copyop),
             _sourceImageSamplingMode(options._sourceImageSamplingMode),
@@ -38,7 +38,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
             _destinationPixelWindow(options._destinationPixelWindow),
             _destinationDataType(options._destinationDataType),
             _destinationPixelFormat(options._destinationPixelFormat) {}
-          
+
 
         META_Object(osgDB,ImageOptions);
 
@@ -58,13 +58,13 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
                 windowWidth = w;
                 windowHeight = h;
             }
-            
+
             double windowX;
             double windowY;
             double windowWidth;
             double windowHeight;
         };
-        
+
         /** PixelWindow stores the window (in exact pixels) from the overall imagery from which to extract the osg::Image*/
         struct PixelWindow
         {
@@ -73,7 +73,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
                 windowY(0),
                 windowWidth(0),
                 windowHeight(0) {}
-        
+
             void set(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
             {
                 windowX = x;
@@ -81,20 +81,20 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
                 windowWidth = w;
                 windowHeight = h;
             }
-            
+
             unsigned int windowX;
             unsigned int windowY;
             unsigned int windowWidth;
             unsigned int windowHeight;
         };
-        
+
         enum ImageWindowMode
         {
             ALL_IMAGE,
             RATIO_WINDOW,
             PIXEL_WINDOW
         };
-        
+
         enum ImageSamplingMode
         {
             NEAREST,
@@ -110,7 +110,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
                 _y(0.0),
                 _w(1.0),
                 _h(1.0) {}
-        
+
             void set(double x,double y, double w, double h)
             {
                 _x = x;
@@ -118,12 +118,12 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
                 _w = w;
                 _h = h;
             }
-        
+
             double _x,_y,_w,_h;
         };
 
 
-        // source        
+        // source
         ImageSamplingMode   _sourceImageSamplingMode;
         ImageWindowMode     _sourceImageWindowMode;
         RatioWindow         _sourceRatioWindow;
@@ -131,7 +131,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
 
         // destination
         osg::ref_ptr<osg::Image> _destinationImage;
-       
+
         ImageWindowMode     _destinationImageWindowMode;
         RatioWindow         _destinationRatioWindow;
         PixelWindow         _destinationPixelWindow;
@@ -140,7 +140,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
         GLenum              _destinationPixelFormat;
 
         void init();
-        
+
 };
 
 

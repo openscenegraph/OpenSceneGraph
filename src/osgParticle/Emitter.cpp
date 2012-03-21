@@ -4,14 +4,14 @@
 #include <osg/CopyOp>
 
 osgParticle::Emitter::Emitter()
-:    ParticleProcessor(), 
+:    ParticleProcessor(),
     _usedeftemp(true)
 {
 }
 
 osgParticle::Emitter::Emitter(const Emitter& copy, const osg::CopyOp& copyop)
 :     ParticleProcessor(copy, copyop),
-    _usedeftemp(copy._usedeftemp), 
+    _usedeftemp(copy._usedeftemp),
     _ptemp(copy._ptemp)
 {
 }

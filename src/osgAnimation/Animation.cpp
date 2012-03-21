@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -103,7 +103,7 @@ bool Animation::update (double time, int priority)
     double ratio = _originalDuration / _duration;
 
     double t = (time - _startTime) * ratio;
-    switch (_playmode) 
+    switch (_playmode)
     {
     case ONCE:
         if (t > _originalDuration)
@@ -120,10 +120,10 @@ bool Animation::update (double time, int priority)
             t = fmod(t, _originalDuration);
         //      std::cout << "t " << t << " duration " << _duration << std::endl;
         break;
-    case PPONG: 
+    case PPONG:
         if (!_originalDuration)
             t = _startTime;
-        else 
+        else
         {
             int tt = (int) (t / _originalDuration);
             t = fmod(t, _originalDuration);

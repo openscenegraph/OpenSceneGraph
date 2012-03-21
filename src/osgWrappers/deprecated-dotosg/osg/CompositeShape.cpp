@@ -44,14 +44,14 @@ bool CompositeShape_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
     }
-    
+
     while((readObject=fr.readObjectOfType(type_wrapper<osg::Shape>())).valid())
     {
         osg::Shape* shape = static_cast<osg::Shape*>(readObject.get());
         composite.addChild(shape);
         iteratorAdvanced = true;
     }
-    
+
     return iteratorAdvanced;
 }
 
@@ -64,7 +64,7 @@ bool CompositeShape_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "Shape ";
         fw.writeObject(*composite.getShape());
     }
-    
+
     for(unsigned int i=0;i<composite.getNumChildren();++i)
     {
         fw.writeObject(*composite.getChild(i));

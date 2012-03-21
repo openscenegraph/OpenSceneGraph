@@ -2193,7 +2193,7 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
     if (_traits.valid())
         _traits->useCursor = cursorOn;
 
-    // note, we are using setCursorImpl to set the cursor, so we can use 
+    // note, we are using setCursorImpl to set the cursor, so we can use
     // _appMouseCursor to cache the current mouse-cursor
     setCursorImpl(cursorOn ? _appMouseCursor : NoCursor);
 }

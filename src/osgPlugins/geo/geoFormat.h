@@ -8,27 +8,27 @@ AUTHOR:            Andy Bushnell
 
     -------------------------------------------------------------------------
 
-PROPRIETARY RIGHTS NOTICE:   
-    
-  This software contains proprietary information and trade secrets of Carbon 
-  Graphics LLC. No part or all of this software may be reproduced in any form, 
+PROPRIETARY RIGHTS NOTICE:
+
+  This software contains proprietary information and trade secrets of Carbon
+  Graphics LLC. No part or all of this software may be reproduced in any form,
   without the written permission of Carbon Graphics LLC.
 
   Exception:
   This Software file can be used by third-party software developers (without
-  using the Geo SDK libraries) for any purpose OTHER THAN loading Geo format 
-  files into an application or executable (such as, though not limited to, 
+  using the Geo SDK libraries) for any purpose OTHER THAN loading Geo format
+  files into an application or executable (such as, though not limited to,
   geometry Modelers & animation systems) which is primarily intended to allow for
-  the CREATION or MODIFICATION of geometric or animation data. 
-  
-  Specifically,using this software (either all or part thereof) to aid in the 
-  creation of a Geo format loader for a run-time system, game engine, toolkit 
+  the CREATION or MODIFICATION of geometric or animation data.
+
+  Specifically,using this software (either all or part thereof) to aid in the
+  creation of a Geo format loader for a run-time system, game engine, toolkit
   IG (Image Generation) System or any software where the PRIMARY purpose is
   real-time image playback and interactivity and not Model Creation and/or
   modification is permitted.
 
-COPYRIGHT NOTICE: 
-   
+COPYRIGHT NOTICE:
+
   Copyright © 1998-2001 Carbon Graphics Llc, ALL RIGHTS RESERVED
 
 \*===========================================================================*/
@@ -42,7 +42,7 @@ COPYRIGHT NOTICE:
 
 #define GEO_1_0_RC2    1132
 #define GEO_1_0_RC3    1133
-#define GEO_1_0_RC4    1134    
+#define GEO_1_0_RC4    1134
 #define GEO_1_0       1141
 
 #define GEO_1_1_RC1 1231
@@ -82,7 +82,7 @@ COPYRIGHT NOTICE:
 const unsigned int DB_DSK_HEADER                        = 100;    // NOTE File MAGIC ID *CHANGED*
 
 //----------------------------------------------------------------
-// 
+//
 //----------------------------------------------------------------
 
 const unsigned int DB_DSK_GROUP                            = 102;
@@ -107,25 +107,25 @@ const unsigned int DB_DSK_TEXT                            = 121;
 const unsigned int DB_DSK_BASE_GROUP                    = 122;
 const unsigned int DB_DSK_BASE_SURFACE                    = 123;
 const unsigned int DB_DSK_BEHAVIOR                        = 124;
-const unsigned int DB_DSK_CLAMP_ACTION                    = 125;    
-const unsigned int DB_DSK_RANGE_ACTION                    = 126;        
-const unsigned int DB_DSK_ROTATE_ACTION                    = 127;        
-const unsigned int DB_DSK_TRANSLATE_ACTION                = 128;    
-const unsigned int DB_DSK_SCALE_ACTION                    = 129;                    
-const unsigned int DB_DSK_ARITHMETIC_ACTION                = 130;            
-const unsigned int DB_DSK_LOGIC_ACTION                    = 131;                
-const unsigned int DB_DSK_CONDITIONAL_ACTION            = 132;        
-const unsigned int DB_DSK_LOOPING_ACTION                = 133;                
-const unsigned int DB_DSK_COMPARE_ACTION                = 134;           
-const unsigned int DB_DSK_VISIBILITY_ACTION                = 135;               
-const unsigned int DB_DSK_STRING_CONTENT_ACTION            = 136;               
-const unsigned int DB_DSK_INTERNAL_VARS                    = 137;                     
-const unsigned int DB_DSK_LOCAL_VARS                    = 138;                    
-const unsigned int DB_DSK_EXTERNAL_VARS                    = 139;               
-const unsigned int DB_DSK_FLOAT_VAR                        = 140;     
-const unsigned int DB_DSK_INT_VAR                        = 141; 
-const unsigned int DB_DSK_LONG_VAR                        = 142; 
-const unsigned int DB_DSK_DOUBLE_VAR                    = 143;     
+const unsigned int DB_DSK_CLAMP_ACTION                    = 125;
+const unsigned int DB_DSK_RANGE_ACTION                    = 126;
+const unsigned int DB_DSK_ROTATE_ACTION                    = 127;
+const unsigned int DB_DSK_TRANSLATE_ACTION                = 128;
+const unsigned int DB_DSK_SCALE_ACTION                    = 129;
+const unsigned int DB_DSK_ARITHMETIC_ACTION                = 130;
+const unsigned int DB_DSK_LOGIC_ACTION                    = 131;
+const unsigned int DB_DSK_CONDITIONAL_ACTION            = 132;
+const unsigned int DB_DSK_LOOPING_ACTION                = 133;
+const unsigned int DB_DSK_COMPARE_ACTION                = 134;
+const unsigned int DB_DSK_VISIBILITY_ACTION                = 135;
+const unsigned int DB_DSK_STRING_CONTENT_ACTION            = 136;
+const unsigned int DB_DSK_INTERNAL_VARS                    = 137;
+const unsigned int DB_DSK_LOCAL_VARS                    = 138;
+const unsigned int DB_DSK_EXTERNAL_VARS                    = 139;
+const unsigned int DB_DSK_FLOAT_VAR                        = 140;
+const unsigned int DB_DSK_INT_VAR                        = 141;
+const unsigned int DB_DSK_LONG_VAR                        = 142;
+const unsigned int DB_DSK_DOUBLE_VAR                    = 143;
 const unsigned int DB_DSK_BOOL_VAR                        = 144;
 //    unsigned int DEPRICATED                            = 145;
 const unsigned int DB_DSK_IF_CONDITION                    = 146;
@@ -133,30 +133,30 @@ const unsigned int DB_DSK_ELSE_CONDITION                = 147;
 //    unsigned int DEPRICATED                            = 148;
 const unsigned int DB_DSK_COLOR_PALETTE                    = 149;
 const unsigned int DB_DSK_COLOR_RAMP_ACTION                = 150;
-const unsigned int DB_DSK_FLOAT2_VAR                    = 151; 
-const unsigned int DB_DSK_FLOAT3_VAR                    = 152;     
-const unsigned int DB_DSK_FLOAT4_VAR                    = 153;     
-const unsigned int DB_DSK_LINEAR_ACTION                    = 154;     
-const unsigned int DB_DSK_TASK_ACTION                    = 155;     
-const unsigned int DB_DSK_PERIODIC_ACTION                = 156; 
+const unsigned int DB_DSK_FLOAT2_VAR                    = 151;
+const unsigned int DB_DSK_FLOAT3_VAR                    = 152;
+const unsigned int DB_DSK_FLOAT4_VAR                    = 153;
+const unsigned int DB_DSK_LINEAR_ACTION                    = 154;
+const unsigned int DB_DSK_TASK_ACTION                    = 155;
+const unsigned int DB_DSK_PERIODIC_ACTION                = 156;
 //    unsigned int DEPRICATED                            = 157;
-const unsigned int DB_DSK_TRIG_ACTION                    = 158;  
-const unsigned int DB_DSK_INVERSE_ACTION                = 159; 
+const unsigned int DB_DSK_TRIG_ACTION                    = 158;
+const unsigned int DB_DSK_INVERSE_ACTION                = 159;
 const unsigned int DB_DSK_TRUNCATE_ACTION                = 160;
-const unsigned int DB_DSK_ABS_ACTION                    = 161; 
+const unsigned int DB_DSK_ABS_ACTION                    = 161;
 const unsigned int DB_DSK_IF_THEN_ELSE_ACTION            = 162;     // simple variable value check
-const unsigned int DB_DSK_DCS_ACTION                    = 163;     
+const unsigned int DB_DSK_DCS_ACTION                    = 163;
 const unsigned int DB_DSK_INSTANCE                        = 164;
 const unsigned int DB_DSK_COORD_POOL                    = 165;
 const unsigned int DB_DSK_LIGHTPT                        = 166;
 const unsigned int DB_DSK_EXTERNAL                        = 167;
 const unsigned int DB_DSK_NORMAL_POOL                    = 168;
 const unsigned int DB_DSK_DISCRETE_ACTION                = 169;
-const unsigned int DB_DSK_STRING_VAR                    = 170;            
+const unsigned int DB_DSK_STRING_VAR                    = 170;
 const unsigned int DB_DSK_STRING_COPY_ACTION            = 171;
 const unsigned int DB_DSK_PAGE                            = 172;
-const unsigned int DB_DSK_SQRT_ACTION                    = 173;     
-const unsigned int DB_DSK_LOG_ACTION                    = 174;     
+const unsigned int DB_DSK_SQRT_ACTION                    = 173;
+const unsigned int DB_DSK_LOG_ACTION                    = 174;
 const unsigned int DB_DSK_PLANE_TEXTURE_MAPPING_INFO    = 175;
 const unsigned int DB_DSK_CYLINDER_TEXTURE_MAPPING_INFO    = 176;    // not implemented in 1.0
 const unsigned int DB_DSK_SPHERE_TEXTURE_MAPPING_INFO    = 177;    // not implemented in 1.0
@@ -183,10 +183,10 @@ const unsigned int DB_DSK_TRANSITION_RULE_ACTION        = 197;
 const unsigned int DB_DSK_PUSH_ACTION                    = 198; // Indicates a list of child actions coming
 const unsigned int DB_DSK_POP_ACTION                    = 199; // End of child action list
 const unsigned int DB_DSK_LIGHT_GROUP                    = 200;
-const unsigned int DB_DSK_CONTINUOUS_ACTION                = 201;  
-const unsigned int DB_DSK_MOMENTARY_ACTION                = 202;  
-const unsigned int DB_DSK_NSTATE_ACTION                    = 203;  
-const unsigned int DB_DSK_ROTARY_DRAG_ACTION            = 204;  
+const unsigned int DB_DSK_CONTINUOUS_ACTION                = 201;
+const unsigned int DB_DSK_MOMENTARY_ACTION                = 202;
+const unsigned int DB_DSK_NSTATE_ACTION                    = 203;
+const unsigned int DB_DSK_ROTARY_DRAG_ACTION            = 204;
 const unsigned int DB_DSK_DCS                            = 205;
 const unsigned int DB_DSK_FAT_VERTEX                    = 206;
 const unsigned int DB_DSK_SLIM_VERTEX                    = 207;
@@ -194,8 +194,8 @@ const unsigned int DB_DSK_CG_SHADER                        = 208;
 const unsigned int DB_DSK_CGFX_SHADER                    = 209;
 const unsigned int DB_DSK_GLSL_SHADER                    = 210;
 
-        
-                    
+
+
 
 
 
@@ -312,7 +312,7 @@ struct GEO_DB_API geoRecordHeader
 struct GEO_DB_API geoFieldHeader
 {
     /** The Field ID for the data about to be read from disk. This Field
-     *  token record in effect describes the data which is going to 
+     *  token record in effect describes the data which is going to
      *  follow this geoFieldToken struct. This description is sufficient to
      *  allow parsing code to step over and ignore either fields or whole
      *  records if they are unknown or unwanted.
@@ -332,7 +332,7 @@ struct GEO_DB_API geoFieldHeader
 
 
 /** The Field ID for the data about to be read from disk. This Field
- *  token record in effect describes the data which is going to 
+ *  token record in effect describes the data which is going to
  *  follow this geoExtendedFieldHeader struct. This description is sufficient to
  *  allow parsing code to step over and ignore either fields or whole
  *  records if they are unknown or unwanted.
@@ -343,15 +343,15 @@ struct GEO_DB_API geoFieldHeader
  *  example of a large vertex palette...
  *
  *  on disk:
- *    
+ *
  *  geoFieldHeader
  *  {
  *      DB_UCHAR    id        GEO_DB_VRTX_COORDS
- *      DB_UCHAR    type    DB_EXTENDED_FIELD_STRUCT  
+ *      DB_UCHAR    type    DB_EXTENDED_FIELD_STRUCT
  *      DB_USHORT   num     1
  *  }
  *
- *  parse code now knows there is 1 record of an extended field struct 
+ *  parse code now knows there is 1 record of an extended field struct
  *  following the header. It just so happens that the following "data item"
  *  is itself a header (this time of the extended variety)
  *
@@ -369,18 +369,18 @@ struct GEO_DB_API geoFieldHeader
  *  after being informed of such by a preceeding geoFieldHeader. This means that
  *  parse code only needs to look for geoRecordHeader & geoFieldHeader records.
  *  It also means that there is enough info grouped together, so that an
- *  ignoreField function can work - given a geoFieldHeader to ignore.   
+ *  ignoreField function can work - given a geoFieldHeader to ignore.
  *
  *  The id field is also an unsigned short in this header - meaning that records
  *  will be able to have more than 255 fields (the limit of a typical
  *  geoFieldHeader field - since its "id" field is only an unsigned char). If any
  *  records have more than 255 fields then their ids will be unsigned shorts and
  *  on disk they will be represented by...
- *    
+ *
  *  geoFieldHeader
  *  {
  *      DB_UCHAR    id        GEO_DB_NODE_EXTENDED
- *      DB_UCHAR    type    DB_EXTENDED_FIELD_STRUCT  
+ *      DB_UCHAR    type    DB_EXTENDED_FIELD_STRUCT
  *      DB_USHORT   num     1
  *  }
  *
@@ -443,23 +443,23 @@ const unsigned char GEO_DB_NODE_ID                            = 7;    // interna
 //
 // Field ID Address Ranges...
 //
-//NODE                                                         1   through 19            
-//    DERIVED_A : public NODE                                    20  through 79        
-//        DERIVED_B : public DERIVED_A                        80  through 139    
+//NODE                                                         1   through 19
+//    DERIVED_A : public NODE                                    20  through 79
+//        DERIVED_B : public DERIVED_A                        80  through 139
 //            DERIVED_C : public DERIVED_B                    140 through 199
 //                DERIVED_D : public DERIVED_C                200 through 255
 //
 //Examples:
 //
 //GEO_DSK_MULTI_TEX_SHADER:
-//            Node Property IDs                                1   through 19    
+//            Node Property IDs                                1   through 19
 //            Group Property IDs                                20  through 79
 //            RenderGroup property IDs                        80  through 139
 //            MultiTexShader Property IDs                        140 through 199
 //
 //
 //DB_DSK_LIGHTPT:
-//            Node Property IDs                                1   through 19    
+//            Node Property IDs                                1   through 19
 //            Polygon Property IDs                            20  through 79
 //            LightPt property IDs                            80  through 139
 //
@@ -482,7 +482,7 @@ const unsigned char GEO_DB_HDR_EXTENDED                        = 4;    // From N
 const unsigned char GEO_DB_HDR_COMMENT                        = 5;    // From Node
 const unsigned char GEO_DB_HDR_NAME                            = 6;    // From Node
 const unsigned char GEO_DB_HDR_NODE_ID                        = 7;    // From Node
-    
+
 const unsigned char GEO_DB_HDR_UNITS                        = 20;    // Header Additions
 const unsigned char GEO_DB_HDR_BBOX                            = 21;
 const unsigned char GEO_DB_HDR_VERSION                        = 22;
@@ -494,19 +494,19 @@ const unsigned char GEO_DB_HDR_LAMBERT2                        = 27;
 const unsigned char GEO_DB_HDR_UTM_ZONE                        = 28;
 const unsigned char GEO_DB_HDR_SOUTHERN_HEMISPHERE            = 29;
 const unsigned char GEO_DB_HDR_ELLIPSOID                    = 30;
-const unsigned char GEO_DB_HDR_ORIGIN_LAT                    = 31;    
+const unsigned char GEO_DB_HDR_ORIGIN_LAT                    = 31;
 const unsigned char GEO_DB_HDR_ORIGIN_LON                    = 32;
-const unsigned char GEO_DB_HDR_SW_CORNER_LAT                = 33;    
-const unsigned char GEO_DB_HDR_SW_CORNER_LON                = 34;    
-const unsigned char GEO_DB_HDR_NE_CORNER_LAT                = 35;    
+const unsigned char GEO_DB_HDR_SW_CORNER_LAT                = 33;
+const unsigned char GEO_DB_HDR_SW_CORNER_LON                = 34;
+const unsigned char GEO_DB_HDR_NE_CORNER_LAT                = 35;
 const unsigned char GEO_DB_HDR_NE_CORNER_LON                = 36;
 const unsigned char GEO_DB_HDR_SW_CORNER_X                    = 37;
 const unsigned char GEO_DB_HDR_SW_CORNER_Y                    = 38;
 const unsigned char GEO_DB_HDR_OFFSET_X                        = 39;
-const unsigned char GEO_DB_HDR_OFFSET_Y                        = 40;    
-const unsigned char GEO_DB_HDR_OFFSET_Z                        = 41;    
-const unsigned char GEO_DB_HDR_MAJOR_AXIS                    = 42;    
-const unsigned char GEO_DB_HDR_MINOR_AXIS                    = 43;                    
+const unsigned char GEO_DB_HDR_OFFSET_Y                        = 40;
+const unsigned char GEO_DB_HDR_OFFSET_Z                        = 41;
+const unsigned char GEO_DB_HDR_MAJOR_AXIS                    = 42;
+const unsigned char GEO_DB_HDR_MINOR_AXIS                    = 43;
 
 
 
@@ -684,10 +684,10 @@ const unsigned char GEO_DB_VIEW_SELECTIVE_SHADING            = 14;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// DB_DSK_PERSPECTIVE_GRID_INFO Record 
+// DB_DSK_PERSPECTIVE_GRID_INFO Record
 //
-// DB_DSK_XY_GRID_INFO Record 
-// DB_DSK_XZ_GRID_INFO Record 
+// DB_DSK_XY_GRID_INFO Record
+// DB_DSK_XZ_GRID_INFO Record
 // DB_DSK_YZ_GRID_INFO Record - Field Ids
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -713,15 +713,15 @@ const unsigned char GEO_DB_GRID_MATRIX                        = 9;
 ///////////////////////////////////////////////////////////////////////////////
 
 // All Node Fields    +
- 
+
 const unsigned char GEO_DB_GRP_BBOX                            = 20;    // Group Additions
 const unsigned char GEO_DB_GRP_INSTANCE_DEF                    = 21;
 const unsigned char GEO_DB_GRP_FLAG_SHOW_BBOX                = 22;
 const unsigned char GEO_DB_GRP_ZBUFFER                        = 23;
-const unsigned char GEO_DB_GRP_MATRIX_TRANSFORM                = 24;    
-const unsigned char GEO_DB_GRP_TRANSLATE_TRANSFORM            = 25;    
-const unsigned char GEO_DB_GRP_ROTATE_TRANSFORM                = 26;    
-const unsigned char GEO_DB_GRP_SCALE_TRANSFORM                = 27;    
+const unsigned char GEO_DB_GRP_MATRIX_TRANSFORM                = 24;
+const unsigned char GEO_DB_GRP_TRANSLATE_TRANSFORM            = 25;
+const unsigned char GEO_DB_GRP_ROTATE_TRANSFORM                = 26;
+const unsigned char GEO_DB_GRP_SCALE_TRANSFORM                = 27;
 const unsigned char GEO_DB_GRP_TOD_DISPLAY                    = 28;
 const unsigned char GEO_DB_GRP_NOISECT                        = 29;
 
@@ -830,8 +830,8 @@ const unsigned char GEO_DB_DCS_VECTOR                        = 129;
 
 // All Node Fields    +
 // All Group Fields +
-              
-const unsigned char GEO_DB_CULL_GRP_RADIUS                    = 80;    // CullGroup Additions    
+
+const unsigned char GEO_DB_CULL_GRP_RADIUS                    = 80;    // CullGroup Additions
 
 
 
@@ -845,10 +845,10 @@ const unsigned char GEO_DB_CULL_GRP_RADIUS                    = 80;    // CullGr
 
 // All Node Fields    +
 // All Group Fields +
-                                          
+
 const unsigned char GEO_DB_Z_GRP_DEPTH_OFFSET                = 80;    // ZOffsetGroup Additions
-const unsigned char GEO_DB_Z_GRP_DEPTH_OFFSET_CONSTANT        = 81;    
-const unsigned char GEO_DB_Z_GRP_TYPE                        = 82;    
+const unsigned char GEO_DB_Z_GRP_DEPTH_OFFSET_CONSTANT        = 81;
+const unsigned char GEO_DB_Z_GRP_TYPE                        = 82;
 
 
 
@@ -862,7 +862,7 @@ const unsigned char GEO_DB_Z_GRP_TYPE                        = 82;
 
 // All Node Fields    +
 // All Group Fields +
-                                                  
+
 const unsigned char GEO_DB_MULTI_SAMPLE_AA_GRP_NUM_SAMPLES    = 80;    // MultiSampleAAGroup Additions
 const unsigned char GEO_DB_MULTI_SAMPLE_AA_GRP_JITTER_RADIUS= 81;
 const unsigned char GEO_DB_MULTI_SAMPLE_AA_GRP_ALPHA_CLAMP    = 82;
@@ -880,8 +880,8 @@ const unsigned char GEO_DB_MULTI_SAMPLE_AA_GRP_ALPHA_CLAMP    = 82;
 
 // All Node Fields    +
 // All Group Fields +
-                                      
-const unsigned char GEO_DB_LINE_AA_GRP_RANGE                = 80;    // LineAAGroup Additions 
+
+const unsigned char GEO_DB_LINE_AA_GRP_RANGE                = 80;    // LineAAGroup Additions
 const unsigned char GEO_DB_LINE_AA_GRP_ALPHA_FACTOR            = 81;
 
 
@@ -898,7 +898,7 @@ const unsigned char GEO_DB_LINE_AA_GRP_ALPHA_FACTOR            = 81;
 
 // All Node Fields    +
 // All Group Fields +
-                                          
+
 const unsigned char GEO_DB_FADE_GRP_NEAR_RANGE                = 80;    // FadeGroup Additions
 const unsigned char GEO_DB_FADE_GRP_NEAR_TRANSITION            = 81;
 const unsigned char GEO_DB_FADE_GRP_FAR_RANGE                = 82;
@@ -968,7 +968,7 @@ const unsigned char GEO_DB_BSP_PLANE_EQUATION                = 80;    // BSP Add
 const unsigned char GEO_DB_LOD_IN                            = 80;    // LOD Additions
 const unsigned char GEO_DB_LOD_OUT                            = 81;
 const unsigned char GEO_DB_LOD_CENTER                        = 82;
-const unsigned char GEO_DB_LOD_CALC                            = 83; 
+const unsigned char GEO_DB_LOD_CALC                            = 83;
 const unsigned char GEO_DB_LOD_FREEZE_CENTER                = 84;
 
 
@@ -1021,10 +1021,10 @@ const unsigned char GEO_DB_INSTANCE_DEF                        = 80;    // insta
 
 // All Node Fields    +
 // All Group Fields +
-    
+
 const unsigned char GEO_DB_SWITCH_CURRENT_MASK                = 80;    // switch Additions
-const unsigned char GEO_DB_SWITCH_MASK_WIDTH                = 81;    
-const unsigned char GEO_DB_SWITCH_NUM_MASKS                    = 82; 
+const unsigned char GEO_DB_SWITCH_MASK_WIDTH                = 81;
+const unsigned char GEO_DB_SWITCH_NUM_MASKS                    = 82;
 const unsigned char GEO_DB_SWITCH_MASKS                        = 83;
 
 
@@ -1042,7 +1042,7 @@ const unsigned char GEO_DB_SWITCH_MASKS                        = 83;
 
 // All Node Fields    +
 // All Group Fields +
-    
+
 const unsigned char GEO_DB_PAGE_ACTIVE_CHILD                = 80;    // page Additions
 
 
@@ -1058,17 +1058,17 @@ const unsigned char GEO_DB_PAGE_ACTIVE_CHILD                = 80;    // page Add
 ///////////////////////////////////////////////////////////////////////////////
 
 // It is important to note that user extended Group fields begin with a field
-// ID of 140 (GEO_DB_BASE_GROUP_START_EXTERNAL). This allows Geo to add 
-// additional fields to the BaseGroup class 
+// ID of 140 (GEO_DB_BASE_GROUP_START_EXTERNAL). This allows Geo to add
+// additional fields to the BaseGroup class
 
 // All Node Fields    +
 // All Group Fields +
-    
+
 const unsigned char GEO_DB_BASE_GROUP_CLASSNAME                = 80;    // BaseGroup Additions
 const unsigned char GEO_DB_BASE_GROUP_EXTENDED_TYPE            = 81;
 const unsigned char GEO_DB_BASE_GROUP_PLUGIN_REQUIRED        = 82;
-    
-const unsigned char GEO_DB_BASE_GROUP_START_EXTERNAL        = 140;    // User Derived Node Additions    
+
+const unsigned char GEO_DB_BASE_GROUP_START_EXTERNAL        = 140;    // User Derived Node Additions
 
 
 
@@ -1081,7 +1081,7 @@ const unsigned char GEO_DB_BASE_GROUP_START_EXTERNAL        = 140;    // User De
 // GEO_DB_BASE_SURFACE Record - Field Ids
 //
 // It is important to note that user extended Surface fields begin with a field
-// ID of 80 (GEO_DB_BASE_SURFACE_START_EXTERNAL). This allows Geo to add 
+// ID of 80 (GEO_DB_BASE_SURFACE_START_EXTERNAL). This allows Geo to add
 // additional fields which will be common to all derived groups up to this
 // number
 //
@@ -1091,12 +1091,12 @@ const unsigned char GEO_DB_BASE_GROUP_START_EXTERNAL        = 140;    // User De
 
 
 // All Node Fields    +
-    
+
 const unsigned char GEO_DB_BASE_SURFACE_CLASSNAME            = 20;    // BaseSurface Additions
 const unsigned char GEO_DB_BASE_SURFACE_EXTENDED_TYPE        = 21;
 const unsigned char GEO_DB_BASE_SURFACE_PLUGIN_REQUIRED        = 22;
-    
-const unsigned char GEO_DB_BASE_SURFACE_START_EXTERNAL        = 80;    // User Derived Node Additions    
+
+const unsigned char GEO_DB_BASE_SURFACE_START_EXTERNAL        = 80;    // User Derived Node Additions
 
 
 
@@ -1113,16 +1113,16 @@ const unsigned char GEO_DB_BASE_SURFACE_START_EXTERNAL        = 80;    // User D
 // All Group Fields +
 
 const unsigned char GEO_DB_RENDERGROUP_MAT                    = 80;    // RenderGroup Additions
-const unsigned char GEO_DB_RENDERGROUP_TERRAIN                = 81;   
-const unsigned char GEO_DB_RENDERGROUP_BILLBOARD            = 82;   
-const unsigned char GEO_DB_RENDERGROUP_LIGHTING                = 83;    
-const unsigned char GEO_DB_RENDERGROUP_FOG                    = 84;    
-const unsigned char GEO_DB_RENDERGROUP_GAIN                    = 85;   
-const unsigned char GEO_DB_RENDERGROUP_TRANSPARENCY            = 86;  
-const unsigned char GEO_DB_RENDERGROUP_CULLING                = 87;    
-const unsigned char GEO_DB_RENDERGROUP_BLENDING                = 88;   
-const unsigned char GEO_DB_RENDERGROUP_ALPHA_REF            = 89;  
-const unsigned char GEO_DB_RENDERGROUP_LIGHTPTS                = 90;   
+const unsigned char GEO_DB_RENDERGROUP_TERRAIN                = 81;
+const unsigned char GEO_DB_RENDERGROUP_BILLBOARD            = 82;
+const unsigned char GEO_DB_RENDERGROUP_LIGHTING                = 83;
+const unsigned char GEO_DB_RENDERGROUP_FOG                    = 84;
+const unsigned char GEO_DB_RENDERGROUP_GAIN                    = 85;
+const unsigned char GEO_DB_RENDERGROUP_TRANSPARENCY            = 86;
+const unsigned char GEO_DB_RENDERGROUP_CULLING                = 87;
+const unsigned char GEO_DB_RENDERGROUP_BLENDING                = 88;
+const unsigned char GEO_DB_RENDERGROUP_ALPHA_REF            = 89;
+const unsigned char GEO_DB_RENDERGROUP_LIGHTPTS                = 90;
 
 
 
@@ -1179,7 +1179,7 @@ const unsigned char GEO_DB_MULTI_TEX_SHADER_TEX7_BLEND_COLOR= 163;
 
 // All Node Fields    +
 
-const unsigned char GEO_DB_POLY_NORMAL                        = 20;    // Polygon Additions 
+const unsigned char GEO_DB_POLY_NORMAL                        = 20;    // Polygon Additions
 const unsigned char GEO_DB_POLY_CENTER                        = 21;
 const unsigned char GEO_DB_POLY_PACKED_COLOR                = 22;
 const unsigned char GEO_DB_POLY_DSTYLE                        = 23;
@@ -1251,7 +1251,7 @@ const unsigned char GEO_DB_PLANE_TEXTURE_MAPPING_INFO_TEXTURE_UNIT    = 4;
 //
 // Many of the possible LightPt fields do not make sense in the context of a
 // Light point - namely most of the Polygon rendering & texturing properties.
-// These will likely not be present in a Geo file - if they are they can be 
+// These will likely not be present in a Geo file - if they are they can be
 // ignored.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1309,7 +1309,7 @@ const unsigned char GEO_DB_TEXT_FONT                        = 31;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// GEO_DB_MESH Record - Field Ids            
+// GEO_DB_MESH Record - Field Ids
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1343,13 +1343,13 @@ const unsigned char GEO_DB_MESH_TYPE                        = 80;    // Mesh Add
 
 const unsigned char GEO_DB_VRTX_COORD_INDEX                    = 20;    // Vertex Additions
 const unsigned char GEO_DB_VRTX_UV_SET_0                    = 21;
-const unsigned char GEO_DB_VRTX_UV_SET_1                    = 22;    
-const unsigned char GEO_DB_VRTX_UV_SET_2                    = 23;    
-const unsigned char GEO_DB_VRTX_UV_SET_3                    = 24;    
-const unsigned char GEO_DB_VRTX_UV_SET_4                    = 25;    
-const unsigned char GEO_DB_VRTX_UV_SET_5                    = 26;    
-const unsigned char GEO_DB_VRTX_UV_SET_6                    = 27;    
-const unsigned char GEO_DB_VRTX_UV_SET_7                    = 28;    
+const unsigned char GEO_DB_VRTX_UV_SET_1                    = 22;
+const unsigned char GEO_DB_VRTX_UV_SET_2                    = 23;
+const unsigned char GEO_DB_VRTX_UV_SET_3                    = 24;
+const unsigned char GEO_DB_VRTX_UV_SET_4                    = 25;
+const unsigned char GEO_DB_VRTX_UV_SET_5                    = 26;
+const unsigned char GEO_DB_VRTX_UV_SET_6                    = 27;
+const unsigned char GEO_DB_VRTX_UV_SET_7                    = 28;
 const unsigned char GEO_DB_VRTX_NORMAL                        = 29;
 const unsigned char GEO_DB_VRTX_PACKED_COLOR                = 30;
 const unsigned char GEO_DB_VRTX_COLOR_INDEX                    = 31;
@@ -1587,7 +1587,7 @@ const unsigned char GEO_DB_TRANSITION_RATIO                = 7;
 //            DB_DSK_POP_ACTION
 //        DB_DSK_POP_ACTION
 //
-// if the first state had an optional set of actions to perform when 
+// if the first state had an optional set of actions to perform when
 // active it would have the following construct...
 //        DB_DSK_STATE_MACHINE_ACTION
 //        DB_DSK_PUSH_ACTION
@@ -1651,7 +1651,7 @@ const unsigned char GEO_DB_ROTATE_ACTION_MAX                = 6;
 // DB_DSK_CLAMP_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_CLAMP_ACTION_INPUT_VAR           = 1;
-const unsigned char GEO_DB_CLAMP_ACTION_OUTPUT_VAR          = 2; 
+const unsigned char GEO_DB_CLAMP_ACTION_OUTPUT_VAR          = 2;
 const unsigned char GEO_DB_CLAMP_ACTION_MIN_VAL             = 3;
 const unsigned char GEO_DB_CLAMP_ACTION_MAX_VAL             = 4;
 
@@ -1661,7 +1661,7 @@ const unsigned char GEO_DB_CLAMP_ACTION_MAX_VAL             = 4;
 // DB_DSK_RANGE_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_RANGE_ACTION_INPUT_VAR           = 1;
-const unsigned char GEO_DB_RANGE_ACTION_OUTPUT_VAR          = 2; 
+const unsigned char GEO_DB_RANGE_ACTION_OUTPUT_VAR          = 2;
 const unsigned char GEO_DB_RANGE_ACTION_IN_MIN_VAL          = 3;
 const unsigned char GEO_DB_RANGE_ACTION_IN_MAX_VAL          = 4;
 const unsigned char GEO_DB_RANGE_ACTION_OUT_MIN_VAL         = 5;
@@ -1673,7 +1673,7 @@ const unsigned char GEO_DB_RANGE_ACTION_OUT_MAX_VAL         = 6;
 // DB_DSK_ARITHMETIC_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_ARITHMETIC_ACTION_INPUT_VAR    = 1;
-const unsigned char GEO_DB_ARITHMETIC_ACTION_OUTPUT_VAR    = 2; 
+const unsigned char GEO_DB_ARITHMETIC_ACTION_OUTPUT_VAR    = 2;
 const unsigned char GEO_DB_ARITHMETIC_ACTION_OP_TYPE    = 3;
 const unsigned char GEO_DB_ARITHMETIC_ACTION_OPERAND_VALUE    = 4;
 const unsigned char GEO_DB_ARITHMETIC_ACTION_OPERAND_VAR    = 5;
@@ -1684,7 +1684,7 @@ const unsigned char GEO_DB_ARITHMETIC_ACTION_OPERAND_VAR    = 5;
 // DB_DSK_EQUATION_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_EQUATION_ACTION_INPUT_VAR    = 1;
-const unsigned char GEO_DB_EQUATION_ACTION_OUTPUT_VAR   = 2; 
+const unsigned char GEO_DB_EQUATION_ACTION_OUTPUT_VAR   = 2;
 const unsigned char GEO_DB_EQUATION_ACTION_A_VAL        = 3;
 const unsigned char GEO_DB_EQUATION_ACTION_C_VAL        = 4;
 const unsigned char GEO_DB_EQUATION_ACTION_A_VAR        = 5;
@@ -1711,7 +1711,7 @@ const unsigned char GEO_DB_TRIG_ACTION_OP                = 7;
 // DB_DSK_CONTINUOUS_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_CONTINUOUS_ACTION_INPUT_VAR              = 1;    // Not used
-const unsigned char GEO_DB_CONTINUOUS_ACTION_OUTPUT_VAR             = 2; 
+const unsigned char GEO_DB_CONTINUOUS_ACTION_OUTPUT_VAR             = 2;
 const unsigned char GEO_DB_CONTINUOUS_ACTION_UPDATE_TYPE            = 4;
 const unsigned char GEO_DB_CONTINUOUS_ACTION_UPDATE_VAL             = 5;
 const unsigned char GEO_DB_CONTINUOUS_ACTION_DEFAULT_VAL            = 6;
@@ -1727,7 +1727,7 @@ const unsigned char GEO_DB_CONTINUOUS_ACTION_MINMAX_BEHAVIOR        = 10;
 // DB_DSK_MOMENTARY_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_MOMENTARY_ACTION_INPUT_VAR               = 1;    // Not used
-const unsigned char GEO_DB_MOMENTARY_ACTION_OUTPUT_VAR              = 2; 
+const unsigned char GEO_DB_MOMENTARY_ACTION_OUTPUT_VAR              = 2;
 const unsigned char GEO_DB_MOMENTARY_ACTION_DEFAULT_VAL             = 3;
 const unsigned char GEO_DB_MOMENTARY_ACTION_VAL                     = 4;
 
@@ -1736,7 +1736,7 @@ const unsigned char GEO_DB_MOMENTARY_ACTION_VAL                     = 4;
 // DB_DSK_NSTATE_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_NSTATE_ACTION_INPUT_VAR                  = 1;    // Not used
-const unsigned char GEO_DB_NSTATE_ACTION_OUTPUT_VAR                 = 2; 
+const unsigned char GEO_DB_NSTATE_ACTION_OUTPUT_VAR                 = 2;
 const unsigned char GEO_DB_NSTATE_ACTION_DIRECTION                  = 3;
 const unsigned char GEO_DB_NSTATE_ACTION_BEHAVIOR                   = 4;
 const unsigned char GEO_DB_NSTATE_ACTION_NUM_ITEMS                  = 5;
@@ -1748,7 +1748,7 @@ const unsigned char GEO_DB_NSTATE_ACTION_VALS                       = 7;
 // DB_DSK_ROTARY_DRAG_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_ROTARY_DRAG_ACTION_INPUT_VAR             = 1;    // Not used
-const unsigned char GEO_DB_ROTARY_DRAG_ACTION_OUTPUT_VAR            = 2; 
+const unsigned char GEO_DB_ROTARY_DRAG_ACTION_OUTPUT_VAR            = 2;
 const unsigned char GEO_DB_ROTARY_DRAG_ACTION_BEHAVIOR              = 3;
 const unsigned char GEO_DB_ROTARY_DRAG_ACTION_ORIGIN                = 4;
 
@@ -1757,7 +1757,7 @@ const unsigned char GEO_DB_ROTARY_DRAG_ACTION_ORIGIN                = 4;
 // DB_DSK_TASK_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_TASK_ACTION_INPUT_VAR                    = 1;
-const unsigned char GEO_DB_TASK_ACTION_OUTPUT_VAR                   = 2; 
+const unsigned char GEO_DB_TASK_ACTION_OUTPUT_VAR                   = 2;
 
 
 ///////////////////////////////////////////////////////////////////
@@ -1787,7 +1787,7 @@ const unsigned char GEO_DB_COLOR_RAMP_ACTION_MATCH_COLUMNS          = 9;
 // DB_DSK_COMPARE_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_COMPARE_ACTION_INPUT_VAR     = 1;
-const unsigned char GEO_DB_COMPARE_ACTION_OUTPUT_VAR    = 2; 
+const unsigned char GEO_DB_COMPARE_ACTION_OUTPUT_VAR    = 2;
 const unsigned char GEO_DB_COMPARE_ACTION_OP_TYPE       = 3;
 const unsigned char GEO_DB_COMPARE_ACTION_OPERAND_VALUE = 4;
 const unsigned char GEO_DB_COMPARE_ACTION_OPERAND_VAR   = 5;
@@ -1890,7 +1890,7 @@ const unsigned char GEO_DB_DCS_ACTION_SCALE_Z_VAR               = 15;
 // DB_DSK_DISCRETE_ACTION  Record Field Ids
 //
 const unsigned char GEO_DB_DISCRETE_ACTION_INPUT_VAR            = 1;
-const unsigned char GEO_DB_DISCRETE_ACTION_OUTPUT_VAR           = 2; 
+const unsigned char GEO_DB_DISCRETE_ACTION_OUTPUT_VAR           = 2;
 const unsigned char GEO_DB_DISCRETE_ACTION_NUM_ITEMS            = 3;
 const unsigned char GEO_DB_DISCRETE_ACTION_OUTPUT_VAR_TYPE      = 4;
 const unsigned char GEO_DB_DISCRETE_ACTION_MIN_VALS             = 5;
@@ -1911,7 +1911,7 @@ struct GEO_DB_API geoExtensionDefRec
 {
 
     /** The Node type for which this extension exists */
-    unsigned int            nodetype;                    //  4 bytes 
+    unsigned int            nodetype;                    //  4 bytes
 
     /** The data type of the extension - defined in terms of GEO_DB_DATATYPE_INT
      *  GEO_DB_DATATYPE_FLOAT, GEO_DB_DATATYPE_BOOL etc.
@@ -1923,10 +1923,10 @@ struct GEO_DB_API geoExtensionDefRec
      *  of GEO_DB_DATATYPE_BOOL means that this extension will be accessed as one
      *  of many in an option menu
      */
-    unsigned char            subdatatype;                //  1 bytes 
+    unsigned char            subdatatype;                //  1 bytes
 
-    /** The User ID (uid) is the optional value provided (in code) by the user 
-     *  to identify this particular extension. Users can search & retrieve 
+    /** The User ID (uid) is the optional value provided (in code) by the user
+     *  to identify this particular extension. Users can search & retrieve
      *  extension values based on this user ID number.
      */
     unsigned short            uid;                        //  2 bytes
@@ -1942,8 +1942,8 @@ struct GEO_DB_API geoExtensionDefRec
      *     divided up as 15 chars for the option menu title, 8 chars for
      *     this particular option menu's label and 1 char for the terminator
      * 2.  When the extension is a text field or boolean toggle value - it is
-     *     recommended that only the 15 chars for the field label be used - 
-     *     setting a 23 char-length  label for a text input field will be a 
+     *     recommended that only the 15 chars for the field label be used -
+     *     setting a 23 char-length  label for a text input field will be a
      *     waste of time, as it will get truncated on display anyway.
      */
     char                    name[24];       // 24 bytes

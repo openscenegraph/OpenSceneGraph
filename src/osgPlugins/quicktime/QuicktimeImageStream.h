@@ -3,8 +3,8 @@
 /*
 * Copyright (C) 2004 Stephan Huber http://digitalmind.de
 *
-* The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
-* real-time rendering of large 3D photo-realistic models. 
+* The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+* real-time rendering of large 3D photo-realistic models.
 * The OSG homepage is http://www.openscenegraph.org/
 *
 * This software is free software; you can redistribute it and/or modify
@@ -70,9 +70,9 @@ public:
    }
 
    /// Pause stream at current position.
-   virtual void pause() 
+   virtual void pause()
    {
-      setCmd(THREAD_STOP); 
+      setCmd(THREAD_STOP);
       // ricky
       _status = ImageStream::PAUSED;
    }
@@ -83,16 +83,16 @@ public:
    /// forward stream to the end
    virtual void forward() { setCmd(THREAD_FORWARD); }
 
-   /// stop playing 
+   /// stop playing
    virtual void quit(bool wiatForThreadToExit);
 
    /// Get total length in seconds.
    virtual double getLength() const
-   { 
+   {
      return double(_len);
    }
 
-   /// jumps to a specific position 
+   /// jumps to a specific position
    void jumpTo(double pos) {
       setCmd(THREAD_SEEK, pos);
    }
@@ -116,19 +116,19 @@ public:
    }
    /// Return the current position in the stream.
    virtual double getReferenceTime() const
-   { 
+   {
      return double(getCurrentTime());
    }
-           
+
    // Set the time multiplier if you want to speed up,
    // slow down, or go normal speed.
    virtual void setTimeMultiplier(double multiplier)
    {
      setMovieRate(multiplier);
    }
-   
+
    virtual double getTimeMultiplier()
-   { 
+   {
      return 0.0;
    }
 

@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 #include "dxfReader.h"
@@ -23,7 +23,7 @@
 
 using namespace std;
 
-static 
+static
 std::string
 trim(const string& str)
 {
@@ -36,30 +36,30 @@ trim(const string& str)
 /*
 ************** readerBase
 */
-bool readerBase::readGroup(std::ifstream& f, codeValue& cv) 
-{ 
+bool readerBase::readGroup(std::ifstream& f, codeValue& cv)
+{
     cv.reset();
     if (readGroupCode(f, cv._groupCode)) {
         cv._type = dxfDataType::typeForCode(cv._groupCode);
         switch (cv._type) {
-            case dxfDataType::BOOL: 
+            case dxfDataType::BOOL:
                 return readValue(f, cv._bool);
                 break;
-            case dxfDataType::SHORT: 
+            case dxfDataType::SHORT:
                 return readValue(f, cv._short);
                 break;
-            case dxfDataType::INT: 
+            case dxfDataType::INT:
                 return readValue(f, cv._int);
                 break;
-            case dxfDataType::LONG: 
+            case dxfDataType::LONG:
                 return readValue(f, cv._long);
                 break;
-            case dxfDataType::DOUBLE: 
+            case dxfDataType::DOUBLE:
                 return readValue(f, cv._double);
                 break;
             case dxfDataType::UNKNOWN:
-            case dxfDataType::STRING: 
-            case dxfDataType::HEX: 
+            case dxfDataType::STRING:
+            case dxfDataType::HEX:
             default: // to do: default case an error
                 return readValue(f, cv._string);
                 break;
@@ -167,7 +167,7 @@ bool readerText::readValue(std::ifstream& f, double &d)
 */
 
 
-bool    
+bool
 dxfReader::openFile(std::string fileName)
 {
     if (fileName.size() == 0) return false;
@@ -190,7 +190,7 @@ dxfReader::openFile(std::string fileName)
     // gossage. un mac peut mettre juste CR. ca fonctionne pas:
 //    if (cr > 0 && (!lf || lf > cr + 1))
 //        _reader = new readerText('\r');
-//    else 
+//    else
         _reader = new readerText;
     _ifs.seekg(0, ios::beg);
     return true;

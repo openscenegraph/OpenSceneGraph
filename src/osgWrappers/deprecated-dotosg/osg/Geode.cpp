@@ -35,7 +35,7 @@ bool Geode_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
     Drawable* drawable = NULL;
     while((drawable=fr.readDrawable())!=NULL)
     {
@@ -52,7 +52,7 @@ bool Geode_writeLocalData(const osg::Object& obj, Output& fw)
     const Geode& geode = static_cast<const Geode&>(obj);
 
     fw.indent() << "num_drawables " << geode.getNumDrawables() << std::endl;
-    
+
     for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         fw.writeObject(*geode.getDrawable(i));

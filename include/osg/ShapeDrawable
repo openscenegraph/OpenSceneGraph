@@ -43,7 +43,7 @@ class TessellationHints : public Object
         _createBottom(true) {}
 
 
-    TessellationHints(const TessellationHints& tess, const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+    TessellationHints(const TessellationHints& tess, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(tess,copyop),
         _TessellationMode(tess._TessellationMode),
             _detailRatio(tess._detailRatio),

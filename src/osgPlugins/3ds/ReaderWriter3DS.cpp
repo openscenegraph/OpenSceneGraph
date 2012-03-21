@@ -273,8 +273,8 @@ ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* 
     if (options)
     {
         std::istringstream iss(options->getOptionString());
-        std::string opt; 
-        while (iss >> opt) 
+        std::string opt;
+        while (iss >> opt)
         {
             if (opt == "noMatrixTransforms")
                 noMatrixTransforms = true;
@@ -390,8 +390,8 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             // ChrisD: Worth bearing in mind that this splitting up of
             // faces into smoothing groups is only correct for faces
             // belonging to a single smoothing group. The smoothing group
-            // value is actually a bitmask for all the smoothing groups that 
-            // a face may belong to. 
+            // value is actually a bitmask for all the smoothing groups that
+            // a face may belong to.
             smoothingFaceMap[mesh->faces[*flitr].smoothing_group].push_back(*flitr);
         }
 
@@ -569,10 +569,10 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
 
     if (group)
     {
-        if (strcmp(node->name, "$$$DUMMY") == 0) 
+        if (strcmp(node->name, "$$$DUMMY") == 0)
         {
             if (node->type == LIB3DS_NODE_MESH_INSTANCE)
-                group->setName(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name); 
+                group->setName(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name);
         }
         else if (node->type == LIB3DS_NODE_MESH_INSTANCE && strlen(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name) != 0)
             group->setName(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name);
@@ -850,7 +850,7 @@ struct RemappedFace
 struct VertexParams
 {
     VertexParams() : matrix(NULL), smoothNormals(false), scaleUV(1.f, 1.f), offsetUV(0.f, 0.f) { }
-    const osg::Matrix* matrix; 
+    const osg::Matrix* matrix;
     bool smoothNormals;
     osg::Vec2f scaleUV;
     osg::Vec2f offsetUV;
@@ -858,7 +858,7 @@ struct VertexParams
 
 static bool isFaceValid(const Lib3dsMesh* mesh, const Lib3dsFace* face)
 {
-    return 
+    return
         face->index[0] < mesh->nvertices &&
         face->index[1] < mesh->nvertices &&
         face->index[2] < mesh->nvertices;
@@ -874,12 +874,12 @@ static bool isFaceValid(const Lib3dsMesh* mesh, const Lib3dsFace* face)
    24 vertices to accomodate the 3 different normals at each vertex.
   */
 static void addVertex(
-    const Lib3dsMesh* mesh, 
-    RemappedFace& remappedFace, 
+    const Lib3dsMesh* mesh,
+    RemappedFace& remappedFace,
     unsigned short int i,
     osg::Geometry* geometry,
     std::vector<int>& origToNewMapping,
-    std::vector<int>& splitVertexChain, 
+    std::vector<int>& splitVertexChain,
     const VertexParams& params)
 {
     osg::Vec3Array* vertices = (osg::Vec3Array*)geometry->getVertexArray();
@@ -961,11 +961,11 @@ static void addVertex(
 }
 
 static bool addFace(
-    const Lib3dsMesh* mesh, 
-    RemappedFace& remappedFace, 
-    osg::Geometry* geometry, 
-    std::vector<int>& origToNewMapping, 
-    std::vector<int>& splitVertexChain, 
+    const Lib3dsMesh* mesh,
+    RemappedFace& remappedFace,
+    osg::Geometry* geometry,
+    std::vector<int>& origToNewMapping,
+    std::vector<int>& splitVertexChain,
     const VertexParams& params)
 {
     if (isFaceValid(mesh, remappedFace.face))
@@ -1018,7 +1018,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
         osg_texCoords = new osg::Vec2Array();
         osg_texCoords->reserve(m->nvertices);
         geom->setTexCoordArray(0, osg_texCoords.get());
- 
+
         // Texture 0 parameters (only one texture supported for now)
         if (ssi.lib3dsmat && *(ssi.lib3dsmat->texture1_map.name))     // valid texture = name not empty
         {
@@ -1027,7 +1027,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
             params.offsetUV = osg::Vec2f(tex3ds.offset[0], tex3ds.offset[1]);
             if (tex3ds.rotation != 0) OSG_NOTICE << "3DS texture rotation not supported yet" << std::endl;
             //TODO: tint_1, tint_2, tint_r, tint_g, tint_b
-        }   
+        }
     }
 
     // The map between lib3ds mesh vertex indices and remapped osg vertices.
@@ -1043,27 +1043,27 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     for (FaceList::iterator itr = faceList.begin();
         itr != faceList.end();
         ++itr, ++faceIndex)
-    {        
+    {
         osg::Vec3 normal = copyLib3dsVec3ToOsgVec3(normals[*itr]);
         if (matrix) normal = osg::Matrix::transform3x3(normal, *(params.matrix));
         normal.normalize();
 
         Lib3dsFace& face = m->faces[*itr];
         remappedFaces[faceIndex].face = &face;
-        remappedFaces[faceIndex].normal = normal; 
+        remappedFaces[faceIndex].normal = normal;
         if (addFace(m, remappedFaces[faceIndex], geom, origToNewMapping, splitVertexChain, params))
         {
             ++faceCount;
         }
     }
 
-    // 'Shrink to fit' all vertex arrays because potentially faceList refers to fewer vertices than the whole mesh. 
+    // 'Shrink to fit' all vertex arrays because potentially faceList refers to fewer vertices than the whole mesh.
     // This will almost certainly be the case where mesh has been broken down into smoothing groups.
     if (osg_vertices.valid() && osg_vertices->size() < osg_vertices->capacity()) osg_vertices->trim();
     if (osg_normals.valid() && osg_normals->size() < osg_normals->capacity()) osg_normals->trim();
     if (osg_texCoords.valid() && osg_texCoords->size() < osg_texCoords->capacity()) osg_texCoords->trim();
 
-    // Set geometry color to white. 
+    // Set geometry color to white.
     osg::ref_ptr<osg::Vec4ubArray> osg_colors = new osg::Vec4ubArray(1);
     (*osg_colors)[0].set(255,255,255,255);
     geom->setColorArray(osg_colors.get());
@@ -1214,8 +1214,8 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
             texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
             texenv->setConstantColor(osg::Vec4(factor, factor, factor, factor));
             stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
-        } 
-        else 
+        }
+        else
         {
             // from an email from Eric Hamil, September 30, 2003.
             // According to the 3DS spec, and other
@@ -1238,7 +1238,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
             diffuse.set(0.8f,0.8f,0.8f);
             specular.set(0.0f,0.0f,0.0f);
 #endif
-        }        
+        }
 
         unit++;
     }
@@ -1249,12 +1249,12 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     {
         if(texture1_map->getImage()->isImageTranslucent())
         {
-            transparency = true; 
+            transparency = true;
 
             stateset->setTextureAttributeAndModes(unit, opacity_map, osg::StateAttribute::ON);
 
             double factor = mat->opacity_map.percent;
-            
+
                 osg::TexEnvCombine* texenv = new osg::TexEnvCombine();
                 texenv->setCombine_Alpha(osg::TexEnvCombine::INTERPOLATE);
                 texenv->setSource0_Alpha(osg::TexEnvCombine::TEXTURE);
@@ -1262,9 +1262,9 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
                 texenv->setSource2_Alpha(osg::TexEnvCombine::CONSTANT);
                 texenv->setConstantColor(osg::Vec4(factor, factor, factor, 1.0 - factor));
                 stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
-            
+
             unit++;
-        } 
+        }
         else
         {
             osg::notify(WARN)<<"The plugin does not support images without alpha channel for opacity"<<std::endl;
@@ -1288,7 +1288,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     }
 
     // Set back face culling state if single sided material applied.
-    // This seems like a reasonable assumption given that the backface cull option 
+    // This seems like a reasonable assumption given that the backface cull option
     // doesn't appear to be encoded directly in the 3DS format, and also because
     // it mirrors the effect of code in 3DS writer which uses the the face culling
     // attribute to determine the state of the 'two_sided' 3DS material being written.
@@ -1367,7 +1367,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& n
     io.read_func = NULL;
     io.write_func = fileo_write_func;
     io.log_func = fileio_log_func;
-    
+
     Lib3dsFile * file3ds = lib3ds_file_new();
     if (!file3ds) return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
 

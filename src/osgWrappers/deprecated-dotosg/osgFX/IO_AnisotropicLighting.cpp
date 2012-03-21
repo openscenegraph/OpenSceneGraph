@@ -47,7 +47,7 @@ bool AnisotropicLighting_writeLocalData(const osg::Object &obj, osgDB::Output &f
     const osgFX::AnisotropicLighting &myobj = static_cast<const osgFX::AnisotropicLighting &>(obj);
 
     fw.indent() << "lightNumber " << myobj.getLightNumber() << "\n";
-    
+
     const osg::Image *lmap = myobj.getLightingMap();
     if (lmap) {
         if (!lmap->getFileName().empty()) {

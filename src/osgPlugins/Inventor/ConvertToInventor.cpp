@@ -228,7 +228,7 @@ void osgArray2ivMField_template(const osg::Array *array, fieldClass &field, int 
   ivType *a = field.startEditing();
 
   osgType *ptr = (osgType*)array->getDataPointer() + startIndex;
-  
+
   if (numItemsUntilMinusOne <= 0)
     for (i=0; i<num; i++, ptr++)
       a[i] = ivType(*ptr);
@@ -369,9 +369,9 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
       default: break;
     }
   }
-  else if (ivApplicateIntType<SoMFInt32,  int32_t>(array, (SoMFInt32&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
+  else if (ivApplicateIntType<SoMFInt32,  int32_t>(array, (SoMFInt32&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
   else if (ivApplicateIntType<SoMFUInt32,uint32_t>(array, (SoMFUInt32&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
-  else if (ivApplicateIntType<SoMFShort,  int16_t>(array, (SoMFShort&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
+  else if (ivApplicateIntType<SoMFShort,  int16_t>(array, (SoMFShort&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
   else if (ivApplicateIntType<SoMFUShort,uint16_t>(array, (SoMFUShort&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
   else if (field.isOfType(SoMFVec2f::getClassTypeId()))
   {
@@ -473,7 +473,7 @@ bool ivProcessArray(const osg::Array *indices, const osg::Array *drawElemIndices
   bool ok = true;
 
   if (indices || drawElemIndices) {
-    
+
     // "deindex" original data
     if (indices && !drawElemIndices)
       ok = ivDeindex<variableType>(destField->startEditing(),
@@ -746,7 +746,7 @@ static SoTexture2::Wrap convertTextureWrap(osg::Texture::WrapMode osgWrap)
   // original SGI Inventor: no
   // Coin: no (until current version Coin 2.5.0b3)
   // TGS Inventor: introduced in TGS Inventor 5.0 (available in SoTexture class)
-  
+
   // note: Coin (since 2.0) uses CLAMP_TO_EDGE for rendering if SoTexture2::CLAMP is specified.
 
   switch (osgWrap) {
@@ -789,11 +789,11 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
   ivPrevState->ivHead->addChild(ivState->ivHead);
 
   if (ss) {
-    
+
     //
     // Lighting
     //
-    
+
     // enable/disable lighting
     updateMode(ivState->osgLighting, ss->getMode(GL_LIGHTING));
     if (ivState->osgLighting != ivPrevState->osgLighting) {
@@ -833,7 +833,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
                                     "Ignoring face culling." << std::endl;
 
         // set two-sided lighting and backface culling off
-        sh->vertexOrdering = ivState->osgFrontFace==osg::FrontFace::COUNTER_CLOCKWISE ? 
+        sh->vertexOrdering = ivState->osgFrontFace==osg::FrontFace::COUNTER_CLOCKWISE ?
                              SoShapeHints::COUNTERCLOCKWISE : SoShapeHints::CLOCKWISE;
         sh->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
       }
@@ -849,7 +849,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
             // Warn if culling the lit faces while rendering unlit faces.
             // Inventor does not support this setup and it lits the unculled faces only.
             OSG_WARN << "IvWriter: Culling was set in a way that one-sided lighting will lit the culled sides of faces. "
-                                      "Using lighting on correct faces." << std::endl; 
+                                      "Using lighting on correct faces." << std::endl;
 
           // face culling on
           sh->vertexOrdering = ccw ? SoShapeHints::COUNTERCLOCKWISE : SoShapeHints::CLOCKWISE;
@@ -879,12 +879,12 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
 
       if (!ivState->osgTexture2Enabled ||
           ivState->osgTexture==NULL || ivState->osgTexture->getImage(0)==NULL)
-        
+
         // empty texture disables texturing
         ivState->ivTexture = new SoTexture2;
-      
+
       else {
-        
+
         // reuse texture if possible
         ivState->ivTexture = ivTexturesMap[ivState->osgTexture][ivState->osgTexEnv];
 
@@ -898,7 +898,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
           // texture file name
           const std::string &textureName = ivState->osgTexture->getImage(0)->getFileName();
           ivState->ivTexture->filename.setValue(textureName.c_str()); // FIXME: handle inlined texture data in the files
-          
+
           // wrap
           ivState->ivTexture->wrapS.setValue(convertTextureWrap(
                                              ivState->osgTexture->getWrap(osg::Texture::WRAP_S)));
@@ -950,7 +950,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
         OSG_WARN << "IvWriter: Model contains different materials for front and "
                                   "back faces. This is not handled properly. Using front material only." << std::endl;
       }
-    
+
       // Convert colors
       // OSG represents colors by: Vec3, Vec4,Vec4ub
       // Inventor by: uint32 (RGBA, by SoPackedColor), SbColor (Vec3f, by SoMaterial and SoBaseColor)
@@ -1179,15 +1179,15 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
     // Post-processing for DrawArrayLengths
     if (drawArrayLengths && primSize==0 && drawArrayLengths->size()>=2) {
-      
+
       postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->coordIndex);
-      
+
       if (ivNormals && g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
         postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->normalIndex);
-      
+
       if (ivMaterial && g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
         postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->materialIndex);
-      
+
       if (ivTexCoords && !ivTexCoords->isOfType(SoTextureCoordinateFunction::getClassTypeId()))
         postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->textureCoordIndex);
     }
@@ -1257,12 +1257,12 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                                &((SoTextureCoordinate3*)ivCoords)->point,
                                                startIndex, n);
         }
-      } 
+      }
       else
 #endif  // __COIN__
         nonIndexedTexCoords = ivTexCoords;
     }
-    
+
     // create alternate normals
     if (ivNormals) {
       nonIndexedNormals = new SoNormal;
@@ -1300,7 +1300,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
     if (shape->isOfType(SoPointSet::getClassTypeId()))
       ((SoPointSet*)shape)->numPoints.setValue(elementsCount); else
-    
+
     if (shape->isOfType(SoLineSet::getClassTypeId())) {
       switch (pset->getMode()) {
       case GL_LINES:
@@ -1561,7 +1561,7 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
       if (g->getTexCoordArray(0)->getDataSize() <= 2) {
         texCoords = new SoTextureCoordinate2;
         osgArray2ivMField(g->getTexCoordArray(0), ((SoTextureCoordinate2*)texCoords)->point);
-      } 
+      }
 #ifdef __COIN__
       else {
         texCoords = new SoTextureCoordinate3;
@@ -1606,7 +1606,7 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
                               break;
       case GL_TRIANGLES:
       case GL_TRIANGLE_STRIP:
-      case GL_QUAD_STRIP:     if (useIndices) 
+      case GL_QUAD_STRIP:     if (useIndices)
                                 if (vrml1Conversion) {
                                   shape = new SoIndexedFaceSet;
                                   needSeparateTriangles = true;
@@ -1664,9 +1664,9 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
       {
         const osg::DrawArrayLengths *drawArrayLengths =
           dynamic_cast<const osg::DrawArrayLengths*>(pset);
-        
+
         int startIndex = drawArrayLengths->getFirst();
-          
+
         ok = processPrimitiveSet(g, pset, NULL, needSeparateTriangles,
                                   -1, primSize, startIndex, -1, normalIndex, colorIndex,
                                   coords, normals, ivMaterial, texCoords,
@@ -1678,7 +1678,7 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
 
         break;
       }
-      
+
       case osg::PrimitiveSet::DrawElementsUBytePrimitiveType:
       case osg::PrimitiveSet::DrawElementsUShortPrimitiveType:
       case osg::PrimitiveSet::DrawElementsUIntPrimitiveType:
@@ -1754,15 +1754,15 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
                       SoGroup *root) {
       // convert rotation
       rotation = osg::Quat(-M_PI_2, osg::Vec3(0.,1.,0.)) * osg::Quat(M_PI_2, osg::Vec3(1.,0.,0.)) * rotation;
-      
+
       if (center.length2()==0. && rotation.zeroRotation() && ivState->ivTexture==NULL)
 
         // optimized handling of single node
         root->addChild(ivNode);
-      
+
       else {
         SoSeparator *root2 = new SoSeparator;
-        
+
         // handle transformation
         if (center.length2()!=0. || !rotation.zeroRotation()) {
           SoTransform *ivTransform = new SoTransform;
@@ -1773,14 +1773,14 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
         // handle texture
         if (ivState->ivTexture)
           root2->addChild(ivState->ivTexture);
-        
+
         // build graph
         root2->addChild(ivNode);
         root->addChild(root2);
       }
     }
-    
-    virtual void apply(const osg::Sphere &s) { 
+
+    virtual void apply(const osg::Sphere &s) {
       SoSphere *ivSphere = new SoSphere;
       ivSphere->radius.setValue(s.getRadius());
       processNode(ivSphere, s.getCenter(), osg::Quat(0., osg::Vec3(1.,0.,0.)), ivState->ivHead);
@@ -1806,7 +1806,7 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
       ivCylinder->height = c.getHeight();
       processNode(ivCylinder, c.getCenter(), c.getRotation(), ivState->ivHead);
     }
-    
+
     void warnNonSupported() {
       OSG_WARN << "IvWriter: Not supported ShapeDrawable found. Skipping it." << std::endl;
     }
@@ -1816,7 +1816,7 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
     virtual void apply(const osg::ConvexHull&)     { warnNonSupported(); }
     virtual void apply(const osg::HeightField&)    { warnNonSupported(); }
     virtual void apply(const osg::CompositeShape&) { warnNonSupported(); }
-  
+
     InventorState *ivState;
     MyShapeVisitor(InventorState *ivState) { this->ivState = ivState; }
   } shapeVisitor(ivState);
@@ -1839,7 +1839,7 @@ void ConvertToInventor::processDrawable(osg::Drawable *d)
   if (g != NULL)
     processGeometry(g, ivDrawableState);
   else
-  
+
   if ((sd = dynamic_cast<osg::ShapeDrawable*>(d)) != NULL) {
     processShapeDrawable(sd, ivDrawableState);
   }
@@ -1897,7 +1897,7 @@ void ConvertToInventor::apply(osg::Billboard& node)
 #ifdef __COIN__
 
   if (useIvExtensions) {
-    
+
     // Create SoSeparator and convert StateSet
     InventorState *ivState = createInventorState(node.getStateSet());
     SoGroup *root = ivState->ivHead;
@@ -1927,7 +1927,7 @@ void ConvertToInventor::apply(osg::Billboard& node)
       };
       billboard->axisOfRotation.setValue(axis);
     #else
-      
+
       billboard->axisOfRotation.setValue(SbVec3f(0.f,0.f,0.f));
 
     #endif
@@ -1954,7 +1954,7 @@ void ConvertToInventor::apply(osg::Billboard& node)
     }
 
     popInventorState();
-  
+
   } else
     apply((osg::Geode&)node);
 
@@ -2021,7 +2021,7 @@ void ConvertToInventor::apply(osg::LOD& node)
   SoGroup *ivLOD = NULL;
   osg::LOD::RangeMode rangeMode = node.getRangeMode();
   if (rangeMode == osg::LOD::DISTANCE_FROM_EYE_POINT) {
-    
+
     // use SoLOD for DISTANCE_FROM_EYE_POINT
     SoLOD *lod = new SoLOD;
 
@@ -2050,7 +2050,7 @@ void ConvertToInventor::apply(osg::LOD& node)
     ivLOD = lod;
 
   } else {
-    
+
     // undefined mode -> put warning
     OSG_WARN << "IvWriter: Undefined LOD::RangeMode value." << std::endl;
     ivLOD = new SoGroup;

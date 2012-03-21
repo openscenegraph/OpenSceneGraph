@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -21,7 +21,7 @@
 #include <osgAnimation/VertexInfluence>
 #include <osg/Geometry>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
     class OSGANIMATION_EXPORT RigGeometry : public osg::Geometry
@@ -37,15 +37,15 @@ namespace osgAnimation
         void setInfluenceMap(VertexInfluenceMap* vertexInfluenceMap) { _vertexInfluenceMap = vertexInfluenceMap; }
         const VertexInfluenceMap* getInfluenceMap() const { return _vertexInfluenceMap.get();}
         VertexInfluenceMap* getInfluenceMap() { return _vertexInfluenceMap.get();}
- 
+
         const Skeleton* getSkeleton() const;
         Skeleton* getSkeleton();
         // will be used by the update callback to init correctly the rig mesh
         void setSkeleton(Skeleton*);
-        
+
         void setNeedToComputeMatrix(bool state) { _needToComputeMatrix = state;}
         bool getNeedToComputeMatrix() const { return _needToComputeMatrix;}
-        
+
 
         // this build the internal database about vertex influence and bones
         void buildVertexInfluenceSet();
@@ -71,7 +71,7 @@ namespace osgAnimation
         void copyFrom(osg::Geometry& from);
 
     protected:
-        
+
         osg::ref_ptr<osg::Geometry> _geometry;
         osg::ref_ptr<RigTransform> _rigTransformImplementation;
 
@@ -82,12 +82,12 @@ namespace osgAnimation
         osg::Matrix _invMatrixFromSkeletonToGeometry;
         osg::observer_ptr<Skeleton> _root;
         bool _needToComputeMatrix;
- 
+
         struct FindNearestParentSkeleton : public osg::NodeVisitor
         {
             osg::ref_ptr<Skeleton> _root;
             FindNearestParentSkeleton() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-            void apply(osg::Transform& node) 
+            void apply(osg::Transform& node)
             {
                 if (_root.valid())
                     return;

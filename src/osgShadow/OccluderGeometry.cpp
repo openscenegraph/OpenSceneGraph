@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,7 +33,7 @@ OccluderGeometry::OccluderGeometry()
 OccluderGeometry::OccluderGeometry(const OccluderGeometry& oc, const osg::CopyOp& copyop):
     osg::Drawable(oc,copyop)
 {
-    
+
 }
 
 
@@ -53,30 +53,30 @@ public:
     void apply(osg::Node& node)
     {
         if (node.getStateSet()) pushState(node.getStateSet());
-        
+
         traverse(node);
 
         if (node.getStateSet()) popState();
     }
-    
+
     void apply(osg::Transform& transform)
     {
         if (transform.getStateSet()) pushState(transform.getStateSet());
-        
+
         osg::Matrix matrix;
         if (!_matrixStack.empty()) matrix = _matrixStack.back();
-        
+
         transform.computeLocalToWorldMatrix(matrix,this);
-        
+
         pushMatrix(matrix);
-        
+
         traverse(transform);
-        
+
         popMatrix();
 
         if (transform.getStateSet()) popState();
     }
-    
+
     void apply(osg::Geode& geode)
     {
         if (geode.getStateSet()) pushState(geode.getStateSet());
@@ -86,39 +86,39 @@ public:
             osg::Drawable* drawable = geode.getDrawable(i);
 
             if (drawable->getStateSet()) pushState(drawable->getStateSet());
-            
+
             apply(geode.getDrawable(i));
 
             if (drawable->getStateSet()) popState();
         }
-        
+
         if (geode.getStateSet()) popState();
     }
-    
+
     void pushState(osg::StateSet* stateset)
     {
         osg::StateAttribute::GLModeValue prevBlendModeValue = _blendModeStack.empty() ? osg::StateAttribute::GLModeValue(osg::StateAttribute::INHERIT) : _blendModeStack.back();
         osg::StateAttribute::GLModeValue newBlendModeValue = stateset->getMode(GL_BLEND);
-        
-        if (!(newBlendModeValue & osg::StateAttribute::PROTECTED) && 
+
+        if (!(newBlendModeValue & osg::StateAttribute::PROTECTED) &&
              (prevBlendModeValue & osg::StateAttribute::OVERRIDE) )
         {
             newBlendModeValue = prevBlendModeValue;
         }
-        
+
         _blendModeStack.push_back(newBlendModeValue);
     }
-    
+
     void popState()
     {
         _blendModeStack.pop_back();
     }
-    
+
     void pushMatrix(osg::Matrix& matrix)
     {
         _matrixStack.push_back(matrix);
     }
-    
+
     void popMatrix()
     {
         _matrixStack.pop_back();
@@ -132,22 +132,22 @@ public:
             // OSG_NOTICE<<"Ignoring transparent drawable."<<std::endl;
             return;
         }
-        
+
         _oc->processGeometry(drawable, (_matrixStack.empty() ? 0 : &_matrixStack.back()), _ratio);
-        
+
     }
-    
+
 protected:
-    
+
     OccluderGeometry* _oc;
-    
+
     typedef std::vector<osg::Matrix> MatrixStack;
     typedef std::vector<osg::StateAttribute::GLModeValue> ModeStack;
-    
+
     float           _ratio;
     MatrixStack     _matrixStack;
     ModeStack       _blendModeStack;
-    
+
 };
 
 void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix, float sampleRatio)
@@ -155,10 +155,10 @@ void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix*
     OSG_NOTICE<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
-    
+
     CollectOccludersVisitor cov(this, matrix, sampleRatio);
     subgraph->accept(cov);
-    
+
     setUpInternalStructures();
 
     osg::Timer_t endTick = osg::Timer::instance()->tick();
@@ -181,7 +181,7 @@ struct TriangleCollector
 
     typedef std::vector<const osg::Vec3*> VertexPointers;
     VertexPointers _vertexPointers;
-    
+
     OccluderGeometry::Vec3List _tempoaryTriangleVertices;
 
     TriangleCollector():_matrix(0) { }
@@ -203,7 +203,7 @@ struct TriangleCollector
             _tempoaryTriangleVertices.push_back(v1);
             _tempoaryTriangleVertices.push_back(v2);
             _tempoaryTriangleVertices.push_back(v3);
-            
+
         }
         else
         {
@@ -214,15 +214,15 @@ struct TriangleCollector
         }
 
     }
-    
+
     void copyToLocalData()
     {
         if ((_vertexPointers.size()+_tempoaryTriangleVertices.size())<3) return;
-    
-    
+
+
         const osg::Vec3* minVertex = _vertexPointers.empty() ? 0 : _vertexPointers.front();
         const osg::Vec3* maxVertex = _vertexPointers.empty() ? 0 : _vertexPointers.front();
-    
+
         VertexPointers::iterator itr;
         for(itr = _vertexPointers.begin();
             itr != _vertexPointers.end();
@@ -234,11 +234,11 @@ struct TriangleCollector
 
         unsigned int base = _vertices->size();
         unsigned int numberNewVertices = _vertexPointers.empty() ? 0 : (maxVertex - minVertex) + 1;
-        
+
         // OSG_NOTICE<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
 
         _vertices->resize(base + numberNewVertices + _tempoaryTriangleVertices.size());
-        
+
         for(itr = _vertexPointers.begin();
             itr != _vertexPointers.end();
             ++itr)
@@ -266,7 +266,7 @@ struct TriangleCollector
                 (*_vertices)[i] = (*_vertices)[i] * (*_matrix);
             }
         }
-        
+
     }
 
 
@@ -281,10 +281,10 @@ void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* mat
     tc.set(&_vertices, &_triangleIndices, matrix);
 
     drawable->accept(tc);
-    
+
     tc.copyToLocalData();
-    
-#if 0    
+
+#if 0
     for(Vec3List::iterator vitr = _vertices.begin();
         vitr != _vertices.end();
         ++vitr)
@@ -307,7 +307,7 @@ void OccluderGeometry::setUpInternalStructures()
     osg::Timer_t t0 = osg::Timer::instance()->tick();
 
     removeDuplicateVertices();
-    
+
     osg::Timer_t t1 = osg::Timer::instance()->tick();
 
     removeNullTriangles();
@@ -319,7 +319,7 @@ void OccluderGeometry::setUpInternalStructures()
     osg::Timer_t t3 = osg::Timer::instance()->tick();
 
     buildEdgeMaps();
-    
+
     osg::Timer_t t4 = osg::Timer::instance()->tick();
 
 
@@ -331,7 +331,7 @@ void OccluderGeometry::setUpInternalStructures()
 
 
     dirtyBound();
-    
+
     dirtyDisplayList();
 }
 
@@ -366,7 +366,7 @@ struct IndexVec3PtrPair
 void OccluderGeometry::removeDuplicateVertices()
 {
     if (_vertices.empty()) return;
-    
+
     OSG_NOTICE<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
 
     typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
@@ -399,17 +399,17 @@ void OccluderGeometry::removeDuplicateVertices()
         }
         else
         {
-            prev = curr; 
+            prev = curr;
             ++numUnique;
         }
     }
-    
+
     OSG_NOTICE<<"Num diplicates = "<<numDuplicates<<std::endl;
     OSG_NOTICE<<"Num unique = "<<numUnique<<std::endl;
 
     if (numDuplicates==0) return;
 
-    // now assign the unique Vec3 to the newVertices arrays    
+    // now assign the unique Vec3 to the newVertices arrays
     typedef std::vector<unsigned int> IndexMap;
     IndexMap indexMap(indexVec3PtrPairs.size());
 
@@ -428,19 +428,19 @@ void OccluderGeometry::removeDuplicateVertices()
 
     for(; curr != indexVec3PtrPairs.end(); ++curr)
     {
-        if (*prev==*curr) 
+        if (*prev==*curr)
         {
             indexMap[curr->index] = index;
         }
         else
         {
-            ++index;            
-            
+            ++index;
+
             // add new unique vertex
             indexMap[curr->index] = index;
             newVertices.push_back(*(curr->vec));
 
-            prev = curr; 
+            prev = curr;
         }
     }
 
@@ -461,7 +461,7 @@ void OccluderGeometry::removeNullTriangles()
 {
     // OSG_NOTICE<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
 
-    
+
     UIntList::iterator lastValidItr = _triangleIndices.begin();
     for(UIntList::iterator titr = _triangleIndices.begin();
         titr != _triangleIndices.end();
@@ -500,7 +500,7 @@ void OccluderGeometry::removeNullTriangles()
 void OccluderGeometry::computeNormals()
 {
     // OSG_NOTICE<<"OccluderGeometry::computeNormals()"<<std::endl;
-    
+
     unsigned int numTriangles = _triangleIndices.size() / 3;
     unsigned int redundentIndices = _triangleIndices.size() - numTriangles * 3;
     if (redundentIndices)
@@ -508,10 +508,10 @@ void OccluderGeometry::computeNormals()
         OSG_NOTICE<<"Warning OccluderGeometry::computeNormals() has found redundent trailing indices"<<std::endl;
         _triangleIndices.erase(_triangleIndices.begin() + numTriangles * 3, _triangleIndices.end());
     }
-    
+
     _triangleNormals.clear();
     _triangleNormals.reserve(numTriangles);
-    
+
     _normals.resize(_vertices.size());
 
 
@@ -528,13 +528,13 @@ void OccluderGeometry::computeNormals()
         _triangleNormals.push_back(normal);
 
         if (!_normals.empty())
-        {        
+        {
             _normals[p1] += normal;
             _normals[p2] += normal;
             _normals[p3] += normal;
         }
     }
-    
+
     for(Vec3List::iterator nitr = _normals.begin();
         nitr != _normals.end();
         ++nitr)
@@ -542,16 +542,16 @@ void OccluderGeometry::computeNormals()
         nitr->normalize();
     }
 
-    
+
 }
 
 void OccluderGeometry::buildEdgeMaps()
 {
     // OSG_NOTICE<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
-    
+
     typedef std::set<Edge> EdgeSet;
     EdgeSet edgeSet;
-    
+
     unsigned int numTriangleErrors = 0;
     unsigned int triNo=0;
     for(UIntList::iterator titr = _triangleIndices.begin();
@@ -561,11 +561,11 @@ void OccluderGeometry::buildEdgeMaps()
         GLuint p1 = *titr++;
         GLuint p2 = *titr++;
         GLuint p3 = *titr++;
-        
+
         {
             Edge edge12(p1,p2);
             EdgeSet::iterator itr = edgeSet.find(edge12);
-            if (itr == edgeSet.end()) 
+            if (itr == edgeSet.end())
             {
                 if (!edge12.addTriangle(triNo)) ++numTriangleErrors;
                 edgeSet.insert(edge12);
@@ -576,10 +576,10 @@ void OccluderGeometry::buildEdgeMaps()
             }
         }
 
-        {        
+        {
             Edge edge23(p2,p3);
             EdgeSet::iterator itr = edgeSet.find(edge23);
-            if (itr == edgeSet.end()) 
+            if (itr == edgeSet.end())
             {
                 if (!edge23.addTriangle(triNo)) ++numTriangleErrors;
                 edgeSet.insert(edge23);
@@ -589,14 +589,14 @@ void OccluderGeometry::buildEdgeMaps()
                 if (!itr->addTriangle(triNo)) ++numTriangleErrors;
             }
         }
-        
+
         {
             Edge edge31(p3,p1);
             EdgeSet::iterator itr = edgeSet.find(edge31);
-            if (itr == edgeSet.end()) 
+            if (itr == edgeSet.end())
             {
                 if (!edge31.addTriangle(triNo)) ++numTriangleErrors;
-                
+
                 edgeSet.insert(edge31);
             }
             else
@@ -608,11 +608,11 @@ void OccluderGeometry::buildEdgeMaps()
 
     _edges.clear();
     _edges.reserve(edgeSet.size());
-    
+
     unsigned int numEdgesWithNoTriangles = 0;
     unsigned int numEdgesWithOneTriangles = 0;
     unsigned int numEdgesWithTwoTriangles = 0;
-    
+
     for(EdgeSet::iterator eitr = edgeSet.begin();
         eitr != edgeSet.end();
         ++eitr)
@@ -634,7 +634,7 @@ void OccluderGeometry::buildEdgeMaps()
             else if (p3 != edge._p1 && p3 != edge._p2) opposite = p3;
             pos = _vertices[opposite];
         }
-        
+
         if (edge._t2>=0)
         {
             ++numTriangles;
@@ -655,17 +655,17 @@ void OccluderGeometry::buildEdgeMaps()
                 ++numEdgesWithNoTriangles;
                 edge._normal.set(0.0,0.0,0.0);
                 OSG_NOTICE<<"Warning no triangles on edge."<<std::endl;
-                break; 
+                break;
             case(1):
                 ++numEdgesWithOneTriangles;
                 edge._normal = pos - mid;
                 edge._normal.normalize();
-                break; 
+                break;
             default:
-                ++numEdgesWithTwoTriangles; 
+                ++numEdgesWithTwoTriangles;
                 edge._normal = (pos*0.5f) - mid;
                 edge._normal.normalize();
-                break; 
+                break;
         }
 
         _edges.push_back(edge);
@@ -686,7 +686,7 @@ void OccluderGeometry::buildEdgeMaps()
 void OccluderGeometry::computeLightDirectionSilhouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const
 {
     silhouetteIndices.clear();
-    
+
     for(EdgeList::const_iterator eitr = _edges.begin();
         eitr != _edges.end();
         ++eitr)
@@ -698,7 +698,7 @@ void OccluderGeometry::computeLightDirectionSilhouetteEdges(const osg::Vec3& lig
             const osg::Vec3& v2 = _vertices[edge._p2];
             osg::Vec3 normal = (v2-v1) ^ lightdirection;
             if (normal * edge._normal > 0.0)
-            {        
+            {
                 silhouetteIndices.push_back(edge._p1);
                 silhouetteIndices.push_back(edge._p2);
             }
@@ -714,7 +714,7 @@ void OccluderGeometry::computeLightDirectionSilhouetteEdges(const osg::Vec3& lig
 void OccluderGeometry::computeLightPositionSilhouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const
 {
     silhouetteIndices.clear();
-    
+
     for(EdgeList::const_iterator eitr = _edges.begin();
         eitr != _edges.end();
         ++eitr)
@@ -726,7 +726,7 @@ void OccluderGeometry::computeLightPositionSilhouetteEdges(const osg::Vec3& ligh
             const osg::Vec3& v2 = _vertices[edge._p2];
             osg::Vec3 normal = (v2-v1) ^ (v1-lightpos);
             if (normal * edge._normal > 0.0)
-            {        
+            {
                 silhouetteIndices.push_back(edge._p1);
                 silhouetteIndices.push_back(edge._p2);
             }
@@ -764,9 +764,9 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     {
         // directional light.
         osg::Vec3 lightdirection( -lightpos.x(), -lightpos.y(), -lightpos.z());
-        
+
         // OSG_NOTICE<<"Directional light"<<std::endl;
-        
+
         // choose the base plane
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
         osg::Polytope::PlaneList::const_iterator pitr = planes.begin();
@@ -786,11 +786,11 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         // compute the silhouette edge
         UIntList silhouetteIndices;
         computeLightDirectionSilhouetteEdges(lightdirection, silhouetteIndices);
-        
+
         osg::Vec3 offset( lightdirection*5.0f );
-        
+
         float directionScale = 1.0f / basePlane.dotProductNormal(lightdirection);
-        
+
         for(UIntList::iterator itr = silhouetteIndices.begin();
             itr != silhouetteIndices.end();
             )
@@ -828,7 +828,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         // OSG_NOTICE<<"Positional light"<<std::endl;
         UIntList silhouetteIndices;
         computeLightPositionSilhouetteEdges(lightposition, silhouetteIndices);
-        
+
         // OSG_NOTICE<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
         // OSG_NOTICE<<"lightpos  = "<<std::endl;
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
@@ -839,7 +839,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         {
             const osg::Vec3& v1 = _vertices[*itr++];
             const osg::Vec3& v2 = _vertices[*itr++];
-            
+
             osg::Vec3 d1 = v1 - lightposition;
             osg::Vec3 d2 = v2 - lightposition;
 
@@ -892,7 +892,7 @@ void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     renderInfo.getState()->disableAllVertexArrays();
 
     renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
-    
+
     if (!_normals.empty())
     {
         renderInfo.getState()->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
@@ -936,7 +936,7 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     if (_drawMode==GEOMETRY)
     {
         osg::State* state = renderInfo.getState();
-        
+
         state->disableAllVertexArrays();
 
         state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
@@ -958,7 +958,7 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     else if (_drawMode==STENCIL_TWO_PASS)
     {
         osg::State* state = renderInfo.getState();
-        
+
         state->disableAllVertexArrays();
         state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
 
@@ -967,13 +967,13 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
         glStencilOp( GL_KEEP, GL_KEEP, GL_INCR);
 
         glDrawArrays( GL_QUADS, 0, _vertices.size() );
-        
+
         // draw back faces of shadow volume
         glCullFace(GL_FRONT);
         glStencilOp( GL_KEEP, GL_KEEP, GL_DECR);
 
         glDrawArrays( GL_QUADS, 0, _vertices.size() );
-        
+
         state->haveAppliedAttribute(osg::StateAttribute::CULLFACE);
         state->haveAppliedAttribute(osg::StateAttribute::STENCIL);
 
@@ -981,7 +981,7 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     else // stencil two sided, note state all set up separately.
     {
         osg::State* state = renderInfo.getState();
-        
+
         state->disableAllVertexArrays();
         state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
 

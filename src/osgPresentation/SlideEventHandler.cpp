@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -71,11 +71,11 @@ struct ImageStreamOperator : public ObjectOperator
 
         reset();
     }
-    
+
     virtual void maintain()
     {
     }
-    
+
     virtual void leave()
     {
        OSG_INFO<<"leave() : _imageStream->pause()"<<std::endl;
@@ -90,7 +90,7 @@ struct ImageStreamOperator : public ObjectOperator
         if (pause) _imageStream->pause();
         else _imageStream->play();
     }
-    
+
     virtual void reset()
     {
         osg::ImageStream::StreamStatus previousStatus = _imageStream->getStatus();
@@ -99,13 +99,13 @@ struct ImageStreamOperator : public ObjectOperator
 
 
         //_imageStream->setVolume(previousVolume);
-        
+
         if(previousStatus==osg::ImageStream::PLAYING)
         {
             _imageStream->play();
         }
 
-        // add a delay so that movie thread has a chance to do the rewind    
+        // add a delay so that movie thread has a chance to do the rewind
         float microSecondsToDelay = SlideEventHandler::instance()->getTimeDelayOnNewSlideWithMovies() * 1000000.0f;
         OpenThreads::Thread::microSleep(static_cast<unsigned int>(microSecondsToDelay));
     }
@@ -125,11 +125,11 @@ struct CallbackOperator : public ObjectOperator
     {
         reset();
     }
-    
+
     virtual void maintain()
     {
     }
-    
+
     virtual void leave()
     {
     }
@@ -207,7 +207,7 @@ struct LayerAttributesOperator : public ObjectOperator
             }
 
             OSG_INFO<<"}"<<std::endl;
-        }   
+        }
         if (!_layerAttribute->_runStrings.empty())
         {
             for(LayerAttributes::RunStrings::iterator itr = _layerAttribute->_runStrings.begin();
@@ -234,11 +234,11 @@ struct LayerAttributesOperator : public ObjectOperator
         }
 
     }
-    
+
     virtual void maintain()
     {
     }
-    
+
     virtual void leave()
     {
         OSG_INFO<<"LayerAttribute leave"<<std::endl;
@@ -285,7 +285,7 @@ public:
         traverse(node);
     }
 
-    void apply(osg::Geode& node)    
+    void apply(osg::Geode& node)
     {
         apply((osg::Node&)node);
         for(unsigned int i=0;i<node.getNumDrawables();++i)
@@ -325,20 +325,20 @@ ActiveOperators::~ActiveOperators()
 void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm)
 {
     _previous.swap(_current);
-    
+
     _current.clear();
-    
+
     FindOperatorsVisitor fov(_current, tm);
     incommingNode->accept(fov);
-    
+
     OSG_INFO<<"ActiveOperators::collect("<<incommingNode<<")"<<std::endl;
     OSG_INFO<<"  _previous.size()="<<_previous.size()<<std::endl;
     OSG_INFO<<"  _current.size()="<<_current.size()<<std::endl;
-    
+
     _outgoing.clear();
     _incomming.clear();
     _maintained.clear();
-    
+
     for(OperatorList::iterator itr = _previous.begin();
         itr != _previous.end();
         ++itr)
@@ -347,7 +347,7 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
         if (_current.count(prev)==0) _outgoing.insert(prev);
         else _maintained.insert(prev);
     }
-    
+
     for(OperatorList::iterator itr = _current.begin();
         itr != _current.end();
         ++itr)
@@ -388,7 +388,7 @@ void ActiveOperators::process()
 
 void ActiveOperators::processOutgoing()
 {
-    OSG_INFO<<"  outgoing.size()="<<_outgoing.size()<<std::endl;    
+    OSG_INFO<<"  outgoing.size()="<<_outgoing.size()<<std::endl;
     for(OperatorList::iterator itr = _outgoing.begin();
         itr != _outgoing.end();
         ++itr)
@@ -429,7 +429,7 @@ public:
 
     FindHomePositionVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
-        
+
     void apply(osg::Node& node)
     {
         HomePosition* homePosition = dynamic_cast<HomePosition*>(node.getUserData());
@@ -437,12 +437,12 @@ public:
         {
             _homePosition = homePosition;
         }
-        
+
         traverse(node);
     }
-        
+
     osg::ref_ptr<HomePosition> _homePosition;
-        
+
 };
 
 class FindNamedSwitchVisitor : public osg::NodeVisitor
@@ -453,7 +453,7 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _name(name),
         _switch(0) {}
-        
+
     void apply(osg::Switch& sw)
     {
         if (sw.getName().find(_name)!=std::string::npos)
@@ -461,13 +461,13 @@ public:
             _switch = &sw;
             return; // note, no need to do traverse now we've located the relevant switch
         }
-        
+
         traverse(sw);
     }
-        
+
     std::string     _name;
     osg::Switch*    _switch;
-        
+
 };
 
 
@@ -477,19 +477,19 @@ public:
 
     FindFilePathDataVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
-        
+
     void apply(osg::Node& node)
     {
         FilePathData* fdd = dynamic_cast<FilePathData*>(node.getUserData());
-        if (fdd) 
+        if (fdd)
         {
             OSG_INFO<<"Recorded FilePathData"<<std::endl;
             osgDB::setDataFilePathList(fdd->filePathList);
         }
-        
+
         traverse(node);
     }
-        
+
 };
 
 class UpdateLightVisitor : public osg::NodeVisitor
@@ -500,12 +500,12 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
         _viewMatrix(viewMatrix),
         _currentX(currentX), _currentY(currentY) {}
-        
+
     void apply(osg::Node& node)
     {
         traverse(node);
     }
-    
+
     void apply(osg::LightSource& lightsource)
     {
         if (lightsource.getLight())
@@ -519,7 +519,7 @@ public:
                 apply(osg::computeEyeToLocal(_viewMatrix,_nodePath), lightsource.getLight());
             }
         }
-        
+
         traverse(lightsource);
     }
 
@@ -530,9 +530,9 @@ public:
         osg::Vec3 direction;
         if (sum_x2_y2<1.0) direction.set(_currentX, _currentY, sqrtf(1.0-sum_x2_y2));
         else direction.set(_currentX, _currentY, 0.0);
-        
+
         direction.normalize();
-        
+
         direction = osg::Matrixd::transform3x3(matrix, direction);
         direction.normalize();
 
@@ -541,7 +541,7 @@ public:
 
     osg::Matrixd    _viewMatrix;
     float           _currentX, _currentY;
-        
+
 };
 
 class UpdateAlphaVisitor : public osg::NodeVisitor
@@ -552,13 +552,13 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
         _modAlphaFunc(modAlphaFunc), _modMaterial(modMaterial),
         _currentX(currentX), _currentY(currentY) {}
-        
+
     void apply(osg::Node& node)
     {
         if (node.getStateSet()) apply(*node.getStateSet());
         traverse(node);
     }
-    
+
     void apply(osg::StateSet& stateset)
     {
         if (_modAlphaFunc)
@@ -574,9 +574,9 @@ public:
                 alphaFunc->setReferenceValue(alpha);
             }
         }
-        
+
         if (_modMaterial)
-        {        
+        {
             osg::Material* material = dynamic_cast<osg::Material*>(stateset.getAttribute(osg::StateAttribute::MATERIAL));
             if (material)
             {
@@ -589,7 +589,7 @@ public:
 
     bool _modAlphaFunc, _modMaterial;
     float   _currentX, _currentY;
-        
+
 };
 
 
@@ -651,19 +651,19 @@ void SlideEventHandler::set(osg::Node* model)
 
     FindNamedSwitchVisitor findPresentation("Presentation");
     model->accept(findPresentation);
-    
+
     if (findPresentation._switch)
     {
         OSG_INFO<<"Presentation '"<<model->getName()<<"'"<<std::endl;
         _presentationSwitch = findPresentation._switch;
-        
+
         double duration = getDuration(_presentationSwitch.get());
         if (duration>=0.0)
         {
             OSG_INFO<<"Presentation time set to "<<duration<<std::endl;
             _timePerSlide = duration;
         }
-        
+
         //selectSlide(0);
     }
     else
@@ -672,10 +672,10 @@ void SlideEventHandler::set(osg::Node* model)
 
         _presentationSwitch = 0;
         _activeSlide = 0;
-        
+
         FindNamedSwitchVisitor findSlide("Slide");
         model->accept(findSlide);
-        
+
         if (findSlide._switch)
         {
             OSG_INFO<<"Found presentation slide"<<findSlide._switch->getName()<<std::endl;
@@ -687,7 +687,7 @@ void SlideEventHandler::set(osg::Node* model)
         {
             OSG_INFO<<"No slides present in scene, unable to operate as a slideshow."<<std::endl;
         }
-    
+
     }
 }
 
@@ -709,9 +709,9 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
         if (duration >=0 )
         {
             return duration;
-        }        
+        }
     }
-        
+
     return _timePerSlide;
 }
 
@@ -757,7 +757,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             if (_autoSteppingActive && !_pause)
             {
                 double time = ea.time();
-                
+
                 if (_firstTraversal)
                 {
                     _firstTraversal = false;
@@ -766,7 +766,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 else if (time-_previousTime>=getCurrentTimeDelayBetweenSlides())
                 {
                     // _previousTime = time;
-                    
+
                     if (!_hold)
                     {
                         // increment the previous by the required time delay, note relative to the current
@@ -793,8 +793,8 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             if (deltaTime < _minimumTimeBetweenKeyPresses)
             {
                  break;
-            } 
-            
+            }
+
             _timeLastKeyPresses = time;
 
             if (ea.getKey()=='g')
@@ -851,7 +851,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 previousLayer();
                 return true;
             }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Page_Down || 
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Page_Down ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
             {
                 _autoSteppingActive = false;
@@ -865,8 +865,8 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 previousLayerOrSlide();
                 return true;
             }
-            else if (ea.getKey()=='N' || 
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Right || 
+            else if (ea.getKey()=='N' ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Right ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Right)
             {
                 _autoSteppingActive = false;
@@ -874,7 +874,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 home(ea,aa);
                 return true;
             }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left || 
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
             {
                 _autoSteppingActive = false;
@@ -887,27 +887,27 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 if (!_pause)
                 {
                     _pause = true;
-#if 0                    
+#if 0
                     resetUpdateCallbackActivity(ALL_OBJECTS);
 #endif
                     _activeOperators.setPause(_pause);
                 }
-                
+
                 return true;
-                
+
             }
             else if (ea.getKey()=='o')
             {
                 if (_pause)
                 {
                     _pause = false;
-#if 0                    
+#if 0
                     resetUpdateCallbackActivity(ALL_OBJECTS);
 #endif
                     _activeOperators.setPause(_pause);
                 }
                 return true;
-                
+
             }
             else if (ea.getKey()=='h')
             {
@@ -922,11 +922,11 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 _activeOperators.reset();
                 return true;
             }
-/*            
+/*
             else if (ea.getKey()=='c')
             {
                 _cursorOn = !_cursorOn;
-            
+
                 for( unsigned int i = 0; i < _viewer->getCameraConfig()->getNumberOfCameras(); i++ )
                 {
                     Producer::Camera* cam = _viewer->getCameraConfig()->getCamera(i);
@@ -994,7 +994,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     if (!_presentationSwitch) return false;
 
     OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
-    
+
     if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren()))
     {
         slideNum = LAST_POSITION;
@@ -1004,7 +1004,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     {
         slideNum = _presentationSwitch->getNumChildren()-1;
     }
-    
+
     if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren())) return false;
 
 
@@ -1018,9 +1018,9 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     }
 
     OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<") at time "<<osg::Timer::instance()->delta_s(_tickAtFirstSlideOrLayerChange, tick)<<" seconds, length ="<<osg::Timer::instance()->delta_s(_tickAtLastSlideOrLayerChange, tick)<<" seconds"<<std::endl;
-    
+
     _tickAtLastSlideOrLayerChange = tick;
-    
+
     // dectivate movies etc on current active slide.
     bool newSlide = _activeSlide!=slideNum;
     if (newSlide)
@@ -1036,7 +1036,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
     //OSG_INFO<<"Selected slide '"<<_presentationSwitch->getChild(_activeSlide)->getName()<<"'"<<std::endl;
 
-    
+
     FindNamedSwitchVisitor findSlide("Slide");
     _presentationSwitch->getChild(_activeSlide)->accept(findSlide);
 
@@ -1048,24 +1048,24 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
         result = selectLayer(layerNum);
 
-        
+
     }
     else
     {
         //OSG_INFO<<"Not found slide"<<std::endl;
         updateOperators();
     }
-    
+
 
     // refersh the viewer.
     //_viewer->getKeySwitchMatrixManipulator()->setMinimumDistance(0.001);
-    
+
     _viewer->getCameraManipulator()->setNode(_slideSwitch.get());
-    
+
     _viewer->computeActiveCoordinateSystemNodePath();
-    
+
     // resetUpdateCallbacks(ALL_OBJECTS);
-    
+
     bool _useSlideFilePaths = false;
     if (_useSlideFilePaths)
     {
@@ -1073,14 +1073,14 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
         FindFilePathDataVisitor ffpdv;
         _presentationSwitch->accept(ffpdv);
     }
-    
+
     if (newSlide && _releaseAndCompileOnEachNewSlide)
     {
         compileSlide(slideNum);
     }
 
     return result;
-    
+
 }
 
 bool SlideEventHandler::selectLayer(int layerNum)
@@ -1101,7 +1101,7 @@ bool SlideEventHandler::selectLayer(int layerNum)
     }
 
     if (layerNum>=static_cast<int>(_slideSwitch->getNumChildren())) return false;
-    
+
     _activeLayer = layerNum;
     _slideSwitch->setSingleChildOn(_activeLayer);
 
@@ -1143,7 +1143,7 @@ bool SlideEventHandler::nextSlide()
             int previousLayer = getActiveLayer();
             int newSlide = previousSlide + la->getSlideNum();
             int newLayer = previousLayer + la->getLayerNum();
-            if (newLayer<0) 
+            if (newLayer<0)
             {
                 newLayer = 0;
             }
@@ -1183,7 +1183,7 @@ bool SlideEventHandler::nextLayer()
     if (la)
     {
         la->callLeaveCallbacks(_slideSwitch->getChild(_activeLayer));
-    
+
         if (la->requiresJump())
         {
             if (la->getRelativeJump())
@@ -1192,7 +1192,7 @@ bool SlideEventHandler::nextLayer()
                 int previousLayer = getActiveLayer();
                 int newSlide = previousSlide + la->getSlideNum();
                 int newLayer = previousLayer + la->getLayerNum();
-                if (newLayer<0) 
+                if (newLayer<0)
                 {
                     newLayer = 0;
                 }
@@ -1267,7 +1267,7 @@ bool SlideEventHandler::home()
 void SlideEventHandler::updateAlpha(bool modAlphaFunc, bool modMaterial, float x, float y)
 {
     OSG_INFO<<"updateAlpha("<<x<<","<<y<<")"<<std::endl;
-    
+
     UpdateAlphaVisitor uav(modAlphaFunc, modMaterial, x,y);
     if (_presentationSwitch.valid()) _presentationSwitch->accept(uav);
     else if (_viewer->getSceneData()) _viewer->getSceneData()->accept(uav);
@@ -1311,10 +1311,10 @@ void SlideEventHandler::compileSlide(unsigned int slideNum)
             (*itr)->setPreDrawCallback(_compileSlideCallback.get());
         }
 
-    }            
-    
+    }
+
     _compileSlideCallback->needCompile(_presentationSwitch->getChild(slideNum));
-    
+
 }
 
 void SlideEventHandler::releaseSlide(unsigned int slideNum)
@@ -1322,7 +1322,7 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
     osgUtil::GLObjectsVisitor globjVisitor(osgUtil::GLObjectsVisitor::RELEASE_DISPLAY_LISTS|
                                            osgUtil::GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
     globjVisitor.setNodeMaskOverride(0xffffffff);
-    
+
     _presentationSwitch->getChild(slideNum)->accept(globjVisitor);
 }
 
@@ -1332,18 +1332,18 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 
     // reset the time of the last key press to ensure that the event is disgarded as a key repeat.
     _timeLastKeyPresses = -1.0;
-    
+
     if (keyPosition._x!=FLT_MAX)
     {
         float xRescaled = eq->getCurrentEventState()->getXmin() + (keyPosition._x+1.0f)*0.5f*(eq->getCurrentEventState()->getXmax()-eq->getCurrentEventState()->getXmin());
         eq->getCurrentEventState()->setX(xRescaled);
     }
-    
+
     if (keyPosition._y!=FLT_MAX)
     {
         float y = (eq->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS) ?
                    keyPosition._y : -keyPosition._y;
-            
+
         float yRescaled = eq->getCurrentEventState()->getYmin() + (y+1.0f)*0.5f*(eq->getCurrentEventState()->getYmax()-eq->getCurrentEventState()->getYmin());
         eq->getCurrentEventState()->setY(yRescaled);
     }

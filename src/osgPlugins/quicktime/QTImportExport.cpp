@@ -20,19 +20,19 @@ class QTImportExportException : public std::exception {
 
     public:
         QTImportExportException(int err, const std::string& msg) : std::exception(), _err(err), _msg(msg) {}
-        
+
         virtual const char* what() { return _msg.c_str(); }
         int getErrorCode() { return _err; }
-        
+
         virtual ~QTImportExportException() throw () {}
-        
+
     private:
         int _err;
         std::string _msg;
 };
 
-QuicktimeImportExport::QuicktimeImportExport() 
-:    _error(0), 
+QuicktimeImportExport::QuicktimeImportExport()
+:    _error(0),
     _lastError("")
 {
 }
@@ -42,7 +42,7 @@ QuicktimeImportExport::QuicktimeImportExport()
 // flipImage
 // ----------------------------------------------------------------------------------------------------------
 
-void QuicktimeImportExport::flipImage(unsigned char* pixels, int bytesPerPixel, unsigned int width, unsigned height) 
+void QuicktimeImportExport::flipImage(unsigned char* pixels, int bytesPerPixel, unsigned int width, unsigned height)
 {
     // Flip the image
     unsigned imageSize = width * height * bytesPerPixel;
@@ -69,11 +69,11 @@ unsigned char* QuicktimeImportExport::pepareBufferForOSG(unsigned char * buffer,
     unsigned char *dstp = pixels;
     unsigned char *srcp = buffer;
     unsigned int i, j;
-    
+
     int roffset, goffset, boffset, aoffset;
     aoffset = -1;
     int sourceStep;
-    
+
     switch (bytesPerPixel) {
         case 1:
             sourceStep = 1;
@@ -92,12 +92,12 @@ unsigned char* QuicktimeImportExport::pepareBufferForOSG(unsigned char * buffer,
             goffset = 3;
             boffset = 0;
             break;
-            
+
     }
-                    
-    for (i = 0; i < height; ++i ) 
+
+    for (i = 0; i < height; ++i )
     {
-        for (j = 0; j < width; ++j ) 
+        for (j = 0; j < width; ++j )
         {
             dstp[0] = (aoffset < 0) ? 0 : srcp[aoffset];
             dstp[1] = srcp[roffset];
@@ -105,10 +105,10 @@ unsigned char* QuicktimeImportExport::pepareBufferForOSG(unsigned char * buffer,
             dstp[3] = srcp[boffset];
             srcp+=sourceStep;
             dstp+=4;
-            
+
         }
     }
-    
+
     flipImage(pixels, bytesPerPixel, width, height);
     return pixels;
 
@@ -120,17 +120,17 @@ unsigned char* QuicktimeImportExport::pepareBufferForOSG(unsigned char * buffer,
 // prepareBufferForQuicktime
 // ----------------------------------------------------------------------------------------------------------
 
-unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* buffer, GLenum pixelFormat, int bytesPerPixel, unsigned int width, unsigned int height) 
+unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* buffer, GLenum pixelFormat, int bytesPerPixel, unsigned int width, unsigned int height)
 {
     unsigned char *pixels = new unsigned char [height * width * 4];
     unsigned char *dstp = pixels;
     unsigned char *srcp = buffer;
     unsigned int i, j;
-    
+
     int roffset, goffset, boffset, aoffset;
     aoffset = -1;
     int sourceStep;
-    
+
     switch (bytesPerPixel) {
         case 1:
             sourceStep = 1;
@@ -151,7 +151,7 @@ unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* b
                     goffset = 1;
                     boffset = 2;
                     break;
-                
+
                 case GL_BGRA:
                     aoffset = 0;
                     roffset = 1;
@@ -160,11 +160,11 @@ unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* b
                     break;
             }
     }
-                    
-            
-    for (i = 0; i < height; ++i ) 
+
+
+    for (i = 0; i < height; ++i )
     {
-        for (j = 0; j < width; ++j ) 
+        for (j = 0; j < width; ++j )
         {
             dstp[0] = (aoffset < 0) ? 0 : srcp[aoffset];
             dstp[1] = srcp[roffset];
@@ -172,12 +172,12 @@ unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* b
             dstp[3] = srcp[boffset];
             srcp+=sourceStep;
             dstp+=4;
-            
+
         }
     }
-    
+
     flipImage(pixels, 4, width, height);
-    
+
     return pixels;
 
 }
@@ -186,31 +186,31 @@ unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* b
 // readFromStream
 // ----------------------------------------------------------------------------------------------------------
 
-osg::Image* QuicktimeImportExport::readFromStream(std::istream & inStream, const std::string& fileTypeHint, long sizeHint) 
+osg::Image* QuicktimeImportExport::readFromStream(std::istream & inStream, const std::string& fileTypeHint, long sizeHint)
 {
     char* content = NULL;
     long length = 0;
-     if (sizeHint != 0) 
+     if (sizeHint != 0)
     {
         length = sizeHint;
         content = new char[length];
         inStream.read (content,length);
     }
-    else 
+    else
     {
         int readBytes(0), newBytes(0);
-        
+
         char buffer[10240];
-        
+
         while (!inStream.eof()) {
             inStream.read(buffer, 10240);
             newBytes = inStream.gcount();
             if (newBytes > 0) {
                 char* newcontent = new char[readBytes + newBytes];
-            
+
                 if (readBytes > 0)
                     memcpy(newcontent, content, readBytes);
-                
+
                 memcpy(&newcontent[readBytes], &buffer, newBytes);
                 readBytes += newBytes;
                 if (content) delete[] content;
@@ -219,14 +219,14 @@ osg::Image* QuicktimeImportExport::readFromStream(std::istream & inStream, const
         }
         length = readBytes;
     }
-    
+
     osg::Image* img = doImport(reinterpret_cast<unsigned char*>(content), length, fileTypeHint);
-    
+
     if (content) delete[] content;
     return img;
  }
- 
- 
+
+
 Handle getPtrDataRef(unsigned char *data, unsigned int size, const std::string &filename)
 {
      // Load Data Reference
@@ -235,16 +235,16 @@ Handle getPtrDataRef(unsigned char *data, unsigned int size, const std::string &
      PointerDataRefRecord ptrDataRefRec;
      ComponentInstance dataRefHandler;
      unsigned char pstr[255];
- 
+
      ptrDataRefRec.data = data;
      ptrDataRefRec.dataLength = size;
- 
+
      /*err = */PtrToHand(&ptrDataRefRec, &dataRef, sizeof(PointerDataRefRecord));
- 
+
      // Open a Data Handler for the Data Reference
      /*err = */OpenADataHandler(dataRef, PointerDataHandlerSubType, NULL,
          (OSType)0, NULL, kDataHCanRead, &dataRefHandler);
- 
+
      // Convert From CString in filename to a PascalString in pstr
      if (filename.length() > 255) {
          //hmm...not good, pascal string limit is 255!
@@ -252,21 +252,21 @@ Handle getPtrDataRef(unsigned char *data, unsigned int size, const std::string &
          throw QTImportExportException(0, "filename length limit exceeded");
      }
      CopyCStringToPascal(filename.c_str(), pstr);
- 
+
     // Add filename extension
      /*err = */PtrToHand(pstr, &fileNameHandle, filename.length() + 1);
      /*err = */DataHSetDataRefExtension(dataRefHandler, fileNameHandle,
          kDataRefExtensionFileName);
      DisposeHandle(fileNameHandle);
- 
+
      // Release old handler which does not have the extensions
      DisposeHandle(dataRef);
- 
+
      // Grab the SAFE_NEW version of the data ref from the data handler
      /*err = */ DataHGetDataRef(dataRefHandler, &dataRef);
-     
+
      CloseComponent(dataRefHandler);
-     
+
      return dataRef;
 }
 
@@ -284,13 +284,13 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
     int depth = 32;
     unsigned int xsize, ysize;
     unsigned char* imageData = 0;
-    
+
     // Data Handle for file data ( & load data from file )
     Handle dataRef = getPtrDataRef(data, sizeData, fileTypeHint);
-    
+
     try {
         OSErr err = noErr;
-        
+
         // GraphicsImporter - Get Importer for our filetype
         GetGraphicsImporterForDataRef(dataRef, 'ptr ', &gicomp);
 
@@ -298,7 +298,7 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         err = GraphicsImportGetNaturalBounds(gicomp, &rectImage);
         if (err != noErr) {
             throw QTImportExportException(err, "GraphicsImportGetNaturalBounds failed");
-            
+
         }
         xsize = (unsigned int)(rectImage.right - rectImage.left);
         ysize = (unsigned int)(rectImage.bottom - rectImage.top);
@@ -311,7 +311,7 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
 
         // ImageDescription - Get Bit Depth
         HLock(reinterpret_cast<char **>(desc));
-        
+
 
         // GWorld - Pixel Format stuff
         pixelFormat = k32ARGBPixelFormat; // Make sure its forced...NOTE: i'm pretty sure this cannot be RGBA!
@@ -347,11 +347,11 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         if (!GetGWorldPixMap(gworld) || !LockPixels(GetGWorldPixMap(gworld))) {
             throw QTImportExportException(0, "GetGWorldPixMap failed");
         }
-        
-           
+
+
         //*** Draw GWorld into our Memory Texture!
         GraphicsImportDraw(gicomp);
- 
+
         // Clean up
         UnlockPixels(GetGWorldPixMap(gworld));
         SetGWorld(origPort, origDevice); // set graphics port to offscreen (we don't need it now)
@@ -359,11 +359,11 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         CloseComponent(gicomp);
         DisposeHandle(reinterpret_cast<char **>(desc));
         DisposeHandle(dataRef);
-    } 
-    catch (QTImportExportException& e) 
+    }
+    catch (QTImportExportException& e)
     {
         setError(e.what());
-        
+
         if (gworld) {
             UnlockPixels(GetGWorldPixMap(gworld));
             SetGWorld(origPort, origDevice); // set graphics port to offscreen (we don't need it now)
@@ -371,19 +371,19 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         }
         if (gicomp)
             CloseComponent(gicomp);
-        if (desc) 
+        if (desc)
             DisposeHandle(reinterpret_cast<char **>(desc));
-        
-        if (imageData) 
+
+        if (imageData)
             delete[] imageData;
         if (dataRef)
             DisposeHandle(dataRef);
-            
+
         return NULL;
     }
-    
 
-    
+
+
     unsigned int bytesPerPixel = depth / 8;
     unsigned int glpixelFormat;
     switch(bytesPerPixel) {
@@ -399,11 +399,11 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
             return NULL;
             break;
     }
-    
+
     unsigned char* swizzled = pepareBufferForOSG(imageData, bytesPerPixel, xsize, ysize);
-    
+
     delete[] imageData;
- 
+
     osg::Image* image = new osg::Image();
     image->setFileName(fileTypeHint.c_str());
     image->setImage(xsize,ysize,1,
@@ -412,13 +412,13 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         GL_UNSIGNED_BYTE,
         swizzled,
         osg::Image::USE_NEW_DELETE );
-    
- 
+
+
     return image;
 }
 
 
- void QuicktimeImportExport::writeToStream(std::ostream& outStream, osg::Image* image, const std::string& fileTypeHint) 
+ void QuicktimeImportExport::writeToStream(std::ostream& outStream, osg::Image* image, const std::string& fileTypeHint)
  {
 
     std::string ext = osgDB::getFileExtension(fileTypeHint);
@@ -438,23 +438,23 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         extmap["rgba"] = kQTFileTypeSGIImage;
     }
 
-    
+
     std::map<std::string, OSType>::iterator cur = extmap.find(ext);
-    
+
     // can not handle this type of file, perhaps a movie?
     if (cur == extmap.end())
         return;
-    
+
     unsigned int numBytes = image->computeNumComponents(image->getPixelFormat());
     unsigned char* pixels = prepareBufferForQuicktime(
         image->data(),
-        image->getPixelFormat(), 
+        image->getPixelFormat(),
         numBytes,
         image->s(),
         image->t()
     );
-    
-        
+
+
     OSType desiredType = cur->second;
     GraphicsExportComponent geComp = NULL;
     GWorldPtr gw = 0;
@@ -464,22 +464,22 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
     try {
         OSErr err = OpenADefaultComponent(GraphicsExporterComponentType, desiredType, &geComp);
         Rect bounds = {0,0, image->t(), image->s()};
-        
+
         err = QTNewGWorldFromPtr(&gw, k32ARGBPixelFormat, &bounds, 0,0,0, pixels, image->s()*4);
         if (err != noErr) {
             throw QTImportExportException(err,  "could not create gworld for type " + ext);
         }
-        
+
         err = GraphicsExportSetInputGWorld(geComp, gw);
         if (err != noErr) {
             throw QTImportExportException(err, "could not set input gworld for type " + ext);
         }
-        
+
         err = GraphicsExportSetOutputHandle( geComp, dataHandle);
         if (err != noErr) {
             throw QTImportExportException(err, "could not set output file for type " + ext);
-        } 
-        
+        }
+
         // Set the compression quality (needed for JPEG, not necessarily for other formats)
         if (desiredType == kQTFileTypeJPEG) {
             err = GraphicsExportSetCompressionQuality(geComp, codecLosslessQuality);
@@ -487,38 +487,38 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
                 throw QTImportExportException(err, "could not set compression for type " + ext);
             }
         }
-        
+
         if(4 == numBytes)
         {
             err = GraphicsExportSetDepth( geComp, k32ARGBPixelFormat );    // depth
         }
         // else k24RGBPixelFormat???
-        
+
         // do the export
         err = GraphicsExportDoExport(geComp, NULL);
         if (err != noErr) {
             throw QTImportExportException(err, "could not do the export for type " + ext);
-        } 
-        
+        }
+
         if (geComp != NULL)
             CloseComponent(geComp);
-            
+
         if (gw) DisposeGWorld (gw);
         if (pixels) free(pixels);
-        
+
         outStream.write(*dataHandle, GetHandleSize(dataHandle));
         DisposeHandle(dataHandle);
     }
-    
-    
-    catch (QTImportExportException& e) 
+
+
+    catch (QTImportExportException& e)
     {
         setError(e.what());
-        
-        if (geComp != NULL) CloseComponent(geComp);      
+
+        if (geComp != NULL) CloseComponent(geComp);
         if (gw != NULL) DisposeGWorld (gw);
         if (pixels) free(pixels);
-        
+
         DisposeHandle(dataHandle);
 
     }

@@ -12,31 +12,31 @@
 
 /* Copyright (C) 2011 Martin Lambers
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
 class ReaderWriterGTA : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterGTA()
         {
             supportsExtension("gta","GTA (Generic Tagged Arrays) file format");
             supportsOption("COMPRESSION","Set compression method: NONE, ZLIB (default), ZLIB1,...,ZLIB9, BZIP2, or XZ");
         }
-        
+
         virtual const char* className() const { return "GTA Image Reader"; }
 
         virtual bool acceptsExtension(const std::string& extension) const
-        { 
+        {
             return osgDB::equalCaseInsensitive(extension,"gta");
         }
 
@@ -83,7 +83,7 @@ class ReaderWriterGTA : public osgDB::ReaderWriter
                     my_errmsg = "GTA has less than 1 or more than 4 element components";
                     throw std::exception();
                 }
-                pixelFormat = 
+                pixelFormat =
                     hdr.components() == 1 ? GL_LUMINANCE :
                     hdr.components() == 2 ? GL_LUMINANCE_ALPHA :
                     hdr.components() == 3 ? GL_RGB :
@@ -355,7 +355,7 @@ class ReaderWriterGTA : public osgDB::ReaderWriter
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }
-        
+
         virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* options) const
         {
             return local_writeImage(fout,img,options);

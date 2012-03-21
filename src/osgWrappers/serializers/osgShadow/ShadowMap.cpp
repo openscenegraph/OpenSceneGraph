@@ -11,7 +11,7 @@ REGISTER_OBJECT_WRAPPER( osgShadow_ShadowMap,
     ADD_UINT_SERIALIZER( TextureUnit, 1 );  // _shadowTextureUnit
     ADD_VEC2_SERIALIZER( PolygonOffset, osg::Vec2f() );  // _polyOffset
     ADD_VEC2_SERIALIZER( AmbientBias, osg::Vec2d() );  // _ambientBias
-    
+
     ADD_SERIALIZER( (new osgDB::PropByRefSerializer<osgShadow::ShadowMap, osg::Vec2s>
                     ("TextureSize", osg::Vec2s(1024, 1024),
                      &osgShadow::ShadowMap::getTextureSize,

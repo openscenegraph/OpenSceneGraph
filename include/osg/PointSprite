@@ -37,7 +37,7 @@ public:
         PointSprite();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        PointSprite(const PointSprite& ps,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):        
+        PointSprite(const PointSprite& ps,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             StateAttribute(ps,copyop),
             _coordOriginMode(ps._coordOriginMode) {}
 
@@ -60,18 +60,18 @@ public:
         virtual void apply(osg::State& state) const;
 
         static bool isPointSpriteSupported(unsigned int context);
-        
+
         enum CoordOriginMode {
             UPPER_LEFT = GL_UPPER_LEFT,
             LOWER_LEFT = GL_LOWER_LEFT
         };
-        
+
         inline void setCoordOriginMode(CoordOriginMode mode) { _coordOriginMode = mode; }
         inline CoordOriginMode getCoordOriginMode() const { return _coordOriginMode; }
 
 protected:
         virtual ~PointSprite();
-        
+
         CoordOriginMode _coordOriginMode;
 };
 

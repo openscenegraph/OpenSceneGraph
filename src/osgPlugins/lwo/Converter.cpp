@@ -116,7 +116,7 @@ void Converter::build_scene_graph(Object &obj)
             // compute remapping map for default surface
             j->compute_vertex_remapping(0, remappings[0]);
 
-            // compute remapping maps for other surfaces            
+            // compute remapping maps for other surfaces
             for (Object::Surface_map::const_iterator h=obj.surfaces().begin(); h!=obj.surfaces().end(); ++h) {
                 j->compute_vertex_remapping(&h->second, remappings[&h->second]);
             }
@@ -170,7 +170,7 @@ void Converter::build_scene_graph(Object &obj)
                 const Unit::Index_list &remapping = remappings[surface];
 
                 // clean up points and normals according to remapping map
-                OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcleaning up redundant vertices and vertex attributes for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";                
+                OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcleaning up redundant vertices and vertex attributes for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";
                 osg::ref_ptr<osg::Vec3Array> new_points = new osg::Vec3Array;
                 osg::ref_ptr<osg::Vec3Array> new_normals = new osg::Vec3Array;
                 for (unsigned pi=0; pi<j->points()->size(); ++pi) {
@@ -179,13 +179,13 @@ void Converter::build_scene_graph(Object &obj)
                         new_normals->push_back((*normals)[pi]);
                     }
                 }
-                
+
                 OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcreating geometry for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";
 
                 osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
                 geo->setVertexArray(new_points.get());
                 geo->setNormalArray(new_normals.get());
-                geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);                
+                geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
                 bool group_used = false;
 
@@ -208,7 +208,7 @@ void Converter::build_scene_graph(Object &obj)
                         options_.force_arb_compression,
                         options_.texturemap_bindings,
                         db_options_.get());
-                    if (sgrp) 
+                    if (sgrp)
                     {
                         group_used = true;
                         osg::ref_ptr<osg::Geode> grp_geode = new osg::Geode;

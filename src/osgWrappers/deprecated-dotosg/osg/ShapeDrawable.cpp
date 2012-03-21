@@ -36,9 +36,9 @@ bool ShapeDrawable_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(color[1]);
         fr[3].getFloat(color[2]);
         fr[4].getFloat(color[3]);
-    
+
         geom.setColor(color);
-        
+
         fr+=5;
         iteratorAdvanced = true;
     }

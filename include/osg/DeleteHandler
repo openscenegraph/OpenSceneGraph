@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,7 +26,7 @@ namespace osg {
   * objects unintentionally.
   * Note, the DeleteHandler cannot itself be reference counted, otherwise it
   * would be responsible for deleting itself!
-  * An static auto_ptr<> is used internally in Referenced.cpp to manage the 
+  * An static auto_ptr<> is used internally in Referenced.cpp to manage the
   * DeleteHandler's memory.*/
 class OSG_EXPORT DeleteHandler
 {
@@ -43,7 +43,7 @@ class OSG_EXPORT DeleteHandler
           * When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc.
           * The ability to retain objects for several frames is useful to prevent premature deletion when objects
           * are still be used the graphics threads that are using double buffering of rendering data structures with
-          * non ref_ptr<> pointers to scene graph elements.*/        
+          * non ref_ptr<> pointers to scene graph elements.*/
         void setNumFramesToRetainObjects(unsigned int numberOfFramesToRetainObjects) {  _numFramesToRetainObjects = numberOfFramesToRetainObjects; }
 
         unsigned int getNumFramesToRetainObjects() const { return _numFramesToRetainObjects; }
@@ -63,8 +63,8 @@ class OSG_EXPORT DeleteHandler
           * Note, this should only be called if there are no threads running with non ref_ptr<> pointers, such as graphics threads.*/
         virtual void flushAll();
 
-        /** Request the deletion of an object. 
-          * Depending on users implementation of DeleteHandler, the delete of the object may occur 
+        /** Request the deletion of an object.
+          * Depending on users implementation of DeleteHandler, the delete of the object may occur
           * straight away or be delayed until doDelete is called.
           * The default implementation does a delete straight away.*/
         virtual void requestDelete(const osg::Referenced* object);

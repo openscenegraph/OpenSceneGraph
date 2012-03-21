@@ -39,14 +39,14 @@ void Image::write(DataOutputStream* out)
     if ( out->getVersion() >= VERSION_0032)
     {
         out->writeInt((int)getWriteHint());
-    }        
+    }
 
     // Write width, height, depth of image.
     out->writeInt(s());
     out->writeInt(t());
     out->writeInt(r());
-    
-    
+
+
     OSG_DEBUG << "image written '" << getFileName()<<"'\t"<<s()<<"\t"<<t()<<std::endl;
 
     // Write formats, type and packing
@@ -56,7 +56,7 @@ void Image::write(DataOutputStream* out)
     out->writeInt(getPacking());
 
     // Write modified tag.
-    out->writeInt(getModifiedCount()); 
+    out->writeInt(getModifiedCount());
 
     // Write mipmapdata vector
     int size = _mipmapData.size();
@@ -98,11 +98,11 @@ void Image::read(DataInputStream* in)
 
         // Read name
         setFileName(in->readString());
-        
+
         if ( in->getVersion() >= VERSION_0032)
         {
             setWriteHint((osg::Image::WriteHint)in->readInt());
-        }        
+        }
 
         // Read width, height, depth of image.
         int is=in->readInt();
@@ -118,7 +118,7 @@ void Image::read(DataInputStream* in)
         // Read modified tag.
         setModifiedCount((unsigned int)in->readInt());
 
-        // Read mipmapdata vector        
+        // Read mipmapdata vector
         int size = in->readInt();
         MipmapDataType mipmapData(size);
 
@@ -130,20 +130,20 @@ void Image::read(DataInputStream* in)
             //std::cout<<_mipmapData[i]<<"\t";
         }
         //std::cout<<std::endl;
-            
+
 
         // Read image data if any
         if(in->readBool())
         {
             unsigned int dataSize = (unsigned int)in->readInt();
-            
+
             //static int totalSize = 0;
-            
+
             //totalSize += dataSize;
             //std::cout<<getFileName()<<" "<<is<<" "<<it<<std::endl;
             //std::cout<<" dataSize = "<<dataSize<<"\tTotalSize = "<<totalSize<<std::endl;
-            
-            
+
+
             //char* data = (char*)malloc (dataSize);
             char* data =  new char[dataSize];
             if(!data)

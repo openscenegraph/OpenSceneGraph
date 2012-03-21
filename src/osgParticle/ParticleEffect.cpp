@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& co
 void ParticleEffect::setUseLocalParticleSystem(bool local)
 {
     if (_useLocalParticleSystem==local) return;
-    
+
     _useLocalParticleSystem = local;
 
     if (_automaticSetup) buildEffect();
@@ -85,7 +85,7 @@ void ParticleEffect::setIntensity(float intensity)
 void ParticleEffect::setStartTime(double startTime)
 {
     if (_startTime==startTime) return;
-    
+
     _startTime =startTime;
 
     if (_automaticSetup) setUpEmitterAndProgram();
@@ -105,7 +105,7 @@ void ParticleEffect::setParticleDuration(double duration)
     if (_defaultParticleTemplate.getLifeTime()==duration) return;
 
     _defaultParticleTemplate.setLifeTime(duration);
-    
+
     if (_automaticSetup) setUpEmitterAndProgram();
 }
 
@@ -121,7 +121,7 @@ void ParticleEffect::setWind(const osg::Vec3& wind)
 void ParticleEffect::setParticleSystem(ParticleSystem* ps)
 {
     if (_particleSystem==ps) return;
-    
+
     _particleSystem = ps;
 
     if (_automaticSetup) buildEffect();
@@ -145,15 +145,15 @@ void ParticleEffect::buildEffect()
     osg::ref_ptr<Program> program = getProgram();
     osg::ref_ptr<ParticleSystem> particleSystem = getParticleSystem();
 
-    if (!emitter || !particleSystem || !program) return; 
+    if (!emitter || !particleSystem || !program) return;
 
 
     // clear the children.
     removeChildren(0,getNumChildren());
-    
+
     // add the emitter
     addChild(emitter.get());
-    
+
     // add the program to update the particles
     addChild(program.get());
 
@@ -165,7 +165,7 @@ void ParticleEffect::buildEffect()
     if (_useLocalParticleSystem)
     {
         particleSystem->setParticleScaleReferenceFrame(ParticleSystem::LOCAL_COORDINATES);
-    
+
         // add the geode to the scene graph
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(particleSystem.get());

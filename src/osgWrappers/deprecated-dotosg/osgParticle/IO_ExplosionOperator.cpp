@@ -34,7 +34,7 @@ bool ExplosionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     float value = 0.0f;
     if (fr[0].matchWord("radius")) {
         if (fr[1].getFloat(value)) {
@@ -43,7 +43,7 @@ bool ExplosionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("magnitude")) {
         if (fr[1].getFloat(value)) {
             ep.setMagnitude(value);
@@ -51,7 +51,7 @@ bool ExplosionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("epsilon")) {
         if (fr[1].getFloat(value)) {
             ep.setEpsilon(value);
@@ -59,7 +59,7 @@ bool ExplosionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("sigma")) {
         if (fr[1].getFloat(value)) {
             ep.setSigma(value);
@@ -76,7 +76,7 @@ bool ExplosionOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgParticle::ExplosionOperator &ep = static_cast<const osgParticle::ExplosionOperator &>(obj);
     osg::Vec3 a = ep.getCenter();
     fw.indent() << "center " << a.x() << " " << a.y() << " " << a.z() << std::endl;
-    
+
     fw.indent() << "radius " << ep.getRadius() << std::endl;
     fw.indent() << "magnitude " << ep.getMagnitude() << std::endl;
     fw.indent() << "epsilon " << ep.getEpsilon() << std::endl;

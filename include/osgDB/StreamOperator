@@ -18,13 +18,13 @@ class OSGDB_EXPORT OutputIterator : public osg::Referenced
 public:
     OutputIterator() : _out(0) {}
     virtual ~OutputIterator() {}
-    
+
     void setStream( std::ostream* ostream ) { _out = ostream; }
     std::ostream* getStream() { return _out; }
     const std::ostream* getStream() const { return _out; }
 
     virtual bool isBinary() const = 0;
-    
+
     virtual void writeBool( bool b ) = 0;
     virtual void writeChar( char c ) = 0;
     virtual void writeUChar( unsigned char c ) = 0;
@@ -39,15 +39,15 @@ public:
     virtual void writeString( const std::string& s ) = 0;
     virtual void writeStream( std::ostream& (*fn)(std::ostream&) ) = 0;
     virtual void writeBase( std::ios_base& (*fn)(std::ios_base&) ) = 0;
-    
+
     virtual void writeGLenum( const ObjectGLenum& value ) = 0;
     virtual void writeProperty( const ObjectProperty& prop ) = 0;
     virtual void writeMark( const ObjectMark& mark ) = 0;
     virtual void writeCharArray( const char* s, unsigned int size ) = 0;
     virtual void writeWrappedString( const std::string& str ) = 0;
-    
+
     virtual void flush() { _out->flush(); }
-    
+
 protected:
     // Return true if the manipulator is std::endl
     bool isEndl( std::ostream& (*fn)(std::ostream&) )
@@ -71,7 +71,7 @@ class OSGDB_EXPORT InputIterator : public osg::Referenced
 public:
     InputIterator() : _in(0), _inputStream(0), _byteSwap(0), _failed(false) {}
     virtual ~InputIterator() {}
-    
+
     void setStream( std::istream* istream ) { _in = istream; }
     std::istream* getStream() { return _in; }
     const std::istream* getStream() const { return _in; }
@@ -85,9 +85,9 @@ public:
 
     void checkStream() const { if (_in->rdstate()&_in->failbit) _failed = true; }
     bool isFailed() const { return _failed; }
-    
+
     virtual bool isBinary() const = 0;
-    
+
     virtual void readBool( bool& b ) = 0;
     virtual void readChar( char& c ) = 0;
     virtual void readSChar( signed char& c ) = 0;
@@ -103,13 +103,13 @@ public:
     virtual void readString( std::string& s ) = 0;
     virtual void readStream( std::istream& (*fn)(std::istream&) ) = 0;
     virtual void readBase( std::ios_base& (*fn)(std::ios_base&) ) = 0;
-    
+
     virtual void readGLenum( ObjectGLenum& value ) = 0;
     virtual void readProperty( ObjectProperty& prop ) = 0;
     virtual void readMark( ObjectMark& mark ) = 0;
     virtual void readCharArray( char* s, unsigned int size ) = 0;
     virtual void readWrappedString( std::string& str ) = 0;
-    
+
     virtual bool matchString( const std::string& /*str*/ ) { return false; }
     virtual void advanceToCurrentEndBracket() {}
 

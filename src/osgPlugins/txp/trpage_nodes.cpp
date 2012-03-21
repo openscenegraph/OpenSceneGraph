@@ -474,7 +474,7 @@ bool trpgLayer::Write(trpgWriteBuffer &buf)
         buf.Add(name);
     }
 
-    buf.End();    
+    buf.End();
 
     return true;
 }
@@ -665,7 +665,7 @@ bool trpgModelRef::Write(trpgWriteBuffer &buf)
 {
     if (!isValid())
         return false;
-    
+
     buf.Begin(TRPG_MODELREF);
     buf.Add(modelRef);
     for (int i=0;i<4;i++)
@@ -891,7 +891,7 @@ bool trpgChildRef::GetTileZValue( float& gZmin, float& gZmax) const
 // Validity check
 bool trpgChildRef::isValid() const
 {
-    if (lod < 0) 
+    if (lod < 0)
     return false;
     return true;
 }

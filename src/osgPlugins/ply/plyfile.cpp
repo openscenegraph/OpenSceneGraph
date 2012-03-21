@@ -1,4 +1,4 @@
-/* Copyright (c) 2005-2007, Stefan Eilemann <eile@equalizergraphics.com> 
+/* Copyright (c) 2005-2007, Stefan Eilemann <eile@equalizergraphics.com>
    All rights reserved.
    - Cleaned up code for 64 bit, little and big endian support
    - Added new ply data types (uint8, float32, int32)
@@ -25,16 +25,16 @@ chars representing red, green and blue.
 ---------------------------------------------------------------
 
 Copyright (c) 1994 The Board of Trustees of The Leland Stanford
-Junior University.  All rights reserved.   
-  
-Permission to use, copy, modify and distribute this software and its   
-documentation for any purpose is hereby granted without fee, provided   
-that the above copyright notice and this permission notice appear in   
-all copies of this software and that you do not sell the software.   
-  
-THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,   
-EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY   
-WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.   
+Junior University.  All rights reserved.
+
+Permission to use, copy, modify and distribute this software and its
+documentation for any purpose is hereby granted without fee, provided
+that the above copyright notice and this permission notice appear in
+all copies of this software and that you do not sell the software.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
+EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 
 */
 
@@ -135,7 +135,7 @@ void swap2Bytes( void* ptr )
 {
     unsigned char* bytes = (unsigned char*)ptr;
     unsigned short* result = (unsigned short*)ptr;
-    
+
     *result = (bytes[0]<<8) | bytes[1];
 }
 
@@ -145,13 +145,13 @@ void swap4Bytes( void* ptr )
     unsigned int* result = (unsigned int*)ptr;
 
     *result = (bytes[0]<<24) | (bytes[1]<<16) | (bytes[2]<<8) | bytes[3];
-}    
+}
 
 void swap8Bytes( void* ptr )
 {
     unsigned char* bytes = (unsigned char*)ptr;
     unsigned long long* result = (unsigned long long*)ptr;
-    
+
     *result = ((unsigned long long)(bytes[0])) << 56 |
         ((unsigned long long)(bytes[1])) << 48 |
         ((unsigned long long)(bytes[2])) << 40 |
@@ -306,7 +306,7 @@ PlyFile *ply_open_for_writing(
 
 
   /* tack on the extension .ply, if necessary */
-  name = (char *) myalloc (sizeof (char) * 
+  name = (char *) myalloc (sizeof (char) *
                            (static_cast<int>(strlen (filename)) + 5));
   strcpy (name, filename);
   if (strlen (name) < 4 ||
@@ -753,7 +753,7 @@ void ply_put_comment(PlyFile *plyfile, const char *comment)
     plyfile->comments = (char **) realloc (plyfile->comments,
                                            sizeof (char *) * (plyfile->num_comments + 1));
     }
-  
+
   /* add comment to list */
   plyfile->comments[plyfile->num_comments] = strdup (comment);
   plyfile->num_comments++;
@@ -781,7 +781,7 @@ void ply_put_obj_info(PlyFile *plyfile, const char *obj_info)
     plyfile->obj_info = (char **) realloc (plyfile->obj_info,
                                            sizeof (char *) * (plyfile->num_obj_info + 1));
     }
-  
+
   /* add info to list */
   plyfile->obj_info[plyfile->num_obj_info] = strdup (obj_info);
   plyfile->num_obj_info++;
@@ -829,7 +829,7 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
 
   plyfile = (PlyFile *) myalloc (sizeof (PlyFile));
   if (!plyfile) return (NULL);
-  
+
   plyfile->nelems = 0;
   plyfile->comments = NULL;
   plyfile->num_comments = 0;
@@ -894,7 +894,7 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
 
     words = get_words (plyfile->fp, &nwords, &orig_line);
   }
-  
+
 
   /* create tags for each property of each element, to be used */
   /* later to say whether or not to store each property for the user */
@@ -950,7 +950,7 @@ PlyFile *ply_open_for_reading(
 
   /* tack on the extension .ply, if necessary */
 
-  name = (char *) myalloc (sizeof (char) * 
+  name = (char *) myalloc (sizeof (char) *
                            (static_cast<int>(strlen (filename) + 5)));
   strcpy (name, filename);
   if (strlen (name) < 4 ||
@@ -1055,13 +1055,13 @@ void ply_get_element_setup( PlyFile *plyfile, char *elem_name, int nprops,
     plyfile->which_elem = elem;
 
     /* deposit the property information into the element's description */
-    for (i = 0; i < nprops; i++) 
+    for (i = 0; i < nprops; i++)
     {
         /* look for actual property */
         prop = find_property (elem, prop_list[i].name, &index);
-        if (prop == NULL) 
+        if (prop == NULL)
         {
-            fprintf ( stderr, 
+            fprintf ( stderr,
                       "Warning:  Can't find property '%s' in element '%s'\n",
                       prop_list[i].name, elem_name );
             continue;
@@ -1303,7 +1303,7 @@ PlyOtherProp *ply_get_other_properties(
 #endif
   other->size = elem->other_size;
   other->props = (PlyProperty **) myalloc (sizeof(PlyProperty*) * elem->nprops);
-  
+
   /* save descriptions of each "other" property */
   nprops = 0;
   for (i = 0; i < elem->nprops; i++) {
@@ -1322,7 +1322,7 @@ PlyOtherProp *ply_get_other_properties(
     elem->other_offset = NO_OTHER_PROPS;
   }
 #endif
-  
+
   /* return structure */
   return (other);
 }
@@ -1534,13 +1534,13 @@ void ply_close(PlyFile *plyfile)
     free (plyfile->comments[i]);
     }
   free (plyfile->comments);
-  
+
   for (i=0; i<plyfile->num_obj_info; i++)
     {
     free (plyfile->obj_info[i]);
     }
   free (plyfile->obj_info);
-  
+
   free (plyfile);
 }
 
@@ -1601,7 +1601,7 @@ PlyElement *find_element(PlyFile *plyfile, const char *element)
     for (i = 0; i < plyfile->nelems; i++)
         if (equal_strings (element, plyfile->elems[i]->name))
             return (plyfile->elems[i]);
-    
+
     return (NULL);
 }
 
@@ -1621,14 +1621,14 @@ Exit:
 PlyProperty *find_property(PlyElement *elem, const char *prop_name, int *index)
 {
     int i;
-    
+
     for( i = 0; i < elem->nprops; i++)
         if (equal_strings (prop_name, elem->props[i]->name))
         {
             *index = i;
             return (elem->props[i]);
         }
-    
+
     *index = -1;
     return (NULL);
 }
@@ -1827,7 +1827,7 @@ void binary_get_element(PlyFile *plyfile, char *elem_ptr)
       /* The "if" was added by Afra Zomorodian 8/22/95
        * so that zipper won't crash reading plies that have additional
        * properties.
-       */ 
+       */
       if (store_it) {
         item_size = ply_type_size[prop->internal_type];
       }
@@ -2760,8 +2760,8 @@ char *my_alloc(int size, int lnum, const char *fname)
 
   ptr = (char *) malloc (size);
 
-  if (ptr == 0) 
-      fprintf( stderr, "Memory allocation bombed on line %d in %s\n", 
+  if (ptr == 0)
+      fprintf( stderr, "Memory allocation bombed on line %d in %s\n",
                lnum, fname);
 
   return (ptr);

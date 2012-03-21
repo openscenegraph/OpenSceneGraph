@@ -88,7 +88,7 @@ struct StatsGraph : public osg::MatrixTransform
         addChild(_statsGraphGeode.get());
         _statsGraphGeode->setCullingActive(false);
     }
-    
+
     void changeYposition(float y)
     {
         osg::Vec3 _pos = getMatrix().getTrans();
@@ -326,7 +326,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
         osg::ref_ptr<osg::MatrixTransform> _group;
         std::map<std::string, StatAction > _actions;
 
-        StatsTimeline() 
+        StatsTimeline()
         {
             _statsHeight = 1024;
             _statsWidth = 1280;
@@ -362,7 +362,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     _group->addChild(geode);
                     osg::ref_ptr<osgText::Text> timeLabel = new osgText::Text;
                     geode->addDrawable( timeLabel.get() );
-                
+
                     timeLabel->setColor(color);
                     timeLabel->setFont(font);
                     timeLabel->setCharacterSize(characterSize);
@@ -612,7 +612,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setGraphicsContext(window);
 
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
-    
+
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
     _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,_statsWidth,0.0,_statsHeight));
@@ -648,7 +648,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
     _group = new osg::Group;
     _camera->addChild(_switch.get());
     _switch->addChild(_group.get());
-    
+
     for (int i = 0; i < (int)finder._timelines.size(); i++) {
         StatsTimeline* s = new StatsTimeline;
         osg::MatrixTransform* m = s->createStatsForTimeline(finder._timelines[i].get());
@@ -684,7 +684,7 @@ void StatAction::init(osg::Stats* stats, const std::string& name, const osg::Vec
     graph->setCullingActive(false);
     graph->addStatGraph(stats, stats, color, 1.0, name);
     _graph = graph;
-    
+
     _group->addChild(_label.get());
     _group->addChild(_graph.get());
 }
@@ -708,7 +708,7 @@ void StatAction::setPosition(const osg::Vec3& pos)
     gfx->changeYposition(pos[1]);
     _textLabel->setPosition(pos - osg::Vec3(0, characterSize,0));
 
-    
+
 
 }
 

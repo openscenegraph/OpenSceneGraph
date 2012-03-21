@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -37,14 +37,14 @@ void StackedQuaternionElement::applyToMatrix(osg::Matrix& matrix) const {matrix.
 osg::Matrix StackedQuaternionElement::getAsMatrix() const { return osg::Matrix(_quaternion); }
 bool StackedQuaternionElement::isIdentity() const { return (_quaternion[0] == 0 && _quaternion[1] == 0 && _quaternion[2] == 0 && _quaternion[3] == 1.0); }
 
-void StackedQuaternionElement::update(float t) 
-{ 
+void StackedQuaternionElement::update(float t)
+{
     if (_target.valid())
         _quaternion = _target->getValue();
 }
 
 Target* StackedQuaternionElement::getOrCreateTarget()
-{    
+{
     if (!_target.valid())
         _target = new QuatTarget(_quaternion);
     return _target.get();

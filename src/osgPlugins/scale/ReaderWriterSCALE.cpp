@@ -3,7 +3,7 @@
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -100,7 +100,7 @@ public:
     {
         supportsExtension(EXTENSION_NAME,"Scale Pseudo loader");
     }
-    
+
     virtual const char* className() const { return "scaling pseudo-loader"; }
 
     virtual bool acceptsExtension(const std::string& extension) const
@@ -170,7 +170,7 @@ public:
             osg::StateSet* ss = xform->getOrCreateStateSet();
             ss->setMode( GL_NORMALIZE, osg::StateAttribute::ON );
         #endif
-        
+
         return xform;
     }
 };

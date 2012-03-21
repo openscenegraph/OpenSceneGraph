@@ -49,7 +49,7 @@ bool SectorPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgParticle::SectorPlacer &myobj = static_cast<const osgParticle::SectorPlacer &>(obj);
 
     osgParticle::rangef r;
-    
+
     r = myobj.getRadiusRange();
     fw.indent() << "radiusRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getPhiRange();

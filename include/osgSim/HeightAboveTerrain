@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,19 +33,19 @@ class OSGSIM_EXPORT HeightAboveTerrain
 {
     public :
 
-    
+
         HeightAboveTerrain();
-        
-    
+
+
         /** Clear the internal HAT List so it contains no height above terrain tests.*/
         void clear();
-        
+
         /** Add a height above terrain test point in the CoordinateFrame.*/
         unsigned int addPoint(const osg::Vec3d& point);
 
         /** Get the number of height above terrain tests.*/
         unsigned int getNumPoints() const { return _HATList.size(); }
-        
+
         /** Set the source point of single height above terrain test.*/
         void setPoint(unsigned int i, const osg::Vec3d& point) { _HATList[i]._point = point; }
 
@@ -53,7 +53,7 @@ class OSGSIM_EXPORT HeightAboveTerrain
         const osg::Vec3d& getPoint(unsigned int i) const { return _HATList[i]._point; }
 
         /** Get the intersection height for a single height above terrain test.
-          * Note, you must call computeIntersections(..) before you can query the HeightAboveTerrain. 
+          * Note, you must call computeIntersections(..) before you can query the HeightAboveTerrain.
           * If no intersections are found then height returned will be the height above mean sea level. */
         double getHeightAboveTerrain(unsigned int i) const  { return _HATList[i]._hat; }
 
@@ -63,7 +63,7 @@ class OSGSIM_EXPORT HeightAboveTerrain
 
         /** Get the lowest height that the should be tested for.*/
         double getLowestHeight() const { return _lowestHeight; }
-        
+
         /** Compute the HAT intersections with the specified scene graph.
           * The results are all stored in the form of a single height above terrain value per HAT test.
           * Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric,
@@ -73,8 +73,8 @@ class OSGSIM_EXPORT HeightAboveTerrain
 
         /** Compute the vertical distance between the specified scene graph and a single HAT point. */
         static double computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point, osg::Node::NodeMask traversalMask=0xffffffff);
-        
-        
+
+
         /** Clear the database cache.*/
         void clearDatabaseCache() { if (_dcrc.valid()) _dcrc->clearDatabaseCache(); }
 
@@ -85,26 +85,26 @@ class OSGSIM_EXPORT HeightAboveTerrain
 
         /** Get the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs.*/
         DatabaseCacheReadCallback* getDatabaseCacheReadCallback() { return _dcrc.get(); }
-        
+
     protected :
-    
+
         struct HAT
         {
             HAT(const osg::Vec3d& point):
                 _point(point),
                 _hat(0.0) {}
-                
+
             osg::Vec3d      _point;
             double          _hat;
         };
-        
+
         typedef std::vector<HAT> HATList;
-        
+
 
         double                                  _lowestHeight;
         HATList                                 _HATList;
 
-        
+
         osg::ref_ptr<DatabaseCacheReadCallback> _dcrc;
         osgUtil::IntersectionVisitor            _intersectionVisitor;
 

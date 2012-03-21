@@ -68,7 +68,7 @@ void Geometry::write(DataOutputStream* out){
     {
         out->writeArray(getVertexIndices());
     }
-    
+
     // Write normal array if any
     if ( out->getVersion() < VERSION_0013 )
     {
@@ -89,11 +89,11 @@ void Geometry::write(DataOutputStream* out){
             out->writeArray(getNormalArray());
         }
     }
-    
+
     // Write normal indices if any
     out->writeBool(getNormalIndices()!=0);
     if (getNormalIndices()){
-        out->writeArray(getNormalIndices());        
+        out->writeArray(getNormalIndices());
     }
     // Write color array if any.
     out->writeBool(getColorArray()!=0);
@@ -104,7 +104,7 @@ void Geometry::write(DataOutputStream* out){
     // Write color indices if any
     out->writeBool(getColorIndices()!=0);
     if (getColorIndices()){
-        out->writeArray(getColorIndices());        
+        out->writeArray(getColorIndices());
     }
     // Write secondary color array if any
     out->writeBool(getSecondaryColorArray()!=0);
@@ -219,7 +219,7 @@ void Geometry::read(DataInputStream* in){
                 in_THROW_EXCEPTION("Unknown PrimitiveSet in Geometry::read()");
             }
         }
-    
+
         // Read vertex array if any
         bool va=in->readBool();
         if (va){
@@ -301,12 +301,12 @@ void Geometry::read(DataInputStream* in){
         {
             setVertexAttribBinding(i,in->readBinding());
             setVertexAttribNormalize(i,in->readBool()?GL_TRUE:GL_FALSE);
-            
+
             // Read coords if valid
             bool coords_valid = in->readBool();
             if(coords_valid)
                 setVertexAttribArray(i, in->readArray());
-                
+
             // Read Indices if valid
             bool indices_valid = in->readBool();
             if(indices_valid)

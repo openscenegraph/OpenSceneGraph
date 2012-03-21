@@ -90,7 +90,7 @@ private:
       {
         OSG_INFO << "ReaderWriterSTL::writeNode: Files are separated written" << std::endl;
       } else {
-        m_f = new osgDB::ofstream(m_fout.c_str());        
+        m_f = new osgDB::ofstream(m_fout.c_str());
         *m_f << "solid " << counter << std::endl;
       }
     };
@@ -101,31 +101,31 @@ private:
       return buf;
     }
 
-    virtual void apply(  osg::Geode& node ){ 
+    virtual void apply(  osg::Geode& node ){
       osg::Matrix mat = osg::computeLocalToWorld( getNodePath() );
-      
+
       if (m_options && (m_options->getOptionString() == "separateFiles")) {
         std::string sepFile = m_fout + i2s(counter);
         m_f = new osgDB::ofstream(sepFile.c_str());
         *m_f << "solid " << std::endl;
       }
-      
+
       for ( unsigned int i = 0; i < node.getNumDrawables(); ++i ) {
         osg::TriangleFunctor<PushPoints> tf;
         tf.m_stream = m_f;
         tf.m_mat = mat;
         node.getDrawable( i )->accept( tf );
       }
-      
+
       if (m_options && (m_options->getOptionString() == "separateFiles")) {
         *m_f << "endsolid " << std::endl;
         m_f->close();
         delete m_f;
       }
-      
+
       ++counter;
       traverse(node);
-      
+
     }
     //        nHandle->SetLocation( Frame( mat ) );
     ~CreateStlVisitor() {
@@ -137,17 +137,17 @@ private:
         delete m_f;
       }
     }
-    
+
     const std::string& getErrorString() const { return m_ErrorString; }
-    
+
   private:
     int counter;
     std::ofstream* m_f;
     std::string m_fout;
     osgDB::ReaderWriter::Options const * m_options;
     std::string m_ErrorString;
-    
-    
+
+
     struct PushPoints {
       std::ofstream* m_stream;
       osg::Matrix m_mat;
@@ -166,14 +166,14 @@ private:
         *m_stream << "endloop" << std::endl;
         *m_stream << "endfacet " << std::endl;
       }
-      
+
     };
-    
-    
+
+
   };
-  
-  
-       
+
+
+
 };
 
 
@@ -238,7 +238,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         osg::swapBytes4((char*) &expectFacets);
     }
     off_t expectLen = sizeof_StlHeader + expectFacets * sizeof_StlFacet;
- 
+
     struct stat stb;
     if (fstat(fileno(fp), &stb) < 0)
     {
@@ -264,7 +264,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
-    if (!isBinary) 
+    if (!isBinary)
     {
         fclose(fp);
         fp = osgDB::fopen(fileName.c_str(), "r");
@@ -279,7 +279,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     {
         return ReadResult::FILE_NOT_HANDLED;
     }
-    
+
     OSG_INFO << "STL loader found " << readerObject._numFacets << " facets" << std::endl;
 
     /*
@@ -301,7 +301,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
-    
+
     if (options && (options->getOptionString() == "smooth")) {
         osgUtil::SmoothingVisitor smooter;
         geode->accept(smooter);
@@ -476,7 +476,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& nod
         OSG_INFO << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
         return WriteResult::FILE_NOT_HANDLED;
     }
-  
+
     CreateStlVisitor createStlVisitor( fileName, opts );
     const_cast<osg::Node&>(node).accept( createStlVisitor );
 

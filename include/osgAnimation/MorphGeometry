@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -19,19 +19,19 @@
 #include <osgAnimation/AnimationUpdateCallback>
 #include <osg/Geometry>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
     class OSGANIMATION_EXPORT MorphGeometry : public osg::Geometry
     {
-    
+
     public:
-    
+
         enum Method {
             NORMALIZED,
             RELATIVE
         };
-    
+
         class MorphTarget
         {
         protected:
@@ -71,17 +71,17 @@ namespace osgAnimation
         virtual const char* className() const { return "MorphGeometry"; }
 
         virtual void transformSoftwareMethod();
-        
+
         /** Set the morphing method. */
         void setMethod(Method method) { _method = method; }
         /** Get the morphing method. */
         inline Method getMethod() const { return _method; }
-        
+
         /** Set flag for morphing normals. */
         void setMorphNormals(bool morphNormals) { _morphNormals = morphNormals; }
         /** Get the flag for morphing normals. */
         inline bool getMorphNormals() const { return _morphNormals; }
-        
+
         /** Add a \c MorphTarget to the \c MorphGeometry.
           * If \c MorphTarget is not \c NULL and is not contained in the \c MorphGeometry
           * then increment its reference count, add it to the MorphTargets list and
@@ -92,11 +92,11 @@ namespace osgAnimation
           * @return  \c true for success; \c false otherwise.
         */
         virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 ) { _morphTargets.push_back(MorphTarget(morphTarget, weight)); _dirty = true; }
-        
+
         void setWeight(unsigned int index, float morphWeight)
-        { 
-            if (index < _morphTargets.size()) 
-            { 
+        {
+            if (index < _morphTargets.size())
+            {
                 _morphTargets[index].setWeight(morphWeight);
                 dirty();
             }
@@ -104,13 +104,13 @@ namespace osgAnimation
 
         /** Set the MorphGeometry dirty.*/
         void dirty() { _dirty = true; }
-        
+
         /** Get the list of MorphTargets.*/
         const MorphTargetList& getMorphTargetList() const { return _morphTargets; }
 
         /** Get the list of MorphTargets. Warning if you modify this array you will have to call dirty() */
         MorphTargetList& getMorphTargetList() { return _morphTargets; }
-        
+
         /** Return the \c MorphTarget at position \c i.*/
         inline const MorphTarget& getMorphTarget( unsigned int i ) const { return _morphTargets[i]; }
 
@@ -123,19 +123,19 @@ namespace osgAnimation
 
         Method          _method;
         MorphTargetList _morphTargets;
-        
+
         std::vector<osg::Vec3> _positionSource;
         std::vector<osg::Vec3> _normalSource;
-        
+
         /// Do we also morph between normals?
         bool _morphNormals;
     };
-    
+
     class OSGANIMATION_EXPORT UpdateMorph : public AnimationUpdateCallback<osg::NodeCallback>
     {
     protected:
         std::map<int, osg::ref_ptr<osgAnimation::FloatTarget> > _weightTargets;
-    
+
     public:
 
         META_Object(osgAnimation, UpdateMorph);

@@ -13,7 +13,7 @@ REGISTER_OBJECT_WRAPPER( osgTerrain_Locator,
         ADD_ENUM_VALUE( GEOGRAPHIC );
         ADD_ENUM_VALUE( PROJECTED );
     END_ENUM_SERIALIZER();  // _coordinateSystemType
-    
+
     ADD_STRING_SERIALIZER( Format, "" );  // _format
     ADD_STRING_SERIALIZER( CoordinateSystem, "" );  // _cs
     ADD_OBJECT_SERIALIZER( EllipsoidModel, osg::EllipsoidModel, NULL );  // _ellipsoidModel

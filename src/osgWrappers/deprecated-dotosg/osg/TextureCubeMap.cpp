@@ -60,7 +60,7 @@ bool TextureCubeMap_readLocalData(Object& obj, Input& fr)
         else READ_IMAGE(POSITIVE_Y)
         else READ_IMAGE(NEGATIVE_Y)
         else READ_IMAGE(POSITIVE_Z)
-        else READ_IMAGE(NEGATIVE_Z)        
+        else READ_IMAGE(NEGATIVE_Z)
     }
 
     return iteratorAdvanced;

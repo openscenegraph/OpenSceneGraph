@@ -122,7 +122,7 @@ void Block::compile(const lwo2::FORM::SURF::BLOK *blok)
                 imap_.texture_amplitude = tamp->amplitude.fraction;
             }
         }
-        
+
     } else {
         OSG_WARN << "Warning: lwosg::Block: only IMAP (image map) block types are supported, this block will be ignored" << std::endl;
     }
@@ -136,7 +136,7 @@ osg::Vec3 Block::setup_texture_point(const osg::Vec3 &P) const
     Q -= imap_.mapping.center_;
     Q = Q * osg::Matrix::rotate(ypr.z(), osg::Vec3(0, 0, -1));
     Q = Q * osg::Matrix::rotate(ypr.x(), osg::Vec3(0, 1, 0));
-    Q = Q * osg::Matrix::rotate(ypr.y(), osg::Vec3(-1, 0, 0));                            
+    Q = Q * osg::Matrix::rotate(ypr.y(), osg::Vec3(-1, 0, 0));
     if (imap_.projection != Image_map::SPHERICAL) {
         Q.x() *= 1/imap_.mapping.size_.x();
         Q.y() *= 1/imap_.mapping.size_.y();

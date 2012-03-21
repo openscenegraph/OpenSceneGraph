@@ -28,7 +28,7 @@ class ReaderWriterTXF : public osgDB::ReaderWriter
         }
 
         virtual const char* className() const { return "TXF Font Reader/Writer"; }
-        
+
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);

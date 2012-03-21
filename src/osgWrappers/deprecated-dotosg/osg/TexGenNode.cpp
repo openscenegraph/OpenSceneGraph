@@ -32,7 +32,7 @@ bool TexGenNode_readLocalData(Object& obj, Input& fr)
     {
 
         texGenNode.setTextureUnit(textureUnit);
-        
+
         fr+=2;
         iteratorAdvanced = true;
     }

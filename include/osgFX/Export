@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgFX - Copyright (C) 2003 Marco Jez
@@ -31,10 +31,10 @@
 
 \namespace osgFX
 
-The osgFX library is a NodeKit that extends the core scene graph to provide a special effects framework. 
+The osgFX library is a NodeKit that extends the core scene graph to provide a special effects framework.
 osgFX's framework allows multiple rendering techniques to be provide for each effect, thereby provide the use
 appropriate rendering techniques for each different class of graphics hardware, i.e. support for both modern
-programmable graphics hardware and still have standard OpenGL 1.1 support as a fallback. 
+programmable graphics hardware and still have standard OpenGL 1.1 support as a fallback.
 */
 
 #endif

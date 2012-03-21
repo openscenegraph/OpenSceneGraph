@@ -38,11 +38,11 @@ class LayerGroup : public osg::Group
 {
 public:
     LayerGroup() : osg::Group() {}
-    
+
     LayerGroup(const LayerGroup& gg,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
         osg::Group(gg, copyop)
     {};
-    
+
     META_Node(txp, LayerGroup);
 protected:
     virtual ~LayerGroup() {}
@@ -99,12 +99,12 @@ TXPParser::TXPParser():
     AddCallback(TRPGTILEHEADER, new tileHeaderRead(this));
 
     _childRefCB = dynamic_cast<childRefRead *>(GetCallback(TRPG_CHILDREF));
-    
+
     if (getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"))
     {
         _defaultMaxAnisotropy = osg::asciiToFloat(getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"));
     }
-    
+
 }
 
 TXPParser::~TXPParser()
@@ -112,7 +112,7 @@ TXPParser::~TXPParser()
 }
 
 osg::Group *TXPParser::parseScene(
-    trpgReadBuffer &buf, 
+    trpgReadBuffer &buf,
     std::map<int,osg::ref_ptr<osg::StateSet> > &materials,
     std::map<int,osg::ref_ptr<osg::Node> > &models,
     double realMinRange, double realMaxRange, double usedMaxRange)
@@ -158,7 +158,7 @@ osg::Group *TXPParser::parseScene(
        _root->accept(lv);
 
        //modified by Brad Anderegg May-27-08
-       //running the optimizer on the terrain fixes some major preformance issues, unfortunately the texture atlas builder seems to get messed up 
+       //running the optimizer on the terrain fixes some major preformance issues, unfortunately the texture atlas builder seems to get messed up
        //on some of the textures (usually around buildings) and the tri stripper seems to occasionally crash and also mess up the indices on certain buildings.
        osgUtil::Optimizer opt;
        opt.optimize(_root.get(), (osgUtil::Optimizer::ALL_OPTIMIZATIONS ^ osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER) ^ osgUtil::Optimizer::TRISTRIP_GEOMETRY);
@@ -231,7 +231,7 @@ bool TXPParser::StartChildren(void * /*in*/)
         _parents.push(_currentTop);
         _currentTop = _currentNode->asGroup();
     }
-    
+
     return true;
 }
 
@@ -274,8 +274,8 @@ bool TXPParser::EndChildren(void *)
 }
 
 DeferredLightAttribute& TXPParser::getLightAttribute(int ix)
-{ 
-    return _archive->getLightAttribute(ix); 
+{
+    return _archive->getLightAttribute(ix);
 }
 
 class FindEmptyGroupsVisitor : public osg::NodeVisitor
@@ -342,7 +342,7 @@ osg::Geode* TXPParser::createBoundingBox(int x,int y, int lod)
             ),
             hints
         );
-    
+
     if (lod==0)
     {
         sd->setColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -402,10 +402,10 @@ void TXPParser::loadLocalMaterials()
         for (int i = 0; i < n_materials; i++)
         {
             osg::StateSet* osg_state_set = new osg::StateSet;
-            
+
             trpgLocalMaterial locmat;
             tile_head->GetLocalMaterial(i,locmat);
-            
+
             const trpgMaterial* mat = 0;
             const trpgTexture *tex = 0;
 
@@ -439,17 +439,17 @@ void TXPParser::loadLocalMaterials()
                     osg_texenv->setMode(osg::TexEnv::MODULATE);
                     break;
                 }
-            
+
                 osg_state_set->setTextureAttribute(texNo,osg_texenv);
 
                 image_helper.GetNthImageInfoForLocalMat(&locmat, texNo, &mat,&tex,size);
-            
+
                 trpgTexture::ImageMode mode;
                 tex->GetImageMode(mode);
                 osg::Texture2D* osg_texture = 0L;
-                if(mode == trpgTexture::Template) 
+                if(mode == trpgTexture::Template)
                     osg_texture = getTemplateTexture(image_helper,&locmat, tex, texNo);
-                else if(mode == trpgTexture::Local) 
+                else if(mode == trpgTexture::Local)
                     osg_texture = getLocalTexture(image_helper,tex);
                 else if(mode == trpgTexture::Global)
                     osg_texture = _archive->getGlobalTexture(texId);
@@ -471,11 +471,11 @@ void TXPParser::loadLocalMaterials()
                     }
                     osg_state_set->setTextureAttributeAndModes(texNo,osg_texture, osg::StateAttribute::ON);
 
-                    int wrap_s, wrap_t;   
+                    int wrap_s, wrap_t;
                     texEnv.GetWrap(wrap_s, wrap_t);
                     osg_texture->setWrap(osg::Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP_TO_EDGE );
                     osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP_TO_EDGE );
-                    
+
                     // by default is anisotropic filtering.
                     osg_texture->setMaxAnisotropy(_defaultMaxAnisotropy);
                 }
@@ -486,29 +486,29 @@ void TXPParser::loadLocalMaterials()
             }
 
             osg::Material     *osg_material     = new osg::Material;
-            
+
             float64 alpha;
             mat->GetAlpha(alpha);
-            
+
             trpgColor color;
             mat->GetAmbient(color);
-            osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
+            osg_material->setAmbient( osg::Material::FRONT_AND_BACK ,
                 osg::Vec4(color.red, color.green, color.blue, alpha));
             mat->GetDiffuse(color);
-            osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
+            osg_material->setDiffuse(osg::Material::FRONT_AND_BACK ,
                 osg::Vec4(color.red, color.green, color.blue, alpha));
-            
+
             mat->GetSpecular(color);
-            osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
+            osg_material->setSpecular(osg::Material::FRONT_AND_BACK ,
                 osg::Vec4(color.red, color.green, color.blue, alpha));
             mat->GetEmission(color);
-            osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
+            osg_material->setEmission(osg::Material::FRONT_AND_BACK ,
                 osg::Vec4(color.red, color.green, color.blue, alpha));
-            
+
             float64 shinines;
             mat->GetShininess(shinines);
             osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
-            
+
             osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
             osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
 
@@ -519,8 +519,8 @@ void TXPParser::loadLocalMaterials()
                 osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
                 osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
-            
-            
+
+
         /* This controls what alpha values in a texture mean.  It can take the values:
            None,Always,Equal,GreaterThanOrEqual,GreaterThan,
            LessThanOrEqual,LessThan,Never,NotEqual
@@ -538,7 +538,7 @@ void TXPParser::loadLocalMaterials()
 
             int cullMode;
             mat->GetCullMode(cullMode);
-            
+
             // Culling mode in txp means opposite from osg i.e. Front-> show front face
             if( cullMode != trpgMaterial::FrontAndBack)
             {
@@ -559,9 +559,9 @@ void TXPParser::loadLocalMaterials()
     }
 }
 
-bool TXPParser::requestModel(int ix) 
+bool TXPParser::requestModel(int ix)
 {
-    return _archive->loadModel(ix); 
+    return _archive->loadModel(ix);
 }
 
 //----------------------------------------------------------------------------
@@ -600,11 +600,11 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 #else
     osgLod->setRange(
         0,
-        _parse->checkAndGetMinRange(minRange), 
+        _parse->checkAndGetMinRange(minRange),
         _parse->checkAndGetMaxRange(maxRange)
     );
 #endif
-    
+
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     // to that instead of the LOD
     // Add it into the scene graph
@@ -650,7 +650,7 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         (float)mat[8], (float)mat[9], (float)mat[10],(float)mat[11],
         (float)mat[12],(float)mat[13],(float)mat[14],(float)mat[15]
         );
-    
+
     // Note: Array check before you do this
     osg::Node *osg_Model = NULL;
     std::map<int,osg::ref_ptr<osg::Node> >*modelList = _parse->getModels();
@@ -749,7 +749,7 @@ void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
 void* childRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
-   
+
    // This object contribute nothing to the scenegraph, except
    // where the children tile should connect.
    // It only contain location info of the children tile
@@ -804,7 +804,7 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     ref->GetPerformerAttr(perfAttr);
 
     lpNode->setMaxPixelSize(perfAttr.maxPixelSize);
-    lpNode->setMinPixelSize(perfAttr.minPixelSize);    
+    lpNode->setMinPixelSize(perfAttr.minPixelSize);
 
     trpg3dPoint norm;
     ref->GetNormal(norm);
@@ -817,10 +817,10 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         trpg3dPoint pt;
         light.GetVertex(i, pt);
 
-        osgSim::LightPoint lp( 
-            true, 
-            osg::Vec3(pt.x,pt.y,pt.z), 
-            osg::Vec4(col.red, col.green,col.blue, 1.0), 
+        osgSim::LightPoint lp(
+            true,
+            osg::Vec3(pt.x,pt.y,pt.z),
+            osg::Vec4(col.red, col.green,col.blue, 1.0),
             inten
         );
 
@@ -833,10 +833,10 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
                 ref->GetHLobeAngle(tmp);
                 lobeHorz = osg::DegreesToRadians( tmp );
-                
+
                 ref->GetVLobeAngle(tmp);
                 lobeVert = osg::DegreesToRadians( tmp );
-                
+
                 ref->GetLobeRollAngle(tmp);
                 lobeRoll = osg::DegreesToRadians( tmp );
 
@@ -851,10 +851,10 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
                 ref->GetHLobeAngle(tmp);
                 lobeHorz = osg::DegreesToRadians( tmp );
-                
+
                 ref->GetVLobeAngle(tmp);
                 lobeVert = osg::DegreesToRadians( tmp );
-                
+
                 ref->GetLobeRollAngle(tmp);
                 lobeRoll = osg::DegreesToRadians( tmp );
 
@@ -864,10 +864,10 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 ref->GetBackColor(col);
                 ref->GetBackIntensity(inten);
 
-                osgSim::LightPoint lp2( 
-                    true, 
-                    osg::Vec3(pt.x,pt.y,pt.z), 
-                    osg::Vec4(col.red, col.green,col.blue, 1.0), 
+                osgSim::LightPoint lp2(
+                    true,
+                    osg::Vec3(pt.x,pt.y,pt.z),
+                    osg::Vec4(col.red, col.green,col.blue, 1.0),
                     inten
                 );
 
@@ -888,7 +888,7 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
 #if 0
 
-    DefferedLightAttribute& dla = _parse->getLightAttribute(attr_index); 
+    DefferedLightAttribute& dla = _parse->getLightAttribute(attr_index);
     osgSim::LightPointNode* node = dla.lightPoint.get();
 
     uint32 nvert;
@@ -1000,7 +1000,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             os << '\\' << sub;
             break;
         }
-        
+
     }
     if (lb.length()) os << lb;
     text->setText(os.str());
@@ -1023,9 +1023,9 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
 
     const trpgLabelPropertyTable *labelPropertyTable = _parse->getArchive()->GetLabelPropertyTable();
-    const trpgLabelProperty *labelProperty = labelPropertyTable ? 
+    const trpgLabelProperty *labelProperty = labelPropertyTable ?
         labelPropertyTable->GetPropertyRef(label.GetProperty()) : 0;
-    
+
     bool addTextGeodeIntoSceneGraph = true;
     if (labelProperty)
     {
@@ -1172,7 +1172,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                         supLineColor = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
                     }
                 }
-                
+
                  switch (supStyle->GetType())
                  {
                  case trpgSupportStyle::Line:
@@ -1194,7 +1194,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                         colors->push_back(supLineColor);
                         linesGeom->setColorArray(colors);
                         linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
-                        
+
                         osg::Vec3Array* normals = new osg::Vec3Array;
                         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
                         linesGeom->setNormalArray(normals);
@@ -1215,7 +1215,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                         for (unsigned int i = 0; i < supports->size(); i++)
                         {
                             const trpg3dPoint& supPt = (*supports)[i];
-                            
+
                             osg::Vec3 supPos(supPt.x,supPt.y,supPt.z);
                             osg::Vec3 supCenter = (supPos+pos)/2.f;
                             float supHeight = (supPos-pos).length();
@@ -1236,7 +1236,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                             supGeode->addDrawable(cylinderDrawable);
 
                         }
-                        
+
                         _parse->getCurrTop()->addChild(supGeode.get());
                      }
                      break;
@@ -1244,7 +1244,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                     break;
                  }
 
-                 
+
              }
          }
     }
@@ -1275,7 +1275,7 @@ public:
         _m = m;
         _im.invert(_m);
     }
-        
+
     virtual ~TransformFunctor() {}
 
     virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
@@ -1288,7 +1288,7 @@ public:
                 (*itr) = (*itr)*_m;
             }
         }
-        else 
+        else
         if (type == osg::Drawable::NORMALS)
         {
             osg::Vec3* end = begin+count;
@@ -1323,14 +1323,14 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     geom.GetNumPrims(numPrims);
     geom.GetNumVertex(numVert);
     geom.GetNumNormal(numNorm);
-    
+
     // Get vertices
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(numVert);
     geom.GetVertices((float *)&(vertices->front()));
-    
+
     // Turn the trpgGeometry into something osg can understand
     osg::ref_ptr<osg::Geometry> geometry;
-    
+
     // Get texture coordinates
     ;
     int num_tex;
@@ -1342,7 +1342,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         if (td)
         {
             tex_coords[texno] = new osg::Vec2Array(numVert);
-            const float* sourcePtr = &(td->floatData[0]); 
+            const float* sourcePtr = &(td->floatData[0]);
             float* destinationPtr = (float*)&((*tex_coords[texno])[0]);
             for (int i=0 ;i < numVert; ++i)
             {
@@ -1351,7 +1351,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             }
         }
     }
-   
+
     // The normals
     osg::ref_ptr<osg::Vec3Array> normals;
     if (numNorm == numVert)
@@ -1359,7 +1359,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         normals = new osg::Vec3Array(numVert);
         geom.GetNormals((float*)&(normals->front()));
     }
-    
+
     // Set up the primitive type
     switch (primType)
     {
@@ -1422,8 +1422,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     default:
         break;
     };
-    
-    
+
+
     // Add it to the current parent group
     osg::Group *top = _parse->getCurrTop();
 
@@ -1434,7 +1434,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     {
 
        //modifed by Brad Anderegg on May-27-08
-       //using display lists actually increases our framerate by 
+       //using display lists actually increases our framerate by
        //a fair amount, on certain laptops it increased by as much as 1000%
        geometry->setUseDisplayList(true);
 
@@ -1461,15 +1461,15 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 _parse->loadMaterial(matId);
                 tmp_ss = (*_parse->getMaterials())[matId];
             }
-            if(sset.valid()) 
+            if(sset.valid())
             {
                 if(tmp_ss.valid())
                   {
                     osg::StateAttribute* texenv0 = tmp_ss->getTextureAttribute(0,osg::StateAttribute::TEXENV);
-                    if(texenv0) 
+                    if(texenv0)
                         sset->setTextureAttribute(n_mat,texenv0);
                     osg::StateAttribute* tex0 = tmp_ss->getTextureAttribute(0,osg::StateAttribute::TEXTURE);
-                    if(tex0) 
+                    if(tex0)
                         sset->setTextureAttributeAndModes(n_mat,tex0,osg::StateAttribute::ON);
                     // submitted by a. danklefsen
                     // Alion science and Technology 2/12/07
@@ -1478,7 +1478,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 }
 //                sset->merge(*tmp_ss.get());
             }
-            else 
+            else
                 sset = tmp_ss;
         }
 
@@ -1500,7 +1500,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             osg::ref_ptr<osg::Billboard> billboard = new osg::Billboard;
             billboard->setAxis(osg::Vec3(0.0f,0.0,1.0f) );
             billboard->setNormal(osg::Vec3(0.0f,-1.0,0.0f));
-            
+
             geometry->setUseDisplayList(true);
 
             switch (info.mode)
@@ -1604,14 +1604,14 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 _parse->getCurrTop()->addChild(geode);
             }
         }
-#endif        
-        
+#endif
+
     }
     else
     {
         OSG_WARN<<"Detected potential memory leak in TXPParser.cpp"<<std::endl;
     }
-    
+
     return (void *) 1;
 }
 
@@ -1700,18 +1700,18 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
     tex->GetImageDepth(depth);
     trpgTexture::ImageType type;
     tex->GetImageType(type);
-    
+
     GLenum internalFormat = (GLenum)-1;
     GLenum pixelFormat = (GLenum)-1;
     GLenum dataType = GL_UNSIGNED_BYTE;
 
     check_format(type,depth,internalFormat , pixelFormat , dataType);
-    
+
     if(pixelFormat!=(GLenum)-1)
     {
         osg_texture = new osg::Texture2D();
 
-        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.
         osg_texture->setUnRefImageDataAfterApply(true);
 
         osg::Image* image = new osg::Image;
@@ -1745,7 +1745,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
             // now set mipmap data (offsets into image raw data)
             osg::Image::MipmapDataType mipmaps;
             // number of offsets in osg is one less than num_mipmaps
-            // because it's assumed that first offset iz 0 
+            // because it's assumed that first offset iz 0
             mipmaps.resize(num_mipmaps-1);
             for( int k = 1 ; k < num_mipmaps;k++ )
             {
@@ -1773,18 +1773,18 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
     tex->GetImageDepth(depth);
     trpgTexture::ImageType type;
     tex->GetImageType(type);
-    
+
     GLenum internalFormat = (GLenum)-1;
     GLenum pixelFormat = (GLenum)-1;
     GLenum dataType = GL_UNSIGNED_BYTE;
 
     check_format(type,depth,internalFormat , pixelFormat , dataType);
-    
+
     if(pixelFormat!=(GLenum)-1)
     {
         osg_texture = new osg::Texture2D();
 
-        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.
         osg_texture->setUnRefImageDataAfterApply(true);
 
         osg::Image* image = new osg::Image;
@@ -1821,7 +1821,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
             // now set mipmap data (offsets into image raw data)
             osg::Image::MipmapDataType mipmaps;
             // number of offsets in osg is one less than num_mipmaps
-            // because it's assumed that first offset iz 0 
+            // because it's assumed that first offset iz 0
             mipmaps.resize(num_mipmaps-1);
             for( int k = 1 ; k < num_mipmaps;k++ )
             {

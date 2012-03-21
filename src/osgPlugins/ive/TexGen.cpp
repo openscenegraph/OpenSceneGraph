@@ -57,7 +57,7 @@ void TexGen::read(DataInputStream* in){
             in_THROW_EXCEPTION("TexGen::read(): Could not cast this osg::TexGen to an osg::Object.");
         // Read TexGen's properties
         setMode((osg::TexGen::Mode)in->readInt());
-                
+
         if ( in->getVersion() >= VERSION_0005 )
         {
             setPlane(osg::TexGen::S, in->readPlane());

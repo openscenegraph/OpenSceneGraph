@@ -5,7 +5,7 @@
  * VRML2 file converter for OpenSceneGraph.
  *
  * authors :
- *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function. 
+ *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function.
  *
  *           Jan Ciger (jan.ciger@gmail.com),
  *           Tolga Abaci (tolga.abaci@gmail.com),

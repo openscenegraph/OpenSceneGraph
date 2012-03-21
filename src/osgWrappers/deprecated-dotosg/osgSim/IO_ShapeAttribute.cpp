@@ -28,9 +28,9 @@ bool ShapeAttributeList_readLocalData(osg::Object &obj, osgDB::Input &fr)
     bool iteratorAdvanced = false;
     ShapeAttributeList &sal = static_cast<ShapeAttributeList &>(obj);
 
-    
+
     int entry = fr[0].getNoNestedBrackets();
-    
+
     while (!fr.eof() && fr[0].getNoNestedBrackets()>=entry)
     {
         if (fr.matchSequence("string %s %s"))
@@ -61,7 +61,7 @@ bool ShapeAttributeList_readLocalData(osg::Object &obj, osgDB::Input &fr)
     return iteratorAdvanced;
 }
 
-    
+
 bool ShapeAttributeList_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const ShapeAttributeList &sal = static_cast<const ShapeAttributeList &>(obj);

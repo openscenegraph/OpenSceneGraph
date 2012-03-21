@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -131,7 +131,7 @@ public:
         if (directional && vertex.validNormal())
         {
             lp._sector = new osgSim::DirectionalSector(
-                vertex._normal, 
+                vertex._normal,
                 osg::DegreesToRadians(_lobeHorizontal),
                 osg::DegreesToRadians(_lobeVertical),
                 osg::DegreesToRadians(_lobeRoll));
@@ -145,7 +145,7 @@ public:
             {
                 lp._blinkSequence->setDataVariance(osg::Object::DYNAMIC);
                 lp._blinkSequence->setPhaseShift(_animationPhaseDelay);
-                lp._blinkSequence->addPulse(_animationPeriod - _animationPeriodEnable, 
+                lp._blinkSequence->addPulse(_animationPeriod - _animationPeriodEnable,
                     osg::Vec4f(0.0f, 0.0f, 0.0f, 0.0f));
                 lp._blinkSequence->addPulse(_animationPeriodEnable, lp._color);
             }
@@ -165,7 +165,7 @@ public:
 
             // back sector
             lp._sector = new osgSim::DirectionalSector(
-                -vertex._normal, 
+                -vertex._normal,
                 osg::DegreesToRadians(_lobeHorizontal),
                 osg::DegreesToRadians(_lobeVertical),
                 osg::DegreesToRadians(_lobeRoll));
@@ -185,11 +185,11 @@ protected:
         _feature = in.readInt16();
 
         int32 backColorIndex = in.readInt32();
-        
-        _backColor = document.getColorPool() ? 
-                            document.getColorPool()->getColor(backColorIndex) : 
+
+        _backColor = document.getColorPool() ?
+                            document.getColorPool()->getColor(backColorIndex) :
                             osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-                            
+
         _displayMode = in.readInt32();
         _intensityFront = in.readFloat32();
         _intensityBack = in.readFloat32();
@@ -285,7 +285,7 @@ public:
             if (directional && vertex.validNormal())
             {
                 lp._sector = new osgSim::DirectionalSector(
-                    vertex._normal, 
+                    vertex._normal,
                     osg::DegreesToRadians(_appearance->horizontalLobeAngle),
                     osg::DegreesToRadians(_appearance->verticalLobeAngle),
                     osg::DegreesToRadians(_appearance->lobeRollAngle));
@@ -358,7 +358,7 @@ public:
 
                 // back sector
                 lp._sector = new osgSim::DirectionalSector(
-                    -vertex._normal, 
+                    -vertex._normal,
                     osg::DegreesToRadians(_appearance->horizontalLobeAngle),
                     osg::DegreesToRadians(_appearance->verticalLobeAngle),
                     osg::DegreesToRadians(_appearance->lobeRollAngle));

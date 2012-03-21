@@ -31,7 +31,7 @@ Normals::Normals( Node *node, float scale, Mode mode )
 
 
 
-Normals::MakeNormalsVisitor::MakeNormalsVisitor( float normalScale, Mode mode): 
+Normals::MakeNormalsVisitor::MakeNormalsVisitor( float normalScale, Mode mode):
             NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _normal_scale(normalScale),
             _mode(mode)
@@ -79,7 +79,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                 Vec3Array::iterator coord_index = coords->begin();
                 while( coord_index != coords->end() )
                   v += *(coord_index++) * _mat;
-                v /= (float)(coords->size()); 
+                v /= (float)(coords->size());
 
                 n *= _normal_scale;
                 _local_coords->push_back( v );
@@ -101,7 +101,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                     if( binding == Geometry::BIND_PER_PRIMITIVE_SET )
                     {
                         Vec3 v(0,0,0);
-                        Vec3 n = *(normals_index++); 
+                        Vec3 n = *(normals_index++);
                         int ni = (*itr)->getNumIndices();
                         for( int i = 0; i < ni; i++ )
                             v += *(coord_index++) * _mat;
@@ -111,7 +111,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                         _local_coords->push_back( v );
                         _local_coords->push_back( (v + n));
                     }
-                    else 
+                    else
                     {
                         switch((*itr)->getMode())
                         {
@@ -123,7 +123,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                     coord_index += 3;
                                     if( binding == Geometry::BIND_PER_PRIMITIVE )
                                         normals_index++;
-                                    else 
+                                    else
                                         normals_index+=3;
                                 }
                                 break;
@@ -152,7 +152,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                     coord_index += 4;
                                     if( binding == Geometry::BIND_PER_PRIMITIVE )
                                         normals_index++;
-                                    else 
+                                    else
                                         normals_index+=4;
                                 }
                                 break;
@@ -192,7 +192,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
 
 
 void Normals::MakeNormalsVisitor::_processPrimitive(  unsigned int nv,
-                        Vec3Array::iterator coords, 
+                        Vec3Array::iterator coords,
                         Vec3Array::iterator normals,
                         Geometry::AttributeBinding binding )
 {
@@ -208,7 +208,7 @@ void Normals::MakeNormalsVisitor::_processPrimitive(  unsigned int nv,
         {
             for( unsigned int i = 0; i < nv; i++ )
                 n += *(normals++);
-            n /= (float)(nv); 
+            n /= (float)(nv);
         }
 
         for( unsigned int i = 0; i < nv; i++ )

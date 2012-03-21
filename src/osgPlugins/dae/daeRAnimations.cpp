@@ -676,7 +676,7 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
     }
 
     //work around for files output by the Autodesk FBX converter.
-    if ((interpolationType == INTERPOLATION_BEZIER) && 
+    if ((interpolationType == INTERPOLATION_BEZIER) &&
         (_authoringTool == FBX_CONVERTER || _authoringTool == MAYA))
     {
         interpolationType = INTERPOLATION_HERMITE;

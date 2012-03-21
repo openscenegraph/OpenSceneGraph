@@ -12,7 +12,7 @@ REGISTER_OBJECT_WRAPPER( osgParticleParticleProcessor,
         ADD_ENUM_VALUE( RELATIVE_RF );
         ADD_ENUM_VALUE( ABSOLUTE_RF );
     END_ENUM_SERIALIZER();  // _rf
-    
+
     ADD_BOOL_SERIALIZER( Enabled, true );  // _enabled
     ADD_OBJECT_SERIALIZER( ParticleSystem, osgParticle::ParticleSystem, NULL );  // _ps
     ADD_BOOL_SERIALIZER( Endless, true );  // _endless

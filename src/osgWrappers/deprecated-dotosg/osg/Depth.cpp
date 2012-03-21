@@ -35,7 +35,7 @@ bool Depth_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     Depth& depth = static_cast<Depth&>(obj);
-    
+
     Depth::Function func;
     if (fr[0].matchWord("function") && Depth_matchFuncStr(fr[1].getStr(),func))
     {
@@ -77,11 +77,11 @@ bool Depth_writeLocalData(const Object& obj,Output& fw)
     const Depth& depth = static_cast<const Depth&>(obj);
 
     fw.indent() << "function " << Depth_getFuncStr(depth.getFunction()) << std::endl;
-    
+
     fw.indent() << "writeMask ";
     if (depth.getWriteMask()) fw << "TRUE" << std::endl;
     else fw << "FALSE" << std::endl;
-    
+
     fw.indent() << "range " << depth.getZNear() << " " << depth.getZFar() << std::endl;
 
     return true;

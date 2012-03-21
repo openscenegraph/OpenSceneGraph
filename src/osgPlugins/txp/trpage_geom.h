@@ -147,9 +147,9 @@ public:
        Each of these terrain LODs is accessed seperately (as are the tiles within them).
        This returns the number of terrain LODs in the file.  It will be at least 1.
        See trpgAttach for instructions on how to hook the terrain LODs together.
-      
-       For version 2.1 and over, this number represent the depest lod that was found 
-       in the gaming area. With variable lod, tiles will not ncessarily fill out all of 
+
+       For version 2.1 and over, this number represent the depest lod that was found
+       in the gaming area. With variable lod, tiles will not ncessarily fill out all of
        the gaming area for all of the lods. trpgAttach node are no longer used, instead
        see trpgChildRef
     */
@@ -190,7 +190,7 @@ public:
         }
     }
     bool    GetIsMaster() const
-    { 
+    {
         return ((flags & ISMASTER)==ISMASTER);
     }
     void    SetLocal(bool isLocal)
@@ -258,7 +258,7 @@ public:
     // Set the application mode for the texture.
     void    SetEnvMode(int);
     // Values used by SetMinFilter and SetMagFilter
-    enum {Point, Linear, MipmapPoint, MipmapLinear, 
+    enum {Point, Linear, MipmapPoint, MipmapLinear,
       MipmapBilinear, MipmapTrilinear, Nearest};
     // Set the Minification filter for a texture
     void    SetMinFilter(int);
@@ -284,7 +284,7 @@ public:
     bool    GetEnvMode(int32 &) const;
     /* The Minification and Magnification filters control how texture
        mipmap levels are used.  We support the values: Point, Linear,
-       MipmapPoint, MipmapLinear, 
+       MipmapPoint, MipmapLinear,
        MipmapBilinear, MipmapTrilinear, Nearest
     */
     bool    GetMinFilter(int32 &) const;
@@ -493,7 +493,7 @@ public:
     bool    Print(trpgPrintBuffer &) const;
 
     // Note: Need to do equality operator
-    
+
 protected:
     bool isBump;
     trpgColor color;
@@ -717,7 +717,7 @@ public:
 
     // Set the transparent scale for Performer Lights
     void SetPerformerTpScale( float64 );
-    
+
     // Set the transparent clamp for Performer Lights
     void SetPerformerTpClamp( float64 );
 
@@ -944,7 +944,7 @@ public:
 
     // operator
     trpgLightTable & operator = (const trpgLightTable &);
-    
+
     typedef std::map<int,trpgLightAttr> LightMapType;
     LightMapType *getLightMap() { return &lightMap; }
 protected:
@@ -1022,10 +1022,10 @@ protected:
 
 /* The Range Table is new to 2.0.  The goal is to provide information about
    certain classes of features within a TerraPage database.  It's intended
-   to solve the following problem.  
-    
+   to solve the following problem.
+
    Let's say that you have an Image Generator that must draw a given TerraPage
-   database at 60Hz.  However, it's only hitting 30Hz reliably.  Often, some 
+   database at 60Hz.  However, it's only hitting 30Hz reliably.  Often, some
    feature set (e.g. bushes) must be sacrified in order to reach the target frame rate.
    Determining which features can be throttled back can often be very difficult.
    Scaling all of the LODs will often work, but it's not very elegant.  It's
@@ -1045,8 +1045,8 @@ protected:
    and sub-category as well as an integer priority.  The category data is there to
    allow run-time systems to tell users what they're dropping (or allow them to pick).
    The priority is there to tell systems what to get rid of first (according to the
-   user who build the TerraPage archive).  
-    
+   user who build the TerraPage archive).
+
    Priorities are relative to each other within the Range Table.  There can be
    duplicates and there may be holes in the numbering.
 
@@ -1058,7 +1058,7 @@ public:
     trpgRangeTable(void);
     ~trpgRangeTable(void);
 
-    // Get the given range info 
+    // Get the given range info
     bool    GetRange(int id,trpgRange &) const;
 
     // Get the number of entries in the table
@@ -1108,7 +1108,7 @@ protected:
    If you're doing a TerraPage reader you'll get a trpgMatTable from the trpgr_Archive.
    This is your central index for materials.  If you can handle the multiple channels/sub-tables
    then you can access those as you need.  If you can't, just use 0 for the sub-table index where appropriate.
-    
+
    If you're doing a TerraPage writer you'll need to build up a trpgMatTable to pass to
    trpgwArchive.  If you're only doing a single sub-table (i.e. visible materials only)
    just use AddMaterial and add them as you go.  The trpgMaterial object you build up
@@ -1137,7 +1137,7 @@ public:
     */
     //void    SetMaterial(int subTable,int mat,const trpgMaterial &);
     void    SetMaterial(int,const trpgMaterial &);
-    
+
     /* This function should be used if you only have a single material sub-table.
        It searches for a matching material and then adds a new one if it doesn't
        find a match.  The new (or old) ID is returned.
@@ -1357,7 +1357,7 @@ public:
     // Returns the size of a given mip level
     int32    MipLevelSize(int miplevel);
 
-    // Returns the offset of the mip level in the whole texture data buffer 
+    // Returns the offset of the mip level in the whole texture data buffer
     int32    MipLevelOffset(int miplevel);
 
     // Validity check
@@ -1500,7 +1500,7 @@ public:
         return &textureMap;
     }
 protected:
-    
+
     TextureMapType textureMap;
     //These are used to initialize the row/col values for
     //multi-archive archives
@@ -1664,7 +1664,7 @@ public:
         return &modelsMap;
     }
 protected:
-    
+
     ModelMapType modelsMap;
 };
 
@@ -1682,7 +1682,7 @@ TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
 public:
     // Tiles can be stored individually (External and ExternalSaved) or in grouped files (Local).
     // ExternalSaved still have an entry in the table. In this case the addess data is not valid.
-   
+
     enum TileMode {Local,External, ExternalSaved};
 
     trpgTileTable();
@@ -1702,7 +1702,7 @@ public:
     // Local or external tiles
     bool    GetMode(TileMode &) const;
     // Get the disk reference (local)
-    bool    GetTile(int x,int y,int lod,trpgwAppAddress &,float32 &min,float32 &max) const; 
+    bool    GetTile(int x,int y,int lod,trpgwAppAddress &,float32 &min,float32 &max) const;
 
     // Validity check
     bool    isValid(void) const;
@@ -1863,14 +1863,14 @@ protected:
    textures from the non-pageable ones by looking at the tile reference count in
    the trpgTexture object.
 
-   The second way of doing texture paging (in version 2.0) is more complex, but 
+   The second way of doing texture paging (in version 2.0) is more complex, but
    much more powerful.  One of the big problems we encountered with v1.0 was the
    enormous proliferation of texture files.  In addition, much information was
-   duplicated between the different terrain resolutions.  Lastly, we (TERREX) have 
+   duplicated between the different terrain resolutions.  Lastly, we (TERREX) have
    had a lot of success with wavelet compressed image pyramids for solving quite a
    few interesting problems.  This second approach to texture paging makes use of
    what we've learned from all of this.  The idea is that instead of having lots of
-   little textures, we have a small number of very large images which can support 
+   little textures, we have a small number of very large images which can support
    extraction at any resolution.  In this way we re-use information between terrain
    levels of detail and we cut down on our disk usage, both in terms of number of
    files as well as data size.
@@ -1886,7 +1886,7 @@ protected:
 
    If you want to page models, you can do so by looking at the list of model IDs
    used in a tile.
-    
+
    If you're doing a TerraPage writer you will need to construct one of these for
    each tile that you build (remember that tiles are per-terrain LOD).  You'll want
    to call AddMaterial for every material that you use in a tile and AddModel
@@ -2486,15 +2486,15 @@ public:
 
     // Get the tile grid location
     bool GetTileLoc(int &gx,int &gy,int &glod) const;
-   
+
 
     void SetTileAddress(const trpgwAppAddress& gAddr);
     void SetTileAddress(int32 file, int32 offset);
     void SetTileZValue( float gZmin, float gZmax);
     bool GetTileAddress(int32& file, int32& offset) const;
-    bool GetTileAddress(trpgwAppAddress& gAddr) const;  
+    bool GetTileAddress(trpgwAppAddress& gAddr) const;
     bool GetTileZValue( float& gZmin, float& gZmax) const;
- 
+
 
     // Validity check
     bool    isValid(void) const;
@@ -2510,7 +2510,7 @@ protected:
     int x,y,lod;
     // File Location
     trpgwAppAddress addr;
-   
+
     float zmin, zmax;
 
 };
@@ -2891,7 +2891,7 @@ public:
     const StyleMapType *getStyleMap()const  { return &styleMap; }
 protected:
     //std::vector<trpgTextStyle> styles;
-    
+
     StyleMapType styleMap;
 };
 
@@ -3019,7 +3019,7 @@ public:
     void    SetSupport(int);
     // Get the font style ID.  Points into trpgSupportTable
     int        GetSupport(void) const;
-    
+
     // Write this class to a write buffer
     bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
@@ -3091,7 +3091,7 @@ public:
 
     bool isValid(void) const;
 
-    
+
     typedef enum {Left,Center,Right,MaxAlignmentType} AlignmentType;
 
     // Set the label property ID. This is an index into a tprgLabelPropertyTable

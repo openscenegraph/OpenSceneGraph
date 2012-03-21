@@ -14,7 +14,7 @@ using namespace osgDB;
 class ReaderWriterIVE : public ReaderWriter
 {
     public:
-    
+
         ReaderWriterIVE()
         {
             supportsExtension("ive","OpenSceneGraph native binary format");
@@ -30,7 +30,7 @@ class ReaderWriterIVE : public ReaderWriter
             supportsOption("noLoadExternalReferenceFiles","Import option");
             supportsOption("OutputTextureFiles","Write out the texture images to file");
         }
-    
+
         virtual const char* className() const { return "IVE Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension) const
@@ -57,7 +57,7 @@ class ReaderWriterIVE : public ReaderWriter
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readImage(istream, local_opt.get());
         }
-        
+
         virtual ReadResult readNode(const std::string& file, const Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -66,14 +66,14 @@ class ReaderWriterIVE : public ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
         }
-        
+
         virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
             return readNode(fin, options);
@@ -82,7 +82,7 @@ class ReaderWriterIVE : public ReaderWriter
         virtual ReadResult readImage(std::istream& fin, const Options* options) const
         {
             ive::DataInputStream in(&fin, options);
-            if (in.getException()) 
+            if (in.getException())
             {
                 return in.getException()->getError();
             }
@@ -94,7 +94,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             // Create datainputstream.
             ive::DataInputStream in(&fin, options);
-            if (in.getException()) 
+            if (in.getException())
             {
                 return in.getException()->getError();
             }
@@ -115,7 +115,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
@@ -134,7 +134,7 @@ class ReaderWriterIVE : public ReaderWriter
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
@@ -143,12 +143,12 @@ class ReaderWriterIVE : public ReaderWriter
 
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
-    
+
             WriteResult result = writeNode(node, fout, local_opt.get());
             fout.close();
             return result;
         }
-        
+
         virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             const Node* node = dynamic_cast<const Node*>(&object);
@@ -163,7 +163,7 @@ class ReaderWriterIVE : public ReaderWriter
             ive::DataOutputStream out(&fout, options);
             out.writeImage(ive::IMAGE_INCLUDE_DATA, const_cast<osg::Image*>(&image));
             if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
-            if (out.getException()) 
+            if (out.getException())
             {
                 OSG_WARN<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;
@@ -178,7 +178,7 @@ class ReaderWriterIVE : public ReaderWriter
             out.writeNode(const_cast<osg::Node*>(&node));
 
             if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
-            if (out.getException()) 
+            if (out.getException())
             {
                 OSG_WARN<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;

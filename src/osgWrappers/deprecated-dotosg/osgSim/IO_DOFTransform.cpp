@@ -35,7 +35,7 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
     {
         fr += 2; // skip over "putMatrix {"
         iteratorAdvanced = true;
-    
+
         bool matched = true;
         for(int k=0;k<16 && matched;++k)
         {
@@ -55,11 +55,11 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
                     k++;
                 }
             }
-            
+
             dof.setPutMatrix(matrix);
             dof.setInversePutMatrix(Matrix::inverse(matrix));
         }
-        
+
         fr.advanceToEndOfCurrentBlock();
     }
 
@@ -74,20 +74,20 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
         fr+=4; \
         iteratorAdvanced = true; \
     } \
-} 
+}
 
     Vec3 vec3;
-    
+
     ReadVec3(setMinHPR,"minHPR")
     ReadVec3(setMaxHPR,"maxHPR")
     ReadVec3(setIncrementHPR,"incrementHPR")
     ReadVec3(setCurrentHPR,"currentHPR")
-    
+
     ReadVec3(setMinTranslate,"minTranslate")
     ReadVec3(setMaxTranslate,"maxTranslate")
     ReadVec3(setIncrementTranslate,"incrementTranslate")
     ReadVec3(setCurrentTranslate,"currentTranslate")
-    
+
     ReadVec3(setMinScale,"minScale")
     ReadVec3(setMaxScale,"maxScale")
     ReadVec3(setIncrementScale,"incrementScale")
@@ -102,30 +102,30 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
         else if(fr[1].matchWord("RHP")) dof.setHPRMultOrder(DOFTransform::RHP);
         else if(fr[1].matchWord("RPH")) dof.setHPRMultOrder(DOFTransform::RPH);
     }
-    
+
 
     if (fr.matchSequence("limitationFlags %i"))
     {
         unsigned int flags;
         fr[1].getUInt(flags);
         dof.setLimitationFlags(flags);
-    
+
         fr += 2;
         iteratorAdvanced = true;
-        
+
     }
-    
+
     if (fr[0].matchWord("animationOn"))
     {
-    
+
         if (fr[1].matchWord("TRUE")) dof.setAnimationOn(true);
         else if (fr[1].matchWord("FALSE")) dof.setAnimationOn(false);
-    
+
         fr += 2;
         iteratorAdvanced = true;
-        
+
     }
-    
+
 #undef ReadVec3
 
     return iteratorAdvanced;

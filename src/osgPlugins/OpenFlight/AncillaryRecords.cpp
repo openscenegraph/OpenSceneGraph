@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -48,7 +48,7 @@ class Comment : public Record
 
             if (_parent.valid())
             {
-#if 0            
+#if 0
                 _parent->setComment(commentfield);
 #else
                 unsigned int front_of_line = 0;
@@ -255,10 +255,10 @@ class UVList : public Record
         {
             int count = 0;
             while (mask)
-            { 
+            {
                 if (mask & 0x0001)
-                    ++count; 
-                mask >>= 1; 
+                    ++count;
+                mask >>= 1;
             }
             return count;
         }

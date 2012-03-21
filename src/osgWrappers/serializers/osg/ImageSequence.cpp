@@ -73,13 +73,13 @@ REGISTER_OBJECT_WRAPPER( ImageSequence,
 {
     ADD_DOUBLE_SERIALIZER( ReferenceTime, DBL_MAX );  // _referenceTime
     ADD_DOUBLE_SERIALIZER( TimeMultiplier, 1.0 );  // _timeMultiplier
-    
+
     BEGIN_ENUM_SERIALIZER( Mode, PRE_LOAD_ALL_IMAGES );
         ADD_ENUM_VALUE( PRE_LOAD_ALL_IMAGES );
         ADD_ENUM_VALUE( PAGE_AND_RETAIN_IMAGES );
         ADD_ENUM_VALUE( PAGE_AND_DISCARD_USED_IMAGES );
     END_ENUM_SERIALIZER();  // _mode
-    
+
     ADD_DOUBLE_SERIALIZER( Length, 1.0 );  // _length
     ADD_USER_SERIALIZER( FileNames );  // _fileNames
     ADD_USER_SERIALIZER( Images );  // _images

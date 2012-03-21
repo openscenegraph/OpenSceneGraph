@@ -13,7 +13,7 @@ REGISTER_OBJECT_WRAPPER( Fog,
         ADD_ENUM_VALUE( EXP );
         ADD_ENUM_VALUE( EXP2 );
     END_ENUM_SERIALIZER();  // _mode
-    
+
     ADD_FLOAT_SERIALIZER( Start, 0.0f );  // _start
     ADD_FLOAT_SERIALIZER( End, 1.0f );  // _end
     ADD_FLOAT_SERIALIZER( Density, 1.0f );  // _density

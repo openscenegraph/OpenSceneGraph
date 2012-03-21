@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -106,7 +106,7 @@ osg::BoundingSphere LightPointNode::computeBound() const
 
 
     bsphere.set(_bbox.center(),0.0f);
-    
+
     for(itr=_lightPointList.begin();
         itr!=_lightPointList.end();
         ++itr)
@@ -135,22 +135,22 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
     osg::Timer_t t1=0,t2=0,t3=0,t4=0,t5=0,t6=0,t7=0,t8=0;
     #endif
 
-    
+
 #ifdef USE_TIMER
     t1 = timer.tick();
 #endif
 
     osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
-    
+
 #ifdef USE_TIMER
     t2 = timer.tick();
 #endif
-    
+
 
     // should we disable small feature culling here?
     if (cv /*&& !cv->isCulled(_bbox)*/)
     {
-    
+
         osg::Matrix matrix = *(cv->getModelViewMatrix());
         osg::RefMatrix& projection = *(cv->getProjectionMatrix());
         osgUtil::StateGraph* rg = cv->getCurrentStateGraph();
@@ -162,7 +162,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // so need to add it.
             cv->getCurrentRenderBin()->addStateGraph(rg);
         }
-        
+
 #ifdef USE_TIMER
         t3 = timer.tick();
 #endif
@@ -193,7 +193,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         {
             drawable = _pointSprites ? new LightPointSpriteDrawable : new LightPointDrawable;
             rg->setUserData(drawable);
-            
+
             if (cv->getFrameStamp())
             {
                 drawable->setSimulationTime(cv->getFrameStamp()->getSimulationTime());
@@ -207,10 +207,10 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             litr != rg->_leaves.end() && (*litr)->_drawable.get()!=drawable;
             ++litr)
         {}
-        
+
         if (litr == rg->_leaves.end())
         {
-            // haven't found the drawable added in the RenderLeaf list, therefore this may be the 
+            // haven't found the drawable added in the RenderLeaf list, therefore this may be the
             // first time through LightPointNode in this frame, so need to add drawable into the StateGraph RenderLeaf list
             // and update its time signatures.
 
@@ -234,17 +234,17 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         t7 = timer.tick();
 #endif
 
-        
+
         if (cv->getComputeNearFarMode() != osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
             cv->updateCalculatedNearFar(matrix,_bbox);
-        
-        
+
+
         const float minimumIntensity = 1.0f/256.0f;
         const osg::Vec3 eyePoint = cv->getEyeLocal();
-        
+
         double time=drawable->getSimulationTime();
         double timeInterval=drawable->getSimulationTimeInterval();
-        
+
         const osg::Polytope clipvol(cv->getCurrentCullingSet().getFrustum());
         const bool computeClipping = false;//(clipvol.getCurrentMask()!=0);
 
@@ -254,7 +254,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             ++itr)
         {
             const LightPoint& lp = *itr;
-    
+
             if (!lp._on) continue;
 
             const osg::Vec3& position = lp._position;
@@ -392,11 +392,11 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 }
             }
         }
-        
+
 #ifdef USE_TIMER
         t8 = timer.tick();
 #endif
-               
+
     }
 #ifdef USE_TIMER
     cout << "compute"<<endl;

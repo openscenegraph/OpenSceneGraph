@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -93,7 +93,7 @@
 #endif
 
 #ifndef GL_OES_compressed_ETC1_RGB8_texture
-    #define GL_ETC1_RGB8_OES        0x8D64   
+    #define GL_ETC1_RGB8_OES        0x8D64
 #endif
 
 namespace osg {
@@ -108,7 +108,7 @@ class OSG_EXPORT Image : public BufferData
     public :
 
         Image();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Image(const Image& image,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -129,22 +129,22 @@ class OSG_EXPORT Image : public BufferData
 
         void setFileName(const std::string& fileName);
         inline const std::string& getFileName() const { return _fileName; }
-        
+
         enum WriteHint {
             NO_PREFERENCE,
             STORE_INLINE,
             EXTERNAL_FILE
         };
-        
+
         void setWriteHint(WriteHint writeHint) { _writeHint = writeHint; }
         WriteHint getWriteHint() const { return _writeHint; }
-        
+
         enum AllocationMode {
             NO_DELETE,
             USE_NEW_DELETE,
             USE_MALLOC_FREE
         };
-        
+
         /** Set the method used for deleting data once it goes out of scope. */
         void setAllocationMode(AllocationMode mode) { _allocationMode = mode; }
 
@@ -156,8 +156,8 @@ class OSG_EXPORT Image : public BufferData
         virtual void allocateImage(int s,int t,int r,
                            GLenum pixelFormat,GLenum type,
                            int packing=1);
-        
-        
+
+
         /** Set the image dimensions, format and data. */
         virtual void setImage(int s,int t,int r,
                       GLint internalTextureformat,
@@ -165,13 +165,13 @@ class OSG_EXPORT Image : public BufferData
                       unsigned char* data,
                       AllocationMode mode,
                       int packing=1, int rowLength=0);
-            
+
         /** Read pixels from current frame buffer at specified position and size, using glReadPixels.
           * Create memory for storage if required, reuse existing pixel coords if possible.
         */
         virtual void readPixels(int x,int y,int width,int height,
                         GLenum pixelFormat,GLenum type);
-            
+
 
         /** Read the contents of the current bound texture, handling compressed pixelFormats if present.
           * Create memory for storage if required, reuse existing pixel coords if possible.
@@ -195,44 +195,44 @@ class OSG_EXPORT Image : public BufferData
         virtual void copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source);
 
 
-        enum Origin 
+        enum Origin
         {
             BOTTOM_LEFT,
             TOP_LEFT
         };
-        
+
         /** Set the origin of the image.
           * The default value is BOTTOM_LEFT and is consistent with OpenGL.
           * TOP_LEFT is used for imagery that follows standard Imagery convention, such as movies,
           * and hasn't been flipped yet.  For such images one much flip the t axis of the tex coords.
           * to handle this origin position. */
         void setOrigin(Origin origin) { _origin = origin; }
-        
+
         /** Get the origin of the image.*/
         Origin getOrigin() const { return _origin; }
-        
+
 
         /** Width of image. */
         inline int s() const { return _s; }
 
         /** Height of image. */
         inline int t() const { return _t; }
-        
+
         /** Depth of image. */
         inline int r() const { return _r; }
 
         void setRowLength(int length);
         inline int getRowLength() const { return _rowLength; }
-        
+
         void setInternalTextureFormat(GLint internalFormat);
         inline GLint getInternalTextureFormat() const { return _internalTextureFormat; }
-        
+
         void setPixelFormat(GLenum pixelFormat);
         inline GLenum getPixelFormat() const { return _pixelFormat; }
-        
+
         void setDataType(GLenum dataType);
-        inline GLenum getDataType() const { return _dataType; }        
-        
+        inline GLenum getDataType() const { return _dataType; }
+
         void setPacking(unsigned int packing) { _packing = packing; }
         inline unsigned int getPacking() const { return _packing; }
 
@@ -244,7 +244,7 @@ class OSG_EXPORT Image : public BufferData
 
         /** Get the pixel aspect ratio.*/
         inline float getPixelAspectRatio() const { return _pixelAspectRatio; }
-        
+
         /** Return the number of bits required for each pixel. */
         inline unsigned int getPixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
 
@@ -257,8 +257,8 @@ class OSG_EXPORT Image : public BufferData
 
         /** Return the number of bytes each image (_s*_t) of pixels occupies. */
         inline unsigned int getImageSizeInBytes() const { return getRowSizeInBytes()*_t; }
-        
-        /** Return the number of bytes between each successive image. 
+
+        /** Return the number of bytes between each successive image.
           * Note, getImageSizeInBytes() will only equal getImageStepInBytes() when isDataContiguous() return true. */
         inline unsigned int getImageStepInBytes() const { return getRowStepInBytes()*_t; }
 
@@ -275,7 +275,7 @@ class OSG_EXPORT Image : public BufferData
           * Note, data in successive rows may not be contiguous, isDataContiguous() return false then you should
           * take care to access the data per row rather than treating the whole data as a single block. */
         inline unsigned char* data() { return _data; }
-        
+
         /** Raw const image data.
           * Note, data in successive rows may not be contiguous, isDataContiguous() return false then you should
           * take care to access the data per row rather than treating the whole data as a single block. */
@@ -286,7 +286,7 @@ class OSG_EXPORT Image : public BufferData
             if (!_data) return NULL;
             return _data+(column*getPixelSizeInBits())/8+row*getRowStepInBytes()+image*getImageSizeInBytes();
         }
-        
+
         inline const unsigned char* data(int column, int row=0,int image=0) const
         {
             if (!_data) return NULL;
@@ -318,9 +318,9 @@ class OSG_EXPORT Image : public BufferData
 
         protected:
 
-            
+
             void assign();
-            
+
             const osg::Image*                   _image;
             int                                 _rowNum;
             int                                 _imageNum;
@@ -341,7 +341,7 @@ class OSG_EXPORT Image : public BufferData
 
         /** Flip the image horizontally, around s dimension. */
         void flipHorizontal();
-        
+
         /** Flip the image vertically, around t dimension. */
         void flipVertical();
 
@@ -378,7 +378,7 @@ class OSG_EXPORT Image : public BufferData
 
         /** Send offsets into data. It is assumed that first mipmap offset (index 0) is 0.*/
         inline void setMipmapLevels(const MipmapDataType& mipmapDataVector) { _mipmapData = mipmapDataVector; }
-        
+
         inline const MipmapDataType& getMipmapLevels() const { return _mipmapData; }
 
         inline unsigned int getMipmapOffset(unsigned int mipmapLevel) const
@@ -389,7 +389,7 @@ class OSG_EXPORT Image : public BufferData
                return _mipmapData[mipmapLevel-1];
             return 0;
         };
-        
+
         inline unsigned char* getMipmapData(unsigned int mipmapLevel)
         {
            return _data+getMipmapOffset(mipmapLevel);
@@ -406,7 +406,7 @@ class OSG_EXPORT Image : public BufferData
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         virtual bool isImageTranslucent() const;
 
-        /** Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. */ 
+        /** Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. */
         void setPixelBufferObject(PixelBufferObject* buffer) { setBufferObject(buffer); }
 
         /** Get the PixelBufferObject.*/
@@ -464,13 +464,13 @@ class OSG_EXPORT Image : public BufferData
 
         AllocationMode _allocationMode;
         unsigned char* _data;
-        
+
         void deallocateData();
-        
+
         void setData(unsigned char* data,AllocationMode allocationMode);
 
         MipmapDataType _mipmapData;
-        
+
         ref_ptr<PixelBufferObject> _bufferObject;
 };
 

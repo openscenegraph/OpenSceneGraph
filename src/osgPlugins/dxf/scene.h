@@ -1,18 +1,18 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
 
 /** Simulate the scene with double precision before passing it back to osg.
-    this permits us to scale down offsets from 0,0,0 with a few matrixtransforms, 
+    this permits us to scale down offsets from 0,0,0 with a few matrixtransforms,
     in case the objects are too far from that center.
     */
 
@@ -45,7 +45,7 @@ public:
     }
     inline void makeMinValid() {
         // we count on _min to offset the whole scene
-        // so, we make sure its at 0,0,0 if 
+        // so, we make sure its at 0,0,0 if
         // bounds are not set (anyway, the scene should be empty,
         // if we need to set any value of _min to 0).
         if (_min.x() == DBL_MAX) _min.x() = 0;
@@ -57,12 +57,12 @@ public:
 };
 
 
-static inline 
+static inline
 osg::Geometry* createPtGeometry( osg::PrimitiveSet::Mode pointType, osg::Vec3Array* vertices, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
-    geom->addPrimitiveSet(new osg::DrawArrays(pointType, 0, vertices->size())); 
+    geom->addPrimitiveSet(new osg::DrawArrays(pointType, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
     geom->setColorArray(colors);
@@ -74,12 +74,12 @@ osg::Geometry* createPtGeometry( osg::PrimitiveSet::Mode pointType, osg::Vec3Arr
     return geom;
 }
 
-static inline 
+static inline
 osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Array* vertices, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
-    geom->addPrimitiveSet(new osg::DrawArrays(lineType, 0, vertices->size())); 
+    geom->addPrimitiveSet(new osg::DrawArrays(lineType, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
     geom->setColorArray(colors);
@@ -91,12 +91,12 @@ osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Arra
     return geom;
 }
 
-static inline 
+static inline
 osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, vertices->size())); 
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
     geom->setColorArray(colors);
@@ -106,12 +106,12 @@ osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* norm
     return geom;
 }
 
-static inline 
+static inline
 osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, vertices->size())); 
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
     geom->setColorArray(colors);
@@ -121,7 +121,7 @@ osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* nor
     return geom;
 }
 
-static inline 
+static inline
 osg::Geode* createModel(const std::string & name, osg::Drawable* drawable)
 {
     osg::Geode* geode = new osg::Geode;
@@ -172,7 +172,7 @@ public:
     MapVList        _trinorms;
     MapVList        _quads;
     MapVList        _quadnorms;
-    
+
     struct textInfo
     {
         textInfo(short int color, osg::Vec3 point, osgText::Text *text) :
@@ -182,9 +182,9 @@ public:
         osg::ref_ptr<osgText::Text> _text;
     };
 
-    typedef std::vector<textInfo> TextList;    
+    typedef std::vector<textInfo> TextList;
     TextList _textList;
-    
+
 protected:
     std::string        _name;
 
@@ -192,7 +192,7 @@ protected:
 
     void osgPoints(osg::Group* root, bounds &b)
     {
-       
+
         for (MapVList::iterator mitr = _points.begin();
             mitr != _points.end(); ++mitr) {
             osg::Vec3Array *coords = new osg::Vec3Array;
@@ -212,7 +212,7 @@ protected:
             ++mlitr)
         {
             for(VListList::iterator itr = mlitr->second.begin();
-                itr != mlitr->second.end(); 
+                itr != mlitr->second.end();
                 ++itr)
             {
                 if (itr->size()) {

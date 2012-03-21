@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,28 +26,28 @@ SmokeEffect::SmokeEffect(bool automaticSetup):
     ParticleEffect(automaticSetup)
 {
     setDefaults();
-    
+
     _position.set(0.0f,0.0f,0.0f);
     _scale = 1.0f;
     _intensity = 1.0f;
 
     _emitterDuration = 65.0;
     _defaultParticleTemplate.setLifeTime(5.0*_scale);
-        
+
     if (_automaticSetup) buildEffect();
 }
 
 SmokeEffect::SmokeEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
-    
+
     _position = position;
     _scale = scale;
     _intensity = intensity;
 
     _emitterDuration = 65.0;
     _defaultParticleTemplate.setLifeTime(5.0*_scale);
-        
+
     if (_automaticSetup) buildEffect();
 }
 
@@ -60,8 +60,8 @@ SmokeEffect::SmokeEffect(const SmokeEffect& copy, const osg::CopyOp& copyop):
 void SmokeEffect::setDefaults()
 {
     ParticleEffect::setDefaults();
-    
-    _textureFileName = "Images/smoke.rgb";    
+
+    _textureFileName = "Images/smoke.rgb";
     _emitterDuration = 65.0;
 
     // set up unit particle.
@@ -69,7 +69,7 @@ void SmokeEffect::setDefaults()
     _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 2.0f));
     _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
     _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
-                                            osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
+                                            osg::Vec4(1, 1.0f, 1.0f, 1.0f),
                                             osg::Vec4(1, 1.0f, 1.f, 0.0f)));
 
 
@@ -89,12 +89,12 @@ void SmokeEffect::setUpEmitterAndProgram()
 
         osgParticle::Particle& ptemplate = _particleSystem->getDefaultParticleTemplate();
 
-        float radius = 0.5f*_scale; 
+        float radius = 0.5f*_scale;
         float density = 1.0f; // 1.0kg/m^3
 
         ptemplate.setLifeTime(_defaultParticleTemplate.getLifeTime());
 
-        // the following ranges set the envelope of the respective 
+        // the following ranges set the envelope of the respective
         // graphical properties in time.
         ptemplate.setSizeRange(osgParticle::rangef(radius*_defaultParticleTemplate.getSizeRange().minimum,
                                                    radius*_defaultParticleTemplate.getSizeRange().maximum));
@@ -152,10 +152,10 @@ void SmokeEffect::setUpEmitterAndProgram()
 
     // set up program.
     if (!_program)
-    {        
+    {
         _program = new osgParticle::FluidProgram;
     }
-    
+
     if (_program.valid())
     {
         _program->setParticleSystem(_particleSystem.get());

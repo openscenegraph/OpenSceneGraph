@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -32,13 +32,13 @@ using namespace osgShadow;
 
 #if defined( DEBUG ) || defined( _DEBUG ) || defined( _DEBUG_ )
 // ConvexPolyhedron may produce tons of warnings when it becomes non convex.
-// Unfortuantely this condition often happens in daily routine of shadow usage 
+// Unfortuantely this condition often happens in daily routine of shadow usage
 // due precision errors mixed with repeating frustum cuts performed by MinimalShadowClasses.
 // However, in most of above cases this condition is not fatal
 // because polyhedron becomes concave by very small margin (mesuring deep the hole).
-// Unfortunately warnings are produced even for such small margin cases and can 
+// Unfortunately warnings are produced even for such small margin cases and can
 // easily flood the console.
-// So I leave MAKE_CHECKS commented out. Its really useful only for a guy who debugs 
+// So I leave MAKE_CHECKS commented out. Its really useful only for a guy who debugs
 // larger concaveness issues which means most developers will want to keep it commented.
 //    #define MAKE_CHECKS 1
 #endif
@@ -1615,7 +1615,7 @@ void ConvexPolyhedron::extrude( const osg::Vec3d & offset )
                 (dotOffset1 < 0.0 && dotOffset0 > 0.0) )
             {
                 Face & face = createFace();
-                char ac[40] = "Side plane from edge extrude ";                
+                char ac[40] = "Side plane from edge extrude ";
                 sprintf(ac + strlen(ac), "%d", new_face_counter++);
                 face.name = ac;
 

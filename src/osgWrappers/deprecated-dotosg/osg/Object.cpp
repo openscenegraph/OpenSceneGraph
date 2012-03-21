@@ -47,7 +47,7 @@ bool Object_readLocalData(Object& obj, Input& fr)
             fr +=2 ;
             iteratorAdvanced = true;
         }
-    }    
+    }
 
     if (fr.matchSequence("name %s"))
     {

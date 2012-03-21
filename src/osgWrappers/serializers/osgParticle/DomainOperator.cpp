@@ -24,7 +24,7 @@ static bool readDomains( osgDB::InputStream& is, osgParticle::DomainOperator& dp
         else if (typeName=="SPHERE") type = osgParticle::DomainOperator::Domain::SPHERE_DOMAIN;
         else if (typeName=="BOX") type = osgParticle::DomainOperator::Domain::BOX_DOMAIN;
         else if (typeName=="DISK") type = osgParticle::DomainOperator::Domain::DISK_DOMAIN;
-        
+
         osgParticle::DomainOperator::Domain domain(type);
         is >> osgDB::PROPERTY("Plane") >> domain.plane;
         is >> osgDB::PROPERTY("Vertices1") >> domain.v1;
@@ -34,7 +34,7 @@ static bool readDomains( osgDB::InputStream& is, osgParticle::DomainOperator& dp
         is >> osgDB::PROPERTY("Basis2") >> domain.s2;
         is >> osgDB::PROPERTY("Factors") >> domain.r1 >> domain.r2;
         dp.addDomain(domain);
-        
+
         is >> osgDB::END_BRACKET;
     }
     is >> osgDB::END_BRACKET;
@@ -48,7 +48,7 @@ static bool writeDomains( osgDB::OutputStream& os, const osgParticle::DomainOper
     for ( unsigned int i=0; i<size; ++i )
     {
         const osgParticle::DomainOperator::Domain& domain = dp.getDomain(i);
-        
+
         os << osgDB::PROPERTY("Domain");
         switch (domain.type)
         {
@@ -71,7 +71,7 @@ static bool writeDomains( osgDB::OutputStream& os, const osgParticle::DomainOper
         default:
             os << std::string("UNDEFINED") << osgDB::BEGIN_BRACKET << std::endl; break;
         }
-        
+
         os << osgDB::PROPERTY("Plane") << domain.plane << std::endl;
         os << osgDB::PROPERTY("Vertices1") << domain.v1 << std::endl;
         os << osgDB::PROPERTY("Vertices2") << domain.v2 << std::endl;

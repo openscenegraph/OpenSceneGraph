@@ -13,7 +13,7 @@
 class ReaderWriterGLSL : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterGLSL()
         {
             supportsExtension("gl","OpenGL Shader Language format");
@@ -22,7 +22,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("geom","OpenGL Shader Language format");
             supportsExtension("glsl","OpenGL Shader Language format");
         }
-    
+
         virtual const char* className() const { return "GLSL Shader Reader"; }
 
         osg::Shader* processIncludes( const osg::Shader* shader, const Options* options ) const
@@ -130,10 +130,10 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
 
         virtual WriteResult writeShader(const osg::Shader& shader,std::ostream& fout,const Options* = NULL) const
         {
-            // get shader source 
+            // get shader source
             std::string source = shader.getShaderSource();
-            
-            // write source to file 
+
+            // write source to file
             fout << source;
 
             // return all things went fine

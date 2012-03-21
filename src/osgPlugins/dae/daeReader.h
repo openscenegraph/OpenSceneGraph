@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #ifndef _DAE_CONV_H_
@@ -76,7 +76,7 @@ inline daeElement *getElementFromIDRef( daeIDRef &idref )
 }
 
 template< typename TInputArray, typename TInputType >
-bool findInputSourceBySemantic( TInputArray& inputs, const char* semantic, daeElement *& element, 
+bool findInputSourceBySemantic( TInputArray& inputs, const char* semantic, daeElement *& element,
                                 TInputType ** input = NULL, int unit = 0 )
 {
     element = NULL;
@@ -129,8 +129,8 @@ inline osg::Matrix parseMatrixString(const std::string& valueAsString)
 
 /**
 @class daeReader
-@brief Read a OSG scene from a DAE file 
-*/ 
+@brief Read a OSG scene from a DAE file
+*/
 class daeReader {
 public:
     enum TessellateMode
@@ -153,7 +153,7 @@ public:
     virtual ~daeReader();
 
     bool convert( const std::string &fileURI );
-    
+
     osg::Node* getRootNode()    { return _rootNode; }
 
     const std::string& getAssetUnitName() const {return _assetUnitName;}
@@ -167,14 +167,14 @@ public:
         TRANSPARENCY_MAP_UNIT
     };
 
-    enum InterpolationType 
-    { 
-        INTERPOLATION_UNKNOWN, 
-        INTERPOLATION_STEP, 
-        INTERPOLATION_LINEAR, 
-        INTERPOLATION_BEZIER, 
-        INTERPOLATION_HERMITE, 
-        INTERPOLATION_CARDINAL, 
+    enum InterpolationType
+    {
+        INTERPOLATION_UNKNOWN,
+        INTERPOLATION_STEP,
+        INTERPOLATION_LINEAR,
+        INTERPOLATION_BEZIER,
+        INTERPOLATION_HERMITE,
+        INTERPOLATION_CARDINAL,
         INTERPOLATION_BSPLINE,
 
         //COLLADA spec states that if interpolation is not specified then
@@ -274,7 +274,7 @@ private:
     standard. This function looks at all transparency values in the database and
     heuristically decides which way the values should be interpreted.*/
     bool findInvertTransparency(daeDatabase*) const;
-    
+
     osgAnimation::BasicAnimationManager* processAnimationLibraries(domCOLLADA* document);
     void processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAnimationManager, domAnimation_clip* pDomAnimationClip);
     void processAnimationMap(const TargetChannelPartMap&, osgAnimation::Animation* pOsgAnimation);
@@ -317,7 +317,7 @@ private:
 
     template< typename T >
     void processSinglePPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
-    
+
     template< typename T >
     void processMultiPPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
 
@@ -337,14 +337,14 @@ private:
     void processEffect(osg::StateSet *ss, domEffect *effect );
     void processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc );
     bool processColorOrTextureType(const osg::StateSet*,
-                                    domCommon_color_or_texture_type *cot, 
-                                    osg::Material::ColorMode channel, 
-                                    osg::Material *mat, 
-                                    domCommon_float_or_param_type *fop = NULL, 
+                                    domCommon_color_or_texture_type *cot,
+                                    osg::Material::ColorMode channel,
+                                    osg::Material *mat,
+                                    domCommon_float_or_param_type *fop = NULL,
                                     osg::Texture2D **sa = NULL,
                                     bool normalizeShininess=false);
     void processTransparencySettings( domCommon_transparent_type *ctt,
-                                        domCommon_float_or_param_type *pTransparency, 
+                                        domCommon_float_or_param_type *pTransparency,
                                         osg::StateSet*,
                                         osg::Material *material,
                                         unsigned int diffuseTextureUnit );

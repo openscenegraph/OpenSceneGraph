@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/IncrementalCompileOperation>
@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace osgUtil 
+namespace osgUtil
 {
 
 
@@ -343,7 +343,7 @@ double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(Compile
 bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 {
 //#define USE_TIME_ESTIMATES
-    
+
     for(CompileOps::iterator itr = _compileOps.begin();
         itr != _compileOps.end() && compileInfo.okToCompile();
     )
@@ -581,7 +581,7 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
         // and reducing the change of frame drop.
         compileSet->_subgraphToCompile->getBound();
     }
-    
+
     if (callBuildCompileMap) compileSet->buildCompileMap(_contexts);
 
     OSG_INFO<<"IncrementalCompileOperation::add(CompileSet = "<<compileSet<<", "<<", "<<callBuildCompileMap<<")"<<std::endl;
@@ -593,7 +593,7 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
 void IncrementalCompileOperation::remove(CompileSet* compileSet)
 {
     // OSG_NOTICE<<"IncrementalCompileOperation::remove(CompileSet* compileSet)"<<std::endl;
-    
+
     if (!compileSet) return;
 
     // remove CompileSet from _toCompile list if it's present.
@@ -647,7 +647,7 @@ void IncrementalCompileOperation::mergeCompiledSubgraphs(const osg::FrameStamp* 
             group->addChild(cs->_subgraphToCompile.get());
         }
     }
-    
+
     _compiled.clear();
 }
 
@@ -658,21 +658,21 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     //glFinish();
     //glFlush();
-    
+
     double targetFrameRate = _targetFrameRate;
     double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
 
     double targetFrameTime = 1.0/targetFrameRate;
-    
+
     const osg::FrameStamp* fs = context->getState()->getFrameStamp();
     double currentTime = fs ? fs->getReferenceTime() : 0.0;
 
     double currentElapsedFrameTime = context->getTimeSinceLastClear();
-    
+
     OSG_NOTIFY(level)<<"IncrementalCompileOperation()"<<std::endl;
     OSG_NOTIFY(level)<<"    currentTime = "<<currentTime<<std::endl;
     OSG_NOTIFY(level)<<"    currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
-    
+
     double _flushTimeRatio(0.5);
     double _conservativeTimeRatio(0.5);
 
@@ -719,7 +719,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
             compileSets(toCompileCopy, compileInfo);
         }
     }
-    
+
     //glFush();
     //glFinish();
 }
@@ -769,7 +769,7 @@ void IncrementalCompileOperation::compileSets(CompileSets& toCompile, CompileInf
 
 }
 
-        
+
 void IncrementalCompileOperation::compileAllForNextFrame(unsigned int numFramesToDoCompileAll)
 {
     _compileAllTillFrameNumber = _currentFrameNumber+numFramesToDoCompileAll;

@@ -19,14 +19,14 @@ static void readArrayData( osgDB::InputStream& is, osg::Geometry::ArrayData& dat
     bool hasArray = false;
     is >> osgDB::PROPERTY("Array") >> hasArray;
     if ( hasArray ) data.array = is.readArray();
-    
+
     bool hasIndices = false;
     is >> osgDB::PROPERTY("Indices") >> hasIndices;
     if ( hasIndices ) data.indices = dynamic_cast<osg::IndexArray*>( is.readArray() );
-    
+
     is >> osgDB::PROPERTY("Binding");
     data.binding = (osg::Geometry::AttributeBinding)readAttributeBinding(is);
-    
+
     int normalizeValue = 0;
     is >> osgDB::PROPERTY("Normalize") >> normalizeValue;
     data.normalize = normalizeValue;
@@ -37,11 +37,11 @@ static void writeArrayData( osgDB::OutputStream& os, const osg::Geometry::ArrayD
     os << osgDB::PROPERTY("Array") << data.array.valid();
     if ( data.array.valid() ) os << data.array.get();
     else os << std::endl;
-    
+
     os << osgDB::PROPERTY("Indices") << data.indices.valid();
     if ( data.indices.valid() ) os << data.indices.get();
     else os << std::endl;
-    
+
     os << osgDB::PROPERTY("Binding"); writeAttributeBinding(os, data.binding); os << std::endl;
     os << osgDB::PROPERTY("Normalize") << (int)data.normalize << std::endl;
 }

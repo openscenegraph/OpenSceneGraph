@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -87,7 +87,7 @@ void ImagePager::ReadQueue::takeFirst(osg::ref_ptr<ImageRequest>& databaseReques
     if (!_requestList.empty())
     {
         sort();
-    
+
         databaseRequest = _requestList.front();
         databaseRequest->_requestQueue = 0;
         _requestList.erase(_requestList.begin());
@@ -126,9 +126,9 @@ int ImagePager::ImageThread::cancel()
 
     if( isRunning() )
     {
-    
+
         _done = true;
-        
+
         switch(_mode)
         {
             case(HANDLE_ALL_REQUESTS):
@@ -153,7 +153,7 @@ int ImagePager::ImageThread::cancel()
             // OSG_DEBUG<<"Waiting for DatabasePager to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
-        
+
         // _startThreadCalled = false;
     }
     //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
@@ -166,7 +166,7 @@ void ImagePager::ImageThread::run()
     bool firstTime = true;
 
     osg::ref_ptr<ImagePager::ReadQueue> read_queue;
-    
+
     switch(_mode)
     {
         case(HANDLE_ALL_REQUESTS):
@@ -186,7 +186,7 @@ void ImagePager::ImageThread::run()
 
         osg::ref_ptr<ImageRequest> imageRequest;
         read_queue->takeFirst(imageRequest);
-                
+
         if (imageRequest.valid())
         {
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageRequest->_fileName);
@@ -218,13 +218,13 @@ void ImagePager::ImageThread::run()
         {
             OpenThreads::Thread::YieldCurrentThread();
         }
-        
-        
+
+
         // go to sleep till our the next time our thread gets scheduled.
 
         if (firstTime)
         {
-            // do a yield to get round a peculiar thread hang when testCancel() is called 
+            // do a yield to get round a peculiar thread hang when testCancel() is called
             // in certain circumstances - of which there is no particular pattern.
             YieldCurrentThread();
             firstTime = false;
@@ -245,7 +245,7 @@ ImagePager::ImagePager():
 {
     _startThreadCalled = false;
     _databasePagerThreadPaused = false;
-    
+
     _readQueue = new ReadQueue(this,"Image Queue");
     _completedQueue = new RequestQueue;
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
@@ -304,25 +304,25 @@ void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attac
     request->_attachmentPoint = attachmentPoint;
     request->_attachmentIndex = attachmentIndex;
     request->_requestQueue = _readQueue.get();
-   
+
     _readQueue->add(request.get());
 
     if (!_startThreadCalled)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_run_mutex);
-        
+
         if (!_startThreadCalled)
         {
             _startThreadCalled = true;
             _done = false;
-            
+
             for(ImageThreads::iterator itr = _imageThreads.begin();
                 itr != _imageThreads.end();
                 ++itr)
             {
                 (*itr)->startThread();
             }
-            
+
         }
     }
 }
@@ -353,7 +353,7 @@ void ImagePager::updateSceneGraph(const osg::FrameStamp&)
             OSG_NOTICE<<"ImagePager::updateSceneGraph() : error, image request attachment type not handled yet."<<std::endl;
         }
     }
-    
+
     _completedQueue->_requestList.clear();
 }
 

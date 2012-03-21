@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -17,7 +17,7 @@
 
 using namespace osgAnimation;
 
-UpdateMaterial::UpdateMaterial(const UpdateMaterial& apc,const osg::CopyOp& copyop) 
+UpdateMaterial::UpdateMaterial(const UpdateMaterial& apc,const osg::CopyOp& copyop)
     : osg::Object(apc, copyop),
       AnimationUpdateCallback<osg::StateAttributeCallback>(apc, copyop)
 {
@@ -43,7 +43,7 @@ void UpdateMaterial::operator()(osg::StateAttribute* sa, osg::NodeVisitor* nv)
 
 
 osgAnimation::Vec4Target* UpdateMaterial::getDiffuse() { return _diffuse.get(); }
-void UpdateMaterial::update(osg::Material& material) 
+void UpdateMaterial::update(osg::Material& material)
 {
     osg::Vec4 diffuse = _diffuse->getValue();
     material.setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
@@ -55,7 +55,7 @@ bool UpdateMaterial::link(osgAnimation::Channel* channel)
     {
         return channel->setTarget(_diffuse.get());
     }
-    else 
+    else
     {
         OSG_WARN << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class " << className() << std::endl;
     }

@@ -40,7 +40,7 @@ public:
         _message = "PNG lib error : ";
         _message += message;
     }
-    friend std::ostream& operator<<(std::ostream& stream, const PNGError& err) 
+    friend std::ostream& operator<<(std::ostream& stream, const PNGError& err)
     {
         stream << err._message;
         return stream;
@@ -88,7 +88,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         {
             supportsExtension("png","PNG Image format");
         }
-        
+
         virtual const char* className() const { return "PNG Image Reader/Writer"; }
 
         WriteResult::WriteStatus writePngStream(std::ostream& fout, const osg::Image& img, int compression_level) const
@@ -120,7 +120,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                 case(GL_RGBA): color = PNG_COLOR_TYPE_RGB_ALPHA; break;
                 case(GL_BGR): color = PNG_COLOR_TYPE_RGB; png_set_bgr(png); break;
                 case(GL_BGRA): color = PNG_COLOR_TYPE_RGB_ALPHA; png_set_bgr(png); break;
-                default: return WriteResult::ERROR_IN_WRITING_FILE; break;                
+                default: return WriteResult::ERROR_IN_WRITING_FILE; break;
             }
 
             //Create row data
@@ -168,7 +168,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             png_uint_32 i;
             png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
- 
+
             // Set custom error handlers
             png_set_error_fn(png, png_get_error_ptr(png), user_error_fn, user_warning_fn);
 
@@ -284,7 +284,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                   case(PNG_COLOR_TYPE_RGB): pixelFormat = GL_RGB; break;
                   case(PNG_COLOR_TYPE_PALETTE): pixelFormat = GL_RGB; break;
                   case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
-                  default: break;                
+                  default: break;
                 }
 
                 // Some paletted images contain alpha information.  To be
@@ -301,14 +301,14 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
                 //    delete [] data;
 
-                if (pixelFormat==0) 
+                if (pixelFormat==0)
                     return ReadResult::FILE_NOT_HANDLED;
 
                 osg::Image* pOsgImage = new osg::Image();
 
                 pOsgImage->setImage(width, height, 1,
                     internalFormat,
-                    pixelFormat, 
+                    pixelFormat,
                     dataType,
                     data,
                     osg::Image::USE_NEW_DELETE);

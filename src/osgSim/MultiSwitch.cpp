@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgSim/MultiSwitch>
@@ -35,7 +35,7 @@ void MultiSwitch::traverse(osg::NodeVisitor& nv)
 {
     if (nv.getTraversalMode()==osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
     {
-    
+
         if (_activeSwitchSet<_values.size())
         {
             for(unsigned int pos=0;pos<_children.size();++pos)
@@ -90,7 +90,7 @@ bool MultiSwitch::insertChild( unsigned int index, osg::Node *child)
             }
         }
 
-        
+
         return true;
     }
     return false;
@@ -101,7 +101,7 @@ bool MultiSwitch::removeChild( osg::Node *child )
     // find the child's position.
     unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return false;
-    
+
     for(SwitchSetList::iterator itr=_values.begin();
         itr!=_values.end();
         ++itr)
@@ -109,8 +109,8 @@ bool MultiSwitch::removeChild( osg::Node *child )
         ValueList& values = *itr;
         values.erase(values.begin()+pos);
     }
-    
-    return Group::removeChild(child);    
+
+    return Group::removeChild(child);
 }
 
 void MultiSwitch::setValue(unsigned int switchSet, unsigned int pos,bool value)
@@ -129,7 +129,7 @@ void MultiSwitch::setChildValue(const osg::Node* child,unsigned int switchSet, b
     // find the child's position.
     unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return;
-    
+
     ValueList& values = _values[switchSet];
     values[pos]=value;
 }
@@ -151,7 +151,7 @@ bool MultiSwitch::getChildValue(const osg::Node* child, unsigned int switchSet) 
     // find the child's position.
     unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return false;
-    
+
     const ValueList& values = _values[switchSet];
     return values[pos];
 }

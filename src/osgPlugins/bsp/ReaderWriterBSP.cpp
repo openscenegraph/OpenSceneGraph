@@ -52,7 +52,7 @@ ReaderWriter::ReadResult ReaderWriterBSP::readNode(
 
     // See if we can find the requested file
     std::string fileName = osgDB::findDataFile(file, options);
-    if (fileName.empty()) 
+    if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
 
     // Open the file and read the magic number and version

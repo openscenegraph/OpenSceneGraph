@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Object>
@@ -274,7 +274,7 @@ bool Input::read(const char* str, Parameter value1)
 
 bool Input::read(const char* str, Parameter value1, Parameter value2)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()))
     {
@@ -288,7 +288,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2)
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()))
@@ -304,7 +304,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter 
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()) &&
@@ -322,7 +322,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter 
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()) &&
@@ -342,7 +342,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter 
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()) &&
@@ -364,7 +364,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter 
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()) &&
@@ -388,7 +388,7 @@ bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter 
 
 bool Input::read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8)
 {
-    if ((*this)[0].matchWord(str) && 
+    if ((*this)[0].matchWord(str) &&
         value1.valid((*this)[1].getStr()) &&
         value2.valid((*this)[2].getStr()) &&
         value3.valid((*this)[3].getStr()) &&

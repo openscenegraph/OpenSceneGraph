@@ -65,5 +65,5 @@ void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
         if (cv) {
             cv->popStateSet();
         }
-    }        
+    }
 }

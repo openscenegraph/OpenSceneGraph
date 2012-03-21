@@ -1,14 +1,14 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2007 Art Tevs
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -535,80 +535,80 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * GetProgramivProc)(GLuint program, GLenum pname, GLint *params);
         typedef void (GL_APIENTRY * GetObjectParameterivARBProc)(GLuint program, GLenum pname, GLint *params);
         typedef void (GL_APIENTRY * GetProgramInfoLogProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        typedef void (GL_APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);    
-        typedef void (GL_APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);                             
-        typedef void (GL_APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);  
-        typedef void (GL_APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);    
-        typedef GLint (GL_APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);                             
-        typedef void (GL_APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);                       
-        typedef void (GL_APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);                         
-        typedef void (GL_APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);                     
-        typedef void (GL_APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);                      
-        typedef void (GL_APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);                        
-        typedef void (GL_APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);               
-        typedef GLboolean (GL_APIENTRY * IsProgramProc)(GLuint program);                                                      
-        typedef GLboolean (GL_APIENTRY * IsShaderProc)(GLuint shader);                                                        
-        typedef void (GL_APIENTRY * LinkProgramProc)(GLuint program);                                                         
+        typedef void (GL_APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        typedef void (GL_APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);
+        typedef void (GL_APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        typedef void (GL_APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
+        typedef GLint (GL_APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);
+        typedef void (GL_APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);
+        typedef void (GL_APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);
+        typedef void (GL_APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);
+        typedef void (GL_APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);
+        typedef void (GL_APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);
+        typedef void (GL_APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);
+        typedef GLboolean (GL_APIENTRY * IsProgramProc)(GLuint program);
+        typedef GLboolean (GL_APIENTRY * IsShaderProc)(GLuint shader);
+        typedef void (GL_APIENTRY * LinkProgramProc)(GLuint program);
         typedef void (GL_APIENTRY * ShaderSourceProc)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
-        typedef void (GL_APIENTRY * UseProgramProc)(GLuint program);                                                            
-        typedef void (GL_APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);                                                 
-        typedef void (GL_APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);                                     
-        typedef void (GL_APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);                         
-        typedef void (GL_APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);             
-        typedef void (GL_APIENTRY * Uniform1iProc)(GLint location, GLint v0);                                                   
-        typedef void (GL_APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);                                         
-        typedef void (GL_APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);                               
-        typedef void (GL_APIENTRY * Uniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);                   
-        typedef void (GL_APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);                       
-        typedef void (GL_APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);                       
-        typedef void (GL_APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);                       
-        typedef void (GL_APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);                       
-        typedef void (GL_APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);                         
-        typedef void (GL_APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);                         
-        typedef void (GL_APIENTRY * Uniform3ivProc)(GLint location, GLsizei count, const GLint *value);                       
-        typedef void (GL_APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);                         
+        typedef void (GL_APIENTRY * UseProgramProc)(GLuint program);
+        typedef void (GL_APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);
+        typedef void (GL_APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);
+        typedef void (GL_APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+        typedef void (GL_APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+        typedef void (GL_APIENTRY * Uniform1iProc)(GLint location, GLint v0);
+        typedef void (GL_APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);
+        typedef void (GL_APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);
+        typedef void (GL_APIENTRY * Uniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+        typedef void (GL_APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        typedef void (GL_APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        typedef void (GL_APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        typedef void (GL_APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        typedef void (GL_APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);
+        typedef void (GL_APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);
+        typedef void (GL_APIENTRY * Uniform3ivProc)(GLint location, GLsizei count, const GLint *value);
+        typedef void (GL_APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);
         typedef void (GL_APIENTRY * UniformMatrix2fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
         typedef void (GL_APIENTRY * UniformMatrix3fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        typedef void (GL_APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);  
-        typedef void (GL_APIENTRY * ValidateProgramProc)(GLuint program);                                                             
-        typedef void (GL_APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);                                                    
-        typedef void (GL_APIENTRY * VertexAttrib1dvProc)(GLuint index, const GLdouble *v);                                          
-        typedef void (GL_APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);                                                     
-        typedef void (GL_APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);                                                     
-        typedef void (GL_APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);                                        
-        typedef void (GL_APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);                                          
-        typedef void (GL_APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);                                          
-        typedef void (GL_APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);                            
-        typedef void (GL_APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);                               
-        typedef void (GL_APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);                               
-        typedef void (GL_APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);                                              
-        typedef void (GL_APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);                  
-        typedef void (GL_APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);                                           
-        typedef void (GL_APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);                                          
-        typedef void (GL_APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);                                              
-        typedef void (GL_APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);                
-        typedef void (GL_APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);                    
-        typedef void (GL_APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);                                               
-        typedef void (GL_APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);                    
-        typedef void (GL_APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);                                            
-        typedef void (GL_APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);                                             
-        typedef void (GL_APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);                                           
+        typedef void (GL_APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        typedef void (GL_APIENTRY * ValidateProgramProc)(GLuint program);
+        typedef void (GL_APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);
+        typedef void (GL_APIENTRY * VertexAttrib1dvProc)(GLuint index, const GLdouble *v);
+        typedef void (GL_APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);
+        typedef void (GL_APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);
+        typedef void (GL_APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);
+        typedef void (GL_APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);
+        typedef void (GL_APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);
+        typedef void (GL_APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);
+        typedef void (GL_APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);
+        typedef void (GL_APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);
+        typedef void (GL_APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);
+        typedef void (GL_APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);
+        typedef void (GL_APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
+        typedef void (GL_APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);
+        typedef void (GL_APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
+        typedef void (GL_APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);
+        typedef void (GL_APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);
+        typedef void (GL_APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+        typedef void (GL_APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);
+        typedef void (GL_APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);
+        typedef void (GL_APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);
+        typedef void (GL_APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+        typedef void (GL_APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);
+        typedef void (GL_APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        typedef void (GL_APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
+        typedef void (GL_APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);
+        typedef void (GL_APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+        typedef void (GL_APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);
+        typedef void (GL_APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);
+        typedef void (GL_APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
+        typedef void (GL_APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
         typedef void (GL_APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-        typedef void (GL_APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );                         
+        typedef void (GL_APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         typedef void (GL_APIENTRY * UniformMatrix3x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         typedef void (GL_APIENTRY * UniformMatrix2x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         typedef void (GL_APIENTRY * UniformMatrix4x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
@@ -642,7 +642,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * GetProgramBinaryProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
         typedef void (GL_APIENTRY * ProgramBinaryProc)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
 
-        BlendEquationSeparateProc _glBlendEquationSeparate;        
+        BlendEquationSeparateProc _glBlendEquationSeparate;
         DrawBuffersProc _glDrawBuffers;
         StencilOpSeparateProc _glStencilOpSeparate;
         StencilFuncSeparateProc _glStencilFuncSeparate;

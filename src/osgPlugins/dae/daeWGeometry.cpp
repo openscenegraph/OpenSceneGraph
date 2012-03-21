@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeWriter.h"
@@ -156,7 +156,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             std::string name( pOsgRigGeometry->getName() );
             if (name.empty())
                 name = uniquify("skincontroller");
-            else 
+            else
                 name = uniquify(name);
             pDomController->setId( name.c_str() );
             _osgRigGeometryDomControllerMap.insert( std::make_pair( pOsgRigGeometry, pDomController ) );
@@ -190,7 +190,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             pDomJointsNameArray->setValue(jointNames);
             {
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomJointsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
-                
+
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
                 std::string url = "#" + jointsNameArrayName;
                 pDomAccessor->setSource(url.c_str());
@@ -213,7 +213,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             pDomMatricesArray->setValue(matrices);
             {
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinBindPoseSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
-                
+
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
                 std::string url = "#" + matricesArrayName;
                 pDomAccessor->setSource(url.c_str());
@@ -237,7 +237,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             pDomWeightsArray->setValue(weights);
             {
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinWeightsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
-                
+
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
                 std::string url = "#" + weightsArrayName;
                 pDomAccessor->setSource(url.c_str());
@@ -248,7 +248,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             }
 
             domSkin::domJoints* pDomJoints = daeSafeCast< domSkin::domJoints >(pDomSkin->add( COLLADA_ELEMENT_JOINTS ));
-            
+
             domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomJoints->add(COLLADA_ELEMENT_INPUT));
             pDomInput->setSemantic(COMMON_PROFILE_INPUT_JOINT);
             url = "#" + skinJointsName;
@@ -324,7 +324,7 @@ void daeWriter::writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometr
             std::string name( pOsgMorphGeometry->getName() );
             if (name.empty())
                 name = uniquify("morphcontroller");
-            else 
+            else
                 name = uniquify(name);
             pDomController->setId( name.c_str() );
             _osgMorphGeometryDomControllerMap.insert( std::make_pair( pOsgMorphGeometry, pDomController ) );
@@ -441,7 +441,7 @@ void daeWriter::apply( osg::Geode &node )
     for ( unsigned int i = 0; i < count; i++ )
     {
         osg::Geometry *g = node.getDrawable( i )->asGeometry();
-        
+
         if ( g != NULL )
         {
             osgAnimation::RigGeometry *pOsgRigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(g);
@@ -465,7 +465,7 @@ void daeWriter::apply( osg::Geode &node )
                         m_CurrentRenderingHint = g->getStateSet()->getRenderingHint();
 
                     pushStateSet(g->getStateSet());
-                    
+
                     domGeometry* pDomGeometry = getOrCreateDomGeometry(g);
                     if (pDomGeometry)
                     {
@@ -516,7 +516,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
     else
       p->getValue().append( normals.inds!=NULL?normals.inds->index( ncount ):ncount );
   }
-  
+
   if ( color != NULL )
   {
     if ( geom->getColorBinding() == osg::Geometry::BIND_PER_VERTEX )
@@ -524,7 +524,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
     else
       p->getValue().append( colors.inds!=NULL?colors.inds->index( ccount ):ccount );
   }
-  
+
   for ( unsigned int ti = 0; ti < texcoords.size(); ti++ )
   {
     //ArrayNIndices &tc = texcoords[ti];
@@ -535,7 +535,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
 
 
 bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const std::string &name )
-{   
+{
     domMesh *mesh = daeSafeCast< domMesh >( geo->add( COLLADA_ELEMENT_MESH ) );
     domSource *pos = NULL;
     domSource *norm = NULL;
@@ -549,7 +549,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     domTrifans *trifans = NULL;
     domPolygons *polys = NULL;
     domPolylist *polylist = NULL;
-    
+
     ArrayNIndices verts( geom->getVertexArray(), geom->getVertexIndices() );
     ArrayNIndices normals( geom->getNormalArray(), geom->getNormalIndices() );
     ArrayNIndices colors( geom->getColorArray(), geom->getColorIndices() );
@@ -714,12 +714,12 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         //process primitive group
         switch( mode )
         {
-            case GL_POINTS:    
+            case GL_POINTS:
             {
-                OSG_WARN << "Geometry contains points rendering. COLLADA does not" << std::endl; 
+                OSG_WARN << "Geometry contains points rendering. COLLADA does not" << std::endl;
                 continue;
             }
-            case GL_LINES:     
+            case GL_LINES:
             {
                 if ( lines == NULL )
                 {
@@ -728,11 +728,11 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     std::string mat = name + "_material";
                     lines->setMaterial( mat.c_str() );
                 }
-                primLength = 2; 
+                primLength = 2;
                 valid = true;
                 break;
             }
-            case GL_TRIANGLES: 
+            case GL_TRIANGLES:
             {
                 if ( tris == NULL )
                 {
@@ -741,11 +741,11 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     std::string mat = name + "_material";
                     tris->setMaterial( mat.c_str() );
                 }
-                primLength = 3; 
+                primLength = 3;
                 valid = true;
                 break;
             }
-            case GL_QUADS:     
+            case GL_QUADS:
             {
                 if ( polys == NULL )
                 {
@@ -759,14 +759,14 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     else
                     {
                           polylist = createPrimGroup<domPolylist>( COLLADA_ELEMENT_POLYLIST, mesh, norm, color, texcoord );
-                            
+
                           polylist->add( COLLADA_ELEMENT_VCOUNT );
                           polylist->add( COLLADA_ELEMENT_P );
                           std::string mat = name + "_material";
                           polylist->setMaterial( mat.c_str() );
                     }
                 }
-                primLength = 4; 
+                primLength = 4;
                 valid = true;
                 break;
             }
@@ -806,7 +806,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 valid = true;
                 break;
             }
-            default:           
+            default:
             {
                 if ( polys == NULL )
                 {
@@ -827,7 +827,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         polylist->setMaterial( mat.c_str() );
                     }
                 }
-                primLength = 0; 
+                primLength = 0;
                 valid = true;
                 break; // compute later when =0.
             }
@@ -839,13 +839,13 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         switch( ps->getType() )
         {
                 //draw arrays (array of contiguous vertices)
-    
+
                        //(primitive type+begin+end),(primitive type+begin+end)...
             case osg::PrimitiveSet::DrawArraysPrimitiveType:
             {
                 //OSG_WARN << "DrawArrays" << std::endl;
 
-                if ( primLength == 0 ) 
+                if ( primLength == 0 )
                 {
                     primLength = ps->getNumIndices();
                 }
@@ -886,7 +886,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
-                    default:           
+                    default:
                     {
                         //TODO : test this case
                         unsigned int nbPolygons=drawArray->getCount()/primLength;
@@ -987,7 +987,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                             trifans->setCount( trifans->getCount() + 1 );
                             break;
                         }
-                        default:           
+                        default:
                         {
 
                             if (_pluginOptions.usePolygons)
@@ -1047,7 +1047,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
                 osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>( ps );
-                
+
                 std::vector<domP *> p;
                 switch ( mode )
                 {
@@ -1081,7 +1081,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
-                    default:           
+                    default:
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
                         if (_pluginOptions.usePolygons)
@@ -1146,7 +1146,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
                 osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>( ps );
-                
+
                                 std::vector<domP *> p;
                 switch ( mode )
                 {
@@ -1180,7 +1180,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
-                    default:           
+                    default:
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
                         if (_pluginOptions.usePolygons)
@@ -1199,7 +1199,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         break;
                     }
                 }
-                
+
                 unsigned int primCount = 0;
                 osg::DrawElementsUShort::iterator primItrBegin = drawElements->begin();
                 unsigned int nbVerticesPerPoly= drawElements->size()/p.size();
@@ -1212,12 +1212,12 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                   {
 
                     unsigned int vindex = *primItr;
-    
+
                     appendGeometryIndices(geom,p[iPoly],vindex,
                                        norm,color,
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
-                        
+
                     if ( primCount>0 && ((primCount % primLength) == 0) )
                     {
                       if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
@@ -1235,9 +1235,9 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 #if ( _SECURE_SCL == 1 )
                   if (primItrBegin != drawElements->end())
 #endif
-                  primItrEnd+=nbVerticesPerPoly;      
+                  primItrEnd+=nbVerticesPerPoly;
                 }
-      
+
                 break;
             }
             case osg::PrimitiveSet::DrawElementsUIntPrimitiveType:
@@ -1247,7 +1247,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
                 osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>( ps );
-                
+
                 std::vector<domP *> p;
                 switch ( mode )
                 {
@@ -1281,7 +1281,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
-                    default:           
+                    default:
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
                         if (_pluginOptions.usePolygons)
@@ -1314,12 +1314,12 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                   {
 
                     unsigned int vindex = *primItr;
-    
+
                     appendGeometryIndices(geom,p[iPoly],vindex,
                                        norm,color,
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
-                        
+
                     if ( primCount>0 && ((primCount % primLength) == 0) )
                     {
                       if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
@@ -1336,7 +1336,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 #if ( _SECURE_SCL == 1 )
                   if (primItrBegin != drawElements->end())
 #endif
-                  primItrEnd+=nbVerticesPerPoly;      
+                  primItrEnd+=nbVerticesPerPoly;
                 }
                 break;
             }
@@ -1345,11 +1345,11 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 break;
         }
 
-        if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET ) 
+        if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET )
         {
             ncount++;
         }
-        if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET ) 
+        if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET )
         {
             ccount++;
         }
@@ -1381,7 +1381,7 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "R" );
         param->setType( "float" );
-        
+
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "G" );
         param->setType( "float" );

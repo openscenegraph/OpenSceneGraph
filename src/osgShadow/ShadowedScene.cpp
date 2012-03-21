@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,10 +23,10 @@ using namespace osgShadow;
 
 ShadowedScene::ShadowedScene(ShadowTechnique* st):
     _receivesShadowTraversalMask(0xffffffff),
-    _castsShadowTraversalMask(0xffffffff)    
+    _castsShadowTraversalMask(0xffffffff)
 {
     setNumChildrenRequiringUpdateTraversal(1);
-    
+
     setShadowSettings(new ShadowSettings);
 
     if (st) setShadowTechnique(st);
@@ -38,7 +38,7 @@ ShadowedScene::ShadowedScene(const ShadowedScene& ss, const osg::CopyOp& copyop)
     _castsShadowTraversalMask(ss._castsShadowTraversalMask)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-    
+
     if (ss._shadowTechnique.valid())
     {
         setShadowTechnique( dynamic_cast<osgShadow::ShadowTechnique*>(ss._shadowTechnique->clone(copyop)) );
@@ -52,7 +52,7 @@ ShadowedScene::ShadowedScene(const ShadowedScene& ss, const osg::CopyOp& copyop)
     {
         setShadowSettings(new ShadowSettings);
     }
-    
+
 }
 
 ShadowedScene::~ShadowedScene()
@@ -80,15 +80,15 @@ void ShadowedScene::setShadowSettings(ShadowSettings* ss)
 void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)
 {
     if (_shadowTechnique == technique) return;
-    
-    if (_shadowTechnique.valid()) 
+
+    if (_shadowTechnique.valid())
     {
         _shadowTechnique->cleanSceneGraph();
         _shadowTechnique->_shadowedScene = 0;
     }
-    
+
     _shadowTechnique = technique;
-    
+
     if (_shadowTechnique.valid())
     {
         _shadowTechnique->_shadowedScene = this;
@@ -98,7 +98,7 @@ void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)
 
 void ShadowedScene::cleanSceneGraph()
 {
-    if (_shadowTechnique.valid()) 
+    if (_shadowTechnique.valid())
     {
         _shadowTechnique->cleanSceneGraph();
     }

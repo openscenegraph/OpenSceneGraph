@@ -51,7 +51,7 @@ public:
 
     /* Call this when you hit a tile header in your own
        Scene parser callback.  The managed tile
-       can then keep track of which textures and models 
+       can then keep track of which textures and models
        go with this tile.
     */
     bool ParseTileHeader(trpgReadBuffer &);
@@ -68,7 +68,7 @@ public:
 
     // In version 2.1 we no longer have the tile table to
     // find the tiles, only by traversing the parent can it be
-    // found. So when we have this info, this is were to save it. 
+    // found. So when we have this info, this is were to save it.
     void SetTileAddress(const trpgwAppAddress& gAddr);
     void SetTileAddress(int32 file, int32 offset);
     const trpgwAppAddress& GetTileAddress() const;
@@ -143,8 +143,8 @@ public:
     const TileLocationInfo& GetChildLocationInfo(int childIdx) const;
     bool GetChildTileLoc(int childIdx, int &x,int &y,int &lod) const;
     const trpgwAppAddress& GetChildTileAddress(int childIdx) const;
-   
-  
+
+
 protected:
     // Set if a tile is currently loaded
     bool isLoaded;
@@ -217,7 +217,7 @@ public:
         and pass it on to AckLoad() which will add to the  appropriate lod list
         the children info. If this is not done then only lod 0 will be pageable.
     */
- 
+
     virtual void AckLoad(std::vector<TileLocationInfo> const& children);
 
     // Using this call with version 2.1 and over will only page lod 0 tiles
@@ -269,7 +269,7 @@ protected:
     trpg2dPoint pagePt;
 
     /* Information associated with each terrain level of
-       detail as related to paging.  
+       detail as related to paging.
     */
     TX_EXDECL class TX_CLDECL LodPageInfo {
         friend class trpgPageManager;
@@ -471,17 +471,17 @@ public:
     void Reset();
 protected:
 //   typedef std::vector<const trpgChildRef> ChildList;
-// The const in the template parameter was removed because it causes GCC to 
-// freak out.  I am of the opinion that const doesn't make sense in a template 
-// parameter for std::vector anyway... const prevents you from changing the 
-// value, so what exactly is the point?  How does one add entries to the vector 
+// The const in the template parameter was removed because it causes GCC to
+// freak out.  I am of the opinion that const doesn't make sense in a template
+// parameter for std::vector anyway... const prevents you from changing the
+// value, so what exactly is the point?  How does one add entries to the vector
 // without giving them a value?  -ADS
     typedef std::vector<trpgChildRef> ChildList;
     ChildList childList;
 };
 
 /* Page Manager Tester.  This class tests a given paging manager
-   by applying likely 
+   by applying likely
 */
 TX_EXDECL class TX_CLDECL trpgPageManageTester
 {
@@ -496,7 +496,7 @@ public:
 
     /* Feeds the paging manager coordinates starting from
        the lower left to upper right of the database in the
-       given increment.  
+       given increment.
     */
     void Fly_LL_to_UR(double dist=100.0);
 

@@ -1,13 +1,13 @@
 #include "WriterCompareTriangle.h"
 #include <assert.h>
 
-WriterCompareTriangle::WriterCompareTriangle(const osg::Geode & geode, unsigned int nbVertices) : geode(geode) 
+WriterCompareTriangle::WriterCompareTriangle(const osg::Geode & geode, unsigned int nbVertices) : geode(geode)
 {
     cutscene(nbVertices, geode.getBoundingBox());
 }
 
-bool 
-WriterCompareTriangle::operator()(const std::pair<Triangle, int> & t1, 
+bool
+WriterCompareTriangle::operator()(const std::pair<Triangle, int> & t1,
                                   const std::pair<Triangle, int> & t2) const
 {
     const osg::Geometry *g = geode.getDrawable( t1.second )->asGeometry();
@@ -30,7 +30,7 @@ WriterCompareTriangle::operator()(const std::pair<Triangle, int> & t1,
 void
 WriterCompareTriangle::setMaxMin(unsigned int & nbVerticesX,
                                  unsigned int & nbVerticesY,
-                                 unsigned int & nbVerticesZ) const    
+                                 unsigned int & nbVerticesZ) const
 {
     static const unsigned int min = 1;
     static const unsigned int max = 5;        // Number of blocks used to divide the scene (arbitrary but seems ok)
@@ -98,7 +98,7 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
                 boxList.push_back(osg::BoundingBox(xMin, // Add a bloc to the list
                     yMin,
                     zMin,
-                    xMax, 
+                    xMax,
                     yMax,
                     zMax));
                 y += yinc;
@@ -112,14 +112,14 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
     }
 }
 
-int 
-WriterCompareTriangle::inWhichBox(const osg::BoundingBox::value_type x, 
+int
+WriterCompareTriangle::inWhichBox(const osg::BoundingBox::value_type x,
                                   const osg::BoundingBox::value_type y,
                                   const osg::BoundingBox::value_type z) const
 {
     for (unsigned int i = 0; i < boxList.size(); ++i)
     {
-        if (x >= boxList[i].xMin() && 
+        if (x >= boxList[i].xMin() &&
             x <  boxList[i].xMax() &&
             y >= boxList[i].yMin() &&
             y <  boxList[i].yMax() &&

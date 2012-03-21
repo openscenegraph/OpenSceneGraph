@@ -7,8 +7,8 @@
  *
  * Based on OBJ writer plugin by Ulrich Hertlein
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -18,7 +18,7 @@
 #include <iomanip>
 
 #include "DXFWriterNodeVisitor.h"
- 
+
 // ROBERT - is there any need for a value visitor like this or is it just overkill?
 
 /** writes all values of an array out to a stream, applies a matrix beforehand if necessary */
@@ -27,116 +27,116 @@
 /*
 class ValueVisitor : public osg::ValueVisitor {
     public:
-        ValueVisitor(std::ostream& fout, const Layer &layer,const osg::Matrix& m = osg::Matrix::identity()) :    
-            osg::ValueVisitor(), 
-            _fout(fout), 
-            _layer(layer),            
-            _m(m)          
-        { 
-            //_applyMatrix = (_m != osg::Matrix::identity());                
+        ValueVisitor(std::ostream& fout, const Layer &layer,const osg::Matrix& m = osg::Matrix::identity()) :
+            osg::ValueVisitor(),
+            _fout(fout),
+            _layer(layer),
+            _m(m)
+        {
+            //_applyMatrix = (_m != osg::Matrix::identity());
         }
-                
-        virtual void apply(osg::Vec3 & inv) 
-        { 
+
+        virtual void apply(osg::Vec3 & inv)
+        {
             osg::Vec3 point(inv) ;
-            point = point * _m;                        
-            _fout << "0 \nVERTEX\n 8\n"<<_layer._name<<"\n";    
+            point = point * _m;
+            _fout << "0 \nVERTEX\n 8\n"<<_layer._name<<"\n";
             if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
+                _fout << "62\n"<<_layer._color<<"\n";
             }
 
-            _fout <<" 10\n"<<point.x()<<"\n 20\n"<<point.y()<<"\n 30\n"<<point.z()<<"\n";                                
+            _fout <<" 10\n"<<point.x()<<"\n 20\n"<<point.y()<<"\n 30\n"<<point.z()<<"\n";
         }
-        
+
     private:
 
         ValueVisitor& operator = (const ValueVisitor&) { return *this; }
 
         std::ostream&    _fout;
         osg::Matrix        _m;
-        const Layer _layer;        
+        const Layer _layer;
 };
 */
 
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
 class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
-    
+
     public:
         DxfPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo,const Layer &layer,AcadColor &acad,
-                                const osg::Matrix& m = osg::Matrix::identity(),bool writeTriangleAs3DFace = true) : 
-            osg::PrimitiveIndexFunctor(), 
-            _fout(fout),            
+                                const osg::Matrix& m = osg::Matrix::identity(),bool writeTriangleAs3DFace = true) :
+            osg::PrimitiveIndexFunctor(),
+            _fout(fout),
             _geo(geo),
             _layer(layer),
             _acad(acad),
             _m(m),
             _writeTriangleAs3DFace(writeTriangleAs3DFace)
         {
-            
+
         }
-        
+
         virtual void setVertexArray(unsigned int,const osg::Vec2*) {}
 
         virtual void setVertexArray(unsigned int ,const osg::Vec3* ) {}
 
         virtual void setVertexArray(unsigned int,const osg::Vec4* ) {}
-        
+
         virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
 
         virtual void setVertexArray(unsigned int ,const osg::Vec3d* ) {}
 
         virtual void setVertexArray(unsigned int,const osg::Vec4d* ) {}
-        
-        
-        void write(unsigned int i,int c) 
-        {            
-            const osg::Vec3 point = ((osg::Vec3Array *)_geo->getVertexArray())->at(i) * _m;                        
-            _fout <<c+10<<"\n "<<point.x()<<"\n"<<20+c<<"\n "<<point.y()<<"\n"<<30+c<<"\n "<<point.z()<<"\n";                        
+
+
+        void write(unsigned int i,int c)
+        {
+            const osg::Vec3 point = ((osg::Vec3Array *)_geo->getVertexArray())->at(i) * _m;
+            _fout <<c+10<<"\n "<<point.x()<<"\n"<<20+c<<"\n "<<point.y()<<"\n"<<30+c<<"\n "<<point.z()<<"\n";
         }
 
-        // operator for triangles 
+        // operator for triangles
         void writeTriangle(unsigned int i1, unsigned int i2, unsigned int i3)
-         {    
+         {
            if (_writeTriangleAs3DFace)
            {
                 _fout << "0 \n3DFACE\n 8\n"<<_layer._name<<"\n";
                 if ( _layer._color ) {
-                    _fout << "62\n"<<_layer._color<<"\n";                
+                    _fout << "62\n"<<_layer._color<<"\n";
                 } else {
-                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";
                     // Acad2000 supports 24bit color but most dxf importers don't
-                    //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";                
+                    //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";
                 }
                 write(i1,0);
                 write(i2,1);
                 write(i3,2);
-                write(i1,3); // yes you have to write the first point again 
+                write(i1,3); // yes you have to write the first point again
            }
            else
            {
                 _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
                 if ( _layer._color ) {
-                    _fout << "62\n"<<_layer._color<<"\n";                
+                    _fout << "62\n"<<_layer._color<<"\n";
                 } else {
-                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                                
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";
                 }
                 write(i1,0);
                 write(i2,1);
 
                 _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
                 if ( _layer._color ) {
-                    _fout << "62\n"<<_layer._color<<"\n";                
+                    _fout << "62\n"<<_layer._color<<"\n";
                 } else {
-                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i2))<<"\n";                                
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i2))<<"\n";
                 }
                 write(i2,0);
                 write(i3,1);
 
                 _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
                 if ( _layer._color ) {
-                    _fout << "62\n"<<_layer._color<<"\n";                
+                    _fout << "62\n"<<_layer._color<<"\n";
                 } else {
-                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i3))<<"\n";                                
+                    _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i3))<<"\n";
                 }
                 write(i3,0);
                 write(i1,1);
@@ -145,30 +145,30 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         }
 
         // operator for lines
-        void writeLine(unsigned int i1, unsigned int i2) 
-        {            
+        void writeLine(unsigned int i1, unsigned int i2)
+        {
             _fout << "0 \nLINE\n 8\n"<<_layer._name<<"\n";
             if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
+                _fout << "62\n"<<_layer._color<<"\n";
             } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                                
+                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";
             }
             write(i1,0);
             write(i2,1);
         }
-        
+
         // operator for points
-        void writePoint(unsigned int i1) 
+        void writePoint(unsigned int i1)
         {
             _fout << "0 \nPOINT\n 8\n"<<_layer._name<<"\n";
             if ( _layer._color ) {
-                _fout << "62\n"<<_layer._color<<"\n";                
+                _fout << "62\n"<<_layer._color<<"\n";
             } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";                
-                //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";                
-                
+                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";
+                //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";
+
             }
-            write(i1,0);            
+            write(i1,0);
         }
 
         virtual void begin(GLenum mode)
@@ -190,8 +190,8 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             }
         }
 
-        virtual void drawArrays(GLenum mode,GLint first,GLsizei count);                    
-        
+        virtual void drawArrays(GLenum mode,GLint first,GLsizei count);
+
         virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
         {
             drawElementsImplementation<GLubyte>(mode, count, indices);
@@ -199,20 +199,20 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
         {
             drawElementsImplementation<GLushort>(mode, count, indices);
-        }    
+        }
 
         virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
         {
             drawElementsImplementation<GLuint>(mode, count, indices);
-        }    
+        }
 
     protected:
-        
-        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices) 
+
+        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices)
         {
             if (indices==0 || count==0) return;
 
-            typedef const T* IndexPointer;                    
+            typedef const T* IndexPointer;
 
             switch(mode)
             {
@@ -221,7 +221,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                         writeTriangle(*iptr,*(iptr+1),*(iptr+2));
-    
+
                     break;
                 }
                 case(GL_TRIANGLE_STRIP):
@@ -270,7 +270,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;++iptr)
-                    
+
                     {
                         writePoint(*iptr);
                     }
@@ -288,7 +288,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 }
                 case(GL_LINE_STRIP):
                 {
-                    
+
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices+1;iptr<ilast;iptr+=2)
 
@@ -312,17 +312,17 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     // uhm should never come to this point :)
                     break;
             }
-        }    
-    
+        }
+
     private:
 
         DxfPrimitiveIndexWriter& operator = (const DxfPrimitiveIndexWriter&) { return *this; }
 
         std::ostream&        _fout;
         GLenum               _modeCache;
-        std::vector<GLuint>  _indexCache;        
-        osg::Geometry*       _geo;        
-        
+        std::vector<GLuint>  _indexCache;
+        osg::Geometry*       _geo;
+
         Layer        _layer;
         AcadColor    _acad; // needed to lookup new colors
         osg::Matrix  _m;
@@ -386,7 +386,7 @@ void DxfPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         }
         case(GL_POINTS):
         {
-            
+
             for(GLsizei i=0;i<count;++i)
             {
                 writePoint(i);
@@ -420,19 +420,19 @@ void DxfPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             break;
         }
         default:
-            OSG_WARN << "DXFWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
+            OSG_WARN << "DXFWriterNodeVisitor :: can't handle mode " << mode << std::endl;
             break;
     }
 }
-                    
+
 
 // TODO - illegal acad characters
-std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue) 
+std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue)
 {
-    
+
     std::string layerName=defaultvalue;
     std::transform(layerName.begin(), layerName.end(), layerName.begin(), toupper);
-        
+
     // remove illegal ACAD characters
     size_t found=0;
     const std::string allowed("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-");
@@ -461,20 +461,20 @@ std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue)
 //{
 //    if (array == NULL)
 //        return;
-//    
-//    ValueVisitor vv(_fout, layer,m);    
-//    for(unsigned int i = 0; i < array->getNumElements(); ++i) {        
-//        array->accept(i, vv);        
+//
+//    ValueVisitor vv(_fout, layer,m);
+//    for(unsigned int i = 0; i < array->getNumElements(); ++i) {
+//        array->accept(i, vv);
 //    }
-//    
+//
 //    OSG_DEBUG << "processArray "<<layer._name<<"\n";
 //    OSG_DEBUG << "# " << array->getNumElements() << " elements written" << std::endl;
-//    
+//
 //}
 
-void DXFWriterNodeVisitor::processStateSet(osg::StateSet* ss) 
+void DXFWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 {
-    // anything to do if no material/texture?   
+    // anything to do if no material/texture?
 
     osg::PolygonMode * pm = dynamic_cast<osg::PolygonMode *>(ss->getAttribute(osg::StateAttribute::POLYGONMODE));
     if (pm)
@@ -483,55 +483,55 @@ void DXFWriterNodeVisitor::processStateSet(osg::StateSet* ss)
     }
 }
 
-void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) 
+void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
 {
-    
+
 
     // We only want to create a new layer for geometry with something to draw
     if (geo->getVertexArray() && geo->getVertexArray()->getNumElements() ) {
 
         processStateSet(_currentStateSet.get());
-        
+
         if ( _firstPass ) {
             // Must have unique layer names
             _layer._name = getLayerName( geo->getName().empty() ? geo->getParent(0)->getName() : geo->getName() );
             OSG_DEBUG << "adding Layer " << _layer._name  << std::endl;
 
             // if single colour include in header
-            if ( osg::Geometry::BIND_OVERALL == geo->getColorBinding() ) {                
+            if ( osg::Geometry::BIND_OVERALL == geo->getColorBinding() ) {
                 _layer._color = _acadColor.findColor(getNodeRGB(geo)); // per layer color
             } else if ( osg::Geometry::BIND_OFF== geo->getColorBinding() ) {
                 _layer._color = 0xff; // use white - or can we easily lookup in texture?
             } else {
                 _layer._color = 0;  // per point color
-            }            
+            }
             _layers.push_back(_layer);
 
         } else {
             _layer = _layers[_count++];
             OSG_DEBUG << "writing Layer " << _layer._name  << std::endl;
-            if ( geo->getNumPrimitiveSets() ) {                
-                for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) 
-                {        
+            if ( geo->getNumPrimitiveSets() ) {
+                for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i)
+                {
                     osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
                     DxfPrimitiveIndexWriter pif(_fout, geo,_layer,_acadColor,m,_writeTriangleAs3DFace);
                     ps->accept(pif);
-                }            
-            } else {                            
+                }
+            } else {
                 // Is array visitor necessary for only dealing with vertex arrays?
-                //processArray(geo->getVertexArray(),  _layer,m);                
+                //processArray(geo->getVertexArray(),  _layer,m);
                 if ( geo->getVertexArray() ) {
                     osg::Vec3Array* data=static_cast<osg::Vec3Array*>(geo->getVertexArray());
                     for (unsigned int ii=0;ii<data->getNumElements();ii++)
                     {
                         osg::Vec3 point = data->at(ii) * m;
-                        _fout << "0 \nVERTEX\n 8\n"<<_layer._name<<"\n";    
+                        _fout << "0 \nVERTEX\n 8\n"<<_layer._name<<"\n";
                         if ( _layer._color ) {
-                            _fout << "62\n"<<_layer._color<<"\n";                
-                        } else {                                
-                            _fout << "62\n"<<_acadColor.findColor(getNodeRGB(geo,ii))<<"\n";                
+                            _fout << "62\n"<<_layer._color<<"\n";
+                        } else {
+                            _fout << "62\n"<<_acadColor.findColor(getNodeRGB(geo,ii))<<"\n";
                         }
-                        _fout<<" 10\n"<<point.x()<<"\n 20\n"<<point.y()<<"\n 30\n"<<point.z()<<"\n";        
+                        _fout<<" 10\n"<<point.x()<<"\n 20\n"<<point.y()<<"\n 30\n"<<point.z()<<"\n";
                     }
                 }
             }
@@ -544,7 +544,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
 void DXFWriterNodeVisitor::apply( osg::Geode &node )
 {
 
-    pushStateSet(node.getStateSet());    
+    pushStateSet(node.getStateSet());
     osg::Matrix m = osg::computeLocalToWorld(getNodePath());
     unsigned int count = node.getNumDrawables();
 
@@ -553,14 +553,14 @@ void DXFWriterNodeVisitor::apply( osg::Geode &node )
         osg::Geometry *g = node.getDrawable( i )->asGeometry();
         if ( g != NULL )
         {
-            pushStateSet(g->getStateSet());            
-            processGeometry(g,m);            
+            pushStateSet(g->getStateSet());
+            processGeometry(g,m);
             popStateSet(g->getStateSet());
         }
     }
 
 
-    popStateSet(node.getStateSet());    
+    popStateSet(node.getStateSet());
 }
 
 
@@ -569,11 +569,11 @@ bool DXFWriterNodeVisitor::writeHeader(const osg::BoundingSphere &bound)
     if ( _layers.empty() ) {
         return false;
     }
-    _fout << "999\n written by OpenSceneGraph" << std::endl;            
+    _fout << "999\n written by OpenSceneGraph" << std::endl;
 
     _fout << "0\nSECTION\n2\nHEADER\n";
     _fout << "9\n$ACADVER\n1\nAC1006\n"; // specify minimum autocad version AC1006=R10
-    
+
     _fout << "9\n$EXTMIN\n10\n"<<bound.center().x()-bound.radius()<<"\n20\n"<<bound.center().y()-bound.radius()<<"\n30\n"<<bound.center().z()-bound.radius()<<"\n";
     _fout << "9\n$EXTMAX\n10\n"<<bound.center().x()+bound.radius()<<"\n20\n"<<bound.center().y()+bound.radius()<<"\n30\n"<<bound.center().z()+bound.radius()<<"\n";
 
@@ -591,7 +591,7 @@ bool DXFWriterNodeVisitor::writeHeader(const osg::BoundingSphere &bound)
     _fout << "0\nENDTAB\n0\nENDSEC\n";
 
     _fout << "0\nSECTION\n2\nENTITIES\n";
-    _firstPass=false; 
+    _firstPass=false;
     _count=0;
 
     return true;
@@ -600,6 +600,6 @@ bool DXFWriterNodeVisitor::writeHeader(const osg::BoundingSphere &bound)
 void DXFWriterNodeVisitor::writeFooter()
 {
     _fout << "0\nENDSEC\n0\nEOF";
-    _fout << std::endl;    
+    _fout << std::endl;
 }
 

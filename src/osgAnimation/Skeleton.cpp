@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ class ValidateSkeletonVisitor : public osg::NodeVisitor
 public:
     ValidateSkeletonVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
     void apply(osg::Node& node) { return; }
-    void apply(osg::Transform& node) 
+    void apply(osg::Transform& node)
     {
         // the idea is to traverse the skeleton or bone but to stop if other node is found
         Bone* bone = dynamic_cast<Bone*>(&node);
@@ -75,7 +75,7 @@ public:
 };
 
 void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
-{ 
+{
     if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
         Skeleton* skeleton = dynamic_cast<Skeleton*>(node);

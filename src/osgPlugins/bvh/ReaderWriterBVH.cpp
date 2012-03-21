@@ -53,7 +53,7 @@ public:
                     stack.push_back( new osgAnimation::StackedTranslateElement("position", offset) );
                     stack.push_back( new osgAnimation::StackedQuaternionElement("quaternion", osg::Quat()) );
                 }
-                
+
                 if ( _drawingFlag && parent->getNumParents() && level>0 )
                     parent->getParent(0)->addChild( createRefGeometry(offset, 0.5).get() );
             }
@@ -310,7 +310,7 @@ protected:
 
     osg::ref_ptr<osg::Geode> createRefGeometry( osg::Vec3 p, double len )
     {
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;  
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
         if ( _drawingFlag==1 )
         {
@@ -343,7 +343,7 @@ protected:
 
             geode->addDrawable( new osg::ShapeDrawable(box.get()) );
         }
-        
+
         return geode;
     }
 

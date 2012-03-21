@@ -71,7 +71,7 @@ public:
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {
         std::string filepath = osgDB::findDataFile(_file, _opts);
-        if (filepath.empty()) 
+        if (filepath.empty())
             return ReadResult::FILE_NOT_FOUND;
 
         if (!HDRLoader::isHDRFile(filepath.c_str()))
@@ -167,7 +167,7 @@ public:
             {
                 internalFormat = GL_RGBA8;
                 pixelFormat = GL_RGBA;
-            } else {                
+            } else {
                 internalFormat = GL_RGB32F_ARB;
                 pixelFormat = GL_RGB;
             }
@@ -214,7 +214,7 @@ public:
             {
                 if (opt=="NO_YFLIP")
                 {
-                    // We want to YFLIP because although the file format specification 
+                    // We want to YFLIP because although the file format specification
                     // dictates that +Y M +X N is a valid resolution line, no software (including
                     // HDRShop!) actually recognises it; hence everything tends to be written upside down
                     // So we flip the image first...
@@ -224,8 +224,8 @@ public:
                 {
                     rawRGBE = true;
                 }
-                /* The following are left out for the moment as 
-                   we don't really do anything with them in OSG 
+                /* The following are left out for the moment as
+                   we don't really do anything with them in OSG
                 else if(opt=="GAMMA")
                 {
                    iss >> gamma;
@@ -238,7 +238,7 @@ public:
 
             }
         }
-    
+
         // Reject unhandled image formats
         if(rawRGBE==false)
         {

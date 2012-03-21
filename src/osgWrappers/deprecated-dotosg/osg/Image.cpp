@@ -27,7 +27,7 @@ bool Image_readLocalData(Object& /*obj*/, Input& /*fr*/)
 
     // Image& image = static_cast<Image&>(obj);
 
-    // no current image reading code 
+    // no current image reading code
     // as it is all handled by osg::Registry::readImage() via plugins.
 
     return iteratorAdvanced;
@@ -38,7 +38,7 @@ bool Image_writeLocalData(const Object& /*obj*/, Output& /*fw*/)
 {
     // const Image& image = static_cast<const Image&>(obj);
 
-    // no current image writing code here 
+    // no current image writing code here
     // as it is all handled by osg::Registry::writeImage() via plugins.
 
     return true;

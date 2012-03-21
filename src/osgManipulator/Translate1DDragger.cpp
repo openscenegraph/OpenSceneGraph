@@ -28,7 +28,7 @@ Translate1DDragger::Translate1DDragger() : Dragger(), _checkForNodeInNodePath(tr
     setColor(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
     setPickColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
 }
-       
+
 Translate1DDragger::Translate1DDragger(const osg::Vec3d& s, const osg::Vec3d& e) : Dragger(), _checkForNodeInNodePath(true)
 {
     _projector = new LineProjector(s,e);
@@ -75,9 +75,9 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
@@ -96,9 +96,9 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
@@ -164,7 +164,7 @@ void Translate1DDragger::setupDefaultGeometry()
         osg::Drawable* cylinderGeom = new osg::ShapeDrawable(cylinder);
 
         setDrawableToAlwaysCull(*cylinderGeom);
-    
+
         geode->addDrawable(cylinderGeom);
     }
 
@@ -172,7 +172,7 @@ void Translate1DDragger::setupDefaultGeometry()
     // Create a line.
     {
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(2);
         (*vertices)[0] = _projector->getLineStart();
         (*vertices)[1] = _projector->getLineEnd();
@@ -182,7 +182,7 @@ void Translate1DDragger::setupDefaultGeometry()
 
         lineGeode->addDrawable(geometry);
     }
-    
+
     // Turn of lighting for line and set line width.
     lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     osg::LineWidth* linewidth = new osg::LineWidth();

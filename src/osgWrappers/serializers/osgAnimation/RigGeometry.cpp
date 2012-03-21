@@ -17,7 +17,7 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
         std::string name;
         unsigned int viSize = 0;
         is >> osgDB::PROPERTY("VertexInfluence") >> name; viSize = is.readSize(); is >> osgDB::BEGIN_BRACKET;
-        
+
         osgAnimation::VertexInfluence vi;
         vi.setName( name );
         vi.reserve( viSize );
@@ -32,7 +32,7 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
         is >> osgDB::END_BRACKET;
     }
     is >> osgDB::END_BRACKET;
-    
+
     if ( !map->empty() ) geom.setInfluenceMap( map );
     return true;
 }
@@ -47,7 +47,7 @@ static bool writeInfluenceMap( osgDB::OutputStream& os, const osgAnimation::RigG
         std::string name = itr->first;
         const osgAnimation::VertexInfluence& vi = itr->second;
         if ( name.empty() ) name = "Empty";
-        
+
         os << osgDB::PROPERTY("VertexInfluence") << name; os.writeSize(vi.size()) ; os << osgDB::BEGIN_BRACKET << std::endl;
 
         for ( osgAnimation::VertexInfluence::const_iterator vitr=vi.begin();

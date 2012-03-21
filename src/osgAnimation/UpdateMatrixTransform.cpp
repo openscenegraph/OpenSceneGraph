@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -30,7 +30,7 @@ UpdateMatrixTransform::UpdateMatrixTransform(const std::string& name) : Animatio
 /** Callback method called by the NodeVisitor when visiting a node.*/
 void UpdateMatrixTransform::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
         osg::MatrixTransform* matrixTransform = dynamic_cast<osg::MatrixTransform*>(node);
         if (matrixTransform)
@@ -48,7 +48,7 @@ void UpdateMatrixTransform::operator()(osg::Node* node, osg::NodeVisitor* nv)
 bool UpdateMatrixTransform::link(osgAnimation::Channel* channel)
 {
     const std::string& channelName = channel->getName();
-    
+
     // check if we can link a StackedTransformElement to the current Channel
     for (StackedTransform::iterator it = _transforms.begin(); it != _transforms.end(); ++it)
     {

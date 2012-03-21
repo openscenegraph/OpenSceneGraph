@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Encapsulate OpenGL glViewport. */     
+/** Encapsulate OpenGL glViewport. */
 class OSG_EXPORT Viewport : public StateAttribute
 {
     public :
@@ -30,13 +30,13 @@ class OSG_EXPORT Viewport : public StateAttribute
         typedef double value_type;
 #endif
         Viewport();
-        
+
         Viewport(value_type x,value_type y,value_type width,value_type height):
             _x(x),
             _y(y),
             _width(width),
             _height(height) {}
-            
+
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Viewport(const Viewport& vp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -47,7 +47,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             _height(vp._height) {}
 
         META_StateAttribute(osg, Viewport,VIEWPORT);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -60,7 +60,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             COMPARE_StateAttribute_Parameter(_y)
             COMPARE_StateAttribute_Parameter(_width)
             COMPARE_StateAttribute_Parameter(_height)
-            
+
             return 0; // passed all the above comparison macros, must be equal.
         }
 
@@ -72,7 +72,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             _height = height;
         }
 
-#if 0        
+#if 0
         void getViewport(int& x,int& y,int& width,int& height) const
         {
             x = _x;
@@ -107,7 +107,7 @@ class OSG_EXPORT Viewport : public StateAttribute
           * If height is zero, the potential division by zero is avoided by simply returning 1.0f.
         */
         inline double aspectRatio() const { if (_height!=0) return (double)_width/(double)_height; else return 1.0; }
-        
+
         /** Compute the Window Matrix which takes projected coords into Window coordinates.
           * To convert local coordinates into window coordinates use v_window = v_local * MVPW matrix,
           * where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the latter supplied by
@@ -122,7 +122,7 @@ class OSG_EXPORT Viewport : public StateAttribute
         virtual void apply(State& state) const;
 
     protected:
-    
+
         virtual ~Viewport();
 
         value_type _x;

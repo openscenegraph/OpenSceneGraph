@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Transform>
@@ -20,13 +20,13 @@ using namespace osg;
 class TransformVisitor : public NodeVisitor
 {
     public:
-    
+
         enum CoordMode
         {
             WORLD_TO_LOCAL,
             LOCAL_TO_WORLD
         };
-        
+
 
         CoordMode       _coordMode;
         Matrix&         _matrix;
@@ -50,11 +50,11 @@ class TransformVisitor : public NodeVisitor
                 transform.computeWorldToLocalMatrix(_matrix,this);
             }
         }
-        
+
         void accumulate(const NodePath& nodePath)
         {
             if (nodePath.empty()) return;
- 
+
             unsigned int i = 0;
             if (_ignoreCameras)
             {
@@ -67,15 +67,15 @@ class TransformVisitor : public NodeVisitor
                     ++ritr, --i)
                 {
                     const osg::Camera* camera = dynamic_cast<const osg::Camera*>(*ritr);
-                    if (camera && 
+                    if (camera &&
                         (camera->getReferenceFrame()!=osg::Transform::RELATIVE_RF || camera->getParents().empty()))
                     {
                         break;
                     }
                 }
-            }            
+            }
 
-            // do the accumulation of the active part of nodepath.        
+            // do the accumulation of the active part of nodepath.
             for(;
                 i<nodePath.size();
                 ++i)
@@ -83,11 +83,11 @@ class TransformVisitor : public NodeVisitor
                 const_cast<Node*>(nodePath[i])->accept(*this);
             }
         }
-        
+
     protected:
-    
+
         TransformVisitor& operator = (const TransformVisitor&) { return *this; }
-    
+
 };
 
 Matrix osg::computeLocalToWorld(const NodePath& nodePath, bool ignoreCameras)
@@ -135,7 +135,7 @@ Transform::Transform()
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
     Group(transform,copyop),
     _referenceFrame(transform._referenceFrame)
-{    
+{
 }
 
 Transform::~Transform()
@@ -145,9 +145,9 @@ Transform::~Transform()
 void Transform::setReferenceFrame(ReferenceFrame rf)
 {
     if (_referenceFrame == rf) return;
-    
+
     _referenceFrame = rf;
-    
+
     // switch off culling if transform is absolute.
     setCullingActive(_referenceFrame==RELATIVE_RF);
 }
@@ -156,7 +156,7 @@ BoundingSphere Transform::computeBound() const
 {
     BoundingSphere bsphere = Group::computeBound();
     if (!bsphere.valid()) return bsphere;
-    
+
     // note, NULL pointer for NodeVisitor, so compute's need
     // to handle this case gracefully, normally this should not be a problem.
     Matrix l2w;

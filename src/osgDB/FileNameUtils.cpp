@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdlib.h>
@@ -71,7 +71,7 @@ std::string osgDB::getFileExtensionIncludingDot(const std::string& fileName)
 std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
 {
     std::string new_fileName(fileName);
-    
+
     std::string::size_type slash = 0;
     while( (slash=new_fileName.find_first_of(UNIX_PATH_SEPARATOR,slash)) != std::string::npos)
     {
@@ -83,7 +83,7 @@ std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
 std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
 {
     std::string new_fileName(fileName);
-    
+
     std::string::size_type slash = 0;
     while( (slash=new_fileName.find_first_of(WINDOWS_PATH_SEPARATOR,slash)) != std::string::npos)
     {
@@ -201,10 +201,10 @@ bool osgDB::containsServerAddress(const std::string& filename)
 {
     // need to check for ://
     std::string::size_type pos(filename.find("://"));
-    if (pos == std::string::npos) 
+    if (pos == std::string::npos)
         return false;
     std::string proto(filename.substr(0, pos));
-    
+
     return Registry::instance()->isProtocolRegistered(proto);
 }
 
@@ -220,7 +220,7 @@ std::string osgDB::getServerProtocol(const std::string& filename)
 std::string osgDB::getServerAddress(const std::string& filename)
 {
     std::string::size_type pos(filename.find("://"));
-    
+
     if (pos != std::string::npos)
     {
         std::string::size_type pos_slash = filename.find_first_of('/',pos+3);
@@ -251,7 +251,7 @@ std::string osgDB::getServerFileName(const std::string& filename)
         {
             return "";
         }
-    
+
     }
     return filename;
 }
@@ -359,10 +359,10 @@ std::string osgDB::getRealPath(const std::string& path)
 #else
     char resolved_path[PATH_MAX];
     char* result = realpath(path.c_str(), resolved_path);
-    
+
     if (result) return std::string(resolved_path);
     else return path;
-#endif 
+#endif
 }
 
 namespace osgDB

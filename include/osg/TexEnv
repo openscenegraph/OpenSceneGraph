@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ class OSG_EXPORT TexEnv : public StateAttribute
         };
 
         TexEnv(Mode mode=MODULATE);
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexEnv(const TexEnv& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texenv,copyop),
@@ -70,11 +70,11 @@ class OSG_EXPORT TexEnv : public StateAttribute
 
 
         void setMode( Mode mode ) { _mode = mode; }
-        
+
         Mode getMode() const { return _mode; }
-        
+
         void setColor( const Vec4& color ) { _color = color; }
-        
+
         Vec4& getColor() { return _color; }
 
         const Vec4& getColor() const { return _color; }

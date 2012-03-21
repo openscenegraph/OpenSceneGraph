@@ -217,6 +217,18 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
     }
 }
 
+bool GraphicsContext::Traits::getContextVersion(unsigned int& major, unsigned int& minor) const
+{
+    if (glContextVersion.empty()) return false;
+
+    std::istringstream istr( glContextVersion );
+    unsigned char dot;
+    istr >> major >> dot >> minor;
+
+    return true;
+}
+
+
 class ContextData
 {
 public:

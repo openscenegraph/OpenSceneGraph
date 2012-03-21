@@ -123,7 +123,9 @@ class OSG_EXPORT GraphicsContext : public Object
             std::string     glContextVersion;
             unsigned int    glContextFlags;
             unsigned int    glContextProfileMask;
-            
+
+            /** return true if glContextVersion is set in the form major.minor, and assign the appropriate major and minor values to the associated parameters.*/
+            bool getContextVersion(unsigned int& major, unsigned int& minor) const;
             
             // shared context
             GraphicsContext* sharedContext;

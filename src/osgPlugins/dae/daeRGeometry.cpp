@@ -462,7 +462,7 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode,
     osg::Geometry *geometry = new osg::Geometry();
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
-    geode->addDrawable( geometry );
+    
 
     osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(mode);
     geometry->addPrimitiveSet(pDrawElements);
@@ -472,7 +472,11 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode,
     std::vector<std::vector<GLuint> > indexLists;
     resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh,
         geometry, sources, indexLists);
-    pDrawElements->asVector().swap(indexLists.front());
+    if (indexLists.front().size()) 
+    {
+        pDrawElements->asVector().swap(indexLists.front());
+        geode->addDrawable( geometry );
+    }
 }
 
 template< typename T >
@@ -945,6 +949,9 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     {
         if (daeElement* texcoord_source = texcoord_sources[texcoord_set])
         {
+            std::string id = std::string("#") + texcoord_source->getID();
+            //We keep somewhere the mapping between daeElement id and created arrays
+            _texCoordIdMap.insert(std::pair<std::string,size_t>(id,texcoord_set));
             // 2D Texcoords
             osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec2Array, osg::Vec2dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
             if (arrayData.array.valid())

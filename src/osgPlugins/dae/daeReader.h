@@ -245,6 +245,7 @@ public:
     typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Skeleton> > domNodeOsgSkeletonMap;
     typedef std::map<TextureParameters, osg::ref_ptr<osg::Texture2D> > TextureParametersMap;
     typedef std::map<std::pair<const osg::StateSet*, TextureUnitUsage>, std::string> TextureToCoordSetMap;
+    typedef std::map<std::string, size_t> IdToCoordIndexMap;
 
     typedef std::map< daeElement*, domSourceReader > SourceMap;
     typedef std::map< int, osg::IntArray*, std::less<int> > IndexMap;
@@ -403,6 +404,7 @@ private:
     MaterialStateSetMap _materialMap2;
     TextureParametersMap _textureParamMap;
     TextureToCoordSetMap _texCoordSetMap;
+    IdToCoordIndexMap    _texCoordIdMap;
     domInstance_controllerList _skinInstanceControllers;
     OldToNewIndexMap _oldToNewIndexMap;
 

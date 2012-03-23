@@ -4,14 +4,14 @@
 SET(TARGET_DEFAULT_PREFIX "example_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Examples")
 
-SET(TARGET_COMMON_LIBRARIES 
+SET(TARGET_COMMON_LIBRARIES
     OpenThreads
-    osg 
-    osgDB 
+    osg
+    osgDB
     osgUtil
     osgGA
-    osgViewer 
-    osgText 
+    osgViewer
+    osgText
 )
 
 IF(ANDROID)
@@ -222,7 +222,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
         OPTION(BUILD_MFC_EXAMPLE "Enable the build of the MFC Example" OFF)
 
-        IF   (BUILD_MFC_EXAMPLE)        
+        IF   (BUILD_MFC_EXAMPLE)
             ADD_SUBDIRECTORY(osgviewerMFC)
         ENDIF(BUILD_MFC_EXAMPLE)
 
@@ -253,7 +253,7 @@ ELSE(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerIPhone)
     ENDIF()
      # IPHONE_PORT@tom
-    
+
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 ENDIF(ANDROID)

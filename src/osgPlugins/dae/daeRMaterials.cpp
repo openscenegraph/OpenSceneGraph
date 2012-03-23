@@ -584,7 +584,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
-            mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+            mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], (f4.getCount()==4)? f4[3] : 1.0 ) );
             retVal = true;
         }
         else if (cot->getParam() != NULL)
@@ -616,7 +616,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
-            mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+            mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], (f4.getCount()==4)? f4[3] : 1.0 ) );
             retVal = true;
         }
         else if (cot->getParam() != NULL)
@@ -646,10 +646,10 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
     }
     else if (channel == osg::Material::DIFFUSE )
     {
-        if (cot->getColor() != NULL )
+        if (cot->getColor() != NULL)
         {
             domFloat4 &f4 = cot->getColor()->getValue();
-            mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+            mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], (f4.getCount()==4)? f4[3] : 1.0 ) );
             retVal = true;
         }
         else if (cot->getTexture() != NULL)
@@ -700,7 +700,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
-            mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+            mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], (f4.getCount()==4)? f4[3] : 1.0 ) );
             retVal = true;
         }
         else if (cot->getParam() != NULL)
@@ -1305,9 +1305,31 @@ bool daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geo
     if (k == bvia.getCount())
     {
         OSG_WARN << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
-        if (cachedGeometry->getNumTexCoordArrays())
+
+        //bind_vertex_input failed, we try bind
+        const domInstance_material::domBind_Array &ba = im->getBind_array();
+        for (k = 0; k < ba.getCount(); k++)
         {
-        clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(0));
+            if (!strcmp(ba[k]->getSemantic(), texCoordSetName.c_str()) )
+            {
+                IdToCoordIndexMap::const_iterator it = _texCoordIdMap.find(ba[k]->getTarget());
+                if (it!=_texCoordIdMap.end()&& (cachedGeometry->getNumTexCoordArrays()>it->second))
+                {
+                  clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(it->second));
+                }
+                else
+                {
+                    OSG_WARN << "Texture coordinate set " << ba[k]->getTarget() << " not found." << std::endl;
+                }
+                break;
+            }
+        }
+        if (k == ba.getCount())
+        {
+            if (cachedGeometry->getNumTexCoordArrays())
+            {
+                clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(0));
+            }
         }
     }
     return true;

@@ -188,6 +188,11 @@ ENDIF(OSG_MAINTAINER)
 
 IF(NOT ANDROID)
 IF(APPLE)
+    # Determine the canonical name of the selected Platform SDK
+    EXECUTE_PROCESS(COMMAND "defaults" "read" "${CMAKE_OSX_SYSROOT}/SDKSettings.plist" "CanonicalName"
+                    OUTPUT_VARIABLE APPLE_PLATFORM_SDK_CANONICAL_NAME
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
     # set to true. Should realy have an OSG_BUILD_PLATFORM variable that we set to our desired platform
@@ -819,20 +824,18 @@ IF(APPLE)
         # FORCE is used because the options are not reflected in the UI otherwise.
         # Seems like a good place to add version specific compiler flags too.
         IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-            # This is really fragile, but CMake doesn't provide the OS system
-            # version information we need. (Darwin versions can be changed
-            # independently of OS X versions.)
-            IF (${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.7.sdk")
+            IF(${APPLE_PLATFORM_SDK_CANONICAL_NAME} STREQUAL "macosx10.7")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 # 64 Bit Works, PPC is not supported any more
                 SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.7 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSEIF(${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.5.sdk" OR ${CMAKE_OSX_SYSROOT} STREQUAL "/Developer/SDKs/MacOSX10.6.sdk") 
+            ELSEIF(${APPLE_PLATFORM_SDK_CANONICAL_NAME} STREQUAL "macosx10.6" /
+                   ${APPLE_PLATFORM_SDK_CANONICAL_NAME} STREQUAL "macosx10.5")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 # 64-bit compiles are not supported with Carbon. 
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSEIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
+            ELSEIF(${APPLE_PLATFORM_SDK_CANONICAL_NAME} STREQUAL "macosx10.4")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
@@ -841,7 +844,7 @@ IF(APPLE)
                 # Should break down further to set the -mmacosx-version-min,
                 # but the SDK detection is too unreliable here.
             ENDIF()
-        ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+        ENDIF()
 
         OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
 
@@ -881,12 +884,12 @@ IF(BUILD_DOCUMENTATION)
     # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
     SET(GENERATE_HTMLHELP "NO")
     IF(DOCUMENTATION_HTML_HELP)
-        # on windows Documentation.cmake finds the html help workshop fi it exists. On u*ix we might have it with wine but no way to point it out
+        # on windows Documentation.cmake finds the html help workshop if it exists. On u*ix we might have it with wine but no way to point it out
         IF(NOT WIN32)
             SET(HTML_HELP_COMPILER "" CACHE FILEPATH "Enter location of the HTML help compiler to let doxygen compile html")
             MARK_AS_ADVANCED(HTML_HELP_COMPILER)
         ENDIF()
-        # this var sets a proper value in .doxygen files when coniguring them below
+        # this var sets a proper value in .doxygen files when configuring them below
         SET(GENERATE_HTMLHELP "YES")
     endif()
 

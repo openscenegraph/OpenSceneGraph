@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.1.1
+OpenSceneGraph Library 3.1.2
 
 480 Contributors:
 
@@ -53,13 +53,13 @@ Robert Milharcic
 Philip Lowman
 Per Fahlberg
 Norman Vine
+Luc Frauciel
 Laurens Voerman
 Brad Christiansen
 Art Tevs
 Terry Welsh
 Serge Lages
 Mathieu Marache
-Luc Frauciel
 Chris Denham
 Alberto Farre
 Sherman Wilcox
@@ -159,6 +159,7 @@ John Vidar Larring
 John Kelso
 John Ivar
 Gustav Haapalahti
+Erik den Dekker
 Emmanuel Roche
 Domenico Mangieri
 Daniel Larimer
@@ -182,6 +183,7 @@ Nathan Monteleone
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
+Lukasz Izdebski
 Lilin Xiong
 Lee Butler
 Konstantin Sinitsyn
@@ -196,7 +198,6 @@ Gary Quinn
 Garrett Potts
 Gabor Dorka
 Fabio Mierlo
-Erik den Dekker
 Doug McCorkle
 Donald Cipperly
 Don Leich
@@ -244,7 +245,6 @@ Martin Lambers
 Martijn Kragtwijk
 Marius Heise
 Marcin Hajder
-Lukasz Izdebski
 Lilith Bryant
 Lars Nilsson
 Kevin Moiule

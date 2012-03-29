@@ -1,6 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2012 David Callu
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -23,137 +24,341 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec2d>
+#include <osg/Vec3d>
+#include <osg/Vec4d>
 #include <osg/Matrix>
 #include <osg/GL2Extensions>
 
+#include <string.h> // for memset
 #include <string>
 #include <vector>
-
-#ifndef GL_SAMPLER_1D
-    #define GL_SAMPLER_1D               0x8B5D
-    #define GL_SAMPLER_2D               0x8B5E
-    #define GL_SAMPLER_3D               0x8B5F
-    #define GL_SAMPLER_1D_SHADOW        0x8B61
-    #define GL_SAMPLER_2D_SHADOW        0x8B62
-#endif
 
 
 namespace osg {
 
 // forward declare
-class GL2Extensions;
 class NodeVisitor;
 
 ///////////////////////////////////////////////////////////////////////////
 // C++ classes to represent the GLSL-specific types.
 
-class OSG_EXPORT Matrix2
+template <typename T, unsigned int ColN, unsigned int RowN>
+class MatrixTemplate
 {
     public:
-        Matrix2() { makeIdentity(); }
-        Matrix2( const Matrix2& mat ) { set(mat.ptr()); }
-        Matrix2( float a00, float a01,
-                 float a10, float a11 )
+      enum { col_count = ColN };
+      enum { row_count = RowN };
+      enum { value_count = ColN * RowN };
+
+      typedef T value_type;
+
+
+    public:
+        MatrixTemplate() {}
+        ~MatrixTemplate() {}
+
+        value_type& operator()(int row, int col) { return _mat[row][col]; }
+        value_type operator()(int row, int col) const { return _mat[row][col]; }
+
+        MatrixTemplate& operator = (const MatrixTemplate& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
+        void set(const MatrixTemplate& rhs) { set(rhs.ptr()); }
+
+        void set(value_type const * const ptr)
+        {
+            value_type* local_ptr = (value_type*)_mat;
+            for(int i=0;i<value_count;++i) local_ptr[i]=ptr[i];
+        }
+
+        value_type* ptr() { return (value_type*)_mat; }
+        const value_type* ptr() const { return (const value_type*)_mat; }
+
+        value_type& operator [] (int i) {return ptr()[i];}
+        value_type operator [] (int i) const {return ptr()[i];}
+
+        void reset() { memset(_mat, 0, sizeof( value_type ) * value_count); }
+
+    protected:
+        value_type _mat[col_count][row_count];
+};
+
+template <typename T>
+class Matrix2Template : public MatrixTemplate<T, 2, 2>
+{
+    public:
+        typedef MatrixTemplate<T, 2, 2>         base_class;
+        typedef typename base_class::value_type value_type;
+
+
+    public:
+        Matrix2Template() { makeIdentity(); }
+        Matrix2Template( const Matrix2Template& mat ) { set(mat.ptr()); }
+        Matrix2Template( value_type a00, value_type a01,
+                         value_type a10, value_type a11 )
         {
             set( a00, a01, a10, a11 );
         }
-        ~Matrix2() {}
-        float& operator()(int row, int col) { return _mat[row][col]; }
-        float operator()(int row, int col) const { return _mat[row][col]; }
+        ~Matrix2Template() {}
 
-        Matrix2& operator = (const Matrix2& rhs)
-        {
-            if( &rhs == this ) return *this;
-            set(rhs.ptr());
-            return *this;
-        }
-
-        void set(const Matrix2& rhs) { set(rhs.ptr()); }
-
-        void set(float const * const ptr)
-        {
-            float* local_ptr = (float*)_mat;
-            for(int i=0;i<4;++i) local_ptr[i]=ptr[i];
-        }
-
-        void set(float a00, float a01,
-                 float a10, float a11)
+        void set(value_type a00, value_type a10,
+                 value_type a01, value_type a11)
          {
-             _mat[0][0]=a00; _mat[0][1]=a01;
-             _mat[1][0]=a10; _mat[1][1]=a11;
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
          }
 
-        float* ptr() { return (float*)_mat; }
-        const float* ptr() const { return (const float*)_mat; }
-
-        float& operator [] (int i) {return ptr()[i];}
-        float operator [] (int i) const {return ptr()[i];}
-
-        void makeIdentity() { set( 1, 0, 0, 1 ); }
-
-    protected:
-        float _mat[2][2];
+        void makeIdentity()
+        {
+            set( 1, 0,
+                 0, 1 );
+        }
 };
 
-
-class OSG_EXPORT Matrix3
+template <typename T>
+class Matrix2x3Template : public MatrixTemplate<T, 2, 3>
 {
     public:
-        Matrix3() { makeIdentity(); }
-        Matrix3( const Matrix3& mat ) { set(mat.ptr()); }
-        Matrix3( float a00, float a01, float a02,
-                 float a10, float a11, float a12,
-                 float a20, float a21, float a22 )
+        typedef MatrixTemplate<T, 2, 3>         base_class;
+        typedef typename base_class::value_type value_type;
+
+
+    public:
+        Matrix2x3Template() { base_class::reset(); }
+        Matrix2x3Template( const Matrix2x3Template& mat ) { set(mat.ptr()); }
+        Matrix2x3Template( value_type a00, value_type a10,
+                           value_type a01, value_type a11,
+                           value_type a02, value_type a12 )
         {
-            set( a00, a01, a02, a10, a11, a12, a20, a21, a22 );
+            set( a00, a10, a01, a11, a02, a12 );
         }
-        ~Matrix3() {}
-        float& operator()(int row, int col) { return _mat[row][col]; }
-        float operator()(int row, int col) const { return _mat[row][col]; }
+        ~Matrix2x3Template() {}
 
-        Matrix3& operator = (const Matrix3& rhs)
-        {
-            if( &rhs == this ) return *this;
-            set(rhs.ptr());
-            return *this;
-        }
-
-        void set(const Matrix3& rhs) { set(rhs.ptr()); }
-
-        void set(float const * const ptr)
-        {
-            float* local_ptr = (float*)_mat;
-            for(int i=0;i<9;++i) local_ptr[i]=ptr[i];
-        }
-
-        void set(float a00, float a01, float a02,
-                 float a10, float a11, float a12,
-                 float a20, float a21, float a22 )
+        void set(value_type a00, value_type a10,
+                 value_type a01, value_type a11,
+                 value_type a02, value_type a12)
          {
-             _mat[0][0]=a00; _mat[0][1]=a01; _mat[0][2]=a02;
-             _mat[1][0]=a10; _mat[1][1]=a11; _mat[1][2]=a12;
-             _mat[2][0]=a20; _mat[2][1]=a21; _mat[2][2]=a22;
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
+             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12;
          }
-
-        float* ptr() { return (float*)_mat; }
-        const float* ptr() const { return (const float*)_mat; }
-
-        float& operator [] (int i) {return ptr()[i];}
-        float operator [] (int i) const {return ptr()[i];}
-
-        void makeIdentity() { set( 1, 0, 0, 0, 1, 0, 0, 0, 1 ); }
-
-    protected:
-        float _mat[3][3];
 };
 
-// TODO add new GL 2.1 non-square matrix types
-// class OSG_EXPORT Matrix2x3
-// class OSG_EXPORT Matrix3x2
-// class OSG_EXPORT Matrix2x4
-// class OSG_EXPORT Matrix4x2
-// class OSG_EXPORT Matrix3x4
-// class OSG_EXPORT Matrix4x3
+template <typename T>
+class Matrix2x4Template : public MatrixTemplate<T, 2, 4>
+{
+    public:
+        typedef MatrixTemplate<T, 2, 4>         base_class;
+        typedef typename base_class::value_type value_type;
+
+
+    public:
+        Matrix2x4Template() { base_class::reset(); }
+        Matrix2x4Template( const Matrix2x4Template& mat ) { set(mat.ptr()); }
+        Matrix2x4Template( value_type a00, value_type a10,
+                           value_type a01, value_type a11,
+                           value_type a02, value_type a12,
+                           value_type a03, value_type a13 )
+        {
+            set( a00, a10,
+                 a01, a11,
+                 a02, a12,
+                 a03, a13 );
+        }
+        ~Matrix2x4Template() {}
+
+        void set(value_type a00, value_type a10,
+                 value_type a01, value_type a11,
+                 value_type a02, value_type a12,
+                 value_type a03, value_type a13)
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
+             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12;
+             base_class::_mat[0][3]=a03; base_class::_mat[1][3]=a13;
+         }
+};
+
+template <typename T>
+class Matrix3x2Template : public MatrixTemplate<T, 3, 2>
+{
+    public:
+        typedef MatrixTemplate<T, 3, 2>         base_class;
+        typedef typename base_class::value_type value_type;
+
+    public:
+        Matrix3x2Template() { base_class::reset(); }
+        Matrix3x2Template( const Matrix3x2Template& mat ) { set(mat.ptr()); }
+        Matrix3x2Template( value_type a00, value_type a10, value_type a20,
+                           value_type a01, value_type a11, value_type a21 )
+        {
+            set( a00, a10, a20,
+                 a01, a11, a21 );
+        }
+        ~Matrix3x2Template() {}
+
+        void set( value_type a00, value_type a10, value_type a20,
+                  value_type a01, value_type a11, value_type a21 )
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
+         }
+};
+
+template <typename T>
+class Matrix3Template : public MatrixTemplate<T, 3, 3>
+{
+    public:
+        typedef MatrixTemplate<T, 3, 3>         base_class;
+        typedef typename base_class::value_type value_type;
+
+    public:
+        Matrix3Template() { base_class::reset(); }
+        Matrix3Template( const Matrix3Template& mat ) { set(mat.ptr()); }
+        Matrix3Template( value_type a00, value_type a10, value_type a20,
+                         value_type a01, value_type a11, value_type a21,
+                         value_type a02, value_type a12, value_type a22 )
+        {
+            set( a00, a10, a20,
+                 a01, a11, a21,
+                 a02, a12, a22 );
+        }
+        ~Matrix3Template() {}
+
+        void set( value_type a00, value_type a10, value_type a20,
+                  value_type a01, value_type a11, value_type a21,
+                  value_type a02, value_type a12, value_type a22 )
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
+             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22;
+         }
+
+        void makeIdentity()
+        {
+            set( 1, 0, 0,
+                 0, 1, 0,
+                 0, 0, 1 );
+        }
+};
+
+template <typename T>
+class Matrix3x4Template : public MatrixTemplate<T, 3, 4>
+{
+    public:
+        typedef MatrixTemplate<T, 3, 4>         base_class;
+        typedef typename base_class::value_type value_type;
+
+    public:
+        Matrix3x4Template() { base_class::reset(); }
+        Matrix3x4Template( const Matrix3x4Template& mat ) { set(mat.ptr()); }
+        Matrix3x4Template( value_type a00, value_type a10, value_type a20,
+                           value_type a01, value_type a11, value_type a21,
+                           value_type a02, value_type a12, value_type a22,
+                           value_type a03, value_type a13, value_type a23 )
+        {
+            set( a00, a10, a20,
+                 a01, a11, a21,
+                 a02, a12, a22,
+                 a03, a13, a23 );
+        }
+        ~Matrix3x4Template() {}
+
+        void set( value_type a00, value_type a10, value_type a20,
+                  value_type a01, value_type a11, value_type a21,
+                  value_type a02, value_type a12, value_type a22,
+                  value_type a03, value_type a13, value_type a23 )
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
+             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22;
+             base_class::_mat[0][3]=a03; base_class::_mat[1][3]=a13; base_class::_mat[2][3]=a23;
+         }
+};
+
+template <typename T>
+class Matrix4x2Template : public MatrixTemplate<T, 4, 2>
+{
+    public:
+        typedef MatrixTemplate<T, 4, 2>         base_class;
+        typedef typename base_class::value_type value_type;
+
+    public:
+        Matrix4x2Template() { base_class::reset(); }
+        Matrix4x2Template( const Matrix4x2Template& mat ) { set(mat.ptr()); }
+        Matrix4x2Template( value_type a00, value_type a10, value_type a20, value_type a30,
+                           value_type a01, value_type a11, value_type a21, value_type a31 )
+        {
+            set( a00, a10, a20, a30,
+                 a01, a11, a21, a31 );
+        }
+        ~Matrix4x2Template() {}
+
+        void set( value_type a00, value_type a10, value_type a20, value_type a30,
+                  value_type a01, value_type a11, value_type a21, value_type a31 )
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20; base_class::_mat[3][0]=a30;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21; base_class::_mat[3][1]=a31;
+         }
+};
+
+template <typename T>
+class Matrix4x3Template : public MatrixTemplate<T, 4, 3>
+{
+    public:
+        typedef MatrixTemplate<T, 4, 3>         base_class;
+        typedef typename base_class::value_type value_type;
+
+    public:
+        Matrix4x3Template() { base_class::reset(); }
+        Matrix4x3Template( const Matrix4x3Template& mat ) { set(mat.ptr()); }
+        Matrix4x3Template( value_type a00, value_type a10, value_type a20, value_type a30,
+                           value_type a01, value_type a11, value_type a21, value_type a31,
+                           value_type a02, value_type a12, value_type a22, value_type a32 )
+        {
+            set( a00, a10, a20, a30,
+                 a01, a11, a21, a31 );
+        }
+        ~Matrix4x3Template() {}
+
+        void set( value_type a00, value_type a10, value_type a20, value_type a30,
+                  value_type a01, value_type a11, value_type a21, value_type a31,
+                  value_type a02, value_type a12, value_type a22, value_type a32 )
+         {
+             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20; base_class::_mat[3][0]=a30;
+             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21; base_class::_mat[3][1]=a31;
+             base_class::_mat[0][2]=a01; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22; base_class::_mat[3][2]=a32;
+         }
+};
+
+typedef Matrix2Template<float>    Matrix2;
+typedef Matrix2x3Template<float>  Matrix2x3;
+typedef Matrix2x4Template<float>  Matrix2x4;
+
+typedef Matrix3x2Template<float>  Matrix3x2;
+typedef Matrix3Template<float>    Matrix3;
+typedef Matrix3x4Template<float>  Matrix3x4;
+
+typedef Matrix4x2Template<float>  Matrix4x2;
+typedef Matrix4x3Template<float>  Matrix4x3;
+
+
+typedef Matrix2Template<double>    Matrix2d;
+typedef Matrix2x3Template<double>  Matrix2x3d;
+typedef Matrix2x4Template<double>  Matrix2x4d;
+
+typedef Matrix3x2Template<double>  Matrix3x2d;
+typedef Matrix3Template<double>    Matrix3d;
+typedef Matrix3x4Template<double>  Matrix3x4d;
+
+typedef Matrix4x2Template<double>  Matrix4x2d;
+typedef Matrix4x3Template<double>  Matrix4x3d;
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -163,62 +368,129 @@ class OSG_EXPORT Uniform : public Object
 {
     public:
         enum Type {
-            FLOAT = GL_FLOAT,
+            FLOAT      = GL_FLOAT,
             FLOAT_VEC2 = GL_FLOAT_VEC2,
             FLOAT_VEC3 = GL_FLOAT_VEC3,
             FLOAT_VEC4 = GL_FLOAT_VEC4,
-            INT = GL_INT,
+
+            DOUBLE      = GL_DOUBLE,
+            DOUBLE_VEC2 = GL_DOUBLE_VEC2,
+            DOUBLE_VEC3 = GL_DOUBLE_VEC3,
+            DOUBLE_VEC4 = GL_DOUBLE_VEC4,
+
+            INT      = GL_INT,
             INT_VEC2 = GL_INT_VEC2,
             INT_VEC3 = GL_INT_VEC3,
             INT_VEC4 = GL_INT_VEC4,
-            BOOL = GL_BOOL,
+
+            UNSIGNED_INT      = GL_UNSIGNED_INT,
+            UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2_EXT,
+            UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3_EXT,
+            UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4_EXT,
+
+            BOOL      = GL_BOOL,
             BOOL_VEC2 = GL_BOOL_VEC2,
             BOOL_VEC3 = GL_BOOL_VEC3,
             BOOL_VEC4 = GL_BOOL_VEC4,
-            FLOAT_MAT2 = GL_FLOAT_MAT2,
-            FLOAT_MAT3 = GL_FLOAT_MAT3,
-            FLOAT_MAT4 = GL_FLOAT_MAT4,
-            SAMPLER_1D = GL_SAMPLER_1D,
-            SAMPLER_2D = GL_SAMPLER_2D,
-            SAMPLER_3D = GL_SAMPLER_3D,
-            SAMPLER_CUBE = GL_SAMPLER_CUBE,
-            SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
-            SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
 
-            SAMPLER_1D_ARRAY  = GL_SAMPLER_1D_ARRAY_EXT,
-            SAMPLER_2D_ARRAY  = GL_SAMPLER_2D_ARRAY_EXT,
-            SAMPLER_1D_ARRAY_SHADOW = GL_SAMPLER_1D_ARRAY_SHADOW_EXT,
-            SAMPLER_2D_ARRAY_SHADOW = GL_SAMPLER_2D_ARRAY_SHADOW_EXT,
-
-// TODO the following must be integrated fully here and Uniform.cpp
+            FLOAT_MAT2   = GL_FLOAT_MAT2,
+            FLOAT_MAT3   = GL_FLOAT_MAT3,
+            FLOAT_MAT4   = GL_FLOAT_MAT4,
             FLOAT_MAT2x3 = GL_FLOAT_MAT2x3,
             FLOAT_MAT2x4 = GL_FLOAT_MAT2x4,
             FLOAT_MAT3x2 = GL_FLOAT_MAT3x2,
             FLOAT_MAT3x4 = GL_FLOAT_MAT3x4,
             FLOAT_MAT4x2 = GL_FLOAT_MAT4x2,
             FLOAT_MAT4x3 = GL_FLOAT_MAT4x3,
-            SAMPLER_BUFFER = GL_SAMPLER_BUFFER_EXT,
-            SAMPLER_CUBE_SHADOW = GL_SAMPLER_CUBE_SHADOW_EXT,
-            UNSIGNED_INT = GL_UNSIGNED_INT,
-            UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2_EXT,
-            UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3_EXT,
-            UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4_EXT,
-            INT_SAMPLER_1D       = GL_INT_SAMPLER_1D_EXT,
-            INT_SAMPLER_2D       = GL_INT_SAMPLER_2D_EXT,
-            INT_SAMPLER_3D       = GL_INT_SAMPLER_3D_EXT,
-            INT_SAMPLER_CUBE     = GL_INT_SAMPLER_CUBE_EXT,
-            INT_SAMPLER_2D_RECT  = GL_INT_SAMPLER_2D_RECT_EXT,
-            INT_SAMPLER_1D_ARRAY = GL_INT_SAMPLER_1D_ARRAY_EXT,
-            INT_SAMPLER_2D_ARRAY = GL_INT_SAMPLER_2D_ARRAY_EXT,
-            INT_SAMPLER_BUFFER   = GL_INT_SAMPLER_BUFFER_EXT,
-            UNSIGNED_INT_SAMPLER_1D       = GL_UNSIGNED_INT_SAMPLER_1D_EXT,
-            UNSIGNED_INT_SAMPLER_2D       = GL_UNSIGNED_INT_SAMPLER_2D_EXT,
-            UNSIGNED_INT_SAMPLER_3D       = GL_UNSIGNED_INT_SAMPLER_3D_EXT,
-            UNSIGNED_INT_SAMPLER_CUBE     = GL_UNSIGNED_INT_SAMPLER_CUBE_EXT,
-            UNSIGNED_INT_SAMPLER_2D_RECT  = GL_UNSIGNED_INT_SAMPLER_2D_RECT_EXT,
-            UNSIGNED_INT_SAMPLER_1D_ARRAY = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT,
-            UNSIGNED_INT_SAMPLER_2D_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT,
-            UNSIGNED_INT_SAMPLER_BUFFER   = GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT,
+
+            DOUBLE_MAT2   = GL_DOUBLE_MAT2,
+            DOUBLE_MAT3   = GL_DOUBLE_MAT3,
+            DOUBLE_MAT4   = GL_DOUBLE_MAT4,
+            DOUBLE_MAT2x3 = GL_DOUBLE_MAT2x3,
+            DOUBLE_MAT2x4 = GL_DOUBLE_MAT2x4,
+            DOUBLE_MAT3x2 = GL_DOUBLE_MAT3x2,
+            DOUBLE_MAT3x4 = GL_DOUBLE_MAT3x4,
+            DOUBLE_MAT4x2 = GL_DOUBLE_MAT4x2,
+            DOUBLE_MAT4x3 = GL_DOUBLE_MAT4x3,
+
+            SAMPLER_1D                    = GL_SAMPLER_1D,
+            SAMPLER_2D                    = GL_SAMPLER_2D,
+            SAMPLER_3D                    = GL_SAMPLER_3D,
+            SAMPLER_CUBE                  = GL_SAMPLER_CUBE,
+            SAMPLER_1D_SHADOW             = GL_SAMPLER_1D_SHADOW,
+            SAMPLER_2D_SHADOW             = GL_SAMPLER_2D_SHADOW,
+            SAMPLER_1D_ARRAY              = GL_SAMPLER_1D_ARRAY_EXT,
+            SAMPLER_2D_ARRAY              = GL_SAMPLER_2D_ARRAY_EXT,
+            SAMPLER_CUBE_MAP_ARRAY        = GL_SAMPLER_CUBE_MAP_ARRAY,
+            SAMPLER_1D_ARRAY_SHADOW       = GL_SAMPLER_1D_ARRAY_SHADOW_EXT,
+            SAMPLER_2D_ARRAY_SHADOW       = GL_SAMPLER_2D_ARRAY_SHADOW_EXT,
+            SAMPLER_2D_MULTISAMPLE        = GL_SAMPLER_2D_MULTISAMPLE,
+            SAMPLER_2D_MULTISAMPLE_ARRAY  = GL_SAMPLER_2D_MULTISAMPLE_ARRAY,
+            SAMPLER_CUBE_SHADOW           = GL_SAMPLER_CUBE_SHADOW_EXT,
+            SAMPLER_CUBE_MAP_ARRAY_SHADOW = GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW,
+            SAMPLER_BUFFER                = GL_SAMPLER_BUFFER_EXT,
+            SAMPLER_2D_RECT               = GL_SAMPLER_2D_RECT,
+            SAMPLER_2D_RECT_SHADOW        = GL_SAMPLER_2D_RECT_SHADOW,
+
+            INT_SAMPLER_1D                   = GL_INT_SAMPLER_1D_EXT,
+            INT_SAMPLER_2D                   = GL_INT_SAMPLER_2D_EXT,
+            INT_SAMPLER_3D                   = GL_INT_SAMPLER_3D_EXT,
+            INT_SAMPLER_CUBE                 = GL_INT_SAMPLER_CUBE_EXT,
+            INT_SAMPLER_1D_ARRAY             = GL_INT_SAMPLER_1D_ARRAY_EXT,
+            INT_SAMPLER_2D_ARRAY             = GL_INT_SAMPLER_2D_ARRAY_EXT,
+            INT_SAMPLER_CUBE_MAP_ARRAY       = GL_INT_SAMPLER_CUBE_MAP_ARRAY,
+            INT_SAMPLER_2D_MULTISAMPLE       = GL_INT_SAMPLER_2D_MULTISAMPLE,
+            INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
+            INT_SAMPLER_BUFFER               = GL_INT_SAMPLER_BUFFER_EXT,
+            INT_SAMPLER_2D_RECT              = GL_INT_SAMPLER_2D_RECT_EXT,
+
+            UNSIGNED_INT_SAMPLER_1D                   = GL_UNSIGNED_INT_SAMPLER_1D_EXT,
+            UNSIGNED_INT_SAMPLER_2D                   = GL_UNSIGNED_INT_SAMPLER_2D_EXT,
+            UNSIGNED_INT_SAMPLER_3D                   = GL_UNSIGNED_INT_SAMPLER_3D_EXT,
+            UNSIGNED_INT_SAMPLER_CUBE                 = GL_UNSIGNED_INT_SAMPLER_CUBE_EXT,
+            UNSIGNED_INT_SAMPLER_1D_ARRAY             = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT,
+            UNSIGNED_INT_SAMPLER_2D_ARRAY             = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT,
+            UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY       = GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY,
+            UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE       = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE,
+            UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
+            UNSIGNED_INT_SAMPLER_BUFFER               = GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT,
+            UNSIGNED_INT_SAMPLER_2D_RECT              = GL_UNSIGNED_INT_SAMPLER_2D_RECT_EXT,
+
+            IMAGE_1D                   = GL_IMAGE_1D,
+            IMAGE_2D                   = GL_IMAGE_2D,
+            IMAGE_3D                   = GL_IMAGE_3D,
+            IMAGE_2D_RECT              = GL_IMAGE_2D_RECT,
+            IMAGE_CUBE                 = GL_IMAGE_CUBE,
+            IMAGE_BUFFER               = GL_IMAGE_BUFFER,
+            IMAGE_1D_ARRAY             = GL_IMAGE_1D_ARRAY,
+            IMAGE_2D_ARRAY             = GL_IMAGE_2D_ARRAY,
+            IMAGE_CUBE_MAP_ARRAY       = GL_IMAGE_CUBE_MAP_ARRAY,
+            IMAGE_2D_MULTISAMPLE       = GL_IMAGE_2D_MULTISAMPLE,
+            IMAGE_2D_MULTISAMPLE_ARRAY = GL_IMAGE_2D_MULTISAMPLE_ARRAY,
+
+            INT_IMAGE_1D                   = GL_INT_IMAGE_1D,
+            INT_IMAGE_2D                   = GL_INT_IMAGE_2D,
+            INT_IMAGE_3D                   = GL_INT_IMAGE_3D,
+            INT_IMAGE_2D_RECT              = GL_INT_IMAGE_2D_RECT,
+            INT_IMAGE_CUBE                 = GL_INT_IMAGE_CUBE,
+            INT_IMAGE_BUFFER               = GL_INT_IMAGE_BUFFER,
+            INT_IMAGE_1D_ARRAY             = GL_INT_IMAGE_1D_ARRAY,
+            INT_IMAGE_2D_ARRAY             = GL_INT_IMAGE_2D_ARRAY,
+            INT_IMAGE_CUBE_MAP_ARRAY       = GL_INT_IMAGE_CUBE_MAP_ARRAY,
+            INT_IMAGE_2D_MULTISAMPLE       = GL_INT_IMAGE_2D_MULTISAMPLE,
+            INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
+
+            UNSIGNED_INT_IMAGE_1D                   = GL_UNSIGNED_INT_IMAGE_1D,
+            UNSIGNED_INT_IMAGE_2D                   = GL_UNSIGNED_INT_IMAGE_2D,
+            UNSIGNED_INT_IMAGE_3D                   = GL_UNSIGNED_INT_IMAGE_3D,
+            UNSIGNED_INT_IMAGE_2D_RECT              = GL_UNSIGNED_INT_IMAGE_2D_RECT,
+            UNSIGNED_INT_IMAGE_CUBE                 = GL_UNSIGNED_INT_IMAGE_CUBE,
+            UNSIGNED_INT_IMAGE_BUFFER               = GL_UNSIGNED_INT_IMAGE_BUFFER,
+            UNSIGNED_INT_IMAGE_1D_ARRAY             = GL_UNSIGNED_INT_IMAGE_1D_ARRAY,
+            UNSIGNED_INT_IMAGE_2D_ARRAY             = GL_UNSIGNED_INT_IMAGE_2D_ARRAY,
+            UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY       = GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY,
+            UNSIGNED_INT_IMAGE_2D_MULTISAMPLE       = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE,
+            UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
 
             UNDEFINED = 0x0
         };
@@ -273,26 +545,43 @@ class OSG_EXPORT Uniform : public Object
 
         /** convenient scalar (non-array) constructors w/ assignment */
         explicit Uniform( const char* name, float f );
+        explicit Uniform( const char* name, double d );
         explicit Uniform( const char* name, int i );
-        explicit Uniform( const char* name, unsigned int i );
+        explicit Uniform( const char* name, unsigned int ui );
         explicit Uniform( const char* name, bool b );
         Uniform( const char* name, const osg::Vec2& v2 );
         Uniform( const char* name, const osg::Vec3& v3 );
         Uniform( const char* name, const osg::Vec4& v4 );
+        Uniform( const char* name, const osg::Vec2d& v2 );
+        Uniform( const char* name, const osg::Vec3d& v3 );
+        Uniform( const char* name, const osg::Vec4d& v4 );
         Uniform( const char* name, const osg::Matrix2& m2 );
         Uniform( const char* name, const osg::Matrix3& m3 );
         Uniform( const char* name, const osg::Matrixf& m4 );
+        Uniform( const char* name, const osg::Matrix2x3& m2x3 );
+        Uniform( const char* name, const osg::Matrix2x4& m2x4 );
+        Uniform( const char* name, const osg::Matrix3x2& m3x2 );
+        Uniform( const char* name, const osg::Matrix3x4& m3x4 );
+        Uniform( const char* name, const osg::Matrix4x2& m4x2 );
+        Uniform( const char* name, const osg::Matrix4x3& m4x3 );
+        Uniform( const char* name, const osg::Matrix2d& m2 );
+        Uniform( const char* name, const osg::Matrix3d& m3 );
         Uniform( const char* name, const osg::Matrixd& m4 );
+        Uniform( const char* name, const osg::Matrix2x3d& m2x3 );
+        Uniform( const char* name, const osg::Matrix2x4d& m2x4 );
+        Uniform( const char* name, const osg::Matrix3x2d& m3x2 );
+        Uniform( const char* name, const osg::Matrix3x4d& m3x4 );
+        Uniform( const char* name, const osg::Matrix4x2d& m4x2 );
+        Uniform( const char* name, const osg::Matrix4x3d& m4x3 );
         Uniform( const char* name, int i0, int i1 );
         Uniform( const char* name, int i0, int i1, int i2 );
         Uniform( const char* name, int i0, int i1, int i2, int i3 );
-        Uniform( const char* name, unsigned int i0, unsigned int i1 );
-        Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2 );
-        Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
+        Uniform( const char* name, unsigned int ui0, unsigned int ui1 );
+        Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned int ui2 );
+        Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned int ui2, unsigned int ui3 );
         Uniform( const char* name, bool b0, bool b1 );
         Uniform( const char* name, bool b0, bool b1, bool b2 );
         Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
-        // TODO must add new types
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const Uniform& rhs) const;
@@ -332,88 +621,160 @@ class OSG_EXPORT Uniform : public Object
 
         /** convenient scalar (non-array) value assignment */
         bool set( float f );
+        bool set( double d );
         bool set( int i );
-        bool set( unsigned int i );
+        bool set( unsigned int ui );
         bool set( bool b );
         bool set( const osg::Vec2& v2 );
         bool set( const osg::Vec3& v3 );
         bool set( const osg::Vec4& v4 );
+        bool set( const osg::Vec2d& v2 );
+        bool set( const osg::Vec3d& v3 );
+        bool set( const osg::Vec4d& v4 );
         bool set( const osg::Matrix2& m2 );
         bool set( const osg::Matrix3& m3 );
         bool set( const osg::Matrixf& m4 );
+        bool set( const osg::Matrix2x3& m2x3 );
+        bool set( const osg::Matrix2x4& m2x4 );
+        bool set( const osg::Matrix3x2& m3x2 );
+        bool set( const osg::Matrix3x4& m3x4 );
+        bool set( const osg::Matrix4x2& m4x2 );
+        bool set( const osg::Matrix4x3& m4x3 );
+        bool set( const osg::Matrix2d& m2 );
+        bool set( const osg::Matrix3d& m3 );
         bool set( const osg::Matrixd& m4 );
+        bool set( const osg::Matrix2x3d& m2x3 );
+        bool set( const osg::Matrix2x4d& m2x4 );
+        bool set( const osg::Matrix3x2d& m3x2 );
+        bool set( const osg::Matrix3x4d& m3x4 );
+        bool set( const osg::Matrix4x2d& m4x2 );
+        bool set( const osg::Matrix4x3d& m4x3 );
         bool set( int i0, int i1 );
         bool set( int i0, int i1, int i2 );
         bool set( int i0, int i1, int i2, int i3 );
-        bool set( unsigned int i0, unsigned int i1 );
-        bool set( unsigned int i0, unsigned int i1, unsigned int i2 );
-        bool set( unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
+        bool set( unsigned int ui0, unsigned int ui1 );
+        bool set( unsigned int ui0, unsigned int ui1, unsigned int ui2 );
+        bool set( unsigned int ui0, unsigned int ui1, unsigned int ui2, unsigned int ui3 );
         bool set( bool b0, bool b1 );
         bool set( bool b0, bool b1, bool b2 );
         bool set( bool b0, bool b1, bool b2, bool b3 );
 
         /** convenient scalar (non-array) value query */
         bool get( float& f ) const;
+        bool get( double& d ) const;
         bool get( int& i ) const;
-        bool get( unsigned int& i ) const;
+        bool get( unsigned int& ui ) const;
         bool get( bool& b ) const;
         bool get( osg::Vec2& v2 ) const;
         bool get( osg::Vec3& v3 ) const;
         bool get( osg::Vec4& v4 ) const;
+        bool get( osg::Vec2d& v2 ) const;
+        bool get( osg::Vec3d& v3 ) const;
+        bool get( osg::Vec4d& v4 ) const;
         bool get( osg::Matrix2& m2 ) const;
         bool get( osg::Matrix3& m3 ) const;
         bool get( osg::Matrixf& m4 ) const;
+        bool get( osg::Matrix2x3& m2x3 ) const;
+        bool get( osg::Matrix2x4& m2x4 ) const;
+        bool get( osg::Matrix3x2& m3x2 ) const;
+        bool get( osg::Matrix3x4& m3x4 ) const;
+        bool get( osg::Matrix4x2& m4x2 ) const;
+        bool get( osg::Matrix4x3& m4x3 ) const;
+        bool get( osg::Matrix2d& m2 ) const;
+        bool get( osg::Matrix3d& m3 ) const;
         bool get( osg::Matrixd& m4 ) const;
+        bool get( osg::Matrix2x3d& m2x3 ) const;
+        bool get( osg::Matrix2x4d& m2x4 ) const;
+        bool get( osg::Matrix3x2d& m3x2 ) const;
+        bool get( osg::Matrix3x4d& m3x4 ) const;
+        bool get( osg::Matrix4x2d& m4x2 ) const;
+        bool get( osg::Matrix4x3d& m4x3 ) const;
         bool get( int& i0, int& i1 ) const;
         bool get( int& i0, int& i1, int& i2 ) const;
         bool get( int& i0, int& i1, int& i2, int& i3 ) const;
-        bool get( unsigned int& i0, unsigned int& i1 ) const;
-        bool get( unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const;
-        bool get( unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const;
+        bool get( unsigned int& ui0, unsigned int& ui1 ) const;
+        bool get( unsigned int& ui0, unsigned int& ui1, unsigned int& ui2 ) const;
+        bool get( unsigned int& ui0, unsigned int& ui1, unsigned int& ui2, unsigned int& ui3 ) const;
         bool get( bool& b0, bool& b1 ) const;
         bool get( bool& b0, bool& b1, bool& b2 ) const;
         bool get( bool& b0, bool& b1, bool& b2, bool& b3 ) const;
 
         /** value assignment for array uniforms */
         bool setElement( unsigned int index, float f );
+        bool setElement( unsigned int index, double d );
         bool setElement( unsigned int index, int i );
-        bool setElement( unsigned int index, unsigned int i );
+        bool setElement( unsigned int index, unsigned int ui );
         bool setElement( unsigned int index, bool b );
         bool setElement( unsigned int index, const osg::Vec2& v2 );
         bool setElement( unsigned int index, const osg::Vec3& v3 );
         bool setElement( unsigned int index, const osg::Vec4& v4 );
+        bool setElement( unsigned int index, const osg::Vec2d& v2 );
+        bool setElement( unsigned int index, const osg::Vec3d& v3 );
+        bool setElement( unsigned int index, const osg::Vec4d& v4 );
         bool setElement( unsigned int index, const osg::Matrix2& m2 );
         bool setElement( unsigned int index, const osg::Matrix3& m3 );
         bool setElement( unsigned int index, const osg::Matrixf& m4 );
+        bool setElement( unsigned int index, const osg::Matrix2x3& m2x3 );
+        bool setElement( unsigned int index, const osg::Matrix2x4& m2x4 );
+        bool setElement( unsigned int index, const osg::Matrix3x2& m3x2 );
+        bool setElement( unsigned int index, const osg::Matrix3x4& m3x4 );
+        bool setElement( unsigned int index, const osg::Matrix4x2& m4x2 );
+        bool setElement( unsigned int index, const osg::Matrix4x3& m4x3 );
+        bool setElement( unsigned int index, const osg::Matrix2d& m2 );
+        bool setElement( unsigned int index, const osg::Matrix3d& m3 );
         bool setElement( unsigned int index, const osg::Matrixd& m4 );
+        bool setElement( unsigned int index, const osg::Matrix2x3d& m2x3 );
+        bool setElement( unsigned int index, const osg::Matrix2x4d& m2x4 );
+        bool setElement( unsigned int index, const osg::Matrix3x2d& m3x2 );
+        bool setElement( unsigned int index, const osg::Matrix3x4d& m3x4 );
+        bool setElement( unsigned int index, const osg::Matrix4x2d& m4x2 );
+        bool setElement( unsigned int index, const osg::Matrix4x3d& m4x3 );
         bool setElement( unsigned int index, int i0, int i1 );
         bool setElement( unsigned int index, int i0, int i1, int i2 );
         bool setElement( unsigned int index, int i0, int i1, int i2, int i3 );
-        bool setElement( unsigned int index, unsigned int i0, unsigned int i1 );
-        bool setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2 );
-        bool setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
+        bool setElement( unsigned int index, unsigned int ui0, unsigned int ui1 );
+        bool setElement( unsigned int index, unsigned int ui0, unsigned int ui1, unsigned int ui2 );
+        bool setElement( unsigned int index, unsigned int ui0, unsigned int ui1, unsigned int ui2, unsigned int ui3 );
         bool setElement( unsigned int index, bool b0, bool b1 );
         bool setElement( unsigned int index, bool b0, bool b1, bool b2 );
         bool setElement( unsigned int index, bool b0, bool b1, bool b2, bool b3 );
 
         /** value query for array uniforms */
         bool getElement( unsigned int index, float& f ) const;
+        bool getElement( unsigned int index, double& d ) const;
         bool getElement( unsigned int index, int& i ) const;
-        bool getElement( unsigned int index, unsigned int& i ) const;
+        bool getElement( unsigned int index, unsigned int& ui ) const;
         bool getElement( unsigned int index, bool& b ) const;
         bool getElement( unsigned int index, osg::Vec2& v2 ) const;
         bool getElement( unsigned int index, osg::Vec3& v3 ) const;
         bool getElement( unsigned int index, osg::Vec4& v4 ) const;
+        bool getElement( unsigned int index, osg::Vec2d& v2 ) const;
+        bool getElement( unsigned int index, osg::Vec3d& v3 ) const;
+        bool getElement( unsigned int index, osg::Vec4d& v4 ) const;
         bool getElement( unsigned int index, osg::Matrix2& m2 ) const;
         bool getElement( unsigned int index, osg::Matrix3& m3 ) const;
         bool getElement( unsigned int index, osg::Matrixf& m4 ) const;
+        bool getElement( unsigned int index, osg::Matrix2x3& m2x3 ) const;
+        bool getElement( unsigned int index, osg::Matrix2x4& m2x4 ) const;
+        bool getElement( unsigned int index, osg::Matrix3x2& m3x2 ) const;
+        bool getElement( unsigned int index, osg::Matrix3x4& m3x4 ) const;
+        bool getElement( unsigned int index, osg::Matrix4x2& m4x2 ) const;
+        bool getElement( unsigned int index, osg::Matrix4x3& m4x3 ) const;
+        bool getElement( unsigned int index, osg::Matrix2d& m2 ) const;
+        bool getElement( unsigned int index, osg::Matrix3d& m3 ) const;
         bool getElement( unsigned int index, osg::Matrixd& m4 ) const;
+        bool getElement( unsigned int index, osg::Matrix2x3d& m2x3 ) const;
+        bool getElement( unsigned int index, osg::Matrix2x4d& m2x4 ) const;
+        bool getElement( unsigned int index, osg::Matrix3x2d& m3x2 ) const;
+        bool getElement( unsigned int index, osg::Matrix3x4d& m3x4 ) const;
+        bool getElement( unsigned int index, osg::Matrix4x2d& m4x2 ) const;
+        bool getElement( unsigned int index, osg::Matrix4x3d& m4x3 ) const;
         bool getElement( unsigned int index, int& i0, int& i1 ) const;
         bool getElement( unsigned int index, int& i0, int& i1, int& i2 ) const;
         bool getElement( unsigned int index, int& i0, int& i1, int& i2, int& i3 ) const;
-        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1 ) const;
-        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const;
-        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const;
+        bool getElement( unsigned int index, unsigned int& ui0, unsigned int& ui1 ) const;
+        bool getElement( unsigned int index, unsigned int& ui0, unsigned int& ui1, unsigned int& ui2 ) const;
+        bool getElement( unsigned int index, unsigned int& ui0, unsigned int& ui1, unsigned int& ui2, unsigned int& ui3 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
@@ -457,12 +818,17 @@ class OSG_EXPORT Uniform : public Object
 
         /** Set the internal data array for a osg::Uniform */
         bool setArray( FloatArray* array );
+        bool setArray( DoubleArray* array );
         bool setArray( IntArray* array );
         bool setArray( UIntArray* array );
 
         /** Get the internal data array for a float osg::Uniform. */
         FloatArray* getFloatArray() { return _floatArray.get(); }
         const FloatArray* getFloatArray() const { return _floatArray.get(); }
+
+        /** Get the internal data array for a double osg::Uniform. */
+        DoubleArray* getDoubleArray() { return _doubleArray.get(); }
+        const DoubleArray* getDoubleArray() const { return _doubleArray.get(); }
 
         /** Get the internal data array for an int osg::Uniform. */
         IntArray* getIntArray() { return _intArray.get(); }
@@ -487,6 +853,10 @@ class OSG_EXPORT Uniform : public Object
         Uniform& operator=(const Uniform&) { return *this; }
 
         bool isCompatibleType( Type t ) const;
+        // for backward compatibility only
+        // see getElement(index, osg::Matrixd &)
+        // see setElement(index, osg::Matrixd &)
+        bool isCompatibleType( Type t1, Type t2 ) const;
         bool isScalar() const { return _numElements==1; }
         void allocateDataArray();
 
@@ -496,21 +866,22 @@ class OSG_EXPORT Uniform : public Object
         ParentList _parents;
         friend class osg::StateSet;
 
-        Type                _type;
-        unsigned int        _numElements;
-        unsigned int        _nameID;
+        Type                 _type;
+        unsigned int         _numElements;
+        unsigned int         _nameID;
 
 
         // The internal data for osg::Uniforms are stored as an array of
         // getInternalArrayType() of length getInternalArrayNumElements().
-        ref_ptr<FloatArray> _floatArray;
-        ref_ptr<IntArray>   _intArray;
-        ref_ptr<UIntArray>  _uintArray;
+        ref_ptr<FloatArray>  _floatArray;
+        ref_ptr<DoubleArray> _doubleArray;
+        ref_ptr<IntArray>    _intArray;
+        ref_ptr<UIntArray>   _uintArray;
 
-        ref_ptr<Callback>   _updateCallback;
-        ref_ptr<Callback>   _eventCallback;
+        ref_ptr<Callback>    _updateCallback;
+        ref_ptr<Callback>    _eventCallback;
 
-        unsigned int        _modifiedCount;
+        unsigned int         _modifiedCount;
 };
 
 }

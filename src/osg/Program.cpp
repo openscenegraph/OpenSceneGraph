@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
+ * Copyright (C) 2012 David Callu
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -104,7 +105,8 @@ Program::ProgramBinary::ProgramBinary() : _format(0)
 {
 }
 
-Program::ProgramBinary::ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp&) :
+Program::ProgramBinary::ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp& copyop) :
+    osg::Object(rhs, copyop),
     _data(rhs._data), _format(rhs._format)
 {
 }
@@ -353,7 +355,7 @@ void Program::setParameter( GLenum pname, GLint value )
     }
 }
 
-void Program::setParameterfv( GLenum pname, const GLfloat* value )
+void Program::setParameterfv( GLenum pname, const GLfloat* /*value*/ )
 {
     switch( pname )
     {
@@ -714,10 +716,11 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             {
                 OSG_WARN << "uniform block " << blockName << " has no binding.\n";
             }
-
         }
-
     }
+
+    typedef std::map<GLuint, std::string> AtomicCounterMap;
+    AtomicCounterMap atomicCounterMap;
 
     // build _uniformInfoMap
     GLint numUniforms = 0;
@@ -744,6 +747,11 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
                 name[pos] = 0;
             }
 
+            if (type == GL_UNSIGNED_INT_ATOMIC_COUNTER)
+            {
+                atomicCounterMap[i] = name;
+            }
+
             GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
 
             if( loc != -1 )
@@ -758,6 +766,83 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             }
         }
         delete [] name;
+    }
+
+    // print atomic counter
+    if (_extensions->isShaderAtomicCounterSupported())
+    {
+        std::vector<GLint> bufferIndex( atomicCounterMap.size(), 0 );
+        std::vector<GLuint> uniformIndex;
+        for (AtomicCounterMap::iterator it = atomicCounterMap.begin(), end = atomicCounterMap.end();
+             it != end; ++it)
+        {
+            uniformIndex.push_back(it->first);
+        }
+
+        _extensions->glGetActiveUniformsiv( _glProgramHandle, uniformIndex.size(),
+                                            &(uniformIndex[0]), GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX,
+                                            &(bufferIndex[0]) );
+
+        for (unsigned int j = 0; j < uniformIndex.size(); ++j)
+        {
+            OSG_INFO << "\tUniform atomic counter \""<<atomicCounterMap[ uniformIndex[j] ] <<"\""
+                     <<" buffer bind= " << bufferIndex[j] << ".\n";
+        }
+
+        std::map<int, std::vector<int> > bufferIndexToUniformIndices;
+        for (unsigned int i=0; i<bufferIndex.size(); ++i)
+        {
+            bufferIndexToUniformIndices[ bufferIndex[i] ].push_back( uniformIndex[i] );
+        }
+
+        GLuint activeAtomicCounterBuffers = 0;
+        _extensions->glGetProgramiv(_glProgramHandle, GL_ACTIVE_ATOMIC_COUNTER_BUFFERS,
+                                    reinterpret_cast<GLint*>(&activeAtomicCounterBuffers));
+        if (activeAtomicCounterBuffers > 0)
+        {
+            for (GLuint i = 0; i < activeAtomicCounterBuffers; ++i)
+            {
+                GLint bindID = 0;
+                _extensions->glGetActiveAtomicCounterBufferiv(_glProgramHandle, i,
+                                                              GL_ATOMIC_COUNTER_BUFFER_BINDING,
+                                                              &bindID);
+
+                GLsizei num = 0;
+                _extensions->glGetActiveAtomicCounterBufferiv(_glProgramHandle, i,
+                                                              GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS,
+                                                              &num);
+                GLsizei minSize = 0;
+                _extensions->glGetActiveAtomicCounterBufferiv(_glProgramHandle, i,
+                                                              GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE,
+                                                              &minSize);
+
+
+                OSG_INFO << "\tUniform atomic counter buffer bind \"" << bindID << "\""
+                         << " num active atomic counter= "<< num
+                         << " min size= " << minSize << "\n";
+
+                if (num)
+                {
+                    std::vector<GLint> indices(num);
+                    _extensions->glGetActiveAtomicCounterBufferiv(_glProgramHandle, i,
+                                                                  GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES,
+                                                                  &(indices[0]));
+                    OSG_INFO << "\t\tindices used= ";
+                    for (GLint j = 0; j < num; ++j)
+                    {
+                        OSG_INFO << indices[j];
+                        if (j < (num-1))
+                        {
+                            OSG_INFO <<  ", ";
+                        }
+                        else
+                        {
+                            OSG_INFO <<  ".\n";
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // build _attribInfoMap

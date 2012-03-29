@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2010 Tim Moore
+ * Copyright (C) 2012 David Callu
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -14,6 +15,9 @@
 
 #include <osg/BufferIndexBinding>
 #include <osg/State>
+
+#include <string.h> // for memcpy
+
 
 namespace osg {
 
@@ -95,4 +99,48 @@ TransformFeedbackBufferBinding::TransformFeedbackBufferBinding(const TransformFe
 {
 }
 
+
+AtomicCounterBufferBinding::AtomicCounterBufferBinding(GLuint index)
+  : BufferIndexBinding(GL_ATOMIC_COUNTER_BUFFER, index)
+{
 }
+
+AtomicCounterBufferBinding::AtomicCounterBufferBinding(GLuint index, BufferObject* bo, GLintptr offset, GLsizeiptr size)
+    : BufferIndexBinding(GL_ATOMIC_COUNTER_BUFFER, index, bo, offset, size)
+{
+
+}
+
+AtomicCounterBufferBinding::AtomicCounterBufferBinding(const AtomicCounterBufferBinding& rhs, const CopyOp& copyop)
+    : BufferIndexBinding(rhs, copyop)
+{
+}
+
+void AtomicCounterBufferBinding::readData(osg::State & state, osg::UIntArray & uintArray) const
+{
+    if (!_bufferObject) return;
+
+    GLBufferObject* bo = _bufferObject->getOrCreateGLBufferObject( state.getContextID() );
+    if (!bo) return;
+
+
+    GLint previousID = 0;
+    glGetIntegerv(GL_ATOMIC_COUNTER_BUFFER_BINDING, &previousID);
+
+    if (static_cast<GLuint>(previousID) != bo->getGLObjectID())
+        bo->_extensions->glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, bo->getGLObjectID());
+
+    GLubyte* src = (GLubyte*)bo->_extensions->glMapBuffer(GL_ATOMIC_COUNTER_BUFFER,
+                                                          GL_READ_ONLY_ARB);
+    if(src)
+    {
+        size_t size = osg::minimum<int>(_size, uintArray.getTotalDataSize());
+        memcpy((void*) &(uintArray.front()), src+_offset, size);
+        bo->_extensions->glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
+    }
+
+    if (static_cast<GLuint>(previousID) != bo->getGLObjectID())
+        bo->_extensions->glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, static_cast<GLuint>(previousID));
+}
+
+} // namespace osg

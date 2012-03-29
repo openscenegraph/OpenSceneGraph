@@ -1,4 +1,5 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ * Copyright (C) 2012 David Callu
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -1668,6 +1669,11 @@ void PixelDataBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
     _mode.resize(maxSize);
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  UniformBufferObject
+//
 UniformBufferObject::UniformBufferObject()
 {
     setTarget(GL_UNIFORM_BUFFER);
@@ -1680,5 +1686,26 @@ UniformBufferObject::UniformBufferObject(const UniformBufferObject& ubo, const C
 }
 
 UniformBufferObject::~UniformBufferObject()
+{
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  AtomicCounterBufferObject
+//
+AtomicCounterBufferObject::AtomicCounterBufferObject()
+{
+    setTarget(GL_ATOMIC_COUNTER_BUFFER);
+    setUsage(GL_DYNAMIC_DRAW);
+}
+
+AtomicCounterBufferObject::AtomicCounterBufferObject(const AtomicCounterBufferObject& ubo, const CopyOp& copyop)
+    : BufferObject(ubo, copyop)
+{
+}
+
+AtomicCounterBufferObject::~AtomicCounterBufferObject()
 {
 }

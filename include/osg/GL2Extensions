@@ -4,6 +4,7 @@
  * Copyright (C) 2007 Art Tevs
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
+ * Copyright (C) 2012 David Callu
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -157,7 +158,7 @@ typedef char GLchar;
 #endif
 
 // EXT_geometry_shader4
-#ifndef GL_GEOMETRY_SHADER_EXT
+#ifndef GL_EXT_geometry_shader4
 #define GL_GEOMETRY_SHADER_EXT                       0x8DD9
 #define GL_GEOMETRY_VERTICES_OUT_EXT                 0x8DDA
 #define GL_GEOMETRY_INPUT_TYPE_EXT                   0x8DDB
@@ -181,7 +182,7 @@ typedef char GLchar;
 #endif
 
 // ARB_tesselation_shader
-#ifndef GL_TESS_EVALUATION_SHADER
+#ifndef GL_ARB_tesselation_shader
 #define GL_PATCHES                                             0x000E
 #define GL_PATCH_VERTICES                                      0x8E72
 #define GL_PATCH_DEFAULT_INNER_LEVEL                           0x8E73
@@ -217,7 +218,7 @@ typedef char GLchar;
 #endif
 
 // EXT_gpu_shader4
-#ifndef GL_INT_SAMPLER_2D_EXT
+#ifndef GL_EXT_gpu_shader4
 #define GL_SAMPLER_1D_ARRAY_EXT               0x8DC0
 #define GL_SAMPLER_2D_ARRAY_EXT               0x8DC1
 #define GL_SAMPLER_BUFFER_EXT                 0x8DC2
@@ -248,7 +249,7 @@ typedef char GLchar;
 #endif
 
 // ARB_uniform_buffer_object
-#ifndef GL_UNIFORM_BUFFER
+#ifndef GL_ARB_uniform_buffer_object
 #define GL_UNIFORM_BUFFER                 0x8A11
 #define GL_UNIFORM_BUFFER_BINDING         0x8A28
 #define GL_UNIFORM_BUFFER_START           0x8A29
@@ -284,12 +285,125 @@ typedef char GLchar;
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
 
-//ARB_get_program_binary
-#ifndef GL_PROGRAM_BINARY_RETRIEVABLE_HINT
+// ARB_get_program_binary
+#ifndef GL_ARB_get_program_binary
 #define GL_PROGRAM_BINARY_RETRIEVABLE_HINT 0x8257
 #define GL_PROGRAM_BINARY_LENGTH           0x8741
 #define GL_NUM_PROGRAM_BINARY_FORMATS      0x87FE
 #define GL_PROGRAM_BINARY_FORMATS          0x87FF
+#endif
+
+// ARB_gpu_shader_fp64
+#ifndef GL_ARB_gpu_shader_fp64
+#define GL_DOUBLE_VEC2                    0x8FFC
+#define GL_DOUBLE_VEC3                    0x8FFD
+#define GL_DOUBLE_VEC4                    0x8FFE
+#define GL_DOUBLE_MAT2                    0x8F46
+#define GL_DOUBLE_MAT3                    0x8F47
+#define GL_DOUBLE_MAT4                    0x8F48
+#define GL_DOUBLE_MAT2x3                  0x8F49
+#define GL_DOUBLE_MAT2x4                  0x8F4A
+#define GL_DOUBLE_MAT3x2                  0x8F4B
+#define GL_DOUBLE_MAT3x4                  0x8F4C
+#define GL_DOUBLE_MAT4x2                  0x8F4D
+#define GL_DOUBLE_MAT4x3                  0x8F4E
+#endif
+
+// ARB_texture_multisample
+#ifndef GL_ARB_texture_multisample
+#define GL_SAMPLER_2D_MULTISAMPLE                    0x9108
+#define GL_INT_SAMPLER_2D_MULTISAMPLE                0x9109
+#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE       0x910A
+#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY              0x910B
+#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY          0x910C
+#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910D
+#endif
+
+// GL_ARB_shader_image_load_store
+#ifndef GL_ARB_shader_image_load_store
+#define GL_IMAGE_1D                       0x904C
+#define GL_IMAGE_2D                       0x904D
+#define GL_IMAGE_3D                       0x904E
+#define GL_IMAGE_2D_RECT                  0x904F
+#define GL_IMAGE_CUBE                     0x9050
+#define GL_IMAGE_BUFFER                   0x9051
+#define GL_IMAGE_1D_ARRAY                 0x9052
+#define GL_IMAGE_2D_ARRAY                 0x9053
+#define GL_IMAGE_CUBE_MAP_ARRAY           0x9054
+#define GL_IMAGE_2D_MULTISAMPLE           0x9055
+#define GL_IMAGE_2D_MULTISAMPLE_ARRAY     0x9056
+#define GL_INT_IMAGE_1D                   0x9057
+#define GL_INT_IMAGE_2D                   0x9058
+#define GL_INT_IMAGE_3D                   0x9059
+#define GL_INT_IMAGE_2D_RECT              0x905A
+#define GL_INT_IMAGE_CUBE                 0x905B
+#define GL_INT_IMAGE_BUFFER               0x905C
+#define GL_INT_IMAGE_1D_ARRAY             0x905D
+#define GL_INT_IMAGE_2D_ARRAY             0x905E
+#define GL_INT_IMAGE_CUBE_MAP_ARRAY       0x905F
+#define GL_INT_IMAGE_2D_MULTISAMPLE       0x9060
+#define GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x9061
+#define GL_UNSIGNED_INT_IMAGE_1D          0x9062
+#define GL_UNSIGNED_INT_IMAGE_2D          0x9063
+#define GL_UNSIGNED_INT_IMAGE_3D          0x9064
+#define GL_UNSIGNED_INT_IMAGE_2D_RECT     0x9065
+#define GL_UNSIGNED_INT_IMAGE_CUBE        0x9066
+#define GL_UNSIGNED_INT_IMAGE_BUFFER      0x9067
+#define GL_UNSIGNED_INT_IMAGE_1D_ARRAY    0x9068
+#define GL_UNSIGNED_INT_IMAGE_2D_ARRAY    0x9069
+#define GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY 0x906A
+#define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE 0x906B
+#define GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY 0x906C
+#endif
+
+#ifndef GL_VERSION_3_1
+#define GL_SAMPLER_2D_RECT                0x8B63
+#define GL_SAMPLER_2D_RECT_SHADOW         0x8B64
+#define GL_SAMPLER_BUFFER                 0x8DC2
+#define GL_INT_SAMPLER_2D_RECT            0x8DCD
+#define GL_INT_SAMPLER_BUFFER             0x8DD0
+#define GL_UNSIGNED_INT_SAMPLER_2D_RECT   0x8DD5
+#define GL_UNSIGNED_INT_SAMPLER_BUFFER    0x8DD8
+#endif
+
+#ifndef GL_VERSION_4_0
+#define GL_SAMPLER_CUBE_MAP_ARRAY         0x900C
+#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW  0x900D
+#define GL_INT_SAMPLER_CUBE_MAP_ARRAY     0x900E
+#define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY 0x900F
+#endif
+
+// ARB_shader_atomic_counters
+#ifndef GL_ARB_shader_atomic_counters
+#define GL_ATOMIC_COUNTER_BUFFER          0x92C0
+#define GL_ATOMIC_COUNTER_BUFFER_BINDING  0x92C1
+#define GL_ATOMIC_COUNTER_BUFFER_START    0x92C2
+#define GL_ATOMIC_COUNTER_BUFFER_SIZE     0x92C3
+#define GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE 0x92C4
+#define GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS 0x92C5
+#define GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES 0x92C6
+#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER 0x92C7
+#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER 0x92C8
+#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER 0x92C9
+#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER 0x92CA
+#define GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER 0x92CB
+#define GL_MAX_VERTEX_ATOMIC_COUNTER_BUFFERS 0x92CC
+#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS 0x92CD
+#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS 0x92CE
+#define GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS 0x92CF
+#define GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS 0x92D0
+#define GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS 0x92D1
+#define GL_MAX_VERTEX_ATOMIC_COUNTERS     0x92D2
+#define GL_MAX_TESS_CONTROL_ATOMIC_COUNTERS 0x92D3
+#define GL_MAX_TESS_EVALUATION_ATOMIC_COUNTERS 0x92D4
+#define GL_MAX_GEOMETRY_ATOMIC_COUNTERS   0x92D5
+#define GL_MAX_FRAGMENT_ATOMIC_COUNTERS   0x92D6
+#define GL_MAX_COMBINED_ATOMIC_COUNTERS   0x92D7
+#define GL_MAX_ATOMIC_COUNTER_BUFFER_SIZE 0x92D8
+#define GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS 0x92DC
+#define GL_ACTIVE_ATOMIC_COUNTER_BUFFERS  0x92D9
+#define GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX 0x92DA
+#define GL_UNSIGNED_INT_ATOMIC_COUNTER    0x92DB
 #endif
 
 namespace osg {
@@ -336,6 +450,12 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void setGetProgramBinarySupported(bool flag) { _isGetProgramBinarySupported = flag; }
         bool isGetProgramBinarySupported() {return _isGetProgramBinarySupported; }
+
+        void setGpuShaderFp64Supported(bool flag) { _isGpuShaderFp64Supported = flag; }
+        bool isGpuShaderFp64Supported() {return _isGpuShaderFp64Supported; }
+
+        void setShaderAtomicCounterSupported(bool flag) { _isShaderAtomicCountersSupported = flag; }
+        bool isShaderAtomicCounterSupported() {return _isShaderAtomicCountersSupported; }
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
@@ -496,6 +616,29 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary) const;
         void glProgramBinary(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length) const;
 
+        // ARB_gpu_shader_fp64
+        void glUniform1d( GLint location, GLdouble v0 ) const;
+        void glUniform2d( GLint location, GLdouble v0, GLdouble v1 ) const;
+        void glUniform3d( GLint location, GLdouble v0, GLdouble v1, GLdouble v2 ) const;
+        void glUniform4d( GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3 ) const;
+        void glUniform1dv( GLint location, GLsizei count, const GLdouble *value ) const;
+        void glUniform2dv( GLint location, GLsizei count, const GLdouble *value ) const;
+        void glUniform3dv( GLint location, GLsizei count, const GLdouble *value ) const;
+        void glUniform4dv( GLint location, GLsizei count, const GLdouble *value ) const;
+        void glUniformMatrix2dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
+        void glUniformMatrix3dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
+        void glUniformMatrix4dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
+        void glUniformMatrix2x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+        void glUniformMatrix3x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+        void glUniformMatrix2x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+        void glUniformMatrix4x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+        void glUniformMatrix3x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+        void glUniformMatrix4x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
+
+        // ARB_shader_atomic_counters
+        void glGetActiveAtomicCounterBufferiv( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params ) const;
+
+
     protected:
         ~GL2Extensions() {}
 
@@ -511,6 +654,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool _isGpuShader4Supported;
         bool _isUniformBufferObjectSupported;
         bool _isGetProgramBinarySupported;
+        bool _isGpuShaderFp64Supported;
+        bool _isShaderAtomicCountersSupported;
 
         typedef void (GL_APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
         typedef void (GL_APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
@@ -641,6 +786,24 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * UniformBlockBindingProc)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
         typedef void (GL_APIENTRY * GetProgramBinaryProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
         typedef void (GL_APIENTRY * ProgramBinaryProc)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
+        typedef void (GL_APIENTRY * Uniform1dProc)(GLint location, GLdouble v0);
+        typedef void (GL_APIENTRY * Uniform2dProc)(GLint location, GLdouble v0, GLdouble v1);
+        typedef void (GL_APIENTRY * Uniform3dProc)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2);
+        typedef void (GL_APIENTRY * Uniform4dProc)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3);
+        typedef void (GL_APIENTRY * Uniform1dvProc)(GLint location, GLsizei count, const GLdouble *value);
+        typedef void (GL_APIENTRY * Uniform2dvProc)(GLint location, GLsizei count, const GLdouble *value);
+        typedef void (GL_APIENTRY * Uniform3dvProc)(GLint location, GLsizei count, const GLdouble *value);
+        typedef void (GL_APIENTRY * Uniform4dvProc)(GLint location, GLsizei count, const GLdouble *value);
+        typedef void (GL_APIENTRY * UniformMatrix2dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        typedef void (GL_APIENTRY * UniformMatrix3dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        typedef void (GL_APIENTRY * UniformMatrix4dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        typedef void (GL_APIENTRY * UniformMatrix2x3dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * UniformMatrix3x2dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * UniformMatrix2x4dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * UniformMatrix4x2dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * UniformMatrix3x4dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * UniformMatrix4x3dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        typedef void (GL_APIENTRY * GetActiveAtomicCounterBufferivProc)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
 
         BlendEquationSeparateProc _glBlendEquationSeparate;
         DrawBuffersProc _glDrawBuffers;
@@ -781,9 +944,31 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         GetActiveUniformBlockNameProc _glGetActiveUniformBlockName;
         UniformBlockBindingProc _glUniformBlockBinding;
 
-        //ARB_get_program_binary
+        // ARB_get_program_binary
         GetProgramBinaryProc _glGetProgramBinary;
         ProgramBinaryProc _glProgramBinary;
+
+        // ARB_gpu_shader_fp64
+        Uniform1dProc _glUniform1d;
+        Uniform2dProc _glUniform2d;
+        Uniform3dProc _glUniform3d;
+        Uniform4dProc _glUniform4d;
+        Uniform1dvProc _glUniform1dv;
+        Uniform2dvProc _glUniform2dv;
+        Uniform3dvProc _glUniform3dv;
+        Uniform4dvProc _glUniform4dv;
+        UniformMatrix2dvProc _glUniformMatrix2dv;
+        UniformMatrix3dvProc _glUniformMatrix3dv;
+        UniformMatrix4dvProc _glUniformMatrix4dv;
+        UniformMatrix2x3dvProc _glUniformMatrix2x3dv;
+        UniformMatrix3x2dvProc _glUniformMatrix3x2dv;
+        UniformMatrix2x4dvProc _glUniformMatrix2x4dv;
+        UniformMatrix4x2dvProc _glUniformMatrix4x2dv;
+        UniformMatrix3x4dvProc _glUniformMatrix3x4dv;
+        UniformMatrix4x3dvProc _glUniformMatrix4x3dv;
+
+        // ARB_shader_atomic_counters
+        GetActiveAtomicCounterBufferivProc _glGetActiveAtomicCounterBufferiv;
 };
 
 }

@@ -187,7 +187,9 @@ class OSG_EXPORT StateAttribute : public Object
             OSGNVPARSE_PROGRAM_PARSER,
 
             UNIFORMBUFFERBINDING,
-            TRANSFORMFEEDBACKBUFFERBINDING
+            TRANSFORMFEEDBACKBUFFERBINDING,
+
+            ATOMICCOUNTERBUFFERBINDING
         };
 
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

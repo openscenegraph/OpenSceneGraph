@@ -65,6 +65,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
 
         Array* data = Array_readLocalData(fr);
         uniform.setArray( dynamic_cast<FloatArray*>(data) );
+        uniform.setArray( dynamic_cast<DoubleArray*>(data) );
         uniform.setArray( dynamic_cast<IntArray*>(data) );
         uniform.setArray( dynamic_cast<UIntArray*>(data) );
     }

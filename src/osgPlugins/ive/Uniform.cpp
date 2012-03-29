@@ -43,7 +43,9 @@ void Uniform::write(DataOutputStream* out){
         out->writeUInt(getNumElements());
 
         if( getFloatArray() ) out->writeArray( getFloatArray() );
+        if( getDoubleArray() ) out->writeArray( getDoubleArray() );
         if( getIntArray() )   out->writeArray( getIntArray() );
+        if( getUIntArray() )   out->writeArray( getUIntArray() );
     }
     else
     {
@@ -177,7 +179,9 @@ void Uniform::read(DataInputStream* in)
 
         osg::Array* data = in->readArray();
         setArray( dynamic_cast<osg::FloatArray*>(data) );
+        setArray( dynamic_cast<osg::DoubleArray*>(data) );
         setArray( dynamic_cast<osg::IntArray*>(data) );
+        setArray( dynamic_cast<osg::UIntArray*>(data) );
     }
     else
     {

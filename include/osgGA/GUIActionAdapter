@@ -67,8 +67,8 @@ public:
         virtual void requestRedraw() = 0;
 
         /**
-        requestContinousUpdate(bool) is for en/disabling a throw or idle
-        callback to be requested by a GUIEventHandler (typically a MatrixManipulator,
+        requestContinuousUpdate(bool) is for en/disabling a throw or idle
+        callback to be requested by a GUIEventHandler (typically a CameraManipulator,
         though other GUIEventHandler's may also provide functionality).
         GUI toolkits can respond  to this immediately by registering an idle/timed
         callback, or can delay setting the callback and update at their own leisure.

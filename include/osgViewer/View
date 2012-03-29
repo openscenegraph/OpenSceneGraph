@@ -196,17 +196,17 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Convenience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
         void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
-        /** Convenience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
+        /** Convenience method for spherical display by rendering main scene to a panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
         void setUpViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
         /** Convenience method for autostereoscopic Philips WoWvx display.*/
         void setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
 
 
-        /** Convenience method for setting up multiple slave cameras that depth partition the specified camera.*/
+        /** Convenience method for setting up depth partitioning on the specified camera.*/
         bool setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* dps=0);
 
-        /** Convenience method for setting up multiple slave cameras that depth partition each of the view's active cameras.*/
+        /** Convenience method for setting up multiple slave cameras with depth partitioning on each of the view's active cameras.*/
         bool setUpDepthPartition(DepthPartitionSettings* dsp=0);
 
 

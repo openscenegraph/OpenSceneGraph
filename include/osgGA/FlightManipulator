@@ -20,7 +20,7 @@
 namespace osgGA {
 
 
-/** FlightManipulator is a MatrixManipulator which provides flight simulator-like
+/** FlightManipulator is a CameraManipulator which provides flight simulator-like
  *  updating of the camera position & orientation. By default, the left mouse
  *  button accelerates, the right mouse button decelerates, and the middle mouse
  *  button (or left and right simultaneously) stops dead.

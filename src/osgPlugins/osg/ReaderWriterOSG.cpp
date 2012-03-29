@@ -116,7 +116,7 @@ class OSGReaderWriter : public ReaderWriter
         {
 
             supportsExtension("osg","OpenSceneGraph Ascii file format");
-            supportsExtension("osgs","Psuedo OpenSceneGraph file loaded, with file encoded in filename string");
+            supportsExtension("osgs","Pseudo OpenSceneGraph file loaded, with file encoded in filename string");
             supportsOption("precision","Set the floating point precision when writing out files");
             supportsOption("OutputTextureFiles","Write out the texture images to file");
             supportsOption("includeExternalReferences","Export option");

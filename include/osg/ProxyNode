@@ -42,13 +42,13 @@ class OSG_EXPORT ProxyNode : public Group
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
 
-        /** Set the optional database osgDB::Options object to use when loaded children.*/
+        /** Set the optional database osgDB::Options object to use when loading children.*/
         void setDatabaseOptions(osg::Referenced* options) { _databaseOptions = options; }
 
-        /** Get the optional database osgDB::Options object used when loaded children.*/
+        /** Get the optional database osgDB::Options object used when loading children.*/
         osg::Referenced* getDatabaseOptions() { return _databaseOptions.get(); }
 
-        /** Get the optional database osgDB::Options object used when loaded children.*/
+        /** Get the optional database osgDB::Options object used when loading children.*/
         const osg::Referenced* getDatabaseOptions() const { return _databaseOptions.get(); }
 
 
@@ -62,7 +62,7 @@ class OSG_EXPORT ProxyNode : public Group
         unsigned int getNumFileNames() const { return _filenameList.size(); }
 
         /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests
-          * being carried on behalf of the DatabasePager.
+          * being carried out on behalf of the DatabasePager.
           * Note, in normal OSG usage you should not set this value yourself, as this will be managed by
           * the osgDB::DatabasePager.*/
         osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) { return _filenameList[childNo].second; }
@@ -71,7 +71,7 @@ class OSG_EXPORT ProxyNode : public Group
         const osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) const { return _filenameList[childNo].second; }
 
 
-        /** Modes which control how the center of object should be determined when computed which child is active.*/
+        /** Modes which control how the center of object should be determined when computing which child is active.*/
         enum CenterMode
         {
             USE_BOUNDING_SPHERE_CENTER,
@@ -79,10 +79,10 @@ class OSG_EXPORT ProxyNode : public Group
             UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED
         };
 
-        /** Set how the center of object should be determined when computed which child is active.*/
+        /** Set how the center of object should be determined when computing which child is active.*/
         void setCenterMode(CenterMode mode) { _centerMode=mode; }
 
-        /** Get how the center of object should be determined when computed which child is active.*/
+        /** Get how the center of object should be determined when computing which child is active.*/
         CenterMode getCenterMode() const { return _centerMode; }
 
         /** Modes which control how the proxynode external reference are loaded.*/
@@ -96,14 +96,14 @@ class OSG_EXPORT ProxyNode : public Group
         /** Set how the child loading is done.*/
         void setLoadingExternalReferenceMode(LoadingExternalReferenceMode mode) { _loadingExtReference=mode; }
 
-        /** Get the setted mode of loading.*/
+        /** Get the loading mode.*/
         LoadingExternalReferenceMode getLoadingExternalReferenceMode() const { return _loadingExtReference; }
 
         /** Sets the object-space point which defines the center of the osg::ProxyNode.
-            center is affected by any transforms in the hierarchy above the osg::ProxyNode.*/
+            Center is affected by any transforms in the hierarchy above the osg::ProxyNode.*/
         inline void setCenter(const vec_type& center) { if (_centerMode!=UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED) { _centerMode=USER_DEFINED_CENTER; } _userDefinedCenter = center; }
 
-        /** return the ProxyNode center point. */
+        /** Return the ProxyNode center point. */
         inline const vec_type& getCenter() const { if ((_centerMode==USER_DEFINED_CENTER)||(_centerMode==UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED)) return _userDefinedCenter; else return getBound().center(); }
 
 

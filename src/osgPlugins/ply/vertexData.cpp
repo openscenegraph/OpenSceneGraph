@@ -67,6 +67,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         unsigned char   red;
         unsigned char   green;
         unsigned char   blue;
+        unsigned char   alpha;
         unsigned char   ambient_red;
         unsigned char   ambient_green;
         unsigned char   ambient_blue;
@@ -91,6 +92,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, red ), 0, 0, 0, 0 },
         { "green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, green ), 0, 0, 0, 0 },
         { "blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, blue ), 0, 0, 0, 0 },
+        { "alpha", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, alpha ), 0, 0, 0, 0 },
         { "ambient_red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_red ), 0, 0, 0, 0 },
         { "ambient_green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_green ), 0, 0, 0, 0 },
         { "ambient_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_blue ), 0, 0, 0, 0 },
@@ -116,16 +118,19 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
       for( int i = 6; i < 9; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
+    if (fields & RGBA)
+        ply_get_property( file, "vertex", &vertexProps[9] );
+
     if (fields & AMBIENT)
-      for( int i = 9; i < 12; ++i )
+      for( int i = 10; i < 13; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     if (fields & DIFFUSE)
-      for( int i = 12; i < 15; ++i )
+      for( int i = 13; i < 16; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     if (fields & SPECULAR)
-      for( int i = 15; i < 20; ++i )
+      for( int i = 16; i < 21; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     // check whether array is valid otherwise allocate the space
@@ -139,7 +144,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
     }
 
     // If read colors allocate space for color array
-    if( fields & RGB )
+    if( fields & RGB || fields & RGBA)
     {
         if(!_colors.valid())
             _colors = new osg::Vec4Array;
@@ -168,26 +173,32 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
     {
         ply_get_element( file, static_cast< void* >( &vertex ) );
         _vertices->push_back( osg::Vec3( vertex.x, vertex.y, vertex.z ) );
-	if (fields & NORMALS)
-	  _normals->push_back( osg::Vec3( vertex.nx, vertex.ny, vertex.nz ) );
-        if( fields & RGB )
-            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 256.0,
-					   (unsigned int) vertex.green / 256.0 ,
-					   (unsigned int) vertex.blue / 256.0, 0.0 ) );
+        if (fields & NORMALS)
+            _normals->push_back( osg::Vec3( vertex.nx, vertex.ny, vertex.nz ) );
+
+        if( fields & RGBA )
+            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 255.0,
+                                           (unsigned int) vertex.green / 255.0 ,
+                                           (unsigned int) vertex.blue / 255.0,
+                                           (unsigned int) vertex.alpha / 255.0) );
+        else if( fields & RGB )
+            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 255.0,
+                                           (unsigned int) vertex.green / 255.0 ,
+                                           (unsigned int) vertex.blue / 255.0, 1.0 ) );
         if( fields & AMBIENT )
-	  _ambient->push_back( osg::Vec4( (unsigned int) vertex.ambient_red / 256.0,
-					   (unsigned int) vertex.ambient_green / 256.0 ,
-					   (unsigned int) vertex.ambient_blue / 256.0, 0.0 ) );
+            _ambient->push_back( osg::Vec4( (unsigned int) vertex.ambient_red / 255.0,
+                                            (unsigned int) vertex.ambient_green / 255.0 ,
+                                            (unsigned int) vertex.ambient_blue / 255.0, 1.0 ) );
 
         if( fields & DIFFUSE )
-	  _diffuse->push_back( osg::Vec4( (unsigned int) vertex.diffuse_red / 256.0,
-					   (unsigned int) vertex.diffuse_green / 256.0 ,
-					   (unsigned int) vertex.diffuse_blue / 256.0, 0.0 ) );
+            _diffuse->push_back( osg::Vec4( (unsigned int) vertex.diffuse_red / 255.0,
+                                            (unsigned int) vertex.diffuse_green / 255.0 ,
+                                            (unsigned int) vertex.diffuse_blue / 255.0, 1.0 ) );
 
         if( fields & SPECULAR )
-	  _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 256.0,
-					   (unsigned int) vertex.specular_green / 256.0 ,
-					   (unsigned int) vertex.specular_blue / 256.0, 0.0 ) );
+            _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 255.0,
+                                             (unsigned int) vertex.specular_green / 255.0 ,
+                                             (unsigned int) vertex.specular_blue / 255.0, 1.0 ) );
     }
 }
 
@@ -332,7 +343,9 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                     fields |= XYZ;
                 if( equal_strings( props[j]->name, "nx" ) )
                     fields |= NORMALS;
-                if( equal_strings( props[j]->name, "red" ) )
+                if( equal_strings( props[j]->name, "alpha" ) )
+                    fields |= RGBA;
+                if ( equal_strings( props[j]->name, "red" ) )
                     fields |= RGB;
                 if( equal_strings( props[j]->name, "ambient" ) )
                     fields |= AMBIENT;
@@ -359,7 +372,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 {
                     MESHASSERT( _normals->size() == static_cast< size_t >( nElems ) );
                 }
-                if( fields & RGB )
+                if( fields & RGB || fields & RGBA)
                 {
                     MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
                 }

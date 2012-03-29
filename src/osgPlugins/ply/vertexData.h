@@ -54,7 +54,8 @@ namespace ply
           RGB = 4,
           AMBIENT = 8,
           DIFFUSE = 16,
-          SPECULAR = 32
+          SPECULAR = 32,
+          RGBA = 64
         };
 
         // Function which reads all the vertices and colors if color info is

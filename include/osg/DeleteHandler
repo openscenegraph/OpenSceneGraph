@@ -21,12 +21,13 @@
 namespace osg {
 
 
-/** Class for override the default delete behavior so that users can implement their own object
-  * deletion schemes.  This might be done to help implement protection of multiple threads from deleting
-  * objects unintentionally.
+/** Class for overriding the default delete behaviour so that users can implement their own object
+  * deletion schemes.
+  * This might be used to implement a protection scheme that avoids
+  * multiple threads deleting objects unintentionally.
   * Note, the DeleteHandler cannot itself be reference counted, otherwise it
   * would be responsible for deleting itself!
-  * An static auto_ptr<> is used internally in Referenced.cpp to manage the
+  * A static auto_ptr<> is used internally in Referenced.cpp to manage the
   * DeleteHandler's memory.*/
 class OSG_EXPORT DeleteHandler
 {
@@ -39,10 +40,10 @@ class OSG_EXPORT DeleteHandler
 
         virtual ~DeleteHandler();
 
-        /** Set the number of frames to retain objects that are have been requested for deletion.
-          * When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc.
+        /** Set the number of frames to retain objects that have been requested for deletion.
+          * When set to zero objects are deleted immediately, by setting to 1 they are kept around for an extra frame etc.
           * The ability to retain objects for several frames is useful to prevent premature deletion when objects
-          * are still be used the graphics threads that are using double buffering of rendering data structures with
+          * are still being used by graphics threads that use double buffering of rendering data structures with
           * non ref_ptr<> pointers to scene graph elements.*/
         void setNumFramesToRetainObjects(unsigned int numberOfFramesToRetainObjects) {  _numFramesToRetainObjects = numberOfFramesToRetainObjects; }
 
@@ -56,7 +57,7 @@ class OSG_EXPORT DeleteHandler
 
         inline void doDelete(const Referenced* object) { delete object; }
 
-        /** Flush objects that ready to be fully deleted.*/
+        /** Flush objects that are ready to be fully deleted.*/
         virtual void flush();
 
         /** Flush all objects that the DeleteHandler holds.

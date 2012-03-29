@@ -918,9 +918,9 @@ void Image::setImage(int s,int t,int r,
 }
 
 void Image::readPixels(int x,int y,int width,int height,
-                       GLenum format,GLenum type)
+                       GLenum format, GLenum type, int packing)
 {
-    allocateImage(width,height,1,format,type);
+    allocateImage(width,height,1,format,type, packing);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
     glPixelStorei(GL_PACK_ROW_LENGTH,_rowLength);

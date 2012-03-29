@@ -170,7 +170,7 @@ class OSG_EXPORT Image : public BufferData
           * Create memory for storage if required, reuse existing pixel coords if possible.
         */
         virtual void readPixels(int x,int y,int width,int height,
-                        GLenum pixelFormat,GLenum type);
+                        GLenum pixelFormat, GLenum type, int packing=1);
 
 
         /** Read the contents of the current bound texture, handling compressed pixelFormats if present.

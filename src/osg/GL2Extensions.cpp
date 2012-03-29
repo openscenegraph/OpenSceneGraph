@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2012 David Callu
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -46,9 +47,12 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _isFragmentShaderSupported = rhs._isFragmentShaderSupported;
     _isLanguage100Supported = rhs._isLanguage100Supported;
     _isGeometryShader4Supported = rhs._isGeometryShader4Supported;
+    _areTessellationShadersSupported = rhs._areTessellationShadersSupported;
     _isGpuShader4Supported = rhs._isGpuShader4Supported;
     _isUniformBufferObjectSupported = rhs._isUniformBufferObjectSupported;
     _isGetProgramBinarySupported = rhs._isGetProgramBinarySupported;
+    _isGpuShaderFp64Supported = rhs._isGpuShaderFp64Supported;
+    _isShaderAtomicCountersSupported = rhs._isShaderAtomicCountersSupported;
 
     _glBlendEquationSeparate = rhs._glBlendEquationSeparate;
     _glDrawBuffers = rhs._glDrawBuffers;
@@ -189,7 +193,27 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glGetProgramBinary = rhs._glGetProgramBinary;
     _glProgramBinary = rhs._glProgramBinary;
 
-    _areTessellationShadersSupported = rhs._areTessellationShadersSupported;
+    // ARB_gpu_shader_fp64
+    _glUniform1d = rhs._glUniform1d;
+    _glUniform2d = rhs._glUniform2d;
+    _glUniform3d = rhs._glUniform3d;
+    _glUniform4d = rhs._glUniform4d;
+    _glUniform1dv = rhs._glUniform1dv;
+    _glUniform2dv = rhs._glUniform2dv;
+    _glUniform3dv = rhs._glUniform3dv;
+    _glUniform4dv = rhs._glUniform4dv;
+    _glUniformMatrix2dv = rhs._glUniformMatrix2dv;
+    _glUniformMatrix3dv = rhs._glUniformMatrix3dv;
+    _glUniformMatrix4dv = rhs._glUniformMatrix4dv;
+    _glUniformMatrix2x3dv = rhs._glUniformMatrix2x3dv;
+    _glUniformMatrix3x2dv = rhs._glUniformMatrix3x2dv;
+    _glUniformMatrix2x4dv = rhs._glUniformMatrix2x4dv;
+    _glUniformMatrix4x2dv = rhs._glUniformMatrix4x2dv;
+    _glUniformMatrix3x4dv = rhs._glUniformMatrix3x4dv;
+    _glUniformMatrix4x3dv = rhs._glUniformMatrix4x3dv;
+
+    // ARB_shader_atomic_counters
+    _glGetActiveAtomicCounterBufferiv = rhs._glGetActiveAtomicCounterBufferiv;
 }
 
 
@@ -204,7 +228,12 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._isFragmentShaderSupported) _isFragmentShaderSupported = false;
     if (!rhs._isLanguage100Supported) _isLanguage100Supported = false;
     if (!rhs._isGeometryShader4Supported) _isGeometryShader4Supported = false;
+    if (!rhs._areTessellationShadersSupported) _areTessellationShadersSupported = false;
     if (!rhs._isGpuShader4Supported) _isGpuShader4Supported = false;
+    if (!rhs._isUniformBufferObjectSupported) _isUniformBufferObjectSupported = false;
+    if (!rhs._isGetProgramBinarySupported) _isGetProgramBinarySupported = false;
+    if (!rhs._isGpuShaderFp64Supported) _isGpuShaderFp64Supported = false;
+    if (!rhs._isShaderAtomicCountersSupported) _isShaderAtomicCountersSupported = false;
 
     if (!rhs._glBlendEquationSeparate) _glBlendEquationSeparate = 0;
     if (!rhs._glDrawBuffers) _glDrawBuffers = 0;
@@ -348,6 +377,28 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     // ARB_get_program_binary
     if (!rhs._glGetProgramBinary) _glGetProgramBinary = 0;
     if (!rhs._glProgramBinary) _glProgramBinary = 0;
+
+    // ARB_gpu_shader_fp64
+    if(!rhs._glUniform1d) _glUniform1d = 0;
+    if(!rhs._glUniform2d) _glUniform2d = 0;
+    if(!rhs._glUniform3d) _glUniform3d = 0;
+    if(!rhs._glUniform4d) _glUniform4d = 0;
+    if(!rhs._glUniform1dv) _glUniform1dv = 0;
+    if(!rhs._glUniform2dv) _glUniform2dv = 0;
+    if(!rhs._glUniform3dv) _glUniform3dv = 0;
+    if(!rhs._glUniform4dv) _glUniform4dv = 0;
+    if(!rhs._glUniformMatrix2dv) _glUniformMatrix2dv = 0;
+    if(!rhs._glUniformMatrix3dv) _glUniformMatrix3dv = 0;
+    if(!rhs._glUniformMatrix4dv) _glUniformMatrix4dv = 0;
+    if(!rhs._glUniformMatrix2x3dv) _glUniformMatrix2x3dv = 0;
+    if(!rhs._glUniformMatrix3x2dv) _glUniformMatrix3x2dv = 0;
+    if(!rhs._glUniformMatrix2x4dv) _glUniformMatrix2x4dv = 0;
+    if(!rhs._glUniformMatrix4x2dv) _glUniformMatrix4x2dv = 0;
+    if(!rhs._glUniformMatrix3x4dv) _glUniformMatrix3x4dv = 0;
+    if(!rhs._glUniformMatrix4x3dv) _glUniformMatrix4x3dv = 0;
+
+    // ARB_shader_atomic_counters
+    if(!rhs._glGetActiveAtomicCounterBufferiv) _glGetActiveAtomicCounterBufferiv = 0;
 }
 
 
@@ -370,6 +421,8 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
         _isGpuShader4Supported = false;
         _isUniformBufferObjectSupported = false;
         _isGetProgramBinarySupported = false;
+        _isGpuShaderFp64Supported = false;
+        _isShaderAtomicCountersSupported = false;
 
         _glBlendEquationSeparate= 0;
         _glDrawBuffers= 0;
@@ -510,9 +563,31 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
         _glGetActiveUniformBlockName= 0;
         _glUniformBlockBinding= 0;
 
-        //ARB_get_program_binary
+        // ARB_get_program_binary
         _glGetProgramBinary= 0;
         _glProgramBinary= 0;
+
+        // ARB_gpu_shader_fp64
+        _glUniform1d= 0;
+        _glUniform2d= 0;
+        _glUniform3d= 0;
+        _glUniform4d= 0;
+        _glUniform1dv= 0;
+        _glUniform2dv= 0;
+        _glUniform3dv= 0;
+        _glUniform4dv= 0;
+        _glUniformMatrix2dv= 0;
+        _glUniformMatrix3dv= 0;
+        _glUniformMatrix4dv= 0;
+        _glUniformMatrix2x3dv= 0;
+        _glUniformMatrix3x2dv= 0;
+        _glUniformMatrix2x4dv= 0;
+        _glUniformMatrix4x2dv= 0;
+        _glUniformMatrix3x4dv= 0;
+        _glUniformMatrix4x3dv= 0;
+
+        // ARB_shader_atomic_counters
+        _glGetActiveAtomicCounterBufferiv= 0;
 
         return;
     }
@@ -531,6 +606,8 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _areTessellationShadersSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
     _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
     _isGetProgramBinarySupported = osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
+    _isGpuShaderFp64Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
+    _isShaderAtomicCountersSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_atomic_counters");
 
     if( isGlslSupported() )
     {
@@ -691,9 +768,32 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glGetActiveUniformBlockiv, "glGetActiveUniformBlockiv");
     setGLExtensionFuncPtr(_glGetActiveUniformBlockName, "glGetActiveUniformBlockName");
     setGLExtensionFuncPtr(_glUniformBlockBinding, "glUniformBlockBinding");
-    //ARB_get_program_binary
+
+    // ARB_get_program_binary
     setGLExtensionFuncPtr(_glGetProgramBinary, "glGetProgramBinary");
     setGLExtensionFuncPtr(_glProgramBinary, "glProgramBinary");
+
+    // ARB_gpu_shader_fp64
+    setGLExtensionFuncPtr(_glUniform1d, "glUniform1d" );
+    setGLExtensionFuncPtr(_glUniform2d, "glUniform2d" );
+    setGLExtensionFuncPtr(_glUniform3d, "glUniform3d" );
+    setGLExtensionFuncPtr(_glUniform4d, "glUniform4d" );
+    setGLExtensionFuncPtr(_glUniform1dv, "glUniform1dv" );
+    setGLExtensionFuncPtr(_glUniform2dv, "glUniform2dv" );
+    setGLExtensionFuncPtr(_glUniform3dv, "glUniform3dv" );
+    setGLExtensionFuncPtr(_glUniform4dv, "glUniform4dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix2dv, "glUniformMatrix2dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix3dv, "glUniformMatrix3dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix4dv, "glUniformMatrix4dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix2x3dv,  "glUniformMatrix2x3dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix3x2dv,  "glUniformMatrix3x2dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix2x4dv,  "glUniformMatrix2x4dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix4x2dv,  "glUniformMatrix4x2dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix3x4dv,  "glUniformMatrix3x4dv" );
+    setGLExtensionFuncPtr(_glUniformMatrix4x3dv,  "glUniformMatrix4x3dv" );
+
+    // ARB_shader_atomic_counters
+    setGLExtensionFuncPtr(_glGetActiveAtomicCounterBufferiv,  "glGetActiveAtomicCounterBufferiv" );
 }
 
 
@@ -2489,6 +2589,240 @@ void GL2Extensions::glProgramBinary(GLuint program,
     else
     {
         NotSupported("glProgramBinary");
+    }
+}
+
+void GL2Extensions::glUniform1d(GLint location, GLdouble v0) const
+{
+    if (_glUniform1d)
+    {
+
+        _glUniform1d(location, v0);
+    }
+    else
+    {
+        NotSupported( "glUniform1d" );
+    }
+}
+
+void GL2Extensions::glUniform2d(GLint location, GLdouble v0, GLdouble v1) const
+{
+    if (_glUniform2d)
+    {
+
+        _glUniform2d(location, v0, v1);
+    }
+    else
+    {
+        NotSupported( "glUniform2d" );
+    }
+}
+
+void GL2Extensions::glUniform3d(GLint location, GLdouble v0, GLdouble v1, GLdouble v2) const
+{
+    if (_glUniform3d)
+    {
+
+        _glUniform3d(location, v0, v1, v2);
+    }
+    else
+    {
+        NotSupported( "glUniform3d" );
+    }
+}
+
+void GL2Extensions::glUniform4d(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3) const
+{
+    if (_glUniform4d)
+    {
+
+        _glUniform4d(location, v0, v1, v2, v3);
+    }
+    else
+    {
+        NotSupported( "glUniform4d" );
+    }
+}
+
+void GL2Extensions::glUniform1dv(GLint location, GLsizei count, const GLdouble *value) const
+{
+    if (_glUniform1dv)
+    {
+
+        _glUniform1dv(location, count, value);
+    }
+    else
+    {
+        NotSupported( "glUniform1dv" );
+    }
+}
+
+void GL2Extensions::glUniform2dv(GLint location, GLsizei count, const GLdouble *value) const
+{
+    if (_glUniform2dv)
+    {
+
+        _glUniform2dv(location, count, value);
+    }
+    else
+    {
+        NotSupported( "glUniform2dv" );
+    }
+}
+
+void GL2Extensions::glUniform3dv(GLint location, GLsizei count, const GLdouble *value) const
+{
+    if (_glUniform3dv)
+    {
+
+        _glUniform3dv(location, count, value);
+    }
+    else
+    {
+        NotSupported( "glUniform3dv" );
+    }
+}
+
+void GL2Extensions::glUniform4dv(GLint location, GLsizei count, const GLdouble *value) const
+{
+    if (_glUniform4dv)
+    {
+
+        _glUniform4dv(location, count, value);
+    }
+    else
+    {
+        NotSupported( "glUniform4dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix2dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const
+{
+    if (_glUniformMatrix2dv)
+    {
+
+        _glUniformMatrix2dv(location, count, transpose, value);
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix2dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix3dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const
+{
+    if (_glUniformMatrix3dv)
+    {
+
+        _glUniformMatrix3dv(location, count, transpose, value);
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix3dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix4dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const
+{
+    if (_glUniformMatrix4dv)
+    {
+
+        _glUniformMatrix4dv(location, count, transpose, value);
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix4dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix2x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix2x3dv)
+    {
+
+        _glUniformMatrix2x3dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix2x3dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix3x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix3x2dv)
+    {
+
+        _glUniformMatrix3x2dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix3x2dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix2x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix2x4dv)
+    {
+
+        _glUniformMatrix2x4dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix2x4dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix4x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix4x2dv)
+    {
+
+        _glUniformMatrix4x2dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix4x2dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix3x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix3x4dv)
+    {
+
+        _glUniformMatrix3x4dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix3x4dv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix4x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const
+{
+    if (_glUniformMatrix4x3dv)
+    {
+
+        _glUniformMatrix4x3dv( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix4x3dv" );
+    }
+}
+
+void GL2Extensions::glGetActiveAtomicCounterBufferiv( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params ) const
+{
+    if (_glGetActiveAtomicCounterBufferiv)
+    {
+
+        _glGetActiveAtomicCounterBufferiv( program, bufferIndex, pname, params );
+    }
+    else
+    {
+        NotSupported( "glGetActiveAtomicCounterBufferiv" );
     }
 }
 

@@ -83,7 +83,7 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
 
             inline void interpolate(double ratio,const ControlPoint& first, const ControlPoint& second)
             {
-                double one_minus_ratio = 1.0f-ratio;
+                double one_minus_ratio = 1.0-ratio;
                 _position = first._position*one_minus_ratio + second._position*ratio;
                 _rotation.slerp(ratio,first._rotation,second._rotation);
                 _scale = first._scale*one_minus_ratio + second._scale*ratio;

@@ -43,11 +43,11 @@ Mattias Helsing
 Andy Skinner
 Paul Melis
 David Fries
+Magnus Kessler
 Tom Jolley
 Pavel Moloshtan
 Alberto Luaces
 Olaf Flebbe
-Magnus Kessler
 Jason Daly
 Robert Milharcic
 Philip Lowman

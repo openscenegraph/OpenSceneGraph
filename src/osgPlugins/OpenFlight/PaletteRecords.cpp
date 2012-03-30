@@ -66,11 +66,14 @@ protected:
         uint32 paletteSize = in.readUInt32();
 
         // Entries in vertex pool found by offset from start of this record.
-        const int RECORD_HEADER_SIZE = 4;
-        const int OFFSET = RECORD_HEADER_SIZE+sizeof(paletteSize);
+        const uint32 RECORD_HEADER_SIZE = 4;
+        const uint32 OFFSET = RECORD_HEADER_SIZE+sizeof(paletteSize);
 
         std::string buffer(paletteSize,'\0');
-        in.read(&buffer[OFFSET], paletteSize-OFFSET);
+        if (OFFSET < paletteSize)
+        {
+            in.read(&buffer[OFFSET], paletteSize-OFFSET);
+        }
 
         // Keep a copy of the vertex pool in memory for later reference.
         document.setVertexPool(new VertexPool(buffer));

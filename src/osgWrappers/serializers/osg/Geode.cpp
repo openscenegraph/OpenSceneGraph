@@ -10,25 +10,25 @@ static bool checkDrawables( const osg::Geode& node )
 
 static bool readDrawables( osgDB::InputStream& is, osg::Geode& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Drawable* drawable = dynamic_cast<osg::Drawable*>( is.readObject() );
         if ( drawable ) node.addDrawable( drawable );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeDrawables( osgDB::OutputStream& os, const osg::Geode& node )
 {
     unsigned int size = node.getNumDrawables();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << node.getDrawable(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

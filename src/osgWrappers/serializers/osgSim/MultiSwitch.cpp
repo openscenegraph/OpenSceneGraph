@@ -10,11 +10,11 @@ static bool checkValues( const osgSim::MultiSwitch& node )
 
 static bool readValues( osgDB::InputStream& is, osgSim::MultiSwitch& node )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        is >> osgDB::PROPERTY("SwitchSet");
-        unsigned int valueSize = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+        is >> is.PROPERTY("SwitchSet");
+        unsigned int valueSize = is.readSize(); is >> is.BEGIN_BRACKET;
 
         osgSim::MultiSwitch::ValueList values;
         for ( unsigned int j=0; j<valueSize; ++j )
@@ -23,29 +23,29 @@ static bool readValues( osgDB::InputStream& is, osgSim::MultiSwitch& node )
             values.push_back( value );
         }
         node.setValueList( i, values );
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeValues( osgDB::OutputStream& os, const osgSim::MultiSwitch& node )
 {
     const osgSim::MultiSwitch::SwitchSetList& switches = node.getSwitchSetList();
-    os.writeSize( switches.size() ); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize( switches.size() ); os << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<switches.size(); ++i )
     {
         const osgSim::MultiSwitch::ValueList& values = node.getValueList(i);
-        os << osgDB::PROPERTY("SwitchSet"); os.writeSize( values.size() );
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.PROPERTY("SwitchSet"); os.writeSize( values.size() );
+        os << os.BEGIN_BRACKET << std::endl;
         for ( osgSim::MultiSwitch::ValueList::const_iterator itr=values.begin();
               itr!=values.end(); ++itr )
         {
             os << *itr << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

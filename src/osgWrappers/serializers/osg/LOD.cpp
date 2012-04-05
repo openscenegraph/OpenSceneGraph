@@ -31,27 +31,27 @@ static bool checkRangeList( const osg::LOD& node )
 
 static bool readRangeList( osgDB::InputStream& is, osg::LOD& node )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float min, max;
         is >> min >> max;
         node.setRange( i, min, max );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeRangeList( osgDB::OutputStream& os, const osg::LOD& node )
 {
     const osg::LOD::RangeList& ranges = node.getRangeList();
-    os.writeSize(ranges.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(ranges.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::LOD::RangeList::const_iterator itr=ranges.begin();
           itr!=ranges.end(); ++itr )
     {
         os << itr->first << itr->second << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

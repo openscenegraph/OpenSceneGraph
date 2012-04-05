@@ -8,8 +8,8 @@
 static void readChannel( osgDB::InputStream& is, osgAnimation::Channel* ch )
 {
     std::string name, targetName;
-    is >> osgDB::PROPERTY("Name") >> name;
-    is >> osgDB::PROPERTY("TargetName") >> targetName;
+    is >> is.PROPERTY("Name") >> name;
+    is >> is.PROPERTY("TargetName") >> targetName;
     ch->setName( name );
     ch->setTargetName( targetName );
 }
@@ -19,11 +19,11 @@ static void readContainer( osgDB::InputStream& is, ContainerType* container )
 {
     typedef typename ContainerType::KeyType KeyType;
     bool hasContainer = false;
-    is >> osgDB::PROPERTY("KeyFrameContainer") >> hasContainer;
+    is >> is.PROPERTY("KeyFrameContainer") >> hasContainer;
     if ( hasContainer )
     {
         unsigned int size = 0;
-        size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+        size = is.readSize(); is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             double time = 0.0f;
@@ -31,7 +31,7 @@ static void readContainer( osgDB::InputStream& is, ContainerType* container )
             is >> time >> value;
             container->push_back( KeyType(time, value) );
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
 }
 
@@ -40,11 +40,11 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
 {
     typedef typename ContainerType::KeyType KeyType;
     bool hasContainer = false;
-    is >> osgDB::PROPERTY("KeyFrameContainer") >> hasContainer;
+    is >> is.PROPERTY("KeyFrameContainer") >> hasContainer;
     if ( hasContainer )
     {
         unsigned int size = 0;
-        size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+        size = is.readSize(); is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             double time = 0.0f;
@@ -52,7 +52,7 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
             is >> time >> pos >> ptIn >> ptOut;
             container->push_back( KeyType(time, ValueType(pos, ptIn, ptOut)) );
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
 }
 
@@ -61,7 +61,7 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
         CHANNEL* ch = new CHANNEL; \
         readChannel( is, ch ); \
         readContainer<CONTAINER, VALUE>( is, ch->getOrCreateSampler()->getOrCreateKeyframeContainer() ); \
-        is >> osgDB::END_BRACKET; \
+        is >> is.END_BRACKET; \
         if ( ch ) ani.addChannel( ch ); \
         continue; \
     }
@@ -71,7 +71,7 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
         CHANNEL* ch = new CHANNEL; \
         readChannel( is, ch ); \
         readContainer2<CONTAINER, VALUE, INVALUE>( is, ch->getOrCreateSampler()->getOrCreateKeyframeContainer() ); \
-        is >> osgDB::END_BRACKET; \
+        is >> is.END_BRACKET; \
         if ( ch ) ani.addChannel( ch ); \
         continue; \
     }
@@ -80,22 +80,22 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
 
 static void writeChannel( osgDB::OutputStream& os, osgAnimation::Channel* ch )
 {
-    os << osgDB::PROPERTY("Name") << ch->getName() << std::endl;
-    os << osgDB::PROPERTY("TargetName") << ch->getTargetName() << std::endl;
+    os << os.PROPERTY("Name") << ch->getName() << std::endl;
+    os << os.PROPERTY("TargetName") << ch->getTargetName() << std::endl;
 }
 
 template <typename ContainerType>
 static void writeContainer( osgDB::OutputStream& os, ContainerType* container )
 {
-    os << osgDB::PROPERTY("KeyFrameContainer") << (container!=NULL);
+    os << os.PROPERTY("KeyFrameContainer") << (container!=NULL);
     if ( container!=NULL )
     {
-        os.writeSize(container->size()); os << osgDB::BEGIN_BRACKET << std::endl;
+        os.writeSize(container->size()); os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<container->size(); ++i )
         {
             os << (*container)[i].getTime() << (*container)[i].getValue() << std::endl;
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
 }
@@ -104,10 +104,10 @@ template <typename ContainerType>
 static void writeContainer2( osgDB::OutputStream& os, ContainerType* container )
 {
     typedef typename ContainerType::KeyType KeyType;
-    os << osgDB::PROPERTY("KeyFrameContainer") << (container!=NULL);
+    os << os.PROPERTY("KeyFrameContainer") << (container!=NULL);
     if ( container!=NULL )
     {
-        os.writeSize(container->size()); os << osgDB::BEGIN_BRACKET << std::endl;
+        os.writeSize(container->size()); os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<container->size(); ++i )
         {
             const KeyType& keyframe = (*container)[i];
@@ -115,7 +115,7 @@ static void writeContainer2( osgDB::OutputStream& os, ContainerType* container )
                << keyframe.getValue().getControlPointIn()
                << keyframe.getValue().getControlPointOut() << std::endl;
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
 }
@@ -123,20 +123,20 @@ static void writeContainer2( osgDB::OutputStream& os, ContainerType* container )
 #define WRITE_CHANNEL_FUNC( NAME, CHANNEL, CONTAINER ) \
     CHANNEL* ch_##NAME = dynamic_cast<CHANNEL*>(ch); \
     if ( ch_##NAME ) { \
-        os << osgDB::PROPERTY("Type") << std::string(#NAME) << osgDB::BEGIN_BRACKET << std::endl; \
+        os << os.PROPERTY("Type") << std::string(#NAME) << os.BEGIN_BRACKET << std::endl; \
         writeChannel( os, ch_##NAME ); \
         writeContainer<CONTAINER>( os, ch_##NAME ->getSamplerTyped()->getKeyframeContainerTyped() ); \
-        os << osgDB::END_BRACKET << std::endl; \
+        os << os.END_BRACKET << std::endl; \
         continue; \
     }
 
 #define WRITE_CHANNEL_FUNC2( NAME, CHANNEL, CONTAINER ) \
     CHANNEL* ch_##NAME = dynamic_cast<CHANNEL*>(ch); \
     if ( ch_##NAME ) { \
-        os << osgDB::PROPERTY("Type") << #NAME << osgDB::BEGIN_BRACKET << std::endl; \
+        os << os.PROPERTY("Type") << #NAME << os.BEGIN_BRACKET << std::endl; \
         writeChannel( os, ch_##NAME ); \
         writeContainer2<CONTAINER>( os, ch_##NAME ->getSamplerTyped()->getKeyframeContainerTyped() ); \
-        os << osgDB::END_BRACKET << std::endl; \
+        os << os.END_BRACKET << std::endl; \
         continue; \
     }
 
@@ -149,11 +149,11 @@ static bool checkChannels( const osgAnimation::Animation& ani )
 
 static bool readChannels( osgDB::InputStream& is, osgAnimation::Animation& ani )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string type;
-        is >> osgDB::PROPERTY("Type") >> type >> osgDB::BEGIN_BRACKET;
+        is >> is.PROPERTY("Type") >> type >> is.BEGIN_BRACKET;
 
         READ_CHANNEL_FUNC( DoubleStepChannel, osgAnimation::DoubleStepChannel, osgAnimation::DoubleKeyframeContainer, double );
         READ_CHANNEL_FUNC( FloatStepChannel, osgAnimation::FloatStepChannel, osgAnimation::FloatKeyframeContainer, float );
@@ -187,14 +187,14 @@ static bool readChannels( osgDB::InputStream& is, osgAnimation::Animation& ani )
                                                     osgAnimation::Vec4CubicBezier, osg::Vec4 );
         is.advanceToCurrentEndBracket();
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeChannels( osgDB::OutputStream& os, const osgAnimation::Animation& ani )
 {
     const osgAnimation::ChannelList& channels = ani.getChannels();
-    os.writeSize(channels.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(channels.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osgAnimation::ChannelList::const_iterator itr=channels.begin();
           itr!=channels.end(); ++itr )
     {
@@ -225,10 +225,10 @@ static bool writeChannels( osgDB::OutputStream& os, const osgAnimation::Animatio
         WRITE_CHANNEL_FUNC2( Vec4CubicBezierChannel, osgAnimation::Vec4CubicBezierChannel,
                                                      osgAnimation::Vec4CubicBezierKeyframeContainer );
 
-        os << osgDB::PROPERTY("Type") << std::string("UnknownChannel") << osgDB::BEGIN_BRACKET << std::endl;
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.PROPERTY("Type") << std::string("UnknownChannel") << os.BEGIN_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

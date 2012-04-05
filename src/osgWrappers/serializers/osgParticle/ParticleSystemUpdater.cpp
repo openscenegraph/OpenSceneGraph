@@ -10,25 +10,25 @@ static bool checkParticleSystems( const osgParticle::ParticleSystemUpdater& upda
 
 static bool readParticleSystems( osgDB::InputStream& is, osgParticle::ParticleSystemUpdater& updater )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osgParticle::ParticleSystem* ps = dynamic_cast<osgParticle::ParticleSystem*>( is.readObject() );
         if ( ps ) updater.addParticleSystem( ps );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeParticleSystems( osgDB::OutputStream& os, const osgParticle::ParticleSystemUpdater& updater )
 {
     unsigned int size = updater.getNumParticleSystems();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << updater.getParticleSystem(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

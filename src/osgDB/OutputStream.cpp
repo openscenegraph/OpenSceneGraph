@@ -25,6 +25,9 @@ using namespace osgDB;
 OutputStream::OutputStream( const osgDB::Options* options )
 :   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false)
 {
+    BEGIN_BRACKET.set( "{", +INDENT_VALUE );
+    END_BRACKET.set( "}", -INDENT_VALUE );
+
     if ( !options ) return;
     _options = options;
 

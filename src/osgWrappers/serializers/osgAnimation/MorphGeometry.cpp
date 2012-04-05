@@ -10,29 +10,29 @@ static bool checkMorphTargets( const osgAnimation::MorphGeometry& geom )
 
 static bool readMorphTargets( osgDB::InputStream& is, osgAnimation::MorphGeometry& geom )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float weight = 0.0f;
-        is >> osgDB::PROPERTY("MorphTarget") >> weight;
+        is >> is.PROPERTY("MorphTarget") >> weight;
         osg::Geometry* target = dynamic_cast<osg::Geometry*>( is.readObject() );
         if ( target ) geom.addMorphTarget( target, weight );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeMorphTargets( osgDB::OutputStream& os, const osgAnimation::MorphGeometry& geom )
 {
     const osgAnimation::MorphGeometry::MorphTargetList& targets = geom.getMorphTargetList();
-    os.writeSize(targets.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(targets.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osgAnimation::MorphGeometry::MorphTargetList::const_iterator itr=targets.begin();
           itr!=targets.end(); ++itr )
     {
-        os << osgDB::PROPERTY("MorphTarget") << itr->getWeight() << std::endl;
+        os << os.PROPERTY("MorphTarget") << itr->getWeight() << std::endl;
         os << itr->getGeometry();
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

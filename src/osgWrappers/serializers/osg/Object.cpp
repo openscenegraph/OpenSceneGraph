@@ -13,18 +13,18 @@ static bool checkUserData( const osg::Object& obj )
 
 static bool readUserData( osgDB::InputStream& is, osg::Object& obj )
 {
-    is >> osgDB::BEGIN_BRACKET;
+    is >> is.BEGIN_BRACKET;
     osg::Object* object = is.readObject();
     if(object) obj.setUserData(object);
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeUserData( osgDB::OutputStream& os, const osg::Object& obj )
 {
-    os << osgDB::BEGIN_BRACKET << std::endl;
+    os << os.BEGIN_BRACKET << std::endl;
     os.writeObject(dynamic_cast<const osg::Object*>(obj.getUserData()));
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

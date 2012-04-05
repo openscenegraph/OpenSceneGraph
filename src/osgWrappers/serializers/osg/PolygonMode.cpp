@@ -21,9 +21,9 @@ static bool checkMode( const osg::PolygonMode& attr )
 static bool readMode( osgDB::InputStream& is, osg::PolygonMode& attr )
 {
     bool frontAndBack;
-    is >> osgDB::PROPERTY("UseFrontAndBack") >> frontAndBack;
-    is >> osgDB::PROPERTY("Front"); int value1 = readModeValue(is);
-    is >> osgDB::PROPERTY("Back"); int value2 = readModeValue(is);
+    is >> is.PROPERTY("UseFrontAndBack") >> frontAndBack;
+    is >> is.PROPERTY("Front"); int value1 = readModeValue(is);
+    is >> is.PROPERTY("Back"); int value2 = readModeValue(is);
 
     if ( frontAndBack )
         attr.setMode( osg::PolygonMode::FRONT_AND_BACK, (osg::PolygonMode::Mode)value1 );
@@ -37,13 +37,13 @@ static bool readMode( osgDB::InputStream& is, osg::PolygonMode& attr )
 
 static bool writeMode( osgDB::OutputStream& os, const osg::PolygonMode& attr )
 {
-    os << osgDB::PROPERTY("UseFrontAndBack") << attr.getFrontAndBack() << std::endl;
+    os << os.PROPERTY("UseFrontAndBack") << attr.getFrontAndBack() << std::endl;
 
-    os << osgDB::PROPERTY("Front");
+    os << os.PROPERTY("Front");
     writeModeValue( os, (int)attr.getMode(osg::PolygonMode::FRONT) );
     os << std::endl;
 
-    os << osgDB::PROPERTY("Back");
+    os << os.PROPERTY("Back");
     writeModeValue( os, (int)attr.getMode(osg::PolygonMode::BACK) );
     os << std::endl;
     return true;

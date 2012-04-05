@@ -34,26 +34,26 @@ USER_WRITE_FUNC( Operation, writeOperation )
 #define STENCIL_INT_VALUE_FUNC( PROP, TYPE ) \
     static bool check##PROP( const osg::StencilTwoSided& attr ) { return true; } \
     static bool read##PROP( osgDB::InputStream& is, osg::StencilTwoSided& attr ) { \
-        TYPE value1; is >> osgDB::PROPERTY("Front") >> value1; \
-        TYPE value2; is >> osgDB::PROPERTY("Back") >> value2; \
+        TYPE value1; is >> is.PROPERTY("Front") >> value1; \
+        TYPE value2; is >> is.PROPERTY("Back") >> value2; \
         attr.set##PROP(osg::StencilTwoSided::FRONT, value1); \
         attr.set##PROP(osg::StencilTwoSided::BACK, value2); return true; } \
     static bool write##PROP( osgDB::OutputStream& os, const osg::StencilTwoSided& attr ) { \
-        os << osgDB::PROPERTY("Front") << attr.get##PROP(osg::StencilTwoSided::FRONT); \
-        os << osgDB::PROPERTY("Back") << attr.get##PROP(osg::StencilTwoSided::BACK); \
+        os << os.PROPERTY("Front") << attr.get##PROP(osg::StencilTwoSided::FRONT); \
+        os << os.PROPERTY("Back") << attr.get##PROP(osg::StencilTwoSided::BACK); \
         os << std::endl; return true; }
 
 #define STENCIL_USER_VALUE_FUNC( PROP, TYPE ) \
     static bool check##PROP( const osg::StencilTwoSided& attr ) { return true; } \
     static bool read##PROP( osgDB::InputStream& is, osg::StencilTwoSided& attr ) { \
-        is >> osgDB::PROPERTY("Front"); int value1 = read##TYPE(is); \
-        is >> osgDB::PROPERTY("Back"); int value2 = read##TYPE(is); \
+        is >> is.PROPERTY("Front"); int value1 = read##TYPE(is); \
+        is >> is.PROPERTY("Back"); int value2 = read##TYPE(is); \
         attr.set##PROP(osg::StencilTwoSided::FRONT, (osg::StencilTwoSided::TYPE)value1); \
         attr.set##PROP(osg::StencilTwoSided::BACK, (osg::StencilTwoSided::TYPE)value2); \
         return true; } \
     static bool write##PROP( osgDB::OutputStream& os, const osg::StencilTwoSided& attr ) { \
-        os << osgDB::PROPERTY("Front"); write##TYPE(os, (int)attr.get##PROP(osg::StencilTwoSided::FRONT)); \
-        os << osgDB::PROPERTY("Back"); write##TYPE(os, (int)attr.get##PROP(osg::StencilTwoSided::BACK)); \
+        os << os.PROPERTY("Front"); write##TYPE(os, (int)attr.get##PROP(osg::StencilTwoSided::FRONT)); \
+        os << os.PROPERTY("Back"); write##TYPE(os, (int)attr.get##PROP(osg::StencilTwoSided::BACK)); \
         os << std::endl; return true; }
 
 STENCIL_USER_VALUE_FUNC( Function, Function )

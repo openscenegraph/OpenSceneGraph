@@ -10,26 +10,26 @@ static bool checkChildren( const osg::Group& node )
 
 static bool readChildren( osgDB::InputStream& is, osg::Group& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::ref_ptr<osg::Object> obj = is.readObject();
         osg::Node* child = dynamic_cast<osg::Node*>( obj.get() );
         if ( child ) node.addChild( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeChildren( osgDB::OutputStream& os, const osg::Group& node )
 {
     unsigned int size = node.getNumChildren();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << node.getChild(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

@@ -26,6 +26,9 @@ static std::string s_lastSchema;
 InputStream::InputStream( const osgDB::Options* options )
     :   _fileVersion(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
+    BEGIN_BRACKET.set( "{", +INDENT_VALUE );
+    END_BRACKET.set( "}", -INDENT_VALUE );
+
     if ( !options ) return;
     _options = options;
 

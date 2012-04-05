@@ -13,26 +13,26 @@ static bool checkFileNames( const osg::ProxyNode& node )
 
 static bool readFileNames( osgDB::InputStream& is, osg::ProxyNode& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string value;
         is.readWrappedString( value );
         node.setFileName( i, value );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeFileNames( osgDB::OutputStream& os, const osg::ProxyNode& node )
 {
-    os << node.getNumFileNames() << osgDB::BEGIN_BRACKET << std::endl;
+    os << node.getNumFileNames() << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<node.getNumFileNames(); ++i )
     {
         os.writeWrappedString( node.getFileName(i) );
         os << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -44,13 +44,13 @@ static bool checkChildren( const osg::ProxyNode& node )
 
 static bool readChildren( osgDB::InputStream& is, osg::ProxyNode& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
         if ( child ) node.addChild( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
@@ -66,14 +66,14 @@ static bool writeChildren( osgDB::OutputStream& os, const osg::ProxyNode& node )
     unsigned int realSize = size-dynamicLoadedSize; os << realSize;
     if ( realSize>0 )
     {
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<size; ++i )
         {
             if ( !node.getFileName(i).empty() ) continue;
             if ( i<node.getNumChildren() )
                 os << node.getChild(i);
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
     return true;

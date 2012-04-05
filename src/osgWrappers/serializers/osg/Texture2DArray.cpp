@@ -10,26 +10,26 @@ static bool checkImages( const osg::Texture2DArray& tex )
 
 static bool readImages( osgDB::InputStream& is, osg::Texture2DArray& tex )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     tex.setTextureDepth(size);
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Image* image = is.readImage();
         if ( image ) tex.setImage( i, image );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeImages( osgDB::OutputStream& os, const osg::Texture2DArray& tex )
 {
     unsigned int size = tex.getNumImages();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << tex.getImage(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

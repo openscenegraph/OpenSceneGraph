@@ -12,7 +12,7 @@ static bool checkImage( const osgTerrain::ImageLayer& im )
 static bool readImage( osgDB::InputStream& is, osgTerrain::ImageLayer& il )
 {
 
-    if(!is.isBinary()) is >> osgDB::BEGIN_BRACKET;
+    if(!is.isBinary()) is >> is.BEGIN_BRACKET;
 
     bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ?
             osgTerrain::TerrainTile::getTileLoadedCallback()->deferExternalLayerLoading() : false;
@@ -26,7 +26,7 @@ static bool readImage( osgDB::InputStream& is, osgTerrain::ImageLayer& il )
             il.setImage(image.get());
         }
     }
-    if(!is.isBinary()) is >> osgDB::END_BRACKET;
+    if(!is.isBinary()) is >> is.END_BRACKET;
 
    return true;
 }
@@ -35,9 +35,9 @@ static bool writeImage( osgDB::OutputStream& os, const osgTerrain::ImageLayer& i
 {
     const osg::Image* image = il.getImage();
 
-    if(!os.isBinary()) os << osgDB::BEGIN_BRACKET << std::endl;
+    if(!os.isBinary()) os << os.BEGIN_BRACKET << std::endl;
     os.writeImage(image);
-    if(!os.isBinary()) os << osgDB::END_BRACKET << std::endl;
+    if(!os.isBinary()) os << os.END_BRACKET << std::endl;
 
     return true;
 }

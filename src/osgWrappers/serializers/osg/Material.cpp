@@ -8,8 +8,8 @@
     static bool read##PROP( osgDB::InputStream& is, osg::Material& attr ) { \
         bool frontAndBack; TYPE value1, value2; \
         is >> frontAndBack; \
-        is >> osgDB::PROPERTY("Front") >> value1; \
-        is >> osgDB::PROPERTY("Back") >> value2; \
+        is >> is.PROPERTY("Front") >> value1; \
+        is >> is.PROPERTY("Back") >> value2; \
         if ( frontAndBack ) \
             attr.set##PROP(osg::Material::FRONT_AND_BACK, value1); \
         else { \
@@ -20,8 +20,8 @@
     } \
     static bool write##PROP( osgDB::OutputStream& os, const osg::Material& attr ) { \
         os << attr.get##PROP##FrontAndBack(); \
-        os << osgDB::PROPERTY("Front") << TYPE(attr.get##PROP(osg::Material::FRONT)); \
-        os << osgDB::PROPERTY("Back") << TYPE(attr.get##PROP(osg::Material::BACK)) << std::endl; \
+        os << os.PROPERTY("Front") << TYPE(attr.get##PROP(osg::Material::FRONT)); \
+        os << os.PROPERTY("Back") << TYPE(attr.get##PROP(osg::Material::BACK)) << std::endl; \
         return true; \
     }
 

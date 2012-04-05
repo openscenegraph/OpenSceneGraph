@@ -12,25 +12,25 @@ static bool checkTransformUpdating( const osgManipulator::Dragger& dragger )
 
 static bool readTransformUpdating( osgDB::InputStream& is, osgManipulator::Dragger& dragger )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        std::string name; is >> name >> osgDB::BEGIN_BRACKET;
+        std::string name; is >> name >> is.BEGIN_BRACKET;
         if ( name=="DraggerTransformCallback" )
         {
             osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>( is.readObject() );
             if ( transform ) dragger.addTransformUpdating( transform );
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeTransformUpdating( osgDB::OutputStream& os, const osgManipulator::Dragger& dragger )
 {
     const osgManipulator::Dragger::DraggerCallbacks& callbacks = dragger.getDraggerCallbacks();
-    os.writeSize( callbacks.size() ); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize( callbacks.size() ); os << os.BEGIN_BRACKET << std::endl;
     for ( osgManipulator::Dragger::DraggerCallbacks::const_iterator itr=callbacks.begin();
           itr!=callbacks.end(); ++itr )
     {
@@ -38,16 +38,16 @@ static bool writeTransformUpdating( osgDB::OutputStream& os, const osgManipulato
             dynamic_cast<osgManipulator::DraggerTransformCallback*>( itr->get() );
         if ( dtcb )
         {
-            os << std::string("DraggerTransformCallback") << osgDB::BEGIN_BRACKET << std::endl;
+            os << std::string("DraggerTransformCallback") << os.BEGIN_BRACKET << std::endl;
             os << dtcb->getTransform();
         }
         else
         {
-            os << std::string("DraggerCallback") << osgDB::BEGIN_BRACKET << std::endl;
+            os << std::string("DraggerCallback") << os.BEGIN_BRACKET << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

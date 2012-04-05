@@ -46,15 +46,15 @@ static bool checkRangeDataList( const osg::PagedLOD& node )
 
 static bool readRangeDataList( osgDB::InputStream& is, osg::PagedLOD& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string name; is.readWrappedString( name );
         node.setFileName( i, name );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
 
-    size = 0; is >> osgDB::PROPERTY("PriorityList") >> size >> osgDB::BEGIN_BRACKET;
+    size = 0; is >> is.PROPERTY("PriorityList") >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float offset, scale;
@@ -63,28 +63,28 @@ static bool readRangeDataList( osgDB::InputStream& is, osg::PagedLOD& node )
         node.setPriorityOffset( i, offset );
         node.setPriorityScale( i, scale );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeRangeDataList( osgDB::OutputStream& os, const osg::PagedLOD& node )
 {
     unsigned int size = node.getNumFileNames();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os.writeWrappedString( node.getFileName(i) );
         os << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
 
     size = node.getNumPriorityOffsets();
-    os << osgDB::PROPERTY("PriorityList") << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("PriorityList") << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << node.getPriorityOffset(i) << node.getPriorityScale(i) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -96,13 +96,13 @@ static bool checkChildren( const osg::PagedLOD& node )
 
 static bool readChildren( osgDB::InputStream& is, osg::PagedLOD& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
         if ( child ) node.addChild( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
@@ -118,14 +118,14 @@ static bool writeChildren( osgDB::OutputStream& os, const osg::PagedLOD& node )
     unsigned int realSize = size-dynamicLoadedSize; os << realSize;
     if ( realSize>0 )
     {
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<size; ++i )
         {
             if ( !node.getFileName(i).empty() ) continue;
             if ( i<node.getNumChildren() )
                 os << node.getChild(i);
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
     return true;

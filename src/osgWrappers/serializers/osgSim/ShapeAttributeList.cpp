@@ -10,12 +10,12 @@ static bool checkAttributes( const osgSim::ShapeAttributeList& list )
 
 static bool readAttributes( osgDB::InputStream& is, osgSim::ShapeAttributeList& list )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string name; int type;
-        is >> osgDB::PROPERTY("ShapeAttribute") >> name;
-        is >> osgDB::PROPERTY("Type") >> type;
+        is >> is.PROPERTY("ShapeAttribute") >> name;
+        is >> is.PROPERTY("Type") >> type;
         switch ( type )
         {
         case osgSim::ShapeAttribute::INTEGER:
@@ -38,19 +38,19 @@ static bool readAttributes( osgDB::InputStream& is, osgSim::ShapeAttributeList& 
             break;
         }
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeAttributes( osgDB::OutputStream& os, const osgSim::ShapeAttributeList& list )
 {
     unsigned int size = list.size();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         const osgSim::ShapeAttribute& sa = list[i];
-        os << osgDB::PROPERTY("ShapeAttribute") << sa.getName();
-        os << osgDB::PROPERTY("Type") << (int)sa.getType();
+        os << os.PROPERTY("ShapeAttribute") << sa.getName();
+        os << os.PROPERTY("Type") << (int)sa.getType();
         switch ( sa.getType() )
         {
         case osgSim::ShapeAttribute::INTEGER: os << sa.getInt() << std::endl; break;
@@ -58,7 +58,7 @@ static bool writeAttributes( osgDB::OutputStream& os, const osgSim::ShapeAttribu
         default: os << std::string(sa.getString()) << std::endl; break;
         }
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

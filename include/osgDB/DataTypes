@@ -88,13 +88,15 @@ struct ObjectGLenum
 class ObjectProperty
 {
 public:
+    ObjectProperty() : _value(0), _mapProperty(false) {}
+
     ObjectProperty( const char* name, int value=0, bool useMap=false )
     : _name(name), _value(value), _mapProperty(useMap) {}
 
     ObjectProperty( const ObjectProperty& copy )
     : _name(copy._name), _value(copy._value), _mapProperty(copy._mapProperty) {}
 
-    ObjectProperty& proto( const char* name )
+    ObjectProperty& operator()( const char* name )
     { _name = name; return *this; }
 
     void set( int v ) { _value = v; }
@@ -103,34 +105,24 @@ public:
     std::string _name;
     int _value;
     bool _mapProperty;
-
-protected:
-    ObjectProperty():_value(0),_mapProperty(false) {}
 };
-static ObjectProperty defaultProp("");
-
-#define PROPERTY(name) defaultProp.proto(name)
 #define MAPPEE(pairName, value) osgDB::ObjectProperty(#pairName, value, true)
-#define DEF_PROPERTY(name, var) osgDB::ObjectProperty var(name);
 #define DEF_MAPPEE(pairName, var) osgDB::ObjectProperty var(#pairName, 0, true);
 
 class ObjectMark
 {
 public:
-    ObjectMark( const char* name, int delta=0 )
-    : _name(name), _indentDelta(delta) {}
+    ObjectMark() : _indentDelta(0) {}
 
     ObjectMark( const ObjectMark& copy )
     : _name(copy._name), _indentDelta(copy._indentDelta) {}
 
+    void set( const char* name, int delta=0 )
+    { _name = name, _indentDelta = delta; }
+
     std::string _name;
     int _indentDelta;
-
-protected:
-    ObjectMark():_indentDelta(0) {}
 };
-static ObjectMark BEGIN_BRACKET("{", +INDENT_VALUE);
-static ObjectMark END_BRACKET  ("}", -INDENT_VALUE);
 
 }
 #endif

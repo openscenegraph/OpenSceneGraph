@@ -10,25 +10,25 @@ static bool checkChildren( const osg::CompositeShape& shape )
 
 static bool readChildren( osgDB::InputStream& is, osg::CompositeShape& shape )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Shape* child = dynamic_cast<osg::Shape*>( is.readObject() );
         if ( child ) shape.addChild( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeChildren( osgDB::OutputStream& os, const osg::CompositeShape& shape )
 {
     unsigned int size = shape.getNumChildren();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << shape.getChild(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

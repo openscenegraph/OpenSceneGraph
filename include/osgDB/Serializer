@@ -177,7 +177,7 @@ public:
         else
         {
             if ( !ok ) return true;
-            os << PROPERTY(_name.c_str());
+            os << os.PROPERTY(_name.c_str());
         }
         return (*_writer)(os, object);
     }
@@ -251,7 +251,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str());
+            os << os.PROPERTY((ParentType::_name).c_str());
             if ( _useHex ) os << std::hex;
             os << value;
             if ( _useHex ) os << std::dec;
@@ -308,7 +308,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
+            os << os.PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;
     }
@@ -358,7 +358,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
+            os << os.PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;
     }
@@ -425,7 +425,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << GLENUM(value) << std::endl;
+            os << os.PROPERTY((ParentType::_name).c_str()) << GLENUM(value) << std::endl;
         }
         return true;
     }
@@ -475,7 +475,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str());
+            os << os.PROPERTY((ParentType::_name).c_str());
             os.writeWrappedString( value );
             os << std::endl;
         }
@@ -517,11 +517,11 @@ public:
             is >> hasObject;
             if ( hasObject )
             {
-                is >> BEGIN_BRACKET;
+                is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readObject() );
                 if ( ParentType::_defaultValue!=value )
                     (object.*_setter)( value );
-                is >> END_BRACKET;
+                is >> is.END_BRACKET;
             }
         }
         return true;
@@ -539,12 +539,12 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << hasObject;
+            os << os.PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
-                os << BEGIN_BRACKET << std::endl;
+                os << os.BEGIN_BRACKET << std::endl;
                 os.writeObject( value );
-                os << END_BRACKET;
+                os << os.END_BRACKET;
             }
             os << std::endl;
         }
@@ -586,11 +586,11 @@ public:
             is >> hasObject;
             if ( hasObject )
             {
-                is >> BEGIN_BRACKET;
+                is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readImage() );
                 if ( ParentType::_defaultValue!=value )
                     (object.*_setter)( value );
-                is >> END_BRACKET;
+                is >> is.END_BRACKET;
             }
         }
         return true;
@@ -608,12 +608,12 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << hasObject;
+            os << os.PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
-                os << BEGIN_BRACKET << std::endl;
+                os << os.BEGIN_BRACKET << std::endl;
                 os.writeImage( value );
-                os << END_BRACKET;
+                os << os.END_BRACKET;
             }
             os << std::endl;
         }
@@ -673,7 +673,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << getString(value) << std::endl;
+            os << os.PROPERTY((ParentType::_name).c_str()) << getString(value) << std::endl;
         }
         return true;
     }
@@ -720,7 +720,7 @@ public:
         else if ( is.matchString(_name) )
         {
             is >> size;
-            if ( size>0 ) is >> BEGIN_BRACKET;
+            if ( size>0 ) is >> is.BEGIN_BRACKET;
             for ( unsigned int i=0; i<size; ++i )
             {
                 ValueType value;
@@ -729,7 +729,7 @@ public:
             }
             if ( size>0 )
             {
-                is >> END_BRACKET;
+                is >> is.END_BRACKET;
                 (object.*_setter)( list );
             }
         }
@@ -752,14 +752,14 @@ public:
         }
         else if ( size>0 )
         {
-            os << PROPERTY((_name).c_str()) << size << BEGIN_BRACKET << std::endl;
+            os << os.PROPERTY((_name).c_str()) << size << os.BEGIN_BRACKET << std::endl;
             for ( ConstIterator itr=list.begin();
                   itr!=list.end(); ++itr )
             {
                 os << (*itr);
             }
             os << std::endl;
-            os << END_BRACKET << std::endl;
+            os << os.END_BRACKET << std::endl;
         }
         return true;
     }

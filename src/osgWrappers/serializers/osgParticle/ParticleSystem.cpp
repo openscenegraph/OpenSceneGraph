@@ -15,10 +15,10 @@ static bool checkDefaultBoundingBox( const osgParticle::ParticleSystem& ps )
 static bool readDefaultBoundingBox( osgDB::InputStream& is, osgParticle::ParticleSystem& ps )
 {
     osg::Vec3d min, max;
-    is >> osgDB::BEGIN_BRACKET;
-    is >> osgDB::PROPERTY("Minimum") >> min;
-    is >> osgDB::PROPERTY("Maximum") >> max;
-    is >> osgDB::END_BRACKET;
+    is >> is.BEGIN_BRACKET;
+    is >> is.PROPERTY("Minimum") >> min;
+    is >> is.PROPERTY("Maximum") >> max;
+    is >> is.END_BRACKET;
     ps.setDefaultBoundingBox( osg::BoundingBox(min, max) );
     return true;
 }
@@ -26,10 +26,10 @@ static bool readDefaultBoundingBox( osgDB::InputStream& is, osgParticle::Particl
 static bool writeDefaultBoundingBox( osgDB::OutputStream& os, const osgParticle::ParticleSystem& ps )
 {
     const osg::BoundingBox& bb = ps.getDefaultBoundingBox();
-    os << osgDB::BEGIN_BRACKET << std::endl;
-    os << osgDB::PROPERTY("Minimum") << osg::Vec3d(bb._min) << std::endl;
-    os << osgDB::PROPERTY("Maximum") << osg::Vec3d(bb._max) << std::endl;
-    os << osgDB::END_BRACKET;
+    os << os.BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("Minimum") << osg::Vec3d(bb._min) << std::endl;
+    os << os.PROPERTY("Maximum") << osg::Vec3d(bb._max) << std::endl;
+    os << os.END_BRACKET;
     os << std::endl;
     return true;
 }

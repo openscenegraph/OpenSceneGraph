@@ -157,6 +157,11 @@ public:
     inline void throwException( const std::string& msg );
     const InputException* getException() const { return _exception.get(); }
 
+    // Property & mask variables
+    ObjectProperty PROPERTY;
+    ObjectMark BEGIN_BRACKET;
+    ObjectMark END_BRACKET;
+
 protected:
     inline void checkStream();
     void setWrapperSchema( const std::string& name, const std::string& properties );

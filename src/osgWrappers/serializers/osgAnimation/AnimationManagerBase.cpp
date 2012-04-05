@@ -13,26 +13,26 @@ static bool checkAnimations( const osgAnimation::AnimationManagerBase& manager )
 
 static bool readAnimations( osgDB::InputStream& is, osgAnimation::AnimationManagerBase& manager )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osgAnimation::Animation* ani = dynamic_cast<osgAnimation::Animation*>( is.readObject() );
         if ( ani ) manager.registerAnimation( ani );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeAnimations( osgDB::OutputStream& os, const osgAnimation::AnimationManagerBase& manager )
 {
     const osgAnimation::AnimationList& animations = manager.getAnimationList();
-    os.writeSize(animations.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(animations.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osgAnimation::AnimationList::const_iterator itr=animations.begin();
           itr!=animations.end(); ++itr )
     {
         os << itr->get();
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

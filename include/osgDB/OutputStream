@@ -164,6 +164,11 @@ public:
     inline void throwException( const std::string& msg );
     const OutputException* getException() const { return _exception.get(); }
 
+    // Property & mask variables
+    ObjectProperty PROPERTY;
+    ObjectMark BEGIN_BRACKET;
+    ObjectMark END_BRACKET;
+
 protected:
     template<typename T>
     void writeArrayImplementation( const T*, int write_size, unsigned int numInRow=1 );

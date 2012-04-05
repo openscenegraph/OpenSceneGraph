@@ -16,20 +16,20 @@ static bool readTimeControlPointMap( osgDB::InputStream& is, osg::AnimationPath&
     unsigned int size = is.readSize();
     if ( size>0 )
     {
-        is >> osgDB::BEGIN_BRACKET;
+        is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             double time = 0.0;
             osg::Vec3d pos, scale;
             osg::Quat rot;
-            is >> osgDB::PROPERTY("Time") >> time >> osgDB::BEGIN_BRACKET;
-            is >> osgDB::PROPERTY("Position") >> pos;
-            is >> osgDB::PROPERTY("Rotation") >> rot;
-            is >> osgDB::PROPERTY("Scale") >> scale;
-            is >> osgDB::END_BRACKET;
+            is >> is.PROPERTY("Time") >> time >> is.BEGIN_BRACKET;
+            is >> is.PROPERTY("Position") >> pos;
+            is >> is.PROPERTY("Rotation") >> rot;
+            is >> is.PROPERTY("Scale") >> scale;
+            is >> is.END_BRACKET;
             path.insert( time, osg::AnimationPath::ControlPoint(pos, rot, scale) );
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
     return true;
 }
@@ -40,18 +40,18 @@ static bool writeTimeControlPointMap( osgDB::OutputStream& os, const osg::Animat
     os.writeSize(map.size());
     if ( map.size()>0 )
     {
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( osg::AnimationPath::TimeControlPointMap::const_iterator itr=map.begin();
               itr!=map.end(); ++itr )
         {
             const osg::AnimationPath::ControlPoint& pt = itr->second;
-            os << osgDB::PROPERTY("Time") << itr->first << osgDB::BEGIN_BRACKET << std::endl;
-            os << osgDB::PROPERTY("Position") << pt.getPosition() << std::endl;
-            os << osgDB::PROPERTY("Rotation") << pt.getRotation() << std::endl;
-            os << osgDB::PROPERTY("Scale") << pt.getScale() << std::endl;
-            os << osgDB::END_BRACKET << std::endl;
+            os << os.PROPERTY("Time") << itr->first << os.BEGIN_BRACKET << std::endl;
+            os << os.PROPERTY("Position") << pt.getPosition() << std::endl;
+            os << os.PROPERTY("Rotation") << pt.getRotation() << std::endl;
+            os << os.PROPERTY("Scale") << pt.getScale() << std::endl;
+            os << os.END_BRACKET << std::endl;
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
     return true;

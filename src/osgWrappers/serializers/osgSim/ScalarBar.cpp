@@ -10,12 +10,12 @@ static bool checkScalarsToColors( const osgSim::ScalarBar& bar )
 static bool readScalarsToColors( osgDB::InputStream& is, osgSim::ScalarBar& bar )
 {
     float min, max;
-    is >> osgDB::BEGIN_BRACKET;
-    is >> osgDB::PROPERTY("Range") >> min >> max;
+    is >> is.BEGIN_BRACKET;
+    is >> is.PROPERTY("Range") >> min >> max;
 
     bool hasColorRange = false;
     unsigned int colorSize = 0;
-    is >> osgDB::PROPERTY("Colors") >> hasColorRange >> colorSize;
+    is >> is.PROPERTY("Colors") >> hasColorRange >> colorSize;
     if ( !hasColorRange )
     {
         osgSim::ScalarsToColors* stc = new osgSim::ScalarsToColors(min, max);
@@ -23,14 +23,14 @@ static bool readScalarsToColors( osgDB::InputStream& is, osgSim::ScalarBar& bar 
     }
     else
     {
-        is >> osgDB::BEGIN_BRACKET;
+        is >> is.BEGIN_BRACKET;
         std::vector<osg::Vec4> colors;
         for ( unsigned int i=0; i<colorSize; ++i )
         {
             osg::Vec4 color; is >> color;
             colors.push_back( color );
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
 
         osgSim::ColorRange* cr = new osgSim::ColorRange(min, max, colors);
         bar.setScalarsToColors( cr );
@@ -41,9 +41,9 @@ static bool readScalarsToColors( osgDB::InputStream& is, osgSim::ScalarBar& bar 
 static bool writeScalarsToColors( osgDB::OutputStream& os, const osgSim::ScalarBar& bar )
 {
     const osgSim::ScalarsToColors* stc = bar.getScalarsToColors();
-    os << osgDB::BEGIN_BRACKET << std::endl;
-    os << osgDB::PROPERTY("Range") << stc->getMin() << stc->getMax() << std::endl;
-    os << osgDB::PROPERTY("Colors");
+    os << os.BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("Range") << stc->getMin() << stc->getMax() << std::endl;
+    os << os.PROPERTY("Colors");
 
     unsigned int colorSize = 0;
     const osgSim::ColorRange* cr = dynamic_cast<const osgSim::ColorRange*>(stc);
@@ -52,16 +52,16 @@ static bool writeScalarsToColors( osgDB::OutputStream& os, const osgSim::ScalarB
         const std::vector<osg::Vec4>& colors = cr->getColors();
         colorSize = colors.size();
 
-        os << true << colorSize << osgDB::BEGIN_BRACKET << std::endl;
+        os << true << colorSize << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<colorSize; ++i )
         {
             os << colors[i] << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
     else
         os << false << colorSize << std::endl;
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -74,19 +74,19 @@ static bool checkScalarPrinter( const osgSim::ScalarBar& bar )
 
 static bool readScalarPrinter( osgDB::InputStream& is, osgSim::ScalarBar& bar )
 {
-    is >> osgDB::BEGIN_BRACKET;
+    is >> is.BEGIN_BRACKET;
     osgSim::ScalarBar::ScalarPrinter* sp =
         dynamic_cast<osgSim::ScalarBar::ScalarPrinter*>( is.readObject() );
     if ( sp ) bar.setScalarPrinter( sp );
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeScalarPrinter( osgDB::OutputStream& os, const osgSim::ScalarBar& bar )
 {
-    os << osgDB::BEGIN_BRACKET << std::endl;
+    os << os.BEGIN_BRACKET << std::endl;
     os.writeObject( dynamic_cast<const osg::Object*>(bar.getScalarPrinter()) );
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -98,12 +98,12 @@ static bool readTextProperties( osgDB::InputStream& is, osgSim::ScalarBar& bar )
 {
     osgSim::ScalarBar::TextProperties prop;
     int resX, resY;
-    is >> osgDB::BEGIN_BRACKET;
-    is >> osgDB::PROPERTY("Font") >> prop._fontFile;
-    is >> osgDB::PROPERTY("Resolution") >> resX >> resY;
-    is >> osgDB::PROPERTY("CharacterSize") >> prop._characterSize;
-    is >> osgDB::PROPERTY("Color") >> prop._fontFile;
-    is >> osgDB::END_BRACKET;
+    is >> is.BEGIN_BRACKET;
+    is >> is.PROPERTY("Font") >> prop._fontFile;
+    is >> is.PROPERTY("Resolution") >> resX >> resY;
+    is >> is.PROPERTY("CharacterSize") >> prop._characterSize;
+    is >> is.PROPERTY("Color") >> prop._fontFile;
+    is >> is.END_BRACKET;
 
     prop._fontResolution = std::pair<int, int>(resX, resY);
     bar.setTextProperties( prop );
@@ -113,13 +113,13 @@ static bool readTextProperties( osgDB::InputStream& is, osgSim::ScalarBar& bar )
 static bool writeTextProperties( osgDB::OutputStream& os, const osgSim::ScalarBar& bar )
 {
     const osgSim::ScalarBar::TextProperties& prop = bar.getTextProperties();
-    os << osgDB::BEGIN_BRACKET << std::endl;
-    os << osgDB::PROPERTY("Font") << prop._fontFile << std::endl;
-    os << osgDB::PROPERTY("Resolution") << prop._fontResolution.first
+    os << os.BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("Font") << prop._fontFile << std::endl;
+    os << os.PROPERTY("Resolution") << prop._fontResolution.first
                                         << prop._fontResolution.second << std::endl;
-    os << osgDB::PROPERTY("CharacterSize") << prop._characterSize << std::endl;
-    os << osgDB::PROPERTY("Color") << prop._color << std::endl;
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.PROPERTY("CharacterSize") << prop._characterSize << std::endl;
+    os << os.PROPERTY("Color") << prop._color << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

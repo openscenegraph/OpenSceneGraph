@@ -219,7 +219,7 @@ class Matrix3Template : public MatrixTemplate<T, 3, 3>
 
     public:
         Matrix3Template() { base_class::reset(); }
-        Matrix3Template( const Matrix3Template& mat ) { set(mat.ptr()); }
+        Matrix3Template( const Matrix3Template& mat ) { base_class::set(mat.ptr()); }
         Matrix3Template( value_type a00, value_type a10, value_type a20,
                          value_type a01, value_type a11, value_type a21,
                          value_type a02, value_type a12, value_type a22 )

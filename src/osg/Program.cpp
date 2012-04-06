@@ -769,7 +769,8 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     }
 
     // print atomic counter
-    if (_extensions->isShaderAtomicCounterSupported())
+
+    if (_extensions->isShaderAtomicCounterSupported() && !atomicCounterMap.empty()) 
     {
         std::vector<GLint> bufferIndex( atomicCounterMap.size(), 0 );
         std::vector<GLuint> uniformIndex;

@@ -432,6 +432,7 @@ void ArrayDispatchers::init()
     _vertexDispatchers->assignGLBeginEnd<GLdouble>(Array::Vec3dArrayType, &GLBeginEndAdapter::Vertex3dv, 3);
     _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
+    _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Color3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
 
 #ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE

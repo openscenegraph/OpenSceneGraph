@@ -180,6 +180,8 @@ osg::Node* createFilterWall(osg::BoundingBox& bb,const std::string& filename)
     // create the text label.
     
     osgText::Text* text = new osgText::Text;
+    text->setDataVariance(osg::Object::DYNAMIC);
+
     text->setFont("fonts/arial.ttf");
     text->setPosition(center);
     text->setCharacterSize(height*0.03f);
@@ -337,13 +339,14 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
     // create the text label.
     
     osgText::Text* text = new osgText::Text;
+    text->setDataVariance(osg::Object::DYNAMIC);
     text->setFont("fonts/arial.ttf");
     text->setPosition(center);
     text->setCharacterSize(height*0.03f);
     text->setColor(osg::Vec4(1.0f,0.0f,1.0f,1.0f));
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::XY_PLANE);
-    
+
     osg::Geode* text_geode = new osg::Geode;
     text_geode->addDrawable(text);
     
@@ -498,12 +501,13 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
     // create the text label.
     
     osgText::Text* text = new osgText::Text;
+    text->setDataVariance(osg::Object::DYNAMIC);
     text->setFont("fonts/arial.ttf");
     text->setPosition(center);
     text->setCharacterSize(height*0.03f);
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::YZ_PLANE);
-    
+
     osg::Geode* text_geode = new osg::Geode;
     text_geode->addDrawable(text);
     

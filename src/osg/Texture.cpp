@@ -1432,13 +1432,23 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
         }
     }
 
+#if defined (OSG_GLES1_AVAILABLE) || defined (OSG_GLES2_AVAILABLE)
+    // GLES doesn't cope with internal formats of 1,2,3 and 4 and glTexImage doesn't
+    // handle the _OES pixel formats so map them to the appropriate equivilants.
+    switch(internalFormat)
+    {
+        case(1) : internalFormat = GL_LUMINANCE; break;
+        case(2) : internalFormat = GL_LUMINANCE_ALPHA; break;
+        case(3) : internalFormat = GL_RGB; break;
+        case(4) : internalFormat = GL_RGBA; break;
+        case(GL_RGB8_OES) : internalFormat = GL_RGB; break;
+        case(GL_RGBA8_OES) : internalFormat = GL_RGBA; break;
+        default: break;
+    }
+#endif
+    
     _internalFormat = internalFormat;
 
-    // GLES doesn't cope with internal formats of 1,2,3 and 4 so map them to the appropriate equivilants.
-    if (_internalFormat==1) _internalFormat = GL_LUMINANCE;
-    if (_internalFormat==2) _internalFormat = GL_LUMINANCE_ALPHA;
-    if (_internalFormat==3) _internalFormat = GL_RGB;
-    if (_internalFormat==4) _internalFormat = GL_RGBA;
 
     computeInternalFormatType();
 

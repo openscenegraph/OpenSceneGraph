@@ -55,7 +55,7 @@ typedef char TCHAR;
     #if (TARGET_OS_IPHONE)
         #include <Availability.h>
         // workaround a bug which appears when compiling for SDK < 4.0 and for the simulator
-        #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+        #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
             #define stat64 stat
         #else
             #if !TARGET_IPHONE_SIMULATOR

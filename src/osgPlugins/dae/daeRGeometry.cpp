@@ -470,7 +470,7 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode,
     domP_Array domPArray;
     domPArray.append(group->getP());
     std::vector<std::vector<GLuint> > indexLists;
-    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry, sources, indexLists);
+    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry.get(), sources, indexLists);
     if (!indexLists.front().empty())
     {
         pDrawElements->asVector().swap(indexLists.front());

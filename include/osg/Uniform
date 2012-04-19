@@ -42,8 +42,33 @@ class NodeVisitor;
 
 ///////////////////////////////////////////////////////////////////////////
 // C++ classes to represent the GLSL-specific types.
-
-template <typename T, unsigned int ColN, unsigned int RowN>
+//
+// Warning :
+// OSG  is Row major
+// GLSL is Column Major
+//
+// If you define an Uniform with type Uniform::FLOAT_MAT4X2 and so use a Matrix4x2 to setup your Uniform,
+// like this :
+// 1 2
+// 3 4
+// 5 6
+// 7 8
+//
+// you will get in your shader a Column Major Matrix like this :
+// 1 3 5 7
+// 2 4 6 8
+//
+// In simple term, you matrix in OSG will be a transposed matrix in GLSL
+//
+//
+// You can avoid this behaviours starting GLSL version 1.40 with uniform layout :
+//
+// <GLSL code>
+// layout(row_major) uniform matrix4x2 myVariable;
+// <GLSL code>
+//
+//
+template <typename T, unsigned int RowN, unsigned int ColN>
 class MatrixTemplate
 {
     public:
@@ -85,7 +110,7 @@ class MatrixTemplate
         void reset() { memset(_mat, 0, sizeof( value_type ) * value_count); }
 
     protected:
-        value_type _mat[col_count][row_count];
+        value_type _mat[row_count][col_count];
 };
 
 template <typename T>
@@ -102,15 +127,16 @@ class Matrix2Template : public MatrixTemplate<T, 2, 2>
         Matrix2Template( value_type a00, value_type a01,
                          value_type a10, value_type a11 )
         {
-            set( a00, a01, a10, a11 );
+            set( a00, a01,
+                 a10, a11 );
         }
         ~Matrix2Template() {}
 
-        void set(value_type a00, value_type a10,
-                 value_type a01, value_type a11)
+        void set(value_type a00, value_type a01,
+                 value_type a10, value_type a11 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
          }
 
         void makeIdentity()
@@ -131,21 +157,19 @@ class Matrix2x3Template : public MatrixTemplate<T, 2, 3>
     public:
         Matrix2x3Template() { base_class::reset(); }
         Matrix2x3Template( const Matrix2x3Template& mat ) { set(mat.ptr()); }
-        Matrix2x3Template( value_type a00, value_type a10,
-                           value_type a01, value_type a11,
-                           value_type a02, value_type a12 )
+        Matrix2x3Template( value_type a00, value_type a01, value_type a02,
+                           value_type a10, value_type a11, value_type a12 )
         {
-            set( a00, a10, a01, a11, a02, a12 );
+            set( a00, a01, a02,
+                 a10, a11, a12 );
         }
         ~Matrix2x3Template() {}
 
-        void set(value_type a00, value_type a10,
-                 value_type a01, value_type a11,
-                 value_type a02, value_type a12)
+        void set( value_type a00, value_type a01, value_type a02,
+                  value_type a10, value_type a11, value_type a12 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
-             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
          }
 };
 
@@ -160,27 +184,19 @@ class Matrix2x4Template : public MatrixTemplate<T, 2, 4>
     public:
         Matrix2x4Template() { base_class::reset(); }
         Matrix2x4Template( const Matrix2x4Template& mat ) { set(mat.ptr()); }
-        Matrix2x4Template( value_type a00, value_type a10,
-                           value_type a01, value_type a11,
-                           value_type a02, value_type a12,
-                           value_type a03, value_type a13 )
+        Matrix2x4Template( value_type a00, value_type a01, value_type a02, value_type a03,
+                           value_type a10, value_type a11, value_type a12, value_type a13 )
         {
-            set( a00, a10,
-                 a01, a11,
-                 a02, a12,
-                 a03, a13 );
+            set( a00, a01, a02, a03,
+                 a10, a11, a12, a13 );
         }
         ~Matrix2x4Template() {}
 
-        void set(value_type a00, value_type a10,
-                 value_type a01, value_type a11,
-                 value_type a02, value_type a12,
-                 value_type a03, value_type a13)
+        void set( value_type a00, value_type a01, value_type a02, value_type a03,
+                  value_type a10, value_type a11, value_type a12, value_type a13 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11;
-             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12;
-             base_class::_mat[0][3]=a03; base_class::_mat[1][3]=a13;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02; base_class::_mat[0][3]=a03;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12; base_class::_mat[1][3]=a13;
          }
 };
 
@@ -194,19 +210,23 @@ class Matrix3x2Template : public MatrixTemplate<T, 3, 2>
     public:
         Matrix3x2Template() { base_class::reset(); }
         Matrix3x2Template( const Matrix3x2Template& mat ) { set(mat.ptr()); }
-        Matrix3x2Template( value_type a00, value_type a10, value_type a20,
-                           value_type a01, value_type a11, value_type a21 )
+        Matrix3x2Template( value_type a00, value_type a01,
+                           value_type a10, value_type a11,
+                           value_type a20, value_type a21 )
         {
-            set( a00, a10, a20,
-                 a01, a11, a21 );
+            set( a00, a01,
+                 a10, a11,
+                 a20, a21 );
         }
         ~Matrix3x2Template() {}
 
-        void set( value_type a00, value_type a10, value_type a20,
-                  value_type a01, value_type a11, value_type a21 )
+        void set( value_type a00, value_type a01,
+                  value_type a10, value_type a11,
+                  value_type a20, value_type a21 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
+             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21;
          }
 };
 
@@ -219,24 +239,24 @@ class Matrix3Template : public MatrixTemplate<T, 3, 3>
 
     public:
         Matrix3Template() { base_class::reset(); }
-        Matrix3Template( const Matrix3Template& mat ) { base_class::set(mat.ptr()); }
-        Matrix3Template( value_type a00, value_type a10, value_type a20,
-                         value_type a01, value_type a11, value_type a21,
-                         value_type a02, value_type a12, value_type a22 )
+        Matrix3Template( const Matrix3Template& mat ) { set(mat.ptr()); }
+        Matrix3Template( value_type a00, value_type a01, value_type a02,
+                         value_type a10, value_type a11, value_type a12,
+                         value_type a20, value_type a21, value_type a22 )
         {
-            set( a00, a10, a20,
-                 a01, a11, a21,
-                 a02, a12, a22 );
+            set( a00, a01, a02,
+                 a10, a11, a12,
+                 a20, a21, a22 );
         }
         ~Matrix3Template() {}
 
-        void set( value_type a00, value_type a10, value_type a20,
-                  value_type a01, value_type a11, value_type a21,
-                  value_type a02, value_type a12, value_type a22 )
+        void set( value_type a00, value_type a01, value_type a02,
+                  value_type a10, value_type a11, value_type a12,
+                  value_type a20, value_type a21, value_type a22 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
-             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
+             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22;
          }
 
         void makeIdentity()
@@ -257,27 +277,23 @@ class Matrix3x4Template : public MatrixTemplate<T, 3, 4>
     public:
         Matrix3x4Template() { base_class::reset(); }
         Matrix3x4Template( const Matrix3x4Template& mat ) { set(mat.ptr()); }
-        Matrix3x4Template( value_type a00, value_type a10, value_type a20,
-                           value_type a01, value_type a11, value_type a21,
-                           value_type a02, value_type a12, value_type a22,
-                           value_type a03, value_type a13, value_type a23 )
+        Matrix3x4Template( value_type a00, value_type a01, value_type a02, value_type a03,
+                           value_type a10, value_type a11, value_type a12, value_type a13,
+                           value_type a20, value_type a21, value_type a22, value_type a23 )
         {
-            set( a00, a10, a20,
-                 a01, a11, a21,
-                 a02, a12, a22,
-                 a03, a13, a23 );
+            set( a00, a01, a02, a03,
+                 a10, a11, a12, a13,
+                 a20, a21, a22, a23 );
         }
         ~Matrix3x4Template() {}
 
-        void set( value_type a00, value_type a10, value_type a20,
-                  value_type a01, value_type a11, value_type a21,
-                  value_type a02, value_type a12, value_type a22,
-                  value_type a03, value_type a13, value_type a23 )
+        void set( value_type a00, value_type a01, value_type a02, value_type a03,
+                  value_type a10, value_type a11, value_type a12, value_type a13,
+                  value_type a20, value_type a21, value_type a22, value_type a23 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21;
-             base_class::_mat[0][2]=a02; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22;
-             base_class::_mat[0][3]=a03; base_class::_mat[1][3]=a13; base_class::_mat[2][3]=a23;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02; base_class::_mat[0][3]=a03;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12; base_class::_mat[1][3]=a13;
+             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22; base_class::_mat[2][3]=a23;
          }
 };
 
@@ -291,19 +307,27 @@ class Matrix4x2Template : public MatrixTemplate<T, 4, 2>
     public:
         Matrix4x2Template() { base_class::reset(); }
         Matrix4x2Template( const Matrix4x2Template& mat ) { set(mat.ptr()); }
-        Matrix4x2Template( value_type a00, value_type a10, value_type a20, value_type a30,
-                           value_type a01, value_type a11, value_type a21, value_type a31 )
+        Matrix4x2Template( value_type a00, value_type a01,
+                           value_type a10, value_type a11,
+                           value_type a20, value_type a21,
+                           value_type a30, value_type a31 )
         {
-            set( a00, a10, a20, a30,
-                 a01, a11, a21, a31 );
+            set( a00, a01,
+                 a10, a11,
+                 a20, a21,
+                 a30, a31 );
         }
         ~Matrix4x2Template() {}
 
-        void set( value_type a00, value_type a10, value_type a20, value_type a30,
-                  value_type a01, value_type a11, value_type a21, value_type a31 )
+        void set( value_type a00, value_type a01,
+                  value_type a10, value_type a11,
+                  value_type a20, value_type a21,
+                  value_type a30, value_type a31 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20; base_class::_mat[3][0]=a30;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21; base_class::_mat[3][1]=a31;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
+             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21;
+             base_class::_mat[3][0]=a30; base_class::_mat[3][1]=a31;
          }
 };
 
@@ -317,22 +341,27 @@ class Matrix4x3Template : public MatrixTemplate<T, 4, 3>
     public:
         Matrix4x3Template() { base_class::reset(); }
         Matrix4x3Template( const Matrix4x3Template& mat ) { set(mat.ptr()); }
-        Matrix4x3Template( value_type a00, value_type a10, value_type a20, value_type a30,
-                           value_type a01, value_type a11, value_type a21, value_type a31,
-                           value_type a02, value_type a12, value_type a22, value_type a32 )
+        Matrix4x3Template( value_type a00, value_type a01, value_type a02,
+                           value_type a10, value_type a11, value_type a12,
+                           value_type a20, value_type a21, value_type a22,
+                           value_type a30, value_type a31, value_type a32 )
         {
-            set( a00, a10, a20, a30,
-                 a01, a11, a21, a31 );
+            set( a00, a01, a02,
+                 a10, a11, a12,
+                 a20, a21, a22,
+                 a30, a31, a32 );
         }
         ~Matrix4x3Template() {}
 
-        void set( value_type a00, value_type a10, value_type a20, value_type a30,
-                  value_type a01, value_type a11, value_type a21, value_type a31,
-                  value_type a02, value_type a12, value_type a22, value_type a32 )
+        void set( value_type a00, value_type a01, value_type a02,
+                  value_type a10, value_type a11, value_type a12,
+                  value_type a20, value_type a21, value_type a22,
+                  value_type a30, value_type a31, value_type a32 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[1][0]=a10; base_class::_mat[2][0]=a20; base_class::_mat[3][0]=a30;
-             base_class::_mat[0][1]=a01; base_class::_mat[1][1]=a11; base_class::_mat[2][1]=a21; base_class::_mat[3][1]=a31;
-             base_class::_mat[0][2]=a01; base_class::_mat[1][2]=a12; base_class::_mat[2][2]=a22; base_class::_mat[3][2]=a32;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a01;
+             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
+             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22;
+             base_class::_mat[3][0]=a30; base_class::_mat[3][1]=a31; base_class::_mat[3][2]=a32;
          }
 };
 

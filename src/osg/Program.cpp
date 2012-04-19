@@ -513,6 +513,11 @@ const Program::ActiveVarInfoMap& Program::getActiveAttribs(unsigned int contextI
     return getPCP( contextID )->getActiveAttribs();
 }
 
+const Program::UniformBlockMap& Program::getUniformBlocks(unsigned contextID) const
+{
+    return getPCP( contextID )->getUniformBlocks();
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // osg::Program::PerContextProgram
 // PCP is an OSG abstraction of the per-context glProgram

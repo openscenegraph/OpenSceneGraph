@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <iostream>
+#include <limits>
 #include <stdlib.h>
 
 #include <osg/GL>
@@ -804,6 +805,11 @@ class SurfaceBin : public PrimitiveBin {
     std::vector<PolygonData> _polygons;
     std::vector<PolygonData> _toTessellatePolygons;
 
+    typedef std::pair<osg::Vec3, osg::Vec3> VertexNormalPair;
+    typedef std::pair<VertexNormalPair, osg::Vec2> VertexNormalTexTuple;
+    typedef std::map<VertexNormalTexTuple, unsigned> VertexIndexMap;
+    VertexIndexMap _vertexIndexMap;
+
   public:
     SurfaceBin(unsigned flags, VertexSet *vertexSet) :
         PrimitiveBin(flags, vertexSet)
@@ -912,13 +918,65 @@ class SurfaceBin : public PrimitiveBin {
         return true;
     }
 
-    void pushVertex(const VertexIndex& vertexIndex, osg::Vec3Array* vertexArray,
-                    osg::Vec3Array* normalArray, osg::Vec2Array* texcoordArray)
+    unsigned pushVertex(const VertexIndex& vertexIndex, osg::Vec3Array* vertexArray,
+                        osg::Vec3Array* normalArray, osg::Vec2Array* texcoordArray)
     {
-        vertexArray->push_back(_vertexSet->getVertex(vertexIndex));
-        normalArray->push_back(_vertexSet->getNormal(vertexIndex));
+        VertexNormalTexTuple vertexNormalTexTuple;
+        vertexNormalTexTuple.first.first = _vertexSet->getVertex(vertexIndex);
+        vertexNormalTexTuple.first.second = _vertexSet->getNormal(vertexIndex);
         if (texcoordArray)
-            texcoordArray->push_back(_vertexSet->getTexCoord(vertexIndex));
+            vertexNormalTexTuple.second = _vertexSet->getTexCoord(vertexIndex);
+        else
+            vertexNormalTexTuple.second = osg::Vec2(0, 0);
+
+        VertexIndexMap::iterator i = _vertexIndexMap.find(vertexNormalTexTuple);
+        if (i != _vertexIndexMap.end())
+            return i->second;
+
+        unsigned index = vertexArray->size();
+        vertexArray->push_back(vertexNormalTexTuple.first.first);
+        normalArray->push_back(vertexNormalTexTuple.first.second);
+        if (texcoordArray)
+            texcoordArray->push_back(vertexNormalTexTuple.second);
+
+        _vertexIndexMap.insert(VertexIndexMap::value_type(vertexNormalTexTuple, index));
+
+        return index;
+    }
+
+    osg::DrawElements* createOptimalDrawElements(osg::DrawElementsUInt* drawElements)
+    {
+        unsigned num = drawElements->getNumIndices();
+        unsigned maxIndex = 0;
+        for (unsigned i = 0; i < num; ++i)
+        {
+            maxIndex = osg::maximum(maxIndex, drawElements->getElement(i));
+        }
+
+        if (maxIndex <= std::numeric_limits<unsigned char>::max())
+        {
+            osg::DrawElementsUByte* drawElementsUByte = new osg::DrawElementsUByte(drawElements->getMode());
+            drawElementsUByte->reserveElements(num);
+            for (unsigned i = 0; i < num; ++i)
+            {
+                drawElementsUByte->addElement(drawElements->getElement(i));
+            }
+            return drawElementsUByte;
+        }
+        else if (maxIndex <= std::numeric_limits<unsigned short>::max())
+        {
+            osg::DrawElementsUShort* drawElementsUShort = new osg::DrawElementsUShort(drawElements->getMode());
+            drawElementsUShort->reserveElements(num);
+            for (unsigned i = 0; i < num; ++i)
+            {
+                drawElementsUShort->addElement(drawElements->getElement(i));
+            }
+            return drawElementsUShort;
+        }
+        else
+        {
+            return drawElements;
+        }
     }
 
     virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData)
@@ -972,18 +1030,16 @@ class SurfaceBin : public PrimitiveBin {
         // At first handle the the polygons to tessellate, fix them and append the other polygons later
         if (!_toTessellatePolygons.empty())
         {
-            unsigned start = vertexArray->size();
-            osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON, start);
-            drawArrayLengths->reserve(_toTessellatePolygons.size());
             for (unsigned i = 0; i < _toTessellatePolygons.size(); ++i)
             {
+                osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::POLYGON);
                 for (unsigned j = 0; j < _toTessellatePolygons[i].index.size(); ++j)
                 {
-                    pushVertex(_toTessellatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                    unsigned index = pushVertex(_toTessellatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                    drawElements->addElement(index);
                 }
-                drawArrayLengths->push_back(_toTessellatePolygons[i].index.size());
+                geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
             }
-            geometry->addPrimitiveSet(drawArrayLengths);
 
             osgUtil::Tessellator Tessellator;
             Tessellator.retessellatePolygons(*geometry);
@@ -992,48 +1048,46 @@ class SurfaceBin : public PrimitiveBin {
         // handle triangles
         if (!_triangles.empty())
         {
-            unsigned start = vertexArray->size();
+            osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
             for (unsigned i = 0; i < _triangles.size(); ++i)
             {
                 for (unsigned j = 0; j < 3; ++j)
                 {
-                    pushVertex(_triangles[i].index[j], vertexArray, normalArray, texcoordArray);
+                    unsigned index = pushVertex(_triangles[i].index[j], vertexArray, normalArray, texcoordArray);
+                    drawElements->addElement(index);
                 }
             }
-            osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, start, 3*_triangles.size());
-            geometry->addPrimitiveSet(drawArray);
+            geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
         }
 
         // handle quads
         if (!_quads.empty())
         {
-            unsigned start = vertexArray->size();
+            osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
             for (unsigned i = 0; i < _quads.size(); ++i)
             {
                 for (unsigned j = 0; j < 4; ++j)
                 {
-                    pushVertex(_quads[i].index[j], vertexArray, normalArray, texcoordArray);
+                    unsigned index = pushVertex(_quads[i].index[j], vertexArray, normalArray, texcoordArray);
+                    drawElements->addElement(index);
                 }
             }
-            osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::QUADS, start, 4*_quads.size());
-            geometry->addPrimitiveSet(drawArray);
+            geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
         }
 
         // handle polygons
         if (!_polygons.empty())
         {
-            unsigned start = vertexArray->size();
-            osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON, start);
-            drawArrayLengths->reserve(_polygons.size());
             for (unsigned i = 0; i < _polygons.size(); ++i)
             {
+                osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::POLYGON);
                 for (unsigned j = 0; j < _polygons[i].index.size(); ++j)
                 {
-                    pushVertex(_polygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                    unsigned index = pushVertex(_polygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                    drawElements->addElement(index);
                 }
-                drawArrayLengths->push_back(_polygons[i].index.size());
+                geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
             }
-            geometry->addPrimitiveSet(drawArrayLengths);
         }
 
         return _geode.get();

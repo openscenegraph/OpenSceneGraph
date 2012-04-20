@@ -21,6 +21,8 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("vert","OpenGL Shader Language format");
             supportsExtension("geom","OpenGL Shader Language format");
             supportsExtension("glsl","OpenGL Shader Language format");
+            supportsExtension("tctrl","OpenGL Shader Language format");
+            supportsExtension("teval","OpenGL Shader Language format");
         }
 
         virtual const char* className() const { return "GLSL Shader Reader"; }
@@ -96,6 +98,8 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 if (options->getOptionString().find("fragment")!=std::string::npos) shader->setType(osg::Shader::FRAGMENT);
                 if (options->getOptionString().find("vertex")!=std::string::npos) shader->setType(osg::Shader::VERTEX);
                 if (options->getOptionString().find("geometry")!=std::string::npos) shader->setType(osg::Shader::GEOMETRY);
+                if (options->getOptionString().find("tesscontrol")!=std::string::npos) shader->setType(osg::Shader::TESSCONTROL);
+                if (options->getOptionString().find("tessevaluation")!=std::string::npos) shader->setType(osg::Shader::TESSEVALUATION);
             }
 
             // return valid shader
@@ -123,6 +127,8 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                     if (ext == "frag") shader->setType(osg::Shader::FRAGMENT);
                     if (ext == "vert") shader->setType(osg::Shader::VERTEX);
                     if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
+                    if (ext == "tctrl") shader->setType(osg::Shader::TESSCONTROL);
+                    if (ext == "teval") shader->setType(osg::Shader::TESSEVALUATION);
                 }
             }
             return rr;

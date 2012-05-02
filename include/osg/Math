@@ -216,9 +216,14 @@ inline double round(double v) { return v>=0.0?floor(v+0.5):ceil(v-0.5); }
         inline bool isNaN(float v) { return std::isnan(v); }
         inline bool isNaN(double v) { return std::isnan(v); }
     #else
-        // Need to use to std::isnan to avoid undef problem from <cmath>
-        inline bool isNaN(float v) { return isnan(v); }
-        inline bool isNaN(double v) { return isnan(v); }
+        #ifdef isnan
+            inline bool isNaN(float v) { return isnan(v); }
+            inline bool isNaN(double v) { return isnan(v); }
+        #else
+            // Need to use to std::isnan to avoid undef problem from <cmath>
+            inline bool isNaN(float v) { return std::isnan(v); }
+            inline bool isNaN(double v) { return std::isnan(v); }
+        #endif
     #endif
 #endif
 

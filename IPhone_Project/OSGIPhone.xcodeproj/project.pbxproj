@@ -1383,7 +1383,6 @@
 		90B90E5410B3A6F000E10618 /* GraphicsWindowIOS in Headers */ = {isa = PBXBuildFile; fileRef = 90B90E4D10B3A5E400E10618 /* GraphicsWindowIOS */; };
 		90B90EA110B3BF5600E10618 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B90CA510B38FF200E10618 /* UIKit.framework */; };
 		90B90EE010B3BF5E00E10618 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B90CBA10B3925800E10618 /* QuartzCore.framework */; };
-		90CAB9E810C3992A00F8B606 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90CAB9E710C3992A00F8B606 /* arial.ttf */; };
 		90EEDE6110B9F071007F0292 /* libosgGA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 906D8E4B10B901570089D3C3 /* libosgGA.a */; };
 		90EEDE7E10B9F554007F0292 /* ReaderWriterImageIO_IOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90EEDE7D10B9F554007F0292 /* ReaderWriterImageIO_IOS.cpp */; };
 		90EEDF6110BA01CB007F0292 /* libosgdb_imageio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90EEDE7310B9F4F1007F0292 /* libosgdb_imageio.a */; };
@@ -1417,7 +1416,6 @@
 		D43C19771168F09800C537EA /* OutputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43C19731168F09800C537EA /* OutputStream.cpp */; };
 		D45A159F11ECBE1C00EBB947 /* ShaderAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D45A159D11ECBE1C00EBB947 /* ShaderAttribute.cpp */; };
 		D45A15A011ECBE1C00EBB947 /* ShaderComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D45A159E11ECBE1C00EBB947 /* ShaderComposer.cpp */; };
-		D45A15AC11ED147800EBB947 /* libFreeType_iphone_universal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45A159511ECB7CB00EBB947 /* libFreeType_iphone_universal.a */; };
 		D471FD6711EBB96D00F3BD97 /* CameraManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D471FD6311EBB96D00F3BD97 /* CameraManipulator.cpp */; };
 		D471FD6811EBB96D00F3BD97 /* FirstPersonManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D471FD6411EBB96D00F3BD97 /* FirstPersonManipulator.cpp */; };
 		D471FD6911EBB96D00F3BD97 /* OrbitManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D471FD6511EBB96D00F3BD97 /* OrbitManipulator.cpp */; };
@@ -1450,7 +1448,11 @@
 		D489B6E61371D4FC0008758E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B90CA510B38FF200E10618 /* UIKit.framework */; };
 		D489B6E71371D4FC0008758E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		D4992EA1136C33F100635EAD /* GraphicsWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4992EA0136C33F100635EAD /* GraphicsWindow.cpp */; };
-		D4AE04F61418C97A003B52D7 /* libFreeType_iphone_universal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45A159511ECB7CB00EBB947 /* libFreeType_iphone_universal.a */; };
+		D4A8F240155283190089605D /* StencilTwoSided.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A8F23E155283190089605D /* StencilTwoSided.cpp */; };
+		D4A8F241155283190089605D /* StencilTwoSided.h in Headers */ = {isa = PBXBuildFile; fileRef = D4A8F23F155283190089605D /* StencilTwoSided.h */; };
+		D4A8F243155289E60089605D /* freetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A8F242155289E60089605D /* freetype.a */; };
+		D4A8F244155289E70089605D /* freetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4A8F242155289E60089605D /* freetype.a */; };
+		D4A8F24615528A890089605D /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4A8F24515528A890089605D /* arial.ttf */; };
 		D4AE30E21176598000B8E6FB /* StackedMatrixElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AE30D91176598000B8E6FB /* StackedMatrixElement.cpp */; };
 		D4AE30E31176598000B8E6FB /* StackedQuaternionElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AE30DA1176598000B8E6FB /* StackedQuaternionElement.cpp */; };
 		D4AE30E41176598000B8E6FB /* StackedRotateAxisElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AE30DB1176598000B8E6FB /* StackedRotateAxisElement.cpp */; };
@@ -3357,7 +3359,6 @@
 		90B90E3810B3A16600E10618 /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewerEventHandlers.cpp; path = ../src/osgViewer/ViewerEventHandlers.cpp; sourceTree = SOURCE_ROOT; };
 		90B90E4D10B3A5E400E10618 /* GraphicsWindowIOS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GraphicsWindowIOS; path = ../include/osgViewer/api/IOS/GraphicsWindowIOS; sourceTree = SOURCE_ROOT; };
 		90B90E4E10B3A60E00E10618 /* GraphicsWindowIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GraphicsWindowIOS.mm; path = ../src/osgViewer/GraphicsWindowIOS.mm; sourceTree = SOURCE_ROOT; };
-		90CAB9E710C3992A00F8B606 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../examples/osgviewerIPhone/Resources/arial.ttf; sourceTree = "<group>"; };
 		90EEDE7310B9F4F1007F0292 /* libosgdb_imageio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libosgdb_imageio.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		90EEDE7D10B9F554007F0292 /* ReaderWriterImageIO_IOS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = ReaderWriterImageIO_IOS.cpp; path = ../src/osgPlugins/imageio/ReaderWriterImageIO_IOS.cpp; sourceTree = "<group>"; };
 		90EEDF4D10B9FCA1007F0292 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -3398,7 +3399,6 @@
 		D43C19711168F09800C537EA /* InputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InputStream.cpp; path = ../src/osgDB/InputStream.cpp; sourceTree = SOURCE_ROOT; };
 		D43C19721168F09800C537EA /* ObjectWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ObjectWrapper.cpp; path = ../src/osgDB/ObjectWrapper.cpp; sourceTree = SOURCE_ROOT; };
 		D43C19731168F09800C537EA /* OutputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OutputStream.cpp; path = ../src/osgDB/OutputStream.cpp; sourceTree = SOURCE_ROOT; };
-		D45A159511ECB7CB00EBB947 /* libFreeType_iphone_universal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFreeType_iphone_universal.a; path = 3rdParty/lib/libFreeType_iphone_universal.a; sourceTree = "<group>"; };
 		D45A159D11ECBE1C00EBB947 /* ShaderAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderAttribute.cpp; path = ../src/osg/ShaderAttribute.cpp; sourceTree = SOURCE_ROOT; };
 		D45A159E11ECBE1C00EBB947 /* ShaderComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderComposer.cpp; path = ../src/osg/ShaderComposer.cpp; sourceTree = SOURCE_ROOT; };
 		D45A15A111ECBE2A00EBB947 /* ShaderAttribute */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ShaderAttribute; path = ../include/osg/ShaderAttribute; sourceTree = SOURCE_ROOT; };
@@ -3434,6 +3434,10 @@
 		D489B5B41371D2930008758E /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainView.xib; path = iphoneExamples/custom_view_test/XCode/MainView.xib; sourceTree = "<group>"; };
 		D489B5B51371D2930008758E /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = iphoneExamples/custom_view_test/XCode/MainWindow.xib; sourceTree = "<group>"; };
 		D4992EA0136C33F100635EAD /* GraphicsWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GraphicsWindow.cpp; path = ../src/osgViewer/GraphicsWindow.cpp; sourceTree = SOURCE_ROOT; };
+		D4A8F23E155283190089605D /* StencilTwoSided.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StencilTwoSided.cpp; path = ../src/osgPlugins/ive/StencilTwoSided.cpp; sourceTree = "<group>"; };
+		D4A8F23F155283190089605D /* StencilTwoSided.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StencilTwoSided.h; path = ../src/osgPlugins/ive/StencilTwoSided.h; sourceTree = "<group>"; };
+		D4A8F242155289E60089605D /* freetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = freetype.a; path = 3rdParty/lib/freetype.a; sourceTree = "<group>"; };
+		D4A8F24515528A890089605D /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = iphoneExamples/iphoneViewer/Resources/arial.ttf; sourceTree = "<group>"; };
 		D4AE30D91176598000B8E6FB /* StackedMatrixElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedMatrixElement.cpp; path = ../src/osgAnimation/StackedMatrixElement.cpp; sourceTree = SOURCE_ROOT; };
 		D4AE30DA1176598000B8E6FB /* StackedQuaternionElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedQuaternionElement.cpp; path = ../src/osgAnimation/StackedQuaternionElement.cpp; sourceTree = SOURCE_ROOT; };
 		D4AE30DB1176598000B8E6FB /* StackedRotateAxisElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedRotateAxisElement.cpp; path = ../src/osgAnimation/StackedRotateAxisElement.cpp; sourceTree = SOURCE_ROOT; };
@@ -3548,7 +3552,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D45A15AC11ED147800EBB947 /* libFreeType_iphone_universal.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3563,6 +3566,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4A8F243155289E60089605D /* freetype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3640,7 +3644,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4AE04F61418C97A003B52D7 /* libFreeType_iphone_universal.a in Frameworks */,
 				90AF63DE10C33FDC0041F6A7 /* libOpenThreads.a in Frameworks */,
 				90AF63DF10C33FDC0041F6A7 /* libosg.a in Frameworks */,
 				90AF63E010C33FDC0041F6A7 /* libosgDB.a in Frameworks */,
@@ -3657,6 +3660,7 @@
 				9014C5C310C3721400947117 /* libosgdb_freetype.a in Frameworks */,
 				9014CA6910C382A200947117 /* libosgText.a in Frameworks */,
 				D40F227B13EBE534004553FE /* ImageIO.framework in Frameworks */,
+				D4A8F244155289E70089605D /* freetype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3795,8 +3799,8 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4A8F242155289E60089605D /* freetype.a */,
 				D40F227913EBE534004553FE /* ImageIO.framework */,
-				D45A159511ECB7CB00EBB947 /* libFreeType_iphone_universal.a */,
 				90EEDF4D10B9FCA1007F0292 /* CoreGraphics.framework */,
 				90B90E1410B3A0D600E10618 /* OpenGLES.framework */,
 				90B90CBA10B3925800E10618 /* QuartzCore.framework */,
@@ -4493,6 +4497,8 @@
 		906D914410B923C30089D3C3 /* osgdb_ive */ = {
 			isa = PBXGroup;
 			children = (
+				D4A8F23E155283190089605D /* StencilTwoSided.cpp */,
+				D4A8F23F155283190089605D /* StencilTwoSided.h */,
 				D4C0F85B1312A05E00BE4A39 /* Terrain.cpp */,
 				D4C0F85C1312A05E00BE4A39 /* Terrain.h */,
 				D4FC8DB812F1744200E433A5 /* Texture2DArray.cpp */,
@@ -5104,7 +5110,7 @@
 		90AF63F010C343120041F6A7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				90CAB9E710C3992A00F8B606 /* arial.ttf */,
+				D4A8F24515528A890089605D /* arial.ttf */,
 				90AF653110C3493D0041F6A7 /* osgIPhoneViewer-Info.plist */,
 			);
 			name = Resources;
@@ -5934,6 +5940,7 @@
 				906D93D310B926AD0089D3C3 /* VolumeTransferFunctionProperty.h in Headers */,
 				D4FC8DBB12F1744200E433A5 /* Texture2DArray.h in Headers */,
 				D4C0F85E1312A05E00BE4A39 /* Terrain.h in Headers */,
+				D4A8F241155283190089605D /* StencilTwoSided.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7021,7 +7028,7 @@
 				90AF643B10C347DB0041F6A7 /* hog.osg in Resources */,
 				90AF644110C347DB0041F6A7 /* Default.png in Resources */,
 				90AF644210C347DB0041F6A7 /* Icon.png in Resources */,
-				90CAB9E810C3992A00F8B606 /* arial.ttf in Resources */,
+				D4A8F24615528A890089605D /* arial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7332,6 +7339,7 @@
 				906D945110B926C40089D3C3 /* VolumeTransferFunctionProperty.cpp in Sources */,
 				D4FC8DBA12F1744200E433A5 /* Texture2DArray.cpp in Sources */,
 				D4C0F85D1312A05E00BE4A39 /* Terrain.cpp in Sources */,
+				D4A8F240155283190089605D /* StencilTwoSided.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8688,6 +8696,10 @@
 					../include,
 					../config/openthreads,
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/3rdParty/lib\"",
+				);
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgdb_ive;
 			};
@@ -8704,6 +8716,10 @@
 					./config,
 					../include,
 					../config/openthreads,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/3rdParty/lib\"",
 				);
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = osgdb_ive;

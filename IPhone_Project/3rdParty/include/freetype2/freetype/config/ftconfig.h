@@ -1,11 +1,10 @@
-/* ftconfig.h.  Generated from ftconfig.in by configure.  */
 /***************************************************************************/
 /*                                                                         */
-/*  ftconfig.in                                                            */
+/*  ftconfig.h                                                             */
 /*                                                                         */
-/*    UNIX-specific configuration file (specification only).               */
+/*    ANSI-specific configuration file (specification only).               */
 /*                                                                         */
-/*  Copyright 1996-2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009 by       */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2006, 2007, 2008, 2010 by       */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -32,8 +31,9 @@
   /* contains system-specific files that are always included first when    */
   /* building the library.                                                 */
   /*                                                                       */
+  /* This ANSI version should stay in `include/freetype/config'.           */
+  /*                                                                       */
   /*************************************************************************/
-
 
 #ifndef __FTCONFIG_H__
 #define __FTCONFIG_H__
@@ -58,11 +58,6 @@ FT_BEGIN_HEADER
   /*************************************************************************/
 
 
-#define HAVE_UNISTD_H 1
-#define HAVE_FCNTL_H 1
-#define HAVE_STDINT_H 1
-
-
   /* There are systems (like the Texas Instruments 'C54x) where a `char' */
   /* has 16 bits.  ANSI C says that sizeof(char) is always 1.  Since an  */
   /* `int' has 16 bits also for this system, sizeof(int) gives 1 which   */
@@ -75,22 +70,6 @@ FT_BEGIN_HEADER
 #define FT_CHAR_BIT  CHAR_BIT
 #endif
 
-
-#define FT_USE_AUTOCONF_SIZEOF_TYPES 1
-#ifdef FT_USE_AUTOCONF_SIZEOF_TYPES
-
-#define SIZEOF_INT 4
-#define SIZEOF_LONG 4
-#define FT_SIZEOF_INT  SIZEOF_INT
-#define FT_SIZEOF_LONG SIZEOF_LONG
-
-#else /* !FT_USE_AUTOCONF_SIZEOF_TYPES */
-
-  /* Following cpp computation of the bit length of int and long */
-  /* is copied from default include/freetype/config/ftconfig.h.  */
-  /* If any improvement is required for this file, it should be  */
-  /* applied to the original header file for the builders that   */
-  /* does not use configure script.                              */
 
   /* The size of an `int' type.  */
 #if                                 FT_UINT_MAX == 0xFFFFUL
@@ -114,8 +93,6 @@ FT_BEGIN_HEADER
 #else
 #error "Unsupported size of `long' type!"
 #endif
-
-#endif /* !FT_USE_AUTOCONF_SIZEOF_TYPES */
 
 
   /* Preferred alignment of data */
@@ -168,29 +145,73 @@ FT_BEGIN_HEADER
 #endif
 
 
-  /* Fix compiler warning with sgi compiler */
-#if defined( __sgi ) && !defined( __GNUC__ )
-#if defined( _COMPILER_VERSION ) && ( _COMPILER_VERSION >= 730 )
-#pragma set woff 3505
-#endif
-#endif
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    basic_types                                                        */
+  /*                                                                       */
+  /*************************************************************************/
 
 
   /*************************************************************************/
   /*                                                                       */
-  /* IntN types                                                            */
+  /* <Type>                                                                */
+  /*    FT_Int16                                                           */
   /*                                                                       */
-  /*   Used to guarantee the size of some specific integers.               */
+  /* <Description>                                                         */
+  /*    A typedef for a 16bit signed integer type.                         */
   /*                                                                       */
-  typedef signed short    FT_Int16;
+  typedef signed short  FT_Int16;
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Type>                                                                */
+  /*    FT_UInt16                                                          */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    A typedef for a 16bit unsigned integer type.                       */
+  /*                                                                       */
   typedef unsigned short  FT_UInt16;
 
-#if FT_SIZEOF_INT == 4
+  /* */
+
+
+  /* this #if 0 ... #endif clause is for documentation purposes */
+#if 0
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Type>                                                                */
+  /*    FT_Int32                                                           */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    A typedef for a 32bit signed integer type.  The size depends on    */
+  /*    the configuration.                                                 */
+  /*                                                                       */
+  typedef signed XXX  FT_Int32;
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Type>                                                                */
+  /*    FT_UInt32                                                          */
+  /*                                                                       */
+  /*    A typedef for a 32bit unsigned integer type.  The size depends on  */
+  /*    the configuration.                                                 */
+  /*                                                                       */
+  typedef unsigned XXX  FT_UInt32;
+
+  /* */
+
+#endif
+
+#if FT_SIZEOF_INT == (32 / FT_CHAR_BIT)
 
   typedef signed int      FT_Int32;
   typedef unsigned int    FT_UInt32;
 
-#elif FT_SIZEOF_LONG == 4
+#elif FT_SIZEOF_LONG == (32 / FT_CHAR_BIT)
 
   typedef signed long     FT_Int32;
   typedef unsigned long   FT_UInt32;
@@ -201,12 +222,12 @@ FT_BEGIN_HEADER
 
 
   /* look up an integer type that is at least 32 bits */
-#if FT_SIZEOF_INT >= 4
+#if FT_SIZEOF_INT >= (32 / FT_CHAR_BIT)
 
   typedef int            FT_Fast;
   typedef unsigned int   FT_UFast;
 
-#elif FT_SIZEOF_LONG >= 4
+#elif FT_SIZEOF_LONG >= (32 / FT_CHAR_BIT)
 
   typedef long           FT_Fast;
   typedef unsigned long  FT_UFast;
@@ -216,7 +237,7 @@ FT_BEGIN_HEADER
 
   /* determine whether we have a 64-bit int type for platforms without */
   /* Autoconf                                                          */
-#if FT_SIZEOF_LONG == 8
+#if FT_SIZEOF_LONG == (64 / FT_CHAR_BIT)
 
   /* FT_LONG64 must be defined if a 64-bit type is available */
 #define FT_LONG64
@@ -252,7 +273,7 @@ FT_BEGIN_HEADER
 #define FT_LONG64
 #define FT_INT64  long long int
 
-#endif /* FT_SIZEOF_LONG == 8 */
+#endif /* FT_SIZEOF_LONG == (64 / FT_CHAR_BIT) */
 
 
   /*************************************************************************/
@@ -266,10 +287,7 @@ FT_BEGIN_HEADER
 
 #ifdef __STDC__
 
-  /* Undefine the 64-bit macros in strict ANSI compilation mode.  */
-  /* Since `#undef' doesn't survive in configuration header files */
-  /* we use the postprocessing facility of AC_CONFIG_HEADERS to   */
-  /* replace the leading `/' with `#'.                            */
+  /* undefine the 64-bit macros in strict ANSI compilation mode */
 #undef FT_LONG64
 #undef FT_INT64
 
@@ -287,10 +305,41 @@ FT_BEGIN_HEADER
   /* Provide assembler fragments for performance-critical functions. */
   /* These must be defined `static __inline__' with GCC.             */
 
+#if defined( __CC_ARM ) || defined( __ARMCC__ )  /* RVCT */
+#define FT_MULFIX_ASSEMBLER  FT_MulFix_arm
+
+  /* documentation is in freetype.h */
+
+  static __inline FT_Int32
+  FT_MulFix_arm( FT_Int32  a,
+                 FT_Int32  b )
+  {
+    register FT_Int32  t, t2;
+
+
+    __asm
+    {
+      smull t2, t,  b,  a           /* (lo=t2,hi=t) = a*b */
+      mov   a,  t,  asr #31         /* a   = (hi >> 31) */
+      add   a,  a,  #0x8000         /* a  += 0x8000 */
+      adds  t2, t2, a               /* t2 += a */
+      adc   t,  t,  #0              /* t  += carry */
+      mov   a,  t2, lsr #16         /* a   = t2 >> 16 */
+      orr   a,  a,  t,  lsl #16     /* a  |= t << 16 */
+    }
+    return a;
+  }
+
+#endif /* __CC_ARM || __ARMCC__ */
+
+
 #ifdef __GNUC__
 
-#if defined( __arm__ ) && !defined( __thumb__ )
+#if defined( __arm__ ) && !defined( __thumb__ )    && \
+    !( defined( __CC_ARM ) || defined( __ARMCC__ ) )
 #define FT_MULFIX_ASSEMBLER  FT_MulFix_arm
+
+  /* documentation is in freetype.h */
 
   static __inline__ FT_Int32
   FT_MulFix_arm( FT_Int32  a,
@@ -299,23 +348,25 @@ FT_BEGIN_HEADER
     register FT_Int32  t, t2;
 
 
-    __asm__ __volatile__ (
-      "smull  %1, %2, %4, %3\n\t"       /* (lo=%1,hi=%2) = a*b */
-      "mov    %0, %2, asr #31\n\t"      /* %0  = (hi >> 31) */
-      "add    %0, %0, #0x8000\n\t"      /* %0 += 0x8000 */
-      "adds   %1, %1, %0\n\t"           /* %1 += %0 */
-      "adc    %2, %2, #0\n\t"           /* %2 += carry */
-      "mov    %0, %1, lsr #16\n\t"      /* %0  = %1 >> 16 */
-      "orr    %0, %0, %2, lsl #16\n\t"  /* %0 |= %2 << 16 */
+    asm __volatile__ (
+      "smull  %1, %2, %4, %3\n\t"   /* (lo=%1,hi=%2) = a*b */
+      "mov    %0, %2, asr #31\n\t"  /* %0  = (hi >> 31) */
+      "add    %0, %0, #0x8000\n\t"  /* %0 += 0x8000 */
+      "adds   %1, %1, %0\n\t"       /* %1 += %0 */
+      "adc    %2, %2, #0\n\t"       /* %2 += carry */
+      "mov    %0, %1, lsr #16\n\t"  /* %0  = %1 >> 16 */
+      "orr    %0, %2, lsl #16\n\t"  /* %0 |= %2 << 16 */
       : "=r"(a), "=&r"(t2), "=&r"(t)
       : "r"(a), "r"(b) );
     return a;
   }
 
-#endif /* __arm__ && !__thumb__ */
+#endif /* __arm__ && !__thumb__ && !( __CC_ARM || __ARMCC__ ) */
 
 #if defined( __i386__ )
 #define FT_MULFIX_ASSEMBLER  FT_MulFix_i386
+
+  /* documentation is in freetype.h */
 
   static __inline__ FT_Int32
   FT_MulFix_i386( FT_Int32  a,
@@ -334,9 +385,9 @@ FT_BEGIN_HEADER
       "shrl  $16, %%eax\n"
       "shll  $16, %%edx\n"
       "addl  %%edx, %%eax\n"
-      : "=a"(result), "+d"(b)
-      : "a"(a)
-      : "%ecx" );
+      : "=a"(result), "=d"(b)
+      : "a"(a), "d"(b)
+      : "%ecx", "cc" );
     return result;
   }
 

@@ -66,20 +66,20 @@ void ProxyNode::write(DataOutputStream* out)
     out->writeUInt(getNumFileNames());
     unsigned int numChildrenToWriteOut = 0;
     unsigned int i;
-    
+
     std::string writeDirectory;
     if (!(out->getOptions()->getDatabasePathList().empty())) writeDirectory = out->getOptions()->getDatabasePathList().front();
-    
+
     if (!writeDirectory.empty()) writeDirectory = writeDirectory + "/";
-    
+
     bool writeOutExternalIVEFIles = !out->getIncludeExternalReferences() && out->getWriteExternalReferenceFiles() && !out->getUseOriginalExternalReferences();
-    
+
     for(i=0; i<getNumFileNames(); i++)
     {
         if (getFileName(i).empty())
         {
             out->writeString("");
-            
+
             if (i<getNumChildren()) ++numChildrenToWriteOut;
         }
         else
@@ -161,7 +161,7 @@ void ProxyNode::read(DataInputStream* in)
         if (in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
         {
             const std::string& path = in->getOptions()->getDatabasePathList().front();
-            if (!path.empty()) 
+            if (!path.empty())
             {
                 setDatabasePath(path);
             }
@@ -183,7 +183,7 @@ void ProxyNode::read(DataInputStream* in)
         {
             osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)in->getOptions())->getDatabasePathList();
             fpl.push_front( fpl.empty() ? osgDB::getFilePath(getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(getFileName(i)));
-            addChild(in->readNode());            
+            addChild(in->readNode());
             fpl.pop_front();
         }
 

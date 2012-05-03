@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/DrawPixels>
@@ -18,12 +18,12 @@ DrawPixels::DrawPixels()
 {
     // turn off display lists right now, just incase we want to modify the projection matrix along the way.
     setSupportsDisplayList(false);
-    
+
     _position.set(0.0f,0.0f,0.0f);
-    
+
     _useSubImage = false;
     _offsetX = 0;
-    _offsetY = 0; 
+    _offsetY = 0;
     _width = 0;
     _height = 0;
 }
@@ -33,7 +33,7 @@ DrawPixels::DrawPixels(const DrawPixels& drawimage,const CopyOp& copyop):
     _position(drawimage._position),
     _image(drawimage._image),
     _useSubImage(drawimage._useSubImage),
-    _offsetX(drawimage._offsetX), 
+    _offsetX(drawimage._offsetX),
     _offsetY(drawimage._offsetY),
     _width(drawimage._width),
     _height(drawimage._height)
@@ -55,7 +55,7 @@ void DrawPixels::setSubImageDimensions(unsigned int offsetX,unsigned int offsetY
 {
     _useSubImage = true;
     _offsetX = offsetX;
-    _offsetY = offsetY; 
+    _offsetY = offsetY;
     _width = width;
     _height = height;
 }
@@ -63,7 +63,7 @@ void DrawPixels::setSubImageDimensions(unsigned int offsetX,unsigned int offsetY
 void DrawPixels::getSubImageDimensions(unsigned int& offsetX,unsigned int& offsetY,unsigned int& width,unsigned int& height) const
 {
     offsetX = _offsetX;
-    offsetY = _offsetY; 
+    offsetY = _offsetY;
     width = _width;
     height = _height;
 }
@@ -82,7 +82,7 @@ BoundingBox DrawPixels::computeBound() const
     {
         diagonal = sqrtf(_image->s()*_image->s()+_image->t()*_image->t());
     }
-    
+
     bbox.expandBy(_position-osg::Vec3(diagonal,diagonal,diagonal));
     bbox.expandBy(_position+osg::Vec3(diagonal,diagonal,diagonal));
     return bbox;

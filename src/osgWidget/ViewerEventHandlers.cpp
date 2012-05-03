@@ -23,7 +23,7 @@ bool MouseHandler::handle(
 
         return (this->*ma)(gea.getX(), gea.getY(), gea.getButton());
     }
-    
+
     return false;
 }
 
@@ -93,23 +93,23 @@ MouseHandler::MouseAction MouseHandler::_isMouseEvent(
     if(ev == osgGA::GUIEventAdapter::PUSH) return
         &MouseHandler::_handleMousePush
     ;
-        
+
     else if(ev == osgGA::GUIEventAdapter::RELEASE) return
         &MouseHandler::_handleMouseRelease
     ;
-    
+
     else if(ev == osgGA::GUIEventAdapter::DOUBLECLICK) return
         &MouseHandler::_handleMouseDoubleClick
     ;
-    
+
     else if(ev == osgGA::GUIEventAdapter::DRAG) return
         &MouseHandler::_handleMouseDrag
     ;
-    
+
     else if(ev == osgGA::GUIEventAdapter::MOVE) return
         &MouseHandler::_handleMouseMove
     ;
-    
+
     else if(ev == osgGA::GUIEventAdapter::SCROLL) return
         &MouseHandler::_handleMouseScroll
     ;
@@ -179,7 +179,7 @@ bool ResizeHandler::handle(
 
         _wm->setSize(w, h);
     }
-    
+
     _wm->setWindowSize(w, h);
     _wm->resizeAllWindows();
 

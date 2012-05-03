@@ -96,7 +96,7 @@ bool FragmentProgram_readLocalData(Object& obj, Input& fr)
             fragmentProgram.setFragmentProgram( vstream.str() );
         }
     }
-    
+
     return iteratorAdvanced;
 }
 

@@ -1,18 +1,18 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
-/*	File handling. 
+/*	File handling.
 	dxfFile creates a dxfReader, which in turn create a readerText or a readerBinary
-	depending on file type. 
+	depending on file type.
 */
 #ifndef DXF_READER
 #define DXF_READER 1

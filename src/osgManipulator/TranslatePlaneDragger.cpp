@@ -38,7 +38,7 @@ TranslatePlaneDragger::TranslatePlaneDragger() : _usingTranslate1DDragger(false)
 
     setParentDragger(getParentDragger());
 }
-       
+
 TranslatePlaneDragger::~TranslatePlaneDragger()
 {
 }
@@ -76,7 +76,7 @@ void TranslatePlaneDragger::setupDefaultGeometry()
     {
         osg::Geode* geode = new osg::Geode;
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(4);
         (*vertices)[0] = osg::Vec3(-0.5,0.0,0.5);
         (*vertices)[1] = osg::Vec3(-0.5,0.0,-0.5);

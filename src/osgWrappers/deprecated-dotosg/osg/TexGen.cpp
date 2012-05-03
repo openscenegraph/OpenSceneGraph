@@ -45,7 +45,7 @@ bool TexGen_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
     osg::Plane plane;
     if (fr[0].matchWord("plane_s"))
     {

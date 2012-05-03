@@ -9,7 +9,7 @@ REGISTER_OBJECT_WRAPPER( LightSource,
                          "osg::Object osg::Node osg::Group osg::LightSource" )
 {
     ADD_OBJECT_SERIALIZER( Light, osg::Light, NULL );  // _light
-    
+
     BEGIN_ENUM_SERIALIZER( ReferenceFrame, RELATIVE_RF );
         ADD_ENUM_VALUE( RELATIVE_RF );
         ADD_ENUM_VALUE( ABSOLUTE_RF );

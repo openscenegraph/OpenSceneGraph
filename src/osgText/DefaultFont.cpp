@@ -1,16 +1,16 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY{
 }
 
  without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -61,9 +61,9 @@ osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned in
     }
 
     // new find the glyph for the required charcode.
-    GlyphMap& glyphmap = itr->second;    
+    GlyphMap& glyphmap = itr->second;
     GlyphMap::iterator gitr = glyphmap.find(charcode);
-    
+
     if (gitr!=glyphmap.end()) return gitr->second.get();
     else return 0;
 }
@@ -180,23 +180,23 @@ void DefaultFont::constructGlyphs()
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x49, 0x31, 0x00, 0x00},
         {0x00, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x00, 0x00}
     };
-    
+
     unsigned int sourceWidth = 8;
     unsigned int sourceHeight = 12;
-    
+
     FontResolution fontRes(sourceWidth,sourceHeight);
 
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
     {
         osg::ref_ptr<Glyph> glyph = new Glyph(this, i);
-        
+
         unsigned int dataSize = sourceWidth*sourceHeight;
         unsigned char* data = new unsigned char[dataSize];
 
         // clear the image to zeros.
         for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
-        
+
         glyph->setImage(sourceWidth,sourceHeight,1,
                         GL_ALPHA,
                         GL_ALPHA,GL_UNSIGNED_BYTE,
@@ -216,7 +216,7 @@ void DefaultFont::constructGlyphs()
             (*data++)=((*ptr)&128)?value_on:value_off;
             (*data++)=((*ptr)&64)?value_on:value_off;
             (*data++)=((*ptr)&32)?value_on:value_off;
-            (*data++)=((*ptr)&16)?value_on:value_off;            
+            (*data++)=((*ptr)&16)?value_on:value_off;
             (*data++)=((*ptr)&8)?value_on:value_off;
             (*data++)=((*ptr)&4)?value_on:value_off;
             (*data++)=((*ptr)&2)?value_on:value_off;

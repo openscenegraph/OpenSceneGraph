@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/LOD>
@@ -66,12 +66,12 @@ void LOD::traverse(NodeVisitor& nv)
                     }
                 }
             }
-            
+
             unsigned int numChildren = _children.size();
             if (_rangeList.size()<numChildren) numChildren=_rangeList.size();
 
             for(unsigned int i=0;i<numChildren;++i)
-            {    
+            {
                 if (_rangeList[i].first<=required_range && required_range<_rangeList[i].second)
                 {
                     _children[i]->accept(nv);
@@ -109,7 +109,7 @@ bool LOD::addChild( Node *child )
     if (Group::addChild(child))
     {
 
-        if (_children.size()>_rangeList.size()) 
+        if (_children.size()>_rangeList.size())
         {
             float maxRange = !_rangeList.empty() ? _rangeList.back().second : 0.0f;
 

@@ -1,9 +1,9 @@
-/* 
+/*
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or (at
  * your option) any later version. The full license is in the LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -65,7 +65,7 @@ std::string ExportOptions::_validateOption( "validate" );
  */
 std::string ExportOptions::_tempDirOption( "tempDir" );
 /** Value: "lighting".
- *  Specifies a default enable/disable state for lighting, for Nodes in the 
+ *  Specifies a default enable/disable state for lighting, for Nodes in the
  *  exported scene graph that don't set it explicitly. By default, the
  *  exporter assumes lighting is enabled (GL_LIGHTING ON). Set this to
  *  either ON or OFF. Example:
@@ -107,7 +107,7 @@ ExportOptions::ExportOptions( const osgDB::ReaderWriter::Options* opt )
     _validate( false ),
     _lightingDefault( true ),
     _stripTextureFilePath( false )
-    
+
 {
     if (opt)
     {

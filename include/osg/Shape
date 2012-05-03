@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,8 +29,8 @@ class ConstShapeVisitor;
 
 /** META_StateAttribute macro define the standard clone, isSameKindAs,
   * className and getType methods.
-  * Use when subclassing from Object to make it more convenient to define 
-  * the standard pure virtual methods which are required for all Object 
+  * Use when subclassing from Object to make it more convenient to define
+  * the standard pure virtual methods which are required for all Object
   * subclasses.*/
 #define META_Shape(library,name) \
         virtual osg::Object* cloneType() const { return new name(); } \
@@ -41,7 +41,7 @@ class ConstShapeVisitor;
         virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); } \
         virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
 
-/** Base class for all shape types. 
+/** Base class for all shape types.
   * Shapes are used to either for culling and collision detection or
   * to define the geometric shape of procedurally generate Geometry.
 */
@@ -50,10 +50,10 @@ class OSG_EXPORT Shape : public Object
     public:
 
         Shape() {}
-        
-        Shape(const Shape& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+
+        Shape(const Shape& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(sa,copyop) {}
-        
+
         /** Clone the type of an attribute, with Object* return type.
             Must be defined by derived classes.*/
         virtual Object* cloneType() const = 0;
@@ -81,7 +81,7 @@ class OSG_EXPORT Shape : public Object
         virtual void accept(ConstShapeVisitor&) const =0;
 
     protected:
-    
+
         virtual ~Shape();
 };
 
@@ -102,7 +102,7 @@ class CompositeShape;
 class OSG_EXPORT ShapeVisitor
 {
     public:
-    
+
         ShapeVisitor() {}
         virtual ~ShapeVisitor();
 
@@ -124,7 +124,7 @@ class OSG_EXPORT ShapeVisitor
 class OSG_EXPORT ConstShapeVisitor
 {
     public:
-    
+
         ConstShapeVisitor() {}
         virtual ~ConstShapeVisitor();
 
@@ -201,7 +201,7 @@ class OSG_EXPORT Box : public Shape
             _center(center),
             _halfLengths(lengthX*0.5f,lengthY*0.5f,lengthZ*0.5f) {}
 
-        Box(const Box& box,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        Box(const Box& box,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(box,copyop),
             _center(box._center),
             _halfLengths(box._halfLengths),
@@ -226,12 +226,12 @@ class OSG_EXPORT Box : public Shape
         inline void setRotation(const Quat& quat) { _rotation = quat; }
         inline const Quat&  getRotation() const { return _rotation; }
         inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); }
 
     protected:
-    
+
         virtual ~Box();
-    
+
         Vec3    _center;
         Vec3    _halfLengths;
         Quat    _rotation;
@@ -254,7 +254,7 @@ class OSG_EXPORT Cone : public Shape
             _radius(radius),
             _height(height) {}
 
-        Cone(const Cone& cone,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        Cone(const Cone& cone,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(cone,copyop),
             _center(cone._center),
             _radius(cone._radius),
@@ -284,15 +284,15 @@ class OSG_EXPORT Cone : public Shape
         inline void setRotation(const Quat& quat) { _rotation = quat; }
         inline const Quat& getRotation() const { return _rotation; }
         inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); }
 
-        inline float getBaseOffsetFactor() const { return 0.25f; } 
-        inline float getBaseOffset() const { return -getBaseOffsetFactor()*getHeight(); } 
+        inline float getBaseOffsetFactor() const { return 0.25f; }
+        inline float getBaseOffset() const { return -getBaseOffsetFactor()*getHeight(); }
 
     protected:
-    
+
         virtual ~Cone();
-    
+
         Vec3    _center;
         float   _radius;
         float   _height;
@@ -314,7 +314,7 @@ class OSG_EXPORT Cylinder : public Shape
             _radius(radius),
             _height(height) {}
 
-        Cylinder(const Cylinder& cylinder,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        Cylinder(const Cylinder& cylinder,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(cylinder,copyop),
             _center(cylinder._center),
             _radius(cylinder._radius),
@@ -344,10 +344,10 @@ class OSG_EXPORT Cylinder : public Shape
         inline void setRotation(const Quat& quat) { _rotation = quat; }
         inline const Quat& getRotation() const { return _rotation; }
         inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-        bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        bool zeroRotation() const { return _rotation.zeroRotation(); }
 
     protected:
-    
+
         virtual ~Cylinder();
 
         Vec3    _center;
@@ -370,7 +370,7 @@ class OSG_EXPORT Capsule : public Shape
             _radius(radius),
             _height(height) {}
 
-        Capsule(const Capsule& capsule,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        Capsule(const Capsule& capsule,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(capsule,copyop),
             _center(capsule._center),
             _radius(capsule._radius),
@@ -400,12 +400,12 @@ class OSG_EXPORT Capsule : public Shape
         inline void setRotation(const Quat& quat) { _rotation = quat; }
         inline const Quat& getRotation() const { return _rotation; }
         inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-        bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        bool zeroRotation() const { return _rotation.zeroRotation(); }
 
     protected:
-    
+
         virtual ~Capsule();
-    
+
         Vec3    _center;
         float   _radius;
         float   _height;
@@ -417,14 +417,14 @@ class OSG_EXPORT InfinitePlane : public Shape, public Plane
     public:
         InfinitePlane() {}
 
-        InfinitePlane(const InfinitePlane& plane,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        InfinitePlane(const InfinitePlane& plane,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(plane,copyop),
             Plane(plane) {}
 
         META_Shape(osg, InfinitePlane);
 
      protected:
-     
+
         virtual ~InfinitePlane();
 };
 
@@ -433,10 +433,10 @@ class OSG_EXPORT InfinitePlane : public Shape, public Plane
 class OSG_EXPORT TriangleMesh : public Shape
 {
     public:
-    
+
         TriangleMesh() {}
 
-        TriangleMesh(const TriangleMesh& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        TriangleMesh(const TriangleMesh& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(mesh,copyop),
             _vertices(mesh._vertices),
             _indices(mesh._indices) {}
@@ -454,7 +454,7 @@ class OSG_EXPORT TriangleMesh : public Shape
         const IndexArray* getIndices() const { return _indices.get(); }
 
     protected:
-    
+
         virtual ~TriangleMesh();
 
         ref_ptr<Vec3Array> _vertices;
@@ -465,27 +465,27 @@ class OSG_EXPORT TriangleMesh : public Shape
 class OSG_EXPORT ConvexHull : public TriangleMesh
 {
     public:
-    
+
         ConvexHull() {}
 
-        ConvexHull(const ConvexHull& hull,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        ConvexHull(const ConvexHull& hull,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             TriangleMesh(hull,copyop) {}
 
         META_Shape(osg, TriangleMesh);
 
     protected:
-    
+
         virtual ~ConvexHull();
 };
 
 class OSG_EXPORT HeightField : public Shape
 {
     public:
-    
+
         HeightField();
 
         HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-        
+
         META_Shape(osg, HeightField);
 
         typedef std::vector<float> HeightList;
@@ -503,7 +503,7 @@ class OSG_EXPORT HeightField : public Shape
 
         inline void setYInterval(float dy) { _dy = dy; }
         inline float getYInterval() const { return _dy; }
-    
+
         /** Get the FloatArray height data.*/
         osg::FloatArray* getFloatArray() { return _heights.get(); }
 
@@ -515,7 +515,7 @@ class OSG_EXPORT HeightField : public Shape
         const HeightList& getHeightList() const { return _heights->asVector(); }
 
         /** Set the height of the skirt to render around the edge of HeightField.
-          * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, 
+          * The skirt is used as a means of disguising edge boundaries between adjacent HeightField,
           * particularly of ones with different resolutions.*/
         void setSkirtHeight(float skirtHeight) { _skirtHeight = skirtHeight; }
 
@@ -533,7 +533,7 @@ class OSG_EXPORT HeightField : public Shape
         inline void setRotation(const Quat& quat) { _rotation = quat; }
         inline const Quat& getRotation() const { return _rotation; }
         inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); }
 
         /* set a single height point in the height field */
         inline void setHeight(unsigned int c,unsigned int r,float value)
@@ -557,7 +557,7 @@ class OSG_EXPORT HeightField : public Shape
         {
             return Vec3(_origin.x()+getXInterval()*(float)c,
                         _origin.y()+getYInterval()*(float)r,
-                        _origin.z()+(*_heights)[c+r*_columns]);  
+                        _origin.z()+(*_heights)[c+r*_columns]);
         }
 
         Vec3 getNormal(unsigned int c,unsigned int r) const;
@@ -565,7 +565,7 @@ class OSG_EXPORT HeightField : public Shape
         Vec2 getHeightDelta(unsigned int c,unsigned int r) const;
 
     protected:
-    
+
         virtual ~HeightField();
 
         unsigned int                    _columns,_rows;
@@ -590,12 +590,12 @@ class OSG_EXPORT CompositeShape : public Shape
     public:
 
 
-    
+
         typedef std::vector< ref_ptr<Shape> > ChildList;
 
         CompositeShape() {}
 
-        CompositeShape(const CompositeShape& cs,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+        CompositeShape(const CompositeShape& cs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(cs,copyop),
             _children(cs._children) {}
 
@@ -626,9 +626,9 @@ class OSG_EXPORT CompositeShape : public Shape
         void removeChild(unsigned int i) { _children.erase(_children.begin()+i); }
 
         /** find the index number of child, if child is not found then it returns getNumChildren(),
-          * so should be used in similar style to STL's result!=end().*/ 
+          * so should be used in similar style to STL's result!=end().*/
         unsigned int findChildNo(Shape* shape) const
-        { 
+        {
             for (unsigned int childNo=0;childNo<_children.size();++childNo)
             {
                 if (_children[childNo]==shape) return childNo;
@@ -638,7 +638,7 @@ class OSG_EXPORT CompositeShape : public Shape
         }
 
     protected:
-    
+
         virtual ~CompositeShape();
 
         ref_ptr<Shape>  _shape;

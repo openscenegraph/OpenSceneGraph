@@ -51,8 +51,8 @@ Timer* Timer::instance()
             OSG_NOTICE<<"Error: Timer::Timer() unable to use QueryPerformanceFrequency, "<<std::endl;
             OSG_NOTICE<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
         }
-        
-        setStartTick();        
+
+        setStartTick();
     }
 
     Timer_t Timer::tick() const
@@ -77,7 +77,7 @@ Timer* Timer::instance()
     {
         _secsPerTick = (1.0 / (double) 1000000);
 
-        setStartTick();        
+        setStartTick();
     }
 
     #if defined(_POSIX_TIMERS) && ( _POSIX_TIMERS > 0 ) && defined(_POSIX_MONOTONIC_CLOCK)

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -87,7 +87,7 @@ protected:
         uint8 units = in.readUInt8();               // 0=Meters 1=Kilometers 4=Feet 5=Inches 8=Nautical miles
         /*uint8 textureWhite =*/ in.readUInt8();
         /*uint32 flags =*/ in.readUInt32();
-        
+
         in.forward( 4*6 );
         /*int32 projectionType =*/ in.readInt32();
 
@@ -222,7 +222,7 @@ protected:
         // of the animation bit.  This implies forward animation (with swing)
         if ((document.version() < VERSION_15_8) && (_flags & SWING_ANIM))
             _forwardAnim = true;
-        
+
         // OpenFlight 15.8 adds backwards animations
         _backwardAnim = ( (document.version() >= VERSION_15_8) &&
             ((_flags & BACKWARD_ANIM) != 0) );
@@ -259,7 +259,7 @@ protected:
 
             if (_forwardAnim)
                 sequence->setInterval(loopMode, 0, -1);
-            else 
+            else
                 sequence->setInterval(loopMode, -1, 0);
 
             // Loop timing available from version 15.8.
@@ -393,14 +393,14 @@ protected:
         float length_x = xAxis.normalize();
         float length_y = yAxis.normalize();
         float length_z = zAxis.normalize();
-        
+
         if ((length_x*length_y*length_z)==0.0f)
         {
             OSG_NOTICE<<"Warning: OpenFlight DegreeOfFreedom::readRecord() found erroneous axis definition:"<<std::endl;
             OSG_NOTICE<<"    localOrigin="<<localOrigin<<std::endl;
             OSG_NOTICE<<"    pointOnXAxis="<<pointOnXAxis<<std::endl;
             OSG_NOTICE<<"    pointInXYPlane="<<pointInXYPlane<<std::endl;
-            
+
             xAxis.set(1.0f,0.0f,0.0f);
             yAxis.set(0.0f,1.0f,0.0f);
             zAxis.set(0.0f,0.0f,1.0f);
@@ -410,7 +410,7 @@ protected:
         osg::Vec3 origin = localOrigin * document.unitScale();
 
         // create putmatrix
-        osg::Matrix inv_putmat(xAxis.x(), xAxis.y(), xAxis.z(), 0.0, 
+        osg::Matrix inv_putmat(xAxis.x(), xAxis.y(), xAxis.z(), 0.0,
                                yAxis.x(), yAxis.y(), yAxis.z(), 0.0,
                                zAxis.x(), zAxis.y(), zAxis.z(), 0.0,
                                origin.x(), origin.y(), origin.z(), 1.0);
@@ -463,7 +463,7 @@ REGISTER_FLTRECORD(DegreeOfFreedom, DOF_OP)
 
 
 /** LevelOfDetail - To recreate the LevelOfDetail record in OSG we have to create a LOD node with one Group node under it.
- *  OSG representation Children of the LevelOfDetail record will be added to 
+ *  OSG representation Children of the LevelOfDetail record will be added to
 */
 class LevelOfDetail : public PrimaryRecord
 {
@@ -603,7 +603,7 @@ public:
         if (_multiSwitch.valid())
         {
             unsigned int nChild = _multiSwitch->getNumChildren();
-            for (unsigned int nMask=0; nMask<_numberOfMasks; ++nMask) 
+            for (unsigned int nMask=0; nMask<_numberOfMasks; ++nMask)
             {
                 // test if this child is active in the current mask (itMask)
                 unsigned int nMaskBit = nChild % 32;
@@ -916,7 +916,7 @@ protected:
         {
             /*uint32 flags =*/ in.readUInt32();
         }
-        
+
         // Postpone add-to-parent until we know a bit more.
     }
 
@@ -1008,7 +1008,7 @@ protected:
         float32 yaw = in.readFloat32();
         float32 pitch = in.readFloat32();
 
-        _lightSource = new osg::LightSource;  
+        _lightSource = new osg::LightSource;
         _lightSource->setName(id);
 
         LightSourcePool* pool = document.getOrCreateLightSourcePool();
@@ -1036,7 +1036,7 @@ protected:
             }
 
             _lightSource->setLight(light);
-            _lightSource->setLocalStateSetModes((flags & ENABLED) ? osg::StateAttribute::ON : osg::StateAttribute::OFF); 
+            _lightSource->setLocalStateSetModes((flags & ENABLED) ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 
             // Global light.
             if (flags & GLOBAL)

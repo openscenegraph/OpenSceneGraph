@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -41,7 +41,7 @@ struct LessDepthSortFunctor
 class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 {
     public:
-    
+
 
         typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >   ChildList;
         typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
@@ -57,10 +57,10 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         int                                 _depth;
         ChildList                           _children;
         LeafList                            _leaves;
-        
+
         mutable float                       _averageDistance;
         mutable float                       _minimumDistance;
-        
+
         osg::ref_ptr<osg::Referenced>       _userData;
 
         bool                                _dynamic;
@@ -88,15 +88,15 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             _dynamic(false)
         {
             if (_parent) _depth = _parent->_depth + 1;
-            
+
             if (_parent && _parent->_dynamic) _dynamic = true;
             else _dynamic = stateset->getDataVariance()==osg::Object::DYNAMIC;
         }
-            
+
         ~StateGraph() {}
-        
+
         StateGraph* cloneType() const { return new StateGraph; }
-        
+
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
         const osg::Referenced* getUserData() const { return _userData.get(); }
@@ -114,7 +114,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         {
             return _leaves.empty() && _children.empty();
         }
-        
+
         inline bool leaves_empty() const
         {
             return _leaves.empty();
@@ -133,11 +133,11 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                    _averageDistance += (*itr)->_depth;
                 }
                 _averageDistance /= (float)_leaves.size();
-                
+
             }
             return _averageDistance;
         }
-        
+
         inline float getMinimumDistance() const
         {
             if (_minimumDistance==FLT_MAX && !_leaves.empty())
@@ -151,7 +151,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 {
                    if ((*itr)->_depth<_minimumDistance) _minimumDistance=(*itr)->_depth;
                 }
-                
+
             }
             return _minimumDistance;
         }
@@ -170,14 +170,14 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
         /** Recursively prune the StateGraph of empty children.*/
         void prune();
-        
-        
+
+
         inline StateGraph* find_or_insert(const osg::StateSet* stateset)
         {
             // search for the appropriate state group, return it if found.
             ChildList::iterator itr = _children.find(stateset);
             if (itr!=_children.end()) return itr->second.get();
-            
+
             // create a state group and insert it into the children list
             // then return the state group.
             StateGraph* sg = new StateGraph(this,stateset);
@@ -209,7 +209,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 std::vector<StateGraph*> return_path;
 
                 // need to pop back root render graph.
-                do 
+                do
                 {
                     return_path.push_back(sg_new);
                     sg_new = sg_new->_parent;
@@ -224,20 +224,20 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 }
                 return;
             }
-        
+
 
             // first handle the typical case which is two state groups
             // are neighbours.
             if (sg_curr->_parent==sg_new->_parent)
             {
-                
+
                 // state has changed so need to pop old state.
                 if (sg_curr->getStateSet()) state.popStateSet();
                 // and push new state.
                 if (sg_new->getStateSet()) state.pushStateSet(sg_new->getStateSet());
                 return;
             }
-        
+
 
             // need to pop back up to the same depth as the new state group.
             while (sg_curr->_depth>sg_new->_depth)
@@ -245,7 +245,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 if (sg_curr->getStateSet()) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
-            
+
             // use return path to trace back steps to sg_new.
             std::vector<StateGraph*> return_path;
 
@@ -255,7 +255,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 return_path.push_back(sg_new);
                 sg_new = sg_new->_parent;
             }
-            
+
             // now pop back up both parent paths until they agree.
 
             // DRT - 10/22/02
@@ -269,7 +269,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 return_path.push_back(sg_new);
                 sg_new = sg_new->_parent;
             }
-            
+
             for(std::vector<StateGraph*>::reverse_iterator itr=return_path.rbegin();
                 itr!=return_path.rend();
                 ++itr)
@@ -288,9 +288,9 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 if (sg_curr->getStateSet()) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
-            
+
         }
-        
+
         inline static int numToPop(StateGraph* sg_curr)
         {
             int numToPop = 0;
@@ -300,7 +300,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 if (sg_curr->getStateSet()) ++numToPop;
                 sg_curr = sg_curr->_parent;
             }
-            
+
             return numToPop;
         }
 

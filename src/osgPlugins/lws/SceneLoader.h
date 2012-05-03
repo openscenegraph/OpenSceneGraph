@@ -113,7 +113,7 @@ namespace lwosg
 
         typedef std::vector<Scene_object> Scene_object_list;
         Scene_object_list scene_objects_;
-        
+
         typedef std::vector<Scene_camera> Scene_camera_list;
         Scene_camera_list scene_cameras_;
 

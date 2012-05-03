@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -43,17 +43,17 @@ namespace osgUtil {
  * opaque osg::Drawables into a depth sorted transparent bin and a state
  * sorted opaque bin.  The opaque bin is rendered first, and then the
  * transparent bin is rendered in order from the furthest osg::Drawable
- * from the eye to the one nearest the eye. 
+ * from the eye to the one nearest the eye.
  */
 class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStack
 {
     public:
-    
+
         typedef osg::Matrix::value_type value_type;
-    
+
 
         CullVisitor();
-        
+
         /// Copy constructor that does a shallow copy.
         CullVisitor(const CullVisitor&);
 
@@ -64,7 +64,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         /** get the prototype singleton used by CullVisitor::create().*/
         static osg::ref_ptr<CullVisitor>& prototype();
-        
+
         /** create a CullVisitor by cloning CullVisitor::prototype().*/
         static CullVisitor* create();
 
@@ -130,7 +130,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                 ++_numberOfEncloseOverrideRenderBinDetails;
             }
         }
-        
+
         /** Pop the top state set and hence associated state group.
           * Move the current state group to the parent of the popped
           * state group.
@@ -156,7 +156,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             }
             _currentStateGraph = _currentStateGraph->_parent;
         }
-        
+
         inline void setStateGraph(StateGraph* rg)
         {
             _rootStateGraph = rg;
@@ -206,7 +206,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         void setCalculatedNearPlane(value_type value) { _computed_znear = value; }
         inline value_type getCalculatedNearPlane() const { return _computed_znear; }
-        
+
         void setCalculatedFarPlane(value_type value) { _computed_zfar = value; }
         inline value_type getCalculatedFarPlane() const { return _computed_zfar; }
 
@@ -216,9 +216,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         bool updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
 
         bool updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable, bool isBillboard=false);
-        
+
         void updateCalculatedNearFar(const osg::Vec3& pos);
-        
+
         /** Add a drawable to current render graph.*/
         inline void addDrawable(osg::Drawable* drawable,osg::RefMatrix* matrix);
 
@@ -233,13 +233,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
 
         /** compute near plane based on the polgon intersection of primtives in near plane candidate list of drawables.
-          * Note, you have to set ComputeNearFarMode to COMPUTE_NEAR_FAR_USING_PRIMITIVES to be able to near plane candidate drawables to be recorded by the cull traversal. */ 
+          * Note, you have to set ComputeNearFarMode to COMPUTE_NEAR_FAR_USING_PRIMITIVES to be able to near plane candidate drawables to be recorded by the cull traversal. */
         void computeNearPlane();
 
         /** Re-implement CullStack's popProjectionMatrix() adding clamping of the projection matrix to
           * the computed near and far.*/
         virtual void popProjectionMatrix();
-        
+
 
         /** CullVisitor's default clamping of the projection float matrix to computed near and far values.
           * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
@@ -265,7 +265,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                 zfar = zf;
                 return true;
             }
-            else 
+            else
                 return false;
         }
 
@@ -286,10 +286,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                 zfar = zf;
                 return true;
             }
-            else 
+            else
                 return false;
         }
-        
+
 
         void setState(osg::State* state) { _renderInfo.setState(state); }
         osg::State* getState() { return _renderInfo.getState(); }
@@ -305,7 +305,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         /** Prevent unwanted copy operator.*/
         CullVisitor& operator = (const CullVisitor&) { return *this; }
-        
+
         inline void handle_cull_callbacks_and_traverse(osg::Node& node)
         {
             osg::NodeCallback* callback = node.getCullCallback();
@@ -323,7 +323,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::ref_ptr<StateGraph>                                   _rootStateGraph;
         StateGraph*                                                _currentStateGraph;
 
-        osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
+        osg::ref_ptr<RenderStage>                                   _rootRenderStage;
         RenderBin*                                                  _currentRenderBin;
         std::vector<RenderBin*>                                     _renderBinStack;
 
@@ -331,14 +331,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         value_type               _computed_znear;
         value_type               _computed_zfar;
-        
-        
+
+
         typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
         RenderLeafList _reuseRenderLeafList;
         unsigned int _currentReuseRenderLeafIndex;
-    
+
         inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth=0.0f);
-        
+
         unsigned int _numberOfEncloseOverrideRenderBinDetails;
 
         osg::RenderInfo         _renderInfo;
@@ -350,13 +350,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                 _drawable(0)
             {
             }
-            
+
             void set(const osg::Matrix& matrix, const osg::Drawable* drawable, const osg::Polytope& frustum)
             {
                 _matrix = matrix;
                 _drawable = drawable;
                 if (!_planes.empty()) _planes.clear();
-                
+
                 // create a new list of planes from the active walls of the frustum.
                 osg::Polytope::ClippingMask result_mask = frustum.getResultMask();
                 osg::Polytope::ClippingMask selector_mask = 0x1;
@@ -365,15 +365,15 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                     ++itr)
                 {
                     if (result_mask&selector_mask) _planes.push_back(*itr);
-                    selector_mask <<= 1; 
+                    selector_mask <<= 1;
                 }
             }
-            
+
             MatrixPlanesDrawables(const MatrixPlanesDrawables& mpd):
                 _matrix(mpd._matrix),
                 _drawable(mpd._drawable),
                 _planes(mpd._planes) {}
-                
+
             MatrixPlanesDrawables& operator = (const MatrixPlanesDrawables& mpd)
             {
                 _matrix = mpd._matrix;
@@ -381,12 +381,12 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                 _planes = mpd._planes;
                 return *this;
             }
-            
+
             osg::Matrix                 _matrix;
             const osg::Drawable*        _drawable;
             osg::Polytope::PlaneList    _planes;
         };
-        
+
         typedef std::multimap<value_type, MatrixPlanesDrawables>   DistanceMatrixDrawableMap;
         DistanceMatrixDrawableMap                                  _nearPlaneCandidateMap;
         DistanceMatrixDrawableMap                                  _farPlaneCandidateMap;
@@ -436,7 +436,7 @@ inline void CullVisitor::addPositionedTextureAttribute(unsigned int textureUnit,
 inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth)
 {
     // Skips any already reused renderleaf.
-    while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() && 
+    while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() &&
            _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
     {
         osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;

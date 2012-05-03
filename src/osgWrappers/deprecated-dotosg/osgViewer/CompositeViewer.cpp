@@ -33,7 +33,7 @@ bool CompositeViewer_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 bool CompositeViewer_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
     // const osgViewer::CompositeViewer* compositeViewer = dynamic_cast<const osgViewer::CompositeViewer*>(&obj);
-    
+
     osg::notify(osg::NOTICE)<<"CompositeViewer_writeLocalData"<<std::endl;
 
     return true;

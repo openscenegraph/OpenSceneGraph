@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -68,7 +68,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
     public :
 
         BlendFunc();
-        
+
         BlendFunc(GLenum source, GLenum destination);
         BlendFunc(GLenum source, GLenum destination, GLenum source_alpha, GLenum destination_alpha);
 
@@ -81,7 +81,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
             _destination_factor_alpha(trans._destination_factor_alpha) {}
 
         META_StateAttribute(osg, BlendFunc,BLENDFUNC);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -146,7 +146,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
 
         void setSourceAlpha(GLenum source) { _source_factor_alpha = source; }
         inline GLenum getSourceAlpha() const { return _source_factor_alpha; }
-        
+
         void setDestination(GLenum destination) { _destination_factor = _destination_factor_alpha = destination; }
         inline GLenum getDestination() const { return _destination_factor; }
 
@@ -159,7 +159,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
         virtual void apply(State& state) const;
         /** Encapsulates queries of extension availability, obtains extension
         * function pointers, and provides convenience wrappers for
-        * calling extension functions. */        
+        * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
         public:

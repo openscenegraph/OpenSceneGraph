@@ -134,11 +134,11 @@ void PagedLOD::read(DataInputStream* in)
         if (getDatabasePath().empty() && in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
         {
             const std::string& path = in->getOptions()->getDatabasePathList().front();
-            if (!path.empty()) 
+            if (!path.empty())
             {
                 setDatabasePath(path);
             }
-        } 
+        }
 
 
         setRadius(in->readFloat());
@@ -157,7 +157,7 @@ void PagedLOD::read(DataInputStream* in)
         int i;
         for(i=0; i<size; i++)
         {
-            addChild(in->readNode());            
+            addChild(in->readNode());
         }
 
         // Read centermode
@@ -178,7 +178,7 @@ void PagedLOD::read(DataInputStream* in)
         for(i=0;i<size;i++){
             setFileName(i, in->readString());
         }
-        
+
 
         // PagedLOD priority settings
         // 2006/03/10 GW

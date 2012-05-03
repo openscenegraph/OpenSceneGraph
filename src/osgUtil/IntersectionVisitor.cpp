@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -50,7 +50,7 @@ void IntersectorGroup::clear()
 Intersector* IntersectorGroup::clone(osgUtil::IntersectionVisitor& iv)
 {
     IntersectorGroup* ig = new IntersectorGroup;
-    
+
     // now copy across all intersectors that arn't disabled.
     for(Intersectors::iterator itr = _intersectors.begin();
         itr != _intersectors.end();
@@ -68,9 +68,9 @@ Intersector* IntersectorGroup::clone(osgUtil::IntersectionVisitor& iv)
 bool IntersectorGroup::enter(const osg::Node& node)
 {
     if (disabled()) return false;
-    
+
     bool foundIntersections = false;
-    
+
     for(Intersectors::iterator itr = _intersectors.begin();
         itr != _intersectors.end();
         ++itr)
@@ -79,14 +79,14 @@ bool IntersectorGroup::enter(const osg::Node& node)
         else if ((*itr)->enter(node)) foundIntersections = true;
         else (*itr)->incrementDisabledCount();
     }
-    
-    if (!foundIntersections) 
+
+    if (!foundIntersections)
     {
         // need to call leave to clean up the DisabledCount's.
         leave();
         return false;
     }
-    
+
     // we have found at least one suitable intersector, so return true
     return true;
 }
@@ -113,11 +113,11 @@ void IntersectorGroup::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
         if (!(*itr)->disabled())
         {
             (*itr)->intersect(iv, drawable);
-            
+
             ++numTested;
         }
     }
-    
+
     // OSG_NOTICE<<"Number testing "<<numTested<<std::endl;
 
 }
@@ -125,7 +125,7 @@ void IntersectorGroup::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
 void IntersectorGroup::reset()
 {
     Intersector::reset();
-    
+
     for(Intersectors::iterator itr = _intersectors.begin();
         itr != _intersectors.end();
         ++itr)
@@ -155,15 +155,15 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
 {
     // override the default node visitor mode.
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-    
+
     _useKdTreesWhenAvailable = true;
     _dummyTraversal = false;
-    
+
     _lodSelectionMode = USE_HIGHEST_LEVEL_OF_DETAIL;
     _eyePointDirty = true;
-    
+
     LineSegmentIntersector* ls = dynamic_cast<LineSegmentIntersector*>(intersector);
-    if (ls) 
+    if (ls)
     {
         setReferenceEyePoint(ls->getStart());
         setReferenceEyePointCoordinateFrame(ls->getCoordinateFrame());
@@ -175,7 +175,7 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
     }
 
     setIntersector(intersector);
-    
+
     setReadCallback(readCallback);
 }
 
@@ -195,7 +195,7 @@ void IntersectionVisitor::reset()
     {
         osg::ref_ptr<Intersector> intersector = _intersectorStack.front();
         intersector->reset();
-        
+
         _intersectorStack.clear();
         _intersectorStack.push_back(intersector);
     }
@@ -308,7 +308,7 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
             targetRangeValue = 1e6; // Init high to find min value
         else
             targetRangeValue = 0; // Init low to find max value
-            
+
         const osg::LOD::RangeList rl = plod.getRangeList();
         osg::LOD::RangeList::const_iterator rit;
         for( rit = rl.begin();
@@ -363,17 +363,17 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
                 child->accept(*this);
             }
         }
-#else    
+#else
         // older code than above block, that assumes that the PagedLOD is ordered correctly
         // i.e. low res children first, no duplicate ranges.
-        
+
         osg::ref_ptr<osg::Node> highestResChild;
 
         if (plod.getNumFileNames() != plod.getNumChildren() && _readCallback.valid())
         {
             highestResChild = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName(plod.getNumFileNames()-1) );
         }
-        
+
         if ( !highestResChild.valid() && plod.getNumChildren()>0)
         {
             highestResChild = plod.getChild( plod.getNumChildren()-1 );
@@ -403,10 +403,10 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     push_clone();
 
     traverse(transform);
-    
+
     // pop the clone.
     pop_clone();
-    
+
     popModelMatrix();
 
     // tidy up an cached cull variables in the current intersector.
@@ -424,10 +424,10 @@ void IntersectionVisitor::apply(osg::Projection& projection)
     push_clone();
 
     traverse(projection);
-    
+
     // pop the clone.
     pop_clone();
-    
+
     popProjectionMatrix();
 
     leave();
@@ -440,7 +440,7 @@ void IntersectionVisitor::apply(osg::Camera& camera)
 
     // note, commenting out right now because default Camera setup is with the culling active.  Should this be changed?
     // if (!enter(camera)) return;
-    
+
     // OSG_NOTICE<<"inside apply(Camera&)"<<std::endl;
 
     osg::RefMatrix* projection = NULL;
@@ -455,13 +455,13 @@ void IntersectionVisitor::apply(osg::Camera& camera)
             view = new osg::RefMatrix(*getViewMatrix()*camera.getViewMatrix());
             model = new osg::RefMatrix(*getModelMatrix());
         }
-        else // pre multiply 
+        else // pre multiply
         {
             projection = new osg::RefMatrix(camera.getProjectionMatrix()*(*getProjectionMatrix()));
             view = new osg::RefMatrix(*getViewMatrix());
             model = new osg::RefMatrix(camera.getViewMatrix()*(*getModelMatrix()));
-        }       
-    } 
+        }
+    }
     else
     {
         // an absolute reference frame
@@ -469,7 +469,7 @@ void IntersectionVisitor::apply(osg::Camera& camera)
         view = new osg::RefMatrix(camera.getViewMatrix());
         model =  new osg::RefMatrix();
     }
- 
+
     if (camera.getViewport()) pushWindowMatrix( camera.getViewport() );
     pushProjectionMatrix(projection);
     pushViewMatrix(view);
@@ -479,10 +479,10 @@ void IntersectionVisitor::apply(osg::Camera& camera)
     push_clone();
 
     traverse(camera);
-    
+
     // pop the clone.
     pop_clone();
-    
+
     popModelMatrix();
     popViewMatrix();
     popProjectionMatrix();
@@ -498,18 +498,18 @@ osg::Vec3 IntersectionVisitor::getEyePoint() const
     osg::Matrix matrix;
     switch (_referenceEyePointCoordinateFrame)
     {
-        case(Intersector::WINDOW): 
+        case(Intersector::WINDOW):
             if (getWindowMatrix()) matrix.preMult( *getWindowMatrix() );
             if (getProjectionMatrix()) matrix.preMult( *getProjectionMatrix() );
             if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
             if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
             break;
-        case(Intersector::PROJECTION): 
+        case(Intersector::PROJECTION):
             if (getProjectionMatrix()) matrix.preMult( *getProjectionMatrix() );
             if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
             if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
             break;
-        case(Intersector::VIEW): 
+        case(Intersector::VIEW):
             if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
             if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
             break;
@@ -523,7 +523,7 @@ osg::Vec3 IntersectionVisitor::getEyePoint() const
 
     _eyePoint = _referenceEyePoint * inverse;
     _eyePointDirty = false;
-    
+
     return _eyePoint;
 }
 

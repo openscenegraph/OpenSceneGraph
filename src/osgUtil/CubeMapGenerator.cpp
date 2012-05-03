@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/CubeMapGenerator>
@@ -22,7 +22,7 @@ CubeMapGenerator::CubeMapGenerator(int texture_size)
     texture_size_(texture_size)
 {
     for (int i=0; i<6; ++i)
-    {                
+    {
         osg::ref_ptr<osg::Image> image = new osg::Image;
         unsigned char* data = new unsigned char [texture_size*texture_size*4];
         image->setImage(texture_size, texture_size, 1, 4, GL_RGBA, GL_UNSIGNED_BYTE, data, osg::Image::USE_NEW_DELETE);
@@ -44,7 +44,7 @@ CubeMapGenerator::CubeMapGenerator(const CubeMapGenerator &copy, const osg::Copy
 void CubeMapGenerator::generateMap(bool use_osg_system)
 {
     osg::Matrix M;
-    
+
     if (use_osg_system) {
         M = osg::Matrix::rotate(osg::PI_2, osg::Vec3(1, 0, 0));
     } else {
@@ -52,7 +52,7 @@ void CubeMapGenerator::generateMap(bool use_osg_system)
     }
 
     const float dst = 2.0f/(texture_size_-1);
-    
+
     float t = -1;
     for (int i=0; i<texture_size_; ++i) {
         float s = -1;

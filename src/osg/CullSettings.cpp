@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdlib.h>
@@ -64,7 +64,7 @@ void CullSettings::setCullSettings(const CullSettings& rhs)
     _impostorActive = rhs._impostorActive;
     _depthSortImpostorSprites = rhs._depthSortImpostorSprites;
     _impostorPixelErrorThreshold = rhs._impostorPixelErrorThreshold;
-    _numFramesToKeepImpostorSprites = rhs._numFramesToKeepImpostorSprites;    
+    _numFramesToKeepImpostorSprites = rhs._numFramesToKeepImpostorSprites;
 
     _cullMask = rhs._cullMask;
     _cullMaskLeft = rhs._cullMaskLeft;
@@ -98,7 +98,7 @@ void CullSettings::readEnvironmentalVariables()
     OSG_INFO<<"CullSettings::readEnvironmentalVariables()"<<std::endl;
 
     char *ptr;
-    
+
     if ((ptr = getenv("OSG_COMPUTE_NEAR_FAR_MODE")) != 0)
     {
         if (strcmp(ptr,"DO_NOT_COMPUTE_NEAR_FAR")==0) _computeNearFar = DO_NOT_COMPUTE_NEAR_FAR;
@@ -106,16 +106,16 @@ void CullSettings::readEnvironmentalVariables()
         else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_PRIMITIVES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
 
         OSG_INFO<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
-        
+
     }
-    
+
     if ((ptr = getenv("OSG_NEAR_FAR_RATIO")) != 0)
     {
         _nearFarRatio = osg::asciiToDouble(ptr);
 
         OSG_INFO<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
     }
-    
+
 }
 
 void CullSettings::readCommandLine(ArgumentParser& arguments)
@@ -150,7 +150,7 @@ void CullSettings::readCommandLine(ArgumentParser& arguments)
 void CullSettings::write(std::ostream& out)
 {
     out<<"CullSettings: "<<this<<" {"<<std::endl;
-    
+
     out<<"    _inheritanceMask = "<<_inheritanceMask<<std::endl;
     out<<"    _inheritanceMaskActionOnAttributeSetting = "<<_inheritanceMaskActionOnAttributeSetting<<std::endl;
     out<<"    _computeNearFar = "<<_computeNearFar<<std::endl;
@@ -166,7 +166,7 @@ void CullSettings::write(std::ostream& out)
     out<<"    _cullMask = "<<_cullMask<<std::endl;
     out<<"    _cullMaskLeft = "<<_cullMaskLeft<<std::endl;
     out<<"    _cullMaskRight = "<<_cullMaskRight<<std::endl;
-    
+
     out<<"{"<<std::endl;
 }
 

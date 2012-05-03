@@ -29,7 +29,7 @@ bool LineStipple_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     LineStipple& linestipple = static_cast<LineStipple&>(obj);
-    
+
     int ref = linestipple.getFactor();
     if (fr[0].matchWord("factor") && fr[1].getInt(ref))
     {

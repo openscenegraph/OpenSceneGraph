@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,7 +32,7 @@ extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );
 
 /** Make a new directory for a given file. */
 extern OSGDB_EXPORT bool makeDirectoryForFile( const std::string &filePath );
-    
+
 /** Get current working directory. */
 extern OSGDB_EXPORT std::string getCurrentWorkingDirectory( void );
 
@@ -72,10 +72,10 @@ typedef std::vector<std::string> DirectoryContents;
 extern OSGDB_EXPORT DirectoryContents getDirectoryContents(const std::string& dirName);
 
 /** Return the list of filenames that match the given filename with wildcards.
-  * Will only expand '*', and will not expand wildcards in directory, only in 
-  * filename part of the given filename. 
-  * Return value will contain path+filename so that if ever the above 
-  * limitation (expanding wildcards in directory) is fixed, client code will 
+  * Will only expand '*', and will not expand wildcards in directory, only in
+  * filename part of the given filename.
+  * Return value will contain path+filename so that if ever the above
+  * limitation (expanding wildcards in directory) is fixed, client code will
   * still work unchanged. */
 extern OSGDB_EXPORT DirectoryContents expandWildcardsInFilename(const std::string& filename);
 
@@ -108,12 +108,12 @@ inline void setDataFilePathList(const std::string& paths) { osgDB::Registry::ins
 
 inline FilePathList& getDataFilePathList() { return osgDB::Registry::instance()->getDataFilePathList(); }
 
-/** Search for specified file in file system, checking the DataFilePathList for possible paths, 
+/** Search for specified file in file system, checking the DataFilePathList for possible paths,
   * returning the full path of the first valid file found, return an empty string if no string is found.
   */
 extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
-/** Search for specified file in file system, checking first the database path set in the Options structure, then the DataFilePathList for possible paths, 
+/** Search for specified file in file system, checking first the database path set in the Options structure, then the DataFilePathList for possible paths,
   * returning the full path of the first valid file found, return an empty string if no string is found.
   */
 extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,const Options* options, CaseSensitivity caseSensitivity=CASE_SENSITIVE);

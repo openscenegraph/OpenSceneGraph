@@ -44,7 +44,7 @@ enum ShapeType {
 };
 
 
-struct BoundingBox 
+struct BoundingBox
 {
     Double Xmin;
     Double Ymin;
@@ -62,7 +62,7 @@ struct BoundingBox
 
 ///////////////
 
-struct ShapeHeader 
+struct ShapeHeader
 {
     Integer fileCode;
     Byte _unused_0[20];
@@ -76,7 +76,7 @@ struct ShapeHeader
     void print();
 };
 
-struct RecordHeader 
+struct RecordHeader
 {
     Integer recordNumber;
     Integer contentLength;
@@ -169,7 +169,7 @@ struct PolyLine: public ShapeObject
 
     PolyLine();
 
-    PolyLine( const PolyLine &p ); 
+    PolyLine( const PolyLine &p );
 
     virtual ~PolyLine();
 
@@ -225,7 +225,7 @@ struct MultiPointM: public ShapeObject
     Box             bbox;
     Integer         numPoints;
     struct Point    *points;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     MultiPointM();
@@ -247,7 +247,7 @@ struct PolyLineM: public ShapeObject
     Integer         numPoints;
     Integer         *parts;
     struct Point    *points;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     PolyLineM();
@@ -267,7 +267,7 @@ struct PolygonM : public ShapeObject
     Integer         numPoints;
     Integer         *parts;
     Point           *points;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     PolygonM();
@@ -305,9 +305,9 @@ struct MultiPointZ: public ShapeObject
     Box             bbox;
     Integer         numPoints;
     struct Point    *points;
-    struct Range    zRange; 
+    struct Range    zRange;
     Double          *zArray;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     MultiPointZ();
@@ -330,14 +330,14 @@ struct PolyLineZ: public ShapeObject
     Integer         numPoints;
     Integer         *parts;
     struct Point    *points;
-    struct Range    zRange; 
+    struct Range    zRange;
     Double          *zArray;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     PolyLineZ();
 
-    PolyLineZ( const PolyLineZ &p ); 
+    PolyLineZ( const PolyLineZ &p );
 
     virtual ~PolyLineZ();
 
@@ -352,9 +352,9 @@ struct PolygonZ : public ShapeObject
     Integer         numPoints;
     Integer         *parts;
     Point           *points;
-    struct Range    zRange; 
+    struct Range    zRange;
     Double          *zArray;
-    struct Range    mRange; 
+    struct Range    mRange;
     Double          *mArray;
 
     PolygonZ();

@@ -55,7 +55,7 @@ typedef struct _rawImageRec
     GLint *rowSize;
     GLenum swapFlag;
     short bpc;
-  
+
     typedef unsigned char * BytePtr;
 
     bool needsBytesSwapped()
@@ -63,7 +63,7 @@ typedef struct _rawImageRec
         union {
             int testWord;
             char testByte[sizeof(int)];
-        }endianTest; 
+        }endianTest;
         endianTest.testWord = 1;
         if( endianTest.testByte[0] == 1 )
             return true;
@@ -74,7 +74,7 @@ typedef struct _rawImageRec
     template <class T>
     inline void swapBytes(  T &s )
     {
-        if( sizeof( T ) == 1 ) 
+        if( sizeof( T ) == 1 )
             return;
 
         T d = s;
@@ -135,15 +135,15 @@ static void RawImageClose(rawImageRec *raw)
 {
     if (raw)
     {
-        
+
         if (raw->tmp) delete [] raw->tmp;
         if (raw->tmpR) delete [] raw->tmpR;
         if (raw->tmpG) delete [] raw->tmpG;
         if (raw->tmpB) delete [] raw->tmpB;
         if (raw->tmpA) delete [] raw->tmpA;
 
-        if (raw->rowStart) delete [] raw->rowStart;        
-        if (raw->rowSize) delete [] raw->rowSize;        
+        if (raw->rowStart) delete [] raw->rowStart;
+        if (raw->rowSize) delete [] raw->rowSize;
 
         delete raw;
     }
@@ -238,7 +238,7 @@ static rawImageRec *RawImageOpen(std::istream& fin)
             return NULL;
         }
     }
-    
+
     if ((raw->type & 0xFF00) == 0x0100)
     {
         unsigned int ybyz = raw->sizeY * raw->sizeZ;
@@ -295,24 +295,24 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
                 tempShort++;
                 iPtr = reinterpret_cast<unsigned char *>(tempShort);
             }
-            
+
             if(raw->bpc != 1)
                 ConvertShort(&pixel, 1);
 
             count = (int)(pixel & 0x7F);
-            
+
             // limit the count value to the remiaing row size
             if (raw->sizeX*raw->bpc <= (oPtr - buf))
             {
                 count = raw->sizeX - (oPtr - buf) / raw->bpc;
             }
-                
+
             if (count<=0)
             {
                 done = 1;
                 return;
             }
-            
+
             if (pixel & 0x80)
             {
                 while (count--)
@@ -324,7 +324,7 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
                         pixel = *tempShort;
                         tempShort++;
                         iPtr = reinterpret_cast<unsigned char *>(tempShort);
-                        
+
                         ConvertShort(&pixel, 1);
 
                         tempShort = reinterpret_cast<unsigned short*>(oPtr);
@@ -386,12 +386,12 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
     //     if (width!=raw->sizeX) width += 4;
 
     // byte aligned.
-    
+
     OSG_INFO<<"raw->sizeX = "<<raw->sizeX<<std::endl;
     OSG_INFO<<"raw->sizeY = "<<raw->sizeY<<std::endl;
     OSG_INFO<<"raw->sizeZ = "<<raw->sizeZ<<std::endl;
     OSG_INFO<<"raw->bpc = "<<raw->bpc<<std::endl;
-    
+
     *data = new unsigned char [(raw->sizeX)*(raw->sizeY)*(raw->sizeZ)*(raw->bpc)];
 
     ptr = *data;
@@ -456,7 +456,7 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
 class ReaderWriterRGB : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterRGB()
         {
             supportsExtension("rgb","rgb image format");
@@ -466,9 +466,9 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             supportsExtension("inta","inta image format");
             supportsExtension("bw","bw image format");
         }
-    
+
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
-        
+
         ReadResult readRGBStream(std::istream& fin) const
         {
             rawImageRec *raw;
@@ -629,7 +629,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 }
             }
 
-        
+
             if( raw.needsBytesSwapped() )
                 raw.swapBytes();
 
@@ -670,7 +670,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 OSG_NOTICE<<"Warning: RGB plugin does not supporting writing non contiguous imagery."<<std::endl;
                 return WriteResult::ERROR_IN_WRITING_FILE;
             }
-            
+
             return writeRGBStream(img,fout,"");
         }
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/CopyOp>
@@ -29,7 +29,7 @@ TYPE* CopyOp::operator() (const TYPE* obj) const \
         return osg::clone(obj, *this); \
     else \
         return const_cast<TYPE*>(obj); \
-} 
+}
 
 COPY_OP( Object,                   DEEP_COPY_OBJECTS )
 COPY_OP( Node,                     DEEP_COPY_NODES )
@@ -57,7 +57,7 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
         {
             return operator()(textbase);
         }
-        else 
+        else
         {
             return osg::clone(attr, *this);
         }
@@ -76,7 +76,7 @@ NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
 
         first->setNestedCallback(0);
         nc = nc->getNestedCallback();
-        while (nc) 
+        while (nc)
         {
             osg::NodeCallback* ucb = osg::clone(nc, *this);
             if (ucb)

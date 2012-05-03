@@ -383,7 +383,7 @@ osg::Node* ConvertFromPerformer::visitSCS(osg::Group* osgParent,pfSCS* scs)
 
     osgTransform = new osg::MatrixTransform;
     if (osgParent) osgParent->addChild(osgTransform);
-    
+
     osgTransform->setDataVariance(osg::Object::STATIC);
 
     registerPfObjectForOsgObject(scs,osgTransform);
@@ -584,7 +584,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
         case PFGS_TRISTRIPS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
             break;
-            
+
         case PFGS_TRIFANS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_FAN,0,np,plen));
             break;
@@ -592,11 +592,11 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
         case PFGS_FLAT_TRISTRIPS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
             break;
-            
+
         case PFGS_POLYS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_POLYGON,0,np,plen));
             break;
-            
+
         case PFGS_LINESTRIPS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_LINE_STRIP,0,np,plen));
             break;
@@ -640,7 +640,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             (*osg_coords)[i][1] = coords[i][1];
             (*osg_coords)[i][2] = coords[i][2];
         }
-        
+
         geom->setVertexArray(osg_coords);
 
         if(ilist)
@@ -658,8 +658,8 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     if(tcoords)
     {
         int bind = geoset->getAttrBind( PFGS_TEXCOORD2 );
-        
-        
+
+
         if (bind==PFGS_PER_VERTEX && bind != PFGS_OFF)
         {
             int nn = bind == PFGS_OFF ? 0 :
@@ -726,7 +726,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     if( ilist[i] > cc ) cc = ilist[i];
                 cc++;
 
-                // straight forward mapping of normals across.                
+                // straight forward mapping of normals across.
                 osg::Vec3Array* osg_norms = new osg::Vec3Array(cc);
                 for( i = 0; i < cc; i++ )
                 {
@@ -734,11 +734,11 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     (*osg_norms)[i][1] = norms[i][1];
                     (*osg_norms)[i][2] = norms[i][2];
                 }
-                geom->setNormalArray(osg_norms);            
+                geom->setNormalArray(osg_norms);
 
                 osg::UShortArray* osg_indices = new osg::UShortArray;
                 osg_indices->reserve(nv);
-                
+
                 int ni=0;
                 for( i = 0; i < np; ++i)
                 {
@@ -751,21 +751,21 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                         osg_indices->push_back(ilist[ni++]);
                     }
                 }
-                
-                if (ni!=nn) 
+
+                if (ni!=nn)
                 {
                     OSG_INFO << "1 ni!=nn"<<std::endl;
                 }
-                
+
                 geom->setNormalIndices(osg_indices);
-                
-                
+
+
             }
             else
             {
                 osg::Vec3Array* osg_norms = new osg::Vec3Array;
                 osg_norms->reserve(nv);
-                
+
                 int ni=0;
                 for( i = 0; i < np; ++i)
                 {
@@ -780,7 +780,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     }
                 }
 
-                geom->setNormalArray(osg_norms);            
+                geom->setNormalArray(osg_norms);
             }
 
         }
@@ -813,7 +813,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                 (*osg_norms)[i][1] = norms[i][1];
                 (*osg_norms)[i][2] = norms[i][2];
             }
-            geom->setNormalArray(osg_norms);            
+            geom->setNormalArray(osg_norms);
 
             if(ilist)
             {
@@ -847,7 +847,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     if( ilist[i] > cc ) cc = ilist[i];
                 cc++;
 
-                // straight forward mapping of normals across.                
+                // straight forward mapping of normals across.
                 osg::Vec4Array* osg_colors = new osg::Vec4Array(cc);
                 for( i = 0; i < cc; i++ )
                 {
@@ -856,11 +856,11 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     (*osg_colors)[i][2] = colors[i][2];
                     (*osg_colors)[i][3] = colors[i][3];
                 }
-                geom->setColorArray(osg_colors);            
+                geom->setColorArray(osg_colors);
 
                 osg::UShortArray* osg_indices = new osg::UShortArray;
                 osg_indices->reserve(nv);
-                
+
                 int ni=0;
                 for( i = 0; i < np; ++i)
                 {
@@ -873,21 +873,21 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                         osg_indices->push_back(ilist[ni++]);
                     }
                 }
-                
-                if (ni!=nn) 
+
+                if (ni!=nn)
                 {
                     OSG_INFO << "1 ni!=nn"<<std::endl;
                 }
-                
+
                 geom->setColorIndices(osg_indices);
-                
-                
+
+
             }
             else
             {
                 osg::Vec4Array* osg_colors = new osg::Vec4Array;
                 osg_colors->reserve(nv);
-                
+
                 int ni=0;
                 for( i = 0; i < np; ++i)
                 {
@@ -902,7 +902,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     }
                 }
 
-                geom->setColorArray(osg_colors);            
+                geom->setColorArray(osg_colors);
             }
         }
         else
@@ -948,11 +948,11 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     else
     {
     }
-    
-    
-        
+
+
+
     visitGeoState(geom,geoset->getGState());
-    
+
     if (flat_shaded_skip_per_primitive)
     {
         osg::StateSet* stateset = geom->getOrCreateStateSet();
@@ -1203,9 +1203,9 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
     //             default:        osgStateSet->setMode(osg::StateSet::TEXGEN,osg::StateAttribute::OFF);break;
     //         }
     //     }
-    // 
-    
-    
+    //
+
+
     pfMaterial* front_mat = (pfMaterial*)geostate->getAttr(PFSTATE_FRONTMTL);
     pfMaterial* back_mat = (pfMaterial*)geostate->getAttr(PFSTATE_BACKMTL);
     visitMaterial(osgStateSet,front_mat,back_mat);
@@ -1214,15 +1214,15 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
     visitTexture(osgStateSet,tex);
 
     pfTexEnv* texenv = (pfTexEnv*)geostate->getAttr(PFSTATE_TEXENV);
-   
+
     if(texenv)
     {
       osg::TexEnv* osgTexEnv = new osg::TexEnv();
       int mode = texenv->getMode();
-      
+
       float r,g,b,a;
       texenv->getBlendColor(&r, &g, &b, &a);
-      
+
       switch(mode)
       {
           case(PFTE_MODULATE) :
@@ -1447,7 +1447,7 @@ static osg::Texture2D::FilterMode getTexfilter(int filter, int pftype)
 
         // not quite sure what is supposed to be interpret the Peformer
         // filter modes here so will simple go with OpenGL default.
-    
+
         return osg::Texture2D::LINEAR;
     }
 }

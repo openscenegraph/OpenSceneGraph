@@ -1,12 +1,12 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1999-2008 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -33,7 +33,7 @@ class CairoImage : public osg::Referenced
 
         void create(int width, int height)
         {
-            if (_image->data() && width==_image->s() && height==_image->t()) 
+            if (_image->data() && width==_image->s() && height==_image->t())
             {
                 return;
             }
@@ -43,19 +43,19 @@ class CairoImage : public osg::Referenced
             // allocate the image data
             _image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
             _image->setPixelFormat(GL_BGRA);
-            _image->setDataVariance(osg::Object::DYNAMIC);            
+            _image->setDataVariance(osg::Object::DYNAMIC);
             _image->setOrigin(osg::Image::TOP_LEFT);
 
 
             // create a cairo surface for this image data
             _surface = cairo_image_surface_create_for_data(
                     _image->data(),
-                    CAIRO_FORMAT_ARGB32, 
-                    width, height, 
+                    CAIRO_FORMAT_ARGB32,
+                    width, height,
                     _image->getRowSizeInBytes());
 
             // create a context for the surface
-            _context = cairo_create(_surface);            
+            _context = cairo_create(_surface);
         }
 
         void destroy()
@@ -71,7 +71,7 @@ class CairoImage : public osg::Referenced
         const cairo_t* getContext() const { return _context; }
 
     protected:
-    
+
         virtual ~CairoImage()
         {
             destroy();
@@ -137,7 +137,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
 #endif
 
             PopplerDocument* doc = poppler_document_new_from_file(uri.c_str(), NULL, NULL);
-            if (!doc) 
+            if (!doc)
             {
                 OSG_NOTICE<<" could not open("<<filename<<"), uri="<<uri<<std::endl;
 

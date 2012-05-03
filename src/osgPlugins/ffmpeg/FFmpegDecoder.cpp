@@ -61,7 +61,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
         if (filename.compare(0, 5, "/dev/")==0)
         {
             avdevice_register_all();
-        
+
             OSG_NOTICE<<"Attempting to stream "<<filename<<std::endl;
 
             AVFormatParameters formatParams;
@@ -76,13 +76,13 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
 #else
             formatParams.width = 640;
             formatParams.height = 480;
-#endif            
+#endif
             formatParams.time_base.num = 1;
             formatParams.time_base.den = 30;
 
             std::string format = "video4linux2";
             iformat = av_find_input_format(format.c_str());
-            
+
             if (iformat)
             {
                 OSG_NOTICE<<"Found input format: "<<format<<std::endl;
@@ -120,7 +120,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
             if (av_open_input_file(&p_format_context, filename.c_str(), av_format, 0, av_params) !=0 )
                 throw std::runtime_error("av_open_input_file() failed");
         }
-        
+
         m_format_context.reset(p_format_context);
 
         // Retrieve stream info
@@ -159,7 +159,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
         OSG_WARN << "FFmpegImageStream::open : " << error.what() << std::endl;
         return false;
     }
-    
+
     return true;
 }
 
@@ -169,7 +169,7 @@ void FFmpegDecoder::close(bool waitForThreadToExit)
 {
     flushAudioQueue();
     flushVideoQueue();
-    
+
     m_audio_decoder.close(waitForThreadToExit);
     m_video_decoder.close(waitForThreadToExit);
 }
@@ -212,7 +212,7 @@ void FFmpegDecoder::rewind()
     rewindButDontFlushQueues();
 }
 
-void FFmpegDecoder::seek(double time) 
+void FFmpegDecoder::seek(double time)
 {
     m_pending_packet.clear();
 
@@ -221,7 +221,7 @@ void FFmpegDecoder::seek(double time)
     seekButDontFlushQueues(time);
 }
 
-void FFmpegDecoder::pause() 
+void FFmpegDecoder::pause()
 {
     m_pending_packet.clear();
 
@@ -317,7 +317,7 @@ bool FFmpegDecoder::readNextPacketNormal()
             if (av_dup_packet(&packet) < 0)
                 throw std::runtime_error("av_dup_packet() failed");
 
-            m_pending_packet = FFmpegPacket(packet);            
+            m_pending_packet = FFmpegPacket(packet);
         }
     }
 
@@ -359,7 +359,7 @@ bool FFmpegDecoder::readNextPacketEndOfStream()
 
     return false;
 }
-    
+
 
 
 bool FFmpegDecoder::readNextPacketRewinding()
@@ -388,14 +388,14 @@ void FFmpegDecoder::rewindButDontFlushQueues()
     m_state = REWINDING;
 }
 
-bool FFmpegDecoder::readNextPacketSeeking() 
+bool FFmpegDecoder::readNextPacketSeeking()
 {
     const FFmpegPacket packet(FFmpegPacket::PACKET_FLUSH);
 
     if (m_audio_queue.timedPush(packet, 10) && m_video_queue.timedPush(packet, 10))
         m_state = NORMAL;
 
-    return false;    
+    return false;
 }
 
 void FFmpegDecoder::seekButDontFlushQueues(double time)
@@ -411,7 +411,7 @@ void FFmpegDecoder::seekButDontFlushQueues(double time)
         throw std::runtime_error("av_seek_frame failed()");
 
     m_clocks.seek(time);
-    m_state = SEEKING;    
+    m_state = SEEKING;
 }
 
 

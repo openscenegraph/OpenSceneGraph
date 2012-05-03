@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ namespace osg
     class CollectParentPaths : public NodeVisitor
     {
     public:
-        CollectParentPaths(const osg::Node* haltTraversalAtNode=0) : 
+        CollectParentPaths(const osg::Node* haltTraversalAtNode=0) :
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
             _haltTraversalAtNode(haltTraversalAtNode)
         {
@@ -58,7 +58,7 @@ Node::Node()
 {
     _boundingSphereComputed = false;
     _nodeMask = 0xffffffff;
-    
+
     _numChildrenRequiringUpdateTraversal = 0;
 
     _numChildrenRequiringEventTraversal = 0;
@@ -90,7 +90,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
 Node::~Node()
 {
     // cleanly detatch any associated stateset (include remove parent links)
-    setStateSet(0);   
+    setStateSet(0);
 }
 
 void Node::addParent(osg::Group* node)
@@ -110,7 +110,7 @@ void Node::removeParent(osg::Group* node)
 
 void Node::accept(NodeVisitor& nv)
 {
-    if (nv.validNodeMask(*this)) 
+    if (nv.validNodeMask(*this))
     {
         nv.pushOntoNodePath(this);
         nv.apply(*this);
@@ -128,22 +128,22 @@ void Node::setStateSet(osg::StateSet* stateset)
 {
     // do nothing if nothing changed.
     if (_stateset==stateset) return;
-    
+
     // track whether we need to account for the need to do a update or event traversal.
     int delta_update = 0;
     int delta_event = 0;
 
-    // remove this node from the current statesets parent list 
+    // remove this node from the current statesets parent list
     if (_stateset.valid())
     {
         _stateset->removeParent(this);
         if (_stateset->requiresUpdateTraversal()) --delta_update;
         if (_stateset->requiresEventTraversal()) --delta_event;
     }
-    
+
     // set the stateset.
     _stateset = stateset;
-    
+
     // add this node to the new stateset to the parent list.
     if (_stateset.valid())
     {
@@ -151,7 +151,7 @@ void Node::setStateSet(osg::StateSet* stateset)
         if (_stateset->requiresUpdateTraversal()) ++delta_update;
         if (_stateset->requiresEventTraversal()) ++delta_event;
     }
-    
+
     if (delta_update!=0)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
@@ -180,9 +180,9 @@ MatrixList Node::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
 {
     CollectParentPaths cpp(haltTraversalAtNode);
     const_cast<Node*>(this)->accept(cpp);
-    
+
     MatrixList matrices;
-    
+
     for(NodePathList::iterator itr = cpp._nodePaths.begin();
         itr != cpp._nodePaths.end();
         ++itr)
@@ -197,7 +197,7 @@ MatrixList Node::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
             matrices.push_back(osg::computeLocalToWorld(nodePath));
         }
     }
-    
+
     return matrices;
 }
 
@@ -205,7 +205,7 @@ void Node::setUpdateCallback(NodeCallback* nc)
 {
     // if no changes just return.
     if (_updateCallback==nc) return;
-    
+
     // updated callback has been changed, will need to update
     // both _updateCallback and possibly the numChildrenRequiringAppTraversal
     // if the number of callbacks changes.
@@ -228,7 +228,7 @@ void Node::setUpdateCallback(NodeCallback* nc)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringUpdateTraversal(
                         (*itr)->getNumChildrenRequiringUpdateTraversal()+delta );
             }
@@ -251,8 +251,8 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
     // _numChildrenRequiringUpdateTraversal so no need to inform them.
     if (!_updateCallback && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringUpdateTraversal>0) --delta;
         if (num>0) ++delta;
@@ -264,7 +264,7 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringUpdateTraversal(
                     (*itr)->getNumChildrenRequiringUpdateTraversal()+delta
                     );
@@ -272,10 +272,10 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
 
         }
     }
-    
+
     // finally update this objects value.
     _numChildrenRequiringUpdateTraversal=num;
-    
+
 }
 
 
@@ -283,7 +283,7 @@ void Node::setEventCallback(NodeCallback* nc)
 {
     // if no changes just return.
     if (_eventCallback==nc) return;
-    
+
     // event callback has been changed, will need to Event
     // both _EventCallback and possibly the numChildrenRequiringAppTraversal
     // if the number of callbacks changes.
@@ -306,7 +306,7 @@ void Node::setEventCallback(NodeCallback* nc)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringEventTraversal(
                         (*itr)->getNumChildrenRequiringEventTraversal()+delta );
             }
@@ -329,8 +329,8 @@ void Node::setNumChildrenRequiringEventTraversal(unsigned int num)
     // _numChildrenRequiringEventTraversal so no need to inform them.
     if (!_eventCallback && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringEventTraversal>0) --delta;
         if (num>0) ++delta;
@@ -342,7 +342,7 @@ void Node::setNumChildrenRequiringEventTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringEventTraversal(
                     (*itr)->getNumChildrenRequiringEventTraversal()+delta
                     );
@@ -350,17 +350,17 @@ void Node::setNumChildrenRequiringEventTraversal(unsigned int num)
 
         }
     }
-    
+
     // finally Event this objects value.
     _numChildrenRequiringEventTraversal=num;
-    
+
 }
 
 void Node::setCullingActive(bool active)
 {
     // if no changes just return.
     if (_cullingActive == active) return;
-    
+
     // culling active has been changed, will need to update
     // both _cullActive and possibly the parents numChildrenWithCullingDisabled
     // if culling disabled changes.
@@ -382,7 +382,7 @@ void Node::setCullingActive(bool active)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenWithCullingDisabled(
                         (*itr)->getNumChildrenWithCullingDisabled()+delta );
             }
@@ -404,8 +404,8 @@ void Node::setNumChildrenWithCullingDisabled(unsigned int num)
     // _numChildrenWithCullingDisabled so no need to inform them.
     if (_cullingActive && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenWithCullingDisabled>0) --delta;
         if (num>0) ++delta;
@@ -417,7 +417,7 @@ void Node::setNumChildrenWithCullingDisabled(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenWithCullingDisabled(
                     (*itr)->getNumChildrenWithCullingDisabled()+delta
                     );
@@ -425,7 +425,7 @@ void Node::setNumChildrenWithCullingDisabled(unsigned int num)
 
         }
     }
-    
+
     // finally update this objects value.
     _numChildrenWithCullingDisabled=num;
 }
@@ -441,8 +441,8 @@ void Node::setNumChildrenWithOccluderNodes(unsigned int num)
     // _numChildrenWithOccluderNodes so no need to inform them.
     if (!dynamic_cast<OccluderNode*>(this) && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenWithOccluderNodes>0) --delta;
         if (num>0) ++delta;
@@ -454,7 +454,7 @@ void Node::setNumChildrenWithOccluderNodes(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenWithOccluderNodes(
                     (*itr)->getNumChildrenWithOccluderNodes()+delta
                     );
@@ -462,10 +462,10 @@ void Node::setNumChildrenWithOccluderNodes(unsigned int num)
 
         }
     }
-    
+
     // finally update this objects value.
     _numChildrenWithOccluderNodes=num;
-    
+
 }
 
 bool Node::containsOccluderNodes() const
@@ -544,7 +544,7 @@ void Node::dirtyBound()
 void Node::setThreadSafeRefUnref(bool threadSafe)
 {
     Object::setThreadSafeRefUnref(threadSafe);
-    
+
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
     if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
     if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);

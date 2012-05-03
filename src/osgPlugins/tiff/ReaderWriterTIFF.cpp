@@ -347,7 +347,7 @@ invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bi
     {
         unsigned short *ptr1 = (unsigned short *)ptr;
         unsigned short *data1 = (unsigned short *)data;
-        
+
         while (n--)
         {
             if (invert) *ptr1++ = 65535 - *data1++;
@@ -358,7 +358,7 @@ invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bi
     {
         float *ptr1 = (float *)ptr;
         float *data1 = (float *)data;
-        
+
         while (n--)
         {
             if (invert) *ptr1++ = 1.0 - *data1++;
@@ -404,7 +404,7 @@ static void interleave_row(unsigned char *ptr,
         unsigned short *red1 = (unsigned short *)red;
         unsigned short *green1 = (unsigned short *)green;
         unsigned short *blue1 = (unsigned short *)blue;
-        
+
         while (n--)
         {
             *ptr1++ = *red1++;
@@ -419,7 +419,7 @@ static void interleave_row(unsigned char *ptr,
         float *red1 = (float *)red;
         float *green1 = (float *)green;
         float *blue1 = (float *)blue;
-        
+
         while (n--)
         {
             *ptr1++ = *red1++;
@@ -452,7 +452,7 @@ static void interleave_row(unsigned char *ptr,
         unsigned short *green1 = (unsigned short *)green;
         unsigned short *blue1 = (unsigned short *)blue;
         unsigned short *alpha1 = (unsigned short *)alpha;
-        
+
         while (n--)
         {
             *ptr1++ = *red1++;
@@ -468,7 +468,7 @@ static void interleave_row(unsigned char *ptr,
         float *green1 = (float *)green;
         float *blue1 = (float *)blue;
         float *alpha1 = (float *)alpha;
-        
+
         while (n--)
         {
             *ptr1++ = *red1++;
@@ -595,7 +595,7 @@ simage_tiff_load(std::istream& fin,
         TIFFClose(in);
         return NULL;
     }
-    
+
     if (TIFFGetField(in, TIFFTAG_IMAGEWIDTH, &w) != 1 ||
         TIFFGetField(in, TIFFTAG_IMAGELENGTH, &h) != 1 ||
         TIFFGetField(in, TIFFTAG_PLANARCONFIG, &config) != 1)
@@ -605,7 +605,7 @@ simage_tiff_load(std::istream& fin,
         return NULL;
     }
 
-        
+
     TIFFGetField(in, TIFFTAG_DATATYPE, &dataType);
     OSG_INFO<<"TIFFTAG_DATATYPE="<<dataType<<std::endl;
 
@@ -620,18 +620,18 @@ simage_tiff_load(std::istream& fin,
     // if it has a palette, data returned is 3 byte rgb
     // so set format to 3.
     if (photometric == PHOTOMETRIC_PALETTE)
-        format = 3; 
+        format = 3;
     else
         format = samplesperpixel * bitspersample / 8;
-    
-    
+
+
     int bytespersample = bitspersample / 8;
     int bytesperpixel = bytespersample * samplesperpixel;
-    
+
     OSG_INFO<<"format="<<format<<std::endl;
     OSG_INFO<<"bytespersample="<<bytespersample<<std::endl;
     OSG_INFO<<"bytesperpixel="<<bytesperpixel<<std::endl;
-    
+
     buffer = new unsigned char [w*h*format];
 
     if (!buffer)
@@ -767,16 +767,16 @@ simage_tiff_load(std::istream& fin,
 class ReaderWriterTIFF : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterTIFF()
         {
             supportsExtension("tiff","Tiff image format");
             supportsExtension("tif","Tiff image format");
         }
-        
+
         virtual const char* className() const { return "TIFF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const
-        { 
+        {
             if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;
             if( osgDB::equalCaseInsensitive(extension,"tif") ) return true;
             return false;
@@ -792,10 +792,10 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 
             imageData = simage_tiff_load(fin, width_ret, height_ret, numComponents_ret, bitspersample_ret);
 
-            if (imageData==NULL) 
+            if (imageData==NULL)
             {
                 char err_msg[256];
-                simage_tiff_error( err_msg, sizeof(err_msg)); 
+                simage_tiff_error( err_msg, sizeof(err_msg));
                 OSG_WARN << err_msg << std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
@@ -813,8 +813,8 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
 
-            unsigned int dataType = 
-                bitspersample_ret == 8 ? GL_UNSIGNED_BYTE : 
+            unsigned int dataType =
+                bitspersample_ret == 8 ? GL_UNSIGNED_BYTE :
                 bitspersample_ret == 16 ? GL_UNSIGNED_SHORT :
                 bitspersample_ret == 32 ? GL_FLOAT : (GLenum)-1;
 
@@ -847,7 +847,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                                     libtiffOStreamSizeProc, //Custom size function
                                     libtiffStreamMapProc, //Custom map function
                                     libtiffStreamUnmapProc); //Custom unmap function
-            
+
             if(image == NULL)
             {
                 return WriteResult::ERROR_IN_WRITING_FILE;
@@ -897,13 +897,13 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,bitsPerSample);
             TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL,samplesPerPixel);
             TIFFSetField(image, TIFFTAG_PHOTOMETRIC, photometric);
-            TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS); 
+            TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
             TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
             TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 
-            //uint32 rowsperstrip = TIFFDefaultStripSize(image, -1); 
+            //uint32 rowsperstrip = TIFFDefaultStripSize(image, -1);
             //TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
-            
+
             // Write the information to the file
             for(int i = 0; i < img.t(); ++i) {
                 TIFFWriteScanline(image,(tdata_t)img.data(0,img.t()-i-1),i,0);

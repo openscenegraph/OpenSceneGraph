@@ -69,7 +69,7 @@ void LightPointNode::read(DataInputStream* in){
         {
             setPointSprite(in->readBool());
         }
-        
+
         // Read in lightpoints.
         unsigned int size = in->readUInt();
         for(unsigned int i=0; i<size; i++ ){

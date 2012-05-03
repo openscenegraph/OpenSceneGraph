@@ -12,7 +12,7 @@
 
 #include "lwo2types.h"
 
-namespace lwo2 
+namespace lwo2
 {
 
 template<class Iter>

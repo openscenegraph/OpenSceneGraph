@@ -82,7 +82,7 @@ void trpgMatTable::SetNumMaterial(int /*no*/)
 
 
 void trpgMatTable::SetMaterial(int nm,const trpgMaterial &mat)
-{    
+{
     materialMap[nm] = mat;
     numMat = materialMap.size();
 }
@@ -92,7 +92,7 @@ void trpgMatTable::SetMaterial(int nm,const trpgMaterial &mat)
 int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
 {
     trpgMaterial cmat = mat; // necessary?
-    
+
     // having a shadeModel of 999 indicates that the entry is free.  I thought this would
     // work fine, until I realized that evidently most of the time the shademodel isn't set
     // at all.  Now my kludge takes so much work it's almost worth doing it right.
@@ -102,7 +102,7 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
     int baseMat=0;
     //bool spaceInTable=false;
     //int offset=baseMat;
-    
+
     if (lookForExisting) {
         // Look for a matching base material minus the textures
         //for (baseMat = 0;baseMat < numMat;baseMat++) {
@@ -192,7 +192,7 @@ bool trpgMatTable::Write(trpgWriteBuffer &buf)
 bool trpgMatTable::GetNumTable(int &no) const
 {
     if (!isValid()) {
-        no = 0; // otherwise this causes errors because it is uninitialized.    
+        no = 0; // otherwise this causes errors because it is uninitialized.
         return false;
     }
     no = numTable;
@@ -201,9 +201,9 @@ bool trpgMatTable::GetNumTable(int &no) const
 bool trpgMatTable::GetNumMaterial(int &no) const
 {
     if (!isValid()) {
-        no = 0;    
+        no = 0;
         return false;
-    }    
+    }
     no = numMat;
     return true;
 }
@@ -252,7 +252,7 @@ bool trpgMatTable::Read(trpgReadBuffer &buf)
                 status = mat.Read(buf);
                 buf.PopLimit();
                 if (!status) throw 1;
-                AddMaterial(mat,false);                
+                AddMaterial(mat,false);
             }
             numTable += nTable;
             numMat = materialMap.size();
@@ -1103,7 +1103,7 @@ void trpgTexture::SetName(const char *inName)
 // Get Name
 bool trpgTexture::GetName(char *outName,int outLen) const
 {
-    if (!isValid()) 
+    if (!isValid())
         return false;
 
     int len = (name) ? strlen(name) : 0;
@@ -1225,7 +1225,7 @@ void trpgTexture::SetNumLayer(int layers)
 
 bool trpgTexture::GetNumLayer(int &layers) const
 {
-    if (!isValid()) 
+    if (!isValid())
         return false;
     GetImageDepth(layers);
     return true;
@@ -1242,7 +1242,7 @@ void trpgTexture::AddTile()
 }
 bool trpgTexture::GetNumTile(int &num) const
 {
-    if (!isValid()) 
+    if (!isValid())
         return false;
     num = useCount;
     return true;
@@ -1258,7 +1258,7 @@ trpgTexture &trpgTexture::operator = (const trpgTexture &in)
         SetName(in.name);
 
     useCount = in.useCount;
-    
+
     sizeX = in.sizeX;
     sizeY = in.sizeY;
 
@@ -1267,7 +1267,7 @@ trpgTexture &trpgTexture::operator = (const trpgTexture &in)
 
     isMipmap = in.isMipmap;
     addr = in.addr;
-    
+
     writeHandle = in.writeHandle;
     handle = in.handle;
 
@@ -1341,7 +1341,7 @@ int32 trpgTexture::CalcTotalSize() const
 // Calculate the size of a given mip level
 int32 trpgTexture::MipLevelSize(int miplevel)
 {
-    
+
     if ( miplevel >= 0 && miplevel < CalcNumMipmaps() ) {
         if ( !storageSize.size() )
             CalcMipLevelSizes();
@@ -1634,7 +1634,7 @@ bool trpgTexTable::isValid() const
     }
 
     TextureMapType::const_iterator itr = textureMap.begin();
-    for (  ; itr != textureMap.end( ); itr++) {        
+    for (  ; itr != textureMap.end( ); itr++) {
         if(!itr->second.isValid()) {
             strcpy(errMess, "A texture in the texture table is invalid");
             return false;
@@ -1652,7 +1652,7 @@ void trpgTexTable::SetNumTextures(int /*no*/)
 }
 int trpgTexTable::AddTexture(const trpgTexture &inTex)
 {
-    
+
     TeAttrHdl hdl = inTex.GetHandle();
     if(hdl==-1) {
         // if no handle is specified, we will use an index as the handle (just like before 2.3)
@@ -1729,9 +1729,9 @@ bool trpgTexTable::GetNumTextures(int &no) const
 }
 bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 {
-    if (!isValid()) 
+    if (!isValid())
         return false;
-    if (id < 0) 
+    if (id < 0)
         return false;
     TextureMapType::const_iterator itr = textureMap.find(id);
     if(itr == textureMap.end()) {
@@ -1743,7 +1743,7 @@ bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 }
 const trpgTexture *trpgTexTable::GetTextureRef(int id) const
 {
-    if (id < 0) 
+    if (id < 0)
         return false;
     TextureMapType::const_iterator itr = textureMap.find(id);
     if(itr == textureMap.end()) {

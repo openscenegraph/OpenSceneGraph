@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -22,21 +22,21 @@
 
 namespace osg {
 
-/** Encapsulates OpenGL 2D texture functionality. Doesn't support cube maps,
+/** Encapsulates OpenGL 3D texture functionality. Doesn't support cube maps,
   * so ignore \a face parameters.
 */
 class OSG_EXPORT Texture3D : public Texture
 {
 
     public :
-        
+
         Texture3D();
 
         Texture3D(Image* image);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture3D(const Texture3D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-        
+
         META_StateAttribute(osg, Texture3D,TEXTURE);
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
@@ -105,9 +105,9 @@ class OSG_EXPORT Texture3D : public Texture
                 virtual void load(const Texture3D& texture,State& state) const = 0;
                 virtual void subload(const Texture3D& texture,State& state) const = 0;
         };
-        
+
         void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb;; }
-        
+
         SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
 
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
@@ -120,7 +120,7 @@ class OSG_EXPORT Texture3D : public Texture
 
         /** Gets the number of mipmap levels created. */
         unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }
-        
+
 
         /** Copies a two-dimensional texture subimage, as per
           * glCopyTexSubImage3D. Updates a portion of an existing OpenGL
@@ -135,25 +135,25 @@ class OSG_EXPORT Texture3D : public Texture
         /** Bind the texture object. If the texture object hasn't already been
           * compiled, create the texture mipmap levels. */
         virtual void apply(State& state) const;
-        
+
 
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                    
+
                 void setupGLExtensions(unsigned int contextID);
 
                 void setTexture3DSupported(bool flag) { _isTexture3DSupported=flag; }
                 bool isTexture3DSupported() const { return _isTexture3DSupported; }
-                
+
                 void setTexture3DFast(bool flag) { _isTexture3DFast=flag; }
                 bool isTexture3DFast() const { return _isTexture3DFast; }
 
@@ -184,10 +184,10 @@ class OSG_EXPORT Texture3D : public Texture
                 bool    _isTexture3DFast;
                 GLint   _maxTexture3DSize;
         };
-        
+
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** Overrides Extensions objects across graphics contexts. Typically
@@ -214,7 +214,7 @@ class OSG_EXPORT Texture3D : public Texture
 
         /** Subloaded images can have different texture and image sizes. */
         mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
-        
+
         /** Number of mip map levels the the texture has been created with, */
         mutable GLsizei _numMipmapLevels;
 

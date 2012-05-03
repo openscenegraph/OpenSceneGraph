@@ -2,7 +2,7 @@
  *
  *    FILE:           ShapeAttributeList.cpp
  *
- *    DESCRIPTION:    Read/Write osgSim::ShapeAttributeList in binary 
+ *    DESCRIPTION:    Read/Write osgSim::ShapeAttributeList in binary
  *                    format to disk.
  *
  *    CREATED BY:     John Vidar Larring
@@ -46,7 +46,7 @@ void ShapeAttributeList::read(DataInputStream* in)
 
         // Read size of the list
         unsigned int count = in->readUInt();
-        
+
         resize(count);
 
         // Read elements of the list
@@ -64,7 +64,7 @@ void ShapeAttributeList::write(DataOutputStream* out, const osgSim::ShapeAttribu
 {
     // Write name
     out->writeString(sa.getName());
-    
+
     // Write datatype
     osgSim::ShapeAttribute::Type type = sa.getType();
     out->writeInt((int)type);
@@ -100,10 +100,10 @@ void ShapeAttributeList::read(DataInputStream* in, osgSim::ShapeAttribute& sa)
     switch (type)
     {
         case osgSim::ShapeAttribute::INTEGER:
-            sa.setValue(in->readInt()); 
+            sa.setValue(in->readInt());
             break;
         case osgSim::ShapeAttribute::DOUBLE:
-            sa.setValue(in->readDouble()); 
+            sa.setValue(in->readDouble());
             break;
         case osgSim::ShapeAttribute::STRING:
             if (in->readBool())

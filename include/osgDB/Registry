@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -74,7 +74,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
 
 
-        
+
         static Registry* instance(bool erase = false);
 
         /** read the command line arguments.*/
@@ -126,10 +126,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** find the library in the OSG_LIBRARY_PATH and load it.*/
         LoadStatus loadLibrary(const std::string& fileName);
-        
+
         /** close the attached library with specified name.*/
         bool closeLibrary(const std::string& fileName);
-        
+
         /** close all libraries.*/
         void closeAllLibraries();
 
@@ -141,13 +141,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** gets a reader/writer that handles the extension mapped to by one of
           * the registered mime-types. */
         ReaderWriter* getReaderWriterForMimeType(const std::string& mimeType);
-        
+
         /** get list of all registered ReaderWriters.*/
         ReaderWriterList& getReaderWriterList() { return _rwList; }
 
         /** get const list of all registered ReaderWriters.*/
         const ReaderWriterList& getReaderWriterList() const { return _rwList; }
- 
+
 
         typedef std::vector< osg::ref_ptr<ImageProcessor> > ImageProcessorList;
 
@@ -202,7 +202,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get the readFile callback.*/
         ReadFileCallback* getReadFileCallback() { return _readFileCallback.get(); }
-        
+
         /** Get the const readFile callback.*/
         const ReadFileCallback* getReadFileCallback() const { return _readFileCallback.get(); }
 
@@ -271,7 +271,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get the writeFile callback.*/
         WriteFileCallback* getWriteFileCallback() { return _writeFileCallback.get(); }
-        
+
         /** Get the const writeFile callback.*/
         const WriteFileCallback* getWriteFileCallback() const { return _writeFileCallback.get(); }
 
@@ -307,7 +307,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             else return writeNodeImplementation(node,fileName,options);
         }
         ReaderWriter::WriteResult writeNodeImplementation(const osg::Node& node, const std::string& fileName,const Options* options);
-        
+
         ReaderWriter::WriteResult writeShader(const osg::Shader& obj, const std::string& fileName,const Options* options)
         {
             if (options && options->getWriteFileCallback()) return options->getWriteFileCallback()->writeShader(obj,fileName,options);
@@ -315,7 +315,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             else return writeShaderImplementation(obj,fileName,options);
         }
         ReaderWriter::WriteResult writeShaderImplementation(const osg::Shader& obj, const std::string& fileName,const Options* options);
-        
+
 
         inline void _buildKdTreeIfRequired(ReaderWriter::ReadResult& result, const Options* options)
         {
@@ -323,7 +323,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
                 options->getBuildKdTreesHint() == Options::BUILD_KDTREES :
                 _buildKdTreesHint == Options::BUILD_KDTREES;
 
-            if (doKdTreeBuilder && _kdTreeBuilder.valid() && result.validNode()) 
+            if (doKdTreeBuilder && _kdTreeBuilder.valid() && result.validNode())
             {
                 osg::ref_ptr<osg::KdTreeBuilder> builder = _kdTreeBuilder->clone();
                 result.getNode()->accept(*builder);
@@ -373,18 +373,18 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }
-        
+
 
         void setOptions(Options* opt) { _options = opt; }
         Options* getOptions() { return _options.get(); }
         const Options*  getOptions() const { return _options.get(); }
 
 
-        /** initialize both the Data and Library FilePaths, by default called by the 
+        /** initialize both the Data and Library FilePaths, by default called by the
           * constructor, so it should only be required if you want to force
           * the re-reading of environmental variables.*/
         void initFilePathLists() { initDataFilePathList(); initLibraryFilePathList(); }
-        
+
         /** initialize the Data FilePath by reading the OSG_FILE_PATH environmental variable.*/
         void initDataFilePathList();
 
@@ -400,7 +400,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the const data file path which is used when search for data files.*/
         const FilePathList& getDataFilePathList() const { return _dataFilePath; }
 
-        /** initialize the Library FilePath by reading the OSG_LIBRARY_PATH 
+        /** initialize the Library FilePath by reading the OSG_LIBRARY_PATH
           * and the appropriate system environmental variables*/
         void initLibraryFilePathList();
 
@@ -412,11 +412,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get the library file path which is used when search for library (dso/dll's) files.*/
         FilePathList& getLibraryFilePathList() { return _libraryFilePath; }
-        
+
         /** get the const library file path which is used when search for library (dso/dll's) files.*/
         const FilePathList& getLibraryFilePathList() const { return _libraryFilePath; }
 
-        /** For each object in the cache which has an reference count greater than 1 
+        /** For each object in the cache which has an reference count greater than 1
           * (and therefore referenced by elsewhere in the application) set the time stamp
           * for that object in the cache to specified time.
           * This would typically be called once per frame by applications which are doing database paging,
@@ -436,7 +436,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         double getExpiryDelay() const { return _expiryDelay; }
 
 
-        /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
+        /** Remove all objects in the cache regardless of having external references or expiry times.*/
         void clearObjectCache();
 
         /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
@@ -447,27 +447,27 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get an Object from the object cache*/
         osg::Object* getFromObjectCache(const std::string& fileName);
-        
+
         /** Get an ref_ptr<Object> from the object cache*/
         osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName);
 
 
-        
+
         /** Add archive to archive cache so that future calls reference this archive.*/
         void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);
 
         /** Remove Archive from cache.*/
         void removeFromArchiveCache(const std::string& fileName);
-        
+
         /** Get an Archive from the archive cache.*/
         osgDB::Archive* getFromArchiveCache(const std::string& fileName);
 
         /** Get an ref_ptr<Archive> from the archive cache.*/
         osg::ref_ptr<osgDB::Archive> getRefFromArchiveCache(const std::string& fileName);
-        
+
         /** Remove all archives from the archive cache.*/
         void clearArchiveCache();
-        
+
          /** If State is non-zero, this function releases OpenGL objects for
            * the specified graphics context. Otherwise, releases OpenGL objexts
            * for all graphics contexts. */
@@ -481,16 +481,16 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get the SharedStateManager, creating one if one is not already created.*/
         SharedStateManager* getOrCreateSharedStateManager();
-        
+
         /** Get the SharedStateManager. Return 0 if no SharedStateManager has been assigned.*/
         SharedStateManager* getSharedStateManager() { return _sharedStateManager.get(); }
 
         /** Add an Archive extension.*/
         void addArchiveExtension(const std::string ext);
-        
+
         /** registers a protocol */
         void registerProtocol(const std::string& protocol);
-        
+
         /** returns true, if named protocol is registered */
         bool isProtocolRegistered(const std::string& protocol);
 
@@ -509,11 +509,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
-        
+
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
         typedef std::map<std::string, osg::ref_ptr<osgDB::Archive> >    ArchiveCache;
-        
+
         typedef std::set<std::string>                                   RegisteredProtocolsSet;
 
         /** constructor is private, as its a singleton, preventing
@@ -526,13 +526,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         Options::BuildKdTreesHint     _buildKdTreesHint;
         osg::ref_ptr<osg::KdTreeBuilder>            _kdTreeBuilder;
-        
+
         osg::ref_ptr<FileCache>                     _fileCache;
-        
+
         osg::ref_ptr<AuthenticationMap>             _authenticationMap;
-        
+
         bool                                        _createNodeFromImage;
-        
+
         RegisteredProtocolsSet                      _registeredProtocols;
 
     public:
@@ -555,9 +555,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         };
 
    protected:
-   
+
         void destruct();
-   
+
         // forward declare helper classes
         struct ReadObjectFunctor;
         struct ReadImageFunctor;
@@ -565,7 +565,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         struct ReadNodeFunctor;
         struct ReadArchiveFunctor;
         struct ReadShaderFunctor;
-        
+
         // make helper classes friends to get round VS6.0 "issues"
         friend struct ReadFunctor;
         friend struct ReadObjectFunctor;
@@ -600,7 +600,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ArchiveCache                _archiveCache;
 
         bool _openingLibrary;
-    
+
         // map to alias to extensions to plugins.
         ExtensionAliasMap  _extAliasMap;
 
@@ -609,17 +609,17 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         // Utility: Removes whitespace from both ends of a string.
         static std::string trim( const std::string& str );
-        
+
         // options to pass to reader writers.
         osg::ref_ptr<Options>     _options;
-        
+
         FilePathList                            _dataFilePath;
         FilePathList                            _libraryFilePath;
 
         double                                  _expiryDelay;
         ObjectCache                             _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;
-        
+
 
         ArchiveExtensionList                    _archiveExtList;
 
@@ -656,9 +656,9 @@ class RegisterReaderWriterProxy
                 Registry::instance()->removeReaderWriter(_rw.get());
             }
         }
-        
+
         T* get() { return _rw.get(); }
-        
+
     protected:
         osg::ref_ptr<T> _rw;
 };

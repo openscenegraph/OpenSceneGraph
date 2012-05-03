@@ -31,27 +31,27 @@ static bool checkRangeList( const osg::LOD& node )
 
 static bool readRangeList( osgDB::InputStream& is, osg::LOD& node )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float min, max;
         is >> min >> max;
         node.setRange( i, min, max );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeRangeList( osgDB::OutputStream& os, const osg::LOD& node )
 {
     const osg::LOD::RangeList& ranges = node.getRangeList();
-    os.writeSize(ranges.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(ranges.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::LOD::RangeList::const_iterator itr=ranges.begin();
           itr!=ranges.end(); ++itr )
     {
         os << itr->first << itr->second << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -65,13 +65,13 @@ REGISTER_OBJECT_WRAPPER( LOD,
         ADD_ENUM_VALUE( USER_DEFINED_CENTER );
         ADD_ENUM_VALUE( UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED );
     END_ENUM_SERIALIZER();  // _centerMode
-    
+
     ADD_USER_SERIALIZER( UserCenter );  // _userDefinedCenter, _radius
-    
+
     BEGIN_ENUM_SERIALIZER( RangeMode, DISTANCE_FROM_EYE_POINT );
         ADD_ENUM_VALUE( DISTANCE_FROM_EYE_POINT );
         ADD_ENUM_VALUE( PIXEL_SIZE_ON_SCREEN );
     END_ENUM_SERIALIZER();  // _rangeMode
-    
+
     ADD_USER_SERIALIZER( RangeList );  // _rangeList
 }

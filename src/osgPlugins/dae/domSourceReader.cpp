@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "domSourceReader.h"
@@ -41,7 +41,7 @@ void domSourceReader::convert(bool doublePrecision)
 
     // Only handle floats or name array for now...
     daeDoubleArray* float_array = NULL;
-    if (src->getFloat_array()) 
+    if (src->getFloat_array())
     {
         float_array = &(src->getFloat_array()->getValue());
     }
@@ -51,7 +51,7 @@ void domSourceReader::convert(bool doublePrecision)
         return;
     }
 
-    switch (stride) 
+    switch (stride)
     {
         case 1:
             m_array_type = Float;
@@ -102,7 +102,7 @@ void domSourceReader::convert(bool doublePrecision)
             return;
     }
 
-    if (float_array) 
+    if (float_array)
     {
         daeDoubleArray& va = *float_array;
         switch (m_array_type)

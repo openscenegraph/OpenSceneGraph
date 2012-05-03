@@ -8,8 +8,8 @@
     static bool read##PROP( osgDB::InputStream& is, osg::TextureCubeMap& tex ) { \
         bool hasImage; is >> hasImage; \
         if ( hasImage ) { \
-            is >> osgDB::BEGIN_BRACKET; tex.setImage(FACE, is.readImage()); \
-            is >> osgDB::END_BRACKET; \
+            is >> is.BEGIN_BRACKET; tex.setImage(FACE, is.readImage()); \
+            is >> is.END_BRACKET; \
         } \
         return true; \
     } \
@@ -17,8 +17,8 @@
         const osg::Image* image = tex.getImage(FACE); \
         os << (image!=NULL); \
         if ( image!=NULL ) { \
-            os << osgDB::BEGIN_BRACKET << std::endl << image; \
-            os << osgDB::END_BRACKET; \
+            os << os.BEGIN_BRACKET << std::endl << image; \
+            os << os.END_BRACKET; \
         } \
         os << std::endl; \
         return true; \
@@ -42,7 +42,7 @@ REGISTER_OBJECT_WRAPPER( TextureCubeMap,
     ADD_USER_SERIALIZER( NegY );
     ADD_USER_SERIALIZER( PosZ );
     ADD_USER_SERIALIZER( NegZ );  // _images
-    
+
     ADD_INT_SERIALIZER( TextureWidth, 0 );  // _textureWidth
     ADD_INT_SERIALIZER( TextureHeight, 0 );  // _textureHeight
 }

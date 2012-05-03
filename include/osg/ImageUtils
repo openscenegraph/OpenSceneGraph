@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,7 +20,7 @@
 
 namespace osg {
 
-template <typename T, class O>    
+template <typename T, class O>
 void _readRow(unsigned int num, GLenum pixelFormat, const T* data,float scale, O& operation)
 {
     switch(pixelFormat)
@@ -35,7 +35,7 @@ void _readRow(unsigned int num, GLenum pixelFormat, const T* data,float scale, O
     }
 }
 
-template <class O>    
+template <class O>
 void readRow(unsigned int num, GLenum pixelFormat, GLenum dataType, const unsigned char* data, O& operation)
 {
     switch(dataType)
@@ -50,11 +50,11 @@ void readRow(unsigned int num, GLenum pixelFormat, GLenum dataType, const unsign
     }
 }
 
-template <class O>    
+template <class O>
 void readImage(const osg::Image* image, O& operation)
 {
     if (!image) return;
-    
+
     for(int r=0;r<image->r();++r)
     {
         for(int t=0;t<image->t();++t)
@@ -67,15 +67,15 @@ void readImage(const osg::Image* image, O& operation)
 // example ModifyOperator
 // struct ModifyOperator
 // {
-//     inline void luminance(float& l) const {} 
-//     inline void alpha(float& a) const {} 
-//     inline void luminance_alpha(float& l,float& a) const {} 
+//     inline void luminance(float& l) const {}
+//     inline void alpha(float& a) const {}
+//     inline void luminance_alpha(float& l,float& a) const {}
 //     inline void rgb(float& r,float& g,float& b) const {}
 //     inline void rgba(float& r,float& g,float& b,float& a) const {}
 // };
 
 
-template <typename T, class M>    
+template <typename T, class M>
 void _modifyRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const M& operation)
 {
     float inv_scale = 1.0f/scale;
@@ -91,7 +91,7 @@ void _modifyRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const
     }
 }
 
-template <class M>    
+template <class M>
 void modifyRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const M& operation)
 {
     switch(dataType)
@@ -106,11 +106,11 @@ void modifyRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned c
     }
 }
 
-template <class M>    
+template <class M>
 void modifyImage(osg::Image* image, const M& operation)
 {
     if (!image) return;
-    
+
     for(int r=0;r<image->r();++r)
     {
         for(int t=0;t<image->t();++t)

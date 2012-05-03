@@ -12,6 +12,6 @@ REGISTER_OBJECT_WRAPPER( ImageStream,
         ADD_ENUM_VALUE( NO_LOOPING );
         ADD_ENUM_VALUE( LOOPING );
     END_ENUM_SERIALIZER();  // _loopingMode
-    
+
     ADD_LIST_SERIALIZER( AudioStreams, osg::ImageStream::AudioStreams );  // _audioStreams
 }

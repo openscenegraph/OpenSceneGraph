@@ -73,7 +73,7 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         case MotionCommand::MOVE:
         {
             //OSG_NOTICE<<"MotionCommand::MOVE "<<command.getMotionMatrix()<<std::endl;
-            
+
             // Transform the command's motion matrix into local motion matrix.
             osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
                                             * command.getMotionMatrix()
@@ -554,7 +554,7 @@ class ForceCullCallback : public osg::Drawable::CullCallback
 void osgManipulator::setDrawableToAlwaysCull(osg::Drawable& drawable)
 {
     ForceCullCallback* cullCB = new ForceCullCallback;
-    drawable.setCullCallback (cullCB);    
+    drawable.setCullCallback (cullCB);
 }
 
 void osgManipulator::setMaterialColor(const osg::Vec4& color, osg::Node& node)

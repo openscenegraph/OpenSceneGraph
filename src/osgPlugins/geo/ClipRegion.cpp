@@ -31,19 +31,19 @@ GeoClipRegion::GeoClipRegion(const GeoClipRegion& clr,const osg::CopyOp& copyop)
 }
 
 void GeoClipRegion::addClipNode(osg::Node *gd) {
-    
+
     osg::StateSet *state=gd->getOrCreateStateSet();
     // add clip node(s) to set stencil bit marking the clip area.
-    // stencil op so that the stencil buffer get set at the clip pixels 
+    // stencil op so that the stencil buffer get set at the clip pixels
     osg::Stencil* stencil = new osg::Stencil;
     stencil->setFunction(osg::Stencil::ALWAYS,1,~0u);
     stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::REPLACE);
     state->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-    
+
     // switch off the writing to the color bit planes. (Dont show the clip area)
     osg::ColorMask* colorMask = new osg::ColorMask;
     colorMask->setMask(false,false,false,false);
-    
+
     state->setRenderBinDetails(stencilbin,"RenderBin");
     state->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
     state->setAttribute(colorMask);
@@ -56,10 +56,10 @@ void GeoClipRegion::addClipNode(osg::Node *gd) {
 }
 
 bool GeoClipRegion::addChild( osg::Node *child )
-{ 
-    // bin the last - draw 'real' scenery last, using Z buffer to clip against any clip region... 
+{
+    // bin the last - draw 'real' scenery last, using Z buffer to clip against any clip region...
 
-        osg::StateSet* statesetBin2 = child->getOrCreateStateSet();        
+        osg::StateSet* statesetBin2 = child->getOrCreateStateSet();
         statesetBin2->setRenderBinDetails(stencilbin+3,"RenderBin");
     /*   osg::Stencil* stencil = new osg::Stencil;
         stencil->setFunction(osg::Stencil::ALWAYS,0,~0);
@@ -118,7 +118,7 @@ void GeoClipRegion::addDrawClipNode(osg::Node *ndclip)
 {
     osg::StateSet *state=ndclip->getOrCreateStateSet();
     // last bin  - draw clip area and blend it with the clipped, visible geometry.
-    
+
     // set up depth so all writing to depth goes to maximum depth.
     osg::Depth* depth = new osg::Depth;
     depth->setFunction(osg::Depth::ALWAYS);

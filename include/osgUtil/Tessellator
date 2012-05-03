@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ namespace osgUtil {
 class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 {
     public:
-   
+
         Tessellator();
         ~Tessellator();
 
@@ -71,7 +71,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 
         /** Change the contours lists of the geometry into tessellated primitives (the
           * list of primitives in the original geometry is stored in the Tessellator for
-          * possible re-use. 
+          * possible re-use.
           * The name remains retessellatePolygons although it now handles trifans, strips, quads etc.
           * as well as Polygons so as to not break old codes relying on this function name. */
         void retessellatePolygons(osg::Geometry &cxgeom);
@@ -79,7 +79,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         /** Define the normal to the tessellated polygon - this provides a hint how to
          *  tessellate the contours; see gluTessNormal in red book or man pages.
          *  GWM July 2005. Can improve teselation
-         *  "For example, if you know that all polygons lie in the x-y plane, 
+         *  "For example, if you know that all polygons lie in the x-y plane,
          *   call gluTessNormal(tess, 0.0, 0.0, 1.0) before rendering any polygons."
          */
         void setTessellationNormal(const osg::Vec3 norm) { tessNormal=norm;}
@@ -89,15 +89,15 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         struct Prim : public osg::Referenced
         {
             Prim(GLenum mode):_mode(mode) {}
-        
+
             typedef std::vector<osg::Vec3*> VecList;
 
             GLenum  _mode;
             VecList _vertices;
         };
-        
+
         virtual void beginTessellation();
-        
+
         void beginContour();
 
         /** Add a vertex to the current contour, see gluTessVertex for details.
@@ -112,11 +112,11 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         void endTessellation();
 
         typedef std::vector< osg::ref_ptr<Prim> > PrimList;
-        
-        PrimList& getPrimList() { return _primList; }        
-        
+
+        PrimList& getPrimList() { return _primList; }
+
         void reset();
-        
+
     protected:
 
         /** remove unused parts of the array, eg for when retessellating
@@ -125,7 +125,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         void reduceArray(osg::Array * cold, const unsigned int nnu);
 
         void collectTessellation(osg::Geometry &cxgeom, unsigned int originalIndex);
-        
+
         typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
         void addContour(GLenum  mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices);
         void addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices);
@@ -137,7 +137,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         void end();
         void error(GLenum errorCode);
 
-    
+
         static void CALLBACK beginCallback(GLenum which, void* userData);
         static void CALLBACK vertexCallback(GLvoid *data, void* userData);
         static void CALLBACK combineCallback(GLdouble coords[3], void* vertex_data[4],
@@ -145,8 +145,8 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
                               void* useData);
         static void CALLBACK endCallback(void* userData);
         static void CALLBACK errorCallback(GLenum errorCode, void* userData);
-        
-        
+
+
         struct Vec3d
         {
             double _v[3];
@@ -155,7 +155,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 
         struct NewVertex
         {
-        
+
             NewVertex():
                 _vpos(0),
                 _f1(0),
@@ -166,7 +166,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
                 _v3(0),
                 _f4(0),
                 _v4(0) {}
-            
+
             NewVertex(const NewVertex& nv):
                 _vpos(nv._vpos),
                 _f1(nv._f1),
@@ -194,7 +194,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
                 _v4(v4) {}
 
             osg::Vec3  *_vpos; // added gwm Jan 2004 the vertex coords s.t. NewVertex can be used in a std::vector
-        
+
             float       _f1;
             osg::Vec3*  _v1;
 
@@ -206,11 +206,11 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 
             float       _f4;
             osg::Vec3*  _v4;
-            
+
         };
-        
+
         //change NewVertexList from std::map<osg::Vec3*,NewVertex> NewVertexList;
-        // because this has undefined order of insertion for new vertices. 
+        // because this has undefined order of insertion for new vertices.
         // which occasionally corrupted the texture mapping.
         typedef std::vector<NewVertex> NewVertexList;
         typedef std::vector<Vec3d*> Vec3dList;
@@ -223,7 +223,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         GLenum          _errorCode;
 
         /** winding rule, which parts will become solid */
-        WindingType _wtype; 
+        WindingType _wtype;
 
         /** tessellation rule, which parts will become solid */
         TessellationType _ttype;

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #if defined(_MSC_VER)
@@ -45,7 +45,7 @@ void InsertImpostorsVisitor::apply(Node& node)
 void InsertImpostorsVisitor::apply(Group& node)
 {
     _groupList.push_back(&node);
-    
+
     ++_numNestedImpostors;
     if (_numNestedImpostors<_maximumNumNestedImpostors)
     {
@@ -60,7 +60,7 @@ void InsertImpostorsVisitor::apply(LOD& node)
     {
         _lodList.push_back(&node);
     }
-    
+
     ++_numNestedImpostors;
     if (_numNestedImpostors<_maximumNumNestedImpostors)
     {
@@ -103,7 +103,7 @@ void InsertImpostorsVisitor::insertImpostors()
                     // standard LOD settings
                     impostor->addChild(group);
                     impostor->setRange(0,0.0f,1e7f);
-                    
+
                     // impostor specfic settings.
                     impostor->setImpostorThresholdToBound(_impostorThresholdRatio);
 
@@ -119,9 +119,9 @@ void InsertImpostorsVisitor::insertImpostors()
                 }
             }
         }
-    
-    }    
-    
+
+    }
+
 
     // handle LOD's
     if (_replaceLODsByImpostors)
@@ -153,7 +153,7 @@ void InsertImpostorsVisitor::insertImpostors()
                         impostor->addChild(lod->getChild(ci));
                         impostor->setRange(ci,lod->getMinRange(ci),lod->getMaxRange(ci));
                     }
-                    
+
                     impostor->setCenter(lod->getCenter());
                     impostor->setCenterMode(lod->getCenterMode());
 
@@ -172,6 +172,6 @@ void InsertImpostorsVisitor::insertImpostors()
                 }
             }
         }
-    
-    }    
+
+    }
 }

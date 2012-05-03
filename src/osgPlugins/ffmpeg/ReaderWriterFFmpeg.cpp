@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -55,7 +55,7 @@ public:
         supportsExtension("3gp",    "3G multi-media format");
         supportsExtension("sdp",    "Session Description Protocol");
         supportsExtension("m2ts",   "MPEG-2 Transport Stream");
-        
+
         supportsOption("format",            "Force setting input format (e.g. vfwcap for Windows webcam)");
         supportsOption("pixel_format",      "Set pixel format");
         supportsOption("frame_size",              "Set frame size (e.g. 320x240)");
@@ -108,7 +108,7 @@ public:
 
         return readImageStream(path, parameters.get());
     }
-    
+
     ReadResult readImageStream(const std::string& filename, osgFFmpeg::FFmpegParameters* parameters) const
     {
         OSG_INFO << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
@@ -122,7 +122,7 @@ public:
     }
 
 private:
-    
+
     void parseOptions(osgFFmpeg::FFmpegParameters* parameters, const osgDB::ReaderWriter::Options * options) const
     {
         if (options && options->getNumPluginStringData()>0)

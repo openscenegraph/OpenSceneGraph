@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -87,44 +87,44 @@ void Matrix_implementation::setRotate(const Quat& q)
         {
             rlength2 = 2.0;
         }
-        
+
         // Source: Gamasutra, Rotating Objects Using Quaternions
         //
         //http://www.gamasutra.com/features/19980703/quaternions_01.htm
-        
+
         double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
-        
+
         // calculate coefficients
         x2 = rlength2*QX;
         y2 = rlength2*QY;
         z2 = rlength2*QZ;
-        
+
         xx = QX * x2;
         xy = QX * y2;
         xz = QX * z2;
-        
+
         yy = QY * y2;
         yz = QY * z2;
         zz = QZ * z2;
-        
+
         wx = QW * x2;
         wy = QW * y2;
         wz = QW * z2;
-        
+
         // Note.  Gamasutra gets the matrix assignments inverted, resulting
-        // in left-handed rotations, which is contrary to OpenGL and OSG's 
+        // in left-handed rotations, which is contrary to OpenGL and OSG's
         // methodology.  The matrix assignment has been altered in the next
         // few lines of code to do the right thing.
         // Don Burns - Oct 13, 2001
         _mat[0][0] = 1.0 - (yy + zz);
         _mat[1][0] = xy - wz;
         _mat[2][0] = xz + wy;
-        
-        
+
+
         _mat[0][1] = xy + wz;
         _mat[1][1] = 1.0 - (xx + zz);
         _mat[2][1] = yz - wx;
-        
+
         _mat[0][2] = xz - wy;
         _mat[1][2] = yz + wx;
         _mat[2][2] = 1.0 - (xx + yy);
@@ -171,29 +171,29 @@ Quat Matrix_implementation::getRotate() const
     {
         /* perform instant calculation */
         QW = tq[0];
-        QX = _mat[1][2]-_mat[2][1]; 
-        QY = _mat[2][0]-_mat[0][2]; 
-        QZ = _mat[0][1]-_mat[1][0]; 
+        QX = _mat[1][2]-_mat[2][1];
+        QY = _mat[2][0]-_mat[0][2];
+        QZ = _mat[0][1]-_mat[1][0];
     }
     else if (j==1)
     {
-        QW = _mat[1][2]-_mat[2][1]; 
+        QW = _mat[1][2]-_mat[2][1];
         QX = tq[1];
-        QY = _mat[0][1]+_mat[1][0]; 
-        QZ = _mat[2][0]+_mat[0][2]; 
+        QY = _mat[0][1]+_mat[1][0];
+        QZ = _mat[2][0]+_mat[0][2];
     }
     else if (j==2)
     {
-        QW = _mat[2][0]-_mat[0][2]; 
-        QX = _mat[0][1]+_mat[1][0]; 
+        QW = _mat[2][0]-_mat[0][2];
+        QX = _mat[0][1]+_mat[1][0];
         QY = tq[2];
-        QZ = _mat[1][2]+_mat[2][1]; 
+        QZ = _mat[1][2]+_mat[2][1];
     }
     else /* if (j==3) */
     {
-        QW = _mat[0][1]-_mat[1][0]; 
-        QX = _mat[2][0]+_mat[0][2]; 
-        QY = _mat[1][2]+_mat[2][1]; 
+        QW = _mat[0][1]-_mat[1][0];
+        QX = _mat[2][0]+_mat[0][2];
+        QY = _mat[1][2]+_mat[2][1];
         QZ = tq[3];
     }
 
@@ -408,7 +408,7 @@ void Matrix_implementation::makeRotate( value_type angle, const Vec3d& axis )
     setRotate(quat);
 }
 
-void Matrix_implementation::makeRotate( value_type angle, value_type x, value_type y, value_type z ) 
+void Matrix_implementation::makeRotate( value_type angle, value_type x, value_type y, value_type z )
 {
     makeIdentity();
 
@@ -424,34 +424,34 @@ void Matrix_implementation::makeRotate( const Quat& quat )
     setRotate(quat);
 }
 
-void Matrix_implementation::makeRotate( value_type angle1, const Vec3f& axis1, 
+void Matrix_implementation::makeRotate( value_type angle1, const Vec3f& axis1,
                          value_type angle2, const Vec3f& axis2,
                          value_type angle3, const Vec3f& axis3)
 {
     makeIdentity();
 
     Quat quat;
-    quat.makeRotate(angle1, axis1, 
+    quat.makeRotate(angle1, axis1,
                     angle2, axis2,
                     angle3, axis3);
     setRotate(quat);
 }
 
-void Matrix_implementation::makeRotate( value_type angle1, const Vec3d& axis1, 
+void Matrix_implementation::makeRotate( value_type angle1, const Vec3d& axis1,
                          value_type angle2, const Vec3d& axis2,
                          value_type angle3, const Vec3d& axis3)
 {
     makeIdentity();
 
     Quat quat;
-    quat.makeRotate(angle1, axis1, 
+    quat.makeRotate(angle1, axis1,
                     angle2, axis2,
                     angle3, axis3);
     setRotate(quat);
 }
 
 void Matrix_implementation::mult( const Matrix_implementation& lhs, const Matrix_implementation& rhs )
-{   
+{
     if (&lhs==this)
     {
         postMult(rhs);
@@ -530,7 +530,7 @@ void Matrix_implementation::orthoNormalize(const Matrix_implementation& rhs)
     value_type x_colMag = (rhs._mat[0][0] * rhs._mat[0][0]) + (rhs._mat[1][0] * rhs._mat[1][0]) + (rhs._mat[2][0] * rhs._mat[2][0]);
     value_type y_colMag = (rhs._mat[0][1] * rhs._mat[0][1]) + (rhs._mat[1][1] * rhs._mat[1][1]) + (rhs._mat[2][1] * rhs._mat[2][1]);
     value_type z_colMag = (rhs._mat[0][2] * rhs._mat[0][2]) + (rhs._mat[1][2] * rhs._mat[1][2]) + (rhs._mat[2][2] * rhs._mat[2][2]);
-    
+
     if(!equivalent((double)x_colMag, 1.0) && !equivalent((double)x_colMag, 0.0))
     {
       x_colMag = sqrt(x_colMag);
@@ -657,7 +657,7 @@ bool Matrix_implementation::invert_4x3( const Matrix_implementation& mat )
 
     if( osg::square(d-1.0) > 1.0e-6 )  // Involves perspective, so we must
     {                       // compute the full inverse
-    
+
         Matrix_implementation TPinv;
         _mat[3][0] = _mat[3][1] = _mat[3][2] = 0.0;
 
@@ -823,24 +823,44 @@ void Matrix_implementation::makeOrtho(double left, double right,
     SET_ROW(3,               tx,                ty,                 tz, 1.0 )
 }
 
-bool Matrix_implementation::getOrtho(double& left, double& right,
-                      double& bottom, double& top,
-                      double& zNear, double& zFar) const
+bool Matrix_implementation::getOrtho(Matrix_implementation::value_type& left, Matrix_implementation::value_type& right,
+                                     Matrix_implementation::value_type& bottom, Matrix_implementation::value_type& top,
+                                     Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=0.0 || _mat[3][3]!=1.0) return false;
 
     zNear = (_mat[3][2]+1.0) / _mat[2][2];
     zFar = (_mat[3][2]-1.0) / _mat[2][2];
-    
+
     left = -(1.0+_mat[3][0]) / _mat[0][0];
     right = (1.0-_mat[3][0]) / _mat[0][0];
 
     bottom = -(1.0+_mat[3][1]) / _mat[1][1];
     top = (1.0-_mat[3][1]) / _mat[1][1];
-    
-    return true;
-}            
 
+    return true;
+}
+
+bool Matrix_implementation::getOrtho(Matrix_implementation::other_value_type& left, Matrix_implementation::other_value_type& right,
+                                     Matrix_implementation::other_value_type& bottom, Matrix_implementation::other_value_type& top,
+                                     Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar;
+    if (getOrtho(temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar))
+    {
+        left = temp_left;
+        right = temp_right;
+        bottom = temp_bottom;
+        top = temp_top;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 void Matrix_implementation::makeFrustum(double left, double right,
                          double bottom, double top,
@@ -857,30 +877,50 @@ void Matrix_implementation::makeFrustum(double left, double right,
     SET_ROW(3,                    0.0,                    0.0,   D,  0.0 )
 }
 
-bool Matrix_implementation::getFrustum(double& left, double& right,
-                                       double& bottom, double& top,
-                                       double& zNear, double& zFar) const
+bool Matrix_implementation::getFrustum(Matrix_implementation::value_type& left, Matrix_implementation::value_type& right,
+                                       Matrix_implementation::value_type& bottom, Matrix_implementation::value_type& top,
+                                       Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0)
         return false;
 
     // note: near and far must be used inside this method instead of zNear and zFar
     // because zNear and zFar are references and they may point to the same variable.
-    double temp_near = _mat[3][2] / (_mat[2][2]-1.0);
-    double temp_far = _mat[3][2] / (1.0+_mat[2][2]);
+    Matrix_implementation::value_type temp_near = _mat[3][2] / (_mat[2][2]-1.0);
+    Matrix_implementation::value_type temp_far = _mat[3][2] / (1.0+_mat[2][2]);
 
     left = temp_near * (_mat[2][0]-1.0) / _mat[0][0];
     right = temp_near * (1.0+_mat[2][0]) / _mat[0][0];
 
     top = temp_near * (1.0+_mat[2][1]) / _mat[1][1];
     bottom = temp_near * (_mat[2][1]-1.0) / _mat[1][1];
-    
+
     zNear = temp_near;
     zFar = temp_far;
 
     return true;
-}                 
+}
 
+bool Matrix_implementation::getFrustum(Matrix_implementation::other_value_type& left, Matrix_implementation::other_value_type& right,
+                                       Matrix_implementation::other_value_type& bottom, Matrix_implementation::other_value_type& top,
+                                       Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar;
+    if (getFrustum(temp_left, temp_right, temp_bottom, temp_top, temp_zNear, temp_zFar))
+    {
+        left = temp_left;
+        right = temp_right;
+        bottom = temp_bottom;
+        top = temp_top;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
                                             double zNear, double zFar)
@@ -894,18 +934,18 @@ void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
     makeFrustum(left,right,bottom,top,zNear,zFar);
 }
 
-bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
-                                           double& zNear, double& zFar) const
+bool Matrix_implementation::getPerspective(Matrix_implementation::value_type& fovy, Matrix_implementation::value_type& aspectRatio,
+                                           Matrix_implementation::value_type& zNear, Matrix_implementation::value_type& zFar) const
 {
-    double right  =  0.0;
-    double left   =  0.0;
-    double top    =  0.0;
-    double bottom =  0.0;
+    Matrix_implementation::value_type right  =  0.0;
+    Matrix_implementation::value_type left   =  0.0;
+    Matrix_implementation::value_type top    =  0.0;
+    Matrix_implementation::value_type bottom =  0.0;
 
     // note: near and far must be used inside this method instead of zNear and zFar
     // because zNear and zFar are references and they may point to the same variable.
-    double temp_near   =  0.0;
-    double temp_far    =  0.0;
+    Matrix_implementation::value_type temp_near   =  0.0;
+    Matrix_implementation::value_type temp_far    =  0.0;
 
     // get frustum and compute results
     bool r = getFrustum(left,right,bottom,top,temp_near,temp_far);
@@ -917,6 +957,24 @@ bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
     zNear = temp_near;
     zFar = temp_far;
     return r;
+}
+
+bool Matrix_implementation::getPerspective(Matrix_implementation::other_value_type& fovy, Matrix_implementation::other_value_type& aspectRatio,
+                                           Matrix_implementation::other_value_type& zNear, Matrix_implementation::other_value_type& zFar) const
+{
+    Matrix_implementation::value_type temp_fovy, temp_aspectRatio, temp_zNear, temp_zFar;
+    if (getPerspective(temp_fovy, temp_aspectRatio, temp_zNear, temp_zFar))
+    {
+        fovy = temp_fovy;
+        aspectRatio = temp_aspectRatio;
+        zNear = temp_zNear;
+        zFar = temp_zFar;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Matrix_implementation::makeLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)

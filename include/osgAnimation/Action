@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -45,12 +45,12 @@ namespace osgAnimation
                 _nestedCallback(nc._nestedCallback) {}
 
             META_Object(osgAnimation,Callback);
-        
+
             virtual void operator()(Action* action, osgAnimation::ActionVisitor* nv) {}
-            
-            Callback* getNestedCallback() { return _nestedCallback.get(); } 
-            void addNestedCallback(Callback* callback) 
-            { 
+
+            Callback* getNestedCallback() { return _nestedCallback.get(); }
+            void addNestedCallback(Callback* callback)
+            {
                 if (callback) {
                     if (_nestedCallback.valid())
                         _nestedCallback->addNestedCallback(callback);
@@ -60,7 +60,7 @@ namespace osgAnimation
             }
 
             void removeCallback(Callback* cb)
-            { 
+            {
                 if (!cb)
                     return;
 
@@ -78,7 +78,7 @@ namespace osgAnimation
         typedef std::map<unsigned int, osg::ref_ptr<Callback> > FrameCallback;
 
         META_Action(osgAnimation, Action);
-        
+
         Action();
         Action(const Action&,const osg::CopyOp&);
 
@@ -135,7 +135,7 @@ namespace osgAnimation
             Play,
             Stop
         };
-        
+
         Status _state;
     };
 

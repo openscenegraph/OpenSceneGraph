@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -69,7 +69,7 @@ public:
         enum CoordinateMode {
             CM_ABSOLUTE,
             CM_RELATIVE
-        };        
+        };
 
 
         Widget (const std::string& = "", point_type = 0.0f, point_type = 0.0f);
@@ -454,7 +454,7 @@ public:
 
         friend class Window;
 
-        // TODO: Because of the current class design, I don't think it's possible to 
+        // TODO: Because of the current class design, I don't think it's possible to
         // have a ref_ptr here. :(
         Window* _parent;
 
@@ -533,7 +533,7 @@ struct NotifyWidget: public Widget {
             return false;
         }
 
-        bool mouseEnter(double, double, const WindowManager*) { 
+        bool mouseEnter(double, double, const WindowManager*) {
             osg::notify(osg::NOTICE) << _name << " > mouseEnter called" << std::endl;
 
             return false;
@@ -609,7 +609,7 @@ struct NullWidget: public Widget {
             return true;
         }
 
-        bool mouseEnter(double, double, const WindowManager*) { 
+        bool mouseEnter(double, double, const WindowManager*) {
             return true;
         }
 

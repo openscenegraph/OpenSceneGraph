@@ -27,12 +27,12 @@ REGISTER_DOTOSGWRAPPER(Projection)
 bool Projection_readLocalData(Object& obj, Input& fr)
 {
     Projection &myobj = static_cast<Projection &>(obj);
-    bool iteratorAdvanced = false;    
+    bool iteratorAdvanced = false;
 
     Matrix matrix;
     if (readMatrix(matrix,fr))
     {
-        myobj.setMatrix(matrix);        
+        myobj.setMatrix(matrix);
         iteratorAdvanced = true;
     }
 

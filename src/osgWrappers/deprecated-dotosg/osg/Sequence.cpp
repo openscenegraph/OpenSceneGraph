@@ -89,9 +89,9 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
 
     Sequence& sw = static_cast<Sequence&>(obj);
 
-    if (fr.matchSequence("defaultTime")) 
+    if (fr.matchSequence("defaultTime"))
     {
-        if (fr[1].isFloat()) 
+        if (fr[1].isFloat())
     {
         float t;
         fr[1].getFloat(t) ;
@@ -100,29 +100,29 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
             fr += 2;
         }
     }
-    else if (fr.matchSequence("frameTime {")) 
+    else if (fr.matchSequence("frameTime {"))
     {
         int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-    
+
         int i = 0;
-        while (!fr.eof() && fr[0].getNoNestedBrackets() > entry) 
+        while (!fr.eof() && fr[0].getNoNestedBrackets() > entry)
         {
             float t;
-            if (fr[0].getFloat(t)) 
+            if (fr[0].getFloat(t))
             {
                 sw.setTime(i, t);
                 ++fr;
                 i++;
             }
         }
-    
+
         iteratorAdvanced = true;
         ++fr;
     }
-    else if (fr.matchSequence("lastFrameTime")) 
+    else if (fr.matchSequence("lastFrameTime"))
     {
-        if (fr[1].isFloat()) 
+        if (fr[1].isFloat())
         {
             float t;
             fr[1].getFloat(t) ;
@@ -131,21 +131,21 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
             fr += 2;
         }
     }
-    else if (fr.matchSequence("interval")) 
+    else if (fr.matchSequence("interval"))
     {
         Sequence::LoopMode mode;
         int begin, end;
         if (Sequence_matchLoopMode(fr[1].getStr(), mode) &&
-            fr[2].getInt(begin) && fr[3].getInt(end)) 
+            fr[2].getInt(begin) && fr[3].getInt(end))
         {
             sw.setInterval(mode, begin, end);
             iteratorAdvanced = true;
             fr += 4;
         }
     }
-    else if (fr.matchSequence("duration")) 
+    else if (fr.matchSequence("duration"))
     {
-        if (fr[1].isFloat() && fr[2].isInt()) 
+        if (fr[1].isFloat() && fr[2].isInt())
         {
             float speed;
             int nreps;
@@ -156,19 +156,19 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
             fr += 3;
         }
     }
-    else if (fr.matchSequence("mode")) 
+    else if (fr.matchSequence("mode"))
     {
         Sequence::SequenceMode mode;
-        if (Sequence_matchSeqMode(fr[1].getStr(), mode)) 
+        if (Sequence_matchSeqMode(fr[1].getStr(), mode))
         {
             sw.setMode(mode);
             iteratorAdvanced = true;
             fr += 2;
         }
     }
-    else if (fr.matchSequence("sync")) 
+    else if (fr.matchSequence("sync"))
     {
-        if (fr[1].isInt()) 
+        if (fr[1].isInt())
         {
         int sync ;
         fr[1].getInt(sync) ;
@@ -177,9 +177,9 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
             fr += 2;
         }
     }
-    else if (fr.matchSequence("clearOnStop")) 
+    else if (fr.matchSequence("clearOnStop"))
     {
-        if (fr[1].isInt()) 
+        if (fr[1].isInt())
         {
             int clearOnStop ;
             fr[1].getInt(clearOnStop) ;
@@ -188,7 +188,7 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
             fr += 2;
         }
     }
-    
+
     return iteratorAdvanced;
 }
 
@@ -202,7 +202,7 @@ bool Sequence_writeLocalData(const Object& obj, Output& fw)
     // frame times
     fw.indent() << "frameTime {" << std::endl;
     fw.moveIn();
-    for (unsigned int i = 0; i < sw.getNumChildren(); i++) 
+    for (unsigned int i = 0; i < sw.getNumChildren(); i++)
     {
         fw.indent() << sw.getTime(i) << std::endl;
     }

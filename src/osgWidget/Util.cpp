@@ -19,7 +19,7 @@ std::string getFilePath(const std::string& filename) {
     osgDB::FilePathList path;
 
     char* fp = getenv("OSGWIDGET_FILE_PATH");
-    
+
     osgDB::convertStringPathIntoFilePathList(fp ? fp : ".", path);
 
     return osgDB::findFileInPath(filename, path);
@@ -27,11 +27,11 @@ std::string getFilePath(const std::string& filename) {
 
 std::string generateRandomName(const std::string& base) {
     static unsigned int count = 0;
-    
+
     std::stringstream ss;
 
     ss << base << "_" << count;
-    
+
     count++;
 
     return ss.str();
@@ -50,7 +50,7 @@ osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
     camera->setViewMatrix(osg::Matrix::identity());
     camera->setClearMask(GL_DEPTH_BUFFER_BIT);
     camera->setRenderOrder(osg::Camera::POST_RENDER);
-    
+
     return camera;
 }
 

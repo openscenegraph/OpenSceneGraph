@@ -82,12 +82,12 @@ void createCornerScaleDraggerGeometry(Scale2DDragger* cornerScaleDragger, osg::N
     // Create a top left box.
     {
         osg::Node* handleScene = createHandleScene(osg::Vec3(cornerScaleDragger->getTopLeftHandlePosition()[0],
-                                                             0.0,cornerScaleDragger->getTopLeftHandlePosition()[1]), 
+                                                             0.0,cornerScaleDragger->getTopLeftHandlePosition()[1]),
                                                    handleNode, handleScaleFactor);
         cornerScaleDragger->addChild(handleScene);
         cornerScaleDragger->setTopLeftHandleNode(*handleScene);
     }
-    
+
     // Create a bottom left box.
     {
         osg::Node* handleScene = createHandleScene(osg::Vec3(cornerScaleDragger->getBottomLeftHandlePosition()[0],
@@ -126,7 +126,7 @@ void createEdgeScaleDraggerGeometry(Scale1DDragger* horzEdgeScaleDragger, Scale1
         horzEdgeScaleDragger->addChild(handleScene);
         horzEdgeScaleDragger->setLeftHandleNode(*handleScene);
     }
-    
+
     // Create a right box.
     {
         osg::Node* handleScene = createHandleScene(osg::Vec3(horzEdgeScaleDragger->getRightHandlePosition(),0.0,0.0),
@@ -161,7 +161,7 @@ void createTranslateDraggerGeometry(Scale2DDragger* cornerScaleDragger, Translat
     {
         osg::Geode* geode = new osg::Geode;
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(4);
         (*vertices)[0] = osg::Vec3(cornerScaleDragger->getTopLeftHandlePosition()[0],0.0,cornerScaleDragger->getTopLeftHandlePosition()[1]);
         (*vertices)[1] = osg::Vec3(cornerScaleDragger->getBottomLeftHandlePosition()[0],0.0,cornerScaleDragger->getBottomLeftHandlePosition()[1]);
@@ -186,7 +186,7 @@ void createTranslateDraggerGeometry(Scale2DDragger* cornerScaleDragger, Translat
 
         translateDragger->getTranslate2DDragger()->addChild(geode);
     }
- 
+
 }
 
 }
@@ -196,7 +196,7 @@ TabPlaneDragger::TabPlaneDragger() : _handleScaleFactor(20.0)
     _cornerScaleDragger = new Scale2DDragger(Scale2DDragger::SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT);
     addChild(_cornerScaleDragger.get());
     addDragger(_cornerScaleDragger.get());
-    
+
     _horzEdgeScaleDragger = new Scale1DDragger(Scale1DDragger::SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT);
     addChild(_horzEdgeScaleDragger.get());
     addDragger(_horzEdgeScaleDragger.get());
@@ -209,10 +209,10 @@ TabPlaneDragger::TabPlaneDragger() : _handleScaleFactor(20.0)
     _translateDragger->setColor(osg::Vec4(0.7f, 0.7f, 0.7f, 1.0f));
     addChild(_translateDragger.get());
     addDragger(_translateDragger.get());
- 
+
     setParentDragger(getParentDragger());
 }
-       
+
 TabPlaneDragger::~TabPlaneDragger()
 {
 }
@@ -225,7 +225,7 @@ bool TabPlaneDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAd
     if (!pointer.contains(this)) return false;
 
     // Since the translate plane and the handleNode lie on the same plane the hit could've been on either one. But we
-    // need to handle the scaling draggers before the translation. Check if the node path has the scaling nodes else 
+    // need to handle the scaling draggers before the translation. Check if the node path has the scaling nodes else
     // check for the scaling nodes in next hit.
     if (_cornerScaleDragger->handle(pointer, ea, aa))
         return true;
@@ -233,10 +233,10 @@ bool TabPlaneDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAd
         return true;
     if (_vertEdgeScaleDragger->handle(pointer, ea, aa))
         return true;
-    
+
     PointerInfo nextPointer(pointer);
     nextPointer.next();
-    
+
     while (!nextPointer.completed())
     {
         if (_cornerScaleDragger->handle(nextPointer, ea, aa))

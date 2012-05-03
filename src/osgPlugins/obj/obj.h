@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -46,16 +46,16 @@ public:
         Ns(0),
         // textureReflection(false),
         alpha(1.0f) {}
-    
+
     std::string name;
-    
+
     osg::Vec4   ambient;
     osg::Vec4   diffuse;
     osg::Vec4   specular;
     osg::Vec4   emissive;
     float       sharpness;
     int         illum;            // read but not implemented (would need specific shaders or state manipulation)
-    
+
     osg::Vec4   Tf;
     int         Ni;
     int         Ns; // shininess 0..1000
@@ -125,10 +125,10 @@ public:
         POLYLINE,
         POLYGON
     };
-    
+
     Element(DataType type):
         dataType(type) {}
-        
+
     enum CoordinateCombination
     {
         VERTICES,
@@ -136,16 +136,16 @@ public:
         VERTICES_TEXCOORDS,
         VERTICES_NORMALS_TEXCOORDS
     };
-    
+
     CoordinateCombination getCoordinateCombination() const
     {
         if (vertexIndices.size()==normalIndices.size())
             return (vertexIndices.size()==texCoordIndices.size()) ? VERTICES_NORMALS_TEXCOORDS : VERTICES_NORMALS;
-        else 
+        else
             return (vertexIndices.size()==texCoordIndices.size()) ?  VERTICES_TEXCOORDS : VERTICES;
     }
-    
-    DataType  dataType;  
+
+    DataType  dataType;
     IndexList vertexIndices;
     IndexList normalIndices;
     IndexList texCoordIndices;
@@ -158,7 +158,7 @@ public:
     ElementState():
         coordinateCombination(Element::VERTICES),
         smoothingGroup(0) {}
-        
+
     bool operator < (const ElementState& rhs) const
     {
         if (materialName<rhs.materialName) return true;
@@ -189,41 +189,41 @@ class Model
 public:
     Model():
         currentElementList(0) {}
-    
+
     void setDatabasePath(const std::string& path) { databasePath = path; }
     const std::string& getDatabasePath() const { return databasePath; }
 
     std::string lastComponent(const char* linep);
     bool readMTL(std::istream& fin);
     bool readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options);
-    
+
     bool readline(std::istream& fin, char* line, const int LINE_SIZE);
     void addElement(Element* element);
-    
+
     osg::Vec3 averageNormal(const Element& element) const;
     osg::Vec3 computeNormal(const Element& element) const;
     bool needReverse(const Element& element) const;
-    
+
     int remapVertexIndex(int vi) { return (vi<0) ? vertices.size()+vi : vi-1; }
     int remapNormalIndex(int vi) { return (vi<0) ? normals.size()+vi : vi-1; }
     int remapTexCoordIndex(int vi) { return (vi<0) ? texcoords.size()+vi : vi-1; }
-    
+
     typedef std::map<std::string,Material>          MaterialMap;
     typedef std::vector< osg::Vec2 >                Vec2Array;
     typedef std::vector< osg::Vec3 >                Vec3Array;
     typedef std::vector< osg::ref_ptr<Element> >    ElementList;
     typedef std::map< ElementState,ElementList >    ElementStateMap;
-    
+
 
     std::string     databasePath;
     MaterialMap     materialMap;
-       
+
     Vec3Array       vertices;
     Vec3Array       normals;
     Vec2Array       texcoords;
-    
+
     ElementState    currentElementState;
-    
+
     ElementStateMap elementStateMap;
     ElementList*    currentElementList;
 

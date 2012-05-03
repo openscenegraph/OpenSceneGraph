@@ -30,7 +30,7 @@ bool ModularEmitter_readLocalData(osg::Object &obj, osgDB::Input &fr)
         myobj.setCounter(counter);
         itAdvanced = true;
     }
-    
+
     osgParticle::Placer *placer = static_cast<osgParticle::Placer *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Placer>()));
     if (placer) {
         myobj.setPlacer(placer);

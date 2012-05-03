@@ -5,7 +5,7 @@
 *    DESCRIPTION:    Class for reading a Valve Texture Format (VTF) file
 *                    into an osg::Image.
 *
-*                    Borrows heavily from the DDS plugin for OSG, as well 
+*                    Borrows heavily from the DDS plugin for OSG, as well
 *                    as the Valve Source SDK
 *
 *    CREATED BY:     Jason Daly (jdaly@ist.ucf.edu)
@@ -361,7 +361,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     int               mip;
     int               mipSize;
     int               mipOffset;
-    
+
     // Validate the file with the 'VTF\0' magic number
     _istream.read(&vtf_header.magic_number[0], 4);
     if ((vtf_header.magic_number[0] != 'V') ||
@@ -394,7 +394,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
 
     // No depth in textures earlier than version 7.2
     if ((vtf_header.file_version[0] < 7) ||
-        ((vtf_header.file_version[0] == 7) && 
+        ((vtf_header.file_version[0] == 7) &&
          (vtf_header.file_version[1] < 2)))
     {
         // No depth in header, set it to 1
@@ -484,7 +484,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         }
 
         // Allocate an osg::Image for the lo-res image metadata
-        osg::ref_ptr<osg::Image> loResImage = new osg::Image();    
+        osg::ref_ptr<osg::Image> loResImage = new osg::Image();
 
         // Set the image metadata, and figure out how many bytes to read
         loResImage->setImage(s, t, r, internalFormat, pixelFormat, dataType,
@@ -503,7 +503,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     // full-size image format, and check whether the format is supported
     supported = ConvertImageFormat(vtf_header.image_format, internalFormat,
                                    pixelFormat, dataType);
-    
+
     // Bail if the format isn't supported
     if (!supported)
     {
@@ -527,7 +527,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     //        are ignored.  Same for cube maps (only one face is loaded).
 
     // Create the mipmap offsets vector
-    osg::Image::MipmapDataType mipmaps; 
+    osg::Image::MipmapDataType mipmaps;
 
     // Deal with mipmaps, if necessary
     if (vtf_header.num_mip_levels > 1)
@@ -547,7 +547,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
             int width = vtf_header.image_width;
             int height = vtf_header.image_height;
             int blockSize;
-            
+
             if ((vtf_header.image_format == VTF_FORMAT_DXT1) ||
                 (vtf_header.image_format == VTF_FORMAT_DXT1_ONEBITALPHA))
                blockSize = 8;
@@ -607,7 +607,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     }
 
     // Allocate the resulting osg::Image
-    osg::ref_ptr<osg::Image> osgImage = new osg::Image();    
+    osg::ref_ptr<osg::Image> osgImage = new osg::Image();
 
     // Set the image meta-data, including dimensions, format, data type,
     // and mipmap levels.  Everything but the image data itself.  We'll use
@@ -696,7 +696,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType,
                        imageData, osg::Image::USE_NEW_DELETE);
     if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
-         
+
     // Finally, return the image
     return osgImage.release();
 }
@@ -705,7 +705,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
 bool WriteVTFFile(const osg::Image *img, std::ostream& fout)
 {
     // Not supported
-    return false; 
+    return false;
 }
 
 
@@ -713,13 +713,13 @@ class ReaderWriterVTF : public osgDB::ReaderWriter
 {
 public:
     virtual const char* className() const
-    { 
-        return "VTF Image Reader/Writer"; 
+    {
+        return "VTF Image Reader/Writer";
     }
 
     virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive(extension, "vtf"); 
+    {
+        return osgDB::equalCaseInsensitive(extension, "vtf");
     }
 
     virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -738,9 +738,9 @@ public:
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file, options );
-    
+
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-        
+
         osgDB::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!stream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult rr = readImage(stream, options);
@@ -752,12 +752,12 @@ public:
     {
         osg::Image* osgImage = ReadVTFFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
-        
+
         if (options && options->getOptionString().find("vtf_flip")!=std::string::npos)
         {
             osgImage->flipVertical();
         }
-        
+
         return osgImage;
     }
 

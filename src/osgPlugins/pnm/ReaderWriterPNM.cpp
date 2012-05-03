@@ -223,7 +223,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             supportsExtension("pgm","PNM Image format");
             supportsExtension("pbm","PNM Image format");
         }
-        
+
         virtual const char* className() const { return "PNM Image Reader/Writer"; }
 
         virtual ReadResult readImage(std::istream& fin, const osgDB::ReaderWriter::Options* options=NULL) const
@@ -417,7 +417,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             }
             else
             {
-                // binary ppm format        
+                // binary ppm format
                 fout<<"P6"<<std::endl;
                 fout<<image.s()<<" "<<image.t()<<std::endl;
                 fout<<"255"<<std::endl;
@@ -440,7 +440,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             // Only ppm format output supported
             std::string ext = osgDB::getFileExtension(fileName);
             if ( !osgDB::equalCaseInsensitive(ext, "ppm") ) return WriteResult::FILE_NOT_HANDLED;
-            
+
             // only support rgb images right now.
             if (image.getPixelFormat()!=GL_RGB || image.getDataType()!=GL_UNSIGNED_BYTE) return WriteResult("Error image pixel format not supported by pnm writer.");
 

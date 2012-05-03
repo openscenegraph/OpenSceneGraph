@@ -8,27 +8,27 @@ AUTHOR:			Andy Bushnell
 
 	-------------------------------------------------------------------------
 
-PROPRIETARY RIGHTS NOTICE:   
+PROPRIETARY RIGHTS NOTICE:
 
-  This software contains proprietary information and trade secrets of Carbon 
-  Graphics LLC. No part or all of this software may be reproduced in any form, 
-  without the written permission of Carbon Graphics LLC. 
+  This software contains proprietary information and trade secrets of Carbon
+  Graphics LLC. No part or all of this software may be reproduced in any form,
+  without the written permission of Carbon Graphics LLC.
 
   Exception:
   This Software file can be used by third-party software developers (without
-  using the Geo SDK libraries) for any purpose OTHER THAN loading Geo format 
-  files into an application or executable (such as, though not limited to, 
+  using the Geo SDK libraries) for any purpose OTHER THAN loading Geo format
+  files into an application or executable (such as, though not limited to,
   geometry Modelers & animation systems) which is primarily intended to allow for
-  the CREATION or MODIFICATION of geometric or animation data. 
-  
-  Specifically,using this software (either all or part thereof) to aid in the 
-  creation of a Geo format loader for a run-time system, game engine, toolkit 
+  the CREATION or MODIFICATION of geometric or animation data.
+
+  Specifically,using this software (either all or part thereof) to aid in the
+  creation of a Geo format loader for a run-time system, game engine, toolkit
   IG (Image Generation) System or any software where the PRIMARY purpose is
   real-time image playback and interactivity and not Model Creation and/or
   modification is permitted.
 
-COPYRIGHT NOTICE: 
-   
+COPYRIGHT NOTICE:
+
   Copyright © 1998-2001 Carbon Graphics Llc, ALL RIGHTS RESERVED
 
 \*===========================================================================*/
@@ -54,9 +54,9 @@ COPYRIGHT NOTICE:
 
 
 
-	
-/** 
- * constants to identify the plugin type 
+
+/**
+ * constants to identify the plugin type
  */
 const uint GEO_PLUGIN_TYPE_UNDEFINED			= 1;
 const uint GEO_PLUGIN_TYPE_GEOMETRY_IMPORTER	= 2;
@@ -123,13 +123,13 @@ const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_GRID;
  *  The GEO Node Type Class Hierarchy is as follows...
  *
  *	GEO_DB_BASE
- *			GEO_DB_GROUP 
+ *			GEO_DB_GROUP
  *					GEO_DB_SEQUENCE
  *					GEO_DB_LOD
  *					GEO_DB_SWITCH
  *					GEO_DB_BASE_GROUP
  *					GEO_DB_RENDERGROUP
- *							GEO_DB_MULTI_TEX_SHADER	
+ *							GEO_DB_MULTI_TEX_SHADER
  *							GEO_DB_BASE_RENDERGROUP (*)
  *					GEO_DB_EXTERNAL
  *					GEO_DB_INSTANCE
@@ -152,8 +152,8 @@ const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_GRID;
  *							GEO_DB_BASE_SURFACE (*)
  *					GEO_DB_TEXT
  *					GEO_DB_VERTEX
- *						GEO_DB_FAT_VERTEX	
- *						GEO_DB_SLIM_VERTEX	
+ *						GEO_DB_FAT_VERTEX
+ *						GEO_DB_SLIM_VERTEX
  *			GEO_DB_HEADER
  *
  * (*) Not available in Geo Version 1.0
@@ -179,29 +179,29 @@ const uint GEO_DB_BSP					= (0x00000400 | GEO_DB_GROUP);
 const uint GEO_DB_POLYGON				= (0x00000800 | GEO_DB_SURFACE);
 //------------
 const uint GEO_DB_MESH					= (0x00001000 | GEO_DB_POLYGON);
-const uint GEO_DB_CULL_GROUP			= (0x00002000 | GEO_DB_GROUP);	
-const uint GEO_DB_MULTI_TEX_SHADER		= (0x00004000 | GEO_DB_RENDERGROUP);	
+const uint GEO_DB_CULL_GROUP			= (0x00002000 | GEO_DB_GROUP);
+const uint GEO_DB_MULTI_TEX_SHADER		= (0x00004000 | GEO_DB_RENDERGROUP);
 const uint GEO_DB_PAGE					= (0x00008000 | GEO_DB_GROUP);
 //------------
-const uint GEO_DB_Z_OFFSET_GROUP		= (0x00010000 | GEO_DB_GROUP);	
-const uint GEO_DB_MULTI_SAMPLE_AA_GROUP	= (0x00020000 | GEO_DB_GROUP);	
+const uint GEO_DB_Z_OFFSET_GROUP		= (0x00010000 | GEO_DB_GROUP);
+const uint GEO_DB_MULTI_SAMPLE_AA_GROUP	= (0x00020000 | GEO_DB_GROUP);
 const uint GEO_DB_TEXT					= (0x00040000 | GEO_DB_GEOMETRY);
 const uint GEO_DB_VERTEX				= (0x00080000 | GEO_DB_GEOMETRY);
 //------------
 const uint GEO_DB_HEADER				= (0x00100000 | GEO_DB_BASE);
-const uint GEO_DB_LINE_AA_GROUP			= (0x00200000 | GEO_DB_GROUP);	
+const uint GEO_DB_LINE_AA_GROUP			= (0x00200000 | GEO_DB_GROUP);
 const uint GEO_DB_BASE_GROUP			= (0x00400000 | GEO_DB_GROUP);
 const uint GEO_DB_BASE_SURFACE			= (0x00800000 | GEO_DB_SURFACE);
 //------------
-const uint GEO_DB_EXTERNAL 				= (0x01000000 | GEO_DB_GROUP);					
+const uint GEO_DB_EXTERNAL 				= (0x01000000 | GEO_DB_GROUP);
 const uint GEO_DB_BASE_RENDERGROUP		= (0x02000000 | GEO_DB_RENDERGROUP);
 const uint GEO_DB_INSTANCE				= (0x04000000 | GEO_DB_GROUP);
 const uint GEO_DB_LIGHTPT				= (0x08000000 | GEO_DB_POLYGON);
 //------------
-const uint GEO_DB_FADE_GROUP			= (0x10000000 | GEO_DB_GROUP);	
-const uint GEO_DB_DECAL_GROUP			= (0x20000000 | GEO_DB_GROUP);	
-const uint GEO_DB_LIGHT_GROUP			= (0x40000000 | GEO_DB_GROUP);	
-const uint GEO_DB_FAT_VERTEX			= (0x80000000 | GEO_DB_VERTEX);	
+const uint GEO_DB_FADE_GROUP			= (0x10000000 | GEO_DB_GROUP);
+const uint GEO_DB_DECAL_GROUP			= (0x20000000 | GEO_DB_GROUP);
+const uint GEO_DB_LIGHT_GROUP			= (0x40000000 | GEO_DB_GROUP);
+const uint GEO_DB_FAT_VERTEX			= (0x80000000 | GEO_DB_VERTEX);
 //------------
 
 //--------------------------------------------------------------------
@@ -215,17 +215,17 @@ const uint GEO_DB_DCS					= (0x00001000 | GEO_DB_GROUP);
 
 // older version types for Compatability & convenience
 //
-const uint GEO_DB_ALL					= GEO_DB_BASE;	
-const uint GEO_DB_ALL_GROUP_TYPES		= GEO_DB_GROUP;		
+const uint GEO_DB_ALL					= GEO_DB_BASE;
+const uint GEO_DB_ALL_GROUP_TYPES		= GEO_DB_GROUP;
 const uint GEO_DB_ALL_GEOMETRY_TYPES	= GEO_DB_GEOMETRY;
-const uint GEO_DB_ALL_SURFACE_TYPES		= GEO_DB_SURFACE;	
+const uint GEO_DB_ALL_SURFACE_TYPES		= GEO_DB_SURFACE;
 
 
 
-	
-///////////////////////////////////////////////////////////////////////////////	
+
+///////////////////////////////////////////////////////////////////////////////
 /** constants to identify the type of picking to be done */
-const uint GEO_PICK_GROUP				= 0x00000001; 
+const uint GEO_PICK_GROUP				= 0x00000001;
 const uint GEO_PICK_PRIM				= 0x00000002;
 const uint GEO_PICK_VERTEX				= 0x00000004;
 const uint GEO_PICK_GRID				= 0x00000010;
@@ -236,7 +236,7 @@ const uint GEO_PICK_TEXT				= 0x00000080;
 
 
 
-///////////////////////////////////////////////////////////////////////////////		
+///////////////////////////////////////////////////////////////////////////////
 /** constants to identify mouse button usage */
 const uint GEO_NO_MOUSE					= 0x00000000;
 const uint GEO_LEFT_MOUSE				= 0x00000001;
@@ -250,7 +250,7 @@ const uint GEO_MIDDLE_AND_RIGHT_MOUSE	= 0x00000010;
 // PROPERTY TYPES
 ///////////////////////////////////////////////////////////////////
 
-// Identifiers for Geo data types - Used in geoProperty & geoPropertyExtension Classes 
+// Identifiers for Geo data types - Used in geoProperty & geoPropertyExtension Classes
 const unsigned char GEO_DB_DATATYPE_STRING					= 1;
 const unsigned char GEO_DB_DATATYPE_SHORT					= 2;
 const unsigned char GEO_DB_DATATYPE_INT						= 3;
@@ -301,8 +301,8 @@ const uint GEO_TRANSFORM_TYPE_MATRIX	= 4;
 
 
 
-///////////////////////////////////////////////////////////////////////////////		
-/** Predefined model unit identifier. database model units can be modified 
+///////////////////////////////////////////////////////////////////////////////
+/** Predefined model unit identifier. database model units can be modified
  *  via set/getUnits
  */
 const uint GEO_DB_INCHES				= 1;
@@ -315,12 +315,12 @@ const uint GEO_DB_KILOMETERS			= 7;
 
 
 
-		
-///////////////////////////////////////////////////////////////////////////////	
-/** Constants to define the modeler's intended "up" direction if that 
- *  makes any sense 
+
+///////////////////////////////////////////////////////////////////////////////
+/** Constants to define the modeler's intended "up" direction if that
+ *  makes any sense
  */
-	
+
 const int GEO_DB_UP_AXIS_X				= 1;
 const int GEO_DB_UP_AXIS_Y				= 2; // the default
 const int GEO_DB_UP_AXIS_Z				= 3;
@@ -341,7 +341,7 @@ const short GEO_DB_PROJ_TYPE_LAST			= GEO_DB_PROJ_TYPE_GEOCENTRIC;
 ///////////////////////////////////////////////////////////////////////////////
 // DB_HDR_ELLIPSOID - defines
 // Constants to define the ellipsoid model used for the projection
-//		
+//
 const short GEO_DB_ELLIPSOID_USER_DEFINED	= -1;
 const short GEO_DB_ELLIPSOID_WGS_1984		= 0;
 const short GEO_DB_ELLIPSOID_WGS_1972		= 1;
@@ -353,10 +353,10 @@ const short GEO_DB_ELLIPSOID_LAST			= GEO_DB_ELLIPSOID_NAD_1927;
 
 
 
-///////////////////////////////////////////////////////////////////////////////		
+///////////////////////////////////////////////////////////////////////////////
 /** Constants to control the drawing effect
- * 
- *  Constants to control the drawing of geometry primitives - usefull if user 
+ *
+ *  Constants to control the drawing of geometry primitives - usefull if user
  *  wants to call standard draw method in a tool postDraw callback
  */
 const uint GEO_DB_SOLID					=  0x00000001;
@@ -399,9 +399,9 @@ const uint GEO_DB_SELECTIVE_ZBUFFER		=  0x80000000;
 
 
 
-	
-///////////////////////////////////////////////////////////////////////////////	
-/** constants to identify the different Group types 
+
+///////////////////////////////////////////////////////////////////////////////
+/** constants to identify the different Group types
 */
 const uint GEO_GROUP_TYPE_CONTAINER				= 1;
 const uint GEO_GROUP_TYPE_CULL					= 2;
@@ -413,9 +413,9 @@ const uint GEO_GROUP_TYPE_TERRAIN				= 7;
 const uint GEO_GROUP_TYPE_DECAL					= 8;
 
 
-///////////////////////////////////////////////////////////////////////////////	
+///////////////////////////////////////////////////////////////////////////////
 /** Constants to control the display of a Group based on time-of-day
-* 
+*
 */
 const uint GEO_DB_GROUP_TOD_DISPLAY_NIGHT		= 0x00000001;
 const uint GEO_DB_GROUP_TOD_DISPLAY_DAWN		= 0x00000002;
@@ -425,9 +425,9 @@ const uint GEO_DB_GROUP_TOD_DISPLAY_DUSK		= 0x00000008;
 
 
 
-///////////////////////////////////////////////////////////////////////////////	
+///////////////////////////////////////////////////////////////////////////////
 /** Constants to control the intersection testing of this Group at runtime
-* 
+*
 */
 const uint GEO_DB_GROUP_ISECT_IG_DEFINED		= 0;
 const uint GEO_DB_GROUP_ISECT_YES				= 1;
@@ -436,9 +436,9 @@ const uint GEO_DB_GROUP_ISECT_NO				= 2;
 
 
 
-///////////////////////////////////////////////////////////////////////////////	
-/** Constants to control the switch Node behavior 
- * 
+///////////////////////////////////////////////////////////////////////////////
+/** Constants to control the switch Node behavior
+ *
  *  Switch Nodes can either be addative (in which case the
  *  accumulate drawable children) or selective (in which case
  *  the determine which of their children should be drawn).
@@ -452,7 +452,7 @@ const uint GEO_SWITCH_TYPE_SELECTIVE	=  2;
 
 
 
-///////////////////////////////////////////////////////////////////////////////	
+///////////////////////////////////////////////////////////////////////////////
 /** Constants to identify special behavior int ZOffset GRoups
  */
 const uint GEO_DB_ZOFFSET_GROUP_TYPE_UNDEFINED		= 0;
@@ -461,9 +461,9 @@ const uint GEO_DB_ZOFFSET_GROUP_TYPE_MARKINGS		= 2;
 
 
 
-///////////////////////////////////////////////////////////////////////////////	
-/** Constants to control the Light Group behavior 
-* 
+///////////////////////////////////////////////////////////////////////////////
+/** Constants to control the Light Group behavior
+*
 *  Light Groups are Groups with the Light-Group flag set. Any Light pt children
 *  are effected by these settings
 */
@@ -472,9 +472,9 @@ const uint GEO_LIGHT_GROUP_ANIM_ON  	=  1;
 const uint GEO_LIGHT_GROUP_ANIM_RANDOM  =  2;
 
 
-///////////////////////////////////////////////////////////////////////////////	
-/** Constants that specify the type of Light Group 
-* 
+///////////////////////////////////////////////////////////////////////////////
+/** Constants that specify the type of Light Group
+*
 *  FIXED is for airfields etc.
 *  MOVING is for aircraft/ships etc.
 */
@@ -483,7 +483,7 @@ const uint GEO_LIGHT_GROUP_TYPE_MOVING	=  1;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/** Type Tokens for Node & Tool Gui Widgets 
+/** Type Tokens for Node & Tool Gui Widgets
 */
 const int GUI_FLOAT		= 1;
 const int GUI_INT		= 2;
@@ -491,7 +491,7 @@ const int GUI_STRING	= 3;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/** geoWidget Typedef - Used by Node & Tool Gui Widgets 
+/** geoWidget Typedef - Used by Node & Tool Gui Widgets
 */
 typedef void geoWidget;
 

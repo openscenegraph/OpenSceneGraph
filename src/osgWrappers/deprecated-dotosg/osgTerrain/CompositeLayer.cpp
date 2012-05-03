@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -43,7 +43,7 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::CompositeLayer& layer = static_cast<osgTerrain::CompositeLayer&>(obj);
 
     bool itrAdvanced = false;
-    
+
     osg::ref_ptr<osgTerrain::Locator> locator = 0;
 
     do
@@ -87,11 +87,11 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 if (locator.valid()) proxyLayer->setLocator(locator.get());
                 if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
                 if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
-                
+
 
                 layer.addLayer(proxyLayer);
             }
-            
+
             fr += 2;
 
             itrAdvanced = true;
@@ -116,9 +116,9 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
             if (readObject.valid()) itrAdvanced = true;
         }
-        
+
     } while (itrAdvanced);
-        
+
     if (locator.valid()) layer.setLocator(locator.get());
 
     return itrAdvanced;
@@ -142,22 +142,22 @@ bool CompositeLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                     {
                         fw.writeObject(*locator);
                     }
-                    
+
                     if (proxyLayer->getMinLevel()!=0)
                     {
                         fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
-                    } 
+                    }
 
                     if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
                     {
                         fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
-                    } 
-                
+                    }
+
                     fw.indent()<<"ProxyLayer "<<proxyLayer->getCompoundName()<<std::endl;
                 }
             }
             else
-            {     
+            {
                 fw.writeObject(*(layer.getLayer(i)));
             }
         }

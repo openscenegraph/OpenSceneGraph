@@ -745,7 +745,7 @@ void StandardManipulator::fixVerticalAxis( const osg::Vec3d& forward, const osg:
 
 /** The method sends a ray into the scene and the point of the closest intersection
     is used to set a new center for the manipulator. For Orbit-style manipulators,
-    the orbiting center is set. For FirstPerson-style manipulators, view is pointed 
+    the orbiting center is set. For FirstPerson-style manipulators, view is pointed
     towards the center.*/
 bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {

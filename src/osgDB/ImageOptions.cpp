@@ -11,7 +11,7 @@ ImageOptions::ImageOptions()
 
 ImageOptions::ImageOptions(const std::string& str)
 {
-    init();   
+    init();
     _str = str;
 }
 
@@ -20,9 +20,9 @@ void ImageOptions::init()
 {
     _sourceImageSamplingMode = NEAREST;
     _sourceImageWindowMode = ALL_IMAGE;
-    
+
     _destinationImageWindowMode = ALL_IMAGE;
-    
+
     _destinationDataType = GL_NONE;
     _destinationPixelFormat = GL_NONE;
 }

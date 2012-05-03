@@ -45,63 +45,63 @@ USER_WRITE_FUNC( BufferComponent, writeBufferComponent )
 static osg::Camera::Attachment readBufferAttachment( osgDB::InputStream& is )
 {
     osg::Camera::Attachment attachment;
-    char type = -1; is >> osgDB::PROPERTY("Type") >> type;
+    char type = -1; is >> is.PROPERTY("Type") >> type;
     if ( type==0 )
     {
-        is >> osgDB::PROPERTY("InternalFormat") >> attachment._internalFormat;
+        is >> is.PROPERTY("InternalFormat") >> attachment._internalFormat;
         return attachment;
     }
     else if ( type==1 )
     {
-        is >> osgDB::PROPERTY("Image");
+        is >> is.PROPERTY("Image");
         attachment._image = dynamic_cast<osg::Image*>( is.readObject() );
     }
     else if ( type==2 )
     {
-        is >> osgDB::PROPERTY("Texture");
+        is >> is.PROPERTY("Texture");
         attachment._texture = dynamic_cast<osg::Texture*>( is.readObject() );
-        is >> osgDB::PROPERTY("Level") >> attachment._level;
-        is >> osgDB::PROPERTY("Face") >> attachment._face;
-        is >> osgDB::PROPERTY("MipMapGeneration") >> attachment._mipMapGeneration;
+        is >> is.PROPERTY("Level") >> attachment._level;
+        is >> is.PROPERTY("Face") >> attachment._face;
+        is >> is.PROPERTY("MipMapGeneration") >> attachment._mipMapGeneration;
     }
     else
         return attachment;
-    
-    is >> osgDB::PROPERTY("MultisampleSamples") >> attachment._multisampleSamples;
-    is >> osgDB::PROPERTY("MultisampleColorSamples") >> attachment._multisampleColorSamples;
+
+    is >> is.PROPERTY("MultisampleSamples") >> attachment._multisampleSamples;
+    is >> is.PROPERTY("MultisampleColorSamples") >> attachment._multisampleColorSamples;
     return attachment;
 }
 
 static void writeBufferAttachment( osgDB::OutputStream& os, const osg::Camera::Attachment& attachment )
 {
-    os << osgDB::PROPERTY("Type");
+    os << os.PROPERTY("Type");
     if ( attachment._internalFormat!=GL_NONE )
     {
         os << (char)0 << std::endl;
-        os << osgDB::PROPERTY("InternalFormat") << GLENUM(attachment._internalFormat) << std::endl;
+        os << os.PROPERTY("InternalFormat") << GLENUM(attachment._internalFormat) << std::endl;
         return;
     }
     else if ( attachment._image.valid() )
     {
         os << (char)1 << std::endl;
-        os << osgDB::PROPERTY("Image") << attachment._image.get();
+        os << os.PROPERTY("Image") << attachment._image.get();
     }
     else if ( attachment._texture.valid() )
     {
         os << (char)2 << std::endl;
-        os << osgDB::PROPERTY("Texture") << attachment._texture.get();
-        os << osgDB::PROPERTY("Level") << attachment._level << std::endl;
-        os << osgDB::PROPERTY("Face") << attachment._face << std::endl;
-        os << osgDB::PROPERTY("MipMapGeneration") << attachment._mipMapGeneration << std::endl;
+        os << os.PROPERTY("Texture") << attachment._texture.get();
+        os << os.PROPERTY("Level") << attachment._level << std::endl;
+        os << os.PROPERTY("Face") << attachment._face << std::endl;
+        os << os.PROPERTY("MipMapGeneration") << attachment._mipMapGeneration << std::endl;
     }
     else
     {
         os << (char)-1 << std::endl;
         return;
     }
-    
-    os << osgDB::PROPERTY("MultisampleSamples") << attachment._multisampleSamples << std::endl;
-    os << osgDB::PROPERTY("MultisampleColorSamples") << attachment._multisampleColorSamples << std::endl;
+
+    os << os.PROPERTY("MultisampleSamples") << attachment._multisampleSamples << std::endl;
+    os << os.PROPERTY("MultisampleColorSamples") << attachment._multisampleColorSamples << std::endl;
 }
 
 // _clearMask
@@ -182,16 +182,16 @@ static bool checkBufferAttachmentMap( const osg::Camera& node )
 
 static bool readBufferAttachmentMap( osgDB::InputStream& is, osg::Camera& node )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        is >> osgDB::PROPERTY("Attachment");
+        is >> is.PROPERTY("Attachment");
         osg::Camera::BufferComponent bufferComponent =
             static_cast<osg::Camera::BufferComponent>( readBufferComponent(is) );
-        is >> osgDB::BEGIN_BRACKET;
+        is >> is.BEGIN_BRACKET;
         osg::Camera::Attachment attachment = readBufferAttachment(is);
-        is >> osgDB::END_BRACKET;
-        
+        is >> is.END_BRACKET;
+
         if ( attachment._internalFormat!=GL_NONE )
         {
             node.attach( bufferComponent, attachment._internalFormat );
@@ -208,23 +208,23 @@ static bool readBufferAttachmentMap( osgDB::InputStream& is, osg::Camera& node )
                          attachment._multisampleSamples, attachment._multisampleColorSamples );
         }
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeBufferAttachmentMap( osgDB::OutputStream& os, const osg::Camera& node )
 {
     const osg::Camera::BufferAttachmentMap& map = node.getBufferAttachmentMap();
-    os.writeSize(map.size()); os<< osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(map.size()); os<< os.BEGIN_BRACKET << std::endl;
     for ( osg::Camera::BufferAttachmentMap::const_iterator itr=map.begin();
           itr!=map.end(); ++itr )
     {
-        os << osgDB::PROPERTY("Attachment"); writeBufferComponent( os, itr->first );
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.PROPERTY("Attachment"); writeBufferComponent( os, itr->first );
+        os << os.BEGIN_BRACKET << std::endl;
         writeBufferAttachment( os, itr->second );
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -241,24 +241,24 @@ REGISTER_OBJECT_WRAPPER( Camera,
     ADD_INT_SERIALIZER( ClearStencil, 0 );  // _clearStencil
     ADD_OBJECT_SERIALIZER( ColorMask, osg::ColorMask, NULL );  // _colorMask
     ADD_OBJECT_SERIALIZER( Viewport, osg::Viewport, NULL );  // _viewport
-    
+
     BEGIN_ENUM_SERIALIZER( TransformOrder, PRE_MULTIPLY );
         ADD_ENUM_VALUE( PRE_MULTIPLY );
         ADD_ENUM_VALUE( POST_MULTIPLY );
     END_ENUM_SERIALIZER();  // _transformOrder
-    
+
     BEGIN_ENUM_SERIALIZER( ProjectionResizePolicy, HORIZONTAL );
         ADD_ENUM_VALUE( FIXED );
         ADD_ENUM_VALUE( HORIZONTAL );
         ADD_ENUM_VALUE( VERTICAL );
     END_ENUM_SERIALIZER();  // _projectionResizePolicy
-    
+
     ADD_MATRIXD_SERIALIZER( ProjectionMatrix, osg::Matrixd() );  // _projectionMatrix
     ADD_MATRIXD_SERIALIZER( ViewMatrix, osg::Matrixd() );  // _viewMatrix
     ADD_USER_SERIALIZER( RenderOrder );  // _renderOrder & _renderOrderNum
     ADD_GLENUM_SERIALIZER( DrawBuffer, GLenum, GL_NONE );  // _drawBuffer
     ADD_GLENUM_SERIALIZER( ReadBuffer, GLenum, GL_NONE );  // _readBuffer
-    
+
     BEGIN_ENUM_SERIALIZER( RenderTargetImplementation, FRAME_BUFFER );
         ADD_ENUM_VALUE( FRAME_BUFFER_OBJECT );
         ADD_ENUM_VALUE( PIXEL_BUFFER_RTT );
@@ -266,7 +266,7 @@ REGISTER_OBJECT_WRAPPER( Camera,
         ADD_ENUM_VALUE( FRAME_BUFFER );
         ADD_ENUM_VALUE( SEPERATE_WINDOW );
     END_ENUM_SERIALIZER();  // _renderTargetImplementation
-    
+
     ADD_USER_SERIALIZER( BufferAttachmentMap );  // _bufferAttachmentMap
     ADD_OBJECT_SERIALIZER( InitialDrawCallback, osg::Camera::DrawCallback, NULL );  // _initialDrawCallback
     ADD_OBJECT_SERIALIZER( PreDrawCallback, osg::Camera::DrawCallback, NULL );  // _preDrawCallback

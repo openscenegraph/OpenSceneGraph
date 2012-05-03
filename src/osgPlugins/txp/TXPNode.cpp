@@ -35,7 +35,7 @@ public:
 
     virtual void operator () ( osg::Node * node, osg::NodeVisitor * nv )
     {
-        osg::Group *pLOD = (osg::Group *) node; 
+        osg::Group *pLOD = (osg::Group *) node;
         osg::Group *n = NULL;
         if ((pLOD->getNumChildren() > 0) &&
             (n = (osg::Group *) pLOD->getChild(0)) &&
@@ -69,7 +69,7 @@ _originY(0.0)
     setNumChildrenRequiringUpdateTraversal(1);
     setCullingActive(false);
 }
-            
+
 TXPNode::TXPNode(const TXPNode& txpNode,const osg::CopyOp& copyop):
 osg::Group(txpNode,copyop),
 _originX(txpNode._originX),
@@ -106,7 +106,7 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     {
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-                
+
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
         {
@@ -116,7 +116,7 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
             osg::Timer_t start = timer.tick();
             std::cout<<"Doing visible tile search"<<std::endl;
 #endif // PRINT_TILEMAPP_TIMEINFO
-        
+
             osg::ref_ptr<TileMapper> tileMapper = new TileMapper;
             tileMapper->setLODScale(cv->getLODScale());
             tileMapper->pushReferenceViewPoint(cv->getReferenceViewPoint());
@@ -133,15 +133,15 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
             tileMapper->popReferenceViewPoint();
 
             //std::cout<<"   found " << tileMapper._tileMap.size() << std::endl;
-            
+
             cv->setUserData(tileMapper.get());
 
-#ifdef PRINT_TILEMAPP_TIMEINFO        
+#ifdef PRINT_TILEMAPP_TIMEINFO
             std::cout<<"Completed visible tile search in "<<timer.delta_m(start,timer.tick())<<std::endl;
-#endif // PRINT_TILEMAPP_TIMEINFO        
+#endif // PRINT_TILEMAPP_TIMEINFO
 
-        }        
-    
+        }
+
         updateEye(nv);
         break;
     }
@@ -208,7 +208,7 @@ bool TXPNode::loadArchive(TXPArchive* archive)
 
    //modified by Brad Anderegg on May-27-08
    //if NULL is passed in we will create a new archive and open the database
-   //otherwise we will use the archive provided which should have already been loaded 
+   //otherwise we will use the archive provided which should have already been loaded
    //by ReaderWriterTXP::getArchive(). See line 57-77 of ReaderWriterTXP.cpp.
    if(archive == NULL)
    {
@@ -222,7 +222,7 @@ bool TXPNode::loadArchive(TXPArchive* archive)
    else
    {
       _archive = archive;
-   } 
+   }
 
     _archive->getOrigin(_originX,_originY);
     _archive->getExtents(_extents);
@@ -283,7 +283,7 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
                 //OSG_NOTICE << "Tile load: " << x << " " << y << " " << lod << std::endl;
             }
             _pageManager->AckLoad();
-            
+
         }
     }
 }
@@ -354,8 +354,8 @@ void TXPNode::updateSceneGraph()
             addChild(_nodesToAdd[i]);
         }
         _nodesToAdd.clear();
-        
-    }    
+
+    }
 }
 
 

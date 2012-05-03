@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include "BaseDotVisitor.h"
@@ -29,10 +29,10 @@ namespace osgDot {
     _rankdir = "rankdir = LR;";
     // Set the locale used by the _nodes and _edges streams to the
     //   classic or "C" locale. This is needed because most of the
-    //   Graphviz tools are not locale sensitive and get confused 
+    //   Graphviz tools are not locale sensitive and get confused
     //   by id numbers containing commas or periods.
     _nodes.imbue(std::locale("C"));
-    _edges.imbue(std::locale("C"));  
+    _edges.imbue(std::locale("C"));
   }
 
   BaseDotVisitor::~BaseDotVisitor() {
@@ -67,11 +67,11 @@ namespace osgDot {
     setTraversalMode( TRAVERSE_ALL_CHILDREN );
     if ( fout && *fout ) {
       root.accept( *this );
-      
+
       *fout << "digraph osg_scenegraph { "<<_rankdir<< std::endl;
-      
+
       *fout << _nodes.str() << _edges.str();
-      
+
       *fout << "}" << std::endl;
 
       _nodes.clear();
@@ -84,7 +84,7 @@ namespace osgDot {
     return false;
   }
 
-  void BaseDotVisitor::apply(Node& node) { 
+  void BaseDotVisitor::apply(Node& node) {
     int id;
     if ( getOrCreateId( &node, id ) ) {
       handle( node, id );
@@ -119,7 +119,7 @@ namespace osgDot {
     }
 
   }
-  
+
   void BaseDotVisitor::apply(Group& node) {
     int id;
 
@@ -137,7 +137,7 @@ namespace osgDot {
       }
 
     }
-    
+
   }
 
   void BaseDotVisitor::handle(osg::Node& node, int id) {
@@ -169,10 +169,10 @@ namespace osgDot {
 
   void BaseDotVisitor::handle(osg::Node& node, osg::StateSet& stateset, int parentID, int childID) {
   }
-  
+
   void BaseDotVisitor::handle(osg::Drawable& drawable, int id) {
   }
-  
+
   void BaseDotVisitor::handle(osg::Drawable& drawable, osg::StateSet& stateset, int parentID, int childID ) {
   }
 

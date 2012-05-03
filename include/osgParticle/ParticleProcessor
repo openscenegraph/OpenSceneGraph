@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
@@ -37,117 +37,117 @@ namespace osgParticle
     */
     class OSGPARTICLE_EXPORT ParticleProcessor: public osg::Node {
     public:
-    
+
         enum ReferenceFrame {
             RELATIVE_RF,
             ABSOLUTE_RF
         };
-        
+
         ParticleProcessor();
         ParticleProcessor(const ParticleProcessor& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         virtual const char* libraryName() const { return "osgParticle"; }
         virtual const char* className() const { return "ParticleProcessor"; }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ParticleProcessor*>(obj) != 0; }
-        virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }        
-        
+        virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
+
         /// Get the reference frame.
         inline ReferenceFrame getReferenceFrame() const;
-        
+
         /// Set the reference frame.
         inline void setReferenceFrame(ReferenceFrame rf);
-        
+
         /// Get whether this processor is enabled or not.
         bool getEnabled() const { return _enabled; }
         inline bool isEnabled() const;
-        
+
         /// Set whether this processor is enabled or not.
         inline void setEnabled(bool v);
-        
+
         /// Get a pointer to the destination particle system.
         inline ParticleSystem* getParticleSystem();
-        
+
         /// Get a const pointer to the destination particle system.
         inline const ParticleSystem* getParticleSystem() const;
-        
+
         /// Set the destination particle system.
         inline void setParticleSystem(ParticleSystem* ps);
-        
+
         /// Set the endless flag of this processor.
         inline void setEndless(bool type);
-        
+
         /// Check whether this processor is endless.
         bool getEndless() const { return _endless; }
         inline bool isEndless() const;
-        
+
         /// Set the lifetime of this processor.
         inline void setLifeTime(double t);
-        
+
         /// Get the lifetime of this processor.
         inline double getLifeTime() const;
-        
+
         /// Set the start time of this processor.
         inline void setStartTime(double t);
-        
+
         /// Get the start time of this processor.
         inline double getStartTime() const;
 
         /// Set the current time of this processor.
         inline void setCurrentTime(double t);
-        
+
         /// Get the current time of this processor.
         inline double getCurrentTime() const;
-        
+
         /// Set the reset time of this processor. A value of 0 disables reset.
         inline void setResetTime(double t);
-        
+
         /// Get the reset time of this processor.
         inline double getResetTime() const;
-        
+
         /**
           Check whether the processor is alive with respect to start time and
-          life duration. Note that this method may return true even if the 
+          life duration. Note that this method may return true even if the
           processor has been disabled by calling setEnabled(false). To test
           whether the processor is actually processing particles or not, you
           should evaluate (isEnabled() && isAlive()).
          */
         inline bool isAlive() const;
-        
+
         void traverse(osg::NodeVisitor& nv);
 
         /// Get the current local-to-world transformation matrix (valid only during cull traversal).
         inline const osg::Matrix& getLocalToWorldMatrix();
-        
+
         /// Get the current world-to-local transformation matrix (valid only during cull traversal).
         inline const osg::Matrix& getWorldToLocalMatrix();
-        
+
         /// Get the previous local-to-world transformation matrix (valid only during cull traversal).
         inline const osg::Matrix& getPreviousLocalToWorldMatrix();
-        
+
         /// Get the previous world-to-local transformation matrix (valid only during cull traversal).
         inline const osg::Matrix& getPreviousWorldToLocalMatrix();
 
 
         /// Transform a point from local to world coordinates (valid only during cull traversal).
         inline osg::Vec3 transformLocalToWorld(const osg::Vec3& P);
-        
+
         /// Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal).
         inline osg::Vec3 rotateLocalToWorld(const osg::Vec3& P);
-        
+
         /// Transform a point from world to local coordinates (valid only during cull traversal).
         inline osg::Vec3 transformWorldToLocal(const osg::Vec3& P);
-        
+
         /// Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal).
         inline osg::Vec3 rotateWorldToLocal(const osg::Vec3& P);
 
-        virtual osg::BoundingSphere computeBound() const;    
+        virtual osg::BoundingSphere computeBound() const;
 
     protected:
         virtual ~ParticleProcessor() {}
         ParticleProcessor& operator=(const ParticleProcessor&) { return *this; }
-        
+
         virtual void process(double dt) = 0;
-        
+
     private:
         ReferenceFrame _rf;
         bool _enabled;
@@ -162,36 +162,36 @@ namespace osgParticle
         osg::Matrix _previous_ltw_matrix;
         osg::Matrix _previous_wtl_matrix;
         osg::NodeVisitor* _current_nodevisitor;
-        
+
         bool _endless;
-        
+
         double _lifeTime;
         double _startTime;
         double _currentTime;
         double _resetTime;
-        
-        //added- 1/17/06- bgandere@nps.edu 
+
+        //added- 1/17/06- bgandere@nps.edu
         //a var to keep from doing multiple updates
         unsigned int _frameNumber;
     };
-    
+
     // INLINE FUNCTIONS
-    
+
     inline ParticleProcessor::ReferenceFrame ParticleProcessor::getReferenceFrame() const
     {
         return _rf;
     }
-    
+
     inline void ParticleProcessor::setReferenceFrame(ReferenceFrame rf)
     {
         _rf = rf;
     }
-    
+
     inline bool ParticleProcessor::isEnabled() const
     {
         return _enabled;
     }
-    
+
     inline void ParticleProcessor::setEnabled(bool v)
     {
         _enabled = v;
@@ -200,7 +200,7 @@ namespace osgParticle
             _currentTime = 0;
         }
     }
-    
+
     inline ParticleSystem* ParticleProcessor::getParticleSystem()
     {
         return _ps.get();
@@ -210,17 +210,17 @@ namespace osgParticle
     {
         return _ps.get();
     }
-    
+
     inline void ParticleProcessor::setParticleSystem(ParticleSystem* ps)
     {
         _ps = ps;
     }
-   
+
     inline void ParticleProcessor::setEndless(bool type)
     {
         _endless = type;
     }
-        
+
     inline bool ParticleProcessor::isEndless() const
     {
         return _endless;
@@ -230,17 +230,17 @@ namespace osgParticle
     {
         _lifeTime = t;
     }
-        
+
     inline double ParticleProcessor::getLifeTime() const
     {
         return _lifeTime;
     }
-       
+
     inline void ParticleProcessor::setStartTime(double t)
     {
         _startTime = t;
     }
-        
+
     inline double ParticleProcessor::getStartTime() const
     {
         return _startTime;
@@ -249,23 +249,23 @@ namespace osgParticle
     {
         _currentTime = t;
     }
-        
+
     inline double ParticleProcessor::getCurrentTime() const
     {
         return _currentTime;
     }
-    
+
     inline void ParticleProcessor::setResetTime(double t)
     {
         _resetTime = t;
     }
-    
+
     inline double ParticleProcessor::getResetTime() const
     {
         return _resetTime;
     }
 
-    inline const osg::Matrix& ParticleProcessor::getLocalToWorldMatrix()    
+    inline const osg::Matrix& ParticleProcessor::getLocalToWorldMatrix()
     {
         if (_need_ltw_matrix) {
             _previous_ltw_matrix = _ltw_matrix;
@@ -280,7 +280,7 @@ namespace osgParticle
         return _ltw_matrix;
     }
 
-    inline const osg::Matrix& ParticleProcessor::getWorldToLocalMatrix()    
+    inline const osg::Matrix& ParticleProcessor::getWorldToLocalMatrix()
     {
         if (_need_wtl_matrix) {
             _previous_wtl_matrix = _wtl_matrix;
@@ -294,7 +294,7 @@ namespace osgParticle
         }
         return _wtl_matrix;
     }
-    
+
     inline const osg::Matrix& ParticleProcessor::getPreviousLocalToWorldMatrix()
     {
         if (_need_ltw_matrix) getLocalToWorldMatrix();
@@ -311,7 +311,7 @@ namespace osgParticle
     {
         return getLocalToWorldMatrix().preMult(P);
     }
-    
+
     inline osg::Vec3 ParticleProcessor::transformWorldToLocal(const osg::Vec3& P)
     {
         return getWorldToLocalMatrix().preMult(P);
@@ -319,16 +319,16 @@ namespace osgParticle
 
     inline osg::Vec3 ParticleProcessor::rotateLocalToWorld(const osg::Vec3& P)
     {
-        return getLocalToWorldMatrix().preMult(P) - 
+        return getLocalToWorldMatrix().preMult(P) -
             getLocalToWorldMatrix().preMult(osg::Vec3(0, 0, 0));
     }
-    
+
     inline osg::Vec3 ParticleProcessor::rotateWorldToLocal(const osg::Vec3& P)
     {
         return getWorldToLocalMatrix().preMult(P) -
             getWorldToLocalMatrix().preMult(osg::Vec3(0, 0, 0));
     }
-    
+
     inline bool ParticleProcessor::isAlive() const
     {
         return _currentTime < (_lifeTime + _startTime);

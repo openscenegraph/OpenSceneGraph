@@ -149,7 +149,7 @@ TXFFont::loadFont(std::istream& stream)
 
     unsigned w = texwidth;
     unsigned h = texheight;
-    
+
     osgText::FontResolution fontResolution(maxheight, maxheight);
 
     std::vector<GlyphData> glyphs;
@@ -248,7 +248,7 @@ TXFFont::loadFont(std::istream& stream)
         _chars[' '] = glyph;
         addGlyph(fontResolution, ' ', glyph);
     }
-    
+
     for (unsigned i = 0; i < glyphs.size(); ++i)
     {
         // have a special one for that
@@ -274,7 +274,7 @@ TXFFont::loadFont(std::istream& stream)
 
         glyph->setWidth(float(width)*coord_scale);
         glyph->setHeight(float(height)*coord_scale);
-        
+
         // OSG_NOTICE<<"char="<<char(glyphs[i].ch)<<", glyphs[i].x_off="<<int(glyphs[i].x_off)<<", glyphs[i].y_off="<<int(glyphs[i].y_off)<<", glyphs[i].advance="<<int(glyphs[i].advance)<<", glyphs[i].width="<<int(glyphs[i].width)<<", glyphs[i].height="<<int(glyphs[i].height)<<std::endl;
 
         glyph->setHorizontalAdvance(float(glyphs[i].advance)*coord_scale);

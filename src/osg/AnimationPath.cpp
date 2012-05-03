@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/AnimationPath>
@@ -27,7 +27,7 @@ void AnimationPath::insert(double time,const ControlPoint& controlPoint)
 bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const
 {
     if (_timeControlPointMap.empty()) return false;
-    
+
     switch(_loopMode)
     {
         case(SWING):
@@ -35,7 +35,7 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
             double modulated_time = (time - getFirstTime())/(getPeriod()*2.0);
             double fraction_part = modulated_time - floor(modulated_time);
             if (fraction_part>0.5) fraction_part = 1.0-fraction_part;
-            
+
             time = getFirstTime()+(fraction_part*2.0) * getPeriod();
             break;
         }
@@ -50,8 +50,8 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
             // no need to modulate the time.
             break;
     }
-    
-    
+
+
 
     TimeControlPointMap::const_iterator second = _timeControlPointMap.lower_bound(time);
     if (second==_timeControlPointMap.begin())
@@ -61,8 +61,8 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
     else if (second!=_timeControlPointMap.end())
     {
         TimeControlPointMap::const_iterator first = second;
-        --first;        
-        
+        --first;
+
         // we have both a lower bound and the next item.
 
         // delta_time = second.time - first.time
@@ -75,7 +75,7 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
             controlPoint.interpolate((time - first->first)/delta_time,
                             first->second,
                             second->second);
-        }        
+        }
     }
     else // (second==_timeControlPointMap.end())
     {
@@ -138,13 +138,13 @@ AnimationPathCallback::AnimationPathCallback(const osg::Vec3d& pivot,const osg::
     double time2 = osg::PI*1.0/angularVelocity;
     double time3 = osg::PI*1.5/angularVelocity;
     double time4 = osg::PI*2.0/angularVelocity;
-    
+
     osg::Quat rotation0(0.0, axis);
     osg::Quat rotation1(osg::PI*0.5, axis);
     osg::Quat rotation2(osg::PI*1.0, axis);
     osg::Quat rotation3(osg::PI*1.5, axis);
-    
-    
+
+
     _animationPath->insert(time0,osg::AnimationPath::ControlPoint(pivot,rotation0));
     _animationPath->insert(time1,osg::AnimationPath::ControlPoint(pivot,rotation1));
     _animationPath->insert(time2,osg::AnimationPath::ControlPoint(pivot,rotation2));
@@ -168,10 +168,10 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 _cp.getInverse(matrix);
             else
                 _cp.getMatrix(matrix);
-                
+
             camera.setViewMatrix(osg::Matrix::translate(-_pivotPoint)*matrix);
         }
-        
+
 
         virtual void apply(CameraView& cv)
         {
@@ -182,7 +182,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 cv.setPosition(matrix.getTrans());
                 cv.setAttitude(_cp.getRotation().inverse());
                 cv.setFocalLength(1.0f/_cp.getScale().x());
-                
+
             }
             else
             {
@@ -199,10 +199,10 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 _cp.getInverse(matrix);
             else
                 _cp.getMatrix(matrix);
-                
+
             mt.setMatrix(osg::Matrix::translate(-_pivotPoint)*matrix);
         }
-        
+
         virtual void apply(PositionAttitudeTransform& pat)
         {
             if (_useInverseMatrix)
@@ -213,7 +213,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 pat.setAttitude(_cp.getRotation().inverse());
                 pat.setScale(osg::Vec3(1.0f/_cp.getScale().x(),1.0f/_cp.getScale().y(),1.0f/_cp.getScale().z()));
                 pat.setPivotPoint(_pivotPoint);
-                
+
             }
             else
             {
@@ -223,16 +223,16 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 pat.setPivotPoint(_pivotPoint);
             }
         }
-        
+
         AnimationPath::ControlPoint _cp;
         osg::Vec3d _pivotPoint;
-        bool _useInverseMatrix;      
+        bool _useInverseMatrix;
 };
 
 void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
 {
-    if (_animationPath.valid() && 
-        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
+    if (_animationPath.valid() &&
+        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR &&
         nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getSimulationTime();
@@ -245,7 +245,7 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
             update(*node);
         }
     }
-    
+
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
 }
@@ -283,7 +283,7 @@ void AnimationPathCallback::setPause(bool pause)
     {
         return;
     }
-    
+
     _pause = pause;
 
     if (_firstTime==DBL_MAX) return;

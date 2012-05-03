@@ -1,8 +1,8 @@
-/*  
+/*
     vertexData.cpp
     Copyright (c) 2007, Tobias Wolf <twolf@access.unizh.ch>
-    All rights reserved.  
-    
+    All rights reserved.
+
     Implementation of the VertexData class.
 */
 
@@ -52,7 +52,7 @@ VertexData::VertexData()
 
 
 /*  Read the vertex and (if available/wanted) color data from the open file.  */
-void VertexData::readVertices( PlyFile* file, const int nVertices, 
+void VertexData::readVertices( PlyFile* file, const int nVertices,
                                const int fields )
 {
     // temporary vertex structure for ply loading
@@ -67,6 +67,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         unsigned char   red;
         unsigned char   green;
         unsigned char   blue;
+        unsigned char   alpha;
         unsigned char   ambient_red;
         unsigned char   ambient_green;
         unsigned char   ambient_blue;
@@ -80,7 +81,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         float           specular_power;
     } vertex;
 
-    PlyProperty vertexProps[] = 
+    PlyProperty vertexProps[] =
     {
         { "x", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, x ), 0, 0, 0, 0 },
         { "y", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, y ), 0, 0, 0, 0 },
@@ -91,6 +92,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, red ), 0, 0, 0, 0 },
         { "green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, green ), 0, 0, 0, 0 },
         { "blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, blue ), 0, 0, 0, 0 },
+        { "alpha", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, alpha ), 0, 0, 0, 0 },
         { "ambient_red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_red ), 0, 0, 0, 0 },
         { "ambient_green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_green ), 0, 0, 0, 0 },
         { "ambient_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_blue ), 0, 0, 0, 0 },
@@ -103,43 +105,46 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "specular_coeff", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_coeff ), 0, 0, 0, 0 },
         { "specular_power", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_power ), 0, 0, 0, 0 },
     };
-    
+
     // use all 6 properties when reading colors, only the first 3 otherwise
-    for( int i = 0; i < 3; ++i ) 
+    for( int i = 0; i < 3; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
-    
+
     if (fields & NORMALS)
-      for( int i = 3; i < 6; ++i ) 
+      for( int i = 3; i < 6; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     if (fields & RGB)
-      for( int i = 6; i < 9; ++i ) 
+      for( int i = 6; i < 9; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
+    if (fields & RGBA)
+        ply_get_property( file, "vertex", &vertexProps[9] );
+
     if (fields & AMBIENT)
-      for( int i = 9; i < 12; ++i ) 
+      for( int i = 10; i < 13; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     if (fields & DIFFUSE)
-      for( int i = 12; i < 15; ++i ) 
+      for( int i = 13; i < 16; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     if (fields & SPECULAR)
-      for( int i = 15; i < 20; ++i ) 
+      for( int i = 16; i < 21; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
 
     // check whether array is valid otherwise allocate the space
     if(!_vertices.valid())
-        _vertices = new osg::Vec3Array; 
+        _vertices = new osg::Vec3Array;
 
     if( fields & NORMALS )
     {
         if(!_normals.valid())
             _normals = new osg::Vec3Array;
     }
-    
+
     // If read colors allocate space for color array
-    if( fields & RGB )
+    if( fields & RGB || fields & RGBA)
     {
         if(!_colors.valid())
             _colors = new osg::Vec4Array;
@@ -156,7 +161,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         if(!_diffuse.valid())
             _diffuse = new osg::Vec4Array;
     }
-    
+
     if( fields & SPECULAR )
     {
         if(!_specular.valid())
@@ -168,26 +173,32 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
     {
         ply_get_element( file, static_cast< void* >( &vertex ) );
         _vertices->push_back( osg::Vec3( vertex.x, vertex.y, vertex.z ) );
-	if (fields & NORMALS)
-	  _normals->push_back( osg::Vec3( vertex.nx, vertex.ny, vertex.nz ) );
-        if( fields & RGB )
-            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 256.0,
-					   (unsigned int) vertex.green / 256.0 ,
-					   (unsigned int) vertex.blue / 256.0, 0.0 ) );
+        if (fields & NORMALS)
+            _normals->push_back( osg::Vec3( vertex.nx, vertex.ny, vertex.nz ) );
+
+        if( fields & RGBA )
+            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 255.0,
+                                           (unsigned int) vertex.green / 255.0 ,
+                                           (unsigned int) vertex.blue / 255.0,
+                                           (unsigned int) vertex.alpha / 255.0) );
+        else if( fields & RGB )
+            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 255.0,
+                                           (unsigned int) vertex.green / 255.0 ,
+                                           (unsigned int) vertex.blue / 255.0, 1.0 ) );
         if( fields & AMBIENT )
-	  _ambient->push_back( osg::Vec4( (unsigned int) vertex.ambient_red / 256.0,
-					   (unsigned int) vertex.ambient_green / 256.0 ,
-					   (unsigned int) vertex.ambient_blue / 256.0, 0.0 ) );
+            _ambient->push_back( osg::Vec4( (unsigned int) vertex.ambient_red / 255.0,
+                                            (unsigned int) vertex.ambient_green / 255.0 ,
+                                            (unsigned int) vertex.ambient_blue / 255.0, 1.0 ) );
 
         if( fields & DIFFUSE )
-	  _diffuse->push_back( osg::Vec4( (unsigned int) vertex.diffuse_red / 256.0,
-					   (unsigned int) vertex.diffuse_green / 256.0 ,
-					   (unsigned int) vertex.diffuse_blue / 256.0, 0.0 ) );
+            _diffuse->push_back( osg::Vec4( (unsigned int) vertex.diffuse_red / 255.0,
+                                            (unsigned int) vertex.diffuse_green / 255.0 ,
+                                            (unsigned int) vertex.diffuse_blue / 255.0, 1.0 ) );
 
         if( fields & SPECULAR )
-	  _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 256.0,
-					   (unsigned int) vertex.specular_green / 256.0 ,
-					   (unsigned int) vertex.specular_blue / 256.0, 0.0 ) );
+            _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 255.0,
+                                             (unsigned int) vertex.specular_green / 255.0 ,
+                                             (unsigned int) vertex.specular_blue / 255.0, 1.0 ) );
     }
 }
 
@@ -202,20 +213,20 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
         int*            vertices;
     } face;
 
-    PlyProperty faceProps[] = 
+    PlyProperty faceProps[] =
     {
-        { "vertex_indices", PLY_INT, PLY_INT, offsetof( _Face, vertices ), 
+        { "vertex_indices", PLY_INT, PLY_INT, offsetof( _Face, vertices ),
           1, PLY_UCHAR, PLY_UCHAR, offsetof( _Face, nVertices ) }
     };
-    
+
     ply_get_property( file, "face", &faceProps[0] );
-    
+
     //triangles.clear();
     //triangles.reserve( nFaces );
     if(!_triangles.valid())
         _triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
 
-    
+
     // read in the faces, asserting that they are only triangles
     int ind1 = _invertFaces ? 2 : 0;
     int ind3 = _invertFaces ? 0 : 2;
@@ -233,7 +244,7 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
         _triangles->push_back( face.vertices[ind1]);
         _triangles->push_back( face.vertices[1]);
         _triangles->push_back( face.vertices[ind3] );
-        
+
         // free the memory that was allocated by ply_get_element
         free( face.vertices );
     }
@@ -250,38 +261,38 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     bool    result = false;
     int     nComments;
     char**  comments;
-    
+
     PlyFile* file = NULL;
 
     // Try to open ply file as for reading
     try{
-            file  = ply_open_for_reading( const_cast< char* >( filename ), 
-                                          &nPlyElems, &elemNames, 
+            file  = ply_open_for_reading( const_cast< char* >( filename ),
+                                          &nPlyElems, &elemNames,
                                           &fileType, &version );
     }
     // Catch the if any exception thrown
     catch( exception& e )
     {
-        MESHERROR << "Unable to read PLY file, an exception occured:  " 
+        MESHERROR << "Unable to read PLY file, an exception occured:  "
                     << e.what() << endl;
     }
 
     if( !file )
     {
-        MESHERROR << "Unable to open PLY file " << filename 
+        MESHERROR << "Unable to open PLY file " << filename
                   << " for reading." << endl;
         return NULL;
     }
 
     MESHASSERT( elemNames != 0 );
-    
+
 
     nComments = file->num_comments;
     comments = file->comments;
-    
-    
+
+
     #ifndef NDEBUG
-    MESHINFO << filename << ": " << nPlyElems << " elements, file type = " 
+    MESHINFO << filename << ": " << nPlyElems << " elements, file type = "
              << fileType << ", version = " << version << endl;
     #endif
 
@@ -297,19 +308,19 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     {
         int nElems;
         int nProps;
-        
+
         PlyProperty** props = NULL;
         try{
-                props = ply_get_element_description( file, elemNames[i], 
+                props = ply_get_element_description( file, elemNames[i],
                                                      &nElems, &nProps );
         }
         catch( exception& e )
         {
-            MESHERROR << "Unable to get PLY file description, an exception occured:  " 
+            MESHERROR << "Unable to get PLY file description, an exception occured:  "
                         << e.what() << endl;
         }
         MESHASSERT( props != 0 );
-        
+
         #ifndef NDEBUG
         MESHINFO << "element " << i << ": name = " << elemNames[i] << ", "
                  << nProps << " properties, " << nElems << " elements" << endl;
@@ -319,7 +330,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                      << "name = " << props[j]->name << endl;
         }
         #endif
-        
+
         // if the string is vertex means vertex data is started
         if( equal_strings( elemNames[i], "vertex" ) )
         {
@@ -332,7 +343,9 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                     fields |= XYZ;
                 if( equal_strings( props[j]->name, "nx" ) )
                     fields |= NORMALS;
-                if( equal_strings( props[j]->name, "red" ) )
+                if( equal_strings( props[j]->name, "alpha" ) )
+                    fields |= RGBA;
+                if ( equal_strings( props[j]->name, "red" ) )
                     fields |= RGB;
                 if( equal_strings( props[j]->name, "ambient" ) )
                     fields |= AMBIENT;
@@ -348,7 +361,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 MESHINFO << "Colors in PLY file ignored per request." << endl;
 	      }
 
-            try {   
+            try {
                 // Read vertices and store in a std::vector array
                 readVertices( file, nElems, fields );
                 // Check whether all vertices are loaded or not
@@ -359,7 +372,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 {
                     MESHASSERT( _normals->size() == static_cast< size_t >( nElems ) );
                 }
-                if( fields & RGB )
+                if( fields & RGB || fields & RGBA)
                 {
                     MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
                 }
@@ -380,12 +393,12 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             }
             catch( exception& e )
             {
-                MESHERROR << "Unable to read vertex in PLY file, an exception occured:  " 
+                MESHERROR << "Unable to read vertex in PLY file, an exception occured:  "
                             << e.what() << endl;
                 // stop for loop by setting the loop variable to break condition
                 // this way resources still get released even on error cases
                 i = nPlyElems;
-                
+
             }
         }
         // If the string is face means triangle info started
@@ -400,21 +413,21 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         }
         catch( exception& e )
         {
-            MESHERROR << "Unable to read PLY file, an exception occured:  " 
+            MESHERROR << "Unable to read PLY file, an exception occured:  "
                       << e.what() << endl;
             // stop for loop by setting the loop variable to break condition
             // this way resources still get released even on error cases
             i = nPlyElems;
         }
-        
+
         // free the memory that was allocated by ply_get_element_description
         for( int j = 0; j < nProps; ++j )
             free( props[j] );
         free( props );
     }
-    
+
     ply_close( file );
-    
+
     // free the memory that was allocated by ply_open_for_reading
     for( int i = 0; i < nPlyElems; ++i )
         free( elemNames[i] );
@@ -442,7 +455,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             geom->setNormalArray(_normals.get());
             geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         }
-        
+
         // Add the primitive set
         if (_triangles.valid() && _triangles->size() > 0 )
             geom->addPrimitiveSet(_triangles.get());
@@ -477,13 +490,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
 
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
-        
+
 
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(geom);
         return geode;
    }
-    
+
     return NULL;
 }
 
@@ -501,9 +514,9 @@ void VertexData::_calculateNormals( const bool vertexNormals )
 
     if(!_normals.valid())
     {
-        _normals = new osg::Vec3Array; 
+        _normals = new osg::Vec3Array;
     }
-    
+
     //normals.clear();
     if( vertexNormals )
     {
@@ -514,7 +527,7 @@ void VertexData::_calculateNormals( const bool vertexNormals )
         }
     }
 
-    
+
     for( size_t i = 0; i < ((_triangles->size()));  i += 3 )
     {
         // iterate over all triangles and add their normals to adjacent vertices
@@ -526,31 +539,31 @@ void VertexData::_calculateNormals( const bool vertexNormals )
         triangleNormal.normal((*_vertices)[i0],
                                (*_vertices)[i1],
                                (*_vertices)[i2] );
-        
+
         // count emtpy normals in debug mode
         #ifndef NDEBUG
         if( triangleNormal.triNormal.length() == 0.0f )
             ++wrongNormals;
         #endif
-         
+
         if( vertexNormals )
         {
-            (*_normals)[i0] += triangleNormal.triNormal; 
-            (*_normals)[i1] += triangleNormal.triNormal; 
+            (*_normals)[i0] += triangleNormal.triNormal;
+            (*_normals)[i1] += triangleNormal.triNormal;
             (*_normals)[i2] += triangleNormal.triNormal;
         }
         else
-            _normals->push_back( triangleNormal.triNormal ); 
+            _normals->push_back( triangleNormal.triNormal );
     }
-    
+
     // normalize all the normals
     if( vertexNormals )
         for( size_t i = 0; i < _normals->size(); ++i )
             (*_normals)[i].normalize();
-    
+
     #ifndef NDEBUG
     if( wrongNormals > 0 )
         MESHINFO << wrongNormals << " faces had no valid normal." << endl;
-    #endif 
+    #endif
 }
 

@@ -1,12 +1,12 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1999-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1999-2008 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -25,13 +25,13 @@ extern "C" {
 class LibVncImage : public osgWidget::VncImage
 {
     public:
-    
+
         LibVncImage();
 
         bool connect(const std::string& hostname);
 
         void close();
-        
+
         virtual bool sendPointerEvent(int x, int y, int buttonMask);
 
         double getTimeOfLastUpdate() const { return _timeOfLastUpdate; }
@@ -46,16 +46,16 @@ class LibVncImage : public osgWidget::VncImage
         void updated();
 
         static rfbBool resizeImage(rfbClient* client);
-        
+
         static void updateImage(rfbClient* client,int x,int y,int w,int h);
-        
+
         static void passwordCheck(rfbClient* client,const char* encryptedPassWord,int len);
         static char* getPassword(rfbClient* client);
 
         std::string                 _optionString;
         std::string                 _username;
         std::string                 _password;
-        
+
         double                      _timeOfLastUpdate;
         double                      _timeOfLastRender;
 
@@ -63,7 +63,7 @@ class LibVncImage : public osgWidget::VncImage
         osg::ref_ptr<osg::RefBlock> _inactiveBlock;
 
     protected:
-    
+
         virtual ~LibVncImage();
 
         class RfbThread : public osg::Referenced, public OpenThreads::Thread
@@ -78,7 +78,7 @@ class LibVncImage : public osgWidget::VncImage
             virtual ~RfbThread()
             {
                 _done = true;
-                while(isRunning()) 
+                while(isRunning())
                 {
                     OpenThreads::Thread::YieldCurrentThread();
                 }
@@ -89,7 +89,7 @@ class LibVncImage : public osgWidget::VncImage
                 do
                 {
                     if (_image->_active)
-                    {               
+                    {
                         int i=WaitForMessage(_client,5000);
                         if(i<0)
                             return;
@@ -97,7 +97,7 @@ class LibVncImage : public osgWidget::VncImage
                         if(i)
                         {
                             OSG_INFO<<"VNC Handling "<<i<<" messages"<<std::endl;
-                        
+
                             if(!HandleRFBServerMessage(_client))
                             return;
 
@@ -108,8 +108,8 @@ class LibVncImage : public osgWidget::VncImage
                     {
                         _image->_inactiveBlock->block();
                     }
-                    
-                    
+
+
                     double deltaTime = _image->getTimeOfLastRender() - _image->getTimeOfLastUpdate();
                     if (deltaTime<-0.01)
                     {
@@ -135,7 +135,7 @@ class LibVncImage : public osgWidget::VncImage
         rfbClient* _client;
 
         osg::ref_ptr<RfbThread>     _rfbThread;
-      
+
 };
 
 LibVncImage::LibVncImage():
@@ -233,7 +233,7 @@ bool LibVncImage::connect(const std::string& hostname)
     if (!_password.empty())  _client->GetPassword = getPassword;
 
     rfbClientSetClientData(_client, 0, this);
-    
+
     _client->serverHost = strdup(hostname.c_str());
 
     // _client->serverPort = ;
@@ -246,13 +246,13 @@ bool LibVncImage::connect(const std::string& hostname)
     {
         _rfbThread = new RfbThread(_client, this);
         _rfbThread->startThread();
-        
+
         return true;
     }
     else
     {
         close();
-        
+
         return false;
     }
 }
@@ -277,10 +277,10 @@ void LibVncImage::close()
 }
 
 
-rfbBool LibVncImage::resizeImage(rfbClient* client) 
+rfbBool LibVncImage::resizeImage(rfbClient* client)
 {
     LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
-    
+
     int width = client->width;
     int height = client->height;
     int depth = client->format.bitsPerPixel;
@@ -294,7 +294,7 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     {
         if (image->_optionString.find("swap")!=std::string::npos || image->_optionString.find("swop")!=std::string::npos) swap = true;
     }
-    
+
     GLenum gl_pixelFormat = swap ? GL_BGRA : GL_RGBA;
 
     if (!image->_optionString.empty())
@@ -309,9 +309,9 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     image->setInternalTextureFormat(GL_RGBA);
 
 
-    
+
     client->frameBuffer= (uint8_t*)(image->data());
-    
+
     return TRUE;
 }
 
@@ -358,11 +358,11 @@ void LibVncImage::updated()
 class ReaderWriterVNC : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterVNC()
         {
             supportsExtension("vnc","VNC plugin");
-            
+
             supportsOption("swap","Swaps the pixel format order, exchanging the red and blue channels.");
             supportsOption("swop","American spelling, same effect as swap.");
             supportsOption("RGB","Use RGBA pixel format for the vnc image");
@@ -370,7 +370,7 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             supportsOption("BGR","Use BGRA pixel format for the vnc image");
             supportsOption("BGRA","Use BGRA pixel format for the vnc image");
         }
-        
+
         virtual const char* className() const { return "VNC plugin"; }
 
         virtual osgDB::ReaderWriter::ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -386,11 +386,11 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             }
 
             std::string hostname = osgDB::getNameLessExtension(fileName);
-            
+
             OSG_NOTICE<<"Hostname = "<<hostname<<std::endl;
 
             osg::ref_ptr<LibVncImage> image = new LibVncImage;
-            image->setDataVariance(osg::Object::DYNAMIC);           
+            image->setDataVariance(osg::Object::DYNAMIC);
             image->setOrigin(osg::Image::TOP_LEFT);
 
             const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ?
@@ -419,15 +419,15 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             {
                 return "Could not connect to "+hostname;
             }
-            
+
             return image.get();
         }
-        
+
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             osgDB::ReaderWriter::ReadResult result = readImage(fileName, options);
             if (!result.validImage()) return result;
-            
+
             osg::ref_ptr<osgWidget::VncClient> vncClient = new osgWidget::VncClient();
             if (vncClient->assign(dynamic_cast<osgWidget::VncImage*>(result.getImage())))
             {

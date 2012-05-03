@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,12 +20,12 @@
 namespace osg {
 
 /** Encapsulates OpenGL glColorMaskFunc/Op/Mask functions.
-*/     
+*/
 class OSG_EXPORT ColorMask : public StateAttribute
 {
     public :
-    
-    
+
+
         ColorMask();
 
         ColorMask(bool red,bool green,bool blue,bool alpha):
@@ -33,7 +33,7 @@ class OSG_EXPORT ColorMask : public StateAttribute
             _green(green),
             _blue(blue),
             _alpha(alpha) {}
-            
+
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         ColorMask(const ColorMask& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -42,9 +42,9 @@ class OSG_EXPORT ColorMask : public StateAttribute
             _green(cm._green),
             _blue(cm._blue),
             _alpha(cm._alpha) {}
-        
+
         META_StateAttribute(osg, ColorMask, COLORMASK);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -67,9 +67,9 @@ class OSG_EXPORT ColorMask : public StateAttribute
             _green = green;
             _blue = blue;
             _alpha = alpha;
-            
+
         }
-        
+
         inline void setRedMask(bool mask) { _red=mask; }
         inline bool getRedMask() const { return _red; }
 
@@ -78,14 +78,14 @@ class OSG_EXPORT ColorMask : public StateAttribute
 
         inline void setBlueMask(bool mask) { _blue=mask; }
         inline bool getBlueMask() const { return _blue; }
-        
+
         inline void setAlphaMask(bool mask) { _alpha=mask; }
         inline bool getAlphaMask() const { return _alpha; }
 
         virtual void apply(State& state) const;
 
     protected:
-    
+
         virtual ~ColorMask();
 
         bool                _red;

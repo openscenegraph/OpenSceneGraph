@@ -260,7 +260,7 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
 static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 {
   int guess_cnt = lwo->face_cnt;
-  
+
   while (nbytes > 0) {
     lwFace *face;
     int i;
@@ -280,17 +280,17 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 
     /* allocate space for points */
     face->index = (int*) g_malloc0(sizeof(int)*face->index_cnt);
- 
+
     /* read points in */
     for (i=0; i<face->index_cnt; i++) {
       face->index[i] = read_short(f);
       nbytes -= 2;
     }
-    
+
     /* read surface material */
     face->material = read_short(f);
     nbytes -= 2;
-    
+
     /* skip over detail  polygons */
     if (face->material < 0) {
       printf("face->material=%i    ",face->material);
@@ -454,7 +454,7 @@ lwObject *lw_object_read(const char *lw_file, std::ostream& output)
 void lw_object_free(lwObject *lw_object)
 {
   g_return_if_fail(lw_object != NULL);
- 
+
   if (lw_object->face) {
     int i;
     for (i=0; i<lw_object->face_cnt; i++) {

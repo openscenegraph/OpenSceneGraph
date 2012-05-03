@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -24,7 +24,7 @@
 #include <osg/Referenced>
 #include <osgAnimation/Export>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
     class Channel;
@@ -32,7 +32,7 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT Target : public osg::Referenced
     {
     public:
-            
+
         Target();
         virtual ~Target() {}
         void reset() { _weight = 0; _priorityWeight = 0; }
@@ -49,7 +49,7 @@ namespace osgAnimation
     class TemplateTarget : public Target
     {
     public:
-            
+
         TemplateTarget() : _target() {}
         TemplateTarget(const T& v) { setValue(v); }
         TemplateTarget(const TemplateTarget& v) { setValue(v.getValue()); }
@@ -117,7 +117,7 @@ namespace osgAnimation
         }
 
         osg::Quat::value_type len2 = _target.length2();
-        if ( len2 != 1.0 && len2 != 0.0) 
+        if ( len2 != 1.0 && len2 != 0.0)
             _target *= 1.0/sqrt(len2);
     }
 
@@ -128,7 +128,7 @@ namespace osgAnimation
     typedef TemplateTarget<osg::Vec2> Vec2Target;
     typedef TemplateTarget<float> FloatTarget;
     typedef TemplateTarget<double> DoubleTarget;
-  
+
 }
 
 #endif

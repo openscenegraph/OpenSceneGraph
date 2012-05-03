@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/AutoTransform>
@@ -58,13 +58,13 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     _cachedMode(pat._cachedMode),
     _side(pat._side)
 {
-//    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+//    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
 }
 
 void AutoTransform::setAutoRotateMode(AutoRotateMode mode)
-{ 
-    _autoRotateMode = mode; 
-    _firstTimeToInitEyePoint = true; 
+{
+    _autoRotateMode = mode;
+    _firstTimeToInitEyePoint = true;
     _cachedMode = CACHE_DIRTY;
     updateCache();
 }
@@ -93,23 +93,23 @@ void AutoTransform::updateCache()
         else                                                                  _cachedMode = ROTATE_TO_AXIS;
     }
     else _cachedMode = _autoRotateMode;
-    
+
     _side = _axis^_normal;
-    _side.normalize();   
+    _side.normalize();
 }
 
 void AutoTransform::setScale(const Vec3d& scale)
 {
-    _scale = scale; 
+    _scale = scale;
     if (_scale.x()<_minimumScale) _scale.x() = _minimumScale;
     if (_scale.y()<_minimumScale) _scale.y() = _minimumScale;
     if (_scale.z()<_minimumScale) _scale.z() = _minimumScale;
-    
+
     if (_scale.x()>_maximumScale) _scale.x() = _maximumScale;
     if (_scale.y()>_maximumScale) _scale.y() = _maximumScale;
     if (_scale.z()>_maximumScale) _scale.z() = _maximumScale;
-    
-    _matrixDirty=true; 
+
+    _matrixDirty=true;
     dirtyBound();
 }
 
@@ -117,7 +117,7 @@ void AutoTransform::setScale(const Vec3d& scale)
 bool AutoTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_matrixDirty) computeMatrix();
-    
+
     if (_referenceFrame==RELATIVE_RF)
     {
         matrix.preMult(_cachedMatrix);
@@ -155,18 +155,18 @@ bool AutoTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 void AutoTransform::computeMatrix() const
 {
     if (!_matrixDirty) return;
-    
+
     _cachedMatrix.makeRotate(_rotation);
     _cachedMatrix.postMultTranslate(_position);
     _cachedMatrix.preMultScale(_scale);
     _cachedMatrix.preMultTranslate(-_pivotPoint);
-    
+
     _matrixDirty = false;
 }
 
 void AutoTransform::accept(NodeVisitor& nv)
 {
-    if (nv.validNodeMask(*this)) 
+    if (nv.validNodeMask(*this))
     {
         // if app traversal update the frame count.
         if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR)
@@ -190,8 +190,8 @@ void AutoTransform::accept(NodeVisitor& nv)
                     height = viewport->height();
                 }
 
-                osg::Vec3d eyePoint = cs->getEyeLocal(); 
-                osg::Vec3d localUp = cs->getUpLocal(); 
+                osg::Vec3d eyePoint = cs->getEyeLocal();
+                osg::Vec3d localUp = cs->getUpLocal();
                 osg::Vec3d position = getPosition();
 
                 const osg::Matrix& projection = *(cs->getProjectionMatrix());
@@ -215,30 +215,30 @@ void AutoTransform::accept(NodeVisitor& nv)
                     {
                         doUpdate = true;
                     }
-                    else if (projection != _previousProjection) 
+                    else if (projection != _previousProjection)
                     {
                         doUpdate = true;
-                    }                
-                    else if (position != _previousPosition) 
-                    { 
-                        doUpdate = true; 
-                    } 
+                    }
+                    else if (position != _previousPosition)
+                    {
+                        doUpdate = true;
+                    }
                 }
                 _firstTimeToInitEyePoint = false;
 
                 if (doUpdate)
-                {            
+                {
 
                     if (getAutoScaleToScreen())
                     {
                         double size = 1.0/cs->pixelSize(getPosition(),0.48f);
 
                         if (_autoScaleTransitionWidthRatio>0.0)
-                        { 
+                        {
                             if (_minimumScale>0.0)
                             {
                                 double j = _minimumScale;
-                                double i = (_maximumScale<DBL_MAX) ? 
+                                double i = (_maximumScale<DBL_MAX) ?
                                             _minimumScale+(_maximumScale-_minimumScale)*_autoScaleTransitionWidthRatio :
                                             _minimumScale*(1.0+_autoScaleTransitionWidthRatio);
                                 double c = 1.0/(4.0*(i-j));
@@ -263,9 +263,9 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                                 if (size>p) size = _maximumScale;
                                 else if (size>m) size = a + b*size + c*(size*size);
-                            }        
+                            }
                         }
-                        
+
                         setScale(size);
                     }
 
@@ -275,7 +275,7 @@ void AutoTransform::accept(NodeVisitor& nv)
                         osg::Quat rotation;
                         osg::Vec3d scale;
                         osg::Quat so;
-                        
+
                         cs->getModelViewMatrix()->decompose( translation, rotation, scale, so );
 
                         setRotation(rotation.inverse());
@@ -350,7 +350,7 @@ void AutoTransform::accept(NodeVisitor& nv)
                                 }
                                 break;
                             }
-                            case(ROTATE_TO_AXIS): // need to implement 
+                            case(ROTATE_TO_AXIS): // need to implement
                             {
                                 float ev_side = ev*_side;
                                 float ev_normal = ev*_normal;

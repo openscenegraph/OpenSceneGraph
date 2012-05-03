@@ -32,7 +32,7 @@ bool VariableRateCounter_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     return itAdvanced;
 }
 
@@ -42,6 +42,6 @@ bool VariableRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &f
 
     osgParticle::rangef r = myobj.getRateRange();
     fw.indent() << "rateRange " << r.minimum << " " << r.maximum << std::endl;
-    
+
     return true;
 }

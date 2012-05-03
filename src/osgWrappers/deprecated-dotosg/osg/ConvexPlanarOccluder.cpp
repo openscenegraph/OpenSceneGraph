@@ -52,9 +52,9 @@ bool ConvexPlanarOccluder_readLocalData(Object& obj, Input& fr)
         {
             int capacity;
             fr[1].getInt(capacity);
-            
+
             vertexList.reserve(capacity);
-            
+
             fr += 3;
         }
 
@@ -81,7 +81,7 @@ bool ConvexPlanarOccluder_readLocalData(Object& obj, Input& fr)
     while ((matchFirst=fr.matchSequence("Hole {")) || fr.matchSequence("Hole %i {"))
     {
         holeList.push_back(ConvexPlanarPolygon());
-        
+
         ConvexPlanarPolygon& cpp = holeList.back();
         ConvexPlanarPolygon::VertexList& vertexList = cpp.getVertexList();
 
@@ -96,9 +96,9 @@ bool ConvexPlanarOccluder_readLocalData(Object& obj, Input& fr)
         {
             int capacity;
             fr[1].getInt(capacity);
-            
+
             vertexList.reserve(capacity);
-            
+
             fr += 3;
         }
 
@@ -141,11 +141,11 @@ bool ConvexPlanarOccluder_writeLocalData(const Object& obj, Output& fw)
         {
             fw.indent() << (*itr)[0] << ' ' << (*itr)[1] << ' ' << (*itr)[2] << std::endl;
         }
-        
+
         fw.moveOut();
         fw.indent()<<"}"<< std::endl;
     }
-    
+
     // write out any holes.
     const ConvexPlanarOccluder::HoleList& holeList = cpo.getHoleList();
     for(ConvexPlanarOccluder::HoleList::const_iterator holeItr=holeList.begin();
@@ -156,18 +156,18 @@ bool ConvexPlanarOccluder_writeLocalData(const Object& obj, Output& fw)
 
         fw.indent() << "Hole " << vertexList.size() << "{"<< std::endl;
         fw.moveIn();
-        
+
         for(ConvexPlanarPolygon::VertexList::const_iterator itr=vertexList.begin();
             itr!=vertexList.end();
             ++itr)
         {
             fw.indent() << (*itr)[0] << ' ' << (*itr)[1] << ' ' << (*itr)[2] << std::endl;
         }
-        
+
         fw.moveOut();
         fw.indent()<<"}"<< std::endl;
     }
-    
+
 
     return true;
 }

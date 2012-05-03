@@ -11,13 +11,13 @@ static bool checkInfluenceMap( const osgAnimation::RigGeometry& geom )
 static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry& geom )
 {
     osgAnimation::VertexInfluenceMap* map = new osgAnimation::VertexInfluenceMap;
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string name;
         unsigned int viSize = 0;
-        is >> osgDB::PROPERTY("VertexInfluence") >> name; viSize = is.readSize(); is >> osgDB::BEGIN_BRACKET;
-        
+        is >> is.PROPERTY("VertexInfluence") >> name; viSize = is.readSize(); is >> is.BEGIN_BRACKET;
+
         osgAnimation::VertexInfluence vi;
         vi.setName( name );
         vi.reserve( viSize );
@@ -29,10 +29,10 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
             vi.push_back( osgAnimation::VertexIndexWeight(index, weight) );
         }
         (*map)[name] = vi;
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
-    is >> osgDB::END_BRACKET;
-    
+    is >> is.END_BRACKET;
+
     if ( !map->empty() ) geom.setInfluenceMap( map );
     return true;
 }
@@ -40,24 +40,24 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
 static bool writeInfluenceMap( osgDB::OutputStream& os, const osgAnimation::RigGeometry& geom )
 {
     const osgAnimation::VertexInfluenceMap* map = geom.getInfluenceMap();
-    os.writeSize(map->size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(map->size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osgAnimation::VertexInfluenceMap::const_iterator itr=map->begin();
           itr!=map->end(); ++itr )
     {
         std::string name = itr->first;
         const osgAnimation::VertexInfluence& vi = itr->second;
         if ( name.empty() ) name = "Empty";
-        
-        os << osgDB::PROPERTY("VertexInfluence") << name; os.writeSize(vi.size()) ; os << osgDB::BEGIN_BRACKET << std::endl;
+
+        os << os.PROPERTY("VertexInfluence") << name; os.writeSize(vi.size()) ; os << os.BEGIN_BRACKET << std::endl;
 
         for ( osgAnimation::VertexInfluence::const_iterator vitr=vi.begin();
               vitr != vi.end(); ++vitr )
         {
             os << vitr->first << vitr->second << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

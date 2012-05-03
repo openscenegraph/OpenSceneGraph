@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,34 +33,34 @@ class OSGSIM_EXPORT ElevationSlice
 {
     public :
 
-    
+
         ElevationSlice();
-        
-        /** Set the start point of the slice.*/        
+
+        /** Set the start point of the slice.*/
         void setStartPoint(const osg::Vec3d& startPoint) { _startPoint = startPoint; }
 
-        /** Get the start point of the slice.*/        
+        /** Get the start point of the slice.*/
         const osg::Vec3d& getStartPoint() const { return _startPoint; }
-        
-        /** Set the end point of the slice.*/        
+
+        /** Set the end point of the slice.*/
         void setEndPoint(const osg::Vec3d& endPoint) { _endPoint = endPoint; }
 
-        /** Get the end point of the slice.*/        
+        /** Get the end point of the slice.*/
         const osg::Vec3d& getEndPoint() const { return _endPoint; }
 
-        
+
         typedef std::vector<osg::Vec3d> Vec3dList;
-        
+
         /** Get the intersections in the form of a vector of Vec3d. */
         const Vec3dList& getIntersections() const  { return _intersections; }
 
         typedef std::pair<double,double> DistanceHeight;
         typedef std::vector<DistanceHeight> DistanceHeightList;
-        
+
         /** Get the intersections in the form a vector of pair<double,double> representing distance along the slice and height. */
         const DistanceHeightList& getDistanceHeightIntersections() const { return _distanceHeightIntersections; }
-        
-       
+
+
         /** Compute the intersections with the specified scene graph, the results are stored in vectors of Vec3d.
           * Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric,
           * with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode.
@@ -69,8 +69,8 @@ class OSGSIM_EXPORT ElevationSlice
 
         /** Compute the vertical distance between the specified scene graph and a single HAT point.*/
         static Vec3dList computeElevationSlice(osg::Node* scene, const osg::Vec3d& startPoint, const osg::Vec3d& endPoint, osg::Node::NodeMask traversalMask=0xffffffff);
-        
-        
+
+
         /** Clear the database cache.*/
         void clearDatabaseCache() { if (_dcrc.valid()) _dcrc->clearDatabaseCache(); }
 
@@ -83,13 +83,13 @@ class OSGSIM_EXPORT ElevationSlice
         DatabaseCacheReadCallback* getDatabaseCacheReadCallback() { return _dcrc.get(); }
 
     protected :
-    
-    
+
+
         osg::Vec3d                              _startPoint;
         osg::Vec3d                              _endPoint;
         Vec3dList                               _intersections;
         DistanceHeightList                      _distanceHeightIntersections;
-        
+
         osg::ref_ptr<DatabaseCacheReadCallback> _dcrc;
         osgUtil::IntersectionVisitor            _intersectionVisitor;
 

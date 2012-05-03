@@ -1,14 +1,14 @@
 //
 // Copyright (C) 2007 Skew Matrix Software LLC (http://www.skew-matrix.com)
 //
-// This library is open source and may be redistributed and/or modified under  
-// the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+// This library is open source and may be redistributed and/or modified under
+// the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
 // (at your option) any later version.  The full license is in LICENSE file
 // included with this distribution, and on the openscenegraph.org website.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // OpenSceneGraph Public License for more details.
 //
 
@@ -244,7 +244,7 @@ struct ClearQueriesCallback : public osg::Camera::DrawCallback
 };
 
 
-// static cache of deleted query objects which can only 
+// static cache of deleted query objects which can only
 // be completely deleted once the appropriate OpenGL context
 // is set.
 typedef std::list< GLuint > QueryObjectList;
@@ -439,7 +439,7 @@ QueryGeometry::flushDeletedQueryObjects( unsigned int contextID, double /*curren
             elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
-        
+
     availableTime -= elapsedTime;
 }
 

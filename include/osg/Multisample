@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -45,13 +45,13 @@ class OSG_EXPORT Multisample : public StateAttribute
 
         enum Mode
         {
-            FASTEST = GL_FASTEST, 
+            FASTEST = GL_FASTEST,
             NICEST = GL_NICEST,
-            DONT_CARE = GL_DONT_CARE 
+            DONT_CARE = GL_DONT_CARE
         };
 
         Multisample();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Multisample(const Multisample& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(trans,copyop),
@@ -60,7 +60,7 @@ class OSG_EXPORT Multisample : public StateAttribute
             _mode(trans._mode) {}
 
         META_StateAttribute(osg, Multisample,MULTISAMPLE);
-        
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {
@@ -76,14 +76,14 @@ class OSG_EXPORT Multisample : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        void setSampleCoverage(float coverage, bool invert) 
+        void setSampleCoverage(float coverage, bool invert)
         {
-            _coverage = coverage; 
+            _coverage = coverage;
             _invert = invert;
         }
         inline void setCoverage(float coverage) { _coverage=coverage; }
         inline float getCoverage() const { return _coverage; }
-    
+
         inline void setInvert(bool invert) { _invert=invert; }
         inline bool getInvert() const { return _invert; }
 
@@ -94,42 +94,42 @@ class OSG_EXPORT Multisample : public StateAttribute
 
 
         /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provide convenience wrappers to 
-          * check for the extensions or use the associated functions.*/        
+          * associated function pointers, and provide convenience wrappers to
+          * check for the extensions or use the associated functions.*/
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+
                 void setupGLExtensions(unsigned int contextID);
 
                 void setMultisampleSupported(bool flag) { _isMultisampleSupported=flag; }
                 void setMultisampleFilterHintSupported(bool flag) { _isMultisampleFilterHintSupported=flag; }
                 bool isMultisampleSupported() const { return _isMultisampleSupported; }
                 bool isMultisampleFilterHintSupported() const { return _isMultisampleFilterHintSupported; }
-                
+
                 void glSampleCoverage(GLclampf value, GLboolean invert) const;
 
             protected:
 
                 ~Extensions() {}
-                
+
                 bool    _isMultisampleSupported;
                 bool    _isMultisampleFilterHintSupported;
-                
+
                 typedef void (GL_APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
                 GLSampleCoverageProc _glSampleCoverage;
 
         };
-        
+
         /** Function to call to get the extension of a specified context.
-          * If the Extension object for that context has not yet been created 
+          * If the Extension object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-          * If 'createIfNotInitalized' is true then the Extensions object is 
+          * If 'createIfNotInitalized' is true then the Extensions object is
           * automatically created.  However, in this case the extension object will
           * only be created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,27 +34,27 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         ShadowTechnique();
 
         ShadowTechnique(const ShadowTechnique& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-            
+
         META_Object(osgShadow, ShadowTechnique);
 
         ShadowedScene* getShadowedScene() { return _shadowedScene; }
 
         const ShadowedScene* getShadowedScene() const { return _shadowedScene; }
-        
+
         /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
-        
+
         /** run the update traversal of the ShadowedScene and update any local cached data structures.*/
         virtual void update(osg::NodeVisitor& nv);
-        
+
         /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
         virtual void cull(osgUtil::CullVisitor& cv);
-        
+
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
         virtual void traverse(osg::NodeVisitor& nv);
-        
+
         /** Dirty so that cached data structures are updated.*/
         virtual void dirty() { _dirty = true; }
 
@@ -76,12 +76,12 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         osg::Vec3 computeOrthogonalVector(const osg::Vec3& direction) const;
 
         virtual ~ShadowTechnique();
-        
+
         friend class ShadowedScene;
-        
+
         ShadowedScene*  _shadowedScene;
         bool            _dirty;
-        
+
 };
 
 }

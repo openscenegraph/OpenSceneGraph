@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ namespace osg {
 class OSG_EXPORT LOD : public Group
 {
     public :
-    
+
         LOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -47,7 +47,7 @@ class OSG_EXPORT LOD : public Group
         typedef osg::BoundingSphere::value_type value_type;
 
         virtual void traverse(NodeVisitor& nv);
-        
+
         virtual bool addChild(Node *child);
 
         virtual bool addChild(Node *child, float min, float max);
@@ -56,7 +56,7 @@ class OSG_EXPORT LOD : public Group
 
         typedef std::pair<float,float>  MinMaxPair;
         typedef std::vector<MinMaxPair> RangeList;
-      
+
         /** Modes which control how the center of object should be determined when computing which child is active.*/
         enum CenterMode
         {
@@ -71,18 +71,18 @@ class OSG_EXPORT LOD : public Group
         /** Get how the center of object should be determined when computing which child is active.*/
         CenterMode getCenterMode() const { return _centerMode; }
 
-        /** Sets the object-space point which defines the center of the osg::LOD.  
+        /** Sets the object-space point which defines the center of the osg::LOD.
             center is affected by any transforms in the hierarchy above the osg::LOD.*/
         inline void setCenter(const vec_type& center) { if (_centerMode!=UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED) { _centerMode=USER_DEFINED_CENTER; } _userDefinedCenter = center; }
-        
+
         /** return the LOD center point. */
         inline const vec_type& getCenter() const { if ((_centerMode==USER_DEFINED_CENTER)||(_centerMode==UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED)) return _userDefinedCenter; else return getBound().center(); }
 
 
-        /** Set the object-space reference radius of the volume enclosed by the LOD. 
+        /** Set the object-space reference radius of the volume enclosed by the LOD.
           * Used to determine the bounding sphere of the LOD in the absence of any children.*/
         inline void setRadius(value_type radius) { _radius = radius; }
-        
+
         /** Get the object-space radius of the volume enclosed by the LOD.*/
         inline value_type getRadius() const { return _radius; }
 
@@ -92,7 +92,7 @@ class OSG_EXPORT LOD : public Group
             DISTANCE_FROM_EYE_POINT,
             PIXEL_SIZE_ON_SCREEN
         };
-        
+
         /** Set how the range values should be interpreted when computing which child is active.*/
         void setRangeMode(RangeMode mode) { _rangeMode = mode; }
 
@@ -103,14 +103,14 @@ class OSG_EXPORT LOD : public Group
         /** Sets the min and max visible ranges of range of specific child.
             Values are floating point distance specified in local objects coordinates.*/
         void setRange(unsigned int childNo, float min,float max);
-        
+
         /** returns the min visible range for specified child.*/
         inline float getMinRange(unsigned int childNo) const { return _rangeList[childNo].first; }
 
         /** returns the max visible range for specified child.*/
         inline float getMaxRange(unsigned int childNo) const { return _rangeList[childNo].second; }
-        
-        /** returns the number of ranges currently set. 
+
+        /** returns the number of ranges currently set.
           * An LOD which has been fully set up will have getNumChildren()==getNumRanges(). */
         inline unsigned int getNumRanges() const { return _rangeList.size(); }
 

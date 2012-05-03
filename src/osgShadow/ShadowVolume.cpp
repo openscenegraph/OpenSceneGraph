@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -38,7 +38,7 @@ ShadowVolume::ShadowVolume():
     _dynamicShadowVolumes(false)
 {
     // _drawMode = osgShadow::ShadowVolumeGeometry::GEOMETRY;
-    
+
     OSG_INFO<<"Warning: osgShadow::ShadowVolume technique is still in development, with current limitations that make it unsuitable for deployment. Please contact the osg-users for an update of developements."<<std::endl;
 }
 
@@ -56,9 +56,9 @@ ShadowVolume::~ShadowVolume()
 void ShadowVolume::setDrawMode(osgShadow::ShadowVolumeGeometry::DrawMode drawMode)
 {
     if (_drawMode == drawMode) return;
-    
+
     _drawMode = drawMode;
-    
+
     dirty();
 }
 
@@ -71,8 +71,8 @@ void ShadowVolume::setDynamicShadowVolumes(bool dynamicShadowVolumes)
 void ShadowVolume::init()
 {
     if (!_shadowedScene) return;
-    
-    // get the bounds of the model.    
+
+    // get the bounds of the model.
     osg::ComputeBoundsVisitor cbbv;
     _shadowedScene->osg::Group::traverse(cbbv);
 
@@ -117,7 +117,7 @@ void ShadowVolume::init()
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
         geode->addDrawable(_shadowVolume.get());
     }
-    
+
     {
 
         // first group, render the depth buffer + ambient light contribution
@@ -132,7 +132,7 @@ void ShadowVolume::init()
             _ambientLight->setAmbient(ambient);
             _ambientLight->setDiffuse(zero_colour);
             _ss1->setAttributeAndModes(_ambientLight.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            
+
             _ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
         }
 
@@ -148,7 +148,7 @@ void ShadowVolume::init()
 
         {
             _shadowVolumeStateSet = new osg::StateSet;
-            
+
             osg::Depth* depth = new osg::Depth;
             depth->setWriteMask(false);
             depth->setFunction(osg::Depth::LEQUAL);
@@ -227,7 +227,7 @@ void ShadowVolume::init()
         _shadowedSceneStateSet->setThreadSafeRefUnref(true);
 
     }
-    
+
     _dirty = false;
 }
 
@@ -263,7 +263,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
     }
 
     if (shadowVolumeBin.valid())
-    {        
+    {
         original_bin->setStateSet(_ss1.get());
 
         osgUtil::RenderStage* orig_rs = cv.getRenderStage();
@@ -276,9 +276,9 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         new_rs->setDrawBuffer(orig_rs->getDrawBuffer(), orig_rs->getDrawBufferApplyMask());
         new_rs->setReadBuffer(orig_rs->getReadBuffer(), orig_rs->getReadBufferApplyMask());
         new_rs->setColorMask(orig_rs->getColorMask());
-        
+
         osg::Vec4 lightpos;
-        
+
         osg::ref_ptr<osgUtil::PositionalStateContainer> ps = new osgUtil::PositionalStateContainer;
         new_rs->setPositionalStateContainer(ps.get());
 
@@ -295,24 +295,24 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
                 osg::RefMatrix* matrix = itr->second.get();
                 if (matrix) lightpos = light->getPosition() * (*matrix);
                 else lightpos = light->getPosition();
-                
+
                 selectLight = light;
             }
             else
             {
-                ps->addPositionedAttribute(itr->second.get(), itr->first.get()); 
+                ps->addPositionedAttribute(itr->second.get(), itr->first.get());
             }
         }
-        
+
         _ambientLight->setPosition(lightpos);
 
         orig_rs->addPositionedAttribute(0,_ambientLight.get());
-        
+
         _diffuseLight->setPosition(lightpos);
         if (selectLight)
         {
             _ambientLight->setAmbient(selectLight->getAmbient());
-            
+
             _diffuseLight->setDiffuse(selectLight->getDiffuse());
             _diffuseLight->setSpecular(selectLight->getSpecular());
             _diffuseLight->setDirection(selectLight->getDirection());
@@ -323,17 +323,17 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
             _diffuseLight->setSpotCutoff(selectLight->getSpotCutoff());
         }
         ps->addPositionedAttribute(0, _diffuseLight.get());
-        
+
         if (_lightpos != lightpos && _dynamicShadowVolumes)
         {
             _lightpos = lightpos;
 
             osg::Matrix eyeToWorld;
             eyeToWorld.invert(*cv.getModelViewMatrix());
-            
+
             _occluder->computeShadowVolumeGeometry(lightpos * eyeToWorld, *_shadowVolume);
         }
-        
+
         if (shadowVolumeBin.valid())
         {
             // new_rs->setStateSet(_mainShadowStateSet.get());
@@ -346,7 +346,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         }
     }
 
-   
+
 }
 
 void ShadowVolume::cleanSceneGraph()

@@ -34,15 +34,15 @@ void Drawable::write(DataOutputStream* out)
         out_THROW_EXCEPTION("Drawable::write(): Could not cast this osg::Drawable to an osg::Object.");
 
     // Write Drawable's properties.
-    
+
     // Write stateset if any
     out->writeBool(getStateSet()!=0);
     if (getStateSet())
     {
         out->writeStateSet(getStateSet());
     }
-    
-      
+
+
     osg::ClusterCullingCallback* ccc = dynamic_cast<osg::ClusterCullingCallback*>(getCullCallback());
     out->writeBool(ccc!=0);
     if(ccc)
@@ -107,7 +107,7 @@ void Drawable::read(DataInputStream* in)
             setCullCallback(ccc);
         }
 
-        
+
         if (in->getVersion() >= VERSION_0010)
         {
             if (in->readBool())

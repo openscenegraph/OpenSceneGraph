@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -73,20 +73,20 @@ public:
 
     enum BackdropImplementation
     {
-        /* POLYGON_OFFSET: 
-         * This uses glPolygonOffset to draw the text multiple times to 
-         * create the drop-shadow and outline effects. glPolygonOffset 
+        /* POLYGON_OFFSET:
+         * This uses glPolygonOffset to draw the text multiple times to
+         * create the drop-shadow and outline effects. glPolygonOffset
          * is used to prevent z-fighting of the overlapping text.
          * This probably should have been the best option, but all the ATI
          * cards we have encountered so far have serious problems with this.
          * We see little white holes/artifacts in the rendered glyph textures
          * which move around depending on the viewing angle. For moving text,
          * the moving holes give an extremely unpleasant flickering effect.
-         * Pumping up the "units" parameter in glPolygonOffset can minimize 
+         * Pumping up the "units" parameter in glPolygonOffset can minimize
          * this problem, but two other bad side-effects occur if you do this.
          * First, high values will cause problems with clipping, particularly
          * when there are objects behind the text. The drop-shadows or outline
-         * may be culled because their computed offset is behind the object or 
+         * may be culled because their computed offset is behind the object or
          * z-far plane. Second, there is an additional problem associated with
          * the Z-slope. High values can make large chunks of the backdrop
          * suddenly disappear. This can be reduced by the "factor" parameter.
@@ -95,24 +95,24 @@ public:
          * So there is no perfect solution. With units, you trade off the 'holes'
          * for the large-section clipping.
          * Experimentally, we have found units values from 150-512 to be tolerable
-         * to acceptable with respect to the 'holes'. A factor of .1 seems to 
+         * to acceptable with respect to the 'holes'. A factor of .1 seems to
          * bring down the large clipping problem without creating a new z-fighting
          * problem.
-         * (You can experiment with these numbers by playing with the 
+         * (You can experiment with these numbers by playing with the
          * osg:PolygonOffset multipliers which this backend tries to respect.)
          *
-         * If ATI ever fixes their cards/drivers, then this might become the 
+         * If ATI ever fixes their cards/drivers, then this might become the
          * best option.*/
         POLYGON_OFFSET = 0,
-        
+
         /* NO_DEPTH_BUFFER
          * Instead of using glPolygonOffset to prevent z-fighting, this mode
          * just disables the depth buffer when rendering the text. This allows
-         * the text to be rendered without any z-fighting. The downside to this 
-         * mode is that render order begins to matter and the text will not 
-         * necessarily correctly appear above or behind other objects in the 
+         * the text to be rendered without any z-fighting. The downside to this
+         * mode is that render order begins to matter and the text will not
+         * necessarily correctly appear above or behind other objects in the
          * scene based on depth values.
-         * This mode is best for text that only needs to be ontop and 
+         * This mode is best for text that only needs to be ontop and
          * not obscured by any objects.*/
         NO_DEPTH_BUFFER,
 
@@ -120,26 +120,26 @@ public:
          * This mode is inspired by Paul Martz's OpenGL FAQ, item 13.050.
          * This uses glDepthRange as a substitute for glPolygonOffset.
          * Strangely, experiments on ATI cards seem to produce cleaner results
-         * than when using glPolygonOffset. The trade-off for this is that the 
+         * than when using glPolygonOffset. The trade-off for this is that the
          * backdrop still may be placed too far back and might be culled by objects
          * directly behind the object or by the far z-plane. If ATI ever fixes
-         * the glPolygonOffset problem, polygon offset is probably a slightly 
-         * better solution because you can use smaller offsets. But with the 
+         * the glPolygonOffset problem, polygon offset is probably a slightly
+         * better solution because you can use smaller offsets. But with the
          * current ATI problem, this option may be preferable.*/
         DEPTH_RANGE,
         /* STENCIL_BUFFER
          * (Assuming the backend is written correctly,) the Stencil Buffer is
          * the most "correct" and reliable way of producing backdrop text.
-         * The stencil buffer is a multipass system that allows writing to the 
+         * The stencil buffer is a multipass system that allows writing to the
          * same z-values without needing to resort to offsets. This implementation
          * should not have any of the problems associated with the 3 previous
-         * implementations. But the trade-off for this mode is that without 
-         * hardware acceleration for the stencil buffer, rendering will be 
-         * extremely slow. (There is also potentially more overhead for this 
-         * algorithm so it could be slower than the other implementations. 
+         * implementations. But the trade-off for this mode is that without
+         * hardware acceleration for the stencil buffer, rendering will be
+         * extremely slow. (There is also potentially more overhead for this
+         * algorithm so it could be slower than the other implementations.
          * Benchmarking would be required to determine if the speed differences
-         * are significant on your particular hardware.) This mode is best for 
-         * when quality is important and stencil buffer hardware acceleration 
+         * are significant on your particular hardware.) This mode is best for
+         * when quality is important and stencil buffer hardware acceleration
          * is available.*/
         STENCIL_BUFFER,
 
@@ -155,17 +155,17 @@ public:
     };
 
     /**
-     * BackdropType gives you a background shadow text behind your regular 
-     * text. This helps give text extra contrast which can be useful when 
-     * placing text against noisy backgrounds. 
+     * BackdropType gives you a background shadow text behind your regular
+     * text. This helps give text extra contrast which can be useful when
+     * placing text against noisy backgrounds.
      * The color of the background shadow text is specified by setBackdropColor().
-     * DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of 
+     * DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of
      * the normal text. Other DROW_SHADOW_* modes do the same for their repective directions.
      * OUTLINE will draw backdrop text so that it appears the text has an outline
      * or border around the normal text. This mode is particularly useful against
-     * really noisy backgrounds that may put text on top of things that have 
-     * all types of colors which you don't have control over. 
-     * Some real world examples of this general technique in use that I know of 
+     * really noisy backgrounds that may put text on top of things that have
+     * all types of colors which you don't have control over.
+     * Some real world examples of this general technique in use that I know of
      * are Google Earth, Sid Meier's Pirates (2004 Remake), and Star Control 2 (PC 1993).
      * The default is NONE.
      */
@@ -173,8 +173,8 @@ public:
 
     BackdropType getBackdropType() const { return _backdropType; }
 
-    /** 
-     * Sets the amount text is offset to create the backdrop/shadow effect. 
+    /**
+     * Sets the amount text is offset to create the backdrop/shadow effect.
      * Set the value too high and for example, in OUTLINE mode you will get a "Brady Bunch"
      * effect where you see duplicates of the text in a 3x3 grid.
      * Set the value too small and you won't see anything.
@@ -185,7 +185,7 @@ public:
      * to your specific font and display characteristics).
      * Note that the text bounding boxes are updated to include backdrop offsets.
      * However, other metric information such as getCharacterHeight() are unaffected
-     * by this. This means that individual glyph spacing (kerning?) are unchanged 
+     * by this. This means that individual glyph spacing (kerning?) are unchanged
      * even when this mode is used.
      * The default is 0.07 (7% offset).
      */
@@ -213,7 +213,7 @@ public:
      * Unfortunately, at this time, there is no "perfect" rendering solution
      * so this function is provided to let you 'pick your poison'. Each
      * implementation has trade-offs. See BackdropImplementation enum
-     * docs for details.*/ 
+     * docs for details.*/
      void setBackdropImplementation(BackdropImplementation implementation);
 
      BackdropImplementation getBackdropImplementation() const { return _backdropImplementation; }
@@ -229,17 +229,17 @@ public:
 
     /**
      * This sets different types of text coloring modes.
-     * When the coloring mode is not set to SOLID, the 
+     * When the coloring mode is not set to SOLID, the
      * colors specified in setColorGradientCorners() determine
      * the colors for the text.
      * When the gradient mode is OVERALL, the coloring scheme
      * attempts to approximate the effect as if the entire text box/region
      * were a single polygon and you had applied colors to each of the four
      * corners with GL_SMOOTH enabled. In this mode, OpenGL interpolates
-     * the colors across the polygon, and this is what OVERALL tries to 
-     * emulate. This can be used to give nice embellishments on things 
+     * the colors across the polygon, and this is what OVERALL tries to
+     * emulate. This can be used to give nice embellishments on things
      * like logos and names.
-     * PER_CHARACTER is similar to OVERALL except that it applies the 
+     * PER_CHARACTER is similar to OVERALL except that it applies the
      * color interpolation to the four corners of each character instead
      * of across the overall text box.
      * The default is SOLID (a.k.a. off).
@@ -250,7 +250,7 @@ public:
 
     /**
      * Used only for gradient mode, let's you specify the colors of the 4 corners.
-     * If ColorGradients are off, these values are ignored (and the value from setColor() 
+     * If ColorGradients are off, these values are ignored (and the value from setColor()
      * is the only one that is relevant.
      */
     void setColorGradientCorners(const osg::Vec4& topLeft, const osg::Vec4& bottomLeft, const osg::Vec4& bottomRight, const osg::Vec4& topRight);
@@ -261,7 +261,7 @@ public:
     const osg::Vec4& getColorGradientTopRight() const { return _colorGradientTopRight; }
 
 
-    
+
     /** Draw the text.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
@@ -340,7 +340,7 @@ public:
         return &itGlyphQuad->second;
     }
 
-    const TextureGlyphQuadMap& getTextureGlyphQuadMap() const 
+    const TextureGlyphQuadMap& getTextureGlyphQuadMap() const
     {
         return _textureGlyphQuadMap;
     }
@@ -354,20 +354,20 @@ protected:
     const Font* getActiveFont() const;
 
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
-    
+
     // members which have public access.
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     mutable TextureGlyphQuadMap            _textureGlyphQuadMap;
-    
+
     void computeGlyphRepresentation();
 
     // internal caches of the positioning of the text.
-    
+
     bool computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const;
-    
+
     virtual void computePositions(unsigned int contextID) const;
-    
+
     void computeBackdropPositions(unsigned int contextID) const;
     void computeBackdropBoundingBox() const;
     void computeBoundingBoxMargin() const;
@@ -385,7 +385,7 @@ protected:
     void renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colorMultiplier) const;
-    
+
     bool _enableDepthWrites;
 
     BackdropType _backdropType;

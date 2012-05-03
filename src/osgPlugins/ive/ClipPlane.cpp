@@ -30,9 +30,9 @@ void ClipPlane::write(DataOutputStream* out){
     out_THROW_EXCEPTION("ClipPlane::write(): Could not cast this osg::ClipPlane to an osg::Object.");
 
   // write ClipPlane's properties
-  
+
   out->writeVec4d(getClipPlane());
-  
+
   out->writeUInt(getClipPlaneNum());
 
 }

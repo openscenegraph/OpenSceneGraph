@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,7 +31,7 @@ bool EdgeCollector::Point::isBoundaryPoint() const
         if ((triangle->_e1->_p1==this || triangle->_e1->_p2==this) && triangle->_e1->isBoundaryEdge()) return true;
         if ((triangle->_e2->_p1==this || triangle->_e2->_p2==this) && triangle->_e2->isBoundaryEdge()) return true;
         if ((triangle->_e3->_p1==this || triangle->_e3->_p2==this) && triangle->_e3->isBoundaryEdge()) return true;
-    
+
         //if ((*itr)->isBoundaryTriangle()) return true;
     }
     return false;
@@ -46,13 +46,13 @@ void EdgeCollector::Edge::clear()
     _triangles.clear();
 }
 
-        
-        
+
+
 bool EdgeCollector::Edge::operator < ( const Edge& rhs) const
 {
     if (dereference_check_less(_p1,rhs._p1)) return true;
     if (dereference_check_less(rhs._p1,_p1)) return false;
-    
+
     return dereference_check_less(_p2,rhs._p2);
 }
 
@@ -95,7 +95,7 @@ void EdgeCollector::Triangle::clear()
     _op1 = 0;
     _op2 = 0;
     _op3 = 0;
-    
+
     _e1 = 0;
     _e2 = 0;
     _e3 = 0;
@@ -107,14 +107,14 @@ bool EdgeCollector::Triangle::operator < (const Triangle& rhs) const
     if (dereference_check_less(rhs._p1,_p1)) return false;
 
 
-    const Point* lhs_lower = dereference_check_less(_p2,_p3) ? _p2.get() : _p3.get(); 
-    const Point* rhs_lower = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p2.get() : rhs._p3.get(); 
+    const Point* lhs_lower = dereference_check_less(_p2,_p3) ? _p2.get() : _p3.get();
+    const Point* rhs_lower = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p2.get() : rhs._p3.get();
 
     if (dereference_check_less(lhs_lower,rhs_lower)) return true;
     if (dereference_check_less(rhs_lower,lhs_lower)) return false;
 
-    const Point* lhs_upper = dereference_check_less(_p2,_p3) ? _p3.get() : _p2.get(); 
-    const Point* rhs_upper = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p3.get() : rhs._p2.get(); 
+    const Point* lhs_upper = dereference_check_less(_p2,_p3) ? _p3.get() : _p2.get();
+    const Point* rhs_upper = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p3.get() : rhs._p2.get();
 
     return dereference_check_less(lhs_upper,rhs_upper);
 }
@@ -123,7 +123,7 @@ bool EdgeCollector::Triangle::operator < (const Triangle& rhs) const
 void EdgeCollector::Triangle::setOrderedPoints(Point* p1, Point* p2, Point* p3)
 {
     Point* points[3];
-    
+
     _op1 = points[0] = p1;
     _op2 = points[1] = p2;
     _op3 = points[2] = p3;
@@ -136,45 +136,45 @@ void EdgeCollector::Triangle::setOrderedPoints(Point* p1, Point* p2, Point* p3)
     _p1 = points[lowest];
     _p2 = points[(lowest+1)%3];
     _p3 = points[(lowest+2)%3];
-    
+
     _plane.set(_op1->_vertex,_op2->_vertex,_op3->_vertex);
 }
 
 
 
-            
+
 osg::UIntArray * EdgeCollector::Edgeloop::toIndexArray() const
 {
     osg::UIntArray * indexArray = new osg::UIntArray;
-    
+
     EdgeList::const_iterator it = _edgeList.begin(), end = _edgeList.end();
-    
-    for (;it != end; ++it) 
+
+    for (;it != end; ++it)
         indexArray->push_back((*it)->_op1->_index);
-    
+
     return indexArray;
 }
-    
+
 EdgeCollector::Triangle* EdgeCollector::addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
 {
     //OSG_NOTICE<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
 
     // detect if triangle is degenerate.
     if (p1==p2 || p2==p3 || p1==p3) return 0;
-    if ((_originalPointList[p1]->_vertex == _originalPointList[p2]->_vertex) || 
+    if ((_originalPointList[p1]->_vertex == _originalPointList[p2]->_vertex) ||
         (_originalPointList[p2]->_vertex == _originalPointList[p3]->_vertex) ||
         (_originalPointList[p3]->_vertex == _originalPointList[p1]->_vertex)) return 0;
-    
+
     Triangle* triangle = new Triangle;
 
     triangle->setOrderedPoints(addPoint(triangle, p1), addPoint(triangle, p2), addPoint(triangle, p3));
-   
+
     triangle->_e1 = addEdge(triangle, triangle->_op1.get(), triangle->_op2.get());
     triangle->_e2 = addEdge(triangle, triangle->_op2.get(), triangle->_op3.get());
     triangle->_e3 = addEdge(triangle, triangle->_op3.get(), triangle->_op1.get());
-    
+
     _triangleSet.insert(triangle);
-    
+
     return triangle;
 }
 
@@ -184,10 +184,10 @@ EdgeCollector::Triangle* EdgeCollector::addTriangle(Point* p1, Point* p2, Point*
 
     // detect if triangle is degenerate.
     if (p1==p2 || p2==p3 || p1==p3) return 0;
-    if ((p1->_vertex == p2->_vertex) || 
+    if ((p1->_vertex == p2->_vertex) ||
         (p2->_vertex == p3->_vertex) ||
         (p3->_vertex == p1->_vertex)) return 0;
-        
+
         Triangle* triangle = new Triangle;
 
         triangle->setOrderedPoints(addPoint(triangle, p1), addPoint(triangle, p2), addPoint(triangle, p3));
@@ -195,19 +195,19 @@ EdgeCollector::Triangle* EdgeCollector::addTriangle(Point* p1, Point* p2, Point*
         triangle->_e1 = addEdge(triangle, triangle->_op1.get(), triangle->_op2.get());
         triangle->_e2 = addEdge(triangle, triangle->_op2.get(), triangle->_op3.get());
         triangle->_e3 = addEdge(triangle, triangle->_op3.get(), triangle->_op1.get());
-        
+
         _triangleSet.insert(triangle);
 
         return triangle;
     }
 
-   
+
 EdgeCollector::Edge* EdgeCollector::addEdge(Triangle* triangle, Point* p1, Point* p2)
 {
         // OSG_NOTICE<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
     osg::ref_ptr<Edge> edge = new Edge;
     edge->setOrderedPoints(p1,p2);
-    
+
     EdgeSet::iterator itr = _edgeSet.find(edge);
     if (itr==_edgeSet.end())
     {
@@ -219,9 +219,9 @@ EdgeCollector::Edge* EdgeCollector::addEdge(Triangle* triangle, Point* p1, Point
         // OSG_NOTICE<<"          reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
         edge = *itr;
     }
-    
+
     edge->addTriangle(triangle);
-    
+
     return edge.get();
 }
 
@@ -230,7 +230,7 @@ EdgeCollector::Edge* EdgeCollector::addEdge(Triangle* triangle, Point* p1, Point
 
 EdgeCollector::Point* EdgeCollector::addPoint(Triangle* triangle, Point* point)
 {
-    
+
     PointSet::iterator itr = _pointSet.find(point);
     if (itr==_pointSet.end())
     {
@@ -244,7 +244,7 @@ EdgeCollector::Point* EdgeCollector::addPoint(Triangle* triangle, Point* point)
     }
 
     point->_triangles.insert(triangle);
-    
+
     return point;
 }
 
@@ -259,16 +259,16 @@ void EdgeCollector::getBoundaryEdgeList(EdgeList & el)
 bool EdgeCollector::extractBoundaryEdgeloop(EdgeList & el, Edgeloop & edgeloop)
 {
     if (el.empty()) return false;
-    
-    
+
+
     osg::ref_ptr<Edge> current = el.back();
     el.pop_back();
-    
+
     // ** init the Edgeloop
     edgeloop._edgeList.push_back(current.get());
-    
-    
-    
+
+
+
     bool done = false;
     while (!done)
     {
@@ -285,7 +285,7 @@ bool EdgeCollector::extractBoundaryEdgeloop(EdgeList & el, Edgeloop & edgeloop)
                 ++it;
             }
         }
-        
+
         if (!found)
         {
             OSG_WARN << "extractBoundaryEdgeloop : unable to close edge loop" << std::endl;
@@ -296,7 +296,7 @@ bool EdgeCollector::extractBoundaryEdgeloop(EdgeList & el, Edgeloop & edgeloop)
             edgeloop._edgeList.push_back(it->get());
             current = it->get();
             el.erase(it);
-            
+
             if (edgeloop.isClosed()) done = true;
         }
     }
@@ -308,7 +308,7 @@ bool EdgeCollector::extractBoundaryEdgeloopList(EdgeList & el, EdgeloopList & ed
     while (!el.empty())
     {
         osg::ref_ptr<Edgeloop> edgeloop(new Edgeloop);
-        
+
         if (extractBoundaryEdgeloop(el, *edgeloop))
             edgeloopList.push_back(edgeloop);
         else
@@ -316,12 +316,12 @@ bool EdgeCollector::extractBoundaryEdgeloopList(EdgeList & el, EdgeloopList & ed
     }
     return true;
 }
-    
 
 
 
-    
-    
+
+
+
 
 struct CollectTriangleOperator
 {
@@ -329,8 +329,8 @@ struct CollectTriangleOperator
     CollectTriangleOperator():_ec(0) {}
 
     void setEdgeCollector(EdgeCollector* ec) { _ec = ec; }
-    
-    EdgeCollector* _ec;    
+
+    EdgeCollector* _ec;
 
     // for use  in the triangle functor.
     inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
@@ -348,89 +348,89 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
     public:
         CopyVertexArrayToPointsVisitor(EdgeCollector::PointList& pointList):
             _pointList(pointList) {}
-        
+
         virtual void apply(osg::Vec2Array& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
-                osgUtil::ConvertVec<osg::Vec2, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+
+                osgUtil::ConvertVec<osg::Vec2, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);
             }
         }
 
         virtual void apply(osg::Vec3Array& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
+
                 _pointList[i]->_vertex = array[i];
             }
         }
-        
+
         virtual void apply(osg::Vec4Array& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
-                osgUtil::ConvertVec<osg::Vec4, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+
+                osgUtil::ConvertVec<osg::Vec4, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);
             }
         }
 
         virtual void apply(osg::Vec2dArray& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
-                osgUtil::ConvertVec<osg::Vec2d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+
+                osgUtil::ConvertVec<osg::Vec2d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);
             }
         }
-        
+
         virtual void apply(osg::Vec3dArray& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
+
                 _pointList[i]->_vertex = array[i];
             }
         }
-        
+
         virtual void apply(osg::Vec4dArray& array)
         {
             if (_pointList.size()!=array.size()) return;
-        
-            for(unsigned int i=0;i<_pointList.size();++i) 
+
+            for(unsigned int i=0;i<_pointList.size();++i)
             {
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
-                
-                osgUtil::ConvertVec<osg::Vec4d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+
+                osgUtil::ConvertVec<osg::Vec4d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);
             }
         }
-        
+
         EdgeCollector::PointList& _pointList;
-        
+
     protected:
-    
+
         CopyVertexArrayToPointsVisitor& operator = (const CopyVertexArrayToPointsVisitor&) { return *this; }
 };
 
@@ -447,7 +447,7 @@ EdgeCollector::~EdgeCollector()
 void EdgeCollector::setGeometry(osg::Geometry* geometry)
 {
     _geometry = geometry;
-    
+
     // check to see if vertex attributes indices exists, if so expand them to remove them
     if (_geometry->suitableForOptimization())
     {
@@ -457,27 +457,27 @@ void EdgeCollector::setGeometry(osg::Geometry* geometry)
     }
 
     unsigned int numVertices = geometry->getVertexArray()->getNumElements();
-        
+
     _originalPointList.resize(numVertices);
-    
+
     // copy vertices across to local point list
     CopyVertexArrayToPointsVisitor copyVertexArrayToPoints(_originalPointList);
     _geometry->getVertexArray()->accept(copyVertexArrayToPoints);
- 
+
     CollectTriangleIndexFunctor collectTriangles;
     collectTriangles.setEdgeCollector(this);
-    
+
     _geometry->accept(collectTriangles);
 }
- 
+
 // ** search BoundaryEdgeloop in the geometry, extrude this loop
 // **  and create primitiveSet to link original loop and extruded loop
 void EdgeCollector::getEdgeloopIndexList(IndexArrayList & ial)
-{   
+{
     // ** collect Boundary Edge
     EdgeList edgeList;
     getBoundaryEdgeList(edgeList);
-    
+
     // ** collect Edgeloop
     EdgeloopList edgeloopList;
     if (extractBoundaryEdgeloopList(edgeList, edgeloopList) == false)
@@ -485,7 +485,7 @@ void EdgeCollector::getEdgeloopIndexList(IndexArrayList & ial)
         OSG_WARN << "EdgeCollector: fail to collect Edgeloop.\n\n\n" << std::endl;
         return;
     }
-    
+
     // ** get IndexArray of each Edgeloop
     EdgeloopList::iterator elIt, elEnd = edgeloopList.end();
     for (elIt = edgeloopList.begin(); elIt != elEnd; ++elIt)

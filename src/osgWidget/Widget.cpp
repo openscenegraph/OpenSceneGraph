@@ -160,12 +160,12 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
     // valid, however.
     if(_coordMode == CM_RELATIVE) {
         XYCoord size;
-        
+
         if(_parent) size = _parent->getSize();
 
         if(x >= 0.0f && x <= 1.0f) {
             _relCoords[0] = x;
-            
+
             x = size.x() * x;
         }
 
@@ -174,16 +174,16 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
 
             y = size.y() * y;
         }
-        
+
         if(w >= 0.0f && w <= 1.0f) {
             _relCoords[2] = w;
-            
+
             w = size.x() * w;
         }
-        
+
         if(h >= 0.0f && h <= 1.0f) {
             _relCoords[3] = h;
-            
+
             h = size.y() * h;
         }
     }
@@ -217,7 +217,7 @@ void Widget::setColor(color_type r, color_type g, color_type b, color_type a, Co
 
 void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Corner p) {
     ColorArray* cols = _cols();
-    
+
     if(p == ALL_CORNERS) {
         (*cols)[LL] += Color(r, g, b, a);
         (*cols)[LR] += Color(r, g, b, a);
@@ -263,7 +263,7 @@ void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_t
     XYCoord t(x / tw, y / tw);
 
     (*texs)[LL] = t;
-    
+
     // Set the LOWER_RIGHT point.
     t += XYCoord(w / tw, 0.0f);
 
@@ -297,7 +297,7 @@ void Widget::setTexCoordWrapVertical() {
     osg::Texture* texture = _texture();
 
     if(!image || !texture || image->t() == 0.0f) return;
-    
+
     texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
 
     setTexCoord(0.0f, getHeight() / image->t(), UPPER_LEFT);
@@ -318,11 +318,11 @@ bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
     }
 
     osg::Texture* texture = 0;
-    
+
     if(useTextRect) texture = new osg::TextureRectangle();
-    
+
     else texture = new osg::Texture2D();
-    
+
     if(!texture) return false;
 
     texture->setImage(0, image);
@@ -431,19 +431,19 @@ void Widget::addSize(point_type w, point_type h) {
             MACRO_WIDGET_H(verts) + h
         );
     }
-    
+
     else setDimensions(-1.0f, -1.0f, _relCoords[2] + w, _relCoords[3] + h);
 }
 
 point_type Widget::getWidth() const {
     const PointArray* verts = _verts();
-    
+
     return MACRO_WIDGET_W(verts);
 }
 
 point_type Widget::getHeight() const {
     const PointArray* verts = _verts();
-    
+
     return MACRO_WIDGET_H(verts);
 }
 
@@ -512,14 +512,14 @@ Color Widget::getImageColorAtXY(point_type x, point_type y) const {
 
     point_type X = ((x / getWidth()) * width) + (*texs)[LL].x();
     point_type Y = (((getHeight() - y) / getHeight()) * height) + (*texs)[UR].y();
-    
+
     return image->getColor(TexCoord(X, Y));
 }
 
 bool Widget::isPaddingUniform() const {
     return
         _padLeft == _padRight &&
-        _padLeft == _padTop && 
+        _padLeft == _padTop &&
         _padLeft == _padBottom
     ;
 }

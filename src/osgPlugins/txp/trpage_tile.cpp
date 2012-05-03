@@ -47,7 +47,7 @@ void trpgTileTable::Reset()
     valid = true;
     currentRow = -1;
     currentCol = -1;
-   
+
 }
 
 // Destructor
@@ -71,7 +71,7 @@ void trpgTileTable::SetNumLod(int numLod)
 
 void trpgTileTable::SetNumTiles(int nx,int ny,int lod)
 {
-    
+
     if(localBlock) {
         LodInfo &li = lodInfo[lod];
         li.numX = nx;  li.numY = ny;
@@ -114,7 +114,7 @@ void trpgTileTable::SetNumTiles(int nx,int ny,int lod)
 }
 void trpgTileTable::SetTile(int x,int y,int lod,trpgwAppAddress &ref,float32 zmin,float32 zmax)
 {
-    if (lod < 0 || lod >= static_cast<int>(lodInfo.size())) 
+    if (lod < 0 || lod >= static_cast<int>(lodInfo.size()))
         return;
     if (mode == External)
         return;
@@ -159,14 +159,14 @@ bool trpgTileTable::GetTile(int x,int y,int lod,trpgwAppAddress &ref,float32 &zm
     const LodInfo &li = lodInfo[lod];
     int loc;
     if(localBlock) {
-        loc = 0;            
+        loc = 0;
     }
     else {
         if (x < 0 || x >= li.numX || y < 0 || y >= li.numY)
             return false;
         loc = y*li.numX + x;
     }
-    
+
     ref = li.addr[loc];
     zmin = li.elev_min[loc];
     zmax = li.elev_max[loc];
@@ -181,7 +181,7 @@ bool trpgTileTable::Write(trpgWriteBuffer &buf)
         return false;
 
     buf.Begin(TRPGTILETABLE2);
-    
+
     // Write the mode
     buf.Add(mode);
 
@@ -270,7 +270,7 @@ bool trpgTileTable::Read(trpgReadBuffer &buf)
                     ref.offset = offset;
                     ref.col = currentCol;
                     ref.row = currentRow;
-                                        
+
                     float emin,emax;
                     buf.Get(emin);
                     buf.Get(emax);
@@ -281,7 +281,7 @@ bool trpgTileTable::Read(trpgReadBuffer &buf)
                 else {
                     buf.Get(li.numX);
                     buf.Get(li.numY);
-                    if (li.numX <= 0 || li.numY <= 0)  
+                    if (li.numX <= 0 || li.numY <= 0)
                         throw 1;
                     int numTile = li.numX*li.numY;
                     li.addr.resize(numTile);
@@ -487,7 +487,7 @@ bool trpgTileHeader::Write(trpgWriteBuffer &buf)
 }
 
 // Tile Header CB
-// Used to aid in parsing tile header 
+// Used to aid in parsing tile header
 // We want the tile header to be expandable, so be careful here
 class tileHeaderCB : public trpgr_Callback {
 public:

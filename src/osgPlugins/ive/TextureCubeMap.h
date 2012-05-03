@@ -7,7 +7,7 @@
 namespace ive
 {
 
-class TextureCubeMap : public osg::TextureCubeMap, public ReadWrite 
+class TextureCubeMap : public osg::TextureCubeMap, public ReadWrite
 {
 public:
     void write(DataOutputStream* out);

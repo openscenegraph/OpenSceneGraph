@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -57,7 +57,7 @@ extern OSG_EXPORT bool initNotifyLevel();
 
 /** notify messaging function for providing fatal through to verbose
   * debugging messages.  Level of messages sent to the console can
-  * be controlled by setting the NotifyLevel either within your 
+  * be controlled by setting the NotifyLevel either within your
   * application or via the an environmental variable i.e.
   * - setenv OSGNOTIFYLEVEL DEBUG (for tsh)
   * - export OSGNOTIFYLEVEL=DEBUG (for bourne shell)
@@ -66,10 +66,10 @@ extern OSG_EXPORT bool initNotifyLevel();
   * All tell the osg to redirect all debugging and more important messages
   * to the notification stream (useful for debugging) setting ALWAYS will force
   * all messages to be absorbed, which might be appropriate for final
-  * applications.  Default NotifyLevel is NOTICE.  Check the enum 
+  * applications.  Default NotifyLevel is NOTICE.  Check the enum
   * #NotifySeverity for full range of possibilities.  To use the notify
   * with your code simply use the notify function as a normal file
-  * stream (like std::cout) i.e 
+  * stream (like std::cout) i.e
   * @code
   * osg::notify(osg::DEBUG) << "Hello Bugs!" << std::endl;
   * @endcode
@@ -88,15 +88,15 @@ inline std::ostream& notify(void) { return notify(osg::INFO); }
 #define OSG_DEBUG OSG_NOTIFY(osg::DEBUG_INFO)
 #define OSG_DEBUG_FP OSG_NOTIFY(osg::DEBUG_FP)
 
-/** Handler processing output of notification stream. It acts as a sink to 
-  * notification messages. It is called when notification stream needs to be 
+/** Handler processing output of notification stream. It acts as a sink to
+  * notification messages. It is called when notification stream needs to be
   * synchronized (i.e. after osg::notify() << std::endl).
-  * StandardNotifyHandler is used by default, it writes notifications to stderr 
+  * StandardNotifyHandler is used by default, it writes notifications to stderr
   * (severity <= WARN) or stdout (severity > WARN).
-  * Notifications can be redirected to other sinks such as GUI widgets or 
+  * Notifications can be redirected to other sinks such as GUI widgets or
   * windows debugger (WinDebugNotifyHandler) with custom handlers.
   * Use setNotifyHandler to set custom handler.
-  * Note that osg notification API is not thread safe although notification 
+  * Note that osg notification API is not thread safe although notification
   * handler is called from many threads. When incorporating handlers into GUI
   * widgets you must take care of thread safety on your own.
   * @see setNotifyHandler
@@ -128,7 +128,7 @@ public:
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 
-/** Redirects notification stream to windows debugger with use of 
+/** Redirects notification stream to windows debugger with use of
   * OuputDebugString functions.
   * @see setNotifyHandler
   */

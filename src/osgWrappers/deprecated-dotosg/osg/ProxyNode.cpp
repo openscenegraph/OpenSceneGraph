@@ -55,7 +55,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
             proxyNode.setLoadingExternalReferenceMode(ProxyNode::DEFER_LOADING_TO_DATABASE_PAGER);
         else if (fr[1].matchWord("NO_AUTOMATIC_LOADING"))
             proxyNode.setLoadingExternalReferenceMode(ProxyNode::NO_AUTOMATIC_LOADING);
-            
+
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -71,11 +71,11 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
     if (fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
     {
         const std::string& path = fr.getOptions()->getDatabasePathList().front();
-        if (!path.empty()) 
+        if (!path.empty())
         {
             proxyNode.setDatabasePath(path);
         }
-    } 
+    }
 
     bool matchFirst;
     if ((matchFirst=fr.matchSequence("FileNameList {")) || fr.matchSequence("FileNameList %i {"))
@@ -99,7 +99,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
             {
                 if (fr[0].getStr()) proxyNode.setFileName(i,fr[0].getStr());
                 else proxyNode.setFileName(i,"");
-                
+
                 ++fr;
                 ++i;
             }
@@ -169,18 +169,18 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
         std::string optionsString = fw.getOptions()->getOptionString();
         includeExternalReferences = optionsString.find("includeExternalReferences")!=std::string::npos;
         bool newExternals = optionsString.find("writeExternalReferenceFiles")!=std::string::npos;
-        if (newExternals) 
+        if (newExternals)
         {
             useOriginalExternalReferences = false;
             writeExternalReferenceFiles = true;
-        } 
+        }
     }
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 
     if (proxyNode.getCenterMode()==osg::ProxyNode::USER_DEFINED_CENTER) fw.indent() << "Center "<< proxyNode.getCenter() << std::endl;
 
     fw.indent() << "ExtRefMode ";
-    
+
     switch(proxyNode.getLoadingExternalReferenceMode())
     {
     case ProxyNode::LOAD_IMMEDIATELY:
@@ -198,9 +198,9 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "FileNameList "<<proxyNode.getNumFileNames()<<" {"<< std::endl;
     fw.moveIn();
-    
+
     unsigned int numChildrenToWriteOut = 0;
-    
+
     for(unsigned int i=0; i<proxyNode.getNumFileNames();++i)
     {
         if (proxyNode.getFileName(i).empty())
@@ -208,7 +208,7 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
             fw.indent() << "\"\"" << std::endl;
             ++numChildrenToWriteOut;
         }
-        else 
+        else
         {
             if(useOriginalExternalReferences)
             {

@@ -20,7 +20,7 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
 
     osg::ref_ptr<osg::Material> pOsgMat = new osg::Material;
     pOsgMat->setName(pFbxMat->GetName());
-    
+
     StateSetContent result;
 
     result.material = pOsgMat;

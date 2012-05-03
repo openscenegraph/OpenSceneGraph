@@ -60,7 +60,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         fr +=5 ;
         iteratorAdvanced = true;
     };
-    
+
     if (fr.matchSequence("clearMask %i"))
     {
         unsigned int value;
@@ -94,7 +94,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    Matrix matrix; 
+    Matrix matrix;
     if (readMatrix(matrix,fr,"ProjectionMatrix"))
     {
         camera.setProjectionMatrix(matrix);
@@ -148,7 +148,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         fr += 2;
         iteratorAdvanced = true;
     }
-    
+
 
     if (fr.matchSequence("bufferComponent %w {"))
     {
@@ -156,17 +156,17 @@ bool Camera_readLocalData(Object& obj, Input& fr)
 
         Camera::BufferComponent buffer;
         Camera_matchBufferComponentStr(fr[1].getStr(),buffer);
-        
+
         fr += 3;
-        
+
         Camera::Attachment& attachment = camera.getBufferAttachmentMap()[buffer];
-        
+
         // read attachment data.
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             bool localAdvance = false;
 
-            if (fr.matchSequence("internalFormat %i")) 
+            if (fr.matchSequence("internalFormat %i"))
             {
                 // In their infinite wisdom, the Apple engineers changed the type
                 // of GLenum from 'unsigned int' to 'unsigned long', thus breaking
@@ -190,31 +190,31 @@ bool Camera_readLocalData(Object& obj, Input& fr)
                     osg::Image* image = dynamic_cast<osg::Image*>(attribute.get());
                     attachment._image = image;
                 }
-                
+
             }
 
-            if (fr.matchSequence("level %i")) 
+            if (fr.matchSequence("level %i"))
             {
                 fr[1].getUInt(attachment._level);
                 fr += 2;
                 localAdvance = true;
             }
 
-            if (fr.matchSequence("face %i")) 
+            if (fr.matchSequence("face %i"))
             {
                 fr[1].getUInt(attachment._face);
                 fr += 2;
                 localAdvance = true;
             }
 
-            if (fr.matchSequence("mipMapGeneration TRUE")) 
+            if (fr.matchSequence("mipMapGeneration TRUE"))
             {
                 attachment._mipMapGeneration = true;
                 fr += 2;
                 localAdvance = true;
             }
 
-            if (fr.matchSequence("mipMapGeneration FALSE")) 
+            if (fr.matchSequence("mipMapGeneration FALSE"))
             {
                 attachment._mipMapGeneration = false;
                 fr += 2;
@@ -223,7 +223,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
 
             if (!localAdvance) ++fr;
         }
-        
+
         iteratorAdvanced = true;
     }
 

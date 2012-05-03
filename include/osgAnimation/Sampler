@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * Authors:
@@ -26,7 +26,7 @@
 #include <osgAnimation/Keyframe>
 #include <osgAnimation/Interpolator>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
     class Sampler : public osg::Referenced
@@ -58,7 +58,7 @@ namespace osgAnimation
 
         KeyframeContainerType* getKeyframeContainerTyped() { return _keyframes.get();}
         const KeyframeContainerType* getKeyframeContainerTyped() const { return _keyframes.get();}
-        KeyframeContainerType* getOrCreateKeyframeContainer() 
+        KeyframeContainerType* getOrCreateKeyframeContainer()
         {
             if (_keyframes != 0)
                 return _keyframes.get();
@@ -73,7 +73,7 @@ namespace osgAnimation
             return _keyframes->front().getTime();
         }
 
-        double getEndTime() const 
+        double getEndTime() const
         {
             if (!_keyframes || _keyframes->empty())
                 return 0.0;
@@ -132,7 +132,7 @@ namespace osgAnimation
     typedef TemplateSampler<Vec2CubicBezierInterpolator> Vec2CubicBezierSampler;
     typedef TemplateSampler<Vec3CubicBezierInterpolator> Vec3CubicBezierSampler;
     typedef TemplateSampler<Vec4CubicBezierInterpolator> Vec4CubicBezierSampler;
-  
+
 }
 
 #endif

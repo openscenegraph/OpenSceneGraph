@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Shape>
@@ -71,7 +71,7 @@ HeightField::HeightField():
     _heights = new osg::FloatArray;
 }
 
-HeightField::HeightField(const HeightField& mesh,const CopyOp& copyop): 
+HeightField::HeightField(const HeightField& mesh,const CopyOp& copyop):
     Shape(mesh,copyop),
     _columns(mesh._columns),
     _rows(mesh._rows),
@@ -99,7 +99,7 @@ void HeightField::allocate(unsigned int numColumns,unsigned int numRows)
     _rows=numRows;
 }
 
-Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const 
+Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
 {
     // four point normal generation.
    float dz_dx;
@@ -115,7 +115,7 @@ Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
     {
         dz_dx = 0.5f*(getHeight(c+1,r)-getHeight(c-1,r))/getXInterval();
     }
-    
+
     float dz_dy;
     if (r==0)
     {
@@ -129,10 +129,10 @@ Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
     {
         dz_dy = 0.5f*(getHeight(c,r+1)-getHeight(c,r-1))/getYInterval();
     }
-    
+
     Vec3 normal(-dz_dx,-dz_dy,1.0f);
     normal.normalize();
-    
+
     return normal;
 }
 
@@ -152,7 +152,7 @@ Vec2 HeightField::getHeightDelta(unsigned int c,unsigned int r) const
     {
         heightDelta.x() = 0.5f*(getHeight(c+1,r)-getHeight(c-1,r));
     }
-    
+
     if (r==0)
     {
         heightDelta.y() = (getHeight(c,r+1)-getHeight(c,r));

@@ -53,7 +53,7 @@ void EllipsoidModel::read(DataInputStream* in){
 
         setRadiusEquator(in->readDouble());
         setRadiusPolar(in->readDouble());
-        
+
 
     }
     else{

@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -162,14 +162,14 @@ class OSGPRESENTATION_EXPORT ActiveOperators
 public:
     ActiveOperators();
     ~ActiveOperators();
-    
+
     void collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
     void process();
-    
+
     void setPause(bool pause);
     bool getPause() const { return _pause; }
-    
+
     void reset();
 
     typedef std::set< osg::ref_ptr<ObjectOperator>, dereference_less >  OperatorList;
@@ -196,9 +196,9 @@ class OSGPRESENTATION_EXPORT SlideEventHandler : public osgGA::GUIEventHandler
 public:
 
     SlideEventHandler(osgViewer::Viewer* viewer=0);
-    
+
     static SlideEventHandler* instance();
-    
+
     META_Object(osgslideshowApp,SlideEventHandler);
 
     void set(osg::Node* model);
@@ -209,9 +209,9 @@ public:
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
-    
+
     virtual void getUsage(osg::ApplicationUsage& usage) const;
-    
+
     osgViewer::Viewer* getViewer() { return _viewer.get(); }
 
     enum WhichPosition
@@ -224,7 +224,7 @@ public:
     void releaseSlide(unsigned int slideNum);
 
     unsigned int getNumSlides();
-    
+
     int getActiveSlide() const { return _activeSlide; }
     int getActiveLayer() const { return _activeLayer; }
 
@@ -239,15 +239,15 @@ public:
 
     bool nextLayer();
     bool previousLayer();
-    
+
     bool home();
 
     void setAutoSteppingActive(bool flag = true) { _autoSteppingActive = flag; }
     bool getAutoSteppingActive() const { return _autoSteppingActive; }
-    
+
     void setTimeDelayBetweenSlides(double dt) { _timePerSlide = dt; }
     double getTimeDelayBetweenSlides() const { return _timePerSlide; }
-    
+
     double getDuration(const osg::Node* node) const;
 
     double getCurrentTimeDelayBetweenSlides() const;
@@ -266,7 +266,7 @@ public:
     void setRequestReload(bool flag);
     bool getRequestReload() const { return _requestReload; }
 
-    
+
 protected:
 
     ~SlideEventHandler() {}
@@ -276,13 +276,13 @@ protected:
 
     void updateAlpha(bool, bool, float x, float y);
     void updateLight(float x, float y);
-    
+
 
     osg::observer_ptr<osgViewer::Viewer>    _viewer;
-    
+
     osg::observer_ptr<osg::Switch>          _showSwitch;
     int                                     _activePresentation;
-    
+
     osg::observer_ptr<osg::Switch>          _presentationSwitch;
     int                                     _activeSlide;
 
@@ -296,11 +296,11 @@ protected:
     bool                                    _loopPresentation;
     bool                                    _pause;
     bool                                    _hold;
-    
+
     bool                                    _updateLightActive;
     bool                                    _updateOpacityActive;
     float                                   _previousX, _previousY;
-    
+
     bool                                    _cursorOn;
 
     bool                                    _releaseAndCompileOnEachNewSlide;
@@ -310,18 +310,18 @@ protected:
     osg::Timer_t                            _tickAtLastSlideOrLayerChange;
 
     float                                   _timeDelayOnNewSlideWithMovies;
-    
+
     double                                  _minimumTimeBetweenKeyPresses;
     double                                  _timeLastKeyPresses;
-    
+
     ActiveOperators                         _activeOperators;
-    
+
     osg::ref_ptr<CompileSlideCallback>      _compileSlideCallback;
 
     bool                                    _requestReload;
 
     void updateOperators();
-        
+
 };
 
 }

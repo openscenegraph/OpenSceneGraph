@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -398,7 +398,7 @@ Field::FieldType Field::calculateFieldType(const char* str,bool withinQuotes)
     int noZeroToNine = 0;
 
     const char* ptr = str;
-    
+
     // check if could be a hex number.
     if (strncmp(ptr,"0x",2)==0)
     {
@@ -408,17 +408,17 @@ Field::FieldType Field::calculateFieldType(const char* str,bool withinQuotes)
         while (
                *ptr!=0 &&
                ((*ptr>='0' && *ptr<='9') ||
-                (*ptr>='a' && *ptr<='f') ||  
+                (*ptr>='a' && *ptr<='f') ||
                 (*ptr>='A' && *ptr<='F'))
               )
         {
             ++ptr;
         }
-        
+
         // got to end of string without failure, therefore must be a hex integer.
         if (*ptr==0) return INTEGER;
     }
-    
+
     ptr = str;
     // check if a float or an int.
     while (*ptr!=0 && couldBeFloat)

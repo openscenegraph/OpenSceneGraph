@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -141,12 +141,12 @@ void TextBase::setLineSpacing(float lineSpacing)
     _lineSpacing = lineSpacing;
     computeGlyphRepresentation();
 }
-    
+
 
 void TextBase::setText(const String& text)
 {
     if (_text==text) return;
-    
+
     _text = text;
     computeGlyphRepresentation();
 }
@@ -160,7 +160,7 @@ void TextBase::setText(const std::string& text,String::Encoding encoding)
 {
     setText(String(text,encoding));
 }
-    
+
 
 void TextBase::setText(const wchar_t* text)
 {
@@ -178,7 +178,7 @@ void TextBase::setPosition(const osg::Vec3& pos)
 void TextBase::setAlignment(AlignmentType alignment)
 {
     if (_alignment==alignment) return;
-    
+
     _alignment = alignment;
     computeGlyphRepresentation();
 }
@@ -191,19 +191,19 @@ void TextBase::setAxisAlignment(AxisAlignment axis)
     {
     case XZ_PLANE:
         setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
+        setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f)));
         break;
     case REVERSED_XZ_PLANE:
         setAutoRotateToScreen(false);
         setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
-                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
+                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f)));
         break;
-    case YZ_PLANE:  
+    case YZ_PLANE:
         setAutoRotateToScreen(false);
         setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
                     osg::Quat(osg::inDegrees(90.0f),osg::Vec3(0.0f,0.0f,1.0f)));
         break;
-    case REVERSED_YZ_PLANE:  
+    case REVERSED_YZ_PLANE:
         setAutoRotateToScreen(false);
         setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
                     osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
@@ -235,7 +235,7 @@ void TextBase::setRotation(const osg::Quat& quat)
 void TextBase::setAutoRotateToScreen(bool autoRotateToScreen)
 {
     if (_autoRotateToScreen==autoRotateToScreen) return;
-    
+
     _autoRotateToScreen = autoRotateToScreen;
     computePositions();
 }
@@ -250,8 +250,8 @@ void TextBase::setLayout(Layout layout)
 }
 
 
-void TextBase::setDrawMode(unsigned int mode) 
-{ 
+void TextBase::setDrawMode(unsigned int mode)
+{
     if (_drawMode==mode) return;
 
     _drawMode=mode;
@@ -317,14 +317,14 @@ osg::BoundingBox TextBase::computeBound() const
 void TextBase::computePositions()
 {
     unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
-    
+
     // FIXME: OPTIMIZE: This would be one of the ideal locations to
     // call computeAverageGlyphWidthAndHeight(). It is out of the contextID loop
     // so the value would be computed fewer times. But the code will need changes
     // to get the value down to the locations it is needed. (Either pass through parameters
     // or member variables, but we would need a system to know if the values are stale.)
 
-    
+
     for(unsigned int i=0;i<size;++i)
     {
         computePositions(i);

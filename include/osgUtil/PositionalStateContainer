@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ namespace osgUtil {
 class OSGUTIL_EXPORT PositionalStateContainer : public osg::Object
 {
     public:
-    
+
 
         PositionalStateContainer();
         virtual osg::Object* cloneType() const { return new PositionalStateContainer(); }
@@ -39,7 +39,7 @@ class OSGUTIL_EXPORT PositionalStateContainer : public osg::Object
         virtual const char* className() const { return "PositionalStateContainer"; }
 
         virtual void reset();
-        
+
         typedef std::pair< osg::ref_ptr<const osg::StateAttribute> , osg::ref_ptr<osg::RefMatrix> >    AttrMatrixPair;
         typedef std::vector< AttrMatrixPair >                                            AttrMatrixList;
         typedef std::map< unsigned int, AttrMatrixList >                                 TexUnitAttrMatrixListMap;
@@ -59,14 +59,14 @@ class OSGUTIL_EXPORT PositionalStateContainer : public osg::Object
         }
 
         virtual void draw(osg::State& state,RenderLeaf*& previous, const osg::Matrix* postMultMatrix = 0);
-        
+
     public:
-        
+
         AttrMatrixList              _attrList;
         TexUnitAttrMatrixListMap    _texAttrListMap;
-        
+
     protected:
-    
+
         virtual ~PositionalStateContainer();
 
 };

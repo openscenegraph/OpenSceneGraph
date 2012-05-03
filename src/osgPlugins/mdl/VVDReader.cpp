@@ -82,7 +82,7 @@ bool VVDReader::readFile(const std::string & file)
 
     // Create the vertex buffers
     for (i = 0; i < header.num_lods; i++)
-    { 
+    {
         // Create the vertex buffer for this LOD
         vertex_buffer[i] = new VVDVertex[header.num_lod_verts[i]];
         vertex_buffer_size[i] = header.num_lod_verts[i];
@@ -99,7 +99,7 @@ bool VVDReader::readFile(const std::string & file)
                 if (fixup_table[j].lod_number >= i)
                 {
                     // Seek to the vertex indicated by the fixup table entry
-                    vvdFile->seekg(header.vertex_data_offset + 
+                    vvdFile->seekg(header.vertex_data_offset +
                                    fixup_table[j].source_vertex_id *
                                    sizeof(VVDVertex));
 

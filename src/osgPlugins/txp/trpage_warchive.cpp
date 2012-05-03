@@ -183,7 +183,7 @@ void trpgwArchive::Init(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint &n
     labelPropertyTable = *inArch->GetLabelPropertyTable();
 
     // Need to resize the tile table (maybe)
-    // NOTE: Starting with version 2.1, the tile tables will contain only 
+    // NOTE: Starting with version 2.1, the tile tables will contain only
     // the lod 0 tiles
     trpgTileTable::TileMode tileTableMode;
     if (!extentsUnchanged) {
@@ -486,7 +486,7 @@ bool trpgwArchive::CheckpointHeader()
         // External tiles are easy
         tileTable.SetMode(trpgTileTable::External);
     } else if( tileMode == TileExternalSaved) {
-   
+
         if(!isRegenerate && firstHeaderWrite)
         {
             // Set up the sizes
@@ -524,7 +524,7 @@ bool trpgwArchive::CheckpointHeader()
                 trpg2iPoint lodSize;
                 header.GetLodSize(0,lodSize);
                 tileTable.SetNumTiles(lodSize.x, lodSize.y, 0);
-             
+
             }
             else
             {
@@ -538,11 +538,11 @@ bool trpgwArchive::CheckpointHeader()
                     header.GetLodSize(i,lodSize);
                     tileTable.SetNumTiles(lodSize.x,lodSize.y,i);
                 }
-                           
+
             }
             firstHeaderWrite = false;
         }
-   
+
 
         // Now set the individual tile locations
         // Nothing special need to be done with version 2.1 since
@@ -558,11 +558,11 @@ bool trpgwArchive::CheckpointHeader()
             }
 
             tf.tiles.clear();
-                 
-         
+
+
         }
     }
-   
+
 
     // Write all the headers into a buffer
     if (!header.Write(buf))
@@ -611,8 +611,8 @@ bool trpgwArchive::CheckpointHeader()
                     return false;
                 }
             }
-                
-                        
+
+
             if(!modelTable.Write(buf) )
             {
                 strcpy(errMess, "Error writing model table");
@@ -1323,7 +1323,7 @@ void trpgwGeomHelper::Optimize()
                     else
                         isStrip = (c[0] == b[2] && c[1] == b[1]);
                     b[0] = c[0];  b[1] = c[1];  b[2] = c[2];
-                } 
+                }
                 flip = !flip;
             } while (triId < numTri && isStrip);
 
@@ -1497,7 +1497,7 @@ trpgwAppFile * trpgwImageHelper::IncrementTextureFile(bool geotyp)
 {
     char filename[1024];
     trpgwAppFile *thefile = texFile;
-        
+
     if(geotyp && separateGeoTypical) {
         thefile = geotypFile;
                 sprintf(filename,"%s" PATHSEPERATOR "geotypFile_%d.txf",dir,static_cast<int>(geotypFileIDs.size()));
@@ -1510,7 +1510,7 @@ trpgwAppFile * trpgwImageHelper::IncrementTextureFile(bool geotyp)
     if (thefile)  delete thefile;
     thefile = NULL;
 
-    // Open the next one        
+    // Open the next one
     thefile = GetNewWAppFile(ness,filename,true);
     if (!thefile->isValid())
         return NULL;
@@ -1559,7 +1559,7 @@ bool trpgwImageHelper::DesignateTextureFile(int id)
         return false;
     geotypFileIDs.push_back(id);
 
-        
+
     return true;
 }
 
@@ -1584,7 +1584,7 @@ bool trpgwImageHelper::WriteToArchive(const trpgTexture &tex,char *data,trpgwApp
         if (! (thefile=IncrementTextureFile(geotyp && separateGeoTypical)))
             return false;
     }
-        
+
     while (maxTexFileLen > 0 && thefile->GetLengthWritten() > maxTexFileLen) {
         if (!(thefile=IncrementTextureFile(geotyp && separateGeoTypical)))
             return false;

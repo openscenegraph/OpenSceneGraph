@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,9 +42,9 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         OverlayNode(OverlayTechnique technique=OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
 
         OverlayNode(const OverlayNode& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-            
+
         META_Node(osgSim, OverlayNode);
-        
+
         virtual void traverse(osg::NodeVisitor& nv);
 
 
@@ -56,17 +56,17 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         /** Set the overlay subgraph which will be rendered to texture.*/
         void setOverlaySubgraph(osg::Node* node);
-        
+
         /** Get the overlay subgraph which will be rendered to texture.*/
         osg::Node* getOverlaySubgraph() { return _overlaySubgraph.get(); }
 
         /** Get the const overlay subgraph which will be render to texture.*/
         const osg::Node* getOverlaySubgraph() const { return _overlaySubgraph.get(); }
-        
+
 
         /** Inform the OverlayNode that the overlay texture needs to be updated.*/
         void dirtyOverlayTexture();
-        
+
         /** Set whether the OverlayNode should update the overlay texture on every frame.*/
         void setContinuousUpdate(bool update) { _continuousUpdate = update; }
 
@@ -91,7 +91,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         /** Set the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
         void setTexEnvMode(GLenum mode);
-        
+
         /** Get the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
         GLenum getTexEnvMode() const { return _texEnvMode; }
 
@@ -100,14 +100,14 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         /** Get the texture unit that the texture should be assigned to.*/
         unsigned int getOverlayTextureUnit() const { return _textureUnit; }
-        
+
         /** Set the texture size hint. The size hint is used to request a texture of specified size.*/
         void setOverlayTextureSizeHint(unsigned int size);
 
         /** Get the texture size hint.*/
         unsigned int getOverlayTextureSizeHint() const { return _textureSizeHint; }
-        
-        
+
+
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
 
@@ -122,12 +122,12 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
     protected :
 
         virtual ~OverlayNode() {}
-        
+
         void init();
         void init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
         void init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
         void init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY();
-        
+
         void traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv);
         void traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv);
         void traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv);
@@ -136,7 +136,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         void updateMainSubgraphStateSet();
 
         typedef osg::buffered_value< int > TextureObjectValidList;
-        
+
         mutable TextureObjectValidList _textureObjectValidList;
 
         OverlayTechnique _overlayTechnique;
@@ -147,7 +147,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         osg::ref_ptr<osg::StateSet>     _overlayStateSet;
         osg::ref_ptr<osg::StateSet>     _mainStateSet;
-        
+
         // texture to render to, and to read from.
         GLenum                          _texEnvMode;
         unsigned int                    _textureUnit;
@@ -157,7 +157,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         bool                            _continuousUpdate;
         double                          _overlayBaseHeight;
         bool                            _updateCamera;
-        
+
         osg::Camera::RenderTargetImplementation _renderTargetImpl;
 
         struct OverlayData : public osg::Referenced
@@ -176,18 +176,18 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
             osg::ref_ptr<osg::Geode>        _geode;
 
             osg::ref_ptr<osg::Program>      _mainSubgraphProgram;
-            
+
             osg::ref_ptr<osg::Uniform>      _y0;
             osg::ref_ptr<osg::Uniform>      _lightingEnabled;
         };
-        
+
         typedef std::map<osgUtil::CullVisitor*, osg::ref_ptr<OverlayData> > OverlayDataMap;
-        
+
         OpenThreads::Mutex              _overlayDataMapMutex;
         OverlayDataMap                  _overlayDataMap;
-        
+
         OverlayNode::OverlayData* getOverlayData(osgUtil::CullVisitor* cv);
-        
+
 };
 
 }

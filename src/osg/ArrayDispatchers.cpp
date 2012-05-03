@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/ArrayDispatchers>
@@ -432,6 +432,7 @@ void ArrayDispatchers::init()
     _vertexDispatchers->assignGLBeginEnd<GLdouble>(Array::Vec3dArrayType, &GLBeginEndAdapter::Vertex3dv, 3);
     _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
+    _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Color3fv, 3);
     _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
 
 #ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE
@@ -518,7 +519,7 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
     #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
     #endif
-    
+
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
     {
         _texCoordDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));

@@ -32,7 +32,7 @@ void AutoTransform::write(DataOutputStream* out){
     out->writeVec3(getPosition());
     out->writeVec3(getPivotPoint());
     out->writeFloat(getAutoUpdateEyeMovementTolerance());
-    
+
     out->writeInt(getAutoRotateMode());
 
     out->writeBool(getAutoScaleToScreen());
@@ -46,7 +46,7 @@ void AutoTransform::write(DataOutputStream* out){
 
     out->writeQuat(getRotation());
     out->writeVec3(getScale());
-    
+
 }
 
 void AutoTransform::read(DataInputStream* in){

@@ -24,11 +24,14 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-    :   _fileVersion(0), _byteSwap(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
+    :   _fileVersion(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
+    BEGIN_BRACKET.set( "{", +INDENT_VALUE );
+    END_BRACKET.set( "}", -INDENT_VALUE );
+
     if ( !options ) return;
     _options = options;
-    
+
     std::string schema;
     if ( options->getPluginStringData("ForceReadingImage")=="true" )
         _forceReadingImage = true;
@@ -43,7 +46,7 @@ InputStream::InputStream( const osgDB::Options* options )
             s_lastSchema = schema;
         }
     }
-    
+
     if ( schema.empty() )
     {
         resetSchema();
@@ -223,16 +226,16 @@ InputStream& InputStream::operator>>( osg::Matrixd& mat )
 osg::Array* InputStream::readArray()
 {
     osg::ref_ptr<osg::Array> array = NULL;
-    
+
     unsigned int id = 0;
     *this >> PROPERTY("ArrayID") >> id;
-    
+
     ArrayMap::iterator itr = _arrayMap.find( id );
     if ( itr!=_arrayMap.end() )
     {
         return itr->second.get();
     }
-    
+
     DEF_MAPPEE(ArrayType, type);
     *this >> type;
     switch ( type.get() )
@@ -240,154 +243,154 @@ osg::Array* InputStream::readArray()
     case ID_BYTE_ARRAY:
         {
             osg::ByteArray* ba = new osg::ByteArray;
-            readArrayImplementation( ba, CHAR_SIZE, true );
+            readArrayImplementation( ba, 1, CHAR_SIZE);
             array = ba;
         }
         break;
     case ID_UBYTE_ARRAY:
         {
             osg::UByteArray* uba = new osg::UByteArray;
-            readArrayImplementation( uba, CHAR_SIZE, true );
+            readArrayImplementation( uba, 1, CHAR_SIZE );
             array = uba;
         }
         break;
     case ID_SHORT_ARRAY:
         {
             osg::ShortArray* sa = new osg::ShortArray;
-            readArrayImplementation( sa, SHORT_SIZE, true );
+            readArrayImplementation( sa, 1, SHORT_SIZE );
             array = sa;
         }
         break;
     case ID_USHORT_ARRAY:
         {
             osg::UShortArray* usa = new osg::UShortArray;
-            readArrayImplementation( usa, SHORT_SIZE, true );
+            readArrayImplementation( usa, 1, SHORT_SIZE );
             array = usa;
         }
         break;
     case ID_INT_ARRAY:
         {
             osg::IntArray* ia = new osg::IntArray;
-            readArrayImplementation( ia, INT_SIZE, true );
+            readArrayImplementation( ia, 1, INT_SIZE );
             array = ia;
         }
         break;
     case ID_UINT_ARRAY:
         {
             osg::UIntArray* uia = new osg::UIntArray;
-            readArrayImplementation( uia, INT_SIZE, true );
+            readArrayImplementation( uia, 1, INT_SIZE );
             array = uia;
         }
         break;
     case ID_FLOAT_ARRAY:
         {
             osg::FloatArray* fa = new osg::FloatArray;
-            readArrayImplementation( fa, FLOAT_SIZE, true );
+            readArrayImplementation( fa, 1, FLOAT_SIZE );
             array = fa;
         }
         break;
     case ID_DOUBLE_ARRAY:
         {
             osg::DoubleArray* da = new osg::DoubleArray;
-            readArrayImplementation( da, DOUBLE_SIZE, true );
+            readArrayImplementation( da, 1, DOUBLE_SIZE );
             array = da;
         }
         break;
     case ID_VEC2B_ARRAY:
         {
             osg::Vec2bArray* va = new osg::Vec2bArray;
-            readArrayImplementation( va, 2*CHAR_SIZE );
+            readArrayImplementation( va, 2, CHAR_SIZE );
             array = va;
         }
         break;
     case ID_VEC3B_ARRAY:
         {
             osg::Vec3bArray* va = new osg::Vec3bArray;
-            readArrayImplementation( va, 3*CHAR_SIZE );
+            readArrayImplementation( va, 3, CHAR_SIZE );
             array = va;
         }
         break;
     case ID_VEC4B_ARRAY:
         {
             osg::Vec4bArray* va = new osg::Vec4bArray;
-            readArrayImplementation( va, 4*CHAR_SIZE );
+            readArrayImplementation( va, 4, CHAR_SIZE );
             array = va;
         }
         break;
     case ID_VEC4UB_ARRAY:
         {
             osg::Vec4ubArray* va = new osg::Vec4ubArray;
-            readArrayImplementation( va, 4*CHAR_SIZE );
+            readArrayImplementation( va, 4, CHAR_SIZE );
             array = va;
         }
         break;
     case ID_VEC2S_ARRAY:
         {
             osg::Vec2sArray* va = new osg::Vec2sArray;
-            readArrayImplementation( va, 2*SHORT_SIZE );
+            readArrayImplementation( va, 2, SHORT_SIZE );
             array = va;
         }
         break;
     case ID_VEC3S_ARRAY:
         {
             osg::Vec3sArray* va = new osg::Vec3sArray;
-            readArrayImplementation( va, 3*SHORT_SIZE );
+            readArrayImplementation( va, 3, SHORT_SIZE );
             array = va;
         }
         break;
     case ID_VEC4S_ARRAY:
         {
             osg::Vec4sArray* va = new osg::Vec4sArray;
-            readArrayImplementation( va, 4*SHORT_SIZE );
+            readArrayImplementation( va, 4, SHORT_SIZE );
             array = va;
         }
         break;
     case ID_VEC2_ARRAY:
         {
             osg::Vec2Array* va = new osg::Vec2Array;
-            readArrayImplementation( va, 2*FLOAT_SIZE );
+            readArrayImplementation( va, 2, FLOAT_SIZE );
             array = va;
         }
         break;
     case ID_VEC3_ARRAY:
         {
             osg::Vec3Array* va = new osg::Vec3Array;
-            readArrayImplementation( va, 3*FLOAT_SIZE );
+            readArrayImplementation( va, 3, FLOAT_SIZE );
             array = va;
         }
         break;
     case ID_VEC4_ARRAY:
         {
             osg::Vec4Array* va = new osg::Vec4Array;
-            readArrayImplementation( va, 4*FLOAT_SIZE );
+            readArrayImplementation( va, 4, FLOAT_SIZE );
             array = va;
         }
         break;
     case ID_VEC2D_ARRAY:
         {
             osg::Vec2dArray* va = new osg::Vec2dArray;
-            readArrayImplementation( va, 2*DOUBLE_SIZE );
+            readArrayImplementation( va, 2, DOUBLE_SIZE );
             array = va;
         }
         break;
     case ID_VEC3D_ARRAY:
         {
             osg::Vec3dArray* va = new osg::Vec3dArray;
-            readArrayImplementation( va, 3*DOUBLE_SIZE );
+            readArrayImplementation( va, 3, DOUBLE_SIZE );
             array = va;
         }
         break;
     case ID_VEC4D_ARRAY:
         {
             osg::Vec4dArray* va = new osg::Vec4dArray;
-            readArrayImplementation( va, 4*DOUBLE_SIZE );
+            readArrayImplementation( va, 4, DOUBLE_SIZE );
             array = va;
         }
         break;
     default:
         throwException( "InputStream::readArray(): Unsupported array type." );
     }
-    
+
     if ( getException() ) return NULL;
     _arrayMap[id] = array;
 
@@ -397,11 +400,11 @@ osg::Array* InputStream::readArray()
 osg::PrimitiveSet* InputStream::readPrimitiveSet()
 {
     osg::ref_ptr<osg::PrimitiveSet> primitive = NULL;
-    
+
     DEF_MAPPEE(PrimitiveType, type);
     DEF_MAPPEE(PrimitiveType, mode);
     *this >> type >> mode;
-    
+
     switch ( type.get() )
     {
     case ID_DRAWARRAYS:
@@ -471,12 +474,12 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
     default:
         throwException( "InputStream::readPrimitiveSet(): Unsupported array type." );
     }
-    
+
     if ( getException() ) return NULL;
     return primitive.release();
 }
 
-osg::Image* InputStream::readImage(bool readFromExternal) 
+osg::Image* InputStream::readImage(bool readFromExternal)
 {
 
     std::string className="osg::Image";
@@ -498,22 +501,22 @@ osg::Image* InputStream::readImage(bool readFromExternal)
     if ( getException() ) return NULL;
 
     osg::ref_ptr<osg::Image> image = NULL;
-    
+
     switch ( decision )
     {
     case IMAGE_INLINE_DATA:
         if ( isBinary() )
         {
             image = new osg::Image;
-            
+
             // _origin, _s & _t & _r, _internalTextureFormat
             int origin, s, t, r, internalFormat;
             *this >> origin >> s >> t >> r >> internalFormat;
-            
+
             // _pixelFormat, _dataType, _packing, _allocationMode
             int pixelFormat, dataType, packing, mode;
             *this >> pixelFormat >> dataType >> packing >> mode;
-            
+
             // _data
             unsigned int size = 0; *this >> size;
             if ( size )
@@ -522,7 +525,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                 if ( !data )
                     throwException( "InputStream::readImage() Out of memory." );
                 if ( getException() ) return NULL;
-                
+
                 readCharArray( data, size );
                 image->setOrigin( (osg::Image::Origin)origin );
                 image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
@@ -554,7 +557,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                     if ( getException() ) return NULL;
                 }
                 readCharArray( data, size );
-                
+
                 std::string ext = osgDB::getFileExtension( name );
                 osgDB::ReaderWriter* reader =
                     osgDB::Registry::instance()->getReaderWriterForExtension( ext );
@@ -562,7 +565,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                 {
                     std::stringstream inputStream;
                     inputStream.write( data, size );
-                    
+
                     osgDB::ReaderWriter::ReadResult rr = reader->readImage( inputStream );
                     if ( rr.validImage() )
                         image = rr.takeImage();
@@ -587,7 +590,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
     default:
         break;
     }
-    
+
     if ( readFromExternal )
     {
         image = osgDB::readImageFile( name, getOptions() );
@@ -599,9 +602,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         image->setWriteHint( (osg::Image::WriteHint)writeHint );
     }
 
-    image = static_cast<osg::Image*>( readObjectFields(className, image.get()) );
-
-   _identifierMap[id] = image;
+    image = static_cast<osg::Image*>( readObjectFields(className, id, image.get()) );
 
    return image.release();
 }
@@ -612,7 +613,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
     unsigned int id = 0;
     *this >> className >> BEGIN_BRACKET >> PROPERTY("UniqueID") >> id;
     if ( getException() ) return NULL;
-    
+
     IdentifierMap::iterator itr = _identifierMap.find( id );
     if ( itr!=_identifierMap.end() )
     {
@@ -620,16 +621,14 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Object> obj = readObjectFields( className, existingObj );
-
-    _identifierMap[id] = obj;
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className, id, existingObj );
 
     advanceToCurrentEndBracket();
 
     return obj.release();
 }
 
-osg::Object* InputStream::readObjectFields( const std::string& className, osg::Object* existingObj )
+osg::Object* InputStream::readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj )
 {
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
@@ -639,8 +638,9 @@ osg::Object* InputStream::readObjectFields( const std::string& className, osg::O
         return NULL;
     }
     _fields.push_back( className );
-    
+
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
+    _identifierMap[id] = obj;
     if ( obj.valid() )
     {
         const StringList& associates = wrapper->getAssociates();
@@ -654,10 +654,10 @@ osg::Object* InputStream::readObjectFields( const std::string& className, osg::O
                 continue;
             }
             _fields.push_back( assocWrapper->getName() );
-            
+
             assocWrapper->read( *this, *obj );
             if ( getException() ) return NULL;
-            
+
             _fields.pop_back();
         }
     }
@@ -672,11 +672,11 @@ void InputStream::readSchema( std::istream& fin )
     while ( std::getline(fin, line) )
     {
         if ( line[0]=='#' ) continue;  // Comment
-        
+
         StringList keyAndValue;
         split( line, keyAndValue, '=' );
         if ( keyAndValue.size()<2 ) continue;
-        
+
         setWrapperSchema( osgDB::trimEnclosingSpaces(keyAndValue[0]),
                           osgDB::trimEnclosingSpaces(keyAndValue[1]) );
     }
@@ -686,7 +686,7 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
 {
     _fields.clear();
     _fields.push_back( "Start" );
-    
+
     ReadType type = READ_UNKNOWN;
     _in = inIterator;
     if ( !_in )
@@ -694,7 +694,7 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     if ( getException() ) return type;
 
     _in->setInputStream(this);
-    
+
     // Check OSG header information
     unsigned int version = 0;
     if ( isBinary() )
@@ -702,7 +702,7 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         unsigned int typeValue;
         *this >> typeValue >> version;
         type = static_cast<ReadType>(typeValue);
-        
+
         unsigned int attributes; *this >> attributes;
         if ( attributes&0x2 ) _useSchemaData = true;
     }
@@ -712,12 +712,12 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         if ( typeString=="Scene" ) type = READ_SCENE;
         else if ( typeString=="Image" ) type = READ_IMAGE;
         else if ( typeString=="Object" ) type = READ_OBJECT;
-        
+
         std::string osgName, osgVersion;
         *this >> PROPERTY("#Version") >> version;
         *this >> PROPERTY("#Generator") >> osgName >> osgVersion;
     }
-    
+
     // Record file version for back-compatibility checking of wrappers
     _fileVersion = version;
     _fields.pop_back();
@@ -728,20 +728,20 @@ void InputStream::decompress()
 {
     if ( !isBinary() ) return;
     _fields.clear();
-    
+
     std::string compressorName; *this >> compressorName;
     if ( compressorName!="0" )
     {
         std::string data;
         _fields.push_back( "Decompression" );
-        
+
         BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
         if ( !compressor )
         {
             OSG_WARN << "InputStream::decompress(): No such compressor "
                                    << compressorName << std::endl;
         }
-        
+
         if ( !compressor->decompress(*(_in->getStream()), data) )
             throwException( "InputStream: Failed to decompress stream." );
         if ( getException() ) return;
@@ -750,7 +750,7 @@ void InputStream::decompress()
         _in->setStream( _dataDecompress );
         _fields.pop_back();
     }
-    
+
     if ( _useSchemaData )
     {
         _fields.push_back( "SchemaData" );
@@ -772,7 +772,7 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
                                << name << std::endl;
         return;
     }
-    
+
     StringList schema, methods, keyAndValue;
     std::vector<int> types;
     split( properties, schema );
@@ -806,7 +806,7 @@ void InputStream::resetSchema()
 }
 
 template<typename T>
-void InputStream::readArrayImplementation( T* a, int read_size, bool useByteSwap )
+void InputStream::readArrayImplementation( T* a, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes )
 {
     int size = 0;
     *this >> size >> BEGIN_BRACKET;
@@ -815,12 +815,8 @@ void InputStream::readArrayImplementation( T* a, int read_size, bool useByteSwap
         a->resize( size );
         if ( isBinary() )
         {
-            readCharArray( (char*)&((*a)[0]), read_size*size ); checkStream();
-            if ( useByteSwap && _byteSwap )
-            {
-                for ( int i=0; i<size; ++i )
-                    osg::swapBytes( (char*)&((*a)[i]), read_size );
-            }
+            readComponentArray( (char*)&((*a)[0]), size, numComponentsPerElements, componentSizeInBytes );
+            checkStream();
         }
         else
         {

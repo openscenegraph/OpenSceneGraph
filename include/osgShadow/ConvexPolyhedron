@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -25,8 +25,8 @@
 // Class based on CustomPolytope defined and used in osgSim::OverlayNode.cpp.
 // Honors should go to Robert Osfield for writing such useful piece of code.
 // First incarnations of my ConvexPolyhedron were derived from CustomPolytope.
-// Later I made a number of modifications aimed at improving convex hull 
-// precision of intersection & extrusion operations and ended up with code 
+// Later I made a number of modifications aimed at improving convex hull
+// precision of intersection & extrusion operations and ended up with code
 // so mixed that I decided to rewrite it as separate class.
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +67,7 @@ class OSGSHADOW_EXPORT ConvexPolyhedron
         bool mergeFaces
             ( const Face & face0, const Face & face1, Face & face );
 
-        void mergeCoplanarFaces( const double & plane_normal_dot_tolerance = 0.0, 
+        void mergeCoplanarFaces( const double & plane_normal_dot_tolerance = 0.0,
             const double & plane_distance_tolerance = 0.0 );
 
         void removeDuplicateVertices( void );
@@ -75,7 +75,7 @@ class OSGSHADOW_EXPORT ConvexPolyhedron
 
         static int pointsColinear
             ( const osg::Vec3d & va, const osg::Vec3d & vb, const osg::Vec3d & vc,
-            const double & edge_normal_dot_tolerance = 0.0, 
+            const double & edge_normal_dot_tolerance = 0.0,
             const double & null_edge_length_tolerance = 0.0 );
 
         static int isFacePolygonConvex( Face & face, bool ignoreCollinearVertices = true );

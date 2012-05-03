@@ -13,18 +13,18 @@ static bool checkUserData( const osg::Object& obj )
 
 static bool readUserData( osgDB::InputStream& is, osg::Object& obj )
 {
-    is >> osgDB::BEGIN_BRACKET;
-    osg::Object* object = is.readObject(); 
-    if(object) obj.setUserData(object); 
-    is >> osgDB::END_BRACKET;
+    is >> is.BEGIN_BRACKET;
+    osg::Object* object = is.readObject();
+    if(object) obj.setUserData(object);
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeUserData( osgDB::OutputStream& os, const osg::Object& obj )
 {
-    os << osgDB::BEGIN_BRACKET << std::endl;
-    os.writeObject(dynamic_cast<const osg::Object*>(obj.getUserData())); 
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.BEGIN_BRACKET << std::endl;
+    os.writeObject(dynamic_cast<const osg::Object*>(obj.getUserData()));
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -34,7 +34,7 @@ REGISTER_OBJECT_WRAPPER( Object,
                          "osg::Object" )
 {
     ADD_STRING_SERIALIZER( Name, "" );  // _name
-    
+
     BEGIN_ENUM_SERIALIZER( DataVariance, UNSPECIFIED );
         ADD_ENUM_VALUE( STATIC );
         ADD_ENUM_VALUE( DYNAMIC );
@@ -42,7 +42,7 @@ REGISTER_OBJECT_WRAPPER( Object,
     END_ENUM_SERIALIZER();  // _dataVariance
 
     ADD_USER_SERIALIZER( UserData );  // _userData, deprecated
-    
+
     UPDATE_TO_VERSION( 77 )
     {
         REMOVE_SERIALIZER( UserData );

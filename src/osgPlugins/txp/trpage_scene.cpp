@@ -351,7 +351,7 @@ public:
             top->AddChild(childRef);
         else
             delete childRef;
-    
+
         return childRef;
     }
 protected:

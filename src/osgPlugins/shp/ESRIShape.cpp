@@ -2,12 +2,12 @@
 #if defined(_MSC_VER) || defined(__MINGW32__)
     #include <stdio.h>
     #include <io.h>
-    
+
     namespace esri
     {
         int read(int fd, void * buf, size_t nbytes) { return _read(fd, buf, static_cast<unsigned int>(nbytes)); }
     }
-    
+
 #else
     #include <unistd.h>
 
@@ -16,7 +16,7 @@
         int read(int fd, void * buf, size_t nbytes) { return ::read(fd, buf, nbytes); }
     }
 
-#endif 
+#endif
 
 #include "ESRIShape.h"
 
@@ -51,7 +51,7 @@ template <class T>
 inline bool readVal( int fd, T &val, ByteOrder bo = LittleEndian )
 {
     int nbytes = 0;
-    if( (nbytes = esri::read( fd, &val, sizeof(T))) <= 0 ) 
+    if( (nbytes = esri::read( fd, &val, sizeof(T))) <= 0 )
         return false;
 
     if( getByteOrder() != bo )
@@ -128,9 +128,9 @@ void ShapeHeader::print()
     bbox.print();
 }
 
-RecordHeader::RecordHeader(): 
-    recordNumber(-1), 
-    contentLength(0) 
+RecordHeader::RecordHeader():
+    recordNumber(-1),
+    contentLength(0)
 {
 }
 
@@ -149,8 +149,8 @@ void RecordHeader::print()
 
 
 
-NullRecord::NullRecord(): 
-    shapeType(ShapeTypeNullShape) 
+NullRecord::NullRecord():
+    shapeType(ShapeTypeNullShape)
 {}
 
 bool NullRecord::read( int fd )
@@ -188,7 +188,7 @@ bool Range::read( int fd )
 }
 
 ShapeObject::ShapeObject(ShapeType s):
-    shapeType(s) 
+    shapeType(s)
 {}
 
 ShapeObject::~ShapeObject()
@@ -196,16 +196,16 @@ ShapeObject::~ShapeObject()
 
 
 
-Point::Point(): 
-    ShapeObject(ShapeTypePoint),  
+Point::Point():
+    ShapeObject(ShapeTypePoint),
     x(0.0),
-    y(0.0) 
+    y(0.0)
 {}
 
-Point::Point(const Point &p): 
-    ShapeObject(ShapeTypePoint), 
-    x(p.x), 
-    y(p.y) 
+Point::Point(const Point &p):
+    ShapeObject(ShapeTypePoint),
+    x(p.x),
+    y(p.y)
 {}
 
 Point::~Point() {}
@@ -240,13 +240,13 @@ void Point::print()
     printf( "    %G %G\n", x, y );
 }
 
-MultiPoint::MultiPoint(): 
-    ShapeObject(ShapeTypeMultiPoint), 
-    numPoints(0), 
-    points(0L) 
+MultiPoint::MultiPoint():
+    ShapeObject(ShapeTypeMultiPoint),
+    numPoints(0),
+    points(0L)
 {}
 
-MultiPoint::MultiPoint( const struct MultiPoint &mpoint ): ShapeObject(ShapeTypeMultiPoint), 
+MultiPoint::MultiPoint( const struct MultiPoint &mpoint ): ShapeObject(ShapeTypeMultiPoint),
     bbox(mpoint.bbox),
     numPoints(mpoint.numPoints)
 {
@@ -265,7 +265,7 @@ bool MultiPoint::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
-    
+
     SAFE_DELETE_ARRAY( points );
 
     Integer shapeType;
@@ -280,7 +280,7 @@ bool MultiPoint::read( int fd )
 
     if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
-    
+
     points = new struct Point[numPoints];
     for( Integer i = 0; i < numPoints; i++ )
     {
@@ -299,15 +299,15 @@ void MultiPoint::print()
 
 
 
-PolyLine::PolyLine(): 
-    ShapeObject(ShapeTypePolyLine), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+PolyLine::PolyLine():
+    ShapeObject(ShapeTypePolyLine),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L) {}
 
 PolyLine::PolyLine( const PolyLine &p ):
-    ShapeObject(ShapeTypePolyLine), 
+    ShapeObject(ShapeTypePolyLine),
     numParts(p.numParts),
     numPoints(p.numPoints)
 {
@@ -321,7 +321,7 @@ PolyLine::PolyLine( const PolyLine &p ):
         points[i] = p.points[i];
 }
 
-PolyLine::~PolyLine() 
+PolyLine::~PolyLine()
 {
     delete [] parts;
     delete [] points;
@@ -370,15 +370,15 @@ bool PolyLine::read( int fd )
 }
 
 
-Polygon::Polygon(): 
-    ShapeObject(ShapeTypePolygon), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+Polygon::Polygon():
+    ShapeObject(ShapeTypePolygon),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L) {}
 
     Polygon::Polygon( const Polygon &p ):
-    ShapeObject(ShapeTypePolygon), 
+    ShapeObject(ShapeTypePolygon),
     numParts(p.numParts),
     numPoints(p.numPoints)
 {
@@ -442,18 +442,18 @@ bool Polygon::read( int fd )
 
 //////////////////////////////////////////////////////////////////////
 
-PointM::PointM(): 
-    ShapeObject(ShapeTypePointM),  
+PointM::PointM():
+    ShapeObject(ShapeTypePointM),
     x(0.0),
-    y(0.0), 
-    m(0.0) 
+    y(0.0),
+    m(0.0)
 {}
 
-PointM::PointM(const PointM &p): 
-    ShapeObject(ShapeTypePointM), 
-    x(p.x), 
-    y(p.y), 
-    m(p.m) 
+PointM::PointM(const PointM &p):
+    ShapeObject(ShapeTypePointM),
+    x(p.x),
+    y(p.y),
+    m(p.m)
 {}
 
 PointM::~PointM() {}
@@ -489,15 +489,15 @@ bool PointMRecord::read( int fd )
 }
 
 
-MultiPointM::MultiPointM(): 
-    ShapeObject(ShapeTypeMultiPointM), 
-    numPoints(0), 
+MultiPointM::MultiPointM():
+    ShapeObject(ShapeTypeMultiPointM),
+    numPoints(0),
     points(0L),
     mArray(0L)
 {}
 
-    MultiPointM::MultiPointM( const struct MultiPointM &mpointm ): 
-    ShapeObject(ShapeTypeMultiPointM), 
+    MultiPointM::MultiPointM( const struct MultiPointM &mpointm ):
+    ShapeObject(ShapeTypeMultiPointM),
     bbox(mpointm.bbox),
     numPoints(mpointm.numPoints),
     mRange(mpointm.mRange)
@@ -538,7 +538,7 @@ bool MultiPointM::read( int fd )
 
     if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
-    
+
     points = new struct Point[numPoints];
     Integer i;
     for( i = 0; i < numPoints; i++ )
@@ -571,22 +571,22 @@ void MultiPointM::print()
         points[i].print();
 }
 
-PolyLineM::PolyLineM(): 
-    ShapeObject(ShapeTypePolyLineM), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+PolyLineM::PolyLineM():
+    ShapeObject(ShapeTypePolyLineM),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L),
-    mArray(0L) 
+    mArray(0L)
 {}
 
-PolyLineM::PolyLineM(const PolyLineM &p): 
-    ShapeObject(ShapeTypePolyLineM), 
-    numParts(p.numParts), 
-    numPoints(p.numPoints), 
-    parts(0L), 
+PolyLineM::PolyLineM(const PolyLineM &p):
+    ShapeObject(ShapeTypePolyLineM),
+    numParts(p.numParts),
+    numPoints(p.numPoints),
+    parts(0L),
     points(0L),
-    mArray(0L) 
+    mArray(0L)
 {
     parts = new Integer[numParts];
     Integer i;
@@ -668,20 +668,20 @@ bool PolyLineM::read( int fd )
 }
 
 
-PolygonM::PolygonM(): 
-    ShapeObject(ShapeTypePolygonM), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+PolygonM::PolygonM():
+    ShapeObject(ShapeTypePolygonM),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L) ,
     mArray(0L)
 {}
 
-PolygonM::PolygonM(const PolygonM &p): 
-    ShapeObject(ShapeTypePolygonM), 
-    numParts(p.numParts), 
-    numPoints(p.numPoints), 
-    parts(0L), 
+PolygonM::PolygonM(const PolygonM &p):
+    ShapeObject(ShapeTypePolygonM),
+    numParts(p.numParts),
+    numPoints(p.numPoints),
+    parts(0L),
     points(0L) ,
     mArray(0L)
 {
@@ -769,20 +769,20 @@ bool PolygonM::read( int fd )
 
 //////////////////////////////////////////////////////////////////////
 
-PointZ::PointZ(): 
-    ShapeObject(ShapeTypePointZ),  
+PointZ::PointZ():
+    ShapeObject(ShapeTypePointZ),
     x(0.0),
-    y(0.0), 
+    y(0.0),
     z(0.0),
-    m(0.0) 
+    m(0.0)
 {}
 
-PointZ::PointZ(const PointZ &p): 
-    ShapeObject(ShapeTypePointZ), 
-    x(p.x), 
-    y(p.y), 
+PointZ::PointZ(const PointZ &p):
+    ShapeObject(ShapeTypePointZ),
+    x(p.x),
+    y(p.y),
     z(p.z),
-    m(p.m) 
+    m(p.m)
 {}
 
 PointZ::~PointZ() {}
@@ -822,16 +822,16 @@ void PointZ::print()
     printf( "    %G %G %G (%G)\n", x, y, z, m );
 }
 
-MultiPointZ::MultiPointZ(): 
-    ShapeObject(ShapeTypeMultiPointZ), 
-    numPoints(0), 
+MultiPointZ::MultiPointZ():
+    ShapeObject(ShapeTypeMultiPointZ),
+    numPoints(0),
     points(0L),
     zArray(0L),
     mArray(0L)
     {}
 
-MultiPointZ::MultiPointZ( const struct MultiPointZ &mpointm ): 
-    ShapeObject(ShapeTypeMultiPointZ), 
+MultiPointZ::MultiPointZ( const struct MultiPointZ &mpointm ):
+    ShapeObject(ShapeTypeMultiPointZ),
     bbox(mpointm.bbox),
     numPoints(mpointm.numPoints),
     zRange(mpointm.zRange),
@@ -877,7 +877,7 @@ bool MultiPointZ::read( int fd )
 
     if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
-    
+
     points = new struct Point[numPoints];
     Integer i;
     for( i = 0; i < numPoints; i++ )
@@ -922,24 +922,24 @@ void MultiPointZ::print()
 }
 
 
-PolyLineZ::PolyLineZ(): 
-    ShapeObject(ShapeTypePolyLineZ), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+PolyLineZ::PolyLineZ():
+    ShapeObject(ShapeTypePolyLineZ),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L),
     zArray(0L) ,
-    mArray(0L) 
+    mArray(0L)
 {}
 
-PolyLineZ::PolyLineZ(const PolyLineZ &p): 
-    ShapeObject(ShapeTypePolyLineZ), 
-    numParts(p.numParts), 
-    numPoints(p.numPoints), 
-    parts(0L), 
+PolyLineZ::PolyLineZ(const PolyLineZ &p):
+    ShapeObject(ShapeTypePolyLineZ),
+    numParts(p.numParts),
+    numPoints(p.numPoints),
+    parts(0L),
     points(0L),
     zArray(0L) ,
-    mArray(0L) 
+    mArray(0L)
 {
     parts = new Integer[numParts];
     Integer i;
@@ -1026,7 +1026,7 @@ bool PolyLineZ::read( int fd )
     int Z = Y + 16 + (8 * numPoints);
 
     if( rh.contentLength != Z )
-    { 
+    {
         mRange.read(fd);
         mArray = new Double[numPoints];
         for( i = 0; i < numPoints; i++ )
@@ -1040,21 +1040,21 @@ bool PolyLineZ::read( int fd )
 }
 
 
-PolygonZ::PolygonZ(): 
-    ShapeObject(ShapeTypePolygonZ), 
-    numParts(0), 
-    numPoints(0), 
-    parts(0L), 
+PolygonZ::PolygonZ():
+    ShapeObject(ShapeTypePolygonZ),
+    numParts(0),
+    numPoints(0),
+    parts(0L),
     points(0L),
     zArray(0L),
     mArray(0L)
 {}
 
-PolygonZ::PolygonZ(const PolygonZ &p): 
-    ShapeObject(ShapeTypePolygonZ), 
-    numParts(p.numParts), 
-    numPoints(p.numPoints), 
-    parts(0L), 
+PolygonZ::PolygonZ(const PolygonZ &p):
+    ShapeObject(ShapeTypePolygonZ),
+    numParts(p.numParts),
+    numPoints(p.numPoints),
+    parts(0L),
     points(0L) ,
     mArray(0L)
 {
@@ -1064,14 +1064,14 @@ PolygonZ::PolygonZ(const PolygonZ &p):
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
-    zArray = new Double[numPoints]; // jcm 
+    zArray = new Double[numPoints]; // jcm
     mArray = new Double[numPoints];
     for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
-        zArray[i] = p.zArray[i]; // jcm 
+        zArray[i] = p.zArray[i]; // jcm
     // M-Array seems to be missing sometimes
-    if(p.mArray)     
+    if(p.mArray)
         mArray[i] = p.mArray[i];
     }
 }
@@ -1089,7 +1089,7 @@ bool PolygonZ::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
-    
+
     SAFE_DELETE_ARRAY( parts );
     SAFE_DELETE_ARRAY( points );
     SAFE_DELETE_ARRAY( zArray );

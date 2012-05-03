@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdio.h>
@@ -38,7 +38,7 @@
 
 using namespace osg;
 
-// local class to help porting from OSG0.8.x to 0.9.x 
+// local class to help porting from OSG0.8.x to 0.9.x
 class TextureGLModeSet
 {
 
@@ -60,7 +60,7 @@ class TextureGLModeSet
             _textureModeSet.insert(GL_TEXTURE_GEN_S);
             _textureModeSet.insert(GL_TEXTURE_GEN_T);
         }
-        
+
         bool isTextureMode(StateAttribute::GLMode mode) const
         {
             return _textureModeSet.find(mode)!=_textureModeSet.end();
@@ -69,7 +69,7 @@ class TextureGLModeSet
     protected:
 
         std::set<StateAttribute::GLMode> _textureModeSet;
-        
+
 };
 
 static TextureGLModeSet& getTextureGLModeSet()
@@ -88,7 +88,7 @@ StateSet::StateSet():
     _nestRenderBins(true)
 {
     _renderingHint = DEFAULT_BIN;
-    
+
     _numChildrenRequiringUpdateTraversal = 0;
     _numChildrenRequiringEventTraversal = 0;
 
@@ -113,17 +113,17 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop),
             attr->addParent(this);
         }
     }
-    
+
     // copy texture related modes.
     _textureModeList = rhs._textureModeList;
-    
+
     // set up the size of the texture attribute list.
     _textureAttributeList.resize(rhs._textureAttributeList.size());
-    
+
     // copy the contents across.
     for(unsigned int i=0;i<rhs._textureAttributeList.size();++i)
     {
-        
+
         AttributeList& lhs_attributeList = _textureAttributeList[i];
         const AttributeList& rhs_attributeList = rhs._textureAttributeList[i];
         for(AttributeList::const_iterator itr=rhs_attributeList.begin();
@@ -155,7 +155,7 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop),
             uni->addParent(this);
         }
     }
-    
+
     _renderingHint = rhs._renderingHint;
 
     _binMode = rhs._binMode;
@@ -191,7 +191,7 @@ void StateSet::computeDataVariance()
         itr!=_attributeList.end();
         ++itr)
     {
-        if (itr->second.first->getDataVariance()==UNSPECIFIED && 
+        if (itr->second.first->getDataVariance()==UNSPECIFIED &&
             (itr->second.first->getUpdateCallback() || itr->second.first->getEventCallback()))
         {
             itr->second.first->setDataVariance(DYNAMIC);
@@ -208,7 +208,7 @@ void StateSet::computeDataVariance()
             itr!=attributeList.end();
             ++itr)
         {
-            if (itr->second.first->getDataVariance()==UNSPECIFIED && 
+            if (itr->second.first->getDataVariance()==UNSPECIFIED &&
                 (itr->second.first->getUpdateCallback() || itr->second.first->getEventCallback()))
             {
                 itr->second.first->setDataVariance(DYNAMIC);
@@ -224,7 +224,7 @@ void StateSet::computeDataVariance()
         uitr != _uniformList.end();
         ++uitr)
     {
-        if (uitr->second.first->getDataVariance()==UNSPECIFIED && 
+        if (uitr->second.first->getDataVariance()==UNSPECIFIED &&
             (uitr->second.first->getUpdateCallback() || uitr->second.first->getEventCallback()))
         {
             uitr->second.first->setDataVariance(DYNAMIC);
@@ -273,7 +273,7 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
 
     if (_textureAttributeList.size()<rhs._textureAttributeList.size()) return -1;
     if (_textureAttributeList.size()>rhs._textureAttributeList.size()) return 1;
-    
+
     for(unsigned int ai=0;ai<_textureAttributeList.size();++ai)
     {
         const AttributeList& rhs_attributeList = _textureAttributeList[ai];
@@ -324,7 +324,7 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
         }
     }
 
-    
+
     // now check the rest of the non texture attributes
     if (compareAttributeContents)
     {
@@ -370,8 +370,8 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
         }
         else if (rhs_attr_itr == rhs._attributeList.end()) return 1;
     }
-    
-    // we've got here so attributes must be equal...    
+
+    // we've got here so attributes must be equal...
 
 
     if (_textureModeList.size()<rhs._textureModeList.size()) return -1;
@@ -439,13 +439,13 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     {
         if (rhs_uniform_itr!=rhs._uniformList.end()) return -1;
     }
-    else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;  
+    else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;
 
     // check render bin details
-    
+
     if ( _binMode < rhs._binMode ) return -1;
     else if ( _binMode > rhs._binMode ) return 1;
-    
+
     if ( _binMode != INHERIT_RENDERBIN_DETAILS )
     {
         if ( _binNum < rhs._binNum ) return -1;
@@ -526,7 +526,7 @@ int StateSet::compareAttributeContents(const AttributeList& lhs,const AttributeL
 }
 
 void StateSet::setGlobalDefaults()
-{    
+{
     _renderingHint = DEFAULT_BIN;
 
     setRenderBinToInherit();
@@ -542,7 +542,7 @@ void StateSet::setGlobalDefaults()
         Material *material       = new Material;
         material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
         setAttributeAndModes(material,StateAttribute::ON);
-        
+
     #endif
 }
 
@@ -561,10 +561,10 @@ void StateSet::clear()
     {
         itr->second.first->removeParent(this);
     }
-    
+
     _modeList.clear();
     _attributeList.clear();
-    
+
 
     // remove self from as texture attributes parent
     for(unsigned int i=0;i<_textureAttributeList.size();++i)
@@ -595,7 +595,7 @@ void StateSet::clear()
 
 void StateSet::merge(const StateSet& rhs)
 {
-    // merge the modes of rhs into this, 
+    // merge the modes of rhs into this,
     // this overrides rhs if OVERRIDE defined in this.
     for(ModeList::const_iterator rhs_mitr = rhs._modeList.begin();
         rhs_mitr != rhs._modeList.end();
@@ -604,9 +604,9 @@ void StateSet::merge(const StateSet& rhs)
         ModeList::iterator lhs_mitr = _modeList.find(rhs_mitr->first);
         if (lhs_mitr!=_modeList.end())
         {
-            // take the rhs mode unless the lhs is override and the rhs is not protected 
+            // take the rhs mode unless the lhs is override and the rhs is not protected
             if (!(lhs_mitr->second & StateAttribute::OVERRIDE ) ||
-                 (rhs_mitr->second & StateAttribute::PROTECTED)) 
+                 (rhs_mitr->second & StateAttribute::PROTECTED))
             {
                 // override isn't on in rhs, so override it with incoming
                 // value.
@@ -620,7 +620,7 @@ void StateSet::merge(const StateSet& rhs)
         }
     }
 
-    // merge the attributes of rhs into this, 
+    // merge the attributes of rhs into this,
     // this overrides rhs if OVERRIDE defined in this.
     for(AttributeList::const_iterator rhs_aitr = rhs._attributeList.begin();
         rhs_aitr != rhs._attributeList.end();
@@ -629,7 +629,7 @@ void StateSet::merge(const StateSet& rhs)
         AttributeList::iterator lhs_aitr = _attributeList.find(rhs_aitr->first);
         if (lhs_aitr!=_attributeList.end())
         {
-            // take the rhs attribute unless the lhs is override and the rhs is not protected 
+            // take the rhs attribute unless the lhs is override and the rhs is not protected
             if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
                  (rhs_aitr->second.second & StateAttribute::PROTECTED))
             {
@@ -667,7 +667,7 @@ void StateSet::merge(const StateSet& rhs)
     {
         ModeList& lhs_modeList = _textureModeList[mi];
         const ModeList& rhs_modeList = rhs._textureModeList[mi];
-        // merge the modes of rhs into this, 
+        // merge the modes of rhs into this,
         // this overrides rhs if OVERRIDE defined in this.
         for(ModeList::const_iterator rhs_mitr = rhs_modeList.begin();
             rhs_mitr != rhs_modeList.end();
@@ -676,9 +676,9 @@ void StateSet::merge(const StateSet& rhs)
             ModeList::iterator lhs_mitr = lhs_modeList.find(rhs_mitr->first);
             if (lhs_mitr!=lhs_modeList.end())
             {
-                // take the rhs mode unless the lhs is override and the rhs is not protected 
+                // take the rhs mode unless the lhs is override and the rhs is not protected
                 if (!(lhs_mitr->second & StateAttribute::OVERRIDE) ||
-                     (rhs_mitr->second & StateAttribute::PROTECTED)) 
+                     (rhs_mitr->second & StateAttribute::PROTECTED))
                 {
                     // override isn't on in rhs, so override it with incoming
                     // value.
@@ -692,14 +692,14 @@ void StateSet::merge(const StateSet& rhs)
             }
         }
     }
-    
+
     if (_textureAttributeList.size()<rhs._textureAttributeList.size()) _textureAttributeList.resize(rhs._textureAttributeList.size());
     for(unsigned int ai=0;ai<rhs._textureAttributeList.size();++ai)
     {
         AttributeList& lhs_attributeList = _textureAttributeList[ai];
         const AttributeList& rhs_attributeList = rhs._textureAttributeList[ai];
-        
-        // merge the attributes of rhs into this, 
+
+        // merge the attributes of rhs into this,
         // this overrides rhs if OVERRIDE defined in this.
         for(AttributeList::const_iterator rhs_aitr = rhs_attributeList.begin();
             rhs_aitr != rhs_attributeList.end();
@@ -708,13 +708,13 @@ void StateSet::merge(const StateSet& rhs)
             AttributeList::iterator lhs_aitr = lhs_attributeList.find(rhs_aitr->first);
             if (lhs_aitr!=lhs_attributeList.end())
             {
-                // take the rhs attribute unless the lhs is override and the rhs is not protected 
+                // take the rhs attribute unless the lhs is override and the rhs is not protected
                 if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
-                     (rhs_aitr->second.second & StateAttribute::PROTECTED)) 
+                     (rhs_aitr->second.second & StateAttribute::PROTECTED))
                 {
                     // override isn't on in rhs, so override it with incoming
                     // value.
-                    
+
                     if (lhs_aitr->second.first!=rhs_aitr->second.first)
                     {
                         lhs_aitr->second.first->removeParent(this);
@@ -735,7 +735,7 @@ void StateSet::merge(const StateSet& rhs)
         }
     }
 
-    // merge the uniforms of rhs into this, 
+    // merge the uniforms of rhs into this,
     // this overrides rhs if OVERRIDE defined in this.
     for(UniformList::const_iterator rhs_uitr = rhs._uniformList.begin();
         rhs_uitr != rhs._uniformList.end();
@@ -744,9 +744,9 @@ void StateSet::merge(const StateSet& rhs)
         UniformList::iterator lhs_uitr = _uniformList.find(rhs_uitr->first);
         if (lhs_uitr!=_uniformList.end())
         {
-            // take the rhs uniform unless the lhs is override and the rhs is not protected 
+            // take the rhs uniform unless the lhs is override and the rhs is not protected
             if (!(lhs_uitr->second.second & StateAttribute::OVERRIDE) ||
-                 (rhs_uitr->second.second & StateAttribute::PROTECTED)) 
+                 (rhs_uitr->second.second & StateAttribute::PROTECTED))
             {
                 // override isn't on in rhs, so override it with incoming
                 // value.
@@ -860,7 +860,7 @@ void StateSet::setAttribute(StateAttribute *attribute, StateAttribute::OverrideV
 
             setTextureAttribute(0,attribute,value);
         }
-    }        
+    }
 }
 
 void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value)
@@ -872,7 +872,7 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::G
             if (value&StateAttribute::INHERIT)
             {
                 removeAttribute(attribute->getType());
-            }    
+            }
             else
             {
                 setAttribute(_attributeList,attribute,value);
@@ -895,12 +895,12 @@ void StateSet::removeAttribute(StateAttribute::Type type, unsigned int member)
     AttributeList::iterator itr = _attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=_attributeList.end())
     {
-        if (itr->second.first->getUpdateCallback()) 
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -914,18 +914,18 @@ void StateSet::removeAttribute(StateAttribute::Type type, unsigned int member)
 void StateSet::removeAttribute(StateAttribute* attribute)
 {
     if (!attribute) return;
-    
+
     AttributeList::iterator itr = _attributeList.find(attribute->getTypeMemberPair());
     if (itr!=_attributeList.end())
     {
         if (itr->second.first != attribute) return;
-        
-        if (itr->second.first->getUpdateCallback()) 
+
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -958,7 +958,7 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
     {
         int delta_update = 0;
         int delta_event = 0;
-        
+
         UniformList::iterator itr=_uniformList.find(uniform->getName());
         if (itr==_uniformList.end())
         {
@@ -966,15 +966,15 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
             RefUniformPair& up = _uniformList[uniform->getName()];
             up.first = uniform;
             up.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
-            
+
             uniform->addParent(this);
-            
-            if (uniform->getUpdateCallback()) 
+
+            if (uniform->getUpdateCallback())
             {
                 delta_update = 1;
             }
 
-            if (uniform->getEventCallback()) 
+            if (uniform->getEventCallback())
             {
                 delta_event = 1;
             }
@@ -991,7 +991,7 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
                 itr->second.first->removeParent(this);
                 if (itr->second.first->getUpdateCallback()) --delta_update;
                 if (itr->second.first->getEventCallback()) --delta_event;
-                
+
                 uniform->addParent(this);
                 itr->second.first = uniform;
                 if (itr->second.first->getUpdateCallback()) ++delta_update;
@@ -1001,12 +1001,12 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
             }
         }
 
-        if (delta_update!=0) 
+        if (delta_update!=0)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
         }
 
-        if (delta_event!=0) 
+        if (delta_event!=0)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+delta_event);
         }
@@ -1019,12 +1019,12 @@ void StateSet::removeUniform(const std::string& name)
     UniformList::iterator itr = _uniformList.find(name);
     if (itr!=_uniformList.end())
     {
-        if (itr->second.first->getUpdateCallback()) 
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -1038,18 +1038,18 @@ void StateSet::removeUniform(const std::string& name)
 void StateSet::removeUniform(Uniform* uniform)
 {
     if (!uniform) return;
-    
+
     UniformList::iterator itr = _uniformList.find(uniform->getName());
     if (itr!=_uniformList.end())
     {
         if (itr->second.first != uniform) return;
 
-        if (itr->second.first->getUpdateCallback()) 
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -1070,17 +1070,17 @@ Uniform* StateSet::getOrCreateUniform(const std::string& name, Uniform::Type typ
 {
     // for look for an appropriate uniform.
     UniformList::iterator itr = _uniformList.find(name);
-    if (itr!=_uniformList.end() && 
+    if (itr!=_uniformList.end() &&
         itr->second.first->getType()==type)
     {
         return itr->second.first.get();
     }
 
     // no uniform found matching name so create it..
-    
+
     Uniform* uniform = new Uniform(type,name,numElements);
     addUniform(uniform);
-    
+
     return uniform;
 }
 
@@ -1173,7 +1173,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
 {
     if (attribute)
     {
-    
+
         if (attribute->isTextureAttribute())
         {
             if (value&StateAttribute::INHERIT)
@@ -1209,12 +1209,12 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
             setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
         }
 
-        if (itr->second.first->getUpdateCallback()) 
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -1238,12 +1238,12 @@ void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribu
 
         setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
 
-        if (itr->second.first->getUpdateCallback()) 
+        if (itr->second.first->getUpdateCallback())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
         }
 
-        if (itr->second.first->getEventCallback()) 
+        if (itr->second.first->getEventCallback())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
         }
@@ -1474,21 +1474,21 @@ class SetAssociateModesHelper : public StateAttribute::ModeUsage
             _stateset(stateset),
             _value(value),
             _unit(unit) {}
-            
+
         virtual ~SetAssociateModesHelper() {}
-        
+
         virtual void usesMode(StateAttribute::GLMode mode)
         {
             _stateset->setMode(mode,_value);
         }
-        
+
         virtual void usesTextureMode(StateAttribute::GLMode mode)
         {
             _stateset->setTextureMode(_unit,mode,_value);
         }
-        
-       
-        
+
+
+
         StateSet*                   _stateset;
         StateAttribute::GLModeValue _value;
         unsigned int                _unit;
@@ -1500,21 +1500,21 @@ class RemoveAssociateModesHelper : public StateAttribute::ModeUsage
         RemoveAssociateModesHelper(StateSet* stateset, unsigned int unit=0):
             _stateset(stateset),
             _unit(unit) {}
-            
+
         virtual ~RemoveAssociateModesHelper() {}
-        
+
         virtual void usesMode(StateAttribute::GLMode mode)
         {
             _stateset->removeMode(mode);
         }
-        
+
         virtual void usesTextureMode(StateAttribute::GLMode mode)
         {
            _stateset->removeTextureMode(_unit, mode);
         }
-        
-       
-        
+
+
+
         StateSet*                   _stateset;
         unsigned int                _unit;
 };
@@ -1549,20 +1549,20 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
     {
         int delta_update = 0;
         int delta_event = 0;
-        
+
         AttributeList::iterator itr=attributeList.find(attribute->getTypeMemberPair());
         if (itr==attributeList.end())
         {
             // new entry.
             attributeList[attribute->getTypeMemberPair()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
             attribute->addParent(this);
-            
-            if (attribute->getUpdateCallback()) 
+
+            if (attribute->getUpdateCallback())
             {
                 delta_update = 1;
             }
 
-            if (attribute->getEventCallback()) 
+            if (attribute->getEventCallback())
             {
                 delta_event = 1;
             }
@@ -1589,12 +1589,12 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
             }
         }
 
-        if (delta_update!=0) 
+        if (delta_update!=0)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
         }
 
-        if (delta_event!=0) 
+        if (delta_event!=0)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+delta_event);
         }
@@ -1643,13 +1643,13 @@ void StateSet::setUpdateCallback(Callback* ac)
     //OSG_INFO<<"Setting StateSet callbacks"<<std::endl;
 
     if (_updateCallback==ac) return;
-    
+
     int delta = 0;
     if (_updateCallback.valid()) --delta;
     if (ac) ++delta;
 
     _updateCallback = ac;
-    
+
     if (delta!=0 && _numChildrenRequiringUpdateTraversal==0)
     {
         //OSG_INFO<<"Going to set StateSet parents"<<std::endl;
@@ -1661,14 +1661,14 @@ void StateSet::setUpdateCallback(Callback* ac)
             //OSG_INFO<<"Setting StateSet parent"<<std::endl;
 
             osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-            if (drawable) 
+            if (drawable)
             {
                 //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
             }
-            else 
+            else
             {
                 osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                if (node) 
+                if (node)
                 {
                     node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
                 }
@@ -1723,13 +1723,13 @@ void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
 void StateSet::setEventCallback(Callback* ac)
 {
     if (_eventCallback==ac) return;
-    
+
     int delta = 0;
     if (_eventCallback.valid()) --delta;
     if (ac) ++delta;
 
     _eventCallback = ac;
-    
+
     if (delta!=0 && _numChildrenRequiringEventTraversal==0)
     {
         for(ParentList::iterator itr=_parents.begin();
@@ -1737,14 +1737,14 @@ void StateSet::setEventCallback(Callback* ac)
             ++itr)
         {
             osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-            if (drawable) 
+            if (drawable)
             {
                 //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
             }
-            else 
+            else
             {
                 osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                if (node) 
+                if (node)
                 {
                     node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
                 }
@@ -1804,8 +1804,8 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
     // _numChildrenRequiringUpdateTraversal so no need to inform them.
     if (!_updateCallback && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringUpdateTraversal>0) --delta;
         if (num>0) ++delta;
@@ -1817,16 +1817,16 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-                if (drawable) 
+                if (drawable)
                 {
                     drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
                 }
-                else 
+                else
                 {
                     osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                    if (node) 
+                    if (node)
                     {
                         node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
                     }
@@ -1834,7 +1834,7 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
             }
         }
     }
-    
+
     // finally update this objects value.
     _numChildrenRequiringUpdateTraversal=num;
 }
@@ -1849,8 +1849,8 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
     // _numChildrenRequiringEventTraversal so no need to inform them.
     if (!_eventCallback && !_parents.empty())
     {
-    
-        // need to pass on changes to parents.        
+
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringEventTraversal>0) --delta;
         if (num>0) ++delta;
@@ -1862,16 +1862,16 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-                if (drawable) 
+                if (drawable)
                 {
                     drawable->setNumChildrenRequiringEventTraversal(drawable->getNumChildrenRequiringEventTraversal()+delta);
                 }
-                else 
+                else
                 {
                     osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                    if (node) 
+                    if (node)
                     {
                         node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
                     }
@@ -1879,7 +1879,7 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
             }
         }
     }
-    
+
     // finally Event this objects value.
     _numChildrenRequiringEventTraversal=num;
 }

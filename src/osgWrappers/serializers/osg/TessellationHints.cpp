@@ -12,7 +12,7 @@ REGISTER_OBJECT_WRAPPER( TessellationHints,
         ADD_ENUM_VALUE( USE_SHAPE_DEFAULTS );
         ADD_ENUM_VALUE( USE_TARGET_NUM_FACES );
     END_ENUM_SERIALIZER();  // _TessellationMode
-    
+
     ADD_FLOAT_SERIALIZER( DetailRatio, 1.0f );  // _detailRatio
     ADD_UINT_SERIALIZER( TargetNumFaces, 100 );  // _targetNumFaces
     ADD_BOOL_SERIALIZER( CreateFrontFace, true );  // _createFrontFace

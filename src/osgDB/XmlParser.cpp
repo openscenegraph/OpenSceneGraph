@@ -363,7 +363,7 @@ bool XmlNode::read(Input& input)
                         OSG_INFO<<"tag is closed correctly"<<std::endl;
                         childNode->type = ATOM;
                     }
-                    else 
+                    else
                         OSG_NOTICE<<"Error: tag is not closed correctly"<<std::endl;
                 }
                 else

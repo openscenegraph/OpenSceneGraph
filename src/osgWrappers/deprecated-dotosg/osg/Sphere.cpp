@@ -43,7 +43,7 @@ bool Sphere_readLocalData(Object& obj, Input& fr)
         fr+=4;
         iteratorAdvanced = true;
     }
-    
+
     if (fr.matchSequence("Radius %f"))
     {
         float radius;
@@ -52,7 +52,7 @@ bool Sphere_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
 
     return iteratorAdvanced;
 }
@@ -60,7 +60,7 @@ bool Sphere_readLocalData(Object& obj, Input& fr)
 bool Sphere_writeLocalData(const Object& obj, Output& fw)
 {
     const Sphere& sphere = static_cast<const Sphere&>(obj);
-    
+
     fw.indent()<<"Center "<<sphere.getCenter()<<std::endl;
     fw.indent()<<"Radius "<<sphere.getRadius()<<std::endl;
 

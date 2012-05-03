@@ -20,7 +20,7 @@ REGISTER_DOTOSGWRAPPER(PSU_Proxy)
 
 bool PSU_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
-    osgParticle::ParticleSystemUpdater &myobj = static_cast<osgParticle::ParticleSystemUpdater &>(obj);    
+    osgParticle::ParticleSystemUpdater &myobj = static_cast<osgParticle::ParticleSystemUpdater &>(obj);
     bool itAdvanced = false;
 
     osg::ref_ptr<osgParticle::ParticleSystem> proto = new osgParticle::ParticleSystem;
@@ -35,7 +35,7 @@ bool PSU_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
 bool PSU_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
-    const osgParticle::ParticleSystemUpdater &myobj = static_cast<const osgParticle::ParticleSystemUpdater &>(obj);    
+    const osgParticle::ParticleSystemUpdater &myobj = static_cast<const osgParticle::ParticleSystemUpdater &>(obj);
 
     for (unsigned int i=0; i<myobj.getNumParticleSystems(); ++i) {
         fw.writeObject(*myobj.getParticleSystem(i));

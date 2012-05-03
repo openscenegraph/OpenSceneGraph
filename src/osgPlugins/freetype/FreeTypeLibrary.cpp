@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -24,7 +24,7 @@
 
 FreeTypeLibrary::FreeTypeLibrary()
 {
-    OSG_INFO << "FreeTypeLibrary::FreeTypeLibrary()" << std::endl; 
+    OSG_INFO << "FreeTypeLibrary::FreeTypeLibrary()" << std::endl;
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
@@ -48,7 +48,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
         if (font) font->setImplementation(0);
         else fontImplementation->_facade = 0;
     }
-    
+
     FT_Done_FreeType( _ftlibrary);
 }
 
@@ -75,7 +75,7 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
         OSG_WARN<<" .... be opened, read or simply that it is broken.."<<std::endl;
         return false;
     }
-    
+
 #ifdef PRINT_OUT_FONT_DETAILS
 
     OSG_NOTICE<<"Face"<<face<<std::endl;
@@ -84,9 +84,9 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
     {
         FT_SfntName names;
         FT_Error error = FT_Get_Sfnt_Name(face, i, &names);
-        
+
         std::string name((char*)names.string, (char*)names.string + names.string_len);
-        
+
         OSG_NOTICE<<"names "<<name<<std::endl;
     }
 
@@ -97,7 +97,7 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
     // GT: Fix to handle symbol fonts in MS Windows
     //
     verifyCharacterMap(face);
-    
+
     return true;
 }
 
@@ -145,7 +145,7 @@ FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, 
     // GT: Fix to handle symbol fonts in MS Windows
     //
     verifyCharacterMap(face);
-    
+
     return buffer;
 }
 
@@ -156,12 +156,12 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile, unsigned in
     if (getFace(fontfile, index, face) == false) return (0);
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
-    
+
     FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
 
     _fontImplementationSet.insert(fontImp);
-    
+
     return font;
 }
 osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index, unsigned int flags)
@@ -170,12 +170,12 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     FT_Byte * buffer = getFace(fontstream, index, face);
     if (face == 0) return (0);
 
-    
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
 
     FreeTypeFont* fontImp = new FreeTypeFont(buffer,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
-    
+
     _fontImplementationSet.insert(fontImp);
 
     return font;
@@ -184,20 +184,20 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
 void FreeTypeLibrary::verifyCharacterMap(FT_Face face)
 {
     //
-    // GT: Verify the correct character mapping for MS windows 
+    // GT: Verify the correct character mapping for MS windows
     // as symbol fonts were being returned incorrectly
     //
     FT_CharMap charmap;
     if (face->charmap == NULL)
     {
-        for (int n = 0; n < face->num_charmaps; n++) 
-        { 
-            charmap = face->charmaps[n]; 
-            if (charmap->platform_id == TT_PLATFORM_MICROSOFT) 
-            { 
+        for (int n = 0; n < face->num_charmaps; n++)
+        {
+            charmap = face->charmaps[n];
+            if (charmap->platform_id == TT_PLATFORM_MICROSOFT)
+            {
                 FT_Set_Charmap(face, charmap);
-                break; 
-            } 
+                break;
+            }
         }
     }
 }

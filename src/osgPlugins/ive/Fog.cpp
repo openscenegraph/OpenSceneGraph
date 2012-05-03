@@ -7,7 +7,7 @@
  *    CREATED BY:        Liang Aibin
  *
  *    HISTORY:        Created 17.06.2008
- * 
+ *
  **********************************************************************/
 
 #include "Exception.h"

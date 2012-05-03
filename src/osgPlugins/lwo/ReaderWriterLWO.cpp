@@ -6,8 +6,8 @@
  * Copyright (C) 2001 Ulrich Hertlein <u.hertlein@web.de>
  * Improved LWO2 reader is (C) 2003-2004 Marco Jez <marco.jez@poste.it>
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -54,24 +54,24 @@ public:
         supportsExtension("lw","Lightwave object format");
         supportsExtension("geo","Lightwave geometry format");
     }
-    
+
     virtual const char* className() const { return "Lightwave Object Reader"; }
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
-        std::string ext = osgDB::getLowerCaseFileExtension(file);        
+        std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
         ReadResult result = readNode_LWO1(fileName,local_opt.get());
         if (result.success()) return result;
-        
+
         if (!options || options->getOptionString() != "USE_OLD_READER") {
             ReadResult result = readNode_LWO2(fileName, local_opt.get());
             if (result.success()) return result;
@@ -88,7 +88,7 @@ public:
 
 protected:
 
-    
+
 
 };
 
@@ -196,7 +196,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
 
     typedef std::map<int,GeometryCollection> MaterialToGeometryCollectionMap;
     MaterialToGeometryCollectionMap mtgcm;
-    
+
     // bin the indices for each material into the mtis;
     int i;
     for (i = 0; i < lw->face_cnt; ++i)
@@ -210,7 +210,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             if (face.texcoord) gc._numPrimitivesWithTexCoords += 1;
         }
     }
-    
+
     MaterialToGeometryCollectionMap::iterator itr;
     for(itr=mtgcm.begin(); itr!=mtgcm.end(); ++itr)
     {
@@ -221,7 +221,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             lwMaterial& lw_material = lw->material[itr->first];
 
             gc._geom = new osg::Geometry;
-            
+
             osg::Vec3Array* vertArray = new osg::Vec3Array(gc._numPoints);
             gc._vertices = vertArray->begin();
             gc._geom->setVertexArray(vertArray);
@@ -232,10 +232,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                              lw_material.g,
                              lw_material.b,
                              1.0f);
-                             
+
             gc._geom->setColorArray(colors);
             gc._geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
+
             // set up texture if needed.
             if (gc._numPrimitivesWithTexCoords==gc._numPrimitives)
             {
@@ -266,7 +266,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
 
                         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
                         gc._texturesActive=true;
-                        
+
                         gc._geom->setStateSet(stateset);
 
                         osg::Vec2Array* texcoordArray = new osg::Vec2Array(gc._numPoints);
@@ -275,17 +275,17 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                     }
                 }
             }
-        }        
+        }
     }
-    
-    
+
+
     for (i = 0; i < lw->face_cnt; ++i)
     {
         lwFace& face = lw->face[i];
         if (face.index_cnt>=3)
         {
             GeometryCollection& gc = mtgcm[face.material];
-            
+
             osg::PrimitiveSet::Mode mode;
             switch(face.index_cnt)
             {
@@ -308,7 +308,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                     mode = osg::PrimitiveSet::POLYGON;
                     break;
             }
-                        
+
             gc._geom->addPrimitiveSet(new osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
             gc._coordCount += face.index_cnt;
 
@@ -325,22 +325,22 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             {
                 (*gc._vertices++).set(lw->vertex[face.index[j]*3], lw->vertex[face.index[j]*3+2], lw->vertex[face.index[j]*3+1]);
             }
-            
+
             if (gc._texturesActive && face.texcoord)
             {
                 for(j=face.index_cnt-1;j>=0;--j)
                 {
                     (*gc._texcoords++).set(face.texcoord[j*2],face.texcoord[j*2+1]);
-                }            
-            }            
+                }
+            }
         }
     }
 
     osg::Geode* geode = new osg::Geode;
-    
+
     osgUtil::Tessellator tessellator;
-    
-    // add everthing into the Geode.    
+
+    // add everthing into the Geode.
     osgUtil::SmoothingVisitor smoother;
     for(itr=mtgcm.begin();
         itr!=mtgcm.end();
@@ -349,11 +349,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         GeometryCollection& gc = itr->second;
         if (gc._geom)
         {
-            
+
             tessellator.retessellatePolygons(*gc._geom);
-        
+
             smoother.smooth(*gc._geom);
-            
+
             geode->addDrawable(gc._geom);
         }
 

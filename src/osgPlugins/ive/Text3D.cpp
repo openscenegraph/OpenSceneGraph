@@ -34,7 +34,7 @@ void Text3D::write(DataOutputStream* out){
     }
     else
         out_THROW_EXCEPTION("Text::write(): Could not cast this osgText::Text to an osg::Drawable.");
-    
+
     // Write Text's properties.
     if( getFont() )
     {
@@ -64,9 +64,9 @@ void Text3D::write(DataOutputStream* out){
     out->writeUInt(getCharacterSizeMode());
     out->writeFloat(getMaximumWidth());
     out->writeFloat(getMaximumHeight());
-    
+
     out->writeFloat(getLineSpacing());
-    
+
     out->writeUInt(getAlignment());
 
     out->writeQuat(getRotation()); //FIXME: controllare che ci sia
@@ -104,7 +104,7 @@ void Text3D::write(DataOutputStream* out){
         }
 
         //std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));
-        
+
         out->writeBool(true);
         out->writeString(str);
     }
@@ -112,7 +112,7 @@ void Text3D::write(DataOutputStream* out){
     {
         // do it the hardway...output each character as an int
         osg::ref_ptr<osg::UIntArray> strarr = new osg::UIntArray(textstring.size());
-        
+
         for(itr=textstring.begin();
             itr!=textstring.end();
             ++itr)

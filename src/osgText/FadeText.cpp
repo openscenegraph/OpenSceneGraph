@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,12 +25,12 @@ struct FadeTextData : public osg::Referenced
     FadeTextData(FadeText* fadeText=0):
         _fadeText(fadeText),
         _visible(true) {}
-        
+
     bool operator < (const FadeTextData& rhs) const
     {
         return _fadeText < rhs._fadeText;
-    }    
-    
+    }
+
     double getNearestZ() const
     {
         double nearestZ = _vertices[0].z();
@@ -58,15 +58,15 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         _referenceVertexList.push_back(_vertices[2]);
         _referenceVertexList.push_back(_vertices[3]);
     }
-    
+
     void addEdgePlane(const osg::Vec3& corner, const osg::Vec3& edge)
     {
         osg::Vec3 normal( edge.y(), -edge.x(), 0.0f);
         normal.normalize();
-        
+
         add(osg::Plane(normal, corner));
     }
-     
+
     void buildPolytope()
     {
         osg::Vec3d edge01 = _vertices[1] - _vertices[0];
@@ -82,7 +82,7 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[1], _vertices[2]));
         add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[2], _vertices[3]));
         add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[3], _vertices[0]));
-        
+
 #if 0
         OSG_NOTICE<<" normalFrontFace = "<<normalFrontFace<<std::endl;
         OSG_NOTICE<<" edge01 = "<<edge01<<std::endl;
@@ -95,16 +95,16 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
 
         if (needToFlip) flip();
 
-#if 0        
+#if 0
         OSG_NOTICE<<"   plane 0 "<< _planeList[0]<<std::endl;
         OSG_NOTICE<<"   plane 1 "<< _planeList[1]<<std::endl;
         OSG_NOTICE<<"   plane 2 "<< _planeList[2]<<std::endl;
         OSG_NOTICE<<"   plane 3 "<< _planeList[3]<<std::endl;
         OSG_NOTICE<<"   plane 4 "<< _planeList[4]<<std::endl;
 #endif
-        
+
     }
-    
+
     inline bool contains(const std::vector<osg::Vec3>& vertices)
     {
         for(std::vector<osg::Vec3>::const_iterator itr = vertices.begin();
@@ -118,7 +118,7 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         }
         return false;
     }
-    
+
 };
 
 struct FadeTextUserData : public osg::Referenced
@@ -144,11 +144,11 @@ struct GlobalFadeText : public osg::Referenced
     {
     }
 
-    
+
     FadeTextUserData* createNewFadeTextUserData(osg::View* view)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        
+
         FadeTextUserData* userData = new FadeTextUserData;
 
         if (!userData)
@@ -158,20 +158,20 @@ struct GlobalFadeText : public osg::Referenced
         }
 
         _viewMap[view].insert(userData);
-        
+
         return userData;
     }
-    
-    
+
+
     void update(unsigned int frameNumber)
     {
         _frameNumber = frameNumber;
-        
+
         for(GlobalFadeText::ViewUserDataMap::iterator vitr = _viewMap.begin();
             vitr != _viewMap.end();
             ++vitr)
         {
-        
+
             osg::View* view = vitr->first;
 
             FadeTextSet& fadeTextSet = _viewFadeTextMap[view];
@@ -184,7 +184,7 @@ struct GlobalFadeText : public osg::Referenced
                 ++uitr)
             {
                 FadeTextUserData* userData = uitr->get();
-                
+
                 int frameDelta = frameNumber - userData->_frameNumber;
                 if (frameDelta<=1)
                 {
@@ -194,7 +194,7 @@ struct GlobalFadeText : public osg::Referenced
                     {
                         FadeTextData& fadeTextData = *fitr;
                         if (fadeTextSet.count(fadeTextData._fadeText)==0)
-                        { 
+                        {
                             fadeTextSet.insert(fadeTextData._fadeText);
                             fadeTextPolytopeMap.insert(FadeTextPolytopeMap::value_type(
                                 -fadeTextData.getNearestZ(), new FadeTextPolytopeData(fadeTextData)));
@@ -203,14 +203,14 @@ struct GlobalFadeText : public osg::Referenced
                 }
             }
 
-            // for each FadeTexPoltopeData            
+            // for each FadeTexPoltopeData
             //    create polytopes
             //    test against all FTPD's later in the list
             //       test all control points on FTPD against each plane of the current polytope
             //       if all control points removed or outside then discard FTPD and make FT visible = false;
-            
-            FadeTextPolytopeMap::iterator outer_itr = fadeTextPolytopeMap.begin();                
-            while (outer_itr != fadeTextPolytopeMap.end()) 
+
+            FadeTextPolytopeMap::iterator outer_itr = fadeTextPolytopeMap.begin();
+            while (outer_itr != fadeTextPolytopeMap.end())
             {
                 FadeTextPolytopeMap::iterator inner_itr = outer_itr;
                 ++inner_itr;
@@ -225,7 +225,7 @@ struct GlobalFadeText : public osg::Referenced
                 while(inner_itr != fadeTextPolytopeMap.end())
                 {
                     FadeTextPolytopeData& inner_ftpm = *(inner_itr->second);
-                    
+
                     // OSG_NOTICE<<"Inner z "<<inner_ftpm.getNearestZ()<<std::endl;
 
                     if (outer_ftpm.contains(inner_ftpm.getReferenceVertexList()))
@@ -233,12 +233,12 @@ struct GlobalFadeText : public osg::Referenced
                         FadeTextPolytopeMap::iterator erase_itr = inner_itr;
                         // move to next ftpm
                         ++inner_itr;
-                        
+
                         fadeTextSet.erase(inner_ftpm._fadeText);
 
                         // need to remove inner_ftpm as its occluded.
                         fadeTextPolytopeMap.erase(erase_itr);
-                        
+
                     }
                     else
                     {
@@ -252,7 +252,7 @@ struct GlobalFadeText : public osg::Referenced
             }
         }
     }
-    
+
     inline void updateIfRequired(unsigned int frameNumber)
     {
         if (_frameNumber!=frameNumber) update(frameNumber);
@@ -278,16 +278,16 @@ struct FadeText::FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
     {
         osgText::FadeText* fadeText = dynamic_cast<osgText::FadeText*>(drawable);
         if (!fadeText) return;
-    
+
         unsigned int frameNumber = nv->getFrameStamp()->getFrameNumber();
 
         GlobalFadeText* gft = getGlobalFadeText();
         gft->updateIfRequired(frameNumber);
-        
+
         osgText::FadeText::ViewBlendColourMap& vbcm = fadeText->getViewBlendColourMap();
 
         _ftd._fadeText = fadeText;
-        
+
         float fadeSpeed = fadeText->getFadeSpeed();
 
         GlobalFadeText::ViewFadeTextMap& vftm = gft->_viewFadeTextMap;
@@ -361,9 +361,9 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         Text::drawImplementation(*renderInfo.getState(), osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
     }
-    
 
-    // now pass on new details 
+
+    // now pass on new details
 
     FadeTextUserData* userData = dynamic_cast<FadeTextUserData*>(renderInfo.getUserData());
     if (!userData)
@@ -396,19 +396,19 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
 
 
     osgText::Text::AutoTransformCache& atc = _autoTransformCache[renderInfo.getContextID()];
-    
+
     osg::Matrix lmv = atc._matrix;
     lmv.postMult(state.getModelViewMatrix());
-    
+
     if (renderInfo.getView() && renderInfo.getView()->getCamera())
     {
         // move from camera into the view space.
         lmv.postMult(state.getInitialInverseViewMatrix());
         lmv.postMult(renderInfo.getView()->getCamera()->getViewMatrix());
     }
-    
+
     FadeTextData ftd(const_cast<osgText::FadeText*>(this));
-    
+
     ftd._vertices[0].set(osg::Vec3d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*lmv);
     ftd._vertices[1].set(osg::Vec3d(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*lmv);
     ftd._vertices[2].set(osg::Vec3d(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*lmv);

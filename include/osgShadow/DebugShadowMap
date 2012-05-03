@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -29,16 +29,16 @@ namespace osgShadow {
 
 /**
 Class used as a layer for debuging resources used by derived xxxShadowMap classes.
-As designed by its base ViewDepndentShadowTechnique, DebugShadowMap serves mainly as container of 
+As designed by its base ViewDepndentShadowTechnique, DebugShadowMap serves mainly as container of
 DebugShadowMap::ViewData objects. Most of the debuging support work is done by these objects.
-DebugShadowMap technique only initializes them in initViewDependentData method. 
+DebugShadowMap technique only initializes them in initViewDependentData method.
 
 Debuging outputs present:
     Shadow maps (pseudo colored to improve readability)
     Shadow and related volumes (represented as convex polyhedra)
 */
 
-class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique 
+class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 {
     public :
 
@@ -46,7 +46,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
         All classes stemming from ViewDependentShadowTechnique follow the same pattern.
 
         They are always based on some underlying level base Technique and they always
-        derive their ViewData from ViewData structure defined in underlying base Technique. 
+        derive their ViewData from ViewData structure defined in underlying base Technique.
 
         I use some typedefs to make these inheritance patterns easier to declare/define.
         */
@@ -98,14 +98,14 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 
         struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
-            /** 
-            Texture used as ShadowMap - initialized by derived classes. 
-            But it has to be defined now since DebugShadowMap::ViewData methods use it 
+            /**
+            Texture used as ShadowMap - initialized by derived classes.
+            But it has to be defined now since DebugShadowMap::ViewData methods use it
             */
             osg::ref_ptr< osg::Texture >   _texture;
-            /** 
+            /**
             Camera used to render ShadowMap - initialized by derived classes.
-            But it has to be defined now since DebugShadowMap::ViewData methods use it 
+            But it has to be defined now since DebugShadowMap::ViewData methods use it
             */
             osg::ref_ptr< osg::Camera >    _camera;
 
@@ -145,7 +145,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
             std::map< std::string, osg::Polytope >    _polytopeMap;
             std::map< std::string, osg::BoundingBox > _boundingBoxMap;
 
-            osg::ref_ptr<osg::Camera>                 _cameraDebugHUD;            
+            osg::ref_ptr<osg::Camera>                 _cameraDebugHUD;
 
             bool          getDebugDraw()    { return *_doDebugDrawPtr; }
             std::string * getDebugDump()    { return _debugDumpPtr; }
@@ -158,12 +158,12 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 
             virtual void cullDebugGeometry( );
 
-            virtual void updateDebugGeometry( const osg::Camera * screenCam, 
+            virtual void updateDebugGeometry( const osg::Camera * screenCam,
                 const osg::Camera * shadowCam );
 
             void setDebugPolytope( const char * name,
                 const ConvexPolyhedron & polytope = *(ConvexPolyhedron*)( NULL ),
-                osg::Vec4 colorOutline = osg::Vec4(0,0,0,0), 
+                osg::Vec4 colorOutline = osg::Vec4(0,0,0,0),
                 osg::Vec4 colorInside = osg::Vec4(0,0,0,0) );
 
             bool DebugBoundingBox( const osg::BoundingBox & bb, const char * name = "" );
@@ -171,9 +171,9 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
             bool DebugMatrix( const osg::Matrix & m, const char * name = "" );
 
             static osg::Vec3d computeShadowTexelToPixelError
-                ( const osg::Matrix & mvpwView, 
+                ( const osg::Matrix & mvpwView,
                   const osg::Matrix & mvpwShadow,
-                  const osg::Vec3d & vWorld, 
+                  const osg::Vec3d & vWorld,
                   const osg::Vec3d & vDelta = osg::Vec3d( 0.01,0.01,0.01 ) );
 
             static void displayShadowTexelToPixelErrors

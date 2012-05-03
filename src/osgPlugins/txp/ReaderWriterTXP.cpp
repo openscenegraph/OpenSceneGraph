@@ -47,7 +47,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
         osg::ref_ptr<TXPNode> txpNode = new TXPNode;
         txpNode->setArchiveName(fileName);
-        if (options) 
+        if (options)
         {
             txpNode->setOptions(options->getOptionString());
         }
@@ -55,7 +55,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
         //modified by Brad Anderegg on May-27-08
         //calling getArchive will create a new TXPArchive if the specified one does not exist
-        //we will set our osgdb loader options on the archive and set the appropriate archive on 
+        //we will set our osgdb loader options on the archive and set the appropriate archive on
         //the txpNode.
         int id = ++_archiveId;
         osg::ref_ptr< TXPArchive > archive = createArchive(id,osgDB::getFilePath(fileName));
@@ -102,14 +102,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         archive->ReadSubArchive( y, x, endian);
 
 //    std::cout << "Attempted " << x << " " << y << std::endl;
-        
+
         TXPArchive::TileInfo info;
         if (!archive->getTileInfo(x,y,lod,info))
             return ReadResult::ERROR_IN_READING_FILE;
 
         std::vector<TXPArchive::TileLocationInfo> childrenLoc;
         osg::ref_ptr<osg::Node> tileContent = getTileContent(info,x,y,lod,archive.get(), childrenLoc);
-        
+
         tileContent->setName("TileContent");
 
         bool asChildren = false;
@@ -192,7 +192,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             return tileContent.get();
     }
 
-    
+
     // For 2.0 and lower we load subtilesLOD_XxY_ID.txp
     // For 2.1 and over  we load subtilesLOD_XxY_ID_NBCHILD_{X_Y_FID_FOFFSET_ZMIN_ZMAX_X_Y_ADDR ....}.txp
     else if (strncmp(name.c_str(),"sub",3)==0)
@@ -442,7 +442,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         //OSG_NOTICE << "Subtiles for " << x << " " << y << " " << lod << " lodaded" << std::endl;
         return subtiles.get();
     }
-    
+
     return ReadResult::ERROR_IN_READING_FILE;
 }
 
@@ -457,19 +457,19 @@ void ReaderWriterTXP::createChildrenLocationString(const std::vector<TXPArchive:
     }
     else
     {
-   
+
         theLoc << "_" << locs.size() << "_" << "{" ;
 
         for(unsigned int idx = 0; idx < locs.size(); ++idx)
         {
             const TXPArchive::TileLocationInfo& loc = locs[idx];
 
-            theLoc << loc.x 
-                   << "_" 
-                   << loc.y 
-                   << "_" 
-                   << loc.addr.file 
-                   << "_" 
+            theLoc << loc.x
+                   << "_"
+                   << loc.y
+                   << "_"
+                   << loc.addr.file
+                   << "_"
                    << loc.addr.offset
                    << "_"
                    << loc.zmin
@@ -554,7 +554,7 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
 
         locs[idx].lod = parentLod+1;
 
-      
+
 
         token = strtok(0, "_");
     }
@@ -585,7 +585,7 @@ osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string
     osg::ref_ptr< TXPArchive > archive = NULL;
 
     std::map< int,osg::ref_ptr<TXPArchive> >::iterator iter = _archives.find(id);
-    
+
     if (iter != _archives.end())
     {
         archive = iter->second.get();
@@ -663,7 +663,7 @@ class SeamFinder: public osg::NodeVisitor
 public:
     SeamFinder(int x, int y, int lod, const TXPArchive::TileInfo& info, TXPArchive *archive ):
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-    _x(x), _y(y), _lod(lod), _info(info), _archive(archive) 
+    _x(x), _y(y), _lod(lod), _info(info), _archive(archive)
     {}
 
     virtual void apply(osg::Group& group)
@@ -685,7 +685,7 @@ public:
 
 protected:
     osg::Node* seamReplacement(osg::Node* node);
-    
+
     SeamFinder& operator = (const SeamFinder&) { return *this; }
 
     int _x, _y, _lod;
@@ -830,11 +830,11 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         TXPSeamLOD* seam = new TXPSeamLOD(_x, _y, lod, dx, dy);
         seam->setCenter(loRes->getCenter());
         seam->addChild(loRes->getChild(0));        // low res
-        if (hiRes) 
+        if (hiRes)
         {
             seam->addChild(hiRes->getChild(0));    // high res
         }
-  
+
         if (nonSeamChildren.empty())
         {
             return seam;
@@ -844,10 +844,10 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             osg::Group* newGroup = new osg::Group;
 
             newGroup->addChild(seam);
-            
+
             for (unsigned int i = 0; i < nonSeamChildren.size(); i++)
                 newGroup->addChild(nonSeamChildren[i]);
-                
+
             return newGroup;
         }
     }
@@ -869,12 +869,12 @@ osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, int
     osg::Vec3 tileCenter;
     osg::Group* tileGroup = archive->getTileContent(x,y,lod,realMinRange,realMaxRange,usedMaxRange,tileCenter, childrenLoc);
 
-    // if group has only one child, then simply use its child.    
+    // if group has only one child, then simply use its child.
     while (tileGroup->getNumChildren()==1 && tileGroup->getChild(0)->asGroup())
     {
         tileGroup = tileGroup->getChild(0)->asGroup();
     }
-        
+
     bool doSeam = false;
     if(majorVersion == 2 && minorVersion >= 1)
         doSeam = (childrenLoc.size() > 0);
@@ -905,12 +905,12 @@ osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, con
     osg::Vec3 tileCenter;
     osg::Group* tileGroup = archive->getTileContent(loc,realMinRange,realMaxRange,usedMaxRange,tileCenter, childrenLoc);
 
-    // if group has only one child, then simply use its child.    
+    // if group has only one child, then simply use its child.
     while (tileGroup->getNumChildren()==1 && tileGroup->getChild(0)->asGroup())
     {
         tileGroup = tileGroup->getChild(0)->asGroup();
     }
-        
+
     // Handle seams
     if (childrenLoc.size() > 0)
     {

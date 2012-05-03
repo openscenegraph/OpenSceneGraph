@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -58,7 +58,7 @@ void RigTransformHardware::computeMatrixPaletteUniform(const osg::Matrix& transf
             OSG_WARN << "RigTransformHardware::computeUniformMatrixPalette can't set uniform at " << i << " elements" << std::endl;
     }
 }
-        
+
 
 int RigTransformHardware::getNumBonesPerVertex() const { return _bonesPerVertex;}
 int RigTransformHardware::getNumVertexes() const { return _nbVertexes;}
@@ -123,7 +123,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
 
     for (int i = 0 ; i < (int)vertexIndexWeight.size(); i++)
         vertexIndexWeight[i].resize(maxBonePerVertex);
-            
+
     _nbVertexes = nbVertexes;
     _bonesPerVertex = maxBonePerVertex;
     _bonePalette = palette;
@@ -197,13 +197,13 @@ bool RigTransformHardware::init(RigGeometry& geom)
 {
     osg::Geometry& source = *geom.getSourceGeometry();
     osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
-    if (!positionSrc) 
+    if (!positionSrc)
     {
         OSG_WARN << "RigTransformHardware no vertex array in the geometry " << geom.getName() << std::endl;
         return false;
     }
 
-    if (!geom.getSkeleton()) 
+    if (!geom.getSkeleton())
     {
         OSG_WARN << "RigTransformHardware no skeleton set in geometry " << geom.getName() << std::endl;
         return false;

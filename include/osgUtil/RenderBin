@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,8 +25,8 @@ namespace osgUtil {
 class RenderStage;
 class Statistics;
 /**
- * RenderBin base class. Renderbin contains geometries to be rendered as a group, 
- * renderbins are rendered once each.  They can improve efficiency or 
+ * RenderBin base class. Renderbin contains geometries to be rendered as a group,
+ * renderbins are rendered once each.  They can improve efficiency or
  * use different rendering algorithms.
  * A renderBin can contain further renderBins producing a tree hierarchy of renderBins.
  */
@@ -34,9 +34,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 {
     public:
 
-        typedef std::vector<RenderLeaf*>                    RenderLeafList; 
+        typedef std::vector<RenderLeaf*>                    RenderLeafList;
         typedef std::vector<StateGraph*>                    StateGraphList;
-        typedef std::map< int, osg::ref_ptr<RenderBin> >    RenderBinList; 
+        typedef std::map< int, osg::ref_ptr<RenderBin> >    RenderBinList;
 
         enum SortMode
         {
@@ -116,7 +116,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual void sortBackToFront();
         virtual void sortTraversalOrder();
 
-        struct SortCallback : public osg::Referenced    
+        struct SortCallback : public osg::Referenced
         {
             virtual void sortImplementation(RenderBin*) = 0;
         };
@@ -131,7 +131,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
-        struct DrawCallback : public osg::Referenced    
+        struct DrawCallback : public osg::Referenced
         {
             virtual void drawImplementation(RenderBin* bin,osg::RenderInfo& renderInfo,RenderLeaf*& previous) = 0;
         };
@@ -156,7 +156,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
     protected:
 
         virtual ~RenderBin();
-   
+
         int                             _binNum;
         RenderBin*                      _parent;
         RenderStage*                    _stage;
@@ -164,7 +164,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         StateGraphList                  _stateGraphList;
         RenderLeafList                  _renderLeafList;
 
-        bool                            _sorted;           
+        bool                            _sorted;
         SortMode                        _sortMode;
         osg::ref_ptr<SortCallback>      _sortCallback;
 
@@ -178,4 +178,4 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
 #endif
 
-    
+

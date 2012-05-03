@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeReader.h"
@@ -42,7 +42,7 @@ osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
     {
         OSG_WARN << "Expected element 'ActiveSwitchSet' not found" << std::endl;
     }
-    
+
     any = daeSafeCast<domAny>(teq->getChild("ValueLists"));
     if (any)
     {
@@ -59,13 +59,13 @@ osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
 
                     cdom::tokenize(child->getValue(), " ", stringValues);
                     cdom::tokenIter iter = stringValues.begin();
-                    
+
                     while (iter != stringValues.end())
                     {
                         values.push_back(parseString<bool>(*iter));
                         ++iter;
                     }
-                    
+
                     msw->setValueList(currChild, values);
                 }
                 else
@@ -156,7 +156,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     {
         OSG_WARN << "Expected element 'LoopMode' not found" << std::endl;
     }
-    
+
     int begin=0;
     any = daeSafeCast< domAny >(teq->getChild("IntervalBegin"));
     if (any)
@@ -167,7 +167,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     {
         OSG_WARN << "Expected element 'IntervalBegin' not found" << std::endl;
     }
-    
+
     int end=-1;
     any = daeSafeCast< domAny >(teq->getChild("IntervalEnd"));
     if (any)
@@ -191,7 +191,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     {
         OSG_WARN << "Expected element 'DurationSpeed' not found" << std::endl;
     }
-    
+
     int nreps = -1;
     any = daeSafeCast< domAny >(teq->getChild("DurationNReps"));
     if (any)
@@ -266,10 +266,10 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
                 {
                     std::list<std::string> stringValues;
                     osg::LOD::MinMaxPair minMaxPair;
-        
+
                     cdom::tokenize(child->getValue(), " ", stringValues);
                     cdom::tokenIter iter = stringValues.begin();
-                    
+
                     if (iter != stringValues.end())
                     {
                         minMaxPair.first = parseString<float>(*iter);
@@ -334,7 +334,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     domLight::domTechnique_common::domPoint *point;
     domLight::domTechnique_common::domSpot *spot;
 
-    if ( dlight->getTechnique_common() == NULL || 
+    if ( dlight->getTechnique_common() == NULL ||
          dlight->getTechnique_common()->getContents().getCount() == 0 )
     {
         OSG_WARN << "Invalid content for light" << std::endl;
@@ -349,12 +349,12 @@ osg::Node* daeReader::processLight( domLight *dlight )
     _rootStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     // Enable this OpenGL light
     _rootStateSet->setMode(GL_LIGHT0 + _numlights++, osg::StateAttribute::ON);
-    
+
     // Set ambient of lightmodel to zero
     // Ambient lights are added as separate lights with only an ambient term
     osg::LightModel* lightmodel = new osg::LightModel;
     lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-    _rootStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON); 
+    _rootStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
     osg::LightSource* lightsource = new osg::LightSource();
     lightsource->setLight(light);
@@ -370,36 +370,36 @@ osg::Node* daeReader::processLight( domLight *dlight )
     spot = daeSafeCast< domLight::domTechnique_common::domSpot >( el );
     if ( ambient != NULL )
     {
-        if ( ambient->getColor() == NULL ) 
+        if ( ambient->getColor() == NULL )
         {
             OSG_WARN << "Invalid content for ambient light" << std::endl;
             return NULL;
         }
 
         light->setAmbient(    osg::Vec4(    ambient->getColor()->getValue()[0],
-                                        ambient->getColor()->getValue()[1], 
+                                        ambient->getColor()->getValue()[1],
                                         ambient->getColor()->getValue()[2], 1.0f ) );
         light->setDiffuse(    osg::Vec4(    0, 0, 0, 0));
         light->setSpecular(    osg::Vec4(    0, 0, 0, 0));
-        
+
         // Tell OpenGL to make it a directional light (w=0)
         light->setPosition(    osg::Vec4(0,0,0,0));
     }
     else if ( directional != NULL )
     {
-        if ( directional->getColor() == NULL ) 
+        if ( directional->getColor() == NULL )
         {
             OSG_WARN << "Invalid content for directional light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
-        light->setDiffuse(    osg::Vec4(    directional->getColor()->getValue()[0], 
-                                        directional->getColor()->getValue()[1], 
+        light->setDiffuse(    osg::Vec4(    directional->getColor()->getValue()[0],
+                                        directional->getColor()->getValue()[1],
                                         directional->getColor()->getValue()[2], 1.0f ) );
         light->setSpecular( osg::Vec4(    directional->getColor()->getValue()[0],
-                                        directional->getColor()->getValue()[1], 
+                                        directional->getColor()->getValue()[1],
                                         directional->getColor()->getValue()[2], 1.0f ) );
-        
+
         light->setDirection(osg::Vec3(0,0,-1));
 
         // Tell OpenGL it is a directional light (w=0)
@@ -407,17 +407,17 @@ osg::Node* daeReader::processLight( domLight *dlight )
     }
     else if ( point != NULL )
     {
-        if ( point->getColor() == NULL ) 
+        if ( point->getColor() == NULL )
         {
             OSG_WARN << "Invalid content for point light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
-        light->setDiffuse(    osg::Vec4(    point->getColor()->getValue()[0], 
-                                        point->getColor()->getValue()[1], 
+        light->setDiffuse(    osg::Vec4(    point->getColor()->getValue()[0],
+                                        point->getColor()->getValue()[1],
                                         point->getColor()->getValue()[2], 1.0f ) );
-        light->setSpecular( osg::Vec4(    point->getColor()->getValue()[0], 
-                                        point->getColor()->getValue()[1], 
+        light->setSpecular( osg::Vec4(    point->getColor()->getValue()[0],
+                                        point->getColor()->getValue()[1],
                                         point->getColor()->getValue()[2], 1.0f ) );
 
         if ( point->getConstant_attenuation() != NULL )
@@ -450,17 +450,17 @@ osg::Node* daeReader::processLight( domLight *dlight )
     }
     else if ( spot != NULL )
     {
-        if ( spot->getColor() == NULL ) 
+        if ( spot->getColor() == NULL )
         {
             OSG_WARN << "Invalid content for spot light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
-        light->setDiffuse(    osg::Vec4(    spot->getColor()->getValue()[0], 
-                                        spot->getColor()->getValue()[1], 
+        light->setDiffuse(    osg::Vec4(    spot->getColor()->getValue()[0],
+                                        spot->getColor()->getValue()[1],
                                         spot->getColor()->getValue()[2], 1.0f ) );
-        light->setSpecular( osg::Vec4(    spot->getColor()->getValue()[0], 
-                                        spot->getColor()->getValue()[1], 
+        light->setSpecular( osg::Vec4(    spot->getColor()->getValue()[0],
+                                        spot->getColor()->getValue()[1],
                                         spot->getColor()->getValue()[2], 1.0f ) );
 
         if ( spot->getConstant_attenuation() != NULL )
@@ -557,7 +557,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
                 // <xfov> and <yfov>
                 pOsgCameraView->setFieldOfView(pXfov->getValue());
                 pOsgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
-                
+
                 if (pAspectRatio)
                 {
                     OSG_WARN << "Unexpected <aspectratio> in <camera> '" << dcamera->getId() << "'" << std::endl;
@@ -569,7 +569,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
                 pOsgCameraView->setFieldOfView(pXfov->getValue() * pAspectRatio->getValue());
                 pOsgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
             }
-            else 
+            else
             {
                 // <xfov>
                 pOsgCameraView->setFieldOfView(pXfov->getValue());
@@ -604,11 +604,11 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
     }
     else if (pDomOrthographic)
     {
-        // <orthographic> 
+        // <orthographic>
         // 1    <xmag>, <ymag>, <xmag> and <ymag>, <xmag> and <aspect_ratio>, <ymag> and <aspect_ratio>
         // 1    <znear>
         // 1    <zfar>
-        
+
         //domTargetableFloat *pXmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getXmag());
         //domTargetableFloat *pYmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getYmag());
         //domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomOrthographic->getAspect_ratio());
@@ -617,7 +617,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
         OSG_WARN << "Orthographic in <camera> '" << dcamera->getId() << "' not supported" << std::endl;
 
         //domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZnear());
-        //domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());    
+        //domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());
 
         // TODO The current osg::CameraView does not support storage of near far
     }

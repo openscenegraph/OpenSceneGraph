@@ -34,7 +34,7 @@ bool BounceOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("resilience")) {
         if (fr[1].getFloat(value)) {
             bp.setResilience(value);
@@ -42,7 +42,7 @@ bool BounceOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("cutoff")) {
         if (fr[1].getFloat(value)) {
             bp.setCutoff(value);

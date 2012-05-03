@@ -19,7 +19,7 @@ namespace iff
 	struct Chunk {
 
 		virtual ~Chunk()
-		{ 
+		{
 			Chunk_list *fod = free_on_destroy();
 			if (fod) {
 				for (Chunk_list::iterator i=fod->begin(); i!=fod->end(); ++i) {
@@ -29,7 +29,7 @@ namespace iff
 		}
 
 		virtual Chunk_list *free_on_destroy() { return 0; }
-	};	
+	};
 
 	template<typename Iter>
 	class GenericParser {
@@ -50,7 +50,7 @@ namespace iff
 
 		inline std::ostream &os() { return os_; }
 
-	private:		
+	private:
 		GenericParser& operator = (const GenericParser&) { return *this; }
 
 

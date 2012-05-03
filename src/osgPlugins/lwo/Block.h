@@ -30,7 +30,7 @@ namespace lwosg
 
 		osg::Vec3 center_;
 		osg::Vec3 size_;
-		osg::Vec3 rotation_;		
+		osg::Vec3 rotation_;
 		// missing: OREF, FALL
 		Coordinate_system_type csys_;
 

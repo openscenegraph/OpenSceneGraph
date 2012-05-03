@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GL>
@@ -24,7 +24,7 @@ using namespace osgUtil;
 Tessellator::Tessellator() :
     _wtype(TESS_WINDING_ODD),
     _ttype(TESS_TYPE_POLYGONS),
-    _boundaryOnly(false), _numberVerts(0) 
+    _boundaryOnly(false), _numberVerts(0)
 {
     _tobj = gluNewTess();
     if (_tobj)
@@ -56,13 +56,13 @@ void Tessellator::beginTessellation()
     {
         gluTessProperty(_tobj, GLU_TESS_WINDING_RULE, _wtype);
         gluTessProperty(_tobj, GLU_TESS_BOUNDARY_ONLY, _boundaryOnly);
-        
+
         if (tessNormal.length()>0.0) gluTessNormal(_tobj, tessNormal.x(), tessNormal.y(), tessNormal.z());
 
         gluTessBeginPolygon(_tobj,this);
     }
-}    
-    
+}
+
 void Tessellator::beginContour()
 {
     if (_tobj)
@@ -70,7 +70,7 @@ void Tessellator::beginContour()
         gluTessBeginContour(_tobj);
     }
 }
-      
+
 void Tessellator::addVertex(osg::Vec3* vertex)
 {
     if (_tobj)
@@ -104,7 +104,7 @@ void Tessellator::endTessellation()
     if (_tobj)
     {
         gluTessEndPolygon(_tobj);
-        
+
         if (_errorCode!=0)
         {
            const GLubyte *estring = gluErrorString((GLenum)_errorCode);
@@ -119,7 +119,7 @@ void Tessellator::reset()
     {
         delete (*i);
     }
-    
+
     // We need to also free the vertex list as well otherwise we are leaking...
     for (NewVertexList::iterator j = _newVertexList.begin(); j != _newVertexList.end(); ++j)
     {
@@ -138,7 +138,7 @@ void Tessellator::reset()
 class InsertNewVertices : public osg::ArrayVisitor
 {
     public:
-    
+
         float _f1,_f2,_f3,_f4;
         unsigned int _i1,_i2,_i3,_i4;
 
@@ -157,7 +157,7 @@ class InsertNewVertices : public osg::ArrayVisitor
             if (_f2) val += static_cast<TYPE>(array[_i2] * _f2);
             if (_f3) val += static_cast<TYPE>(array[_i3] * _f3);
             if (_f4) val += static_cast<TYPE>(array[_i4] * _f4);
-            
+
             array.push_back(val);
         }
 
@@ -179,7 +179,7 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
 {
     // turn the contour list into primitives, a little like Tessellator does but more generally
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
-    
+
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
 
@@ -189,7 +189,7 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
         geom.getColorIndices() ||
         geom.getSecondaryColorIndices() ||
         geom.getFogCoordIndices()) return;
-        
+
     // not even text coord indices don't handle geometry which use indices...
     for(unsigned int unit=0;unit<geom.getNumTexCoordArrays();++unit)
     {
@@ -240,7 +240,7 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
                 if (primitive->getType()==osg::PrimitiveSet::DrawArrayLengthsPrimitiveType)
                 {
                     osg::DrawArrayLengths* drawArrayLengths = static_cast<osg::DrawArrayLengths*>(primitive.get());
-                    unsigned int first = drawArrayLengths->getFirst(); 
+                    unsigned int first = drawArrayLengths->getFirst();
                     for(osg::DrawArrayLengths::iterator itr=drawArrayLengths->begin();
                         itr!=drawArrayLengths->end();
                         ++itr)
@@ -290,8 +290,8 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
     }
     if (_ttype==TESS_TYPE_GEOMETRY) {
         endTessellation();
-    
-        collectTessellation(geom, 0);    
+
+        collectTessellation(geom, 0);
     }
 }
 
@@ -371,13 +371,13 @@ void Tessellator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* verti
     if (primitive->getMode()==osg::PrimitiveSet::QUADS) nperprim=4;
     if (primitive->getMode()==osg::PrimitiveSet::TRIANGLES) nperprim=3;
     unsigned int idx=0;
-    
+
     switch(primitive->getType())
     {
     case(osg::PrimitiveSet::DrawArraysPrimitiveType):
         {
             osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
-            unsigned int first = drawArray->getFirst(); 
+            unsigned int first = drawArray->getFirst();
             unsigned int last = first+drawArray->getCount();
             addContour(primitive->getMode(),first,last,vertices);
             break;
@@ -437,50 +437,50 @@ void Tessellator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* verti
         OSG_NOTICE<<"Tessellator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
         break;
     }
-    
+
 }
 
 void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap)
 {
     if (!_newVertexList.empty())
     {
-        
+
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
         osg::Vec3Array* normals = NULL;
         if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
         {
             normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray());
         }
-        
+
         typedef std::vector<osg::Array*> ArrayList;
         ArrayList arrays;
-        
+
         if (geom.getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getColorArray());
         }
-        
+
         if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getSecondaryColorArray());
         }
-        
+
         if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getFogCoordArray());
         }
-        
+
         osg::Geometry::ArrayDataList& tcal = geom.getTexCoordArrayList();
         for(osg::Geometry::ArrayDataList::iterator tcalItr=tcal.begin();
             tcalItr!=tcal.end();
             ++tcalItr)
         {
-            if (tcalItr->array.valid()) 
+            if (tcalItr->array.valid())
             {
                 arrays.push_back(tcalItr->array.get());
             }
         }
-        
+
         // now add any new vertices that are required.
         for(NewVertexList::iterator itr=_newVertexList.begin();
             itr!=_newVertexList.end();
@@ -488,11 +488,11 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
         {
             NewVertex& newVertex = (*itr);
             osg::Vec3* vertex = newVertex._vpos;
-            
+
             // assign vertex.
             vertexPtrToIndexMap[vertex]=vertices->size();
             vertices->push_back(*vertex);
-            
+
             // assign normals
             if (normals)
             {
@@ -504,14 +504,14 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
                 norm.normalize();
                 normals->push_back(norm);
             }
-            
+
             if (!arrays.empty())
             {
                 InsertNewVertices inv(newVertex._f1,vertexPtrToIndexMap[newVertex._v1],
                     newVertex._f2,vertexPtrToIndexMap[newVertex._v2],
                     newVertex._f3,vertexPtrToIndexMap[newVertex._v3],
                     newVertex._f4,vertexPtrToIndexMap[newVertex._v4]);
-                
+
                 // assign the rest of the attributes.
                 for(ArrayList::iterator aItr=arrays.begin();
                     aItr!=arrays.end();
@@ -521,9 +521,9 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
                 }
             }
         }
-        
+
     }
-    
+
 }
 
 void Tessellator::begin(GLenum mode)
@@ -614,8 +614,8 @@ void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
             (*v4arr).erase(itr, v4arr->end());
                                         }
             break;
-        default: // should also handle:ArrayType' ByteArrayType' ShortArrayType' IntArrayType' 
-        // `UShortArrayType'  `UIntArrayType'  `Vec4ubArrayType'  `FloatArrayType' 
+        default: // should also handle:ArrayType' ByteArrayType' ShortArrayType' IntArrayType'
+        // `UShortArrayType'  `UIntArrayType'  `Vec4ubArrayType'  `FloatArrayType'
             break;
         }
     }
@@ -625,15 +625,15 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
 {
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     VertexPtrToIndexMap vertexPtrToIndexMap;
-    
+
     // populate the VertexPtrToIndexMap.
     for(unsigned int vi=0;vi<vertices->size();++vi)
     {
         vertexPtrToIndexMap[&((*vertices)[vi])] = vi;
     }
-    
+
     handleNewVertices(geom, vertexPtrToIndexMap);
-    
+
     // we don't properly handle per primitive and per primitive_set bindings yet
     // will need to address this soon. Robert Oct 2002.
     {
@@ -661,9 +661,9 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
               default:
                   break;
               }
-              
+
         }
-        // GWM Dec 2003 - these holders need to go outside the loop to 
+        // GWM Dec 2003 - these holders need to go outside the loop to
         // retain the flat shaded colour &/or normal for each tessellated polygon
         osg::Vec3 norm(0.0f,0.0f,0.0f);
         osg::Vec4 primCol4(0.0f,0.0f,0.0f,1.0f);
@@ -719,7 +719,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                   ntris=elements->getNumIndices()/3;
               }
 
-              if (primItr==_primList.begin()) 
+              if (primItr==_primList.begin())
               {   // first primitive so collect primitive normal & colour.
                   if (normals) {
                      if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE)
@@ -778,7 +778,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                           }
                       }
                   }
-                  //        OSG_WARN<<"Add: "<< iprim << std::endl; 
+                  //        OSG_WARN<<"Add: "<< iprim << std::endl;
               }
               iprim++; // GWM Sep 2002 count which normal we should use
         }

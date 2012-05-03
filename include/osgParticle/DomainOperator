@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 // Written by Wang Rui, (C) 2010
@@ -44,7 +44,7 @@ public:
             BOX_DOMAIN,
             DISK_DOMAIN
         };
-        
+
         Domain( Type t ) : r1(0.0f), r2(0.0f), type(t) {}
         osg::Plane plane;
         osg::Vec3 v1;
@@ -56,70 +56,70 @@ public:
         float r2;
         Type type;
     };
-    
+
     DomainOperator()
     : Operator()
     {}
-    
+
     DomainOperator( const DomainOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY )
     : Operator(copy, copyop), _domains(copy._domains), _backupDomains(copy._backupDomains)
     {}
-    
+
     META_Object( osgParticle, DomainOperator );
-    
+
     /// Add a point domain
     inline void addPointDomain( const osg::Vec3& p );
-    
+
     /// Add a line segment domain
     inline void addLineSegmentDomain( const osg::Vec3& v1, const osg::Vec3& v2 );
-    
+
     /// Add a triangle domain
     inline void addTriangleDomain( const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3 );
-    
+
     /// Add a rectangle domain
     inline void addRectangleDomain( const osg::Vec3& corner, const osg::Vec3& w, const osg::Vec3& h );
-    
+
     /// Add a plane domain
     inline void addPlaneDomain( const osg::Plane& plane );
-    
+
     /// Add a sphere domain
     inline void addSphereDomain( const osg::Vec3& c, float r );
-    
+
     /// Add a box domain
     inline void addBoxDomain( const osg::Vec3& min, const osg::Vec3& max );
-    
+
     /// Add a disk domain
     inline void addDiskDomain( const osg::Vec3& c, const osg::Vec3& n, float r1, float r2=0.0f );
-    
+
     /// Add a domain object directly, used by the .osg wrappers and serializers.
     void addDomain( const Domain& domain ) { _domains.push_back(domain); }
-    
+
     /// Get a domain object directly, used by the .osg wrappers and serializers.
     const Domain& getDomain( unsigned int i ) const { return _domains[i]; }
-    
+
     /// Remove a domain at specific index
     void removeDomain( unsigned int i )
     { if (i<_domains.size()) _domains.erase(_domains.begin() + i); }
-    
+
     /// Remove all existing domains
     void removeAllDomains() { _domains.clear(); }
-    
+
     /// Get number of domains
     unsigned int getNumDomains() const { return _domains.size(); }
-    
+
     /// Apply the acceleration to a particle. Do not call this method manually.
     void operate( Particle* P, double dt );
-    
+
     /// Perform some initializations. Do not call this method manually.
     void beginOperate( Program* prg );
-    
+
     /// Perform some post-operations. Do not call this method manually.
     void endOperate();
-    
+
 protected:
     virtual ~DomainOperator() {}
     DomainOperator& operator=( const DomainOperator& ) { return *this; }
-    
+
     virtual void handlePoint( const Domain& domain, Particle* P, double dt ) { ignore("Point"); }
     virtual void handleLineSegment( const Domain& domain, Particle* P, double dt ) { ignore("LineSegment"); }
     virtual void handleTriangle( const Domain& domain, Particle* P, double dt ) { ignore("Triangle"); }
@@ -128,10 +128,10 @@ protected:
     virtual void handleSphere( const Domain& domain, Particle* P, double dt ) { ignore("Sphere"); }
     virtual void handleBox( const Domain& domain, Particle* P, double dt ) { ignore("Box"); }
     virtual void handleDisk( const Domain& domain, Particle* P, double dt ) { ignore("Disk"); }
-    
+
     inline void computeNewBasis( const osg::Vec3&, const osg::Vec3&, osg::Vec3&, osg::Vec3& );
     inline void ignore( const std::string& func );
-    
+
     std::vector<Domain> _domains;
     std::vector<Domain> _backupDomains;
 };
@@ -217,7 +217,7 @@ inline void DomainOperator::computeNewBasis( const osg::Vec3& u, const osg::Vec3
     float det = w.z()*u.x()*v.y() - w.z()*u.y()*v.x() - u.z()*w.x()*v.y() -
                 u.x()*v.z()*w.y() + v.z()*w.x()*u.y() + u.z()*v.x()*w.y();
     det = 1.0f / det;
-    
+
     s1.set( v.y()*w.z() - v.z()*w.y(), v.z()*w.x() - v.x()*w.z(), v.x()*w.y() - v.y()*w.x() );
     s1 = s1 * det;
     s2.set( u.y()*w.z() - u.z()*w.y(), u.z()*w.x() - u.x()*w.z(), u.x()*w.y() - u.y()*w.x() );

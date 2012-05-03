@@ -531,43 +531,43 @@ static const unsigned short yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals. */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "PRTOKEN_VISUAL", "PRTOKEN_SET_SIMPLE", 
-  "PRTOKEN_VISUAL_ID", "PRTOKEN_BUFFER_SIZE", "PRTOKEN_LEVEL", 
-  "PRTOKEN_RGBA", "PRTOKEN_DOUBLEBUFFER", "PRTOKEN_STEREO", 
-  "PRTOKEN_AUX_BUFFERS", "PRTOKEN_RED_SIZE", "PRTOKEN_GREEN_SIZE", 
-  "PRTOKEN_BLUE_SIZE", "PRTOKEN_ALPHA_SIZE", "PRTOKEN_DEPTH_SIZE", 
-  "PRTOKEN_STENCIL_SIZE", "PRTOKEN_ACCUM_RED_SIZE", 
-  "PRTOKEN_ACCUM_GREEN_SIZE", "PRTOKEN_ACCUM_BLUE_SIZE", 
-  "PRTOKEN_ACCUM_ALPHA_SIZE", "PRTOKEN_SAMPLES", "PRTOKEN_SAMPLE_BUFFERS", 
-  "PRTOKEN_RENDER_SURFACE", "PRTOKEN_WINDOW_RECT", "PRTOKEN_INPUT_RECT", 
-  "PRTOKEN_HOSTNAME", "PRTOKEN_DISPLAY", "PRTOKEN_SCREEN", 
-  "PRTOKEN_BORDER", "PRTOKEN_DRAWABLE_TYPE", "PRTOKEN_WINDOW_TYPE", 
-  "PRTOKEN_PBUFFER_TYPE", "PRTOKEN_CAMERA_GROUP", "PRTOKEN_CAMERA", 
-  "PRTOKEN_PROJECTION_RECT", "PRTOKEN_LENS", "PRTOKEN_FRUSTUM", 
-  "PRTOKEN_PERSPECTIVE", "PRTOKEN_ORTHO", "PRTOKEN_OFFSET", 
-  "PRTOKEN_ROTATE", "PRTOKEN_TRANSLATE", "PRTOKEN_SCALE", "PRTOKEN_SHEAR", 
-  "PRTOKEN_CLEAR_COLOR", "PRTOKEN_INPUT_AREA", "PRTOKEN_ERROR", 
-  "PRTOKEN_INTEGER", "PRTOKEN_HEX_INTEGER", "PRTOKEN_FLOAT", 
-  "PRTOKEN_TRUE", "PRTOKEN_FALSE", "PRTOKEN_QUOTED_STRING", 
-  "PRTOKEN_STEREO_SYSTEM_COMMANDS", 
-  "PRTOKEN_CUSTOM_FULL_SCREEN_RECTANGLE", "PRTOKEN_METHOD", 
-  "PRTOKEN_PREMULTIPLY", "PRTOKEN_POSTMULTIPLY", 
-  "PRTOKEN_OVERRIDE_REDIRECT", "PRTOKEN_SHARELENS", "PRTOKEN_SHAREVIEW", 
-  "PRTOKEN_READ_DRAWABLE", "PRTOKEN_SET_RTT_MODE", 
-  "PRTOKEN_RTT_MODE_NONE", "PRTOKEN_RTT_MODE_RGB", 
-  "PRTOKEN_RTT_MODE_RGBA", "PRTOKEN_THREAD_MODEL", 
-  "PRTOKEN_SINGLE_THREADED", "PRTOKEN_THREAD_PER_CAMERA", 
-  "PRTOKEN_THREAD_PER_RENDER_SURFACE", "';'", "'{'", "'}'", "','", 
-  "$accept", "config", "entries", "entry", "system_params", 
-  "system_param", "threadModelDirective", "stereo_param", "camera_group", 
-  "camera_group_attributes", "cameras", "camera", "@1", 
-  "camera_attributes", "camera_attribute", "camera_offset", "@2", 
-  "camera_offset_attributes", "camera_offset_attribute", 
-  "offset_multiply_method", "lens", "lens_attributes", "lens_attribute", 
-  "render_surface", "@3", "render_surface_attributes", 
-  "render_surface_attribute", "drawableType", "rtt_mode", "visual", "@4", 
-  "@5", "visual_attributes", "visual_attribute", "input_area", "@6", 
-  "input_area_entries", "input_area_entry", "real", "floatparam", 
+  "$end", "error", "$undefined", "PRTOKEN_VISUAL", "PRTOKEN_SET_SIMPLE",
+  "PRTOKEN_VISUAL_ID", "PRTOKEN_BUFFER_SIZE", "PRTOKEN_LEVEL",
+  "PRTOKEN_RGBA", "PRTOKEN_DOUBLEBUFFER", "PRTOKEN_STEREO",
+  "PRTOKEN_AUX_BUFFERS", "PRTOKEN_RED_SIZE", "PRTOKEN_GREEN_SIZE",
+  "PRTOKEN_BLUE_SIZE", "PRTOKEN_ALPHA_SIZE", "PRTOKEN_DEPTH_SIZE",
+  "PRTOKEN_STENCIL_SIZE", "PRTOKEN_ACCUM_RED_SIZE",
+  "PRTOKEN_ACCUM_GREEN_SIZE", "PRTOKEN_ACCUM_BLUE_SIZE",
+  "PRTOKEN_ACCUM_ALPHA_SIZE", "PRTOKEN_SAMPLES", "PRTOKEN_SAMPLE_BUFFERS",
+  "PRTOKEN_RENDER_SURFACE", "PRTOKEN_WINDOW_RECT", "PRTOKEN_INPUT_RECT",
+  "PRTOKEN_HOSTNAME", "PRTOKEN_DISPLAY", "PRTOKEN_SCREEN",
+  "PRTOKEN_BORDER", "PRTOKEN_DRAWABLE_TYPE", "PRTOKEN_WINDOW_TYPE",
+  "PRTOKEN_PBUFFER_TYPE", "PRTOKEN_CAMERA_GROUP", "PRTOKEN_CAMERA",
+  "PRTOKEN_PROJECTION_RECT", "PRTOKEN_LENS", "PRTOKEN_FRUSTUM",
+  "PRTOKEN_PERSPECTIVE", "PRTOKEN_ORTHO", "PRTOKEN_OFFSET",
+  "PRTOKEN_ROTATE", "PRTOKEN_TRANSLATE", "PRTOKEN_SCALE", "PRTOKEN_SHEAR",
+  "PRTOKEN_CLEAR_COLOR", "PRTOKEN_INPUT_AREA", "PRTOKEN_ERROR",
+  "PRTOKEN_INTEGER", "PRTOKEN_HEX_INTEGER", "PRTOKEN_FLOAT",
+  "PRTOKEN_TRUE", "PRTOKEN_FALSE", "PRTOKEN_QUOTED_STRING",
+  "PRTOKEN_STEREO_SYSTEM_COMMANDS",
+  "PRTOKEN_CUSTOM_FULL_SCREEN_RECTANGLE", "PRTOKEN_METHOD",
+  "PRTOKEN_PREMULTIPLY", "PRTOKEN_POSTMULTIPLY",
+  "PRTOKEN_OVERRIDE_REDIRECT", "PRTOKEN_SHARELENS", "PRTOKEN_SHAREVIEW",
+  "PRTOKEN_READ_DRAWABLE", "PRTOKEN_SET_RTT_MODE",
+  "PRTOKEN_RTT_MODE_NONE", "PRTOKEN_RTT_MODE_RGB",
+  "PRTOKEN_RTT_MODE_RGBA", "PRTOKEN_THREAD_MODEL",
+  "PRTOKEN_SINGLE_THREADED", "PRTOKEN_THREAD_PER_CAMERA",
+  "PRTOKEN_THREAD_PER_RENDER_SURFACE", "';'", "'{'", "'}'", "','",
+  "$accept", "config", "entries", "entry", "system_params",
+  "system_param", "threadModelDirective", "stereo_param", "camera_group",
+  "camera_group_attributes", "cameras", "camera", "@1",
+  "camera_attributes", "camera_attribute", "camera_offset", "@2",
+  "camera_offset_attributes", "camera_offset_attribute",
+  "offset_multiply_method", "lens", "lens_attributes", "lens_attribute",
+  "render_surface", "@3", "render_surface_attributes",
+  "render_surface_attribute", "drawableType", "rtt_mode", "visual", "@4",
+  "@5", "visual_attributes", "visual_attribute", "input_area", "@6",
+  "input_area_entries", "input_area_entry", "real", "floatparam",
   "intparam", "name", "string", "hex_integer", "bool", 0
 };
 #endif
@@ -1171,7 +1171,7 @@ yyparse ()
 #endif
 #endif
 {
-  
+
   register int yystate;
   register int yyn;
   int yyresult;
@@ -1672,7 +1672,7 @@ yyreduce:
 
   case 71:
 
-    {    
+    {
         cfg->setRenderSurfaceBorder( yyvsp[-1].boolean );
     ;}
     break;
@@ -2210,10 +2210,10 @@ yyreturn:
 
 static void yyerror( const char *errmsg )
 {
-    fprintf( stderr, 
+    fprintf( stderr,
         "CameraConfig::parseFile(\"%s\") : %s - Line %d at or before \"%s\"\n",
         fileName.c_str(),
-        errmsg, 
+        errmsg,
         flexer->lineno(),
         flexer->YYText() );
 }

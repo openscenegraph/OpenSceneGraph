@@ -118,7 +118,7 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
         if ( (*itr)->getName()==name )
             return itr->get();
     }
-    
+
     for ( StringList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
     {
         const std::string& assocName = *itr;
@@ -129,7 +129,7 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
                                    << assocName << std::endl;
             continue;
         }
-        
+
         for ( SerializerList::iterator aitr=assocWrapper->_serializers.begin();
               aitr!=assocWrapper->_serializers.end(); ++aitr )
         {
@@ -169,7 +169,7 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
      {
          (*itr)->objectRead(is, obj);
      }
-    
+
     return readOK;
 }
 
@@ -204,7 +204,7 @@ bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<
     if ( !_backupSerializers.size() )
         _backupSerializers = _serializers;
     _serializers.clear();
-    
+
     unsigned int size = properties.size();
     unsigned int serializersSize = _backupSerializers.size();
     for ( unsigned int i=0; i<size; ++i )
@@ -215,7 +215,7 @@ bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<
                                    << ": Incompatible serializers size" << std::endl;
             break;
         }
-        
+
         const std::string& prop = properties[i];
         if ( prop==_backupSerializers[i]->getName() )
         {
@@ -248,7 +248,7 @@ void ObjectWrapper::writeSchema( StringList& properties, std::vector<int>& types
     {
         properties.push_back( (*itr)->getName() );
     }
-    
+
     for ( std::vector<int>::iterator itr=_typeList.begin();
           itr!=_typeList.end(); ++itr )
     {
@@ -414,7 +414,7 @@ ObjectWrapperManager::ObjectWrapperManager()
     glTable.add( "GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG",GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG );
     glTable.add( "GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG",GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG );
     glTable.add( "GL_ETC1_RGB8_OES",GL_ETC1_RGB8_OES );
-    
+
     // Texture source types
     glTable.add( "GL_BYTE", GL_BYTE );
     glTable.add( "GL_SHORT", GL_SHORT );

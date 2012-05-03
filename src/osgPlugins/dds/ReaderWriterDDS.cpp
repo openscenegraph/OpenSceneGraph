@@ -14,14 +14,14 @@
 *    HISTORY:        Created   31.03.2003
 *             Modified  13.05.2004
 *                by George Tarantilis, gtaranti@nps.navy.mil
-*             Modified  22.05.2009 
-*                Wojtek Lewandowski, lewandowski@ai.com.pl 
+*             Modified  22.05.2009
+*                Wojtek Lewandowski, lewandowski@ai.com.pl
 *
-*    WARNING: 
-*          Bit Masks in the WrtiteDDS are set for 8 bit components 
-*          write with 4 or 16 bit components will 
-*          probably produce corrupted file 
-*          Wojtek Lewandowski 2009-05-22 
+*    WARNING:
+*          Bit Masks in the WrtiteDDS are set for 8 bit components
+*          write with 4 or 16 bit components will
+*          probably produce corrupted file
+*          Wojtek Lewandowski 2009-05-22
 *
 **********************************************************************/
 #include <osg/Texture>
@@ -56,7 +56,7 @@ struct  DDCOLORKEY
     DDCOLORKEY():
         dwColorSpaceLowValue(0),
         dwColorSpaceHighValue(0) {}
-        
+
     UI32    dwColorSpaceLowValue;
     UI32    dwColorSpaceHighValue;
 };
@@ -73,7 +73,7 @@ struct DDPIXELFORMAT
         dwGBitMask(0),
         dwBBitMask(0),
         dwRGBAlphaBitMask(0) {}
-        
+
 
     UI32    dwSize;
     UI32    dwFlags;
@@ -134,21 +134,21 @@ struct DDSURFACEDESC2
         dwSize(0),
         dwFlags(0),
         dwHeight(0),
-        dwWidth(0), 
+        dwWidth(0),
         lPitch(0),
         dwBackBufferCount(0),
         dwMipMapCount(0),
         dwAlphaBitDepth(0),
-        dwReserved(0),     
-        lpSurface(0),      
-        dwTextureStage(0) {}      
-        
+        dwReserved(0),
+        lpSurface(0),
+        dwTextureStage(0) {}
+
 
     UI32         dwSize;
     UI32         dwFlags;
     UI32         dwHeight;
-    UI32         dwWidth; 
-    union                          
+    UI32         dwWidth;
+    union
     {
         I32              lPitch;
         UI32     dwLinearSize;
@@ -156,7 +156,7 @@ struct DDSURFACEDESC2
     union
     {
         UI32      dwBackBufferCount;
-        UI32      dwDepth;      
+        UI32      dwDepth;
     };
     union
     {
@@ -164,15 +164,15 @@ struct DDSURFACEDESC2
         UI32     dwRefreshRate;
     };
     UI32         dwAlphaBitDepth;
-    UI32         dwReserved;     
-    UI32        lpSurface;         //Fred Marmond: removed from pointer type to UI32 for 64bits compatibility. it is unused data 
-    DDCOLORKEY    ddckCKDestOverlay;      
-    DDCOLORKEY    ddckCKDestBlt;           
-    DDCOLORKEY    ddckCKSrcOverlay;        
-    DDCOLORKEY    ddckCKSrcBlt;            
-    DDPIXELFORMAT ddpfPixelFormat;         
-    DDSCAPS2      ddsCaps;                 
-    UI32 dwTextureStage;          
+    UI32         dwReserved;
+    UI32        lpSurface;         //Fred Marmond: removed from pointer type to UI32 for 64bits compatibility. it is unused data
+    DDCOLORKEY    ddckCKDestOverlay;
+    DDCOLORKEY    ddckCKDestBlt;
+    DDCOLORKEY    ddckCKSrcOverlay;
+    DDCOLORKEY    ddckCKSrcBlt;
+    DDPIXELFORMAT ddpfPixelFormat;
+    DDSCAPS2      ddsCaps;
+    UI32 dwTextureStage;
 };
 
 //
@@ -203,7 +203,7 @@ struct DXT1TexelsBlock
 // DDPIXELFORMAT flags
 //
 #define DDPF_ALPHAPIXELS        0x00000001l
-#define DDPF_FOURCC             0x00000004l        // Compressed formats 
+#define DDPF_FOURCC             0x00000004l        // Compressed formats
 #define DDPF_RGB                0x00000040l        // Uncompressed formats
 #define DDPF_ALPHA              0x00000002l
 #define DDPF_COMPRESSED         0x00000080l
@@ -250,7 +250,7 @@ static unsigned int ComputeImageSizeInBytes
     if( height < 1 ) height = 1;
     if( depth < 1 )  depth = 1;
 
-    // Taking advantage of the fact that 
+    // Taking advantage of the fact that
     // DXT formats are defined as 4 successive numbers:
     // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
     // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
@@ -295,7 +295,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     DDSURFACEDESC2 ddsd;
 
     char filecode[4];
-    
+
     _istream.read(filecode, 4);
     if (strncmp(filecode, "DDS ", 4) != 0) {
         return NULL;
@@ -303,8 +303,8 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Get the surface desc.
     _istream.read((char*)(&ddsd), sizeof(ddsd));
 
-    osg::ref_ptr<osg::Image> osgImage = new osg::Image();    
-    
+    osg::ref_ptr<osg::Image> osgImage = new osg::Image();
+
     //Check valid structure sizes
     if(ddsd.dwSize != 124 && ddsd.ddpfPixelFormat.dwSize != 32)
     {
@@ -322,13 +322,13 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Retreive image properties.
     int s = ddsd.dwWidth;
     int t = ddsd.dwHeight;
-    int r = depth; 
+    int r = depth;
     unsigned int dataType = GL_UNSIGNED_BYTE;
     unsigned int pixelFormat = 0;
     unsigned int internalFormat = 0;
 
     // Handle some esoteric formats
-    if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPDUDV) 
+    if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPDUDV)
     {
         OSG_WARN << "ReadDDSFile warning: DDPF_BUMPDUDV format is not supported" << std::endl;
         return NULL;
@@ -339,7 +339,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 //         // but Q8W8U8L8 as RGB?
 //         // A2W10U10V10 as RGBA (dwFlags == DDPF_BUMPDUDV + DDPF_ALPHAPIXELS)
     }
-    if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPLUMINANCE) 
+    if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPLUMINANCE)
     {
         OSG_WARN << "ReadDDSFile warning: DDPF_BUMPLUMINANCE format is not supported" << std::endl;
         return NULL;
@@ -348,10 +348,10 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 //         // L6V5U5 -- 655 is not supported data type in GL
 //         // X8L8V8U8 -- just as RGB
     }
-    
+
     // Uncompressed formats will usually use DDPF_RGB to indicate an RGB format,
     // while compressed formats will use DDPF_FOURCC with a four-character code.
-    
+
     bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
 
     // Uncompressed formats.
@@ -372,7 +372,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 
         const unsigned int UNSUPPORTED = 0;
 
-        static const RGBFormat rgbFormats[] =            
+        static const RGBFormat rgbFormats[] =
         {
             { "R3G3B2"     ,  8,       0xe0,       0x1c,       0x03,       0x00,
               GL_RGB , GL_RGB , GL_UNSIGNED_BYTE_3_3_2 },
@@ -391,25 +391,25 @@ osg::Image* ReadDDSFile(std::istream& _istream)
               GL_RGBA, GL_BGRA, UNSUPPORTED },
 
             { "R8G8B8",      24,   0xff0000,   0x00ff00,   0x0000ff,   0x000000,
-              GL_RGB , GL_BGR , GL_UNSIGNED_BYTE }, 
+              GL_RGB , GL_BGR , GL_UNSIGNED_BYTE },
 
             { "B8G8R8",      24,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
-              GL_RGB , GL_RGB , GL_UNSIGNED_BYTE }, 
+              GL_RGB , GL_RGB , GL_UNSIGNED_BYTE },
 
             { "A8R8G8B8",    32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000,
-              GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE }, 
+              GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE },
             { "X8R8G8B8",    32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000,
-              GL_RGB , GL_BGRA, GL_UNSIGNED_BYTE }, 
+              GL_RGB , GL_BGRA, GL_UNSIGNED_BYTE },
             { "A8B8G8R8",    32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000,
-              GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE }, 
+              GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE },
             { "X8B8G8R8",    32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000,
-              GL_RGB , GL_RGBA, GL_UNSIGNED_BYTE }, 
+              GL_RGB , GL_RGBA, GL_UNSIGNED_BYTE },
             { "A2R10G10B10", 32, 0x000003ff, 0x000ffc00, 0x3ff00000, 0xc0000000,
-              GL_RGBA, GL_BGRA, GL_UNSIGNED_INT_2_10_10_10_REV }, 
+              GL_RGBA, GL_BGRA, GL_UNSIGNED_INT_2_10_10_10_REV },
             { "A2B10G10R10", 32, 0x3ff00000, 0x000ffc00, 0x000003ff, 0xc0000000,
-              GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV }, 
+              GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV },
             { "G16R16",      32, 0x0000ffff, 0xffff0000, 0x00000000, 0x00000000,
-              GL_RGB, UNSUPPORTED, GL_UNSIGNED_SHORT }, 
+              GL_RGB, UNSUPPORTED, GL_UNSIGNED_SHORT },
         };
 
         bool found = false;
@@ -438,9 +438,9 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                 {
                     OSG_INFO << "ReadDDSFile info : " << f.name
                                            << " format is not supported" << std::endl;
-                    return NULL;                   
+                    return NULL;
                 }
-            }            
+            }
         }
 
         if ( !found )
@@ -449,16 +449,16 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBBitCount     = "
                                    << ddsd.ddpfPixelFormat.dwRGBBitCount << std::endl;
             OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRBitMask        = 0x"
-                                   << std::hex << std::setw(8) << std::setfill('0') 
+                                   << std::hex << std::setw(8) << std::setfill('0')
                                    << ddsd.ddpfPixelFormat.dwRBitMask << std::endl;
             OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwGBitMask        = 0x"
-                                   << std::hex << std::setw(8) << std::setfill('0') 
+                                   << std::hex << std::setw(8) << std::setfill('0')
                                    << ddsd.ddpfPixelFormat.dwGBitMask << std::endl;
             OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwBBitMask        = 0x"
-                                   << std::hex << std::setw(8) << std::setfill('0') 
+                                   << std::hex << std::setw(8) << std::setfill('0')
                                    << ddsd.ddpfPixelFormat.dwBBitMask << std::endl;
             OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBAlphaBitMask = 0x"
-                                   << std::hex << std::setw(8) << std::setfill('0') 
+                                   << std::hex << std::setw(8) << std::setfill('0')
                                    << ddsd.ddpfPixelFormat.dwRGBAlphaBitMask << std::dec << std::endl;
             return NULL;
         }
@@ -499,7 +499,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     {
             OSG_INFO << "ReadDDSFile info : format = ALPHA" << std::endl;
             internalFormat = GL_ALPHA;
-            pixelFormat    = GL_ALPHA;              
+            pixelFormat    = GL_ALPHA;
     }
     // Compressed formats
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
@@ -538,7 +538,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             OSG_INFO << "ReadDDSFile info : format = ATI2" << std::endl;
             internalFormat = GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
             pixelFormat    = GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
-            break;        
+            break;
         case 0x00000024: // A16B16G16R16
             OSG_INFO << "ReadDDSFile info : format = A16B16G16R16" << std::endl;
             internalFormat = GL_RGBA;
@@ -549,7 +549,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             OSG_INFO << "ReadDDSFile info : format = A16B16G16R16F" << std::endl;
             internalFormat = GL_RGBA; // why no transparency?
             pixelFormat    = GL_RGBA;
-            dataType       = GL_HALF_FLOAT_NV; 
+            dataType       = GL_HALF_FLOAT_NV;
             break;
         case 0x0000006E: // Q16W16V16U16
             OSG_INFO << "ReadDDSFile info : format = Q16W16V16U16" << std::endl;
@@ -610,10 +610,10 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                                    << " = 0x" << std::hex << std::setw(8) << std::setfill('0')
                                    << ddsd.ddpfPixelFormat.dwFourCC << std::dec
                                    << ") in dds file, image not loaded." << std::endl;
-            return NULL; 
+            return NULL;
         }
     }
-    else 
+    else
     {
         OSG_WARN << "ReadDDSFile warning: unhandled pixel format (ddsd.ddpfPixelFormat.dwFlags"
                                << " = 0x" << std::hex << std::setw(8) << std::setfill('0')
@@ -628,14 +628,14 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     unsigned int sizeWithMipmaps = size;
     osg::Image::MipmapDataType mipmap_offsets;
     if ( ddsd.dwMipMapCount>1 )
-    {        
+    {
         unsigned numMipmaps = osg::Image::computeNumberOfMipmapLevels( s, t, r );
         if( numMipmaps > ddsd.dwMipMapCount ) numMipmaps = ddsd.dwMipMapCount;
         // array starts at 1 level offset, 0 level skipped
         mipmap_offsets.resize( numMipmaps - 1 );
 
         int width = s;
-        int height = t; 
+        int height = t;
         int depth = r;
 
         for( unsigned int k = 0; k < mipmap_offsets.size(); ++k  )
@@ -646,19 +646,19 @@ osg::Image* ReadDDSFile(std::istream& _istream)
            height = osg::maximum( height >> 1, 1 );
            depth = osg::maximum( depth >> 1, 1 );
 
-           sizeWithMipmaps += 
+           sizeWithMipmaps +=
                 ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType );
         }
     }
-     
+
     unsigned char* imageData = new unsigned char [sizeWithMipmaps];
     if(!imageData)
     {
         OSG_WARN << "ReadDDSFile warning: imageData == NULL" << std::endl;
         return NULL;
     }
-    
-    // Read pixels in two chunks. First main image, next mipmaps. 
+
+    // Read pixels in two chunks. First main image, next mipmaps.
     if ( !_istream.read( (char*)imageData, size ) )
     {
         delete [] imageData;
@@ -688,7 +688,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 {
 
-    // Initialize ddsd structure and its members 
+    // Initialize ddsd structure and its members
     DDSURFACEDESC2 ddsd;
     memset( &ddsd, 0, sizeof( ddsd ) );
     DDPIXELFORMAT  ddpf;
@@ -700,12 +700,12 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     DDSCAPS2       ddsCaps;
     memset( &ddsCaps, 0, sizeof( ddsCaps ) );
 
-    ddsd.dwSize = sizeof(ddsd);  
+    ddsd.dwSize = sizeof(ddsd);
     ddpf.dwSize = sizeof(ddpf);
 
     // Default values and initialization of structures' flags
     unsigned int SD_flags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-    unsigned int CAPS_flags  = DDSCAPS_TEXTURE; 
+    unsigned int CAPS_flags  = DDSCAPS_TEXTURE;
     unsigned int PF_flags = 0;
     unsigned int CAPS2_flags = 0;
 
@@ -737,10 +737,10 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         {
             ddpf.dwRBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwBBitMask        = 0x00ff0000;  
+            ddpf.dwBBitMask        = 0x00ff0000;
             ddpf.dwRGBAlphaBitMask = 0xff000000;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_RGB);
-            ddpf.dwRGBBitCount = pixelSize; 
+            ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
         }
@@ -749,10 +749,10 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         {
             ddpf.dwBBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwRBitMask        = 0x00ff0000;  
+            ddpf.dwRBitMask        = 0x00ff0000;
             ddpf.dwRGBAlphaBitMask = 0xff000000;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_RGB);
-            ddpf.dwRGBBitCount = pixelSize; 
+            ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
         }
@@ -761,8 +761,8 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         {
             ddpf.dwRBitMask         = 0x000000ff;
             ddpf.dwRGBAlphaBitMask  = 0x0000ff00;
-            PF_flags |= (DDPF_ALPHAPIXELS | DDPF_LUMINANCE);  
-            ddpf.dwRGBBitCount = pixelSize; 
+            PF_flags |= (DDPF_ALPHAPIXELS | DDPF_LUMINANCE);
+            ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
         }
@@ -771,7 +771,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         {
             ddpf.dwRBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwBBitMask        = 0x00ff0000;  
+            ddpf.dwBBitMask        = 0x00ff0000;
             PF_flags |= DDPF_RGB;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
@@ -782,7 +782,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         {
             ddpf.dwBBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwRBitMask        = 0x00ff0000;  
+            ddpf.dwRBitMask        = 0x00ff0000;
             PF_flags |= DDPF_RGB;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
@@ -856,7 +856,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             ddsd.dwLinearSize = imageSize;
             SD_flags |= DDSD_LINEARSIZE;
         }
-        break;    
+        break;
     case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:
         {
             ddpf.dwFourCC = FOURCC_ATI2;
@@ -864,7 +864,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             ddsd.dwLinearSize = imageSize;
             SD_flags |= DDSD_LINEARSIZE;
         }
-        break;    
+        break;
     case GL_COMPRESSED_RED_GREEN_RGTC2_EXT:
         {
             ddpf.dwFourCC = FOURCC_ATI2;
@@ -872,7 +872,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             ddsd.dwLinearSize = imageSize;
             SD_flags |= DDSD_LINEARSIZE;
         }
-        break;    
+        break;
     default:
         OSG_WARN<<"Warning:: unhandled pixel format in image, file cannot be written."<<std::endl;
         return false;
@@ -891,7 +891,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 
         SD_flags   |= DDSD_MIPMAPCOUNT;
         CAPS_flags |= DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-        
+
         ddsd.dwMipMapCount = img->getNumMipmapLevels();
 
         OSG_INFO<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
@@ -920,7 +920,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         return false;
 
     // If we get that far the file was saved properly //
-    return true; 
+    return true;
 }
 
 
@@ -938,8 +938,8 @@ public:
     }
 
     virtual const char* className() const
-    { 
-        return "DDS Image Reader/Writer"; 
+    {
+        return "DDS Image Reader/Writer";
     }
 
     virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -958,9 +958,9 @@ public:
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file, options );
-    
+
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-        
+
         osgDB::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!stream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult rr = readImage(stream, options);
@@ -1015,7 +1015,7 @@ public:
         {
             osgImage->flipVertical();
         }
-        
+
         return osgImage;
     }
 

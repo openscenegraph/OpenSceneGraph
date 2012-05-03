@@ -81,7 +81,7 @@ void Table::_resizeImplementation(point_type width, point_type height) {
 
         for(unsigned int row = 0; row < _rows; row++) {
             point_type h = height / numRowFills;
-        
+
             if(cur >= _lastRowAdd && hrem) {
                 _lastRowAdd++;
                 h++;
@@ -147,7 +147,7 @@ Window::Sizes Table::_getWidthImplementation() const {
 
     getColumnWidths(cols);
     getColumnMinWidths(minCols);
-    
+
     return Sizes(
         std::accumulate(cols.begin(), cols.end(), 0.0f, Plus()),
         std::accumulate(minCols.begin(), minCols.end(), 0.0f, Plus())

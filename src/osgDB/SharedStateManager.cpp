@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -17,7 +17,7 @@
 using namespace osgDB;
 
 SharedStateManager::SharedStateManager(unsigned int mode):
-    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) 
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
 {
     setShareMode(mode);
     _mutex=0;
@@ -60,7 +60,7 @@ void SharedStateManager::prune()
             ++titr;
     }
 
-} 
+}
 
 
 //----------------------------------------------------------------
@@ -70,7 +70,7 @@ void SharedStateManager::share(osg::Node *node, OpenThreads::Mutex *mt)
 {
 //    const osg::Timer& timer = *osg::Timer::instance();
 //    osg::Timer_t start_tick = timer.tick();
-    
+
     _mutex = mt;
     node->accept(*this);
     tmpSharedTextureList.clear();
@@ -107,7 +107,7 @@ void SharedStateManager::apply(osg::Geode& geode)
         }
     }
 }
- 
+
 bool SharedStateManager::isShared(osg::StateSet* ss)
 {
     if (shareStateSet(ss->getDataVariance()))
@@ -155,7 +155,7 @@ osg::StateAttribute *SharedStateManager::find(osg::StateAttribute *sa)
     else
         return result->get();
 }
-   
+
 
 //----------------------------------------------------------------
 // SharedStateManager::setStateSet
@@ -194,12 +194,12 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
             TextureTextureSharePairMap::iterator titr = tmpSharedTextureList.find(texture);
             if(titr==tmpSharedTextureList.end())
             {
-                // Texture is not in tmp list: 
+                // Texture is not in tmp list:
                 // First time it appears in this file, search Texture in sharedAttributeList
                 osg::StateAttribute *textureFromSharedList = find(texture);
                 if(textureFromSharedList)
                 {
-                    // Texture is in sharedAttributeList: 
+                    // Texture is in sharedAttributeList:
                     // Share now. Required to be shared all next times
                     if(_mutex) _mutex->lock();
                     ss->setTextureAttributeAndModes(unit, textureFromSharedList, osg::StateAttribute::ON);
@@ -208,12 +208,12 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
                 }
                 else
                 {
-                    // Texture is not in _sharedAttributeList: 
+                    // Texture is not in _sharedAttributeList:
                     // Add to _sharedAttributeList. Not needed to be
                     // shared all next times.
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_listMutex);
-                    _sharedTextureList.insert(texture); 
-                    tmpSharedTextureList[texture] = TextureSharePair(texture, false);            
+                    _sharedTextureList.insert(texture);
+                    tmpSharedTextureList[texture] = TextureSharePair(texture, false);
                 }
             }
             else if(titr->second.second)
@@ -240,12 +240,12 @@ void SharedStateManager::process(osg::StateSet* ss, osg::Object* parent)
         StateSetStateSetSharePairMap::iterator sitr = tmpSharedStateSetList.find(ss);
         if (sitr==tmpSharedStateSetList.end())
         {
-            // StateSet is not in tmp list: 
+            // StateSet is not in tmp list:
             // First time it appears in this file, search StateSet in sharedObjectList
             osg::StateSet *ssFromSharedList = find(ss);
             if (ssFromSharedList)
             {
-                // StateSet is in sharedStateSetList: 
+                // StateSet is in sharedStateSetList:
                 // Share now. Required to be shared all next times
                 if (_mutex) _mutex->lock();
                 setStateSet(ssFromSharedList, parent);
@@ -254,13 +254,13 @@ void SharedStateManager::process(osg::StateSet* ss, osg::Object* parent)
             }
             else
             {
-                // StateSet is not in sharedStateSetList: 
+                // StateSet is not in sharedStateSetList:
                 // Add to sharedStateSetList. Not needed to be shared all next times.
                 {
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_listMutex);
-                    _sharedStateSetList.insert(ss); 
+                    _sharedStateSetList.insert(ss);
                     tmpSharedStateSetList[ss]
-                        = StateSetSharePair(ss, false);            
+                        = StateSetSharePair(ss, false);
                 }
                 // Only in this case sharing textures is also required
                 if (_shareMode & (SHARE_DYNAMIC_TEXTURES | SHARE_STATIC_TEXTURES | SHARE_UNSPECIFIED_TEXTURES))

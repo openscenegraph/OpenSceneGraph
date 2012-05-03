@@ -32,7 +32,7 @@ struct XBaseHeader
     Byte    _mdxflag;
     Byte    _languageDriver;
     Short   _reserved2;
-    
+
     void print();
     bool read(int fd);
 };
@@ -50,7 +50,7 @@ struct XBaseFieldDescriptor
     Byte _setFieldFlag;
     Byte _reserved[7];
     Byte _indexFieldFlag;
-    
+
     void print();
     bool read(int fd);
 };
@@ -59,9 +59,9 @@ struct XBaseFieldDescriptor
 class XBaseParser
 {
     public:
-        
+
         typedef std::vector< osg::ref_ptr<osgSim::ShapeAttributeList> > ShapeAttributeListList;
-        
+
         XBaseParser(const std::string fileName);
         ~XBaseParser() {}
         ShapeAttributeListList & getAttributeList() { return _shapeAttributeListList; }
@@ -69,9 +69,9 @@ class XBaseParser
     private:
 
         XBaseParser();
-        
+
         bool parse(int fd);
-        
+
         ShapeAttributeListList _shapeAttributeListList;
         bool _valid;
 };

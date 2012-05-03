@@ -50,6 +50,6 @@ bool ConstantRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &f
 
     fw.indent() << "minimumNumberOfParticlesToCreate " << myobj.getMinimumNumberOfParticlesToCreate() << std::endl;
     fw.indent() << "numberOfParticlesPerSecondToCreate " << myobj.getNumberOfParticlesPerSecondToCreate() << std::endl;
-    
+
     return true;
 }

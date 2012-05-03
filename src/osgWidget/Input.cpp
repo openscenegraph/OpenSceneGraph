@@ -103,7 +103,7 @@ void Input::_calculateCursorOffsets() {
    _offsets.resize(_text->getText().size()+1, 0.0f);
    _widths.resize(_text->getText().size()+1, 1.0f);
 
-    if (_text->getText().size()==0) 
+    if (_text->getText().size()==0)
     {
         _offsets[0] = 0;
         _widths[0] = 1.f;
@@ -128,7 +128,7 @@ void Input::_calculateCursorOffsets() {
             glyphs.push_back(gq.getGlyphs().at(i));
         }
     }
-    
+
     std::list<unsigned int> keys;
     for (unsigned int i=0; i<_text->getText().size(); ++i)
     {
@@ -248,7 +248,7 @@ void Input::positioned()
         }
         else
         {
-            // We're at the end of the string, perhaps the string is empty, 
+            // We're at the end of the string, perhaps the string is empty,
             // so get the advance for any character, perhaps a large one, I chose 'A'.
             osgText::Glyph* glyph = const_cast<osgText::Font*>(_text->getFont())->getGlyph(osgText::FontResolution(_text->getFontWidth(), _text->getFontHeight()), 'A');
             _cursor->setSize(glyph->getHorizontalAdvance(), getHeight());
@@ -297,7 +297,7 @@ bool Input::mouseDrag (double x, double y, const WindowManager*)
         if ((x >= offset1 && x <= offset2) ||
             i == _offsets.size() - 1)  // If we're at the last one, obviously it will be there.
         {
-            _selectionEndIndex = _index = i; 
+            _selectionEndIndex = _index = i;
             positioned();
             break;
         }
@@ -310,9 +310,9 @@ bool Input::mousePush (double x, double y, const WindowManager* wm)
 {
     double offset = getOrigin().x();
     Window* window = getParent();
-    if (window) 
-    { 
-        offset += window->getOrigin().x(); 
+    if (window)
+    {
+        offset += window->getOrigin().x();
     }
 
     x -= offset;
@@ -325,7 +325,7 @@ bool Input::mousePush (double x, double y, const WindowManager* wm)
         if ((x >= offset1 && x <= offset2) ||
             i == _offsets.size() - 1)  // If we're at the last one, obviously it will be there.
         {
-            _selectionStartIndex = _selectionEndIndex = _index = i; 
+            _selectionStartIndex = _selectionEndIndex = _index = i;
             positioned();
             break;
         }

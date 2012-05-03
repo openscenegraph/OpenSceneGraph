@@ -114,7 +114,7 @@ void VBSPEntity::processFuncBrush()
         // Get the origin parameter's value
         std::string value = (*param).second;
 
-        // Parse the value into a vector 
+        // Parse the value into a vector
         entity_origin = getVector(value);
     }
     param = entity_parameters.find("angles");
@@ -123,7 +123,7 @@ void VBSPEntity::processFuncBrush()
         // Get the origin parameter's value
         std::string value = (*param).second;
 
-        // Parse the value into a vector 
+        // Parse the value into a vector
         entity_angles = getVector(value);
     }
 }
@@ -152,7 +152,7 @@ void VBSPEntity::processProp()
         // Get the origin parameter's value
         std::string value = (*param).second;
 
-        // Parse the value into a vector 
+        // Parse the value into a vector
         entity_origin = getVector(value);
     }
     param = entity_parameters.find("angles");
@@ -161,7 +161,7 @@ void VBSPEntity::processProp()
         // Get the origin parameter's value
         std::string value = (*param).second;
 
-        // Parse the value into a vector 
+        // Parse the value into a vector
         entity_angles = getVector(value);
     }
 }

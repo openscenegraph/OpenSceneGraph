@@ -10,11 +10,11 @@
 #ifndef QTUTILS_HEADER_
 #define QTUTILS_HEADER_
 
-// Quicktime plugin is able to load regular 2D images 
-// besides movie streams. 
+// Quicktime plugin is able to load regular 2D images
+// besides movie streams.
 // It is used as default image loader on __APPLE__
 // Uncomment this define to use it as image loader
-// on other platforms. 
+// on other platforms.
 // #define QT_HANDLE_IMAGES_ALSO
 
 #ifdef __APPLE__
@@ -42,14 +42,14 @@
         inline PixMapHandle GetPortPixMap (CGrafPtr port) {
             return port->portPixMap;
         }
- 
+
     }
 
 #define SetRect MacSetRect
 #define OffsetRect MacOffsetRect
 
 #endif
-    
+
 
 
 #endif

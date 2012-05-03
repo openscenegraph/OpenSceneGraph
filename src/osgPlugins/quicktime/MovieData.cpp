@@ -16,7 +16,7 @@
 
 
 
-    
+
 MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false), _isLooping(false)
 {
 
@@ -24,7 +24,7 @@ MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false)
 
 
 MovieData::~MovieData()
-{  
+{
     if (_pointer) free(_pointer);
     if (_gw) DisposeGWorld(_gw);
 
@@ -32,22 +32,22 @@ MovieData::~MovieData()
         DisposeMovie(_movie);
     }
 }
-    
-   
-    
-    
+
+
+
+
 void MovieData::load(osg::Image* image, std::string afilename, double startTime)
 {
     bool isUrl( osgDB::containsServerAddress(afilename) );
-    
+
     std::string filename = afilename;
     if (!isUrl) {
-        if (!osgDB::isFileNameNativeStyle(filename)) 
+        if (!osgDB::isFileNameNativeStyle(filename))
             filename = osgDB::convertFileNameToNativeStyle(filename);
     }
-    
+
     image->setFileName(filename);
-    
+
 
     QTNewMoviePropertyElement newMovieProperties[2];
     CFStringRef movieLocation = CFStringCreateWithCString(NULL, filename.c_str(), kCFStringEncodingUTF8);
@@ -55,21 +55,21 @@ void MovieData::load(osg::Image* image, std::string afilename, double startTime)
     Boolean trueValue = true;
 
     newMovieProperties[0].propClass = kQTPropertyClass_DataLocation;
-    if (!isUrl) 
+    if (!isUrl)
     {
         #ifdef __APPLE__
             newMovieProperties[0].propID = kQTDataLocationPropertyID_CFStringPosixPath;
         #else
             newMovieProperties[0].propID = kQTDataLocationPropertyID_CFStringWindowsPath;
         #endif
-        
+
         newMovieProperties[0].propValueSize = sizeof(CFStringRef);
         newMovieProperties[0].propValueAddress = &movieLocation;
-    } 
-    else 
+    }
+    else
     {
         movieURL = CFURLCreateWithString(kCFAllocatorDefault, movieLocation, NULL);
-        
+
         newMovieProperties[0].propID = kQTDataLocationPropertyID_CFURL;
         newMovieProperties[0].propValueSize = sizeof(movieURL);
         newMovieProperties[0].propValueAddress = (void*)&movieURL;
@@ -80,21 +80,21 @@ void MovieData::load(osg::Image* image, std::string afilename, double startTime)
     newMovieProperties[1].propID = kQTNewMoviePropertyID_Active;
     newMovieProperties[1].propValueSize = sizeof(trueValue);
     newMovieProperties[1].propValueAddress = &trueValue;
-    
+
     // Instantiate the Movie
     OSStatus status = NewMovieFromProperties(2, newMovieProperties, 0, NULL, &_movie);
     CFRelease(movieLocation);
     if (movieURL) CFRelease(movieURL);
-    
+
     if (status !=0) {
         _fError = true;
         OSG_FATAL << " MovieData :: NewMovieFromProperties failed with err " << status<< std::endl;
         return;
     }
-    
-    
+
+
     Rect bounds;
- 
+
 #ifdef __APPLE__
     GetRegionBounds(GetMovieBoundsRgn(_movie), &bounds);
 #else
@@ -109,22 +109,22 @@ void MovieData::load(osg::Image* image, std::string afilename, double startTime)
 
     _movieWidth = bounds.right;
     _movieHeight = bounds.bottom;
-    
+
     _timescale = GetMovieTimeScale(_movie);
 
     _initImage(image);
     if (!_fError) _initGWorldStuff(image);
 
-        
+
     if (!_fError) {
-    
+
         if ( startTime == 0.0)
             GoToBeginningOfMovie(_movie);
         else {
             TimeValue t = (TimeValue) (startTime*_timescale);
             SetMovieTimeValue(_movie,t);
         }
-            
+
         UpdateMovie(_movie);
         SetMovieRate(_movie,0.0);
         SetMovieActive(_movie, true);
@@ -143,12 +143,12 @@ void MovieData::_initImage(osg::Image* image)
 {
 
     void* buffer;
-    
+
 
     _textureWidth = ((_movieWidth + 7) >> 3) << 3;
     _textureHeight = _movieHeight;
-    
-    // some magic alignment... 
+
+    // some magic alignment...
     _pointer = (char*)malloc(4 * _textureWidth * _textureHeight + 32);
 
     if (_pointer == NULL) {
@@ -188,7 +188,7 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
     textureBounds.right = image->s();
     textureBounds.bottom = image->t();
     err = QTNewGWorldFromPtr(&_gw, k32ARGBPixelFormat, &textureBounds, NULL, NULL, 0, image->data(), 4 * image->s());
-    
+
     if (err !=0 )
     {
         OSG_FATAL << "MovieData : Could not create gWorld" << std::endl;
@@ -197,7 +197,7 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
     GetGWorld (&origPort, &origDevice);
     SetGWorld(_gw, NULL);                                         // set current graphics port to offscreen
     SetMovieGWorld(_movie, (CGrafPtr)_gw, NULL);
-    
+
     _checkMovieError("SetMovieGWorld failed");
 
     pixmap = GetGWorldPixMap (_gw);
@@ -221,14 +221,14 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
 
 void MovieData::setMovieTime(double atime) {
     double time = (atime > getMovieDuration()) ? getMovieDuration() : atime;
-    
+
     TimeValue t = (TimeValue) (time * _timescale);
     SetMovieTimeValue(_movie,t);
     _checkMovieError("setMovieTime failed");
     UpdateMovie(_movie);
     MoviesTask(_movie,0);
-    
-        
+
+
 }
 
 void MovieData::setMovieRate(double rate) {
@@ -239,12 +239,12 @@ void MovieData::setMovieRate(double rate) {
         _checkMovieError("PrerollMovie failed");
         _preRolled = true;
     }
-    
-    SetMovieRate(_movie, X2Fix(rate)); 
+
+    SetMovieRate(_movie, X2Fix(rate));
     _checkMovieError("setMovieRate failed");
     MoviesTask(_movie, 0);
     _checkMovieError("MoviesTask failed");
-    
+
     UpdateMovie(_movie);
     _checkMovieError("UpdateMovie failed");
 

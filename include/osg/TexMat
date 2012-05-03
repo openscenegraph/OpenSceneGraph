@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ class OSG_EXPORT TexMat : public StateAttribute
             _scaleByTextureRectangleSize(texmat._scaleByTextureRectangleSize) {}
 
         META_StateAttribute(osg, TexMat, TEXMAT);
-        
+
         virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
@@ -64,7 +64,7 @@ class OSG_EXPORT TexMat : public StateAttribute
         /** Switch on/off the post scaling of the TexMat matrix by the size of the last applied texture rectangle.
           * Use a TexMat alongside a TextureRectangle with this scaling applied allows one to treat a TextureRectnagles texture coordinate
           * range as if it were the usual non dimensional 0.0 to 1.0 range.
-          * Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the 
+          * Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the
           * the TexMat matrix has been loaded.*/
         void setScaleByTextureRectangleSize(bool flag) { _scaleByTextureRectangleSize = flag; }
 

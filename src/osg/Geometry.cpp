@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdlib.h>
@@ -92,14 +92,14 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
             setUseVertexBufferObjects(true);
         }
     }
-    
+
 }
 
 Geometry::~Geometry()
 {
     // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
     dirtyDisplayList();
-    
+
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
@@ -118,9 +118,9 @@ bool Geometry::empty() const
 
 void Geometry::setVertexArray(Array* array)
 {
-    _vertexData.array = array; 
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _vertexData.array = array;
+    computeFastPathsUsed();
+    dirtyDisplayList();
     dirtyBound();
 
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
@@ -128,17 +128,17 @@ void Geometry::setVertexArray(Array* array)
 
 void Geometry::setVertexIndices(IndexArray* array)
 {
-    _vertexData.indices = array; 
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _vertexData.indices = array;
+    computeFastPathsUsed();
+    dirtyDisplayList();
     dirtyBound();
 }
 
 void Geometry::setVertexData(const ArrayData& arrayData)
 {
-    _vertexData = arrayData; 
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _vertexData = arrayData;
+    computeFastPathsUsed();
+    dirtyDisplayList();
     dirtyBound();
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
@@ -146,9 +146,9 @@ void Geometry::setVertexData(const ArrayData& arrayData)
 
 void Geometry::setNormalArray(Array* array)
 {
-    _normalData.array = array; 
-    if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; 
-    computeFastPathsUsed(); 
+    _normalData.array = array;
+    if (!_normalData.array.valid()) _normalData.binding=BIND_OFF;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
@@ -156,15 +156,15 @@ void Geometry::setNormalArray(Array* array)
 
 void Geometry::setNormalIndices(IndexArray* array)
 {
-    _normalData.indices = array; 
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _normalData.indices = array;
+    computeFastPathsUsed();
+    dirtyDisplayList();
 }
 
 void Geometry::setNormalData(const ArrayData& arrayData)
 {
-    _normalData = arrayData;  
-    computeFastPathsUsed(); 
+    _normalData = arrayData;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
@@ -173,8 +173,8 @@ void Geometry::setNormalData(const ArrayData& arrayData)
 void Geometry::setColorArray(Array* array)
 {
     _colorData.array = array;
-    if (!_colorData.array.valid()) _colorData.binding=BIND_OFF; 
-    computeFastPathsUsed(); 
+    if (!_colorData.array.valid()) _colorData.binding=BIND_OFF;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
@@ -182,15 +182,15 @@ void Geometry::setColorArray(Array* array)
 
 void Geometry::setColorIndices(IndexArray* array)
 {
-    _colorData.indices = array;  
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _colorData.indices = array;
+    computeFastPathsUsed();
+    dirtyDisplayList();
 }
 
 void Geometry::setColorData(const ArrayData& arrayData)
 {
-    _colorData = arrayData;  
-    computeFastPathsUsed(); 
+    _colorData = arrayData;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
@@ -199,9 +199,9 @@ void Geometry::setColorData(const ArrayData& arrayData)
 
 void Geometry::setSecondaryColorArray(Array* array)
 {
-    _secondaryColorData.array = array; 
-    if (!_secondaryColorData.array.valid()) _secondaryColorData.binding=BIND_OFF; 
-    computeFastPathsUsed(); 
+    _secondaryColorData.array = array;
+    if (!_secondaryColorData.array.valid()) _secondaryColorData.binding=BIND_OFF;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
@@ -209,15 +209,15 @@ void Geometry::setSecondaryColorArray(Array* array)
 
 void Geometry::setSecondaryColorIndices(IndexArray* array)
 {
-    _secondaryColorData.indices = array; 
-    computeFastPathsUsed(); 
+    _secondaryColorData.indices = array;
+    computeFastPathsUsed();
     dirtyDisplayList();
 }
 
 void Geometry::setSecondaryColorData(const ArrayData& arrayData)
 {
-    _secondaryColorData = arrayData; 
-    computeFastPathsUsed(); 
+    _secondaryColorData = arrayData;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
@@ -225,37 +225,37 @@ void Geometry::setSecondaryColorData(const ArrayData& arrayData)
 
 void Geometry::setFogCoordArray(Array* array)
 {
-    _fogCoordData.array = array; 
-    if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF; 
-    computeFastPathsUsed(); 
-    dirtyDisplayList(); 
+    _fogCoordData.array = array;
+    if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF;
+    computeFastPathsUsed();
+    dirtyDisplayList();
 
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
 }
 
 void Geometry::setFogCoordIndices(IndexArray* array)
 {
-    _fogCoordData.indices = array; 
-    computeFastPathsUsed(); 
+    _fogCoordData.indices = array;
+    computeFastPathsUsed();
     dirtyDisplayList();
 }
 
 void Geometry::setFogCoordData(const ArrayData& arrayData)
 {
-    _fogCoordData = arrayData; 
-    computeFastPathsUsed(); 
+    _fogCoordData = arrayData;
+    computeFastPathsUsed();
     dirtyDisplayList();
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
 }
 
-void Geometry::setNormalBinding(AttributeBinding ab) 
+void Geometry::setNormalBinding(AttributeBinding ab)
 {
     if (_normalData.binding == ab) return;
-    
+
     _normalData.binding = ab;
     computeFastPathsUsed();
-    dirtyDisplayList(); 
+    dirtyDisplayList();
 }
 
 void Geometry::setColorBinding(AttributeBinding ab)
@@ -264,7 +264,7 @@ void Geometry::setColorBinding(AttributeBinding ab)
 
     _colorData.binding = ab;
     computeFastPathsUsed();
-    dirtyDisplayList(); 
+    dirtyDisplayList();
 }
 
 void Geometry::setSecondaryColorBinding(AttributeBinding ab)
@@ -273,7 +273,7 @@ void Geometry::setSecondaryColorBinding(AttributeBinding ab)
 
     _secondaryColorData.binding = ab;
     computeFastPathsUsed();
-    dirtyDisplayList(); 
+    dirtyDisplayList();
 }
 
 void Geometry::setFogCoordBinding(AttributeBinding ab)
@@ -282,14 +282,14 @@ void Geometry::setFogCoordBinding(AttributeBinding ab)
 
     _fogCoordData.binding = ab;
     computeFastPathsUsed();
-    dirtyDisplayList(); 
+    dirtyDisplayList();
 }
 
 void Geometry::setTexCoordData(unsigned int unit,const ArrayData& arrayData)
 {
     if (_texCoordList.size()<=unit)
         _texCoordList.resize(unit+1);
-    
+
     _texCoordList[unit] = arrayData;
 
     if (_useVertexBufferObjects && arrayData.array.valid()) addVertexBufferObjectIfRequired(arrayData.array.get());
@@ -299,7 +299,7 @@ Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit)
 {
     if (_texCoordList.size()<=unit)
         _texCoordList.resize(unit+1);
-        
+
     return _texCoordList[unit];
 }
 
@@ -307,7 +307,7 @@ const Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit) const
 {
     if (_texCoordList.size()<=unit)
         return s_InvalidArrayData;
-        
+
     return _texCoordList[unit];
 }
 
@@ -362,9 +362,9 @@ void Geometry::setVertexAttribData(unsigned int index, const Geometry::ArrayData
 {
     if (_vertexAttribList.size()<=index)
         _vertexAttribList.resize(index+1);
-        
+
     _vertexAttribList[index] = attrData;
- 
+
     computeFastPathsUsed();
     dirtyDisplayList();
 
@@ -375,7 +375,7 @@ Geometry::ArrayData& Geometry::getVertexAttribData(unsigned int index)
 {
     if (_vertexAttribList.size()<=index)
         _vertexAttribList.resize(index+1);
-        
+
     return _vertexAttribList[index];
 }
 
@@ -383,7 +383,7 @@ const Geometry::ArrayData& Geometry::getVertexAttribData(unsigned int index) con
 {
     if (_vertexAttribList.size()<=_vertexAttribList.size())
         return s_InvalidArrayData;
-        
+
     return _vertexAttribList[index];
 }
 
@@ -505,7 +505,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
         {
             return addPrimitiveSet(primitiveset);
         }
-        
+
     }
     OSG_WARN<<"Warning: invalid index i or primitiveset passed to osg::Geometry::insertPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
     return false;
@@ -543,7 +543,7 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
             OSG_WARN<<"         removing on from i to the end of the list of primitive sets."<<std::endl;
             _primitives.erase(_primitives.begin()+i,_primitives.end());
         }
-    
+
         dirtyDisplayList();
         dirtyBound();
         return true;
@@ -573,7 +573,7 @@ bool Geometry::computeFastPathsUsed()
     else if (_colorData.binding==BIND_PER_PRIMITIVE || (_colorData.binding==BIND_PER_VERTEX && _colorData.indices.valid())) _fastPath = false;
     else if (_secondaryColorData.binding==BIND_PER_PRIMITIVE || (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.indices.valid())) _fastPath = false;
     else if (_fogCoordData.binding==BIND_PER_PRIMITIVE || (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.indices.valid())) _fastPath = false;
-    else 
+    else
     {
         for( unsigned int va = 0; va < _vertexAttribList.size(); ++va )
         {
@@ -587,9 +587,9 @@ bool Geometry::computeFastPathsUsed()
                 const Array * array = _vertexAttribList[va].array.get();
                 const IndexArray * idxArray = _vertexAttribList[va].indices.get();
 
-                if( _vertexAttribList[va].binding==BIND_PER_VERTEX && 
+                if( _vertexAttribList[va].binding==BIND_PER_VERTEX &&
                     array && array->getNumElements()>0 &&
-                    idxArray && idxArray->getNumElements()>0 ) 
+                    idxArray && idxArray->getNumElements()>0 )
                 {
                     _fastPath = false;
                     break;
@@ -611,15 +611,15 @@ bool Geometry::computeFastPathsUsed()
             {
                 if (texcoordData.indices->getNumElements()>0)
                 {
-                    _fastPath = false;         
+                    _fastPath = false;
                     break;
                 }
             }
         }
     }
-    
+
     _supportsVertexBufferObjects = _fastPath;
-    
+
     //_supportsVertexBufferObjects = false;
     //_useVertexBufferObjects = false;
 
@@ -655,7 +655,7 @@ unsigned int Geometry::getGLObjectSizeHint() const
         for( index = 0; index < _vertexAttribList.size(); ++index )
         {
             const Array* array = _vertexAttribList[index].array.get();
-            if (array) totalSize += array->getTotalDataSize();           
+            if (array) totalSize += array->getTotalDataSize();
         }
     }
 
@@ -676,13 +676,13 @@ unsigned int Geometry::getGLObjectSizeHint() const
 bool Geometry::getArrayList(ArrayList& arrayList) const
 {
     unsigned int startSize = arrayList.size();
-    
+
     if (_vertexData.array.valid()) arrayList.push_back(_vertexData.array.get());
     if (_normalData.array.valid()) arrayList.push_back(_normalData.array.get());
     if (_colorData.array.valid()) arrayList.push_back(_colorData.array.get());
     if (_secondaryColorData.array.valid()) arrayList.push_back(_secondaryColorData.array.get());
     if (_fogCoordData.array.valid()) arrayList.push_back(_fogCoordData.array.get());
-    
+
     for(unsigned int unit=0;unit<_texCoordList.size();++unit)
     {
         Array* array = _texCoordList[unit].array.get();
@@ -701,7 +701,7 @@ bool Geometry::getArrayList(ArrayList& arrayList) const
 bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
 {
     unsigned int startSize = drawElementsList.size();
-    
+
     for(PrimitiveSetList::const_iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)
@@ -709,7 +709,7 @@ bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
         osg::DrawElements* de = (*itr)->getDrawElements();
         if (de) drawElementsList.push_back(de);
     }
-    
+
     return drawElementsList.size()!=startSize;
 }
 
@@ -773,13 +773,13 @@ osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
     // flag = true;
-    
+
     // OSG_NOTICE<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     if (_useVertexBufferObjects==flag) return;
 
     Drawable::setUseVertexBufferObjects(flag);
-    
+
     ArrayList arrayList;
     getArrayList(arrayList);
 
@@ -791,11 +791,11 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
     if (_useVertexBufferObjects)
     {
-        if (!arrayList.empty()) 
+        if (!arrayList.empty())
         {
 
             VertexBufferObjectList vboList;
-            
+
             osg::ref_ptr<osg::VertexBufferObject> vbo;
 
             ArrayList::iterator vitr;
@@ -818,10 +818,10 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             }
         }
 
-        if (!drawElementsList.empty()) 
+        if (!drawElementsList.empty())
         {
             ElementBufferObjectList eboList;
-            
+
             osg::ref_ptr<osg::ElementBufferObject> ebo;
 
             DrawElementsList::iterator deitr;
@@ -1006,7 +1006,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         return;
     }
 #endif
-    
+
     if (_internalOptimizedGeometry.valid())
     {
         _internalOptimizedGeometry->drawImplementation(renderInfo);
@@ -1017,7 +1017,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
-    
+
     bool useFastPath = areFastPathsUsed();
     // useFastPath = false;
 
@@ -1284,11 +1284,11 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 class AttributeFunctorArrayVisitor : public ArrayVisitor
 {
     public:
-    
+
         AttributeFunctorArrayVisitor(Drawable::AttributeFunctor& af):
             _af(af),
             _type(0) {}
-    
+
         virtual ~AttributeFunctorArrayVisitor() {}
 
         virtual void apply(ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -1306,8 +1306,8 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
         virtual void apply(Vec2dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec3dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec4dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
-    
-    
+
+
         inline void applyArray(Drawable::AttributeType type,Array* array)
         {
             if (array)
@@ -1317,8 +1317,8 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
             }
         }
 
-    protected:        
-        
+    protected:
+
         AttributeFunctorArrayVisitor& operator = (const AttributeFunctorArrayVisitor&) { return *this; }
         Drawable::AttributeFunctor&   _af;
         Drawable::AttributeType       _type;
@@ -1342,7 +1342,7 @@ void Geometry::accept(AttributeFunctor& af)
     afav.applyArray(COLORS,_colorData.array.get());
     afav.applyArray(SECONDARY_COLORS,_secondaryColorData.array.get());
     afav.applyArray(FOG_COORDS,_fogCoordData.array.get());
-    
+
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
         afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].array.get());
@@ -1357,11 +1357,11 @@ void Geometry::accept(AttributeFunctor& af)
 class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
 {
     public:
-    
+
         ConstAttributeFunctorArrayVisitor(Drawable::ConstAttributeFunctor& af):
             _af(af),
             _type(0) {}
-    
+
         virtual ~ConstAttributeFunctorArrayVisitor() {}
 
         virtual void apply(const ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -1379,8 +1379,8 @@ class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
         virtual void apply(const Vec2dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec3dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec4dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
-    
-    
+
+
         inline void applyArray(Drawable::AttributeType type,const Array* array)
         {
             if (array)
@@ -1389,7 +1389,7 @@ class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
                 array->accept(*this);
             }
         }
-    
+
 protected:
 
         ConstAttributeFunctorArrayVisitor& operator = (const ConstAttributeFunctorArrayVisitor&) { return *this; }
@@ -1401,7 +1401,7 @@ protected:
 void Geometry::accept(ConstAttributeFunctor& af) const
 {
     ConstAttributeFunctorArrayVisitor afav(af);
-    
+
     if (_vertexData.array.valid())
     {
         afav.applyArray(VERTICES,_vertexData.array.get());
@@ -1446,29 +1446,29 @@ void Geometry::accept(PrimitiveFunctor& functor) const
     {
         switch(vertices->getType())
         {
-        case(Array::Vec2ArrayType): 
+        case(Array::Vec2ArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2*>(vertices->getDataPointer()));
             break;
-        case(Array::Vec3ArrayType): 
+        case(Array::Vec3ArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3*>(vertices->getDataPointer()));
             break;
-        case(Array::Vec4ArrayType): 
+        case(Array::Vec4ArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4*>(vertices->getDataPointer()));
             break;
-        case(Array::Vec2dArrayType): 
+        case(Array::Vec2dArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2d*>(vertices->getDataPointer()));
             break;
-        case(Array::Vec3dArrayType): 
+        case(Array::Vec3dArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3d*>(vertices->getDataPointer()));
             break;
-        case(Array::Vec4dArrayType): 
+        case(Array::Vec4dArrayType):
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
             break;
         default:
             OSG_WARN<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
             return;
         }
-        
+
         for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
@@ -1487,22 +1487,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
         Array::Type type = vertices->getType();
         switch(type)
         {
-        case(Array::Vec2ArrayType): 
+        case(Array::Vec2ArrayType):
             vec2Array = static_cast<const Vec2*>(vertices->getDataPointer());
             break;
-        case(Array::Vec3ArrayType): 
+        case(Array::Vec3ArrayType):
             vec3Array = static_cast<const Vec3*>(vertices->getDataPointer());
             break;
-        case(Array::Vec4ArrayType): 
+        case(Array::Vec4ArrayType):
             vec4Array = static_cast<const Vec4*>(vertices->getDataPointer());
             break;
-        case(Array::Vec2dArrayType): 
+        case(Array::Vec2dArrayType):
             vec2dArray = static_cast<const Vec2d*>(vertices->getDataPointer());
             break;
-        case(Array::Vec3dArrayType): 
+        case(Array::Vec3dArrayType):
             vec3dArray = static_cast<const Vec3d*>(vertices->getDataPointer());
             break;
-        case(Array::Vec4dArrayType): 
+        case(Array::Vec4dArrayType):
             vec4dArray = static_cast<const Vec4d*>(vertices->getDataPointer());
             break;
         default:
@@ -1530,22 +1530,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                     {
                         switch(type)
                         {
-                        case(Array::Vec2ArrayType): 
+                        case(Array::Vec2ArrayType):
                             functor.vertex(vec2Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3ArrayType): 
+                        case(Array::Vec3ArrayType):
                             functor.vertex(vec3Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4ArrayType): 
+                        case(Array::Vec4ArrayType):
                             functor.vertex(vec4Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec2dArrayType): 
+                        case(Array::Vec2dArrayType):
                             functor.vertex(vec2dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3dArrayType): 
+                        case(Array::Vec3dArrayType):
                             functor.vertex(vec3dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4dArrayType): 
+                        case(Array::Vec4dArrayType):
                             functor.vertex(vec4dArray[_vertexData.indices->index(vindex)]);
                             break;
                         default:
@@ -1573,22 +1573,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         {
                             switch(type)
                             {
-                            case(Array::Vec2ArrayType): 
+                            case(Array::Vec2ArrayType):
                                 functor.vertex(vec2Array[_vertexData.indices->index(vindex)]);
                                 break;
-                            case(Array::Vec3ArrayType): 
+                            case(Array::Vec3ArrayType):
                                 functor.vertex(vec3Array[_vertexData.indices->index(vindex)]);
                                 break;
-                            case(Array::Vec4ArrayType): 
+                            case(Array::Vec4ArrayType):
                                 functor.vertex(vec4Array[_vertexData.indices->index(vindex)]);
                                 break;
-                            case(Array::Vec2dArrayType): 
+                            case(Array::Vec2dArrayType):
                                 functor.vertex(vec2dArray[_vertexData.indices->index(vindex)]);
                                 break;
-                            case(Array::Vec3dArrayType): 
+                            case(Array::Vec3dArrayType):
                                 functor.vertex(vec3dArray[_vertexData.indices->index(vindex)]);
                                 break;
-                            case(Array::Vec4dArrayType): 
+                            case(Array::Vec4dArrayType):
                                 functor.vertex(vec4dArray[_vertexData.indices->index(vindex)]);
                                 break;
                             default:
@@ -1615,22 +1615,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         unsigned int vindex=*primItr;
                         switch(type)
                         {
-                        case(Array::Vec2ArrayType): 
+                        case(Array::Vec2ArrayType):
                             functor.vertex(vec2Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3ArrayType): 
+                        case(Array::Vec3ArrayType):
                             functor.vertex(vec3Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4ArrayType): 
+                        case(Array::Vec4ArrayType):
                             functor.vertex(vec4Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec2dArrayType): 
+                        case(Array::Vec2dArrayType):
                             functor.vertex(vec2dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3dArrayType): 
+                        case(Array::Vec3dArrayType):
                             functor.vertex(vec3dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4dArrayType): 
+                        case(Array::Vec4dArrayType):
                             functor.vertex(vec4dArray[_vertexData.indices->index(vindex)]);
                             break;
                         default:
@@ -1653,22 +1653,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         unsigned int vindex=*primItr;
                         switch(type)
                         {
-                        case(Array::Vec2ArrayType): 
+                        case(Array::Vec2ArrayType):
                             functor.vertex(vec2Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3ArrayType): 
+                        case(Array::Vec3ArrayType):
                             functor.vertex(vec3Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4ArrayType): 
+                        case(Array::Vec4ArrayType):
                             functor.vertex(vec4Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec2dArrayType): 
+                        case(Array::Vec2dArrayType):
                             functor.vertex(vec2dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3dArrayType): 
+                        case(Array::Vec3dArrayType):
                             functor.vertex(vec3dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4dArrayType): 
+                        case(Array::Vec4dArrayType):
                             functor.vertex(vec4dArray[_vertexData.indices->index(vindex)]);
                             break;
                         default:
@@ -1691,22 +1691,22 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         unsigned int vindex=*primItr;
                         switch(type)
                         {
-                        case(Array::Vec2ArrayType): 
+                        case(Array::Vec2ArrayType):
                             functor.vertex(vec2Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3ArrayType): 
+                        case(Array::Vec3ArrayType):
                             functor.vertex(vec3Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4ArrayType): 
+                        case(Array::Vec4ArrayType):
                             functor.vertex(vec4Array[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec2dArrayType): 
+                        case(Array::Vec2dArrayType):
                             functor.vertex(vec2dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec3dArrayType): 
+                        case(Array::Vec3dArrayType):
                             functor.vertex(vec3dArray[_vertexData.indices->index(vindex)]);
                             break;
-                        case(Array::Vec4dArrayType): 
+                        case(Array::Vec4dArrayType):
                             functor.vertex(vec4dArray[_vertexData.indices->index(vindex)]);
                             break;
                         default:
@@ -1743,22 +1743,22 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
 
     switch(vertices->getType())
     {
-    case(Array::Vec2ArrayType): 
+    case(Array::Vec2ArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2*>(vertices->getDataPointer()));
         break;
-    case(Array::Vec3ArrayType): 
+    case(Array::Vec3ArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3*>(vertices->getDataPointer()));
         break;
-    case(Array::Vec4ArrayType): 
+    case(Array::Vec4ArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4*>(vertices->getDataPointer()));
         break;
-    case(Array::Vec2dArrayType): 
+    case(Array::Vec2dArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2d*>(vertices->getDataPointer()));
         break;
-    case(Array::Vec3dArrayType): 
+    case(Array::Vec3dArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3d*>(vertices->getDataPointer()));
         break;
-    case(Array::Vec4dArrayType): 
+    case(Array::Vec4dArrayType):
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
         break;
     default:
@@ -1797,7 +1797,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
                     {
                         functor.vertex(indices->index(vindex));
                     }
-                    
+
                     functor.end();
                     break;
                 }
@@ -1818,7 +1818,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
                             functor.vertex(indices->index(vindex));
                             ++vindex;
                         }
-                        
+
                         functor.end();
 
                     }
@@ -1887,7 +1887,7 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
 {
 
     unsigned int totalNumberOfPrimitives = 0;
-    
+
     for(Geometry::PrimitiveSetList::const_iterator itr=geom.getPrimitiveSetList().begin();
         itr!=geom.getPrimitiveSetList().end();
         ++itr)
@@ -1958,10 +1958,10 @@ bool _verifyBindings(const osg::Geometry& geom, const A& arrayData)
         {
             unsigned int numVertices = geom.getVertexIndices()?geom.getVertexIndices()->getNumElements():
                                        geom.getVertexArray()?geom.getVertexArray()->getNumElements():0;
-            if (numElements!=numVertices) return false;        
+            if (numElements!=numVertices) return false;
             break;
         }
-    } 
+    }
     return true;
 }
 
@@ -1976,7 +1976,7 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
     {
         // correct binding if not correct.
         if (arrayData.binding!=osg::Geometry::BIND_OFF)
-        { 
+        {
             out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                    <<"         "<<arrayName<<" binding has been reset to BIND_OFF"<<std::endl;
             arrayData.binding=osg::Geometry::BIND_OFF;
@@ -1989,7 +1989,7 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
     {
         // correct binding if not correct.
         if (arrayData.binding!=osg::Geometry::BIND_OVERALL)
-        { 
+        {
             out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                    <<"         "<<arrayName<<" binding has been reset to BIND_OVERALL"<<std::endl;
             arrayData.binding=osg::Geometry::BIND_OVERALL;
@@ -2000,7 +2000,7 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
 
     unsigned int numVertices = geom.getVertexIndices()?geom.getVertexIndices()->getNumElements():
                                geom.getVertexArray()?geom.getVertexArray()->getNumElements():0;
-    
+
     if ( numVertices==0 )
     {
         if (arrayData.binding!=osg::Geometry::BIND_OFF)
@@ -2013,7 +2013,7 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
                 <<"         reseting "<<arrayName<< " binding to BIND_OFF and array & indices to 0."<<std::endl;
         }
     }
-    
+
     if (numElements==numVertices)
     {
         // correct the binding to per vertex.
@@ -2028,9 +2028,9 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
 
 
 
-    // check to see if binding might be per primitive set    
+    // check to see if binding might be per primitive set
     unsigned int numPrimitiveSets = geom.getPrimitiveSetList().size();
-    
+
     if (numElements==numPrimitiveSets)
     {
         if (arrayData.binding != osg::Geometry::BIND_PER_PRIMITIVE_SET)
@@ -2041,8 +2041,8 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
         }
         return;
     }
-    
-    // check to see if binding might be per primitive   
+
+    // check to see if binding might be per primitive
     unsigned int numPrimitives = _computeNumberOfPrimitives(geom);
     if (numElements==numPrimitives)
     {
@@ -2076,8 +2076,8 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
         return;
     }
     arrayData.binding = osg::Geometry::BIND_OFF;
- 
-}        
+
+}
 
 bool Geometry::verifyBindings(const ArrayData& arrayData) const
 {
@@ -2126,7 +2126,7 @@ bool Geometry::verifyBindings() const
 void Geometry::computeCorrectBindingsAndArraySizes()
 {
     // if (verifyBindings()) return;
-    
+
     computeCorrectBindingsAndArraySizes(_normalData,"_normalData");
     computeCorrectBindingsAndArraySizes(_colorData,"_colorData");
     computeCorrectBindingsAndArraySizes(_secondaryColorData,"_secondaryColorData");
@@ -2153,10 +2153,10 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
         ExpandIndexedArray(const osg::IndexArray& indices,Array* targetArray):
             _indices(indices),
             _targetArray(targetArray) {}
-        
+
         virtual ~ExpandIndexedArray() {}
 
-        // Create when both of the arrays are predefined templated classes. We 
+        // Create when both of the arrays are predefined templated classes. We
         // can do some optimizations in this case that aren't possible in the general
         // case.
         template <class T,class I>
@@ -2167,7 +2167,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             // if source array type and target array type are equal but arrays arn't equal
             if (_targetArray && _targetArray->getType()==array.getType() && _targetArray!=(osg::Array*)(&array))
             {
-                // reuse exisiting target array 
+                // reuse exisiting target array
                 newArray = static_cast<T*>(_targetArray);
                 if (newArray->size()!=indices.size())
                 {
@@ -2190,9 +2190,9 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
         }
 
         // Create when one of the arrays isn't one of the predefined templated classes. The
-        // template parameter is the type of the array that will get created. This is  always 
-        // one of the predefined classes. We could call clone to get one of the same type as 
-        // the input array, but the interface of the osg::Array class doesn't include a way 
+        // template parameter is the type of the array that will get created. This is  always
+        // one of the predefined classes. We could call clone to get one of the same type as
+        // the input array, but the interface of the osg::Array class doesn't include a way
         // to set an element.
         template <class T>
         osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices)
@@ -2215,7 +2215,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
 
         osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices)
         {
-            switch (array.getType()) 
+            switch (array.getType())
             {
                 case(osg::Array::ByteArrayType):   return create_noinline<osg::ByteArray>(array,indices);
                 case(osg::Array::ShortArrayType):  return create_noinline<osg::ShortArray>(array,indices);
@@ -2239,9 +2239,9 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
         template <class TA, class TI>
         osg::Array* create(const TA& array, const osg::IndexArray& indices)
         {
-            // We know that indices.getType returned the same thing as TI, but 
-            // we need to determine whether it is really an instance of TI, or 
-            // perhaps another subclass of osg::Array that contains the same 
+            // We know that indices.getType returned the same thing as TI, but
+            // we need to determine whether it is really an instance of TI, or
+            // perhaps another subclass of osg::Array that contains the same
             // type of data.
             const TI* ba(dynamic_cast<const TI*>(&indices));
             if (ba != NULL) {
@@ -2265,7 +2265,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             case(osg::Array::UIntArrayType):   return create<T, osg::UIntArray>(array, _indices);
             default:                           return create_noinline(array, _indices);
             }
-            
+
         }
 
         // applys for the predefined classes go through 1-arg create to do indexing
@@ -2311,7 +2311,7 @@ bool Geometry::suitableForOptimization() const
     {
         if (getTexCoordIndices(ti)) hasIndices = true;
     }
-    
+
     for(unsigned int vi=0;vi<getNumVertexAttribArrays();++vi)
     {
         if (getVertexAttribIndices(vi)) hasIndices = true;
@@ -2402,18 +2402,18 @@ void Geometry::copyToAndOptimize(Geometry& target)
         if (getTexCoordIndices(ti) && getTexCoordArray(ti))
         {
             ExpandIndexedArray eia(*(getTexCoordIndices(ti)),target.getTexCoordArray(ti));
-            
+
             getTexCoordArray(ti)->accept(eia);
 
             target.setTexCoordArray(ti,eia._targetArray);
             target.setTexCoordIndices(ti,0);
         }
-        else if (getTexCoordArray(ti)) 
+        else if (getTexCoordArray(ti))
         {
             if (!copyToSelf) target.setTexCoordArray(ti,getTexCoordArray(ti));
         }
     }
-    
+
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
         ArrayData& arrayData = _vertexAttribList[vi];
@@ -2433,7 +2433,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
 bool Geometry::containsSharedArrays() const
 {
     unsigned int numSharedArrays = 0;
-    
+
     if (getVertexArray() && getVertexArray()->referenceCount()>1) ++numSharedArrays;
     if (getNormalArray() && getNormalArray()->referenceCount()>1) ++numSharedArrays;
     if (getColorArray() && getColorArray()->referenceCount()>1) ++numSharedArrays;
@@ -2444,7 +2444,7 @@ bool Geometry::containsSharedArrays() const
     {
         if (getTexCoordArray(ti) && getTexCoordArray(ti)->referenceCount()>1) ++numSharedArrays;
     }
-    
+
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
         const ArrayData& arrayData = _vertexAttribList[vi];
@@ -2474,7 +2474,7 @@ void Geometry::duplicateSharedArrays()
             setTexCoordArray(ti, osg::clone(getTexCoordArray(ti),osg::CopyOp::DEEP_COPY_ARRAYS));
         }
     }
-    
+
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
         ArrayData& arrayData = _vertexAttribList[vi];

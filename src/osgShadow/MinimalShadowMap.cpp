@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -24,13 +24,13 @@ using namespace osgShadow;
 
 #define PRINT_SHADOW_TEXEL_TO_PIXEL_ERROR 0
 
-MinimalShadowMap::MinimalShadowMap(): 
-    BaseClass(), 
+MinimalShadowMap::MinimalShadowMap():
+    BaseClass(),
     _maxFarPlane( FLT_MAX ),
     _minLightMargin( 0 ),
     _shadowReceivingCoarseBoundAccuracy( BOUNDING_BOX )
 {
-    
+
 }
 
 MinimalShadowMap::MinimalShadowMap
@@ -42,7 +42,7 @@ MinimalShadowMap::MinimalShadowMap
 {
 }
 
-MinimalShadowMap::~MinimalShadowMap() 
+MinimalShadowMap::~MinimalShadowMap()
 {
 }
 
@@ -57,11 +57,11 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
     if( accuracy == MinimalShadowMap::EMPTY_BOX )
     {
         // One may skip coarse scene bounds computation if light is infinite.
-        // Empty box will be intersected with view frustum so in the end 
+        // Empty box will be intersected with view frustum so in the end
         // view frustum will be used as bounds approximation.
-        // But if light is nondirectional and bounds come out too large 
-        // they may bring the effect of almost 180 deg perspective set 
-        // up for shadow camera. Such projection will significantly impact 
+        // But if light is nondirectional and bounds come out too large
+        // they may bring the effect of almost 180 deg perspective set
+        // up for shadow camera. Such projection will significantly impact
         // precision of further math.
 
         return osg::BoundingBox();
@@ -86,22 +86,22 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
 
         frustum.cut( box );
 
-        // approximate sphere with octahedron. Ie first cut by box then 
+        // approximate sphere with octahedron. Ie first cut by box then
         // additionaly cut with the same box rotated 45, 45, 45 deg.
         box.transform( // rotate box around its center
             osg::Matrix::translate( -bs.center() ) *
-            osg::Matrix::rotate( osg::PI_4, 0, 0, 1 ) * 
-            osg::Matrix::rotate( osg::PI_4, 1, 1, 0 ) * 
+            osg::Matrix::rotate( osg::PI_4, 0, 0, 1 ) *
+            osg::Matrix::rotate( osg::PI_4, 1, 1, 0 ) *
             osg::Matrix::translate( bs.center() ) );
         frustum.cut( box );
-    
-        return frustum.computeBoundingBox( );    
+
+        return frustum.computeBoundingBox( );
     }
-    
+
     if( accuracy == MinimalShadowMap::BOUNDING_BOX ) // Default
     {
-        // more precise method but slower method 
-        // bound visitor traversal takes lot of time for complex scenes 
+        // more precise method but slower method
+        // bound visitor traversal takes lot of time for complex scenes
         // (note that this adds to cull time)
 
         osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
@@ -114,12 +114,12 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
     return osg::BoundingBox();
 }
 
-void MinimalShadowMap::ViewData::aimShadowCastingCamera( 
+void MinimalShadowMap::ViewData::aimShadowCastingCamera(
                                         const osg::BoundingSphere &bs,
                                         const osg::Light *light,
                                         const osg::Vec4 &lightPos,
                                         const osg::Vec3 &lightDir,
-                                        const osg::Vec3 &lightUpVector 
+                                        const osg::Vec3 &lightUpVector
                                         /* by default = osg::Vec3( 0, 1 0 )*/ )
 {
     BaseClass::ViewData::aimShadowCastingCamera( bs, light, lightPos, lightDir, lightUpVector );
@@ -128,7 +128,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera(
 void MinimalShadowMap::ViewData::aimShadowCastingCamera
  ( const osg::Light *light, const osg::Vec4 &lightPos,
    const osg::Vec3 &lightDir, const osg::Vec3 &lightUp )
-{    
+{
     osg::BoundingBox bb = computeScenePolytopeBounds();
     if( !bb.valid() ) { // empty scene or looking at the sky - substitute something
         bb.expandBy( osg::BoundingSphere( _cv->getEyePoint(), 1 ) );
@@ -136,9 +136,9 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
 
     osg::Vec3 up = lightUp;
 
-    if( up.length2() <= 0 ) 
+    if( up.length2() <= 0 )
     {
-    // This is extra step (not really needed but helpful in debuging) 
+    // This is extra step (not really needed but helpful in debuging)
     // Compute such lightUp vector that shadow cam is intuitively aligned with eye
     // We compute this vector on -ZY view plane, perpendicular to light direction
     // Matrix m = ViewToWorld
@@ -157,7 +157,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
         // OpenGL std cam looks along -Z axis so Cam Fw = [ 0  0  -1  0 ] * m
         up.set( -m( 2, 0 ), -m( 2, 1 ), -m( 2, 2 ) );
 #endif
-    } 
+    }
 
     aimShadowCastingCamera( osg::BoundingSphere( bb ), light, lightPos, lightDir, up );
 
@@ -175,7 +175,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
 void MinimalShadowMap::ViewData::frameShadowCastingCamera
      ( const osg::Camera* cameraMain, osg::Camera* cameraShadow, int pass )
 {
-    osg::Matrix mvp = 
+    osg::Matrix mvp =
         cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix();
 
     ConvexPolyhedron polytope = _sceneReceivingShadowPolytope;
@@ -194,18 +194,18 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         // osg::Vec3d normal = osg::Matrix::transform3x3( osg::Vec3d( 0,0,-1)., transfrom );
 
         // So I replaced it with safer code working with spot lights as well
-        osg::Vec3d normal = 
+        osg::Vec3d normal =
             osg::Vec3d(0,0,-1) * transform - osg::Vec3d(0,0,1) * transform;
 
         normal.normalize();
         _sceneReceivingShadowPolytope.extrude( normal * *_minLightMarginPtr );
 
         // Zero pass does crude shadowed scene hull approximation.
-        // Its important to cut it to coarse light frustum properly 
+        // Its important to cut it to coarse light frustum properly
         // at this stage.
-        // If not cut and polytope extends beyond shadow projection clip 
-        // space (-1..1), it may get "twisted" by precisely adjusted shadow cam 
-        // projection in second pass. 
+        // If not cut and polytope extends beyond shadow projection clip
+        // space (-1..1), it may get "twisted" by precisely adjusted shadow cam
+        // projection in second pass.
 
         if ( pass == 0 && _frameShadowCastingCameraPasses > 1 )
         { // Make sure extruded polytope does not extend beyond light frustum
@@ -222,20 +222,20 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         bb = computeScenePolytopeBounds( mvp );
     }
 
-    setDebugPolytope( "extended", 
+    setDebugPolytope( "extended",
         _sceneReceivingShadowPolytope, osg::Vec4( 1, 0.5, 0, 1 ), osg::Vec4( 1, 0.5, 0, 0.1 ) );
 
     _sceneReceivingShadowPolytope = polytope;
     _sceneReceivingShadowPolytopePoints = points;
-    
-    // Warning: Trim light projection at near plane may remove shadowing 
+
+    // Warning: Trim light projection at near plane may remove shadowing
     // from objects outside of view space but still casting shadows into it.
     // I have not noticed this issue so I left mask at default: all bits set.
     if( bb.valid() )
         trimProjection( cameraShadow->getProjectionMatrix(), bb, 1|2|4|8|16|32 );
 
     ///// Debuging stuff //////////////////////////////////////////////////////////
-    setDebugPolytope( "scene", _sceneReceivingShadowPolytope, osg::Vec4(0,1,0,1) );    
+    setDebugPolytope( "scene", _sceneReceivingShadowPolytope, osg::Vec4(0,1,0,1) );
 
 
 #if PRINT_SHADOW_TEXEL_TO_PIXEL_ERROR
@@ -253,7 +253,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
             frustum.setToUnitFrustum();
             frustum.transform( osg::Matrix::inverse( mvp ), mvp );
 
-            setDebugPolytope( "shadowCamFrustum", frustum, osg::Vec4(0,0,1,1) );    
+            setDebugPolytope( "shadowCamFrustum", frustum, osg::Vec4(0,0,1,1) );
         }
 
         {
@@ -270,7 +270,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         {
             dump( *filename );
             filename->clear();
-        } 
+        }
     }
 }
 
@@ -283,36 +283,36 @@ void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
     if( _cv->getComputeNearFarMode() ) {
 
         // Redo steps from CullVisitor::popProjectionMatrix()
-        // which clamps projection matrix when Camera & Projection 
+        // which clamps projection matrix when Camera & Projection
         // completes traversal of their children
 
-        // We have to do this now manually 
-        // because we did not complete camera traversal yet but 
+        // We have to do this now manually
+        // because we did not complete camera traversal yet but
         // we need to know how this clamped projection matrix will be
 
         _cv->computeNearPlane();
-        
+
         osgUtil::CullVisitor::value_type n = _cv->getCalculatedNearPlane();
         osgUtil::CullVisitor::value_type f = _cv->getCalculatedFarPlane();
 
         if( n < f )
             _cv->clampProjectionMatrix( _clampedProjection, n, f );
-    } 
+    }
 
-    // Aditionally clamp far plane if shadows don't need to be cast as 
-    // far as main projection far plane 
+    // Aditionally clamp far plane if shadows don't need to be cast as
+    // far as main projection far plane
     if( 0 < *_maxFarPlanePtr )
         clampProjection( _clampedProjection, 0.f, *_maxFarPlanePtr );
 
-    // Give derived classes chance to initialize _sceneReceivingShadowPolytope     
+    // Give derived classes chance to initialize _sceneReceivingShadowPolytope
     osg::BoundingBox bb = computeShadowReceivingCoarseBounds( );
     if( bb.valid() )
         _sceneReceivingShadowPolytope.setToBoundingBox( bb );
-    else 
+    else
         _sceneReceivingShadowPolytope.clear();
 
-    // Cut initial scene using main camera frustum. 
-    // Cutting will work correctly on empty polytope too. 
+    // Cut initial scene using main camera frustum.
+    // Cutting will work correctly on empty polytope too.
     // Take into consideration near far calculation and _maxFarPlane variable
 
 
@@ -336,24 +336,24 @@ void MinimalShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
 }
 
 void MinimalShadowMap::ViewData::cutScenePolytope
-    ( const osg::Matrix & transform, 
-      const osg::Matrix & inverse, 
+    ( const osg::Matrix & transform,
+      const osg::Matrix & inverse,
       const osg::BoundingBox & bb )
-{   
+{
     _sceneReceivingShadowPolytopePoints.clear();
 
     if( bb.valid() ) {
         osg::Polytope polytope;
         polytope.setToBoundingBox( bb );
         polytope.transformProvidingInverse( inverse );
-        _sceneReceivingShadowPolytope.cut( polytope );        
+        _sceneReceivingShadowPolytope.cut( polytope );
         _sceneReceivingShadowPolytope.getPoints
                                 ( _sceneReceivingShadowPolytopePoints );
     } else
         _sceneReceivingShadowPolytope.clear();
 }
 
-osg::BoundingBox 
+osg::BoundingBox
     MinimalShadowMap::ViewData::computeScenePolytopeBounds( const osg::Matrix & m )
 {
     osg::BoundingBox bb;
@@ -361,7 +361,7 @@ osg::BoundingBox
     if( &m )
         for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
             bb.expandBy( _sceneReceivingShadowPolytopePoints[i] * m );
-    else 
+    else
         for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
             bb.expandBy( _sceneReceivingShadowPolytopePoints[i] );
 
@@ -398,7 +398,7 @@ void MinimalShadowMap::ViewData::trimProjection
 #else
     if( !bb.valid() || !( trimMask & (1|2|4|8|16|32) ) ) return;
     double l, r, t, b, n, f;
-    bool ortho = projectionMatrix.getOrtho( l, r, b, t, n, f ); 
+    bool ortho = projectionMatrix.getOrtho( l, r, b, t, n, f );
     if( !ortho && !projectionMatrix.getFrustum( l, r, b, t, n, f ) )
         return; // rotated or skewed or other crooked projection - give up
 
@@ -409,7 +409,7 @@ void MinimalShadowMap::ViewData::trimProjection
     }
 
     osg::Matrix projectionToView = osg::Matrix::inverse( projectionMatrix );
-    
+
     osg::Vec3 min =
         osg::Vec3( bb._min[0], bb._min[1], bb._min[2] ) * projectionToView;
 
@@ -452,9 +452,9 @@ void MinimalShadowMap::ViewData::trimProjection
         if( t < max[1] && ( trimMask & 8 ) ) t = max[1];
     }
 
-    if( ortho ) 
+    if( ortho )
         projectionMatrix.makeOrtho( l, r, b, t, n, f );
-    else 
+    else
         projectionMatrix.makeFrustum( l, r, b, t, n, f );
 #endif
 }
@@ -479,24 +479,24 @@ void MinimalShadowMap::ViewData::clampProjection
                 t *= new_near / n;
             }
             n = new_near;
-        } 
+        }
 
         if( n < new_far && new_far < f ) {
-            f = new_far;             
+            f = new_far;
         }
 
         if( perspective )
             projection.makeFrustum( l, r, b, t, n, f );
         else
-            projection.makeOrtho( l, r, b, t, n, f );                     
+            projection.makeOrtho( l, r, b, t, n, f );
     }
 }
 
-// Imagine following scenario: 
+// Imagine following scenario:
 // We stand in the room and look through the window.
 // How should our view change if we were looking through larger window ?
-// In other words how should projection be adjusted if 
-// window had grown by some margin ? 
+// In other words how should projection be adjusted if
+// window had grown by some margin ?
 // Method computes such new projection which maintains perpective/world ratio
 
 void MinimalShadowMap::ViewData::extendProjection
@@ -514,28 +514,28 @@ void MinimalShadowMap::ViewData::extendProjection
   }
 
   osg::Matrix window = viewport->computeWindowMatrix();
- 
-  osg::Vec3 vMin( viewport->x() - margin.x(), 
-                 viewport->y() - margin.y(), 
+
+  osg::Vec3 vMin( viewport->x() - margin.x(),
+                 viewport->y() - margin.y(),
                  0.0 );
 
-  osg::Vec3 vMax( viewport->width() + margin.x() * 2  + vMin.x(), 
-                  viewport->height() + margin.y() * 2  + vMin.y(), 
+  osg::Vec3 vMax( viewport->width() + margin.x() * 2  + vMin.x(),
+                  viewport->height() + margin.y() * 2  + vMin.y(),
                   0.0 );
-  
+
   osg::Matrix inversePW = osg::Matrix::inverse( projection * window );
 
   vMin = vMin * inversePW;
   vMax = vMax * inversePW;
-  
-  l = vMin.x(); 
+
+  l = vMin.x();
   r = vMax.x();
-  b = vMin.y(); 
+  b = vMin.y();
   t = vMax.y();
 
   if( frustum )
     projection.makeFrustum( l,r,b,t,n,f );
-  else 
+  else
     projection.makeOrtho( l,r,b,t,n,f );
 }
 

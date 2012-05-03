@@ -93,7 +93,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
-    // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+    // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -109,15 +109,15 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(std::istream& fin,
     }
 
     // Options?
-    bool flipTexture = true; 
+    bool flipTexture = true;
     bool switchToLeftHanded = true; // when true: swap y and z for incoming files
     float creaseAngle = 80.0f;
     if (options) {
         const std::string option = options->getOptionString();
-        if (option.find("rightHanded") != std::string::npos) { 
+        if (option.find("rightHanded") != std::string::npos) {
             switchToLeftHanded = false;
         }
-        if (option.find("leftHanded") != std::string::npos) { 
+        if (option.find("leftHanded") != std::string::npos) {
             switchToLeftHanded = true;
         }
         if (option.find("flipTexture") != std::string::npos) {
@@ -204,7 +204,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchToLef
 
     // Texture-for-Image map
     std::map<std::string, osg::Texture2D*> texForImage;
-    
+
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {
 

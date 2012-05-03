@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -151,7 +151,7 @@ class DrawElements;
 class OSG_EXPORT PrimitiveSet : public BufferData
 {
     public:
-    
+
         enum Type
         {
             PrimitiveType,
@@ -174,9 +174,9 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             QUADS = GL_QUADS,
             QUAD_STRIP = GL_QUAD_STRIP,
             POLYGON = GL_POLYGON,
-            LINES_ADJACENCY = GL_LINES_ADJACENCY_EXT, 
-            LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY_EXT, 
-            TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY_EXT, 
+            LINES_ADJACENCY = GL_LINES_ADJACENCY_EXT,
+            LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY_EXT,
+            TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY_EXT,
             TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY_EXT,
             PATCHES = GL_PATCHES
         };
@@ -185,7 +185,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             _primitiveType(primType),
             _numInstances(numInstances),
             _mode(mode) {}
-    
+
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(prim,copyop),
             _primitiveType(prim._primitiveType),
@@ -195,7 +195,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "PrimitiveSet"; }
-        
+
         Type                    getType() const { return _primitiveType; }
 
         virtual osg::PrimitiveSet* asPrimitiveSet() { return this; }
@@ -207,7 +207,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
 
         virtual DrawElements* getDrawElements() { return 0; }
         virtual const DrawElements* getDrawElements() const { return 0; }
-            
+
         void setNumInstances(int n) { _numInstances = n; }
         int getNumInstances() const { return _numInstances; }
 
@@ -215,15 +215,15 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         GLenum getMode() const { return _mode; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const = 0;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const = 0;
         virtual void accept(PrimitiveIndexFunctor& functor) const = 0;
-        
+
         virtual unsigned int index(unsigned int pos) const = 0;
         virtual unsigned int getNumIndices() const = 0;
         virtual void offsetIndices(int offset) = 0;
 
-        virtual unsigned int getNumPrimitives() const; 
+        virtual unsigned int getNumPrimitives() const;
 
         virtual void computeRange() const {}
 
@@ -244,7 +244,7 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
             PrimitiveSet(DrawArraysPrimitiveType,mode),
             _first(0),
             _count(0) {}
-    
+
         DrawArrays(GLenum mode, GLint first, GLsizei count, int numInstances=0):
             PrimitiveSet(DrawArraysPrimitiveType, mode, numInstances),
             _first(first),
@@ -256,11 +256,11 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
             _count(da._count) {}
 
         virtual Object* cloneType() const { return new DrawArrays(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrays(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrays(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrays*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawArrays"; }
-        
+
 
         void set(GLenum mode,GLint first, GLsizei count)
         {
@@ -271,15 +271,15 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
 
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
-        
+
         void setCount(GLsizei count) { _count = count; }
         GLsizei getCount() const { return _count; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
-        
+
         virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(_count); }
         virtual unsigned int index(unsigned int pos) const { return static_cast<unsigned int>(_first)+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
@@ -301,43 +301,43 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
         DrawArrayLengths(GLenum mode=0):
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             _first(0) {}
-    
+
         DrawArrayLengths(const DrawArrayLengths& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(dal,copyop),
             vector_type(dal),
             _first(dal._first) {}
 
-        DrawArrayLengths(GLenum mode, GLint first, unsigned int no, GLsizei* ptr) : 
+        DrawArrayLengths(GLenum mode, GLint first, unsigned int no, GLsizei* ptr) :
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             vector_type(ptr,ptr+no),
             _first(first) {}
 
-        DrawArrayLengths(GLenum mode,GLint first, unsigned int no) : 
+        DrawArrayLengths(GLenum mode,GLint first, unsigned int no) :
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             vector_type(no),
             _first(first) {}
 
-        DrawArrayLengths(GLenum mode,GLint first) : 
+        DrawArrayLengths(GLenum mode,GLint first) :
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             vector_type(),
             _first(first) {}
 
 
         virtual Object* cloneType() const { return new DrawArrayLengths(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrayLengths(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrayLengths(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrayLengths*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawArrayLengths"; }
-        
+
 
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
-        
+
         virtual void draw(State& state, bool useVertexBufferObjects) const;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
-        
+
         virtual unsigned int getNumIndices() const;
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
@@ -354,10 +354,10 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
 class DrawElements : public PrimitiveSet
 {
     public:
-        
+
         DrawElements(Type primType=PrimitiveType, GLenum mode=0, int numInstances=0):
             PrimitiveSet(primType,mode, numInstances) {}
-    
+
         DrawElements(const DrawElements& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(copy,copyop) {}
 
@@ -387,12 +387,12 @@ class DrawElements : public PrimitiveSet
 class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
 {
     public:
-    
+
         typedef VectorGLubyte vector_type;
 
         DrawElementsUByte(GLenum mode=0):
             DrawElements(DrawElementsUBytePrimitiveType,mode) {}
-    
+
         DrawElementsUByte(const DrawElementsUByte& array, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             DrawElements(array,copyop),
             vector_type(array) {}
@@ -400,19 +400,19 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         /**
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) : 
+        DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) :
             DrawElements(DrawElementsUBytePrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUByte(GLenum mode, unsigned int no) : 
+        DrawElementsUByte(GLenum mode, unsigned int no) :
             DrawElements(DrawElementsUBytePrimitiveType,mode),
             vector_type(no) {}
 
         virtual Object* cloneType() const { return new DrawElementsUByte(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUByte(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUByte(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUByte*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUByte"; }
@@ -422,18 +422,18 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const ;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(size()); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
-        
+
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v)  { (*this)[i] = v; }
-        virtual unsigned int getElement(unsigned int i) { return (*this)[i]; } 
-        virtual void addElement(unsigned int v) { push_back(GLubyte(v)); } 
+        virtual unsigned int getElement(unsigned int i) { return (*this)[i]; }
+        virtual void addElement(unsigned int v) { push_back(GLubyte(v)); }
 
     protected:
 
@@ -449,7 +449,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
 
         DrawElementsUShort(GLenum mode=0):
             DrawElements(DrawElementsUShortPrimitiveType,mode) {}
-    
+
         DrawElementsUShort(const DrawElementsUShort& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             DrawElements(array,copyop),
             vector_type(array) {}
@@ -457,24 +457,24 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         /**
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) : 
+        DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) :
             DrawElements(DrawElementsUShortPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUShort(GLenum mode, unsigned int no) : 
+        DrawElementsUShort(GLenum mode, unsigned int no) :
             DrawElements(DrawElementsUShortPrimitiveType,mode),
             vector_type(no) {}
 
         template <class InputIterator>
-        DrawElementsUShort(GLenum mode, InputIterator first,InputIterator last) : 
+        DrawElementsUShort(GLenum mode, InputIterator first,InputIterator last) :
             DrawElements(DrawElementsUShortPrimitiveType,mode),
             vector_type(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUShort(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUShort(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUShort(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUShort*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUShort"; }
@@ -484,7 +484,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 
@@ -510,7 +510,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
 
         DrawElementsUInt(GLenum mode=0):
             DrawElements(DrawElementsUIntPrimitiveType,mode) {}
-    
+
         DrawElementsUInt(const DrawElementsUInt& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             DrawElements(array,copyop),
             vector_type(array) {}
@@ -519,24 +519,24 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
          * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) : 
+        DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) :
             DrawElements(DrawElementsUIntPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
-        DrawElementsUInt(GLenum mode, unsigned int no) : 
+        DrawElementsUInt(GLenum mode, unsigned int no) :
             DrawElements(DrawElementsUIntPrimitiveType,mode),
             vector_type(no) {}
 
         template <class InputIterator>
-        DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) : 
+        DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) :
             DrawElements(DrawElementsUIntPrimitiveType,mode),
             vector_type(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUInt(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUInt*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUInt"; }
@@ -546,7 +546,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
-        
+
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 

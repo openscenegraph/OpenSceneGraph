@@ -13,7 +13,7 @@
 #include <osg/NodeVisitor>
 #include <osg/MatrixTransform>
 
-class Normals: public osg::Geode 
+class Normals: public osg::Geode
 {
     public:
         enum Mode {
@@ -48,7 +48,7 @@ class Normals: public osg::Geode
 
 
                 void _processPrimitive(  unsigned int nv,
-                        osg::Vec3Array::iterator coords, 
+                        osg::Vec3Array::iterator coords,
                         osg::Vec3Array::iterator normals,
                         osg::Geometry::AttributeBinding binding );
         };

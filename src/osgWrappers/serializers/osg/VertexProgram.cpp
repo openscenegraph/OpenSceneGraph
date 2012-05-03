@@ -11,27 +11,27 @@ static bool checkLocalParameters( const osg::VertexProgram& vp )
 
 static bool readLocalParameters( osgDB::InputStream& is, osg::VertexProgram& vp )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         GLuint key; osg::Vec4d value;
         is >> key >> value;
         vp.setProgramLocalParameter( key, value );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeLocalParameters( osgDB::OutputStream& os, const osg::VertexProgram& vp )
 {
     const osg::VertexProgram::LocalParamList& params = vp.getLocalParameters();
-    os.writeSize(params.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(params.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::VertexProgram::LocalParamList::const_iterator itr=params.begin();
           itr!=params.end(); ++itr )
     {
         os << itr->first << osg::Vec4d(itr->second) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -43,27 +43,27 @@ static bool checkMatrices( const osg::VertexProgram& vp )
 
 static bool readMatrices( osgDB::InputStream& is, osg::VertexProgram& vp )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         unsigned int key; osg::Matrixd value;
         is >> key >> value;
         vp.setMatrix( key, value );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeMatrices( osgDB::OutputStream& os, const osg::VertexProgram& vp )
 {
     const osg::VertexProgram::MatrixList& matrices = vp.getMatrices();
-    os.writeSize(matrices.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(matrices.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::VertexProgram::MatrixList::const_iterator itr=matrices.begin();
           itr!=matrices.end(); ++itr )
     {
         os << (unsigned int)itr->first << osg::Matrixd(itr->second) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

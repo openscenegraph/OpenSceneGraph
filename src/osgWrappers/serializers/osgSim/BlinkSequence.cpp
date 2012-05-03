@@ -10,7 +10,7 @@ static bool checkPulseData( const osgSim::BlinkSequence& bs )
 
 static bool readPulseData( osgDB::InputStream& is, osgSim::BlinkSequence& bs )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         double length = 0.0;
@@ -18,14 +18,14 @@ static bool readPulseData( osgDB::InputStream& is, osgSim::BlinkSequence& bs )
         is >> length >> color;
         bs.addPulse( length, color );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writePulseData( osgDB::OutputStream& os, const osgSim::BlinkSequence& bs )
 {
     unsigned int size = bs.getNumPulses();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         double length = 0.0;
@@ -33,7 +33,7 @@ static bool writePulseData( osgDB::OutputStream& os, const osgSim::BlinkSequence
         bs.getPulse( i, length, color );
         os << length << color << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

@@ -18,17 +18,17 @@ public:
 
     virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* options=NULL) const
     {
-        
+
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file, options );
-        if (fileName.empty()) 
+        if (fileName.empty())
         {
             if (status==READ) return ReadResult::FILE_NOT_FOUND;
             fileName = file;
         }
-            
+
         osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
         if (!archive->open(fileName, status, indexBlockSize))
         {
@@ -38,7 +38,7 @@ public:
         return archive.get();
     }
 
-    /** open an archive for reading.*/ 
+    /** open an archive for reading.*/
     virtual ReadResult openArchive(std::istream& fin,const Options*) const
     {
         osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
@@ -53,13 +53,13 @@ public:
     virtual ReadResult readImage(const std::string& file,const Options* options) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
-        
+
         if (!result.validArchive()) return result;
 
 
         // copy the incoming options if possible so that plugin options can be applied to files
         // inside the archive
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = 
+        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options =
             options?
             new osgDB::ReaderWriter::Options( *options ) :
             new osgDB::ReaderWriter::Options;
@@ -67,7 +67,7 @@ public:
         local_options->setDatabasePath(file);
 
         ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
-        
+
 
         if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
         {
@@ -81,13 +81,13 @@ public:
     virtual ReadResult readNode(const std::string& file,const Options* options) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
-        
+
         if (!result.validArchive()) return result;
 
 
         // copy the incoming options if possible so that plugin options can be applied to files
         // inside the archive
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = 
+        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options =
             options?
             new osgDB::ReaderWriter::Options( *options ) :
             new osgDB::ReaderWriter::Options;
@@ -95,7 +95,7 @@ public:
         local_options->setDatabasePath(file);
 
         ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
-        
+
 
         if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
         {
@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    
+
 };
 
 

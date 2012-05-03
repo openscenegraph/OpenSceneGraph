@@ -154,7 +154,7 @@ namespace
 
 ///////////////////////////////////////////////////////////////////////////
 // A port of Marco Jez's "cartoon.cg" to the OpenGL Shading Language
-// by Mike Weiblen 2003-10-03, 
+// by Mike Weiblen 2003-10-03,
 //
 // This shader is simplified due to limitations in the OGLSL implementation
 // in the current 3Dlabs driver.  As the OGLSL implementation improves,
@@ -244,7 +244,7 @@ namespace
                 _wf_mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
                 _wf_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
                 _wf_mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                
+
                 // set by outline colour so no need to set here.
                 //_wf_mat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
 

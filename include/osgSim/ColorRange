@@ -41,13 +41,13 @@ public:
     /** Constructor for a ColorRange
     @param min      minimum scalar value
     @param max      maximum scalar value
-    @param colors   optional range of colors, 
+    @param colors   optional range of colors,
     */
     ColorRange(float min, float max, const std::vector<osg::Vec4>& colors);
 
     /** Set the range of colors. */
     void setColors(const std::vector<osg::Vec4>& colors);
-    
+
     /** Get the range of colors */
     const std::vector<osg::Vec4>& getColors() const { return _colors; }
 

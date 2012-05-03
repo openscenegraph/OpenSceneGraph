@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/PositionalStateContainer>
@@ -54,7 +54,7 @@ void PositionalStateContainer::draw(osg::State& state,RenderLeaf*& previous, con
             else
                 state.applyModelViewMatrix(new osg::RefMatrix( *postMultMatrix));
         }
-        
+
         else
         {
             state.applyModelViewMatrix((*litr).second.get());
@@ -62,10 +62,10 @@ void PositionalStateContainer::draw(osg::State& state,RenderLeaf*& previous, con
 
         // apply the light source.
         litr->first->apply(state);
-        
+
         // tell state about.
         state.haveAppliedAttribute(litr->first.get());
-        
+
         // set this state as a global default
         state.setGlobalDefaultAttribute(litr->first.get());
     }
@@ -75,9 +75,9 @@ void PositionalStateContainer::draw(osg::State& state,RenderLeaf*& previous, con
         ++titr)
     {
         state.setActiveTextureUnit(titr->first);
-        
+
         AttrMatrixList attrList = titr->second;
-        
+
         for(AttrMatrixList::iterator litr=attrList.begin();
             litr!=attrList.end();
             ++litr)

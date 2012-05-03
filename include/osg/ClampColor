@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -44,7 +44,7 @@ class OSG_EXPORT ClampColor : public StateAttribute
     public :
 
         ClampColor();
-        
+
         ClampColor(GLenum vertexMode, GLenum fragmentMode, GLenum readMode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
@@ -55,7 +55,7 @@ class OSG_EXPORT ClampColor : public StateAttribute
             _clampReadColor(rhs._clampReadColor) {}
 
         META_StateAttribute(osg, ClampColor,CLAMPCOLOR);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -80,37 +80,37 @@ class OSG_EXPORT ClampColor : public StateAttribute
         void setClampReadColor(GLenum mode) { _clampReadColor = mode; }
         GLenum getClampReadColor() const { return _clampReadColor; }
 
-        
+
         virtual void apply(State& state) const;
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+
                 void setupGLExtensions(unsigned int contextID);
 
                 void setClampColorSupported(bool flag) { _isClampColorSupported=flag; }
                 bool isClampColorSupported() const { return _isClampColorSupported; }
-                
+
                 void glClampColor(GLenum target, GLenum mode) const;
 
             protected:
 
                 ~Extensions() {}
-                
+
                 typedef void (GL_APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
                 bool                _isClampColorSupported;
                 GLClampColorProc    _glClampColor;
 
         };
-        
+
         /** Returns the Extensions object for the given context.
           * If createIfNotInitalized is true and the Extensions object doesn't
           * exist, getExtensions() creates it on the given context.

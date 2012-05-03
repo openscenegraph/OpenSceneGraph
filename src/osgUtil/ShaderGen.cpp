@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -59,14 +59,14 @@ public:
     osg::Uniform *getUniform(const std::string& name) const
     {
         UniformMap::const_iterator it = _uniformMap.find(name);
-        return it != _uniformMap.end() ? 
+        return it != _uniformMap.end() ?
             const_cast<osg::Uniform *>(it->second.uniformVec.back().first) : 0;
     }
 
 protected:
 
     osg::StateAttribute::GLModeValue getMode(const ModeMap &modeMap,
-        osg::StateAttribute::GLMode mode, 
+        osg::StateAttribute::GLMode mode,
         osg::StateAttribute::GLModeValue def = osg::StateAttribute::INHERIT) const
     {
         ModeMap::const_iterator it = modeMap.find(mode);
@@ -77,7 +77,7 @@ protected:
         osg::StateAttribute::Type type, unsigned int member = 0) const
     {
         AttributeMap::const_iterator it = attributeMap.find(std::make_pair(type, member));
-        return (it != attributeMap.end() && it->second.attributeVec.size()) ? 
+        return (it != attributeMap.end() && it->second.attributeVec.size()) ?
             const_cast<osg::StateAttribute*>(it->second.attributeVec.back().first) : 0;
     }
 };
@@ -134,7 +134,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     {
         vert << "varying vec3 viewDir;\n";
     }
-    
+
     // copy varying to fragment shader
     frag << vert.str();
 
@@ -168,7 +168,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
 
     if (stateMask & NORMAL_MAP)
     {
-        vert << 
+        vert <<
             "  vec3 n = gl_NormalMatrix * gl_Normal;\n"\
             "  vec3 t = gl_NormalMatrix * tangent;\n"\
             "  vec3 b = cross(n, t);\n"\
@@ -187,7 +187,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     }
     else if (stateMask & LIGHTING)
     {
-        vert << 
+        vert <<
             "  normalDir = gl_NormalMatrix * gl_Normal;\n"\
             "  vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
             "  viewDir = dir;\n"\
@@ -199,7 +199,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     }
     else if (stateMask & FOG)
     {
-        vert << 
+        vert <<
             "  viewDir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
             "  gl_FrontColor = gl_Color;\n";
     }
@@ -207,7 +207,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     {
         vert << "  gl_FrontColor = gl_Color;\n";
     }
-    
+
     vert << "}\n";
 
     frag << "\n"\
@@ -230,7 +230,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
 
     if (stateMask & (LIGHTING | NORMAL_MAP))
     {
-        frag << 
+        frag <<
             "  vec3 nd = normalize(normalDir);\n"\
             "  vec3 ld = normalize(lightDir);\n"\
             "  vec3 vd = normalize(viewDir);\n"\
@@ -258,12 +258,12 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
 
     if (stateMask & FOG)
     {
-        frag << 
+        frag <<
             "  float d2 = dot(viewDir, viewDir);//gl_FragCoord.z/gl_FragCoord.w;\n"\
             "  float f = exp2(-1.442695*gl_Fog.density*gl_Fog.density*d2);\n"\
             "  color.rgb = mix(gl_Fog.color.rgb, color.rgb, clamp(f, 0.0, 1.0));\n";
     }
-    
+
     frag << "  gl_FragColor = color;\n";
     frag << "}\n";
 
@@ -279,14 +279,14 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     return stateSet;
 }
 
-ShaderGenVisitor::ShaderGenVisitor() : 
+ShaderGenVisitor::ShaderGenVisitor() :
     NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _stateCache(new ShaderGenCache),
     _state(new StateEx)
 {
 }
 
-ShaderGenVisitor::ShaderGenVisitor(ShaderGenCache *stateCache) : 
+ShaderGenVisitor::ShaderGenVisitor(ShaderGenCache *stateCache) :
     NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _stateCache(stateCache),
     _state(new StateEx)
@@ -383,7 +383,7 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
     osg::StateSet *ss = const_cast<osg::StateSet *>(state->getStateSetStack().back());
     ss->setAttribute(progss->getAttribute(osg::StateAttribute::PROGRAM));
     ss->setUniformList(progss->getUniformList());
-    
+
     // remove any modes that won't be appropriate when using shaders
     if ((stateMask&ShaderGenCache::LIGHTING)!=0)
     {

@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -18,24 +18,24 @@
 using namespace osgAnimation;
 
 BasicAnimationManager::BasicAnimationManager()
-: _lastUpdate(0.0) 
+: _lastUpdate(0.0)
 {
 }
 
-BasicAnimationManager::BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop) 
+BasicAnimationManager::BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop)
 : AnimationManagerBase(b,copyop)
-, _lastUpdate(0.0) 
+, _lastUpdate(0.0)
 {
 }
 
-BasicAnimationManager::~BasicAnimationManager() 
+BasicAnimationManager::~BasicAnimationManager()
 {
 }
 
 void BasicAnimationManager::stopAll()
 {
     // loop over all playing animation
-    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
         for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
@@ -51,7 +51,7 @@ void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, f
 
     if ( isPlaying(pAnimation) )
         stopAnimation(pAnimation);
-  
+
     _animationsPlaying[priority].push_back(pAnimation);
     // for debug
     //std::cout << "player Animation " << pAnimation->getName() << " at " << _lastUpdate << std::endl;
@@ -94,12 +94,12 @@ void BasicAnimationManager::update (double time)
         AnimationList& list = iterAnim->second;
         for (unsigned int i = 0; i < list.size(); i++)
         {
-            if (! list[i]->update(time, priority)) 
+            if (! list[i]->update(time, priority))
             {
                 // debug
                 // std::cout << list[i]->getName() << " finished at " << time << std::endl;
                 toremove.push_back(i);
-            } else 
+            } else
             {
                 // debug
                 //std::cout << list[i]->getName() << " updated" << std::endl;
@@ -118,7 +118,7 @@ void BasicAnimationManager::update (double time)
 
 bool BasicAnimationManager::findAnimation(Animation* pAnimation)
 {
-    for( AnimationList::const_iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
+    for( AnimationList::const_iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim )
     {
         if ( (*iterAnim) == pAnimation )
             return true;

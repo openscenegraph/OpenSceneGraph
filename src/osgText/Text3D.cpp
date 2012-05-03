@@ -72,7 +72,7 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
 
             if (!vertices || vertices->empty())
               continue; //skip over spaces
-          
+
             //pf.setVertexArray(it->_glyph->getVertexArray()->size(),&(it->_glyph->getVertexArray()->front()));
             //////////////////////////////////////////////////////////////////////////
             // now apply matrix to the glyphs.

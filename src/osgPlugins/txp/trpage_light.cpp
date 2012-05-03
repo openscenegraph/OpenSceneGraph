@@ -585,7 +585,7 @@ bool trpgLightAttr::Read(trpgReadBuffer &buf)
     parse.AddCallback(TRPGLIGHTATTR_CALLIGRAPHIC,&lightAttrCb,false);
     parse.AddCallback(TRPGLIGHTATTR_ANIMATION,&lightAttrCb,false);
     parse.AddCallback(TRPGLIGHTATTR_COMMENT,&lightAttrCb,false);
-    parse.AddCallback(TRPGLIGHTATTR_HANDLE,&lightAttrCb,false);    
+    parse.AddCallback(TRPGLIGHTATTR_HANDLE,&lightAttrCb,false);
     parse.Parse(buf);
 
     return isValid();
@@ -944,7 +944,7 @@ trpgLightTable::~trpgLightTable()
 bool trpgLightTable::isValid() const
 {
     LightMapType::const_iterator itr = lightMap.begin();
-    for (  ; itr != lightMap.end( ); itr++) 
+    for (  ; itr != lightMap.end( ); itr++)
     {
         if (!itr->second.isValid())
         {
@@ -965,7 +965,7 @@ int trpgLightTable::AddLightAttr(const trpgLightAttr& inLight)
         handle = lightMap.size();
     }
     lightMap[handle] = inLight;
-    return handle;    
+    return handle;
 }
 int trpgLightTable::FindAddLightAttr(const trpgLightAttr& inLight)
 {
@@ -1004,8 +1004,8 @@ bool trpgLightTable::Write(trpgWriteBuffer &buf)
     numLights = lightMap.size();
     buf.Add(numLights);
     LightMapType::iterator itr = lightMap.begin();
-    for (  ; itr != lightMap.end( ); itr++) 
-        itr->second.Write(buf);    
+    for (  ; itr != lightMap.end( ); itr++)
+        itr->second.Write(buf);
     //for (unsigned int i=0;i<lightList.size();i++)
     //    lightList[i].Write(buf);
     buf.End();
@@ -1049,7 +1049,7 @@ bool trpgLightTable::Read(trpgReadBuffer &buf)
             buf.GetToken(lightTok,len);
             if (lightTok != TRPGLIGHTATTR) throw 1;
             buf.PushLimit(len);
-            trpgLightAttr light;// = lightList[i];            
+            trpgLightAttr light;// = lightList[i];
             bool status = light.Read(buf);
             buf.PopLimit();
             if (!status) throw 1;

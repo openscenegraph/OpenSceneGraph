@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #ifndef _DOM_SRC_CONV_H_
@@ -25,7 +25,7 @@ namespace osgDAE {
 @class domSourceReader
 Converts a source to an OSG vector array as soon as you call a getter, so calling simple precision version \c getArray<osg::Vec3Array>() will force getArray<osg::Vec3dArray>() to return NULL, and vice-versa (for a Vec3 array in the example).
 @brief Convert sources from DAE to OSG arrays
-*/ 
+*/
 class domSourceReader
 {
 public:

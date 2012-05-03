@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -131,7 +131,7 @@ void Timeline::update(double simulationTime)
         _animationManager->clearTargets();
         updateTimeline.setFrame(_currentFrame);
         accept(updateTimeline);
-        if (_collectStats) 
+        if (_collectStats)
         {
             if (!_statsVisitor)
                 _statsVisitor = new StatsActionVisitor;
@@ -237,11 +237,11 @@ bool Timeline::isActive(Action* activeAction)
         for (unsigned int i = 0; i < list.size(); i++)
         {
             Action* action = list[i].second.get();
-            if (action == activeAction) 
+            if (action == activeAction)
             {
                 unsigned int firstFrame = list[i].first;
                 // check if current frame of timeline hit an action interval
-                if (_currentFrame >= firstFrame && 
+                if (_currentFrame >= firstFrame &&
                     _currentFrame < (firstFrame + action->getNumFrames()) )
                     return true;
             }

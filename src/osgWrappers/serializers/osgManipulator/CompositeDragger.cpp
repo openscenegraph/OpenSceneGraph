@@ -10,25 +10,25 @@ static bool checkDraggers( const osgManipulator::CompositeDragger& dragger )
 
 static bool readDraggers( osgDB::InputStream& is, osgManipulator::CompositeDragger& dragger )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osgManipulator::Dragger* child = dynamic_cast<osgManipulator::Dragger*>( is.readObject() );
         if ( child ) dragger.addDragger( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeDraggers( osgDB::OutputStream& os, const osgManipulator::CompositeDragger& dragger )
 {
     unsigned int size = dragger.getNumDraggers();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << dragger.getDragger(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

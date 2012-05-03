@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -230,7 +230,7 @@ FreeTypeFont::~FreeTypeFont()
             // remove myself from the local registry to ensure that
             // not dangling pointers remain
             freeTypeLibrary->removeFontImplmentation(this);
-        
+
             // free the freetype font face itself
             FT_Done_Face(_face);
             _face = 0;
@@ -271,7 +271,7 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
         (unsigned int)(width+2*margin) > _facade->getTextureHeightHint())
     {
         OSG_WARN<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
-    
+
         width = _facade->getTextureWidthHint()-2*margin;
         height = _facade->getTextureHeightHint()-2*margin;
 
@@ -302,9 +302,9 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     float coord_scale = getCoordScale();
 
     //
-    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being  
-    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct 
-    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.  
+    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
+    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct
+    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.
     // Microsoft uses a private field for its symbol fonts
     //
     unsigned int charindex = charcode;
@@ -331,15 +331,15 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     unsigned int sourceWidth = glyphslot->bitmap.width;;
     unsigned int sourceHeight = glyphslot->bitmap.rows;
-    
+
     unsigned int width = sourceWidth;
     unsigned int height = sourceHeight;
 
     osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
-    
+
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];
-    
+
 
     // clear the image to zeros.
     for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
@@ -353,7 +353,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     glyph->setInternalTextureFormat(GL_ALPHA);
 
-    // copy image across to osgText::Glyph image.     
+    // copy image across to osgText::Glyph image.
     switch(glyphslot->bitmap.pixel_mode)
     {
         case FT_PIXEL_MODE_MONO:
@@ -367,7 +367,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
             }
             break;
 
-        
+
         case FT_PIXEL_MODE_GRAY:
             for(int r=sourceHeight-1;r>=0;--r)
             {
@@ -378,7 +378,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
                 }
             }
             break;
-            
+
         default:
             OSG_WARN << "FT_Load_Char(...) returned bitmap with unknown pixel_mode " << glyphslot->bitmap.pixel_mode << std::endl;
     }
@@ -404,7 +404,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     OSG_NOTICE<<"   coord_scale = "<<coord_scale<<std::endl;
     OSG_NOTICE<<"   _face->units_per_EM = "<<_face->units_per_EM<<", scale="<<1.0f/float(_face->units_per_EM)<<std::endl;
 #endif
-    
+
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 
     return glyph.release();
@@ -524,8 +524,8 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
     // convert character code to glyph index
     FT_UInt left = FT_Get_Char_Index( _face, leftcharcode );
     FT_UInt right = FT_Get_Char_Index( _face, rightcharcode );
-    
-    // get the kerning distances.   
+
+    // get the kerning distances.
     FT_Vector  kerning;
 
     FT_Error error = FT_Get_Kerning( _face,                     // handle to face object
@@ -572,7 +572,7 @@ bool FreeTypeFont::getVerticalSize(float & ascender, float & descender) const
     descender = static_cast<float>(_face->descender) * coord_scale;
     return true;
 #endif
-} 
+}
 
 float FreeTypeFont::getCoordScale() const
 {

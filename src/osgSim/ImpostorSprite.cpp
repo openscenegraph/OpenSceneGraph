@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #if defined(_MSC_VER)
@@ -82,9 +82,9 @@ float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
         float dy = (projected_coord.y()-projected_control.y());
 
         float error_sqrd = dx*dx+dy*dy;
-        
+
         if (error_sqrd > max_error_sqrd) max_error_sqrd = error_sqrd;
-        
+
     }
 
     return sqrtf(max_error_sqrd);
@@ -154,7 +154,7 @@ void ImpostorSprite::accept(osg::PrimitiveFunctor& functor) const
 {
     functor.setVertexArray(4,_coords);
     functor.drawArrays( GL_QUADS, 0, 4);
-    
+
 }
 
 
@@ -171,7 +171,7 @@ ImpostorSpriteManager::ImpostorSpriteManager():
 
     _alphafunc = new osg::AlphaFunc;
     _alphafunc->setFunction( osg::AlphaFunc::GREATER, 0.000f );
-    
+
     _reuseStateSetIndex = 0;
 }
 
@@ -186,7 +186,7 @@ ImpostorSpriteManager::~ImpostorSpriteManager()
         _first->_next = NULL;
         _first = next;
     }
-    
+
 }
 
 void ImpostorSpriteManager::push_back(ImpostorSprite* is)
@@ -253,7 +253,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,u
     if (!empty())
     {
 
-        // search for a valid impostor to reuse.        
+        // search for a valid impostor to reuse.
         ImpostorSprite* curr = _first;
         while (curr)
         {
@@ -273,7 +273,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,u
     }
 
     // creating new impostor sprite.
-    
+
 
     osg::StateSet* stateset = new osg::StateSet;
 
@@ -310,7 +310,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,u
     is->setTexture(texture,s,t);
 
     push_back(is);
-    
+
     return is;
 
 }

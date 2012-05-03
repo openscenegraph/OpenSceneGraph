@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -74,17 +74,17 @@ class OSGPRESENTATION_EXPORT SlideShowConstructor
 {
 public:
 
-    
+
     enum CoordinateFrame { SLIDE, MODEL };
 
-    
+
     LayerAttributes* getOrCreateLayerAttributes(osg::Node* node);
-    
+
     void setDuration(osg::Node* node,double duration)
     {
         getOrCreateLayerAttributes(node)->setDuration(duration);
     }
-    
+
     void addKey(osg::Node* node,const KeyPosition& kp)
     {
         getOrCreateLayerAttributes(node)->addKey(kp);
@@ -102,13 +102,13 @@ public:
 
     void addPresentationKey(const KeyPosition& kp)
     {
-        if (!_presentationSwitch) createPresentation();            
+        if (!_presentationSwitch) createPresentation();
         if (_presentationSwitch.valid()) addKey( _presentationSwitch.get(), kp);
     }
 
     void addPresentationRunString(const std::string& runString)
     {
-        if (!_presentationSwitch) createPresentation();            
+        if (!_presentationSwitch) createPresentation();
         if (_presentationSwitch.valid()) addRunString( _presentationSwitch.get(),runString);
     }
 
@@ -117,13 +117,13 @@ public:
         if (!_slide) addSlide();
         if (_slide.valid()) addKey(_slide.get(),kp);
     }
-    
+
     void addSlideRunString(const std::string& runString)
     {
         if (!_slide) addSlide();
         if (_slide.valid()) addRunString(_slide.get(),runString);
     }
-    
+
     void setSlideJump(bool relativeJump, int switchNum, int layerNum)
     {
         if (!_slide) addSlide();
@@ -141,7 +141,7 @@ public:
         if (!_currentLayer) addLayer();
         if (_currentLayer.valid()) addRunString(_currentLayer.get(),runString);
     }
-    
+
 
     void setLayerJump(bool relativeJump, int switchNum, int layerNum)
     {
@@ -223,7 +223,7 @@ public:
     struct ModelData
     {
         ModelData() {}
-            
+
         std::string effect;
         std::string options;
     };
@@ -317,24 +317,24 @@ public:
     SlideShowConstructor(osgDB::Options* options);
 
     void createPresentation();
-    
+
     void setBackgroundColor(const osg::Vec4& color, bool updateClearNode);
     const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
-    
+
     void setTextColor(const osg::Vec4& color);
     const osg::Vec4& getTextColor() const { return _textFontDataDefault.color; }
-    
+
     void setPresentationName(const std::string& name);
-    
+
     void setPresentationAspectRatio(float aspectRatio);
 
     void setPresentationAspectRatio(const std::string& str);
-    
+
     void setPresentationDuration(double duration);
 
 
     void addSlide();
-    
+
     void selectSlide(int slideNum);
 
 
@@ -347,17 +347,17 @@ public:
 
     void setSlideBackgrondHUD(bool hud) { _slideBackgroundAsHUD = hud; }
     void setSlideBackground(const std::string& name) { _slideBackgroundImageFileName = name; }
-    
+
     void setSlideDuration(double duration);
 
 
     void addLayer(bool inheritPreviousLayers=true, bool defineAsBaseLayer=false);
-    
+
     void selectLayer(int layerNum);
-    
+
     void setLayerDuration(double duration);
 
-    
+
     // title settings
     FontData& getTitleFontData() { return _titleFontData; }
     FontData& getTitleFontDataDefault() { return _titleFontDataDefault; }
@@ -368,7 +368,7 @@ public:
     // text settings
     FontData& getTextFontData() { return _textFontData; }
     FontData& getTextFontDataDefault() { return _textFontDataDefault; }
-    
+
     PositionData& getTextPositionData() { return _textPositionData; }
     PositionData& getTextPositionDataDefault() { return _textPositionDataDefault; }
 
@@ -388,11 +388,11 @@ public:
     void layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
 
     void addToCurrentLayer(osg::Node* subgraph);
-    
+
     void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
-    
+
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
-    
+
     void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
 
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
@@ -406,17 +406,17 @@ public:
     void addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData);
 
     void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData);
-    
+
     void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData);
 
     osg::Group* takePresentation() { return _root.release(); }
-    
+
     osg::Group* getPresentation() { return _root.get(); }
 
     osg::Switch* getPresentationSwitch() { return _presentationSwitch.get(); }
 
     osg::Switch* getCurrentSlide() { return _slide.get(); }
-    
+
     osg::Group* getCurrentLayer() { return _currentLayer.get(); }
 
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
@@ -438,15 +438,15 @@ protected:
 
     osg::Vec3 computePositionInModelCoords(const PositionData& positionData) const;
     void updatePositionFromInModelCoords(const osg::Vec3& vertex, PositionData& positionData) const;
-    
+
     osg::Vec3 convertSlideToModel(const osg::Vec3& position) const;
     osg::Vec3 convertModelToSlide(const osg::Vec3& position) const;
 
     osg::AnimationPathCallback* getAnimationPathCallback(const PositionData& positionData);
-    
+
     osg::Node* attachMaterialAnimation(osg::Node* model, const PositionData& positionData);
     bool attachTexMat(osg::StateSet* stateset, const ImageData& imageData, float s, float t, bool textureRectangle);
-    
+
     osg::StateSet* createTransformStateSet()
     {
         osg::StateSet* stateset = new osg::StateSet;
@@ -469,7 +469,7 @@ protected:
     unsigned int _rightEyeMask;
 
     osg::ref_ptr<HUDSettings> _hudSettings;
-    
+
     // title settings
     FontData        _titleFontData;
     FontData        _titleFontDataDefault;
@@ -480,7 +480,7 @@ protected:
     // text settings
     FontData        _textFontData;
     FontData        _textFontDataDefault;
-    
+
     PositionData    _textPositionData;
     PositionData    _textPositionDataDefault;
 
@@ -501,24 +501,24 @@ protected:
 
     osg::ref_ptr<osg::Group>        _root;
     osg::ref_ptr<osg::Switch>       _presentationSwitch;
-    
+
     osg::ref_ptr<osg::ClearNode>    _slideClearNode;
     osg::ref_ptr<osg::Switch>       _slide;
     std::string                     _slideTitle;
     std::string                     _slideBackgroundImageFileName;
     bool                            _slideBackgroundAsHUD;
-    
+
     osg::ref_ptr<osg::Group>        _previousLayer;
     osg::ref_ptr<osg::Group>        _currentLayer;
-    
+
     osg::ref_ptr<FilePathData>      _filePathData;
-    
+
     osg::ref_ptr<osg::Group>                _layerToApplyEventCallbackTo;
     osg::ref_ptr<osgGA::GUIEventHandler>    _currentEventCallbackToApply;
 
 
     std::string findFileAndRecordPath(const std::string& filename);
-    
+
     void recordOptionsFilePath(const osgDB::Options* options);
 
 };

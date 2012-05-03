@@ -243,7 +243,7 @@ void Mesh::parseMeshMaterialList(std::istream& fin)
             continue;
 
         // check for "{ <material name> }" for a
-        // material which was declared globally 
+        // material which was declared globally
         string materialName = token[0];
         // could be given as "{ someName }" which more than 1 tokens
         if (materialName == "{" && token.size()>1)

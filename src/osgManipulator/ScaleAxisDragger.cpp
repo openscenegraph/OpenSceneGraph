@@ -26,18 +26,18 @@ ScaleAxisDragger::ScaleAxisDragger()
     _xDragger = new osgManipulator::Scale1DDragger();
     addChild(_xDragger.get());
     addDragger(_xDragger.get());
-    
+
     _yDragger = new osgManipulator::Scale1DDragger();
     addChild(_yDragger.get());
     addDragger(_yDragger.get());
-    
+
     _zDragger = new osgManipulator::Scale1DDragger();
     addChild(_zDragger.get());
     addDragger(_zDragger.get());
 
     setParentDragger(getParentDragger());
 }
-       
+
 ScaleAxisDragger::~ScaleAxisDragger()
 {
 }
@@ -48,7 +48,7 @@ void ScaleAxisDragger::setupDefaultGeometry()
     osg::Geode* lineGeode = new osg::Geode;
     {
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(2);
         (*vertices)[0] = osg::Vec3(0.0f,0.0f,0.0f);
         (*vertices)[1] = osg::Vec3(1.0f,0.0f,0.0f);
@@ -73,7 +73,7 @@ void ScaleAxisDragger::setupDefaultGeometry()
     _zDragger->addChild(lineGeode);
 
     osg::Geode* geode = new osg::Geode;
-    
+
     // Create a box.
     geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(1.0f,0.0f,0.0f), 0.05)));
 

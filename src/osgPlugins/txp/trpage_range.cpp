@@ -193,7 +193,7 @@ bool trpgRange::Read(trpgReadBuffer &buf)
         // Read the handle if we can..
         try {
             int32 tempHandle;
-            if(buf.Get(tempHandle)) 
+            if(buf.Get(tempHandle))
             {
                 handle = tempHandle;
             }
@@ -348,7 +348,7 @@ trpgRangeTable & trpgRangeTable::operator = (const trpgRangeTable &inTab)
 {
     Reset();
     RangeMapType::const_iterator itr = inTab.rangeMap.begin();
-    for (  ; itr != inTab.rangeMap.end( ); itr++) 
+    for (  ; itr != inTab.rangeMap.end( ); itr++)
         rangeMap[itr->first] = itr->second;
 
 #if 0

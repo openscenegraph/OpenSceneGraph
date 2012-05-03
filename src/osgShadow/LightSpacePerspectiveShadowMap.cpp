@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -35,7 +35,7 @@
 using namespace osgShadow;
 
 ////////////////////////////////////////////////////////////////////////////////
-// There are two slightly differing implemetations available on 
+// There are two slightly differing implemetations available on
 // "Light Space Perspective Shadow Maps" page. One from 2004 and other from 2006.
 // Our implementation is written in two versions based on these solutions.
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,16 +47,16 @@ using namespace osgShadow;
 ////////////////////////////////////////////////////////////////////////////////
 // This code is copyright Vienna University of Technology, 2004.
 //
-// Please feel FREE to COPY and USE the code to include it in your own work, 
+// Please feel FREE to COPY and USE the code to include it in your own work,
 // provided you include this copyright notice.
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//
 // Authors Code:
 // Daniel Scherzer (scherzer@cg.tuwien.ac.at)
-// 
-// Authors Paper: 
+//
+// Authors Paper:
 // Michael Wimmer (wimmer@cg.tuwien.ac.at)
 // Daniel Scherzer (scherzer@cg.tuwien.ac.at)
 // Werner Purgathofer
@@ -87,14 +87,14 @@ void calcLispSMMtx(struct VecPoint* B) {
 
     //temporal light View
     //look from position(eyePos)
-    //into direction(lightDir) 
+    //into direction(lightDir)
     //with up vector(up)
     look(lightView,eyePos,lightDir,up);
 
     //transform the light volume points from world into light space
     transformVecPoint(B,lightView);
 
-    //calculate the cubic hull (an AABB) 
+    //calculate the cubic hull (an AABB)
     //of the light space extents of the intersection body B
     //and save the two extreme points min and max
     calcCubicHull(min,max,B->points,B->size);
@@ -102,7 +102,7 @@ void calcLispSMMtx(struct VecPoint* B) {
     {
         //use the formulas of the paper to get n (and f)
         const double factor = 1.0/sinGamma;
-        const double z_n = factor*nearDist; //often 1 
+        const double z_n = factor*nearDist; //often 1
         const double d = absDouble(max[1]-min[1]); //perspective transform depth //light space y extents
         const double z_f = z_n + d*sinGamma;
         const double n = (z_n+sqrt(z_f*z_n))/sinGamma;
@@ -118,18 +118,18 @@ void calcLispSMMtx(struct VecPoint* B) {
         //one possibility for a simple perspective transformation matrix
         //with the two parameters n(near) and f(far) in y direction
         copyMatrix(lispMtx,IDENTITY);    // a = (f+n)/(f-n); b = -2*f*n/(f-n);
-        lispMtx[ 5] = (f+n)/(f-n);        // [ 1 0 0 0] 
+        lispMtx[ 5] = (f+n)/(f-n);        // [ 1 0 0 0]
         lispMtx[13] = -2*f*n/(f-n);        // [ 0 a 0 b]
         lispMtx[ 7] = 1;                // [ 0 0 1 0]
         lispMtx[15] = 0;                // [ 0 1 0 0]
 
         //temporal arrangement for the transformation of the points to post-perspective space
         mult(lightProjection,lispMtx,lightView); // ligthProjection = lispMtx*lightView
-        
+
         //transform the light volume points from world into the distorted light space
         transformVecPoint(&Bcopy,lightProjection);
 
-        //calculate the cubic hull (an AABB) 
+        //calculate the cubic hull (an AABB)
         //of the light space extents of the intersection body B
         //and save the two extreme points min and max
         calcCubicHull(min,max,Bcopy.points,Bcopy.size);
@@ -183,7 +183,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     const double dotProd = viewDir * lightDir;
     const double sinGamma = sqrt(1.0- dotProd*dotProd);
     const double factor = 1.0/sinGamma;
-    const double z_n = factor*nearDist; //often 1 
+    const double z_n = factor*nearDist; //often 1
     //use the formulas of the paper to get n (and f)
     const double d = fabs( bb._max[1]-bb._min[1]); //perspective transform depth //light space y extents
     const double z_f = z_n + d*sinGamma;
@@ -193,10 +193,10 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
 #if PRINT_COMPUTED_N_OPT
     std::cout
-       << " N=" << std::setw(8) << n 
+       << " N=" << std::setw(8) << n
        << " n=" << std::setw(8) << z_n
        << " f=" << std::setw(8) << z_f
-       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" 
+       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
        << std::flush;
 #endif
 
@@ -215,7 +215,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 //    lispProjection.makeIdentity( );
 #if 0
     {
-        osg::Matrix mvp = _camera->getViewMatrix() * 
+        osg::Matrix mvp = _camera->getViewMatrix() *
                       _camera->getProjectionMatrix();
 
         extendScenePolytope( mvp, osg::Matrix::inverse( mvp ) );
@@ -231,12 +231,12 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
     cameraShadow->setProjectionMatrix
         ( lightViewToWorld * lightView * lispProjection * fitToUnitFrustum );
-    
+
 
 #if 0 // DOUBLE CHECK!
     bb = computeScenePolytopeBounds
         ( cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix() );
-    
+
     if( !osg::equivalent( 0.f, (bb._min - osg::Vec3d(-1,-1,-1)).length2() ) ||
         !osg::equivalent( 0.f, (bb._max - osg::Vec3d( 1, 1, 1)).length2() ) )
     {
@@ -262,14 +262,14 @@ LightSpacePerspectiveShadowMapAlgorithm::~LightSpacePerspectiveShadowMapAlgorith
 }
 
 void LightSpacePerspectiveShadowMapAlgorithm::operator()
-    ( const osgShadow::ConvexPolyhedron* hullShadowedView, 
-      const osg::Camera* cameraMain, 
+    ( const osgShadow::ConvexPolyhedron* hullShadowedView,
+      const osg::Camera* cameraMain,
       osg::Camera* cameraShadow ) const
 {
 
     // all computations are done in post projection light space
-    // which means we are in left handed coordinate system 
-    osg::Matrix mvpLight = 
+    // which means we are in left handed coordinate system
+    osg::Matrix mvpLight =
         cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix();
 
     osg::Matrix m = cameraMain->getInverseViewMatrix() * mvpLight;
@@ -297,24 +297,24 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     // infinte directional, omnidirectional and spot types may be treated as directional
     // as all computations are performed in post projection light space.
     // Frankly, I have my doubts if their error analysis and methodology still works
-    // in non directional lights post projective space. But since I can't prove it doesn't, 
-    // I assume it does ;-). So I made an effort to modify their original directional algo 
+    // in non directional lights post projective space. But since I can't prove it doesn't,
+    // I assume it does ;-). So I made an effort to modify their original directional algo
     // to work in true light post perspective space and compute all params in this space.
-    // And here is a snag. Although shadowed hull fits completely into light space, 
-    // camera position may not, and after projective transform it may land outside 
-    // light frustum and even on/or below infinity plane. I need camera pos to compute 
+    // And here is a snag. Although shadowed hull fits completely into light space,
+    // camera position may not, and after projective transform it may land outside
+    // light frustum and even on/or below infinity plane. I need camera pos to compute
     // minimal distance to shadowed hull. If its not right rest of the computation may
-    // be completely off. So in the end this approach is not singulartity free. 
-    // I guess this problem is solvable in other way but "this other 
-    // way" looks like a topic for other scientific paper and I am definitely not that 
-    // ambitious ;-). So for the time being I simply try to discover when this happens and 
-    // apply workaround, I found works. This workaround may mean that adjusted projection 
-    // may not be optimal in original LisPSM Lmax norm sense. But as I wrote above, 
-    // I doubt they are optimal when Light is not directional, anyway. 
+    // be completely off. So in the end this approach is not singulartity free.
+    // I guess this problem is solvable in other way but "this other
+    // way" looks like a topic for other scientific paper and I am definitely not that
+    // ambitious ;-). So for the time being I simply try to discover when this happens and
+    // apply workaround, I found works. This workaround may mean that adjusted projection
+    // may not be optimal in original LisPSM Lmax norm sense. But as I wrote above,
+    // I doubt they are optimal when Light is not directional, anyway.
 
-    // Seems that most nasty case when algorithm fails is when cam pos is 
-    // below light frustum near plane but above infinity plane - when this occurs 
-    // shadows simply disappear. My workaround is to find this case by 
+    // Seems that most nasty case when algorithm fails is when cam pos is
+    // below light frustum near plane but above infinity plane - when this occurs
+    // shadows simply disappear. My workaround is to find this case by
     // checking light postperspective transform camera z ( negative value means this )
     // and make sure min distance to shadow hull is clamped to positive value.
 
@@ -326,7 +326,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 #if ROBERTS_TEST_CHANGES
         // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() adjusting eye"<<std::endl;
 #endif
-        
+
     }
 #endif
 
@@ -340,14 +340,14 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 #endif
 
     // Beware!!! Dirty Tricks:
-    // Light direction in light post proj space is actually (0,0,1) 
-    // But since we want to pass it to std OpenGL right handed coordinate 
-    // makeLookAt function we compensate the effects by also using right 
-    // handed view forward vector (ie 0,0,-1) instead. 
-    // So in the end we get left handed makeLookAt behaviour (D3D like)...    
-    // I agree this method is bizarre. But it works so I left it as is.  
-    // It sort of came out by itself through trial and error. 
-    // I later understoood why it works. 
+    // Light direction in light post proj space is actually (0,0,1)
+    // But since we want to pass it to std OpenGL right handed coordinate
+    // makeLookAt function we compensate the effects by also using right
+    // handed view forward vector (ie 0,0,-1) instead.
+    // So in the end we get left handed makeLookAt behaviour (D3D like)...
+    // I agree this method is bizarre. But it works so I left it as is.
+    // It sort of came out by itself through trial and error.
+    // I later understoood why it works.
 
     osg::Vec3 lightDir(0,0,-1);
     osg::Matrix lightView; // compute coarse light view matrix
@@ -367,7 +367,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     const double factor = 1.0/sinGamma;
     const double z_n = factor*nearDist;
     //perspective transform depth light space y extents
-    const double d = fabs( bb._max[1]-bb._min[1]); 
+    const double d = fabs( bb._max[1]-bb._min[1]);
     const double z_f = z_n + d*sinGamma;
     double n = (z_n+sqrt(z_f*z_n))/sinGamma;
 
@@ -382,7 +382,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 #endif
     const double f = n+d;
     osg::Vec3d pos = eye-up*(n-nearDist);
-    //pos = eye;  
+    //pos = eye;
     lightView.makeLookAt( pos, pos + lightDir, up );
 
     //one possibility for a simple perspective transformation matrix
@@ -408,7 +408,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
 
 // Adapted Modified version of LispSM authors implementation from 2006
-// Nopt formula differs from the paper. I adopted original authors class to 
+// Nopt formula differs from the paper. I adopted original authors class to
 // use with OSG
 
 
@@ -423,10 +423,10 @@ class LispSM {
 public:
     typedef std::vector<osg::Vec3d> Vertices;
 
-    void setProjectionMatrix( const osg::Matrix & projectionMatrix ) 
+    void setProjectionMatrix( const osg::Matrix & projectionMatrix )
         { _projectionMatrix = projectionMatrix; }
 
-    void setViewMatrix( const osg::Matrix & viewMatrix ) 
+    void setViewMatrix( const osg::Matrix & viewMatrix )
         { _viewMatrix = viewMatrix; }
 
     void setHull( const ConvexPolyhedron & hull )
@@ -435,59 +435,59 @@ public:
     const ConvexPolyhedron & getHull( ) const
         { return _hull; }
 
-    const osg::Matrix & getProjectionMatrix( void ) const 
+    const osg::Matrix & getProjectionMatrix( void ) const
         { return _projectionMatrix; }
 
-    const osg::Matrix & getViewMatrix( void ) const 
+    const osg::Matrix & getViewMatrix( void ) const
         { return _viewMatrix; }
-    
-    bool getUseLiSPSM() const    
+
+    bool getUseLiSPSM() const
         { return _useLiSPSM; }
 
-    void setUseLiSPSM( bool use ) 
+    void setUseLiSPSM( bool use )
         { _useLiSPSM = use; }
 
     bool getUseFormula() const
         { return _useFormula; }
 
-    void setUseFormula( bool use ) 
+    void setUseFormula( bool use )
         { _useFormula = use; }
 
     bool getUseOldFormula() const
         { return _useOldFormula; }
 
-    void setUseOldFormula( bool use ) 
+    void setUseOldFormula( bool use )
         { _useOldFormula = use; }
 
-    void setN(const double& n )    
+    void setN(const double& n )
         { _N = n; }
 
-    const double getN() const    
-        { return _N; } 
+    const double getN() const
+        { return _N; }
 
     //for old LispSM formula from paper
     const double getNearDist() const
         { return _nearDist; }
 
-    void setNearDist( const double & nearDist ) 
+    void setNearDist( const double & nearDist )
         { _nearDist = nearDist; }
 
     const double getFarDist() const
         { return _farDist; }
 
-    void setFarDist( const double & farDist ) 
+    void setFarDist( const double & farDist )
         { _farDist = farDist; }
 
-    const osg::Vec3d & getEyeDir() const 
+    const osg::Vec3d & getEyeDir() const
         { return _eyeDir; }
 
-    const osg::Vec3d & getLightDir() const 
+    const osg::Vec3d & getLightDir() const
         { return _lightDir; }
 
-    void setEyeDir( const osg::Vec3d eyeDir ) 
+    void setEyeDir( const osg::Vec3d eyeDir )
         { _eyeDir = eyeDir; }
 
-    void setLightDir( const osg::Vec3d lightDir ) 
+    void setLightDir( const osg::Vec3d lightDir )
         { _lightDir = lightDir; }
 
 protected:
@@ -511,7 +511,7 @@ protected:
     double      getN(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) const;
 
     osg::Vec3d  getNearCameraPointE() const;
-    
+
     osg::Vec3d  getZ0_ls
                     (const osg::Matrix& lightSpace, const osg::Vec3d& e, const double& b_lsZmax, const osg::Vec3d& eyeDir) const;
 
@@ -538,7 +538,7 @@ public:
 
 }
 
-osg::Vec3d LispSM::getNearCameraPointE( ) const 
+osg::Vec3d LispSM::getNearCameraPointE( ) const
 {
     const osg::Matrix& eyeView = getViewMatrix();
 
@@ -565,9 +565,9 @@ osg::Vec3d LispSM::getNearCameraPointE( ) const
 //z0 is the point that lies on the plane A parallel to the near plane through e
 //and on the near plane of the C frustum (the plane z = bZmax) and on the line x = e.x
 osg::Vec3d LispSM::getZ0_ls
-    (const osg::Matrix& lightSpace, const osg::Vec3d& e, const double& b_lsZmax, const osg::Vec3d& eyeDir) const 
+    (const osg::Matrix& lightSpace, const osg::Vec3d& e, const double& b_lsZmax, const osg::Vec3d& eyeDir) const
 {
-    //to calculate the parallel plane to the near plane through e we 
+    //to calculate the parallel plane to the near plane through e we
     //calculate the plane A with the three points
     osg::Plane A(eyeDir,e);
     //to transform plane A into lightSpace
@@ -575,12 +575,12 @@ osg::Vec3d LispSM::getZ0_ls
     //transform to light space
     const osg::Vec3d e_ls = e * lightSpace;
 
-    //z_0 has the x coordinate of e, the z coord of B_lsZmax 
+    //z_0 has the x coordinate of e, the z coord of B_lsZmax
     //and the y coord of the plane A and plane (z==B_lsZmax) intersection
 #if 1
     osg::Vec3d v = osg::Vec3d(e_ls.x(),0,b_lsZmax);
 
-    // x & z are given. We compute y from equations: 
+    // x & z are given. We compute y from equations:
     // A.distance( x,y,z ) == 0
     // A.distance( x,y,z ) == A.distance( x,0,z ) + A.normal.y * y
     // hence A.distance( x,0,z ) == -A.normal.y * y
@@ -597,14 +597,14 @@ osg::Vec3d LispSM::getZ0_ls
 
 }
 
-double LispSM::calcNoptGeneral(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) const 
+double LispSM::calcNoptGeneral(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) const
 {
     const osg::Matrix& eyeView = getViewMatrix();
     const osg::Matrix invLightSpace = osg::Matrix::inverse( lightSpace );
 
     const osg::Vec3d z0_ls = getZ0_ls(lightSpace, _E,B_ls.zMax(),getEyeDir());
     const osg::Vec3d z1_ls = osg::Vec3d(z0_ls.x(),z0_ls.y(),B_ls.zMin());
-    
+
     //to world
     const osg::Vec4d z0_ws = osg::Vec4d( z0_ls, 1 ) * invLightSpace;
     const osg::Vec4d z1_ws = osg::Vec4d( z1_ls, 1 ) * invLightSpace;
@@ -619,17 +619,17 @@ double LispSM::calcNoptGeneral(const osg::Matrix lightSpace, const osg::Bounding
     if( z1 / z0 <= 1.0 ) {
 
         // solve camera pos singularity in light space problem brutally:
-        // if extreme points of B projected to Light space extend beyond 
+        // if extreme points of B projected to Light space extend beyond
         // camera frustum simply use B extents in camera frustum
 
-        // Its not optimal selection but ceratainly better than negative N       
+        // Its not optimal selection but ceratainly better than negative N
         osg::BoundingBox bb = _hull.computeBoundingBox( eyeView );
         z0 = -bb.zMax();
-        if( z0 <= 0 ) 
+        if( z0 <= 0 )
             z0 = 0.1;
 
         z1 = -bb.zMin();
-        if( z1 <= z0 ) 
+        if( z1 <= z0 )
             z1 = z0 + 0.1;
     }
 
@@ -638,16 +638,16 @@ double LispSM::calcNoptGeneral(const osg::Matrix lightSpace, const osg::Bounding
     double N = d/( sqrt( z1 / z0 ) - 1.0 );
 #if PRINT_COMPUTED_N_OPT
     std::cout
-       << " N=" << std::setw(8) << N 
+       << " N=" << std::setw(8) << N
        << " n=" << std::setw(8) << z0
        << " f=" << std::setw(8) << z1
-       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" 
+       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
        << std::flush;
 #endif
     return N;
 }
 
-double LispSM::calcNoptOld( const double gamma_ ) const 
+double LispSM::calcNoptOld( const double gamma_ ) const
 {
     const double& n = getNearDist();
     const double& f = getFarDist();
@@ -664,16 +664,16 @@ double LispSM::calcNoptOld( const double gamma_ ) const
     double N = (n+sqrt(n*(n+d*sinGamma)))/sinGamma;
 #if PRINT_COMPUTED_N_OPT
     std::cout
-       << " N=" << std::setw(8) << N 
+       << " N=" << std::setw(8) << N
        << " n=" << std::setw(8) << n
        << " f=" << std::setw(8) << f
-       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" 
+       << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
        << std::flush;
 #endif
     return N;
 }
 
-double LispSM::getN(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) const 
+double LispSM::getN(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) const
 {
     if( getUseFormula()) {
         if( getUseOldFormula() )
@@ -686,7 +686,7 @@ double LispSM::getN(const osg::Matrix lightSpace, const osg::BoundingBox& B_ls) 
     }
 }
 //this is the algorithm discussed in the article
-osg::Matrix LispSM::getLispSmMtx( const osg::Matrix& lightSpace ) const 
+osg::Matrix LispSM::getLispSmMtx( const osg::Matrix& lightSpace ) const
 {
     const osg::BoundingBox B_ls = _hull.computeBoundingBox( lightSpace );
 
@@ -694,7 +694,7 @@ osg::Matrix LispSM::getLispSmMtx( const osg::Matrix& lightSpace ) const
 
     //get the coordinates of the near camera point in light space
     const osg::Vec3d e_ls = _E * lightSpace;
-    //c start has the x and y coordinate of e, the z coord of B.min() 
+    //c start has the x and y coordinate of e, the z coord of B.min()
     const osg::Vec3d Cstart_lp(e_ls.x(),e_ls.y(),B_ls.zMax());
 
     if( n >= OSG_INFINITY ) {
@@ -712,7 +712,7 @@ osg::Matrix LispSM::getLispSmMtx( const osg::Matrix& lightSpace ) const
     const double d = osg::absolute(B_ls.zMax()-B_ls.zMin());
 
     //the lispsm perspective transformation
-    
+
     //here done with a standard frustum call that maps P onto the unit cube with
     //corner points [-1,-1,-1] and [1,1,1].
     //in directX you can use the same mapping and do a mapping to the directX post-perspective cube
@@ -750,7 +750,7 @@ osg::Vec3d LispSM::getProjViewDir_ls(const osg::Matrix& lightSpace ) const {
         b_lp = v;
     }
 
-    osg::Vec3d projDir( osg::Vec3( b_lp[0], b_lp[1], b_lp[2] ) / b_lp[3] - 
+    osg::Vec3d projDir( osg::Vec3( b_lp[0], b_lp[1], b_lp[2] ) / b_lp[3] -
                         osg::Vec3( e_lp[0], e_lp[1], e_lp[2] ) / e_lp[3] );
 
     projDir.normalize();
@@ -761,10 +761,10 @@ osg::Vec3d LispSM::getProjViewDir_ls(const osg::Matrix& lightSpace ) const {
 }
 
 void LispSM::updateLightMtx
-    ( osg::Matrix& lightView, osg::Matrix& lightProj ) const 
+    ( osg::Matrix& lightView, osg::Matrix& lightProj ) const
 {
     //calculate standard light space for spot or directional lights
-    //this routine returns two matrices: 
+    //this routine returns two matrices:
     //lightview contains the rotated translated frame
     //lightproj contains in the case of a spot light the spot light perspective transformation
     //in the case of a directional light a identity matrix
@@ -790,14 +790,14 @@ void LispSM::updateLightMtx
 
     osg::Matrix L = lightView * lightProj;
 
-    osg::Vec3d projViewDir = getProjViewDir_ls(L); 
+    osg::Vec3d projViewDir = getProjViewDir_ls(L);
 
     if( getUseLiSPSM() /* && projViewDir.z() < 0*/ ) {
         //do Light Space Perspective shadow mapping
         //rotate the lightspace so that the proj light view always points upwards
         //calculate a frame matrix that uses the projViewDir[light-space] as up vector
         //look(from position, into the direction of the projected direction, with unchanged up-vector)
-        lightProj = lightProj * 
+        lightProj = lightProj *
             osg::Matrix::lookAt( osg::Vec3d(0,0,0), projViewDir, osg::Vec3d(0,1,0) );
 
         osg::Matrix lispsm = getLispSmMtx( lightView * lightProj );
@@ -831,7 +831,7 @@ void LispSM::updateLightMtx
 
 void LightSpacePerspectiveShadowMapAlgorithm::operator()
     ( const osgShadow::ConvexPolyhedron* hullShadowedView,
-      const osg::Camera* cameraMain, 
+      const osg::Camera* cameraMain,
       osg::Camera* cameraShadow ) const
 {
     lispsm->setHull( *hullShadowedView );
@@ -843,7 +843,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     osg::Vec3d eyeDir = osg::Matrix::transform3x3( osg::Vec3d( 0, 0, -1 ), osg::Matrix::inverse( cameraMain->getViewMatrix() ) );
 
 #else
-    
+
     osg::Vec3d lightDir = osg::Matrix::transform3x3( cameraShadow->getViewMatrix(), osg::Vec3d( 0.0, 0.0, -1.0 ) );
     osg::Vec3d eyeDir = osg::Matrix::transform3x3( cameraMain->getViewMatrix(), osg::Vec3d( 0.0, 0.0, -1.0 ) );
 
@@ -859,9 +859,9 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     double l,r,b,t,n,f;
     if( proj.getOrtho( l,r,b,t,n,f ) )
     {
-        osg::Vec3d camPosInLightSpace = 
-            osg::Vec3d( 0, 0, 0 ) * 
-            osg::Matrix::inverse( cameraMain->getViewMatrix() ) * 
+        osg::Vec3d camPosInLightSpace =
+            osg::Vec3d( 0, 0, 0 ) *
+            osg::Matrix::inverse( cameraMain->getViewMatrix() ) *
             cameraShadow->getViewMatrix() *
             cameraShadow->getProjectionMatrix();
     }
@@ -870,7 +870,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
     lispsm->setEyeDir( eyeDir );
 
-    osg::BoundingBox bb = 
+    osg::BoundingBox bb =
         hullShadowedView->computeBoundingBox( cameraMain->getViewMatrix() );
 
     lispsm->setNearDist( -bb.zMax() );

@@ -66,7 +66,7 @@ void Shader::read(DataInputStream* in)
     {
         setName(in->readString());
     }
-    
+
     setType(static_cast<Type>(in->readInt()));
     setShaderSource(in->readString());
 

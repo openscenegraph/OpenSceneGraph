@@ -18,8 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
@@ -64,7 +64,7 @@ Lwo2::~Lwo2()
     }
 }
 
-bool 
+bool
 Lwo2::ReadFile( const string& filename )
 {
     OSG_INFO  << "Opening file: " << filename << std::endl;
@@ -78,13 +78,13 @@ Lwo2::ReadFile( const string& filename )
 
     // checking EA-IFF85 format
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/eaiff85.html
-    if (_read_uint() != tag_FORM) 
+    if (_read_uint() != tag_FORM)
     {
         OSG_INFO << "File '" << filename << "' is not IFF format file." << std::endl;
         _fin.close();
         return false;
     }
-    else 
+    else
     {
         OSG_INFO << "Detected EA-IFF85 format" << std::endl;
     }
@@ -92,16 +92,16 @@ Lwo2::ReadFile( const string& filename )
     unsigned int form_size = _read_uint();
     OSG_INFO << "Form size: " << form_size << std::endl;
 
-    // checking LWO2 format 
+    // checking LWO2 format
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/lwo2.html
-    if (_read_uint() != tag_LWO2) 
+    if (_read_uint() != tag_LWO2)
     {
         unsigned long make_id(const char*);
         OSG_INFO << "File '" << filename << "' is not LWO2 format file." << std::endl;
         _fin.close();
         return false;
     }
-    else 
+    else
     {
         OSG_INFO << "Detected LWO2 format" << std::endl;
     }
@@ -119,43 +119,43 @@ Lwo2::ReadFile( const string& filename )
 
         _print_tag(current_tag_name, current_tag_size);
 
-        if (current_tag_name == tag_TAGS) 
+        if (current_tag_name == tag_TAGS)
         {
             _read_tag_strings(current_tag_size);
-        } 
-        else if (current_tag_name == tag_LAYR) 
+        }
+        else if (current_tag_name == tag_LAYR)
         {
             _read_layer(current_tag_size);
         }
-        else if (current_tag_name == tag_PNTS) 
+        else if (current_tag_name == tag_PNTS)
         {
             _read_points(current_tag_size);
         }
-        else if (current_tag_name == tag_VMAP) 
+        else if (current_tag_name == tag_VMAP)
         {
             _read_vertex_mapping(current_tag_size);
         }
-        else if (current_tag_name == tag_VMAD) 
+        else if (current_tag_name == tag_VMAD)
         {
             _read_polygons_mapping(current_tag_size);
         }
-        else if (current_tag_name == tag_POLS) 
+        else if (current_tag_name == tag_POLS)
         {
             _read_polygons(current_tag_size);
         }
-        else if (current_tag_name == tag_PTAG) 
+        else if (current_tag_name == tag_PTAG)
         {
             _read_polygon_tag_mapping(current_tag_size);
         }
-        else if (current_tag_name == tag_CLIP) 
+        else if (current_tag_name == tag_CLIP)
         {
             _read_image_definition(current_tag_size);
         }
-        else if (current_tag_name == tag_SURF) 
+        else if (current_tag_name == tag_SURF)
         {
             _read_surface(current_tag_size);
-        } 
-        else 
+        }
+        else
         {
             _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
         }
@@ -166,7 +166,7 @@ Lwo2::ReadFile( const string& filename )
     return _successfully_read = true;
 }
 
-unsigned char 
+unsigned char
 Lwo2::_read_char()
 {
   char c = 0;
@@ -177,31 +177,31 @@ Lwo2::_read_char()
   return static_cast<unsigned char>(c);
 }
 
-unsigned int 
+unsigned int
 Lwo2::_read_uint()
 {
   return
-    (_read_char() << 24) | 
-    (_read_char() << 16) |  
-    (_read_char() <<  8) | 
+    (_read_char() << 24) |
+    (_read_char() << 16) |
+    (_read_char() <<  8) |
     _read_char();
 }
 
-unsigned short 
+unsigned short
 Lwo2::_read_short()
 {
   return
-    (_read_char() <<  8) | 
+    (_read_char() <<  8) |
     _read_char();
 }
 
-float 
+float
 Lwo2::_read_float()
 {
   return lwo2::changeType4<float, unsigned int>(_read_uint());
 }
 
-// read null terminated string 
+// read null terminated string
 
 string&
 Lwo2::_read_string(string& str)
@@ -212,7 +212,7 @@ Lwo2::_read_string(string& str)
     str += c;
   } while (c != 0);
 
-  // if length of string (including \0) is odd skip another byte 
+  // if length of string (including \0) is odd skip another byte
   if (str.length() % 2) {
     _read_char();
   }
@@ -222,38 +222,38 @@ Lwo2::_read_string(string& str)
 
 // print 4-char tag to debug out
 
-void 
+void
 Lwo2::_print_tag(unsigned int tag, unsigned int size) {
-  OSG_DEBUG << "Found tag " 
-                     << char(tag >> 24) 
-                     << char(tag >> 16) 
-                     << char(tag >>  8) 
-                     << char(tag) 
-                     << " size " << size << " bytes" 
+  OSG_DEBUG << "Found tag "
+                     << char(tag >> 24)
+                     << char(tag >> 16)
+                     << char(tag >>  8)
+                     << char(tag)
+                     << " size " << size << " bytes"
                      << std::endl;
 }
 
 // print 4-char type
-void 
+void
 Lwo2::_print_type(unsigned int type) {
-  OSG_DEBUG << "  type   \t" 
-                     << char(type >> 24) 
-                     << char(type >> 16) 
-                     << char(type >>  8) 
-                     << char(type) 
+  OSG_DEBUG << "  type   \t"
+                     << char(type >> 24)
+                     << char(type >> 16)
+                     << char(type >>  8)
+                     << char(type)
                      << std::endl;
 }
 
 // read TAGS info
 
-void 
+void
 Lwo2::_read_tag_strings(unsigned long size)
 {
     while (size > 0)
     {
         string name;
         _read_string(name);
-        size -= name.length() + name.length() % 2; 
+        size -= name.length() + name.length() % 2;
         _tags.push_back(name);
 
         OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
@@ -262,7 +262,7 @@ Lwo2::_read_tag_strings(unsigned long size)
 
 // read LAYR info
 
-void Lwo2::_read_layer(unsigned long size) 
+void Lwo2::_read_layer(unsigned long size)
 {
     unsigned short number = _read_short();
     size -= 2;
@@ -282,9 +282,9 @@ void Lwo2::_read_layer(unsigned long size)
     size -= 4 * 3;
 
     _read_string(layer->_name);
-    size -= layer->_name.length() + layer->_name.length() % 2; 
+    size -= layer->_name.length() + layer->_name.length() % 2;
 
-    if (size > 2) 
+    if (size > 2)
     {
         layer->_parent = _read_short();
         size -= 2;
@@ -295,7 +295,7 @@ void Lwo2::_read_layer(unsigned long size)
 
 // read PNTS info
 
-void Lwo2::_read_points(unsigned long size) 
+void Lwo2::_read_points(unsigned long size)
 {
     int count = size / 12;
     OSG_DEBUG << "  count \t" << count << std::endl;
@@ -309,12 +309,12 @@ void Lwo2::_read_points(unsigned long size)
         float z = _read_float();
         point.coord = Vec3(x, y, z);
         _current_layer->_points.push_back(point);
-    } 
+    }
 }
 
 // read VMAP info
 
-void Lwo2::_read_vertex_mapping(unsigned long size) 
+void Lwo2::_read_vertex_mapping(unsigned long size)
 {
     unsigned int type = _read_uint();
     size -= 4;
@@ -328,10 +328,10 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
 
     string name;
     _read_string(name);
-    size -= name.length() + name.length() % 2; 
+    size -= name.length() + name.length() % 2;
     OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
 
-    if (type == tag_TXUV && dimension == 2) 
+    if (type == tag_TXUV && dimension == 2)
     {
         int count = size / 10;
         unsigned short n;
@@ -350,7 +350,7 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
             }
         }
     }
-    else 
+    else
     {
 
         // not recognized yet
@@ -361,15 +361,15 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
 
 // read POLS info
 
-void 
-Lwo2::_read_polygons(unsigned long size) 
+void
+Lwo2::_read_polygons(unsigned long size)
 {
     unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
 
-    if (type == tag_FACE) 
+    if (type == tag_FACE)
     {
         unsigned short vertex_count;
 
@@ -390,12 +390,12 @@ Lwo2::_read_polygons(unsigned long size)
 
                 points_list.push_back(point);
                 size -= 2;
-            }     
+            }
 
             _current_layer->_polygons.push_back(points_list);
         }
     }
-    else 
+    else
     {
 
         // not recognized yet
@@ -406,14 +406,14 @@ Lwo2::_read_polygons(unsigned long size)
 
 // read PTAG info
 
-void Lwo2::_read_polygon_tag_mapping(unsigned long size) 
+void Lwo2::_read_polygon_tag_mapping(unsigned long size)
 {
     unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
 
-    if (type == tag_SURF) 
+    if (type == tag_SURF)
     {
         int count = size / 4;
         _current_layer->_polygons_tag.resize(count);
@@ -428,7 +428,7 @@ void Lwo2::_read_polygon_tag_mapping(unsigned long size)
             _current_layer->_polygons_tag[polygon_index] = tag_index;
         }
     }
-    else 
+    else
     {
 
         // not recognized yet
@@ -439,7 +439,7 @@ void Lwo2::_read_polygon_tag_mapping(unsigned long size)
 
 // read VMAD info
 
-void Lwo2::_read_polygons_mapping(unsigned long size) 
+void Lwo2::_read_polygons_mapping(unsigned long size)
 {
     unsigned int type = _read_uint();
     size -= 4;
@@ -453,10 +453,10 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
 
     string name;
     _read_string(name);
-    size -= name.length() + name.length() % 2; 
+    size -= name.length() + name.length() % 2;
     OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
 
-    if (type == tag_TXUV && dimension == 2) 
+    if (type == tag_TXUV && dimension == 2)
     {
         OSG_DEBUG << "  polygons mappings:" << endl;
         OSG_DEBUG << "\tpoint\tpolygon\ttexcoord" <<  endl;
@@ -477,7 +477,7 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
 
             OSG_DEBUG << "    \t" << point_index << "\t" << polygon_index << "\t" << Vec2(u, v) << endl;
 
-            // apply texture coordinates 
+            // apply texture coordinates
             PointsList& points_list = _current_layer->_polygons[polygon_index];
             for (unsigned int i = 0; i < points_list.size(); i++)
             {
@@ -488,7 +488,7 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
             }
         }
     }
-    else 
+    else
     {
 
         // not recognized yet
@@ -500,7 +500,7 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
 
 // read CLIP info
 
-void 
+void
 Lwo2::_read_image_definition(unsigned long size)
 {
     unsigned int index = _read_uint();
@@ -522,13 +522,13 @@ Lwo2::_read_image_definition(unsigned long size)
 
         string name;
         _read_string(name);
-        size -= name.length() + name.length() % 2; 
+        size -= name.length() + name.length() % 2;
 
         if (index + 1 > _images.size())
         {
           _images.resize(index + 1);
         }
-        
+
         _images[index] = name.c_str();
 
         OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
@@ -544,18 +544,18 @@ void Lwo2::_read_surface(unsigned long size)
     surface->state_set = NULL;
 
     _read_string(surface->name);
-    size -= surface->name.length() + surface->name.length() % 2; 
+    size -= surface->name.length() + surface->name.length() % 2;
     OSG_DEBUG << "  name   \t'" << surface->name.c_str() << "'" << std::endl;
 
     string source;
     _read_string(source);
-    size -= source.length() + source.length() % 2; 
+    size -= source.length() + source.length() % 2;
     OSG_DEBUG << "  source   \t'" << source.c_str() << "'" << std::endl;
 
     unsigned long current_tag_name;
     unsigned short current_tag_size;
 
-    while (size > 0 && !_fin.eof()) 
+    while (size > 0 && !_fin.eof())
     {
         current_tag_name = _read_uint();
         size -= 4;
@@ -564,13 +564,13 @@ void Lwo2::_read_surface(unsigned long size)
 
         _print_tag(current_tag_name, current_tag_size);
 
-        if (current_tag_name == tag_BLOK) 
+        if (current_tag_name == tag_BLOK)
         {
 
             // BLOK
             int blok_size = current_tag_size;
             size -= blok_size;
-            while (blok_size > 0) 
+            while (blok_size > 0)
             {
                 current_tag_name = _read_uint();
                 blok_size -= 4;
@@ -585,7 +585,7 @@ void Lwo2::_read_surface(unsigned long size)
                     OSG_DEBUG << "    image index\t" << surface->image_index << std::endl;
                     blok_size -= 2;
                 }
-                else if (current_tag_name == tag_IMAP) 
+                else if (current_tag_name == tag_IMAP)
                 {
 
                     // IMAP
@@ -594,7 +594,7 @@ void Lwo2::_read_surface(unsigned long size)
 
                     string ordinal;
                     _read_string(ordinal);
-                    imap_size -= ordinal.length() + ordinal.length() % 2; 
+                    imap_size -= ordinal.length() + ordinal.length() % 2;
                     OSG_DEBUG << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
 
                     while(imap_size > 0)
@@ -610,7 +610,7 @@ void Lwo2::_read_surface(unsigned long size)
                         imap_size -= current_tag_size + current_tag_size % 2;
                     }
                 }
-                else 
+                else
                 {
                     _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
                     blok_size -= current_tag_size + current_tag_size % 2;
@@ -631,7 +631,7 @@ void Lwo2::_read_surface(unsigned long size)
             _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
             size -= current_tag_size + current_tag_size % 2;
         }
-        else 
+        else
         {
           _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
           size -= current_tag_size + current_tag_size % 2;
@@ -643,7 +643,7 @@ void Lwo2::_read_surface(unsigned long size)
 
 // Generation OSG Geode object from parsed LWO2 file
 
-bool 
+bool
 Lwo2::GenerateGroup( Group& group )
 {
   if (!_successfully_read) return false;
@@ -705,7 +705,7 @@ Lwo2::_generate_statesets_from_surfaces()
         OSG_DEBUG << "\tcreating surface " << (*itr_surf).first << std::endl;
 
         // check if exist texture image for this surface
-        if (surface->image_index >= 0) 
+        if (surface->image_index >= 0)
         {
             osg::ref_ptr<Image> image = osgDB::readRefImageFile(_images[surface->image_index]);
             OSG_DEBUG << "\tloaded image '" << _images[surface->image_index] << "'" << std::endl;
@@ -715,7 +715,7 @@ Lwo2::_generate_statesets_from_surfaces()
                 // create texture
                 Texture2D* texture = new osg::Texture2D;
                 texture->setImage(image.get());
-                state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
+                state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);
 
                 // setup texture wrapping
                 texture->setWrap(Texture::WRAP_S, Texture::REPEAT);
@@ -734,7 +734,7 @@ Lwo2::_generate_statesets_from_surfaces()
                             data++; // skip b
 
                             // check alpha
-                            if (*data < 255) 
+                            if (*data < 255)
                             {
                                 use_blending = true;
                                 break;
@@ -773,10 +773,10 @@ Lwo2::_generate_statesets_from_surfaces()
     }
 }
 
-// makes 4-byte integer tag from four chars 
+// makes 4-byte integer tag from four chars
 // used in IFF standard
 
-unsigned long make_id(const char* tag) 
+unsigned long make_id(const char* tag)
 {
     unsigned long result = 0;
     for (unsigned int i = 0; i < strlen(tag) && i < 4; i++)
@@ -785,4 +785,4 @@ unsigned long make_id(const char* tag)
         result += int(tag[i]);
     }
     return result;
-}                   
+}

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -64,7 +64,7 @@ inline void clampBetweenRange(T& value,const T minValue,const T maxValue,const c
         notify(WARN) << "Warning: "<<valueName<<" of "<<value<<" is above permitted maximum, clampping to "<<maxValue<<"."<< std::endl;
         value = maxValue;
     }
-    
+
 }
 
 /** If value[i] is greater than or equal to minValue do nothing - legal value,
@@ -112,7 +112,7 @@ inline void clampArrayElementBetweenRange(A& value,unsigned int i,const T minVal
         notify(WARN) << "Warning: "<<valueName<<"["<<i<<"] of "<<value[i]<<" is above permitted maximum, clampping to "<<maxValue<<"."<< std::endl;
         value[i] = maxValue;
     }
-    
+
 }
 
 /** For each element of value[] in the range (first,last), if the element is
@@ -145,7 +145,7 @@ template <typename A, typename T>
 inline void clampArrayElementsBetweenRange(A& value,unsigned int first,unsigned int last,const T minValue,const T maxValue,const char* valueName)
 {
     for(unsigned int i=first;i<=last;++i)
-        clampArrayElementBetweenRange(value,i,minValue,maxValue,valueName);    
+        clampArrayElementBetweenRange(value,i,minValue,maxValue,valueName);
 }
 
 

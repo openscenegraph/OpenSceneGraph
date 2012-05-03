@@ -42,16 +42,16 @@ namespace
 
       // Save the list
 //      std::vector<const trpgChildRef> childRefList;
-// The const in the template parameter was removed because it causes GCC to 
-// freak out.  I am of the opinion that const doesn't make sense in a template 
-// parameter for std::vector anyway... const prevents you from changing the 
-// value, so what exactly is the point?  How does one add entries to the vector 
+// The const in the template parameter was removed because it causes GCC to
+// freak out.  I am of the opinion that const doesn't make sense in a template
+// parameter for std::vector anyway... const prevents you from changing the
+// value, so what exactly is the point?  How does one add entries to the vector
 // without giving them a value?  -ADS
       std::vector<trpgChildRef> childRefList;
       for(unsigned int idx =0; idx < parser.GetNbChildrenRef(); idx++)
          childRefList.push_back(*parser.GetChildRef(idx));
 
-      
+
       for(unsigned int idx =0; idx < childRefList.size(); idx++)
       {
          const trpgChildRef& childRef = childRefList[idx];
@@ -72,7 +72,7 @@ namespace
 
          if(status)
             printBuf(glod, gx, gy, archive, parser, childBuf, pBuf);
-         
+
       }
    }
 } // end namespace
@@ -104,7 +104,7 @@ trpgPrintGraphParser::trpgPrintGraphParser(trpgr_Archive *inArch,trpgrImageHelpe
     AddCallback(TRPG_LIGHT,new ReadHelper(this,printBuf));
     AddCallback(TRPG_LABEL,new ReadHelper(this,printBuf));
     AddCallback(TRPGTILEHEADER,new ReadHelper(this,printBuf));
-   
+
    childRefCB = dynamic_cast<ReadHelper *>(GetCallback(TRPG_CHILDREF));
 }
 
@@ -145,7 +145,7 @@ const trpgChildRef* trpgPrintGraphParser::GetChildRef(unsigned int idx) const
       return childRefCB->GetChildRef(idx);
    else
       return 0;
-   
+
 }
 
 
@@ -264,7 +264,7 @@ void *trpgPrintGraphParser::ReadHelper::Parse(trpgToken tok,trpgReadBuffer &buf)
 
                     // Fetch the individual mipmap levels
                     {
-                        
+
                         bool hasMipmap = false;
                         baseTex->GetIsMipmap(hasMipmap);
                         int numMipmap = hasMipmap ? baseTex->CalcNumMipmaps() : 0;
@@ -342,8 +342,8 @@ bool trpgPrintArchive(trpgr_Archive *archive,trpgPrintBuffer &pBuf,int flags)
 {
     char ls[1024];
 
-    if (!archive->isValid())  return false;    
-    
+    if (!archive->isValid())  return false;
+
     pBuf.prnLine("====Header Structures====");
 
     // Print out the header portion
@@ -362,7 +362,7 @@ bool trpgPrintArchive(trpgr_Archive *archive,trpgPrintBuffer &pBuf,int flags)
     // Read the local images and do the math for the templates
 
     // Now do the tiles
-    if (!archive->isValid())  return false;    
+    if (!archive->isValid())  return false;
 
    int majorVersion, minorVersion;
    archive->GetHeader()->GetVersion(majorVersion, minorVersion);
@@ -383,7 +383,7 @@ bool trpgPrintArchive(trpgr_Archive *archive,trpgPrintBuffer &pBuf,int flags)
    if(majorVersion == 2 && minorVersion >= 1)
    {
       // Version 2.1
-      // Because of variable lod support in version 2.1 and over, we can 
+      // Because of variable lod support in version 2.1 and over, we can
       // no longer suppose that all lod level are all populated with tiles
       // in all of the gaming area. We have to parse the parent to know that.
       // Also the tile table only contains lod 0 tiles so we can no longer access
@@ -396,7 +396,7 @@ bool trpgPrintArchive(trpgr_Archive *archive,trpgPrintBuffer &pBuf,int flags)
                 printBuf(0, x, y, archive, parser, buf, pBuf);
 
       }
-   
+
    }
    else
    {

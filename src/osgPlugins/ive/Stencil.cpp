@@ -29,17 +29,17 @@ void Stencil::write(DataOutputStream* out){
     else
         out_THROW_EXCEPTION("Stencil::write(): Could not cast this osg::Stencil to an osg::Object.");
     // Write Stencil's properties.
-    
+
     out->writeInt(getFunction());
     out->writeInt(getFunctionRef());
     out->writeUInt(getFunctionMask());
-    
+
     out->writeInt(getStencilFailOperation());
     out->writeInt(getStencilPassAndDepthFailOperation());
     out->writeInt(getStencilPassAndDepthPassOperation());
-    
+
     out->writeUInt(getWriteMask());
-    
+
 
 }
 
@@ -61,11 +61,11 @@ void Stencil::read(DataInputStream* in){
         setFunction((Function)in->readInt());
         setFunctionRef(in->readInt());
         setFunctionMask(in->readUInt());
-        
+
         setStencilFailOperation((Operation)in->readInt());
         setStencilPassAndDepthFailOperation((Operation)in->readInt());
         setStencilPassAndDepthPassOperation((Operation)in->readInt());
-        
+
         setWriteMask(in->readUInt());
 
     }

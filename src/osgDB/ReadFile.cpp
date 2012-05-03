@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
@@ -91,7 +91,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& fileList,const Options* opt
         }
 
     }
-    
+
     if (nodeList.empty())
     {
         return NULL;
@@ -113,7 +113,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& fileList,const Options* opt
 
         return group;
     }
-    
+
 }
 
 Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options)
@@ -128,14 +128,14 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options
     {
         osgDB::Registry::instance()->setFileCache(new osgDB::FileCache(filename));
     }
-    
+
     while (arguments.read("--image",filename))
     {
         osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
         if (image.valid())
         {
             osg::Geode* geode = osg::createGeodeForImage(image.get());
-           
+
             if (image->isImageTranslucent())
             {
                 OSG_INFO<<"Image "<<image->getFileName()<<" is translucent; setting up blending."<<std::endl;
@@ -225,7 +225,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options
 
         }
     }
-    
+
     if (nodeList.empty())
     {
         return NULL;
@@ -247,7 +247,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options
 
         return group;
     }
-    
+
 }
 
 osg::ref_ptr<osg::Object> osgDB::readRefObjectFile(const std::string& filename,const Options* options)

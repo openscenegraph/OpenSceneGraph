@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,7 +25,7 @@ class TriangleIndexFunctor : public PrimitiveIndexFunctor, public T
 public:
 
 
-    virtual void setVertexArray(unsigned int,const Vec2*) 
+    virtual void setVertexArray(unsigned int,const Vec2*)
     {
     }
 
@@ -33,11 +33,11 @@ public:
     {
     }
 
-    virtual void setVertexArray(unsigned int,const Vec4* ) 
+    virtual void setVertexArray(unsigned int,const Vec4* )
     {
     }
 
-    virtual void setVertexArray(unsigned int,const Vec2d*) 
+    virtual void setVertexArray(unsigned int,const Vec2d*)
     {
     }
 
@@ -45,7 +45,7 @@ public:
     {
     }
 
-    virtual void setVertexArray(unsigned int,const Vec4d* ) 
+    virtual void setVertexArray(unsigned int,const Vec4d* )
     {
     }
 
@@ -197,7 +197,7 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
     {
@@ -205,7 +205,7 @@ public:
 
         typedef GLushort Index;
         typedef const Index* IndexPointer;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -265,15 +265,15 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef GLuint Index;
         typedef const Index* IndexPointer;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -333,7 +333,7 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
     GLenum               _modeCache;
     std::vector<GLuint>  _indexCache;

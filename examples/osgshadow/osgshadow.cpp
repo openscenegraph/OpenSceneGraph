@@ -118,8 +118,8 @@ public:
         set( false );
     }
 
-    bool get() { return _value; } 
-    void set( bool value ) { _value = value; } 
+    bool get() { return _value; }
+    void set( bool value ) { _value = value; }
 
     /** Deprecated, Handle events, return true if handled, false otherwise. */
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -589,7 +589,7 @@ namespace ModelFive
     struct UseVBOVisitor : public osg::NodeVisitor
     {
         UseVBOVisitor():
-            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}            
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
         virtual void apply(osg::Geode& geode)
         {
@@ -604,7 +604,7 @@ namespace ModelFive
         }
     };
 
-    
+
     osg::AnimationPathCallback* createAnimationPathCallback( float radius, float time )
     {
         osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
@@ -902,12 +902,12 @@ int main(int argc, char** argv)
             }
 
 
-        
+
         double polyoffsetfactor = pssm->getPolygonOffset().x();
         double polyoffsetunit   = pssm->getPolygonOffset().y();
         while (arguments.read("--PolyOffset-Factor", polyoffsetfactor));
         while (arguments.read("--PolyOffset-Unit", polyoffsetunit));
-        pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit)); 
+        pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit));
 
         shadowedScene->setShadowTechnique(pssm.get());
     }
@@ -927,7 +927,7 @@ int main(int argc, char** argv)
 
         unsigned int unit=1;
         if (arguments.read("--unit",unit)) settings->setBaseShadowTextureUnit(unit);
-        
+
         double n=0.0;
         if (arguments.read("-n",n)) settings->setMinimumShadowMapNearFarRatio(n);
 
@@ -945,7 +945,7 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
         shadowedScene->setShadowTechnique(vdsm.get());
     }
-    else if ( arguments.read("--lispsm") ) 
+    else if ( arguments.read("--lispsm") )
     {
         if( arguments.read( "--ViewBounds" ) )
             msm = new osgShadow::LightSpacePerspectiveShadowMapVB;
@@ -953,7 +953,7 @@ int main(int argc, char** argv)
             msm = new osgShadow::LightSpacePerspectiveShadowMapCB;
         else // if( arguments.read( "--DrawBounds" ) ) // default
             msm = new osgShadow::LightSpacePerspectiveShadowMapDB;
-    } 
+    }
     else if( arguments.read("--msm") )
     {
        if( arguments.read( "--ViewBounds" ) )
@@ -1023,7 +1023,7 @@ int main(int argc, char** argv)
         lightpos.y() = bb.yMin()+(bb.yMax()-bb.yMin())*lightpos.y();
         lightpos.z() = bb.zMin()+(bb.zMax()-bb.zMin())*lightpos.z();
     }
-      
+
     if ( arguments.read("--base"))
     {
 
@@ -1101,7 +1101,7 @@ int main(int argc, char** argv)
         if (windows.empty()) return 1;
 
         osgShadow::ShadowMap* sm = dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique());
-        if( sm ) { 
+        if( sm ) {
             osg::ref_ptr<osg::Camera> hudCamera = sm->makeDebugHUD();
 
             // set up cameras to rendering on the first window available.
@@ -1117,31 +1117,31 @@ int main(int argc, char** argv)
 
 
     // osgDB::writeNodeFile(*group,"test.osgt");
- 
+
     while (!viewer.done())
     {
         {
             osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
-   
+
             if( msm ) {
 
-                // If scene decorated by CoordinateSystemNode try to find localToWorld 
+                // If scene decorated by CoordinateSystemNode try to find localToWorld
                 // and set modellingSpaceToWorld matrix to optimize scene bounds computation
 
                 osg::NodePath np = viewer.getCoordinateSystemNodePath();
                 if( !np.empty() ) {
-                    osg::CoordinateSystemNode * csn = 
+                    osg::CoordinateSystemNode * csn =
                         dynamic_cast<osg::CoordinateSystemNode *>( np.back() );
 
                     if( csn ) {
-                        osg::Vec3d pos = 
+                        osg::Vec3d pos =
                             viewer.getCameraManipulator()->getMatrix().getTrans();
 
                         msm->setModellingSpaceToWorldTransform
                             ( csn->computeLocalCoordinateFrame( pos ) );
                     }
                 }
-            }        
+            }
         }
 
         if (lightAnimationHandler.valid() && lightAnimationHandler ->getAnimating())
@@ -1174,10 +1174,10 @@ int main(int argc, char** argv)
             dumpFileNo ++;
             char filename[256];
             std::sprintf( filename, "shadowDump%d.osgt", dumpFileNo );
-            
+
             osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
 
-            if( msm ) msm->setDebugDump( filename );            
+            if( msm ) msm->setDebugDump( filename );
         }
 
         viewer.frame();

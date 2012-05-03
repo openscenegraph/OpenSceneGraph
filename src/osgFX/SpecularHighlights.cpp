@@ -68,7 +68,7 @@ namespace
                 osg::Matrix LM = osg::Matrix::rotate(
                     osg::Vec3(lightvec.x(), lightvec.y(), lightvec.z()),
                     eye_light_ref);
-                
+
                 glLoadMatrix((LM * osg::Matrix::inverse(M)).ptr());
 
             } else {
@@ -114,7 +114,7 @@ namespace
         {
             if (!Technique::validate(state)) return false;
 
-            osg::TextureCubeMap::Extensions *ext = 
+            osg::TextureCubeMap::Extensions *ext =
                 osg::TextureCubeMap::getExtensions(state.getContextID(), true);
             if (ext) {
                 return ext->isCubeMapSupported();

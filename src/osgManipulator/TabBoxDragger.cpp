@@ -59,7 +59,7 @@ TabBoxDragger::TabBoxDragger()
 
     setParentDragger(getParentDragger());
 }
-       
+
 TabBoxDragger::~TabBoxDragger()
 {
 }

@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ namespace OpenThreads {
 /**
  *  Get the number of processors.
  *
- *  Note, systems where no support exists for querrying the number of processors, 1 is returned. 
+ *  Note, systems where no support exists for querrying the number of processors, 1 is returned.
  *
  */
 extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
@@ -37,7 +37,7 @@ extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
 /**
  *  Set the processor affinity of current thread.
  *
- *  Note, systems where no support exists no affinity will be set, and -1 will be returned. 
+ *  Note, systems where no support exists no affinity will be set, and -1 will be returned.
  *
  */
 extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityOfCurrentThread(unsigned int cpunum);
@@ -372,7 +372,7 @@ private:
      *  Implementation-specific data
      */
     void * _prvData;
-    
+
     /**
      *  Master thread's priority, set by Thread::Init.
      */

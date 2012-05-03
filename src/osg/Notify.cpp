@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
@@ -39,7 +39,7 @@ public:
     NullStream():
         std::ostream(new NullStreamBuffer)
     { _buffer = dynamic_cast<NullStreamBuffer *>(rdbuf()); }
-        
+
     ~NullStream()
     {
         rdbuf(0);
@@ -97,7 +97,7 @@ public:
     {
         return _buffer->getCurrentSeverity();
     }
-        
+
     ~NotifyStream()
     {
         rdbuf(0);
@@ -153,7 +153,7 @@ bool osg::initNotifyLevel()
 
     g_NullStream = &s_NullStream;
     g_NotifyStream = &s_NotifyStream;
-    
+
     // g_NotifyLevel
     // =============
 
@@ -183,7 +183,7 @@ bool osg::initNotifyLevel()
         else if(stringOSGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      g_NotifyLevel=osg::DEBUG_INFO;
         else if(stringOSGNOTIFYLEVEL.find("INFO")!=std::string::npos)       g_NotifyLevel=osg::INFO;
         else std::cout << "Warning: invalid OSG_NOTIFY_LEVEL set ("<<stringOSGNOTIFYLEVEL<<")"<<std::endl;
- 
+
     }
 
     // Setup standard notify handler
@@ -220,7 +220,7 @@ std::ostream& osg::notify(const osg::NotifySeverity severity)
 void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
 {
 #if 1
-    if (severity <= osg::WARN) 
+    if (severity <= osg::WARN)
         fputs(message, stderr);
     else
         fputs(message, stdout);

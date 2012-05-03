@@ -57,7 +57,7 @@ REGISTER_OBJECT_WRAPPER( osgSim_DOFTransform,
     ADD_USER_SERIALIZER( PutMatrix );  // _Put, _inversePut
     ADD_USER_SERIALIZER( LimitationFlags );  // _limitationFlags
     ADD_BOOL_SERIALIZER( AnimationOn, false );  // _animationOn
-    
+
     BEGIN_ENUM_SERIALIZER2( HPRMultOrder, osgSim::DOFTransform::MultOrder, PRH );
         ADD_ENUM_VALUE( PRH );
         ADD_ENUM_VALUE( PHR );

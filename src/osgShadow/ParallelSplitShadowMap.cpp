@@ -108,11 +108,11 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
             } else {
 
 
-                // filter the shadow (look up) 3x3 
+                // filter the shadow (look up) 3x3
                 //
                 // 1 0 1
-                // 0 2 0 
-                // 1 0 1 
+                // 0 2 0
+                // 1 0 1
                 //
                 // / 6
 
@@ -122,11 +122,11 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
                 sstr << "    float shadow2"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3( fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
                 sstr << "    float shadow3"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(-fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
 
-                sstr << "    float shadow"    <<    i    <<" = ( 2.0*shadowOrg"    <<    i    
-                    <<" + shadow0"    <<    i  
-                    <<" + shadow1"    <<    i  
-                    <<" + shadow2"    <<    i  
-                    <<" + shadow3"    <<    i  
+                sstr << "    float shadow"    <<    i    <<" = ( 2.0*shadowOrg"    <<    i
+                    <<" + shadow0"    <<    i
+                    <<" + shadow1"    <<    i
+                    <<" + shadow2"    <<    i
+                    <<" + shadow3"    <<    i
                     << ")/6.0;"<< std::endl;
 
                 //sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.025,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
@@ -371,7 +371,7 @@ void ParallelSplitShadowMap::init()
                 polygon_offset->setUnits(units);
                 stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
                 stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            }           
+            }
 
 
             //////////////////////////////////////////////////////////////////////////
@@ -746,7 +746,7 @@ const osg::Vec3d const_pointNearBL( -1.0, -1.0, -1.0);
 //////////////////////////////////////////////////////////////////////////
 
 
-void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pssmShadowSplitTexture, osg::Vec3d *frustumCorners) 
+void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pssmShadowSplitTexture, osg::Vec3d *frustumCorners)
 {
     // get user cameras
     double fovy,aspectRatio,camNear,camFar;
@@ -775,7 +775,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pss
     double maxFar = camFar;
     // double minNear = camNear;
     double camNearFar_Dist = maxFar - camNear;
-    if ( _SplitCalcMode == SPLIT_LINEAR ) 
+    if ( _SplitCalcMode == SPLIT_LINEAR )
     {
         camFar  = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID+1))/((double)(_number_of_splits));
         camNear = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID))/((double)(_number_of_splits));
@@ -790,7 +790,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pss
         fSplitSchemeBias[1]=Clamp(fSplitSchemeBias[1],0.0,3.0);
         double* pSplitDistances =new double[_number_of_splits+1];
 
-        for(int i=0;i<(int)_number_of_splits;i++) 
+        for(int i=0;i<(int)_number_of_splits;i++)
         {
             double fIDM=(double)(i)/(double)(_number_of_splits);
             pSplitDistances[i]=camNearFar_Dist*(pow(fIDM,fSplitSchemeBias[1]+1))+camNear;
@@ -839,7 +839,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pss
 void ParallelSplitShadowMap::calculateLightInitialPosition(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners)
 {
     pssmShadowSplitTexture._frustumSplitCenter = frustumCorners[0];
-    for(int i=1;i<8;i++) 
+    for(int i=1;i<8;i++)
     {
         pssmShadowSplitTexture._frustumSplitCenter +=frustumCorners[i];
     }

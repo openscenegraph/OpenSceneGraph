@@ -57,7 +57,7 @@ class Logos: public osg::Drawable
                             vp->height() != logos->getViewport()->height() )
                         {
                             logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
-                            logos->dirtyDisplayList(); 
+                            logos->dirtyDisplayList();
                         }
                     }
                 }
@@ -65,7 +65,7 @@ class Logos: public osg::Drawable
             }
         };
 
-        Logos() 
+        Logos()
         {
             osg::StateSet *sset = new osg::StateSet;
             osg::BlendFunc *transp = new osg::BlendFunc;
@@ -74,7 +74,7 @@ class Logos: public osg::Drawable
             sset->setMode( GL_BLEND, osg::StateAttribute::ON );
             sset->setMode( GL_DEPTH_TEST, osg::StateAttribute::OFF );
             sset->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF );
-#if 1            
+#if 1
             // for now we'll crudely set the bin number to 100 to force it to draw later and ontop of the scene
             sset->setRenderBinDetails( 100 , "RenderBin" );
 #else
@@ -97,7 +97,7 @@ class Logos: public osg::Drawable
         {
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
 
-            if( renderInfo.getContextID() != _contextID ) 
+            if( renderInfo.getContextID() != _contextID )
                 return;
 
 
@@ -168,7 +168,7 @@ class Logos: public osg::Drawable
             glPopMatrix();
             glMatrixMode( GL_PROJECTION );
             glPopMatrix();
-            glMatrixMode( GL_MODELVIEW );            
+            glMatrixMode( GL_MODELVIEW );
         #else
             OSG_NOTICE<<"Warning: Logos::drawImplementation(..) not supported."<<std::endl;
         #endif
@@ -200,7 +200,7 @@ class Logos: public osg::Drawable
             return (n != 0);
         }
 
-        virtual osg::BoundingBox computeBound() const 
+        virtual osg::BoundingBox computeBound() const
         {
             return osg::BoundingBox( -1, -1, -1, 1, 1, 1);
         }
@@ -225,7 +225,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
         {
             supportsExtension("logo","Ascii logo placement format");
         }
-        
+
         virtual const char* className() const { return "Logo Database Reader/Writer"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -234,7 +234,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) 
+            if (fileName.empty())
                 return ReadResult::FILE_NOT_FOUND;
 
             OSG_INFO<< "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
@@ -289,13 +289,13 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                         OSG_WARN << "Error... Camera requires an integer argument\n";
                         break;
                     }
-                    
+
                     if (tn < 0)
                     {
                         OSG_WARN << "Error... Camera requires an positive or null value argument\n";
                         break;
                     }
-                    
+
                     unsigned int n = static_cast<unsigned int>(tn);
                     if( screen != n )
                     {
@@ -317,10 +317,10 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                 }
             }
             fclose( fp );
-       
+
             if( ld->hasLogos() )
                 geode->addDrawable( ld );
-        
+
             geode->setCullingActive(false);
             return geode;
         }

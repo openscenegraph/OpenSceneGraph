@@ -1,14 +1,14 @@
 //
 // Copyright (C) 2007 Skew Matrix Software LLC (http://www.skew-matrix.com)
 //
-// This library is open source and may be redistributed and/or modified under  
-// the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+// This library is open source and may be redistributed and/or modified under
+// the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
 // (at your option) any later version.  The full license is in LICENSE file
 // included with this distribution, and on the openscenegraph.org website.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // OpenSceneGraph Public License for more details.
 //
 
@@ -75,11 +75,11 @@ public:
     unsigned int getNumPixels( const osg::Camera* cam );
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
-    
+
     static void deleteQueryObject( unsigned int contextID, GLuint handle );
     static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
     static void discardDeletedQueryObjects( unsigned int contextID );
-    
+
 protected:
     typedef std::map< const osg::Camera*, TestResult > ResultMap;
     mutable ResultMap _results;
@@ -107,8 +107,8 @@ public:
     virtual osg::BoundingSphere computeBound() const;
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
-    
-    
+
+
     // When disabled, OQN doesn't perform occlusion queries, and simply
     //   renders its children.
     void setQueriesEnabled( bool enable=true );
@@ -153,8 +153,8 @@ public:
 
     // For statistics gathering, e.g., by a NodeVisitor.
     bool getPassed() const;
-    
-    
+
+
     // These methods are public so that osgUtil::CullVisitor can access them.
     // Not intended for application use.
     virtual bool getPassed( const osg::Camera* camera, osg::NodeVisitor& nv );

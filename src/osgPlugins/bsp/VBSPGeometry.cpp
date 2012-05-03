@@ -30,7 +30,7 @@ VBSPGeometry::VBSPGeometry(VBSPData * bspData)
     disp_normal_array = new Vec3Array();
     disp_texcoord_array = new Vec2Array();
     disp_vertex_attr_array = new Vec4Array();
-   
+
     // Create a second primitive set for drawing indexed triangles, which is
     // the quickest method for drawing the displacement surfaces
     disp_primitive_set = new DrawElementsUInt(PrimitiveSet::TRIANGLES);
@@ -42,7 +42,7 @@ VBSPGeometry::~VBSPGeometry()
 }
 
 
-bool VBSPGeometry::doesEdgeExist(int row, int col, int direction, 
+bool VBSPGeometry::doesEdgeExist(int row, int col, int direction,
                                  int vertsPerEdge)
 {
     // See if there is an edge on the displacement surface from the given
@@ -278,14 +278,14 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     osg::Vec2         texCoord;
     float             alphaBlend;
     unsigned char     edgeBits;
-   
+
 
     // Get the texture info for this face
     currentTexInfo = bsp_data->getTexInfo(face.texinfo_index);
     currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
     // Get the texture vectors and offsets.  These are used to calculate
-    // texture coordinates 
+    // texture coordinates
     texU.set(currentTexInfo.texture_vecs[0][0],
              currentTexInfo.texture_vecs[0][1],
              currentTexInfo.texture_vecs[0][2]);
@@ -299,7 +299,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     texU *= 39.37f;
     texV *= 39.37f;
 
-    // Get the size of the texture involved, as the planar texture projection 
+    // Get the size of the texture involved, as the planar texture projection
     // assumes non-normalized texture coordinates
     texUScale = 1.0f / (float)currentTexData.texture_width;
     texVScale = 1.0f / (float)currentTexData.texture_height;
@@ -404,7 +404,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
 
             // Calculate the displaced vertex
             dispVertex =
-                dispVertInfo.displace_vec * 
+                dispVertInfo.displace_vec *
                 (dispVertInfo.displace_dist * 0.0254);
             dispVertex += flatVertex;
 
@@ -547,7 +547,7 @@ void VBSPGeometry::addFace(int faceIndex)
         currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
         // Get the texture vectors and offsets.  These are used to calculate
-        // texture coordinates 
+        // texture coordinates
         texU.set(currentTexInfo.texture_vecs[0][0],
                  currentTexInfo.texture_vecs[0][1],
                  currentTexInfo.texture_vecs[0][2]);

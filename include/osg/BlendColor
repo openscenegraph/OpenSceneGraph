@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,16 +29,16 @@ class OSG_EXPORT BlendColor : public StateAttribute
     public :
 
         BlendColor();
-        
+
         BlendColor(const osg::Vec4& constantColor);
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         BlendColor(const BlendColor& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(trans,copyop),
             _constantColor(trans._constantColor) {}
 
         META_StateAttribute(osg, BlendColor,BLENDCOLOR);
-        
+
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
@@ -71,34 +71,34 @@ class OSG_EXPORT BlendColor : public StateAttribute
 
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
-          * calling extension functions. */        
+          * calling extension functions. */
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
-                
+
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+
                 void setupGLExtensions(unsigned int contextID);
 
                 void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
                 bool isBlendColorSupported() const { return _isBlendColorSupported; }
-                
+
                 void glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const;
 
             protected:
 
                 ~Extensions() {}
-                
+
 
                 typedef void (GL_APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
                 bool                _isBlendColorSupported;
                 GLBlendColorProc    _glBlendColor;
 
         };
-        
+
         /** Returns the Extensions object for the given context.
           * If createIfNotInitalized is true and the Extensions object doesn't
           * exist, getExtensions() creates it on the given context.

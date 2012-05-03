@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgDB/Output>
@@ -47,13 +47,13 @@ void Output::init()
     _indentStep = 2;
     _numIndicesPerLine = 10;
     _pathNameHint = AS_IS;
-    
+
     _outputTextureFiles = false;
     _textureFileNameNumber = 0;
 
     _outputShaderFiles = false;
     _shaderFileNameNumber = 0;
-    
+
     _writeOutDefaultValues = false;
 
     const char* env = getenv("OSG_WRITE_OUT_DEFAULT_VALUES");
@@ -76,8 +76,8 @@ void Output::open(const char *name)
 }
 
 // Comment out to avoid compile errors under new compilers, the int mode
-// is now a replaced by a class to wrap the mode.  
-// This method is not used right now to hopefully nobody will miss it... 
+// is now a replaced by a class to wrap the mode.
+// This method is not used right now to hopefully nobody will miss it...
 // Jan 2002.
 // void Output::open(const char *name,int mode)
 // {
@@ -194,13 +194,13 @@ std::string Output::getFileNameForOutput(const std::string& filename) const
     case(FULL_PATH):
         {
             // need to think about how best to implement this first...
-            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<< std::endl;        
+            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<< std::endl;
             return filename;
         }
     case(RELATIVE_PATH):
         {
             // need to think about how best to implement this as well...
-            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<< std::endl;        
+            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<< std::endl;
             return filename;
         }
     case(FILENAME_ONLY):
@@ -222,10 +222,10 @@ std::string Output::getTextureFileNameForOutput()
         o << '_' << _textureFileNameNumber;
         fileName += o.str();
     }
-    
+
     fileName += ".dds";
     ++_textureFileNameNumber;
-    
+
     return fileName;
 }
 
@@ -238,10 +238,10 @@ std::string Output::getShaderFileNameForOutput()
         o << '_' << _shaderFileNameNumber;
         fileName += o.str();
     }
-    
+
     fileName += ".glsl";
     ++_shaderFileNameNumber;
-    
+
     return fileName;
 }
 

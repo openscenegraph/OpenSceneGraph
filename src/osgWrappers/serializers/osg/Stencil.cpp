@@ -18,10 +18,10 @@ REGISTER_OBJECT_WRAPPER( Stencil,
         ADD_ENUM_VALUE( GEQUAL );
         ADD_ENUM_VALUE( ALWAYS );
     END_ENUM_SERIALIZER();  // _func
-    
+
     ADD_INT_SERIALIZER( FunctionRef, 0 );  // _funcRef
     ADD_HEXINT_SERIALIZER( FunctionMask, ~0u );  // _funcMask
-    
+
     BEGIN_ENUM_SERIALIZER2( StencilFailOperation, osg::Stencil::Operation, KEEP );
         ADD_ENUM_VALUE( KEEP );
         ADD_ENUM_VALUE( ZERO );
@@ -32,7 +32,7 @@ REGISTER_OBJECT_WRAPPER( Stencil,
         ADD_ENUM_VALUE( INCR_WRAP );
         ADD_ENUM_VALUE( DECR_WRAP );
     END_ENUM_SERIALIZER();  // _sfail
-    
+
     BEGIN_ENUM_SERIALIZER2( StencilPassAndDepthFailOperation, osg::Stencil::Operation, KEEP );
         ADD_ENUM_VALUE( KEEP );
         ADD_ENUM_VALUE( ZERO );
@@ -43,7 +43,7 @@ REGISTER_OBJECT_WRAPPER( Stencil,
         ADD_ENUM_VALUE( INCR_WRAP );
         ADD_ENUM_VALUE( DECR_WRAP );
     END_ENUM_SERIALIZER();  // _zfail
-    
+
     BEGIN_ENUM_SERIALIZER2( StencilPassAndDepthPassOperation, osg::Stencil::Operation, KEEP );
         ADD_ENUM_VALUE( KEEP );
         ADD_ENUM_VALUE( ZERO );
@@ -54,6 +54,6 @@ REGISTER_OBJECT_WRAPPER( Stencil,
         ADD_ENUM_VALUE( INCR_WRAP );
         ADD_ENUM_VALUE( DECR_WRAP );
     END_ENUM_SERIALIZER();  // _zpass
-    
+
     ADD_HEXINT_SERIALIZER( WriteMask, ~0u );  // _writeMask
 }

@@ -163,7 +163,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         // Check for a leading slash and concatenate appropriately
         texPath = findFileInPath("materials", textureName, ".vtf");
 
-        // Check up one directory if we don't find it here (the map file is 
+        // Check up one directory if we don't find it here (the map file is
         // usually located in the "maps" directory, adjacent to the materials
         // directory)
         if (texPath.empty())
@@ -363,7 +363,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
                 if (!token.empty())
                     texture = readTextureFile(token);
             }
-            else if (equalCaseInsensitive(token, "$basetexture2")) 
+            else if (equalCaseInsensitive(token, "$basetexture2"))
             {
                 // Get the second base texture name
                 token = getToken(line, " \t\n\r\"", start);
@@ -396,7 +396,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
                    alpha = osg::asciiToDouble(token.c_str());
                 }
             }
- 
+
             // Try the next token
             token = getToken(line, " \t\n\r\"", start);
         }
@@ -649,7 +649,7 @@ bool MDLReader::readFile(const std::string & file)
         {
             mdlFile->get(texPath[j]);
             j++;
-        } 
+        }
         while ((j < sizeof(texPath)) && (texPath[j-1] != 0));
 
         // Store this path
@@ -674,7 +674,7 @@ bool MDLReader::readFile(const std::string & file)
         {
             mdlFile->get(texName[j]);
             j++;
-        } 
+        }
         while ((j < sizeof(texName)) && (texName[j-1] != 0));
 
         // Load this texture

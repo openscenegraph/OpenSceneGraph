@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -30,21 +30,21 @@ StackedTransform::StackedTransform(const StackedTransform& rhs, const osg::CopyO
 }
 
 
-void StackedTransform::update()
+void StackedTransform::update(float t)
 {
     int dirty = 0;
     for (StackedTransform::iterator it = begin(); it != end(); ++it)
     {
-        
         StackedTransformElement* element = it->get();
         if (!element)
             continue;
         // update and check if there are changes
-        element->update();
+        element->update(t);
         if (element->isIdentity())
             continue;
         dirty++;
     }
+
     if (!dirty)
         return;
 

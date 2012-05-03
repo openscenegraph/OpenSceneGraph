@@ -18,7 +18,7 @@ REGISTER_OBJECT_WRAPPER( Depth,
         ADD_ENUM_VALUE( GEQUAL );
         ADD_ENUM_VALUE( ALWAYS );
     END_ENUM_SERIALIZER();  // _func
-    
+
     ADD_DOUBLE_SERIALIZER( ZNear, 0.0 );  // _zNear
     ADD_DOUBLE_SERIALIZER( ZFar, 1.0 );  // _zFar
     ADD_BOOL_SERIALIZER( WriteMask, true );  // _depthWriteMask

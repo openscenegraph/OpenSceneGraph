@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/State>
@@ -57,11 +57,11 @@ State::State():
     #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         _useModelViewAndProjectionUniforms = true;
         _useVertexAttributeAliasing = true;
-    #else    
+    #else
         _useModelViewAndProjectionUniforms = false;
         _useVertexAttributeAliasing = false;
     #endif
-    
+
     _modelViewMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewMatrix");
     _projectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ProjectionMatrix");
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
@@ -109,7 +109,7 @@ State::State():
         }
     }
 
-    _abortRenderingPtr = NULL;    
+    _abortRenderingPtr = NULL;
 
     _checkGLErrors = ONCE_PER_FRAME;
 
@@ -134,7 +134,7 @@ State::State():
 
     _isVertexBufferObjectSupportResolved = false;
     _isVertexBufferObjectSupported = false;
-    
+
     _lastAppliedProgramObject = 0;
 
     _extensionProcsInitialized = false;
@@ -186,7 +186,7 @@ void State::objectDeleted(void* object)
 {
     const Program::PerContextProgram* ppcp = reinterpret_cast<const Program::PerContextProgram*>(object);
     AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
-    if (itr != _appliedProgramObjectSet.end()) 
+    if (itr != _appliedProgramObjectSet.end())
     {
         // OSG_NOTICE<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
         _appliedProgramObjectSet.erase(itr);
@@ -205,14 +205,14 @@ void State::reset()
         ms.valueVec.clear();
         ms.last_applied_value = !ms.global_default_value;
         ms.changed = true;
-    }        
+    }
 #else
     _modeMap.clear();
 #endif
 
     _modeMap[GL_DEPTH_TEST].global_default_value = true;
     _modeMap[GL_DEPTH_TEST].changed = true;
-    
+
     // go through all active StateAttribute's, setting to change to force update,
     // the idea is to leave only the global defaults left.
     for(AttributeMap::iterator aitr=_attributeMap.begin();
@@ -225,7 +225,7 @@ void State::reset()
         as.last_applied_shadercomponent = NULL;
         as.changed = true;
     }
-    
+
     // we can do a straight clear, we arn't interested in GL_DEPTH_TEST defaults in texture modes.
     for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
         tmmItr!=_textureModeMapList.end();
@@ -254,16 +254,16 @@ void State::reset()
     }
 
     _stateStateStack.clear();
-    
+
     _modelView = _identity;
     _projection = _identity;
-    
+
     dirtyAllVertexArrays();
-    
+
 #if 0
     // reset active texture unit values and call OpenGL
     // note, this OpenGL op precludes the use of State::reset() without a
-    // valid graphics context, therefore the new implementation below 
+    // valid graphics context, therefore the new implementation below
     // is preferred.
     setActiveTextureUnit(0);
 #else
@@ -284,10 +284,10 @@ void State::reset()
         (*apitr)->resetAppliedUniforms();
         (*apitr)->removeObserver(this);
     }
-    
+
     _appliedProgramObjectSet.clear();
-    
-    
+
+
     // what about uniforms??? need to clear them too...
     // go through all active Unfirom's, setting to change to force update,
     // the idea is to leave only the global defaults left.
@@ -332,7 +332,7 @@ void State::pushStateSet(const StateSet* dstate)
 
         pushModeList(_modeMap,dstate->getModeList());
 
-        // iterator through texture modes.        
+        // iterator through texture modes.
         unsigned int unit;
         const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
         for(unit=0;unit<ds_textureModeList.size();++unit)
@@ -360,10 +360,10 @@ void State::popAllStateSets()
     // OSG_NOTICE<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
 
     while (!_stateStateStack.empty()) popStateSet();
-    
+
     applyProjectionMatrix(0);
     applyModelViewMatrix(0);
-    
+
     _lastAppliedProgramObject = 0;
 }
 
@@ -372,8 +372,8 @@ void State::popStateSet()
     // OSG_NOTICE<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
 
     if (_stateStateStack.empty()) return;
-    
-    
+
+
     const StateSet* dstate = _stateStateStack.back();
 
     if (dstate)
@@ -381,7 +381,7 @@ void State::popStateSet()
 
         popModeList(_modeMap,dstate->getModeList());
 
-        // iterator through texture modes.        
+        // iterator through texture modes.
         unsigned int unit;
         const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
         for(unit=0;unit<ds_textureModeList.size();++unit)
@@ -401,7 +401,7 @@ void State::popStateSet()
         popUniformList(_uniformMap,dstate->getUniformList());
 
     }
-    
+
     // remove the top draw state from the stack.
     _stateStateStack.pop_back();
 }
@@ -409,7 +409,7 @@ void State::popStateSet()
 void State::insertStateSet(unsigned int pos,const StateSet* dstate)
 {
     StateSetStack tempStack;
-    
+
     // first pop the StateSet above the position we need to insert at
     while (_stateStateStack.size()>pos)
     {
@@ -419,7 +419,7 @@ void State::insertStateSet(unsigned int pos,const StateSet* dstate)
 
     // push our new stateset
     pushStateSet(dstate);
-    
+
     // push back the original ones
     for(StateSetStack::reverse_iterator itr = tempStack.rbegin();
         itr != tempStack.rend();
@@ -437,7 +437,7 @@ void State::removeStateSet(unsigned int pos)
         OSG_NOTICE<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
         return;
     }
-    
+
     // record the StateSet above the one we intend to remove
     StateSetStack tempStack;
     while (_stateStateStack.size()-1>pos)
@@ -446,7 +446,7 @@ void State::removeStateSet(unsigned int pos)
         popStateSet();
     }
 
-    // remove the intended StateSet as well    
+    // remove the intended StateSet as well
     popStateSet();
 
     // push back the original ones that were above the remove StateSet
@@ -462,7 +462,7 @@ void State::captureCurrentState(StateSet& stateset) const
 {
     // empty the stateset first.
     stateset.clear();
-    
+
     for(ModeMap::const_iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
         ++mitr)
@@ -473,7 +473,7 @@ void State::captureCurrentState(StateSet& stateset) const
         {
             stateset.setMode(mitr->first,ms.valueVec.back());
         }
-    }        
+    }
 
     for(AttributeMap::const_iterator aitr=_attributeMap.begin();
         aitr!=_attributeMap.end();
@@ -484,7 +484,7 @@ void State::captureCurrentState(StateSet& stateset) const
         {
             stateset.setAttribute(const_cast<StateAttribute*>(as.attributeVec.back().first));
         }
-    }        
+    }
 
 }
 
@@ -570,7 +570,7 @@ void State::apply()
 
     // go through all active StateAttribute's, applying where appropriate.
     applyAttributeMap(_attributeMap);
-       
+
     unsigned int unit;
     unsigned int unitMax = maximum(_textureModeMapList.size(),_textureAttributeMapList.size());
     for(unit=0;unit<unitMax;++unit)
@@ -701,7 +701,7 @@ void State::haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAt
     ms.last_applied_value = value & StateAttribute::ON;
 
     // will need to disable this mode on next apply so set it to changed.
-    ms.changed = true;    
+    ms.changed = true;
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
@@ -714,7 +714,7 @@ void State::haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode)
     ms.last_applied_value = !ms.last_applied_value;
 
     // will need to disable this mode on next apply so set it to changed.
-    ms.changed = true;    
+    ms.changed = true;
 }
 
 /** attribute has been applied externally, update state to reflect this setting.*/
@@ -733,7 +733,7 @@ void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute
 
 void State::haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member)
 {
-    
+
     AttributeMap::iterator itr = attributeMap.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeMap.end())
     {
@@ -781,9 +781,9 @@ void State::dirtyAllModes()
     {
         ModeStack& ms = mitr->second;
         ms.last_applied_value = !ms.last_applied_value;
-        ms.changed = true;    
+        ms.changed = true;
 
-    }        
+    }
 
     for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
         tmmItr!=_textureModeMapList.end();
@@ -795,9 +795,9 @@ void State::dirtyAllModes()
         {
             ModeStack& ms = mitr->second;
             ms.last_applied_value = !ms.last_applied_value;
-            ms.changed = true;    
+            ms.changed = true;
 
-        }        
+        }
     }
 }
 
@@ -811,7 +811,7 @@ void State::dirtyAllAttributes()
         as.last_applied_attribute = 0;
         as.changed = true;
     }
-    
+
 
     for(TextureAttributeMapList::iterator tamItr=_textureAttributeMapList.begin();
         tamItr!=_textureAttributeMapList.end();
@@ -1031,7 +1031,7 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
 /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
 * note, only updates values that change.*/
 void State::setVertexAttribPointer( unsigned int index,
-                                      GLint size, GLenum type, GLboolean normalized, 
+                                      GLint size, GLenum type, GLboolean normalized,
                                     GLsizei stride, const GLvoid *ptr )
 {
     if (_glVertexAttribPointer)
@@ -1057,7 +1057,7 @@ void State::setVertexAttribPointer( unsigned int index,
         eap._lazy_disable = false;
         eap._dirty = false;
     }
-}      
+}
 
 /** wrapper around DisableVertexAttribArrayARB(index);
 * note, only updates values that change.*/
@@ -1076,7 +1076,7 @@ void State::disableVertexAttribPointer( unsigned int index )
             _glDisableVertexAttribArray( index );
         }
     }
-}        
+}
 
 void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 {
@@ -1287,7 +1287,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     OSG_INFO<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
     OSG_INFO<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
-    
+
     // replace ftransform as it only works with built-ins
     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
@@ -1425,13 +1425,13 @@ void State::updateModelViewAndProjectionMatrixUniforms()
 void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
 {
     // OSG_NOTICE<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
-    
+
     unsigned int array = first % 4;
     unsigned int offsetFirst = ((first-array) / 4) * 6;
     unsigned int numQuads = (count/4);
     unsigned int numIndices = numQuads * 6;
     unsigned int endOfIndices = offsetFirst+numIndices;
-    
+
     if (endOfIndices<65536)
     {
         IndicesGLushort& indices = _quadIndicesGLushort[array];

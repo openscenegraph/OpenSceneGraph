@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,10 +42,10 @@ bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
 {
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
     if (!view) return false;
-    
+
     osgViewer::ViewerBase* viewer = view->getViewerBase();
     if (!viewer) return false;
-    
+
     if (ea.getHandled()) return false;
 
     switch(ea.getEventType())
@@ -85,7 +85,7 @@ void HelpHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
     if (!window)
-    {    
+    {
         osgViewer::Viewer::Windows windows;
         viewer->getWindows(windows);
 
@@ -156,7 +156,7 @@ void HelpHandler::setUpScene(osgViewer::ViewerBase* viewer)
     }
 
     const osg::ApplicationUsage::UsageMap& keyboardBinding = _applicationUsage->getKeyboardMouseBindings();
-    
+
     for(osg::ApplicationUsage::UsageMap::const_iterator itr = keyboardBinding.begin();
         itr != keyboardBinding.end();
         ++itr)
@@ -196,9 +196,9 @@ void HelpHandler::setUpScene(osgViewer::ViewerBase* viewer)
         float ratio = 1.0;
         if (width > 1024.0f) ratio = 1024.0f/width;
         if (height*ratio > 800.0f) ratio = 800.0f/height;
-        
-        _camera->setViewMatrix(osg::Matrix::translate(-bb.center()) * 
-                               osg::Matrix::scale(ratio,ratio,ratio) * 
+
+        _camera->setViewMatrix(osg::Matrix::translate(-bb.center()) *
+                               osg::Matrix::scale(ratio,ratio,ratio) *
                                osg::Matrix::translate(osg::Vec3(640.0f, 520.0f, 0.0f)));
     }
 }

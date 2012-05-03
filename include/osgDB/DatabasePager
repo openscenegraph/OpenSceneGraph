@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -44,7 +44,7 @@ namespace osgDB {
 
 
 
-/** Database paging class which manages the loading of files in a background thread, 
+/** Database paging class which manages the loading of files in a background thread,
   * and synchronizing of loaded models with the main scene graph.*/
 class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler
 {
@@ -63,11 +63,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** get the prototype singleton used by DatabasePager::create().*/
         static osg::ref_ptr<DatabasePager>& prototype();
-        
+
         /** create a DatabasePager by cloning DatabasePager::prototype().*/
         static DatabasePager* create();
 
-        
+
 
         /** Add a request to load a node file to end the the database request list.*/
         virtual void requestNodeFile(const std::string& fileName, osg::NodePath& nodePath,
@@ -78,27 +78,27 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Set the priority of the database pager thread(s).*/
         int setSchedulePriority(OpenThreads::Thread::ThreadPriority priority);
 
-        /** Cancel the database pager thread(s).*/        
+        /** Cancel the database pager thread(s).*/
         virtual int cancel();
-        
+
         virtual bool isRunning() const;
-        
+
         /** Clear all internally cached structures.*/
         virtual void clear();
-        
+
         class OSGDB_EXPORT DatabaseThread : public osg::Referenced, public OpenThreads::Thread
         {
         public:
-        
+
             enum Mode
             {
                 HANDLE_ALL_REQUESTS,
                 HANDLE_NON_HTTP,
                 HANDLE_ONLY_HTTP
             };
-        
+
             DatabaseThread(DatabasePager* pager, Mode mode, const std::string& name);
-            
+
             DatabaseThread(const DatabaseThread& dt, DatabasePager* pager);
 
             void setName(const std::string& name) { _name = name; }
@@ -106,18 +106,18 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             void setDone(bool done) { _done.exchange(done?1:0); }
             bool getDone() const { return _done!=0; }
-            
+
             void setActive(bool active) { _active = active; }
             bool getActive() const { return _active; }
 
             virtual int cancel();
-            
+
             virtual void run();
-            
+
         protected:
 
             virtual ~DatabaseThread();
-        
+
             OpenThreads::Atomic _done;
             volatile bool       _active;
             DatabasePager*      _pager;
@@ -125,42 +125,42 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             std::string         _name;
 
         };
-        
+
         void setUpThreads(unsigned int totalNumThreads=2, unsigned int numHttpThreads=1);
 
         virtual unsigned int addDatabaseThread(DatabaseThread::Mode mode, const std::string& name);
 
         DatabaseThread* getDatabaseThread(unsigned int i) { return _databaseThreads[i].get(); }
-        
+
         const DatabaseThread* getDatabaseThread(unsigned int i) const { return _databaseThreads[i].get(); }
 
         unsigned int getNumDatabaseThreads() const { return _databaseThreads.size(); }
-        
+
         /** Set whether the database pager thread should be paused or not.*/
         void setDatabasePagerThreadPause(bool pause);
-        
+
         /** Get whether the database pager thread should is paused or not.*/
         bool getDatabasePagerThreadPause() const { return _databasePagerThreadPaused; }
-        
+
         /** Set whether new database request calls are accepted or ignored.*/
         void setAcceptNewDatabaseRequests(bool acceptNewRequests) { _acceptNewRequests = acceptNewRequests; }
-        
+
         /** Get whether new database request calls are accepted or ignored.*/
         bool getAcceptNewDatabaseRequests() const { return _acceptNewRequests; }
-        
+
         /** Get the number of frames that are currently active.*/
         int getNumFramesActive() const { return _numFramesActive; }
 
         /** Signal the database thread that the update, cull and draw has begun for a new frame.
           * Note, this is called by the application so that the database pager can go to sleep while the CPU is busy on the main rendering threads. */
         virtual void signalBeginFrame(const osg::FrameStamp* framestamp);
-        
+
         /** Signal the database thread that the update, cull and draw dispatch has completed.
           * Note, this is called by the application so that the database pager can go to wake back up now the main rendering threads are iddle waiting for the next frame.*/
         virtual void signalEndFrame();
-        
 
-        /** Find all PagedLOD nodes in a subgraph and register them with 
+
+        /** Find all PagedLOD nodes in a subgraph and register them with
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
         virtual void registerPagedLODs(osg::Node* subgraph, unsigned int frameNumber = 0);
@@ -197,7 +197,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Set whether the removed subgraphs should be deleted in the database thread or not.*/
         void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
-        
+
         /** Get whether the removed subgraphs should be deleted in the database thread or not.*/
         bool getDeleteRemovedSubgraphsInDatabaseThread() const { return _deleteRemovedSubgraphsInDatabaseThread; }
 
@@ -239,7 +239,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
         bool requiresUpdateSceneGraph() const;
-        
+
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
         virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
@@ -249,13 +249,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Report how many items are in the _dataToCompileList queue */
         unsigned int getDataToCompileListSize() const { return _dataToCompileList->size(); }
-        
+
         /** Report how many items are in the _dataToMergeList queue */
         unsigned int getDataToMergeListSize() const { return _dataToMergeList->size(); }
 
         /** Report whether any requests are in the pager.*/
         bool getRequestsInProgress() const;
-        
+
         /** Get the minimum time between the first request for a tile to be loaded and the time of its merge into the main scene graph.*/
         double getMinimumTimeToMergeTile() const { return _minimumTimeToMergeTile; }
 
@@ -324,7 +324,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             double                      _timestampLastRequest;
             float                       _priorityLastRequest;
             unsigned int                _numOfRequests;
-            
+
             osg::observer_ptr<osg::Node>        _terrain;
             osg::observer_ptr<osg::Group>       _group;
 
@@ -380,7 +380,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual ~RequestQueue();
         };
 
-        
+
         typedef std::vector< osg::ref_ptr<DatabaseThread> > DatabaseThreadList;
 
         struct OSGDB_EXPORT ReadQueue : public RequestQueue
@@ -415,7 +415,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         struct SortFileRequestFunctor;
         friend struct SortFileRequestFunctor;
 
-        
+
         OpenThreads::Mutex              _run_mutex;
         OpenThreads::Mutex              _dr_mutex;
         bool                            _startThreadCalled;

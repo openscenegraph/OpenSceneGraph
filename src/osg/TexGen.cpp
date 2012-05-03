@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/TexGen>
@@ -72,7 +72,7 @@ void TexGen::setPlanesFromMatrix(const Matrixd& matrix)
     _plane_s.set(matrix(0,0),matrix(1,0),matrix(2,0),matrix(3,0));
     _plane_t.set(matrix(0,1),matrix(1,1),matrix(2,1),matrix(3,1));
     _plane_r.set(matrix(0,2),matrix(1,2),matrix(2,2),matrix(3,2));
-    _plane_q.set(matrix(0,3),matrix(1,3),matrix(2,3),matrix(3,3));    
+    _plane_q.set(matrix(0,3),matrix(1,3),matrix(2,3),matrix(3,3));
 }
 
 void TexGen::apply(State&) const
@@ -81,7 +81,7 @@ void TexGen::apply(State&) const
     if (_mode == OBJECT_LINEAR || _mode == EYE_LINEAR)
     {
         GLenum glmode = _mode == OBJECT_LINEAR ? GL_OBJECT_PLANE : GL_EYE_PLANE;
-    
+
         if (sizeof(_plane_s[0])==sizeof(GLfloat))
         {
             glTexGenfv(GL_S, glmode, (const GLfloat*)_plane_s.ptr());

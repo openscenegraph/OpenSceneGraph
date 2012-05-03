@@ -7,23 +7,23 @@
     static bool check##PROP(const osg::Program& attr) \
     { return attr.get##TYPE().size()>0; } \
     static bool read##PROP(osgDB::InputStream& is, osg::Program& attr) { \
-        unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET; \
+        unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET; \
         for ( unsigned int i=0; i<size; ++i ) { \
             std::string key; unsigned int value; \
             is >> key >> value; attr.add##DATA(key, value); \
         } \
-        is >> osgDB::END_BRACKET; \
+        is >> is.END_BRACKET; \
         return true; \
     } \
     static bool write##PROP( osgDB::OutputStream& os, const osg::Program& attr ) \
     { \
         const osg::Program::TYPE& plist = attr.get##TYPE(); \
-        os.writeSize(plist.size()); os << osgDB::BEGIN_BRACKET << std::endl; \
+        os.writeSize(plist.size()); os << os.BEGIN_BRACKET << std::endl; \
         for ( osg::Program::TYPE::const_iterator itr=plist.begin(); \
               itr!=plist.end(); ++itr ) { \
             os << itr->first << itr->second << std::endl; \
         } \
-        os << osgDB::END_BRACKET << std::endl; \
+        os << os.END_BRACKET << std::endl; \
         return true; \
     }
 
@@ -34,12 +34,12 @@ PROGRAM_LIST_FUNC( FragDataBinding, FragDataBindingList, BindFragDataLocation )
     static bool check##PROP(const osg::Program& attr) \
     { return attr.getParameter(NAME)!=GL_NONE; } \
     static bool read##PROP(osgDB::InputStream& is, osg::Program& attr) { \
-        int value; is >> osgDB::PROPERTY(#NAME) >> value; \
+        int value; is >> is.PROPERTY(#NAME) >> value; \
         attr.setParameter(NAME, value); \
         return true; \
     } \
     static bool write##PROP(osgDB::OutputStream& os, const osg::Program& attr) { \
-        os << osgDB::PROPERTY(#NAME) << (int)attr.getParameter(NAME) << std::endl; \
+        os << os.PROPERTY(#NAME) << (int)attr.getParameter(NAME) << std::endl; \
         return true; \
     }
 
@@ -55,25 +55,25 @@ static bool checkShaders( const osg::Program& attr )
 
 static bool readShaders( osgDB::InputStream& is, osg::Program& attr )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Shader* shader = dynamic_cast<osg::Shader*>( is.readObject() );
         if ( shader ) attr.addShader( shader );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeShaders( osgDB::OutputStream& os, const osg::Program& attr )
 {
     unsigned int size = attr.getNumShaders();
-    os.writeSize(size); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(size); os << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << attr.getShader(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

@@ -48,7 +48,7 @@ typedef long TeAttrHdl;
 // Current TerraPage minor version
 #define TRPG_VERSION_MINOR 2
 
-// defined values for the version that doesn't need 
+// defined values for the version that doesn't need
 // a merge
 #define TRPG_NOMERGE_VERSION_MAJOR 2
 #define TRPG_NOMERGE_VERSION_MINOR 2
@@ -78,10 +78,10 @@ typedef short trpgToken;
 #define TRPGMATTABLE        300
 // Added 11/14/98 - New material table
 // {secret}
-#define TRPGMATTABLE2        301        
+#define TRPGMATTABLE2        301
 // Added 11/14/98
 // {secret}
-#define TRPGSHORTMATTABLE    302        
+#define TRPGSHORTMATTABLE    302
 
 // {secret}
 #define TRPGMATERIAL        400
@@ -380,11 +380,11 @@ public:
     trpgMemWriteBuffer(trpgEndian);
     virtual ~trpgMemWriteBuffer(void);
     // Return the current length of buffer
-    virtual int length(void) const;        
+    virtual int length(void) const;
     // Return the raw data (if you want to write to disk, for example)
-    virtual const char *getData(void) const;    
+    virtual const char *getData(void) const;
     // Allocate the given amount of space for the buffer
-    virtual void setLength(unsigned int);  
+    virtual void setLength(unsigned int);
 
     // Add a 32 bit integer to the buffer
     virtual void Add(int32);
@@ -517,7 +517,7 @@ protected:
     virtual bool GetDataRef(char **,int)=0;
     /* This virtual method must be filled in by the subclass so that SkipToLimit
         will work correctly. */
-    virtual bool Skip(int) = 0;             
+    virtual bool Skip(int) = 0;
     /* Utility function that must be called after a successfull read to update
         the outside imposed read limits. */
     virtual void UpdateLimits(int);
@@ -535,7 +535,7 @@ public:
     trpgMemReadBuffer(trpgEndian);
     ~trpgMemReadBuffer(void);
     // Return true if we're out of data
-    bool isEmpty(void);                        
+    bool isEmpty(void);
     // Sets the size of this read buffer.
     void SetLength(int);
     // Gets the size of the buffer.
@@ -564,9 +564,9 @@ public:
     virtual ~trpgCheckable(void);
     // Returns the state of the valid flag, or can be overriden by a subclass to do a more complex check.
     bool isValid(void) const;
-    
+
     virtual TeAttrHdl GetHandle() const {
-        return handle;    
+        return handle;
     }
     virtual void SetHandle(TeAttrHdl hdl) {
         writeHandle = true;
@@ -612,7 +612,7 @@ public:
     virtual bool        Read(trpgReadBuffer &) { return false;};
     /* Every read/writeable must be able to reset itself to a pristine state
         so that, for example, multiple objects of the same type can be read into
-        it, one after the other.  */ 
+        it, one after the other.  */
     virtual void        Reset(void) = 0;
     /* The print method is optional.  If it's not there, it won't do anything.
      */
@@ -692,7 +692,7 @@ protected:
 };
 
 /* Archive File Cache.
-    This class keeps 
+    This class keeps
  */
 TX_EXDECL class TX_CLDECL trpgrAppFileCache {
 public:

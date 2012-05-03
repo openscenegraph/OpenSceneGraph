@@ -5,7 +5,7 @@
 #include <osg/GL>
 
 #if defined _WIN32 && !defined OSG_LIBRARY_STATIC
-//Make the half format work against openEXR libs 
+//Make the half format work against openEXR libs
 #define OPENEXR_DLL
 #endif
 
@@ -93,9 +93,9 @@ unsigned char *exr_load(std::istream& fin,
     bool inputError = false;
     Array2D<Rgba> pixels;
     int width,height,numComponents;
-    
+
     try
-    {    
+    {
         C_IStream inStream(&fin);
         RgbaInputFile rgbafile(inStream);
 
@@ -107,7 +107,7 @@ unsigned char *exr_load(std::istream& fin,
 
         pixels.resizeErase (height, width);
 
-        rgbafile.setFrameBuffer((&pixels)[0][0] - dw.min.x - dw.min.y * width, 1, width);    
+        rgbafile.setFrameBuffer((&pixels)[0][0] - dw.min.x - dw.min.y * width, 1, width);
         rgbafile.readPixels(dw.min.y, dw.max.y);
     }
     catch( char * str ) {
@@ -119,7 +119,7 @@ unsigned char *exr_load(std::istream& fin,
     {
         return buffer;
     }
-    
+
     //If there is no information in alpha channel do not store the alpha channel
     numComponents = 3;
     for (long i = height-1; i >= 0; i--)
@@ -140,13 +140,13 @@ unsigned char *exr_load(std::istream& fin,
     {
         return NULL;
     }
-    
+
     //Copy and allocate data to a unsigned char array that OSG can use for texturing
     unsigned dataSize = (sizeof(half) * height * width * numComponents);
     //buffer = new unsigned char[dataSize];
     buffer = (unsigned char*)malloc(dataSize);
     half* pOut = (half*) buffer;
-    
+
     for (long i = height-1; i >= 0; i--)
     {
         for (long j = 0 ; j < width; j++)
@@ -177,9 +177,9 @@ public:
     }
 
     virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"exr"); }
-    
+
     virtual const char* className() const { return "EXR Image Reader"; }
-    
+
     virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
     {
         return readImage(fin, options);
@@ -205,15 +205,15 @@ public:
 
         osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!istream) return ReadResult::FILE_NOT_HANDLED;
-        
+
         ReadResult rr = readEXRStream(istream);
-        if(rr.validImage()) 
+        if(rr.validImage())
         {
             rr.getImage()->setFileName(fileName);
         }
         return rr;
     }
-    
+
     virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
     {
         bool success = writeEXRStream(image, fout, "<output stream>");
@@ -233,7 +233,7 @@ public:
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
         bool success = writeEXRStream(img, fout, fileName);
- 
+
         fout.close();
 
         if(success)
@@ -275,7 +275,7 @@ protected:
         Array2D<Rgba> outPixels(height,width);
          //If texture is half format
          if (dataType == GL_HALF_FLOAT_ARB)
-         {    
+         {
              for (long i = height-1; i >= 0; i--)
              {
                 half* pOut = (half*) img.data(0,i);
@@ -317,14 +317,14 @@ protected:
                     else
                     {outPixels[i][j].a = 1.0f;}
                 }
-            }        
-        } 
+            }
+        }
          else
          {
              //If texture format not supported
              return false;
          }
- 
+
          try
          {
              //Write to stream

@@ -72,7 +72,7 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 
         m_frequency = m_context->sample_rate;
         m_nb_channels = m_context->channels;
-        switch (m_context->sample_fmt) 
+        switch (m_context->sample_fmt)
         {
         case AV_SAMPLE_FMT_NONE:
             throw std::runtime_error("invalid audio format AV_SAMPLE_FMT_NONE");
@@ -231,7 +231,7 @@ void FFmpegDecoderAudio::fillBuffer(void * const buffer, size_t size)
 void FFmpegDecoderAudio::decodeLoop()
 {
     const bool skip_audio = ! validContext() || ! m_audio_sink.valid();
-    
+
     if (! skip_audio && ! m_audio_sink->playing())
     {
         m_clocks.audioSetDelay(m_audio_sink->getDelay());
@@ -339,7 +339,7 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
 
             // If we have some data, return it and come back for more later.
             if (data_size > 0)
-                return data_size; 
+                return data_size;
         }
 
         // Get next packet

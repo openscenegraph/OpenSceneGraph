@@ -54,14 +54,14 @@ void ClusterCullingCallback::read(DataInputStream* in)
         }
         else
             in_THROW_EXCEPTION("ClusterCullingCallback::read(): Could not cast this osg::ClusterCullingCallback to an osg::Object.");
-    
+
         // Read ClusterCullingCallback's properties
-        
+
         _controlPoint = in->readVec3();
         _normal = in->readVec3();
         _radius = in->readFloat();
         _deviation = in->readFloat();
-        
+
     }
     else
     {

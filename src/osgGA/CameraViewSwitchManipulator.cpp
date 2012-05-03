@@ -14,12 +14,12 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _cameraViews(cameraViews)
     {}
-    
+
     virtual void apply(CameraView& node)
     {
         _cameraViews->push_back(&node);
     }
-    
+
     CameraViewSwitchManipulator::CameraViewList* _cameraViews;
 };
 
@@ -45,7 +45,7 @@ bool CameraViewSwitchManipulator::handle(const GUIEventAdapter& ea,GUIActionAdap
 
     switch(ea.getEventType())
     {
- 
+
         case(GUIEventAdapter::KEYDOWN):
             if (ea.getKey()=='[')
             {
@@ -86,7 +86,7 @@ osg::Matrixd CameraViewSwitchManipulator::getMatrix() const
             OSG_NOTICE<<"CameraViewSwitchManipulator::getMatrix(): Unable to calculate matrix due to empty parental path."<<std::endl;
         }
     }
-    return mat;    
+    return mat;
 }
 
 osg::Matrixd CameraViewSwitchManipulator::getInverseMatrix() const

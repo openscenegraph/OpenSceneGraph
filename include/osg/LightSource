@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -24,7 +24,7 @@ namespace osg {
 class OSG_EXPORT LightSource : public Group
 {
     public:
-    
+
         LightSource();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
@@ -42,7 +42,7 @@ class OSG_EXPORT LightSource : public Group
             RELATIVE_RF,
             ABSOLUTE_RF
         };
-        
+
         /** Set the light sources's ReferenceFrame, either to be relative to its
           * parent reference frame, or relative to an absolute coordinate
           * frame. RELATIVE_RF is the default.
@@ -55,7 +55,7 @@ class OSG_EXPORT LightSource : public Group
           * absolute light source at the top of the scene.
         */
         void setReferenceFrame(ReferenceFrame rf);
-        
+
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         /** Set the attached light. */

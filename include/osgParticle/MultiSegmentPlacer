@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
@@ -42,50 +42,50 @@ namespace osgParticle {
 
         /// Get the number of vertices which define the segments.
         inline int numVertices() const;
-        
+
         /// Get a vertex.
         inline const osg::Vec3& getVertex(int i) const;
-        
+
         /// Set a vertex.
         inline void setVertex(int i, const osg::Vec3& v);
-        
+
         /// Set a vertex.
         inline void setVertex(int i, float x, float y, float z);
-        
+
         /// Add a vertex.
         inline void addVertex(const osg::Vec3& v);
-        
+
         /// Add a vertex.
         inline void addVertex(float x, float y, float z);
-        
+
         /// Remove a vertex.
         inline void removeVertex(int i);
-        
+
         /// Place a partice. Called automatically by <CODE>ModularEmitter</CODE>, do not call this method manually.
         void place(Particle* P) const;
 
         /// return the length of the multi-segment
         inline float volume() const;
-        
+
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
 
     protected:
         virtual ~MultiSegmentPlacer() {}
-        MultiSegmentPlacer& operator=(const MultiSegmentPlacer&) { return *this; }        
+        MultiSegmentPlacer& operator=(const MultiSegmentPlacer&) { return *this; }
 
     private:
         typedef std::pair<osg::Vec3, float> Vertex_data;
         typedef std::vector<Vertex_data> Vertex_vector;
-        
+
         Vertex_vector _vx;
         float _total_length;
-        
+
         void recompute_length();
     };
 
     // INLINE FUNCTIONS
-    
+
 
     inline int MultiSegmentPlacer::numVertices() const
     {
@@ -111,12 +111,12 @@ namespace osgParticle {
 
     inline void MultiSegmentPlacer::addVertex(const osg::Vec3& v)
     {
-        float l = 0;        
+        float l = 0;
         if (_vx.size() > 0) {
             l = (v - _vx.back().first).length();
-        }                
+        }
         _total_length += l;
-        _vx.push_back(std::make_pair(v, _total_length));        
+        _vx.push_back(std::make_pair(v, _total_length));
     }
 
     inline void MultiSegmentPlacer::addVertex(float x, float y, float z)
@@ -129,12 +129,12 @@ namespace osgParticle {
         _vx.erase(_vx.begin()+i);
         recompute_length();
     }
-    
+
     inline float MultiSegmentPlacer::volume() const
     {
         return _total_length;
     }
-    
+
     inline osg::Vec3 MultiSegmentPlacer::getControlPosition() const
     {
         return _vx.empty() ? osg::Vec3(0.0f,0.0f,0.0f) : _vx[0].first;

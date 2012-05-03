@@ -10,7 +10,7 @@ REGISTER_OBJECT_WRAPPER( Multisample,
 {
     ADD_FLOAT_SERIALIZER( Coverage, 0.0f );  // _coverage
     ADD_BOOL_SERIALIZER( Invert, false );  // _invert
-    
+
     BEGIN_ENUM_SERIALIZER2( Hint, osg::Multisample::Mode, DONT_CARE );
         ADD_ENUM_VALUE( FASTEST );
         ADD_ENUM_VALUE( NICEST );

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,8 +26,9 @@ class Matrixf;
 class OSG_EXPORT Matrixf
 {
     public:
-    
+
         typedef float value_type;
+        typedef double other_value_type;
 
         inline Matrixf() { makeIdentity(); }
         inline Matrixf( const Matrixf& mat) { set(mat.ptr()); }
@@ -64,7 +65,7 @@ class OSG_EXPORT Matrixf
             set(rhs.ptr());
             return *this;
         }
-        
+
         Matrixf& operator = (const Matrixd& other);
 
         inline void set(const Matrixf& rhs) { set(rhs.ptr()); }
@@ -76,7 +77,7 @@ class OSG_EXPORT Matrixf
             value_type* local_ptr = (value_type*)_mat;
             for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
-        
+
         inline void set(double const * const ptr)
         {
             value_type* local_ptr = (value_type*)_mat;
@@ -87,7 +88,7 @@ class OSG_EXPORT Matrixf
                  value_type a10, value_type a11, value_type a12,value_type a13,
                  value_type a20, value_type a21, value_type a22,value_type a23,
                  value_type a30, value_type a31, value_type a32,value_type a33);
-                  
+
         value_type * ptr() { return (value_type*)_mat; }
         const value_type * ptr() const { return (const value_type *)_mat; }
 
@@ -100,39 +101,39 @@ class OSG_EXPORT Matrixf
         }
 
         void makeIdentity();
-        
+
         void makeScale( const Vec3f& );
         void makeScale( const Vec3d& );
         void makeScale( value_type, value_type, value_type );
-        
+
         void makeTranslate( const Vec3f& );
         void makeTranslate( const Vec3d& );
         void makeTranslate( value_type, value_type, value_type );
-        
+
         void makeRotate( const Vec3f& from, const Vec3f& to );
         void makeRotate( const Vec3d& from, const Vec3d& to );
         void makeRotate( value_type angle, const Vec3f& axis );
         void makeRotate( value_type angle, const Vec3d& axis );
         void makeRotate( value_type angle, value_type x, value_type y, value_type z );
         void makeRotate( const Quat& );
-        void makeRotate( value_type angle1, const Vec3f& axis1, 
+        void makeRotate( value_type angle1, const Vec3f& axis1,
                          value_type angle2, const Vec3f& axis2,
                          value_type angle3, const Vec3f& axis3);
-        void makeRotate( value_type angle1, const Vec3d& axis1, 
+        void makeRotate( value_type angle1, const Vec3d& axis1,
                          value_type angle2, const Vec3d& axis2,
                          value_type angle3, const Vec3d& axis3);
 
-        
-        /** decompose the matrix into translation, rotation, scale and scale orientation.*/        
+
+        /** decompose the matrix into translation, rotation, scale and scale orientation.*/
         void decompose( osg::Vec3f& translation,
-                        osg::Quat& rotation, 
-                        osg::Vec3f& scale, 
+                        osg::Quat& rotation,
+                        osg::Vec3f& scale,
                         osg::Quat& so ) const;
 
-        /** decompose the matrix into translation, rotation, scale and scale orientation.*/        
+        /** decompose the matrix into translation, rotation, scale and scale orientation.*/
         void decompose( osg::Vec3d& translation,
-                        osg::Quat& rotation, 
-                        osg::Vec3d& scale, 
+                        osg::Quat& rotation,
+                        osg::Vec3d& scale,
                         osg::Quat& so ) const;
 
 
@@ -144,12 +145,18 @@ class OSG_EXPORT Matrixf
                        double zNear,  double zFar);
 
         /** Get the orthographic settings of the orthographic projection matrix.
-          * Note, if matrix is not an orthographic matrix then invalid values 
+          * Note, if matrix is not an orthographic matrix then invalid values
           * will be returned.
         */
         bool getOrtho(double& left,   double& right,
                       double& bottom, double& top,
                       double& zNear,  double& zFar) const;
+
+        /** float version of getOrtho(..) */
+        bool getOrtho(float& left,   float& right,
+                      float& bottom, float& top,
+                      float& zNear,  float& zFar) const;
+
 
         /** Set to a 2D orthographic projection.
           * See glOrtho2D for further details.
@@ -176,6 +183,11 @@ class OSG_EXPORT Matrixf
                         double& bottom, double& top,
                         double& zNear,  double& zFar) const;
 
+        /** float version of getFrustum(..) */
+        bool getFrustum(float& left,   float& right,
+                        float& bottom, float& top,
+                        float& zNear,  float& zFar) const;
+
         /** Set to a symmetrical perspective projection.
           * See gluPerspective for further details.
           * Aspect ratio is defined as width/height.
@@ -186,7 +198,7 @@ class OSG_EXPORT Matrixf
         /** Get the frustum settings of a symmetric perspective projection
           * matrix.
           * Return false if matrix is not a perspective matrix,
-          * where parameter values are undefined. 
+          * where parameter values are undefined.
           * Note, if matrix is not a symmetric perspective matrix then the
           * shear will be lost.
           * Asymmetric matrices occur when stereo, power walls, caves and
@@ -195,6 +207,10 @@ class OSG_EXPORT Matrixf
         */
         bool getPerspective(double& fovy,  double& aspectRatio,
                             double& zNear, double& zFar) const;
+
+        /** float version of getPerspective(..) */
+        bool getPerspective(float& fovy,  float& aspectRatio,
+                            float& zNear, float& zFar) const;
 
         /** Set the position and orientation to be a view matrix,
           * using the same convention as gluLookAt.
@@ -226,8 +242,8 @@ class OSG_EXPORT Matrixf
         /** full 4x4 matrix invert. */
         bool invert_4x4( const Matrixf& rhs);
 
-        /** ortho-normalize the 3x3 rotation & scale matrix */ 
-        void orthoNormalize(const Matrixf& rhs); 
+        /** ortho-normalize the 3x3 rotation & scale matrix */
+        void orthoNormalize(const Matrixf& rhs);
 
         //basic utility functions to create new matrices
         inline static Matrixf identity( void );
@@ -242,16 +258,16 @@ class OSG_EXPORT Matrixf
         inline static Matrixf rotate( value_type angle, value_type x, value_type y, value_type z);
         inline static Matrixf rotate( value_type angle, const Vec3f& axis);
         inline static Matrixf rotate( value_type angle, const Vec3d& axis);
-        inline static Matrixf rotate( value_type angle1, const Vec3f& axis1, 
+        inline static Matrixf rotate( value_type angle1, const Vec3f& axis1,
                                       value_type angle2, const Vec3f& axis2,
                                       value_type angle3, const Vec3f& axis3);
-        inline static Matrixf rotate( value_type angle1, const Vec3d& axis1, 
+        inline static Matrixf rotate( value_type angle1, const Vec3d& axis1,
                                       value_type angle2, const Vec3d& axis2,
                                       value_type angle3, const Vec3d& axis3);
         inline static Matrixf rotate( const Quat& quat);
         inline static Matrixf inverse( const Matrixf& matrix);
-        inline static Matrixf orthoNormal(const Matrixf& matrix); 
-        
+        inline static Matrixf orthoNormal(const Matrixf& matrix);
+
         /** Create an orthographic projection matrix.
           * See glOrtho for further details.
         */
@@ -322,16 +338,16 @@ class OSG_EXPORT Matrixf
         void setTrans( value_type tx, value_type ty, value_type tz );
         void setTrans( const Vec3f& v );
         void setTrans( const Vec3d& v );
-        
-        inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); } 
-        
+
+        inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); }
+
         inline Vec3d getScale() const {
-          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]); 
-          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]); 
-          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]); 
-          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length()); 
+          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]);
+          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]);
+          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]);
+          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length());
         }
-        
+
         /** apply a 3x3 transform of v*M[0..2,0..2]. */
         inline static Vec3f transform3x3(const Vec3f& v,const Matrixf& m);
 
@@ -368,12 +384,12 @@ class OSG_EXPORT Matrixf
         /** Optimized version of postMult(rotate(q)); */
         inline void postMultRotate( const Quat& q );
 
-        inline void operator *= ( const Matrixf& other ) 
+        inline void operator *= ( const Matrixf& other )
         {    if( this == &other ) {
                 Matrixf temp(other);
                 postMult( temp );
             }
-            else postMult( other ); 
+            else postMult( other );
         }
 
         inline Matrixf operator * ( const Matrixf &m ) const
@@ -413,7 +429,7 @@ class OSG_EXPORT Matrixf
             _mat[3][2]*=rhs;
             _mat[3][3]*=rhs;
             return *this;
-        }  
+        }
 
         /** Divide by scalar. */
         inline Matrixf operator / (value_type rhs) const
@@ -445,7 +461,7 @@ class OSG_EXPORT Matrixf
             _mat[3][2]/=rhs;
             _mat[3][3]/=rhs;
             return *this;
-        }          
+        }
 
         /** Binary vector add. */
         inline Matrixf operator + (const Matrixf& rhs) const
@@ -466,7 +482,7 @@ class OSG_EXPORT Matrixf
                 _mat[3][0] + rhs._mat[3][0],
                 _mat[3][1] + rhs._mat[3][1],
                 _mat[3][2] + rhs._mat[3][2],
-                _mat[3][3] + rhs._mat[3][3]);                         
+                _mat[3][3] + rhs._mat[3][3]);
         }
 
         /** Unary vector add. Slightly more efficient because no temporary
@@ -491,7 +507,7 @@ class OSG_EXPORT Matrixf
             _mat[3][2] += rhs._mat[3][2];
             _mat[3][3] += rhs._mat[3][3];
             return *this;
-        }            
+        }
 
     protected:
         value_type _mat[4][4];
@@ -501,7 +517,7 @@ class OSG_EXPORT Matrixf
 class RefMatrixf : public Object, public Matrixf
 {
     public:
-    
+
         RefMatrixf():Object(false), Matrixf() {}
         RefMatrixf( const Matrixf& other) : Object(false), Matrixf(other) {}
         RefMatrixf( const Matrixd& other) : Object(false), Matrixf(other) {}
@@ -511,21 +527,21 @@ class RefMatrixf : public Object, public Matrixf
             Matrixf::value_type a10, Matrixf::value_type a11, Matrixf::value_type a12, Matrixf::value_type a13,
             Matrixf::value_type a20, Matrixf::value_type a21, Matrixf::value_type a22, Matrixf::value_type a23,
             Matrixf::value_type a30, Matrixf::value_type a31, Matrixf::value_type a32, Matrixf::value_type a33):
-            Object(false), 
+            Object(false),
             Matrixf(a00, a01, a02, a03,
                    a10, a11, a12, a13,
                    a20, a21, a22, a23,
                    a30, a31, a32, a33) {}
 
-        virtual Object* cloneType() const { return new RefMatrixf(); } 
+        virtual Object* cloneType() const { return new RefMatrixf(); }
         virtual Object* clone(const CopyOp&) const { return new RefMatrixf(*this); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const RefMatrixf*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Matrix"; }
-        
-        
+
+
     protected:
-    
+
         virtual ~RefMatrixf() {}
 };
 
@@ -594,7 +610,7 @@ inline Matrixf Matrixf::rotate(value_type angle, const Vec3d& axis )
     m.makeRotate(angle,axis);
     return m;
 }
-inline Matrixf Matrixf::rotate( value_type angle1, const Vec3f& axis1, 
+inline Matrixf Matrixf::rotate( value_type angle1, const Vec3f& axis1,
                               value_type angle2, const Vec3f& axis2,
                               value_type angle3, const Vec3f& axis3)
 {
@@ -602,7 +618,7 @@ inline Matrixf Matrixf::rotate( value_type angle1, const Vec3f& axis1,
     m.makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
     return m;
 }
-inline Matrixf Matrixf::rotate( value_type angle1, const Vec3d& axis1, 
+inline Matrixf Matrixf::rotate( value_type angle1, const Vec3d& axis1,
                               value_type angle2, const Vec3d& axis2,
                               value_type angle3, const Vec3d& axis3)
 {
@@ -634,7 +650,7 @@ inline Matrixf Matrixf::orthoNormal(const Matrixf& matrix)
 {
   Matrixf m;
   m.orthoNormalize(matrix);
-  return m; 
+  return m;
 }
 
 inline Matrixf Matrixf::ortho(double left, double right,

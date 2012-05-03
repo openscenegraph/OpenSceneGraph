@@ -57,8 +57,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         static const unsigned int MAX_VERTICES = 65000;
         static const unsigned int MAX_FACES    = MAX_VERTICES;
 
-        WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName, 
-                        const osgDB::ReaderWriter::Options* options, 
+        WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName,
+                        const osgDB::ReaderWriter::Options* options,
                         const std::string & srcDirectory);
 
         bool succeeded() const { return _succeeded; }
@@ -134,7 +134,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
     private:
         WriterNodeVisitor& operator = (const WriterNodeVisitor&) { return *this; }
 
-        /** 
+        /**
         *  Fill the faces field of the mesh and call buildMesh().
         *  \param geo is the geode who contain vertice and faces.
         *  \param mat Local to world matrix applied to the geode
@@ -143,13 +143,13 @@ class WriterNodeVisitor: public osg::NodeVisitor
         */
         void buildFaces(osg::Geode & geo, const osg::Matrix & mat, ListTriangle & listTriangles, bool texcoords);
 
-        /** 
+        /**
         *  Calculate the number of vertices in the geode.
         *  \return the number of vertices in the geode.
         */
         unsigned int calcVertices(osg::Geode & geo);
 
-        /** 
+        /**
         *  Build a mesh
         *  \param geo is the geode who contain vertice and faces
         *  \param mat Local to world matrix applied to the geode
@@ -162,10 +162,10 @@ class WriterNodeVisitor: public osg::NodeVisitor
         buildMesh(osg::Geode        &    geo,
                   const osg::Matrix &    mat,
                   MapIndices        &    index_vert,
-                  bool                   texcoords,       
+                  bool                   texcoords,
                   Lib3dsMesh             *mesh);
 
-        /** 
+        /**
         *  Add a vertice to the index and link him with the Triangle index and the drawable.
         *  \param index_vert is the map where the vertice are stored.
         *  \param index is the indice of the vertice's position in the vec3.
@@ -173,17 +173,17 @@ class WriterNodeVisitor: public osg::NodeVisitor
         *  \return the position of the vertice in the final mesh.
         */
         unsigned int
-        getMeshIndexForGeometryIndex(MapIndices & index_vert, 
+        getMeshIndexForGeometryIndex(MapIndices & index_vert,
                                      unsigned int index,
                                      unsigned int drawable_n);
-        /** 
+        /**
         *  Create the list of faces from the geode.
         *  \param geo is the geode to study.
         *  \param listTriangles is the list to fill.
         *  \param texcoords tell us if we have to treat texture coord.
         *  \param drawable_n tell us which drawable we are building.
-        */ 
-        void createListTriangle(osg::Geometry       *    geo, 
+        */
+        void createListTriangle(osg::Geometry       *    geo,
                                 ListTriangle        &    listTriangles,
                                 bool                &    texcoords,
                                 unsigned int        &    drawable_n);

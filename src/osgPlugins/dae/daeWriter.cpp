@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeWriter.h"
@@ -239,7 +239,7 @@ void daeWriter::createAssetTag( bool isZUpAxis )
     //TODO : set date and time
     c->setValue( "2006-07-25T00:00:00Z" );
     m->setValue( "2006-07-25T00:00:00Z" );
-    
+
     u->setName( "meter" );
     u->setMeter( 1 );
 }
@@ -277,7 +277,7 @@ void daeWriter::createAssetTag(const osg::Node &node)
 
 
 
-   // get description info as name value pairs 
+   // get description info as name value pairs
    if (node.getDescriptions().size()%2 == 0)
    {
       for(osg::Node::DescriptionList::const_iterator ditr=node.getDescriptions().begin();
@@ -286,15 +286,15 @@ void daeWriter::createAssetTag(const osg::Node &node)
       {
          std::string attrName( *ditr );   ++ditr;
          std::string attrValue( *ditr );
- 
+
          if (attrName=="collada_created" && !attrValue.empty())
          {
             c->setValue( attrValue.c_str() );
-         } 
+         }
          else if (attrName=="collada_modified" && !attrValue.empty())
          {
             m->setValue( attrValue.c_str() );
-         } 
+         }
          else if (attrName=="collada_keywords" && !attrValue.empty())
          {
             domAsset::domKeywords *keywords = daeSafeCast< domAsset::domKeywords >(asset->add("keywords" ));
@@ -351,35 +351,35 @@ void daeWriter::createAssetTag(const osg::Node &node)
          }
          else if (attrName=="collada_contributor{0}.author" && !attrValue.empty())
          {
-            domAsset::domContributor::domAuthor *author = 
+            domAsset::domContributor::domAuthor *author =
                daeSafeCast< domAsset::domContributor::domAuthor >(contributor->add("author" ));
             author->setValue( attrValue.c_str() );
          }
          else if (attrName=="collada_contributor{0}.authoring_tool" && !attrValue.empty())
          {
-            domAsset::domContributor::domAuthoring_tool *authoring_tool = 
+            domAsset::domContributor::domAuthoring_tool *authoring_tool =
                daeSafeCast< domAsset::domContributor::domAuthoring_tool >(contributor->add("authoring_tool" ));
             authoring_tool->setValue( attrValue.c_str() );
          }
          else if (attrName=="collada_contributor{0}.comments" && !attrValue.empty())
          {
-            domAsset::domContributor::domComments *comments = 
+            domAsset::domContributor::domComments *comments =
                daeSafeCast< domAsset::domContributor::domComments >(contributor->add("comments" ));
             comments->setValue( attrValue.c_str() );
          }
          else if (attrName=="collada_contributor{0}.source_data" && !attrValue.empty())
          {
-            domAsset::domContributor::domSource_data *source_data = 
+            domAsset::domContributor::domSource_data *source_data =
                daeSafeCast< domAsset::domContributor::domSource_data >(contributor->add("source_data" ));
             source_data->setValue( attrValue.c_str() );
          }
          else if (attrName=="collada_contributor{0}.copyright" && !attrValue.empty())
          {
-            domAsset::domContributor::domCopyright *copyright = 
+            domAsset::domContributor::domCopyright *copyright =
                daeSafeCast< domAsset::domContributor::domCopyright >(contributor->add("copyright" ));
             copyright->setValue( attrValue.c_str() );
          }
-         
+
          // TODO:  handle array of contributor data rather that just the first.
          // also there is probably a better way to pass attribute data as DescriptionList is a bit fragile
 
@@ -401,10 +401,10 @@ void daeWriter::pushStateSet(osg::StateSet* ss)
   if (NULL!=ss) {
     // Save our current stateset
     stateSetStack.push(currentStateSet.get());
-    
+
     // merge with node stateset
     currentStateSet = static_cast<osg::StateSet*>(currentStateSet->clone(osg::CopyOp::SHALLOW_COPY));
-    currentStateSet->merge(*ss);    
+    currentStateSet->merge(*ss);
   }
 }
 

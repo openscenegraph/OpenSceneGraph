@@ -148,7 +148,7 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
 
         bool writeChildren(const ControlMap& controlMap, std::ostream& fout, const std::string& indent) const;
         bool writeProperties(const ControlMap& controlMap, std::ostream& fout) const;
-        
+
         bool readAndReplaceControl(std::string& contents, Input& input);
 };
 

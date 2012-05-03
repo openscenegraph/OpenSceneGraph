@@ -142,15 +142,15 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Set the current OpenGL context uniqueID.
          *  The ContextID is used by classes like osg::StateAttribute's and osg::Drawable's to
          *  help manage seperate OpenGL objects, such as display lists, vertex buffer objects
-         *  and texture object for each graphics context. The ContextID simply acts as an index 
+         *  and texture object for each graphics context. The ContextID simply acts as an index
          *  into arrays that these classes maintain for the purpose of storing GL object handles.
-         * 
+         *
          *  Note, osgViewer::GraphicsWindow will automatically set up the ContextID for you,
          *  so you will rearely need to set this yourself.
-         * 
+         *
          *  The exception is when creating your own graphics context, where you should set
          *  the ContextID uniquely for each graphics context.
-         * 
+         *
          *  Typical settings for ContextID are 0,1,2,3... up to the maximum
          *  number of graphics contexts you have set up. By default contextID is 0.
          */
@@ -407,8 +407,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedAttribute(const StateAttribute* attribute);
 
-        /** Attribute has been applied externally, 
-          * and therefore this attribute type has been dirtied 
+        /** Attribute has been applied externally,
+          * and therefore this attribute type has been dirtied
           * and will need to be re-applied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
           * then use the have_applied(attribute) method as this will cause the osg::State to
@@ -1182,7 +1182,7 @@ class OSG_EXPORT State : public Referenced, public Observer
           * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/
         inline bool setActiveTextureUnit( unsigned int unit );
-        
+
         /** Get the current texture unit.*/
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
@@ -1268,8 +1268,8 @@ class OSG_EXPORT State : public Referenced, public Observer
           * Alternative version of getUniformLocation( unsigned int uniformNameID )
           * retrofited into OSG for backward compatibility with osgCal,
           * after uniform ids were refactored from std::strings to GLints in OSG version 2.9.10.
-          * 
-          * Drawbacks: This method is not particularly fast. It has to access mutexed static 
+          *
+          * Drawbacks: This method is not particularly fast. It has to access mutexed static
           * map of uniform ids. So don't overuse it or your app performance will suffer.
         */
         inline GLint getUniformLocation( const std::string & uniformName ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(uniformName) : -1; }
@@ -1338,8 +1338,8 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         /** Get the number of dynamic objects that will be rendered in this graphics context this frame.*/
         unsigned int getDynamicObjectCount() const { return _dynamicObjectCount; }
-        
-        /** Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the 
+
+        /** Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the
           * DynamicObjectRenderingCompletedCallback to inform of completion.*/
         inline void decrementDynamicObjectCount()
         {
@@ -1510,7 +1510,7 @@ class OSG_EXPORT State : public Referenced, public Observer
                 last_applied_attribute = 0L;
                 last_applied_shadercomponent = 0L;
                 global_default_attribute = 0L;
-                
+
             }
 
             void print(std::ostream& fout) const;
@@ -1845,7 +1845,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         ArrayDispatchers            _arrayDispatchers;
 
         osg::ref_ptr<GraphicsCostEstimator> _graphicsCostEstimator;
-        
+
         Timer_t                      _startTick;
         Timer_t                      _gpuTick;
         GLuint64EXT                 _gpuTimestamp;

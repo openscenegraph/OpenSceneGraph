@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -37,12 +37,12 @@ namespace osgUtil
 // Compute the circumcircle of a triangle (only x and y coordinates are used),
 // return (Cx, Cy, r^2)
 inline osg::Vec3 compute_circumcircle(
-    const osg::Vec3 &a, 
-    const osg::Vec3 &b, 
+    const osg::Vec3 &a,
+    const osg::Vec3 &b,
     const osg::Vec3 &c)
 {
-    float D = 
-        (a.x() - c.x()) * (b.y() - c.y()) - 
+    float D =
+        (a.x() - c.x()) * (b.y() - c.y()) -
         (b.x() - c.x()) * (a.y() - c.y());
 
     float cx, cy, r2;
@@ -59,14 +59,14 @@ inline osg::Vec3 compute_circumcircle(
     }
     else
     {
-        cx = 
-        (((a.x() - c.x()) * (a.x() + c.x()) + 
+        cx =
+        (((a.x() - c.x()) * (a.x() + c.x()) +
         (a.y() - c.y()) * (a.y() + c.y())) / 2 * (b.y() - c.y()) -
         ((b.x() - c.x()) * (b.x() + c.x()) +
         (b.y() - c.y()) * (b.y() + c.y())) / 2 * (a.y() - c.y())) / D;
 
-        cy = 
-        (((b.x() - c.x()) * (b.x() + c.x()) + 
+        cy =
+        (((b.x() - c.x()) * (b.x() + c.x()) +
         (b.y() - c.y()) * (b.y() + c.y())) / 2 * (a.x() - c.x()) -
         ((a.x() - c.x()) * (a.x() + c.x()) +
         (a.y() - c.y()) * (a.y() + c.y())) / 2 * (b.x() - c.x())) / D;
@@ -84,8 +84,8 @@ inline osg::Vec3 compute_circumcircle(
 
 inline bool point_in_circle(const osg::Vec3 &point, const osg::Vec3 &circle)
 {
-    float r2 = 
-        (point.x() - circle.x()) * (point.x() - circle.x()) + 
+    float r2 =
+        (point.x() - circle.x()) * (point.x() - circle.x()) +
         (point.y() - circle.y()) * (point.y() - circle.y());
     return r2 <= circle.z()*circle.z();
 //    return r2 <= circle.z();
@@ -157,12 +157,12 @@ public:
         a_(0),
         b_(0),
         c_(0) {}
-        
-    
+
+
     Triangle(Vertex_index a, Vertex_index b, Vertex_index c, osg::Vec3Array *points)
-        :    a_(a), 
-            b_(b), 
-            c_(c), 
+        :    a_(a),
+            b_(b),
+            c_(c),
             cc_(compute_circumcircle((*points)[a_], (*points)[b_], (*points)[c_]))
     {
         edge_[0] = Edge(a_, b_);
@@ -173,7 +173,7 @@ public:
     Triangle& operator = (const Triangle& rhs)
     {
         if (&rhs==this) return *this;
-        
+
         a_ = rhs.a_;
         b_ = rhs.b_;
         c_ = rhs.c_;
@@ -181,7 +181,7 @@ public:
         edge_[0]  = rhs.edge_[0];
         edge_[1]  = rhs.edge_[1];
         edge_[2]  = rhs.edge_[2];
-        
+
         return *this;
     }
 
@@ -240,15 +240,15 @@ public:
         {
             ie1=c();
             ie2=a();
-        } 
+        }
         if (ip1==ie1 || ip2==ie1) return false;
         if (ip1==ie2 || ip2==ie2) return false;
-    
+
         osg::Vec2 tp1((*points)[ie1].x(),(*points)[ie1].y());
         osg::Vec2 tp2((*points)[ie2].x(),(*points)[ie2].y());
         return intersect(tp1,tp2,p1,p2);
     }
-    
+
     bool intersectedby(const osg::Vec2 p1,const osg::Vec2 p2,osg::Vec3Array *points) const {
         // true if line [p1,p2] cuts at least one edge of this triangle
         osg::Vec2 tp1((*points)[a()].x(),(*points)[a()].y());
@@ -289,7 +289,7 @@ public:
     }
 
     int lineBisectTest(const osg::Vec3 apt,const osg::Vec3 bpt,const osg::Vec3 cpt, const osg::Vec2 p2) const
-    { 
+    {
         osg::Vec2 vp2tp=p2-osg::Vec2(apt.x(), apt.y()); // vector from p1 to a.
         // test is: cross product (z component) with ab,ac is opposite signs
         // AND dot product with ab,ac has at least one positive value.
@@ -309,9 +309,9 @@ public:
         }
         return 0;
     }
-    
+
     int lineBisects(osg::Vec3Array *points, const unsigned int ip1, const osg::Vec2 p2) const
-    { 
+    {
         // return true if line starts at vertex <ip1> and lies between the 2 edges which meet at vertex
         // <vertex> is that which uses index ip1.
         // line is <vertex> to p2
@@ -342,7 +342,7 @@ public:
         }
         return 0;
     }
-    
+
 private:
 
 
@@ -354,7 +354,7 @@ private:
         float det=((p4.y()-p3.y())*(p2.x()-p1.x())-(p4.x()-p3.x())*(p2.y()-p1.y()));
         if (det!=0)
         {
-            // point on line is P=p1+ua.(p2-p1) and Q=p3+ub.(p4-p3) 
+            // point on line is P=p1+ua.(p2-p1) and Q=p3+ub.(p4-p3)
             float ua=((p4.x()-p3.x())*(p1.y()-p3.y())-(p4.y()-p3.y())*(p1.x()-p3.x()))/det;
             float ub=((p2.x()-p1.x())*(p1.y()-p3.y())-(p2.y()-p1.y())*(p1.x()-p3.x()))/det;
             if (ua> 0.00 && ua< 1 && ub> 0.0000  && ub< 1)
@@ -364,11 +364,11 @@ private:
         }
         return false;
     }
-    
+
     Vertex_index a_;
     Vertex_index b_;
     Vertex_index c_;
-    osg::Vec3 cc_;    
+    osg::Vec3 cc_;
     Edge edge_[3];
 };
 
@@ -451,13 +451,13 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     osg::ref_ptr<osg::Geometry> gtess=new osg::Geometry; // add all the contours to this for analysis
     osg::ref_ptr<osg::Vec3Array> constraintverts=new osg::Vec3Array;
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
-    
+
     for (std::vector<unsigned int>::iterator itint=vindexlist.begin(); itint!=vindexlist.end(); itint++)
     {
     //    OSG_WARN<< "add point " << (*itint) << " at " << (*points)[*itint].x() << ","<< (*points)[*itint].y() <<std::endl;
         constraintverts->push_back((*points)[*itint]);
     }
-    
+
     unsigned int npts=vindexlist.size();
 
     gtess->setVertexArray(constraintverts.get());
@@ -469,7 +469,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     tscx->retessellatePolygons(*(gtess.get())); // this should insert extra vertices where constraints overlap
 
     // extract triangles from gtess
-    
+
     unsigned int ipr;
     for (ipr=0; ipr<gtess->getNumPrimitiveSets(); ipr++)
     {
@@ -492,7 +492,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     pidx=vindexlist[prset->index(ic)];
                 }
-                
+
                 if (prset->index(ic+1)>=npts)
                 {
                     // this is an added point.
@@ -503,7 +503,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     pidx1=vindexlist[prset->index(ic+1)];
                 }
-                
+
                 if (prset->index(ic+2)>=npts)
                 {
                     // this is an added point.
@@ -540,18 +540,18 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     pidx1=vindexlist[prset->index(ic+1)];
                 }
-                
+
                 if (prset->index(ic+2)>=npts)
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic+2)]);
                     pidx2=points->size()-1;
                 }
-                else 
+                else
                 {
                     pidx2=vindexlist[prset->index(ic+2)];
                 }
-                
+
                 if (ic%2==0)
                 {
                     triangles.push_back(Triangle(pidx, pidx1, pidx2, points));
@@ -563,7 +563,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 //                    OSG_WARN<< "vert " << prset->index(ic) << " in array"<<std::endl;
             }
             break;
-            
+
         case osg::PrimitiveSet::TRIANGLE_FAN:
             {
                 if (prset->index(0)>=npts)
@@ -589,7 +589,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                     {
                         pidx1=vindexlist[prset->index(ic)];
                     }
-                    
+
                     if (prset->index(ic+1)>=npts)
                     { // this is an added point.
                         points->push_back((*constraintverts)[prset->index(ic+1)]);
@@ -636,7 +636,7 @@ void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
       * defined as edge of dco subtends>acs(0.999999)
     */
     int nrem=0;
-    osg::Vec3Array *vertices= dynamic_cast< osg::Vec3Array*>(getVertexArray()); 
+    osg::Vec3Array *vertices= dynamic_cast< osg::Vec3Array*>(getVertexArray());
     if (vertices)
     {
         for (osg::Vec3Array::iterator vitr=vertices->begin(); vitr!=vertices->end(); )
@@ -792,7 +792,7 @@ bool DelaunayTriangulator::triangulate()
 
     // initialize storage structures
     Triangle_list triangles;
-    Triangle_list discarded_tris;    
+    Triangle_list discarded_tris;
 
     // GWM July 2005 add constraint vertices to terrain
     linelist::iterator linitr;
@@ -824,22 +824,22 @@ bool DelaunayTriangulator::triangulate()
 
     // pre-sort sample points
     OSG_INFO << "DelaunayTriangulator: pre-sorting sample points\n";
-    std::sort(points->begin(), points->end(), Sample_point_compare);    
+    std::sort(points->begin(), points->end(), Sample_point_compare);
     // 24.12.06 add convex hull of points to force sensible outline.
     osg::ref_ptr<osgUtil::DelaunayConstraint> dcconvexhull=getconvexhull(points);
     addInputConstraint(dcconvexhull.get());
 
     // set the last valid index for the point list
-    GLuint last_valid_index = points->size() - 1;    
+    GLuint last_valid_index = points->size() - 1;
 
     // find the minimum and maximum x values in the point list
     float minx = (*points)[0].x();
     float maxx = (*points)[last_valid_index].x();
 
-    // find the minimum and maximum y values in the point list    
+    // find the minimum and maximum y values in the point list
     float miny = (*points)[0].y();
     float maxy = miny;
-    
+
     OSG_INFO << "DelaunayTriangulator: finding minimum and maximum Y values\n";
     osg::Vec3Array::const_iterator mmi;
     for (mmi=points->begin(); mmi!=points->end(); ++mmi)
@@ -847,7 +847,7 @@ bool DelaunayTriangulator::triangulate()
         if (mmi->y() < miny) miny = mmi->y();
         if (mmi->y() > maxy) maxy = mmi->y();
     }
-    
+
     // add supertriangle vertices to the point list
     // gwm added 1.05* to ensure that supervertices are outside the domain of points.
     // original value could make 2 coincident points for regular arrays of x,y,h data.
@@ -859,17 +859,17 @@ bool DelaunayTriangulator::triangulate()
     points_->push_back(osg::Vec3(maxx + .10*(maxx - minx), miny - .10*(maxy - miny), 0));
     points_->push_back(osg::Vec3(maxx + .10*(maxx - minx), maxy + .10*(maxy - miny), 0));
     points_->push_back(osg::Vec3(minx - .10*(maxx - minx), maxy + .10*(maxy - miny), 0));
-                                                                   
-    // add supertriangles to triangle list                           
+
+    // add supertriangles to triangle list
     triangles.push_back(Triangle(last_valid_index+1, last_valid_index+2, last_valid_index+3, points));
     triangles.push_back(Triangle(last_valid_index+4, last_valid_index+1, last_valid_index+3, points));
 
-    
-    // begin triangulation    
+
+    // begin triangulation
     GLuint pidx = 0;
-    osg::Vec3Array::const_iterator i;    
-    
-    OSG_INFO << "DelaunayTriangulator: triangulating vertex grid (" << (points->size()-3) <<" points)\n";    
+    osg::Vec3Array::const_iterator i;
+
+    OSG_INFO << "DelaunayTriangulator: triangulating vertex grid (" << (points->size()-3) <<" points)\n";
 
     for (i=points->begin(); i!=points->end(); ++i, ++pidx)
     {
@@ -921,7 +921,7 @@ bool DelaunayTriangulator::triangulate()
                       //      edge.set_duplicate(true);
                             edge.set_duplicate(!edge.get_duplicate());
                         }
-                    }                    
+                    }
                     triangles.erase(j);
                 }
             }
@@ -981,7 +981,7 @@ bool DelaunayTriangulator::triangulate()
                                 //check that the edge ip1-ip2 is not already part of the triangulation.
                                 if (titr->isedge(ip1,ip2)) edgused=true;
                                 if (titr->isedge(ip2,ip1)) edgused=true;
-                                //        if (edgused) OSG_WARN << "Edge used in triangle " << it << " " << 
+                                //        if (edgused) OSG_WARN << "Edge used in triangle " << it << " " <<
                                 //            titr->a()<<","<< titr->b()<<","<< titr->c()<<  std::endl;
                                 it++;
                             }
@@ -1006,7 +1006,7 @@ bool DelaunayTriangulator::triangulate()
                                     if (icut>0)
                                     {
                                         // triangle titr starts the constraint edge
-                                        std::vector<unsigned int> edgeRight, edgeLeft; 
+                                        std::vector<unsigned int> edgeRight, edgeLeft;
                                         edgeRight.push_back(ip1);
                                         edgeLeft.push_back(ip1);
                                         //        OSG_WARN << "hole first " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
@@ -1037,7 +1037,7 @@ bool DelaunayTriangulator::triangulate()
                                                 trisToDelete.push_back(tradj);
                                                 icut=tradj->whichEdge(points_.get(),p1,p2,e1,e2);
                                                 //    OSG_WARN  << ntr << " cur triedge " << icut << " " << ip1 <<
-                                                //        " to " << ip2 << " tadj " << tradj->a()<< ","<<tradj->b() <<"," 
+                                                //        " to " << ip2 << " tadj " << tradj->a()<< ","<<tradj->b() <<","
                                                 //        <<tradj->c() <<std::endl;
                                                 if        (icut==1) {e1=tradj->b(); e2=tradj->c();} // icut=1 implies vertex a is not involved
                                                 else if (icut==2) {e1=tradj->c(); e2=tradj->a();}
@@ -1079,7 +1079,7 @@ bool DelaunayTriangulator::triangulate()
                                 for (tri=triangles.begin(); tri!=triangles.end(); )
                                 {
                                     bool deleted=false;
-                                    for (std::vector<const Triangle *>::iterator deleteTri=trisToDelete.begin(); 
+                                    for (std::vector<const Triangle *>::iterator deleteTri=trisToDelete.begin();
                                     deleteTri!=trisToDelete.end(); )
                                     {
                                         if (&(*tri)==*deleteTri)
@@ -1158,18 +1158,18 @@ bool DelaunayTriangulator::triangulate()
             pt_indices.push_back(ti->c());
         }
     }
-    
+
     // LF August 2011 fix crash when no triangle is created
     if (!pt_indices.size())
     {
         OSG_WARN << "Warning: DelaunayTriangulator::triangulate(): no triangle generated" << std::endl;
-        return false;        
-    }    
-    
+        return false;
+    }
+
     prim_tris_ = new osg::DrawElementsUInt(GL_TRIANGLES, pt_indices.size(), &(pt_indices.front()));
 
     OSG_INFO << "DelaunayTriangulator: process done, " << prim_tris_->getNumPrimitives() << " triangles remain\n";
-    
+
     return true;
 }
 
@@ -1264,37 +1264,37 @@ float DelaunayConstraint::windingNumber(const osg::Vec3 &testpoint) const
             }
         }
     }
-    
+
     return theta/osg::PI/2.0; // should be 0 or 2 pi.
 }
 osg::DrawElementsUInt *DelaunayConstraint::makeDrawable()
-{ 
+{
     // initialize index storage vector for internal triangles.
     std::vector<GLuint> pt_indices;
     pt_indices.reserve(_interiorTris.size() * 3);
     trilist::const_iterator ti;
     for (ti=_interiorTris.begin(); ti!=_interiorTris.end(); ++ti)
     {
-        
+
         //  if (normals_.valid()) {
         //        (normals_.get())->push_back(ti->compute_normal(points));
         //  }
-        
+
         pt_indices.push_back((*ti)[0]);
         pt_indices.push_back((*ti)[1]);
         pt_indices.push_back((*ti)[2]);
     }
     prim_tris_ = new osg::DrawElementsUInt(GL_TRIANGLES, pt_indices.size(), &(pt_indices.front()));
-    
+
     return prim_tris_.get();
 }
-bool DelaunayConstraint::contains(const osg::Vec3 &testpoint) const 
+bool DelaunayConstraint::contains(const osg::Vec3 &testpoint) const
 {
     // true if point is internal to the loop.
     float theta=windingNumber(testpoint); // sum of angles subtended by the line array - the winding number
     return fabs(theta)>0.9; // should be 0 or 1 (or 2,3,4 for very complex not permitted loops).
 }
-bool DelaunayConstraint::outside(const osg::Vec3 &testpoint) const 
+bool DelaunayConstraint::outside(const osg::Vec3 &testpoint) const
 {
     // true if point is outside the loop.
     float theta=windingNumber(testpoint); // sum of angles subtended by the line array - the winding number
@@ -1364,11 +1364,11 @@ void DelaunayConstraint::handleOverlaps(void)
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); 
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD);
     //  ODD chooses the winding =1, NOT overlapping areas of constraints.
     // nb this includes all the edges where delaunay constraints meet
     // draw a case to convince yourself!.
-    
+
     tscx->retessellatePolygons(*this); // find all edges
 }
 

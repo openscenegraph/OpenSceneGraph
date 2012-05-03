@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Box>
 
-bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr) 
+bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr)
 {
 	/*
 	osgWidget::Box& box = static_cast<osgWidgegt::Box&>(obj);
@@ -18,7 +18,7 @@ bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr)
 		model,
 		fr
 	);
-		
+
 	if(fr[0].matchWord("animation") and fr[1].isString()) iter = loadFile(
 		"animation",
 		&osgCal::osgWidget_Box::loadAnimation,
@@ -40,7 +40,7 @@ bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr)
 		fr
 	);
 	*/
-	
+
 	osgWidget::warn() << "Box read" << std::endl;
 
 	return false;
@@ -49,7 +49,7 @@ bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr)
 bool osgWidget_Box_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
 {
 	// const osgWidget::Box& model = static_cast<const osgWidget::Box&>(obj);
-	
+
 	fw.indent() << fw.wrapString("Box stuff...") << std::endl;
 
 	return true;
@@ -66,7 +66,7 @@ bool Model_readData(osg::Object& obj, osgDB::Input& fr) {
 
 	if(core) {
 		model.create(core);
-	
+
 		iter = true;
 	}
 

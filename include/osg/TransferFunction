@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,14 +23,14 @@ namespace osg {
 
 
 /** TransferFunction is a class that provide a 1D,2D or 3D colour look up table
-  * that can be used on the GPU as a 1D, 2D or 3D texture.  
-  * Typically uses include mapping heights to colours when contouring terrain, 
+  * that can be used on the GPU as a 1D, 2D or 3D texture.
+  * Typically uses include mapping heights to colours when contouring terrain,
   * or mapping intensities to colours when volume rendering.
 */
 class OSG_EXPORT TransferFunction : public osg::Object
 {
     public :
-    
+
         TransferFunction();
 
        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -43,9 +43,9 @@ class OSG_EXPORT TransferFunction : public osg::Object
 
         /** Get the const image that is used for passing the transfer function data to the GPU.*/
         const osg::Image* getImage() const { return _image.get(); }
-        
+
     protected:
-    
+
         virtual ~TransferFunction();
 
         osg::ref_ptr<osg::Image>    _image;
@@ -55,17 +55,17 @@ class OSG_EXPORT TransferFunction : public osg::Object
 class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
 {
     public:
-    
+
         TransferFunction1D();
-    
+
        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         TransferFunction1D(const TransferFunction1D& tf, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Object(osg, TransferFunction1D)
-        
+
         /** Get the minimum transfer function value.*/
         float getMinimum() const { return _colorMap.empty() ? 0.0f : _colorMap.begin()->first; }
-        
+
         /** Get the maximum transfer function value.*/
         float getMaximum() const { return _colorMap.empty() ? 0.0f : _colorMap.rbegin()->first; }
 
@@ -75,12 +75,12 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
 
         /** Clear the whole range to just represent a single color.*/
         void clear(const osg::Vec4& color = osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        
+
         /** Get pixel value from the image. */
         osg::Vec4 getPixelValue(unsigned int i) const
         {
             if (_image.valid() && i<static_cast<unsigned int>(_image->s()))
-            {   
+            {
                 return *reinterpret_cast<osg::Vec4*>(_image->data(i));
             }
             else
@@ -96,30 +96,30 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
           * updateImage defaults to true, and tells the setColor function to update the associate osg::Image that
           * tracks the color map.  Pass in false as the updateImage parameter if you are setting up many values
           * at once to avoid recomputation of the image data, then once all setColor calls are made explictly call
-          * updateImage() to bring the osg::Image back into sync with the color map. */ 
+          * updateImage() to bring the osg::Image back into sync with the color map. */
         void setColor(float v, const osg::Vec4& color, bool updateImage=true);
-        
+
         /** Get the color for a specified transfer function value, interpolating the value if no exact match is found.*/
         osg::Vec4 getColor(float v) const;
-        
+
         typedef std::map<float, osg::Vec4> ColorMap;
-        
+
         /** Get the color map that stores the mapping between the the transfer function value and the colour it maps to.*/
         ColorMap& getColorMap() { return _colorMap; }
-        
+
         /** Get the const color map that stores the mapping between the the transfer function value and the colour it maps to.*/
         const ColorMap& getColorMap() const { return _colorMap; }
 
         /** Assign a color map and automatically update the image to make sure they are in sync.*/
         void assign(const ColorMap& vcm);
-        
+
         /** Manually update the associate osg::Image to represent the colors assigned in the color map.*/
         void updateImage();
 
     protected:
-    
+
         ColorMap _colorMap;
-        
+
         void assignToImage(float lower_v, const osg::Vec4& lower_c, float upper_v, const osg::Vec4& upper_c);
 };
 

@@ -125,7 +125,7 @@ public:
     BSP_VERTEX m_controlPoints[9];  // Se accede a ellos en la carga
 
 protected:
-        
+
     int m_tessellation;
     std::vector<BSP_VERTEX> m_vertices;
     std::vector<GLuint> m_indices;
@@ -285,8 +285,8 @@ osg::Geode* Q3BSPReader::convertFromBSP(
                     }
                 }
 
-              
-  
+
+
               osg::Geometry* patch_geom = new osg::Geometry;
               //tessellate the patch
 
@@ -295,19 +295,19 @@ osg::Geode* Q3BSPReader::convertFromBSP(
               {
                 stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
               }
-              
+
               if(lightmap_texture)
               {
                   stateset->setTextureAttributeAndModes(1,lightmap_texture,osg::StateAttribute::ON);
               }
-                
+
               //patch_group->addChild(map_geode);
 
               current_patch.m_quadraticPatches[y*numPatchesWide+x].Tessellate(8/*aCurveTessellation*/,patch_geom);
               map_geode->addDrawable(patch_geom);
             }
         }
-      
+
 
     }
 
@@ -364,7 +364,7 @@ osg::Geometry* Q3BSPReader::createMeshFace( const BSP_LOAD_FACE& aLoadFace,const
     }
 
   return obj_geom;
-     
+
 
 }
 

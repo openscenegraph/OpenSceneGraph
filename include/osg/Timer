@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ class OSG_EXPORT Timer {
         void setStartTick(Timer_t t) { _startTick = t; }
         Timer_t getStartTick() const { return _startTick; }
 
-        
+
         /** Get elapsed time in seconds.*/
         inline double time_s() const { return delta_s(_startTick, tick()); }
 
@@ -54,7 +54,7 @@ class OSG_EXPORT Timer {
 
         /** Get elapsed time in nanoseconds.*/
         inline double time_n() const { return delta_n(_startTick, tick()); }
-        
+
         /** Get the time in seconds between timer ticks t1 and t2.*/
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerTick; }
 
@@ -66,7 +66,7 @@ class OSG_EXPORT Timer {
 
         /** Get the time in nanoseconds between timer ticks t1 and t2.*/
         inline double delta_n( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e9; }
-        
+
         /** Get the the number of seconds per tick. */
         inline double getSecondsPerTick() const { return _secsPerTick; }
 

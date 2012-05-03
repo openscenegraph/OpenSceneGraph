@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -21,7 +21,7 @@
 #include <osgAnimation/VertexInfluence>
 #include <osg/observer_ptr>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
     class RigGeometry;
@@ -33,9 +33,9 @@ namespace osgAnimation
 
         RigTransformSoftware();
         virtual void operator()(RigGeometry&);
-    
 
-        class BoneWeight 
+
+        class BoneWeight
         {
         public:
             BoneWeight(Bone* bone, float weight) : _bone(bone), _weight(weight) {}
@@ -55,8 +55,8 @@ namespace osgAnimation
         public:
             BoneWeightList& getBones() { return _bones; }
             VertexList& getVertexes() { return _vertexes; }
-            
-            void resetMatrix() 
+
+            void resetMatrix()
             {
                 _result.set(0, 0, 0, 0,
                             0, 0, 0, 0,
@@ -122,7 +122,7 @@ namespace osgAnimation
         {
             // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
             int size = _boneSetVertexSet.size();
-            for (int i = 0; i < size; i++) 
+            for (int i = 0; i < size; i++)
             {
                 UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
                 uniq.computeMatrixForVertexSet();
@@ -142,7 +142,7 @@ namespace osgAnimation
         template <class V> void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
             int size = _boneSetVertexSet.size();
-            for (int i = 0; i < size; i++) 
+            for (int i = 0; i < size; i++)
             {
                 UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
                 uniq.computeMatrixForVertexSet();
@@ -150,7 +150,7 @@ namespace osgAnimation
 
                 const VertexList& vertexes = uniq.getVertexes();
                 int vertexSize = vertexes.size();
-                for (int j = 0; j < vertexSize; j++) 
+                for (int j = 0; j < vertexSize; j++)
                 {
                     int idx = vertexes[j];
                     dst[idx] = osg::Matrix::transform3x3(src[idx],matrix);

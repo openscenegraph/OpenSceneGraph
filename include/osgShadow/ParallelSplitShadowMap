@@ -68,7 +68,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
 
         /** Set the texture resolution */
         inline void setTextureResolution(unsigned int resolution) { _resolution = resolution; }
-        
+
         /** Get the texture resolution */
         inline unsigned int getTextureResolution() const { return _resolution; }
 
@@ -86,7 +86,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
 
         /** Set min near distance for splits */
         inline void setMinNearDistanceForSplits(double nd){ _split_min_near_dist=nd; }
-        
+
         /** Get min near distance for splits */
         inline double getMinNearDistanceForSplits() const { return _split_min_near_dist; }
 
@@ -95,13 +95,13 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
          *    and simulated. just this user passed light, it needs to be a directional light.
          */
         inline void setUserLight(osg::Light* light) { _userLight = light; }
-        
+
         /** get the user defined light for shadow simulation */
         inline const osg::Light* getUserLight() const { return _userLight.get(); }
 
         /** Set the values for the ambient bias the shader will use.*/
         void setAmbientBias(const osg::Vec2& ambientBias );
-        
+
         /** Get the values for the ambient bias the shader will use.*/
         const osg::Vec2& getAmbientBias() const { return _ambientBias; }
 
@@ -129,7 +129,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
 
         /** set split calculation mode */
         inline void setSplitCalculationMode(SplitCalcMode scm=SPLIT_EXP) { _SplitCalcMode = scm; }
-        
+
         /** get split calculation mode */
         inline SplitCalcMode getSplitCalculationMode() const { return _SplitCalcMode; }
 

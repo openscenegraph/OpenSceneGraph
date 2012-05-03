@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -48,31 +48,31 @@ bool Stats::setAttribute(unsigned int frameNumber, const std::string& attributeN
 
     if (frameNumber>_latestFrameNumber)
     {
-        // need to advance 
-        
+        // need to advance
+
         // first clear the entries up to and including the new frameNumber
         for(unsigned int i = _latestFrameNumber+1; i<= frameNumber; ++i)
         {
             unsigned int index = (i - _baseFrameNumber) % _attributeMapList.size();
             _attributeMapList[index].clear();
         }
-        
+
         if ( (frameNumber-_baseFrameNumber) >= static_cast<unsigned int>(_attributeMapList.size()))
         {
             _baseFrameNumber = (frameNumber/_attributeMapList.size())*_attributeMapList.size();
         }
-        
+
         _latestFrameNumber = frameNumber;
-        
+
     }
 
     int index = getIndex(frameNumber);
-    if (index<0) 
+    if (index<0)
     {
         OSG_NOTICE<<"Failed to assing valid index for Stats::setAttribute("<<frameNumber<<","<<attributeName<<","<<value<<")"<<std::endl;
         return false;
     }
-    
+
     AttributeMap& attributeMap = _attributeMapList[index];
     attributeMap[attributeName] = value;
 
@@ -83,12 +83,12 @@ bool Stats::getAttributeNoMutex(unsigned int frameNumber, const std::string& att
 {
     int index = getIndex(frameNumber);
     if (index<0) return false;
-    
+
     const AttributeMap& attributeMap = _attributeMapList[index];
     AttributeMap::const_iterator itr = attributeMap.find(attributeName);
     if (itr == attributeMap.end()) return false;
 
-    value = itr->second;    
+    value = itr->second;
     return true;
 }
 
@@ -103,7 +103,7 @@ bool Stats::getAveragedAttribute(unsigned int startFrameNumber, unsigned int end
     {
         std::swap(endFrameNumber, startFrameNumber);
     }
-    
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     double total = 0.0;
@@ -131,7 +131,7 @@ Stats::AttributeMap& Stats::getAttributeMapNoMutex(unsigned int frameNumber)
 {
     int index = getIndex(frameNumber);
     if (index<0) return _invalidAttributeMap;
-    
+
     return _attributeMapList[index];
 }
 
@@ -139,7 +139,7 @@ const Stats::AttributeMap& Stats::getAttributeMapNoMutex(unsigned int frameNumbe
 {
     int index = getIndex(frameNumber);
     if (index<0) return _invalidAttributeMap;
-    
+
     return _attributeMapList[index];
 }
 

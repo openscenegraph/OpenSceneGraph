@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -47,7 +47,7 @@ MinimalDrawBoundsShadowMap::~MinimalDrawBoundsShadowMap()
 }
 
 void MinimalDrawBoundsShadowMap::ViewData::cullShadowReceivingScene( )
-{    
+{
     BaseClass::ViewData::cullShadowReceivingScene( );
     ThisClass::ViewData::cullBoundAnalysisScene( );
 }
@@ -59,17 +59,17 @@ void MinimalDrawBoundsShadowMap::ViewData::cullBoundAnalysisScene( )
     _boundAnalysisCamera->setProjectionMatrix( _clampedProjection );
 
     osg::Matrixd::value_type l,r,b,t,n,f;
-    _boundAnalysisCamera->getProjectionMatrixAsFrustum( l,r,b,t,n,f );    
+    _boundAnalysisCamera->getProjectionMatrixAsFrustum( l,r,b,t,n,f );
 
     _mainCamera = _cv->getRenderStage()->getCamera();
 
     extendProjection( _boundAnalysisCamera->getProjectionMatrix(),
-                      _boundAnalysisCamera->getViewport(), osg::Vec2( 2,2 ) ); 
+                      _boundAnalysisCamera->getViewport(), osg::Vec2( 2,2 ) );
 
     // record the traversal mask on entry so we can reapply it later.
     unsigned int traversalMask = _cv->getTraversalMask();
 
-    _cv->setTraversalMask( traversalMask & 
+    _cv->setTraversalMask( traversalMask &
          _st->getShadowedScene()->getReceivesShadowTraversalMask() );
 
     // do RTT camera traversal
@@ -95,7 +95,7 @@ void MinimalDrawBoundsShadowMap::ViewData::createDebugHUD( )
 
     osg::Geometry* geometry = osg::createTexturedQuadGeometry
         ( osg::Vec3(_hudOrigin[0]+_hudSize[0],_hudOrigin[1],0),
-          osg::Vec3(_hudSize[0],0,0), 
+          osg::Vec3(_hudSize[0],0,0),
           osg::Vec3(0,_hudSize[1],0) );
 
     geode->addDrawable(geometry);
@@ -119,10 +119,10 @@ osg::BoundingBox MinimalDrawBoundsShadowMap::ViewData::scanImage
 {
     osg::BoundingBox bb, bbProj;
 
-    int components = osg::Image::computeNumComponents( image->getPixelFormat() );    
+    int components = osg::Image::computeNumComponents( image->getPixelFormat() );
 
     if( image->getDataType() == GL_FLOAT ) {
-        float scale = 255.f / 254.f;    
+        float scale = 255.f / 254.f;
         float * pf = (float *)image->data();
         for( int y = 0; y < image->t(); y++ ) {
             float fY = ( 0.5f + y ) / image->t();
@@ -133,7 +133,7 @@ osg::BoundingBox MinimalDrawBoundsShadowMap::ViewData::scanImage
                     float fMinZ = pf[0] * scale;
                     bbProj.expandBy( osg::Vec3( fX, fY, fMinZ ) );
                     bb.expandBy( osg::Vec3( fX, fY, fMinZ ) * m );
-                
+
                     if( components > 1 ) {
                         float fMaxZ = scale * ( 1.f - pf[1] );
                         bbProj.expandBy( osg::Vec3( fX, fY, fMaxZ ) );
@@ -164,7 +164,7 @@ osg::BoundingBox MinimalDrawBoundsShadowMap::ViewData::scanImage
                     if( components > 1 ) {
                         float fMaxZ = scale * (255 - pb[1] + 0.5f);
                         fMaxZ = osg::clampTo( fMaxZ, 0.f, 1.f );
-                    
+
                         bbProj.expandBy( osg::Vec3( fX, fY, fMaxZ ) );
                         bb.expandBy( osg::Vec3( fX, fY, fMaxZ ) * m );
                     }
@@ -183,7 +183,7 @@ void MinimalDrawBoundsShadowMap::ViewData::performBoundAnalysis( const osg::Came
     if( !_projection.valid() )
         return;
 
-    osg::Camera::BufferAttachmentMap & bam 
+    osg::Camera::BufferAttachmentMap & bam
         = const_cast<osg::Camera&>( camera ).getBufferAttachmentMap();
 #if ANALYSIS_DEPTH
     osg::Camera::Attachment & attachment = bam[ osg::Camera::DEPTH_BUFFER ];
@@ -192,12 +192,12 @@ void MinimalDrawBoundsShadowMap::ViewData::performBoundAnalysis( const osg::Came
 #endif
 
     const osg::ref_ptr< osg::Image > image = attachment._image.get();
-    if( !image.valid() ) 
+    if( !image.valid() )
         return;
 
     osg::Matrix m;
-    m.invert( *_modellingSpaceToWorldPtr * 
-              camera.getViewMatrix() * 
+    m.invert( *_modellingSpaceToWorldPtr *
+              camera.getViewMatrix() *
               camera.getProjectionMatrix() );
 
     m.preMult( osg::Matrix::scale( osg::Vec3( 2.f, 2.f, 2.f ) ) *
@@ -205,17 +205,17 @@ void MinimalDrawBoundsShadowMap::ViewData::performBoundAnalysis( const osg::Came
 
     osg::BoundingBox bb = scanImage( image.get(), m );
 
-    if( getDebugDraw() ) { 
+    if( getDebugDraw() ) {
         ConvexPolyhedron p;
         p.setToBoundingBox( bb );
-        p.transform( *_modellingSpaceToWorldPtr, 
+        p.transform( *_modellingSpaceToWorldPtr,
                  osg::Matrix::inverse( *_modellingSpaceToWorldPtr ) );
 
         setDebugPolytope( "scan", p,
                       osg::Vec4( 0,0,0,1 ), osg::Vec4( 0,0,0,0.1 ) );
     }
 
-    cutScenePolytope( *_modellingSpaceToWorldPtr, 
+    cutScenePolytope( *_modellingSpaceToWorldPtr,
                      osg::Matrix::inverse( *_modellingSpaceToWorldPtr ), bb );
 
     frameShadowCastingCamera( _mainCamera.get(), _camera.get() );
@@ -233,12 +233,12 @@ void MinimalDrawBoundsShadowMap::ViewData::performBoundAnalysis( const osg::Came
 void MinimalDrawBoundsShadowMap::ViewData::recordShadowMapParams( )
 {
     const osgUtil::RenderStage * rs = _cv->getCurrentRenderBin()->getStage();
-    
+
     setShadowCameraProjectionMatrixPtr( _cv->getProjectionMatrix() );
 
-    if( !rs->getRenderBinList().empty() || rs->getBinNum() != 0 ) 
+    if( !rs->getRenderBinList().empty() || rs->getBinNum() != 0 )
     {
-        
+
     }
 #if 0
     MinimalShadowMap::RenderLeafList rll;
@@ -248,17 +248,17 @@ void MinimalDrawBoundsShadowMap::ViewData::recordShadowMapParams( )
     pass++;
 
     std::set< osg::ref_ptr< osg::RefMatrix > > projections;
-    
+
     MinimalShadowMap::GetRenderLeaves( , rll );
-    for( unsigned i =0; i < rll.size(); i++ ) {        
+    for( unsigned i =0; i < rll.size(); i++ ) {
         if( rll[i]->_projection.get() != _projection.get() ) {
             osg::RefMatrix * projection = rll[i]->_projection.get();
-            projections.insert( rll[i]->_projection ); 
+            projections.insert( rll[i]->_projection );
             c++;
         }
     }
 
-    if( projections.size() > 0 ) 
+    if( projections.size() > 0 )
         _projection = (*projections.begin()).get();
 
 
@@ -270,11 +270,11 @@ void MinimalDrawBoundsShadowMap::ViewData::init
         ( ThisClass *st, osgUtil::CullVisitor *cv )
 {
     BaseClass::ViewData::init( st, cv );
-    
+
     _frameShadowCastingCameraPasses = 2;
     _camera->setCullCallback
         ( new CameraCullCallback( this, _camera->getCullCallback() ) );
-    
+
     _boundAnalysisTexture = new osg::Texture2D;
     _boundAnalysisTexture->setTextureSize
         ( _boundAnalysisSize[0], _boundAnalysisSize[1] );
@@ -287,7 +287,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
                                         _boundAnalysisSize[1], 1,
                                         GL_DEPTH_COMPONENT, GL_FLOAT );
 
-    _boundAnalysisTexture->setInternalFormat(GL_DEPTH_COMPONENT);    
+    _boundAnalysisTexture->setInternalFormat(GL_DEPTH_COMPONENT);
 //    _boundAnalysisTexture->setShadowComparison(true);
     _boundAnalysisTexture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
 
@@ -298,14 +298,14 @@ void MinimalDrawBoundsShadowMap::ViewData::init
 
 #if USE_FLOAT_IMAGE
     _boundAnalysisImage->allocateImage( _boundAnalysisSize[0],
-                                        _boundAnalysisSize[1], 1, 
+                                        _boundAnalysisSize[1], 1,
                                         GL_RGBA, GL_FLOAT );
 
     _boundAnalysisImage->setInternalTextureFormat( GL_RGBA16F_ARB );
     _boundAnalysisTexture->setInternalFormat(GL_RGBA16F_ARB);
 #else
     _boundAnalysisImage->allocateImage( _boundAnalysisSize[0],
-                                        _boundAnalysisSize[1], 1, 
+                                        _boundAnalysisSize[1], 1,
                                         GL_RGBA, GL_UNSIGNED_BYTE );
 
     _boundAnalysisImage->setInternalTextureFormat( GL_RGBA );
@@ -325,7 +325,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
     _boundAnalysisTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
     _boundAnalysisTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
 
-    // set up the render to texture camera.    
+    // set up the render to texture camera.
     // create the camera
     _boundAnalysisCamera = new osg::Camera;
     _boundAnalysisCamera->setName( "AnalysisCamera" );

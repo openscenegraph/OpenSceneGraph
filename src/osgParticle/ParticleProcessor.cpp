@@ -66,7 +66,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
             {
                 ParticleSystem::ScopedWriteLock lock(*(_ps->getReadWriteMutex()));
 
-                //added- 1/17/06- bgandere@nps.edu 
+                //added- 1/17/06- bgandere@nps.edu
                 //a check to make sure we havent updated yet this frame
                 if(_frameNumber < nv.getFrameStamp()->getFrameNumber())
                 {
@@ -81,7 +81,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                         _currentTime = 0;
                         _t0 = -1;
                     }
-                    
+
                     // skip if we haven't initialized _t0 yet
                     if (_t0 != -1)
                     {
@@ -93,21 +93,21 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                             if (_endless || (_currentTime < (_startTime + _lifeTime)))
                                 alive = true;
                         }
-    
+
                         // update current time
                         _currentTime += t - _t0;
-    
+
                         // process only if the particle system is not frozen/culled
-                        if (alive && 
-                            _enabled && 
-                            !_ps->isFrozen() && 
+                        if (alive &&
+                            _enabled &&
+                            !_ps->isFrozen() &&
                             ((_ps->getLastFrameNumber()+1) >= (nv.getFrameStamp()->getFrameNumber()) || !_ps->getFreezeOnCull()))
                         {
                             // initialize matrix flags
                             _need_ltw_matrix = true;
                             _need_wtl_matrix = true;
                             _current_nodevisitor = &nv;
-    
+
                             // do some process (unimplemented in this base class)
                             process( t - _t0 );
                         } else {
@@ -120,8 +120,8 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                     _t0 = t;
                 }
 
-                //added- 1/17/06- bgandere@nps.edu 
-                //updates the _frameNumber, keeping it current 
+                //added- 1/17/06- bgandere@nps.edu
+                //updates the _frameNumber, keeping it current
                 _frameNumber = nv.getFrameStamp()->getFrameNumber();
             }
             else
@@ -129,7 +129,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                 OSG_WARN << "osgParticle::ParticleProcessor::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
             }
 
-        } else 
+        } else
         {
             OSG_WARN << "ParticleProcessor \"" << getName() << "\": invalid particle system\n";
         }

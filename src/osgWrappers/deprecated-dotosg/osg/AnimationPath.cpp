@@ -32,8 +32,8 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     osg::AnimationPath *ap = dynamic_cast<osg::AnimationPath*>(&obj);
     if (!ap) return false;
-    
-    
+
+
     bool itAdvanced = false;
 
     if (fr[0].matchWord("LoopMode"))
@@ -42,20 +42,20 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
         {
             ap->setLoopMode(AnimationPath::SWING);
             fr += 2;
-            itAdvanced = true;            
+            itAdvanced = true;
         }
         else if (fr[1].matchWord("LOOP"))
         {
             ap->setLoopMode(AnimationPath::LOOP);
             fr += 2;
-            itAdvanced = true;                        
-        } 
+            itAdvanced = true;
+        }
         else if (fr[1].matchWord("NO_LOOPING"))
         {
             ap->setLoopMode(AnimationPath::NO_LOOPING);
             fr += 2;
-            itAdvanced = true;                        
-        } 
+            itAdvanced = true;
+        }
     }
 
 
@@ -65,24 +65,24 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
         int entry = fr[0].getNoNestedBrackets();
 
         fr += 2;
-        
+
 
         double time;
         Vec3d position,scale;
         Quat rotation;
-        
+
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             if (fr[0].getFloat(time) &&
-                fr[1].getFloat(position[0]) && 
-                fr[2].getFloat(position[1]) && 
+                fr[1].getFloat(position[0]) &&
+                fr[2].getFloat(position[1]) &&
                 fr[3].getFloat(position[2]) &&
-                fr[4].getFloat(rotation[0]) && 
-                fr[5].getFloat(rotation[1]) && 
+                fr[4].getFloat(rotation[0]) &&
+                fr[5].getFloat(rotation[1]) &&
                 fr[6].getFloat(rotation[2]) &&
                 fr[7].getFloat(rotation[3]) &&
-                fr[8].getFloat(scale[0]) && 
-                fr[9].getFloat(scale[1]) && 
+                fr[8].getFloat(scale[0]) &&
+                fr[9].getFloat(scale[1]) &&
                 fr[10].getFloat(scale[2]))
             {
 
@@ -90,8 +90,8 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
                 osg::AnimationPath::ControlPoint ctrlPoint(position,rotation,scale);
                 ap->insert(time, ctrlPoint);
 
-                fr+=11; 
-            } 
+                fr+=11;
+            }
             else fr.advanceOverCurrentFieldOrBlock();
 
         }
@@ -99,7 +99,7 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
         itAdvanced = true;
 
     }
-    
+
     return itAdvanced;
 }
 
@@ -132,7 +132,7 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.precision(15);
 
     for (AnimationPath::TimeControlPointMap::const_iterator itr=tcpm.begin();
-         itr!=tcpm.end(); 
+         itr!=tcpm.end();
          ++itr)
     {
         fw.indent() << itr->first << " " << itr->second.getPosition() << " " << itr->second.getRotation() << " " <<itr->second.getScale() << std::endl;
@@ -170,27 +170,27 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (!apc) return false;
 
     bool iteratorAdvanced = false;
-    
+
     if (fr.matchSequence("pivotPoint %f %f %f"))
     {
         osg::Vec3 pivot;
         fr[1].getFloat(pivot[0]);
         fr[2].getFloat(pivot[1]);
         fr[3].getFloat(pivot[2]);
-        
+
         apc->setPivotPoint(pivot);
-        
+
         fr += 4;
         iteratorAdvanced = true;
     }
-    
+
     if (fr.matchSequence("timeOffset %f"))
     {
         fr[1].getFloat(apc->_timeOffset);
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
     else if(fr.matchSequence("timeMultiplier %f"))
     {
         fr[1].getFloat(apc->_timeMultiplier);
@@ -206,7 +206,7 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
         if (animpath) apc->setAnimationPath(animpath);
         iteratorAdvanced = true;
     }
-    
+
     return iteratorAdvanced;
 }
 

@@ -36,7 +36,7 @@ bool Stencil_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     Stencil& stencil = static_cast<Stencil&>(obj);
-    
+
     bool setFunction = false;
     Stencil::Function func = stencil.getFunction();
     if (fr[0].matchWord("function") && Stencil_matchFuncStr(fr[1].getStr(),func))
@@ -110,11 +110,11 @@ bool Stencil_writeLocalData(const Object& obj,Output& fw)
     fw.indent() << "function " << Stencil_getFuncStr(stencil.getFunction()) << std::endl;
     fw.indent() << "functionRef " << stencil.getFunctionRef() << std::endl;
     fw.indent() << "functionMask 0x" << hex << stencil.getFunctionMask() << dec << std::endl;
-    
+
     fw.indent() << "stencilFailOperation " << Stencil_getOperationStr(stencil.getStencilFailOperation()) << std::endl;
     fw.indent() << "stencilPassAndDepthFailOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthFailOperation()) << std::endl;
     fw.indent() << "stencilPassAndDepthPassOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthPassOperation()) << std::endl;
-    
+
     fw.indent() << "writeMask 0x" << hex << stencil.getWriteMask() << dec << std::endl;
 
     return true;

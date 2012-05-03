@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -26,7 +26,7 @@
 
 class dxfFile {
 public:
-    dxfFile(std::string fileName) : 
+    dxfFile(std::string fileName) :
                 _fileName(fileName),
                 _isNewSection(false)
     {}
@@ -34,7 +34,7 @@ public:
     osg::Group*        dxf2osg();
     dxfBlock*        findBlock(std::string name);
     VariableList    getVariable(std::string var);
-    
+
 protected:
 
     short assign(codeValue& cv);

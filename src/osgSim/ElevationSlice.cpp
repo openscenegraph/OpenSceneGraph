@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -53,10 +53,10 @@ struct DistanceHeightCalculator
         normal.normalize();
 
         _angleIncrement = 0.005;
-        
-        _radiusList.push_back(_startRadius);        
+
+        _radiusList.push_back(_startRadius);
         _distanceList.push_back(0.0);
-        
+
         osg::Matrixd rotationMatrix;
         double angleBetweenStartEnd = acos( _startNormal * _endNormal );
         double prevRadius = _startRadius;
@@ -67,24 +67,24 @@ struct DistanceHeightCalculator
         {
             rotationMatrix.makeRotate(angle, normal);
             osg::Vec3d newVector = osg::Matrixd::transform3x3(_startPoint, rotationMatrix);
-            
+
             _em->convertXYZToLatLongHeight(newVector.x(), newVector.y(), newVector.z(), latitude, longitude, height);
             double newRadius = newVector.length() - height;
-            
+
             double distanceIncrement = _angleIncrement * (newRadius + prevRadius) *0.5;
             distance  += distanceIncrement;
-            
+
             _radiusList.push_back(newRadius);
             _distanceList.push_back(distance);
-            
+
             // OSG_NOTICE<<"  newVector = "<<newVector<<" newRadius = "<<newRadius<<" distanceIncrement="<<distanceIncrement<<std::endl;
-            
+
             prevRadius = newRadius;
         }
 
     }
-    
-        
+
+
     void computeDistanceHeight(const osg::Vec3d& v, double& distance, double& height) const
     {
         osg::Vec3d vNormal = v;
@@ -94,32 +94,32 @@ struct DistanceHeightCalculator
         double latitude, longitude;
         _em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
                                        latitude, longitude, height);
-                                       
+
         // compute the radius at the point
         double Rv = v.length() - height;
 
         // compute the angle from the _startPoint
         double alpha = acos( vNormal * _startNormal);
-        
+
         unsigned int int_alpha = static_cast<unsigned int>(floor(alpha / _angleIncrement));
         if (int_alpha >= _distanceList.size())
         {
             int_alpha = _distanceList.size() - 1;
         }
-        
+
         double prevAlpha = ((double)int_alpha) * _angleIncrement;
         double deltaAlpha = alpha - prevAlpha;
         double prevDistance = _distanceList[int_alpha];
         double prevRadius = _radiusList[int_alpha];
-        
+
         double averageRadius = (prevRadius + Rv)*0.5;
         double distanceIncrement = deltaAlpha * averageRadius;
-        
+
         distance = prevDistance + distanceIncrement;
 
 #if 0
         double oldDistance = alpha * (_startRadius + Rv) *0.5;
-        
+
         distance = oldDistance;
 
         OSG_NOTICE<<" new distance = "<<distance<<" old = "<<oldDistance<<" delta = "<<oldDistance-distance<<std::endl;
@@ -140,9 +140,9 @@ struct DistanceHeightCalculator
     double                              _endRadius;
 
     double                              _angleIncrement;
-    
-    DoubleList                          _radiusList;    
-    DoubleList                          _distanceList;    
+
+    DoubleList                          _radiusList;
+    DoubleList                          _distanceList;
 
 };
 
@@ -168,21 +168,21 @@ struct DistanceHeightXYZ
         // small distance values first
         if (distance < rhs.distance) return true;
         if (distance > rhs.distance) return false;
-        
+
         // smallest heights first
         return (height < rhs.height);
     }
-    
+
     bool operator == (const DistanceHeightXYZ& rhs) const
     {
         return distance==rhs.distance && height==rhs.height;
     }
-    
+
     bool operator != (const DistanceHeightXYZ& rhs) const
     {
         return distance!=rhs.distance || height!=rhs.height;
     }
-    
+
     bool equal_distance(const DistanceHeightXYZ& rhs, double epsilon=1e-6) const
     {
         return osg::absolute(rhs.distance - distance) <= epsilon;
@@ -201,7 +201,7 @@ struct Point : public osg::Referenced, public DistanceHeightXYZ
     {
         //OSG_NOTICE<<"Point::Point distance="<<distance<<" height="<<height<<" position="<<position<<std::endl;
     }
-    
+
     Point(const Point& point):
         osg::Referenced(),
         DistanceHeightXYZ(point) {}
@@ -236,7 +236,7 @@ struct Segment
 
         return (*_p2 < *rhs._p2);
     }
-    
+
     enum Classification
     {
         UNCLASSIFIED,
@@ -247,7 +247,7 @@ struct Segment
         ENCLOSING,
         ENCLOSED
     };
-    
+
     Classification compare(const Segment& rhs) const
     {
         if (*_p1 == *rhs._p1 && *_p2==*rhs._p2) return IDENTICAL;
@@ -266,42 +266,42 @@ struct Segment
         }
 
         if (rhs._p2->distance < _p1->distance || _p2->distance < rhs._p1->distance) return SEPERATE;
-        
+
         bool rhs_p1_inside = (_p1->distance <= rhs._p1->distance) && (rhs._p1->distance <= _p2->distance);
         bool rhs_p2_inside = (_p1->distance <= rhs._p2->distance) && (rhs._p2->distance <= _p2->distance);
-        
+
         if (rhs_p1_inside && rhs_p2_inside) return ENCLOSING;
-        
+
         bool p1_inside = (rhs._p1->distance <= _p1->distance) && (_p1->distance <= rhs._p2->distance);
         bool p2_inside = (rhs._p1->distance <= _p2->distance) && (_p2->distance <= rhs._p2->distance);
 
         if (p1_inside && p2_inside) return ENCLOSED;
 
         if (rhs_p1_inside || rhs_p2_inside || p1_inside || p2_inside) return OVERLAPPING;
-        
+
         return UNCLASSIFIED;
     }
-    
+
     double height(double d) const
     {
         double delta = (_p2->distance - _p1->distance);
         return _p1->height + ((_p2->height - _p1->height) * (d - _p1->distance) / delta);
     }
-    
+
     double deltaHeight(Point& point) const
     {
         return point.height - height(point.distance);
     }
-    
+
     Point* createPoint(double d) const
     {
         if (d == _p1->distance) return _p1.get();
         if (d == _p2->distance) return _p2.get();
-        
+
         double delta = (_p2->distance - _p1->distance);
         double r = (d - _p1->distance)/delta;
         double one_minus_r = 1.0 - r;
-        return new Point(d, 
+        return new Point(d,
                          _p1->height * one_minus_r + _p2->height * r,
                          _p1->position * one_minus_r + _p2->position * r);
     }
@@ -312,33 +312,33 @@ struct Segment
         double B = _p2->distance - _p1->distance;
         double C = _p1->height;
         double D = _p2->height - _p1->height;
-        
+
         double E = rhs._p1->distance;
         double F = rhs._p2->distance - rhs._p1->distance;
         double G = rhs._p1->height;
         double H = rhs._p2->height - rhs._p1->height;
-        
+
         double div = D*F - B*H;
         if (div==0.0)
         {
             OSG_NOTICE<<"ElevationSlideUtils::Segment::createIntersectionPoint(): error Segments are parallel."<<std::endl;
             return _p2.get();
         }
-        
+
         double r = (G*F - E*H + A*H - C*F) / div;
-        
+
         if (r<0.0)
         {
             OSG_NOTICE<<"ElevationSlideUtils::Segment::createIntersectionPoint(): error intersection point outwith segment, r ="<<r<<std::endl;
             return _p1.get();
         }
-        
+
         if (r>1.0)
         {
             OSG_NOTICE<<"ElevationSlideUtils::Segment::createIntersectionPoint(): error intersection point outwith segment, r ="<<r<<std::endl;
             return _p2.get();
         }
-        
+
 //         OSG_NOTICE<<"ElevationSlideUtils::Segment::createIntersectionPoint(): r="<<r<<std::endl;
 //         OSG_NOTICE<<"\tp1 = "<<_p1->distance<<" "<<_p1->height<<"  p2 = "<<_p2->distance<<" "<<_p2->height<<std::endl;
 //         OSG_NOTICE<<"\trrhs.p1 = "<<rhs._p1->distance<<" "<<rhs._p1->height<<"  p2 = "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
@@ -359,38 +359,38 @@ struct LineConstructor
     typedef std::set<Segment> SegmentSet;
 
     LineConstructor() {}
-    
-    
-    
+
+
+
     void add(double d, double h, const osg::Vec3d& pos)
     {
         osg::ref_ptr<Point> newPoint = new Point(d,h,pos);
-        
-        
+
+
         if (_previousPoint.valid() && newPoint->distance != _previousPoint->distance)
         {
             const double maxGradient = 100.0;
             double gradient = fabs( (newPoint->height - _previousPoint->height) / (newPoint->distance - _previousPoint->distance) );
-            
+
             if (gradient < maxGradient)
             {
                 _segments.insert( Segment(_previousPoint.get(), newPoint.get()) );
             }
         }
-        
+
         _previousPoint = newPoint;
     }
-    
+
     void endline()
     {
         _previousPoint = 0;
     }
-    
+
     void report()
     {
 
         OSG_NOTICE<<"Number of segments = "<<_segments.size()<<std::endl;
-        
+
         for(SegmentSet::iterator itr = _segments.begin();
              itr != _segments.end();
              ++itr)
@@ -414,7 +414,7 @@ struct LineConstructor
                     case(Segment::UNCLASSIFIED): OSG_NOTICE<<"U"; break;
                 }
             }
-            
+
             OSG_NOTICE<<std::endl;
 
         }
@@ -447,17 +447,17 @@ struct LineConstructor
                 }
             }
         }
-        
+
     }
-    
+
     void pruneOverlappingSegments()
     {
         SegmentSet::iterator prevItr = _segments.begin();
         SegmentSet::iterator nextItr = prevItr;
         ++nextItr;
-        
+
         double epsilon = 0.001;
-        
+
         for(SegmentSet::iterator itr = _segments.begin();
             itr != _segments.end();
             ++itr)
@@ -489,8 +489,8 @@ struct LineConstructor
                         bool lhs_p2_inside = (rhs._p1->distance <= lhs._p2->distance) && (lhs._p2->distance <= rhs._p2->distance);
 
                         if (rhs_p1_inside && lhs_p2_inside)
-                        {                    
-                            double distance_between = osg::Vec2d(lhs._p2->distance - rhs._p1->distance, 
+                        {
+                            double distance_between = osg::Vec2d(lhs._p2->distance - rhs._p1->distance,
                                                                  lhs._p2->height - rhs._p1->height).length2();
 
                             if (distance_between < epsilon)
@@ -499,9 +499,9 @@ struct LineConstructor
 
                                 Segment newSeg(lhs._p2.get(), rhs._p2.get());
                                 _segments.insert(newSeg);
-                                
+
                                 _segments.erase(nextItr);
-                                
+
                                 nextItr = _segments.find(newSeg);
                             }
                             else
@@ -525,7 +525,7 @@ struct LineConstructor
                                     Segment seg2( rhs._p1.get(), cp );
                                     Segment seg3( cp, lhs._p2.get() );
                                     Segment seg4( rhs.createPoint(lhs._p2->distance), lhs._p2.get() );
-                                    
+
                                     _segments.erase(nextItr);
                                     _segments.erase(itr);
 
@@ -533,7 +533,7 @@ struct LineConstructor
                                     _segments.insert(seg2);
                                     _segments.insert(seg3);
                                     _segments.insert(seg4);
-                                    
+
                                     itr = _segments.find(seg1);
                                     nextItr = itr;
                                     ++nextItr;
@@ -564,8 +564,8 @@ struct LineConstructor
 //                                     OSG_NOTICE<<"    lhs_p2 "<<lhs._p2->distance<<" "<<lhs._p2->height<<std::endl;
 //                                     OSG_NOTICE<<"    rhs_p1 "<<rhs._p1->distance<<" "<<rhs._p1->height<<std::endl;
 //                                     OSG_NOTICE<<"    rhs_p2 "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
-                                    
-                                    
+
+
                                     Segment newSeg(lhs._p1.get(), lhs.createPoint(rhs._p1->distance));
 
                                     _segments.erase(itr);
@@ -619,20 +619,20 @@ struct LineConstructor
                         }
                         else if (dh1>=0.0 && dh2>=0.0)
                         {
-                            
+
                             double d_left = enclosed._p1->distance - enclosing._p1->distance;
                             double d_right = enclosing._p2->distance - enclosed._p2->distance;
 
                             if (d_left < epsilon && d_right < epsilon)
                             {
-                                // treat ENCLOSED as ENCLOSING.                                
+                                // treat ENCLOSED as ENCLOSING.
                                 // OSG_NOTICE<<"   Treat enclosed above as enclosing "<<std::endl;
 
                                 nextItr = itr;
                                 ++nextItr;
 
                                 _segments.erase(itr);
-                                
+
                                 itr = nextItr;
                                 ++nextItr;
 
@@ -640,12 +640,12 @@ struct LineConstructor
                             else if (d_left < epsilon)
                             {
 //                                 OSG_NOTICE<<"ENCLOSING: ENCLOSING is below enclosed "<<dh1<<" "<<dh2<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"   Replace enclosing with right section"<<std::endl;
 
                                 Segment newSeg(enclosing.createPoint(enclosed._p2->distance), enclosing._p2.get());
@@ -654,7 +654,7 @@ struct LineConstructor
 
                                 _segments.erase(itr);
                                 _segments.insert(newSeg);
-                                
+
                                 itr = nextItr;
                                 ++nextItr;
 
@@ -664,12 +664,12 @@ struct LineConstructor
                             else if (d_right < epsilon)
                             {
 //                                 OSG_NOTICE<<"ENCLOSING: ENCLOSING is below enclosed "<<dh1<<" "<<dh2<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"   Replace enclosing with left section"<<std::endl;
 
                                 Segment newSeg(enclosing._p1.get(), enclosing.createPoint(enclosed._p1->distance) );
@@ -684,15 +684,15 @@ struct LineConstructor
 //                                 OSG_NOTICE<<"    newSeg_p1 "<<newSeg._p1->distance<<" "<<newSeg._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    newSeg_p2 "<<newSeg._p2->distance<<" "<<newSeg._p2->height<<std::endl;
                             }
-                            else 
+                            else
                             {
 //                                 OSG_NOTICE<<"ENCLOSING: ENCLOSING is below enclosed "<<dh1<<" "<<dh2<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
-// 
+//
 //                                 OSG_NOTICE<<"   Replace enclosing with left and right sections"<<std::endl;
 
 
@@ -702,7 +702,7 @@ struct LineConstructor
                                 _segments.erase(itr);
                                 _segments.insert(newSegLeft);
                                 _segments.insert(newSegRight);
-                                
+
                                 itr = _segments.find(newSegLeft);
                                 nextItr = itr;
                                 ++nextItr;
@@ -718,7 +718,7 @@ struct LineConstructor
                         else if (dh1 * dh2 < 0.0)
                         {
 //                             OSG_NOTICE<<"ENCLOSING: ENCLOSING is crossing enclosed "<<dh1<<" "<<dh2<<std::endl;
-//                             
+//
 //                             OSG_NOTICE<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
 //                             OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                             OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
@@ -729,39 +729,39 @@ struct LineConstructor
 
                             if (d_left < epsilon && d_right < epsilon)
                             {
-                                // treat ENCLOSED as ENCLOSING.                                
+                                // treat ENCLOSED as ENCLOSING.
                                 if (dh1 < 0.0)
                                 {
                                     // OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), cp);
                                     Segment newSegRight(cp, enclosed._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
                                 }
-                                else 
+                                else
                                 {
                                     // OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosed._p1.get(), cp);
                                     Segment newSegRight(cp, enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
@@ -775,37 +775,37 @@ struct LineConstructor
                                 if (dh1 < 0.0)
                                 {
                                     // OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), cp);
                                     Segment newSegMid(cp, enclosed._p2.get());
                                     Segment newSegRight(enclosing.createPoint(enclosed._p2->distance), enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegMid);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
                                 }
-                                else 
+                                else
                                 {
                                     // OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosed._p1.get(), cp);
                                     Segment newSegRight(cp, enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
@@ -818,43 +818,43 @@ struct LineConstructor
                                 if (dh1 < 0.0)
                                 {
 //                                    OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), cp);
                                     Segment newSegRight(cp, enclosed._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
                                 }
-                                else 
+                                else
                                 {
 //                                    OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), enclosing.createPoint(enclosed._p1->distance));
                                     Segment newSegMid(enclosed._p1.get(), cp);
                                     Segment newSegRight(cp, enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegMid);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
                                 }
                             }
-                            else 
+                            else
                             {
 //                                OSG_NOTICE<<"   >> Replace enclosing with left and right sections"<<std::endl;
 
@@ -862,39 +862,39 @@ struct LineConstructor
                                 if (dh1 < 0.0)
                                 {
 //                                    OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), cp);
                                     Segment newSegMid(cp, enclosed._p2.get());
                                     Segment newSegRight(enclosing.createPoint(enclosed._p2->distance), enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegMid);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
                                 }
-                                else 
+                                else
                                 {
 //                                    OSG_NOTICE<<"   >> enclosing left side is above enclosed left side"<<std::endl;
-                                    
+
                                     Point* cp = enclosing.createIntersectionPoint(enclosed);
                                     Segment newSegLeft(enclosing._p1.get(), enclosing.createPoint(enclosed._p1->distance));
                                     Segment newSegMid(enclosed._p1.get(), cp);
                                     Segment newSegRight(cp, enclosing._p2.get());
-                                    
+
                                     _segments.erase(itr);
                                     _segments.erase(nextItr);
-                                    
+
                                     _segments.insert(newSegLeft);
                                     _segments.insert(newSegMid);
                                     _segments.insert(newSegRight);
-                                    
+
                                     itr = _segments.find(newSegLeft);
                                     nextItr = itr;
                                     ++nextItr;
@@ -905,7 +905,7 @@ struct LineConstructor
                         else
                         {
                             OSG_NOTICE<<"ENCLOSING: ENCLOSING - error case "<<dh1<<" "<<dh2<<std::endl;
-                            
+
                             OSG_NOTICE<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
                             OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
                             OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
@@ -925,7 +925,7 @@ struct LineConstructor
 
                         double d_left = enclosed._p1->distance - enclosing._p1->distance;
                         double d_right = enclosing._p2->distance - enclosed._p2->distance;
-                        
+
                         if (d_left<=epsilon)
                         {
 
@@ -945,7 +945,7 @@ struct LineConstructor
 //                                 OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
-                                
+
                                 _segments.insert(Segment(enclosing.createPoint(enclosed._p2->distance), enclosed._p2.get()));
                                 _segments.erase(nextItr);
 
@@ -959,7 +959,7 @@ struct LineConstructor
 //                                 OSG_NOTICE<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
 //                                 OSG_NOTICE<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
-                                
+
                                 if (d_right<=epsilon)
                                 {
                                     // enclosed and enclosing effectively overlap
@@ -968,13 +968,13 @@ struct LineConstructor
                                         Point* cp = enclosed.createIntersectionPoint(enclosing);
                                         Segment segLeft(enclosed._p1.get(), cp);
                                         Segment segRight(cp, enclosing._p2.get());
-                                        
+
                                         _segments.erase(itr);
                                         _segments.erase(nextItr);
-                                        
+
                                         _segments.insert(segLeft);
                                         _segments.insert(segRight);
-                                        
+
                                         itr = _segments.find(segLeft);
                                         nextItr = itr;
                                         ++nextItr;
@@ -984,13 +984,13 @@ struct LineConstructor
                                         Point* cp = enclosed.createIntersectionPoint(enclosing);
                                         Segment segLeft(enclosing._p1.get(), cp);
                                         Segment segRight(cp, enclosed._p2.get());
-                                        
+
                                         _segments.erase(itr);
                                         _segments.erase(nextItr);
-                                        
+
                                         _segments.insert(segLeft);
                                         _segments.insert(segRight);
-                                        
+
                                         itr = _segments.find(segLeft);
                                         nextItr = itr;
                                         ++nextItr;
@@ -1004,13 +1004,13 @@ struct LineConstructor
                                         Point* cp = enclosed.createIntersectionPoint(enclosing);
                                         Segment segLeft(enclosed._p1.get(), cp);
                                         Segment segRight(cp, enclosing._p2.get());
-                                        
+
                                         _segments.erase(itr);
                                         _segments.erase(nextItr);
-                                        
+
                                         _segments.insert(segLeft);
                                         _segments.insert(segRight);
-                                        
+
                                         itr = _segments.find(segLeft);
                                         nextItr = itr;
                                         ++nextItr;
@@ -1021,19 +1021,19 @@ struct LineConstructor
                                         Segment segLeft(enclosing._p1.get(), cp);
                                         Segment segMid(cp, enclosed._p2.get());
                                         Segment segRight(enclosing.createPoint(enclosed._p2->distance), enclosing._p2.get());
-                                        
+
                                         _segments.erase(itr);
                                         _segments.erase(nextItr);
-                                        
+
                                         _segments.insert(segLeft);
                                         _segments.insert(segMid);
                                         _segments.insert(segRight);
-                                        
+
                                         itr = _segments.find(segLeft);
                                         nextItr = itr;
                                         ++nextItr;
                                     }
-                                }                                
+                                }
                             }
                             else
                             {
@@ -1052,24 +1052,24 @@ struct LineConstructor
 
                         break;
                     }
-                    default: 
+                    default:
                         OSG_NOTICE<<"** Not handled, advancing"<<std::endl;
                         ++nextItr;
                         break;
                 }
-                
+
                 classification = ((itr != _segments.end()) && (nextItr != _segments.end())) ?  itr->compare(*nextItr) : Segment::UNCLASSIFIED;
             }
         }
     }
-    
+
     unsigned int numOverlapping(SegmentSet::const_iterator startItr) const
     {
         if (startItr==_segments.end()) return 0;
-    
+
         SegmentSet::const_iterator nextItr = startItr;
         ++nextItr;
-        
+
         unsigned int num = 0;
         while (nextItr!=_segments.end() && startItr->compare(*nextItr)>=Segment::OVERLAPPING)
         {
@@ -1078,7 +1078,7 @@ struct LineConstructor
         }
         return num;
     }
-    
+
     unsigned int totalNumOverlapping() const
     {
         unsigned int total = 0;
@@ -1096,14 +1096,14 @@ struct LineConstructor
         SegmentSet::iterator prevItr = _segments.begin();
         SegmentSet::iterator nextItr = prevItr;
         ++nextItr;
-        
+
         intersections.push_back( prevItr->_p1->position );
         distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(prevItr->_p1->distance, prevItr->_p1->height) );
-        
+
         intersections.push_back( prevItr->_p2->position );
         distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(prevItr->_p2->distance, prevItr->_p2->height) );
 
-        for(; 
+        for(;
             nextItr != _segments.end();
             ++nextItr,++prevItr)
         {
@@ -1114,45 +1114,45 @@ struct LineConstructor
                 {
                     intersections.push_back( nextItr->_p1->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p1->distance, nextItr->_p1->height) );
-        
+
                     intersections.push_back( nextItr->_p2->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
                     break;
                 }
-                case(Segment::JOINED): 
+                case(Segment::JOINED):
                 {
 #if 1
                     intersections.push_back( nextItr->_p2->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
-#else                
+#else
                     intersections.push_back( nextItr->_p1->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p1->distance, nextItr->_p1->height) );
-        
+
                     intersections.push_back( nextItr->_p2->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
 #endif
                     break;
                 }
-                default: 
+                default:
                 {
                     intersections.push_back( nextItr->_p1->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p1->distance, nextItr->_p1->height) );
-        
+
                     intersections.push_back( nextItr->_p2->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
                     break;
                 }
             }
-            
+
         }
-        
+
     }
-    
+
     SegmentSet _segments;
     osg::ref_ptr<Point> _previousPoint;
     osg::Plane  _plane;
     osg::ref_ptr<osg::EllipsoidModel>   _em;
-    
+
 };
 
 }
@@ -1188,17 +1188,17 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
                                       end_latitude, end_longitude, end_height);
 
         OSG_NOTICE<<"end_lat = "<<end_latitude<<" end_longitude = "<<end_longitude<<" end_height = "<<end_height<<std::endl;
-        
+
         // set up the main intersection plane
         osg::Vec3d planeNormal = (_endPoint - _startPoint) ^ start_upVector;
-        planeNormal.normalize();        
+        planeNormal.normalize();
         plane.set( planeNormal, _startPoint );
-        
+
         // set up the start cut off plane
         osg::Vec3d startPlaneNormal = start_upVector ^ planeNormal;
         startPlaneNormal.normalize();
         boundingPolytope.add( osg::Plane(startPlaneNormal, _startPoint) );
-        
+
         // set up the end cut off plane
         osg::Vec3d endPlaneNormal = planeNormal ^ end_upVector;
         endPlaneNormal.normalize();
@@ -1210,20 +1210,20 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
 
         // set up the main intersection plane
         osg::Vec3d planeNormal = (_endPoint - _startPoint) ^ upVector;
-        planeNormal.normalize();        
+        planeNormal.normalize();
         plane.set( planeNormal, _startPoint );
-        
+
         // set up the start cut off plane
         osg::Vec3d startPlaneNormal = upVector ^ planeNormal;
         startPlaneNormal.normalize();
         boundingPolytope.add( osg::Plane(startPlaneNormal, _startPoint) );
-        
+
         // set up the end cut off plane
         osg::Vec3d endPlaneNormal = planeNormal ^ upVector;
         endPlaneNormal.normalize();
         boundingPolytope.add( osg::Plane(endPlaneNormal, _endPoint) );
     }
-    
+
     osg::ref_ptr<osgUtil::PlaneIntersector> intersector = new osgUtil::PlaneIntersector(plane, boundingPolytope);
 
 
@@ -1233,9 +1233,9 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
     _intersectionVisitor.reset();
     _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersector.get() );
-    
+
     scene->accept(_intersectionVisitor);
-    
+
     osgUtil::PlaneIntersector::Intersections& intersections = intersector->getIntersections();
 
     typedef osgUtil::PlaneIntersector::Intersection::Polyline Polyline;
@@ -1254,14 +1254,14 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
             if (intersection.matrix.valid())
             {
                 // OSG_NOTICE<<"  transforming "<<std::endl;
-                // transform points on polyline 
+                // transform points on polyline
                 for(Polyline::iterator pitr = intersection.polyline.begin();
                     pitr != intersection.polyline.end();
                     ++pitr)
                 {
                     *pitr = (*pitr) * (*intersection.matrix);
                 }
-                
+
                 // matrix no longer needed.
                 intersection.matrix = 0;
             }
@@ -1269,7 +1269,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
 
 #if 0
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        
+
         for(itr = intersections.begin();
             itr != intersections.end();
             ++itr)
@@ -1289,16 +1289,16 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
 
             geometry->setVertexArray( vertices );
             geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->size()) );
-            
+
             osg::Vec4Array* colours = new osg::Vec4Array;
             colours->push_back( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
-            
+
             geometry->setColorArray( colours );
 
             geode->addDrawable( geometry );
             geode->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
         }
-        
+
         osgDB::writeNodeFile(*geode, "raw.osg");
 #endif
 
@@ -1316,9 +1316,9 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
                 ++itr)
             {
                 osgUtil::PlaneIntersector::Intersection& intersection = *itr;
-                
+
                 if (intersection.attributes.size()!=intersection.polyline.size()) continue;
-                
+
                 Attributes::iterator aitr = intersection.attributes.begin();
                 for(Polyline::iterator pitr = intersection.polyline.begin();
                     pitr != intersection.polyline.end();
@@ -1327,9 +1327,9 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
                     const osg::Vec3d& v = *pitr;
                     double distance, height;
                     dhc.computeDistanceHeight(v, distance, height);
-                    
+
                     double pi_height = *aitr;
-                    
+
                     // OSG_NOTICE<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
 
                     constructor.add( distance, pi_height, v);
@@ -1360,7 +1360,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
                 }
                 constructor.endline();
             }
-        } 
+        }
 
         // copy final results
         _intersections.clear();
@@ -1373,16 +1373,16 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
         while(numOverlapping>0)
         {
             unsigned int previousNumOverlapping = numOverlapping;
-        
+
             constructor.pruneOverlappingSegments();
             // constructor.report();
-            
+
             numOverlapping = constructor.totalNumOverlapping();
             if (previousNumOverlapping == numOverlapping) break;
         }
 
         constructor.copyPoints(_intersections, _distanceHeightIntersections);
-        
+
 #if 0
         {
             osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -1418,7 +1418,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask 
     {
         OSG_NOTICE<<"No intersections found."<<std::endl;
     }
-    
+
 }
 
 ElevationSlice::Vec3dList ElevationSlice::computeElevationSlice(osg::Node* scene, const osg::Vec3d& startPoint, const osg::Vec3d& endPoint, osg::Node::NodeMask traversalMask)

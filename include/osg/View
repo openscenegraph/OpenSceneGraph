@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ class OSG_EXPORT View : public virtual osg::Object
         View(const osg::View& view, const osg::CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Object(osg,View);
-        
+
         /** Take all the settings, Camera and Slaves from the passed in view, leaving it empty. */
         virtual void take(View& rhs);
 
@@ -57,7 +57,7 @@ class OSG_EXPORT View : public virtual osg::Object
             HEADLIGHT,
             SKY_LIGHT
         };
-        
+
         /** Set the global lighting to use for this view.
           * Defaults to headlight. */
         void setLightingMode(LightingMode lightingMode);
@@ -74,22 +74,22 @@ class OSG_EXPORT View : public virtual osg::Object
         /** Get the const global lighting if assigned.*/
         const osg::Light* getLight() const { return _light.get(); }
 
-        /** Set the master camera of the view. */        
+        /** Set the master camera of the view. */
         void setCamera(osg::Camera* camera);
 
-        /** Get the master camera of the view. */        
+        /** Get the master camera of the view. */
         osg::Camera* getCamera() { return _camera.get(); }
 
-        /** Get the const master camera of the view. */        
+        /** Get the const master camera of the view. */
         const osg::Camera* getCamera() const { return _camera.get(); }
 
-        /** Set the frame stamp of the view. */        
+        /** Set the frame stamp of the view. */
         void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
 
-        /** Get the frame stamp of the view. */        
+        /** Get the frame stamp of the view. */
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
 
-        /** Get the frame stamp of the view. */        
+        /** Get the frame stamp of the view. */
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
@@ -98,16 +98,16 @@ class OSG_EXPORT View : public virtual osg::Object
         {
             Slave(bool useMastersSceneData=true):
                 _useMastersSceneData(useMastersSceneData) {}
-                
+
             Slave(osg::Camera* camera, const osg::Matrixd& projectionOffset, const osg::Matrixd& viewOffset, bool useMastersSceneData=true):
-                _camera(camera), 
-                _projectionOffset(projectionOffset), 
+                _camera(camera),
+                _projectionOffset(projectionOffset),
                 _viewOffset(viewOffset),
                 _useMastersSceneData(useMastersSceneData) {}
-        
+
             Slave(const Slave& rhs) :
-                _camera(rhs._camera), 
-                _projectionOffset(rhs._projectionOffset), 
+                _camera(rhs._camera),
+                _projectionOffset(rhs._projectionOffset),
                 _viewOffset(rhs._viewOffset),
                 _useMastersSceneData(rhs._useMastersSceneData),
                 _updateSlaveCallback(rhs._updateSlaveCallback) {}
@@ -134,7 +134,7 @@ class OSG_EXPORT View : public virtual osg::Object
                 if (_updateSlaveCallback.valid()) _updateSlaveCallback->updateSlave(view, *this);
                 else updateSlaveImplementation(view);
             }
-            
+
             virtual void updateSlaveImplementation(View& view);
 
             osg::ref_ptr<osg::Camera>           _camera;
@@ -173,7 +173,7 @@ class OSG_EXPORT View : public virtual osg::Object
         osg::ref_ptr<osg::Light>        _light;
 
         osg::ref_ptr<osg::Camera>       _camera;
-        
+
         typedef std::vector<Slave>      Slaves;
         Slaves                          _slaves;
 

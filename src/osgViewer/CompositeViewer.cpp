@@ -704,7 +704,7 @@ void CompositeViewer::eventTraversal()
     if (_views.empty()) return;
 
     double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
-    
+
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // OSG_NOTICE<<"CompositeViewer::frameEventTraversal()."<<std::endl;
@@ -1037,7 +1037,7 @@ void CompositeViewer::eventTraversal()
                 hitr != view->getEventHandlers().end();
                 ++hitr)
             {
-                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, _eventVisitor);
+                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, _eventVisitor.get());
             }
         }
     }

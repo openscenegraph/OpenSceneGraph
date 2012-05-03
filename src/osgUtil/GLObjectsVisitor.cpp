@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/GLObjectsVisitor>
@@ -16,7 +16,7 @@
 #include <osg/Notify>
 #include <osg/Timer>
 
-namespace osgUtil 
+namespace osgUtil
 {
 
 /////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ void GLObjectsVisitor::apply(osg::Geode& node)
 void GLObjectsVisitor::apply(osg::Drawable& drawable)
 {
     if (_drawablesAppliedSet.count(&drawable)!=0) return;
-    
+
     _drawablesAppliedSet.insert(&drawable);
 
     if (_mode&SWITCH_OFF_DISPLAY_LISTS)
@@ -104,18 +104,18 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
 void GLObjectsVisitor::apply(osg::StateSet& stateset)
 {
     if (_stateSetAppliedSet.count(&stateset)!=0) return;
-    
+
     _stateSetAppliedSet.insert(&stateset);
 
     if (_mode & COMPILE_STATE_ATTRIBUTES && _renderInfo.getState())
     {
         stateset.compileGLObjects(*_renderInfo.getState());
-        
+
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
         if (program) {
             if( program->isFixedFunction() )
                 _lastCompiledProgram = NULL; // It does not make sense to apply uniforms on fixed pipe
-            else 
+            else
                 _lastCompiledProgram = program;
         }
 
@@ -125,9 +125,9 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
             if (pcp)
             {
                 pcp->useProgram();
-                
+
                 _renderInfo.getState()->setLastAppliedProgramObject(pcp);
-            
+
                 osg::StateSet::UniformList& ul = stateset.getUniformList();
                 for(osg::StateSet::UniformList::iterator itr = ul.begin();
                     itr != ul.end();
@@ -138,19 +138,19 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
             }
         }
         else if(_renderInfo.getState()->getLastAppliedProgramObject()){
-                            
+
             osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
             extensions->glUseProgram(0);
             _renderInfo.getState()->setLastAppliedProgramObject(0);
         }
-        
+
     }
 
     if (_mode & RELEASE_STATE_ATTRIBUTES)
     {
         stateset.releaseGLObjects(_renderInfo.getState());
     }
-    
+
     if (_mode & CHECK_BLACK_LISTED_MODES)
     {
         stateset.checkValidityOfAssociatedModes(*_renderInfo.getState());
@@ -178,11 +178,11 @@ GLObjectsOperation::GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mo
 void GLObjectsOperation::operator () (osg::GraphicsContext* context)
 {
     GLObjectsVisitor glObjectsVisitor(_mode);
-    
+
     context->getState()->initializeExtensionProcs();
 
     glObjectsVisitor.setState(context->getState());
-    
+
     // OSG_NOTICE<<"GLObjectsOperation::before <<<<<<<<<<<"<<std::endl;
     if (_subgraph.valid())
     {

@@ -95,7 +95,7 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
                 } else {
                     for (i=0; i<N-2; ++i) {
                         if ((i%2) == 0) {
-                            compute(pset, vx, nx, tx, i, i+1, i+2);                            
+                            compute(pset, vx, nx, tx, i, i+1, i+2);
                         } else {
                             compute(pset, vx, nx, tx, i+1, i, i+2);
                         }
@@ -144,9 +144,9 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
         osg::Vec4 &vT = (*T_)[i];
         osg::Vec4 &vB = (*B_)[i];
         osg::Vec4 &vN = (*N_)[i];
-    
+
         osg::Vec3 txN = osg::Vec3(vT.x(), vT.y(), vT.z()) ^ osg::Vec3(vB.x(), vB.y(), vB.z());
-        
+
         if (txN * osg::Vec3(vN.x(), vN.y(), vN.z()) >= 0) {
             vN = osg::Vec4(txN, 0);
         } else {
@@ -275,7 +275,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
     if(nx){
         osg::Vec3 V, T1, T2, T3, B1, B2, B3;
 
-        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -284,10 +284,10 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             T2.x() += -V.y() / V.x();
             B2.x() += -V.z() / V.x();
             T3.x() += -V.y() / V.x();
-            B3.x() += -V.z() / V.x();            
+            B3.x() += -V.z() / V.x();
         }
 
-        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -296,10 +296,10 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             T2.y() += -V.y() / V.x();
             B2.y() += -V.z() / V.x();
             T3.y() += -V.y() / V.x();
-            B3.y() += -V.z() / V.x();            
+            B3.y() += -V.z() / V.x();
         }
 
-        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -308,7 +308,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             T2.z() += -V.y() / V.x();
             B2.z() += -V.z() / V.x();
             T3.z() += -V.y() / V.x();
-            B3.z() += -V.z() / V.x();            
+            B3.z() += -V.z() / V.x();
         }
 
         osg::Vec3 tempvec;
@@ -334,7 +334,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
 
         osg::Vec3 V;
 
-        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -343,10 +343,10 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             (*T_)[iB].x() += -V.y() / V.x();
             (*B_)[iB].x() += -V.z() / V.x();
             (*T_)[iC].x() += -V.y() / V.x();
-            (*B_)[iC].x() += -V.z() / V.x();            
+            (*B_)[iC].x() += -V.z() / V.x();
         }
 
-        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -355,10 +355,10 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             (*T_)[iB].y() += -V.y() / V.x();
             (*B_)[iB].y() += -V.z() / V.x();
             (*T_)[iC].y() += -V.y() / V.x();
-            (*B_)[iC].y() += -V.z() / V.x();            
+            (*B_)[iC].y() += -V.z() / V.x();
         }
 
-        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
+        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
             osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
         if (V.x() != 0) {
             V.normalize();
@@ -367,7 +367,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             (*T_)[iB].z() += -V.y() / V.x();
             (*B_)[iB].z() += -V.z() / V.x();
             (*T_)[iC].z() += -V.y() / V.x();
-            (*B_)[iC].z() += -V.z() / V.x();            
+            (*B_)[iC].z() += -V.z() / V.x();
         }
 
         (*N_)[iA] += osg::Vec4(face_normal, 0);

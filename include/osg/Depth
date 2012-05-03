@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -19,12 +19,12 @@
 namespace osg {
 
 /** Encapsulate OpenGL glDepthFunc/Mask/Range functions.
-*/     
+*/
 class OSG_EXPORT Depth : public StateAttribute
 {
     public :
-    
-    
+
+
         enum Function
         {
             NEVER = GL_NEVER,
@@ -39,7 +39,7 @@ class OSG_EXPORT Depth : public StateAttribute
 
 
         Depth(Function func=LESS,double zNear=0.0, double zFar=1.0,bool writeMask=true);
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Depth(const Depth& dp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(dp,copyop),
@@ -47,10 +47,10 @@ class OSG_EXPORT Depth : public StateAttribute
             _zNear(dp._zNear),
             _zFar(dp._zFar),
             _depthWriteMask(dp._depthWriteMask) {}
-        
-        
+
+
         META_StateAttribute(osg, Depth, DEPTH);
-        
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {
@@ -73,9 +73,9 @@ class OSG_EXPORT Depth : public StateAttribute
             return true;
         }
 
-        inline void setFunction(Function func) { _func = func; }        
+        inline void setFunction(Function func) { _func = func; }
         inline Function getFunction() const { return _func; }
-               
+
 
         inline void setRange(double zNear, double zFar)
         {
@@ -85,22 +85,22 @@ class OSG_EXPORT Depth : public StateAttribute
 
         inline void setZNear(double zNear) { _zNear=zNear; }
         inline double getZNear() const { return _zNear; }
-    
+
         inline void setZFar(double zFar) { _zFar=zFar; }
         inline double getZFar() const { return _zFar; }
 
-        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }        
+        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }
         inline bool getWriteMask() const { return _depthWriteMask; }
 
 
         virtual void apply(State& state) const;
 
     protected:
-    
+
         virtual ~Depth();
 
         Function            _func;
-        
+
         double              _zNear;
         double              _zFar;
 

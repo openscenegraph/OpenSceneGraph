@@ -122,9 +122,9 @@ void ScalarBar::createDrawables()
 {
     // Remove any existing Drawables
     _drawables.erase(_drawables.begin(), _drawables.end());
-    
+
     if (_numColors==0) return;
-    
+
     osg::Matrix matrix;
     if(_orientation==HORIZONTAL)
     {

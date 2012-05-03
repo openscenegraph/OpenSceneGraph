@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -103,7 +103,7 @@ class OSG_EXPORT StencilTwoSided : public StateAttribute
             DECR_WRAP = GL_DECR_WRAP
         };
 
-        /** set the operations to apply when the various stencil and depth 
+        /** set the operations to apply when the various stencil and depth
           * tests fail or pass.  First parameter is to control the operation
           * when the stencil test fails.  The second parameter is to control the
           * operation when the stencil test passes, but depth test fails. The
@@ -146,7 +146,7 @@ class OSG_EXPORT StencilTwoSided : public StateAttribute
     public:
 
         /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provide convenience wrappers to 
+          * associated function pointers, and provide convenience wrappers to
           * check for the extensions or use the associated functions.
         */
         class OSG_EXPORT Extensions : public osg::Referenced

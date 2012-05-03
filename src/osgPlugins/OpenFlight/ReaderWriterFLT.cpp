@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,7 +34,7 @@
 #include "FltExportVisitor.h"
 #include "ExportOptions.h"
 
-#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
 using namespace flt;
 using namespace osg;
@@ -226,7 +226,7 @@ class FLTReaderWriter : public ReaderWriter
           : _implicitPath( "." )
         {
             supportsExtension("flt","OpenFlight format");
-            
+
             supportsOption("clampToEdge","Import option");
             supportsOption("keepExternalReferences","Import option");
             supportsOption("preserveFace","Import option");
@@ -262,7 +262,7 @@ class FLTReaderWriter : public ReaderWriter
         {
             return readNode(file, options);
         }
-        
+
         virtual ReadResult readNode(const std::string& file, const Options* options) const
         {
             SERIALIZER();
@@ -280,7 +280,7 @@ class FLTReaderWriter : public ReaderWriter
                     return ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             }
 
-            // setting up the database path so that internally referenced file are searched for on relative paths. 
+            // setting up the database path so that internally referenced file are searched for on relative paths.
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
@@ -303,7 +303,7 @@ class FLTReaderWriter : public ReaderWriter
             {
                 // add to local cache.
                 flt::Registry::instance()->addExternalToLocalCache(fileName,rr.getNode());
-        
+
                 bool keepExternalReferences = false;
                 if (options)
                     keepExternalReferences = (options->getOptionString().find("keepExternalReferences")!=std::string::npos);
@@ -323,7 +323,7 @@ class FLTReaderWriter : public ReaderWriter
                 }
                 else
                 {
-                    OSG_DEBUG << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
+                    OSG_DEBUG << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;
                 }
             }
 
@@ -333,12 +333,12 @@ class FLTReaderWriter : public ReaderWriter
 
             return rr;
         }
-        
+
         virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
             return readNode(fin, options);
         }
-        
+
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
             Document document;
@@ -348,7 +348,7 @@ class FLTReaderWriter : public ReaderWriter
             if (options)
             {
                 const char readerMsg[] = "flt reader option: ";
-                
+
                 document.setReplaceClampWithClampToEdge((options->getOptionString().find("clampToEdge")!=std::string::npos));
                 OSG_DEBUG << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
 
@@ -428,7 +428,7 @@ class FLTReaderWriter : public ReaderWriter
                 opcode_type opcode = (opcode_type)dataStream.readUInt16();
                 size_type   size   = (size_type)dataStream.readUInt16();
 
-                // If size == 0, an EOF has probably been reached, i.e. there is nothing 
+                // If size == 0, an EOF has probably been reached, i.e. there is nothing
                 // more to read so we must return.
                 if (size==0)
                 {
@@ -514,8 +514,8 @@ class FLTReaderWriter : public ReaderWriter
                 osgUtil::Optimizer optimizer;
                 optimizer.optimize(document.getHeaderNode(),
                     osgUtil::Optimizer::SHARE_DUPLICATE_STATE |
-                    osgUtil::Optimizer::MERGE_GEOMETRY | 
-                    osgUtil::Optimizer::MERGE_GEODES | 
+                    osgUtil::Optimizer::MERGE_GEOMETRY |
+                    osgUtil::Optimizer::MERGE_GEODES |
                     osgUtil::Optimizer::TESSELLATE_GEOMETRY |
                     osgUtil::Optimizer::STATIC_OBJECT_DETECTION);
             }

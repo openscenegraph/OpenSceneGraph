@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -57,7 +57,7 @@ Browser::Browser(const std::string& url, const GeometryHints& hints)
 bool Browser::assign(BrowserImage* browserImage, const GeometryHints& hints)
 {
     if (!browserImage) return false;
-    
+
     _browserImage = browserImage;
 
     bool flip = _browserImage->getOrigin()==osg::Image::TOP_LEFT;
@@ -66,7 +66,7 @@ bool Browser::assign(BrowserImage* browserImage, const GeometryHints& hints)
 
     osg::Vec3 widthVec(hints.widthVec);
     osg::Vec3 heightVec(hints.heightVec);
-    
+
     switch(hints.aspectRatioPolicy)
     {
         case(GeometryHints::RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO):
@@ -79,7 +79,7 @@ bool Browser::assign(BrowserImage* browserImage, const GeometryHints& hints)
             // no need to adjust aspect ratio
             break;
     }
-    
+
     osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(hints.position, widthVec, heightVec,
                                        0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
 

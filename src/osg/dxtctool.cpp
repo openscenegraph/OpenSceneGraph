@@ -1,5 +1,5 @@
 // dxtctool.cpp: implementation of DXTC Tools functions.
-// 
+//
 // Copyright (C) 2002 Tanguy Fautré.
 // For conditions of distribution and use,
 // see copyright notice in dxtctool.h
@@ -60,7 +60,7 @@ bool dxtc_pixels::VFlip() const
     // Nothing to do if Height == 1
     if (m_Height == 1)
         return true;
-        
+
     if (DXT1())
         VFlip_DXT1();
     else if (DXT3())
@@ -120,7 +120,7 @@ void dxtc_pixels::VFlip_DXT3() const
             for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
                 const size_t TargetRow = ((m_Height + 3) / 4) - (i + 1);
                 BVF_Alpha_DXT3(GetBlock(i, j, BSIZE_DXT3), GetBlock(TargetRow, j, BSIZE_DXT3));
-                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3, 
+                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3,
                           ((dxtc_int8 * ) GetBlock(TargetRow, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3);
             }
 }
@@ -149,7 +149,7 @@ void dxtc_pixels::VFlip_DXT5() const
             for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
                 const size_t TargetRow = ((m_Height + 3) / 4) - (i + 1);
                 BVF_Alpha_DXT5(GetBlock(i, j, BSIZE_DXT5), GetBlock(TargetRow, j, BSIZE_DXT5));
-                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5, 
+                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5,
                           ((dxtc_int8 * ) GetBlock(TargetRow, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5);
             }
 }

@@ -25,8 +25,8 @@ osgParticle::Particle::Particle()
     _sr(0.2f, 0.2f),
     _ar(1, 0),
     _cr(osg::Vec4(1, 1, 1, 1), osg::Vec4(1, 1, 1, 1)),
-    _si(new LinearInterpolator), 
-    _ai(new LinearInterpolator), 
+    _si(new LinearInterpolator),
+    _ai(new LinearInterpolator),
     _ci(new LinearInterpolator),
     _mustdie(false),
     _lifeTime(2),
@@ -65,7 +65,7 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
         return false;
     }
 
-    double x = 0;    
+    double x = 0;
 
     // if we don't live forever, compute our normalized age.
     if (_lifeTime > 0) {
@@ -79,7 +79,7 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
         _alive = -1.0;
         return false;
     }
-    
+
     // compute the current values for size, alpha and color.
     if (_lifeTime <= 0) {
        if (dt == _t0) {
@@ -92,29 +92,29 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
        _current_alpha = _ai.get()->interpolate(x, _ar);
        _current_color = _ci.get()->interpolate(x, _cr);
     }
-    
+
     // update position
     _prev_pos = _position;
     _position += _velocity * dt;
-    
+
     // return now if we indicate that only time stamp should be updated
     // the shader will handle remain properties in this case
     if (onlyTimeStamp) return true;
 
     //Compute the current texture tile based on our normalized age
     int currentTile = _start_tile + static_cast<int>(x * getNumTiles());
-    
+
     //If the current texture tile is different from previous, then compute new texture coords
     if(currentTile != _cur_tile)
     {
-    
+
         _cur_tile = currentTile;
         _s_coord = _s_tile * fmod(_cur_tile , 1.0 / _s_tile);
         _t_coord = 1.0 - _t_tile * (static_cast<int>(_cur_tile * _t_tile) + 1);
 
         // OSG_NOTICE<<this<<" setting tex coords "<<_s_coord<<" "<<_t_coord<<std::endl;
     }
-    
+
     // update angle
     _prev_angle = _angle;
     _angle += _angul_arvel * dt;

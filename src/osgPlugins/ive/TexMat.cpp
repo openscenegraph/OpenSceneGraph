@@ -57,7 +57,7 @@ void TexMat::read(DataInputStream* in){
 
         // Read matrix
         setMatrix(in->readMatrixf());
-        
+
         if ( in->getVersion() >= VERSION_0017 )
         {
             setScaleByTextureRectangleSize(in->readBool());

@@ -43,7 +43,7 @@ bool ShadowedScene_readLocalData(osg::Object& obj, osgDB::Input &fr)
 bool ShadowedScene_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgShadow::ShadowedScene& ss = static_cast<const osgShadow::ShadowedScene &>(obj);
-    
+
     if (ss.getShadowTechnique())
     {
         fw.writeObject(*ss.getShadowTechnique());

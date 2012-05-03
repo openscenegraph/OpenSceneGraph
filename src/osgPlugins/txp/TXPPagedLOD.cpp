@@ -25,7 +25,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
     //TileMapper* tileMapper = dynamic_cast<TileMapper*>(nv.getUserData());
     //Modified by Brad Anderegg (May-27-08) because the black listing process appears to make tiles switch lods
-    //when they clearly shouldnt, in the worst cases a tile will page out that is right in front of you.  
+    //when they clearly shouldnt, in the worst cases a tile will page out that is right in front of you.
     bool forceUseOfFirstChild = /*tileMapper ? (tileMapper->isNodeBlackListed(this)) :*/ false;
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
@@ -34,8 +34,8 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
     // set the frame number of the traversal so that external nodes can find out how active this
     // node is.
-    if (nv.getFrameStamp() && 
-        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) 
+    if (nv.getFrameStamp() &&
+        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
         setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
     }
@@ -58,7 +58,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
             for(unsigned int i=0;i<maxRangeSize;++i)
             {
-                if (forceUseOfFirstChild || 
+                if (forceUseOfFirstChild ||
                     (_rangeList[i].first<=distance && distance<_rangeList[i].second))
                 {
                     if (i<_children.size())
@@ -90,7 +90,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                     //std::cout<<"    to child "<<numChildren-1<<std::endl;
                     if (updateTimeStamp)
                         _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
-                        
+
                     _children[numChildren-1]->accept(nv);
                 }
 

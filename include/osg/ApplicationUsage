@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,7 +25,7 @@ namespace osg {
 class OSG_EXPORT ApplicationUsage : public osg::Referenced
 {
     public:
-        
+
         static ApplicationUsage* instance();
 
         ApplicationUsage() {}
@@ -33,7 +33,7 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
         ApplicationUsage(const std::string& commandLineUsage);
 
         typedef std::map<std::string,std::string> UsageMap;
-        
+
 
         /** The ApplicationName is often displayed when logging errors, and frequently incorporated into the Description (below). */
         void setApplicationName(const std::string& name) { _applicationName = name; }
@@ -52,15 +52,15 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
             KEYBOARD_MOUSE_BINDING = 0x4,
             HELP_ALL = KEYBOARD_MOUSE_BINDING|ENVIRONMENTAL_VARIABLE|COMMAND_LINE_OPTION
         };
-        
+
         void addUsageExplanation(Type type,const std::string& option,const std::string& explanation);
-        
+
         void setCommandLineUsage(const std::string& explanation) { _commandLineUsage=explanation; }
         const std::string& getCommandLineUsage() const { return _commandLineUsage; }
 
 
         void addCommandLineOption(const std::string& option,const std::string& explanation, const std::string &defaultValue = "");
-        
+
         void setCommandLineOptions(const UsageMap& usageMap) { _commandLineOptions=usageMap; }
         const UsageMap& getCommandLineOptions() const { return _commandLineOptions; }
 
@@ -69,7 +69,7 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
 
 
         void addEnvironmentalVariable(const std::string& option,const std::string& explanation, const std::string& defaultValue = "");
-        
+
         void setEnvironmentalVariables(const UsageMap& usageMap) { _environmentalVariables=usageMap; }
         const UsageMap& getEnvironmentalVariables() const { return _environmentalVariables; }
 
@@ -86,13 +86,13 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
         void getFormattedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput=80,bool showDefaults=false,const UsageMap& ud=UsageMap());
 
         void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80,bool showDefaults=false,const UsageMap& ud=UsageMap());
-        
+
         void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION, unsigned int widthOfOutput=80,bool showDefaults=false);
 
         void writeEnvironmentSettings(std::ostream& output);
 
     protected:
-    
+
         virtual ~ApplicationUsage() {}
 
         std::string _applicationName;
@@ -103,11 +103,11 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
         UsageMap    _keyboardMouse;
         UsageMap    _environmentalVariablesDefaults;
         UsageMap    _commandLineOptionsDefaults;
-        
+
 };
 
 class ApplicationUsageProxy
-{   
+{
     public:
 
         /** register an explanation of commandline/environmentvariable/keyboard mouse usage.*/

@@ -71,7 +71,7 @@ class ref_ptr
         bool operator != (const ref_ptr& rp) const { return (_ptr!=rp._ptr); }
         bool operator != (const T* ptr) const { return (_ptr!=ptr); }
         friend bool operator != (const T* ptr, const ref_ptr& rp) { return (ptr!=rp._ptr); }
- 
+
         bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
 
 

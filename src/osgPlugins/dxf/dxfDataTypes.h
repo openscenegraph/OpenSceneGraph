@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -32,12 +32,12 @@ public:
     inline static bool between(int a, int m, int x) { return (a >= m && a <= x); }
     inline static int typeForCode(int gc) {
         if (    between(gc, 0, 9) ||
-                gc == 100 || gc == 102 || 
+                gc == 100 || gc == 102 ||
                 between(gc, 300, 309) ||
                 between(gc, 410, 419) ||
                 between(gc, 430, 439) ||
                 between(gc, 470, 479) ||
-                gc == 999 || 
+                gc == 999 ||
                 between(gc, 1000, 1009)
             )
             return STRING;

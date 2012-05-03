@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -150,8 +150,8 @@ void DataSetLayer::setUpLocator()
                     geoTransform[2],    geoTransform[5],    0.0,    0.0,
                     0.0,                0.0,                1.0,    0.0,
                     geoTransform[0],    geoTransform[3],    0.0,    1.0);
-                    
-            
+
+
         int nPixels = _dataset->GetRasterXSize();
         int nLines = _dataset->GetRasterYSize();
 
@@ -161,7 +161,7 @@ void DataSetLayer::setUpLocator()
 
         locator->setDefinedInFile(true);
 
-        setLocator(locator.get());    
+        setLocator(locator.get());
 
     }
     else if (_dataset->GetGCPCount()>0 && _dataset->GetGCPProjection())
@@ -173,9 +173,9 @@ void DataSetLayer::setUpLocator()
         /*      Create a transformation object from the source to               */
         /*      destination coordinate system.                                  */
         /* -------------------------------------------------------------------- */
-        void *hTransformArg = 
-            GDALCreateGenImgProjTransformer( _dataset, pszSourceSRS, 
-                                             NULL, pszSourceSRS, 
+        void *hTransformArg =
+            GDALCreateGenImgProjTransformer( _dataset, pszSourceSRS,
+                                             NULL, pszSourceSRS,
                                              TRUE, 0.0, 1 );
 
         if ( hTransformArg == NULL )
@@ -189,8 +189,8 @@ void DataSetLayer::setUpLocator()
         /* -------------------------------------------------------------------- */
         double adfDstGeoTransform[6];
         int nPixels=0, nLines=0;
-        if( GDALSuggestedWarpOutput( _dataset, 
-                                     GDALGenImgProjTransform, hTransformArg, 
+        if( GDALSuggestedWarpOutput( _dataset,
+                                     GDALGenImgProjTransform, hTransformArg,
                                      adfDstGeoTransform, &nPixels, &nLines )
             != CE_None )
         {
@@ -209,10 +209,10 @@ void DataSetLayer::setUpLocator()
         locator->setTransform(
             osg::Matrixd::scale(static_cast<double>(nPixels-1), static_cast<double>(nLines-1), 1.0) *
             matrix);
-            
+
         locator->setDefinedInFile(true);
 
-        setLocator(locator.get());    
+        setLocator(locator.get());
     }
     else
     {

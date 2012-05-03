@@ -258,7 +258,7 @@ bool trpgModel::Read(trpgReadBuffer &buf, bool hasHandle)
                 handle = -1;
             }
         }
-        else 
+        else
             handle = -1;
 
         if (type == Local) {

@@ -925,15 +925,15 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 37 ".././ConfigLexer.l"
-{ 
+{
                         #ifdef DEBUG
                         char buff[128];
                         int i = 0;
                         #endif
-                        
+
                         char c;
                         while( (c = yyinput()) != '\n' )
-                        {   
+                        {
                             if( c <= 0 )
                                 break;
                             #ifdef DEBUG
@@ -969,7 +969,7 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 62 ".././ConfigLexer.l"
-{ 
+{
            		        char c;
 	   		            int i = 0;
            		        while( (c = yyinput()) != '"' )

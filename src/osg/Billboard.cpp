@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdio.h>
@@ -94,12 +94,12 @@ void Billboard::updateCache()
     {
         if(_axis==Vec3(0.0f, 0.0, 1.0f) && _normal==Vec3(0.0f, -1.0f, 0.0f))  _cachedMode = POINT_ROT_WORLD_Z_AXIS;
         else _cachedMode = _mode;
-       
+
     }
     else _cachedMode = _mode;
-    
+
     _side = _axis^_normal;
-    _side.normalize();   
+    _side.normalize();
 }
 
 bool Billboard::addDrawable(Drawable *gset)
@@ -215,7 +215,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             }
             break;
         }
-        case(AXIAL_ROT): // need to implement 
+        case(AXIAL_ROT): // need to implement
         {
             float ev_side = ev*_side;
             float ev_normal = ev*_normal;

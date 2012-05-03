@@ -34,7 +34,7 @@ namespace lwo2
     protected:
         virtual iff::Chunk *parse_chunk_data(const std::string &tag, const std::string &context, Iter it, Iter end);
         iff::Chunk *parse_subchunk(Iter &it, const std::string &context);
-                
+
                 Parser& operator = (const Parser&) { return *this; }
     };
 
@@ -125,7 +125,7 @@ namespace lwo2
                     pl.numvert = nvf & 0x03FF;
                     for (int i=0; i<pl.numvert; ++i)
                         pl.vert.push_back(read_VX(it));
-                    chk->polygons.push_back(pl);                    
+                    chk->polygons.push_back(pl);
                 }
                 return chk;
             }

@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -44,7 +44,7 @@ FileNameList osgDB::listAllAvailablePlugins()
             pluginFiles.push_back(fullPath + std::string("/")+*itr);
         }
     }
-    
+
     return pluginFiles;
 }
 
@@ -71,7 +71,7 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
             ++itr)
         {
             const ReaderWriter* rw = itr->get();
-            
+
             if (previouslyLoadedReaderWriters.count(rw)==0)
             {
                 osg::ref_ptr<ReaderWriterInfo> rwi = new ReaderWriterInfo;
@@ -125,9 +125,9 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
                 ++fl_itr)
             {
                 out << *fl_itr << " ";
-            }    
+            }
             out << std::endl;
-            
+
             unsigned int longestOptionLength = 0;
             osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr;
             for(fdm_itr = info.protocols.begin();

@@ -477,7 +477,7 @@ public:
         case DB_DSK_FLOAT2_VAR:
         case DB_DSK_FLOAT3_VAR:
         case DB_DSK_FLOAT4_VAR:
-    
+
         case DB_DSK_INTERNAL_VARS:
         case DB_DSK_LOCAL_VARS:
         case DB_DSK_EXTERNAL_VARS:
@@ -612,7 +612,7 @@ public:
         case DB_DSK_BOOL_VAR: output << "Bool var" << std::endl; break;
         default: output << " inp record " << gr.id << std::endl; break;
         }
- 
+
         for (geoFieldList::const_iterator itr=gr.fields.begin();
         itr!=gr.fields.end();
         ++itr)

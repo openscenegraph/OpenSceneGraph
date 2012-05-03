@@ -74,7 +74,7 @@ bool RadialShooter_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "phiRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getInitialSpeedRange();
     fw.indent() << "initialSpeedRange " << r.minimum << " " << r.maximum << std::endl;
-    
+
     osgParticle::rangev3 rv = myobj.getInitialRotationalSpeedRange();
     osg::Vec3 v1 = rv.minimum;
     osg::Vec3 v2 = rv.maximum;

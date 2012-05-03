@@ -41,7 +41,7 @@ bool TXPNode_readLocalData(osg::Object &obj, osgDB::Input &fr)
         //this function now takes the archive to load as a parameter
         //passing in NULL will have the same effect as before.
         txpNode.loadArchive(NULL);
-        
+
         fr += 2;
         itrAdvanced = true;
     }
@@ -62,7 +62,7 @@ public:
         NodeVisitor::apply(node);
     }
     osgDB::Output &_fw;
-    
+
 protected:
 
     Dump2Osg& operator = (const Dump2Osg&) { return *this; }
@@ -82,7 +82,7 @@ bool TXPNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 
     Dump2Osg wrt(fw);
     grp->accept(wrt);
-    
+
     return true;
 }
 

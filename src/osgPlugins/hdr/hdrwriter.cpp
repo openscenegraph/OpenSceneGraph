@@ -1,4 +1,4 @@
-/* 
+/*
  The following code was based on code from the following location:
     http://www.graphics.cornell.edu/online/formats/rgbe/
 
@@ -8,7 +8,7 @@
     developed by Greg Ward.  It handles the conversions between rgbe and
     pixels consisting of floats.  The data is assumed to be an array of floats.
     By default there are three floats per pixel in the order red, green, blue.
-    (RGBE_DATA_??? values control this.)  Only the mimimal header reading and 
+    (RGBE_DATA_??? values control this.)  Only the mimimal header reading and
     writing is implemented.  Each routine does error checking and will return
     a status value as defined below.  This code is intended as a skeleton so
     feel free to modify it to suit your needs.
@@ -22,7 +22,7 @@
     The file format is described fully in http://radsite.lbl.gov/radiance/refer/filefmts.pdf
     For the moment, we don't output most of the header fields
 
- 
+
 */
 
 #include <stdlib.h>
@@ -142,7 +142,7 @@ bool HDRWriter::writeBytesRLE(std::ostream& fout, unsigned char *data, int numby
             beg_run += run_count;
             old_run_count = run_count;
             run_count = 1;
-            while((data[beg_run] == data[beg_run + run_count]) 
+            while((data[beg_run] == data[beg_run + run_count])
                 && (beg_run + run_count < numbytes)
                 && (run_count < 127))
             {
@@ -197,14 +197,14 @@ bool HDRWriter::writeRLE( const osg::Image* img, std::ostream& fout)
         return writeNoRLE(fout,img);
 
     buffer = (unsigned char *)malloc(sizeof(unsigned char)*4*scanline_width);
-    if (buffer == NULL) 
+    if (buffer == NULL)
         // no buffer space so write flat
         return writeNoRLE(fout,img);
 
     for(int row = 0; row<num_scanlines; ++row)
     {
         float* data = (float*) img->data(0, row);
-        
+
         rgbe[0] = 2;
         rgbe[1] = 2;
         rgbe[2] = scanline_width >> 8;

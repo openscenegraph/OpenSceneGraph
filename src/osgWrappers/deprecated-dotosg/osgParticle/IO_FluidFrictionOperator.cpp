@@ -70,7 +70,7 @@ bool FluidFrictionOperator_writeLocalData(const osg::Object &obj, osgDB::Output 
     fw.indent() << "fluidDensity " << aop.getFluidDensity() << std::endl;
     fw.indent() << "fluidViscosity " << aop.getFluidViscosity() << std::endl;
     fw.indent() << "overrideRadius " << aop.getOverrideRadius() << std::endl;
-    
+
     osg::Vec3 w = aop.getWind();
     fw.indent() << "wind " << w << std::endl;
     return true;

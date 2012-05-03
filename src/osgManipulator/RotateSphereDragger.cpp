@@ -79,9 +79,9 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                     aa.requestRedraw();
                 }
 
-                return true; 
+                return true;
             }
-            
+
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
@@ -111,9 +111,9 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                     _prevPtOnSphere = _projector->isProjectionOnSphere();
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {

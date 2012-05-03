@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -28,21 +28,21 @@ namespace osgShadow {
 class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
 {
     public:
-    
+
         ShadowedScene(ShadowTechnique* st=0);
 
         ShadowedScene(const ShadowedScene& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-            
+
         META_Node(osgShadow, ShadowedScene);
-        
+
         virtual void traverse(osg::NodeVisitor& nv);
-        
+
         void setReceivesShadowTraversalMask(unsigned int mask) { _receivesShadowTraversalMask = mask; }
         unsigned int getReceivesShadowTraversalMask() const { return _receivesShadowTraversalMask; }
-        
+
         void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
         unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
-        
+
         void setShadowSettings(ShadowSettings* ss);
         ShadowSettings* getShadowSettings() { return _shadowSettings.get(); }
         const ShadowSettings* getShadowSettings() const { return _shadowSettings.get(); }
@@ -54,9 +54,9 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         void cleanSceneGraph();
 
-        /** Dirty any cache data structures held in the attached ShadowTechnqiue.*/        
+        /** Dirty any cache data structures held in the attached ShadowTechnqiue.*/
         void dirty();
-        
+
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
@@ -74,7 +74,7 @@ protected:
 
         osg::ref_ptr<ShadowSettings>    _shadowSettings;
         osg::ref_ptr<ShadowTechnique>   _shadowTechnique;
-        
+
 };
 
 }

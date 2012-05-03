@@ -45,12 +45,12 @@ bool Texture1D_readLocalData(Object& obj, Input& fr)
         if (image)
         {
             // name will have already been set by the image plugin,
-            // but it will have absolute path, so will override it 
+            // but it will have absolute path, so will override it
             // here to keep the original name intact.
             //image->setFileName(filename);
             texture.setImage(image);
         }
-        
+
         fr += 2;
         iteratorAdvanced = true;
     }
@@ -89,7 +89,7 @@ bool Texture1D_writeLocalData(const Object& obj, Output& fw)
             }
 
             if (!fileName.empty())
-            {    
+            {
                 fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
             }
         }

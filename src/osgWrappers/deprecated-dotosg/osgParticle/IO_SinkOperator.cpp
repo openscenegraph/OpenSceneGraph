@@ -36,12 +36,12 @@ bool SinkOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
                 sp.setSinkTarget(osgParticle::SinkOperator::SINK_VELOCITY);
             else if (str == "angular_velocity")
                 sp.setSinkTarget(osgParticle::SinkOperator::SINK_ANGULAR_VELOCITY);
-            
+
             fr += 2;
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("sinkStrategy")) {
         const char *ptstr = fr[1].getStr();
         if (ptstr) {
@@ -50,19 +50,19 @@ bool SinkOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
                 sp.setSinkStrategy(osgParticle::SinkOperator::SINK_INSIDE);
             else if (str == "outside")
                 sp.setSinkStrategy(osgParticle::SinkOperator::SINK_OUTSIDE);
-            
+
             fr += 2;
             itAdvanced = true;
         }
     }
-    
+
     return itAdvanced;
 }
 
 bool SinkOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgParticle::SinkOperator &sp = static_cast<const osgParticle::SinkOperator &>(obj);
-    
+
     fw.indent() << "sinkTarget ";
     switch (sp.getSinkTarget())
     {
@@ -75,7 +75,7 @@ bool SinkOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     default:
         fw << "undefined" << std::endl; break;
     }
-    
+
     fw.indent() << "sinkStrategy ";
     switch (sp.getSinkStrategy())
     {
@@ -86,6 +86,6 @@ bool SinkOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     default:
         fw << "undefined" << std::endl; break;
     }
-    
+
     return true;
 }

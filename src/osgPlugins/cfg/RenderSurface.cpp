@@ -39,9 +39,9 @@ bool RenderSurface::allGLContextsAreShared()
 }
 
 
-const std::string &RenderSurface::getDefaultWindowName() 
-{ 
-    return defaultWindowName; 
+const std::string &RenderSurface::getDefaultWindowName()
+{
+    return defaultWindowName;
 }
 
 RenderSurface::RenderSurface( void )
@@ -84,7 +84,7 @@ RenderSurface::RenderSurface( void )
     _windowLeft     = 0;
     _windowRight    = 1;
     _windowBottom   = 0;
-    _windowTop      = 1; 
+    _windowTop      = 1;
     _windowX        = 0;
     _windowY        = 0;
     _windowWidth    = UnknownDimension;
@@ -126,7 +126,7 @@ RenderSurface::RenderSurface( void )
     _checkOwnEvents = true;
     _inputRectangle.set( -1.0,  1.0, -1.0, 1.0 );
     _bindInputRectangleToWindowSize = false;
-    
+
 
     _rtt_mode   = RenderToTextureMode_None;
     //_rtt_mode   = RenderToRGBTexture;
@@ -136,7 +136,7 @@ RenderSurface::RenderSurface( void )
     _rtt_face = PositiveX;
     _rtt_dirty_mipmap = true;
     _rtt_dirty_face = true;
-    
+
 
 #ifdef _WIN32_IMPLEMENTATION
     _ownWindow = true;
@@ -344,7 +344,7 @@ void RenderSurface::setCustomFullScreenRectangle( int x, int y, unsigned int wid
 
 int RenderSurface::getWindowOriginX() const
 {
-    if( _isFullScreen ) 
+    if( _isFullScreen )
     {
         if( _useCustomFullScreen == true )
             return _customFullScreenOriginX;
@@ -356,7 +356,7 @@ int RenderSurface::getWindowOriginX() const
 
 int RenderSurface::getWindowOriginY() const
 {
-    if( _isFullScreen ) 
+    if( _isFullScreen )
     {
         if( _useCustomFullScreen == true )
             return _customFullScreenOriginY;
@@ -368,7 +368,7 @@ int RenderSurface::getWindowOriginY() const
 
 unsigned int RenderSurface::getWindowWidth() const
 {
-    if( _isFullScreen ) 
+    if( _isFullScreen )
     {
         if( _useCustomFullScreen == true )
             return _customFullScreenWidth;
@@ -380,7 +380,7 @@ unsigned int RenderSurface::getWindowWidth() const
 
 unsigned int RenderSurface::getWindowHeight() const
 {
-    if( _isFullScreen ) 
+    if( _isFullScreen )
     {
         if( _useCustomFullScreen == true )
             return _customFullScreenHeight;
@@ -568,12 +568,12 @@ void  RenderSurface::useConfigEventThread( bool flag )
 unsigned int RenderSurface::getRefreshRate() const
 {
     if( !_realized ) return 0;
-    return _refreshRate; 
+    return _refreshRate;
 }
 
 void RenderSurface::addRealizeCallback( Callback *realizeCB )
 {
-    if( _realized ) 
+    if( _realized )
     {
         std::cerr << "RenderSurface::addRealizeCallback() : Warning.  RenderSurface is already realized.  ignored.\n";
             return;

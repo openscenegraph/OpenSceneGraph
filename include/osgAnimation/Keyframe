@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,15 +25,15 @@
 #include <osg/Vec2>
 #include <osg/Matrixf>
 
-namespace osgAnimation 
+namespace osgAnimation
 {
 
-    class Keyframe 
+    class Keyframe
     {
     public:
         double getTime() const { return _time; }
         void setTime(double time) { _time = time; }
-              
+
     protected:
         double _time;
 
@@ -48,8 +48,8 @@ namespace osgAnimation
         TemplateKeyframe () {}
         ~TemplateKeyframe () {}
 
-        TemplateKeyframe (double time, const T& value) 
-        { 
+        TemplateKeyframe (double time, const T& value)
+        {
             _time = time;
             _value = value;
         }
@@ -99,9 +99,9 @@ namespace osgAnimation
 
     typedef TemplateKeyframe<float> FloatKeyframe;
     typedef TemplateKeyframeContainer<float> FloatKeyframeContainer;
-    
+
     typedef TemplateKeyframe<double> DoubleKeyframe;
-    typedef TemplateKeyframeContainer<double> DoubleKeyframeContainer;    
+    typedef TemplateKeyframeContainer<double> DoubleKeyframeContainer;
 
     typedef TemplateKeyframe<osg::Vec2> Vec2Keyframe;
     typedef TemplateKeyframeContainer<osg::Vec2> Vec2KeyframeContainer;
@@ -123,16 +123,16 @@ namespace osgAnimation
 
     typedef TemplateKeyframe<FloatCubicBezier> FloatCubicBezierKeyframe;
     typedef TemplateKeyframeContainer<FloatCubicBezier> FloatCubicBezierKeyframeContainer;
-    
+
     typedef TemplateKeyframe<DoubleCubicBezier> DoubleCubicBezierKeyframe;
     typedef TemplateKeyframeContainer<DoubleCubicBezier> DoubleCubicBezierKeyframeContainer;
-    
+
     typedef TemplateKeyframe<Vec2CubicBezier> Vec2CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec2CubicBezier> Vec2CubicBezierKeyframeContainer;
-    
+
     typedef TemplateKeyframe<Vec3CubicBezier> Vec3CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec3CubicBezier> Vec3CubicBezierKeyframeContainer;
-    
+
     typedef TemplateKeyframe<Vec4CubicBezier> Vec4CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec4CubicBezier> Vec4CubicBezierKeyframeContainer;
 

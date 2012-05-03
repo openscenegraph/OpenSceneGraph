@@ -121,7 +121,7 @@ void Surface::compile(const lwo2::FORM::SURF *surf, const Clip_map &clips)
                     new_block.get_image_map().clip = &i->second;
                 } else {
                     OSG_WARN << "Warning: lwosg::Surface: cannot find clip number " << new_block.get_image_map().image_map << std::endl;
-                }                
+                }
             }
             blocks_.insert(Block_map::value_type(new_block.get_ordinal(), new_block));
         }
@@ -195,7 +195,7 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                                 OSG_WARN << "Warning: lwosg::Surface: maximum number of texture units (" << max_tex_units << ") has been reached, skipping incoming blocks" << std::endl;
                                 break;
                             }
-                
+
                             osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(image_file, db_options);
                             if (!image) break;
 
@@ -324,7 +324,7 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
             }
         }
     }
-    
+
     osg::Vec4 color = osg::Vec4(base_color_, 1-transparency_);
 
     const VertexMap_map *color_maps = 0;

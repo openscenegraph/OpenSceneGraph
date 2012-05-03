@@ -46,20 +46,20 @@ void Camera::write(DataOutputStream* out){
     {
         out->writeStateAttribute(getViewport());
     }
-    
+
     out->writeInt(getTransformOrder());
 
     // Write Camera's properties.
     out->writeMatrixd(getProjectionMatrix());
     out->writeMatrixd(getViewMatrix());
-    
+
     out->writeInt(getRenderOrder());
     out->writeInt(getRenderTargetImplementation());
     out->writeInt(getRenderTargetFallback());
- 
+
     out->writeUInt(getDrawBuffer());
     out->writeUInt(getReadBuffer());
-     
+
     const BufferAttachmentMap& baf = getBufferAttachmentMap();
     out->writeUInt(baf.size());
     for(BufferAttachmentMap::const_iterator itr = baf.begin();
@@ -80,12 +80,12 @@ void Camera::write(DataOutputStream* out){
         out->writeBool(attachment._texture.valid());
         if(attachment._texture.valid())
             out->writeStateAttribute(attachment._texture.get());
-            
+
         out->writeUInt(attachment._level);
         out->writeUInt(attachment._face);
         out->writeBool(attachment._mipMapGeneration);
     }
-     
+
 }
 
 void Camera::read(DataInputStream* in)
@@ -121,32 +121,32 @@ void Camera::read(DataInputStream* in)
             osg::Viewport* vp = dynamic_cast<osg::Viewport*>(attribute.get());
             if (vp) setViewport(vp);
         }
-    
+
         setTransformOrder((TransformOrder)in->readInt());
 
         // Read matrix
         setProjectionMatrix(in->readMatrixd());
         setViewMatrix(in->readMatrixd());
 
-    
+
         setRenderOrder((RenderOrder)in->readInt());
-    
+
         RenderTargetImplementation impl = (RenderTargetImplementation)in->readInt();
         RenderTargetImplementation fallback = (RenderTargetImplementation)in->readInt();
         setRenderTargetImplementation(impl, fallback);
- 
+
         setDrawBuffer((GLenum)in->readUInt());
         setReadBuffer((GLenum)in->readUInt());
-     
+
         _bufferAttachmentMap.clear();
-        
+
         unsigned int numAttachments = in->readUInt();
         for(unsigned int i=0; i<numAttachments; ++i)
         {
             int buffer_component = in->readInt();
             if (in->getVersion() < VERSION_0036 )
             {
-                // prior to VERSION_0036, there was no PACKED_DEPTH_STENCIL_BUFFER so we have to 
+                // prior to VERSION_0036, there was no PACKED_DEPTH_STENCIL_BUFFER so we have to
                 // bump up the value of one to make sure it maps to the original location.
                 if (buffer_component >= PACKED_DEPTH_STENCIL_BUFFER)
                 {
@@ -156,7 +156,7 @@ void Camera::read(DataInputStream* in)
 
             Attachment& attachment = _bufferAttachmentMap[BufferComponent(buffer_component)];
             attachment._internalFormat = (GLenum)in->readUInt();
-            
+
             if (in->readBool())
             {
                 // this ain't right... what if we need to share images????

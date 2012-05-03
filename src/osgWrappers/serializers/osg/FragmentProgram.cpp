@@ -11,27 +11,27 @@ static bool checkLocalParameters( const osg::FragmentProgram& fp )
 
 static bool readLocalParameters( osgDB::InputStream& is, osg::FragmentProgram& fp )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         GLuint key; osg::Vec4d value;
         is >> key >> value;
         fp.setProgramLocalParameter( key, value );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeLocalParameters( osgDB::OutputStream& os, const osg::FragmentProgram& fp )
 {
     const osg::FragmentProgram::LocalParamList& params = fp.getLocalParameters();
-    os.writeSize(params.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(params.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::FragmentProgram::LocalParamList::const_iterator itr=params.begin();
           itr!=params.end(); ++itr )
     {
         os << itr->first << osg::Vec4d(itr->second) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -43,27 +43,27 @@ static bool checkMatrices( const osg::FragmentProgram& fp )
 
 static bool readMatrices( osgDB::InputStream& is, osg::FragmentProgram& fp )
 {
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         unsigned int key; osg::Matrixd value;
         is >> key >> value;
         fp.setMatrix( key, value );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeMatrices( osgDB::OutputStream& os, const osg::FragmentProgram& fp )
 {
     const osg::FragmentProgram::MatrixList& matrices = fp.getMatrices();
-    os.writeSize(matrices.size()); os << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(matrices.size()); os << os.BEGIN_BRACKET << std::endl;
     for ( osg::FragmentProgram::MatrixList::const_iterator itr=matrices.begin();
           itr!=matrices.end(); ++itr )
     {
         os << (unsigned int)itr->first << osg::Matrixd(itr->second) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

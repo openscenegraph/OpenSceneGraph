@@ -53,7 +53,7 @@ class OSGVIEWER_EXPORT EXTQuerySupport : public OpenGLQuerySupport
     typedef std::pair<GLuint, unsigned int> QueryFrameNumberPair;
     typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
     typedef std::vector<GLuint> QueryList;
-    
+
     QueryFrameNumberList                        _queryFrameNumberList;
     QueryList                                   _availableQueryObjects;
     double                                      _previousQueryTime;
@@ -147,7 +147,7 @@ class ARBQuerySupport : public OpenGLQuerySupport
 public:
     virtual void checkQuery(osg::Stats* stats, osg::State* state,
                             osg::Timer_t startTick);
-        
+
     virtual void beginQuery(unsigned int frameNumber, osg::State* state);
     virtual void endQuery(osg::State* state);
     virtual void initialize(osg::State* state, osg::Timer_t startTick);
@@ -377,7 +377,7 @@ Renderer::Renderer(osg::Camera* camera):
     osgViewer::ViewerBase* viewer = view ? view->getViewerBase() : 0;
     osgUtil::IncrementalCompileOperation* ico = viewer ? viewer->getIncrementalCompileOperation() : 0;
     bool automaticFlush = (ico==NULL);
-    
+
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
@@ -501,7 +501,7 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     bool automaticFlush = (ico==NULL);
 
     sceneView->setAutomaticFlush(automaticFlush);
-    
+
     osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
     sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
 
@@ -540,7 +540,7 @@ void Renderer::compile()
         glov.setState(sceneView->getState());
         sceneView->getSceneData()->accept(glov);
     }
-    
+
     sceneView->getState()->checkGLErrors("After Renderer::compile");
 }
 
@@ -731,7 +731,7 @@ void Renderer::draw()
         }
 
         _availableQueue.add(sceneView);
-    
+
         if (acquireGPUStats)
         {
             _querySupport->endQuery(state);

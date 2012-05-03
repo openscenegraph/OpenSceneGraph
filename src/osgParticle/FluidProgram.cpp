@@ -30,12 +30,12 @@ void osgParticle::FluidProgram::execute(double dt)
             float radius = particle->getRadius();
             float Area = osg::PI*radius*radius;
             float Volume = Area*radius*four_over_three;
-        
+
             // compute force due to gravity + boyancy of displacing the fluid that the particle is emersed in.
             osg::Vec3 accel_gravity = _acceleration * ((particle->getMass() - _density*Volume) * particle->getMassInv());
-            
+
             // compute force due to friction
-            osg::Vec3 relative_wind = particle->getVelocity()-_wind;            
+            osg::Vec3 relative_wind = particle->getVelocity()-_wind;
             osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficient*relative_wind.length());
             osg::Vec3 wind_accel = wind_force * particle->getMassInv();
 
@@ -48,7 +48,7 @@ void osgParticle::FluidProgram::execute(double dt)
             }
 
             particle->addVelocity(accel_gravity*dt + wind_accel*compenstated_dt);
-            
+
 
         }
     }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -46,7 +46,7 @@ class OSG_EXPORT ImageStream : public Image
             PAUSED,
             REWINDING
         };
-        
+
         virtual void seek(double /*time*/) {}
 
         virtual void play() { _status=PLAYING; }
@@ -54,39 +54,39 @@ class OSG_EXPORT ImageStream : public Image
         virtual void pause() { _status=PAUSED; }
 
         virtual void rewind() { _status=REWINDING; }
-        
+
         virtual void quit(bool /*waitForThreadToExit*/ = true) {}
 
         StreamStatus getStatus() { return _status; }
-        
+
 
         enum LoopingMode
         {
             NO_LOOPING,
             LOOPING
         };
-        
+
         void setLoopingMode(LoopingMode mode)
         {
             if (_loopingMode == mode) return;
-            
+
             _loopingMode = mode;
             applyLoopingMode();
         }
-        
+
         LoopingMode getLoopingMode() const { return _loopingMode; }
 
         virtual double getCreationTime() const { return HUGE_VAL; }
         virtual double getLength() const { return 0.0; }
-        virtual double getFrameRate() const { return 0.0; } 
+        virtual double getFrameRate() const { return 0.0; }
         virtual double getCurrentTime() const { return 0.0; }
 
         virtual void setReferenceTime(double) {}
         virtual double getReferenceTime() const { return 0.0; }
-                
+
         virtual void setTimeMultiplier(double) {}
         virtual double getTimeMultiplier() const { return 0.0; }
-        
+
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
 
@@ -94,7 +94,7 @@ class OSG_EXPORT ImageStream : public Image
         void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }
         AudioStreams& getAudioStreams() { return _audioStreams; }
         const AudioStreams& getAudioStreams() const { return _audioStreams; }
-        
+
 
     protected:
         virtual void applyLoopingMode() {}
@@ -103,7 +103,7 @@ class OSG_EXPORT ImageStream : public Image
 
         StreamStatus    _status;
         LoopingMode     _loopingMode;
-        
+
         AudioStreams    _audioStreams;
 };
 

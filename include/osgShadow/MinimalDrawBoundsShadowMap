@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -23,7 +23,7 @@
 namespace osgShadow {
 
 class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
-    : public MinimalShadowMap 
+    : public MinimalShadowMap
 {
     public :
         /** Convenient typedef used in definition of ViewData struct and methods */
@@ -34,9 +34,9 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
         /** Classic OSG constructor */
         MinimalDrawBoundsShadowMap();
 
-        /** Classic OSG cloning constructor */        
+        /** Classic OSG cloning constructor */
         MinimalDrawBoundsShadowMap(
-            const MinimalDrawBoundsShadowMap& mdbsm, 
+            const MinimalDrawBoundsShadowMap& mdbsm,
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         /** Declaration of standard OSG object methods */
@@ -59,7 +59,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             { _projection = projection; }
 
             osg::RefMatrix * getShadowCameraProjectionMatrixPtr( void )
-            { return _projection.get(); }  
+            { return _projection.get(); }
 
             virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );
 
@@ -100,7 +100,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
 
         struct CameraCullCallback: public osg::NodeCallback {
 
-            CameraCullCallback(ViewData * vd, osg::NodeCallback * nc): _vd(vd), _nc(nc) 
+            CameraCullCallback(ViewData * vd, osg::NodeCallback * nc): _vd(vd), _nc(nc)
             {
             }
 
@@ -110,7 +110,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
 
                 if( _nc.valid() )
                     _nc->operator()(node,nv);
-                else 
+                else
                     traverse(node,nv);
 
                 if( cv )

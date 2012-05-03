@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -71,9 +71,9 @@ void TerrainTile::write(DataOutputStream* out)
             helper.writeLayer(out, getColorLayer(i));
         }
     }
-        
+
     writeTerrainTechnique(out, getTerrainTechnique());
-    
+
 }
 
 void TerrainTile::read(DataInputStream* in)
@@ -98,7 +98,7 @@ void TerrainTile::read(DataInputStream* in)
 
     if (in->getVersion() >= VERSION_0026)
     {
-    
+
         int level = in->readInt();
         int x = in->readInt();
         int y = in->readInt();
@@ -115,7 +115,7 @@ void TerrainTile::read(DataInputStream* in)
         for(unsigned int i=0; i<numColorLayers; ++i)
         {
             setColorLayer(i, in->readLayer());
-        }        
+        }
     }
     else
     {
@@ -131,7 +131,7 @@ void TerrainTile::read(DataInputStream* in)
             setColorLayer(i, helper.readLayer(in));
         }
     }
-        
+
     setTerrainTechnique(readTerrainTechnique(in));
 
     if (in->getOptions())
@@ -143,7 +143,7 @@ void TerrainTile::read(DataInputStream* in)
         }
     }
 
-    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
+    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid())
         osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(this, in->getOptions());
 }
 

@@ -679,7 +679,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
               default:
               {
                   OSG_DEBUG << "ReaderWriterJPEG::write_JPEG_file - Error pixel format non supported" << std::endl;
-                return WriteResult::ERROR_IN_WRITING_FILE; break;              
+                return WriteResult::ERROR_IN_WRITING_FILE; break;
               }
             }
 
@@ -729,7 +729,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             {
                 return WriteResult::ERROR_IN_WRITING_FILE;
             }*/
-    
+
             //jpeg_stdio_dest(&cinfo, outfile);
             osgDBJPEG::jpeg_stream_dest(&cinfo, &fout);
 
@@ -834,7 +834,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             int r = 1;
 
             //int internalFormat = numComponents_ret;
-            int internalFormat = 
+            int internalFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE :
                 numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
                 numComponents_ret == 3 ? GL_RGB :

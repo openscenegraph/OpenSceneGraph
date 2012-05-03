@@ -4,14 +4,14 @@
 SET(TARGET_DEFAULT_PREFIX "example_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Examples")
 
-SET(TARGET_COMMON_LIBRARIES 
+SET(TARGET_COMMON_LIBRARIES
     OpenThreads
-    osg 
-    osgDB 
+    osg
+    osgDB
     osgUtil
     osgGA
-    osgViewer 
-    osgText 
+    osgViewer
+    osgText
 )
 
 IF(ANDROID)
@@ -23,6 +23,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osg2cpp)
     ADD_SUBDIRECTORY(osganalysis)
     ADD_SUBDIRECTORY(osganimate)
+    ADD_SUBDIRECTORY(osgatomiccounter)
     ADD_SUBDIRECTORY(osgautocapture)
     ADD_SUBDIRECTORY(osgautotransform)
     ADD_SUBDIRECTORY(osgbillboard)
@@ -102,6 +103,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgshadow)
     ADD_SUBDIRECTORY(osgshape)
     ADD_SUBDIRECTORY(osgsharedarray)
+    ADD_SUBDIRECTORY(osgsimpleshaders)
     ADD_SUBDIRECTORY(osgsimplifier)
     ADD_SUBDIRECTORY(osgsimulation)
     ADD_SUBDIRECTORY(osgsidebyside)
@@ -174,6 +176,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
     ADD_SUBDIRECTORY(osgphotoalbum)
     ADD_SUBDIRECTORY(osgtessellate)
+    ADD_SUBDIRECTORY(osgtessellationshaders)
 
     ADD_SUBDIRECTORY(osgpdf)
 
@@ -193,8 +196,10 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerFOX)
     ENDIF(FOX_FOUND)
 
-    IF   (wxWidgets_FOUND AND (${CMAKE_BUILD_TYPE} STREQUAL "Release"))
-        ADD_SUBDIRECTORY(osgviewerWX)
+    IF   (wxWidgets_FOUND AND CMAKE_BUILD_TYPE)
+        IF (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            ADD_SUBDIRECTORY(osgviewerWX)
+        ENDIF()
     ENDIF()
 
     IF   (QT_FOUND AND NOT OSG_GLES1_AVAILABLE AND NOT OSG_GLES2_AVAILABLE AND NOT OSG_GL3_AVAILABLE)
@@ -219,7 +224,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
         OPTION(BUILD_MFC_EXAMPLE "Enable the build of the MFC Example" OFF)
 
-        IF   (BUILD_MFC_EXAMPLE)        
+        IF   (BUILD_MFC_EXAMPLE)
             ADD_SUBDIRECTORY(osgviewerMFC)
         ENDIF(BUILD_MFC_EXAMPLE)
 
@@ -250,7 +255,7 @@ ELSE(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerIPhone)
     ENDIF()
      # IPHONE_PORT@tom
-    
+
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 ENDIF(ANDROID)

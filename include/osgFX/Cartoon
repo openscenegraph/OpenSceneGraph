@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgFX - Copyright (C) 2003 Marco Jez
@@ -25,10 +25,10 @@ namespace osgFX
 {
 
      /**
-     This effect implements a technique called 'Cel-Shading' to produce a 
-     cartoon-style (non photorealistic) rendering. Two passes are required: 
-     the first one draws solid surfaces, the second one draws the outlines. 
-     A vertex program is used to setup texture coordinates for a sharp lighting 
+     This effect implements a technique called 'Cel-Shading' to produce a
+     cartoon-style (non photorealistic) rendering. Two passes are required:
+     the first one draws solid surfaces, the second one draws the outlines.
+     A vertex program is used to setup texture coordinates for a sharp lighting
      texture on unit 0 which is generated on-the-fly.
      This effect requires the ARB_vertex_program extension.
      */
@@ -39,11 +39,11 @@ namespace osgFX
 
         // effect class informations
         META_Effect(
-            osgFX, 
-            Cartoon, 
-            
-            "Cartoon", 
-            
+            osgFX,
+            Cartoon,
+
+            "Cartoon",
+
             "This effect implements a technique called 'Cel-Shading' to produce a "
             "cartoon-style (non photorealistic) rendering. Two passes are required: "
             "the first one draws solid surfaces, the second one draws the outlines. "
@@ -51,24 +51,24 @@ namespace osgFX
             "texture on unit 0 which is generated on-the-fly.\n"
             "This effect requires the ARB_vertex_program extension "
             "or OpenGL Shading Language.",
-            
+
             "Marco Jez; OGLSL port by Mike Weiblen");
 
         /** get the outline color */
         inline const osg::Vec4& getOutlineColor() const;
-        
+
         /** set the outline color */
         inline void setOutlineColor(const osg::Vec4& color);
-        
+
         /** get the outline line width */
         inline float getOutlineLineWidth() const;
-        
+
         /** set the outline line width */
         inline void setOutlineLineWidth(float w);
-        
+
         /** get the OpenGL light number */
         inline int getLightNumber() const;
-        
+
         /** set the OpenGL light number that will be used in lighting computations */
         inline void setLightNumber(int n);
 
@@ -95,22 +95,22 @@ namespace osgFX
     {
         _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, color);
     }
-    
+
     inline float Cartoon::getOutlineLineWidth() const
     {
         return _wf_lw->getWidth();
     }
-    
+
     inline void Cartoon::setOutlineLineWidth(float w)
     {
         _wf_lw->setWidth(w);
     }
-    
+
     inline int Cartoon::getLightNumber() const
     {
         return _lightnum;
     }
-    
+
     inline void Cartoon::setLightNumber(int n)
     {
         _lightnum = n;

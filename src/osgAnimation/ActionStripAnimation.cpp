@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -24,11 +24,11 @@ const ActionAnimation* ActionStripAnimation::getAnimation() const { return _anim
 const ActionBlendIn* ActionStripAnimation::getBlendIn() const { return _blendIn.get(); }
 const ActionBlendOut* ActionStripAnimation::getBlendOut() const { return _blendOut.second.get(); }
 unsigned int ActionStripAnimation::getBlendOutStartFrame() const { return _blendOut.first; }
-        
+
 unsigned int ActionStripAnimation::getLoop() const { return _animation->getLoop(); }
 
 
-ActionStripAnimation::ActionStripAnimation(const ActionStripAnimation& a, const osg::CopyOp& c) : Action(a,c) 
+ActionStripAnimation::ActionStripAnimation(const ActionStripAnimation& a, const osg::CopyOp& c) : Action(a,c)
 {
     _animation = a._animation;
     _blendIn = a._blendIn;

@@ -39,9 +39,9 @@ ReaderWriter::ReadResult ReaderWriterMDL::readNode(
 
     // See if we can find the requested file
     std::string fileName = osgDB::findDataFile(file, options, CASE_INSENSITIVE);
-    if (fileName.empty()) 
+    if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
-   
+
     // Read the file (pass the base name and not the file that was found, this
     // allows us to also find the .vvd and .vtx files without the leading
     // path confusing things)

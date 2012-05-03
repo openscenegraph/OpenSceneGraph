@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -33,7 +33,7 @@ using namespace osgShadow;
 
 
 StandardShadowMap::StandardShadowMap():
-    BaseClass(),    
+    BaseClass(),
     _polygonOffsetFactor( 1.1f ),
     _polygonOffsetUnits( 4.0f ),
     _textureSize( 1024, 1024 ),
@@ -42,7 +42,7 @@ StandardShadowMap::StandardShadowMap():
     _baseTextureCoordIndex( 0 ),
     _shadowTextureCoordIndex( 1 )
 
-{ 
+{
 #if FRAGMENT_SHADERS_ONLY
     _mainFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:       \n"
@@ -69,7 +69,7 @@ StandardShadowMap::StandardShadowMap():
 //      "  float fog = clamp((gl_Fog.end - gl_FogFragCoord)*gl_Fog.scale, 0.,1.);\n"
 //      "  color.rgb = mix( gl_Fog.color.rgb, color.rgb, fog );                  \n"
         "  gl_FragColor = color;                                                 \n"
-        "} \n" );   
+        "} \n" );
 
     _shadowFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:      \n"
@@ -81,8 +81,8 @@ StandardShadowMap::StandardShadowMap():
         "{                                                                      \n"
         "    return shadow2DProj( shadowTexture, gl_TexCoord[1] ).r;            \n"
         "} \n" );
-    
-    
+
+
     _shadowVertexShader = NULL;
     _mainVertexShader = NULL;
 
@@ -111,9 +111,9 @@ StandardShadowMap::StandardShadowMap():
 //      "  float fog = clamp((gl_Fog.end - gl_FogFragCoord)*gl_Fog.scale, 0.,1.);\n"
 //      "  color.rgb = mix( gl_Fog.color.rgb, color.rgb, fog );                  \n"
         "  gl_FragColor = color;                                                 \n"
-        "} \n" );   
-    
-    
+        "} \n" );
+
+
     _shadowFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:      \n"
         " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
@@ -125,8 +125,8 @@ StandardShadowMap::StandardShadowMap():
         "    return shadow2DProj( shadowTexture, gl_TexCoord[1] ).r;            \n"
         "} \n" );
 
-    
-    
+
+
     _shadowVertexShader = new osg::Shader( osg::Shader::VERTEX,
         " // following expressions are auto modified - do not change them:      \n"
         " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
@@ -143,7 +143,7 @@ StandardShadowMap::StandardShadowMap():
         "    gl_TexCoord[1].p = dot( ecPosition, gl_EyePlaneR[1] );             \n"
         "    gl_TexCoord[1].q = dot( ecPosition, gl_EyePlaneQ[1] );             \n"
         "} \n" );
-    
+
     _mainVertexShader = new osg::Shader( osg::Shader::VERTEX,
         " // following expressions are auto modified - do not change them:      \n"
         " // gl_TexCoord[0]      0 - can be subsituted with other index         \n"
@@ -236,7 +236,7 @@ StandardShadowMap::StandardShadowMap():
         "    // Compute distance between surface and light position             \n"
         "    d = length(VP);                                                    \n"
         "                                                                       \n"
-        "    // Normalize the vector from surface to light position             \n" 
+        "    // Normalize the vector from surface to light position             \n"
         "    VP = normalize(VP);                                                \n"
         "                                                                       \n"
         "    // Compute attenuation                                             \n"
@@ -360,10 +360,10 @@ StandardShadowMap::StandardShadowMap(const StandardShadowMap& copy, const osg::C
             ( copy._shadowFragmentShader->clone(copyop) );
 }
 
-StandardShadowMap::~StandardShadowMap(void)                                        
-{                                                                                
-                                                                                
-}                                    
+StandardShadowMap::~StandardShadowMap(void)
+{
+
+}
 
 void StandardShadowMap::updateTextureCoordIndices( unsigned int fromTextureCoordIndex, unsigned int toTextureCoordIndex )
 {
@@ -386,7 +386,7 @@ void StandardShadowMap::updateTextureCoordIndices( unsigned int fromTextureCoord
     {
         char acFrom[ 32 ], acTo[32];
 
-        // its not elegant to mix stdio & stl strings 
+        // its not elegant to mix stdio & stl strings
         // but in this context I do an exception for cleaner code
 
         sprintf( acFrom, "%s%d%s", expressions[i], fromTextureCoordIndex, expressions[i+1]);
@@ -412,7 +412,7 @@ void StandardShadowMap::searchAndReplaceShaderSource
     std::string destString;
 
     std::string::size_type fromLength = fromString.length();
-    std::string::size_type srceLength = srceString.length();   
+    std::string::size_type srceLength = srceString.length();
 
     for( std::string::size_type pos = 0; pos < srceLength; )
     {
@@ -422,7 +422,7 @@ void StandardShadowMap::searchAndReplaceShaderSource
             end = srceLength;
 
         destString.append( srceString, pos, end - pos );
-        
+
         if( end == srceLength )
             break;
 
@@ -435,12 +435,12 @@ void StandardShadowMap::searchAndReplaceShaderSource
 
 void StandardShadowMap::ViewData::cull()
 {
-    // step 1: 
-    // cull shadowed scene ie put into render bins and states into stage graphs 
+    // step 1:
+    // cull shadowed scene ie put into render bins and states into stage graphs
     cullShadowReceivingScene( );
 
     // step 2:
-    // find the light casting our shadows 
+    // find the light casting our shadows
     osg::Vec4 lightPos;
     osg::Vec3 lightDir;
     osg::Vec3 lightUp( 0,0,0 ); // force computing most approprate dir
@@ -454,11 +454,11 @@ void StandardShadowMap::ViewData::cull()
     aimShadowCastingCamera( light, lightPos, lightDir, lightUp );
 
     // step 4:
-    // cull scene casting shadow and generate render  
+    // cull scene casting shadow and generate render
     cullShadowCastingScene( );
 
     // step 5:
-    // setup texgen generating shadow map coords for the shadow receiving scene 
+    // setup texgen generating shadow map coords for the shadow receiving scene
     addShadowReceivingTexGen( );
 
     BaseClass::ViewData::cull();
@@ -487,13 +487,13 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
         _texture = texture;
     }
-    
+
     _camera = new osg::Camera;
-    { // Setup shadow map camera 
+    { // Setup shadow map camera
         _camera->setName( "ShadowCamera" );
 #if 0  // Absolute reference frame INHERIT_VIEWPOINT works better than this
         _camera->setCullingMode
-                ( _camera->getCullingMode() & ~osg::CullSettings::SMALL_FEATURE_CULLING ); 
+                ( _camera->getCullingMode() & ~osg::CullSettings::SMALL_FEATURE_CULLING );
 #endif
         _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
         _camera->setCullCallback(new CameraCullCallback( st ));
@@ -503,10 +503,10 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         _camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         _camera->setClearColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
 #endif
-        _camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);        
+        _camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
         _camera->setViewport(0,0, st->_textureSize.x(), st->_textureSize.y() );
-        _camera->setRenderOrder(osg::Camera::PRE_RENDER);        
-        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);        
+        _camera->setRenderOrder(osg::Camera::PRE_RENDER);
+        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
         _camera->attach(osg::Camera::DEPTH_BUFFER, _texture.get());
     }
 
@@ -517,13 +517,13 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         osg::Image * image = new osg::Image;
         image->allocateImage( 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE );
         *(osg::Vec4ub*)image->data() = osg::Vec4ub( 0xFF, 0xFF, 0xFF, 0xFF );
-        
+
         osg::Texture2D* fakeTex = new osg::Texture2D( image );
         fakeTex->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
         fakeTex->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
         fakeTex->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
         fakeTex->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
-        
+
         _stateset->setTextureAttribute(st->_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
@@ -532,7 +532,7 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         #endif
     }
 
-    { // Add shadow texture 
+    { // Add shadow texture
         _stateset->setTextureAttributeAndModes(st->_shadowTextureUnit,_texture.get(),osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_shadowTextureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_shadowTextureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
@@ -540,7 +540,7 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         _stateset->setTextureMode(st->_shadowTextureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
     }
 
-    {  // Setup shaders used in shadow casting        
+    {  // Setup shaders used in shadow casting
         osg::Program * program = new osg::Program();
         _stateset->setAttribute( program );
 
@@ -564,8 +564,8 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
 
     { // Setup states used for shadow map generation
         osg::StateSet * stateset = _camera->getOrCreateStateSet();
-     
-        stateset->setAttribute( 
+
+        stateset->setAttribute(
             new osg::PolygonOffset( st->_polygonOffsetFactor, st->_polygonOffsetUnits ),
                 osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 
@@ -573,7 +573,7 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
               osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 
         // agressive optimization
-        stateset->setRenderBinDetails( 0, "RenderBin", 
+        stateset->setRenderBinDetails( 0, "RenderBin",
                             osg::StateSet::OVERRIDE_RENDERBIN_DETAILS );
 
         // Assure that AlphaTest/AlphaRef works when redirecting all drawables to single bin.
@@ -588,22 +588,22 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
             osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 
         // note soft (attribute only no mode override) setting. When this works ?
-        // 1. for objects prepared for backface culling 
+        // 1. for objects prepared for backface culling
         //    because they usually also set CullFace and CullMode on in their state
         //    For them we override CullFace but CullMode remains set by them
-        // 2. For one faced, trees, and similar objects which cannot use 
+        // 2. For one faced, trees, and similar objects which cannot use
         //    backface nor front face so they usually use CullMode off set here.
         //    In this case we will draw them in their entirety.
 
         stateset->setAttribute( new osg::CullFace( osg::CullFace::FRONT ),
               osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 
-        // make sure GL_CULL_FACE is off by default 
-        // we assume that if object has cull face attribute set to back 
+        // make sure GL_CULL_FACE is off by default
+        // we assume that if object has cull face attribute set to back
         // it will also set cull face mode ON so no need for override
         stateset->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
 
-        // optimization attributes 
+        // optimization attributes
         osg::Program* program = new osg::Program;
         stateset->setAttribute( program, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON );
         stateset->setMode
@@ -648,7 +648,7 @@ const osg::Light* StandardShadowMap::ViewData::selectLight
     //MR testing giving a specific light
     osgUtil::RenderStage * rs = _cv->getRenderStage();
 
-    osgUtil::PositionalStateContainer::AttrMatrixList& aml = 
+    osgUtil::PositionalStateContainer::AttrMatrixList& aml =
         rs->getPositionalStateContainer()->getAttrMatrixList();
 
     osg::RefMatrix* matrix = 0;
@@ -677,8 +677,8 @@ const osg::Light* StandardShadowMap::ViewData::selectLight
 
         if( lightPos[3] == 0 )
             lightDir.set( -lightPos[0], -lightPos[1], -lightPos[2] );
-        else 
-            lightDir = light->getDirection();            
+        else
+            lightDir = light->getDirection();
 
         lightPos = lightPos * localToWorld;
         lightDir = osg::Matrix::transform3x3( lightDir, localToWorld );
@@ -690,11 +690,11 @@ const osg::Light* StandardShadowMap::ViewData::selectLight
 
 void StandardShadowMap::ViewData::aimShadowCastingCamera( const osg::Light *light,
                                                   const osg::Vec4 &lightPos,
-                                                  const osg::Vec3 &lightDir,                                           
+                                                  const osg::Vec3 &lightDir,
                                                   const osg::Vec3 &lightUp
                                         /* by default = osg::Vec3( 0, 1 0 )*/ )
 {
-#if 0 // less precise but faster 
+#if 0 // less precise but faster
     osg::BoundingSphere bs =_st->getShadowedScene()->getBound();
 #else
     // get the bounds of the model.
@@ -708,12 +708,12 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera( const osg::Light *ligh
         ( bs, light, lightPos, lightDir, lightUp );
 }
 
-void StandardShadowMap::ViewData::aimShadowCastingCamera( 
+void StandardShadowMap::ViewData::aimShadowCastingCamera(
                                         const osg::BoundingSphere &bs,
                                         const osg::Light *light,
                                         const osg::Vec4 &lightPos,
-                                        const osg::Vec3 &lightDir,                                           
-                                        const osg::Vec3 &lightUpVector 
+                                        const osg::Vec3 &lightDir,
+                                        const osg::Vec3 &lightUpVector
                                         /* by default = osg::Vec3( 0, 1 0 )*/ )
 {
     osg::Matrixd & view = _camera->getViewMatrix();
@@ -729,12 +729,12 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
         // set the position far away along the light direction
         position = bs.center() - lightDir * bs.radius() * 2;
     }
-        
+
     float centerDistance = (position-bs.center()).length();
     float znear = centerDistance-bs.radius();
     float zfar  = centerDistance+bs.radius();
     float zNearRatio = 0.001f;
-    if (znear<zfar*zNearRatio) 
+    if (znear<zfar*zNearRatio)
         znear = zfar*zNearRatio;
 
     if ( lightPos[3]!=0.0 ) {  // positional light
@@ -764,17 +764,17 @@ void StandardShadowMap::ViewData::cullShadowReceivingScene( )
 {
     _cv->pushStateSet( _stateset.get() );
 
-    _st->getShadowedScene()->osg::Group::traverse( *_cv );        
+    _st->getShadowedScene()->osg::Group::traverse( *_cv );
 
     _cv->popStateSet();
 }
 
 void StandardShadowMap::ViewData::cullShadowCastingScene( )
-{    
+{
     // record the traversal mask on entry so we can reapply it later.
     unsigned int traversalMask = _cv->getTraversalMask();
 
-    _cv->setTraversalMask( traversalMask & 
+    _cv->setTraversalMask( traversalMask &
          _st->getShadowedScene()->getCastsShadowTraversalMask() );
 
     // do RTT camera traversal
@@ -785,7 +785,7 @@ void StandardShadowMap::ViewData::cullShadowCastingScene( )
 }
 
 void StandardShadowMap::ViewData::addShadowReceivingTexGen( )
-{     
+{
      _texgen->setMode(osg::TexGen::EYE_LINEAR);
 
      // compute the matrix which takes a vertex from view coords into tex coords

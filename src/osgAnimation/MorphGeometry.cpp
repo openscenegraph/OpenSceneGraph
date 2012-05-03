@@ -1,4 +1,4 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MorphGeometry::MorphGeometry() :
     setUseVertexBufferObjects(true);
 }
 
-MorphGeometry::MorphGeometry(const osg::Geometry& b) : 
+MorphGeometry::MorphGeometry(const osg::Geometry& b) :
     osg::Geometry(b, osg::CopyOp::DEEP_COPY_ARRAYS),
     _dirty(false),
     _method(NORMALIZED),
@@ -53,7 +53,7 @@ MorphGeometry::MorphGeometry(const osg::Geometry& b) :
         computeInternalOptimizedGeometry();
 }
 
-MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) : 
+MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
     _dirty(b._dirty),
     _method(b._method),
@@ -90,12 +90,12 @@ void MorphGeometry::transformSoftwareMethod()
             _normalSource = std::vector<osg::Vec3>(normal->begin(),normal->end());
             normal->setDataVariance(osg::Object::DYNAMIC);
         }
-        
 
-        if (!_positionSource.empty()) 
+
+        if (!_positionSource.empty())
         {
             bool initialized = false;
-            if (_method == NORMALIZED) 
+            if (_method == NORMALIZED)
             {
                 // base * 1 - (sum of weights) + sum of (weight * target)
                 float baseWeight = 0;
@@ -202,20 +202,20 @@ void MorphGeometry::transformSoftwareMethod()
     }
 }
 
-UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) : 
+UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) :
     osg::Object(apc, copyop),
     AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
 }
 
-UpdateMorph::UpdateMorph(const std::string& name) : AnimationUpdateCallback<osg::NodeCallback>(name) 
+UpdateMorph::UpdateMorph(const std::string& name) : AnimationUpdateCallback<osg::NodeCallback>(name)
 {
 }
 
 /** Callback method called by the NodeVisitor when visiting a node.*/
 void UpdateMorph::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
         osg::Geode* geode = dynamic_cast<osg::Geode*>(node);
         if (geode)
@@ -224,7 +224,7 @@ void UpdateMorph::operator()(osg::Node* node, osg::NodeVisitor* nv)
             for (unsigned int i = 0; i != numDrawables; ++i)
             {
                 osgAnimation::MorphGeometry* morph = dynamic_cast<osgAnimation::MorphGeometry*>(geode->getDrawable(i));
-                if (morph) 
+                if (morph)
                 {
                     // Update morph weights
                     std::map<int, osg::ref_ptr<osgAnimation::FloatTarget> >::iterator iter = _weightTargets.begin();

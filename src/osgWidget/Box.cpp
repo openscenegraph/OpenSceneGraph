@@ -111,7 +111,7 @@ void Box::_resizeImplementation(point_type w, point_type h) {
             widget->setOrigin(xoff, 0.0f);
 
             // Immediately reset our xoff for the next iteration.
-            if(_uniform) {            
+            if(_uniform) {
                 _positionWidget(widget, maxWidth, maxHeight);
 
                 xadd = maxWidth;
@@ -178,7 +178,7 @@ Window::Sizes Box::_getHeightImplementation() const {
             _getMaxWidgetHeightTotal() * size(),
             _getMaxWidgetMinHeightTotal() * size()
         );
-    
+
         else return Sizes(
             _accumulate<Plus>(&Widget::getHeightTotal),
             _accumulate<Plus>(&Widget::getMinHeightTotal)

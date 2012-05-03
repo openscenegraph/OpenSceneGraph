@@ -35,16 +35,16 @@ void Object::write(DataOutputStream* out)
         case(osg::Object::DYNAMIC): out->writeChar((char)1); break;
         case(osg::Object::UNSPECIFIED): out->writeChar((char)2); break;
     }
-    
+
     if ( out->getVersion() >= VERSION_0031)
     {
         const osg::Object* object = dynamic_cast<const osg::Object*>(getUserData());
-        if (object) 
+        if (object)
         {
             out->writeBool(true);
             out->writeObject(object);
         }
-        else 
+        else
         {
             out->writeBool(false);
         }

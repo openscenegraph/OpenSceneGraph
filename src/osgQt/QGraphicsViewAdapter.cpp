@@ -275,17 +275,17 @@ void QGraphicsViewAdapter::setUpKeyMap()
 QWidget* QGraphicsViewAdapter::getWidgetAt(const QPoint& pos)
 {
    QWidget* childAt = _graphicsView->childAt(pos);
-   if(childAt) 
+   if(childAt)
    {
        return childAt;
    }
-  
+
    QGraphicsItem* item = _graphicsView->itemAt(pos);
    if(item && item->contains(item->mapFromScene(pos)))
    {
       QGraphicsProxyWidget* p = dynamic_cast<QGraphicsProxyWidget*>(item);
       if(p)
-      {  
+      {
          childAt = p->widget();
          QWidget* c;
          while( (c = childAt->childAt(childAt->mapFromGlobal(pos)))!=0 )
@@ -302,9 +302,9 @@ bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
 {
     _previousQtMouseX = x;
     _previousQtMouseY = _graphicsView->size().height() - y;
-   
+
     QPoint pos(_previousQtMouseX, _previousQtMouseY);
-   
+
     if (getWidgetAt(pos) != NULL || (_previousSentEvent && buttonMask != 0))
     {
         QCoreApplication::postEvent(this, new MyQPointerEvent(x,y,buttonMask));
@@ -312,7 +312,7 @@ bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
         _previousSentEvent = true;
         return true;
     }
-    
+
     OSG_INFO<<"sendPointerEvent("<<x<<", "<<y<<") not sent"<<std::endl;
     _previousSentEvent = false;
     return false;
@@ -342,7 +342,7 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         (rightButtonPressed ? Qt::RightButton : Qt::NoButton);
 
     const QPoint globalPos(x, y);
-      
+
     if (buttonMask != _previousButtonMask)
     {
         Qt::MouseButton qtButton = Qt::NoButton;
@@ -364,15 +364,15 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
             if(!rightButtonPressed)
             {
                QWidget* targetWidget = getWidgetAt(globalPos);
-               if(targetWidget) 
+               if(targetWidget)
                {
                   QPoint localPos = targetWidget->mapFromGlobal(globalPos);
                   QContextMenuEvent* cme = new QContextMenuEvent(QContextMenuEvent::Mouse, localPos, globalPos);
                   QCoreApplication::postEvent(targetWidget, cme);
-               }               
+               }
             }
         }
-      
+
         if (eventType==QEvent::MouseButtonPress)
         {
             _image->sendFocusHint(true);
@@ -509,7 +509,7 @@ void QGraphicsViewAdapter::render()
         }
         OSG_INFO << "render image " << _currentWrite << " with size (" << _width << "," << _height << ")" <<std::endl;
     }
-    
+
 #if 1
     // paint the image with the graphics view
     QPainter painter(&image);
@@ -567,7 +567,7 @@ void QGraphicsViewAdapter::resize(int width, int height)
     OSG_INFO << "resize to (" << width << "," << height << ")" <<std::endl;
 
     // Save the new width and height which will take effect on the next render() (in the Qt thread).
-    
+
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_qresizeMutex);
         _width = width;

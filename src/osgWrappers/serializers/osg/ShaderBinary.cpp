@@ -17,12 +17,12 @@ static bool readData( osgDB::InputStream& is, osg::ShaderBinary& sb )
     }
     else
     {
-        is >> osgDB::BEGIN_BRACKET;
+        is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             is >> std::hex >> data[i] >> std::dec;
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
     sb.assign( size, (unsigned char*)data );
     delete [] data;
@@ -40,12 +40,12 @@ static bool writeData( osgDB::OutputStream& os, const osg::ShaderBinary& sb )
     {
         const unsigned char* data = sb.getData();
         os << (unsigned int)sb.getSize();
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<sb.getSize(); ++i )
         {
             os << std::hex << data[i] << std::dec << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
     return true;
 }

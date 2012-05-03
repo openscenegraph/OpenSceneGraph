@@ -1,18 +1,18 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
 #ifndef OSGGA_GUIACTIONADAPTER
-#define OSGGA_GUIACTIONADAPTER 1 
+#define OSGGA_GUIACTIONADAPTER 1
 
 #include <osgGA/Export>
 #include <osg/View>
@@ -34,7 +34,7 @@ GUIEventHandler issues it's request via a GUIActionAdapter, and the viewer
 in use should honour the request, using the GUI system in play.
 
 There is more than one way of using the GUIActionAdapter. E.g. it may be inherited
-into a Viewer class, as is done with osgGLUT::Viewer. Alternatively, a simple 
+into a Viewer class, as is done with osgGLUT::Viewer. Alternatively, a simple
 subclass of GUIActionAdapter (e.g. osgQt::QtActionAdapter) may be passed to
 the GUIEventHandler::handle() function; once the function has returned, the viewer
 will then unpack the results and work out what to do to respond to the
@@ -56,20 +56,20 @@ class GUIActionAdapter
 {
 public:
         virtual ~GUIActionAdapter() {}
-        
+
         /** Provide a mechanism for getting the osg::View associated with this GUIActionAdapter.
           * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
         virtual osg::View* asView() { return 0; }
-        
+
         /**
         requestRedraw() requests a single redraw.
         */
         virtual void requestRedraw() = 0;
 
         /**
-        requestContinousUpdate(bool) is for en/disabling a throw or idle 
-        callback to be requested by a GUIEventHandler (typically a MatrixManipulator,
-        though other GUIEventHandler's may also provide functionality). 
+        requestContinuousUpdate(bool) is for en/disabling a throw or idle
+        callback to be requested by a GUIEventHandler (typically a CameraManipulator,
+        though other GUIEventHandler's may also provide functionality).
         GUI toolkits can respond  to this immediately by registering an idle/timed
         callback, or can delay setting the callback and update at their own leisure.
         */

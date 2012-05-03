@@ -31,7 +31,7 @@ void CameraView::write(DataOutputStream* out)
     else
         out_THROW_EXCEPTION("CameraView::write(): Could not cast this osg::CameraView to an osg::Transform.");
 
-    // Write CameraView's properties.      
+    // Write CameraView's properties.
     out->writeVec3(getPosition());
     out->writeQuat(getAttitude());
     out->writeDouble(getFieldOfView());
@@ -54,7 +54,7 @@ void CameraView::read(DataInputStream* in){
         }
         else
             in_THROW_EXCEPTION("CameraView::read(): Could not cast this osg::CameraView to an osg::Transform.");
-        
+
         // Read CameraView's properties
         setPosition(in->readVec3());
         setAttitude(in->readQuat());

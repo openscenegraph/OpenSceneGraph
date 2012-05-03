@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -21,12 +21,12 @@ namespace osgDB {
 class ParameterOutput
 {
     public:
-    
+
         ParameterOutput(Output& fw):
             _fw(fw),
             _numItemsPerLine(fw.getNumIndicesPerLine()),
             _column(0) {}
-            
+
         ParameterOutput(Output& fw,int numItemsPerLine):
             _fw(fw),
             _numItemsPerLine(numItemsPerLine),
@@ -51,14 +51,14 @@ class ParameterOutput
             _fw.indent() << "}"<<std::endl;
             _column = 0;
         }
-    
+
         template<class T>
         void write(const T& t)
         {
             if (_column==0) _fw.indent();
 
             _fw << t;
-            
+
             ++_column;
             if (_column==_numItemsPerLine)
             {
@@ -71,7 +71,7 @@ class ParameterOutput
             }
 
         }
-        
+
         template<class Iterator>
         void write(Iterator first, Iterator last)
         {
@@ -83,7 +83,7 @@ class ParameterOutput
             }
 
         }
-        
+
         template<class Iterator>
         void writeAsInts(Iterator first, Iterator last)
         {
@@ -95,10 +95,10 @@ class ParameterOutput
             }
 
         }
-        
-        
+
+
     protected:
-    
+
         ParameterOutput& operator = (const ParameterOutput&) { return *this; }
 
         Output& _fw;
@@ -116,15 +116,15 @@ void writeArray(Output& fw, Iterator first, Iterator last,int noItemsPerLine=0)
     fw.moveIn();
 
     int column=0;
-    
+
     for(Iterator itr=first;
         itr!=last;
         ++itr)
     {
         if (column==0) fw.indent();
-        
+
         fw << *itr;
-        
+
         ++column;
         if (column==noItemsPerLine)
         {
@@ -137,10 +137,10 @@ void writeArray(Output& fw, Iterator first, Iterator last,int noItemsPerLine=0)
         }
     }
     if (column!=0) fw << std::endl;
-    
+
     fw.moveOut();
     fw.indent()<<"}"<<std::endl;
-    
+
 }
 
 
@@ -153,15 +153,15 @@ void writeArrayAsInts(Output& fw, Iterator first, Iterator last,int noItemsPerLi
     fw.moveIn();
 
     int column=0;
-    
+
     for(Iterator itr=first;
         itr!=last;
         ++itr)
     {
         if (column==0) fw.indent();
-        
+
         fw << (int)*itr;
-        
+
         ++column;
         if (column==noItemsPerLine)
         {
@@ -174,10 +174,10 @@ void writeArrayAsInts(Output& fw, Iterator first, Iterator last,int noItemsPerLi
         }
     }
     if (column!=0) fw << std::endl;
-    
+
     fw.moveOut();
     fw.indent()<<"}"<<std::endl;
-    
+
 }
 
 

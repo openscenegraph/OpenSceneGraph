@@ -4,7 +4,7 @@
 bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keyword)
 {
     bool iteratorAdvanced = false;
-    
+
     if (fr[0].matchWord(keyword) && fr[1].isOpenBracket())
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -30,8 +30,8 @@ bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keyword)
             else fr.advanceOverCurrentFieldOrBlock();
         }
         iteratorAdvanced = true;
-    }        
-        
+    }
+
     return iteratorAdvanced;
 }
 

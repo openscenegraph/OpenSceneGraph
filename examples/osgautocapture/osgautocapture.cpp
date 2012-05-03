@@ -348,6 +348,8 @@ int main( int argc, char **argv )
         keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() ); 
     }
 
             

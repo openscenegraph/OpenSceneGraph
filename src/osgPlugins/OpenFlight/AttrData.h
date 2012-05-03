@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,7 +32,7 @@ class AttrData : public osg::Object
     public :
 
         AttrData();
-        
+
         AttrData(const AttrData& attr, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(flt,AttrData);
@@ -110,7 +110,7 @@ class AttrData : public osg::Object
             INTERNAL_FORMAT_TX_I_16 = 8,
             INTERNAL_FORMAT_TX_RGB_12 = 9
         };
-  
+
         int32   texels_u;               // Number of texels in u direction
         int32   texels_v;               // Number of texels in v direction
         int32   direction_u;            // Real world size u direction
@@ -304,7 +304,7 @@ class AttrData : public osg::Object
             float64 geoPoint[2];        // Real earth coordinate of geospecific control point
                                         // (this value depends on the projection, earth model,
                                         // and geospecific points units)
-        }                               
+        }
 
         // ----------------
         // v15.6 ends here

@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 
@@ -27,7 +27,7 @@ void dxfHeader::assign(dxfFile*, codeValue& cv)
     }
 }
 
-void dxfTables::assign(dxfFile* dxf, codeValue& cv) 
+void dxfTables::assign(dxfFile* dxf, codeValue& cv)
 {
     if (cv._groupCode == 0 && cv._string == "TABLE") {
         _currentTable = NULL;
@@ -58,7 +58,7 @@ void dxfBlocks::assign(dxfFile* dxf, codeValue& cv)
     }
 }
 
-void dxfEntities::assign(dxfFile* dxf, codeValue& cv) 
+void dxfEntities::assign(dxfFile* dxf, codeValue& cv)
 {
     if (cv._groupCode == 0) {
         if (_currentEntity && _currentEntity->done()) {
@@ -75,13 +75,13 @@ void dxfEntities::assign(dxfFile* dxf, codeValue& cv)
     }
 }
 
-void 
+void
 dxfEntities::drawScene(scene* sc)
 {
     for (EntityList::iterator itr = _entityList.begin();
         itr != _entityList.end(); ++itr)
         (*itr)->drawScene(sc);
 }
-dxfBlock* 
+dxfBlock*
 dxfBlocks::findBlock(std::string s) { return _blockNameList[s]; }
 

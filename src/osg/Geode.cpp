@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Geode>
@@ -53,22 +53,22 @@ bool Geode::addDrawable( Drawable *drawable )
     {
         // note ref_ptr<> automatically handles incrementing drawable's reference count.
         _drawables.push_back(drawable);
-        
+
         // register as parent of drawable.
         drawable->addParent(this);
-        
+
         if (drawable->requiresUpdateTraversal())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
         }
-        
+
         if (drawable->requiresEventTraversal())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
         }
 
-        dirtyBound();        
-        
+        dirtyBound();
+
         return true;
     }
     else return false;
@@ -109,14 +109,14 @@ bool Geode::removeDrawables(unsigned int pos,unsigned int numDrawablesToRemove)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
-        
+
         if (eventCallbackRemoved)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
         }
 
         dirtyBound();
-        
+
         return true;
     }
     else return false;
@@ -138,7 +138,7 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
 {
     if (i<_drawables.size() && newDrawable)
     {
-    
+
         Drawable* origDrawable = _drawables[i].get();
 
         int deltaUpdate = 0;
@@ -160,7 +160,7 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
 
         // remove from origDrawable's parent list.
         origDrawable->removeParent(this);
-        
+
         // note ref_ptr<> automatically handles decrementing origGset's reference count,
         // and incrementing newGset's reference count.
         _drawables[i] = newDrawable;
@@ -170,7 +170,7 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
 
 
         dirtyBound();
-        
+
         return true;
     }
     else return false;
@@ -212,7 +212,7 @@ void Geode::compileDrawables(RenderInfo& renderInfo)
 void Geode::setThreadSafeRefUnref(bool threadSafe)
 {
     Node::setThreadSafeRefUnref(threadSafe);
-    
+
     for(DrawableList::const_iterator itr=_drawables.begin();
         itr!=_drawables.end();
         ++itr)

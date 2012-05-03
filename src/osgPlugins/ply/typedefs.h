@@ -1,8 +1,8 @@
-/*  
+/*
     typedefs.h
     Copyright (c) 2007, Tobias Wolf <twolf@access.unizh.ch>
-    All rights reserved.  
-    
+    All rights reserved.
+
     Type definitions for the mesh classes.
 */
 
@@ -48,15 +48,15 @@ typedef SSIZE_T    ssize_t;
 #include <iostream>
 #include <string>
 
-namespace ply 
+namespace ply
 {
-    
-    
+
+
 
     typedef size_t                      Index;
 //    typedef unsigned short            ShortIndex;
-    
-    
+
+
     // mesh exception
     struct MeshException : public std::exception
     {
@@ -66,7 +66,7 @@ namespace ply
     private:
         std::string _message;
     };
-    
+
     // null output stream that discards everything written to it
     struct NullOStream : std::ostream
     {
@@ -74,10 +74,10 @@ namespace ply
         {
             int overflow( int c ) { return traits_type::not_eof( c ); }
         } _nullBuf;
-        
+
         NullOStream() : std::ios( &_nullBuf ), std::ostream( &_nullBuf ) {}
     };
-    
+
     // wrapper to enable array use where arrays would not be allowed otherwise
     template< class T, size_t d >
     struct ArrayWrapper
@@ -87,22 +87,22 @@ namespace ply
             MESHASSERT( i < d );
             return data[i];
         }
-        
+
         const T& operator[]( const size_t i ) const
         {
             MESHASSERT( i < d );
             return data[i];
         }
-        
+
     private:
         T data[d];
     };
-    
-    
+
+
     // binary mesh file version, increment if changing the file format
     const unsigned short    FILE_VERSION ( 0x0114 );
-    
-    
+
+
     // enumeration for the sort axis
     enum Axis
     {

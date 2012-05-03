@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * Some elements of GraphicsWindowWin32 have used the Producer implementation as a reference.
@@ -151,7 +151,7 @@ DECLARE_HANDLE(HPBUFFERARB);
 #define        WGL_SAMPLES_ARB                0x2042
 #endif
 
-namespace 
+namespace
 {
 
 static std::string sysError()
@@ -166,7 +166,7 @@ static std::string sysError()
                      err,
                      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
                      (LPTSTR) &lpMsgBuf,\
-                     0,NULL 
+                     0,NULL
                      );
 
     std::ostringstream msgResult;
@@ -179,7 +179,7 @@ static std::string sysError()
     {
         msgResult << "Error code " << err;
     }
-    
+
     return msgResult.str();
 }
 
@@ -205,13 +205,13 @@ public:
 
 protected:
     ~TemporaryWindow();
-    
+
     TemporaryWindow(const TemporaryWindow &):
         _handle(0),
         _dc(0),
         _context(0),
         _instance(0) {}
-        
+
     TemporaryWindow &operator=(const TemporaryWindow &) { return *this; }
 
     void create();
@@ -232,10 +232,10 @@ void TemporaryWindow::create()
     _classname = oss.str();
 
     _instance = GetModuleHandle(0);
-        
+
     WNDCLASS wndclass;
-            
-    wndclass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; 
+
+    wndclass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wndclass.lpfnWndProc   = DefWindowProc;
     wndclass.cbClsExtra    = 0;
     wndclass.cbWndExtra    = 0;
@@ -243,7 +243,7 @@ void TemporaryWindow::create()
     wndclass.hCursor       = 0;
     wndclass.hIcon         = 0;
     wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    wndclass.lpszMenuName  = 0;                            
+    wndclass.lpszMenuName  = 0;
     wndclass.lpszClassName = _classname.c_str();
 
     if (!RegisterClass(&wndclass))
@@ -274,27 +274,27 @@ void TemporaryWindow::create()
         return;
     }
 
-    PIXELFORMATDESCRIPTOR pfd = { 
+    PIXELFORMATDESCRIPTOR pfd = {
         sizeof(PIXELFORMATDESCRIPTOR),
-        1,                     
-        PFD_DRAW_TO_WINDOW |   
-        PFD_SUPPORT_OPENGL,      
-        PFD_TYPE_RGBA,         
-        24,                    
-        0, 0, 0, 0, 0, 0,      
-        0,                     
-        0,                     
-        0,                     
-        0, 0, 0, 0,            
+        1,
+        PFD_DRAW_TO_WINDOW |
+        PFD_SUPPORT_OPENGL,
+        PFD_TYPE_RGBA,
+        24,
+        0, 0, 0, 0, 0, 0,
+        0,
+        0,
+        0,
+        0, 0, 0, 0,
         16,
-        0,                     
-        0,                     
-        PFD_MAIN_PLANE,        
-        0,                     
-        0, 0, 0                
-    }; 
+        0,
+        0,
+        PFD_MAIN_PLANE,
+        0,
+        0, 0, 0
+    };
 
-    int visual_id = ChoosePixelFormat(_dc, &pfd); 
+    int visual_id = ChoosePixelFormat(_dc, &pfd);
 
     if (!SetPixelFormat(_dc, visual_id, &pfd))
     {
@@ -421,7 +421,7 @@ bool WGLExtensions::isValid()
 WGLExtensions *WGLExtensions::instance()
 {
     HGLRC context = wglGetCurrentContext();
-    
+
     // Get wgl function pointers for the current graphics context, or if there is no
     // current context then use a temporary window.
 
@@ -466,7 +466,7 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
         if (_traits.valid() && _traits->sharedContext )
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
-            incrementContextIDUsageCount( getState()->getContextID() );   
+            incrementContextIDUsageCount( getState()->getContextID() );
         }
         else
         {
@@ -479,7 +479,7 @@ PixelBufferWin32::~PixelBufferWin32()
 {
     closeImplementation();
 }
-    
+
 void PixelBufferWin32::init()
 {
     if (_initialized) return;
@@ -640,7 +640,7 @@ void PixelBufferWin32::init()
         _traits->height = iHeight;
     }
 
-    _initialized = true;    
+    _initialized = true;
     _valid = true;
 
     return;
@@ -655,13 +655,13 @@ bool PixelBufferWin32::realizeImplementation()
     }
 
     if (!_initialized) init();
-    
+
     if (!_initialized) return false;
 
     if ( _traits->sharedContext )
     {
         GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
-        if (graphicsHandleWin32) 
+        if (graphicsHandleWin32)
         {
             if ( !wglShareLists(graphicsHandleWin32->getWGLContext(), _hglrc) )
             {
@@ -719,7 +719,7 @@ bool PixelBufferWin32::makeCurrentImplementation()
 
     // If the pbuffer is bound to a texture then release it.  This operation requires a current context, so
     // do it after the MakeCurrent.
-    
+
     if ( _boundBuffer!=0 )
     {
         WGLExtensions* wgle = WGLExtensions::instance();
@@ -735,7 +735,7 @@ bool PixelBufferWin32::makeCurrentImplementation()
 
     return result;
 }
-        
+
 bool PixelBufferWin32::makeContextCurrentImplementation( GraphicsContext* readContext )
 {
     WGLExtensions* wgle = WGLExtensions::instance();
@@ -747,7 +747,7 @@ bool PixelBufferWin32::makeContextCurrentImplementation( GraphicsContext* readCo
     }
 
     GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(readContext);
-    if (graphicsHandleWin32) 
+    if (graphicsHandleWin32)
     {
         return wgle->wglMakeContextCurrentARB(_hdc, graphicsHandleWin32->getHDC(), _hglrc);
     }
@@ -768,7 +768,7 @@ bool PixelBufferWin32::releaseContextImplementation()
 void PixelBufferWin32::bindPBufferToTextureImplementation( GLenum buffer )
 {
     WGLExtensions* wgle = WGLExtensions::instance();
-    
+
     if ( !wgle || !wgle->wglBindTexImageARB )
     {
         OSG_NOTICE << "PixelBufferWin32, wglBindTexImageARB not available" << std::endl;
@@ -788,7 +788,7 @@ void PixelBufferWin32::bindPBufferToTextureImplementation( GLenum buffer )
         default:
             bindBuffer = static_cast<int>(buffer);
     }
-    
+
     if ( bindBuffer != _boundBuffer )
     {
         if ( _boundBuffer != 0 && !wgle->wglReleaseTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), _boundBuffer) )
@@ -801,10 +801,10 @@ void PixelBufferWin32::bindPBufferToTextureImplementation( GLenum buffer )
             OSG_NOTICE << "PixelBufferWin32::bindPBufferToTextureImplementation, wglBindTexImageARB error: " << sysError() << std::endl;
         }
         _boundBuffer = bindBuffer;
-    }       
+    }
 }
 
-void PixelBufferWin32::swapBuffersImplementation() 
+void PixelBufferWin32::swapBuffersImplementation()
 {
     SwapBuffers( _hdc );
 }

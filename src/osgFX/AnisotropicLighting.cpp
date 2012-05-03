@@ -67,7 +67,7 @@ namespace
                     osg::Matrix M = state.getInitialInverseViewMatrix();
                     for (int i=0; i<4; ++i) {
                         _vp->setProgramLocalParameter(_param+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
-                    }                
+                    }
                 }
             }
         }

@@ -85,7 +85,7 @@ namespace lwosg
 		void generate_normals();
 		void generate_auto_texture_maps();
 
-	private:		
+	private:
 		Layer_map layers_;
 
 		typedef std::map<int, Clip> Clip_map;

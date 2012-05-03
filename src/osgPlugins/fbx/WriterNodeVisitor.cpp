@@ -538,7 +538,7 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
             //case osg::Geometry::BIND_PER_PRIMITIVE:
             //case osg::Geometry::BIND_PER_VERTEX:
             //    break;
-            //}   
+            //}
             lLayerElementNormal->GetDirectArray().SetAt(it->second, normal);
         }
 
@@ -638,7 +638,7 @@ void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
 
     if (nbVertices==0) return;
 
-    int material = processStateSet(_currentStateSet.get());   
+    int material = processStateSet(_currentStateSet.get());
 
     PrimitiveIndexWriter pif(geo, listTriangles, drawable_n, material);
     for (unsigned int iPrimSet = 0; iPrimSet < geo->getNumPrimitiveSets(); ++iPrimSet) //Fill the Triangle List

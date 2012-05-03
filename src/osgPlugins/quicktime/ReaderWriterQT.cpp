@@ -43,24 +43,24 @@ public:
 
 
     // This class is used as a helper to de-initialize
-    // properly quicktime, when the last media loaded 
-    // with the quicktime plugin is released. 
-    // All loaded media must be added to the observer 
-    // (see ReaderWriterQT::readImage() function) 
+    // properly quicktime, when the last media loaded
+    // with the quicktime plugin is released.
+    // All loaded media must be added to the observer
+    // (see ReaderWriterQT::readImage() function)
     class QuicktimeInitializer : public osg::Observer
     {
     public:
 
-       QuicktimeInitializer (): 
+       QuicktimeInitializer ():
           _instanceCount(0),
              _setup(false)
           {}
 
           virtual ~QuicktimeInitializer()
           {
-             // When we get here, the exit() function 
-             // should have been called, when last media was released. 
-             // In case no media has been added after initialization, 
+             // When we get here, the exit() function
+             // should have been called, when last media was released.
+             // In case no media has been added after initialization,
              // let's perform an extra check
              if (_setup && _instanceCount == 0)
              {
@@ -74,7 +74,7 @@ public:
              ++ _instanceCount;
           }
 
-          virtual void objectDeleted(void*) 
+          virtual void objectDeleted(void*)
           {
              -- _instanceCount;
              if(_instanceCount== 0)
@@ -141,7 +141,7 @@ public:
         supportsExtension("3gp","Mobile movie format");
 
         supportsExtension("live","Live video streaming");
-        
+
         supportsProtocol("http", "streaming media per http");
         supportsProtocol("rtsp", "streaming media per rtsp");
 
@@ -183,7 +183,7 @@ public:
 
    virtual bool acceptsLiveExtension(const std::string& extension) const
    {
-       return osgDB::equalCaseInsensitive(extension,"live");     
+       return osgDB::equalCaseInsensitive(extension,"live");
    }
 
    virtual bool acceptsExtension(const std::string& extension) const
@@ -193,17 +193,17 @@ public:
       return
 
          #ifdef QT_HANDLE_IMAGES_ALSO
-         osgDB::equalCaseInsensitive(extension,"jpg") || 
+         osgDB::equalCaseInsensitive(extension,"jpg") ||
          osgDB::equalCaseInsensitive(extension,"jpeg") ||
-         osgDB::equalCaseInsensitive(extension,"tif") ||               
-         osgDB::equalCaseInsensitive(extension,"tiff") || 
+         osgDB::equalCaseInsensitive(extension,"tif") ||
+         osgDB::equalCaseInsensitive(extension,"tiff") ||
          osgDB::equalCaseInsensitive(extension,"gif") ||
          osgDB::equalCaseInsensitive(extension,"png") ||
          osgDB::equalCaseInsensitive(extension,"pict") ||
          osgDB::equalCaseInsensitive(extension,"pct") ||
          osgDB::equalCaseInsensitive(extension,"tga") ||
          osgDB::equalCaseInsensitive(extension,"psd") ||
-         #endif 
+         #endif
 
          acceptsMovieExtension(extension) ||
          acceptsLiveExtension(extension);
@@ -216,7 +216,7 @@ public:
       {
          return readImage(osgDB::getNameLessExtension(file),options);
       }
-      
+
       if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
       // if the file is a ".live" video encoded string then load as an ImageStream
@@ -281,10 +281,10 @@ public:
               OSG_DEBUG << " available Video DigitizerComponents : " << num_video_components << std::endl;
               if (num_video_components)
               {
-                  // Note from Riccardo Corsi 
+                  // Note from Riccardo Corsi
                   // Quicktime initialization is done here, when a media is found
-                  // and before any image or movie is loaded. 
-                  // After the first call the function does nothing. 
+                  // and before any image or movie is loaded.
+                  // After the first call the function does nothing.
                   // The cleaning up is left to the QuicktimeInitializer (see below)
                   _qtExitObserver.init();
 
@@ -305,12 +305,12 @@ public:
       // Not an encoded "live" psuedo file - so check a real file exists
       // only find the file if it isn't a URL
       std::string fileName = file;
-      
-      
-      // Note from Riccardo Corsi 
+
+
+      // Note from Riccardo Corsi
       // Quicktime initialization is done here, when a media is found
-      // and before any image or movie is loaded. 
-      // After the first call the function does nothing. 
+      // and before any image or movie is loaded.
+      // After the first call the function does nothing.
       // The cleaning up is left to the QuicktimeInitializer (see below)
       _qtExitObserver.init();
 
@@ -323,7 +323,7 @@ public:
              fileName = osgDB::findDataFile( file,  options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
          }
-         
+
          // note from Robert Osfield when integrating, we should probably have so
          // error handling mechanism here.  Possibly move the load from
          // the constructor to a separate load method, and have a valid
@@ -337,13 +337,13 @@ public:
 
          return moov;
       }
-        
-        
+
+
         // no live-video, no movie-file, so try to load as an image
-        
+
         fileName = osgDB::findDataFile( file,  options);
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-            
+
         QuicktimeImportExport importer;
 
         osgDB::ifstream is;
@@ -363,16 +363,16 @@ public:
 
       return image.release();
    }
-   
-    virtual ReadResult readImage (std::istream& is, const osgDB::ReaderWriter::Options* options=NULL) const 
+
+    virtual ReadResult readImage (std::istream& is, const osgDB::ReaderWriter::Options* options=NULL) const
     {
         std::string filename = "";
         long sizeHint(0);
-        // check options for a file-type-hint 
+        // check options for a file-type-hint
         if (options) {
             std::istringstream iss(options->getOptionString());
             std::string opt;
-            while (iss >> opt) 
+            while (iss >> opt)
             {
                 int index = opt.find( "=" );
                 if( opt.substr( 0, index ) == "filename" ||
@@ -389,17 +389,17 @@ public:
         }
 
         _qtExitObserver.init();
-        
+
         QuicktimeImportExport importer;
         osg::ref_ptr<osg::Image> image = importer.readFromStream(is, filename, sizeHint);
-        
+
         if (!importer.success() || (image == NULL)) {
             OSG_WARN << "Error reading from stream "  << importer.getLastErrorString() << std::endl;
             return ReadResult::ERROR_IN_READING_FILE;
         }
         _qtExitObserver.addMedia(image.get());
         return image.release();
-        
+
     }
 
     virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
@@ -421,7 +421,7 @@ public:
         extmap.insert(std::pair<std::string, OSType>("gif",  kQTFileTypeGIF));
         extmap.insert(std::pair<std::string, OSType>("psd",  kQTFileTypePhotoShop));
         extmap.insert(std::pair<std::string, OSType>("sgi",  kQTFileTypeSGIImage));
-        
+
         std::map<std::string, OSType>::iterator cur = extmap.find(ext);
 
         // can not handle this type of file, perhaps a movie?
@@ -429,26 +429,26 @@ public:
          return WriteResult::FILE_NOT_HANDLED;
 
         osgDB::ofstream os(fileName.c_str(), std::ios::binary | std::ios::trunc | std::ios::out);
-        if(os.good()) 
+        if(os.good())
         {
             QuicktimeImportExport exporter;
             exporter.writeToStream(os, const_cast<osg::Image*>(&img), fileName);
-            
-            if (exporter.success()) 
-                return WriteResult::FILE_SAVED;
-        } 
 
-        return WriteResult::ERROR_IN_WRITING_FILE; 
+            if (exporter.success())
+                return WriteResult::FILE_SAVED;
+        }
+
+        return WriteResult::ERROR_IN_WRITING_FILE;
     }
-   
+
     virtual WriteResult writeImage (const osg::Image& img, std::ostream& os, const Options* options=NULL) const
     {
         std::string filename = "file.jpg"; // use jpeg if not otherwise specified
-        
+
         if (options) {
             std::istringstream iss(options->getOptionString());
             std::string opt;
-            while (iss >> opt) 
+            while (iss >> opt)
             {
                 int index = opt.find( "=" );
                 if( opt.substr( 0, index ) == "filename" ||
@@ -458,16 +458,16 @@ public:
                 }
             }
         }
-        
+
         _qtExitObserver.init();
 
         QuicktimeImportExport exporter;
         exporter.writeToStream(os, const_cast<osg::Image*>(&img), filename);
-            
-        if (exporter.success()) 
+
+        if (exporter.success())
             return WriteResult::FILE_SAVED;
-        
-        return WriteResult::ERROR_IN_WRITING_FILE;         
+
+        return WriteResult::ERROR_IN_WRITING_FILE;
     }
 
 protected:
@@ -494,7 +494,7 @@ protected:
       r->addFileExtensionAlias("mpv",  "qt");
       r->addFileExtensionAlias("dv",   "qt");
       r->addFileExtensionAlias("mp4",  "qt");
-      r->addFileExtensionAlias("m4v",  "qt");         
+      r->addFileExtensionAlias("m4v",  "qt");
       #endif
    }
 

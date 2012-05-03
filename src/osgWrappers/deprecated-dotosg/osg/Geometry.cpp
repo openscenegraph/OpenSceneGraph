@@ -48,13 +48,13 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
         int capacity;
         fr[1].getInt(capacity);
-        
+
         Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
         if (capacity>0) primitives.reserve(capacity);
-        
+
 
         fr += 3;
-        
+
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -62,7 +62,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         }
 
         ++fr;
-        
+
         iteratorAdvanced = true;
 
     }
@@ -114,7 +114,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("VertexIndices"))
     {
         ++fr;
@@ -291,7 +291,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     {
         int unit=0;
         fr[1].getInt(unit);
-    
+
         fr+=2;
         Array* texcoords = Array_readLocalData(fr);
         if (texcoords)
@@ -299,14 +299,14 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             geom.setTexCoordArray(unit,texcoords);
         }
         iteratorAdvanced = true;
-        
+
     }
 
     if (fr.matchSequence("TexCoordIndices %i"))
     {
         int unit=0;
         fr[1].getInt(unit);
-    
+
         fr+=2;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
@@ -330,12 +330,12 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     {
         int unit=0;
         fr[1].getInt(unit);
-        
-        if (fr[2].matchString("TRUE"))        
+
+        if (fr[2].matchString("TRUE"))
             geom.setVertexAttribNormalize(unit,GL_TRUE);
         else
             geom.setVertexAttribNormalize(unit,GL_FALSE);
-        
+
         fr+=3;
         iteratorAdvanced = true;
     }
@@ -344,7 +344,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     {
         int unit=0;
         fr[1].getInt(unit);
-    
+
         fr+=2;
         Array* vertexattrib = Array_readLocalData(fr);
         if (vertexattrib)
@@ -352,14 +352,14 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             geom.setVertexAttribArray(unit,vertexattrib);
         }
         iteratorAdvanced = true;
-        
+
     }
 
     if (fr.matchSequence("VertexAttribIndices %i"))
     {
         int unit=0;
         fr[1].getInt(unit);
-    
+
         fr+=2;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
@@ -785,12 +785,12 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
-    
-    if (return_array) 
+
+    if (return_array)
     {
         if (!uniqueID.empty()) fr.registerUniqueIDForObject(uniqueID.c_str(),return_array);
     }
-    
+
     return return_array;
 }
 
@@ -1004,16 +1004,16 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 {
     bool iteratorAdvanced = false;
     bool firstMatched = false;
-    if ((firstMatched = fr.matchSequence("DrawArrays %w %i %i %i")) || 
+    if ((firstMatched = fr.matchSequence("DrawArrays %w %i %i %i")) ||
          fr.matchSequence("DrawArrays %w %i %i") )
     {
-        
+
         GLenum mode;
         Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int first;
         fr[2].getInt(first);
-        
+
         int count;
         fr[3].getInt(count);
 
@@ -1030,11 +1030,11 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 
         geom.addPrimitiveSet(new DrawArrays(mode, first, count, numInstances));
 
-        
+
         iteratorAdvanced = true;
-        
+
     }
-    else if ((firstMatched = fr.matchSequence("DrawArrayLengths %w %i %i %i {")) || 
+    else if ((firstMatched = fr.matchSequence("DrawArrayLengths %w %i %i %i {")) ||
          fr.matchSequence("DrawArrayLengths %w %i %i {") )
     {
         int entry = fr[1].getNoNestedBrackets();
@@ -1047,7 +1047,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 
         int capacity;
         fr[3].getInt(capacity);
-        
+
         int numInstances = 0;
         if (firstMatched)
         {
@@ -1075,12 +1075,12 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
             }
         }
          ++fr;
-         
+
          geom.addPrimitiveSet(prim);
-   
+
         iteratorAdvanced = true;
     }
-    else if ((firstMatched = fr.matchSequence("DrawElementsUByte %w %i %i {")) || 
+    else if ((firstMatched = fr.matchSequence("DrawElementsUByte %w %i %i {")) ||
          fr.matchSequence("DrawElementsUByte %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
@@ -1090,7 +1090,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 
         int capacity;
         fr[2].getInt(capacity);
-        
+
         int numInstances = 0;
         if (firstMatched)
         {
@@ -1117,12 +1117,12 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
             }
         }
          ++fr;
-         
+
          geom.addPrimitiveSet(prim);
-   
+
         iteratorAdvanced = true;
     }
-    else if ((firstMatched = fr.matchSequence("DrawElementsUShort %w %i %i {")) || 
+    else if ((firstMatched = fr.matchSequence("DrawElementsUShort %w %i %i {")) ||
          fr.matchSequence("DrawElementsUShort %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
@@ -1132,7 +1132,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 
         int capacity;
         fr[2].getInt(capacity);
-        
+
         int numInstances = 0;
         if (firstMatched)
         {
@@ -1143,7 +1143,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         {
             fr += 4;
         }
-        
+
         DrawElementsUShort* prim = new DrawElementsUShort;
         prim->setMode(mode);
         prim->setNumInstances(numInstances);
@@ -1159,12 +1159,12 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
             }
         }
          ++fr;
-         
+
          geom.addPrimitiveSet(prim);
-   
+
         iteratorAdvanced = true;
     }
-    else if ((firstMatched = fr.matchSequence("DrawElementsUInt %w %i %i {")) || 
+    else if ((firstMatched = fr.matchSequence("DrawElementsUInt %w %i %i {")) ||
               fr.matchSequence("DrawElementsUInt %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
@@ -1174,7 +1174,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 
         int capacity;
         fr[2].getInt(capacity);
-        
+
         int numInstances = 0;
         if (firstMatched)
         {
@@ -1185,7 +1185,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         {
             fr += 4;
         }
-        
+
         DrawElementsUInt* prim = new DrawElementsUInt;
         prim->setMode(mode);
         prim->setNumInstances(numInstances);
@@ -1201,9 +1201,9 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
             }
         }
          ++fr;
-         
+
          geom.addPrimitiveSet(prim);
-   
+
         iteratorAdvanced = true;
     }
 
@@ -1298,31 +1298,31 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
 
         fw.indent()<<"VertexArray ";
         Array_writeLocalData(*geom.getVertexArray(),fw);
-        
+
     }
     if (geom.getVertexIndices())
     {
         fw.indent()<<"VertexIndices ";
-        Array_writeLocalData(*geom.getVertexIndices(),fw);        
+        Array_writeLocalData(*geom.getVertexIndices(),fw);
     }
 
     if (geom.getNormalArray())
     {
-        
+
         fw.indent()<<"NormalBinding "<<Geometry_getBindingTypeStr(geom.getNormalBinding())<<std::endl;
-        
+
 //        const Vec3Array& normals = *geom.getNormalArray();
 //        fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
 //        Array_writeLocalData(fw,normals.begin(),normals.end(),1);
 
         fw.indent()<<"NormalArray ";
-        Array_writeLocalData(*geom.getNormalArray(),fw);        
-        
+        Array_writeLocalData(*geom.getNormalArray(),fw);
+
     }
     if (geom.getNormalIndices())
     {
         fw.indent()<<"NormalIndices ";
-        Array_writeLocalData(*geom.getNormalIndices(),fw);        
+        Array_writeLocalData(*geom.getNormalIndices(),fw);
     }
 
     if (geom.getColorArray())
@@ -1334,7 +1334,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
     if (geom.getColorIndices())
     {
         fw.indent()<<"ColorIndices ";
-        Array_writeLocalData(*geom.getColorIndices(),fw);        
+        Array_writeLocalData(*geom.getColorIndices(),fw);
     }
 
     if (geom.getSecondaryColorArray())
@@ -1346,7 +1346,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
     if (geom.getSecondaryColorIndices())
     {
         fw.indent()<<"SecondayColorIndices ";
-        Array_writeLocalData(*geom.getSecondaryColorIndices(),fw);        
+        Array_writeLocalData(*geom.getSecondaryColorIndices(),fw);
     }
 
     if (geom.getFogCoordArray())
@@ -1358,7 +1358,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
     if (geom.getFogCoordIndices())
     {
         fw.indent()<<"FogCoordIndices ";
-        Array_writeLocalData(*geom.getFogCoordIndices(),fw);        
+        Array_writeLocalData(*geom.getFogCoordIndices(),fw);
     }
 
     const Geometry::ArrayDataList& tcal=geom.getTexCoordArrayList();
@@ -1376,21 +1376,21 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
             Array_writeLocalData(*(tcal[i].indices),fw);
         }
     }
-    
+
     const Geometry::ArrayDataList& vaal=geom.getVertexAttribArrayList();
     for(i=0;i<vaal.size();++i)
     {
         const osg::Geometry::ArrayData& arrayData = vaal[i];
-    
+
         if (arrayData.array.valid())
         {
             fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(arrayData.binding)<<std::endl;
-            
+
             if (arrayData.normalize)
                 fw.indent()<<"VertexAttribNormalize "<<i<<" TRUE"<<std::endl;
             else
                 fw.indent()<<"VertexAttribNormalize "<<i<<" FALSE"<<std::endl;
-                
+
             fw.indent()<<"VertexAttribArray "<<i<<" ";
             Array_writeLocalData(*(arrayData.array),fw);
         }

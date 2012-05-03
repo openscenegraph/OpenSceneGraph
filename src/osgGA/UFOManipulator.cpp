@@ -28,7 +28,7 @@ UFOManipulator::UFOManipulator():
             _t0(0.0),
             _shift(false),
             _ctrl(false)
-{ 
+{
     _minHeightAboveGround          = 2.0;
     _minDistanceInFront            = 5.0;
 
@@ -67,9 +67,9 @@ bool UFOManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, o
 
     osgUtil::IntersectionVisitor iv(lsi.get());
     iv.setTraversalMask(_intersectTraversalMask);
-    
+
     _node->accept(iv);
-    
+
     if (lsi->containsIntersections())
     {
         intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
@@ -82,7 +82,7 @@ void UFOManipulator::setNode( osg::Node *node )
 {
     _node = node;
 
-    if (getAutoComputeHomePosition()) 
+    if (getAutoComputeHomePosition())
         computeHomePosition();
 
     home(0.0);
@@ -99,12 +99,12 @@ osg::Node* UFOManipulator::getNode()
 }
 
 
-const char* UFOManipulator::className() const 
-{ 
-    return "UFO"; 
+const char* UFOManipulator::className() const
+{
+    return "UFO";
 }
 
-void UFOManipulator::setByMatrix( const osg::Matrixd &mat ) 
+void UFOManipulator::setByMatrix( const osg::Matrixd &mat )
 {
     _inverseMatrix = mat;
     _matrix.invert( _inverseMatrix );
@@ -117,7 +117,7 @@ void UFOManipulator::setByMatrix( const osg::Matrixd &mat )
     _stop();
 }
 
-void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat) 
+void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat)
 {
     _matrix = invmat;
     _inverseMatrix.invert( _matrix );
@@ -135,7 +135,7 @@ osg::Matrixd UFOManipulator::getMatrix() const
     return (osg::Matrix::inverse(_offset) * _matrix);
 }
 
-osg::Matrixd UFOManipulator::getInverseMatrix() const 
+osg::Matrixd UFOManipulator::getInverseMatrix() const
 {
     return (_inverseMatrix * _offset);
 }
@@ -149,7 +149,7 @@ void UFOManipulator::computeHomePosition()
 
     /*
        * Find the ground - Assumption: The ground is the hit of an intersection
-       * from a line segment extending from above to below the database at its 
+       * from a line segment extending from above to below the database at its
        * horizontal center, that intersects the database closest to zero. */
 
     osg::CoordinateFrame cf( getCoordinateFrame(bs.center()) ); // not sure what position to use here
@@ -191,7 +191,7 @@ void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
     _stop();
 }
 
-void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us) 
+void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us)
 {
     home(ea.getTime());
     us.requestRedraw();
@@ -199,9 +199,9 @@ void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 
 }
 
-void UFOManipulator::home(double) 
+void UFOManipulator::home(double)
 {
-    if (getAutoComputeHomePosition()) 
+    if (getAutoComputeHomePosition())
         computeHomePosition();
 
     _position = _homeEye;
@@ -256,7 +256,7 @@ bool UFOManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAda
 
 void UFOManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
-    /** Way too busy.  This needs to wait until we have a scrollable window 
+    /** Way too busy.  This needs to wait until we have a scrollable window
     usage.addKeyboardMouseBinding("UFO Manipulator: <SpaceBar>",        "Reset the viewing angle to 0.0");
     usage.addKeyboardMouseBinding("UFO Manipulator: <UpArrow>",         "Acceleration forward.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <DownArrow>",       "Acceleration backward (or deceleration forward");
@@ -429,7 +429,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
                     if( fabs( _directionRotationRate ) < _directionRotationEpsilon )
                         _directionRotationRate = 0.0;
                 }
-                
+
             }
             break;
 
@@ -464,7 +464,7 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
     {
       osg::Vec3d _sideVec = _direction * osg::Matrix::rotate( -M_PI*0.5, upVec);
 
-        _position += ((_direction       * _forwardSpeed) + 
+        _position += ((_direction       * _forwardSpeed) +
                       (_sideVec         * _sideSpeed) +
                       (upVec * _upSpeed))
                        * _dt;
@@ -476,7 +476,7 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
         _pitchOffset *= -1;
 
     _yawOffset   += _yawOffsetRate   * _dt;
-    if( _yawOffset >= M_PI || _yawOffset < -M_PI ) 
+    if( _yawOffset >= M_PI || _yawOffset < -M_PI )
         _yawOffset *= -1;
 
     _offset       = osg::Matrix::rotate( _yawOffset, getSideVector(cf),
@@ -485,7 +485,7 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
 
     _adjustPosition();
 
-    _inverseMatrix.makeLookAt( _position, _position + _direction, upVec); 
+    _inverseMatrix.makeLookAt( _position, _position + _direction, upVec);
     _matrix.invert(_inverseMatrix);
 
     if( _decelerateUpSideRate )
@@ -540,7 +540,7 @@ void UFOManipulator::_adjustPosition()
 
     // Check intersects infront.
     osg::Vec3d ip;
-    if (intersect(_position, 
+    if (intersect(_position,
                   _position + (_direction * (_minDistanceInFront * 3.0)),
                   ip ))
     {
@@ -552,13 +552,13 @@ void UFOManipulator::_adjustPosition()
             _stop();
         }
     }
-    
+
     // Check intersects below.
     osg::CoordinateFrame cf( getCoordinateFrame(_position) );
     osg::Vec3d upVec( getUpVector(cf) );
 
-    if (intersect(_position, 
-                  _position - upVec*_minHeightAboveGround*3, 
+    if (intersect(_position,
+                  _position - upVec*_minHeightAboveGround*3,
                   ip ))
     {
         double d = (ip - _position).length();

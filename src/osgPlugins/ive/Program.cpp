@@ -29,7 +29,7 @@ void Program::write(DataOutputStream* out){
     }
     else
         out_THROW_EXCEPTION("Program::write(): Could not cast this osg::Program to an osg::Object.");
-        
+
     if ( out->getVersion() >= VERSION_0030 )
     {
         out->writeInt(getParameter(GL_GEOMETRY_VERTICES_OUT_EXT));
@@ -47,7 +47,7 @@ void Program::write(DataOutputStream* out){
         out->writeUInt(itr->second);
     }
 
-    // Write 
+    // Write
     out->writeUInt(getNumShaders());
     for(unsigned int si=0; si<getNumShaders(); ++si)
     {

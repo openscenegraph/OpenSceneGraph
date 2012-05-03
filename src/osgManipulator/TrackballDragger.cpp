@@ -63,7 +63,7 @@ TrackballDragger::TrackballDragger(bool useAutoTransform)
         osg::AutoTransform *at = new osg::AutoTransform;
         at->setAutoScaleToScreen(true);
         at->addChild(scaler);
-        
+
         AntiSquish* as = new AntiSquish;
         as->addChild(at);
         addChild(as);
@@ -71,11 +71,11 @@ TrackballDragger::TrackballDragger(bool useAutoTransform)
         _xDragger = new RotateCylinderDragger();
         scaler->addChild(_xDragger.get());
         addDragger(_xDragger.get());
-    
+
         _yDragger = new RotateCylinderDragger();
         scaler->addChild(_yDragger.get());
         addDragger(_yDragger.get());
-    
+
         _zDragger = new RotateCylinderDragger();
         scaler->addChild(_zDragger.get());
         addDragger(_zDragger.get());
@@ -89,11 +89,11 @@ TrackballDragger::TrackballDragger(bool useAutoTransform)
         _xDragger = new RotateCylinderDragger();
         addChild(_xDragger.get());
         addDragger(_xDragger.get());
-    
+
         _yDragger = new RotateCylinderDragger();
         addChild(_yDragger.get());
         addDragger(_yDragger.get());
-    
+
         _zDragger = new RotateCylinderDragger();
         addChild(_zDragger.get());
         addDragger(_zDragger.get());
@@ -105,7 +105,7 @@ TrackballDragger::TrackballDragger(bool useAutoTransform)
 
     setParentDragger(getParentDragger());
 }
-       
+
 TrackballDragger::~TrackballDragger()
 {
 }
@@ -137,7 +137,7 @@ void TrackballDragger::setupDefaultGeometry()
         #if !defined(OSG_GLES2_AVAILABLE)
             geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
         #endif
-    
+
     }
 
     // Add line to all the individual 1D draggers.

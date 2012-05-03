@@ -141,7 +141,7 @@ bool Material_readLocalData(Object& obj, Input& fr)
     {
 
         material.setTransparency(Material::FRONT_AND_BACK,transparency);
-        
+
         fr+=2;
         iteratorAdvanced = true;
     }

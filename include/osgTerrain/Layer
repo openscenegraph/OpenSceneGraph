@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -41,9 +41,9 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Layer(const Layer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, Layer);
-        
+
         /** Set the name of this layer. */
         void setSetName(const std::string& setname) { setName(setname); }
 
@@ -62,7 +62,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
- 
+
         void setMinLevel(unsigned int minLevel) { _minLevel = minLevel; }
         unsigned int getMinLevel() const { return _minLevel; }
 
@@ -87,7 +87,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
-        
+
 
         /** Set the minification texture filter to use when a texture is associated with this layer.*/
         void setMinFilter(osg::Texture::FilterMode filter) { _minFilter = filter; }
@@ -104,10 +104,10 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
 
 
-        /** Return image associated with layer if supported. */        
+        /** Return image associated with layer if supported. */
         virtual osg::Image* getImage() { return 0; }
 
-        /** Return const image associated with layer if supported. */        
+        /** Return const image associated with layer if supported. */
         virtual const osg::Image* getImage() const { return 0; }
 
 
@@ -167,7 +167,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             j = (unsigned int)(ndc_y);
             ir = ndc_x - double(i);
             jr = ndc_y - double(j);
-        } 
+        }
 
         /**
          * Calculate the interpolated layer value at the given normalized coordinates.
@@ -184,35 +184,35 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             value = 0.0f;
             double div = 0.0f;
             float v,r;
-            
+
             r = (1.0f-ir)*(1.0f-jr);
-            if (r>0.0 && getValue(i,j,v)) 
+            if (r>0.0 && getValue(i,j,v))
             {
                 value += v*r;
                 div += r;
             }
-            
+
             r = (ir)*(1.0f-jr);
-            if (r>0.0 && getValue(i+1,j,v)) 
+            if (r>0.0 && getValue(i+1,j,v))
             {
                 value += v*r;
                 div += r;
             }
-            
+
             r = (ir)*(jr);
-            if (r>0.0 && getValue(i+1,j+1,v)) 
+            if (r>0.0 && getValue(i+1,j+1,v))
             {
                 value += v*r;
                 div += r;
             }
-            
+
             r = (1.0f-ir)*(jr);
-            if (r>0.0 && getValue(i,j+1,v)) 
+            if (r>0.0 && getValue(i,j+1,v))
             {
                 value += v*r;
                 div += r;
             }
-            
+
             if (div != 0.0)
             {
                 value /= div;
@@ -304,7 +304,7 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, ImageLayer);
 
         void setFileName(const std::string& filename) { _filename = filename; if (_image.valid()) _image->setFileName(filename); }
@@ -314,7 +314,7 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
 
         void setImage(osg::Image* image);
 
-        /** Return image associated with layer. */  
+        /** Return image associated with layer. */
         virtual osg::Image* getImage() { return _image.get(); }
 
         /** Return const image associated with layer. */
@@ -348,7 +348,7 @@ class OSGTERRAIN_EXPORT ContourLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ContourLayer(const ContourLayer& tfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, ContourLayer);
 
         virtual bool transform(float offset, float scale);
@@ -357,7 +357,7 @@ class OSGTERRAIN_EXPORT ContourLayer : public Layer
         osg::TransferFunction1D* getTransferFunction() { return _tf.get(); }
         const osg::TransferFunction1D* getTransferFunction() const { return _tf.get(); }
 
-        /** Return image associated with layer. */  
+        /** Return image associated with layer. */
         virtual osg::Image* getImage() { return _tf.valid() ? _tf->getImage() : 0; }
 
         /** Return const image associated with layer. */
@@ -392,7 +392,7 @@ class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, HeightFieldLayer);
 
         void setFileName(const std::string& filename) { _filename = filename; }
@@ -434,10 +434,10 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ProxyLayer(const ProxyLayer& proxyLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, ProxyLayer);
-        
-        /** Return image associated with layer if supported. */        
+
+        /** Return image associated with layer if supported. */
         virtual osg::Image* getImage()
         {
             return _implementation.valid() ? _implementation->getImage() : 0;
@@ -451,7 +451,7 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 
         /** Set the implementation layer that does the actual work.*/
         void setImplementation(Layer* layer) { _implementation = layer; }
-        
+
         /** Get the implementation layer that does the actual work.*/
         Layer* getImplementation() { return _implementation.get(); }
 
@@ -463,7 +463,7 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 
         virtual unsigned int getNumColumns() const;
         virtual unsigned int getNumRows() const;
-        
+
         virtual bool transform(float offset, float scale);
 
         virtual bool getValue(unsigned int i, unsigned int j, float& value) const;
@@ -480,7 +480,7 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
     protected:
 
         virtual ~ProxyLayer();
-        
+
         osg::ref_ptr<Layer> _implementation;
 
 
@@ -494,7 +494,7 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, CompositeLayer);
 
         void clear();
@@ -521,11 +521,11 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
 
         void addLayer(const std::string& compoundname);
         void addLayer(const std::string& setname, const std::string& filename);
-        
+
         void addLayer(Layer* layer) { _layers.push_back(CompoundNameLayer(layer->getName(),layer->getFileName(),layer)); }
 
         void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
-        
+
         unsigned int getNumLayers() const { return _layers.size(); }
 
     protected:
@@ -535,7 +535,7 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         struct CompoundNameLayer
         {
             CompoundNameLayer() {}
-        
+
             CompoundNameLayer(const CompoundNameLayer& cnl):
                 setname(cnl.setname),
                 filename(cnl.filename),
@@ -549,7 +549,7 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
             CompoundNameLayer& operator = (const CompoundNameLayer& cnl)
             {
                 if (&cnl==this) return *this;
-                
+
                 setname = cnl.setname;
                 filename = cnl.filename;
                 layer = cnl.layer;
@@ -560,9 +560,9 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
             std::string         filename;
             osg::ref_ptr<Layer> layer;
         };
-        
+
         typedef std::vector< CompoundNameLayer > Layers;
-        
+
         Layers _layers;
 };
 
@@ -575,32 +575,32 @@ class OSGTERRAIN_EXPORT SwitchLayer : public CompositeLayer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, SwitchLayer);
-        
+
         void setActiveLayer(int i) { _activeLayer = i; }
         int getActiveLayer() const { return _activeLayer; }
 
-        /** Return image associated with layer if supported. */        
+        /** Return image associated with layer if supported. */
         virtual osg::Image* getImage()
         {
-            if (_activeLayer < 0) return 0;            
+            if (_activeLayer < 0) return 0;
             if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
-            return _layers[_activeLayer].layer->getImage();            
+            return _layers[_activeLayer].layer->getImage();
         }
 
         /** Return const image associated with layer if supported. */
         virtual const osg::Image* getImage() const
         {
-            if (_activeLayer < 0) return 0;            
+            if (_activeLayer < 0) return 0;
             if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
-            return _layers[_activeLayer].layer->getImage();            
+            return _layers[_activeLayer].layer->getImage();
         }
 
     protected:
 
         virtual ~SwitchLayer() {}
-        
+
         int _activeLayer;
 };
 

@@ -46,45 +46,45 @@ static bool checkRangeDataList( const osg::PagedLOD& node )
 
 static bool readRangeDataList( osgDB::InputStream& is, osg::PagedLOD& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string name; is.readWrappedString( name );
         node.setFileName( i, name );
     }
-    is >> osgDB::END_BRACKET;
-    
-    size = 0; is >> osgDB::PROPERTY("PriorityList") >> size >> osgDB::BEGIN_BRACKET;
+    is >> is.END_BRACKET;
+
+    size = 0; is >> is.PROPERTY("PriorityList") >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float offset, scale;
         is >> offset >> scale;
-        
+
         node.setPriorityOffset( i, offset );
         node.setPriorityScale( i, scale );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeRangeDataList( osgDB::OutputStream& os, const osg::PagedLOD& node )
 {
     unsigned int size = node.getNumFileNames();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os.writeWrappedString( node.getFileName(i) );
         os << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
-    
+    os << os.END_BRACKET << std::endl;
+
     size = node.getNumPriorityOffsets();
-    os << osgDB::PROPERTY("PriorityList") << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("PriorityList") << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << node.getPriorityOffset(i) << node.getPriorityScale(i) << std::endl;
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -96,13 +96,13 @@ static bool checkChildren( const osg::PagedLOD& node )
 
 static bool readChildren( osgDB::InputStream& is, osg::PagedLOD& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
         if ( child ) node.addChild( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
@@ -114,18 +114,18 @@ static bool writeChildren( osgDB::OutputStream& os, const osg::PagedLOD& node )
         if ( !node.getFileName(i).empty() )
             dynamicLoadedSize++;
     }
-    
+
     unsigned int realSize = size-dynamicLoadedSize; os << realSize;
     if ( realSize>0 )
     {
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<size; ++i )
         {
             if ( !node.getFileName(i).empty() ) continue;
             if ( i<node.getNumChildren() )
                 os << node.getChild(i);
         }
-        os << osgDB::END_BRACKET;
+        os << os.END_BRACKET;
     }
     os << std::endl;
     return true;
@@ -137,7 +137,7 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
                          "osg::Object osg::Node osg::LOD osg::PagedLOD" )
 {
     // Note: osg::Group is not in the list to prevent recording dynamic loaded children
-    
+
     ADD_USER_SERIALIZER( DatabasePath );  // _databasePath
     ADD_UINT_SERIALIZER( FrameNumberOfLastTraversal, 0 );  // _frameNumberOfLastTraversal, note, not required, removed from soversion 70 onwwards, see below
     ADD_UINT_SERIALIZER( NumChildrenThatCannotBeExpired, 0 );  // _numChildrenThatCannotBeExpired
@@ -147,9 +147,9 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
 
     UPDATE_TO_VERSION( 70 )
     {
-        REMOVE_SERIALIZER( FrameNumberOfLastTraversal ); 
+        REMOVE_SERIALIZER( FrameNumberOfLastTraversal );
     }
 
 
-    
+
 }

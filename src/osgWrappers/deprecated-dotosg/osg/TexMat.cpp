@@ -35,9 +35,9 @@ bool TexMat_readLocalData(Object& obj, Input& fr)
     }
     if (matched)
     {
-    
+
         Matrix& matrix = texmat.getMatrix();
-    
+
         int k=0;
         double v;
         for(int i=0;i<4;++i)
@@ -55,13 +55,13 @@ bool TexMat_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("scaleByTextureRectangleSize"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             texmat.setScaleByTextureRectangleSize(true);
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("FALSE")) 
+        else if (fr[1].matchWord("FALSE"))
         {
             texmat.setScaleByTextureRectangleSize(false);
             fr +=2 ;
@@ -81,11 +81,11 @@ bool TexMat_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << matrix(1,0) << " " << matrix(1,1) << " " << matrix(1,2) << " " << matrix(1,3) << std::endl;
     fw.indent() << matrix(2,0) << " " << matrix(2,1) << " " << matrix(2,2) << " " << matrix(2,3) << std::endl;
     fw.indent() << matrix(3,0) << " " << matrix(3,1) << " " << matrix(3,2) << " " << matrix(3,3) << std::endl;
-    
+
     if (texmat.getScaleByTextureRectangleSize())
     {
         fw.indent() << "scaleByTextureRectangleSize TRUE"<<std::endl;
-    } 
-    
+    }
+
     return true;
 }

@@ -86,7 +86,7 @@ class NormalsReader: public osgDB::ReaderWriter
                     const osg::BoundingSphere& bsph = group->getBound();
                     scale = bsph.radius() * 0.05f * scale; // default is 5% of bounding-sphere radius
 
-                    if( mode == Normals::VertexNormals ) 
+                    if( mode == Normals::VertexNormals )
                         group->addChild( new VertexNormals( node.get(), scale ));
                     else if( mode == Normals::SurfaceNormals )
                         group->addChild( new SurfaceNormals( node.get(), scale ));
@@ -99,7 +99,7 @@ class NormalsReader: public osgDB::ReaderWriter
 
     private:
         void usage() const {
-            OSG_INFO << 
+            OSG_INFO <<
                 "Normals Plugin usage:  <application> [-O options] <model.ext>.normals\n"
                 "     options: \"scale=<scale>\"                        (default = 1.0)\n"
                 "              \"mode=<VertexNormals|SurfaceNormals>\"  (default = VertexNormals)" << std::endl;

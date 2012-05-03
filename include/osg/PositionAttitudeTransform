@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ class OSG_EXPORT PositionAttitudeTransform : public Transform
             _attitude(pat._attitude),
             _scale(pat._scale),
             _pivotPoint(pat._pivotPoint) {}
-            
+
 
         META_Node(osg, PositionAttitudeTransform);
 
@@ -49,22 +49,22 @@ class OSG_EXPORT PositionAttitudeTransform : public Transform
 
         inline void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
         inline const Quat& getAttitude() const { return _attitude; }
-        
+
 
         inline void setScale(const Vec3d& scale) { _scale = scale; dirtyBound(); }
         inline const Vec3d& getScale() const { return _scale; }
 
-        
+
         inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; dirtyBound(); }
         inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
-        
+
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
 
     protected :
-            
+
         virtual ~PositionAttitudeTransform() {}
 
         Vec3d _position;

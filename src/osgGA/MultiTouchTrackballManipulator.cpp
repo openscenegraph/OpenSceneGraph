@@ -80,7 +80,7 @@ bool MultiTouchTrackballManipulator::handle( const GUIEventAdapter& ea, GUIActio
         case osgGA::GUIEventAdapter::PUSH:
         case osgGA::GUIEventAdapter::DRAG:
         case osgGA::GUIEventAdapter::RELEASE:
-            if (ea.isMultiTouchEvent()) 
+            if (ea.isMultiTouchEvent())
             {
                 double eventTimeDelta = 1/60.0; //_ga_t0->getTime() - _ga_t1->getTime();
                 if( eventTimeDelta < 0. )
@@ -129,6 +129,6 @@ bool MultiTouchTrackballManipulator::handle( const GUIEventAdapter& ea, GUIActio
         default:
             break;
     }
-    
+
     return handled ? handled : TrackballManipulator::handle(ea, us);
 }

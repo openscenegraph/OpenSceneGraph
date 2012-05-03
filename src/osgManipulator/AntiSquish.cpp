@@ -23,14 +23,14 @@ namespace
         public:
             AntiSquishCallback(AntiSquish* asq) : osg::NodeCallback(), _antiSquish(asq) {}
             virtual ~AntiSquishCallback() {};
-            
+
             virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
             {
                 // Get the node path.
                 osg::NodePath np = nv->getNodePath();
 
                 // Remove the last node which is the anti squish node itself.
-                np.pop_back(); 
+                np.pop_back();
 
                 // Get the accumulated modeling matrix.
                 osg::Matrix localToWorld = osg::computeLocalToWorld(np);
@@ -76,7 +76,7 @@ AntiSquish::AntiSquish(const AntiSquish& pat,const osg::CopyOp& copyop) :
     _usePivot(pat._usePivot),
     _position(pat._position),
     _usePosition(pat._usePosition),
-    _cachedLocalToWorld(pat._cachedLocalToWorld) 
+    _cachedLocalToWorld(pat._cachedLocalToWorld)
 {
 }
 
@@ -87,7 +87,7 @@ AntiSquish::~AntiSquish()
 osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& flag)
 {
     osg::Vec3d t, s;
-    osg::Quat r, so; 
+    osg::Quat r, so;
 
     if (LTW == _cachedLocalToWorld && _dirty == false)
     {
@@ -95,12 +95,12 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
         return osg::Matrix::identity();
     }
 
-    _cachedLocalToWorld = LTW; 
+    _cachedLocalToWorld = LTW;
 
     LTW.decompose(t, r, s, so);
 
     // Let's take an average of the scale.
-    double av = (s[0] + s[1] + s[2])/3.0; 
+    double av = (s[0] + s[1] + s[2])/3.0;
     s[0] = av; s[1] = av; s[2]=av;
 
     if (av == 0)
@@ -110,7 +110,7 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
     }
 
     osg::Matrix unsquished;
-    
+
     //
     // Final Matrix: [-Pivot][SO]^[S][SO][R][T][Pivot][LOCALTOWORLD]^[position]
     // OR [SO]^[S][SO][R][T][LOCALTOWORLD]^
@@ -126,7 +126,7 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
             flag = false;
             return osg::Matrix::identity();
         }
-  
+
         //SO^
         unsquished.postMult(invtmps);
         //S
@@ -180,11 +180,11 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
     {
         flag = false;
         return  osg::Matrix::identity();
-    } 
+    }
 
     flag = true;
     _dirty = false;
-    return unsquished; 
+    return unsquished;
 }
 
 

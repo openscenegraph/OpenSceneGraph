@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Material>
@@ -49,7 +49,7 @@ Material::~Material()
 Material& Material:: operator = (const Material& rhs)
 {
     if (&rhs==this) return *this;
-    
+
     _colorMode= rhs._colorMode;
     _ambientFrontAndBack= rhs._ambientFrontAndBack;
     _ambientFront= rhs._ambientFront;
@@ -66,7 +66,7 @@ Material& Material:: operator = (const Material& rhs)
     _shininessFrontAndBack= rhs._shininessFrontAndBack;
     _shininessFront= rhs._shininessFront;
     _shininessBack= rhs._shininessBack;
-    
+
     return *this;
 }
 
@@ -265,7 +265,7 @@ const Vec4& Material::getEmission(Face face) const
 void Material::setShininess(Face face, float shininess )
 {
     clampBetweenRange(shininess,0.0f,128.0f,"Material::setShininess()");
-    
+
     switch(face)
     {
         case(FRONT):
@@ -327,7 +327,7 @@ void Material::setTransparency(Face face,float transparency)
         _specularBack[3] = 1.0f-transparency;
         _emissionBack[3] = 1.0f-transparency;
     }
-}        
+}
 
 void Material::setAlpha(Face face,float alpha)
 {

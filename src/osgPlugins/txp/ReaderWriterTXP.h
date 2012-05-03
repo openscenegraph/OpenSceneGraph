@@ -1,17 +1,17 @@
-/*************************************************************************** 
+/***************************************************************************
  * December 2003
  *
- * This TerraPage loader was re-written in a fashion to use PagedLOD 
- * to manage paging entirely, also includes a version of Terrex's smart mesh 
- * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * This TerraPage loader was re-written in a fashion to use PagedLOD
+ * to manage paging entirely, also includes a version of Terrex's smart mesh
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present,
  * slight modified.
  * nick at terrex dot com
- * 
+ *
  * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
 /***************************************************************************
- * OpenSceneGraph loader for Terrapage format database 
+ * OpenSceneGraph loader for Terrapage format database
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -63,19 +63,19 @@ public:
     {
         return "TXP Reader/Writer";
     }
-    
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         if( !acceptsExtension(osgDB::getFileExtension(file) ))
             return ReadResult::FILE_NOT_HANDLED;
-            
+
         OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
 
         return const_cast<ReaderWriterTXP*>(this)->local_readNode(file, options);
     }
 
     bool removeArchive( int id );
-    
+
 protected:
 
 
@@ -84,14 +84,14 @@ protected:
     std::string getArchiveName(const std::string& dir);
     osg::ref_ptr< TXPArchive > createArchive(int id, const std::string& dir);
     osg::ref_ptr< TXPArchive > getArchive(int id, const std::string&);
- 
+
     osg::Node* getTileContent(const TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc);
     osg::Node* getTileContent(const TXPArchive::TileInfo &info, const TXPArchive::TileLocationInfo& loc, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc);
     void createChildrenLocationString(const std::vector<TXPArchive::TileLocationInfo>& locs, std::string& locString) const;
     bool extractChildrenLocations(const std::string& name, int parentLod, std::vector<TXPArchive::TileLocationInfo>& locs, int nbChild) const;
 
     mutable OpenThreads::ReentrantMutex               _serializerMutex;
-    
+
     std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
     static int                                  _archiveId;
 };

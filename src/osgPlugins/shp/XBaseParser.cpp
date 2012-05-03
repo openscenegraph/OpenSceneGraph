@@ -10,7 +10,7 @@
     #include <io.h>
 #else
     #include <unistd.h>
-#endif 
+#endif
 
 #include <fcntl.h>
 #include <osg/Notify>
@@ -25,7 +25,7 @@ void XBaseHeader::print()
                            << "LastUpdate    = " << 1900 + (int) _lastUpdate[0] << "/" << (int) _lastUpdate[1] << "/" << (int) _lastUpdate[2] << std::endl
                            << "NumRecord     = " << _numRecord << std::endl
                            << "HeaderLength  = " << _headerLength << std::endl
-                           << "RecordLength  = " << _recordLength << std::endl;                               
+                           << "RecordLength  = " << _recordLength << std::endl;
 }
 
 bool XBaseHeader::read(int fd)
@@ -45,10 +45,10 @@ bool XBaseHeader::read(int fd)
     if ((nbytes = ::read( fd, &_mdxflag, sizeof(_mdxflag))) <= 0) return false;
     if ((nbytes = ::read( fd, &_languageDriver, sizeof(_languageDriver))) <= 0) return false;
     if ((nbytes = ::read( fd, &_reserved2, sizeof(_reserved2))) <= 0) return false;
-    
+
     return true;
 }
-    
+
 void XBaseFieldDescriptor::print()
 {
     OSG_INFO << "name           = " << _name << std::endl
@@ -63,7 +63,7 @@ void XBaseFieldDescriptor::print()
 bool XBaseFieldDescriptor::read(int fd)
 {
     int nbytes = 0;
-    
+
     if ((nbytes = ::read( fd, &_name, sizeof(_name))) <= 0) return false;
     if ((nbytes = ::read( fd, &_fieldType, sizeof(_fieldType))) <= 0) return false;
     if ((nbytes = ::read( fd, &_fieldDataAddress, sizeof(_fieldDataAddress))) <= 0) return false;
@@ -75,7 +75,7 @@ bool XBaseFieldDescriptor::read(int fd)
     if ((nbytes = ::read( fd, &_setFieldFlag, sizeof(_setFieldFlag))) <= 0) return false;
     if ((nbytes = ::read( fd, &_reserved, sizeof(_reserved))) <= 0) return false;
     if ((nbytes = ::read( fd, &_indexFieldFlag, sizeof(_indexFieldFlag))) <= 0) return false;
-    
+
     return true;
 }
 
@@ -97,63 +97,63 @@ XBaseParser::XBaseParser(const std::string fileName):
             return;
         }
     }
-    
+
     _valid = parse(fd);
 }
-        
+
 bool XBaseParser::parse(int fd)
-{           
+{
     int nbytes;
     XBaseHeader _xBaseHeader;
     std::vector<XBaseFieldDescriptor> _xBaseFieldDescriptorList;
     XBaseFieldDescriptor _xBaseFieldDescriptorTmp;
 
-    
+
     // ** read the header
     if (_xBaseHeader.read(fd) == false) return false;
 //    _xBaseHeader.print();
-    
-    
+
+
     // ** read field descriptor
     bool fieldDescriptorDone = false;
     Byte nullTerminator;
-    
+
     while (fieldDescriptorDone == false)
     {
         // ** store the field descriptor
         if (_xBaseFieldDescriptorTmp.read(fd) == false) return false;
         _xBaseFieldDescriptorList.push_back(_xBaseFieldDescriptorTmp);
 //        _xBaseFieldDescriptorTmp.print();
-        
-        // ** check the terminator 
-        if ((nbytes = ::read( fd, &nullTerminator, sizeof(nullTerminator))) <= 0) return false; 
-        if (nullTerminator == 0x0D) 
+
+        // ** check the terminator
+        if ((nbytes = ::read( fd, &nullTerminator, sizeof(nullTerminator))) <= 0) return false;
+        if (nullTerminator == 0x0D)
             fieldDescriptorDone = true;
         else
             ::lseek( fd, -1, SEEK_CUR);
     }
 
-    
+
     // ** move to the end of the Header
     ::lseek( fd, _xBaseHeader._headerLength + 1, SEEK_SET);
-    
-    
+
+
     // ** reserve AttributeListList
     _shapeAttributeListList.reserve(_xBaseHeader._numRecord);
-    
-    
+
+
     // ** read each record and store them in the ShapeAttributeListList
     char* record = new char[_xBaseHeader._recordLength];
-    
+
     std::vector<XBaseFieldDescriptor>::iterator it, end = _xBaseFieldDescriptorList.end();
     for (Integer i = 0; i < _xBaseHeader._numRecord; ++i)
     {
-        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return false;    
-        
+        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return false;
+
         char * recordPtr = record;
         osgSim::ShapeAttributeList * shapeAttributeList = new osgSim::ShapeAttributeList;
         shapeAttributeList->reserve(_xBaseFieldDescriptorList.size());
-        
+
         for (it = _xBaseFieldDescriptorList.begin(); it != end; ++it)
         {
             switch (it->_fieldType)
@@ -163,7 +163,7 @@ bool XBaseParser::parse(int fd)
                 char* str = new char[it->_fieldLength + 1];
                 memcpy(str, recordPtr, it->_fieldLength);
                 str[it->_fieldLength] = 0;
-                shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (char*) str));                
+                shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (char*) str));
                 delete [] str;
                 break;
             }
@@ -197,20 +197,20 @@ bool XBaseParser::parse(int fd)
                 shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (double) 0));
                 break;
             }
-                
-                
+
+
             }
-            
+
             recordPtr += it->_fieldLength;
         }
-        
+
         _shapeAttributeListList.push_back(shapeAttributeList);
     }
-    
+
     delete [] record;
-    
+
     close (fd);
-         
+
     return true;
 }
 

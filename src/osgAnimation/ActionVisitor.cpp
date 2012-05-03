@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -48,9 +48,9 @@ Timeline* ActionVisitor::getCurrentTimeline()
     return _stackTimeline.back();
 }
 
-UpdateActionVisitor::UpdateActionVisitor() 
+UpdateActionVisitor::UpdateActionVisitor()
 {
-    _frame = 0; 
+    _frame = 0;
     _currentAnimationPriority = 0;
 }
 
@@ -116,7 +116,7 @@ void UpdateActionVisitor::apply(Action& action)
 
 void UpdateActionVisitor::apply(ActionBlendIn& action)
 {
-    if (isActive(action)) 
+    if (isActive(action))
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
@@ -126,7 +126,7 @@ void UpdateActionVisitor::apply(ActionBlendIn& action)
 
 void UpdateActionVisitor::apply(ActionBlendOut& action)
 {
-    if (isActive(action)) 
+    if (isActive(action))
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));

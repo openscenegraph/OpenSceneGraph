@@ -41,7 +41,7 @@ class OSGUTIL_EXPORT PerlinNoise
 public:
 
     PerlinNoise();
-    
+
     void SetNoiseFrequency(int frequency);
 
     double noise1(double arg);
@@ -62,13 +62,13 @@ public:
 
     osg::Image* create3DNoiseImage(int texSize);
     osg::Texture3D* create3DNoiseTexture(int texSize );
-    
+
 protected:
-     
+
     void initNoise(void);
 
     enum { MAXB = 0x100 };
-    
+
     int p[MAXB + MAXB + 2];
     double g3[MAXB + MAXB + 2][3];
     double g2[MAXB + MAXB + 2][2];
@@ -77,7 +77,7 @@ protected:
     int start;
     int B;
     int BM;
-    
+
 };
 
 inline osg::Image* create3DNoiseImage(int texSize)

@@ -52,7 +52,7 @@ bool HeightField_readLocalData(Object& obj, Input& fr)
         heightfield.setOrigin(origin);
         fr+=4;
     }
-    
+
     if (fr.matchSequence("XInterval %f"))
     {
         float interval;
@@ -165,14 +165,14 @@ bool HeightField_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"NumColumnsAndRows "<<heightfield.getNumColumns()<<" "<<heightfield.getNumRows()<<std::endl;
 
     fw.indent()<<"Heights"<<std::endl;
-    
+
     ParameterOutput po(fw);
     po.begin();
     for(unsigned int row=0;row<heightfield.getNumRows();++row)
     {
         for(unsigned int column=0;column<heightfield.getNumColumns();++column)
         {
-            po.write(heightfield.getHeight(column,row));         
+            po.write(heightfield.getHeight(column,row));
         }
         po.newLine();
     }

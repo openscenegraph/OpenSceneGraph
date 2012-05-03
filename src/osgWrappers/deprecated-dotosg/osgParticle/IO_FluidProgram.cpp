@@ -38,7 +38,7 @@ bool FluidProgram_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("viscosity")) {
         if (fr[1].getFloat(f)) {
             myobj.setFluidViscosity(f);
@@ -46,7 +46,7 @@ bool FluidProgram_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("density")) {
         if (fr[1].getFloat(f)) {
             myobj.setFluidDensity(f);
@@ -72,16 +72,16 @@ bool FluidProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 
     osg::Vec3 vec;
     float f;
-    
+
     vec = myobj.getAcceleration();
     fw.indent() << "acceleration " << vec << std::endl;
-    
+
     f = myobj.getFluidViscosity();
     fw.indent() << "viscosity " << f << std::endl;
-    
+
     f = myobj.getFluidDensity();
     fw.indent() << "density " << f << std::endl;
-        
+
     vec = myobj.getWind();
     fw.indent() << "wind " << vec << std::endl;
 

@@ -21,7 +21,7 @@
 
 namespace osgProducer {
 
-class VisualChooser : public osg::Referenced 
+class VisualChooser : public osg::Referenced
 {
     public :
         VisualChooser( void );
@@ -30,9 +30,9 @@ class VisualChooser : public osg::Referenced
             UseGL,
             BufferSize,
             Level,
-            RGBA, 
-            DoubleBuffer, 
-            Stereo, 
+            RGBA,
+            DoubleBuffer,
+            Stereo,
             AuxBuffers,
             RedSize,
             GreenSize,
@@ -50,12 +50,12 @@ class VisualChooser : public osg::Referenced
 #if 0
         //-------------------------------------------------------------------------
         // Explicitely set the visual info pointer.  This will override the use of
-        // glXChooseVisual().  Useful for functions requiring a VisualChooser 
+        // glXChooseVisual().  Useful for functions requiring a VisualChooser
         // argument, but not a XVisualInfo.
         void setVisual( VisualInfo *vinfo );
 #endif
         //-------------------------------------------------------------------------
-        // Chooses a minimal set of parameters 
+        // Chooses a minimal set of parameters
         void setSimpleConfiguration(bool doublebuffer = true);
 
         //-------------------------------------------------------------------------
@@ -63,22 +63,22 @@ class VisualChooser : public osg::Referenced
         void clear() ;
 
         //-------------------------------------------------------------------------
-        // Generic method for adding an attribute without a parameter 
+        // Generic method for adding an attribute without a parameter
         // (e.g DoubleBuffer )
         void addAttribute( AttributeName attribute );
 
         //-------------------------------------------------------------------------
-        // Generic method for adding an attribute with a parameter 
+        // Generic method for adding an attribute with a parameter
         // (e.g DepthSize, 1 )
         void addAttribute( AttributeName attribute, int parameter );
 
         //-------------------------------------------------------------------------
-        // Generic method for adding an attribute without a parameter 
+        // Generic method for adding an attribute without a parameter
         // (e.g DoubleBuffer )
         void addExtendedAttribute( unsigned int attribute );
 
         //-------------------------------------------------------------------------
-        // Generic method for adding an extended attribute with a parameter 
+        // Generic method for adding an extended attribute with a parameter
         // (e.g DepthSize, 1 )
         void addExtendedAttribute( unsigned int attribute, int parameter );
 
@@ -92,7 +92,7 @@ class VisualChooser : public osg::Referenced
         void setBufferSize( unsigned int size );
 
         void setLevel( int level );
-        
+
         void useRGBA();
 
         void useDoubleBuffer();
@@ -125,7 +125,7 @@ class VisualChooser : public osg::Referenced
 
         void setSamples( unsigned int size );
 
-        void setVisualID( unsigned int id ); 
+        void setVisualID( unsigned int id );
 
 
 #if 0
@@ -133,16 +133,16 @@ class VisualChooser : public osg::Referenced
         // Chooses visual based on previously selected attributes and parameters
         //     dpy              = Conection to Xserver as returned by XOpenDisplay()
         //     screen           = XServer screen (Could be DefaultScreen(dpy))
-        //     strict_adherence = If true, return NULL visual info if the set of 
+        //     strict_adherence = If true, return NULL visual info if the set of
         //                        parameters is not matched verbatim.  If set to
         //                        false, choose() will attempt to find a visual that
         //                        matches as much of the attribute list as possible
         //
         //                        Important Note : An attribute is removed from the end
-        //                        of the list before each retry, implying that the 
+        //                        of the list before each retry, implying that the
         //                        attribute list should be specified in priority order,
         //                        most important attriutes first.
-        //                    
+        //
 
         VisualInfo *choose( Display *dpy, int screen, bool strict_adherence=false);
 
@@ -157,7 +157,7 @@ class VisualChooser : public osg::Referenced
 
     public :
 
-        struct VisualAttribute 
+        struct VisualAttribute
         {
                 unsigned int  _attribute;
                 bool _has_parameter;
@@ -196,7 +196,7 @@ class VisualChooser : public osg::Referenced
 
         void applyAttribute(const VisualAttribute &va, std::vector<int> &attribs);
         void resetVisualInfo();
-        
+
         std::vector <VisualAttribute> _visual_attributes;
 //         VisualInfo *_vinfo;
         unsigned int _visual_id;

@@ -54,7 +54,7 @@ PerlinNoise::PerlinNoise()
 {
     SetNoiseFrequency(1);
 }
-        
+
 void PerlinNoise::SetNoiseFrequency(int frequency)
 {
         start = 1;

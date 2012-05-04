@@ -4,7 +4,7 @@ INSTALL_DIR=${ROOT}/products
 DEVICE=iphoneos
 SIMULATOR=iphonesimulator
 COMPILER=com.apple.compilers.llvmgcc42
-ACTION="build"
+
 CMAKE_OPTIONS="-D BUILD_OSG_APPLICATIONS:BOOL=OFF \
 	-D OSG_WINDOWING_SYSTEM:STRING=IOS \
 	-D OSG_GL1_AVAILABLE:BOOL=OFF \
@@ -19,6 +19,9 @@ CMAKE_OPTIONS="-D BUILD_OSG_APPLICATIONS:BOOL=OFF \
 	-D CURL_INCLUDE_DIR:PATH="" \
 	-D DYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
 	-D DYNAMIC_OPENTHREADS:BOOL=OFF "
+
+CMAKE_DEVICE_OPTIONS="-DCMAKE_OSX_ARCHITECTURES:STRING=armv7"
+CMAKE_SIMULATOR_OPTIONS=""
 
 XCODEBUILD=/Developer/usr/bin/xcodebuild
 if [ ! -f ${XCODEBUILD} ]; then
@@ -41,6 +44,7 @@ create_project () {
 	
 	/usr/bin/cmake -G Xcode \
 		${CMAKE_OPTIONS} \
+		${3} \
 		-D ${2}:BOOL=ON \
 		-D CMAKE_INSTALL_PREFIX:PATH="${INSTALL_DIR}/${1}" \
 		${SOURCE_DIR}
@@ -69,10 +73,12 @@ build_project () {
 
 
 #create xcode-projects
-create_project device OSG_BUILD_PLATFORM_IPHONE
-create_project simulator OSG_BUILD_PLATFORM_IPHONE_SIMULATOR
+#create_project device OSG_BUILD_PLATFORM_IPHONE ${CMAKE_DEVICE_OPTIONS}
+create_project simulator OSG_BUILD_PLATFORM_IPHONE_SIMULATOR ${CMAKE_SIMULATOR_OPTIONS}
 
 #build device
 cd ${ROOT}/build/device
-build_project install iphoneos build
+build_project install ${DEVICE} build 
 
+cd ${ROOT}/build/simulator
+build_project install ${SIMULATOR} build

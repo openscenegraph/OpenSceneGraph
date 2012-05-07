@@ -5,6 +5,10 @@ DEVICE=iphoneos
 SIMULATOR=iphonesimulator
 COMPILER=com.apple.compilers.llvmgcc42
 
+UNIVERSAL_DIR=${INSTALL_DIR}/universal
+DEVICE_DIR=${ROOT}/build/device
+SIMULATOR_DIR=${ROOT}/build/simulator
+
 CMAKE_OPTIONS="-D BUILD_OSG_APPLICATIONS:BOOL=OFF \
 	-D OSG_WINDOWING_SYSTEM:STRING=IOS \
 	-D OSG_GL1_AVAILABLE:BOOL=OFF \
@@ -30,10 +34,10 @@ fi
 
 #create build dirs
 
-mkdir -p ${ROOT}/build/device
-mkdir -p ${ROOT}/build/simulator
+mkdir -p ${SIMULATOR_DIR}
+mkdir -p ${DEVICE_DIR}
 
-# create install-dirs
+mkdir -p ${UNIVERSAL_DIR}/lib
 
 mkdir -p ${INSTALL_DIR}/device
 mkdir -p ${INSTALL_DIR}/simulator
@@ -71,14 +75,43 @@ build_project () {
   
 }
 
+create_universal_lib () {
+   FILE_NAME=${1}
+   echo "creating universal lib '${FILE_NAME}'"
 
-#create xcode-projects
-#create_project device OSG_BUILD_PLATFORM_IPHONE ${CMAKE_DEVICE_OPTIONS}
+   lipo -create -output "${UNIVERSAL_DIR}/lib/${FILE_NAME}" "${DEVICE_DIR}/lib/${FILE_NAME}" "${SIMULATOR_DIR}/lib/${FILE_NAME}"
+}
+
+
+
+# create xcode-projects
+create_project device OSG_BUILD_PLATFORM_IPHONE ${CMAKE_DEVICE_OPTIONS}
 create_project simulator OSG_BUILD_PLATFORM_IPHONE_SIMULATOR ${CMAKE_SIMULATOR_OPTIONS}
 
-#build device
+# build device
 cd ${ROOT}/build/device
 build_project install ${DEVICE} build 
 
+# build simulator
 cd ${ROOT}/build/simulator
 build_project install ${SIMULATOR} build
+
+
+# create univeral libs
+for i in $( ls "${DEVICE_DIR}/lib" ); 
+do
+   if [ -d $i ]
+      then
+            echo "ignoring directory ${i}"
+      else
+      		if [ ${i: -2} == ".a" ]
+      		then
+		      	create_universal_lib $i
+			fi
+    fi
+done
+
+# copy header files
+cp -r ${INSTALL_DIR}/device/include ${UNIVERSAL_DIR}
+rm -rf ${INSTALL_DIR}/device
+rm -rf ${INSTALL_DIR}/simulator

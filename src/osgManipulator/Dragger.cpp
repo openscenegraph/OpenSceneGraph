@@ -275,6 +275,19 @@ void Dragger::addDraggerCallback(DraggerCallback* dc)
 
 void Dragger::removeDraggerCallback(DraggerCallback* dc)
 {
+    for(Dragger::DraggerCallbacks::iterator itr = _draggerCallbacks.begin();
+        itr != _draggerCallbacks.end();
+        )
+    {
+        if (dc==itr->get())
+        {
+            itr = _draggerCallbacks.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
 }
 
 
@@ -390,6 +403,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                         }
                     }
                 }
+                break;
             }
             case osgGA::GUIEventAdapter::DRAG:
             case osgGA::GUIEventAdapter::RELEASE:

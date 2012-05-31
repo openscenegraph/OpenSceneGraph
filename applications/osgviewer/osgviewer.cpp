@@ -105,8 +105,14 @@ public:
         //OSG_NOTICE<<"After swap"<<std::endl;
     }
 
+    #ifdef _WIN32
+    typedef __int64 GLint64;
+    typedef unsigned __int64 GLuint64;
+    #else
     typedef int64_t GLint64;
     typedef uint64_t GLuint64;
+    #endif
+    
     typedef struct __GLsync *GLsync;
 
     typedef GLsync (GL_APIENTRY * PFNGLFENCESYNCPROC) (GLenum condition, GLbitfield flags);

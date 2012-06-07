@@ -69,6 +69,9 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     double length = -1.0;
     while (arguments.read("--length",length)) {}
     
+    double fps = 30.0;
+    while (arguments.read("--fps",fps)) {}
+
     if (arguments.argc()>1)
     {
         for(int i=1; i<arguments.argc(); ++i)
@@ -86,6 +89,7 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
                 imageSequence->addImageFile(arguments[i]);
             }
         }
+
         
         if (length>0.0)
         {
@@ -96,7 +100,7 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
             unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
                                                imageSequence->getImages().size());
                                                
-            imageSequence->setLength(float(maxNum)*0.1f);
+            imageSequence->setLength(double(maxNum)*(1.0/fps));
         }
     }
     else

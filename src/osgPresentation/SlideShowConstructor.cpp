@@ -843,8 +843,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     return pictureQuad;
 }
 
-
-void SlideShowConstructor::addImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
+osg::Image* SlideShowConstructor::readImage(const std::string& filename, const ImageData& imageData)
 {
     osg::ref_ptr<osgDB::Options> options = _options;
     if (!imageData.options.empty())
@@ -853,15 +852,11 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         options->setOptionString(imageData.options);
     }
 
-
-    std::string foundFile = filename;
     osg::ref_ptr<osg::Image> image;
-    osg::ref_ptr<osgVolume::Volume> volume;
-    osg::ref_ptr<osgVolume::VolumeTile> tile;
-    osg::ref_ptr<osgVolume::ImageLayer> layer;
-
     osgDB::DirectoryContents filenames;
     bool preLoad = true;
+
+    std::string foundFile = filename;
 
     // check for wild cards
     if (filename.find('*')!=std::string::npos)
@@ -882,7 +877,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         if (fileType == osgDB::DIRECTORY)
         {
             OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
-            
+
             filenames = osgDB::getDirectoryContents(foundFile);
 
             // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
@@ -914,7 +909,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         }
     }
 
-    if (filenames.empty()) return;
+    if (filenames.empty()) return 0;
 
     if (filenames.size()==1)
     {
@@ -964,6 +959,17 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         image = imageSequence;
     }
 
+    return image.release();
+}
+
+void SlideShowConstructor::addImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
+{
+
+    osg::ref_ptr<osgVolume::Volume> volume;
+    osg::ref_ptr<osgVolume::VolumeTile> tile;
+    osg::ref_ptr<osgVolume::ImageLayer> layer;
+
+    osg::ref_ptr<osg::Image> image = readImage(filename, imageData);
     if (!image) return;
 
     bool isImageTranslucent = false;
@@ -1095,26 +1101,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
 void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight, const ImageData& imageDataRight,const PositionData& positionData)
 {
-    osg::ref_ptr<osgDB::Options> optionsLeft = _options;
-    if (!imageDataLeft.options.empty())
-    {
-        optionsLeft = _options->cloneOptions();
-        optionsLeft->setOptionString(imageDataLeft.options);
-    }
-
-    osg::ref_ptr<osgDB::Options> optionsRight = _options;
-    if (!imageDataRight.options.empty())
-    {
-        optionsRight = _options->cloneOptions();
-        optionsRight->setOptionString(imageDataRight.options);
-    }
-
-    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft, optionsLeft.get());
-    if (imageLeft.valid()) recordOptionsFilePath(optionsLeft.get());
-
-    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight, optionsRight.get());
-    if (imageRight.valid()) recordOptionsFilePath(optionsRight.get());
-
+    osg::ref_ptr<osg::Image> imageLeft = readImage(filenameLeft, imageDataLeft);
+    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : readImage(filenameRight, imageDataRight);
+    
     if (!imageLeft && !imageRight) return;
 
     bool isImageTranslucent = false;

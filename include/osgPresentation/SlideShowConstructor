@@ -397,6 +397,8 @@ public:
 
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
 
+    osg::Image* readImage(const std::string& filename, const ImageData& imageData);
+
     void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
 
     void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);

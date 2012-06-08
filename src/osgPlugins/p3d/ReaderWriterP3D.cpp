@@ -870,13 +870,13 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     if (getProperty(cur, "fps", value.fps))
     {
         propertiesRead = true;
-        OSG_NOTIFY(osg::NOTICE)<<"read fps \""<<value.fps<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read fps \""<<value.fps<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "duration", value.duration))
     {
         propertiesRead = true;
-        OSG_NOTIFY(osg::NOTICE)<<"read duration \""<<value.duration<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read duration \""<<value.duration<<"\""<<std::endl;
     }
 
     /*

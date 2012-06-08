@@ -238,7 +238,9 @@ public:
             texcoord_rotate(0.0f),
             loopingMode(osg::ImageStream::NO_LOOPING),
             page(-1),
-            backgroundColor(1.0f,1.0f,1.0f,1.0f) {}
+            backgroundColor(1.0f,1.0f,1.0f,1.0f),
+            fps(30.0),
+            duration(-1.0) {}
 
         std::string                     options;
         float                           width;
@@ -249,6 +251,8 @@ public:
         osg::ImageStream::LoopingMode   loopingMode;
         int                             page;
         osg::Vec4                       backgroundColor;
+        double                          fps;
+        double                          duration;
     };
 
     struct VolumeData

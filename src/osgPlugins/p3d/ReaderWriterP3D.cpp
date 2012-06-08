@@ -867,7 +867,19 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"looping \""<<str<<"\""<<std::endl;
     }
 
-/*
+    if (getProperty(cur, "fps", value.fps))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(osg::NOTICE)<<"read fps \""<<value.fps<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "duration", value.duration))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(osg::NOTICE)<<"read duration \""<<value.duration<<"\""<<std::endl;
+    }
+
+    /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {
         propertiesRead = true;

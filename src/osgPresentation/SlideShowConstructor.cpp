@@ -21,6 +21,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/TexMat>
 #include <osg/ShapeDrawable>
+#include <osg/ImageSequence>
 #include <osg/ImageUtils>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -775,12 +776,16 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
 
     bool flipYAxis = image->getOrigin()==osg::Image::TOP_LEFT;
 
-#ifdef __sgi
+#if 1
     bool useTextureRectangle = false;
 #else
-    bool useTextureRectangle = true;
+    #ifdef __sgi
+        bool useTextureRectangle = false;
+    #else
+        bool useTextureRectangle = true;
+    #endif
 #endif
-
+    
     // pass back info on wether texture 2D is used.
     usedTextureRectangle = useTextureRectangle;
 
@@ -814,6 +819,8 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
 
         texture = new osg::Texture2D(image);
 
+        texture->setResizeNonPowerOfTwoHint(false);
+
         stateset->setTextureAttributeAndModes(0,
                     texture,
                     osg::StateAttribute::ON);
@@ -846,15 +853,122 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         options->setOptionString(imageData.options);
     }
 
-    osg::Image* image = osgDB::readImageFile(filename, options.get());
 
-    if (image) recordOptionsFilePath(_options.get());
+    std::string foundFile = filename;
+    osg::ref_ptr<osg::Image> image;
+    osg::ref_ptr<osgVolume::Volume> volume;
+    osg::ref_ptr<osgVolume::VolumeTile> tile;
+    osg::ref_ptr<osgVolume::ImageLayer> layer;
+
+    osgDB::DirectoryContents filenames;
+    bool preLoad = true;
+
+    // check for wild cards
+    if (filename.find('*')!=std::string::npos)
+    {
+        OSG_INFO<<"Expanding wildcard "<<std::endl;
+        filenames = osgDB::expandWildcardsInFilename(filename);
+    }
+    else
+    {
+        std::string foundFile = filename;
+        osgDB::FileType fileType = osgDB::fileType(foundFile);
+        if (fileType == osgDB::FILE_NOT_FOUND)
+        {
+            foundFile = findFileAndRecordPath(foundFile);
+            fileType = osgDB::fileType(foundFile);
+        }
+
+        if (fileType == osgDB::DIRECTORY)
+        {
+            OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
+            
+            filenames = osgDB::getDirectoryContents(foundFile);
+
+            // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
+            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                itr != filenames.end();
+                ++itr)
+            {
+                *itr = foundFile + osgDB::getNativePathSeparator() + *itr;
+            }
+
+            // prune any directory entries from the list.
+            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                itr != filenames.end();
+                )
+            {
+                if (osgDB::fileType(*itr)!=osgDB::REGULAR_FILE)
+                {
+                    itr = filenames.erase(itr);
+                }
+                else
+                {
+                    ++itr;
+                }
+            }
+        }
+        else
+        {
+            filenames.push_back(foundFile);
+        }
+    }
+
+    if (filenames.empty()) return;
+
+    if (filenames.size()==1)
+    {
+        image = osgDB::readImageFile(filenames[0], options.get());
+        if (image.valid()) recordOptionsFilePath(options.get() );
+    }
+    else
+    {
+        // make sure images are in alphabetical order.
+        std::sort(filenames.begin(), filenames.end());
+
+        osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
+
+        for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+            itr != filenames.end();
+            ++itr)
+        {
+            if (preLoad)
+            {
+                OSG_INFO<<"Attempting to read "<<*itr<<std::endl;
+                osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
+                if (loadedImage.valid())
+                {
+                    OSG_INFO<<"Loaded image "<<*itr<<std::endl;
+                    imageSequence->addImage(loadedImage.get());
+                }
+            }
+            else
+            {
+                OSG_INFO<<"Adding filename for load image on demand "<<*itr<<std::endl;
+                imageSequence->addImageFile(*itr);
+            }
+        }
+
+        if (imageData.duration>0.0)
+        {
+            imageSequence->setLength(imageData.duration);
+        }
+        else
+        {
+            unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
+                                               imageSequence->getImages().size());
+
+            imageSequence->setLength(double(maxNum)*(1.0/imageData.fps));
+        }
+
+        image = imageSequence;
+    }
 
     if (!image) return;
 
     bool isImageTranslucent = false;
 
-    osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
+    osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image.get());
     if (imageStream)
     {
         imageStream->setLoopingMode(imageData.loopingMode);
@@ -1819,7 +1933,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
         else
         {
-            // not found image, so fallback to plguins/callbacks to find the model.
+            // not found image, so fallback to plugins/callbacks to find the model.
             image = osgDB::readImageFile( filename, options.get() );
             if (image) recordOptionsFilePath(options.get() );
         }

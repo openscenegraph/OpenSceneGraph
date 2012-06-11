@@ -429,6 +429,10 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             {
                 osg::Texture2D* texture = new osg::Texture2D(image.get());
                 texture->setResizeNonPowerOfTwoHint(false);
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+                texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+                texture->setClientStorageHint(true);
+
                 backgroundStateSet->setTextureAttributeAndModes(0,
                             texture,
                             osg::StateAttribute::ON);
@@ -820,6 +824,9 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         texture = new osg::Texture2D(image);
 
         texture->setResizeNonPowerOfTwoHint(false);
+        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        texture->setClientStorageHint(true);
 
         stateset->setTextureAttributeAndModes(0,
                     texture,
@@ -854,7 +861,6 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
     osg::ref_ptr<osg::Image> image;
     osgDB::DirectoryContents filenames;
-    bool preLoad = true;
 
     std::string foundFile = filename;
 
@@ -923,11 +929,15 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
         osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
 
+        imageSequence->setMode(imageData.imageSequencePagingMode);
+
+        bool firstLoad = true;
+
         for(osgDB::DirectoryContents::iterator itr = filenames.begin();
             itr != filenames.end();
             ++itr)
         {
-            if (preLoad)
+            if (imageSequence->getMode()==osg::ImageSequence::PRE_LOAD_ALL_IMAGES)
             {
                 OSG_INFO<<"Attempting to read "<<*itr<<std::endl;
                 osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
@@ -941,6 +951,15 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
             {
                 OSG_INFO<<"Adding filename for load image on demand "<<*itr<<std::endl;
                 imageSequence->addImageFile(*itr);
+                if (firstLoad)
+                {
+                    osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
+                    if (loadedImage.valid())
+                    {                    
+                        imageSequence->addImage(loadedImage.get());
+                        firstLoad = false;
+                    }
+                }
             }
         }
 
@@ -955,6 +974,8 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
             imageSequence->setLength(double(maxNum)*(1.0/imageData.fps));
         }
+
+        imageSequence->play();
 
         image = imageSequence;
     }

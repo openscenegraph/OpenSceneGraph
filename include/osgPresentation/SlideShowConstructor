@@ -21,6 +21,7 @@
 #include <osg/AnimationPath>
 #include <osg/TransferFunction>
 #include <osg/ImageStream>
+#include <osg/ImageSequence>
 #include <osgText/Text>
 #include <osgGA/GUIEventAdapter>
 
@@ -240,7 +241,9 @@ public:
             page(-1),
             backgroundColor(1.0f,1.0f,1.0f,1.0f),
             fps(30.0),
-            duration(-1.0) {}
+            duration(-1.0),
+            imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES)
+        {}
 
         std::string                     options;
         float                           width;
@@ -253,6 +256,7 @@ public:
         osg::Vec4                       backgroundColor;
         double                          fps;
         double                          duration;
+        osg::ImageSequence::Mode        imageSequencePagingMode;
     };
 
     struct VolumeData

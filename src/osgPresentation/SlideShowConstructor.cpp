@@ -58,6 +58,8 @@
 
 using namespace osgPresentation;
 
+#define USE_CLIENT_STORAGE_HINT 0
+
 class SetToTransparentBin : public osg::NodeVisitor
 {
 public:
@@ -431,8 +433,9 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
                 texture->setResizeNonPowerOfTwoHint(false);
                 texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
                 texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+#if USE_CLIENT_STORAGE_HINT
                 texture->setClientStorageHint(true);
-
+#endif
                 backgroundStateSet->setTextureAttributeAndModes(0,
                             texture,
                             osg::StateAttribute::ON);
@@ -748,7 +751,9 @@ public:
                 texture->setResizeNonPowerOfTwoHint(false);
                 texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
                 texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+#if USE_CLIENT_STORAGE_HINT
                 texture->setClientStorageHint(true);
+#endif          
             }
         }
     }
@@ -826,8 +831,9 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         texture->setResizeNonPowerOfTwoHint(false);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+#if USE_CLIENT_STORAGE_HINT        
         texture->setClientStorageHint(true);
-
+#endif
         stateset->setTextureAttributeAndModes(0,
                     texture,
                     osg::StateAttribute::ON);
@@ -841,9 +847,10 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         imageStream->pause();
 
         OSG_INFO<<"Reading video "<<imageStream->getFileName()<<std::endl;
-
+#if USE_CLIENT_STORAGE_HINT
         // make sure that OSX uses the client storage extension to accelerate peformance where possible.
         texture->setClientStorageHint(true);
+#endif  
     }
 
 

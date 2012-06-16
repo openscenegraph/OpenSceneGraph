@@ -857,7 +857,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     return pictureQuad;
 }
 
-struct FileNameComparotor
+struct FileNameComparator
 {
     bool operator() (const std::string& lhs, const std::string& rhs) const
     {
@@ -982,7 +982,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
     else
     {
         // make sure images are in alphabetical order.
-        std::sort(filenames.begin(), filenames.end(), FileNameComparotor());
+        std::sort(filenames.begin(), filenames.end(), FileNameComparator());
 
         osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
 

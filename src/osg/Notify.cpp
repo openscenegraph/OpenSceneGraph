@@ -21,6 +21,8 @@
 
 #include <ctype.h>
 
+#define OSG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
+
 namespace osg
 {
 
@@ -114,119 +116,114 @@ using namespace osg;
 
 static osg::ApplicationUsageProxy Notify_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_NOTIFY_LEVEL <mode>", "FATAL | WARN | NOTICE | DEBUG_INFO | DEBUG_FP | DEBUG | INFO | ALWAYS");
 
-static bool s_NeedNotifyInit = true;
-static osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
-static osg::NullStream *g_NullStream;
-static osg::NotifyStream *g_NotifyStream;
-
-void osg::setNotifyLevel(osg::NotifySeverity severity)
+struct NotifySingleton
 {
-    if (s_NeedNotifyInit) osg::initNotifyLevel();
-    g_NotifyLevel = severity;
-}
+    NotifySingleton()
+    {
+        // _notifyLevel
+        // =============
 
+        _notifyLevel = osg::NOTICE; // Default value
 
-osg::NotifySeverity osg::getNotifyLevel()
+        char* OSGNOTIFYLEVEL=getenv("OSG_NOTIFY_LEVEL");
+        if (!OSGNOTIFYLEVEL) OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
+        if(OSGNOTIFYLEVEL)
+        {
+
+            std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);
+
+            // Convert to upper case
+            for(std::string::iterator i=stringOSGNOTIFYLEVEL.begin();
+                i!=stringOSGNOTIFYLEVEL.end();
+                ++i)
+            {
+                *i=toupper(*i);
+            }
+
+            if(stringOSGNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)          _notifyLevel=osg::ALWAYS;
+            else if(stringOSGNOTIFYLEVEL.find("FATAL")!=std::string::npos)      _notifyLevel=osg::FATAL;
+            else if(stringOSGNOTIFYLEVEL.find("WARN")!=std::string::npos)       _notifyLevel=osg::WARN;
+            else if(stringOSGNOTIFYLEVEL.find("NOTICE")!=std::string::npos)     _notifyLevel=osg::NOTICE;
+            else if(stringOSGNOTIFYLEVEL.find("DEBUG_INFO")!=std::string::npos) _notifyLevel=osg::DEBUG_INFO;
+            else if(stringOSGNOTIFYLEVEL.find("DEBUG_FP")!=std::string::npos)   _notifyLevel=osg::DEBUG_FP;
+            else if(stringOSGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      _notifyLevel=osg::DEBUG_INFO;
+            else if(stringOSGNOTIFYLEVEL.find("INFO")!=std::string::npos)       _notifyLevel=osg::INFO;
+            else std::cout << "Warning: invalid OSG_NOTIFY_LEVEL set ("<<stringOSGNOTIFYLEVEL<<")"<<std::endl;
+
+        }
+
+        // Setup standard notify handler
+        osg::NotifyStreamBuffer *buffer = dynamic_cast<osg::NotifyStreamBuffer *>(_notifyStream.rdbuf());
+        if (buffer && !buffer->getNotifyHandler())
+            buffer->setNotifyHandler(new StandardNotifyHandler);
+    }
+
+    osg::NotifySeverity _notifyLevel;
+    osg::NullStream     _nullStream;
+    osg::NotifyStream   _notifyStream;
+};
+
+static NotifySingleton& getNotifySingleton()
 {
-    if (s_NeedNotifyInit) osg::initNotifyLevel();
-    return g_NotifyLevel;
-}
-
-void osg::setNotifyHandler(osg::NotifyHandler *handler)
-{
-    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
-    if (buffer)
-        buffer->setNotifyHandler(handler);
-}
-
-osg::NotifyHandler* osg::getNotifyHandler()
-{
-    if (s_NeedNotifyInit) osg::initNotifyLevel();
-    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
-    return buffer ? buffer->getNotifyHandler() : 0;
+    static NotifySingleton s_NotifySingleton;
+    return s_NotifySingleton;
 }
 
 bool osg::initNotifyLevel()
 {
-    static osg::NullStream s_NullStream;
-    static osg::NotifyStream s_NotifyStream;
-
-    g_NullStream = &s_NullStream;
-    g_NotifyStream = &s_NotifyStream;
-
-    // g_NotifyLevel
-    // =============
-
-    g_NotifyLevel = osg::NOTICE; // Default value
-
-    char* OSGNOTIFYLEVEL=getenv("OSG_NOTIFY_LEVEL");
-    if (!OSGNOTIFYLEVEL) OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
-    if(OSGNOTIFYLEVEL)
-    {
-
-        std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);
-
-        // Convert to upper case
-        for(std::string::iterator i=stringOSGNOTIFYLEVEL.begin();
-            i!=stringOSGNOTIFYLEVEL.end();
-            ++i)
-        {
-            *i=toupper(*i);
-        }
-
-        if(stringOSGNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)          g_NotifyLevel=osg::ALWAYS;
-        else if(stringOSGNOTIFYLEVEL.find("FATAL")!=std::string::npos)      g_NotifyLevel=osg::FATAL;
-        else if(stringOSGNOTIFYLEVEL.find("WARN")!=std::string::npos)       g_NotifyLevel=osg::WARN;
-        else if(stringOSGNOTIFYLEVEL.find("NOTICE")!=std::string::npos)     g_NotifyLevel=osg::NOTICE;
-        else if(stringOSGNOTIFYLEVEL.find("DEBUG_INFO")!=std::string::npos) g_NotifyLevel=osg::DEBUG_INFO;
-        else if(stringOSGNOTIFYLEVEL.find("DEBUG_FP")!=std::string::npos)   g_NotifyLevel=osg::DEBUG_FP;
-        else if(stringOSGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      g_NotifyLevel=osg::DEBUG_INFO;
-        else if(stringOSGNOTIFYLEVEL.find("INFO")!=std::string::npos)       g_NotifyLevel=osg::INFO;
-        else std::cout << "Warning: invalid OSG_NOTIFY_LEVEL set ("<<stringOSGNOTIFYLEVEL<<")"<<std::endl;
-
-    }
-
-    // Setup standard notify handler
-    osg::NotifyStreamBuffer *buffer = dynamic_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
-    if (buffer && !buffer->getNotifyHandler())
-        buffer->setNotifyHandler(new StandardNotifyHandler);
-
-    s_NeedNotifyInit = false;
-
+    getNotifySingleton();
     return true;
-
 }
+
+// Use a proxy to force the initialization of the the NotifySingleton during static initialization
+OSG_INIT_SINGLETON_PROXY(NotifySingletonProxy, osg::initNotifyLevel())
+
+void osg::setNotifyLevel(osg::NotifySeverity severity)
+{
+    getNotifySingleton()._notifyLevel = severity;
+}
+
+osg::NotifySeverity osg::getNotifyLevel()
+{
+    return getNotifySingleton()._notifyLevel;
+}
+
+void osg::setNotifyHandler(osg::NotifyHandler *handler)
+{
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer*>(getNotifySingleton()._notifyStream.rdbuf());
+    if (buffer) buffer->setNotifyHandler(handler);
+}
+
+osg::NotifyHandler* osg::getNotifyHandler()
+{
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(getNotifySingleton()._notifyStream.rdbuf());
+    return buffer ? buffer->getNotifyHandler() : 0;
+}
+
 
 #ifndef OSG_NOTIFY_DISABLED
 bool osg::isNotifyEnabled( osg::NotifySeverity severity )
 {
-    if (s_NeedNotifyInit) osg::initNotifyLevel();
-    return severity<=g_NotifyLevel;
+    return severity<=getNotifySingleton()._notifyLevel;
 }
 #endif
 
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
-    if (s_NeedNotifyInit) osg::initNotifyLevel();
-
     if (osg::isNotifyEnabled(severity))
     {
-        g_NotifyStream->setCurrentSeverity(severity);
-        return *g_NotifyStream;
+        getNotifySingleton()._notifyStream.setCurrentSeverity(severity);
+        return getNotifySingleton()._notifyStream;
     }
-    return *g_NullStream;
+    return getNotifySingleton()._nullStream;
 }
 
 void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
 {
-#if 1
     if (severity <= osg::WARN)
         fputs(message, stderr);
     else
         fputs(message, stdout);
-#else
-   fputs(message, stdout);
-#endif
 }
 
 #if defined(WIN32) && !defined(__CYGWIN__)

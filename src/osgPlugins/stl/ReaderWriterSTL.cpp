@@ -73,6 +73,7 @@ private:
         bool _generateNormal;
         unsigned int _numFacets;
 
+	std::string _solidName;
         osg::ref_ptr<osg::Vec3Array> _vertex;
         osg::ref_ptr<osg::Vec3Array> _normal;
         osg::ref_ptr<osg::Vec4Array> _color;
@@ -403,6 +404,7 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
         }
         else if (strncmp(bp, "solid", 5) == 0) {
             OSG_INFO << "STL loader parsing '" << bp + 6 << "'" << std::endl;
+	    _solidName = bp + 6;
         }
     }
 

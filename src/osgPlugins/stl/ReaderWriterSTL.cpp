@@ -52,8 +52,9 @@ public:
     {
         supportsExtension("stl","STL binary format");
         supportsExtension("sta","STL ASCII format");
-        supportsOption("smooth", "run SmoothingVisitor");
-        supportsOption("separateFiles", "Save every geode in a different file. Can be a Huge amount of Files!!!");
+        supportsOption("smooth", "Run SmoothingVisitor");
+        supportsOption("separateFiles", "Save every geode in a different file. Can be a huge amount of files!!!");
+        supportsOption("ignoreNormals", "Do not save normals. Set them to [0 0 0].");
     }
 
     virtual const char* className() const {
@@ -84,7 +85,7 @@ private:
   class CreateStlVisitor : public osg::NodeVisitor {
   public:
 
-    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options)
+    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options), m_ignoreNormals(false)
     {
       if (options && (options->getOptionString() == "separateFiles"))
       {
@@ -92,6 +93,12 @@ private:
       } else {
         m_f = new osgDB::ofstream(m_fout.c_str());
         *m_f << "solid " << counter << std::endl;
+      }
+
+      if (options && (options->getOptionString() == "ignoreNormals"))
+      {
+        OSG_INFO << "ReaderWriterSTL::writeNode: Ignoring normals" << std::endl;
+	m_ignoreNormals = true;
       }
     };
 
@@ -114,6 +121,7 @@ private:
         osg::TriangleFunctor<PushPoints> tf;
         tf.m_stream = m_f;
         tf.m_mat = mat;
+        tf.m_ignoreNormals = m_ignoreNormals;
         node.getDrawable( i )->accept( tf );
       }
 
@@ -146,11 +154,13 @@ private:
     std::string m_fout;
     osgDB::ReaderWriter::Options const * m_options;
     std::string m_ErrorString;
+    bool m_ignoreNormals;
 
 
     struct PushPoints {
       std::ofstream* m_stream;
       osg::Matrix m_mat;
+      bool m_ignoreNormals;
       inline void operator () ( const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary ) {
         osg::Vec3 v1 = _v1 * m_mat;
         osg::Vec3 v2 = _v2 * m_mat;
@@ -158,7 +168,10 @@ private:
         osg::Vec3 vV1V2 = v2-v1;
         osg::Vec3 vV1V3 = v3-v1;
         osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
-        *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
+        if (m_ignoreNormals)
+          *m_stream << "facet normal 0 0 0" << std::endl;
+	else
+          *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
         *m_stream << "outer loop" << std::endl;
         *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
         *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;

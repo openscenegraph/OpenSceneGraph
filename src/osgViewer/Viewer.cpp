@@ -1038,7 +1038,7 @@ void Viewer::updateTraversal()
         setFusionDistance( getCameraManipulator()->getFusionDistanceMode(),
                             getCameraManipulator()->getFusionDistanceValue() );
 
-        _cameraManipulator->updateCamera(_camera);
+        _cameraManipulator->updateCamera(*_camera);
     }
 
     updateSlaves();

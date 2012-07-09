@@ -89,7 +89,7 @@ class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
 
         /** update the camera for the current frame, typically called by the viewer classes. 
             Default implementation simply set the camera view matrix. */
-        virtual void updateCamera(osg::Camera* camera) { camera->setViewMatrix(getInverseMatrix()); }
+        virtual void updateCamera(osg::Camera& camera) { camera.setViewMatrix(getInverseMatrix()); }
 
         /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE; }

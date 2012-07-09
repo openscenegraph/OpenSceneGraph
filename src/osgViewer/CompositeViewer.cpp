@@ -1159,7 +1159,7 @@ void CompositeViewer::updateTraversal()
             view->setFusionDistance( view->getCameraManipulator()->getFusionDistanceMode(),
                                     view->getCameraManipulator()->getFusionDistanceValue() );
             
-            view->getCameraManipulator()->updateCamera(view->getCamera());
+            view->getCameraManipulator()->updateCamera(*(view->getCamera()));
             
         }
         view->updateSlaves();

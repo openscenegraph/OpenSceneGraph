@@ -427,7 +427,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         group->accept(smoother);
     }
 
-    return group.release();
+    return group.get();
 }
 
 /**********************************************************************

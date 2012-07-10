@@ -4,7 +4,11 @@
  * $Id$
  *
  * STL importer for OpenSceneGraph.
- * Copyright (c)2004 Ulrich Hertlein <u.hertlein@sandbox.de>
+ *
+ * Copyright (c) 2004 Ulrich Hertlein <u.hertlein@sandbox.de>
+ *
+ * Modified by Piotr Domagalski <piotr@domagalski.com> to support STL ASCII
+ * files with multiple named solids.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -166,7 +170,12 @@ private:
   class CreateStlVisitor : public osg::NodeVisitor
   {
   public:
-      CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN), counter(0), m_fout(fout), m_options(options), m_dontSaveNormals(false)
+      CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0):
+         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+         counter(0),
+         m_fout(fout),
+         m_options(options),
+         m_dontSaveNormals(false)
       {
           if (options && (options->getOptionString() == "separateFiles"))
           {
@@ -179,7 +188,7 @@ private:
 
           if (options && (options->getOptionString() == "dontSaveNormals"))
           {
-              OSG_INFO << "ReaderWriterSTL::writeNode: Ignoring normals" << std::endl;
+              OSG_INFO << "ReaderWriterSTL::writeNode: Not saving normals" << std::endl;
               m_dontSaveNormals = true;
           }
       }

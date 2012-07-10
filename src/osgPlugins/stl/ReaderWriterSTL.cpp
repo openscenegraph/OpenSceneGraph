@@ -6,9 +6,7 @@
  * STL importer for OpenSceneGraph.
  *
  * Copyright (c) 2004 Ulrich Hertlein <u.hertlein@sandbox.de>
- *
- * Modified by Piotr Domagalski <piotr@domagalski.com> to support STL ASCII
- * files with multiple named solids.
+ * Copyright (c) 2012 Piotr Domagalski <piotr@domagalski.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -122,15 +120,6 @@ private:
             return _numFacets == 0;
         }
 
-        void clear()
-        {
-            _solidName = "";
-            _numFacets = 0;
-            _vertex = osg::ref_ptr<osg::Vec3Array>();
-            _normal = osg::ref_ptr<osg::Vec3Array>();
-            _color = osg::ref_ptr<osg::Vec4Array>();
-        }
-
         std::string& getName()
         {
             return _solidName;
@@ -144,6 +133,15 @@ private:
         osg::ref_ptr<osg::Vec3Array> _vertex;
         osg::ref_ptr<osg::Vec3Array> _normal;
         osg::ref_ptr<osg::Vec4Array> _color;
+
+        void clear()
+        {
+            _solidName = "";
+            _numFacets = 0;
+            _vertex = osg::ref_ptr<osg::Vec3Array>();
+            _normal = osg::ref_ptr<osg::Vec3Array>();
+            _color = osg::ref_ptr<osg::Vec4Array>();
+        }
     };
 
     class AsciiReaderObject : public ReaderObject

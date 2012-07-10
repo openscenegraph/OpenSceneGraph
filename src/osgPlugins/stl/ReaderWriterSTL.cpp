@@ -275,7 +275,7 @@ private:
               *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
               *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
               *m_stream << "endloop" << std::endl;
-              *m_stream << "endfacet " << std::endl;
+              *m_stream << "endfacet" << std::endl;
           }
       };
   };

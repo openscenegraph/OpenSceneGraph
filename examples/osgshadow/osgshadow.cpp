@@ -836,8 +836,8 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
 
-    shadowedScene->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
-    shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
+    shadowedScene->getShadowSettings()->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
+    shadowedScene->getShadowSettings()->setCastsShadowTraversalMask(CastsShadowTraversalMask);
 
     osg::ref_ptr<osgShadow::MinimalShadowMap> msm = NULL;
     if (arguments.read("--no-shadows"))

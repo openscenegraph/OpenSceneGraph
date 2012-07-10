@@ -2302,18 +2302,14 @@ void ViewDependentShadowMap::cullShadowReceivingScene(osgUtil::CullVisitor* cv) 
 {
     OSG_INFO<<"cullShadowReceivingScene()"<<std::endl;
 
-#if 0
     // record the traversal mask on entry so we can reapply it later.
     unsigned int traversalMask = cv->getTraversalMask();
 
     cv->setTraversalMask( traversalMask & _shadowedScene->getReceivesShadowTraversalMask() );
-#endif
 
     _shadowedScene->osg::Group::traverse(*cv);
 
-#if 0
     cv->setTraversalMask( traversalMask );
-#endif
 
     return;
 }

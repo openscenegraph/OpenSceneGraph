@@ -28,6 +28,12 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         META_Object(osgShadow, ShadowSettings);
 
+        void setReceivesShadowTraversalMask(unsigned int mask) { _receivesShadowTraversalMask = mask; }
+        unsigned int getReceivesShadowTraversalMask() const { return _receivesShadowTraversalMask; }
+
+        void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
+        unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
+
         /** Set the LightNum of the light in the scene to assign a shadow for.
           * Default value is -1, which signifies that shadow technique should automatically select an active light
           * to assign a shadow, typically this will be the first active light found. */
@@ -103,20 +109,24 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         virtual ~ShadowSettings();
 
-        int                                     _lightNum;
-        unsigned int                            _baseShadowTextureUnit;
-        bool                                    _useShadowMapTextureOverride;
-        osg::Vec2s                              _textureSize;
 
-        double                                  _minimumShadowMapNearFarRatio;
-        ShadowMapProjectionHint                 _shadowMapProjectionHint;
-        double                                  _perspectiveShadowMapCutOffAngle;
+        unsigned int            _receivesShadowTraversalMask;
+        unsigned int            _castsShadowTraversalMask;
 
-        unsigned int                            _numShadowMapsPerLight;
-        MultipleShadowMapHint                   _multipleShadowMapHint;
+        int                     _lightNum;
+        unsigned int            _baseShadowTextureUnit;
+        bool                    _useShadowMapTextureOverride;
+        osg::Vec2s              _textureSize;
 
-        ShaderHint                              _shaderHint;
-        bool                                    _debugDraw;
+        double                  _minimumShadowMapNearFarRatio;
+        ShadowMapProjectionHint _shadowMapProjectionHint;
+        double                  _perspectiveShadowMapCutOffAngle;
+
+        unsigned int            _numShadowMapsPerLight;
+        MultipleShadowMapHint   _multipleShadowMapHint;
+
+        ShaderHint              _shaderHint;
+        bool                    _debugDraw;
 
 };
 

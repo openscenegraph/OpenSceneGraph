@@ -16,6 +16,8 @@
 using namespace osgShadow;
 
 ShadowSettings::ShadowSettings():
+     _receivesShadowTraversalMask(0xffffffff),
+     _castsShadowTraversalMask(0xffffffff),
     _lightNum(-1),
     _baseShadowTextureUnit(1),
     _useShadowMapTextureOverride(true),
@@ -33,6 +35,8 @@ ShadowSettings::ShadowSettings():
 
 ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copyop):
     Object(ss,copyop),
+    _receivesShadowTraversalMask(ss._receivesShadowTraversalMask),
+    _castsShadowTraversalMask(ss._castsShadowTraversalMask),
     _lightNum(ss._lightNum),
     _baseShadowTextureUnit(ss._baseShadowTextureUnit),
     _useShadowMapTextureOverride(ss._useShadowMapTextureOverride),

@@ -37,12 +37,6 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
 
-        void setReceivesShadowTraversalMask(unsigned int mask) { _receivesShadowTraversalMask = mask; }
-        unsigned int getReceivesShadowTraversalMask() const { return _receivesShadowTraversalMask; }
-
-        void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
-        unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
-
         void setShadowSettings(ShadowSettings* ss);
         ShadowSettings* getShadowSettings() { return _shadowSettings.get(); }
         const ShadowSettings* getShadowSettings() const { return _shadowSettings.get(); }
@@ -65,12 +59,21 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const;
 
+    public:
+
+        /** deprecated, moved to ShadowSettings.*/
+        void setReceivesShadowTraversalMask(unsigned int mask) { if (_shadowSettings.valid()) _shadowSettings->setReceivesShadowTraversalMask(mask); }
+        /** deprecated, moved to ShadowSettings.*/
+        unsigned int getReceivesShadowTraversalMask() const { return _shadowSettings.valid() ? _shadowSettings->getReceivesShadowTraversalMask() : 0xffffffff; }
+
+        /** deprecated, moved to ShadowSettings.*/
+        void setCastsShadowTraversalMask(unsigned int mask) { if (_shadowSettings.valid()) _shadowSettings->setCastsShadowTraversalMask(mask);  }
+        /** deprecated, moved to ShadowSettings.*/
+        unsigned int getCastsShadowTraversalMask() const { return _shadowSettings.valid() ? _shadowSettings->getCastsShadowTraversalMask() : 0xffffffff; }
+
 protected:
 
         virtual ~ShadowedScene();
-
-        unsigned int _receivesShadowTraversalMask;
-        unsigned int _castsShadowTraversalMask;
 
         osg::ref_ptr<ShadowSettings>    _shadowSettings;
         osg::ref_ptr<ShadowTechnique>   _shadowTechnique;

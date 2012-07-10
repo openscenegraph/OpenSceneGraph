@@ -97,15 +97,15 @@ private:
         {
             osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
-            geom->setVertexArray(_vertex);
-            geom->setNormalArray(_normal);
+            geom->setVertexArray(_vertex.get());
+            geom->setNormalArray(_normal.get());
             geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
             if (_color.valid())
             {
                 OSG_INFO << "STL file with color" << std::endl;
-                geom->setColorArray(_color);
+                geom->setColorArray(_color.get());
                 geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
             }
 
@@ -410,9 +410,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         {
             osg::ref_ptr<osg::Geometry> geom = readerPtr->asGeometry();
             osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-            geode->addDrawable(geom);
+            geode->addDrawable(geom.get());
             geode->setName(readerPtr->getName());
-            group->addChild(geode);
+            group->addChild(geode.get());
         }
 
         if (result == ReaderObject::ReadEOF)

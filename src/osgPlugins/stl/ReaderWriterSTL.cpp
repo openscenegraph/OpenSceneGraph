@@ -56,7 +56,8 @@ public:
         supportsExtension("stl", "STL binary format");
         supportsExtension("sta", "STL ASCII format");
         supportsOption("smooth", "Run SmoothingVisitor");
-        supportsOption("separateFiles", "Save every geode in a different file. Can be a Huge amount of Files!!!");
+        supportsOption("separateFiles", "Save each geode in a different file. Can result in a huge amount of files!");
+        supportsOption("dontSaveNormals", "Set all normals to [0 0 0] when saving to a file.");
     }
 
     virtual const char* className() const
@@ -162,96 +163,121 @@ private:
         unsigned int _expectNumFacets;
     };
 
-  class CreateStlVisitor : public osg::NodeVisitor {
+  class CreateStlVisitor : public osg::NodeVisitor
+  {
   public:
-
-    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options)
-    {
-      if (options && (options->getOptionString() == "separateFiles"))
+      CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN), counter(0), m_fout(fout), m_options(options), m_dontSaveNormals(false)
       {
-        OSG_INFO << "ReaderWriterSTL::writeNode: Files are written separately" << std::endl;
-      } else {
-        m_f = new osgDB::ofstream(m_fout.c_str());
-      }
-    };
+          if (options && (options->getOptionString() == "separateFiles"))
+          {
+              OSG_INFO << "ReaderWriterSTL::writeNode: Files are written separately" << std::endl;
+          }
+          else
+          {
+              m_f = new osgDB::ofstream(m_fout.c_str());
+          }
 
-    std::string i2s( int i) {
-      char buf[16];  // -2^31 == -2147483648 needs 11 chars + \0  -> 12 (+4 for security ;-)
-      sprintf(buf,"%d",i);
-      return buf;
-    }
-
-    virtual void apply(  osg::Geode& node ){
-      osg::Matrix mat = osg::computeLocalToWorld( getNodePath() );
-
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        std::string sepFile = m_fout + i2s(counter);
-        m_f = new osgDB::ofstream(sepFile.c_str());
+          if (options && (options->getOptionString() == "dontSaveNormals"))
+          {
+              OSG_INFO << "ReaderWriterSTL::writeNode: Ignoring normals" << std::endl;
+              m_dontSaveNormals = true;
+          }
       }
 
-      if (node.getName().empty())
-        *m_f << "solid " << counter << std::endl;
-      else
-        *m_f << "solid " << node.getName() << std::endl;
-
-      for ( unsigned int i = 0; i < node.getNumDrawables(); ++i ) {
-        osg::TriangleFunctor<PushPoints> tf;
-        tf.m_stream = m_f;
-        tf.m_mat = mat;
-        node.getDrawable( i )->accept( tf );
+      std::string i2s(int i)
+      {
+          char buf[16];  // -2^31 == -2147483648 needs 11 chars + \0  -> 12 (+4 for security ;-)
+          sprintf(buf, "%d", i);
+          return buf;
       }
 
-      if (node.getName().empty())
-        *m_f << "endsolid " << counter << std::endl;
-      else
-        *m_f << "endsolid " << node.getName() << std::endl;
+      virtual void apply(osg::Geode& node)
+      {
+          osg::Matrix mat = osg::computeLocalToWorld(getNodePath());
 
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        m_f->close();
-        delete m_f;
+          if (m_options && (m_options->getOptionString() == "separateFiles"))
+          {
+              std::string sepFile = m_fout + i2s(counter);
+              m_f = new osgDB::ofstream(sepFile.c_str());
+          }
+
+          if (node.getName().empty())
+              *m_f << "solid " << counter << std::endl;
+          else
+              *m_f << "solid " << node.getName() << std::endl;
+
+          for (unsigned int i = 0; i < node.getNumDrawables(); ++i)
+          {
+              osg::TriangleFunctor<PushPoints> tf;
+              tf.m_stream = m_f;
+              tf.m_mat = mat;
+              tf.m_dontSaveNormals = m_dontSaveNormals;
+              node.getDrawable(i)->accept(tf);
+          }
+
+          if (node.getName().empty())
+              *m_f << "endsolid " << counter << std::endl;
+          else
+              *m_f << "endsolid " << node.getName() << std::endl;
+
+          if (m_options && (m_options->getOptionString() == "separateFiles"))
+          {
+              m_f->close();
+              delete m_f;
+          }
+
+          ++counter;
+          traverse(node);
       }
 
-      ++counter;
-      traverse(node);
-    }
-
-    ~CreateStlVisitor() {
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        OSG_INFO << "ReaderWriterSTL::writeNode: " << counter - 1 << " files were written" << std::endl;
-      } else {
-        m_f->close();
-        delete m_f;
+      ~CreateStlVisitor()
+      {
+          if (m_options && (m_options->getOptionString() == "separateFiles"))
+          {
+              OSG_INFO << "ReaderWriterSTL::writeNode: " << counter - 1 << " files were written" << std::endl;
+          }
+          else
+          {
+              m_f->close();
+              delete m_f;
+          }
       }
-    }
 
-    const std::string& getErrorString() const { return m_ErrorString; }
+      const std::string& getErrorString() const { return m_ErrorString; }
 
   private:
-    int counter;
-    std::ofstream* m_f;
-    std::string m_fout;
-    osgDB::ReaderWriter::Options const * m_options;
-    std::string m_ErrorString;
+      int counter;
+      std::ofstream* m_f;
+      std::string m_fout;
+      osgDB::ReaderWriter::Options const * m_options;
+      std::string m_ErrorString;
+      bool m_dontSaveNormals;
 
-    struct PushPoints {
-      std::ofstream* m_stream;
-      osg::Matrix m_mat;
-      inline void operator () ( const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary ) {
-        osg::Vec3 v1 = _v1 * m_mat;
-        osg::Vec3 v2 = _v2 * m_mat;
-        osg::Vec3 v3 = _v3 * m_mat;
-        osg::Vec3 vV1V2 = v2-v1;
-        osg::Vec3 vV1V3 = v3-v1;
-        osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
-        *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
-        *m_stream << "outer loop" << std::endl;
-        *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
-        *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
-        *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
-        *m_stream << "endloop" << std::endl;
-        *m_stream << "endfacet " << std::endl;
-      }
-    };
+      struct PushPoints
+      {
+          std::ofstream* m_stream;
+          osg::Matrix m_mat;
+          bool m_dontSaveNormals;
+
+          inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary) {
+              osg::Vec3 v1 = _v1 * m_mat;
+              osg::Vec3 v2 = _v2 * m_mat;
+              osg::Vec3 v3 = _v3 * m_mat;
+              osg::Vec3 vV1V2 = v2 - v1;
+              osg::Vec3 vV1V3 = v3 - v1;
+              osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
+              if (m_dontSaveNormals)
+                  *m_stream << "facet normal 0 0 0" << std::endl;
+              else
+                  *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
+              *m_stream << "outer loop" << std::endl;
+              *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+              *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+              *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
+              *m_stream << "endloop" << std::endl;
+              *m_stream << "endfacet " << std::endl;
+          }
+      };
   };
 };
 

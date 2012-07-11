@@ -368,6 +368,8 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
         }
 
         osg::ref_ptr<osg::Geode> osg_geode = new osg::Geode();
+        if (!obj->id().empty())
+            osg_geode->setName(obj->id());
         osg_geode->addDrawable(osg_geom.get());
         osg::StateSet *osg_stateset = osg_geode->getOrCreateStateSet();
 

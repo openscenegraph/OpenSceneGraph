@@ -16,8 +16,8 @@
 using namespace osgShadow;
 
 ShadowSettings::ShadowSettings():
-     _receivesShadowTraversalMask(0xffffffff),
-     _castsShadowTraversalMask(0xffffffff),
+    _receivesShadowTraversalMask(0xffffffff),
+    _castsShadowTraversalMask(0xffffffff),
     _lightNum(-1),
     _baseShadowTextureUnit(1),
     _useShadowMapTextureOverride(true),
@@ -27,7 +27,7 @@ ShadowSettings::ShadowSettings():
     _perspectiveShadowMapCutOffAngle(2.0),
     _numShadowMapsPerLight(1),
     _multipleShadowMapHint(PARALLEL_SPLIT),
-   _shaderHint(NO_SHADERS),
+    _shaderHint(NO_SHADERS),
 //    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
 {

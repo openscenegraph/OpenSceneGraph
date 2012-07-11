@@ -361,7 +361,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                         // other geometry types not handled yet
                     }
 
-                    if (osg_geom.valid() && !obj->id().empty())
+                    if (osg_geom.valid() && !node_ptr->id().empty())
                         osg_geom->setName(node_ptr->id());
                 }
             }

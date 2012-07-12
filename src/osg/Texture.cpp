@@ -2330,22 +2330,24 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 #if defined( OSG_GLES2_AVAILABLE ) || defined( OSG_GL3_AVAILABLE )
         return GENERATE_MIPMAP;
 #else
-        int width = getTextureWidth();
-        int height = getTextureHeight();
 
-        //quick bithack to determine whether width or height are non-power-of-two
-        if ((width & (width - 1)) || (height & (height - 1)))
+        bool useGenerateMipMap = FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmap!=0;
+
+        if (useGenerateMipMap)
         {
-            //GL_GENERATE_MIPMAP_SGIS with non-power-of-two textures on NVIDIA hardware
-            //is extremely slow. Use glGenerateMipmapEXT() instead if supported.
-            if (_internalFormatType != SIGNED_INTEGER &&
-                _internalFormatType != UNSIGNED_INTEGER)
+            if (Texture::getExtensions(state.getContextID(),true)->getPreferGenerateMipmapSGISForPowerOfTwo())
             {
-                if (FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmap)
-                {
-                    return GENERATE_MIPMAP;
-                }
+                int width = getTextureWidth();
+                int height = getTextureHeight();
+                useGenerateMipMap = ((width & (width - 1)) || (height & (height - 1)));
             }
+
+            if (useGenerateMipMap)
+            {
+                useGenerateMipMap = (_internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER);
+            }
+
+            if (useGenerateMipMap) return GENERATE_MIPMAP;
         }
 
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
@@ -2470,6 +2472,8 @@ Texture::Extensions::Extensions(unsigned int contextID)
     const char* renderer = (const char*) glGetString(GL_RENDERER);
     std::string rendererString(renderer ? renderer : "");
 
+    bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
+
     bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
 
     _isMultiTexturingSupported = builtInSupport || OSG_GLES1_FEATURES ||
@@ -2506,6 +2510,8 @@ Texture::Extensions::Extensions(unsigned int contextID)
                                      ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f));
 
     _isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
+
+    _preferGenerateMipmapSGISForPowerOfTwo = radeonHardwareDetected ? false : true;
 
     _isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
 

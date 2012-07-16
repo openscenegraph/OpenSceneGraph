@@ -29,7 +29,7 @@ class OSGMANIPULATOR_EXPORT TabPlaneDragger : public CompositeDragger
 {
     public:
 
-        TabPlaneDragger();
+        TabPlaneDragger(float handleScaleFactor=20.0f);
 
         META_OSGMANIPULATOR_Object(osgManipulator,TabPlaneDragger)
 

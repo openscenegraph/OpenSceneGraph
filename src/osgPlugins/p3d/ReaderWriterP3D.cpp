@@ -867,7 +867,29 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"looping \""<<str<<"\""<<std::endl;
     }
 
-/*
+    if (getProperty(cur, "fps", value.fps))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read fps \""<<value.fps<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "duration", value.duration))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read duration \""<<value.duration<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "paging_mode", str))
+    {
+        propertiesRead = true;
+        if (str=="PRE_LOAD_ALL_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PRE_LOAD_ALL_IMAGES;
+        else if (str=="PAGE_AND_RETAIN_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PAGE_AND_RETAIN_IMAGES;
+        else if (str=="PAGE_AND_DISCARD_USED_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES;
+
+        OSG_NOTIFY(_notifyLevel)<<"read imageSequencePagingMode \""<<value.imageSequencePagingMode<<"\""<<std::endl;
+    }
+
+    /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {
         propertiesRead = true;

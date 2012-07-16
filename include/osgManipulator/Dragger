@@ -220,6 +220,9 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         void setActivationModKeyMask(unsigned int mask) { _activationModKeyMask = mask; }
         unsigned int getActivationModKeyMask() const { return _activationModKeyMask; }
 
+        void setActivationMouseButtonMask(unsigned int mask) { _activationMouseButtonMask = mask; }
+        unsigned int getActivationMouseButtonMask() const { return _activationMouseButtonMask; }
+
         void setActivationKeyEvent(int key) { _activationKeyEvent = key; }
         int getActivationKeyEvent() const { return _activationKeyEvent; }
 
@@ -278,8 +281,10 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         bool                            _draggerActive;
 
         unsigned int                    _activationModKeyMask;
+        unsigned int                    _activationMouseButtonMask;
         int                             _activationKeyEvent;
         bool                            _activationPermittedByModKeyMask;
+        bool                            _activationPermittedByMouseButtonMask;
         bool                            _activationPermittedByKeyEvent;
 
         osgManipulator::PointerInfo     _pointer;

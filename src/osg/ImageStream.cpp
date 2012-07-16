@@ -21,11 +21,11 @@ ImageStream::ImageStream():
 {
     setDataVariance(DYNAMIC);
 
-#ifndef __APPLE__
+//#ifndef __APPLE__
     // disabled under OSX for time being while we resolve why PBO
     // doesn't function properly under OSX.
     setPixelBufferObject(new PixelBufferObject(this));
-#endif
+//#endif
 
 }
 

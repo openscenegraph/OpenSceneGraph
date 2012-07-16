@@ -678,6 +678,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setGenerateMipMapSupported(bool flag) { _isGenerateMipMapSupported=flag; }
                 bool isGenerateMipMapSupported() const { return _isGenerateMipMapSupported; }
 
+                void setPreferGenerateMipmapSGISForPowerOfTwo(bool flag) { _preferGenerateMipmapSGISForPowerOfTwo = flag; }
+                bool getPreferGenerateMipmapSGISForPowerOfTwo() const { return _preferGenerateMipmapSGISForPowerOfTwo; }
+
                 void setTextureMultisampledSupported(bool flag) { _isTextureMultisampledSupported=flag; }
                 bool isTextureMultisampledSupported() const { return _isTextureMultisampledSupported; }
 
@@ -773,6 +776,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;
                 bool    _isGenerateMipMapSupported;
+                bool    _preferGenerateMipmapSGISForPowerOfTwo;
                 bool    _isTextureMultisampledSupported;
                 bool    _isShadowSupported;
                 bool    _isShadowAmbientSupported;

@@ -16,18 +16,64 @@
 
 using namespace osgViewer;
 
-typedef std::vector< osg::observer_ptr<Scene> >  SceneCache;
+#define OSG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
 
-static SceneCache s_sceneCache;
-static SceneCache& getSceneCache()
+namespace osgViewer
 {
-    return s_sceneCache;
+    
+
+struct SceneSingleton
+{
+    SceneSingleton() {}
+
+    inline void add(Scene* scene)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        _cache.push_back(scene);
+    }
+
+    inline void remove(Scene* scene)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        for(SceneCache::iterator itr = _cache.begin();
+            itr != _cache.end();
+            ++itr)
+        {
+            if (scene==itr->get())
+            {
+                _cache.erase(itr);
+                break;
+            }
+        }
+    }
+
+    inline Scene* getScene(osg::Node* node)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        for(SceneCache::iterator itr = _cache.begin();
+            itr != _cache.end();
+            ++itr)
+        {
+            Scene* scene = itr->get();
+            if (scene && scene->getSceneData()==node) return scene;
+        }
+        return 0;
+    }
+
+    typedef std::vector< osg::observer_ptr<Scene> >  SceneCache;
+    SceneCache          _cache;
+    OpenThreads::Mutex  _mutex;
+};
+
+static SceneSingleton& getSceneSingleton()
+{
+    static SceneSingleton s_sceneSingleton;
+    return s_sceneSingleton;
 }
 
-static OpenThreads::Mutex s_sceneCacheMutex;
-static OpenThreads::Mutex& getSceneCacheMutex()
-{
-    return s_sceneCacheMutex;
+// Use a proxy to force the initialization of the the SceneSingleton during static initialization
+OSG_INIT_SINGLETON_PROXY(SceneSingletonProxy, getSceneSingleton())
+
 }
 
 Scene::Scene():
@@ -35,25 +81,12 @@ Scene::Scene():
 {
     setDatabasePager(osgDB::DatabasePager::create());
     setImagePager(new osgDB::ImagePager);
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getSceneCacheMutex());
-    getSceneCache().push_back(this);
+    getSceneSingleton().add(this);
 }
 
 Scene::~Scene()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getSceneCacheMutex());
-    for(SceneCache::iterator itr = getSceneCache().begin();
-        itr != getSceneCache().end();
-        ++itr)
-    {
-        Scene* scene = itr->get();
-        if (scene==this)
-        {
-            getSceneCache().erase(itr);
-            break;
-        }
-    }
+    getSceneSingleton().remove(this);
 }
 
 void Scene::setSceneData(osg::Node* node)
@@ -107,14 +140,7 @@ void Scene::updateSceneGraph(osg::NodeVisitor& updateVisitor)
 
 Scene* Scene::getScene(osg::Node* node)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getSceneCacheMutex());
-    for(SceneCache::iterator itr = getSceneCache().begin();
-        itr != getSceneCache().end();
-        ++itr)
-    {
-        Scene* scene = itr->get();
-        if (scene && scene->getSceneData()==node) return scene;
-    }
+    return getSceneSingleton().getScene(node);
     return 0;
 }
 

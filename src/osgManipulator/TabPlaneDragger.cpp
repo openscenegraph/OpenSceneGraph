@@ -191,7 +191,8 @@ void createTranslateDraggerGeometry(Scale2DDragger* cornerScaleDragger, Translat
 
 }
 
-TabPlaneDragger::TabPlaneDragger() : _handleScaleFactor(20.0)
+TabPlaneDragger::TabPlaneDragger( float handleScaleFactor )
+          :_handleScaleFactor( handleScaleFactor )
 {
     _cornerScaleDragger = new Scale2DDragger(Scale2DDragger::SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT);
     addChild(_cornerScaleDragger.get());

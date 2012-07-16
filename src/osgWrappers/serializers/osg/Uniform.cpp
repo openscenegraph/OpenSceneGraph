@@ -37,7 +37,7 @@ static bool writeElements( osgDB::OutputStream& os, const osg::Uniform& uniform 
         os << (uniform.getFloatArray()!=NULL);
         os.writeArray( uniform.getFloatArray() );
     }
-    if ( uniform.getDoubleArray()!=NULL )
+    else if ( uniform.getDoubleArray()!=NULL )
     {
         os << (uniform.getDoubleArray()!=NULL);
         os.writeArray( uniform.getDoubleArray() );

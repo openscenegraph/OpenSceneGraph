@@ -21,6 +21,7 @@
 #include <osg/AnimationPath>
 #include <osg/TransferFunction>
 #include <osg/ImageStream>
+#include <osg/ImageSequence>
 #include <osgText/Text>
 #include <osgGA/GUIEventAdapter>
 
@@ -238,7 +239,11 @@ public:
             texcoord_rotate(0.0f),
             loopingMode(osg::ImageStream::NO_LOOPING),
             page(-1),
-            backgroundColor(1.0f,1.0f,1.0f,1.0f) {}
+            backgroundColor(1.0f,1.0f,1.0f,1.0f),
+            fps(30.0),
+            duration(-1.0),
+            imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES)
+        {}
 
         std::string                     options;
         float                           width;
@@ -249,6 +254,9 @@ public:
         osg::ImageStream::LoopingMode   loopingMode;
         int                             page;
         osg::Vec4                       backgroundColor;
+        double                          fps;
+        double                          duration;
+        osg::ImageSequence::Mode        imageSequencePagingMode;
     };
 
     struct VolumeData
@@ -392,6 +400,8 @@ public:
     void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
 
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
+
+    osg::Image* readImage(const std::string& filename, const ImageData& imageData);
 
     void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
 

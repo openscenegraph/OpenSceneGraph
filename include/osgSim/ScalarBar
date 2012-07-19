@@ -182,7 +182,7 @@ public:
 
     /** Set the position of scalar bar's lower left corner.*/
     void setPosition(const osg::Vec3& pos);
-    
+
     /** Get the position of scalar bar.*/
     const osg::Vec3& getPosition() const { return _position; }
 

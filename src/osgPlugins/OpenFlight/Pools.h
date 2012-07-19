@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -94,7 +94,7 @@ public:
     // Get material, return default material if not found in palette.
     osg::Material* get(int index);
 
-    // Get or create material based on 
+    // Get or create material based on
     // index: face material index
     // color: face color with alpha set to 1-face transparency.
     osg::Material* getOrCreateMaterial(int index, const osg::Vec4& faceColor);
@@ -217,7 +217,7 @@ protected:
 
 struct LPAnimation : public osg::Referenced
 {
-    enum AnimationType 
+    enum AnimationType
     {
         FLASHING_SEQUENCE = 0,
         ROTATING = 1,

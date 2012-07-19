@@ -5,7 +5,7 @@
  * VRML2 file converter for OpenSceneGraph.
  *
  * authors :
- *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function. 
+ *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function.
  *
  *           Jan Ciger (jan.ciger@gmail.com),
  *           Tolga Abaci (tolga.abaci@gmail.com),
@@ -334,22 +334,22 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                     // is it indexed_face_set_node ?
                     if (node_ptr->type().id()=="IndexedFaceSet")
                         osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
-                    
+
                     else if (node_ptr->type().id()=="IndexedLineSet")
                         osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
-                    
+
                     else if (node_ptr->type().id() == "Box")
                         osg_geom = convertVRML97Box(node_ptr.get());
-                    
+
                     else if (node_ptr->type().id() == "Sphere")
                         osg_geom = convertVRML97Sphere(node_ptr.get());
-                    
+
                     else if (node_ptr->type().id() == "Cone")
                         osg_geom = convertVRML97Cone(node_ptr.get());
-                    
+
                     else if (node_ptr->type().id() == "Cylinder")
                         osg_geom = convertVRML97Cylinder(node_ptr.get());
-                    
+
                     else
                     {
                         // other geometry types not handled yet
@@ -433,9 +433,9 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             std::auto_ptr<openvrml::field_value> texture_url_fv = vrml_texture_node->field("url");
                             const openvrml::mfstring *mfs = dynamic_cast<const openvrml::mfstring *>(texture_url_fv.get());
                             const std::string &url = mfs->value()[0];
-                            
+
                             image = osgDB::readRefImageFile(url);
-                            
+
                             if (!image.valid())
                             {
                                 std::cerr << "texture file " << url << " not found !" << std::endl << std::flush;

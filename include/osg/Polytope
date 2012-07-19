@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,12 +34,12 @@ class OSG_EXPORT Polytope
 
         inline Polytope() {setupMask();}
 
-        inline Polytope(const Polytope& cv) : 
+        inline Polytope(const Polytope& cv) :
             _maskStack(cv._maskStack),
             _resultMask(cv._resultMask),
             _planeList(cv._planeList),
             _referenceVertexList(cv._referenceVertexList) {}
-        
+
         inline Polytope(const PlaneList& pl) : _planeList(pl) {setupMask();}
 
         inline ~Polytope() {}
@@ -55,7 +55,7 @@ class OSG_EXPORT Polytope
             _referenceVertexList = cv._referenceVertexList;
             return *this;
         }
-        
+
         /** Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units.*/
         void setToUnitFrustum(bool withNear=true, bool withFar=true)
         {
@@ -94,7 +94,7 @@ class OSG_EXPORT Polytope
                 _planeList.clear();
                 return;
             }
-            
+
             ClippingMask selector_mask = 0x1;
 
             unsigned int numActivePlanes = 0;
@@ -108,7 +108,7 @@ class OSG_EXPORT Polytope
                 if (resultMask&selector_mask) ++numActivePlanes;
                 selector_mask <<= 1;
             }
-            
+
             _planeList.resize(numActivePlanes);
             _resultMask = 0;
             selector_mask = 0x1;
@@ -130,8 +130,8 @@ class OSG_EXPORT Polytope
         }
 
         inline void set(const PlaneList& pl) { _planeList = pl; setupMask(); }
-        
-        
+
+
         inline void add(const osg::Plane& pl) { _planeList.push_back(pl); setupMask(); }
 
         /** flip/reverse the orientation of all the planes.*/
@@ -144,7 +144,7 @@ class OSG_EXPORT Polytope
                 itr->flip();
             }
         }
-        
+
         inline bool empty() const { return _planeList.empty(); }
 
         inline PlaneList& getPlaneList() { return _planeList; }
@@ -155,7 +155,7 @@ class OSG_EXPORT Polytope
         inline void setReferenceVertexList(VertexList& vertices) { _referenceVertexList=vertices; }
 
         inline VertexList& getReferenceVertexList() { return _referenceVertexList; }
-        
+
         inline const VertexList& getReferenceVertexList() const { return _referenceVertexList; }
 
 
@@ -176,12 +176,12 @@ class OSG_EXPORT Polytope
         inline void setResultMask(ClippingMask mask) { _resultMask=mask; }
 
         inline ClippingMask getResultMask() const { return _resultMask; }
-        
+
         MaskStack& getMaskStack() { return _maskStack; }
-        
+
         const MaskStack& getMaskStack() const { return _maskStack; }
-        
-        
+
+
         inline void pushCurrentMask()
         {
             _maskStack.push_back(_resultMask);
@@ -196,7 +196,7 @@ class OSG_EXPORT Polytope
         inline bool contains(const osg::Vec3& v) const
         {
             if (!_maskStack.back()) return true;
-            
+
             unsigned int selector_mask = 0x1;
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
@@ -229,7 +229,7 @@ class OSG_EXPORT Polytope
                     if ((_maskStack.back()&selector_mask) && (itr->distance(v)<0.0f)) outside = true;
                     selector_mask <<= 1;
                 }
-                
+
                 if (!outside) return true;
             }
             return false;
@@ -257,11 +257,11 @@ class OSG_EXPORT Polytope
                     if (res<0) return false; // outside clipping set.
                     else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
-                selector_mask <<= 1; 
+                selector_mask <<= 1;
             }
             return true;
         }
-        
+
         /** Check whether any part of a bounding box is contained within clipping set.
             Using a mask to determine which planes should be used for the check, and
             modifying the mask to turn off planes which wouldn't contribute to clipping
@@ -284,7 +284,7 @@ class OSG_EXPORT Polytope
                     if (res<0) return false; // outside clipping set.
                     else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
-                selector_mask <<= 1; 
+                selector_mask <<= 1;
             }
             return true;
         }
@@ -307,7 +307,7 @@ class OSG_EXPORT Polytope
                     if (res<1) return false;  // intersects, or is below plane.
                     _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
-                selector_mask <<= 1; 
+                selector_mask <<= 1;
             }
             return true;
         }
@@ -319,7 +319,7 @@ class OSG_EXPORT Polytope
 
             _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
-            
+
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
@@ -330,11 +330,11 @@ class OSG_EXPORT Polytope
                     if (res<1) return false;  // intersects, or is below plane.
                     _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
-                selector_mask <<= 1; 
+                selector_mask <<= 1;
             }
             return true;
         }
-        
+
         /** Check whether the entire bounding box is contained within clipping set.*/
         inline bool containsAllOf(const osg::BoundingBox& bb)
         {
@@ -353,14 +353,14 @@ class OSG_EXPORT Polytope
                     if (res<1) return false;  // intersects, or is below plane.
                     _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
-                selector_mask <<= 1; 
+                selector_mask <<= 1;
             }
             return true;
         }
 
-        
+
         /** Transform the clipping set by matrix.  Note, this operations carries out
-          * the calculation of the inverse of the matrix since a plane must 
+          * the calculation of the inverse of the matrix since a plane must
           * be multiplied by the inverse transposed to transform it. This
           * makes this operation expensive.  If the inverse has been already
           * calculated elsewhere then use transformProvidingInverse() instead.
@@ -371,7 +371,7 @@ class OSG_EXPORT Polytope
             inverse.invert(matrix);
             transformProvidingInverse(inverse);
         }
-        
+
         /** Transform the clipping set by provide a pre inverted matrix.
           * see transform for details. */
         inline void transformProvidingInverse(const osg::Matrix& matrix)
@@ -387,11 +387,11 @@ class OSG_EXPORT Polytope
                 if (_resultMask&selector_mask)
                 {
                     itr->transformProvidingInverse(matrix);
-                    selector_mask <<= 1; 
+                    selector_mask <<= 1;
                 }
             }
         }
-        
+
     protected:
 
 
@@ -404,4 +404,4 @@ class OSG_EXPORT Polytope
 
 }    // end of namespace
 
-#endif 
+#endif

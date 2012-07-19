@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/ShadowVolumeOccluder>
@@ -66,19 +66,19 @@ unsigned int clip(const Plane& plane,const PointList& in, PointList& out,unsigne
     for(unsigned int i=0;i<in.size();++i)
     {
         unsigned int i_1 = (i+1)%in.size(); // do the mod to wrap the index round back to the start.
-        
+
         if (distance[i]>=0.0f)
         {
             out.push_back(in[i]);
-            
-            
+
+
             if (distance[i_1]<0.0f)
             {
                 unsigned int mask = (in[i].first & in[i_1].first) | planeMask;
                 float r = distance[i_1]/(distance[i_1]-distance[i]);
                 out.push_back(Point(mask,in[i].second*r+in[i_1].second*(1.0f-r)));
             }
-        
+
         }
         else if (distance[i_1]>0.0f)
         {
@@ -87,7 +87,7 @@ unsigned int clip(const Plane& plane,const PointList& in, PointList& out,unsigne
             out.push_back(Point(mask,in[i].second*r+in[i_1].second*(1.0f-r)));
         }
     }
-    
+
     return out.size();
 }
 
@@ -97,7 +97,7 @@ unsigned int clip(const Polytope::PlaneList& planeList,const VertexList& vin,Poi
 {
     PointList in;
     copyVertexListToPointList(vin,in);
-    
+
     unsigned int planeMask = 0x1;
     for(Polytope::PlaneList::const_iterator itr=planeList.begin();
         itr!=planeList.end();
@@ -190,33 +190,33 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
     // take a reference to the projection matrix.
     _projectionMatrix = &P;
-    
+
     // initialize the volume
     _volume = 0.0f;
-    
+
 
     // compute the inverse of the projection matrix.
     Matrix invP;
     invP.invert(P);
-    
+
     float volumeview = cullStack.getFrustumVolume();
 
-    
+
     // compute the transformation matrix which takes form local coords into clip space.
     Matrix MVP(MV*P);
-    
+
     // for the occluder polygon and each of the holes do
     //     first transform occluder polygon into clipspace by multiple it by c[i] = v[i]*(MV*P)
     //     then push to coords to far plane by setting its coord to c[i].z = -1.
     //     then transform far plane polygon back into projection space, by p[i]*inv(P)
     //     compute orientation of front plane, if normal.z()<0 then facing away from eye pont, so reverse the polygons, or simply invert planes.
     //     compute volume (quality) betwen front polygon in projection space and back polygon in projection space.
-    
-    
+
+
     const VertexList& vertices_in = occluder.getOccluder().getVertexList();
-    
+
     PointList points;
-    
+
     if (clip(cullingset.getFrustum().getPlaneList(),vertices_in,points)>=3)
     {
         // compute the points on the far plane.
@@ -225,7 +225,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         transform(points,farPoints,MVP);
         pushToFarPlane(farPoints);
         transform(farPoints,invP);
-        
+
         // move the occlude points into projection space.
         transform(points,MV);
 
@@ -241,16 +241,16 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         computePlanes(points,farPoints,_occluderVolume.getPlaneList());
 
         _occluderVolume.setupMask();
-        
+
         // if the front face is pointing away from the eye point flip the whole polytope.
         if (occludePlane[3]>0.0f)
         {
             _occluderVolume.flip();
         }
-        
+
         _volume = computePolytopeVolume(points,farPoints)/volumeview;
 
-        
+
         for(ConvexPlanarOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();
             hitr!=occluder.getHoleList().end();
             ++hitr)
@@ -292,7 +292,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                 // remove the hole's volume from the occluder volume.
                 _volume -= computePolytopeVolume(points,farPoints)/volumeview;
             }
-            
+
         }
 
         //std::cout << "final volume = "<<_volume<<std::endl;

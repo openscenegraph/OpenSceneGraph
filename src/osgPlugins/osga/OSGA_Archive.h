@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -18,13 +18,13 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/ReentrantMutex>
 
-#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
 class OSGA_Archive : public osgDB::Archive
 {
     public:
         OSGA_Archive();
-        virtual ~OSGA_Archive(); 
+        virtual ~OSGA_Archive();
 
         virtual const char* libraryName() const { return "osga"; }
 
@@ -34,7 +34,7 @@ class OSGA_Archive : public osgDB::Archive
         {
             return osgDB::equalCaseInsensitive(extension,"osga");
         }
-        
+
         /** open the archive.*/
         virtual bool open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
 
@@ -46,10 +46,10 @@ class OSGA_Archive : public osgDB::Archive
 
         /** Get the file name which represents the archived file.*/
         virtual std::string getArchiveFileName() const { return _archiveFileName; }
-        
+
         /** Get the file name which represents the master file recorded in the Archive.*/
         virtual std::string getMasterFileName() const;
-        
+
         /** return true if file exists in archive.*/
         virtual bool fileExists(const std::string& filename) const;
 
@@ -89,7 +89,7 @@ class OSGA_Archive : public osgDB::Archive
 
         /** Write an osg::Shader with specified file name to the Archive.*/
         virtual WriteResult writeShader(const osg::Shader& shader,const std::string& fileName,const Options* options=NULL) const;
-        
+
         #if defined(_MSC_VER)
         typedef __int64 pos_type;
         typedef __int64 size_type;
@@ -97,12 +97,12 @@ class OSGA_Archive : public osgDB::Archive
         typedef unsigned long long pos_type;
         typedef unsigned long long size_type;
         #endif
-        
+
         typedef std::pair<pos_type, size_type> PositionSizePair;
         typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
-        
+
     protected:
-  
+
         mutable OpenThreads::ReentrantMutex _serializerMutex;
 
         class IndexBlock;
@@ -112,42 +112,42 @@ class OSGA_Archive : public osgDB::Archive
         {
         public:
             IndexBlock(unsigned int blockSize=0);
-            
+
             inline pos_type getPosition() const { return _filePosition; }
 
             inline unsigned int getBlockSize() const { return _blockSize; }
 
 
             void setPositionNextIndexBlock(pos_type position);
-            
+
             inline pos_type getPositionNextIndexBlock() const { return _filePositionNextIndexBlock; }
 
 
             static IndexBlock* read(std::istream& in, bool doEndianSwap);
-            
+
             std::string getFirstFileName() const;
 
             bool getFileReferences(FileNamePositionMap& indexMap) const;
-            
+
 
             inline bool requiresWrite() const { return _requiresWrite; }
-            
+
             void write(std::ostream& out);
-            
+
             inline bool spaceAvailable(pos_type, size_type, const std::string& filename) const
             {
                 unsigned requiredSize = sizeof(pos_type)+sizeof(size_type)+sizeof(unsigned int)+filename.size();
                 return (_offsetOfNextAvailableSpace + requiredSize)<_blockSize;
             }
-            
+
             bool addFileReference(pos_type position, size_type size, const std::string& filename);
-            
+
 
 
         protected:
-            
+
             void allocateData(unsigned int blockSize);
-        
+
             virtual ~IndexBlock();
             bool            _requiresWrite;
             pos_type        _filePosition;
@@ -157,8 +157,8 @@ class OSGA_Archive : public osgDB::Archive
             unsigned int    _offsetOfNextAvailableSpace;
             char*           _data;
         };
-    
-    public: 
+
+    public:
         /** Functor used in internal implementations.*/
         struct ReadFunctor
         {
@@ -186,7 +186,7 @@ class OSGA_Archive : public osgDB::Archive
             std::string _filename;
             const osgDB::ReaderWriter::Options* _options;
         };
-        
+
     protected:
         struct ReadObjectFunctor;
         struct ReadImageFunctor;
@@ -204,15 +204,15 @@ class OSGA_Archive : public osgDB::Archive
 
         osgDB::ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
         osgDB::ReaderWriter::WriteResult write(const WriteFunctor& writeFunctor);
-    
+
         typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
-        
+
         bool _open(std::istream& fin);
 
         void writeIndexBlocks();
-        
+
         bool addFileReference(pos_type position, size_type size, const std::string& fileName);
-        
+
         static float        s_currentSupportedVersion;
         float               _version;
         ArchiveStatus       _status;
@@ -223,14 +223,14 @@ class OSGA_Archive : public osgDB::Archive
         std::string         _masterFileName;
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;
-        
+
 
         template <typename T>
         static inline void _write(char* ptr, const T& value)
         {
             std::copy(reinterpret_cast<const char*>(&value),reinterpret_cast<const char*>(&value)+sizeof(value),ptr);
         }
-        
+
         template <typename T>
         static inline void _read(char* ptr, T& value)
         {

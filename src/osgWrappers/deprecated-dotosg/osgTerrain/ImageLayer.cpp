@@ -33,13 +33,13 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::ImageLayer& layer = static_cast<osgTerrain::ImageLayer&>(obj);
 
     bool itrAdvanced = false;
-    
+
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s"))
     {
         std::string filename = fr[1].getStr();
         if (!filename.empty())
         {
-            bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ? 
+            bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ?
                 osgTerrain::TerrainTile::getTileLoadedCallback()->deferExternalLayerLoading() : false;
 
             layer.setFileName(filename);
@@ -53,11 +53,11 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 }
             }
         }
-        
+
         fr += 2;
         itrAdvanced = true;
     }
-   
+
 
     return itrAdvanced;
 }
@@ -67,7 +67,7 @@ bool ImageLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     const osgTerrain::ImageLayer& layer = static_cast<const osgTerrain::ImageLayer&>(obj);
 
     std::string fileName = layer.getFileName();
-    
+
     if (fw.getOutputTextureFiles())
     {
         if (fileName.empty())

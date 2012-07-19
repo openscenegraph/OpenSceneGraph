@@ -29,7 +29,7 @@ TabBoxTrackballDragger::TabBoxTrackballDragger()
     _trackballDragger = new TrackballDragger(true);
     addChild(_trackballDragger.get());
     addDragger(_trackballDragger.get());
-    
+
     _tabBoxDragger = new TabBoxDragger();
     addChild(_tabBoxDragger.get());
     addDragger(_tabBoxDragger.get());

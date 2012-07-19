@@ -148,7 +148,7 @@ const TileLocationInfo& trpgManagedTile::GetChildLocationInfo(int childIdx) cons
     if(childIdx < 0 || childIdx >= (int)childLocationInfo.size())
         throw std::invalid_argument(
                 "trpgManagedTile::GetChildLocationInfo(): index argument out of bound.");
-   
+
 
     return childLocationInfo[childIdx];
 }
@@ -160,13 +160,13 @@ bool trpgManagedTile::GetChildTileLoc(int childIdx, int &x,int &y,int &lod) cons
                 "trpgManagedTile::GetChildTileLoc(): index argument out of bound.");
     TileLocationInfo const& info = childLocationInfo[childIdx];
 
-    x = info.x;  
-    y = info.y;  
+    x = info.x;
+    y = info.y;
     lod = info.lod;
 
     return true;
 }
-   
+
 const trpgwAppAddress& trpgManagedTile::GetChildTileAddress(int childIdx) const
 {
     if(childIdx < 0 || childIdx >= (int)childLocationInfo.size())
@@ -192,7 +192,7 @@ const trpgLocalMaterial *trpgManagedTile::GetLocMaterial(int id) const
 
     if (id <0 || id >= (int)matList->size())
         return NULL;
-    
+
     return &(*matList)[id];
 }
 
@@ -240,7 +240,7 @@ void trpgManagedTile::Print(trpgPrintBuffer &buf)
     sprintf(line,"x = %d, y = %d, lod = %d",location.x, location.y, location.lod);  buf.prnLine(line);
     // Note: Should print the rest too, probably.
 }
- 
+
 /*  Page Manager LOD Page Info class.
     Used by the page manager to keep track of paging information
     for a single terrain LOD.  See the header file for details.
@@ -300,7 +300,7 @@ bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, doubl
     pageDist *= scale;
 
     head->GetVersion(majorVersion, minorVersion);
-   
+
 
     // Area of interest size (in cells)
     aoiSize.x = (int)(pageDist/cellSize.x);
@@ -315,7 +315,7 @@ bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, doubl
        Version 2.1 now support variable lods, it might be overkill to
        allocate a free list by supposing that the tiles exist.
        So only for version 2.1 an over we will use the divider to allocate less
-    */ 
+    */
     maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
     if(majorVersion == 2 && minorVersion >= 1)
         maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1)/freeListDivider);
@@ -323,7 +323,7 @@ bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, doubl
         maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
 
 
-   
+
 
     // Allocate 'em
     for (int i=0;i<maxNumTiles;i++) {
@@ -422,9 +422,9 @@ bool trpgPageManager::LodPageInfo::isWithin(trpgManagedTile *tile,trpg2iPoint &s
 {
     int tileX,tileY,tileLod;
     tile->GetTileLoc(tileX,tileY,tileLod);
-    if (tileX >= sw.x && 
+    if (tileX >= sw.x &&
         tileX <= ne.x &&
-        tileY >= sw.y && 
+        tileY >= sw.y &&
         tileY <= ne.y)
         return true;
     else
@@ -456,11 +456,11 @@ void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManaged
     trpg2iPoint sw,ne;
     sw.x = cell.x - aoiSize.x;
     sw.y = cell.y - aoiSize.y;
-    ne.x = cell.x + aoiSize.x;  
+    ne.x = cell.x + aoiSize.x;
     ne.y = cell.y + aoiSize.y;
-    sw.x = MAX(0,sw.x);            
+    sw.x = MAX(0,sw.x);
     sw.y = MAX(0,sw.y);
-    ne.x = MIN(lodSize.x-1,ne.x);   
+    ne.x = MIN(lodSize.x-1,ne.x);
     ne.y = MIN(lodSize.y-1,ne.y);
 
     int dx = ne.x - sw.x +1;
@@ -487,7 +487,7 @@ void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManaged
     }
 
     for(unsigned int parentIdx = 0; parentIdx < parentList.size(); ++parentIdx) {
-      
+
         trpgManagedTile* parentTile = parentList[parentIdx];
         unsigned int nbChildren = parentTile->GetNbChildren();
 
@@ -516,27 +516,27 @@ void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManaged
         }
     }
 }
-  
+
 bool trpgPageManager::LodPageInfo::AddToLoadList(int x, int y, const trpgwAppAddress& addr)
 {
     trpg2iPoint sw,ne;
 
     // Figure out the lower left and upper right corners
     //  in cell coordinates
-    sw.x = cell.x - aoiSize.x;  
+    sw.x = cell.x - aoiSize.x;
     sw.y = cell.y - aoiSize.y;
-    ne.x = cell.x + aoiSize.x;  
+    ne.x = cell.x + aoiSize.x;
     ne.y = cell.y + aoiSize.y;
-    sw.x = MAX(0,sw.x);            
+    sw.x = MAX(0,sw.x);
     sw.y = MAX(0,sw.y);
-    ne.x = MIN(lodSize.x-1,ne.x);   
+    ne.x = MIN(lodSize.x-1,ne.x);
     ne.y = MIN(lodSize.y-1,ne.y);
 
     if (x >= sw.x &&
         x <= ne.x &&
         y >= sw.y &&
         y <= ne.y)   {
-      
+
         trpgManagedTile *tile = 0;
         if(freeList.size() > 0){
 
@@ -617,7 +617,7 @@ void trpgPageManager::LodPageInfo::Update()
         }
     }
     current.resize(curPos);
-    
+
     bool doUpdate = true;
     if(majorVersion == 2 && minorVersion >= 1)
     {
@@ -682,13 +682,13 @@ void trpgPageManager::LodPageInfo::GetLoadedTileWithin(double pagingDistance, st
 
     // Calculate the area that we must check, in parent cell coordinate
     trpg2iPoint sw, ne;
-    sw.x = cell.x - aoi_size.x;  
+    sw.x = cell.x - aoi_size.x;
     sw.y = cell.y - aoi_size.y;
-    ne.x = cell.x + aoi_size.x;  
+    ne.x = cell.x + aoi_size.x;
     ne.y = cell.y + aoi_size.y;
-    sw.x = MAX(0,sw.x);            
+    sw.x = MAX(0,sw.x);
     sw.y = MAX(0,sw.y);
-    ne.x = MIN(lodSize.x-1,ne.x);   
+    ne.x = MIN(lodSize.x-1,ne.x);
     ne.y = MIN(lodSize.y-1,ne.y);
 
     tileList.clear();
@@ -764,7 +764,7 @@ void trpgPageManager::Init(trpgr_Archive *inArch)
     int numLod;
     head->GetNumLods(numLod);
     head->GetVersion(majorVersion, minorVersion);
-    
+
     // Reset the terrain LOD paging classes.
     valid = true;
     pageInfo.resize(numLod);
@@ -798,7 +798,7 @@ void trpgPageManager::Init(trpgr_Archive *inArch, int maxLod)
 
     if(maxLod > numLod)
         maxLod = numLod;
-    
+
     // Reset the terrain LOD paging classes.
     valid = true;
     pageInfo.resize(maxLod);
@@ -921,7 +921,7 @@ void trpgPageManager::AckLoad(std::vector<TileLocationInfo> const& children)
             }
         }
     }
-  
+
     pageInfo[lastLod].AckLoad();
     lastLoad = None;
     lastTile = NULL;

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -96,7 +96,7 @@ class OSGWIDGET_EXPORT Window:
         // If you only want to display a portion of a Window (such as when it is embedded),
         // you will need to set the VisibilityMode to WM_PARTIAL. Otherwise, the entire
         // Window is visible by default. The final enum, VM_ENTIRE, says that no Scissoring
-        // should take place at all, and is useful in cases where you want to properly 
+        // should take place at all, and is useful in cases where you want to properly
         // scale or rotate Windows.
         enum VisibilityMode {
             VM_FULL,
@@ -211,7 +211,7 @@ class OSGWIDGET_EXPORT Window:
             return _wm;
         }
 
-        Window* getParent() { 
+        Window* getParent() {
             return _parent;
         }
 
@@ -416,7 +416,7 @@ class OSGWIDGET_EXPORT Window:
         }
 
         typedef point_type (Widget::*Getter)() const;
-        
+
     protected:
 
         typedef std::less<point_type>    Less;
@@ -493,7 +493,7 @@ class OSGWIDGET_EXPORT Window:
             // I WARNED YOU! If you try and understand what this does your head will
             // explode! But let me say a few things: in MSVC you can't add to an iterator
             // such that the add will cause it to increment past the end of the container.
-            // This appears to be safe in GCC, where it will just return the last 
+            // This appears to be safe in GCC, where it will just return the last
             // item therein, but causes an assertion error in other compilers. I'm not
             // sure if there is a cleaner remedy for this, so what we do for now is keep a
             // count variable called "c" that makes sure our iterator's opterator+()

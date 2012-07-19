@@ -55,17 +55,17 @@ OperationQueue::~OperationQueue()
 {
 }
 
-bool OperationQueue::empty() 
-{ 
+bool OperationQueue::empty()
+{
 
   OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
-  return _operations.empty(); 
+  return _operations.empty();
 }
 
 unsigned int OperationQueue::getNumOperationsInQueue()
 {
   OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
-  return static_cast<unsigned int>(_operations.size()); 
+  return static_cast<unsigned int>(_operations.size());
 }
 
 ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
@@ -76,15 +76,15 @@ ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
     }
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
-    
+
     if (_operations.empty()) return osg::ref_ptr<Operation>();
-    
+
     if (_currentOperationIterator == _operations.end())
     {
         // iterator at end of operations so reset to beginning.
         _currentOperationIterator = _operations.begin();
     }
-    
+
     ref_ptr<Operation> currentOperation = *_currentOperationIterator;
 
     if (!currentOperation->getKeep())
@@ -139,11 +139,11 @@ void OperationQueue::remove(Operation* operation)
         if ((*itr)==operation)
         {
             bool needToResetCurrentIterator = (_currentOperationIterator == itr);
-            
+
             itr = _operations.erase(itr);
-            
+
             if (needToResetCurrentIterator) _currentOperationIterator = itr;
-            
+
         }
         else ++itr;
     }
@@ -152,7 +152,7 @@ void OperationQueue::remove(Operation* operation)
 void OperationQueue::remove(const std::string& name)
 {
     OSG_INFO<<"Doing remove named operation"<<std::endl;
-    
+
     // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
@@ -160,12 +160,12 @@ void OperationQueue::remove(const std::string& name)
     for(Operations::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
-        if ((*itr)->getName()==name) 
+        if ((*itr)->getName()==name)
         {
             bool needToResetCurrentIterator = (_currentOperationIterator == itr);
-            
+
             itr = _operations.erase(itr);
-            
+
             if (needToResetCurrentIterator) _currentOperationIterator = itr;
         }
         else ++itr;
@@ -182,9 +182,9 @@ void OperationQueue::removeAllOperations()
     OSG_INFO<<"Doing remove all operations"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
-    
+
     _operations.clear();
-    
+
     // reset current operator.
     _currentOperationIterator = _operations.begin();
 
@@ -200,7 +200,7 @@ void OperationQueue::runOperations(Object* callingObject)
 
     // reset current operation iterator to beginning if at end.
     if (_currentOperationIterator==_operations.end()) _currentOperationIterator = _operations.begin();
-    
+
     for(;
         _currentOperationIterator != _operations.end();
         )
@@ -215,7 +215,7 @@ void OperationQueue::runOperations(Object* callingObject)
         {
             ++_currentOperationIterator;
         }
-                
+
         // OSG_INFO<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
         // call the graphics operation.
@@ -232,11 +232,11 @@ void OperationQueue::releaseOperationsBlock()
 {
     _operationsBlock->release();
 }
- 
+
  void OperationQueue::releaseAllOperations()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
-    
+
     for(Operations::iterator itr = _operations.begin();
         itr!=_operations.end();
         ++itr)
@@ -300,7 +300,7 @@ void OperationThread::setDone(bool done)
     if (done)
     {
         OSG_INFO<<"set done "<<this<<std::endl;
-        
+
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
             if (_currentOperation.valid())
@@ -321,7 +321,7 @@ int OperationThread::cancel()
     int result = 0;
     if( isRunning() )
     {
-    
+
         _done = true;
 
         OSG_INFO<<"   Doing cancel "<<this<<std::endl;
@@ -329,7 +329,7 @@ int OperationThread::cancel()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
 
-            if (_operationQueue.valid()) 
+            if (_operationQueue.valid())
             {
                  _operationQueue->releaseOperationsBlock();
                 //_operationQueue->releaseAllOperations();
@@ -337,7 +337,7 @@ int OperationThread::cancel()
 
             if (_currentOperation.valid()) _currentOperation->release();
         }
-        
+
         // then wait for the the thread to stop running.
         while(isRunning())
         {
@@ -346,7 +346,7 @@ int OperationThread::cancel()
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
 
-                if (_operationQueue.valid()) 
+                if (_operationQueue.valid())
                 {
                     _operationQueue->releaseOperationsBlock();
                     // _operationQueue->releaseAllOperations();
@@ -403,7 +403,7 @@ void OperationThread::run()
         // OSG_NOTICE<<"In thread loop "<<this<<std::endl;
         ref_ptr<Operation> operation;
         ref_ptr<OperationQueue> operationQueue;
-        
+
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
             operationQueue = _operationQueue;
@@ -425,7 +425,7 @@ void OperationThread::run()
             // call the graphics operation.
             (*operation)(_parent.get());
 
-            {            
+            {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
                 _currentOperation = 0;
             }
@@ -433,12 +433,12 @@ void OperationThread::run()
 
         if (firstTime)
         {
-            // do a yield to get round a peculiar thread hang when testCancel() is called 
+            // do a yield to get round a peculiar thread hang when testCancel() is called
             // in certain circumstances - of which there is no particular pattern.
             YieldCurrentThread();
             firstTime = false;
         }
-        
+
         // OSG_NOTICE<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);

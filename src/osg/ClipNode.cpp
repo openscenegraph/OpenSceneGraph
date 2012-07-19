@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/ClipNode>
@@ -73,7 +73,7 @@ void ClipNode::createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberB
     _stateset->setAssociatedModes(_planes.back().get(), _value);
 }
 
-// Add a ClipPlane to a ClipNode. Return true if plane is added, 
+// Add a ClipPlane to a ClipNode. Return true if plane is added,
 // return false if plane already exists in ClipNode, or clipplane is false.
 bool ClipNode::addClipPlane(ClipPlane* clipplane)
 {
@@ -93,7 +93,7 @@ bool ClipNode::addClipPlane(ClipPlane* clipplane)
     }
 }
 
-// Remove ClipPlane from a ClipNode. Return true if plane is removed, 
+// Remove ClipPlane from a ClipNode. Return true if plane is removed,
 // return false if plane does not exists in ClipNode.
 bool ClipNode::removeClipPlane(ClipPlane* clipplane)
 {
@@ -113,7 +113,7 @@ bool ClipNode::removeClipPlane(ClipPlane* clipplane)
     }
 }
 
-// Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
+// Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed,
 // return false if plane does not exists in ClipNode.
 bool ClipNode::removeClipPlane(unsigned int pos)
 {

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -43,7 +43,7 @@ QuicktimeLiveImageStream::QuicktimeLiveImageStream(std::string fileName) : Image
     // Initialise QT
     //    initialize_quicktime_qtml();
     //    enter_quicktime_movies();
-    // 
+    //
     load(fileName);
 }
 
@@ -73,7 +73,7 @@ void QuicktimeLiveImageStream::pause()
 {
    OSG_DEBUG<<"Sending pause"<<this<<std::endl;
 }
-/// stop playing 
+/// stop playing
 void QuicktimeLiveImageStream::quit(bool wiatForThreadToExit)
 {
    OSG_DEBUG<<"Sending quit"<<this<<std::endl;
@@ -160,7 +160,7 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
    std::string::size_type idx = fileName.find(':');
    if (idx == std::string::npos)
    {
-       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
+       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;
    }
    // Better c++ code is to use istrstream
    std::string deviceIDStr      = fileName.substr(0,idx);
@@ -190,7 +190,7 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
    // Start the engine Jack!
    // Callbacks
    createSequenceGrabberVideoBottlenecks();
-   
+
    ComponentResult result = noErr;
    result = SGPrepare( m_gSeqGrabber, TRUE, FALSE);
    if (result != noErr)
@@ -214,7 +214,7 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
            OSG_FATAL << "SGStartPreview : error" << std::endl;
        }
    }
- 
+
    _status = ImageStream::PLAYING;
    // Ticker
    start();
@@ -306,9 +306,9 @@ void QuicktimeLiveImageStream::createSequenceGrabberVideoChannel()
         print_video_component_capability(vdig);
 
         result = SGVideoDigitizerChanged( m_gVideoChannel);
-        result = SGGetSrcVideoBounds    ( m_gVideoChannel, &gActiveVideoRect);     
+        result = SGGetSrcVideoBounds    ( m_gVideoChannel, &gActiveVideoRect);
         result = SGSetChannelBounds     ( m_gVideoChannel, &gActiveVideoRect);
-        
+
         result = SGChangedSource (m_gSeqGrabber, m_gVideoChannel);
 
         Fixed frame_rate;
@@ -432,12 +432,12 @@ static ComponentResult GrabFrameCompleteProc(SGChannel sgChan, short nBufferNum,
 ComponentResult QuicktimeLiveImageStream::grabFrameCompleteProc(SGChannel sgChan, short nBufferNum, Boolean *pbDone, long lRefCon)
 {
    ComponentResult err = noErr;
-  
+
    // call the default grab-complete function
    err = SGGrabFrameComplete(sgChan,      // channel reference
                              nBufferNum,  // buffer identifier, provided for you
                              pbDone);     // pointer to a boolean, has the frame been completely captured? provided for you
-   
+
    static unsigned int fps_counter = 0;
    static osg::Timer_t start, finish;
 
@@ -457,7 +457,7 @@ ComponentResult QuicktimeLiveImageStream::grabFrameCompleteProc(SGChannel sgChan
             fps_counter = 0;
         }
    }
-  
+
    return err;
 }
 
@@ -491,7 +491,7 @@ void QuicktimeLiveImageStream::createAndRunWithVideoDigitizer(std::string fileNa
    std::string::size_type idx = fileName.find(':');
    if (idx == std::string::npos)
    {
-       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
+       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;
    }
    // Better c++ code is to use istrstream
    std::string deviceIDStr      = fileName.substr(0,idx);
@@ -562,7 +562,7 @@ void QuicktimeLiveImageStream::createVideoDigitizer()
                 destinationBounds.left   = 0;
                 destinationBounds.top    = 0;
                 destinationBounds.right  = m_videoRectWidth;
-                destinationBounds.bottom = m_videoRectHeight;                    
+                destinationBounds.bottom = m_videoRectHeight;
                 error = VDSetPlayThruDestination(m_vdig, m_pixmap, &destinationBounds, 0, 0);
                 //error = VDSetPlayThruGlobalRect(m_vdig, (GrafPtr)origPort, &destinationBounds);
                 if (error != noErr)
@@ -587,7 +587,7 @@ void QuicktimeLiveImageStream::run()
 
    //memset( data(), 255, 720*250*4);
 
-   while (!done) 
+   while (!done)
    {
        // Do some funky rotational memset
        // void * memset ( void * ptr, int value, size_t num );
@@ -604,7 +604,7 @@ void QuicktimeLiveImageStream::run()
        //OpenThreads::Thread::microSleep(250000); // 25fps (1,000,000 = 1 fps)
        //OpenThreads::Thread::microSleep(50000); // 200fps (1,000,000 = 1 fps)
        //OpenThreads::Thread::microSleep(25000); // 400fps (1,000,000 = 1 fps)
-       // Ridiculous 
+       // Ridiculous
        OpenThreads::Thread::microSleep(10000); // 1000fps (1,000,000 = 1 fps)
    }
 }

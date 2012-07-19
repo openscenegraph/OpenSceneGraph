@@ -69,7 +69,7 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                     {
                         if ( pointer.contains(_leftHandleNode.get()) )
                             _scaleCenter = _projector->getLineEnd()[0];
-                        else if ( pointer.contains( _rightHandleNode.get()) ) 
+                        else if ( pointer.contains( _rightHandleNode.get()) )
                             _scaleCenter = _projector->getLineStart()[0];
                     }
 
@@ -86,9 +86,9 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
@@ -109,7 +109,7 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                         referencePoint = _projector->getLineStart()[0];
                     else
                         referencePoint = _projector->getLineEnd()[0];
-                    
+
                     cmd->setStage(MotionCommand::MOVE);
                     cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
                     cmd->setScale(scale);
@@ -122,9 +122,9 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
@@ -169,7 +169,7 @@ void Scale1DDragger::setupDefaultGeometry()
 
         lineGeode->addDrawable(geometry);
     }
-    
+
     // Turn of lighting for line and set line width.
     lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     osg::LineWidth* linewidth = new osg::LineWidth();
@@ -186,7 +186,7 @@ void Scale1DDragger::setupDefaultGeometry()
         addChild(geode);
         setLeftHandleNode(*geode);
     }
-    
+
     // Create a right box.
     {
         osg::Geode* geode = new osg::Geode;

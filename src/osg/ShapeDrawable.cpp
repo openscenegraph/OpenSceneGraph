@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/ShapeDrawable>
@@ -29,7 +29,7 @@ const unsigned int MIN_NUM_SEGMENTS = 5;
 class DrawShapeVisitor : public ConstShapeVisitor
 {
     public:
-    
+
         DrawShapeVisitor(State& state,const TessellationHints* hints):
             _state(state),
             _hints(hints)
@@ -39,9 +39,9 @@ class DrawShapeVisitor : public ConstShapeVisitor
             {
                 OSG_NOTICE<<"Warning: TessellationHints ignored in present osg::ShapeDrawable implementation."<<std::endl;
             }
-#endif   
+#endif
         }
-    
+
         virtual void apply(const Sphere&);
         virtual void apply(const Box&);
         virtual void apply(const Cone&);
@@ -57,13 +57,13 @@ class DrawShapeVisitor : public ConstShapeVisitor
 
         State&                      _state;
         const TessellationHints*    _hints;
-        
+
     protected:
 
         DrawShapeVisitor& operator = (const DrawShapeVisitor&) { return *this; }
 
         enum SphereHalf { SphereTopHalf, SphereBottomHalf };
-    
+
         // helpers for apply( Cylinder | Sphere | Capsule )
         void drawCylinderBody(unsigned int numSegments, float radius, float height);
         void drawHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, SphereHalf which, float zOffset = 0.0f);
@@ -74,22 +74,22 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
 {
     const float angleDelta = 2.0f*osg::PI/(float)numSegments;
     const float texCoordDelta = 1.0f/(float)numSegments;
-    
+
     const float r = radius;
     const float h = height;
-    
+
     float basez = -h*0.5f;
     float topz = h*0.5f;
-    
+
     float angle = 0.0f;
     float texCoord = 0.0f;
-    
+
     bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
     bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
-    
+
     // The only difference between the font & back face loops is that the
     //  normals are inverted and the order of the vertex pairs is reversed.
-    //  The code is mostly duplicated in order to hoist the back/front face 
+    //  The code is mostly duplicated in order to hoist the back/front face
     //  test out of the loop for efficiency
 
     GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
@@ -104,26 +104,26 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
       {
           float c = cosf(angle);
           float s = sinf(angle);
-  
+
           gl.Normal3f(c,s,0.0f);
-  
+
           gl.TexCoord2f(texCoord,1.0f);
           gl.Vertex3f(c*r,s*r,topz);
-  
+
           gl.TexCoord2f(texCoord,0.0f);
           gl.Vertex3f(c*r,s*r,basez);
       }
-  
+
       // do last point by hand to ensure no round off errors.
       gl.Normal3f(1.0f,0.0f,0.0f);
-  
+
       gl.TexCoord2f(1.0f,1.0f);
       gl.Vertex3f(r,0.0f,topz);
-  
+
       gl.TexCoord2f(1.0f,0.0f);
       gl.Vertex3f(r,0.0f,basez);
     }
-    
+
     if (drawBackFace) {
       for(unsigned int bodyi=0;
           bodyi<numSegments;
@@ -131,22 +131,22 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
       {
           float c = cosf(angle);
           float s = sinf(angle);
-  
+
           gl.Normal3f(-c,-s,0.0f);
-  
+
           gl.TexCoord2f(texCoord,0.0f);
           gl.Vertex3f(c*r,s*r,basez);
 
           gl.TexCoord2f(texCoord,1.0f);
           gl.Vertex3f(c*r,s*r,topz);
       }
-  
+
       // do last point by hand to ensure no round off errors.
       gl.Normal3f(-1.0f,0.0f,0.0f);
-  
+
       gl.TexCoord2f(1.0f,0.0f);
       gl.Vertex3f(r,0.0f,basez);
-  
+
       gl.TexCoord2f(1.0f,1.0f);
       gl.Vertex3f(r,0.0f,topz);
     }
@@ -197,71 +197,71 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
 
             // The only difference between the font & back face loops is that the
             //  normals are inverted and the order of the vertex pairs is reversed.
-            //  The code is mostly duplicated in order to hoist the back/front face 
+            //  The code is mostly duplicated in order to hoist the back/front face
             //  test out of the loop for efficiency
-            
+
             if (drawFrontFace) {
               for(unsigned int topi=0; topi<numSegments;
                   ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
               {
-  
+
                   float c = cosf(angle);
                   float s = sinf(angle);
-  
+
                   gl.Normal3f(c*nRatioTop,s*nRatioTop,nzTop);
-  
+
                   gl.TexCoord2f(texCoord,vTop);
                   gl.Vertex3f(c*rTop,s*rTop,zTop+zOffset);
-  
+
                   gl.Normal3f(c*nRatioBase,s*nRatioBase,nzBase);
-  
+
                   gl.TexCoord2f(texCoord,vBase);
                   gl.Vertex3f(c*rBase,s*rBase,zBase+zOffset);
-  
+
               }
-  
+
               // do last point by hand to ensure no round off errors.
               gl.Normal3f(nRatioTop,0.0f,nzTop);
-  
+
               gl.TexCoord2f(1.0f,vTop);
               gl.Vertex3f(rTop,0.0f,zTop+zOffset);
-  
+
               gl.Normal3f(nRatioBase,0.0f,nzBase);
-  
+
               gl.TexCoord2f(1.0f,vBase);
               gl.Vertex3f(rBase,0.0f,zBase+zOffset);
             }
-            
+
           if (drawBackFace) {
               for(unsigned int topi=0; topi<numSegments;
                   ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
               {
-  
+
                   float c = cosf(angle);
                   float s = sinf(angle);
-  
+
                   gl.Normal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
-  
+
                   gl.TexCoord2f(texCoord,vBase);
                   gl.Vertex3f(c*rBase,s*rBase,zBase+zOffset);
-  
+
                   gl.Normal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
-  
+
                   gl.TexCoord2f(texCoord,vTop);
                   gl.Vertex3f(c*rTop,s*rTop,zTop+zOffset);
               }
-  
+
               // do last point by hand to ensure no round off errors.
               gl.Normal3f(-nRatioBase,0.0f,-nzBase);
-  
+
               gl.TexCoord2f(1.0f,vBase);
               gl.Vertex3f(rBase,0.0f,zBase+zOffset);
 
               gl.Normal3f(-nRatioTop,0.0f,-nzTop);
-  
+
               gl.TexCoord2f(1.0f,vTop);
               gl.Vertex3f(rTop,0.0f,zTop+zOffset);
-  
+
           }
 
         gl.End();
@@ -724,7 +724,7 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 
 
     // cylinder body
-    if (createBody) 
+    if (createBody)
         drawCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight());
 
     float angleDelta = 2.0f*osg::PI/(float)numSegments;
@@ -830,15 +830,15 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
 
 
     // capsule cylindrical body
-    if (createBody) 
+    if (createBody)
         drawCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight());
 
     // capsule top cap
-    if (createTop) 
+    if (createTop)
         drawHalfSphere(numSegments, numRows, capsule.getRadius(), SphereTopHalf, capsule.getHeight()/2.0f);
 
     // capsule bottom cap
-    if (createBottom) 
+    if (createBottom)
         drawHalfSphere(numSegments, numRows, capsule.getRadius(), SphereBottomHalf, -capsule.getHeight()/2.0f);
 
     gl.PopMatrix();
@@ -855,7 +855,7 @@ void DrawShapeVisitor::apply(const TriangleMesh& mesh)
 
     const Vec3Array* vertices = mesh.getVertices();
     const IndexArray* indices = mesh.getIndices();
-    
+
      if (vertices && indices)
      {
         gl.Begin(GL_TRIANGLES);
@@ -1060,7 +1060,7 @@ void DrawShapeVisitor::apply(const CompositeShape& group)
 class ComputeBoundShapeVisitor : public ConstShapeVisitor
 {
     public:
-    
+
         ComputeBoundShapeVisitor(BoundingBox& bb):_bb(bb) {}
 
         virtual void apply(const Sphere&);
@@ -1236,7 +1236,7 @@ void ComputeBoundShapeVisitor::apply(const TriangleMesh& mesh)
 {
     const Vec3Array* vertices = mesh.getVertices();
     const IndexArray* indices = mesh.getIndices();
-    
+
     if (vertices && indices)
     {
         for(unsigned int i=0;i<indices->getNumElements();++i)
@@ -1327,7 +1327,7 @@ void ComputeBoundShapeVisitor::apply(const CompositeShape& group)
 class PrimitiveShapeVisitor : public ConstShapeVisitor
 {
     public:
-    
+
         PrimitiveShapeVisitor(PrimitiveFunctor& functor,const TessellationHints* hints):
             _functor(functor),
             _hints(hints) {}
@@ -1362,15 +1362,15 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
 void PrimitiveShapeVisitor::createCylinderBody(unsigned int numSegments, float radius, float height, const osg::Matrix& matrix)
 {
     const float angleDelta = 2.0f*osg::PI/(float)numSegments;
-    
+
     const float r = radius;
     const float h = height;
-    
+
     float basez = -h*0.5f;
     float topz = h*0.5f;
-    
+
     float angle = 0.0f;
-    
+
     _functor.begin(GL_QUAD_STRIP);
 
         for(unsigned int bodyi=0;
@@ -1387,7 +1387,7 @@ void PrimitiveShapeVisitor::createCylinderBody(unsigned int numSegments, float r
         // do last point by hand to ensure no round off errors.
         _functor.vertex(osg::Vec3(r,0.0f,topz) * matrix);
         _functor.vertex(osg::Vec3(r,0.0f,basez) * matrix);
-    
+
     _functor.end();
 }
 
@@ -1433,20 +1433,20 @@ void PrimitiveShapeVisitor::createHalfSphere(unsigned int numSegments, unsigned 
                 _functor.vertex(osg::Vec3(c*rBase,s*rBase,zBase+zOffset) * matrix);
 
             }
-  
+
             // do last point by hand to ensure no round off errors.
             _functor.vertex(osg::Vec3(rTop,0.0f,zTop+zOffset) * matrix);
-            _functor.vertex(osg::Vec3(rBase,0.0f,zBase+zOffset) * matrix);            
+            _functor.vertex(osg::Vec3(rBase,0.0f,zBase+zOffset) * matrix);
 
         _functor.end();
-        
-        
+
+
         lBase=lTop;
         rBase=rTop;
         zBase=zTop;
         vBase=vTop;
     }
-        
+
 }
 
 
@@ -1558,7 +1558,7 @@ void PrimitiveShapeVisitor::apply(const Box& box)
     {
         Matrix matrix = box.computeRotationMatrix();
         matrix.setTrans(box.getCenter());
-        
+
         base_1 = base_1*matrix;
         base_2 = base_2*matrix;
         base_3 = base_3*matrix;
@@ -1843,7 +1843,7 @@ void PrimitiveShapeVisitor::apply(const TriangleMesh& mesh)
 {
     const Vec3Array* vertices = mesh.getVertices();
     const IndexArray* indices = mesh.getIndices();
-    
+
      if (vertices && indices)
      {
         _functor.begin(GL_TRIANGLES);
@@ -1869,7 +1869,7 @@ void PrimitiveShapeVisitor::apply(const ConvexHull& hull)
 void PrimitiveShapeVisitor::apply(const HeightField& field)
 {
     if (field.getNumColumns()==0 || field.getNumRows()==0) return;
-    
+
     Matrix matrix = field.computeRotationMatrix();
     matrix.setTrans(field.getOrigin());
 
@@ -1947,9 +1947,9 @@ void ShapeDrawable::setColor(const Vec4& color)
 
 void ShapeDrawable::setTessellationHints(TessellationHints* hints)
 {
-    if (_tessellationHints!=hints) 
+    if (_tessellationHints!=hints)
     {
-        _tessellationHints = hints; 
+        _tessellationHints = hints;
         dirtyDisplayList();
     }
 }
@@ -1962,9 +1962,9 @@ void ShapeDrawable::drawImplementation(RenderInfo& renderInfo) const
     if (_shape.valid())
     {
         gl.Color4fv(_color.ptr());
-    
+
         DrawShapeVisitor dsv(state,_tessellationHints.get());
-        
+
         _shape->accept(dsv);
     }
 }

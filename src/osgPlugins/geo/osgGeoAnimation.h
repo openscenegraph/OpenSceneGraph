@@ -6,7 +6,7 @@
 // These functions are demonstrated in geodemo.cpp.
 
 // Consider a model as being a class (or a subroutine).  The class has a 'draw' method
-// supplied by OSG, and the model can be animated (parts of the model 
+// supplied by OSG, and the model can be animated (parts of the model
 //	rotate, move, change colour, become invisible etc.).
 //
 // The model developer attaches 'behaviours' to parts of the model (using the Geo graphical editor)
@@ -14,7 +14,7 @@
 //	Internal, usually time dependent variables which cannot be modified by the developer.
 //	User variables - may be a function of other variables, defined in the editor.
 //	External variables - the user written callback function extvarupdate sets these values on each frame of simulation.
-//	User & external variables may be defined as a mathematical or logical function of 
+//	User & external variables may be defined as a mathematical or logical function of
 // all the variables (external variables, internal variables & user variables).
 
 // as a design rule, you should not normally attach a function to uvarupdate
@@ -32,12 +32,12 @@ class geoHeader: public osg::PositionAttitudeTransform {
 	// adds position attitude orientation for not Z up models,
 	// plus animation variables.
 public:
-	geoHeader() { 
+	geoHeader() {
 		uvarupdate=NULL; extvarupdate=NULL;
 	};
 	geoHeader(const geoHeader &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) :
 		osg::PositionAttitudeTransform(geo,copyop)
-	{ 
+	{
 	//	const geoHeaderGeo *ghg=static_cast<const geoHeaderGeo *> (&geo);
 	}
 

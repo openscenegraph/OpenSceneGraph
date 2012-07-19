@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -28,17 +28,17 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 {
 
     public:
-    
-    
+
+
         CullStack();
         CullStack(const CullStack& cs);
-        
+
         ~CullStack();
-    
+
         typedef std::vector<ShadowVolumeOccluder>   OccluderList;
 
         void reset();
-        
+
         void pushCullingSet();
         void popCullingSet();
 
@@ -63,7 +63,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             return getCurrentCullingSet().pixelSize(v,radius);
         }
-        
+
         /** Compute the pixel size of the bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const
         {
@@ -75,7 +75,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             return getCurrentCullingSet().clampedPixelSize(v,radius);
         }
-        
+
         /** Compute the pixel size of the bounding sphere. fabs()ed to always be positive. */
         float clampedPixelSize(const BoundingSphere& bs) const
         {
@@ -101,12 +101,12 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             return bb.valid() && getCurrentCullingSet().isCulled(bb);
         }
-        
+
         inline bool isCulled(const BoundingSphere& bs)
         {
             return getCurrentCullingSet().isCulled(bs);
         }
-        
+
         inline bool isCulled(const osg::Node& node)
         {
             return node.isCullingActive() && getCurrentCullingSet().isCulled(node.getBound());
@@ -116,30 +116,30 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             getCurrentCullingSet().pushCurrentMask();
         }
-        
+
         inline void popCurrentMask()
         {
             getCurrentCullingSet().popCurrentMask();
         }
-        
-        
+
+
         typedef std::vector< CullingSet > CullingStack;
 
         inline CullingStack& getClipSpaceCullingStack() { return _clipspaceCullingStack; }
-        
+
         inline CullingStack& getProjectionCullingStack() { return _projectionCullingStack; }
-        
+
         inline CullingStack& getModelViewCullingStack() { return _modelviewCullingStack; }
-        
+
         inline CullingSet& getCurrentCullingSet() { return *_back_modelviewCullingStack; }
         inline const CullingSet& getCurrentCullingSet() const { return *_back_modelviewCullingStack; }
-        
+
         inline osg::Viewport* getViewport();
         inline osg::RefMatrix* getModelViewMatrix();
         inline osg::RefMatrix* getProjectionMatrix();
         inline osg::Matrix getWindowMatrix();
         inline const osg::RefMatrix* getMVPW();
-        
+
         inline const osg::Vec3& getReferenceViewPoint() const { return _referenceViewPoints.back(); }
         inline void pushReferenceViewPoint(const osg::Vec3& viewPoint) { _referenceViewPoints.push_back(viewPoint); }
         inline void popReferenceViewPoint() { _referenceViewPoints.pop_back(); }
@@ -159,10 +159,10 @@ class OSG_EXPORT CullStack : public osg::CullSettings
             const osg::Matrix& matrix = *_modelviewStack.back();
             return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
         }
-        
+
 
     protected:
-    
+
         // base set of shadow volume occluder to use in culling.
         ShadowVolumeOccluderList                                    _occluderList;
 
@@ -175,7 +175,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
         typedef fast_back_stack<ref_ptr<Viewport> >                 ViewportStack;
         ViewportStack                                               _viewportStack;
-        
+
         typedef fast_back_stack<Vec3>                               EyePointStack;
         EyePointStack                                               _referenceViewPoints;
         EyePointStack                                               _eyePointStack;
@@ -195,14 +195,14 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         unsigned int                                                _bbCornerFar;
 
         ref_ptr<osg::RefMatrix>                                     _identity;
-        
+
         typedef std::vector< osg::ref_ptr<osg::RefMatrix> > MatrixList;
         MatrixList _reuseMatrixList;
         unsigned int _currentReuseMatrixIndex;
-        
+
         inline osg::RefMatrix* createOrReuseMatrix(const osg::Matrix& value);
 
-        
+
 };
 
 inline osg::Viewport* CullStack::getViewport()
@@ -275,7 +275,7 @@ inline const osg::RefMatrix* CullStack::getMVPW()
 inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
 {
     // skip of any already reused matrix.
-    while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
+    while (_currentReuseMatrixIndex<_reuseMatrixList.size() &&
            _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
     {
         ++_currentReuseMatrixIndex;
@@ -299,4 +299,4 @@ inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
 
 }    // end of namespace
 
-#endif 
+#endif

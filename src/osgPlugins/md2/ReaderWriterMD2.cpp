@@ -67,7 +67,7 @@ ReaderWriterMD2::readNode (const std::string& file, const osgDB::ReaderWriter::O
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+    // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
@@ -172,7 +172,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         close (file_fd);
         return NULL;
     }
-    
+
     if (read(file_fd, mapbase, st.st_size)==0)
     {
         close (file_fd);
@@ -416,7 +416,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     base_switch->setSingleChildOn(0);
 
     result = base_switch;
-    
+
 #if 0
     munamp (mapbase);
 #else

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -30,17 +30,17 @@ class Terrain;
 class OSGTERRAIN_EXPORT TileID
 {
     public:
-    
+
         TileID();
 
         TileID(int in_level, int in_x, int in_y);
-            
-        bool operator == (const TileID& rhs) const        
+
+        bool operator == (const TileID& rhs) const
         {
             return (level==rhs.level) && (x==rhs.x) && (y==rhs.y);
         }
 
-        bool operator != (const TileID& rhs) const        
+        bool operator != (const TileID& rhs) const
         {
             return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y);
         }
@@ -53,7 +53,7 @@ class OSGTERRAIN_EXPORT TileID
             if (x>rhs.x) return false;
             return y<rhs.y;
         }
-        
+
         bool valid() const { return level>=0; }
 
         int level;
@@ -89,22 +89,22 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Get the const Terrain that this Terrain tile is a member of.*/
         const Terrain* getTerrain() const { return _terrain; }
 
-        
+
         /** Set the TileID (layer, x,y) of the TerrainTile.
-          * The TileID is used so it can be located by its neighbours 
+          * The TileID is used so it can be located by its neighbours
           * via the enclosing Terrain node that manages a map of TileID to TerraiTiles.*/
         void setTileID(const TileID& tileID);
-        
+
         /** Get the TileID (layer, x,y) of the TerrainTile.*/
         const TileID& getTileID() const { return _tileID; }
-        
+
 
         /** Set the TerrainTechnique*/
         void setTerrainTechnique(TerrainTechnique* terrainTechnique);
 
         /** Get the TerrainTechnique*/
         TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }
-        
+
         /** Get the const TerrainTechnique*/
         const TerrainTechnique* getTerrainTechnique() const { return _terrainTechnique.get(); }
 
@@ -140,8 +140,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Get the number of colour layers.*/
         unsigned int getNumColorLayers() const { return _colorLayers.size(); }
-        
-        
+
+
         /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
         void setRequiresNormals(bool flag) { _requiresNormals = flag; }
 
@@ -259,7 +259,7 @@ class OSGTERRAIN_EXPORT WhiteListTileLoadedCallback : public TerrainTile::TileLo
         WhiteListTileLoadedCallback();
 
         void allow(const std::string& setname) { _setWhiteList.insert(setname); }
-        
+
         void setMinimumNumOfLayers(unsigned int numLayers) { _minumumNumberOfLayers = numLayers; }
         unsigned int getMinimumNumOfLayers() const { return _minumumNumberOfLayers; }
 
@@ -275,11 +275,11 @@ class OSGTERRAIN_EXPORT WhiteListTileLoadedCallback : public TerrainTile::TileLo
         virtual bool deferExternalLayerLoading() const;
 
         virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const;
-    
+
     protected:
 
         virtual ~WhiteListTileLoadedCallback();
-    
+
         typedef std::set<std::string> SetWhiteList;
         SetWhiteList    _setWhiteList;
         unsigned int    _minumumNumberOfLayers;

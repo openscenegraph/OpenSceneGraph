@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,18 +23,18 @@ namespace osg {
 class OSG_EXPORT PagedLOD : public LOD
 {
     public :
-    
+
         PagedLOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PagedLOD(const PagedLOD&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, PagedLOD);
-        
-        
+
+
 
         virtual void traverse(NodeVisitor& nv);
-        
+
         virtual bool addChild(Node *child);
 
         virtual bool addChild(Node *child, float min, float max);
@@ -60,7 +60,7 @@ class OSG_EXPORT PagedLOD : public LOD
         /** Get the database path used to prepend to children's filenames.*/
         inline const std::string& getDatabasePath() const { return _databasePath; }
 
-        
+
         struct OSG_EXPORT PerRangeData
         {
             PerRangeData();
@@ -79,7 +79,7 @@ class OSG_EXPORT PagedLOD : public LOD
         };
 
         typedef std::vector<PerRangeData> PerRangeDataList;
-        
+
         void setFileName(unsigned int childNo, const std::string& filename) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._filename=filename; }
         const std::string& getFileName(unsigned int childNo) const { return _perRangeDataList[childNo]._filename; }
         unsigned int getNumFileNames() const { return _perRangeDataList.size(); }
@@ -113,18 +113,18 @@ class OSG_EXPORT PagedLOD : public LOD
         unsigned int getNumFrameNumbers() const { return _perRangeDataList.size(); }
 
 
-        /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests 
+        /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests
           * being carried on behalf of the DatabasePager.
-          * Note, in normal OSG usage you should not set this value yourself, as this will be managed by 
+          * Note, in normal OSG usage you should not set this value yourself, as this will be managed by
           * the osgDB::DatabasePager.*/
         osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) { return _perRangeDataList[childNo]._databaseRequest; }
-        
-        /** Return the const DatabaseRequest object.*/ 
+
+        /** Return the const DatabaseRequest object.*/
         const osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) const { return _perRangeDataList[childNo]._databaseRequest; }
 
 
         /** Set the frame number of the last time that this PageLOD node was traversed.
-          * Note, this frame number is automatically set by the traverse() method for all traversals (update, cull etc.). 
+          * Note, this frame number is automatically set by the traverse() method for all traversals (update, cull etc.).
           */
         inline void setFrameNumberOfLastTraversal(unsigned int frameNumber) { _frameNumberOfLastTraversal=frameNumber; }
 
@@ -150,11 +150,11 @@ class OSG_EXPORT PagedLOD : public LOD
           * this allows the children to be deleted later at the caller's discretion.
           * Return true if children are removed, false otherwise. */
         virtual bool removeExpiredChildren(double expiryTime, unsigned int expiryFrame, NodeList& removedChildren);
-        
+
     protected :
-    
+
         virtual ~PagedLOD();
-        
+
         void expandPerRangeDataTo(unsigned int pos);
 
         ref_ptr<Referenced> _databaseOptions;

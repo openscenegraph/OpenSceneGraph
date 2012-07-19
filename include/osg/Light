@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -58,7 +58,7 @@ class OSG_EXPORT Light : public StateAttribute
             _quadratic_attenuation(light._quadratic_attenuation),
             _spot_exponent(light._spot_exponent),
             _spot_cutoff(light._spot_cutoff) {}
-        
+
         virtual osg::Object* cloneType() const { return new Light(_lightnum); }
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Light(*this,copyop); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Light *>(obj)!=NULL; }
@@ -96,12 +96,12 @@ class OSG_EXPORT Light : public StateAttribute
             usage.usesMode(GL_LIGHT0+_lightnum);
             return true;
         }
-        
-        
+
+
 
         /** Set which OpenGL light to operate on. */
         void setLightNum(int num);
-        
+
         /** Get which OpenGL light this osg::Light operates on. */
         int getLightNum() const { return _lightnum; }
 
@@ -123,16 +123,16 @@ class OSG_EXPORT Light : public StateAttribute
         /** Get the specular component of the light. */
         inline const Vec4& getSpecular() const { return _specular; }
 
-        /** Set the position of the light. */    
+        /** Set the position of the light. */
         inline void setPosition( const Vec4& position ) { _position = position; }
 
-        /** Get the position of the light. */    
+        /** Get the position of the light. */
         inline const Vec4& getPosition() const { return _position; }
 
-        /** Set the direction of the light. */    
+        /** Set the direction of the light. */
         inline void setDirection( const Vec3& direction ) { _direction = direction; }
 
-        /** Get the direction of the light. */    
+        /** Get the direction of the light. */
         inline const Vec3& getDirection() const { return _direction; }
 
         /** Set the constant attenuation of the light. */
@@ -174,7 +174,7 @@ class OSG_EXPORT Light : public StateAttribute
         virtual void apply(State& state) const;
 
     protected :
-    
+
         virtual ~Light();
 
         /** Initialize the light's settings with some decent defaults. */

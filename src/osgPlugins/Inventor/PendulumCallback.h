@@ -9,13 +9,13 @@ class PendulumCallback : public osg::NodeCallback
 {
     public:
 
-        PendulumCallback(const osg::Vec3& axis, float startAngle, 
+        PendulumCallback(const osg::Vec3& axis, float startAngle,
                          float endAngle, float frequency);
 
         virtual void operator() (osg::Node* node, osg::NodeVisitor* nv);
-                
+
     protected:
-    
+
         float _startAngle;
         float _endAngle;
         float _frequency;

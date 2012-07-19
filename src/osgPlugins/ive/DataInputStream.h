@@ -15,7 +15,7 @@
 #include <osg/Quat>
 #include <osg/Array>
 #include <osg/Matrix>
-#include <osg/Geometry>                       
+#include <osg/Geometry>
 #include <osg/Image>
 #include <osg/StateSet>
 #include <osg/Uniform>
@@ -27,7 +27,7 @@
 #include <osgDB/ReaderWriter>
 
 #include "IveVersion.h"
-#include "DataTypeSize.h"    
+#include "DataTypeSize.h"
 #include "Exception.h"
 
 
@@ -56,7 +56,7 @@ public:
     double readDouble();
     std::string readString();
     void readCharArray(char* data, int size);
-        
+
     osg::Vec2 readVec2();
     osg::Vec3 readVec3();
     osg::Vec4 readVec4();
@@ -88,7 +88,7 @@ public:
     osg::Vec4sArray* readVec4sArray();
     osg::Vec2dArray* readVec2dArray();
     osg::Vec3dArray* readVec3dArray();
-    osg::Vec4dArray* readVec4dArray();    
+    osg::Vec4dArray* readVec4dArray();
 
     osg::Image* readImage(std::string s);
     osg::Image* readImage(IncludeImageMode mode);
@@ -140,13 +140,13 @@ public:
     void throwException(const std::string& message) { _exception = new Exception(message); }
     void throwException(Exception* exception) { _exception = exception; }
     const Exception* getException() const { return _exception.get(); }
-    
+
 private:
 
 
     int                 _version;
     bool                _peeking;
-    int                 _peekValue; 
+    int                 _peekValue;
     ImageMap            _imageMap;
     StateSetMap         _statesetMap;
     StateAttributeMap   _stateAttributeMap;
@@ -162,9 +162,9 @@ private:
     VolumePropertyMap   _volumePropertyMap;
 
     bool _loadExternalReferenceFiles;
-        
+
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
-    
+
     osg::ref_ptr<Exception> _exception;
 };
 

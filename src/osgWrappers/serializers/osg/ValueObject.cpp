@@ -16,7 +16,7 @@
             SERIALIZER_TYPE( Value, DEFAULT ); \
         } \
     } \
-    
+
 
 WRAPVALUEOBJECT( BoolValueObject, "osg::Object osg::BoolValueObject", ADD_REF_BOOL_SERIALIZER, 0)
 WRAPVALUEOBJECT( CharValueObject, "osg::Object osg::CharValueObject", ADD_REF_CHAR_SERIALIZER, 0)

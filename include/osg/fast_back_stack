@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,12 +25,12 @@ namespace osg {
   * and back() methods so is not as general purpose as stl stack implementation.
   * The focus of the fast_back_stack is purely to maximize the speed at which the
   * back can be accessed.*/
-  
+
 template<class T>
 class fast_back_stack
 {
     public:
-    
+
         inline fast_back_stack():_value(),_stack(),_size(0) {}
 
         inline fast_back_stack(const fast_back_stack& fbs):_value(fbs._value),_stack(fbs._stack),_size(fbs._size) {}
@@ -63,7 +63,7 @@ class fast_back_stack
             }
             ++_size;
         }
-        
+
         inline void push_back(const T& value)
         {
             if (_size>0)
@@ -73,7 +73,7 @@ class fast_back_stack
             _value = value;
             ++_size;
         }
-        
+
         inline void pop_back()
         {
             if (_size>0)
@@ -86,7 +86,7 @@ class fast_back_stack
                 --_size;
             } // else error condition.
         }
-        
+
         T              _value;
         std::vector<T> _stack;
         unsigned int   _size;

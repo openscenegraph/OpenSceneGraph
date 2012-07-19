@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
@@ -62,12 +62,12 @@ int Texture1D::compare(const StateAttribute& sa) const
             }
             else
             {
-                return 1; // valid lhs._image is greater than null. 
+                return 1; // valid lhs._image is greater than null.
             }
         }
-        else if (rhs._image.valid()) 
+        else if (rhs._image.valid())
         {
-            return -1; // valid rhs._image is greater than null. 
+            return -1; // valid rhs._image is greater than null.
         }
     }
 
@@ -107,7 +107,7 @@ void Texture1D::setImage(Image* image)
 
     _image = image;
     _modifiedCount.setAllElementsTo(0);
-    
+
     if (_image.valid() && _image->requiresUpdateCall())
     {
         setUpdateCallback(new Image::UpdateCallback());
@@ -119,7 +119,7 @@ void Texture1D::setImage(Image* image)
 void Texture1D::apply(State& state) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
@@ -171,7 +171,7 @@ void Texture1D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
+        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID, GL_TEXTURE_1D);
 
         textureObject->bind();
@@ -192,7 +192,7 @@ void Texture1D::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
 
-        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
+        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         textureObject = generateTextureObject(this, contextID,GL_TEXTURE_1D);
 
         textureObject->bind();
@@ -205,22 +205,22 @@ void Texture1D::apply(State& state) const
 
         // update the modified count to show that it is upto date.
         getModifiedCount(contextID) = _image->getModifiedCount();
-    
+
         _textureObjectBuffer[contextID] = textureObject;
-    
+
         // unref image data?
         if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)
         {
             Texture1D* non_const_this = const_cast<Texture1D*>(this);
             non_const_this->_image = NULL;
         }
-        
+
     }
     else if ( (_textureWidth!=0) && (_internalFormat!=0) )
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 this,contextID,GL_TEXTURE_1D,_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_1D,state);
@@ -230,8 +230,8 @@ void Texture1D::apply(State& state) const
                      _textureWidth, _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                     0);                
-                     
+                     0);
+
         if (_readPBuffer.valid())
         {
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
@@ -255,7 +255,7 @@ void Texture1D::apply(State& state) const
 
 void Texture1D::computeInternalFormat() const
 {
-    if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    if (_image.valid()) computeInternalFormatWithImage(*_image);
     else computeInternalFormatType();
 }
 
@@ -266,7 +266,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     if (!image || !image->data())
         return;
 
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
@@ -277,7 +277,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
     // select the internalFormat required for the texture.
     bool compressed = isCompressedInternalFormat(_internalFormat);
-    
+
     //Rescale if resize hint is set or NPOT not supported or dimension exceeds max size
     if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported(_min_filter) || inwidth > extensions->maxTextureSize() )
     {
@@ -288,7 +288,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 
-    static MyCompressedTexImage1DArbProc glCompressedTexImage1D_ptr = 
+    static MyCompressedTexImage1DArbProc glCompressedTexImage1D_ptr =
         convertPointerType<MyCompressedTexImage1DArbProc, void*>(getGLExtensionFuncPtr("glCompressedTexImage1DARB"));
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
@@ -306,12 +306,12 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
         else if(glCompressedTexImage1D_ptr)
         {
             numMipmapLevels = 1;
-            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 );
             GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
-            glCompressedTexImage1D_ptr(target, 0, _internalFormat, 
-                  image->s(), _borderWidth, 
-                  size, 
-                  image->data());                
+            glCompressedTexImage1D_ptr(target, 0, _internalFormat,
+                  image->s(), _borderWidth,
+                  size,
+                  image->data());
 
         }
 
@@ -351,14 +351,14 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
             }
             else if(glCompressedTexImage1D_ptr)
             {
-                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-                GLint size = 0; 
+                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 );
+                GLint size = 0;
                 for( GLsizei k = 0 ; k < numMipmapLevels  && width ;k++)
                 {
 
                     size = ((width+3)/4)*blockSize;
-                    glCompressedTexImage1D_ptr(target, k, _internalFormat, 
-                        width,  _borderWidth, size, image->getMipmapData(k));                
+                    glCompressedTexImage1D_ptr(target, k, _internalFormat,
+                        width,  _borderWidth, size, image->getMipmapData(k));
 
                     width >>= 1;
                 }
@@ -393,16 +393,16 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
             return;
         }
         // the relevent texture object is not of the right size so
-        // needs to been deleted    
-        // remove previously bound textures. 
+        // needs to been deleted
+        // remove previously bound textures.
         dirtyTextureObject();
         // note, dirtyTextureObject() dirties all the texture objects for
         // this texture, is this right?  Perhaps we should dirty just the
         // one for this context.  Note sure yet will leave till later.
         // RO July 2001.
     }
-    
-    
+
+
     // remove any previously assigned images as these are nolonger valid.
     _image = NULL;
 
@@ -420,7 +420,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 
     _textureWidth = width;
     _numMipmapLevels = 1;
-    
+
     textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
 
     // inform state that this texture is the current one bound.
@@ -469,7 +469,7 @@ void Texture1D::allocateMipmap(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject && _textureWidth != 0)
     {
         // bind texture
@@ -481,7 +481,7 @@ void Texture1D::allocateMipmap(State& state) const
 
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;
-        
+
         for( GLsizei k = 1; k < numMipmapLevels  && width; k++)
         {
             if (width == 0)
@@ -494,9 +494,9 @@ void Texture1D::allocateMipmap(State& state) const
 
             width >>= 1;
         }
-                
+
         // inform state that this texture is the current one bound.
-        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
     }
 #else
     OSG_NOTICE<<"Warning: Texture1D::allocateMipmap(..) not supported."<<std::endl;

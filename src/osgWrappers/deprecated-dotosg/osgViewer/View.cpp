@@ -25,7 +25,7 @@ REGISTER_DOTOSGWRAPPER(View_Proxy)
 static bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keyword)
 {
     bool iteratorAdvanced = false;
-    
+
     if (fr[0].matchWord(keyword) && fr[1].isOpenBracket())
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -51,8 +51,8 @@ static bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keywor
             else fr.advanceOverCurrentFieldOrBlock();
         }
         iteratorAdvanced = true;
-    }        
-        
+    }
+
     return iteratorAdvanced;
 }
 
@@ -93,16 +93,16 @@ osg::Image* readIntensityImage(osgDB::Input& fr, bool& itrAdvanced)
             }
         }
         ++fr;
-        
+
         itrAdvanced = true;
 
         if (!intensityMap.empty())
         {
             unsigned int numPixels = 256;
-        
+
             osg::Image* image = new osg::Image;
             image->allocateImage(1,numPixels,1,GL_LUMINANCE,GL_FLOAT);
-        
+
             float intensityMultiplier = 0.01f;
             float* ptr = reinterpret_cast<float*>(image->data());
             for(unsigned int i=0; i<numPixels; ++i)
@@ -131,15 +131,15 @@ osg::Image* readIntensityImage(osgDB::Input& fr, bool& itrAdvanced)
                     {
                         intensity = above_itr->second * intensityMultiplier;
                     }
-                    
+
                 }
-                
+
                 *ptr++ = intensity;
             }
-            
+
             return image;
         }
-        
+
     }
     return 0;
 }
@@ -157,7 +157,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
         double collar = 0.45;
         unsigned int screenNum = 0;
         unsigned int intensityFormat = 8;
-        osg::Matrix matrix; 
+        osg::Matrix matrix;
         std::string filename;
         osg::ref_ptr<osg::Image> intensityMap;
         int entry = fr[0].getNoNestedBrackets();
@@ -174,15 +174,15 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             if (fr.matchSequence("intensityMap {")) intensityMap = readIntensityImage(fr,local_itrAdvanced);
             if (fr.read("intensityFormat",intensityFormat)) local_itrAdvanced = true;
             if (readMatrix(matrix,fr,"projectorMatrix")) local_itrAdvanced = true;
-            
+
             if (!local_itrAdvanced) ++fr;
         }
-        
+
         // skip trailing '}'
         ++fr;
-        
+
         iteratorAdvanced = true;
-        
+
         if (!filename.empty())
         {
             intensityMap = osgDB::readRefImageFile(filename);
@@ -205,24 +205,24 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
     int width = 128;
     int height = 1024;
     unsigned int screenNum = 0;
-    
+
     if (fr.read("setUpViewOnSingleScreen",screenNum))
     {
         view.setUpViewOnSingleScreen(screenNum);
         iteratorAdvanced = true;
     }
-    
+
     if (fr.read("setUpViewAcrossAllScreens"))
     {
         view.setUpViewAcrossAllScreens();
         iteratorAdvanced = true;
     }
-    
+
     if (fr.read("setUpViewInWindow",x,y,width,height,screenNum))
     {
         view.setUpViewInWindow(x, y, width, height, screenNum);
     }
-    
+
     if (fr.read("setUpViewInWindow",x,y,width,height))
     {
         view.setUpViewInWindow(x, y, width, height);
@@ -235,7 +235,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
         view.setCamera(static_cast<osg::Camera*>(readObject.get()));
         iteratorAdvanced = true;
     }
-    
+
     if (fr.matchSequence("Slaves {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -248,14 +248,14 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             if (readObject.valid()) view.addSlave(static_cast<osg::Camera*>(readObject.get()));
             else ++fr;
         }
-        
+
         // skip trailing '}'
         ++fr;
-        
+
         iteratorAdvanced = true;
 
     }
-    
+
     return iteratorAdvanced;
 }
 
@@ -269,12 +269,12 @@ bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     {
         fw.writeObject(*view.getCamera());
     }
-    
+
     if (view.getNumSlaves() != 0)
     {
         fw.indent()<<"Slaves {"<<std::endl;
         fw.moveIn();
-    
+
         for(unsigned int i=0; i<view.getNumSlaves(); ++i)
         {
             const osg::Camera* camera = view.getSlave(i)._camera.get();
@@ -283,10 +283,10 @@ bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
                 fw.writeObject(*camera);
             }
         }
-        
+
         fw.moveOut();
         fw.indent()<<"}"<<std::endl;
     }
-    
+
     return true;
 }

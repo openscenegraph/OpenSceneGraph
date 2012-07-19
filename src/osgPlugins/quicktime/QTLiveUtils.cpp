@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -79,7 +79,7 @@ void terminite_quicktime_qtml()
 #ifndef __APPLE__
     TerminateQTML();
 #endif
-    OSG_NOTICE << "QT QTML: Closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT QTML: Closed successfully"  << std::endl;
 }
 
 void enter_quicktime_movies()
@@ -103,7 +103,7 @@ void leave_quicktime_movies()
 #ifndef __APPLE__
     ExitMovies();
 #endif
-    OSG_NOTICE << "QT Movies: closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT Movies: closed successfully"  << std::endl;
 }
 
 #if TARGET_OS_MAC
@@ -128,7 +128,7 @@ void leave_quicktime_movies_mt()
 #ifndef __APPLE__
     ExitMoviesOnThread();
 #endif
-    OSG_NOTICE << "QT Movies MT: closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT Movies MT: closed successfully"  << std::endl;
 }
 #endif
 
@@ -320,8 +320,8 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
 {
     short count         = (*deviceList)->count;
     short selectedIndex = (*deviceList)->selectedIndex;
-    OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;                                              
-    OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;              
+    OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;
+    OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;
 
     // Create List
     OSG_SGDeviceList device_list;
@@ -329,11 +329,11 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
     for (short i=0; i<count; ++i)
     {
         // Devices
-        OSG_NOTICE << std::endl;    
+        OSG_NOTICE << std::endl;
         SGDeviceName deviceNameRec = (*deviceList)->entry[i];
         Str63        deviceNameStr;
         memcpy(deviceNameStr, deviceNameRec.name, sizeof(Str63));
-        OSG_NOTICE << "    " << "Device ID : " << i << "  : DeviceNameStr : " << pstr_printable(deviceNameStr) << std::endl;    
+        OSG_NOTICE << "    " << "Device ID : " << i << "  : DeviceNameStr : " << pstr_printable(deviceNameStr) << std::endl;
         SGDeviceInputList deviceInputList = deviceNameRec.inputs;
         if (deviceInputList)
         {
@@ -359,7 +359,7 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
         }
         else
         {
-            OSG_NOTICE << "    InputList is empty!" << std::endl;                                                      
+            OSG_NOTICE << "    InputList is empty!" << std::endl;
         }
     }
     return device_list;
@@ -463,7 +463,7 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           // result = SGInitChannel(gVideoChannel, gSeqGrabber);
 //                                           if (result != noErr)
 //                                           {
-//                                               OSG_NOTICE << "SGInitChannel - failed!" << std::endl;                                              
+//                                               OSG_NOTICE << "SGInitChannel - failed!" << std::endl;
 //                                           }
                                           // Usage
                                           result = SGSetChannelUsage (gVideoChannel, seqGrabPreview);
@@ -476,18 +476,18 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           result = SGGetChannelDeviceAndInputNames( gVideoChannel, deviceName, inputName, &inputNumber);
                                           if (result != noErr)
                                           {
-                                              OSG_NOTICE << "Could not get DeviceAndInput names from Video SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceAndInput names from Video SG" << std::endl;
                                           }
                                           OSG_NOTICE << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
                                           SGDeviceList deviceList;
                                           result = SGGetChannelDeviceList( gVideoChannel, sgDeviceListIncludeInputs, &deviceList);
                                           if (result != noErr)
                                           {
-                                              OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;
                                           }
                                           else
                                           {
-                                              OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;               
+                                              OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;
                                               device_list = print_sequence_grabber_device_list(deviceList);
                                               devices_list.push_back(device_list);
                                           }
@@ -504,18 +504,18 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           result = SGGetChannelDeviceAndInputNames( gVideoChannel, deviceName, inputName, &inputNumber);
                                           if (result != noErr)
                                           {
-                                              OSG_NOTICE << "Could not get DeviceAndInput names from Sound SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceAndInput names from Sound SG" << std::endl;
                                           }
                                           OSG_NOTICE << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
                                           SGDeviceList deviceList;
                                           result = SGGetChannelDeviceList( gSoundChannel, sgDeviceListIncludeInputs, &deviceList);
                                           if (result != noErr)
                                           {
-                                              OSG_NOTICE << "Could not get DeviceList from Sound SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceList from Sound SG" << std::endl;
                                           }
                                           else
                                           {
-                                              OSG_NOTICE << "DeviceList from Sound SG ok" << std::endl;               
+                                              OSG_NOTICE << "DeviceList from Sound SG ok" << std::endl;
                                               device_list = print_sequence_grabber_device_list(deviceList);
                                               devices_list.push_back(device_list);
                                           }
@@ -775,7 +775,7 @@ void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63
 // You can use the VDSetDigitizerRect function to set the size and location of the digitizer rectangle.
 // The VDGetDigitizerRect function lets you retrieve the size and location of this rectangle.
 
-// Imput Source          
+// Imput Source
 // Some of these functions provide information about the available video inputs. Applications can use
 // the VDGetNumberOfInputs function to determine the number of video inputs supported by the digitizer component.
 // The VDGetInputFormat function allows applications to find out the video format (composite, s-video, or component) employed by a specified input.
@@ -784,58 +784,58 @@ void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63
 // The VDSetInputStandard function allows you to specify the video signaling standard to be used by the video digitizer component.
 
 /*
-QTVideoOutputRestoreState  
-QTVideoOutputSaveState  
+QTVideoOutputRestoreState
+QTVideoOutputSaveState
 
  Selecting an Input Source
-VDGetInput  
-VDGetInputFormat  
-VDGetNumberOfInputs  
-VDSetInput  
-VDSetInputStandard  
+VDGetInput
+VDGetInputFormat
+VDGetNumberOfInputs
+VDSetInput
+VDSetInputStandard
  Setting Source Characteristics
-VDGetActiveSrcRect  
-VDGetDigitizerRect  
-VDGetMaxSrcRect  
-VDGetVBlankRect  
-VDSetDigitizerRect  
+VDGetActiveSrcRect
+VDGetDigitizerRect
+VDGetMaxSrcRect
+VDGetVBlankRect
+VDSetDigitizerRect
  Setting Video Destinations
-VDGetMaxAuxBuffer  
-VDGetPlayThruDestination  
-VDPreflightDestination  
-VDPreflightGlobalRect  
-VDSetPlayThruDestination  
-VDSetPlayThruGlobalRect  
+VDGetMaxAuxBuffer
+VDGetPlayThruDestination
+VDPreflightDestination
+VDPreflightGlobalRect
+VDSetPlayThruDestination
+VDSetPlayThruGlobalRect
  Video Clipping
-VDClearClipRgn  
-VDGetClipState  
-VDSetClipRgn  
-VDSetClipState  
+VDClearClipRgn
+VDGetClipState
+VDSetClipRgn
+VDSetClipState
 */
 
 /*
-QTVideoOutputCopyIndAudioOutputDeviceUID  
-QTVideoOutputGetIndImageDecompressor  
-VDGetInputGammaRecord  
-VDGetInputName  
-VDGetPreferredImageDimensions  
-VDIIDCGetCSRData  
-VDIIDCGetDefaultFeatures  
-VDIIDCGetFeatures  
-VDIIDCGetFeaturesForSpecifier  
-VDIIDCSetCSRData  
-VDIIDCSetFeatures  
-VDSetDestinationPort  
-VDSetInputGammaRecord  
-VDSetPreferredImageDimensions  
-VDUseSafeBuffers  
+QTVideoOutputCopyIndAudioOutputDeviceUID
+QTVideoOutputGetIndImageDecompressor
+VDGetInputGammaRecord
+VDGetInputName
+VDGetPreferredImageDimensions
+VDIIDCGetCSRData
+VDIIDCGetDefaultFeatures
+VDIIDCGetFeatures
+VDIIDCGetFeaturesForSpecifier
+VDIIDCSetCSRData
+VDIIDCSetFeatures
+VDSetDestinationPort
+VDSetInputGammaRecord
+VDSetPreferredImageDimensions
+VDUseSafeBuffers
 */
 
 //void test ()
 //{
 //if ((i == count-1) && (inp == inputCount-1))
 //{
-//    OSG_NOTICE << "    * TEST SGSetChannelDevice(..) : " << pstr_printable(deviceNameRec.name) << std::endl;                           
+//    OSG_NOTICE << "    * TEST SGSetChannelDevice(..) : " << pstr_printable(deviceNameRec.name) << std::endl;
 //    result = SGSetChannelDevice (gVideoChannel, deviceNameStr);
 //    if (result == noErr)
 //    {
@@ -850,20 +850,20 @@ VDUseSafeBuffers
 //        result = SGGetChannelDeviceList( gVideoChannel, sgDeviceListIncludeInputs, &deviceList);
 //        if (result != noErr)
 //        {
-//            OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;                                              
+//            OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;
 //        }
 //        else
 //        {
-//            OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;                                              
+//            OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;
 //            short count         = (*deviceList)->count;
 //            short selectedIndex = (*deviceList)->selectedIndex;
-//            OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;                                              
-//            OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;   
+//            OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;
+//            OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;
 //        }
 //    }
 //    else
 //    {
-//        OSG_NOTICE << "SGSetChannelDevice - failed!" << std::endl;                                                      
+//        OSG_NOTICE << "SGSetChannelDevice - failed!" << std::endl;
 //    }
 //    OSG_NOTICE << "    * TEST SGSetChannelDevice(..) end" << std::endl;
 //}

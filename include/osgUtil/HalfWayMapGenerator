@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #ifndef OSGUTIL_HALFWAYMAPGENERATOR_
@@ -20,9 +20,9 @@
 namespace osgUtil
 {
 
-    /** This cube map generator produces an Half-way vector map, useful for 
+    /** This cube map generator produces an Half-way vector map, useful for
       * hardware-based specular lighting effects.
-      * It computes: C = normalize(R - L), where C is the resulting color, 
+      * It computes: C = normalize(R - L), where C is the resulting color,
       * R is the reflection vector and L is the light direction.
       */
     class OSGUTIL_EXPORT HalfWayMapGenerator: public CubeMapGenerator {

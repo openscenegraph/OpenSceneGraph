@@ -596,22 +596,6 @@ void Viewer::advance(double simulationTime)
         _frameStamp->setSimulationTime(simulationTime);
     }
 
-    if (_eventQueue.valid())
-    {
-        osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
-        if (getCamera()->getViewport())
-        {
-            osg::Viewport* viewport = getCamera()->getViewport();
-            eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
-        }
-        else
-        {
-            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
-        }
-
-        _eventQueue->frame( getFrameStamp()->getReferenceTime() );
-    }
-
     if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
@@ -637,7 +621,7 @@ void Viewer::eventTraversal()
     if (_done) return;
 
     double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
-    
+
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // OSG_NOTICE<<"Viewer::frameEventTraversal()."<<std::endl;
@@ -814,6 +798,7 @@ void Viewer::eventTraversal()
         }
     }
 
+    _eventQueue->frame( getFrameStamp()->getReferenceTime() );
 
     // OSG_NOTICE<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
@@ -954,7 +939,7 @@ void Viewer::eventTraversal()
             hitr != _eventHandlers.end();
             ++hitr)
         {
-            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, _eventVisitor);
+            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, _eventVisitor.get());
         }
 
     }
@@ -1053,7 +1038,7 @@ void Viewer::updateTraversal()
         setFusionDistance( getCameraManipulator()->getFusionDistanceMode(),
                             getCameraManipulator()->getFusionDistanceValue() );
 
-        _camera->setViewMatrix(_cameraManipulator->getInverseMatrix());
+        _cameraManipulator->updateCamera(*_camera);
     }
 
     updateSlaves();

@@ -5,6 +5,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgDB/Archive>
+#include <OpenThreads/Mutex>
 
 #include "unzip.h"
 
@@ -74,15 +75,26 @@ class ZipArchive : public osgDB::Archive
 
     private:
 
-        bool mZipLoaded;
-
-        HZIP mZipRecord;
-        ZIPENTRY mMainRecord;
 
         typedef std::pair<std::string, ZIPENTRY*> ZipEntryMapping;
         typedef std::map<std::string, ZIPENTRY*> ZipEntryMap;
 
-        ZipEntryMap mZipIndex;
+        std::string _filename, _password, _membuffer;
+
+        OpenThreads::Mutex _zipMutex;
+        bool               _zipLoaded;
+        ZipEntryMap        _zipIndex;
+        ZIPENTRY           _mainRecord;
+
+        struct PerThreadData {
+            HZIP _zipHandle;
+        };
+
+        typedef std::map<OpenThreads::Thread*, PerThreadData> PerThreadDataMap;
+        PerThreadDataMap _perThreadData;
+
+        const PerThreadData& getData() const;
+        const PerThreadData& getDataNoLock() const;
 };
 
 

@@ -10,25 +10,25 @@ static bool checkProperties( const osgVolume::CompositeProperty& prop )
 
 static bool readProperties( osgDB::InputStream& is, osgVolume::CompositeProperty& prop )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osgVolume::Property* child = dynamic_cast<osgVolume::Property*>( is.readObject() );
         if ( child ) prop.addProperty( child );
     }
-    is >> osgDB::END_BRACKET;
+    is >> is.END_BRACKET;
     return true;
 }
 
 static bool writeProperties( osgDB::OutputStream& os, const osgVolume::CompositeProperty& prop )
 {
     unsigned int size = prop.getNumProperties();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os << size << os.BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << prop.getProperty(i);
     }
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 

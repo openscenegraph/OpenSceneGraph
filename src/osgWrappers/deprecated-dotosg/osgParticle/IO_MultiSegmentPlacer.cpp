@@ -28,7 +28,7 @@ bool MultiSegmentPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     osg::Vec3 v;
 
-    if (fr[0].matchWord("vertex")) {        
+    if (fr[0].matchWord("vertex")) {
         if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
             myobj.addVertex(v);
             fr += 4;

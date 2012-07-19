@@ -28,7 +28,7 @@
 #include <osg/StateSet>
 #include <osg/ref_ptr>
 
-namespace ive {                       
+namespace ive {
 
 class DataOutputStream{
 
@@ -39,12 +39,12 @@ public:
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
     unsigned int getVersion() { return VERSION; }
-        
+
     void writeBool(bool b);
     void writeChar(char c);
     void writeUChar(unsigned char c);
     void writeUShort(unsigned short s);
-    void writeShort(short s);    
+    void writeShort(short s);
     void writeUInt(unsigned int s);
     void writeInt(int i);
     void writeFloat(float f);
@@ -69,25 +69,25 @@ public:
     void writeUShortArray(const osg::UShortArray* a);
     void writeUIntArray(const osg::UIntArray* a);
     void writeVec4ubArray(const osg::Vec4ubArray* a);
-    void writeVec2b(const osg::Vec2b& v);    
-    void writeVec3b(const osg::Vec3b& v);    
-    void writeVec4b(const osg::Vec4b& v);    
-    
+    void writeVec2b(const osg::Vec2b& v);
+    void writeVec3b(const osg::Vec3b& v);
+    void writeVec4b(const osg::Vec4b& v);
+
     void writePackedFloatArray(const osg::FloatArray* a, float maxError);
-    
+
     void writeFloatArray(const osg::FloatArray* a);
     void writeVec2Array(const osg::Vec2Array* a);
     void writeVec3Array(const osg::Vec3Array* a);
     void writeVec4Array(const osg::Vec4Array* a);
     void writeVec2sArray(const osg::Vec2sArray* a);
     void writeVec3sArray(const osg::Vec3sArray* a);
-    void writeVec4sArray(const osg::Vec4sArray* a);    
+    void writeVec4sArray(const osg::Vec4sArray* a);
     void writeVec2bArray(const osg::Vec2bArray* a);
     void writeVec3bArray(const osg::Vec3bArray* a);
     void writeVec4bArray(const osg::Vec4bArray* a);
     void writeVec2dArray(const osg::Vec2dArray* a);
     void writeVec3dArray(const osg::Vec3dArray* a);
-    void writeVec4dArray(const osg::Vec4dArray* a);  
+    void writeVec4dArray(const osg::Vec4dArray* a);
     void writeMatrixf(const osg::Matrixf& mat);
     void writeMatrixd(const osg::Matrixd& mat);
 
@@ -160,7 +160,7 @@ public:
     std::ostream* _ostream;
     std::ostream* _output_ostream;
     std::string _filename; // not necessary, but optional for use in texture export
-    
+
     std::stringstream _compressionStream;
     int _compressionLevel;
 

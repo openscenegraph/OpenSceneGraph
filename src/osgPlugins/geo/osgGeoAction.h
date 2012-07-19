@@ -5,7 +5,7 @@
 
 using namespace osg;
 
-class georecord; // You don't need to know how I read a geo record, 
+class georecord; // You don't need to know how I read a geo record,
 //	but objects of this class are passed to some of the parsing routines.
 // The values are defined in osgGeoStructs.h which is distributed with OSG.
 
@@ -13,7 +13,7 @@ class geoBehaviour { // base class for action & math functions where var out = f
 public:
     geoBehaviour() { }
     virtual ~geoBehaviour() { }
-    virtual void doaction(osg::Node *)=0;// {} // do math or action operation 
+    virtual void doaction(osg::Node *)=0;// {} // do math or action operation
 
     virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader)=0; // pure virtual
 protected:
@@ -76,7 +76,7 @@ public:
 	inline double get(void) const { return varop? *varop : constant;}
 private:
     float constant;
-    const double *varop; // if null use constant value in maths; else 
+    const double *varop; // if null use constant value in maths; else
 };
 
 class geoArithBehaviour : public geoMathBehaviour {
@@ -102,7 +102,7 @@ public:
     void setType(uint iact);
     void setTrigType(int iop);
     void setPeriodicType(int iop);
-	
+
     virtual void doaction(osg::Node *); // do math operation
     virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
@@ -123,7 +123,7 @@ public:
 private:
     float constant;
     optype oper;
-    const double *varop; // if null use constant value in maths; else 
+    const double *varop; // if null use constant value in maths; else
 };
 
 class geoRangeBehaviour :public geoMathBehaviour {
@@ -181,7 +181,7 @@ private:
 class geoActionBehaviour : public geoBehaviour { // base class for any scenegraph changes
 public:
     geoActionBehaviour() { var=NULL; type=0;}
-    virtual ~geoActionBehaviour() { 
+    virtual ~geoActionBehaviour() {
         var=NULL;}
     void setType(const unsigned int t) { type=t; }
     void setVar(const double *v) { var=v;}

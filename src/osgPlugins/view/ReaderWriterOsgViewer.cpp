@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -30,7 +30,7 @@ public:
         supportsOption("precision","Set the floating point precision of output");
         supportsOption("OutputTextureFiles","Output texture image to file");
     }
-    
+
     virtual const char* className() const { return "osgViewer configuration loader"; }
 
     void setPrecision(osgDB::Output& fout, const osgDB::ReaderWriter::Options* options) const
@@ -41,7 +41,7 @@ public:
             std::string opt;
             while (iss >> opt)
             {
-                if(opt=="PRECISION" || opt=="precision") 
+                if(opt=="PRECISION" || opt=="precision")
                 {
                     int prec;
                     iss >> prec;
@@ -53,7 +53,7 @@ public:
                 }
             }
         }
-    }            
+    }
 
 
     virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -65,7 +65,7 @@ public:
         std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osgDB::ifstream fin(fileName.c_str());
         if (fin)
         {

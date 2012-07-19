@@ -52,7 +52,7 @@ void FadeText::read(DataInputStream* in){
         }
         else
             in_THROW_EXCEPTION("FadeText::read(): Could not cast this osgText::FadeText to an osgText::Text.");
-        
+
         setFadeSpeed(in->readFloat());
     }
     else{

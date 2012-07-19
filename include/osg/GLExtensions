@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -49,7 +49,7 @@ extern OSG_EXPORT bool isGLExtensionOrVersionSupported(unsigned int contextID, c
   * Note, glGLExtensionFuncPtr is declared inline so that the code
   * is compiled locally to the calling code.  This should get by Windows'
   * dumb implementation of having different GL function ptr's for each
-  * library when linked to it. 
+  * library when linked to it.
 */
 extern OSG_EXPORT void* getGLExtensionFuncPtr(const char *funcName);
 
@@ -109,12 +109,12 @@ bool setGLExtensionFuncPtr(T& t, const char* str1)
     if (data)
     {
         memcpy(&t, &data, sizeof(T));
-        return true;        
+        return true;
     }
     else
     {
         t = 0;
-        return false;        
+        return false;
     }
 }
 
@@ -125,12 +125,12 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2)
     if (data)
     {
         memcpy(&t, &data, sizeof(T));
-        return true;        
+        return true;
     }
     else
     {
         t = 0;
-        return false;        
+        return false;
     }
 }
 
@@ -141,12 +141,12 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char*
     if (data)
     {
         memcpy(&t, &data, sizeof(T));
-        return true;        
+        return true;
     }
     else
     {
         t = 0;
-        return false;        
+        return false;
     }
 }
 

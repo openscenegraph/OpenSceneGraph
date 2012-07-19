@@ -155,9 +155,9 @@ bool TexEnvCombine_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(color[1]);
         fr[3].getFloat(color[2]);
         fr[4].getFloat(color[3]);
-    
+
         texenv.setConstantColor(color);
-        
+
         fr+=5;
         iteratorAdvanced = true;
     }
@@ -171,7 +171,7 @@ bool TexEnvCombine_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "combine_RGB " << TexEnvCombine_getCombineParamStr(texenv.getCombine_RGB()) << std::endl;
     fw.indent() << "combine_Alpha " << TexEnvCombine_getCombineParamStr(texenv.getCombine_Alpha()) << std::endl;
-    
+
     fw.indent() << "source0_RGB " << TexEnvCombine_getSourceParamStr(texenv.getSource0_RGB()) << std::endl;
     fw.indent() << "source1_RGB " << TexEnvCombine_getSourceParamStr(texenv.getSource1_RGB()) << std::endl;
     fw.indent() << "source2_RGB " << TexEnvCombine_getSourceParamStr(texenv.getSource2_RGB()) << std::endl;
@@ -190,7 +190,7 @@ bool TexEnvCombine_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "scale_RGB " << texenv.getScale_RGB() << std::endl;
     fw.indent() << "scale_Alpha " << texenv.getScale_Alpha() << std::endl;
-    
+
     fw.indent() << "constantColor " << texenv.getConstantColor() << std::endl;
 
     return true;

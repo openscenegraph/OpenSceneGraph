@@ -52,7 +52,7 @@ void Node::write(DataOutputStream* out){
     if(nDesc!=0){
         std::vector<std::string> desc =  getDescriptions();
         for(int i=0;i<nDesc;i++)
-            out->writeString(desc[i]); 
+            out->writeString(desc[i]);
     }
     // Write Stateset if any
     out->writeBool( getStateSet()!=0);
@@ -66,7 +66,7 @@ void Node::write(DataOutputStream* out){
         {
         ((ive::AnimationPathCallback*)(nc))->write(out);
     }
-    
+
     if (out->getVersion() >= VERSION_0006)
     {
         osg::ClusterCullingCallback* ccc = dynamic_cast<osg::ClusterCullingCallback*>(getCullCallback());

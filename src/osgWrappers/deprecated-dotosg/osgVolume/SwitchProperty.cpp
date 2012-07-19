@@ -32,7 +32,7 @@ bool SwitchProperty_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
 
-    int value=0; 
+    int value=0;
     if (fr.read("activeProperty",value))
     {
         itrAdvanced = true;

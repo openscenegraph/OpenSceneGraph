@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -77,7 +77,7 @@ public:
         supportsExtension("osgShadow","OpenSceneGraph osgShadow extension to .osg ascii format");
         supportsExtension("shadow","OpenSceneGraph osgShadow extension pseudo loader");
     }
-    
+
     virtual const char* className() const { return "osgShadow pseudo-loader"; }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
@@ -97,7 +97,7 @@ public:
         {
             return ReadResult::FILE_NOT_HANDLED;
         }
-        
+
         if( subFileName.empty())
         {
             OSG_WARN << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
@@ -130,7 +130,7 @@ public:
         }
 
         osgShadow::ShadowedScene* shadowedScene = new osgShadow::ShadowedScene;
-        shadowedScene->setShadowTechnique(technique.get());        
+        shadowedScene->setShadowTechnique(technique.get());
         shadowedScene->addChild( node );
         return shadowedScene;
     }

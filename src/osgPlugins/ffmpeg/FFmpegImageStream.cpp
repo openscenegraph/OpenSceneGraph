@@ -43,7 +43,7 @@ FFmpegImageStream::~FFmpegImageStream()
     OSG_INFO<<"Destructing FFmpegImageStream..."<<std::endl;
 
     quit(true);
-    
+
     OSG_INFO<<"Have done quit"<<std::endl;
 
     // release athe audio streams to make sure that the decoder doesn't retain any external
@@ -169,8 +169,8 @@ double FFmpegImageStream::getCreationTime() const
 }
 
 double FFmpegImageStream::getLength() const
-{ 
-    return m_decoder->duration(); 
+{
+    return m_decoder->duration();
 }
 
 
@@ -187,15 +187,15 @@ double FFmpegImageStream::getCurrentTime() const
 
 
 double FFmpegImageStream::getFrameRate() const
-{ 
-    return m_decoder->video_decoder().frameRate(); 
+{
+    return m_decoder->video_decoder().frameRate();
 }
 
 
 
-bool FFmpegImageStream::isImageTranslucent() const 
-{ 
-    return m_decoder->video_decoder().alphaChannel(); 
+bool FFmpegImageStream::isImageTranslucent() const
+{
+    return m_decoder->video_decoder().alphaChannel();
 }
 
 
@@ -236,7 +236,7 @@ void FFmpegImageStream::run()
     {
         OSG_WARN << "FFmpegImageStream::run : unhandled exception" << std::endl;
     }
-    
+
     OSG_NOTICE<<"Finished FFmpegImageStream::run()"<<std::endl;
 }
 
@@ -317,7 +317,7 @@ void FFmpegImageStream::cmdRewind()
     m_decoder->rewind();
 }
 
-void FFmpegImageStream::cmdSeek(double time) 
+void FFmpegImageStream::cmdSeek(double time)
 {
     m_decoder->seek(time);
 }

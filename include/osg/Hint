@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -53,16 +53,16 @@ public:
             // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_target)
             COMPARE_StateAttribute_Parameter(_mode)
-            
+
             return 0;
         }
 
         /** Return the member identifier within the attribute's class type. Used for light number/clip plane number etc.*/
         virtual unsigned int getMember() const { return static_cast<unsigned int>(_target); }
-        
+
         void setTarget(GLenum target);
         inline GLenum getTarget() const { return _target;  }
-        
+
         inline void setMode(GLenum mode) { _mode = mode; }
         inline GLenum getMode() const { return _mode; }
 
@@ -70,7 +70,7 @@ public:
 
 protected:
 
-        
+
         GLenum _target;
         GLenum _mode;
 };

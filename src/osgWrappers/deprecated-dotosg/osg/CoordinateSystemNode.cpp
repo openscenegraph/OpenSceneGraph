@@ -46,7 +46,7 @@ bool CoordinateSystemNode_readLocalData(Object& obj, Input& fr)
     }
 
     static ref_ptr<EllipsoidModel> s_ellipsoidModel = new EllipsoidModel;
-    
+
     EllipsoidModel* em = static_cast<EllipsoidModel*>(fr.readObjectOfType(*s_ellipsoidModel));
     if (em) csn.setEllipsoidModel(em);
 
@@ -60,8 +60,8 @@ bool CoordinateSystemNode_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent()<<"Format "<<fw.wrapString(csn.getFormat())<<std::endl;
     fw.indent()<<"CoordinateSystem "<<fw.wrapString(csn.getCoordinateSystem())<<std::endl;
-    
-    if (csn.getEllipsoidModel()) 
+
+    if (csn.getEllipsoidModel())
     {
         fw.writeObject(*csn.getEllipsoidModel());
     }

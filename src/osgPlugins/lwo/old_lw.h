@@ -65,7 +65,7 @@ struct lwMaterial
   char name[LW_MAX_NAME_LEN];
   GLfloat r,g,b;
   struct lwTexture ctex;
-  
+
   lwMaterial()
   {
     r=1.0f;
@@ -82,7 +82,7 @@ struct lwFace
   int index_cnt;        /* number of vertices */
   int *index;           /* index to vertex */
   float *texcoord;      /* u,v texture coordinates */
-  
+
   void init()
   {
     material = 0;       /* material of this face */
@@ -90,7 +90,7 @@ struct lwFace
     index = 0;          /* index to vertex */
     texcoord = 0;       /* u,v texture coordinates */
   }
-  
+
 };
 
 struct lwObject
@@ -103,7 +103,7 @@ struct lwObject
 
   int vertex_cnt;
   GLfloat *vertex;
-  
+
   void init()
   {
     face_cnt = 0;

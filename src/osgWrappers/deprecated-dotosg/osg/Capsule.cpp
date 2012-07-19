@@ -42,7 +42,7 @@ bool Capsule_readLocalData(Object& obj, Input& fr)
         fr+=4;
         iteratorAdvanced = true;
     }
-    
+
     if (fr.matchSequence("Radius %f"))
     {
         float radius;

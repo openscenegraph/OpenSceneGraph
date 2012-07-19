@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -21,7 +21,7 @@
 
 namespace osgShadow {
 
-class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap 
+class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
 {
     public :
         /** Convenient typedef used in definition of ViewData struct and methods */
@@ -34,7 +34,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
 
         /** Classic OSG cloning constructor */
         MinimalShadowMap(
-            const MinimalShadowMap& msm, 
+            const MinimalShadowMap& msm,
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         /** Declaration of standard OSG object methods */
@@ -69,7 +69,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
                 ( ShadowReceivingCoarseBoundAccuracy accuracy )
                     { _shadowReceivingCoarseBoundAccuracy = accuracy; }
 
-        ShadowReceivingCoarseBoundAccuracy 
+        ShadowReceivingCoarseBoundAccuracy
                 getShadowReceivingCoarseBoundAccuracy() const
                     { return _shadowReceivingCoarseBoundAccuracy; }
 
@@ -77,25 +77,25 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
         /** Classic protected OSG destructor */
         virtual ~MinimalShadowMap(void);
 
-    protected:         
+    protected:
         // Matrix modellingSpaceToWorld and its inverse
         // are used to define Modelling Space where shadowed scene drawables
         // have minimal (smallest possible extent) bounding boxes.
 
-        // Computing visible shadow range in this space 
+        // Computing visible shadow range in this space
         // allows for optimal use of ShadowMap resolution.
 
         // By default it is set to identity ie computations are in world space.
-        // But it should be set to ElipsoidModel::localToWorld 
+        // But it should be set to ElipsoidModel::localToWorld
         // when scene objects are put on earth ellipsoid surface.
 
-        // Other scenarios are also possible for example when models are 
+        // Other scenarios are also possible for example when models are
         // built in XZY space which would require identity matrix with swapped colums
 
         osg::Matrix                        _modellingSpaceToWorld;
         float                              _maxFarPlane;
-        float                              _minLightMargin; 
-        ShadowReceivingCoarseBoundAccuracy _shadowReceivingCoarseBoundAccuracy;        
+        float                              _minLightMargin;
+        ShadowReceivingCoarseBoundAccuracy _shadowReceivingCoarseBoundAccuracy;
 
         struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
@@ -115,7 +115,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
 
             virtual void cullShadowReceivingScene( );
 
-            virtual void aimShadowCastingCamera( 
+            virtual void aimShadowCastingCamera(
                 const osg::BoundingSphere &bounds,
                 const osg::Light *light,
                 const osg::Vec4 &worldLightPos,
@@ -131,13 +131,13 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
             virtual void frameShadowCastingCamera
                 ( const osg::Camera* cameraMain, osg::Camera* cameraShadow, int pass = 1 );
 
-            void cutScenePolytope( const osg::Matrix & matrix, 
+            void cutScenePolytope( const osg::Matrix & matrix,
                 const osg::Matrix & inverse,
-                const osg::BoundingBox &bb = 
+                const osg::BoundingBox &bb =
                 osg::BoundingBox(-1,-1,-1,1,1,1) );
 
             osg::BoundingBox computeScenePolytopeBounds
-                ( const osg::Matrix & m = *(osg::Matrix*)(NULL) );    
+                ( const osg::Matrix & m = *(osg::Matrix*)(NULL) );
 
             // Utility methods for adjusting projection matrices
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -39,7 +39,7 @@ Sequence::Sequence() :
     _mode(STOP),
     _sync(false),
     _clearOnStop(false)
-    
+
 {
     setNumChildrenRequiringUpdateTraversal(1);
 }
@@ -66,7 +66,7 @@ Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     _sync(seq._sync),
     _clearOnStop(seq._clearOnStop)
 {
-    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
 }
 
 bool Sequence::addChild( Node *child)
@@ -115,8 +115,8 @@ bool Sequence::removeChild( Node *child )
 bool Sequence::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 {
     if (pos<_frameTime.size())
-        _frameTime.erase(_frameTime.begin()+pos, 
-                         osg::minimum(_frameTime.begin()+(pos+numChildrenToRemove), 
+        _frameTime.erase(_frameTime.begin()+pos,
+                         osg::minimum(_frameTime.begin()+(pos+numChildrenToRemove),
                                       _frameTime.end()) );
     _resetTotalTime = true;
     return Group::removeChildren(pos,numChildrenToRemove);
@@ -140,7 +140,7 @@ void Sequence::setTime(unsigned int frame, double t)
             _frameTime.push_back(t);
         }
     }
-  
+
 }
 
 // returns a frame time of -1 if frame is out of range
@@ -178,7 +178,7 @@ void Sequence::setMode(SequenceMode mode)
 {
     int ubegin, uend;
 
-    switch (mode) 
+    switch (mode)
     {
     case START:
         // restarts sequence from beginning
@@ -222,11 +222,11 @@ void Sequence::traverse(NodeVisitor& nv)
     }
 
 
-    if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
+    if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR &&
         _mode == START &&
         !_frameTime.empty() && getNumChildren()!=0)
     {
-      
+
         // if begin or end < 0, make it last frame
         int _ubegin = (_begin < 0 ?  (int)_frameTime.size()-1: _begin);
         int _uend = (_end < 0 ? (int)_frameTime.size()-1: _end);
@@ -278,8 +278,8 @@ void Sequence::traverse(NodeVisitor& nv)
                 }
                 else
                 {
-                    if ( (_loopMode == LOOP) && 
-                         ( (_step>0 && _value!=_send) || 
+                    if ( (_loopMode == LOOP) &&
+                         ( (_step>0 && _value!=_send) ||
                            (_step<0 && _value!=_sbegin)))
                     {
                         _mode = STOP;
@@ -293,7 +293,7 @@ void Sequence::traverse(NodeVisitor& nv)
 
                 }
             }
-          
+
             // update local variables
             _update();
 
@@ -306,12 +306,12 @@ void Sequence::traverse(NodeVisitor& nv)
             { // case 2 or case 3
                 // most of the time it's just the next frame in the sequence
                 int nextValue = _getNextValue();
-                if (!_sync || 
+                if (!_sync ||
                     ((_now - _start) <= (_frameTime[_value]+_frameTime[nextValue])*osg::absolute(_speed)) )
                 {
                     _start += _frameTime[_value]*osg::absolute(_speed);
                     // repeat or change directions?
-                    if ( (_step>0 && nextValue==_send) || 
+                    if ( (_step>0 && nextValue==_send) ||
                          (_step<0 && nextValue==_sbegin))
                     {
                         if (_nreps>0)
@@ -330,23 +330,23 @@ void Sequence::traverse(NodeVisitor& nv)
 
             // elapsed time from start of the frame
             double deltaT = _now - _start;
-            
+
             // factors _speed into account
             double adjTotalTime = _totalTime*osg::absolute(_speed);
-            
+
             // how many laps?
             int loops = (int)(deltaT/adjTotalTime);
-            
-            
+
+
             // adjust reps & quick check to see if done becuase reps used up
-            
+
             if (_nreps>0)
             {
             if (_loopMode == LOOP)
                 _nrepsRemain -= loops;
             else
                 _nrepsRemain -= 2*loops;
-            
+
             if (_nrepsRemain<=0)
             {
                 _nrepsRemain = 0;
@@ -354,17 +354,17 @@ void Sequence::traverse(NodeVisitor& nv)
                 OSG_WARN << "stopping because elapsed time greater or equal to time remaining to repeat the sequence\n";
             }
             }
-            
+
             // deduct off time for laps- _value shouldn't change as it's modulo the total time
             double jumpStart = ((double)loops * adjTotalTime);
-            
+
             // step through frames one at a time until caught up
             while (deltaT-jumpStart > _frameTime[_value]*osg::absolute(_speed))
             {
             jumpStart +=  _frameTime[_value]*osg::absolute(_speed );
             _value = _getNextValue();
             }
-            
+
             // set start time
             _start += jumpStart;
         }
@@ -398,7 +398,7 @@ int Sequence::_getNextValue()
     // if begin or end < 0, make it last frame
     int _ubegin = (_begin < 0 ?  (int)_frameTime.size()-1: _begin);
     int _uend = (_end < 0 ? (int)_frameTime.size()-1: _end);
-    
+
     int _sbegin = osg::minimum(_ubegin,_uend);
     int _send = osg::maximum(_ubegin,_uend);
 
@@ -422,7 +422,7 @@ int Sequence::_getNextValue()
             {
                 v+=vs;
             }
-            
+
             return v;
         }
         else // SWING
@@ -444,7 +444,7 @@ void Sequence::_update()
     // if begin or end < 0, make it last frame
     int _ubegin = (_begin < 0 ?  (int)_frameTime.size()-1: _begin);
     int _uend = (_end < 0 ? (int)_frameTime.size()-1: _end);
-    
+
     int _sbegin = osg::minimum(_ubegin,_uend);
     int _send = osg::maximum(_ubegin,_uend);
 
@@ -454,14 +454,14 @@ void Sequence::_update()
         _value = (_begin < 0 ?  (int)_frameTime.size()-1: _begin);
         _resetTotalTime = true;
     }
-  
+
     // if _start<0, new or restarted
     if (_start<0)
     {
         _start = _now;
         _resetTotalTime = true;
     }
-  
+
     // need to calculate time of a complete sequence?
     // time is different depending on loop mode
     if (_resetTotalTime)
@@ -490,5 +490,5 @@ void Sequence::_update()
 
         _resetTotalTime = false;
     }
-  
+
 }

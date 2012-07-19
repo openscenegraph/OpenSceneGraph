@@ -50,7 +50,7 @@ void Texture3D::read(DataInputStream* in){
         else
             in_THROW_EXCEPTION("Texture3D::read(): Could not cast this osg::Texture3D to an osg::Texture.");
         // Read image.
-        
+
         // Should we read image data from stream
         osg::Image *image = in->readImage();
         if(image) {

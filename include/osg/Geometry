@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,9 +32,9 @@ class OSG_EXPORT Geometry : public Drawable
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Geometry(const Geometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-            
+
         virtual Object* cloneType() const { return new Geometry(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new Geometry(*this,copyop); }        
+        virtual Object* clone(const CopyOp& copyop) const { return new Geometry(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Geometry"; }
@@ -52,13 +52,13 @@ class OSG_EXPORT Geometry : public Drawable
             BIND_PER_PRIMITIVE,
             BIND_PER_VERTEX
         };
-               
+
         struct OSG_EXPORT ArrayData
         {
             ArrayData():
                 binding(BIND_OFF),
                 normalize(GL_FALSE) {}
-                
+
             ArrayData(const ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
             ArrayData(Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
@@ -81,21 +81,21 @@ class OSG_EXPORT Geometry : public Drawable
                 normalize = rhs.normalize;
                 return *this;
             }
-            
-            inline bool empty() const { return !array.valid(); } 
+
+            inline bool empty() const { return !array.valid(); }
 
             ref_ptr<Array>          array;
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
         };
-        
+
         struct OSG_EXPORT Vec3ArrayData
         {
             Vec3ArrayData():
                 binding(BIND_OFF),
                 normalize(GL_FALSE) {}
-                
+
             Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
             Vec3ArrayData(Vec3Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
@@ -119,7 +119,7 @@ class OSG_EXPORT Geometry : public Drawable
                 return *this;
             }
 
-            inline bool empty() const { return !array.valid(); } 
+            inline bool empty() const { return !array.valid(); }
 
             ref_ptr<Vec3Array>      array;
             ref_ptr<IndexArray>     indices;
@@ -127,13 +127,13 @@ class OSG_EXPORT Geometry : public Drawable
             GLboolean               normalize;
         };
 
-        /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const 
+        /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const
           * when i is out of range.
         */
         static const ArrayData s_InvalidArrayData;
-        
+
         typedef std::vector< ArrayData >  ArrayDataList;
-               
+
 
         void setVertexArray(Array* array);
         Array* getVertexArray() { return _vertexData.array.get(); }
@@ -142,7 +142,7 @@ class OSG_EXPORT Geometry : public Drawable
         void setVertexData(const ArrayData& arrayData);
         ArrayData& getVertexData() { return _vertexData; }
         const ArrayData& getVertexData() const { return _vertexData; }
-        
+
 
         void setNormalBinding(AttributeBinding ab);
         AttributeBinding getNormalBinding() const { return _normalData.binding; }
@@ -189,7 +189,7 @@ class OSG_EXPORT Geometry : public Drawable
         void setFogCoordData(const ArrayData& arrayData);
         ArrayData& getFogCoordData() { return _fogCoordData; }
         const ArrayData& getFogCoordData() const { return _fogCoordData; }
-        
+
 
         void setTexCoordArray(unsigned int unit,Array*);
         Array* getTexCoordArray(unsigned int unit);
@@ -228,23 +228,23 @@ class OSG_EXPORT Geometry : public Drawable
         typedef std::vector< ref_ptr<PrimitiveSet> > PrimitiveSetList;
 
         void setPrimitiveSetList(const PrimitiveSetList& primitives);
-        
+
         PrimitiveSetList& getPrimitiveSetList() { return _primitives; }
         const PrimitiveSetList& getPrimitiveSetList() const { return _primitives; }
 
         unsigned int getNumPrimitiveSets() const { return static_cast<unsigned int>(_primitives.size()); }
         PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
         const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
-        
+
         /** Add a primitive set to the geometry. */
         bool addPrimitiveSet(PrimitiveSet* primitiveset);
-        
+
         /** Set a primitive set to the specified position in geometry's primitive set list. */
         bool setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
-        
+
         /** Insert a primitive set to the specified position in geometry's primitive set list. */
         bool insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
-        
+
         /** Remove primitive set(s) from the specified position in geometry's primitive set list. */
         bool removePrimitiveSet(unsigned int i,unsigned int numElementsToRemove=1);
 
@@ -260,7 +260,7 @@ class OSG_EXPORT Geometry : public Drawable
         void setVertexIndices(IndexArray* array);
         IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
         const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
-     
+
         /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
         void setNormalIndices(IndexArray* array);
         IndexArray* getNormalIndices() { return _normalData.indices.get(); }
@@ -294,7 +294,7 @@ class OSG_EXPORT Geometry : public Drawable
 
 
 
-        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
+        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation
             method to use OpenGL vertex buffer objects for rendering.*/
         virtual void setUseVertexBufferObjects(bool flag);
 
@@ -358,9 +358,9 @@ class OSG_EXPORT Geometry : public Drawable
 
 
         bool containsSharedArrays() const;
-        
+
         void duplicateSharedArrays();
-        
+
 
         void computeInternalOptimizedGeometry();
 
@@ -418,16 +418,16 @@ class OSG_EXPORT Geometry : public Drawable
         Geometry& operator = (const Geometry&) { return *this;}
 
         virtual ~Geometry();
-       
+
         bool verifyBindings(const ArrayData& arrayData) const;
         bool verifyBindings(const Vec3ArrayData& arrayData) const;
-        
+
         void computeCorrectBindingsAndArraySizes(ArrayData& arrayData,const char* arrayName);
         void computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData,const char* arrayName);
-        
+
         void addVertexBufferObjectIfRequired(osg::Array* array);
         void addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
-        
+
 
         PrimitiveSetList                _primitives;
         ArrayData                       _vertexData;

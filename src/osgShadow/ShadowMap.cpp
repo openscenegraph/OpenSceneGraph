@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,7 +34,7 @@ using namespace osgShadow;
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-static const char fragmentShaderSource_noBaseTexture[] = 
+static const char fragmentShaderSource_noBaseTexture[] =
     "uniform sampler2DShadow osgShadow_shadowTexture; \n"
     "uniform vec2 osgShadow_ambientBias; \n"
     "\n"
@@ -46,7 +46,7 @@ static const char fragmentShaderSource_noBaseTexture[] =
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-static const char fragmentShaderSource_withBaseTexture[] = 
+static const char fragmentShaderSource_withBaseTexture[] =
     "uniform sampler2D osgShadow_baseTexture; \n"
     "uniform sampler2DShadow osgShadow_shadowTexture; \n"
     "uniform vec2 osgShadow_ambientBias; \n"
@@ -216,7 +216,7 @@ void ShadowMap::init()
 
 #if 1
         // cull front faces so that only backfaces contribute to depth map
-        
+
 
         osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
         cull_face->setMode(osg::CullFace::FRONT);
@@ -251,7 +251,7 @@ void ShadowMap::init()
     }
 
     {
-        _stateset = new osg::StateSet;        
+        _stateset = new osg::StateSet;
         _stateset->setTextureAttributeAndModes(_shadowTextureUnit,_texture.get(),osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
         _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
@@ -374,12 +374,12 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 selectLight = light;
 
             osg::RefMatrix* matrix = itr->second.get();
-            if (matrix) 
+            if (matrix)
             {
                 lightpos = light->getPosition() * (*matrix);
                 lightDir = osg::Matrix::transform3x3( light->getDirection(), *matrix );
             }
-            else 
+            else
             {
                 lightpos = light->getPosition();
                 lightDir = light->getDirection();
@@ -391,7 +391,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
     osg::Matrix eyeToWorld;
     eyeToWorld.invert(*cv.getModelViewMatrix());
 
-    lightpos = lightpos * eyeToWorld;     
+    lightpos = lightpos * eyeToWorld;
     lightDir = osg::Matrix::transform3x3( lightDir, eyeToWorld );
     lightDir.normalize();
 
@@ -412,7 +412,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
         }
         else
         {
-            // get the bounds of the model.    
+            // get the bounds of the model.
             osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
             cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
 
@@ -463,7 +463,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
 
         }
 
-        cv.setTraversalMask( traversalMask & 
+        cv.setTraversalMask( traversalMask &
             getShadowedScene()->getCastsShadowTraversalMask() );
 
         // do RTT camera traversal
@@ -485,10 +485,10 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
 
         cv.getRenderStage()->getPositionalStateContainer()->
              addPositionedTextureAttribute( _shadowTextureUnit, refMatrix, _texgen.get() );
-#else 
+#else
         // compute the matrix which takes a vertex from local coords into tex coords
         // will use this later to specify osg::TexGen..
-        osg::Matrix MVPT = _camera->getViewMatrix() * 
+        osg::Matrix MVPT = _camera->getViewMatrix() *
                _camera->getProjectionMatrix() *
                osg::Matrix::translate(1.0,1.0,1.0) *
                osg::Matrix::scale(0.5f,0.5f,0.5f);
@@ -512,15 +512,15 @@ void ShadowMap::cleanSceneGraph()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Callback used by debugging hud to display Shadow Map in color buffer
-// OSG does not allow to use the same GL Texture Id with different glTexParams. 
-// Callback simply turns shadow compare mode off via GL while rendering hud and 
-// restores it afterwards. 
+// OSG does not allow to use the same GL Texture Id with different glTexParams.
+// Callback simply turns shadow compare mode off via GL while rendering hud and
+// restores it afterwards.
 ////////////////////////////////////////////////////////////////////////////////
-class ShadowMap::DrawableDrawWithDepthShadowComparisonOffCallback: 
+class ShadowMap::DrawableDrawWithDepthShadowComparisonOffCallback:
     public osg::Drawable::DrawCallback
 {
 public:
-    // 
+    //
     DrawableDrawWithDepthShadowComparisonOffCallback
         ( osg::Texture2D * texture, unsigned stage = 0 )
             : _texture( texture ), _stage( stage )
@@ -535,7 +535,7 @@ public:
             ri.getState()->applyTextureAttribute( _stage, _texture.get() );
 
             // Turn off depth comparison mode
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, 
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB,
                              GL_NONE );
         }
 
@@ -543,7 +543,7 @@ public:
 
         if( _texture.valid() ) {
             // Turn it back on
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, 
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB,
                              GL_COMPARE_R_TO_TEXTURE_ARB );
         }
     }
@@ -564,7 +564,7 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(0,size.x(),0,size.y()));
 
-    // set the view matrix    
+    // set the view matrix
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     camera->setViewMatrix(osg::Matrix::identity());
 
@@ -582,7 +582,7 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
     osg::Geode* geode = new osg::Geode;
 
     osg::Vec3 position(10.0f,size.y()-100.0f,0.0f);
-    osg::Vec3 delta(0.0f,-120.0f,0.0f); 
+    osg::Vec3 delta(0.0f,-120.0f,0.0f);
     float length = 300.0f;
 
     // turn the text off to avoid linking with osgText

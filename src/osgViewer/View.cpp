@@ -286,7 +286,7 @@ void View::setSceneData(osg::Node* node)
             getSceneData()->getOrCreateStateSet();
             getSceneData()->accept(sgv);
         #endif
-        
+
         // now make sure the scene graph is set up with the correct DataVariance to protect the dynamic elements of
         // the scene graph from being run in parallel.
         osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
@@ -369,7 +369,7 @@ void View::home()
 
 
 void View::addEventHandler(osgGA::GUIEventHandler* eventHandler)
-{ 
+{
     EventHandlers::iterator itr = std::find(_eventHandlers.begin(), _eventHandlers.end(), eventHandler);
     if (itr == _eventHandlers.end())
     {
@@ -459,7 +459,7 @@ void View::setUpViewAcrossAllScreens()
         traits->windowDecoration = false;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
-        
+
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
         _camera->setGraphicsContext(gc.get());

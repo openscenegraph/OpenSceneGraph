@@ -87,7 +87,7 @@ REGISTER_OBJECT_WRAPPER( Texture,
     ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, true );  // _resizeNonPowerOfTwoHint
     ADD_VEC4D_SERIALIZER( BorderColor, osg::Vec4d(0.0,0.0,0.0,0.0) );  // _borderColor
     ADD_GLINT_SERIALIZER( BorderWidth, 0 );  // _borderWidth
-    
+
     BEGIN_ENUM_SERIALIZER( InternalFormatMode, USE_IMAGE_DATA_FORMAT );
         ADD_ENUM_VALUE( USE_IMAGE_DATA_FORMAT );
         ADD_ENUM_VALUE( USE_USER_DEFINED_FORMAT );
@@ -103,12 +103,12 @@ REGISTER_OBJECT_WRAPPER( Texture,
         ADD_ENUM_VALUE( USE_S3TC_DXT1c_COMPRESSION );
         ADD_ENUM_VALUE( USE_S3TC_DXT1a_COMPRESSION );
     END_ENUM_SERIALIZER();  // _internalFormatMode
-    
+
     ADD_USER_SERIALIZER( InternalFormat );  // _internalFormat
     ADD_USER_SERIALIZER( SourceFormat );  // _sourceFormat
     ADD_USER_SERIALIZER( SourceType );  // _sourceType
     ADD_BOOL_SERIALIZER( ShadowComparison, false );  // _use_shadow_comparison
-    
+
     BEGIN_ENUM_SERIALIZER( ShadowCompareFunc, LEQUAL );
         ADD_ENUM_VALUE( NEVER );
         ADD_ENUM_VALUE( LESS );
@@ -119,12 +119,12 @@ REGISTER_OBJECT_WRAPPER( Texture,
         ADD_ENUM_VALUE( GEQUAL );
         ADD_ENUM_VALUE( ALWAYS );
     END_ENUM_SERIALIZER();  // _shadow_compare_func
-    
+
     BEGIN_ENUM_SERIALIZER( ShadowTextureMode, LUMINANCE );
         ADD_ENUM_VALUE( LUMINANCE );
         ADD_ENUM_VALUE( INTENSITY );
         ADD_ENUM_VALUE( ALPHA );
     END_ENUM_SERIALIZER();  // _shadow_texture_mode
-    
+
     ADD_FLOAT_SERIALIZER( ShadowAmbient, 0.0f );  // _shadow_ambient
 }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
@@ -62,7 +62,7 @@ TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
     _modifiedCount[4].setAllElementsTo(0);
     _modifiedCount[5].setAllElementsTo(0);
 
-}    
+}
 
 
 TextureCubeMap::~TextureCubeMap()
@@ -81,7 +81,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
     {
         if (noImages && _images[n].valid()) noImages = false;
         if (noImages && rhs._images[n].valid()) noImages = false;
-    
+
         if (_images[n]!=rhs._images[n]) // smart pointer comparison.
         {
             if (_images[n].valid())
@@ -93,12 +93,12 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
                 }
                 else
                 {
-                    return 1; // valid lhs._image is greater than null. 
+                    return 1; // valid lhs._image is greater than null.
                 }
             }
-            else if (rhs._images[n].valid()) 
+            else if (rhs._images[n].valid())
             {
-                return -1; // valid rhs._image is greater than null. 
+                return -1; // valid rhs._image is greater than null.
             }
         }
     }
@@ -184,13 +184,13 @@ bool TextureCubeMap::imagesValid() const
 
 void TextureCubeMap::computeInternalFormat() const
 {
-    if (imagesValid()) computeInternalFormatWithImage(*_images[0]); 
+    if (imagesValid()) computeInternalFormatWithImage(*_images[0]);
     else computeInternalFormatType();
 }
 
 void TextureCubeMap::apply(State& state) const
 {
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
@@ -286,7 +286,7 @@ void TextureCubeMap::apply(State& state) const
 
         textureObject = generateTextureObject(
                 this, contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
@@ -317,34 +317,34 @@ void TextureCubeMap::apply(State& state) const
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)
-            {                
+            {
                 if (_images[n].valid() && _images[n]->getDataVariance()==STATIC)
                 {
                     non_const_this->_images[n] = NULL;
                 }
             }
         }
-        
+
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 this, contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
         for (int n=0; n<6; n++)
-        {                
+        {
             // no image present, but dimensions at set so less create the texture
             glTexImage2D( faceTarget[n], 0, _internalFormat,
                          _textureWidth, _textureHeight, _borderWidth,
                          _sourceFormat ? _sourceFormat : _internalFormat,
                          _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                         0);                
+                         0);
         }
-        
+
     }
     else
     {
@@ -379,25 +379,25 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
 
         // create texture object.
         apply(state);
-        
+
         textureObject = getTextureObject(contextID);
-        
+
         if (!textureObject)
         {
             // failed to create texture object
             OSG_NOTICE<<"Warning : failed to create TextureCubeMap texture obeject, copyTexSubImageCubeMap abondoned."<<std::endl;
             return;
         }
-        
+
     }
 
     GLenum target = faceTarget[face];
-    
+
     if (textureObject)
     {
         // we have a valid image
         textureObject->bind();
-        
+
         applyTexParameters(GL_TEXTURE_CUBE_MAP, state);
 
         bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
@@ -432,7 +432,7 @@ void TextureCubeMap::allocateMipmap(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
     if (textureObject && _textureWidth != 0 && _textureHeight != 0)
     {
         // bind texture
@@ -446,7 +446,7 @@ void TextureCubeMap::allocateMipmap(State& state) const
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;
         height >>= 1;
-        
+
         for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
         {
             if (width == 0)
@@ -462,13 +462,13 @@ void TextureCubeMap::allocateMipmap(State& state) const
                             _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                             0);
             }
-        
+
             width >>= 1;
             height >>= 1;
         }
-                
+
         // inform state that this texture is the current one bound.
-        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
     }
 }
 

@@ -45,7 +45,7 @@ bool Text3D_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgText::Text3D &text = static_cast<osgText::Text3D &>(obj);
     bool itAdvanced = false;
 
-    
+
     // characterDepth
     if (fr[0].matchWord("characterDepth"))
     {
@@ -68,8 +68,8 @@ bool Text3D_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
         fr += 2;
         itAdvanced = true;
-    }    
-  
+    }
+
     return itAdvanced;
 }
 
@@ -78,8 +78,8 @@ bool Text3D_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const osgText::Text3D &text = static_cast<const osgText::Text3D &>(obj);
 
     fw.indent() << "characterDepth " << text.getCharacterDepth() << std::endl;
-    
+
     fw.indent() << "renderMode " << convertRenderModeEnumToString(text.getRenderMode()) << std::endl;
-    
+
     return true;
 }

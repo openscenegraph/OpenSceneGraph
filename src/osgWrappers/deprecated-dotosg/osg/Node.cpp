@@ -215,7 +215,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     {
         fw.writeObject(*node.getStateSet());
     }
-    
+
     if (node.getUpdateCallback())
     {
         fw.indent() << "UpdateCallbacks {" << std::endl;
@@ -248,7 +248,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
         const osg::BoundingSphere& bs = node.getInitialBound();
         fw.indent()<<"initialBound "<<bs.center()<<" "<<bs.radius()<<std::endl;
     }
-    
+
     if (node.getComputeBoundingSphereCallback())
     {
         fw.indent() << "ComputeBoundingSphereCallback {" << std::endl;

@@ -60,7 +60,7 @@ void LightPoint::write(DataOutputStream* out){
     if(_blinkSequence.valid()){
         ((ive::BlinkSequence*)(_blinkSequence.get()))->write(out);
     }
-    
+
     // Write out blendingMode.
     out->writeInt(_blendingMode);
 }
@@ -118,7 +118,7 @@ void LightPoint::read(DataInputStream* in){
             ((ive::BlinkSequence*)(blinkSequence))->read(in);
             _blinkSequence = blinkSequence;
         }
-        
+
         // Read in blendingMode.
         _blendingMode = (osgSim::LightPoint::BlendingMode)in->readInt();
     }

@@ -42,7 +42,7 @@ bool SpecularHighlights_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     if (fr[0].matchWord("specularColor")) {
         osg::Vec4 w;
-        if (fr[1].getFloat(w.x()) && fr[2].getFloat(w.y()) && 
+        if (fr[1].getFloat(w.x()) && fr[2].getFloat(w.y()) &&
             fr[3].getFloat(w.z()) && fr[4].getFloat(w.w())) {
             myobj.setSpecularColor(w);
             fr += 5;

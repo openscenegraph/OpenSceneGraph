@@ -4,7 +4,7 @@
 
 using namespace osgGA;
 
-AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animationPath) 
+AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animationPath)
 {
     _printOutTimingInfo = true;
 
@@ -12,13 +12,13 @@ AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animation
     _timeOffset = 0.0;
     _timeScale = 1.0;
     _isPaused = false;
-    
+
     _realStartOfTimedPeriod = 0.0;
     _animStartOfTimedPeriod = 0.0;
     _numOfFramesSinceStartOfTimedPeriod = -1; // need to init.
 }
 
-AnimationPathManipulator::AnimationPathManipulator( const std::string& filename ) 
+AnimationPathManipulator::AnimationPathManipulator( const std::string& filename )
 {
     _printOutTimingInfo = true;
 
@@ -41,14 +41,14 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
     _animationPath->read(in);
 
     in.close();
-    
+
 }
 
 void AnimationPathManipulator::home(double currentTime)
 {
     if (_animationPath.valid())
     {
-        _timeOffset = _animationPath->getFirstTime()-currentTime; 
+        _timeOffset = _animationPath->getFirstTime()-currentTime;
 
     }
     // reset the timing of the animation.
@@ -85,13 +85,13 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
             if (ea.getKey()==' ')
             {
                 _isPaused = false;
-                
+
                 home(ea,us);
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);
-                
+
                 return true;
-            } 
+            }
             else if (ea.getKey()==')')
             {
                 double time = _isPaused ? _pauseTime : ea.getTime();
@@ -103,23 +103,23 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 
                 // adjust timeOffset so the current animationTime does change.
                 _timeOffset = animationTime/_timeScale - time;
-                
+
                 return true;
-            } 
+            }
             else if (ea.getKey()=='(')
             {
                 double time = _isPaused ? _pauseTime : ea.getTime();
                 double animationTime = (time+_timeOffset)*_timeScale;
 
                 _timeScale /= 1.1;
-                
+
                 OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
 
                 // adjust timeOffset so the current animationTime does change.
                 _timeOffset = animationTime/_timeScale - time;
-                
+
                 return true;
-            } 
+            }
             else if(ea.getKey() == 'p')
             {
                 if( _isPaused )
@@ -136,7 +136,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 us.requestContinuousUpdate(false);
                 return true;
             }
-                
+
         break;
         default:
             break;

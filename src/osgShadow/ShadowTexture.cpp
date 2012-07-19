@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -41,7 +41,7 @@ void ShadowTexture::init()
 
     unsigned int tex_width = 512;
     unsigned int tex_height = 512;
-    
+
     _texture = new osg::Texture2D;
     _texture->setTextureSize(tex_width, tex_height);
     _texture->setInternalFormat(GL_RGB);
@@ -57,7 +57,7 @@ void ShadowTexture::init()
         _camera = new osg::Camera;
 
         _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        
+
         _camera->setCullCallback(new CameraCullCallback(this));
 
         // set viewport
@@ -81,20 +81,20 @@ void ShadowTexture::init()
 
         osg::StateSet* stateset = _camera->getOrCreateStateSet();
         stateset->setAttribute(_material.get(),osg::StateAttribute::OVERRIDE);
-        
+
     }
-    
+
     {
-        _stateset = new osg::StateSet;        
+        _stateset = new osg::StateSet;
         _stateset->setTextureAttributeAndModes(_textureUnit,_texture.get(),osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
-        
+
         _texgen = new osg::TexGen;
     }
-    
+
     _dirty = false;
 }
 
@@ -113,7 +113,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
 
     // do traversal of shadow casting scene which does not need to be decorated by the shadow texture
     {
-        cv.setTraversalMask( traversalMask & 
+        cv.setTraversalMask( traversalMask &
                              getShadowedScene()->getCastsShadowTraversalMask() );
 
         _shadowedScene->osg::Group::traverse(cv);
@@ -122,16 +122,16 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
     // do traversal of shadow receiving scene which does need to be decorated by the shadow texture
     {
         cv.pushStateSet(_stateset.get());
-    
-        cv.setTraversalMask( traversalMask & 
+
+        cv.setTraversalMask( traversalMask &
                              getShadowedScene()->getReceivesShadowTraversalMask() );
 
         _shadowedScene->osg::Group::traverse(cv);
-        
+
         cv.popStateSet();
 
     }
-    
+
     // need to compute view frustum for RTT camera.
     // 1) get the light position
     // 2) get the center and extents of the view frustum
@@ -154,23 +154,23 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
             selectLight = light;
         }
     }
-    
+
     osg::Matrix eyeToWorld;
     eyeToWorld.invert(*cv.getModelViewMatrix());
-    
+
     lightpos = lightpos * eyeToWorld;
 
     if (selectLight)
     {
 
-        // get the bounds of the model.    
+        // get the bounds of the model.
         osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
         cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
-        
+
         _shadowedScene->osg::Group::traverse(cbbv);
-        
+
         osg::BoundingBox bb = cbbv.getBoundingBox();
-        
+
         if (lightpos[3]!=0.0)
         {
             osg::Vec3 position(lightpos.x(), lightpos.y(), lightpos.z());
@@ -188,15 +188,15 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
             _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
             _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(bb.center()-position));
-            
+
 
             // compute the matrix which takes a vertex from local coords into tex coords
             // will use this later to specify osg::TexGen..
-            osg::Matrix MVPT = _camera->getViewMatrix() * 
+            osg::Matrix MVPT = _camera->getViewMatrix() *
                                _camera->getProjectionMatrix() *
                                osg::Matrix::translate(1.0,1.0,1.0) *
                                osg::Matrix::scale(0.5f,0.5f,0.5f);
-                               
+
             _texgen->setMode(osg::TexGen::EYE_LINEAR);
             _texgen->setPlanesFromMatrix(MVPT);
         }
@@ -222,21 +222,21 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
             _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
             _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(lightDir));
-            
+
 
             // compute the matrix which takes a vertex from local coords into tex coords
             // will use this later to specify osg::TexGen..
-            osg::Matrix MVPT = _camera->getViewMatrix() * 
+            osg::Matrix MVPT = _camera->getViewMatrix() *
                                _camera->getProjectionMatrix() *
                                osg::Matrix::translate(1.0,1.0,1.0) *
                                osg::Matrix::scale(0.5f,0.5f,0.5f);
-                               
+
             _texgen->setMode(osg::TexGen::EYE_LINEAR);
             _texgen->setPlanesFromMatrix(MVPT);
         }
 
 
-        cv.setTraversalMask( traversalMask & 
+        cv.setTraversalMask( traversalMask &
                              getShadowedScene()->getCastsShadowTraversalMask() );
 
         // do RTT camera traversal
@@ -244,9 +244,9 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
 
         orig_rs->getPositionalStateContainer()->addPositionedTextureAttribute(_textureUnit, cv.getModelViewMatrix(), _texgen.get());
     }
-    
-    
-    
+
+
+
 
 
     // reapply the original traversal mask

@@ -23,7 +23,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
 {
     osgParticle::ParticleEffect& effect = static_cast<osgParticle::ParticleEffect&>(object);
     bool itrAdvanced = false;
-    
+
     if (fr.matchSequence("textFileName %s"))
     {
         effect.setTextureFileName(fr[1].getStr());
@@ -37,7 +37,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         fr[1].getFloat(position[0]);
         fr[2].getFloat(position[1]);
         fr[3].getFloat(position[2]);
-    
+
         effect.setPosition(position);
 
         fr += 4;
@@ -49,17 +49,17 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         float scale;
         fr[1].getFloat(scale);
         effect.setScale(scale);
-        
+
         fr += 2;
         itrAdvanced = true;
     }
-    
+
     if (fr.matchSequence("intensity %f"))
     {
         float intensity;
         fr[1].getFloat(intensity);
         effect.setIntensity(intensity);
-        
+
         fr += 2;
         itrAdvanced = true;
     }
@@ -69,7 +69,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         float startTime;
         fr[1].getFloat(startTime);
         effect.setStartTime(startTime);
-        
+
         fr += 2;
         itrAdvanced = true;
     }
@@ -79,7 +79,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         float emitterDuration;
         fr[1].getFloat(emitterDuration);
         effect.setEmitterDuration(emitterDuration);
-        
+
         fr += 2;
         itrAdvanced = true;
     }
@@ -96,7 +96,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         fr += 2;
         itrAdvanced = true;
     }
-    
+
     if (fr[0].matchWord("particleSizeRange"))
     {
         osgParticle::rangef r;
@@ -131,12 +131,12 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
             itrAdvanced = true;
         }
     }
-    
+
     if (particleSet)
     {
         effect.setDefaultParticleTemplate(particle);
     }
-    
+
 
     if (fr.matchSequence("wind %f %f %f"))
     {
@@ -144,13 +144,13 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         fr[1].getFloat(wind[0]);
         fr[2].getFloat(wind[1]);
         fr[3].getFloat(wind[2]);
-    
+
         effect.setWind(wind);
-        
+
         fr += 4;
         itrAdvanced = true;
     }
-    
+
     if (fr[0].matchWord("useLocalParticleSystem"))
     {
         if (fr[1].matchWord("FALSE"))
@@ -215,7 +215,7 @@ bool ParticleEffect_writeLocalData(const osg::Object& object, osgDB::Output& fw)
 
     fw.indent()<<"useLocalParticleSystem ";
     if (effect.getUseLocalParticleSystem()) fw<<"TRUE"<<std::endl;
-    else 
+    else
     {
         fw<<"FALSE"<<std::endl;
         fw.writeObject(*effect.getParticleSystem());

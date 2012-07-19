@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -37,26 +37,26 @@ void MultiTextureControl::setTextureWeight(unsigned int unit, float weight)
         _textureWeightList.resize(unit+1,0.0f);
     }
     _textureWeightList[unit] = weight;
-    
+
     updateStateSet();
 }
 
 void MultiTextureControl::updateStateSet()
 {
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
-    
+
     unsigned int numTextureUnitsOn = 0;
     unsigned int unit;
     for(unit=0;unit<_textureWeightList.size();++unit)
     {
         if (_textureWeightList[unit]>0.0f) ++numTextureUnitsOn;
     }
-    
+
     if (numTextureUnitsOn<=1)
     {
         for(unit=0;unit<_textureWeightList.size();++unit)
         {
-            if (_textureWeightList[unit]>0.0f) 
+            if (_textureWeightList[unit]>0.0f)
             {
                 osg::TexEnv* texenv = new osg::TexEnv(osg::TexEnv::MODULATE);
                 stateset->setTextureAttribute(unit, texenv);
@@ -97,12 +97,12 @@ void MultiTextureControl::updateStateSet()
 
             stateset->setTextureAttribute(1, texenv);
         }
-    } 
+    }
     else if (_textureWeightList.size()==3)
     {
         float b = (_textureWeightList[0]+_textureWeightList[1])/(_textureWeightList[0]+_textureWeightList[1]+_textureWeightList[2]);
         float a = _textureWeightList[0]/(_textureWeightList[0]+_textureWeightList[1]);
-        
+
         {
             osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
             texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
@@ -143,7 +143,7 @@ void MultiTextureControl::updateStateSet()
 
             stateset->setTextureAttribute(2, texenv);
         }
-    } 
+    }
 
     setStateSet(stateset.get());
 }

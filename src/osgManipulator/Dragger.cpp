@@ -73,7 +73,7 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
         case MotionCommand::MOVE:
         {
             //OSG_NOTICE<<"MotionCommand::MOVE "<<command.getMotionMatrix()<<std::endl;
-            
+
             // Transform the command's motion matrix into local motion matrix.
             osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
                                             * command.getMotionMatrix()
@@ -166,8 +166,10 @@ Dragger::Dragger() :
     _handleEvents(false),
     _draggerActive(false),
     _activationModKeyMask(0),
+    _activationMouseButtonMask(0),
     _activationKeyEvent(0),
     _activationPermittedByModKeyMask(false),
+    _activationPermittedByMouseButtonMask(false),
     _activationPermittedByKeyEvent(false),
     _intersectionMask(0xffffffff)
 {
@@ -183,12 +185,13 @@ Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
     _handleEvents(rhs._handleEvents),
     _draggerActive(false),
     _activationModKeyMask(rhs._activationModKeyMask),
+    _activationMouseButtonMask(rhs._activationMouseButtonMask),
     _activationKeyEvent(rhs._activationKeyEvent),
     _activationPermittedByModKeyMask(false),
+    _activationPermittedByMouseButtonMask(false),
     _activationPermittedByKeyEvent(false),
     _intersectionMask(0xffffffff)
 {
-    OSG_NOTICE<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
 
 Dragger::~Dragger()
@@ -275,6 +278,19 @@ void Dragger::addDraggerCallback(DraggerCallback* dc)
 
 void Dragger::removeDraggerCallback(DraggerCallback* dc)
 {
+    for(Dragger::DraggerCallbacks::iterator itr = _draggerCallbacks.begin();
+        itr != _draggerCallbacks.end();
+        )
+    {
+        if (dc==itr->get())
+        {
+            itr = _draggerCallbacks.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
 }
 
 
@@ -309,10 +325,14 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
     bool handled = false;
 
     bool activationPermitted = true;
-    if (_activationModKeyMask!=0 || _activationKeyEvent!=0)
+    if (_activationModKeyMask!=0 || _activationMouseButtonMask!=0 || _activationKeyEvent!=0)
     {
         _activationPermittedByModKeyMask = (_activationModKeyMask!=0) ?
             ((ea.getModKeyMask() & _activationModKeyMask)!=0) :
+            false;
+
+        _activationPermittedByMouseButtonMask = (_activationMouseButtonMask!=0) ?
+            ((ea.getButtonMask() & _activationMouseButtonMask)!=0) :
             false;
 
         if (_activationKeyEvent!=0)
@@ -334,7 +354,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
             }
         }
 
-        activationPermitted =  _activationPermittedByModKeyMask || _activationPermittedByKeyEvent;
+        activationPermitted =  _activationPermittedByModKeyMask || _activationPermittedByMouseButtonMask || _activationPermittedByKeyEvent;
 
     }
 
@@ -390,6 +410,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                         }
                     }
                 }
+                break;
             }
             case osgGA::GUIEventAdapter::DRAG:
             case osgGA::GUIEventAdapter::RELEASE:
@@ -554,7 +575,7 @@ class ForceCullCallback : public osg::Drawable::CullCallback
 void osgManipulator::setDrawableToAlwaysCull(osg::Drawable& drawable)
 {
     ForceCullCallback* cullCB = new ForceCullCallback;
-    drawable.setCullCallback (cullCB);    
+    drawable.setCullCallback (cullCB);
 }
 
 void osgManipulator::setMaterialColor(const osg::Vec4& color, osg::Node& node)

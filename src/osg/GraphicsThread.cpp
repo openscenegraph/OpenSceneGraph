@@ -22,26 +22,26 @@ using namespace OpenThreads;
 
 GraphicsThread::GraphicsThread()
 {
-}   
+}
 
 void GraphicsThread::run()
 {
     // make the graphics context current.
     GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
     if (graphicsContext)
-    {        
+    {
         graphicsContext->makeCurrent();
-        
+
         graphicsContext->getState()->initializeExtensionProcs();
     }
 
     OperationThread::run();
 
     // release operations before the thread stops working.
-    _operationQueue->releaseAllOperations(); 
+    _operationQueue->releaseAllOperations();
 
     if (graphicsContext)
-    {    
+    {
         graphicsContext->releaseContext();
     }
 
@@ -52,7 +52,7 @@ void GraphicsOperation::operator () (Object* object)
     osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
     if (context) operator() (context);
 }
- 
+
 void SwapBuffersOperation::operator () (GraphicsContext* context)
 {
     context->swapBuffersCallbackOrImplemenation();
@@ -71,7 +71,7 @@ void BarrierOperation::operator () (Object* /*object*/)
         if (_preBlockOp==GL_FLUSH) glFlush();
         else if (_preBlockOp==GL_FINISH) glFinish();
     }
-        
+
     block();
 }
 
@@ -85,13 +85,13 @@ void ReleaseContext_Block_MakeCurrentOperation::operator () (GraphicsContext* co
 {
     // release the graphics context.
     context->releaseContext();
-    
-    // reset the block so that it the next call to block() 
+
+    // reset the block so that it the next call to block()
     reset();
-    
+
     // block this thread, until the block is released externally.
     block();
-    
+
     // re acquire the graphics context.
     context->makeCurrent();
 }

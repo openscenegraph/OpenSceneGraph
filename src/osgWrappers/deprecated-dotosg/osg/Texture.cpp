@@ -117,13 +117,13 @@ bool Texture_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("useHardwareMipMapGeneration"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             texture.setUseHardwareMipMapGeneration(true);
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("FALSE")) 
+        else if (fr[1].matchWord("FALSE"))
         {
             texture.setUseHardwareMipMapGeneration(false);
             fr +=2 ;
@@ -133,13 +133,13 @@ bool Texture_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("unRefImageDataAfterApply"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             texture.setUnRefImageDataAfterApply(true);
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("FALSE")) 
+        else if (fr[1].matchWord("FALSE"))
         {
             texture.setUnRefImageDataAfterApply(false);
             fr +=2 ;
@@ -191,13 +191,13 @@ bool Texture_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("resizeNonPowerOfTwo"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             texture.setResizeNonPowerOfTwoHint(true);
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("FALSE")) 
+        else if (fr[1].matchWord("FALSE"))
         {
             texture.setResizeNonPowerOfTwoHint(false);
             fr +=2 ;
@@ -207,13 +207,13 @@ bool Texture_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("shadowComparison"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             texture.setShadowComparison(true);
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("FALSE")) 
+        else if (fr[1].matchWord("FALSE"))
         {
             texture.setShadowComparison(false);
             fr +=2 ;
@@ -258,13 +258,13 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
     fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
     fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
-    
+
     fw.indent() << "borderColor " << texture.getBorderColor() << std::endl;
     fw.indent() << "borderWidth " << texture.getBorderWidth() << std::endl;
 
     fw.indent() << "useHardwareMipMapGeneration "<< (texture.getUseHardwareMipMapGeneration()?"TRUE":"FALSE") << std::endl;
     fw.indent() << "unRefImageDataAfterApply "<< (texture.getUnRefImageDataAfterApply()?"TRUE":"FALSE") << std::endl;
-            
+
     fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
     if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)
     {
@@ -275,14 +275,14 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
         else fw.indent() << "internalFormat " << texture.getInternalFormat() << std::endl;
 
     }
-    
+
     if (texture.getSourceFormat())
     {
         const char* str = Texture_getInternalFormatStr(texture.getSourceFormat());
 
         if (str) fw.indent() << "sourceFormat " << str << std::endl;
         else fw.indent() << "sourceFormat " << texture.getSourceFormat() << std::endl;
-        
+
     }
 
     if (texture.getSourceType())
@@ -291,7 +291,7 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
 
         if (str) fw.indent() << "sourceType " << str << std::endl;
         else fw.indent() << "sourceType " << texture.getSourceType() << std::endl;
-        
+
     }
 
     fw.indent() << "resizeNonPowerOfTwo "<< (texture.getResizeNonPowerOfTwoHint()?"TRUE":"FALSE") << std::endl;

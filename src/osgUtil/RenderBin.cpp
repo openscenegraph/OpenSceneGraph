@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdlib.h>
@@ -73,7 +73,7 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
         RenderBin* prototype = getRenderBinPrototype(binName);
         if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
     }
-    
+
     OSG_WARN <<"Warning: RenderBin \""<<binName<<"\" implementation not found, using default RenderBin as a fallback."<<std::endl;
     return new RenderBin;
 }
@@ -123,7 +123,7 @@ RenderBin::SortMode RenderBin::getDefaultRenderBinSortMode()
     if (!s_defaultBinSortModeInitialized)
     {
         s_defaultBinSortModeInitialized = true;
-        
+
         const char* str = getenv("OSG_DEFAULT_BIN_SORT_MODE");
         if (str)
         {
@@ -134,7 +134,7 @@ RenderBin::SortMode RenderBin::getDefaultRenderBinSortMode()
             else if (strcmp(str,"TRAVERSAL_ORDER")==0) s_defaultBinSortMode = RenderBin::TRAVERSAL_ORDER;
         }
     }
-    
+
     return s_defaultBinSortMode;
 }
 
@@ -160,17 +160,17 @@ RenderBin::RenderBin(SortMode mode)
     {
         _stateset  = new osg::StateSet;
         _stateset->setThreadSafeRefUnref(true);
-        
+
          // set up an alphafunc by default to speed up blending operations.
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
         osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
         alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
         alphafunc->setThreadSafeRefUnref(true);
-        
+
         _stateset->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
 #endif
     }
-#endif    
+#endif
 }
 
 RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
@@ -212,13 +212,13 @@ void RenderBin::sort()
     {
         itr->second->sort();
     }
-    
-    if (_sortCallback.valid()) 
+
+    if (_sortCallback.valid())
     {
         _sortCallback->sortImplementation(this);
     }
     else sortImplementation();
-    
+
     _sorted = true;
 }
 
@@ -296,14 +296,14 @@ struct FrontToBackSortFunctor
     }
 };
 
-    
+
 void RenderBin::sortFrontToBack()
 {
     copyLeavesFromStateGraphListToRenderLeafList();
 
     // now sort the list into acending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),FrontToBackSortFunctor());
-    
+
 //    cout << "sort front to back"<<endl;
 }
 
@@ -356,9 +356,9 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
     }
 
     _renderLeafList.reserve(totalsize);
-    
+
     bool detectedNaN = false;
-        
+
     // first copy all the leaves from the render graphs into the leaf list.
     for(itr=_stateGraphList.begin();
         itr!=_stateGraphList.end();
@@ -378,9 +378,9 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
             }
         }
     }
-    
+
     if (detectedNaN) OSG_NOTICE<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
-    
+
     // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
     _stateGraphList.clear();
 }
@@ -417,7 +417,7 @@ RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
 
 void RenderBin::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
-    if (_drawCallback.valid()) 
+    if (_drawCallback.valid())
     {
         _drawCallback->drawImplementation(this,renderInfo,previous);
     }
@@ -535,7 +535,7 @@ bool RenderBin::getStats(Statistics& stats) const
         const RenderLeaf* rl = *dw_itr;
         const Drawable* dw= rl->getDrawable();
         stats.addDrawable(); // number of geosets
-        
+
         const Geometry* geom = dw->asGeometry();
         if (geom)
         {
@@ -547,7 +547,7 @@ bool RenderBin::getStats(Statistics& stats) const
         {
             stats.addMatrix(); // number of matrices
         }
-        
+
         if (dw)
         {
               // then tot up the primitive types and no vertices.
@@ -560,7 +560,7 @@ bool RenderBin::getStats(Statistics& stats) const
         oitr!=_stateGraphList.end();
         ++oitr)
     {
-        
+
         for(StateGraph::LeafList::const_iterator dw_itr = (*oitr)->_leaves.begin();
             dw_itr != (*oitr)->_leaves.end();
             ++dw_itr)
@@ -645,7 +645,7 @@ unsigned int RenderBin::computeNumberOfDynamicRenderLeaves() const
     {
         count += rbitr->second->computeNumberOfDynamicRenderLeaves();
     }
-    
+
     return count;
 }
 

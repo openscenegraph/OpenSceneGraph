@@ -207,11 +207,11 @@ public:
 
     // Get a new appendable file
     virtual trpgwAppFile* GetNewWAppFile(trpgEndian inNess,const char *fileName,bool reuse=false);
-    
+
     // Write the given texture data into one our local archives
     bool WriteToArchive(const trpgTexture &tex,char *data,trpgwAppAddress &addr,bool geotyp=false);
     // Merge block textable into a master.
-    
+
 protected:
 
 

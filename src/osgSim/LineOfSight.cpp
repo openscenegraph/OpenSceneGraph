@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -39,24 +39,24 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
     // first check to see if file is already loaded.
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        
+
         FileNameSceneMap::iterator itr = _filenameSceneMap.find(filename);
         if (itr != _filenameSceneMap.end())
         {
             OSG_INFO<<"Getting from cache "<<filename<<std::endl;
-        
+
             return itr->second.get();
         }
     }
-    
+
     // now load the file.
     osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
-    
+
     // insert into the cache.
     if (node.valid())
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        
+
         if (_filenameSceneMap.size() < _maxNumFilesToCache)
         {
             OSG_INFO<<"Inserting into cache "<<filename<<std::endl;
@@ -83,7 +83,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
             _filenameSceneMap[filename] = node;
         }
     }
-    
+
     return node.release();
 }
 
@@ -115,13 +115,13 @@ void LineOfSight::computeIntersections(osg::Node* scene, osg::Node::NodeMask tra
         osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = new osgUtil::LineSegmentIntersector(itr->_start, itr->_end);
         intersectorGroup->addIntersector( intersector.get() );
     }
-    
+
     _intersectionVisitor.reset();
     _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersectorGroup.get() );
-    
+
     scene->accept(_intersectionVisitor);
-    
+
     unsigned int index = 0;
     osgUtil::IntersectorGroup::Intersectors& intersectors = intersectorGroup->getIntersectors();
     for(osgUtil::IntersectorGroup::Intersectors::iterator intersector_itr = intersectors.begin();
@@ -133,9 +133,9 @@ void LineOfSight::computeIntersections(osg::Node* scene, osg::Node::NodeMask tra
         {
             Intersections& intersectionsLOS = _LOSList[index]._intersections;
             _LOSList[index]._intersections.clear();
-            
+
             osgUtil::LineSegmentIntersector::Intersections& intersections = lsi->getIntersections();
-            
+
             for(osgUtil::LineSegmentIntersector::Intersections::iterator itr = intersections.begin();
                 itr != intersections.end();
                 ++itr)
@@ -146,7 +146,7 @@ void LineOfSight::computeIntersections(osg::Node* scene, osg::Node::NodeMask tra
             }
         }
     }
-    
+
 }
 
 LineOfSight::Intersections LineOfSight::computeIntersections(osg::Node* scene, const osg::Vec3d& start, const osg::Vec3d& end, osg::Node::NodeMask traversalMask)

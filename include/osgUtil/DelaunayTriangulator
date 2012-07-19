@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,7 +25,7 @@
 
 #include <osgUtil/Export>
 
-namespace osgUtil 
+namespace osgUtil
 {
 
 /** DelaunayTriangulator: Utility class that triangulates an irregular network of sample points.
@@ -43,7 +43,7 @@ class OSGUTIL_EXPORT DelaunayConstraint: public osg::Geometry {
 public:
     DelaunayConstraint() { }
 
-    /** Each primitiveset is a list of vertices which may be closed by joining up to its start 
+    /** Each primitiveset is a list of vertices which may be closed by joining up to its start
      * to make a loop.  Constraints should be simple lines, not crossing themselves.
      * Constraints which cross other constraints can cause difficulties - see the example
      * for methods of dealing with them. */
@@ -56,9 +56,9 @@ public:
 
     /** Get the filling primitive. One:
      * triangulate must have bneen called and
-     * two:  triangle list is filled when 
+     * two:  triangle list is filled when
      * DelaunayTriangulator::removeInternalTriangles is called.
-     * These return the triangles removed from the delaunay triangulation by 
+     * These return the triangles removed from the delaunay triangulation by
      * DelaunayTriangulator::removeInternalTriangles. */
     inline const osg::DrawElementsUInt *getTriangles() const { return prim_tris_.get(); }
 
@@ -81,7 +81,7 @@ public:
     /** remove from line the vertices that are inside dco
      */
     void removeVerticesInside(const DelaunayConstraint *dco);
-    
+
      /** return winding number as a float of loop around testpoint; may use multiple loops
       * does not reject points on the edge or very very close to the edge */
     float windingNumber(const osg::Vec3 &testpoint) const ;
@@ -150,7 +150,7 @@ public:
 
     /** Get the generated primitive (call triangulate() first). */
     inline osg::DrawElementsUInt *getTriangles() { return prim_tris_.get(); }
-    
+
     /** remove the triangles internal to the constraint loops.
      * (Line strips cannot remove any internal triangles). */
     void removeInternalTriangles(DelaunayConstraint *constraint);

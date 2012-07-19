@@ -29,7 +29,7 @@ void TexEnvCombine::write(DataOutputStream* out){
     else
         out_THROW_EXCEPTION("TexEnvCombine::write(): Could not cast this osg::TexEnvCombine to an osg::Object.");
     // Write TexEnvCombine's properties.
-    
+
     // Write combine method
     out->writeInt(getCombine_RGB());
     out->writeInt(getCombine_Alpha());

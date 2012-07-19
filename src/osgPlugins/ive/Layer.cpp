@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -37,7 +37,7 @@ void Layer::write(DataOutputStream* out)
     else
         out_THROW_EXCEPTION("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
 
- 
+
     if (out->getVersion() >= VERSION_0023)
     {
         out->writeLocator(getLocator());
@@ -57,8 +57,8 @@ void Layer::write(DataOutputStream* out)
         LayerHelper helper;
         helper.writeLocator(out, getLocator());
     }
-    
-    
+
+
 
     out->writeUInt(getMinLevel());
     out->writeUInt(getMaxLevel());
@@ -75,7 +75,7 @@ void Layer::read(DataInputStream* in)
     int id = in->peekInt();
     if (id != IVELAYER)
         in_THROW_EXCEPTION("Layer::read(): Expected Layer identification.");
-    
+
     // Read Layer's identification.
     id = in->readInt();
 
@@ -117,7 +117,7 @@ void Layer::read(DataInputStream* in)
 
 void LayerHelper::writeLayer(DataOutputStream* out, osgTerrain::Layer* layer)
 {
-    if (layer) 
+    if (layer)
     {
         out->writeBool(true);
 
@@ -192,31 +192,31 @@ osgTerrain::Layer* LayerHelper::readLayer(DataInputStream* in)
         std::string filename = in->readString();
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename+".gdal");
         osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(object.get());
-        
+
         osg::ref_ptr<osgTerrain::Locator> locator = readLocator(in);
         unsigned int minLevel = in->readUInt();
         unsigned int maxLevel = in->readUInt();
-        
+
         if (proxyLayer)
         {
             if (locator.valid()) proxyLayer->setLocator(locator.get());
-            
+
             proxyLayer->setMinLevel(minLevel);
             proxyLayer->setMaxLevel(maxLevel);
         }
-        
+
         return proxyLayer;
     }
-    
+
     return new osgTerrain::ImageLayer;
 }
 
 void LayerHelper::writeLocator(DataOutputStream* out, osgTerrain::Locator* locator)
 {
-    if (locator) 
+    if (locator)
     {
         out->writeBool(true);
-        
+
         ((ive::Locator*)(locator))->write(out);
     }
     else
@@ -229,11 +229,11 @@ osgTerrain::Locator* LayerHelper::readLocator(DataInputStream* in)
 {
     bool locatorExist = in->readBool();
     if (!locatorExist) return 0;
-    
+
     osgTerrain::Locator* locator = new osgTerrain::Locator;
-    
+
     ((ive::Locator*)(locator))->read(in);
-    
+
     return locator;
 }
 
@@ -249,8 +249,8 @@ void Layer::writeValidDataOperator(DataOutputStream* out, osgTerrain::ValidDataO
             out->writeFloat(validRange->getMinValue());
             out->writeFloat(validRange->getMaxValue());
         }
-        else 
-        {    
+        else
+        {
             osgTerrain::NoDataValue* noDataValue  = dynamic_cast<osgTerrain::NoDataValue*>(validDataOperator);
             if (noDataValue)
             {
@@ -269,14 +269,14 @@ osgTerrain::ValidDataOperator* Layer::readValidDataOperator(DataInputStream* in)
 {
     bool hasOperator = in->readBool();
     if (!hasOperator) return 0;
-    
+
     int id = in->peekInt();
     if (id==IVEVALIDRANGE)
     {
         id = in->readInt();
         float minValue = in->readFloat();
         float maxValue = in->readFloat();
-        return new osgTerrain::ValidRange(minValue,maxValue);        
+        return new osgTerrain::ValidRange(minValue,maxValue);
     }
     else if (id==IVENODATAVALUE)
     {

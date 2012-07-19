@@ -23,7 +23,7 @@
    If you want to parse data out of a different structure instead, look at
    subclassing trpgReadBuffer and replacing its virtual methods.  That's what
    trpgMemReadBuffer is doing.
-   
+
    This file also contains the implementation of trpgSceneParser().
    That class implements a set of callbacks for handling the Pushes and Pops
    in an archive.  You fill in the Start/EndChildren callbacks and register
@@ -97,7 +97,7 @@ void trpgr_Parser::AddCallback(trpgToken tok,trpgr_Callback *cb,bool in_dest)
 class WriteWrapper : public trpgr_Callback {
 public:
     WriteWrapper(trpgReadWriteable *in_wr)  { wr = in_wr; };
-    void *Parse(trpgToken,trpgReadBuffer &buf) { 
+    void *Parse(trpgToken,trpgReadBuffer &buf) {
         if (wr->Read(buf))
             return wr;
         else
@@ -131,7 +131,7 @@ trpgr_Callback *trpgr_Parser::GetCallback(trpgToken tok)
     else
         return 0;
 }
-   
+
 
 // Remove Callback
 void trpgr_Parser::RemoveCallback(trpgToken tok)
@@ -240,7 +240,7 @@ class trpgSceneHelperPush : public trpgr_Callback
 public:
     trpgSceneHelperPush(trpgSceneParser *in_parse)
     { parse = in_parse; };
-        
+
     void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/)
     {
         // Call the start children callback

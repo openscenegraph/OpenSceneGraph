@@ -26,18 +26,18 @@ TranslateAxisDragger::TranslateAxisDragger()
     _xDragger = new Translate1DDragger(osg::Vec3(0.0,0.0,0.0), osg::Vec3(0.0,0.0,1.0));
     addChild(_xDragger.get());
     addDragger(_xDragger.get());
-    
+
     _yDragger = new Translate1DDragger(osg::Vec3(0.0,0.0,0.0), osg::Vec3(0.0,0.0,1.0));
     addChild(_yDragger.get());
     addDragger(_yDragger.get());
-    
+
     _zDragger = new Translate1DDragger(osg::Vec3(0.0,0.0,0.0), osg::Vec3(0.0,0.0,1.0));
     addChild(_zDragger.get());
     addDragger(_zDragger.get());
 
     setParentDragger(getParentDragger());
 }
-       
+
 TranslateAxisDragger::~TranslateAxisDragger()
 {
 }
@@ -48,7 +48,7 @@ void TranslateAxisDragger::setupDefaultGeometry()
     osg::Geode* lineGeode = new osg::Geode;
     {
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(2);
         (*vertices)[0] = osg::Vec3(0.0f,0.0f,0.0f);
         (*vertices)[1] = osg::Vec3(0.0f,0.0f,1.0f);
@@ -73,7 +73,7 @@ void TranslateAxisDragger::setupDefaultGeometry()
     _zDragger->addChild(lineGeode);
 
     osg::Geode* geode = new osg::Geode;
-    
+
     // Create a cone.
     {
         osg::Cone* cone = new osg::Cone (osg::Vec3(0.0f, 0.0f, 1.0f), 0.025f, 0.10f);

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/IntersectVisitor>
@@ -87,9 +87,9 @@ Hit& Hit::operator = (const Hit& hit)
 
 const osg::Vec3 Hit::getWorldIntersectNormal() const
 {
-    if (_inverse.valid()) 
+    if (_inverse.valid())
     {
-        osg::Vec3 norm = osg::Matrix::transform3x3(*_inverse,_intersectNormal); 
+        osg::Vec3 norm = osg::Matrix::transform3x3(*_inverse,_intersectNormal);
         norm.normalize();
         return norm;
     }
@@ -154,7 +154,7 @@ void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
     // create a new segment transformed to local coordintes.
     LineSegment* ns = new LineSegment;
 
-    if (_model_inverse.valid()) 
+    if (_model_inverse.valid())
     {
         if (_view_inverse.valid())
         {
@@ -162,7 +162,7 @@ void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
             ns->mult(*seg,matrix);
         }
         else
-        { 
+        {
             ns->mult(*seg,*(_model_inverse));
         }
     }
@@ -174,7 +174,7 @@ void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
     {
         *ns = *seg;
     }
-    
+
     _segList.push_back(LineSegmentPair(seg,ns));
 }
 
@@ -184,7 +184,7 @@ IntersectVisitor::IntersectVisitor()
 
     // override the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-    
+
     // Initialize eyepoint to 0,0,0
     setEyePoint(Vec3(0.0f,0.0f,0.0f));
 
@@ -244,11 +244,11 @@ osg::Vec3 IntersectVisitor::getEyePoint() const
     const IntersectState* cis = _intersectStateStack.empty() ? 0 : _intersectStateStack.back().get();
     if (cis && (cis->_model_inverse.valid() || cis->_view_inverse.valid()))
     {
-        
+
         osg::Vec3 eyePoint = _pseudoEyePoint;
         if (cis->_view_inverse.valid()) eyePoint = eyePoint * (*(cis->_view_inverse));
         if (cis->_model_inverse.valid()) eyePoint = eyePoint * (*(cis->_model_inverse));
-        
+
         //OSG_NOTICE<<"IntersectVisitor::getEyePoint()"<<eyePoint<<std::endl;
 
         return eyePoint;
@@ -262,16 +262,16 @@ osg::Vec3 IntersectVisitor::getEyePoint() const
 void IntersectVisitor::addLineSegment(LineSegment* seg)
 {
     if (!seg) return;
-    
+
     if (!seg->valid())
     {
         OSG_WARN<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..)"<<std::endl;
         OSG_WARN<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
         return;
     }
-    
+
     IntersectState* cis = _intersectStateStack.back().get();
-    
+
     if (cis->_segList.size()>=32)
     {
         OSG_WARN<<"Warning: excessive number of line segmenets passed to IntersectVisitor::addLineSegment(..), maximum permitted is 32 line segments."<<std::endl;
@@ -305,7 +305,7 @@ void IntersectVisitor::pushMatrix(RefMatrix* matrix, osg::Transform::ReferenceFr
         // share the original view matrix
         nis->_view_matrix = cis->_view_matrix;
         nis->_view_inverse = cis->_view_inverse;
-        
+
         // set up new model matrix
         nis->_model_matrix = matrix;
         if (cis->_model_matrix.valid())
@@ -372,11 +372,11 @@ bool IntersectVisitor::enterNode(Node& node)
     else
     {
         IntersectState* cis = _intersectStateStack.back().get();
-        if (!cis->_segmentMaskStack.empty()) 
+        if (!cis->_segmentMaskStack.empty())
             cis->_segmentMaskStack.push_back(cis->_segmentMaskStack.back());
         else
             cis->_segmentMaskStack.push_back(0xffffffff);
-        
+
         return true;
     }
 }
@@ -406,20 +406,20 @@ struct TriangleHit
         _index(index),
         _normal(normal),
         _r1(r1),
-        _v1(v1),        
+        _v1(v1),
         _r2(r2),
-        _v2(v2),        
+        _v2(v2),
         _r3(r3),
         _v3(v3) {}
 
     unsigned int        _index;
     const osg::Vec3     _normal;
     float               _r1;
-    const osg::Vec3*    _v1;        
+    const osg::Vec3*    _v1;
     float               _r2;
-    const osg::Vec3*    _v2;        
+    const osg::Vec3*    _v2;
     float               _r3;
-    const osg::Vec3*    _v3;        
+    const osg::Vec3*    _v3;
 
 protected:
 
@@ -439,11 +439,11 @@ struct TriangleIntersect
     int _index;
     float _ratio;
     bool _hit;
-    
-    
+
+
 
     typedef std::multimap<float,TriangleHit> TriangleHitList;
-    
+
     TriangleHitList _thl;
 
     TriangleIntersect():
@@ -458,7 +458,7 @@ struct TriangleIntersect
     {
         set(seg,ratio);
     }
-    
+
     void set(const LineSegment& seg,float ratio=FLT_MAX)
     {
         _seg=new LineSegment(seg);
@@ -523,18 +523,18 @@ struct TriangleIntersect
             if (ds31>0.0f) return;
             if (ds31<d231) return;
         }
-        
+
 
         float r3;
         if (ds12==0.0f) r3=0.0f;
         else if (d312!=0.0f) r3 = ds12/d312;
         else return; // the triangle and the line must be parallel intersection.
-        
+
         float r1;
         if (ds23==0.0f) r1=0.0f;
         else if (d123!=0.0f) r1 = ds23/d123;
         else return; // the triangle and the line must be parallel intersection.
-        
+
         float r2;
         if (ds31==0.0f) r2=0.0f;
         else if (d231!=0.0f) r2 = ds31/d231;
@@ -549,7 +549,7 @@ struct TriangleIntersect
             r2 *= inv_total_r;
             r3 *= inv_total_r;
         }
-        
+
         Vec3 in = v1*r1+v2*r2+v3*r3;
         if (!in.valid())
         {
@@ -569,7 +569,7 @@ struct TriangleIntersect
 
         float r = d/_length;
 
-        
+
         if (treatVertexDataAsTemporary)
         {
             _thl.insert(std::pair<const float,TriangleHit>(r,TriangleHit(_index-1,normal,r1,0,r2,0,r3,0)));
@@ -604,15 +604,15 @@ bool IntersectVisitor::intersect(Drawable& drawable)
             drawable.accept(ti);
             if (ti._hit)
             {
-            
+
                 osg::Geometry* geometry = drawable.asGeometry();
-                
+
 
                 for(TriangleIntersect::TriangleHitList::iterator thitr=ti._thl.begin();
                     thitr!=ti._thl.end();
                     ++thitr)
                 {
-                
+
                     Hit hit;
                     hit._nodePath = _nodePath;
                     hit._matrix = cis->_model_matrix;
@@ -622,7 +622,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                     else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
 
                     TriangleHit& triHit = thitr->second;
-                    
+
                     hit._ratio = thitr->first;
                     hit._primitiveIndex = triHit._index;
                     hit._originalLineSegment = sitr->first;
@@ -632,7 +632,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                         sitr->second->end()*hit._ratio;
 
                     hit._intersectNormal = triHit._normal;
-                    
+
                     if (geometry)
                     {
                         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
@@ -644,7 +644,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                             if (triHit._v3) hit._vecIndexList.push_back(triHit._v3-first);
                         }
                     }
-                    
+
 
                     _segHitList[sitr->first.get()].push_back(hit);
 
@@ -669,7 +669,7 @@ void IntersectVisitor::apply(Geode& geode)
     {
         intersect(*geode.getDrawable(i));
     }
-    
+
     leaveNode();
 }
 
@@ -746,8 +746,8 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
 {
     setLODSelectionMode(USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 
-    if (viewport && 
-        mx >= static_cast<float>(viewport->x()) && 
+    if (viewport &&
+        mx >= static_cast<float>(viewport->x()) &&
         my >= static_cast<float>(viewport->y()) &&
         mx < static_cast<float>(viewport->x()+viewport->width()) &&
         my < static_cast<float>(viewport->y()+viewport->height()))
@@ -777,7 +777,7 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
         {
             OSG_NOTICE<<"Warning: PickVisitor not set up correctly, picking errors likely"<<std::endl;
         }
-        
+
 
         addLineSegment(lineSegment);
     }
@@ -804,8 +804,8 @@ void PickVisitor::runNestedPickVisitor(osg::Node& node, const osg::Viewport* vie
 
 void PickVisitor::apply(osg::Projection& projection)
 {
-    runNestedPickVisitor( projection, 
-                          _lastViewport.get(), 
+    runNestedPickVisitor( projection,
+                          _lastViewport.get(),
                           projection.getMatrix(),
                           _lastViewMatrix,
                           _mx, _my );
@@ -821,7 +821,7 @@ void PickVisitor::apply(osg::Camera& camera)
             {
                 runNestedPickVisitor( camera,
                                       camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                                      _lastProjectionMatrix * camera.getProjectionMatrix(), 
+                                      _lastProjectionMatrix * camera.getProjectionMatrix(),
                                       _lastViewMatrix * camera.getViewMatrix(),
                                       _mx, _my );
             }
@@ -829,7 +829,7 @@ void PickVisitor::apply(osg::Camera& camera)
             {
                 runNestedPickVisitor( camera,
                                       camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                                      camera.getProjectionMatrix() * _lastProjectionMatrix, 
+                                      camera.getProjectionMatrix() * _lastProjectionMatrix,
                                       camera.getViewMatrix() * _lastViewMatrix,
                                       _mx, _my );
             }
@@ -838,7 +838,7 @@ void PickVisitor::apply(osg::Camera& camera)
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                                  camera.getProjectionMatrix(), 
+                                  camera.getProjectionMatrix(),
                                   camera.getViewMatrix(),
                                   _mx, _my );
         }

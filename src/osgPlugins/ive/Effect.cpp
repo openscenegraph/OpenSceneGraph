@@ -29,7 +29,7 @@ void Effect::write(DataOutputStream* out){
 
     // Write Effect's properties.
     out->writeBool(getEnabled());
-    
+
     out->writeInt(getSelectedTechnique());
 }
 
@@ -50,7 +50,7 @@ void Effect::read(DataInputStream* in){
 
         // Read Effect's properties
         setEnabled(in->readBool());
-        
+
         selectTechnique(in->readInt());
     }
     else{

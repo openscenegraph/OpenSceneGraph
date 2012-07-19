@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -166,7 +166,7 @@ namespace osg
 
         TglBindRenderbuffer* glBindRenderbuffer;
         TglGenRenderbuffers* glGenRenderbuffers;
-        TglDeleteRenderbuffers* glDeleteRenderbuffers; 
+        TglDeleteRenderbuffers* glDeleteRenderbuffers;
         TglRenderbufferStorage* glRenderbufferStorage;
         TglRenderbufferStorageMultisample* glRenderbufferStorageMultisample;
         TglRenderbufferStorageMultisampleCoverageNV* glRenderbufferStorageMultisampleCoverageNV;
@@ -376,10 +376,10 @@ namespace osg
         explicit FrameBufferAttachment(TextureCubeMap* target, unsigned int face, unsigned int level = 0);
         explicit FrameBufferAttachment(TextureRectangle* target);
         explicit FrameBufferAttachment(Camera::Attachment& attachment);
-        
+
         ~FrameBufferAttachment();
 
-        FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);        
+        FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);
 
         bool isMultisample() const;
         void createRequiredTexturesAndApplyGenerateMipMap(State& state, const FBOExtensions* ext) const;
@@ -412,7 +412,7 @@ namespace osg
     public:
         typedef std::map<Camera::BufferComponent, FrameBufferAttachment> AttachmentMap;
         typedef std::vector<GLenum> MultipleRenderingTargets;
-        
+
         typedef Camera::BufferComponent BufferComponent;
 
         FrameBufferObject();
@@ -421,19 +421,19 @@ namespace osg
         META_StateAttribute(osg, FrameBufferObject, (StateAttribute::Type)0x101010/*FrameBufferObject*/);
 
         inline const AttachmentMap& getAttachmentMap() const;
-        
+
 
         void setAttachment(BufferComponent attachment_point, const FrameBufferAttachment &attachment);
         inline const FrameBufferAttachment& getAttachment(BufferComponent attachment_point) const;
         inline bool hasAttachment(BufferComponent attachment_point) const;
-        
+
         inline bool hasMultipleRenderingTargets() const { return !_drawBuffers.empty(); }
         inline const MultipleRenderingTargets& getMultipleRenderingTargets() const { return _drawBuffers; }
 
         bool isMultisample() const;
 
         int compare(const StateAttribute &sa) const;
-        
+
         void apply(State &state) const;
 
         enum BindTarget
@@ -472,12 +472,12 @@ namespace osg
         FrameBufferObject& operator = (const FrameBufferObject&) { return *this; }
 
         void updateDrawBuffers();
-        
+
         inline void dirtyAll();
 
         GLenum convertBufferComponentToGLenum(BufferComponent attachment_point) const;
 
-    private:        
+    private:
         AttachmentMap               _attachments;
 
         // Buffers passed to glDrawBuffers when using multiple render targets.
@@ -486,7 +486,7 @@ namespace osg
         mutable buffered_value<int>         _dirtyAttachmentList;
         mutable buffered_value<int>         _unsupported;
         mutable buffered_value<GLuint>      _fboID;
-        
+
     };
 
     // INLINE METHODS

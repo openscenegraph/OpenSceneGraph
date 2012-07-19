@@ -25,10 +25,10 @@ class GraphicsContext;
 class OSG_EXPORT GraphicsThread : public osg::OperationThread
 {
     public:
-    
+
         GraphicsThread();
-        
-        /** Run does the graphics thread run loop.*/        
+
+        /** Run does the graphics thread run loop.*/
         virtual void run();
 };
 
@@ -72,11 +72,11 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
     virtual void release();
 
     virtual void operator () (Object* object);
-    
+
     PreBlockOp _preBlockOp;
 };
 
-/** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to acquire, 
+/** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to acquire,
   * then blocks waiting for context to be released, once the block is release the context is re-acquired.*/
 struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsOperation, public RefBlock
 {
@@ -103,7 +103,7 @@ struct OSG_EXPORT FlushDeletedGLObjectsOperation : public GraphicsOperation
     FlushDeletedGLObjectsOperation(double availableTime, bool keep=false);
 
     virtual void operator () (GraphicsContext*);
-    
+
     double _availableTime;
 };
 
@@ -113,17 +113,17 @@ public:
 
     RunOperations():
         osg::GraphicsOperation("RunOperation",true) {}
-    
+
     virtual void operator () (osg::GraphicsContext* context);
-    
+
 };
 
 class OSG_EXPORT EndOfDynamicDrawBlock : public OpenThreads::BlockCount, public osg::State::DynamicObjectRenderingCompletedCallback
 {
     public:
-    
+
         EndOfDynamicDrawBlock(unsigned int);
-    
+
         void completed(osg::State* state);
 
     protected:

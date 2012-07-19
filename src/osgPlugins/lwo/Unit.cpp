@@ -71,7 +71,7 @@ void Unit::generate_normals()
         }
 
         for (Polygon::Index_list::const_iterator j=poly.indices().begin(); j!=poly.indices().end(); ++j) {
-            
+
             osg::Vec4 N(poly.face_normal(points_.get()), 0);
             unsigned num_smoothed = 1;
 
@@ -106,7 +106,7 @@ void Unit::flatten_maps()
         i->local_normals()->clear();
 
         VertexMap_map::const_iterator j;
-        
+
         // flatten weight maps
         while (!i->weight_maps()->empty()) {
             VertexMap_map::iterator j = i->weight_maps()->begin();
@@ -174,7 +174,7 @@ void Unit::flatten_map(Polygon &poly, const VertexMap *local_map, VertexMap *glo
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
                 }
-                
+
                 // duplicate subpatch weights
                 for (vm=subpatch_weight_maps()->begin(); vm!=subpatch_weight_maps()->end(); ++vm) {
                     if (vm->second->find(*i) != vm->second->end())
@@ -186,32 +186,32 @@ void Unit::flatten_map(Polygon &poly, const VertexMap *local_map, VertexMap *glo
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
                 }
-                
+
                 // duplicate RGBs
                 for (vm=rgb_maps()->begin(); vm!=rgb_maps()->end(); ++vm) {
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
                 }
-                
+
                 // duplicate RGBAs
                 for (vm=rgba_maps()->begin(); vm!=rgba_maps()->end(); ++vm) {
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
                 }
-                
+
                 // duplicate displacements
                 for (vm=displacement_maps()->begin(); vm!=displacement_maps()->end(); ++vm) {
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
                 }
-                
+
                 // duplicate spots
                 for (vm=spot_maps()->begin(); vm!=spot_maps()->end(); ++vm) {
                     if (vm->second->find(*i) != vm->second->end())
                         (*vm->second.get())[new_index] = (*vm->second.get())[*i];
-                }                
-                
-                // update vertex index                
+                }
+
+                // update vertex index
                 poly.dup_vertices()[j] = *i;
                 *i = new_index;
             }

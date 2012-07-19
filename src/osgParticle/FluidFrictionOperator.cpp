@@ -20,7 +20,7 @@ osgParticle::FluidFrictionOperator::FluidFrictionOperator(const FluidFrictionOpe
 :    Operator(copy, copyop),
     _coeff_A(copy._coeff_A),
     _coeff_B(copy._coeff_B),
-    _density(copy._density), 
+    _density(copy._density),
     _viscosity(copy._viscosity),
     _ovr_rad(copy._ovr_rad),
     _current_program(0)
@@ -34,9 +34,9 @@ void osgParticle::FluidFrictionOperator::operate(Particle* P, double dt)
 
     float vm = v.normalize();
     float R = _coeff_A * r * vm + _coeff_B * r * r * vm * vm;
-    
+
     osg::Vec3 Fr(-R * v.x(), -R * v.y(), -R * v.z());
-    
+
 #if 0
     // Commenting out rotation of force vector rotation from local to world as the particle velocity itself
     // should already be in world coords so shouldn't need rotating.

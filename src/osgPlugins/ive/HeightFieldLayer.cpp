@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,9 +36,9 @@ void HeightFieldLayer::write(DataOutputStream* out)
     if (getFileName().empty() && getHeightField())
     {
         osg::HeightField* hf = getHeightField();
-    
+
         // using inline heightfield
-        out->writeBool(true);        
+        out->writeBool(true);
         if (out->getVersion()>=VERSION_0035)
         {
             // Write HeightField's properties.
@@ -52,16 +52,16 @@ void HeightFieldLayer::write(DataOutputStream* out)
             out->writeUInt(hf->getBorderWidth());
 
             float maxError = 0.0f;
-            
+
             if (getLocator())
             {
                 osg::Vec3d world_origin, world_corner;
-                
+
                 getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), world_origin);
                 getLocator()->convertLocalToModel(osg::Vec3d(1.0,1.0,0.0), world_corner);
-                
+
                 double distance = (world_origin-world_corner).length();
-                
+
                 maxError = distance * out->getTerrainMaximumErrorToSizeRatio();
             }
 
@@ -70,14 +70,14 @@ void HeightFieldLayer::write(DataOutputStream* out)
         else
         {
             out->writeShape(getHeightField());
-        }    
+        }
 
     }
     else
     {
         // using external heightfield file
-        out->writeBool(false);        
-        out->writeString(getFileName());        
+        out->writeBool(false);
+        out->writeString(getFileName());
     }
 
 }
@@ -88,7 +88,7 @@ void HeightFieldLayer::read(DataInputStream* in)
     int id = in->peekInt();
     if (id != IVEHEIGHTFIELDLAYER)
         in_THROW_EXCEPTION("HeightFieldLayer::read(): Expected HeightFieldLayer identification.");
-    
+
     // Read Layer's identification.
     id = in->readInt();
 
@@ -101,18 +101,18 @@ void HeightFieldLayer::read(DataInputStream* in)
 
 
     bool useInlineHeightField = in->readBool();
-    
+
     if (useInlineHeightField)
     {
-    
+
         if (in->getVersion()>=VERSION_0035)
         {
             osg::HeightField* hf = new osg::HeightField;
-            
+
             // Read HeightField's properties
             //setColor(in->readVec4());
             unsigned int col = in->readUInt();
-            unsigned int row = in->readUInt();        
+            unsigned int row = in->readUInt();
             hf->allocate(col,row);
 
             hf->setOrigin(in->readVec3());
@@ -127,7 +127,7 @@ void HeightFieldLayer::read(DataInputStream* in)
             {
                 in->readPackedFloatArray(hf->getFloatArray());
             }
-            
+
             setHeightField(hf);
 
         }
@@ -135,14 +135,14 @@ void HeightFieldLayer::read(DataInputStream* in)
         {
             osg::Shape* shape = in->readShape();
             setHeightField(dynamic_cast<osg::HeightField*>(shape));
-        }    
+        }
 
     }
     else
     {
         std::string filename = in->readString();
         setFileName(filename);
-        
+
         setHeightField(osgDB::readHeightFieldFile(filename,in->getOptions()));
     }
 

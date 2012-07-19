@@ -13,7 +13,7 @@ bool StateAttribute_readLocalData(Object& obj, Input& fr);
 bool StateAttribute_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-osg::StateAttribute* g_stateAttribute = 0; 
+osg::StateAttribute* g_stateAttribute = 0;
 REGISTER_DOTOSGWRAPPER(StateAttribute)
 (
     g_stateAttribute, // no instance, osg::StateAttribute is an abstract class.

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -63,7 +63,7 @@ public:
         _vertexArrayPtr = vertices;
     }
 
-    virtual void setVertexArray(unsigned int,const Vec4* ) 
+    virtual void setVertexArray(unsigned int,const Vec4* )
     {
         notify(WARN)<<"Triangle Functor does not support Vec4* vertex arrays"<<std::endl;
     }
@@ -78,7 +78,7 @@ public:
         notify(WARN)<<"Triangle Functor does not support Vec3d* vertex arrays"<<std::endl;
     }
 
-    virtual void setVertexArray(unsigned int,const Vec4d* ) 
+    virtual void setVertexArray(unsigned int,const Vec4d* )
     {
         notify(WARN)<<"Triangle Functor does not support Vec4d* vertex arrays"<<std::endl;
     }
@@ -150,9 +150,9 @@ public:
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef const GLubyte* IndexPointer;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -212,14 +212,14 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef const GLushort* IndexPointer;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -228,7 +228,7 @@ public:
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                 {
                     this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                }    
+                }
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -281,14 +281,14 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef const GLuint* IndexPointer;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):

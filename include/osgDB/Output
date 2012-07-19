@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,10 +31,10 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
 
         Output();
         Output(const char* name);
-        
+
         virtual ~Output();
 
-       
+
         void setOptions(const Options* options);
         const Options* getOptions() const { return _options.get(); }
 
@@ -42,7 +42,7 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         bool getWriteOutDefaultValues() const { return _writeOutDefaultValues; }
 
         void open(const char *name);
-        
+
         // comment out temporarily to avoid compilation problems, RO Jan 2002.
         // void open(const char *name,int mode);
 
@@ -65,7 +65,7 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
 
         void moveIn();
         void moveOut();
-        
+
         virtual bool writeObject(const osg::Object& obj);
         virtual void writeBeginObject(const std::string& name);
         virtual void writeEndObject();
@@ -83,7 +83,7 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
             RELATIVE_PATH,
             FILENAME_ONLY
         };
-        
+
         inline void setPathNameHint(const PathNameHint pnh) { _pathNameHint = pnh; }
         inline PathNameHint getPathNameHint() const { return _pathNameHint; }
 
@@ -114,14 +114,14 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
 
         int _indent;
         int _indentStep;
-        
+
         int _numIndicesPerLine;
 
         typedef std::map<const osg::Object*,std::string> UniqueIDToLabelMapping;
         UniqueIDToLabelMapping _objectToUniqueIDMap;
-        
+
         std::string _filename;
-        
+
         PathNameHint _pathNameHint;
 
         bool _outputTextureFiles;

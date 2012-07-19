@@ -102,7 +102,7 @@ protected:
     osg::CullFace::Mode osgCullFace;
     bool osgBlendEnabled;
     const osg::BlendFunc *osgBlendFunc;
-    
+
     InventorState()  {}
     InventorState(SoGroup *root) : ivHead(root), ivTexture(NULL),
         ivMaterial(NULL), osgMaterial(NULL),
@@ -111,7 +111,7 @@ protected:
         osgLighting(true), osgTwoSided(false), osgFrontFace(osg::FrontFace::COUNTER_CLOCKWISE),
         osgCullFaceEnabled(false), osgCullFace(osg::CullFace::BACK),
         osgBlendEnabled(false), osgBlendFunc(NULL)  {}
-    InventorState(const InventorState &s) : ivHead(s.ivHead), ivTexture(s.ivTexture), 
+    InventorState(const InventorState &s) : ivHead(s.ivHead), ivTexture(s.ivTexture),
         ivMaterial(s.ivMaterial), osgMaterial(s.osgMaterial),
         osgTexture2Enabled(s.osgTexture2Enabled), osgTexture(s.osgTexture), osgTexEnv(s.osgTexEnv),
         osgTexGenS(s.osgTexGenS), osgTexGenT(s.osgTexGenT), osgTexGen(s.osgTexGen),

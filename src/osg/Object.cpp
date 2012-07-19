@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Object>
@@ -20,7 +20,7 @@ namespace osg
 //
 // Object
 //
-Object::Object(const Object& obj,const CopyOp& copyop): 
+Object::Object(const Object& obj,const CopyOp& copyop):
     Referenced(),
     _name(obj._name),
     _dataVariance(obj._dataVariance),
@@ -54,11 +54,11 @@ void Object::setThreadSafeRefUnref(bool threadSafe)
 void Object::setUserDataContainer(osg::UserDataContainer* udc)
 {
     if (_userDataContainer == udc) return;
-    
+
     if (_userDataContainer) _userDataContainer->unref();
-    
+
     _userDataContainer = udc;
-    
+
     if (_userDataContainer) _userDataContainer->ref();
 }
 
@@ -71,7 +71,7 @@ osg::UserDataContainer* Object::getOrCreateUserDataContainer()
 void Object::setUserData(Referenced* obj)
 {
     if (getUserData()==obj) return;
-    
+
     getOrCreateUserDataContainer()->setUserData(obj);
 }
 

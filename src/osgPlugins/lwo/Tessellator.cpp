@@ -9,7 +9,7 @@
 
 using namespace lwosg;
 
-namespace lwosg 
+namespace lwosg
 {
 
     void CALLBACK cb_begin_data(GLenum type, void *data)
@@ -52,7 +52,7 @@ bool Tessellator::tessellate(const Polygon &poly, const osg::Vec3Array *points, 
     osg::gluTessCallback(tess, GLU_TESS_ERROR_DATA, (osg::GLU_TESS_CALLBACK) (cb_error_data));
 
     osg::gluTessBeginPolygon(tess, this);
-    osg::gluTessBeginContour(tess);    
+    osg::gluTessBeginContour(tess);
 
     double *vertices = new double[poly.indices().size() * 3];
     int *indices = new int[poly.indices().size()];

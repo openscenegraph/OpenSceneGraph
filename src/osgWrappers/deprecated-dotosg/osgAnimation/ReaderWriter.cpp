@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -54,7 +54,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(att[1]);
         fr[3].getFloat(att[2]);
         fr[4].getFloat(att[3]);
-        
+
         fr += 5;
         iteratorAdvanced = true;
         osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
@@ -66,7 +66,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
         fr[3].getFloat(pos[2]);
-        
+
         fr += 4;
         iteratorAdvanced = true;
         osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
@@ -78,7 +78,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(scale[0]);
         fr[2].getFloat(scale[1]);
         fr[3].getFloat(scale[2]);
-        
+
         fr += 4;
         iteratorAdvanced = true;
         osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
@@ -86,7 +86,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("InvBindMatrixInSkeletonSpace {"))
     {
-        Matrix matrix; 
+        Matrix matrix;
         if (readMatrix(matrix,fr, "InvBindMatrixInSkeletonSpace"))
         {
             bone.setInvBindMatrixInSkeletonSpace(matrix);
@@ -95,7 +95,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
     }
     if (fr.matchSequence("MatrixInSkeletonSpace {"))
     {
-        Matrix matrix; 
+        Matrix matrix;
         if (readMatrix(matrix,fr, "MatrixInSkeletonSpace"))
         {
             bone.setMatrixInSkeletonSpace(matrix);
@@ -126,13 +126,13 @@ RegisterDotOsgWrapperProxy g_BoneProxy
 
 
 
-bool Skeleton_readLocalData(Object& obj, Input& fr) 
-{ 
+bool Skeleton_readLocalData(Object& obj, Input& fr)
+{
     return false;
 }
-bool Skeleton_writeLocalData(const Object& obj, Output& fr) 
+bool Skeleton_writeLocalData(const Object& obj, Output& fr)
 {
-    return true; 
+    return true;
 }
 RegisterDotOsgWrapperProxy g_SkeletonProxy
 (
@@ -149,7 +149,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
 {
     bool iteratorAdvanced = false;
     std::string name = "unknown";
-    if (fr.matchSequence("name %s")) 
+    if (fr.matchSequence("name %s"))
     {
         if (fr[1].getStr())
             name = fr[1].getStr();
@@ -159,7 +159,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
     pChannel->setName(name);
 
     std::string target = "unknown";
-    if (fr.matchSequence("target %s")) 
+    if (fr.matchSequence("target %s"))
     {
         if (fr[1].getStr())
             target = fr[1].getStr();
@@ -170,7 +170,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
 
 // we dont need this info
     float weight = 1.0;
-    if (fr.matchSequence("weight %f")) 
+    if (fr.matchSequence("weight %f"))
     {
         fr[1].getFloat(weight);
         fr += 2;
@@ -195,7 +195,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("weight %f")) 
+    if (fr.matchSequence("weight %f"))
     {
         float weight;
         fr[1].getFloat(weight);
@@ -203,8 +203,8 @@ bool Animation_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
         anim.setWeight(weight);
     }
-    
-    if (fr.matchSequence("duration %f")) 
+
+    if (fr.matchSequence("duration %f"))
     {
         float duration;
         fr[1].getFloat(duration);
@@ -213,7 +213,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
         anim.setDuration(duration);
     }
 
-    if (fr.matchSequence("starttime %f")) 
+    if (fr.matchSequence("starttime %f"))
     {
         float starttime;
         fr[1].getFloat(starttime);
@@ -223,16 +223,16 @@ bool Animation_readLocalData(Object& obj, Input& fr)
     }
 
     int nbChannels = 0;
-    if (fr.matchSequence("num_channels %i")) 
+    if (fr.matchSequence("num_channels %i"))
     {
         fr[1].getInt(nbChannels);
         fr += 2;
         iteratorAdvanced = true;
     }
 
-    for (int i = 0; i < nbChannels; i++) 
+    for (int i = 0; i < nbChannels; i++)
     {
-        if (fr.matchSequence("DoubleLinearChannel {")) 
+        if (fr.matchSequence("DoubleLinearChannel {"))
         {
             fr += 2;
 
@@ -240,15 +240,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     double v;
                     float time;
@@ -269,7 +269,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
             if (fr.matchSequence("}")) // channel
                 fr += 1;
         }
-        else if (fr.matchSequence("FloatLinearChannel {")) 
+        else if (fr.matchSequence("FloatLinearChannel {"))
         {
             fr += 2;
 
@@ -277,15 +277,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     float v;
                     float time;
@@ -306,7 +306,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
             if (fr.matchSequence("}")) // channel
                 fr += 1;
         }
-        else if (fr.matchSequence("Vec2LinearChannel {")) 
+        else if (fr.matchSequence("Vec2LinearChannel {"))
         {
             fr += 2;
 
@@ -314,15 +314,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     osg::Vec2 v;
                     float time;
@@ -344,7 +344,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
             if (fr.matchSequence("}")) // channel
                 fr += 1;
         }
-        else if (fr.matchSequence("Vec3LinearChannel {")) 
+        else if (fr.matchSequence("Vec3LinearChannel {"))
         {
             fr += 2;
 
@@ -352,15 +352,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     osg::Vec3 v;
                     float time;
@@ -383,7 +383,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
             if (fr.matchSequence("}")) // channel
                 fr += 1;
         }
-        else if (fr.matchSequence("Vec4LinearChannel {")) 
+        else if (fr.matchSequence("Vec4LinearChannel {"))
         {
             fr += 2;
 
@@ -391,15 +391,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     osg::Vec4 v;
                     float time;
@@ -423,7 +423,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
             if (fr.matchSequence("}")) // channel
                 fr += 1;
         }
-        else if (fr.matchSequence("QuatSphericalLinearChannel {")) 
+        else if (fr.matchSequence("QuatSphericalLinearChannel {"))
         {
             fr += 2;
 
@@ -431,15 +431,15 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             if (Animation_readChannel(channel, fr))
                 iteratorAdvanced = true;
-                 
+
             int nbKeys;
-            if (fr.matchSequence("Keyframes %i {")) 
+            if (fr.matchSequence("Keyframes %i {"))
             {
                 fr[1].getInt(nbKeys);
                 fr += 3;
                 iteratorAdvanced = true;
 
-                for (int k = 0; k < nbKeys; k++) 
+                for (int k = 0; k < nbKeys; k++)
                 {
                     osg::Quat q;
                     float time;
@@ -464,14 +464,14 @@ bool Animation_readLocalData(Object& obj, Input& fr)
                 fr += 1;
         }
         // Deprecated
-        // Reading of old channel info 
+        // Reading of old channel info
         // Kept here for easy conversion of old .osg data to new format
-        else if (fr.matchSequence("Channel {")) 
+        else if (fr.matchSequence("Channel {"))
         {
             fr += 2;
 
             std::string name = "unknown";
-            if (fr.matchSequence("name %s")) 
+            if (fr.matchSequence("name %s"))
             {
                 if (fr[1].getStr())
                     name = fr[1].getStr();
@@ -479,7 +479,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
                 iteratorAdvanced = true;
             }
             std::string target = "unknown";
-            if (fr.matchSequence("target %s")) 
+            if (fr.matchSequence("target %s"))
             {
                 if (fr[1].getStr())
                     target = fr[1].getStr();
@@ -489,7 +489,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
             std::string type = "unknown";
             int nbKeys;
-            if (fr.matchSequence("Keyframes %s %i {")) 
+            if (fr.matchSequence("Keyframes %s %i {"))
             {
                 if (fr[1].getStr())
                     type = fr[1].getStr();
@@ -498,24 +498,24 @@ bool Animation_readLocalData(Object& obj, Input& fr)
                 iteratorAdvanced = true;
 
                 osgAnimation::Channel* channel = 0;
-                if (type == "Quat") 
+                if (type == "Quat")
                 {
                     osgAnimation::QuatSphericalLinearChannel* c = new osgAnimation::QuatSphericalLinearChannel;
                     c->getOrCreateSampler()->getOrCreateKeyframeContainer();
                     channel = c;
                 }
-                else if (type == "Vec3") 
+                else if (type == "Vec3")
                 {
                     osgAnimation::Vec3LinearChannel* c = new osgAnimation::Vec3LinearChannel;
                     c->getOrCreateSampler()->getOrCreateKeyframeContainer();
                     channel = c;
                 }
 
-                if (channel) 
+                if (channel)
                 {
-                    for (int k = 0; k < nbKeys; k++) 
+                    for (int k = 0; k < nbKeys; k++)
                     {
-                        if (type == "Quat") 
+                        if (type == "Quat")
                         {
                             osg::Quat q;
                             float time;
@@ -530,7 +530,7 @@ bool Animation_readLocalData(Object& obj, Input& fr)
                             c->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::QuatKeyframe(time, q));
                             iteratorAdvanced = true;
                         }
-                        else if (type == "Vec3") 
+                        else if (type == "Vec3")
                         {
                             osg::Vec3 v;
                             float time;
@@ -576,7 +576,7 @@ void Animation_writeChannel(const std::string& channelString, ChannelType* pChan
     {
         fw.indent() << "Keyframes " << kfc->size() << " {" << std::endl;
         fw.moveIn();
-        for (unsigned int k = 0; k < kfc->size(); k++) 
+        for (unsigned int k = 0; k < kfc->size(); k++)
         {
             fw.indent() << "key " << (*kfc)[k].getTime() << " " <<  (*kfc)[k].getValue() << std::endl;
         }
@@ -591,7 +591,7 @@ bool Animation_writeLocalData(const Object& obj, Output& fw)
 {
     const osgAnimation::Animation& anim = dynamic_cast<const osgAnimation::Animation&>(obj);
 
-    switch (anim.getPlayMode()) 
+    switch (anim.getPlayMode())
     {
     case osgAnimation::Animation::ONCE:
         fw.indent() << "playmode ONCE" << std::endl;
@@ -602,7 +602,7 @@ bool Animation_writeLocalData(const Object& obj, Output& fw)
     case osgAnimation::Animation::LOOP:
         fw.indent() << "playmode LOOP" << std::endl;
         break;
-    case osgAnimation::Animation::PPONG: 
+    case osgAnimation::Animation::PPONG:
         fw.indent() << "playmode PPONG" << std::endl;
         break;
     default:
@@ -614,7 +614,7 @@ bool Animation_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "starttime " << anim.getStartTime() << std::endl;
 
     fw.indent() << "num_channels " << anim.getChannels().size()  << std::endl;
-    for (unsigned int i = 0; i < anim.getChannels().size(); i++) 
+    for (unsigned int i = 0; i < anim.getChannels().size(); i++)
     {
         osgAnimation::Channel* pChannel = anim.getChannels()[i].get();
 
@@ -698,12 +698,12 @@ RegisterDotOsgWrapperProxy g_atkAnimationProxy
 
 
 
-bool AnimationManagerBase_readLocalData(osgAnimation::AnimationManagerBase& manager, Input& fr) 
+bool AnimationManagerBase_readLocalData(osgAnimation::AnimationManagerBase& manager, Input& fr)
 {
     int nbAnims = 0;
     bool iteratorAdvanced = false;
 
-    if (fr.matchSequence("num_animations %i")) 
+    if (fr.matchSequence("num_animations %i"))
     {
         fr[1].getInt(nbAnims);
         fr += 2;
@@ -714,26 +714,26 @@ bool AnimationManagerBase_readLocalData(osgAnimation::AnimationManagerBase& mana
     {
         Object* o = fr.readObject();
         osgAnimation::Animation* a = dynamic_cast<osgAnimation::Animation*>(o);
-        if (a) 
+        if (a)
         {
             manager.registerAnimation(a);
             iteratorAdvanced = true;
-        } 
+        }
         else
-            osg::notify(osg::WARN)<<"Warning: can't read an animation object"<< std::endl;        
+            osg::notify(osg::WARN)<<"Warning: can't read an animation object"<< std::endl;
     }
 
     return iteratorAdvanced;
 }
 
 
-bool BasicAnimationManager_readLocalData(Object& obj, Input& fr) 
+bool BasicAnimationManager_readLocalData(Object& obj, Input& fr)
 {
     osgAnimation::BasicAnimationManager& manager = dynamic_cast<osgAnimation::BasicAnimationManager&>(obj);
     return AnimationManagerBase_readLocalData(manager, fr);
 }
 
-bool TimelineAnimationManager_readLocalData(Object& obj, Input& fr) 
+bool TimelineAnimationManager_readLocalData(Object& obj, Input& fr)
 {
     osgAnimation::TimelineAnimationManager& manager = dynamic_cast<osgAnimation::TimelineAnimationManager&>(obj);
     return AnimationManagerBase_readLocalData(manager, fr);
@@ -748,7 +748,7 @@ bool AnimationManagerBase_writeLocalData(const osgAnimation::AnimationManagerBas
     for (osgAnimation::AnimationList::const_iterator it = animList.begin(); it != animList.end(); ++it)
     {
         if (!fw.writeObject(**it))
-            osg::notify(osg::WARN)<<"Warning: can't write an animation object"<< std::endl;        
+            osg::notify(osg::WARN)<<"Warning: can't write an animation object"<< std::endl;
     }
     return true;
 }
@@ -787,25 +787,25 @@ RegisterDotOsgWrapperProxy g_TimelineAnimationManagerProxy
 );
 
 
-bool RigGeometry_readLocalData(Object& obj, Input& fr) 
+bool RigGeometry_readLocalData(Object& obj, Input& fr)
 {
     osgAnimation::RigGeometry& geom = dynamic_cast<osgAnimation::RigGeometry&>(obj);
     osg::ref_ptr<osgAnimation::VertexInfluenceMap> vmap = new osgAnimation::VertexInfluenceMap;
 
     int nbGroups = 0;
     bool iteratorAdvanced = false;
-    if (fr.matchSequence("num_influences %i")) 
+    if (fr.matchSequence("num_influences %i"))
     {
         fr[1].getInt(nbGroups);
         fr += 2;
         iteratorAdvanced = true;
     }
 
-    for (int i = 0; i < nbGroups; i++) 
+    for (int i = 0; i < nbGroups; i++)
     {
         int nbVertexes = 0;
         std::string name;
-        if (fr.matchSequence("osgAnimation::VertexInfluence %s %i {")) 
+        if (fr.matchSequence("osgAnimation::VertexInfluence %s %i {"))
         {
             name = fr[1].getStr();
             fr[2].getInt(nbVertexes);
@@ -816,11 +816,11 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
         osgAnimation::VertexInfluence vi;
         vi.setName(name);
         vi.reserve(nbVertexes);
-        for (int j = 0; j < nbVertexes; j++) 
+        for (int j = 0; j < nbVertexes; j++)
         {
             int index = -1;
             float weight = 1;
-            if (fr.matchSequence("%i %f")) 
+            if (fr.matchSequence("%i %f"))
             {
                 fr[0].getInt(index);
                 fr[1].getFloat(weight);
@@ -829,7 +829,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
             }
             vi.push_back(osgAnimation::VertexIndexWeight(index, weight));
         }
-        if (fr.matchSequence("}")) 
+        if (fr.matchSequence("}"))
         {
             fr+=1;
         }
@@ -848,7 +848,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
     return iteratorAdvanced;
 }
 
-bool RigGeometry_writeLocalData(const Object& obj, Output& fw) 
+bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
 {
     const osgAnimation::RigGeometry& geom = dynamic_cast<const osgAnimation::RigGeometry&>(obj);
     const osgAnimation::VertexInfluenceMap* vm = geom.getInfluenceMap();
@@ -856,7 +856,7 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
         return true;
     fw.indent() << "num_influences "  << vm->size() << std::endl;
     fw.moveIn();
-    for (osgAnimation::VertexInfluenceMap::const_iterator it = vm->begin(); it != vm->end(); ++it) 
+    for (osgAnimation::VertexInfluenceMap::const_iterator it = vm->begin(); it != vm->end(); ++it)
     {
         std::string name = it->first;
         if (name.empty())
@@ -864,7 +864,7 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "osgAnimation::VertexInfluence \""  << name << "\" " << it->second.size() << " {" << std::endl;
         fw.moveIn();
         const osgAnimation::VertexInfluence& vi = it->second;
-        for (osgAnimation::VertexInfluence::const_iterator itv = vi.begin(); itv != vi.end(); itv++) 
+        for (osgAnimation::VertexInfluence::const_iterator itv = vi.begin(); itv != vi.end(); itv++)
         {
             fw.indent() << itv->first << " " << itv->second << std::endl;
         }
@@ -888,7 +888,7 @@ RegisterDotOsgWrapperProxy g_atkRigGeometryProxy
     );
 
 
-bool MorphGeometry_readLocalData(Object& obj, Input& fr) 
+bool MorphGeometry_readLocalData(Object& obj, Input& fr)
 {
     osgAnimation::MorphGeometry& geom = dynamic_cast<osgAnimation::MorphGeometry&>(obj);
 
@@ -946,7 +946,7 @@ bool MorphGeometry_readLocalData(Object& obj, Input& fr)
             {
 
                 float weight = 1.0;
-                if (fr.matchSequence("weight %f")) 
+                if (fr.matchSequence("weight %f"))
                 {
                     fr[1].getFloat(weight);
                     fr += 2;
@@ -965,7 +965,7 @@ bool MorphGeometry_readLocalData(Object& obj, Input& fr)
     return iteratorAdvanced;
 }
 
-bool MorphGeometry_writeLocalData(const Object& obj, Output& fw) 
+bool MorphGeometry_writeLocalData(const Object& obj, Output& fw)
 {
     const osgAnimation::MorphGeometry& geom = dynamic_cast<const osgAnimation::MorphGeometry&>(obj);
 
@@ -976,9 +976,9 @@ bool MorphGeometry_writeLocalData(const Object& obj, Output& fw)
     }
 
     fw.indent() << "morphNormals ";
-    if (geom.getMorphNormals()) 
+    if (geom.getMorphNormals())
         fw << "TRUE" << std::endl;
-    else 
+    else
         fw << "FALSE" << std::endl;
 
     const osgAnimation::MorphGeometry::MorphTargetList& morphTargets = geom.getMorphTargetList();
@@ -1032,7 +1032,7 @@ RegisterDotOsgWrapperProxy g_UpdateBoneProxy
 
 
 
-bool UpdateSkeleton_readLocalData(Object& obj, Input& fr) 
+bool UpdateSkeleton_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
@@ -1054,7 +1054,7 @@ RegisterDotOsgWrapperProxy g_UpdateSkeletonProxy
     );
 
 
-bool UpdateMorph_readLocalData(Object& obj, Input& fr) 
+bool UpdateMorph_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;

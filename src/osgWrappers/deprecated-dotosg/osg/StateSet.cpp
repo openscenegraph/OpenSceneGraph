@@ -84,7 +84,7 @@ void initGLNames()
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_initGLNames);
 
     if (!first_time) return;
-    
+
     ADD_NAME("GL_ALPHA_TEST",GL_ALPHA_TEST)
     ADD_NAME("GL_BLEND",GL_BLEND)
     ADD_NAME("GL_COLOR_MATERIAL",GL_COLOR_MATERIAL)
@@ -100,21 +100,21 @@ void initGLNames()
     ADD_NAME("GL_COLOR_SUM",GL_COLOR_SUM);
     ADD_NAME("GL_NORMALIZE",GL_NORMALIZE);
     ADD_NAME("GL_RESCALE_NORMAL",GL_RESCALE_NORMAL);
-    
+
     ADD_NAME("GL_TEXTURE_1D",GL_TEXTURE_1D)
     ADD_NAME("GL_TEXTURE_2D",GL_TEXTURE_2D)
     ADD_NAME("GL_TEXTURE_3D",GL_TEXTURE_3D)
-    
+
     ADD_NAME("GL_TEXTURE_CUBE_MAP",GL_TEXTURE_CUBE_MAP);
     ADD_NAME("GL_TEXTURE_RECTANGLE",GL_TEXTURE_RECTANGLE);
-    
+
     ADD_NAME("GL_TEXTURE_GEN_Q",GL_TEXTURE_GEN_Q)
     ADD_NAME("GL_TEXTURE_GEN_R",GL_TEXTURE_GEN_R)
     ADD_NAME("GL_TEXTURE_GEN_S",GL_TEXTURE_GEN_S)
     ADD_NAME("GL_TEXTURE_GEN_T",GL_TEXTURE_GEN_T)
-    
+
     ADD_NAME("GL_STENCIL_TEST",GL_STENCIL_TEST)
-    
+
     ADD_NAME("GL_CLIP_PLANE0",GL_CLIP_PLANE0);
     ADD_NAME("GL_CLIP_PLANE1",GL_CLIP_PLANE1);
     ADD_NAME("GL_CLIP_PLANE2",GL_CLIP_PLANE2);
@@ -137,19 +137,19 @@ void initGLNames()
 #endif
     ADD_NAME("GL_VERTEX_PROGRAM_POINT_SIZE", GL_VERTEX_PROGRAM_POINT_SIZE)
     ADD_NAME("GL_VERTEX_PROGRAM_TWO_SIDE", GL_VERTEX_PROGRAM_TWO_SIDE)
-    
+
     s_TextureGLModeSet.insert(GL_TEXTURE_1D);
     s_TextureGLModeSet.insert(GL_TEXTURE_2D);
     s_TextureGLModeSet.insert(GL_TEXTURE_3D);
-    
+
     s_TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
     s_TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE);
-    
+
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_R);
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_S);
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_T);
-    
+
 
 //     for(GLNameToGLModeMap::iterator itr=s_GLNameToGLModeMap.begin();
 //         itr!=s_GLNameToGLModeMap.end();
@@ -157,7 +157,7 @@ void initGLNames()
 //     {
 //         cout << "Name ["<<itr->first<<","<<itr->second<<"]"<< std::endl;
 //     }
-    
+
     first_time = false;
 }
 
@@ -277,10 +277,10 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
         {
             statset.setAttribute(attribute);
         }
-        
-        if (attribute->getType()==StateAttribute::TEXGEN) 
+
+        if (attribute->getType()==StateAttribute::TEXGEN)
             statset.setAssociatedModes(attribute,texgening);
-            
+
         iteratorAdvanced = true;
     }
 
@@ -295,8 +295,8 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     StateSet& stateset = static_cast<StateSet&>(obj);
 
     initGLNames();
-    
-    // read the rendering hint value.    
+
+    // read the rendering hint value.
     if (fr[0].matchWord("rendering_hint"))
     {
         if (fr[1].matchWord("DEFAULT_BIN"))
@@ -349,7 +349,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     {
         setRenderBinDetails=true;
         binName = fr[1].getStr();
-        
+
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -394,7 +394,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
             {
                 int mode;
                 fr[0].getInt(mode);
-                
+
                 if (s_TextureGLModeSet.find(mode)!=s_TextureGLModeSet.end())
                 {
                     // remap to a texture unit.
@@ -432,7 +432,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                     readingMode=true;
                 }
             }
-        } 
+        }
     }
 
     // new code using osg::Registry's list of prototypes to loaded attributes.
@@ -459,7 +459,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         }
         iteratorAdvanced = true;
     }
-    
+
     while(fr.matchSequence("textureUnit %i {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -467,11 +467,11 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         unsigned int unit=0;
         fr[1].getUInt(unit);
         fr+=3;
-        
+
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             bool localIteratorAdvanced = false;
-            
+
             bool readingMode = true;
             StateAttribute::GLModeValue value;
             while (readingMode)
@@ -504,34 +504,34 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                             readingMode=true;
                         }
                     }
-                } 
+                }
             }
-            
+
             StateAttribute* attribute = NULL;
             while((attribute=fr.readStateAttribute())!=NULL)
             {
                 stateset.setTextureAttribute(unit,attribute);
                 localIteratorAdvanced = true;
             }
-            
+
             if (!localIteratorAdvanced)
                 fr.advanceOverCurrentFieldOrBlock();
         }
-        
+
         // skip over trailing '}'
         ++fr;
-        
+
         iteratorAdvanced = true;
 
     }
-    
-    
-    
+
+
+
 
     return iteratorAdvanced;
 }
 
-// visual studio 6.0 doesn't appear to define std::max?!? So do our own here.. 
+// visual studio 6.0 doesn't appear to define std::max?!? So do our own here..
 template<class T>
 T mymax(const T& a,const T& b)
 {
@@ -545,22 +545,22 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
 
     initGLNames();
 
-    // write the rendering hint value.    
+    // write the rendering hint value.
     fw.indent()<<"rendering_hint ";
     switch(stateset.getRenderingHint())
     {
     case(StateSet::DEFAULT_BIN):
         fw<<"DEFAULT_BIN"<< std::endl;
-        break;    
+        break;
     case(StateSet::OPAQUE_BIN):
         fw<<"OPAQUE_BIN"<< std::endl;
-        break;    
+        break;
     case(StateSet::TRANSPARENT_BIN):
         fw<<"TRANSPARENT_BIN"<< std::endl;
-        break;    
+        break;
     default:
         fw<<stateset.getRenderingHint()<< std::endl;
-        break;    
+        break;
     }
 
     fw.indent()<<"renderBinMode "<<StateSet_getRenderBinModeStr(stateset.getRenderBinMode())<< std::endl;
@@ -587,7 +587,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
              fw.indent() << "0x" << hex << (unsigned int)mitr->first << dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
          }
     }
-    
+
     const StateSet::UniformList& ul = stateset.getUniformList();
     for(StateSet::UniformList::const_iterator uitr=ul.begin();
         uitr!=ul.end();
@@ -604,15 +604,15 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
         fw.writeObject(*(sitr->second.first));
     }
 
-    
-    const StateSet::TextureModeList& tml = stateset.getTextureModeList();    
+
+    const StateSet::TextureModeList& tml = stateset.getTextureModeList();
     const StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
     unsigned int maxUnit = mymax(tml.size(),tal.size());
     for(unsigned int unit=0;unit<maxUnit;++unit)
     {
         fw.indent()<<"textureUnit "<<unit<<" {"<< std::endl;
         fw.moveIn();
-        
+
         if (unit<tml.size())
         {
             const StateSet::ModeList& ml = tml[unit];
@@ -632,7 +632,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
                  }
             }
         }
-        
+
         if (unit<tal.size())
         {
             const StateSet::AttributeList& sl = tal[unit];
@@ -643,11 +643,11 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
                 fw.writeObject(*(sitr->second.first));
             }
         }
-        
+
         fw.moveOut();
         fw.indent()<<"}"<< std::endl;
     }
-    
+
     if (stateset.getUpdateCallback())
     {
         fw.indent() << "UpdateCallback {" << std::endl;

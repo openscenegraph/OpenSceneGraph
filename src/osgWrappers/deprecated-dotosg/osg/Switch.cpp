@@ -53,7 +53,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("NewChildDefaultValue"))
     {
-        if (fr[1].matchWord("TRUE")) 
+        if (fr[1].matchWord("TRUE"))
         {
             sw.setNewChildDefaultValue(true);
             iteratorAdvanced = true;
@@ -95,9 +95,9 @@ bool Switch_readLocalData(Object& obj, Input& fr)
         }
 
         ++fr;
-        
+
         iteratorAdvanced = true;
-        
+
     }
 
     return iteratorAdvanced;

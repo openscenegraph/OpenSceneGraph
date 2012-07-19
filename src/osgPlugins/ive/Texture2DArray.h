@@ -7,7 +7,7 @@
 namespace ive
 {
 
-class Texture2DArray : public osg::Texture2DArray, public ReadWrite 
+class Texture2DArray : public osg::Texture2DArray, public ReadWrite
 {
 public:
     void write(DataOutputStream* out);

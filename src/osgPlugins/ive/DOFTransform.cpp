@@ -50,7 +50,7 @@ void DOFTransform::write(DataOutputStream* out){
     {
         out->writeChar((char)(getHPRMultOrder()));
     }
-    
+
     out->writeULong(getLimitationFlags());
     out->writeBool(getAnimationOn());
 }

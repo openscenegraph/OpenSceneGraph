@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,21 +33,21 @@ using namespace osgDarwin;
 
 // Carbon-Eventhandler to handle the click in the close-widget and the resize of windows
 
-static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void* userData) 
+static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void* userData)
 {
     WindowRef           window;
     Rect                bounds;
     OSStatus            result = eventNotHandledErr; /* report failure by default */
-    
+
     OSG_INFO << "GraphicsWindowEventHandler" << std::endl;
 
     GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
     if (!w)
         return result;
-    
+
     GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
                          sizeof(window), NULL, &window);
-                         
+
     switch(GetEventClass(event))
     {
         case kEventClassTablet:
@@ -55,38 +55,38 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
             if (w->handleMouseEvent(event))
                 result = noErr;
             break;
-               
+
         case kEventClassKeyboard:
             if (w->handleKeyboardEvent(event))
                 result = noErr;
             break;
-            
+
         case kEventClassWindow: {
-        
+
             switch (GetEventKind(event))
                 {
                     case kEventWindowBoundsChanging:
                         // left the code for live-resizing, but it is not used, because of window-refreshing issues...
                         GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &bounds );
-                        
+
                         w->adaptResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
                         w->requestRedraw();
                         result = noErr;
                         break;
-                            
+
                     case kEventWindowBoundsChanged:
                         InvalWindowRect(window, GetWindowPortBounds(window, &bounds));
                         GetWindowBounds(window, kWindowContentRgn, &bounds);
                         w->adaptResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
                         result = noErr;
                         break;
-                    
+
                     case kEventWindowClose:
                         w->requestClose();
                         result = noErr;
                         break;
-         
-                    default: 
+
+                    default:
                         break;
                 }
             }
@@ -94,20 +94,20 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
             //std::cout << "unknown: " << GetEventClass(event) << std::endl;
             break;
     }
-    
+
     //if (result == eventNotHandledErr)
     //    result = CallNextEventHandler (nextHandler, event);
-        
+
     return result;
 }
 
 
 static bool s_quit_requested = false;
 
-// Application eventhandler -- listens for a quit-event 
+// Application eventhandler -- listens for a quit-event
 static pascal OSStatus ApplicationEventHandler(EventHandlerCallRef inHandlerCallRef, EventRef inEvent, void *inUserData)
 {
-    
+
     HICommand commandStruct;
 
     OSErr  err = eventNotHandledErr;
@@ -119,9 +119,9 @@ static pascal OSStatus ApplicationEventHandler(EventHandlerCallRef inHandlerCall
             s_quit_requested = true;
             err = noErr;
             break;
-                    
+
     }
-    
+
     return err;
 }
 
@@ -157,7 +157,7 @@ class CarbonKeyboardMap {
             _keymap[48                ] = osgGA::GUIEventAdapter::KEY_Tab;
             _keymap[49                ] = osgGA::GUIEventAdapter::KEY_Space;
             _keymap[117                ] = osgGA::GUIEventAdapter::KEY_Delete;
-            
+
             _keymap[122                    ] = osgGA::GUIEventAdapter::KEY_F1;
             _keymap[120                    ] = osgGA::GUIEventAdapter::KEY_F2;
             _keymap[99                    ] = osgGA::GUIEventAdapter::KEY_F3;
@@ -170,7 +170,7 @@ class CarbonKeyboardMap {
             _keymap[109                    ] = osgGA::GUIEventAdapter::KEY_F10;
             _keymap[103                    ] = osgGA::GUIEventAdapter::KEY_F11;
             _keymap[111                    ] = osgGA::GUIEventAdapter::KEY_F12;
-            
+
             _keymap[75                    ] = osgGA::GUIEventAdapter::KEY_KP_Divide;
             _keymap[67                    ] = osgGA::GUIEventAdapter::KEY_KP_Multiply;
             _keymap[78                    ] = osgGA::GUIEventAdapter::KEY_KP_Subtract;
@@ -188,10 +188,10 @@ class CarbonKeyboardMap {
             _keymap[65                    ] = osgGA::GUIEventAdapter::KEY_KP_Delete;
 
         }
-        
+
         ~CarbonKeyboardMap() {
         }
-        
+
         unsigned int remapKey(unsigned int key, unsigned int rawkey)
         {
             KeyMap::iterator itr = _keymap.find(rawkey);
@@ -215,7 +215,7 @@ class CarbonWindowAdapter : public MenubarController::WindowAdapter {
 public:
     CarbonWindowAdapter(GraphicsWindowCarbon* win) : MenubarController::WindowAdapter(), _win(win) {}
     virtual bool valid() {return (_win.valid() && _win->valid()); }
-    virtual void getWindowBounds(CGRect& rect) 
+    virtual void getWindowBounds(CGRect& rect)
     {
         Rect windowBounds;
         OSErr error = GetWindowBounds(_win->getNativeWindowRef(), kWindowStructureRgn, &windowBounds);
@@ -224,9 +224,9 @@ public:
         rect.size.width = windowBounds.right - windowBounds.left;
         rect.size.height = windowBounds.bottom - windowBounds.top;
     }
-        
+
     osgViewer::GraphicsWindow* getWindow()  { return _win.get(); }
-private: 
+private:
     osg::observer_ptr<GraphicsWindowCarbon> _win;
 };
 
@@ -237,7 +237,7 @@ void GraphicsWindowCarbon::init()
     if (_initialized) return;
 
     // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
-    
+
     _lastModifierKeys = 0;
     _windowTitleHeight = 0;
     _closeRequested = false;
@@ -271,7 +271,7 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
         else
         {
             err = ChangeWindowAttributes(getNativeWindowRef(), kWindowNoTitleBarAttribute | kWindowNoShadowAttribute, kWindowStandardDocumentAttributes);
-            SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);    
+            SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
         }
 
         if (err != noErr)
@@ -279,18 +279,18 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
             OSG_WARN << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
             return false;
         }
-        
+
         // update titlebar-height
         Rect titleRect;
         GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
         _windowTitleHeight = abs(titleRect.bottom - titleRect.top);
-        
-        // sth: I don't know why I have to reattach the context to the window here, If I don't do this  I get blank areas, where the titlebar was. 
+
+        // sth: I don't know why I have to reattach the context to the window here, If I don't do this  I get blank areas, where the titlebar was.
         // InvalWindowRect doesn't help here :-/
-        
+
         aglSetDrawable(_context, 0);
         aglSetDrawable(_context, GetWindowPort(_window));
-                
+
         MenubarController::instance()->update();
     }
 
@@ -299,16 +299,16 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
 
 
 WindowAttributes GraphicsWindowCarbon::computeWindowAttributes(bool useWindowDecoration, bool supportsResize) {
-    WindowAttributes attr; 
-    
-    if (useWindowDecoration) 
+    WindowAttributes attr;
+
+    if (useWindowDecoration)
     {
         if (supportsResize)
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
         else
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
     }
-    else 
+    else
     {
         attr = kWindowNoTitleBarAttribute | kWindowNoShadowAttribute | kWindowStandardHandlerAttribute;
         if (supportsResize)
@@ -323,7 +323,7 @@ void GraphicsWindowCarbon::installEventHandler() {
     EventTypeSpec   windEventList[] = {
         { kEventClassWindow, kEventWindowBoundsChanged},
         { kEventClassWindow, kEventWindowClose},
-        
+
         {kEventClassMouse, kEventMouseDown},
         {kEventClassMouse, kEventMouseUp},
         {kEventClassMouse, kEventMouseMoved},
@@ -338,7 +338,7 @@ void GraphicsWindowCarbon::installEventHandler() {
         {kEventClassKeyboard, kEventHotKeyPressed},
         {kEventClassKeyboard, kEventHotKeyReleased},
     };
-    
+
     InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  GetEventTypeCount(windEventList), windEventList, this, NULL);
  }
 
@@ -348,31 +348,31 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (!_initialized) init();
     if (!_initialized) return false;
     if (!_traits) return false;
- 
+
     OSG_INFO << "GraphicsWindowCarbon::realizeImplementation" << std::endl;
-    
+
     setWindowDecoration(_traits->windowDecoration);
     useCursor(_traits->useCursor);
 
     // move the window to the right screen
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft = 0, screenTop = 0;
-    if (wsi) 
+    if (wsi)
     {
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
     }
-    
-    WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0; 
-     
+
+    WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0;
+
     _ownsWindow = (windowData) ? (windowData->getNativeWindowRef() == NULL) : true;
-    
+
     if (_ownsWindow) {
-        
+
         // create the window
         Rect bounds = {_traits->y + screenTop, _traits->x + screenLeft, _traits->y + _traits->height + screenTop, _traits->x + _traits->width + screenLeft};
         OSStatus err = 0;
         WindowAttributes attr = computeWindowAttributes(_useWindowDecoration, _traits->supportsResize);
-        
+
         err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
 
         if (err) {
@@ -385,22 +385,22 @@ bool GraphicsWindowCarbon::realizeImplementation()
     else {
          _window = windowData->getNativeWindowRef();
     }
-    
+
     Rect titleRect;
     GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
     _windowTitleHeight = abs(titleRect.bottom - titleRect.top);
-    
+
     if ((_ownsWindow) || (windowData && windowData->installEventHandler()))
         installEventHandler();
-    
+
     // set the window title
     setWindowName(_traits->windowName);
-    
+
     // create the context
     AGLContext sharedContextCarbon = NULL;
-    
+
     GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext);
-    if (graphicsHandleCarbon) 
+    if (graphicsHandleCarbon)
     {
         sharedContextCarbon = graphicsHandleCarbon->getAGLContext();
     }
@@ -411,16 +411,16 @@ bool GraphicsWindowCarbon::realizeImplementation()
         return false;
     }
 
-     
+
     if ( windowData && windowData->getAGLDrawable() ) {
-        aglSetDrawable(_context, (AGLDrawable)*(windowData->getAGLDrawable()) ); 
-                
+        aglSetDrawable(_context, (AGLDrawable)*(windowData->getAGLDrawable()) );
+
     } else {
-        aglSetDrawable(_context, GetWindowPort(_window)); 
-        ShowWindow(_window); 
+        aglSetDrawable(_context, GetWindowPort(_window));
+        ShowWindow(_window);
         MenubarController::instance()->attachWindow( new CarbonWindowAdapter(this) );
     }
-    
+
     makeCurrent();
 
     if ((_traits->useMultiThreadedOpenGLEngine) && (OpenThreads::GetNumberOfProcessors() > 1)) {
@@ -435,11 +435,11 @@ bool GraphicsWindowCarbon::realizeImplementation()
         // so we'll use the raw value of it to keep things compiling on older
         // versions of OSX.
         cgerr =  CGLEnable( ctx, static_cast <CGLContextEnable>(313) );
-#endif    
+#endif
         if (cgerr != kCGLNoError )
         {
             OSG_INFO << "GraphicsWindowCarbon::realizeImplementation: multi-threaded OpenGL Execution not available" << std::endl;
-        } 
+        }
     }
 
     InitCursor();
@@ -459,7 +459,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
 
 bool GraphicsWindowCarbon::makeCurrentImplementation()
 {
-        
+
     return (aglSetCurrentContext(_context) == GL_TRUE);
 }
 
@@ -487,21 +487,21 @@ void GraphicsWindowCarbon::closeImplementation()
     // there's a possibility that the MenubarController is destructed already, so prevent a crash:
     MenubarController* mbc = MenubarController::instance();
     if (mbc) mbc->detachWindow(this);
-    
+
     if (_pixelFormat)
     {
         aglDestroyPixelFormat(_pixelFormat);
         _pixelFormat = NULL;
     }
- 
-    if (_context) 
+
+    if (_context)
     {
         aglSetDrawable(_context, NULL);
         aglSetCurrentContext(NULL);
         aglDestroyContext(_context);
         _context = NULL;
     }
- 
+
     if (_ownsWindow && _window) DisposeWindow(_window);
     _window = NULL;
 }
@@ -531,7 +531,7 @@ void GraphicsWindowCarbon::resizedImplementation(int x, int y, int width, int he
 
     aglUpdateContext(_context);
     MenubarController::instance()->update();
-    
+
     getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
 }
 
@@ -541,24 +541,24 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
 {
 
     static unsigned int lastEmulatedMouseButton = 0;
-    // mouse down event   
+    // mouse down event
     Point wheresMyMouse;
     GetEventParameter (theEvent, kEventParamWindowMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
-    
+
     wheresMyMouse.v -= _windowTitleHeight;
     if (_useWindowDecoration && (wheresMyMouse.v < 0))
         return false;
-    
+
     Point wheresMyMouseGlobal;
     GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouseGlobal);
-    
+
     EventMouseButton mouseButton = 0;
     GetEventParameter (theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(mouseButton), NULL, &mouseButton);
-    
+
     UInt32 modifierKeys;
     GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
-    
-    
+
+
     WindowRef win;
     int fwres = FindWindow(wheresMyMouseGlobal, &win);
     // return false when Window is inactive; For enabling click-to-active on window by delegating event to default handler
@@ -573,7 +573,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
         // swap right and middle buttons so that middle button is 2, right button is 3.
         if (mouseButton==3) mouseButton = 2;
         else if (mouseButton==2) mouseButton = 3;
-        
+
         // check tablet pointer device and map it to a mouse button
         TabletProximityRec    theTabletRecord;    // The Tablet Proximity Record
         // Extract the Tablet Proximity reccord from the event.
@@ -581,18 +581,18 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                                       typeTabletProximityRec, NULL,
                                       sizeof(TabletProximityRec),
                                       NULL, (void *)&theTabletRecord))
-        {            
+        {
             osgGA::GUIEventAdapter::TabletPointerType pointerType;
             switch(theTabletRecord.pointerType)
             {
                 case 1: // pen
                     pointerType = osgGA::GUIEventAdapter::PEN;
                     break;
-                    
+
                 case 2: // puck
                     pointerType = osgGA::GUIEventAdapter::PUCK;
                     break;
-                    
+
                 case 3: // eraser
                     pointerType = osgGA::GUIEventAdapter::ERASER;
                     break;
@@ -601,14 +601,14 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                    pointerType = osgGA::GUIEventAdapter::UNKNOWN;
                    break;
             }
-            
+
             getEventQueue()->penProximity(pointerType, (theTabletRecord.enterProximity != 0));
         }
 
         // get tilt and rotation from the pen
         TabletPointRec theTabletPointRecord;
-        if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL, 
-                sizeof(TabletPointRec), NULL, (void *)&theTabletPointRecord)) 
+        if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL,
+                sizeof(TabletPointRec), NULL, (void *)&theTabletPointRecord))
         {
             int penRotation = (int)theTabletPointRecord.rotation * 9 / 575; //to get angle between 0 to 360 grad
             penRotation = -(((penRotation + 180) % 360) - 180) ;          //for same range on all plattforms we need -180 to 180
@@ -618,7 +618,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     penRotation
             );
         }
-            
+
         switch(GetEventKind(theEvent))
         {
             case kEventMouseDown:
@@ -626,10 +626,10 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     float mx = wheresMyMouse.h;
                     float my = wheresMyMouse.v;
                     transformMouseXY(mx, my);
-                    
+
                     lastEmulatedMouseButton = 0;
-                    
-                    if (mouseButton == 1) 
+
+                    if (mouseButton == 1)
                     {
                         if( modifierKeys & cmdKey )
                         {
@@ -640,8 +640,8 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                             mouseButton = lastEmulatedMouseButton = 2;
                         }
                     }
-                    
-                    if (clickCount > 1) 
+
+                    if (clickCount > 1)
                         getEventQueue()->mouseDoubleButtonPress(mx,my, mouseButton);
                     else
                         getEventQueue()->mouseButtonPress(mx, my, mouseButton);
@@ -661,24 +661,24 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     }
                 }
                 break;
-                
+
             case kEventMouseDragged:
                 {
                     // get pressure from the pen, only when mouse/pen is dragged
                     TabletPointRec    theTabletRecord;
-                    if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL, 
+                    if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL,
                                     sizeof(TabletPointRec), NULL, (void *)&theTabletRecord)) {
-                    
+
                         getEventQueue()->penPressure(theTabletRecord.pressure / 65535.0f);
                     }
-                    
+
                     float mx = wheresMyMouse.h;
                     float my = wheresMyMouse.v;
                     transformMouseXY(mx, my);
                     getEventQueue()->mouseMotion(mx, my);
                 }
                 break;
-                
+
             case kEventMouseMoved:
                 {
                     float mx = wheresMyMouse.h;
@@ -687,7 +687,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     getEventQueue()->mouseMotion(mx, my);
                 }
                 break;
-                
+
             // mouse with scroll-wheels
             case kEventMouseWheelMoved:
                 {
@@ -707,7 +707,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     }
                 }
                 break;
-            
+
             // new trackpads and mighty mouse, (not officially documented, see http://developer.apple.com/qa/qa2005/qa1453.html )
             case 11:
                 {
@@ -716,7 +716,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                         kEventParamMouseWheelSmoothVerticalDelta       = 'saxy', // typeSInt32
                         kEventParamMouseWheelSmoothHorizontalDelta     = 'saxx' // typeSInt32
                     };
-                    
+
                     SInt32 scroll_delta_x = 0;
                     SInt32 scroll_delta_y = 0;
                     OSErr err = noErr;
@@ -728,12 +728,12 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     }
                 }
                 break;
- 
+
             default:
                 return false;
         }
     }
-    
+
     return true;
 }
 
@@ -742,25 +742,25 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
 bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
 {
     handleModifierKeys(theEvent);
-        
+
     OSStatus status;
-    
+
     UInt32 rawkey;
     GetEventParameter (theEvent,kEventParamKeyCode,typeUInt32, NULL,sizeof(rawkey), NULL,&rawkey);
-    
+
     // OSG_INFO << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
-            
+
     UInt32 dataSize;
     /* jbw check return status so that we don't allocate a huge array */
     status = GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, 0, &dataSize, NULL );
     if (status != noErr) return false;
     if (dataSize<=1) return false;
-    
+
     UniChar* uniChars = new UniChar[dataSize+1];
     GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, dataSize, NULL, (void*)uniChars );
-    
+
     unsigned int keychar = remapCarbonKey(static_cast<unsigned long>(uniChars[0]), rawkey);
-    
+
     switch(GetEventKind(theEvent))
     {
         case kEventRawKeyDown:
@@ -772,18 +772,18 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
             getEventQueue()->keyPress(keychar);
             break;
         }
-        
+
         case kEventRawKeyUp:
-        {                 
+        {
             //OSG_INFO << "GraphicsWindowCarbon::keyPress" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
             getEventQueue()->keyRelease(keychar);
             break;
         }
-        
+
         default:
              break;
-    
+
     }
 
     delete[] uniChars;
@@ -797,14 +797,14 @@ void GraphicsWindowCarbon::handleModifierKey(UInt32 modifierKey, UInt32 modifier
     {
         getEventQueue()->keyPress(keySymbol);
     }
-    
+
     if (!(modifierKey & modifierMask) && (_lastModifierKeys & modifierMask))
     {
         getEventQueue()->keyRelease(keySymbol);
     }
 }
 
-bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent) 
+bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent)
 {
     UInt32 modifierKeys;
     GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
@@ -812,25 +812,25 @@ bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent)
     //std::cout << modifierKeys << std::endl;
     if (_lastModifierKeys == modifierKeys)
         return false;
-        
+
     handleModifierKey(modifierKeys, shiftKey, osgGA::GUIEventAdapter::KEY_Shift_L);
     handleModifierKey(modifierKeys, controlKey, osgGA::GUIEventAdapter::KEY_Control_L);
     handleModifierKey(modifierKeys, optionKey, osgGA::GUIEventAdapter::KEY_Alt_L);
     handleModifierKey(modifierKeys, cmdKey, osgGA::GUIEventAdapter::KEY_Super_L);
-    
-    // Caps lock needs some special handling, i did not find a way to get informed when the caps-lock-key gets released    
+
+    // Caps lock needs some special handling, i did not find a way to get informed when the caps-lock-key gets released
     if ((modifierKeys & alphaLock) && !(_lastModifierKeys & alphaLock))
     {
         getEventQueue()->keyPress(osgGA::GUIEventAdapter::KEY_Caps_Lock);
         getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KEY_Caps_Lock);
     }
-    
+
     if (!(modifierKeys & alphaLock) && (_lastModifierKeys & alphaLock))
     {
         getEventQueue()->keyPress(osgGA::GUIEventAdapter::KEY_Caps_Lock);
         getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KEY_Caps_Lock);
     }
-    
+
     _lastModifierKeys = modifierKeys;
     return true;
 }
@@ -840,22 +840,22 @@ bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent)
 void GraphicsWindowCarbon::checkEvents()
 {
     if (!_realized) return;
-    
+
     EventRef theEvent;
     EventTargetRef theTarget = GetEventDispatcherTarget();
     while (ReceiveNextEvent(0, NULL, 0,true, &theEvent)== noErr)
     {
         switch(GetEventClass(theEvent))
         {
-            case kEventClassMouse: 
+            case kEventClassMouse:
                     {
                     // handle the menubar
                     Point wheresMyMouse;
                     GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
-                    
+
                     EventMouseButton mouseButton = 0;
                     GetEventParameter (theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(mouseButton), NULL, &mouseButton);
-                    
+
                     WindowRef win;
                     int fwres = FindWindow(wheresMyMouse, &win);
 
@@ -874,8 +874,8 @@ void GraphicsWindowCarbon::checkEvents()
                         break;
                 }
                 break;
-            
-            case kEventClassAppleEvent: 
+
+            case kEventClassAppleEvent:
                 {
                     EventRecord eventRecord;
                     ConvertEventRefToEventRecord(theEvent, &eventRecord);
@@ -886,16 +886,16 @@ void GraphicsWindowCarbon::checkEvents()
 
         }
         SendEventToEventTarget (theEvent, theTarget);
-        ReleaseEvent(theEvent);        
-    }  
+        ReleaseEvent(theEvent);
+    }
     if (_closeRequested)
         getEventQueue()->closeWindow();
-        
+
     if (s_quit_requested) {
         getEventQueue()->quitApplication();
         s_quit_requested = false;
     }
-            
+
 }
 
 
@@ -903,11 +903,11 @@ bool GraphicsWindowCarbon::setWindowRectangleImplementation(int x, int y, int wi
 {
     int screenLeft(0), screenTop(0);
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
-   if (wsi) 
+   if (wsi)
     {
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
     }
-    
+
     Rect bounds = {y + screenTop, x + screenLeft, y + height + screenTop, x + width + screenLeft};
     SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
     aglUpdateContext(_context);
@@ -922,17 +922,17 @@ void GraphicsWindowCarbon::adaptResize(int x, int y, int w, int h)
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
-        
+
         // get the screen containing the window
         unsigned int screenNdx = wsi->getScreenContaining(x,y,w,h);
-        
+
         // update traits
         _traits->screenNum = screenNdx;
-        
+
         // get top left of screen
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
     }
-    
+
     resized(x-screenLeft,y-screenTop,w,h);
 }
 
@@ -961,7 +961,7 @@ void GraphicsWindowCarbon::useCursor(bool cursorOn)
         OSG_WARN << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
-    
+
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
     CGDisplayErr err = (cursorOn ? CGDisplayShowCursor(displayId) : CGDisplayHideCursor(displayId));
     if (err != kCGErrorSuccess) {
@@ -977,7 +977,7 @@ void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
       return;
 
     UInt32 cursor;
-    switch (mouseCursor) 
+    switch (mouseCursor)
     {
         case NoCursor:
           HideCursor();
@@ -1002,7 +1002,7 @@ void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
             cursor = kThemeArrowCursor;
             OSG_WARN << "GraphicsWindowCarbon::setCursor doesn't implement cursor: type = " << mouseCursor << std::endl;
     }
-    
+
     _currentCursor = mouseCursor;
     SetThemeCursor(cursor);
     ShowCursor();
@@ -1015,10 +1015,10 @@ void GraphicsWindowCarbon::setSyncToVBlank(bool on)
     }
 }
 
-void GraphicsWindowCarbon::setWindowName (const std::string& name) 
+void GraphicsWindowCarbon::setWindowName (const std::string& name)
 {
     _traits->windowName = name;
-    if (!_traits->windowName.empty()) 
+    if (!_traits->windowName.empty())
     {
         CFStringRef windowtitle = CFStringCreateWithBytes( kCFAllocatorDefault, (const UInt8*)(_traits->windowName.c_str()), _traits->windowName.length(),kCFStringEncodingUTF8, false );
         SetWindowTitleWithCFString( _window, windowtitle );
@@ -1068,7 +1068,7 @@ public:
     {
     }
 
-    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
+    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
     {
         _init();
 

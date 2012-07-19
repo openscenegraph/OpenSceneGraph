@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ class OSGSIM_EXPORT SequenceGroup : public osg::Object
        SequenceGroup(double baseTime);
 
        META_Object(osgSim,SequenceGroup);
-       
+
        inline void setBaseTime( double t ) { _baseTime = t; }
        inline double getBaseTime() const { return _baseTime; }
 
@@ -80,7 +80,7 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
         /** set the phase shift of the blink sequence, this would be used to shift a sequence within a sequence group.*/
         inline void setPhaseShift(double ps) { _phaseShift = ps; }
 
-        /** get the pahse shift.*/        
+        /** get the pahse shift.*/
         inline double getPhaseShift() const { return _phaseShift; }
 
         /** compute the local time clamped to this BlinkSequences period, and accounting for the phase shift and sequence group.*/
@@ -88,14 +88,14 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
 
         /** compute the color for the time interval sepecifed. Averages the colors if the length is greater than the current pulse.*/
         inline osg::Vec4 color(double time,double length) const;
-        
+
 
     protected:
 
 
         typedef std::pair<double,osg::Vec4> IntervalColor;
         typedef std::vector<IntervalColor>  PulseData;
-        
+
         double                      _pulsePeriod;
         double                      _phaseShift;
         PulseData                   _pulseData;
@@ -145,7 +145,7 @@ inline osg::Vec4 BlinkSequence::color(double time,double length) const
         if (itr==_pulseData.end()) itr = _pulseData.begin();
     }
 
-    // if time interval fits inside the current pulse 
+    // if time interval fits inside the current pulse
     // then simply return this pulses color value.
     if (lt+length<=itr->first)
     {
@@ -174,7 +174,7 @@ inline osg::Vec4 BlinkSequence::color(double time,double length) const
     // add remaining part of the final pulse.
     color += itr->second*len;
 
-    // normalise the time waited color.   
+    // normalise the time waited color.
     color /= length;
 
     return color;

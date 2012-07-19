@@ -50,7 +50,7 @@ void Texture2D::read(DataInputStream* in){
         else
             in_THROW_EXCEPTION("Texture2D::read(): Could not cast this osg::Texture2D to an osg::Texture.");
         // Read image.
-        
+
         osg::Image *image = in->readImage();
         if(image) {
             setImage(image);

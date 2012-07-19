@@ -1,13 +1,13 @@
- /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,7 +34,7 @@ GeometryTechnique::GeometryTechnique()
     setFilterBias(0);
     setFilterWidth(0.1);
     setFilterMatrixAs(GAUSSIAN);
-    
+
 }
 
 GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::CopyOp& copyop):
@@ -65,7 +65,7 @@ void GeometryTechnique::setFilterWidth(float filterWidth)
 
 void GeometryTechnique::setFilterMatrix(const osg::Matrix3& matrix)
 {
-    _filterMatrix = matrix; 
+    _filterMatrix = matrix;
     if (!_filterMatrixUniform) _filterMatrixUniform = new osg::Uniform("filterMatrix",_filterMatrix);
     else _filterMatrixUniform->set(_filterMatrix);
 }
@@ -96,7 +96,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
 void GeometryTechnique::init(int dirtyMask, bool assumeMultiThreaded)
 {
     OSG_INFO<<"Doing GeometryTechnique::init()"<<std::endl;
-    
+
     if (!_terrainTile) return;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_writeBufferMutex);
@@ -161,14 +161,14 @@ Locator* GeometryTechnique::computeMasterLocator()
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
-    
+
     Locator* masterLocator = elevationLocator ? elevationLocator : colorLocator;
     if (!masterLocator)
     {
         OSG_NOTICE<<"Problem, no locator found in any of the terrain layers"<<std::endl;
         return 0;
     }
-    
+
     return masterLocator;
 }
 
@@ -181,13 +181,13 @@ osg::Vec3d GeometryTechnique::computeCenterModel(BufferData& buffer, Locator* ma
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
-    
+
     if (!elevationLocator) elevationLocator = masterLocator;
     if (!colorLocator) colorLocator = masterLocator;
 
     osg::Vec3d bottomLeftNDC(DBL_MAX, DBL_MAX, 0.0);
     osg::Vec3d topRightNDC(-DBL_MAX, -DBL_MAX, 0.0);
-    
+
     if (elevationLayer)
     {
         if (elevationLocator!= masterLocator)
@@ -226,9 +226,9 @@ osg::Vec3d GeometryTechnique::computeCenterModel(BufferData& buffer, Locator* ma
     osg::Vec3d centerNDC = (bottomLeftNDC + topRightNDC)*0.5;
     osg::Vec3d centerModel = (bottomLeftNDC + topRightNDC)*0.5;
     masterLocator->convertLocalToModel(centerNDC, centerModel);
-    
+
     buffer._transform->setMatrix(osg::Matrix::translate(centerModel));
-    
+
     return centerModel;
 }
 
@@ -464,7 +464,7 @@ void VertexNormalGenerator::populateCenter(osgTerrain::Layer* elevationLayer, La
             if (elevationLayer)
             {
                 float value = 0.0f;
-                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(ndc.x(), ndc.y(), value); 
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(ndc.x(), ndc.y(), value);
                 else validValue = elevationLayer->getValidValue(i,j,value);
                 ndc.z() = value*_scaleHeight;
             }
@@ -783,23 +783,23 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     {
         unsigned int originalNumColumns = numColumns;
         unsigned int originalNumRows = numRows;
-    
+
         numColumns = std::max((unsigned int) (float(originalNumColumns)*sqrtf(sampleRatio)), minimumNumColumns);
         numRows = std::max((unsigned int) (float(originalNumRows)*sqrtf(sampleRatio)),minimumNumRows);
     }
-    
-    
+
+
 
     bool treatBoundariesToValidDataAsDefaultValue = _terrainTile->getTreatBoundariesToValidDataAsDefaultValue();
     OSG_INFO<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
-    
+
     float skirtHeight = 0.0f;
     HeightFieldLayer* hfl = dynamic_cast<HeightFieldLayer*>(elevationLayer);
-    if (hfl && hfl->getHeightField()) 
+    if (hfl && hfl->getHeightField())
     {
         skirtHeight = hfl->getHeightField()->getSkirtHeight();
     }
-    
+
     bool createSkirt = skirtHeight != 0.0f;
 
 
@@ -863,7 +863,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     // allocate and assign color
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
-    
+
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
@@ -1001,7 +1001,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
     // OSG_NOTICE<<"smallTile = "<<smallTile<<std::endl;
 
-    osg::ref_ptr<osg::DrawElements> elements = smallTile ? 
+    osg::ref_ptr<osg::DrawElements> elements = smallTile ?
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
 
@@ -1077,7 +1077,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         osg::ref_ptr<osg::Vec3Array> vertices = VNG._vertices.get();
         osg::ref_ptr<osg::Vec3Array> normals = VNG._normals.get();
 
-        osg::ref_ptr<osg::DrawElements> skirtDrawElements = smallTile ? 
+        osg::ref_ptr<osg::DrawElements> skirtDrawElements = smallTile ?
             static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
             static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
 
@@ -1162,7 +1162,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = smallTile ? 
+            skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
@@ -1204,7 +1204,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = smallTile ? 
+            skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
@@ -1287,7 +1287,7 @@ void GeometryTechnique::applyColorLayers(BufferData& buffer)
 {
     typedef std::map<osgTerrain::Layer*, osg::Texture*> LayerToTextureMap;
     LayerToTextureMap layerToTextureMap;
-    
+
     for(unsigned int layerNum=0; layerNum<_terrainTile->getNumColorLayers(); ++layerNum)
     {
         osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(layerNum);
@@ -1296,7 +1296,7 @@ void GeometryTechnique::applyColorLayers(BufferData& buffer)
         osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(colorLayer);
         if (switchLayer)
         {
-            if (switchLayer->getActiveLayer()<0 || 
+            if (switchLayer->getActiveLayer()<0 ||
                 static_cast<unsigned int>(switchLayer->getActiveLayer())>=switchLayer->getNumLayers())
             {
                 continue;
@@ -1351,7 +1351,7 @@ void GeometryTechnique::applyColorLayers(BufferData& buffer)
             }
 
             stateset->setTextureAttributeAndModes(layerNum, texture2D, osg::StateAttribute::ON);
-            
+
         }
         else if (contourLayer)
         {
@@ -1368,7 +1368,7 @@ void GeometryTechnique::applyColorLayers(BufferData& buffer)
 
                 layerToTextureMap[colorLayer] = texture1D;
             }
-            
+
             stateset->setTextureAttributeAndModes(layerNum, texture1D, osg::StateAttribute::ON);
 
         }
@@ -1477,7 +1477,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     }
 
 
-    if (_terrainTile->getDirty()) 
+    if (_terrainTile->getDirty())
     {
         OSG_INFO<<"******* Doing init ***********"<<std::endl;
         _terrainTile->init(_terrainTile->getDirtyMask(), false);

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ class OSGVIEWER_EXPORT OpenGLQuerySupport : public osg::Referenced
 
         virtual void checkQuery(osg::Stats* stats, osg::State* state,
                                 osg::Timer_t startTick) = 0;
-        
+
         virtual void beginQuery(unsigned int frameNumber, osg::State* state) = 0;
         virtual void endQuery(osg::State* state) = 0;
         virtual void initialize(osg::State* state, osg::Timer_t startTick);
@@ -59,16 +59,16 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
         virtual void cull_draw();
 
         virtual void compile();
-        
+
         void setCompileOnNextDraw(bool flag) { _compileOnNextDraw = flag; }
         bool getCompileOnNextDraw() const { return _compileOnNextDraw; }
 
         virtual void operator () (osg::Object* object);
-        
+
         virtual void operator () (osg::GraphicsContext* context);
 
         virtual void release();
-        
+
         /** Force update of state associated with cameras. */
         void setCameraRequiresSetUp(bool flag);
         bool getCameraRequiresSetUp() const;
@@ -77,14 +77,14 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
         void initialize(osg::State* state);
         virtual ~Renderer();
 
-        virtual void updateSceneView(osgUtil::SceneView* sceneView);        
+        virtual void updateSceneView(osgUtil::SceneView* sceneView);
 
         osg::observer_ptr<osg::Camera>                      _camera;
-        
+
         bool                                                _done;
         bool                                                _graphicsThreadDoesCull;
         bool                                                _compileOnNextDraw;
-        
+
         osg::ref_ptr<osgUtil::SceneView>                    _sceneView[2];
 
         struct OSGVIEWER_EXPORT ThreadSafeQueue
@@ -94,7 +94,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
             typedef std::list<osgUtil::SceneView*> SceneViewList;
             SceneViewList _queue;
             bool _isReleased;
-            
+
             ThreadSafeQueue();
             ~ThreadSafeQueue();
 

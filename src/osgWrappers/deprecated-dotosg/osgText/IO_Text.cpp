@@ -37,7 +37,7 @@ osgText::Text::BackdropType convertBackdropTypeStringToEnum(std::string & str)
     else if (str=="DROP_SHADOW_TOP_LEFT") return osgText::Text::DROP_SHADOW_TOP_LEFT;
     else if (str=="OUTLINE") return osgText::Text::OUTLINE;
     else if (str=="NONE") return osgText::Text::NONE;
-    else return static_cast<osgText::Text::BackdropType>(-1);       
+    else return static_cast<osgText::Text::BackdropType>(-1);
 }
 std::string convertBackdropTypeEnumToString(osgText::Text::BackdropType backdropType)
 {
@@ -56,15 +56,15 @@ std::string convertBackdropTypeEnumToString(osgText::Text::BackdropType backdrop
     default : return "";
     }
 }
-    
-    
+
+
 osgText::Text::BackdropImplementation convertBackdropImplementationStringToEnum(std::string & str)
 {
     if      (str=="POLYGON_OFFSET") return osgText::Text::POLYGON_OFFSET;
     else if (str=="NO_DEPTH_BUFFER") return osgText::Text::NO_DEPTH_BUFFER;
     else if (str=="DEPTH_RANGE") return osgText::Text::DEPTH_RANGE;
     else if (str=="STENCIL_BUFFER") return osgText::Text::STENCIL_BUFFER;
-    else return static_cast<osgText::Text::BackdropImplementation>(-1);       
+    else return static_cast<osgText::Text::BackdropImplementation>(-1);
 }
 std::string convertBackdropImplementationEnumToString(osgText::Text::BackdropImplementation backdropImplementation)
 {
@@ -83,7 +83,7 @@ osgText::Text::ColorGradientMode convertColorGradientModeStringToEnum(std::strin
     if      (str=="SOLID") return osgText::Text::SOLID;
     else if (str=="PER_CHARACTER") return osgText::Text::PER_CHARACTER;
     else if (str=="OVERALL") return osgText::Text::OVERALL;
-    else return static_cast<osgText::Text::ColorGradientMode>(-1);       
+    else return static_cast<osgText::Text::ColorGradientMode>(-1);
 }
 std::string convertColorGradientModeEnumToString(osgText::Text::ColorGradientMode colorGradientMode)
 {
@@ -108,17 +108,17 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     {
         std::string str = fr[1].getStr();
         osgText::Text::BackdropType backdropType = convertBackdropTypeStringToEnum(str);
-        
+
         if (backdropType != static_cast<osgText::Text::BackdropType>(-1))
             text.setBackdropType(backdropType);
-    
+
         fr += 2;
         itAdvanced = true;
     }
-    
+
     float backdropHorizontalOffset = text.getBackdropHorizontalOffset();
     float backdropVerticalOffset = text.getBackdropVerticalOffset();
-    
+
     // backdropHorizontalOffset
     if (fr[0].matchWord("backdropHorizontalOffset"))
     {
@@ -139,7 +139,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
     text.setBackdropOffset(backdropHorizontalOffset, backdropVerticalOffset);
-    
+
     // backdropColor
     if (fr[0].matchWord("backdropColor"))
     {
@@ -151,39 +151,39 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     // backdropImplementation
     if (fr[0].matchWord("backdropImplementation"))
     {
         std::string str = fr[1].getStr();
         osgText::Text::BackdropImplementation backdropImplementation = convertBackdropImplementationStringToEnum(str);
-        
+
         if (backdropImplementation != static_cast<osgText::Text::BackdropImplementation>(-1))
             text.setBackdropImplementation(backdropImplementation);
-    
+
         fr += 2;
         itAdvanced = true;
     }
-  
+
     // ColorGradientMode
     if (fr[0].matchWord("colorGradientMode"))
     {
         std::string str = fr[1].getStr();
         osgText::Text::ColorGradientMode colorGradientMode = convertColorGradientModeStringToEnum(str);
-      
+
         if (colorGradientMode != static_cast<osgText::Text::ColorGradientMode>(-1))
             text.setColorGradientMode(colorGradientMode);
-  
+
         fr += 2;
         itAdvanced = true;
     }
-    
+
     // ** get default value;
     osg::Vec4 colorGradientTopLeft = text.getColorGradientTopLeft();
     osg::Vec4 colorGradientBottomLeft = text.getColorGradientBottomLeft();
     osg::Vec4 colorGradientBottomRight = text.getColorGradientBottomRight();
     osg::Vec4 colorGradientTopRight = text.getColorGradientTopRight();
-    
+
     // colorGradientTopLeft
     if (fr[0].matchWord("colorGradientTopLeft"))
     {
@@ -207,7 +207,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     // colorGradientBottomRight
     if (fr[0].matchWord("colorGradientBottomRight"))
     {
@@ -219,7 +219,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     // colorGradientTopRight
     if (fr[0].matchWord("colorGradientTopRight"))
     {
@@ -231,9 +231,9 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     text.setColorGradientCorners(colorGradientTopLeft, colorGradientBottomLeft, colorGradientBottomRight, colorGradientTopRight);
-    
+
     return itAdvanced;
 }
 
@@ -243,38 +243,38 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 
     // backdropType
     fw.indent() << "backdropType " << convertBackdropTypeEnumToString(text.getBackdropType()) << std::endl;
-    
+
     // backdropHorizontalOffset
     fw.indent() << "backdropHorizontalOffset " << text.getBackdropHorizontalOffset() << std::endl;
-    
+
     // backdropVerticalOffset
     fw.indent() << "backdropVerticalOffset " << text.getBackdropVerticalOffset() << std::endl;
-    
+
     // backdropColor
     osg::Vec4 c = text.getBackdropColor();
     fw.indent() << "backdropColor " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-    
+
     // backdropImplementation
     fw.indent() << "backdropImplementation " << convertBackdropImplementationEnumToString(text.getBackdropImplementation()) << std::endl;
-    
+
     // colorGradientMode
     fw.indent() << "colorGradientMode " << convertColorGradientModeEnumToString(text.getColorGradientMode()) << std::endl;
-    
+
     // colorGradientTopLeft
     c = text.getColorGradientTopLeft();
     fw.indent() << "colorGradientTopLeft " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-    
+
     // colorGradientBottomLeft
     c = text.getColorGradientBottomLeft();
     fw.indent() << "colorGradientBottomLeft " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-    
+
     // colorGradientBottomRight
     c = text.getColorGradientBottomRight();
     fw.indent() << "colorGradientBottomRight " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-        
+
     // colorGradientTopRight
     c = text.getColorGradientTopRight();
     fw.indent() << "colorGradientTopRight " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-    
+
     return true;
 }

@@ -44,6 +44,6 @@ bool TexEnvFilter_writeLocalData(const Object& obj, Output& fw)
     const TexEnvFilter& texenvfilter = static_cast<const TexEnvFilter&>(obj);
 
     fw.indent() << "lodBias " << texenvfilter.getLodBias() << std::endl;
-    
+
     return true;
 }

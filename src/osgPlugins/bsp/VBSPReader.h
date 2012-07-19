@@ -185,7 +185,7 @@ struct GameHeader
     // This is followed by this many GameLump entries (see below)
 };
 
-   
+
 struct GameLump
 {
     int               lump_id;
@@ -193,15 +193,15 @@ struct GameLump
     unsigned short    lump_version;
     int               lump_offset;
     int               lump_length;
-}; 
-   
-   
+};
+
+
 // This is the ID for the static prop game lump
 const int STATIC_PROP_ID = (('s'<<24)+('p'<<16)+('r'<<8)+'p');
 
 
 struct StaticPropModelNames
-{  
+{
     int    num_model_names;
 
     // This is followed by this many names, each 128 characters long

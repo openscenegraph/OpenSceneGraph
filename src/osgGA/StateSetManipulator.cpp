@@ -38,9 +38,9 @@ void StateSetManipulator::setStateSet(StateSet *stateset)
 {
     _stateset = stateset;
 #if 0
-    // specify that this stateset is dynamic so it prevents 
-    // the draw and update phase from overlapping - good for 
-    // stability but breaks all the performance advantage of 
+    // specify that this stateset is dynamic so it prevents
+    // the draw and update phase from overlapping - good for
+    // stability but breaks all the performance advantage of
     // DrawThreadPerContex.
     _stateset->setDataVariance(osg::Object::DYNAMIC);
 #endif
@@ -59,11 +59,11 @@ const StateSet *StateSetManipulator::getStateSet() const
 void StateSetManipulator::clone()
 {
     if (!_stateset) return;
-    
+
     // we clone the StateSet so that any draw traversals that might be running at the time of the
-    // event traversal won't change the same StateSet that is being read.  One could just set the 
+    // event traversal won't change the same StateSet that is being read.  One could just set the
     // DataVariance to DYNAMIC to avoid this overlap, but this would introduce a performance penalty.
-    
+
     StateSet::ParentList parents = _stateset->getParents();
     osg::ref_ptr<osg::StateSet> newStateSet = dynamic_cast<osg::StateSet*>(_stateset->clone(osg::CopyOp::SHALLOW_COPY));
 
@@ -81,7 +81,7 @@ void StateSetManipulator::clone()
             if (drawable) drawable->setStateSet(newStateSet.get());
         }
     }
-    
+
     _stateset = newStateSet;
 }
 
@@ -101,7 +101,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                    (_stateset->getTextureMode(0,GL_TEXTURE_3D)&mode)!=0 ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode)!=0 ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode)!=0;
-                   
+
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             _texture |= ((_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0);
         #endif
@@ -153,9 +153,9 @@ void StateSetManipulator::getUsage(osg::ApplicationUsage& usage) const
 void StateSetManipulator::setBackfaceEnabled(bool newbackface)
 {
     if (_backface == newbackface) return;
-    
+
     clone();
-    
+
     _backface = newbackface;
     if( _backface ) _stateset->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
     else _stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
@@ -164,7 +164,7 @@ void StateSetManipulator::setBackfaceEnabled(bool newbackface)
 void StateSetManipulator::setLightingEnabled(bool newlighting)
 {
     if (_lighting == newlighting) return;
-    
+
     clone();
 
     _lighting = newlighting;
@@ -175,7 +175,7 @@ void StateSetManipulator::setLightingEnabled(bool newlighting)
 void StateSetManipulator::setTextureEnabled(bool newtexture)
 {
     if (_texture==newtexture) return;
-    
+
     clone();
 
     _texture = newtexture;
@@ -213,7 +213,7 @@ void StateSetManipulator::cyclePolygonMode()
     osg::PolygonMode* polyModeObj = getOrCreatePolygonMode();
 
     osg::PolygonMode::Mode currentMode = getPolygonMode();
-    // cycle through the available modes.  
+    // cycle through the available modes.
     switch(currentMode)
     {
         case osg::PolygonMode::FILL : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE); break;
@@ -232,7 +232,7 @@ osg::PolygonMode::Mode StateSetManipulator::getPolygonMode() const
 osg::PolygonMode* StateSetManipulator::getOrCreatePolygonMode()
 {
     osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_stateset->getAttribute(osg::StateAttribute::POLYGONMODE));
-    if (!polyModeObj) 
+    if (!polyModeObj)
     {
         polyModeObj = new osg::PolygonMode;
         _stateset->setAttribute(polyModeObj);

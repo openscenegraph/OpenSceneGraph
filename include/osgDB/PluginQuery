@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,9 +31,9 @@ FileNameList OSGDB_EXPORT listAllAvailablePlugins();
 class ReaderWriterInfo : public osg::Referenced
 {
     public:
-        
+
         ReaderWriterInfo() {}
-    
+
         std::string                         plugin;
         std::string                         description;
         ReaderWriter::FormatDescriptionMap  protocols;
@@ -42,7 +42,7 @@ class ReaderWriterInfo : public osg::Referenced
         ReaderWriter::Features              features;
 
     protected:
-        
+
         virtual ~ReaderWriterInfo() {}
 };
 

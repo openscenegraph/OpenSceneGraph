@@ -23,7 +23,7 @@ void osgParticle::ModularProgram::execute(double dt)
     Operator_vector::iterator ci_end = _operators.end();
 
     ParticleSystem* ps = getParticleSystem();
-    for (ci=_operators.begin(); ci!=ci_end; ++ci) {        
+    for (ci=_operators.begin(); ci!=ci_end; ++ci) {
         (*ci)->beginOperate(this);
         (*ci)->operateParticles(ps, dt);
         (*ci)->endOperate();

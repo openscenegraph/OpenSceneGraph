@@ -36,7 +36,7 @@ bool CameraView_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
         fr[3].getFloat(pos[2]);
-        
+
         cameraview.setPosition(pos);
 
         fr += 4;
@@ -50,9 +50,9 @@ bool CameraView_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(att[1]);
         fr[3].getFloat(att[2]);
         fr[4].getFloat(att[3]);
-        
+
         cameraview.setAttitude(att);
-        
+
         fr += 5;
         iteratorAdvanced = true;
     }
@@ -96,10 +96,10 @@ bool CameraView_readLocalData(Object& obj, Input& fr)
 bool CameraView_writeLocalData(const Object& obj, Output& fw)
 {
     const CameraView& cameraview = static_cast<const CameraView&>(obj);
-    
+
     fw.indent()<<"position "<<cameraview.getPosition()<<std::endl;
     fw.indent()<<"attitude "<<cameraview.getAttitude()<<std::endl;
-    
+
     fw.indent()<<"fieldOfView "<<cameraview.getFieldOfView()<<std::endl;
     fw.indent()<<"fieldOfViewMode ";
     switch(cameraview.getFieldOfViewMode())
@@ -108,7 +108,7 @@ bool CameraView_writeLocalData(const Object& obj, Output& fw)
         case(osg::CameraView::HORIZONTAL): fw <<"HORIZONTAL"<<std::endl; break;
         case(osg::CameraView::VERTICAL): fw <<"VERTICAL"<<std::endl; break;
     }
-    
+
     fw.indent()<<"focalLength "<<cameraview.getFocalLength()<<std::endl;
 
     return true;

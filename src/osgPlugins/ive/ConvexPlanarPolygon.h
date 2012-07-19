@@ -9,7 +9,7 @@ class ConvexPlanarPolygon : public osg::ConvexPlanarPolygon, public ReadWrite {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
-        
+
         virtual ~ConvexPlanarPolygon() {}
 };
 }

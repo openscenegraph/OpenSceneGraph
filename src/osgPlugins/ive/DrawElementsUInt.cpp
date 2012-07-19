@@ -5,7 +5,7 @@
  *    DESCRIPTION:    Read/Write osg::DrawElementsUInt in binary format to disk.
  *
  *    CREATED BY:        Copied from DrawElementsUShort.cpp by Marco Jez
- *                    
+ *
  *
  *    HISTORY:        Created 20.3.2003
  *
@@ -63,7 +63,7 @@ void DrawElementsUInt::read(DataInputStream* in)
            {
                 osg::swapBytes4((char*)&((*this)[i])) ;
            }
-        }        
+        }
     }
     else{
         in_THROW_EXCEPTION("DrawElementsUInt::read(): Expected DrawElementsUInt identification.");

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,7 +32,7 @@ double osg::asciiToDouble(const char* str)
         while (
                *ptr!=0 &&
                ((*ptr>='0' && *ptr<='9') ||
-                (*ptr>='a' && *ptr<='f') ||  
+                (*ptr>='a' && *ptr<='f') ||
                 (*ptr>='A' && *ptr<='F'))
               )
         {
@@ -41,24 +41,24 @@ double osg::asciiToDouble(const char* str)
             else if (*ptr>='A' && *ptr<='F') value = value*16.0 + double(*ptr-'A'+10);
             ++ptr;
         }
-        
+
         // OSG_NOTICE<<"Read "<<str<<" result = "<<value<<std::endl;
         return value;
     }
-    
+
     ptr = str;
-    
+
     bool    hadDecimal[2];
     double  value[2];
     double  sign[2];
     double  decimalMultiplier[2];
-    
+
     hadDecimal[0] = hadDecimal[1] = false;
     sign[0] = sign[1] = 1.0;
     value[0] = value[1] = 0.0;
     decimalMultiplier[0] = decimalMultiplier[1] = 0.1;
     int pos = 0;
-    
+
     // compute mantissa and exponent parts
     while (*ptr!=0 && pos<2)
     {
@@ -89,7 +89,7 @@ double osg::asciiToDouble(const char* str)
         else if (*ptr=='e' || *ptr=='E')
         {
             if (pos==1) break;
-            
+
             pos = 1;
         }
         else

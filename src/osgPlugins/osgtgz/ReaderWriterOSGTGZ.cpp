@@ -25,12 +25,12 @@ using namespace osg;
 class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 {
     public:
-    
+
         sgReaderWriterOSGTGZ()
         {
             supportsExtension("osgtgz","OpenSceneGraph tar gzid'd archive format");
         }
-        
+
         virtual const char* className() const { return "OSGTGZ Database Reader/Writer"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -79,7 +79,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             }
 
             osg::ref_ptr<osg::Group> grp = new osg::Group;
-            
+
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
 

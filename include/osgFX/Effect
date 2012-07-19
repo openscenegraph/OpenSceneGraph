@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgFX - Copyright (C) 2003 Marco Jez
@@ -50,10 +50,10 @@ namespace osgFX
      defined. Each technique tries to implement the effect in a different way,
      often using different OpenGL extensions. The active technique can be
      selected either manually, with selectTechnique(), or automatically, in which
-     case the first technique that is supported by all active rendering contexts 
+     case the first technique that is supported by all active rendering contexts
      is chosen.
-     If you are an Effect user, then simply use it as a node group. Create an 
-     instance of your desired effect, add it to your scene graph and call its 
+     If you are an Effect user, then simply use it as a node group. Create an
+     instance of your desired effect, add it to your scene graph and call its
      addChild() method to add a child node as you would do with a Group.
      If you are an Effect developer, you will have to implement the method
      define_techniques() to define the different techniques that can be used
@@ -74,7 +74,7 @@ namespace osgFX
 
         /** get the name of this Effect */
         virtual const char *effectName() const        = 0;
-        
+
         /** get a brief description of this Effect*/
         virtual const char *effectDescription() const = 0;
 
@@ -86,7 +86,7 @@ namespace osgFX
 
         /** set whether the effect is enabled or not */
         inline void setEnabled(bool v);
-        
+
         /**
          optional: set effect parameters to produce a visually significant
          result to be used in demo applications like osgfxbrowser. Default
@@ -96,7 +96,7 @@ namespace osgFX
 
         /** get the number of techniques defined for this Effect */
         inline int getNumTechniques() const;
-        
+
         /** get the i-th Technique */
         inline Technique* getTechnique(int i);
 
@@ -114,7 +114,7 @@ namespace osgFX
         inline void selectTechnique(int i = AUTO_DETECT);
 
         /** custom traversal */
-        virtual void traverse(osg::NodeVisitor& nv);        
+        virtual void traverse(osg::NodeVisitor& nv);
 
         /** default traversal */
         inline void inherited_traverse(osg::NodeVisitor& nv);
@@ -122,7 +122,7 @@ namespace osgFX
     protected:
         virtual ~Effect();
         Effect &operator=(const Effect &) { return *this; }
-       
+
         /** force rebuilding of techniques on next traversal */
         inline void dirtyTechniques();
 
@@ -136,7 +136,7 @@ namespace osgFX
          this method.
          */
         virtual bool define_techniques() = 0;
-        
+
     private:
         friend class Validator;
 
@@ -149,13 +149,13 @@ namespace osgFX
 
         // use int instead of bool to avoid errors
         mutable osg::buffered_value<int> _tech_selected;
-        
+
         int _global_sel_tech;
 
         bool _techs_defined;
 
         osg::ref_ptr<osg::Geode> _dummy_for_validation;
-        
+
         void build_dummy_node();
     };
 
@@ -170,7 +170,7 @@ namespace osgFX
     {
         _enabled = v;
     }
-    
+
     inline int Effect::getNumTechniques() const
     {
         return static_cast<int>(_techs.size());
@@ -200,12 +200,12 @@ namespace osgFX
     {
         _techs.push_back(tech);
     }
-    
+
     inline void Effect::dirtyTechniques()
     {
         _techs_defined = false;
     }
-    
+
     inline void Effect::inherited_traverse(osg::NodeVisitor& nv)
     {
         typedef osg::Group inherited;

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -88,7 +88,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     LOAD_FBO_EXT(glGenerateMipmap);
     LOAD_FBO_EXT(glGetRenderbufferParameteriv);
 
-    _supported = 
+    _supported =
         glBindRenderbuffer != 0 &&
         glDeleteRenderbuffers != 0 &&
         glGenRenderbuffers != 0 &&
@@ -240,7 +240,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
     if (objectID == 0)
     {
         ext->glGenRenderbuffers(1, &objectID);
-        if (objectID == 0) 
+        if (objectID == 0)
             return 0;
         dirty = 1;
     }
@@ -335,7 +335,7 @@ struct FrameBufferAttachment::Pimpl
         TEXTURE2DARRAY,
         TEXTURE2DMULTISAMPLE
     };
-    
+
     TargetType targetType;
     ref_ptr<RenderBuffer> renderbufferTarget;
     ref_ptr<Texture> textureTarget;
@@ -426,7 +426,7 @@ FrameBufferAttachment::FrameBufferAttachment(TextureRectangle* target)
 FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
 {
     osg::Texture* texture = attachment._texture.get();
-    
+
     if (texture)
     {
         osg::Texture1D* texture1D = dynamic_cast<osg::Texture1D*>(texture);
@@ -461,7 +461,7 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
             _ximpl->zoffset = attachment._face;
             return;
         }
-        
+
         osg::Texture2DArray* texture2DArray = dynamic_cast<osg::Texture2DArray*>(texture);
         if (texture2DArray)
         {
@@ -556,9 +556,9 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
             return;
 
         Texture::FilterMode minFilter = _ximpl->textureTarget->getFilter(Texture::MIN_FILTER);
-        if (minFilter==Texture::LINEAR_MIPMAP_LINEAR || 
-            minFilter==Texture::LINEAR_MIPMAP_NEAREST || 
-            minFilter==Texture::NEAREST_MIPMAP_LINEAR || 
+        if (minFilter==Texture::LINEAR_MIPMAP_LINEAR ||
+            minFilter==Texture::LINEAR_MIPMAP_NEAREST ||
+            minFilter==Texture::NEAREST_MIPMAP_LINEAR ||
             minFilter==Texture::NEAREST_MIPMAP_NEAREST)
         {
             state.setActiveTextureUnit(0);
@@ -586,7 +586,7 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         if (!tobj || tobj->id() == 0)
             return;
     }
-    
+
     switch (_ximpl->targetType)
     {
     default:
@@ -858,8 +858,8 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
 
     if (_unsupported[contextID])
         return;
-        
-        
+
+
     FBOExtensions* ext = FBOExtensions::instance(contextID,true);
     if (!ext->isSupported())
     {
@@ -892,7 +892,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
 
     if (dirtyAttachmentList)
     {
-        // the set of of attachments appears to be thread sensitive, it shouldn't be because 
+        // the set of of attachments appears to be thread sensitive, it shouldn't be because
         // OpenGL FBO handles osg::FrameBufferObject has are multi-buffered...
         // so as a temporary fix will stick in a mutex to ensure that only one thread passes through here
         // at one time.
@@ -907,8 +907,8 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         }
 
     }
-    
-   
+
+
     ext->glBindFramebuffer(target, fboID);
 
     // enable drawing buffers to render the result to fbo
@@ -936,7 +936,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
                     }
                     else
                     {
-                        OSG_WARN << 
+                        OSG_WARN <<
                             "Warning: FrameBufferObject: could not attach PACKED_DEPTH_STENCIL_BUFFER, "
                             "EXT_packed_depth_stencil is not supported !" << std::endl;
                     }
@@ -946,7 +946,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
                     fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
                     break;
             }
-        }        
+        }
         dirtyAttachmentList = 0;
     }
 

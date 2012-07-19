@@ -127,7 +127,7 @@ several changes.
 
  * Add the path to <GL3/gl3.h> to the CMake compiler flags, CMAKE_CXX_FLAGS and
    CMAKE_CXX_FLAGS_DEBUG (for release and debug builds; others if you use other
-   build configurations). The test to add should look something like this:
+   build configurations). The text to add should look something like this:
      /I “C:\GLHeader”
    The folder GLHeader should contain a subfolder GL3, which in turn contains
    gl3.h.
@@ -145,9 +145,6 @@ several changes.
      OSG_GL_MATRICES_AVAILABLE
      OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
      OSG_GL_VERTEX_FUNCS_AVAILABLE
-
- * Additionally, leave BUILD_OSG_EXAMPLES disabled. None of the existing
-   examples use GL3, so there's no point in building them.
 
 Create your project files in cmake-gui as usual, and build OSG as usual.
 

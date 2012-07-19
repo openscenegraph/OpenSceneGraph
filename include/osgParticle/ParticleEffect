@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -23,7 +23,7 @@ namespace osgParticle
     class OSGPARTICLE_EXPORT ParticleEffect : public osg::Group
     {
     public:
-    
+
         explicit ParticleEffect(bool automaticSetup=true):
             _automaticSetup(automaticSetup),
             _useLocalParticleSystem(true),
@@ -33,7 +33,7 @@ namespace osgParticle
             _emitterDuration(1.0),
             _wind(0.0f,0.0f,0.0f)
             {}
-        
+
         ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
 
@@ -62,7 +62,7 @@ namespace osgParticle
 
         void setIntensity(float intensity);
         float getIntensity() const { return _intensity; }
-        
+
         void setStartTime(double startTime);
         double getStartTime() const { return _startTime; }
 
@@ -75,7 +75,7 @@ namespace osgParticle
         void setWind(const osg::Vec3& wind);
         const osg::Vec3& getWind() const { return _wind; }
 
-        /// Get whether all particles are dead 
+        /// Get whether all particles are dead
         bool areAllParticlesDead() const { return _particleSystem.valid()?_particleSystem->areAllParticlesDead():true; }
 
         virtual Emitter* getEmitter() = 0;
@@ -83,7 +83,7 @@ namespace osgParticle
 
         virtual Program* getProgram()  = 0;
         virtual const Program* getProgram() const  = 0;
-        
+
         void setParticleSystem(ParticleSystem* ps);
         inline ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
         inline const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
@@ -95,14 +95,14 @@ namespace osgParticle
         virtual void buildEffect();
 
     protected:
-    
+
         virtual ~ParticleEffect() {}
-        
+
         bool                            _automaticSetup;
 
         osg::ref_ptr<ParticleSystem>    _particleSystem;
 
-        bool                            _useLocalParticleSystem;        
+        bool                            _useLocalParticleSystem;
         std::string                     _textureFileName;
         Particle                        _defaultParticleTemplate;
         osg::Vec3                       _position;

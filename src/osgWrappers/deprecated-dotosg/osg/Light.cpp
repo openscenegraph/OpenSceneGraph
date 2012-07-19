@@ -55,7 +55,7 @@ bool Light_readLocalData(Object& obj, Input& fr)
         fr+=5; \
         iteratorAdvanced = true; \
     } \
-} 
+}
 
 #define ReadVec3(A,B) {  \
     if (fr[0].matchWord(B) && \
@@ -67,7 +67,7 @@ bool Light_readLocalData(Object& obj, Input& fr)
         fr+=4; \
         iteratorAdvanced = true; \
     } \
-} 
+}
 
 #define ReadFloat(A,B) {  \
     if (fr[0].matchWord(B) && \
@@ -77,17 +77,17 @@ bool Light_readLocalData(Object& obj, Input& fr)
         fr+=2; \
         iteratorAdvanced = true; \
     } \
-} 
+}
 
     Vec4 vec4;
     ReadVec4(setAmbient,"ambient")
     ReadVec4(setDiffuse,"diffuse")
     ReadVec4(setSpecular,"specular")
     ReadVec4(setPosition,"position")
-    
+
     Vec3 vec3;
     ReadVec3(setDirection,"direction")
-    
+
     float value;
     ReadFloat(setConstantAttenuation,"constant_attenuation")
     ReadFloat(setLinearAttenuation,"linear_attenuation")

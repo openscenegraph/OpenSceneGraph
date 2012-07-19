@@ -34,7 +34,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgVolume::ImageLayer& layer = static_cast<osgVolume::ImageLayer&>(obj);
 
     bool itrAdvanced = false;
-    
+
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s"))
     {
         std::string filename = fr[1].getStr();
@@ -58,7 +58,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 if (fileType == osgDB::DIRECTORY)
                 {
                     image = osgDB::readRefImageFile(filename+".dicom");
-                    
+
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
@@ -67,7 +67,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
 
                 if (image.valid())
-                {                
+                {
                     osg::notify(osg::INFO)<<"osgVolume::ImageLayer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::dec<<std::endl;
 
                     osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
@@ -89,11 +89,11 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 }
             }
         }
-        
+
         fr += 2;
         itrAdvanced = true;
     }
-   
+
 
     return itrAdvanced;
 }
@@ -101,7 +101,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 bool ImageLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgVolume::ImageLayer& layer = static_cast<const osgVolume::ImageLayer&>(obj);
-    
+
     if (!layer.getFileName().empty())
     {
         fw.indent()<<"file "<< layer.getFileName() << std::endl;

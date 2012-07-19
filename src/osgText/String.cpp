@@ -17,19 +17,19 @@ struct look_ahead_iterator
         _string(string),
         _index(0),
         _nullCharacter(0) {}
-        
+
     bool valid() const { return _index<_string.length(); }
-    
+
     look_ahead_iterator& operator ++ ()
     {
-        if (_index<_string.length()) ++_index; 
+        if (_index<_string.length()) ++_index;
         return *this;
     }
-    
+
     look_ahead_iterator operator ++ (int)
     {
-        look_ahead_iterator tmp(*this); 
-        if (_index<_string.length()) ++_index; 
+        look_ahead_iterator tmp(*this);
+        if (_index<_string.length()) ++_index;
         return tmp;
     }
 
@@ -38,7 +38,7 @@ struct look_ahead_iterator
         if (_index<_string.length()) _index = osg::minimum((unsigned int)(_index+offset),(unsigned int)_string.length());
         return *this;
     }
-    
+
     unsigned char operator * () const
     {
         if (_index<_string.length()) return _string[_index];
@@ -51,12 +51,12 @@ struct look_ahead_iterator
         if (_index+offset<_string.length()) return _string[_index+offset];
         else return _nullCharacter;
     }
-    
+
 
     const std::string&      _string;
     unsigned int            _index;
     unsigned char           _nullCharacter;
-    
+
 protected:
 
     look_ahead_iterator& operator = (const look_ahead_iterator&) { return *this; }
@@ -124,7 +124,7 @@ String::Encoding findEncoding(look_ahead_iterator& charString,String::Encoding o
 
 unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding encoding)
 {
-    // For more info on unicode encodings see: 
+    // For more info on unicode encodings see:
     // http://www-106.ibm.com/developerworks/unicode/library/u-encode.html
     switch(encoding)
     {
@@ -168,7 +168,7 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
             {
                 int char2 = *charString++;
                 int char3 = *charString++;
-                int highSurrogate = (char0<<8) | char1; 
+                int highSurrogate = (char0<<8) | char1;
                 int lowSurrogate = (char2<<8) | char3;
                 if ((char2>=0xDC)&&(char2<=0xDF)) //only for the valid range of low surrogate
                 {
@@ -190,7 +190,7 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
             {
                 int char3 = *charString++;
                 int char2 = *charString++;
-                int highSurrogate = (char0<<8) | char1; 
+                int highSurrogate = (char0<<8) | char1;
                 int lowSurrogate = (char2<<8) | char3;
                 if ((char2>=0xDC)&&(char2<=0xDF)) //only for the valid range of low surrogate
                 {
@@ -205,9 +205,9 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
             int character = ((((int)charString[0])<<24) | (((int)charString[1])<<16) |
                             (((int)charString[2])<<8) | charString[3]);
             charString+=4;
-            if (character<0x110000) 
-            { 
-                // Character is constrained to the range set by the unicode standard 
+            if (character<0x110000)
+            {
+                // Character is constrained to the range set by the unicode standard
                 return character;
             }
             break;
@@ -217,9 +217,9 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
             int character = ((((int)charString[3])<<24) | (((int)charString[2])<<16) |
                             (((int)charString[1])<<8) | charString[0]);
             charString+=4;
-            if (character<0x110000) 
-            { 
-                // Character is constrained to the range set by the unicode standard 
+            if (character<0x110000)
+            {
+                // Character is constrained to the range set by the unicode standard
                 return character;
             }
             break;
@@ -249,10 +249,10 @@ String::String(const String& str):
 String& String::operator = (const String& str)
 {
     if (&str==this) return *this;
-    
+
     clear();
     std::copy(str.begin(),str.end(),std::back_inserter(*this));
-    
+
     return *this;
 }
 
@@ -281,13 +281,13 @@ void String::set(const std::string& text,Encoding encoding)
 
     look_ahead_iterator itr(text);
 
-    if ((encoding == ENCODING_SIGNATURE) || 
-        (encoding == ENCODING_UTF16) || 
+    if ((encoding == ENCODING_SIGNATURE) ||
+        (encoding == ENCODING_UTF16) ||
         (encoding == ENCODING_UTF32))
     {
         encoding = findEncoding(itr,encoding);
     }
-    
+
     while(itr.valid())
     {
         unsigned int c = getNextCharacter(itr,encoding);

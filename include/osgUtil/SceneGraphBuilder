@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,7 +31,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
 
         SceneGraphBuilder();
 
-        // 
+        //
         //  OpenGL 1.0 style building methods
         //
         void PushMatrix();
@@ -42,7 +42,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         void Translated(GLdouble x, GLdouble y, GLdouble z);
         void Scaled(GLdouble x, GLdouble y, GLdouble z);
         void Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
-        
+
         void BlendFunc(GLenum srcFactor, GLenum dstFactor);
         void CullFace(GLenum mode);
         void DepthFunc(GLenum mode);
@@ -54,10 +54,10 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         void PolygonOffset(GLfloat factor, GLfloat units);
         void PolygonStipple(const GLubyte* mask);
         void ShadeModel(GLenum mode);
-        
+
         void Enable(GLenum mode);
         void Disable(GLenum mode);
-        
+
         void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
         void Color4fv(GLfloat* c) { Color4f(c[0], c[1], c[2], c[3]); }
 
@@ -120,27 +120,27 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         osg::Node* takeScene();
 
     protected:
-    
+
         typedef std::vector<osg::Matrixd> Matrices;
 
         void matrixChanged();
         void addAttribute(osg::StateAttribute* attribute);
-        void addMode(GLenum mode, bool enabled);                
+        void addMode(GLenum mode, bool enabled);
         void addTextureAttribute(unsigned int unit, osg::StateAttribute* attribute);
-        void addTextureMode(unsigned int unit, GLenum mode, bool enabled);                
+        void addTextureMode(unsigned int unit, GLenum mode, bool enabled);
         void addShape(osg::Shape* shape);
         void addDrawable(osg::Drawable* drawable);
         void newGeometry();
-        
+
         void allocateGeometry();
         void completeGeometry();
-        
+
         void allocateStateSet();
-        
+
         Matrices                            _matrixStack;
         osg::ref_ptr<osg::StateSet>         _stateset;
         bool                                _statesetAssigned;
-        
+
         bool                                _normalSet;
         osg::Vec3f                          _normal;
 
@@ -155,7 +155,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         osg::ref_ptr<osg::Vec3Array>        _normals;
         osg::ref_ptr<osg::Vec4Array>        _colors;
         osg::ref_ptr<osg::Vec4Array>        _texCoords;
-    
+
         struct QuadricState
         {
             QuadricState():
@@ -177,7 +177,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         osg::ref_ptr<osg::Geode>            _geode;
         osg::ref_ptr<osg::MatrixTransform>  _transform;
         osg::ref_ptr<osg::Group>            _group;
-    
+
 };
 
 

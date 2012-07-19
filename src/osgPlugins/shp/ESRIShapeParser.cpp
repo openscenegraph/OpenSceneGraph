@@ -6,7 +6,7 @@
 #if defined(_MSC_VER)
     #include <io.h>
     #include <stdio.h>
-#endif 
+#endif
 
 #include "ESRIShapeParser.h"
 
@@ -44,7 +44,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
     {
         case ESRIShape::ShapeTypeNullShape  :
             break;
-    
+
         case ESRIShape::ShapeTypePoint      :
             {
                 std::vector<ESRIShape::Point> pts;
@@ -67,7 +67,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
             }
             break;
 
-        case ESRIShape::ShapeTypePolyLine   : 
+        case ESRIShape::ShapeTypePolyLine   :
             {
                 std::vector<ESRIShape::PolyLine> plines;
                 ESRIShape::PolyLine pline;
@@ -113,7 +113,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process(  mptms );
             }
             break;
-    
+
         case ESRIShape::ShapeTypePolyLineM   :
             {
                 std::vector<ESRIShape::PolyLineM> plinems;
@@ -125,7 +125,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process( plinems );
             }
             break;
-    
+
         case ESRIShape::ShapeTypePolygonM    :
             {
                 std::vector<ESRIShape::PolygonM> polyms;
@@ -137,7 +137,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process( polyms );
             }
             break;
-    
+
 
         case ESRIShape::ShapeTypePointZ      :
             {
@@ -148,7 +148,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process( ptzs );
             }
             break;
-    
+
         case ESRIShape::ShapeTypeMultiPointZ :
             {
                 std::vector<ESRIShape::MultiPointZ> mptzs;
@@ -160,7 +160,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process(  mptzs );
             }
             break;
-    
+
         case ESRIShape::ShapeTypePolyLineZ   :
             {
                 std::vector<ESRIShape::PolyLineZ> plinezs;
@@ -172,7 +172,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process( plinezs );
             }
             break;
-    
+
         case ESRIShape::ShapeTypePolygonZ    :
             {
                 std::vector<ESRIShape::PolygonZ> polyzs;
@@ -184,8 +184,8 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process( polyzs );
             }
             break;
-    
-    
+
+
         case ESRIShape::ShapeTypeMultiPatch  :
             {
                 std::vector<ESRIShape::MultiPatch> mpatches;
@@ -197,7 +197,7 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
                 _process(mpatches);
             }
             break;
-    
+
         default:
             break;
     }
@@ -209,15 +209,15 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
     }
 }
 
-osg::Geode *ESRIShapeParser::getGeode() 
-{ 
-    return _geode.get(); 
+osg::Geode *ESRIShapeParser::getGeode()
+{
+    return _geode.get();
 }
 
 void ESRIShapeParser::_combinePointToMultipoint()
 {
     if( !_valid ) return;
-    
+
     OSG_NOTICE<<"_combinePointToMultipoint()"<<std::endl;
 
     ArrayHelper coords(_useDouble);
@@ -300,11 +300,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLine> &lines )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, index, len));
         }
         _geode->addDrawable( geometry.get() );
@@ -329,11 +329,11 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Polygon> &polys )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::POLYGON, index, len));
         }
 
@@ -407,11 +407,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineM> &linems )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, index, len));
         }
         _geode->addDrawable( geometry.get() );
@@ -436,11 +436,11 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonM> &polyms )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::POLYGON, index, len));
         }
         _geode->addDrawable( geometry.get() );
@@ -505,11 +505,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineZ> &linezs )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, index, len));
         }
         _geode->addDrawable( geometry.get() );
@@ -524,7 +524,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonZ> &polyzs )
     for( p = polyzs.begin(); p != polyzs.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        
+
         int i;
         for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
@@ -535,11 +535,11 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonZ> &polyzs )
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            geometry->addPrimitiveSet( 
+            geometry->addPrimitiveSet(
                     new osg::DrawArrays(osg::PrimitiveSet::POLYGON, index, len));
         }
         _geode->addDrawable( geometry.get() );
@@ -554,7 +554,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
     for( p = mpatches.begin(); p != mpatches.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        
+
         int i;
         for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
@@ -570,38 +570,38 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
-            int len = i < p->numParts - 1 ? 
+            int len = i < p->numParts - 1 ?
                             p->parts[i+1] - p->parts[i] :
                             p->numPoints  - p->parts[i];
 
-            int  mode = 
+            int  mode =
                 p->partTypes[i] == TriangleStrip ? osg::PrimitiveSet::TRIANGLE_STRIP :
                 p->partTypes[i] == TriangleFan   ? osg::PrimitiveSet::TRIANGLE_FAN :
                 // HACK for now
                 p->partTypes[i] == OuterRing     ? osg::PrimitiveSet::LINE_STRIP :
                 p->partTypes[i] == InnerRing     ? osg::PrimitiveSet::LINE_STRIP :
                 p->partTypes[i] == FirstRing     ? osg::PrimitiveSet::LINE_STRIP :
-                p->partTypes[i] == Ring          ? osg::PrimitiveSet::LINE_STRIP : 
-                                                   osg::PrimitiveSet::POINTS ; 
+                p->partTypes[i] == Ring          ? osg::PrimitiveSet::LINE_STRIP :
+                                                   osg::PrimitiveSet::POINTS ;
 
             if( p->partTypes[i] == OuterRing ||
-                p->partTypes[i] == InnerRing || 
+                p->partTypes[i] == InnerRing ||
                 p->partTypes[i] == FirstRing || p->partTypes[i] == Ring )
             {
-                OSG_WARN << "ESRIShapeParser - MultiPatch type " << 
+                OSG_WARN << "ESRIShapeParser - MultiPatch type " <<
                     (p->partTypes[i] == TriangleStrip ? "TriangleStrip":
                      p->partTypes[i] == TriangleFan   ? "TriangleFan":
                      p->partTypes[i] == OuterRing     ? "OuterRing":
                      p->partTypes[i] == InnerRing     ? "InnerRing":
                      p->partTypes[i] == FirstRing     ? "FirstRing":
-                     p->partTypes[i] == Ring          ? "Ring": "Dunno") << 
+                     p->partTypes[i] == Ring          ? "Ring": "Dunno") <<
                     " poorly supported.  Will be represented by a red line strip" << std::endl;
             }
-                                                   
-        
+
+
 
             // Lets mark poorly supported primitives with red, otherwise white
-            osg::Vec4 color = 
+            osg::Vec4 color =
                 p->partTypes[i] == TriangleStrip ? osg::Vec4(1.0,1.0,1.0,1.0) :
                 p->partTypes[i] == TriangleFan   ? osg::Vec4(1.0,1.0,1.0,1.0) :
                 // HACK for now
@@ -613,7 +613,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
             for( int j = 0; j < len; j++ )
                 colors->push_back( color );
 
-            geometry->addPrimitiveSet( new osg::DrawArrays(mode, index, len )); 
+            geometry->addPrimitiveSet( new osg::DrawArrays(mode, index, len ));
         }
 
         _geode->addDrawable( geometry.get() );

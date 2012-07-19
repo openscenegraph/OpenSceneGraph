@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
 *
-* This library is open source and may be redistributed and/or modified under  
-* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+* This library is open source and may be redistributed and/or modified under
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
 * (at your option) any later version.  The full license is in LICENSE file
 * included with this distribution, and on the openscenegraph.org website.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * OpenSceneGraph Public License for more details.
 */
 
@@ -77,7 +77,7 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
 {
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
     if (!view) return false;
-    
+
     osgViewer::ViewerBase* viewer = view->getViewerBase();
 
     if (viewer == NULL)
@@ -160,7 +160,7 @@ void WindowSizeHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
 {
     osg::GraphicsContext::WindowingSystemInterface    *wsi = osg::GraphicsContext::getWindowingSystemInterface();
 
-    if (wsi == NULL) 
+    if (wsi == NULL)
     {
         OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
         return;
@@ -206,7 +206,7 @@ void WindowSizeHandler::changeWindowedResolution(osgViewer::GraphicsWindow *wind
 {
     osg::GraphicsContext::WindowingSystemInterface    *wsi = osg::GraphicsContext::getWindowingSystemInterface();
 
-    if (wsi == NULL) 
+    if (wsi == NULL)
     {
         OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
         return;
@@ -316,7 +316,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 {
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
     if (!view) return false;
-    
+
     osgViewer::ViewerBase* viewerBase = view->getViewerBase();
     osgViewer::Viewer* viewer = dynamic_cast<Viewer*>(viewerBase);
 
@@ -356,11 +356,11 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
                     OSG_NOTICE<<"Threading model 'SingleThreaded' selected."<<std::endl;
                     break;
-#if 1                    
+#if 1
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
                     OSG_NOTICE<<"Threading model 'SingleThreaded' selected."<<std::endl;
-#else                    
+#else
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(viewer->suggestBestThreadingModel());
                     OSG_NOTICE<<"Threading model 'AutomaticSelection' selected."<<std::endl;
@@ -447,7 +447,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
         if (_animPath.valid() && _currentlyRecording && _delta >= _interval)
         {
             const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
-            double animationPathTime = osg::Timer::instance()->delta_s(_animStartTime, time);            
+            double animationPathTime = osg::Timer::instance()->delta_s(_animStartTime, time);
             _animPath->insert(animationPathTime, osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
             _delta = 0.0f;
 
@@ -459,7 +459,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
         }
         else _delta += delta;
-        
+
         return true;
     }
 
@@ -478,7 +478,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     _currentlyRecording = true;
                     _animStartTime = osg::Timer::instance()->tick();
                     _animPath = new osg::AnimationPath();
-                    
+
                     if (!_filename.empty())
                     {
                         std::stringstream ss;
@@ -489,7 +489,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                             _autoinc++;
                         }
                         ss << "."<<osgDB::getFileExtension(_filename);
-                        
+
                         OSG_NOTICE << "Recording camera path to file " << ss.str() << std::endl;
                         _fout.open( ss.str().c_str() );
 
@@ -547,7 +547,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                 if (!_currentlyPlaying)
                 {
                      if (_animPath.valid() && !_animPath->empty())
-                     {                    
+                     {
                         _animPathManipulator = new osgGA::AnimationPathManipulator(_animPath.get());
                         _animPathManipulator->home(ea,aa);
 
@@ -562,7 +562,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                         }
                      }
                 }
-                
+
                 // The user has requested to STOP playback.
                 else
                 {
@@ -573,7 +573,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                 }
 
                 return true;
-            }        
+            }
 
             break;
         }
@@ -636,7 +636,7 @@ void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
         ostr<<char(_keyEventIncreaseLODScale);
         usage.addKeyboardMouseBinding(ostr.str(),"Increase LODScale.");
     }
-    
+
     {
         std::ostringstream ostr;
         ostr<<char(_keyEventDecreaseLODScale);
@@ -653,14 +653,14 @@ bool ToggleSyncToVBlankHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::
 {
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
     if (!view) return false;
-    
+
     osgViewer::ViewerBase* viewer = view->getViewerBase();
 
     if (viewer == NULL)
     {
         return false;
     }
-    
+
     if (ea.getHandled()) return false;
 
     switch(ea.getEventType())
@@ -729,7 +729,7 @@ InteractiveImageHandler::InteractiveImageHandler(osg::Image* image, osg::Texture
     }
 }
 
-bool InteractiveImageHandler::computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask) const 
+bool InteractiveImageHandler::computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask) const
 {
     float local_x, local_y = 0.0;
     const osg::Camera* camera;
@@ -818,7 +818,7 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
     {
         osg::Vec2 tc(0.5f,0.5f);
 
-        // use the nearest intersection                 
+        // use the nearest intersection
         const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
         osg::Drawable* drawable = intersection.drawable.get();
         osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
@@ -843,7 +843,7 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
                 osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
                 if (texcoords_Vec2Array)
                 {
-                    // we have tex coord array so now we can compute the final tex coord at the point of intersection.                                
+                    // we have tex coord array so now we can compute the final tex coord at the point of intersection.
                     osg::Vec2 tc1 = (*texcoords_Vec2Array)[i1];
                     osg::Vec2 tc2 = (*texcoords_Vec2Array)[i2];
                     osg::Vec2 tc3 = (*texcoords_Vec2Array)[i3];
@@ -893,7 +893,7 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
 bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
 {
     if (ea.getHandled()) return false;
-    
+
     if (!_image) return false;
 
     switch(ea.getEventType())
@@ -917,11 +917,11 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
             int x,y;
             bool sendKeyEvent = mousePosition(view, nv, ea, x, y);
-        
+
             if (sendKeyEvent)
             {
                 return _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
-            }          
+            }
             break;
         }
         case (osgGA::GUIEventAdapter::RESIZE):
@@ -959,7 +959,7 @@ void InteractiveImageHandler::resize(int width, int height)
         _image->scaleImage(width, height, 1);
     }
 
-    // Make sure the texture does not rescale the image because 
+    // Make sure the texture does not rescale the image because
     // it thinks it should still be the previous size...
     if (_texture.valid())
         _texture->setTextureSize(width, height);

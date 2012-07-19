@@ -32,7 +32,7 @@ void Uniform::write(DataOutputStream* out){
         out_THROW_EXCEPTION("Uniform::write(): Could not cast this osg::Uniform to an osg::Object.");
 
     out->writeInt(getType());
-    
+
     if ( out->getVersion() < VERSION_0012 )
     {
         out->writeString(getName());
@@ -43,7 +43,9 @@ void Uniform::write(DataOutputStream* out){
         out->writeUInt(getNumElements());
 
         if( getFloatArray() ) out->writeArray( getFloatArray() );
+        if( getDoubleArray() ) out->writeArray( getDoubleArray() );
         if( getIntArray() )   out->writeArray( getIntArray() );
+        if( getUIntArray() )   out->writeArray( getUIntArray() );
     }
     else
     {
@@ -163,21 +165,23 @@ void Uniform::read(DataInputStream* in)
     {
         in_THROW_EXCEPTION("Uniform::read(): Expected Uniform identification.");
     }
-    
+
     setType(static_cast<Type>(in->readInt()));
 
     if ( in->getVersion() < VERSION_0012 )
     {
         setName(in->readString());
     }
-    
+
     if ( in->getVersion() >= VERSION_0016 )
     {
         setNumElements( in->readUInt() );
 
         osg::Array* data = in->readArray();
         setArray( dynamic_cast<osg::FloatArray*>(data) );
+        setArray( dynamic_cast<osg::DoubleArray*>(data) );
         setArray( dynamic_cast<osg::IntArray*>(data) );
+        setArray( dynamic_cast<osg::UIntArray*>(data) );
     }
     else
     {

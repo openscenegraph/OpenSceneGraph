@@ -27,7 +27,7 @@
     trpgMemReadBuffer is a subclass of that which implements methods for
      reading out of a chunk of memory.  Data is read off of disk and then
      dumped into a read buffer for parsing.
-    If you wanted to read directly from disk, for example, you could 
+    If you wanted to read directly from disk, for example, you could
      implement a trpgDiskReadBuffer as a subclass of trpgReadBuffer.
 */
 

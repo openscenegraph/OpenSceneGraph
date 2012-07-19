@@ -29,7 +29,7 @@ Translate2DDragger::Translate2DDragger()
     setColor(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
     setPickColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
 }
-       
+
 Translate2DDragger::Translate2DDragger(const osg::Plane& plane)
 {
     _projector = new PlaneProjector(plane);
@@ -57,7 +57,7 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                 computeNodePathToRoot(*this,nodePathToRoot);
                 osg::Matrix localToWorld = osg::computeLocalToWorld(nodePathToRoot);
                 _projector->setLocalToWorld(localToWorld);
-                
+
                 if (_projector->project(pointer, _startProjectedPoint))
                 {
                     // Generate the motion command.
@@ -76,9 +76,9 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
-            
+
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
@@ -98,7 +98,7 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-                return true; 
+                return true;
             }
 
         // Pick finish.
@@ -132,7 +132,7 @@ void Translate2DDragger::setupDefaultGeometry()
     osg::Geode* lineGeode = new osg::Geode;
     {
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(2);
         (*vertices)[0] = osg::Vec3(0.0f,0.0f,-0.5f);
         (*vertices)[1] = osg::Vec3(0.0f,0.0f,0.5f);
@@ -158,7 +158,7 @@ void Translate2DDragger::setupDefaultGeometry()
         cone->setRotation(rotation);
         geode->addDrawable(new osg::ShapeDrawable(cone));
     }
-    
+
     // Create right cone.
     {
         osg::Cone* cone = new osg::Cone (osg::Vec3(0.0f, 0.0f, 0.5f), 0.025f, 0.10f);
@@ -197,13 +197,13 @@ void Translate2DDragger::setupDefaultGeometry()
 
         xform->addChild(arrow);
     }
-    
+
     // Rotate the xform so that the geometry lies on the plane.
     {
         osg::Vec3 normal = _projector->getPlane().getNormal(); normal.normalize();
         osg::Quat rotation; rotation.makeRotate(osg::Vec3(0.0f, 1.0f, 0.0f), normal);
         xform->setMatrix(osg::Matrix(rotation));
     }
-    
+
     addChild(xform);
 }

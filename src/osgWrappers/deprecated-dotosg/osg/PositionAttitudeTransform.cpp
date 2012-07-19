@@ -35,7 +35,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
         fr[3].getFloat(pos[2]);
-        
+
         transform.setPosition(pos);
 
         fr += 4;
@@ -49,9 +49,9 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(att[1]);
         fr[3].getFloat(att[2]);
         fr[4].getFloat(att[3]);
-        
+
         transform.setAttitude(att);
-        
+
         fr += 5;
         iteratorAdvanced = true;
     }
@@ -62,7 +62,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(scale[0]);
         fr[2].getFloat(scale[1]);
         fr[3].getFloat(scale[2]);
-        
+
         transform.setScale(scale);
 
         fr += 4;
@@ -75,9 +75,9 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(pivot[0]);
         fr[2].getFloat(pivot[1]);
         fr[3].getFloat(pivot[2]);
-        
+
         transform.setPivotPoint(pivot);
-        
+
         fr += 4;
         iteratorAdvanced = true;
     }
@@ -89,7 +89,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 bool PositionAttitudeTransform_writeLocalData(const Object& obj, Output& fw)
 {
     const PositionAttitudeTransform& transform = static_cast<const PositionAttitudeTransform&>(obj);
-    
+
     fw.indent()<<"position "<<transform.getPosition()<<std::endl;
     fw.indent()<<"attitude "<<transform.getAttitude()<<std::endl;
     fw.indent()<<"scale "<<transform.getScale()<<std::endl;

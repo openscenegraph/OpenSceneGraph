@@ -85,7 +85,7 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("useShaders")) {
         if (fr[1].matchWord("TRUE")) {
             myobj.setUseShaders(true);
@@ -133,7 +133,7 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("defaultBoundingBox")) {
         osg::BoundingBox bbox;
         if (    fr[1].getFloat(bbox.xMin()) &&
@@ -147,7 +147,7 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("sortMode")) {
         if (fr[1].matchWord("NO_SORT")) {
             myobj.setSortMode(osgParticle::ParticleSystem::NO_SORT);
@@ -165,7 +165,7 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
+
     if (fr[0].matchWord("visibilityDistance")) {
         double distance;
         if (fr[1].getFloat(distance)) {
@@ -174,15 +174,15 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
             itAdvanced = true;
         }
     }
-    
-    if (fr[0].matchWord("particleTemplate")) {        
+
+    if (fr[0].matchWord("particleTemplate")) {
         ++fr;
         itAdvanced = true;
         osgParticle::Particle P;
         if (read_particle(fr, P)) {
             myobj.setDefaultParticleTemplate(P);
         }
-    }    
+    }
 
     return itAdvanced;
 }
@@ -229,15 +229,15 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
         fw << "TRUE" << std::endl;
     else
         fw << "FALSE" << std::endl;
-    
+
     fw.indent() << "doublePassRendering ";
     if (myobj.getDoublePassRendering())
         fw << "TRUE" << std::endl;
     else
         fw << "FALSE" << std::endl;
-        
+
     fw.indent() << "frozen ";
-    if (myobj.isFrozen()) 
+    if (myobj.isFrozen())
         fw << "TRUE" << std::endl;
     else
         fw << "FALSE" << std::endl;
@@ -248,7 +248,7 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     else
         fw << "FALSE" << std::endl;
 
-    osg::BoundingBox bbox = myobj.getDefaultBoundingBox();    
+    osg::BoundingBox bbox = myobj.getDefaultBoundingBox();
     fw.indent() << "defaultBoundingBox ";
     fw << bbox.xMin() << " " << bbox.yMin() << " " << bbox.zMin() << " ";
     fw << bbox.xMax() << " " << bbox.yMax() << " " << bbox.zMax() << std::endl;
@@ -266,7 +266,7 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
             fw << "SORT_BACK_TO_FRONT" << std::endl;
             break;
     }
-    
+
     fw.indent() << "visibilityDistance " << myobj.getVisibilityDistance() << std::endl;
 
     fw.indent() << "particleTemplate ";

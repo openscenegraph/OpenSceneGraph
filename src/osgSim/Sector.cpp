@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -18,7 +18,7 @@ using namespace osgSim;
 
 
 //
-// Elevation Range 
+// Elevation Range
 //
 
 void AzimRange::setAzimuthRange(float minAzimuth,float maxAzimuth,float fadeAngle)
@@ -58,7 +58,7 @@ void AzimRange::getAzimuthRange(float& minAzimuth, float& maxAzimuth, float& fad
 
 
 //
-// Elevation Range 
+// Elevation Range
 //
 void ElevationRange::setElevationRange(float minElevation,float maxElevation,float fadeAngle)
 {
@@ -286,7 +286,7 @@ void DirectionalSector::setFadeAngle(float angle)
     float ang = acos(_cosHorizAngle)+angle ;
     if ( ang > osg::PI ) _cosHorizFadeAngle = -1.0 ;
     else _cosHorizFadeAngle = cos(ang);
-    
+
     ang = acos(_cosVertAngle)+angle ;
     if ( ang > osg::PI ) _cosVertFadeAngle = -1.0 ;
     else _cosVertFadeAngle = cos(ang);
@@ -298,15 +298,15 @@ float DirectionalSector::getFadeAngle() const
 }
 
 float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
-{      
+{
    float elev_intensity, azim_intensity ;
-   
+
    // Tranform eyeLocal into the LightPoint frame
    osg::Vec3 EPlp = _local_to_LP * eyeLocal ;
-   
+
    /*fprintf(stderr, "    eyeLocal = %f, %f, %f\n", eyeLocal[0], eyeLocal[1], eyeLocal[2]) ;
    fprintf(stderr, "    EPlp     = %f, %f, %f\n", EPlp[0], EPlp[1], EPlp[2]) ;*/
-   
+
    // Elevation check
      // Project EPlp into LP YZ plane and dot with LPy
    osg::Vec2 EPyz(EPlp[1], EPlp[2]) ;
@@ -330,7 +330,7 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
       //fprintf(stderr, "   >> fully inside el range\n") ;
    }
    // Elevation check passed
-   
+
    // Azimuth check
      // Project EPlp into LP XY plane and dot with LPy
    osg::Vec2 EPxy(EPlp[0], EPlp[1]) ;
@@ -356,7 +356,7 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
       azim_intensity = 1.0 ;
    }
    // Azimuth check passed
-   
+
    // We're good! Return full intensity
    //fprintf(stderr, "   %%%% Returing intensity = %f\n", elev_intensity * azim_intensity) ;
    return elev_intensity * azim_intensity ;

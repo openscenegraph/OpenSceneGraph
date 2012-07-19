@@ -31,16 +31,16 @@ bool CompositeProperty_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgVolume::CompositeProperty& cp = static_cast<osgVolume::CompositeProperty&>(obj);
 
     bool itrAdvanced = false;
-    
-    osg::ref_ptr<osg::Object> readObject;    
+
+    osg::ref_ptr<osg::Object> readObject;
     do
     {
         readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::Property>());
         if (readObject.valid()) itrAdvanced = true;
-        
+
         osgVolume::Property* property = dynamic_cast<osgVolume::Property*>(readObject.get());
         if (property) cp.addProperty(property);
-        
+
     } while (readObject.valid());
 
     return itrAdvanced;

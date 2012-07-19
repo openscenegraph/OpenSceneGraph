@@ -50,7 +50,7 @@ void TextureRectangle::read(DataInputStream* in){
         else
             in_THROW_EXCEPTION("TextureRectangle::read(): Could not cast this osg::TextureRectangle to an osg::Texture.");
         // Read image.
-        
+
         // Should we read image data from stream
         osg::Image *image = in->readImage();
         if(image) {

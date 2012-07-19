@@ -195,7 +195,7 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
         {
             supportsExtension("pic","PIC Image format");
         }
-        
+
         virtual const char* className() const { return "PIC Image Reader"; }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const

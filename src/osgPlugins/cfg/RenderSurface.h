@@ -33,12 +33,12 @@ namespace osgProducer {
     \class RenderSurface
     \brief A RenderSurface provides a rendering surface for 3D graphics applications.
 
-    A RenderSurface creates a window in a windowing system for the purpose of 3D 
+    A RenderSurface creates a window in a windowing system for the purpose of 3D
     rendering.  The focus of a RenderSurface differs from a windowing system window
     in that it is not a user input/output device, but rather a context and screen area
-    specifically designed for 3D applications.  Consequently, a RenderSurface does not 
+    specifically designed for 3D applications.  Consequently, a RenderSurface does not
     provide or impose a requirement on the caller to structure the application around
-    the capturing or handling of events.  Further, RenderSurface provides increased 
+    the capturing or handling of events.  Further, RenderSurface provides increased
     control over the quality of pixel formats.
  */
 
@@ -50,7 +50,7 @@ class RenderSurface : public osg::Referenced
         static const unsigned int UnknownAmount;
         static unsigned int _numScreens;
 
-        class Callback : public osg::Referenced 
+        class Callback : public osg::Referenced
         {
             public:
                 Callback() {}
@@ -60,13 +60,13 @@ class RenderSurface : public osg::Referenced
                 virtual ~Callback() {}
         };
 
-        struct InputRectangle 
+        struct InputRectangle
         {
             public:
                 InputRectangle(): _left(-1.0), _bottom(-1.0), _width(2.0), _height(2.0) {}
                 InputRectangle( float left, float right, float bottom, float top ):
                     _left(left), _bottom(bottom), _width(right-left), _height(top-bottom) {}
-                InputRectangle(const InputRectangle &ir) 
+                InputRectangle(const InputRectangle &ir)
                 {
                      _left = ir._left;
                      _bottom = ir._bottom;
@@ -74,7 +74,7 @@ class RenderSurface : public osg::Referenced
                      _height = ir._height;
                 }
                 virtual ~InputRectangle() {}
-        
+
                 void set( float left, float right, float bottom, float top )
                 {
                     _left = left;
@@ -86,9 +86,9 @@ class RenderSurface : public osg::Referenced
                 float bottom() const { return _bottom; }
                 float width() const { return _width; }
                 float height() const { return _height; }
-        
+
             protected:
-        
+
             private:
                 float _left, _bottom, _width, _height;
         };
@@ -117,36 +117,36 @@ class RenderSurface : public osg::Referenced
             Ignored on Win32*/
         void setHostName( const std::string & );
 
-        /** 
-          * Get the name of the Host the window is to be created on. 
+        /**
+          * Get the name of the Host the window is to be created on.
           * Ignored on Win32 */
         const std::string& getHostName( void ) const;
 
-        /** 
-          * Set the number of the display the render surface is to 
+        /**
+          * Set the number of the display the render surface is to
           * be created on.  In XWindows, this is the number of the
           * XServer.  Ignored on Win32   */
         void setDisplayNum( int );
 
-        /** Get the number of the display the render surface is to 
+        /** Get the number of the display the render surface is to
           * be created on.  In XWindows, this is the number of the
           * XServer.  Ignored on Win32   */
         int getDisplayNum( void ) const;
-     
-        /** Set the number of the screen the render surface is to 
+
+        /** Set the number of the screen the render surface is to
           * be created on.  In XWindows, this is the number of the
           * XServer.  Ignored on Win32   */
         void setScreenNum( int );
 
-        /** Get the number of the screen the render surface is to 
+        /** Get the number of the screen the render surface is to
           * be created on.  In XWindows, this is the number of the
           * XServer.  Ignored on Win32   */
         int getScreenNum( void ) const;
 
-        /** Get the size of the screen in pixels the render surface 
+        /** Get the size of the screen in pixels the render surface
           * is to be created on.  */
         void getScreenSize( unsigned int &width, unsigned int &height ) const;
-        
+
 
         /** Default window name */
         static const std::string defaultWindowName;
@@ -158,17 +158,17 @@ class RenderSurface : public osg::Referenced
         /** Get the Window system Window name of the Render Surface */
         const std::string& getWindowName( void ) const;
 
-        /** Set the windowing system rectangle the RenderSurface will 
+        /** Set the windowing system rectangle the RenderSurface will
           * occupy on the screen.  The parameters are given as integers
           * in screen space.  x and y determine the lower left hand corner
-          * of the RenderSurface.  Width and height are given in screen 
+          * of the RenderSurface.  Width and height are given in screen
           * coordinates */
-        void  setWindowRectangle( int x, int y, unsigned int width, unsigned int height, 
+        void  setWindowRectangle( int x, int y, unsigned int width, unsigned int height,
                                     bool resize=true );
-        /** Get the windowing system rectangle the RenderSurface will 
+        /** Get the windowing system rectangle the RenderSurface will
           * occupy on the screen.  The parameters are given as integers
           * in screen space.  x and y determine the lower left hand corner
-          * of the RenderSurface.  Width and height are given in screen 
+          * of the RenderSurface.  Width and height are given in screen
           * coordinates */
         void getWindowRectangle( int &x, int &y, unsigned int &width, unsigned int &height ) const;
         /** Get the X coordinate of the origin of the RenderSurface's window */
@@ -233,7 +233,7 @@ class RenderSurface : public osg::Referenced
          void useOverrideRedirect(bool);
          bool usesOverrideRedirect();
 
-       /** Request whether the window should have a visible cursor.  If true, the 
+       /** Request whether the window should have a visible cursor.  If true, the
          * windowing system's default cursor will be assigned to the window.  If false
          * the window will not have a visible cursor. */
         void useCursor( bool flag );
@@ -247,15 +247,15 @@ class RenderSurface : public osg::Referenced
 #endif
         void setCursorToDefault();
 
-        /** Specify whether the RenderSurface should use a separate thread for 
-          * window configuration events.  If flag is set to true, then the 
-          * RenderSurface will spawn a new thread to manage events caused by 
+        /** Specify whether the RenderSurface should use a separate thread for
+          * window configuration events.  If flag is set to true, then the
+          * RenderSurface will spawn a new thread to manage events caused by
           * resizing the window, mapping or destroying the window. */
         void useConfigEventThread(bool flag);
 
         /** shareAllGLContexts will share all OpenGL Contexts between render surfaces
           * upon realize.  This must be called before any call to renderSurface::realize().
-          */ 
+          */
         static void shareAllGLContexts(bool);
 
         /** Returns true or false indicating the the state flag for sharing contexts
@@ -265,9 +265,9 @@ class RenderSurface : public osg::Referenced
 
 #if 0
         /** Realize the RenderSurface.  When realized, all components of the RenderSurface
-          * not already configured are configured, a window and a graphics context are 
+          * not already configured are configured, a window and a graphics context are
           * created and made current.  If an already existing graphics context is passed
-          * through "sharedGLContext", then the graphics context created will share certain 
+          * through "sharedGLContext", then the graphics context created will share certain
           * graphics constructs (such as display lists) with "sharedGLContext". */
         bool realize( VisualChooser *vc=NULL, GLContext sharedGLContext=0 );
 
@@ -278,10 +278,10 @@ class RenderSurface : public osg::Referenced
         /** Swaps buffers if RenderSurface quality attribute is DoubleBuffered */
         virtual void swapBuffers(void);
 
-        /** Makes the graphics context and RenderSurface current for rendering */ 
+        /** Makes the graphics context and RenderSurface current for rendering */
         bool makeCurrent(void) const;
 
-        /** Where supported, sync() will synchronize with the vertical retrace signal of the 
+        /** Where supported, sync() will synchronize with the vertical retrace signal of the
           * graphics display device.  \a divisor specifies the number of vertical retace signals
           * to allow before returning. */
         virtual void sync( int divisor=1 );
@@ -297,15 +297,15 @@ class RenderSurface : public osg::Referenced
           * are made, and should always be called when multi-threaded environments are intended.          */
         static void initThreads();
 
-        /** 
+        /**
          * Puts the calling thread to sleep until the RenderSurface is realized.  Returns true
          * if for success and false for failure.
          * */
         bool waitForRealize();
 
-        /** fullScreen(flag).  If flag is true, RenderSurface resizes its window to fill the 
+        /** fullScreen(flag).  If flag is true, RenderSurface resizes its window to fill the
          * entire screen and turns off the border.  If false, the window is returned to a size
-         * previously specified.  If previous state specified a border around the window, a 
+         * previously specified.  If previous state specified a border around the window, a
          * the border is replaced
          * */
 
@@ -322,7 +322,7 @@ class RenderSurface : public osg::Referenced
         void unmapWindow();
 #endif
         void fullScreen( bool flag );
-        /** setCustomFullScreenRencangle(x,y,width,height).  Programmer may set a customized 
+        /** setCustomFullScreenRencangle(x,y,width,height).  Programmer may set a customized
           * rectangle to be interpreted as "fullscreen" when fullscreen(true) is called.  This
           * allows configurations that have large virtual screens that span more than one monitor
           * to define a "local" full screen for each monitor.
@@ -331,9 +331,9 @@ class RenderSurface : public osg::Referenced
         /** useDefaultFullScreenRetangle().  Sets the application back to using the default
           * screen size as fullscreen rather than the custom full screen rectangle
           */
-        void useDefaultFullScreenRectangle(); 
+        void useDefaultFullScreenRectangle();
 
-        /** isFullScreen() returns true if the RenderSurface's window fills the entire screen 
+        /** isFullScreen() returns true if the RenderSurface's window fills the entire screen
          * and has no border. */
         bool isFullScreen() const { return _isFullScreen; }
 
@@ -346,25 +346,25 @@ class RenderSurface : public osg::Referenced
             FrontBuffer,
             BackBuffer
         };
-        
+
         enum RenderToTextureMode {
             RenderToTextureMode_None,
             RenderToRGBTexture,
             RenderToRGBATexture
         };
-       
+
         enum RenderToTextureTarget {
             Texture1D,
             Texture2D,
             TextureCUBE
         };
-        
+
         enum RenderToTextureOptions {
             RenderToTextureOptions_Default = 0,
             RequestSpaceForMipMaps  = 1,
             RequestLargestPBuffer   = 2
         };
-        
+
         enum CubeMapFace {
             PositiveX  = 0,
             NegativeX  = 1,
@@ -378,12 +378,12 @@ class RenderSurface : public osg::Referenced
           * Bind PBuffer content to the currently selected texture.
           * This method affects PBuffer surfaces only. */
         void bindPBufferToTexture(BufferType buffer = FrontBuffer) const;
-        
-        /** 
+
+        /**
           * Get the render-to-texture mode (PBuffer drawables only).
           * This method has no effect if it is called after realize() */
         RenderToTextureMode getRenderToTextureMode() const;
-        
+
         /**
           * Set the render-to-texture mode (PBuffer drawables only). You
           * can pass int values different from the constants defined by
@@ -391,32 +391,32 @@ class RenderSurface : public osg::Referenced
           * directly as parameters to the WGL_TEXTURE_FORMAT attribute.
           * This method has no effect if it is called after realize(). */
         void setRenderToTextureMode(RenderToTextureMode mode);
-        
-        /** 
+
+        /**
           * Get the render-to-texture target (PBuffer drawables only).
           * This method has no effect if it is called after realize(). */
         RenderToTextureTarget getRenderToTextureTarget() const;
-        
-        /** 
+
+        /**
           * Set the render-to-texture target (PBuffer drawables only). You
           * can pass int values different from the constants defined by
           * RenderToTextureTarget, in which case they will be applied
           * directly as parameters to the WGL_TEXTURE_TARGET attribute.
           * This method has no effect if it is called after realize(). */
         void setRenderToTextureTarget(RenderToTextureTarget target);
-        
-        /** 
+
+        /**
           * Get the render-to-texture options (PBuffer drawables only).
           * This method has no effect if it is called after realize(). */
         RenderToTextureOptions getRenderToTextureOptions() const;
-        
-        /** 
+
+        /**
           * Set the render-to-texture options (PBuffer drawables only).
           * You can pass any combination of the constants defined in
           * enum RenderToTextureOptions.
           * This method has no effect if it is called after realize(). */
         void setRenderToTextureOptions(RenderToTextureOptions options);
-        
+
         /**
           * Get which mipmap level on the target texture will be
           * affected by rendering. */
@@ -427,7 +427,7 @@ class RenderSurface : public osg::Referenced
           * affected by rendering. This method can be called after the
           * PBuffer has been realized. */
         void setRenderToTextureMipMapLevel(int level);
-        
+
         /**
           * Get which face on the target cube map texture will be
           * affected by rendering. */
@@ -440,7 +440,7 @@ class RenderSurface : public osg::Referenced
         void setRenderToTextureFace(CubeMapFace face);
 
         // END TEMPORARY PBUFFER RENDER TO TEXTURE SUPPORT
-        
+
         /**
           * Get the (const) vector of user-defined PBuffer attributes. */
         const std::vector<int> &getPBufferUserAttributes() const;
@@ -478,7 +478,7 @@ class RenderSurface : public osg::Referenced
         DrawableType       _drawableType;
         std::string        _hostname;
         int                _displayNum;
-        float              _windowLeft, _windowRight, 
+        float              _windowLeft, _windowRight,
                            _windowBottom, _windowTop;
         int                _windowX, _windowY;
         unsigned int       _windowWidth, _windowHeight;
@@ -530,19 +530,19 @@ class RenderSurface : public osg::Referenced
         GLContext          _windowGlcontext;
         GLContext          _fullscreenGlcontext;
         CFDictionaryRef    _oldDisplayMode;
-        
+
         bool _captureDisplayOrWindow();
         void _releaseDisplayOrWindow();
 #endif
-        
+
         // user-defined PBuffer attributes
         std::vector<int>        _user_pbattr;
-        
+
 
         bool _useConfigEventThread;
         bool _checkOwnEvents;
         bool _useDefaultEsc;
-        
+
         InputRectangle _inputRectangle;
 
         //        void _computeScreenSize( unsigned int &width, unsigned int &height ) const;
@@ -583,7 +583,7 @@ class RenderSurface : public osg::Referenced
 
         BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag);
         void KillGLWindow();
-        
+
         LONG WINAPI proc( Window, UINT, WPARAM, LPARAM );
         static LONG WINAPI s_proc( Window, UINT, WPARAM, LPARAM );
         static std::map <Window, RenderSurface *>registry;
@@ -596,8 +596,8 @@ class RenderSurface : public osg::Referenced
 
 public:
         EventQueue * selectInput( unsigned int mask );
-        
-        // if _parent is set, resize the window to 
+
+        // if _parent is set, resize the window to
         // fill the client area of the parent
         void resizeToParent();
 #endif

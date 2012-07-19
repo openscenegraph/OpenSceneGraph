@@ -137,7 +137,7 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
         fr += 2;
         itAdvanced = true;
     }
-    
+
     if (fr.matchSequence("axisAlignment %w"))
     {
         std::string str = fr[1].getStr();
@@ -328,7 +328,7 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     {
         fw.indent() << "maximumWidth " << text.getMaximumWidth() << std::endl;
     }
-    
+
     if (text.getMaximumHeight()>0.0f)
     {
         fw.indent() << "maximumHeight " << text.getMaximumHeight() << std::endl;
@@ -338,7 +338,7 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     {
         fw.indent() << "lineSpacing " << text.getLineSpacing() << std::endl;
     }
-    
+
     // alignment
     fw.indent() << "alignment ";
     switch(text.getAlignment())
@@ -346,19 +346,19 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
       case osgText::Text::LEFT_TOP:        fw << "LEFT_TOP" << std::endl; break;
       case osgText::Text::LEFT_CENTER :    fw << "LEFT_CENTER" << std::endl; break;
       case osgText::Text::LEFT_BOTTOM :    fw << "LEFT_BOTTOM" << std::endl; break;
-      
+
       case osgText::Text::CENTER_TOP:      fw << "CENTER_TOP" << std::endl; break;
       case osgText::Text::CENTER_CENTER:   fw << "CENTER_CENTER" << std::endl; break;
       case osgText::Text::CENTER_BOTTOM:   fw << "CENTER_BOTTOM" << std::endl; break;
-      
+
       case osgText::Text::RIGHT_TOP:       fw << "RIGHT_TOP" << std::endl; break;
       case osgText::Text::RIGHT_CENTER:    fw << "RIGHT_CENTER" << std::endl; break;
       case osgText::Text::RIGHT_BOTTOM:    fw << "RIGHT_BOTTOM" << std::endl; break;
-      
+
       case osgText::Text::LEFT_BASE_LINE:  fw << "LEFT_BASE_LINE" << std::endl; break;
       case osgText::Text::CENTER_BASE_LINE:fw << "CENTER_BASE_LINE" << std::endl; break;
       case osgText::Text::RIGHT_BASE_LINE: fw << "RIGHT_BASE_LINE" << std::endl; break;
-      
+
       case osgText::Text::LEFT_BOTTOM_BASE_LINE:  fw << "LEFT_BOTTOM_BASE_LINE" << std::endl; break;
       case osgText::Text::CENTER_BOTTOM_BASE_LINE:fw << "CENTER_BOTTOM_BASE_LINE" << std::endl; break;
       case osgText::Text::RIGHT_BOTTOM_BASE_LINE: fw << "RIGHT_BOTTOM_BASE_LINE" << std::endl; break;
@@ -426,7 +426,7 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
         }
 
         //std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));
-        
+
         fw.indent() << "text " << fw.wrapString(str) << std::endl;
     }
     else

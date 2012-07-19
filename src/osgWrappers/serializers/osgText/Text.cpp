@@ -32,24 +32,24 @@ static bool checkColorGradientCorners( const osgText::Text& text )
 static bool readColorGradientCorners( osgDB::InputStream& is, osgText::Text& text )
 {
     osg::Vec4d lt, lb, rb, rt;
-    is >> osgDB::BEGIN_BRACKET;
-    is >> osgDB::PROPERTY("TopLeft") >> lt;
-    is >> osgDB::PROPERTY("BottomLeft") >> lb;
-    is >> osgDB::PROPERTY("BottomRight") >> rb;
-    is >> osgDB::PROPERTY("TopRight") >> rt;
-    is >> osgDB::END_BRACKET;
+    is >> is.BEGIN_BRACKET;
+    is >> is.PROPERTY("TopLeft") >> lt;
+    is >> is.PROPERTY("BottomLeft") >> lb;
+    is >> is.PROPERTY("BottomRight") >> rb;
+    is >> is.PROPERTY("TopRight") >> rt;
+    is >> is.END_BRACKET;
     text.setColorGradientCorners( lt, lb, rb, rt );
     return true;
 }
 
 static bool writeColorGradientCorners( osgDB::OutputStream& os, const osgText::Text& text )
 {
-    os << osgDB::BEGIN_BRACKET << std::endl;
-    os << osgDB::PROPERTY("TopLeft") << osg::Vec4d(text.getColorGradientTopLeft()) << std::endl;
-    os << osgDB::PROPERTY("BottomLeft") << osg::Vec4d(text.getColorGradientBottomLeft()) << std::endl;
-    os << osgDB::PROPERTY("BottomRight") << osg::Vec4d(text.getColorGradientBottomRight()) << std::endl;
-    os << osgDB::PROPERTY("TopRight") << osg::Vec4d(text.getColorGradientTopRight()) << std::endl;
-    os << osgDB::END_BRACKET << std::endl;
+    os << os.BEGIN_BRACKET << std::endl;
+    os << os.PROPERTY("TopLeft") << osg::Vec4d(text.getColorGradientTopLeft()) << std::endl;
+    os << os.PROPERTY("BottomLeft") << osg::Vec4d(text.getColorGradientBottomLeft()) << std::endl;
+    os << os.PROPERTY("BottomRight") << osg::Vec4d(text.getColorGradientBottomRight()) << std::endl;
+    os << os.PROPERTY("TopRight") << osg::Vec4d(text.getColorGradientTopRight()) << std::endl;
+    os << os.END_BRACKET << std::endl;
     return true;
 }
 
@@ -72,22 +72,22 @@ REGISTER_OBJECT_WRAPPER( osgText_Text,
         ADD_ENUM_VALUE( OUTLINE );
         ADD_ENUM_VALUE( NONE );
     END_ENUM_SERIALIZER();  // _backdropType
-    
+
     BEGIN_ENUM_SERIALIZER( BackdropImplementation, DEPTH_RANGE );
         ADD_ENUM_VALUE( POLYGON_OFFSET );
         ADD_ENUM_VALUE( NO_DEPTH_BUFFER );
         ADD_ENUM_VALUE( DEPTH_RANGE );
         ADD_ENUM_VALUE( STENCIL_BUFFER );
     END_ENUM_SERIALIZER();  // _backdropImplementation
-    
+
     ADD_USER_SERIALIZER( BackdropOffset );  // _backdropHorizontalOffset, _backdropVerticalOffset
     ADD_VEC4_SERIALIZER( BackdropColor, osg::Vec4() );  // _backdropColor
-    
+
     BEGIN_ENUM_SERIALIZER( ColorGradientMode, SOLID );
         ADD_ENUM_VALUE( SOLID );
         ADD_ENUM_VALUE( PER_CHARACTER );
         ADD_ENUM_VALUE( OVERALL );
     END_ENUM_SERIALIZER();  // _colorGradientMode
-    
+
     ADD_USER_SERIALIZER( ColorGradientCorners );  // _colorGradientTopLeft .. _colorGradientBottomRight
 }

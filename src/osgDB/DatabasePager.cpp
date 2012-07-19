@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -233,7 +233,7 @@ public:
                     }
                     std::copy(expiredChildren.begin(), expiredChildren.end(), std::back_inserter(childrenRemoved));
                 }
-            
+
                 // advance the iterator to the next element
                 ++itr;
             }
@@ -371,7 +371,7 @@ public:
     bool                                    _changeAnisotropy;
     float                                   _valueAnisotropy;
     osg::ref_ptr<osg::KdTreeBuilder>        _kdTreeBuilder;
-    
+
 protected:
 
     FindCompileableGLObjectsVisitor& operator = (const FindCompileableGLObjectsVisitor&) { return *this; }
@@ -555,7 +555,7 @@ void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& datab
         RequestQueue::RequestList::iterator selected_itr = _requestList.end();
 
         int frameNumber = _pager->_frameNumber;
-        
+
         for(RequestQueue::RequestList::iterator citr = _requestList.begin();
             citr != _requestList.end();
             )
@@ -648,7 +648,7 @@ int DatabasePager::DatabaseThread::cancel()
     if( isRunning() )
     {
         setDone(true);
-        
+
         switch(_mode)
         {
             case(HANDLE_ALL_REQUESTS):
@@ -685,10 +685,10 @@ void DatabasePager::DatabaseThread::run()
 
 
     bool firstTime = true;
-    
+
     osg::ref_ptr<DatabasePager::ReadQueue> read_queue;
     osg::ref_ptr<DatabasePager::ReadQueue> out_queue;
-    
+
     switch(_mode)
     {
         case(HANDLE_ALL_REQUESTS):
@@ -720,7 +720,7 @@ void DatabasePager::DatabaseThread::run()
         OSG_INFO<<_name<<": _pager->size()= "<<read_queue->size()<<" to delete = "<<read_queue->_childrenToDeleteList.size()<<std::endl;
 
 
-        
+
         //
         // delete any children if required.
         //
@@ -833,16 +833,16 @@ void DatabasePager::DatabaseThread::run()
                 }
             }
             else
-            {                
+            {
                 databaseRequest = 0;
             }
         }
-        
-        
+
+
         if (databaseRequest.valid())
         {
-                       
-            // load the data, note safe to write to the databaseRequest since once 
+
+            // load the data, note safe to write to the databaseRequest since once
             // it is created this thread is the only one to write to the _loadedModel pointer.
             //OSG_NOTICE<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
             //osg::Timer_t before = osg::Timer::instance()->tick();
@@ -924,7 +924,7 @@ void DatabasePager::DatabaseThread::run()
                     _pager->_dataToMergeList->addNoLock(databaseRequest.get());
                     databaseRequest = 0;
                 }
-            
+
             }
 
             // _pager->_dataToCompileList->pruneOldRequestsAndCheckIfEmpty();
@@ -933,13 +933,13 @@ void DatabasePager::DatabaseThread::run()
         {
             OpenThreads::Thread::YieldCurrentThread();
         }
-        
-        
+
+
         // go to sleep till our the next time our thread gets scheduled.
 
         if (firstTime)
         {
-            // do a yield to get round a peculiar thread hang when testCancel() is called 
+            // do a yield to get round a peculiar thread hang when testCancel() is called
             // in certain circumstances - of which there is no particular pattern.
             YieldCurrentThread();
             firstTime = false;
@@ -952,16 +952,16 @@ void DatabasePager::DatabaseThread::run()
 DatabasePager::DatabasePager()
 {
     //OSG_INFO<<"Constructing DatabasePager()"<<std::endl;
-    
+
     _startThreadCalled = false;
 
     _done = false;
     _acceptNewRequests = true;
     _databasePagerThreadPaused = false;
-    
+
     _numFramesActive = 0;
     _frameNumber.exchange(0);
-    
+
 
 #if __APPLE__
     // OSX really doesn't like compiling display lists, and performs poorly when they are used,
@@ -969,8 +969,8 @@ DatabasePager::DatabasePager()
     _drawablePolicy = USE_VERTEX_ARRAYS;
 #else
     _drawablePolicy = DO_NOT_MODIFY_DRAWABLE_SETTINGS;
-#endif    
-    
+#endif
+
     const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
     if (!str) str = getenv("OSG_DATABASE_PAGER_DRAWABLE");
     if (str)
@@ -990,7 +990,7 @@ DatabasePager::DatabasePager()
         else if (strcmp(str,"VertexArrays")==0 || strcmp(str,"VA")==0 )
         {
             _drawablePolicy = USE_VERTEX_ARRAYS;
-        } 
+        }
     }
 
     _assignPBOToImages = false;
@@ -1004,7 +1004,7 @@ DatabasePager::DatabasePager()
 
     _changeAutoUnRef = true;
     _valueAutoUnRef = false;
- 
+
     _changeAnisotropy = false;
     _valueAnisotropy = 1.0f;
 
@@ -1037,10 +1037,10 @@ DatabasePager::DatabasePager()
 
     _fileRequestQueue = new ReadQueue(this,"fileRequestQueue");
     _httpRequestQueue = new ReadQueue(this,"httpRequestQueue");
-    
+
     _dataToCompileList = new RequestQueue(this);
     _dataToMergeList = new RequestQueue(this);
-    
+
     setUpThreads(
         osg::DisplaySettings::instance()->getNumOfDatabaseThreadsHint(),
         osg::DisplaySettings::instance()->getNumOfHttpDatabaseThreadsHint());
@@ -1080,13 +1080,13 @@ DatabasePager::DatabasePager()
 DatabasePager::DatabasePager(const DatabasePager& rhs)
 {
     //OSG_INFO<<"Constructing DatabasePager(const DatabasePager& )"<<std::endl;
-    
+
     _startThreadCalled = false;
 
     _done = false;
     _acceptNewRequests = true;
     _databasePagerThreadPaused = false;
-    
+
     _numFramesActive = 0;
     _frameNumber.exchange(0);
 
@@ -1107,7 +1107,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
 
     _fileRequestQueue = new ReadQueue(this,"fileRequestQueue");
     _httpRequestQueue = new ReadQueue(this,"httpRequestQueue");
-    
+
     _dataToCompileList = new RequestQueue(this);
     _dataToMergeList = new RequestQueue(this);
 
@@ -1167,19 +1167,19 @@ osg::ref_ptr<DatabasePager>& DatabasePager::prototype()
 
 DatabasePager* DatabasePager::create()
 {
-    return DatabasePager::prototype().valid() ? 
+    return DatabasePager::prototype().valid() ?
            DatabasePager::prototype()->clone() :
-           new DatabasePager; 
+           new DatabasePager;
 }
 
 void DatabasePager::setUpThreads(unsigned int totalNumThreads, unsigned int numHttpThreads)
 {
     _databaseThreads.clear();
-    
+
     unsigned int numGeneralThreads = numHttpThreads < totalNumThreads ?
         totalNumThreads - numHttpThreads :
         1;
-    
+
     if (numHttpThreads==0)
     {
         for(unsigned int i=0; i<numGeneralThreads; ++i)
@@ -1198,7 +1198,7 @@ void DatabasePager::setUpThreads(unsigned int totalNumThreads, unsigned int numH
         {
             addDatabaseThread(DatabaseThread::HANDLE_ONLY_HTTP, "HANDLE_ONLY_HTTP");
         }
-    }    
+    }
 }
 
 unsigned int DatabasePager::addDatabaseThread(DatabaseThread::Mode mode, const std::string& name)
@@ -1206,16 +1206,16 @@ unsigned int DatabasePager::addDatabaseThread(DatabaseThread::Mode mode, const s
     OSG_INFO<<"DatabasePager::addDatabaseThread() "<<name<<std::endl;
 
     unsigned int pos = _databaseThreads.size();
-    
+
     DatabaseThread* thread = new DatabaseThread(this, mode,name);
     _databaseThreads.push_back(thread);
-    
+
     if (_startThreadCalled)
     {
         OSG_INFO<<"DatabasePager::startThread()"<<std::endl;
         thread->startThread();
     }
-    
+
     return pos;
 }
 
@@ -1239,7 +1239,7 @@ bool DatabasePager::isRunning() const
     {
         if ((*dt_itr)->isRunning()) return true;
     }
-    
+
     return false;
 }
 
@@ -1299,7 +1299,7 @@ bool DatabasePager::getRequestsInProgress() const
 {
     if (getFileRequestListSize()>0) return true;
 
-    if (getDataToCompileListSize()>0) 
+    if (getDataToCompileListSize()>0)
     {
         return true;
     }
@@ -1366,7 +1366,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     static int previousFrame = -1;
     static double totalTime = 0.0;
-    
+
     if (previousFrame!=frameNumber)
     {
         OSG_NOTICE<<"requestNodeFiles for "<<previousFrame<<" time = "<<totalTime<<std::endl;
@@ -1375,7 +1375,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
         totalTime = 0.0;
     }
 #endif
-    
+
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
 
@@ -1401,7 +1401,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
                 databaseRequest->_timestampLastRequest = timestamp;
                 databaseRequest->_priorityLastRequest = priority;
                 ++(databaseRequest->_numOfRequests);
-            
+
                 foundEntry = true;
 
                 if (databaseRequestRef->referenceCount()==1)
@@ -1416,7 +1416,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
                     databaseRequest->_loadOptions = loadOptions;
                     requeue = true;
                 }
-            
+
             }
         }
         if (requeue)
@@ -1426,9 +1426,9 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
     if (!foundEntry)
     {
         OSG_INFO<<"In DatabasePager::requestNodeFile("<<fileName<<")"<<std::endl;
-        
+
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_requestMutex);
-        
+
         if (!databaseRequestRef.valid() || databaseRequestRef->referenceCount()==1)
         {
             osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
@@ -1450,18 +1450,18 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
             _fileRequestQueue->addNoLock(databaseRequest.get());
         }
     }
-    
+
     if (!_startThreadCalled)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_run_mutex);
-        
+
         if (!_startThreadCalled)
         {
             _startThreadCalled = true;
             _done = false;
             OSG_INFO<<"DatabasePager::startThread()"<<std::endl;
-            
-            if (_databaseThreads.empty()) 
+
+            if (_databaseThreads.empty())
             {
                 setUpThreads(
                     osg::DisplaySettings::instance()->getNumOfDatabaseThreadsHint(),
@@ -1484,7 +1484,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
 
 void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
 {
-#if 0    
+#if 0
     OSG_NOTICE<<"DatabasePager : _fileRequestQueue->size()="<<_fileRequestQueue->size()
                <<", _httpRequestQueue->size()= "<<_httpRequestQueue->size()
                <<", _dataToCompileList->size()= "<<_dataToCompileList->size()
@@ -1508,7 +1508,7 @@ void DatabasePager::signalEndFrame()
 void DatabasePager::setDatabasePagerThreadPause(bool pause)
 {
     if (_databasePagerThreadPaused == pause) return;
-    
+
     _databasePagerThreadPaused = pause;
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_requestMutex);
@@ -1576,7 +1576,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 
     // get the data from the _dataToMergeList, leaving it empty via a std::vector<>.swap.
     _dataToMergeList->swap(localFileLoadedList);
-        
+
     mid = osg::Timer::instance()->tick();
 
     // add the loaded data into the scene graph.
@@ -1608,18 +1608,18 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
                 if (proxyNode)
                 {
                     proxyNode->getDatabaseRequest(proxyNode->getNumChildren()) = 0;
-                } 
+                }
             }
 
             group->addChild(databaseRequest->_loadedModel.get());
 
             // Check if parent plod was already registered if not start visitor from parent
-            if( plod && 
+            if( plod &&
                 !_activePagedLODList->containsPagedLOD( plod ) )
             {
                 registerPagedLODs(plod, frameNumber);
-            } 
-            else 
+            }
+            else
             {
                 registerPagedLODs(databaseRequest->_loadedModel.get(), frameNumber);
             }
@@ -1665,7 +1665,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     static double s_total_iter_stage_a = 0.0;
     static double s_total_time_stage_a = 0.0;
     static double s_total_max_stage_a = 0.0;
-    
+
     static double s_total_iter_stage_b = 0.0;
     static double s_total_time_stage_b = 0.0;
     static double s_total_max_stage_b = 0.0;
@@ -1686,25 +1686,25 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     // numPagedLODs >= actual number of PagedLODs. There can be
     // invalid observer pointers in _activePagedLODList.
     unsigned int numPagedLODs = _activePagedLODList->size();
-    
+
     osg::Timer_t end_a_Tick = osg::Timer::instance()->tick();
     double time_a = osg::Timer::instance()->delta_m(startTick,end_a_Tick);
 
     s_total_iter_stage_a += 1.0;
     s_total_time_stage_a += time_a;
     if (s_total_max_stage_a<time_a) s_total_max_stage_a = time_a;
-    
+
 
     if (numPagedLODs <= _targetMaximumNumberOfPageLOD)
     {
         // nothing to do
         return;
     }
-    
+
     int numToPrune = numPagedLODs - _targetMaximumNumberOfPageLOD;
 
     ObjectList childrenRemoved;
-    
+
     double expiryTime = frameStamp.getReferenceTime() - 0.1;
     unsigned int expiryFrame = frameStamp.getFrameNumber() - 1;
 
@@ -1730,7 +1730,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     //OSG_NOTICE<<" childrenRemoved.size()="<<childrenRemoved.size()<<std::endl;
 
     if (!childrenRemoved.empty())
-    { 
+    {
         // pass the objects across to the database pager delete list
         if (_deleteRemovedSubgraphsInDatabaseThread)
         {
@@ -1744,7 +1744,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         else
             childrenRemoved.clear();
     }
-    
+
     osg::Timer_t end_c_Tick = osg::Timer::instance()->tick();
     double time_c = osg::Timer::instance()->delta_m(end_b_Tick,end_c_Tick);
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -78,7 +78,7 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue),
     _blendingPolicy(terrain._blendingPolicy)
 {
-    if (terrain.getTerrainTechnique()) 
+    if (terrain.getTerrainTechnique())
     {
         setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
     }
@@ -97,9 +97,9 @@ TerrainTile::~TerrainTile()
 void TerrainTile::setTerrain(Terrain* ts)
 {
     if (_terrain == ts) return;
-    
+
     if (_terrain) _terrain->unregisterTerrainTile(this);
-    
+
     _terrain = ts;
 
     if (_terrain) _terrain->registerTerrainTile(this);
@@ -131,7 +131,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
                     ++itr)
                 {
                     osgTerrain::Terrain* ts = dynamic_cast<Terrain*>(*itr);
-                    if (ts) 
+                    if (ts)
                     {
                         OSG_INFO<<"Assigning terrain system "<<ts<<std::endl;
                         setTerrain(ts);
@@ -169,7 +169,7 @@ void TerrainTile::init(int dirtyMask, bool assumeMultiThreaded)
     if (!_terrainTechnique)
     {
         if (_terrain && _terrain->getTerrainTechniquePrototype())
-        {            
+        {
             osg::ref_ptr<osg::Object> object = _terrain->getTerrainTechniquePrototype()->clone(osg::CopyOp::DEEP_COPY_ALL);
             setTerrainTechnique(dynamic_cast<TerrainTechnique*>(object.get()));
         }
@@ -187,23 +187,23 @@ void TerrainTile::init(int dirtyMask, bool assumeMultiThreaded)
 
 void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
-    if (_terrainTechnique == terrainTechnique) return; 
+    if (_terrainTechnique == terrainTechnique) return;
 
     int dirtyDelta = (_dirtyMask==NOT_DIRTY) ? 0 : -1;
 
-    if (_terrainTechnique.valid()) 
+    if (_terrainTechnique.valid())
     {
         _terrainTechnique->setTerrainTile(0);
     }
 
     _terrainTechnique = terrainTechnique;
-    
-    if (_terrainTechnique.valid()) 
+
+    if (_terrainTechnique.valid())
     {
         _terrainTechnique->setTerrainTile(this);
-        ++dirtyDelta;        
+        ++dirtyDelta;
     }
-    
+
     if (dirtyDelta>0) setDirtyMask(ALL_DIRTY);
     else if (dirtyDelta<0) setDirtyMask(NOT_DIRTY);
 }
@@ -248,14 +248,14 @@ void TerrainTile::setElevationLayer(Layer* layer)
 void TerrainTile::setColorLayer(unsigned int i, Layer* layer)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
-    
+
     _colorLayers[i] = layer;
 }
 
 osg::BoundingSphere TerrainTile::computeBound() const
 {
     osg::BoundingSphere bs;
-    
+
     if (_elevationLayer.valid())
     {
         bs.expandBy(_elevationLayer->computeBound(true));
@@ -269,7 +269,7 @@ osg::BoundingSphere TerrainTile::computeBound() const
             if (itr->valid()) bs.expandBy((*itr)->computeBound(false));
         }
     }
-    
+
     return bs;
 }
 
@@ -300,7 +300,7 @@ bool WhiteListTileLoadedCallback::layerAcceptable(const std::string& setname) co
 
 bool WhiteListTileLoadedCallback::readImageLayer(osgTerrain::ImageLayer* imageLayer, const osgDB::ReaderWriter::Options* options) const
 {
-   if (!imageLayer->getImage() && 
+   if (!imageLayer->getImage() &&
         !imageLayer->getFileName().empty())
     {
         if (layerAcceptable(imageLayer->getSetName()))
@@ -340,8 +340,8 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
                 if (imageLayer)
                 {
                     if (readImageLayer(imageLayer, options))
-                    {                        
-                        // replace SwitchLayer by 
+                    {
+                        // replace SwitchLayer by
                         if (_replaceSwitchLayer) tile->setColorLayer(i, imageLayer);
                         else if (switchLayer->getActiveLayer()<0) switchLayer->setActiveLayer(si);
 

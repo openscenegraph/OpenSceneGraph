@@ -13,6 +13,6 @@ REGISTER_OBJECT_WRAPPER( osgShadow_ShadowVolume,
         ADD_ENUM_CLASS_VALUE( osgShadow::ShadowVolumeGeometry, STENCIL_TWO_PASS );
         ADD_ENUM_CLASS_VALUE( osgShadow::ShadowVolumeGeometry, STENCIL_TWO_SIDED );
     END_ENUM_SERIALIZER();  // _drawMode
-    
+
     ADD_BOOL_SERIALIZER( DynamicShadowVolumes, false );  // _dynamicShadowVolumes
 }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osgSim/DOFTransform>
@@ -29,8 +29,8 @@ static const unsigned int SCALE_Z_LIMIT_BIT        = 0x80000000u >> 8;
 DOFTransform::DOFTransform():
     _previousTraversalNumber(osg::UNINITIALIZED_FRAME_NUMBER),
     _previousTime(0.0),
-    _limitationFlags(0), 
-    _animationOn(false), 
+    _limitationFlags(0),
+    _animationOn(false),
     _increasingFlags(0xffff),
     _multOrder(PRH)
 {
@@ -59,7 +59,7 @@ DOFTransform::DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop):
     _increasingFlags(dof._increasingFlags),
     _multOrder(dof._multOrder)
 {
-    if (_animationOn) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+    if (_animationOn) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
 }
 
 void DOFTransform::traverse(osg::NodeVisitor& nv)
@@ -76,7 +76,7 @@ void DOFTransform::traverse(osg::NodeVisitor& nv)
             animate((float)(newTime-_previousTime));
 
             _previousTraversalNumber = nv.getTraversalNumber();
-            _previousTime = newTime; 
+            _previousTime = newTime;
         }
     }
 
@@ -89,7 +89,7 @@ bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisito
     osg::Matrix l2w(getPutMatrix());
 
     //now the current matrix:
-    osg::Matrix current; 
+    osg::Matrix current;
     current.makeTranslate(getCurrentTranslate());
 
     //now create the local rotation:
@@ -146,9 +146,9 @@ bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisito
     }
     else
     {
-        matrix = l2w;    
+        matrix = l2w;
     }
-    
+
     return true;
 }
 
@@ -159,7 +159,7 @@ bool DOFTransform::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisito
     osg::Matrix w2l(getInversePutMatrix());
 
     //now the current matrix:
-    osg::Matrix current; 
+    osg::Matrix current;
     current.makeTranslate(-getCurrentTranslate());
 
     //now create the local rotation:
@@ -226,7 +226,7 @@ void DOFTransform::updateCurrentHPR(const osg::Vec3& hpr)
     //if there is constrain on animation
     if (_limitationFlags & ROTATION_ROLL_LIMIT_BIT)
     {
-        //if we have min == max, it is efective constrain, so don't change 
+        //if we have min == max, it is efective constrain, so don't change
         if(_minHPR[2] != _maxHPR[2])
         {
             _currentHPR[2] = hpr[2];
@@ -234,7 +234,7 @@ void DOFTransform::updateCurrentHPR(const osg::Vec3& hpr)
 
             if(_currentHPR[2] < _minHPR[2])
             {
-                _currentHPR[2] = _minHPR[2]; 
+                _currentHPR[2] = _minHPR[2];
                 //force increasing flag to 1
                 _increasingFlags |= this_flag;
             }
@@ -283,12 +283,12 @@ void DOFTransform::updateCurrentHPR(const osg::Vec3& hpr)
 
             unsigned short this_flag = (unsigned short)1<<5;//heading
 
-            if(_currentHPR[0] < _minHPR[0]) 
+            if(_currentHPR[0] < _minHPR[0])
             {
                 _currentHPR[0] = _minHPR[0];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentHPR[0] > _maxHPR[0]) 
+            else if(_currentHPR[0] > _maxHPR[0])
             {
                 _currentHPR[0] = _maxHPR[0];
                 _increasingFlags &= ~this_flag;
@@ -318,7 +318,7 @@ void DOFTransform::updateCurrentTranslate(const osg::Vec3& translate)
                 _currentTranslate[2] = _minTranslate[2];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentTranslate[2] > _maxTranslate[2]) 
+            else if(_currentTranslate[2] > _maxTranslate[2])
             {
                 _currentTranslate[2] = _maxTranslate[2];
                 _increasingFlags &= ~this_flag;
@@ -342,7 +342,7 @@ void DOFTransform::updateCurrentTranslate(const osg::Vec3& translate)
                 _currentTranslate[1] = _minTranslate[1];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentTranslate[1] > _maxTranslate[1]) 
+            else if(_currentTranslate[1] > _maxTranslate[1])
             {
                 _currentTranslate[1] = _maxTranslate[1];
                 _increasingFlags &= ~this_flag;
@@ -361,18 +361,18 @@ void DOFTransform::updateCurrentTranslate(const osg::Vec3& translate)
             _currentTranslate[0] = translate[0];
             unsigned short this_flag = (unsigned short)1;
 
-            if(_currentTranslate[0] < _minTranslate[0]) 
+            if(_currentTranslate[0] < _minTranslate[0])
             {
                 _currentTranslate[0] = _minTranslate[0];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentTranslate[0] > _maxTranslate[0]) 
+            else if(_currentTranslate[0] > _maxTranslate[0])
             {
                 _currentTranslate[0] = _maxTranslate[0];
                 _increasingFlags &= ~this_flag;
             }
         }
-    }    
+    }
     else
     {
         _currentTranslate[0] = translate[0];
@@ -387,16 +387,16 @@ void DOFTransform::updateCurrentScale(const osg::Vec3& scale)
     if (_limitationFlags & SCALE_Z_LIMIT_BIT)
     {
         if(_minScale[2] != _maxScale[2])
-        {            
+        {
             _currentScale[2] = scale[2];
             unsigned short this_flag = (unsigned short)1<<8;
 
-            if(_currentScale[2] < _minScale[2]) 
+            if(_currentScale[2] < _minScale[2])
             {
                 _currentScale[2] = _minScale[2];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentScale[2] > _maxScale[2]) 
+            else if(_currentScale[2] > _maxScale[2])
             {
                 _currentScale[2] = _maxScale[2];
                 _increasingFlags &= ~this_flag;
@@ -415,12 +415,12 @@ void DOFTransform::updateCurrentScale(const osg::Vec3& scale)
             _currentScale[1] = scale[1];
             unsigned short this_flag = (unsigned short)1<<7;
 
-            if(_currentScale[1] < _minScale[1]) 
+            if(_currentScale[1] < _minScale[1])
             {
                 _currentScale[1] = _minScale[1];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentScale[1] > _maxScale[1]) 
+            else if(_currentScale[1] > _maxScale[1])
             {
                 _currentScale[1] = _maxScale[1];
                 _increasingFlags &= ~this_flag;
@@ -439,12 +439,12 @@ void DOFTransform::updateCurrentScale(const osg::Vec3& scale)
             _currentScale[0] = scale[0];
             unsigned short this_flag = (unsigned short)1<<6;
 
-            if(_currentScale[0] < _minScale[0]) 
+            if(_currentScale[0] < _minScale[0])
             {
                 _currentScale[0] = _minScale[0];
                 _increasingFlags |= this_flag;
             }
-            else if(_currentScale[0] > _maxScale[0]) 
+            else if(_currentScale[0] > _maxScale[0])
             {
                 _currentScale[0] = _maxScale[0];
                 _increasingFlags &= ~this_flag;
@@ -462,14 +462,14 @@ void DOFTransform::updateCurrentScale(const osg::Vec3& scale)
 void DOFTransform::setAnimationOn(bool do_animate)
 {
     if (_animationOn == do_animate) return;
-    
+
     int delta = 0;
 
     if (_animationOn) --delta;
     if (do_animate) ++delta;
 
     _animationOn = do_animate;
-    
+
     if (_animationOn) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta);
 }
 
@@ -534,5 +534,5 @@ void DOFTransform::animate(float deltaTime)
         new_value[2] -= _incrementScale[2]*deltaTime;
 
     updateCurrentScale(new_value);
-    
+
 }

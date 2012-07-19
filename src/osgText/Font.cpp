@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -75,8 +75,8 @@ std::string osgText::findFontFile(const std::string& str)
             winFontPath += "\\fonts";
             s_FontFilePath.push_back(winFontPath);
         }
-    #elif defined(__APPLE__) 
-      osgDB::convertStringPathIntoFilePathList( 
+    #elif defined(__APPLE__)
+      osgDB::convertStringPathIntoFilePathList(
         ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives:/Library/Fonts:/System/Library/Fonts",
         s_FontFilePath);
     #else
@@ -103,7 +103,7 @@ std::string osgText::findFontFile(const std::string& str)
     }
 
     // Not found, return empty string
-    OSG_INFO<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
+    OSG_INFO<<"Warning: font file \""<<str<<"\" not found."<<std::endl;
     return std::string();
 }
 
@@ -114,7 +114,7 @@ osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::R
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty())
         foundFile = filename;
-    
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
@@ -156,7 +156,7 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
         return 0;
     }
     if (!rr.validObject()) return 0;
-    
+
     osg::Object *object = rr.takeObject();
 
     // if the object is a font then return it.
@@ -175,7 +175,7 @@ osg::ref_ptr<Font> osgText::readRefFontFile(const std::string& filename, const o
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty())
         foundFile = filename;
-    
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
@@ -215,7 +215,7 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
         return 0;
     }
     if (!rr.validObject()) return 0;
-    
+
     // if the object is a font then return it.
     osgText::Font* font = dynamic_cast<osgText::Font*>(rr.getObject());
     if (font) return osg::ref_ptr<Font>(font);
@@ -322,7 +322,7 @@ unsigned int Font::getTextureWidthHint() const
 unsigned int Font::getTextureHeightHint() const
 {
     return _textureHeightHint;
-}    
+}
 
 
 void Font::setMinFilterHint(osg::Texture::FilterMode mode)
@@ -354,7 +354,7 @@ Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 
     FontResolution fontResUsed(0,0);
     if (_implementation->supportsMultipleFontResolutions()) fontResUsed = fontRes;
-        
+
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
         FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontResUsed);
@@ -396,7 +396,7 @@ Glyph3D* Font::getGlyph3D(unsigned int charcode)
 void Font::setThreadSafeRefUnref(bool threadSafe)
 {
    osg::Object::setThreadSafeRefUnref(threadSafe);
-    
+
     if (_texenv.valid()) _texenv->setThreadSafeRefUnref(threadSafe);
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
 
@@ -405,7 +405,7 @@ void Font::setThreadSafeRefUnref(bool threadSafe)
         ++itr)
     {
         (*itr)->setThreadSafeRefUnref(threadSafe);
-    }    
+    }
 }
 
 void Font::resizeGLObjectBuffers(unsigned int maxSize)
@@ -417,7 +417,7 @@ void Font::resizeGLObjectBuffers(unsigned int maxSize)
         ++itr)
     {
         (*itr)->resizeGLObjectBuffers(maxSize);
-    }    
+    }
 }
 
 void Font::releaseGLObjects(osg::State* state) const
@@ -430,7 +430,7 @@ void Font::releaseGLObjects(osg::State* state) const
     {
         (*itr)->releaseGLObjects(state);
     }
-    
+
     // const_cast<Font*>(this)->_glyphTextureList.clear();
     // const_cast<Font*>(this)->_sizeGlyphMap.clear();
 }
@@ -454,9 +454,9 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
 
     _sizeGlyphMap[fontRes][charcode]=glyph;
-    
+
     int posX=0,posY=0;
-    
+
     GlyphTexture* glyphTexture = 0;
     for(GlyphTextureList::iterator itr=_glyphTextureList.begin();
         itr!=_glyphTextureList.end() && !glyphTexture;
@@ -464,17 +464,17 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
     {
         if ((*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
     }
-    
+
     if (glyphTexture)
     {
         //cout << "    found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
     }
-    
+
     if (!glyphTexture)
     {
-        
+
         glyphTexture = new GlyphTexture;
-        
+
         static int numberOfTexturesAllocated = 0;
         ++numberOfTexturesAllocated;
 
@@ -487,18 +487,18 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);
         glyphTexture->setMaxAnisotropy(8);
-        
+
         _glyphTextureList.push_back(glyphTexture);
-        
+
         if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))
         {
             OSG_WARN<<"Warning: unable to allocate texture big enough for glyph"<<std::endl;
             return;
         }
 
-    }    
-    
+    }
+
     // add the glyph into the texture.
     glyphTexture->addGlyph(glyph,posX,posY);
-    
+
 }

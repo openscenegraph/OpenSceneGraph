@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -40,7 +40,7 @@ extern OSG_EXPORT Matrix computeLocalToWorld(const NodePath& nodePath, bool igno
 extern OSG_EXPORT Matrix computeWorldToLocal(const NodePath& nodePath, bool ignoreCameras = true);
 
 /** Compute the matrix which transforms objects in local coords to eye coords,
-  * by accumulating the Transform local to world matrices along the specified node path 
+  * by accumulating the Transform local to world matrices along the specified node path
   * and multiplying by the supplied initial camera modelview.
 */
 extern OSG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, const NodePath& nodePath, bool ignoreCameras = true);
@@ -63,7 +63,7 @@ extern OSG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePa
   *
   * Note: If the transformation matrix scales the subgraph then the normals
   * of the underlying geometry will need to be renormalized to be unit
-  * vectors once more.  This can be done transparently through OpenGL's 
+  * vectors once more.  This can be done transparently through OpenGL's
   * use of either GL_NORMALIZE and GL_RESCALE_NORMAL modes. For further
   * background reading see the glNormalize documentation in the OpenGL
   * Reference Guide (the blue book). To enable it in the OSG, you simply
@@ -97,7 +97,7 @@ class OSG_EXPORT Transform : public Group
             ABSOLUTE_RF,
             ABSOLUTE_RF_INHERIT_VIEWPOINT
         };
-        
+
         /** Set the transform's ReferenceFrame, either to be relative to its
           * parent reference frame, or relative to an absolute coordinate
           * frame. RELATIVE_RF is the default.
@@ -112,12 +112,12 @@ class OSG_EXPORT Transform : public Group
           * ABSOLUTE_RF_INHERIT_VIEWPOINT is the same as ABSOLUTE_RF except it
           * adds the ability to use the parents view points position in world coordinates
           * as its local viewpoint in the new coordinates frame.  This is useful for
-          * Render to texture Cameras that wish to use the main views LOD range computation 
+          * Render to texture Cameras that wish to use the main views LOD range computation
           * (which uses the viewpoint rather than the eye point) rather than use the local
           * eye point defined by the this Transforms' absolute view matrix.
         */
         void setReferenceFrame(ReferenceFrame rf);
-        
+
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
@@ -132,7 +132,7 @@ class OSG_EXPORT Transform : public Group
                 return true;
             }
         }
-        
+
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_RF)
@@ -146,7 +146,7 @@ class OSG_EXPORT Transform : public Group
             }
         }
 
-        /** Overrides Group's computeBound. 
+        /** Overrides Group's computeBound.
           * There is no need to override in subclasses from osg::Transform
           * since this computeBound() uses the underlying matrix (calling
           * computeMatrix if required).
@@ -154,10 +154,10 @@ class OSG_EXPORT Transform : public Group
         virtual BoundingSphere computeBound() const;
 
     protected :
-    
+
         virtual ~Transform();
-        
-        
+
+
         ReferenceFrame                      _referenceFrame;
 
 };

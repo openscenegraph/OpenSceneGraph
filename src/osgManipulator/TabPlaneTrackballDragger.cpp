@@ -29,14 +29,14 @@ TabPlaneTrackballDragger::TabPlaneTrackballDragger()
     _trackballDragger = new TrackballDragger(true);
     addChild(_trackballDragger.get());
     addDragger(_trackballDragger.get());
-    
+
     _tabPlaneDragger = new TabPlaneDragger();
     addChild(_tabPlaneDragger.get());
     addDragger(_tabPlaneDragger.get());
 
     setParentDragger(getParentDragger());
 }
-       
+
 TabPlaneTrackballDragger::~TabPlaneTrackballDragger()
 {
 }

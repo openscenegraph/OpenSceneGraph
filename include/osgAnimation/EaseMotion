@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -23,25 +23,25 @@
 
 namespace osgAnimation
 {
-    struct OutBounceFunction 
+    struct OutBounceFunction
     {
-        inline static void getValueAt(float t, float& result) 
-        { 
-            if ((t) < (1/2.75)) 
+        inline static void getValueAt(float t, float& result)
+        {
+            if ((t) < (1/2.75))
             {
                 result = 7.5625 * t * t;
-            } 
-            else if (t < (2/2.75)) 
+            }
+            else if (t < (2/2.75))
             {
                 t = t - (1.5/2.75);
                 result = 7.5625* t * t + .75;
             }
-            else if (t < (2.5/2.75)) 
+            else if (t < (2.5/2.75))
             {
                 t = t - (2.25/2.75);
                 result = 7.5625 * t * t + .9375;
             }
-            else 
+            else
             {
                 t = t - (2.625/2.75);
                 result = 7.5625* t * t + .984375;
@@ -49,25 +49,25 @@ namespace osgAnimation
         }
     };
 
-    struct InBounceFunction 
+    struct InBounceFunction
     {
-        inline static void getValueAt(float t, float& result) 
-        { 
+        inline static void getValueAt(float t, float& result)
+        {
             OutBounceFunction::getValueAt(1-t, result);
             result = 1 - result;
         }
     };
 
-    struct InOutBounceFunction 
+    struct InOutBounceFunction
     {
-        inline static void getValueAt(float t, float& result) 
-        { 
-            if (t < 0.5) 
+        inline static void getValueAt(float t, float& result)
+        {
+            if (t < 0.5)
             {
                 InBounceFunction::getValueAt(t * 2, result);
                 result *= 0.5;
-            } 
-            else 
+            }
+            else
             {
                 OutBounceFunction::getValueAt(t * 2 - 1 , result);
                 result = result * 0.5 + 0.5;
@@ -76,30 +76,30 @@ namespace osgAnimation
     };
 
     /// Linear function
-    struct LinearFunction 
+    struct LinearFunction
     {
         inline static void getValueAt(float t, float& result) { result = t;}
     };
 
     /// Quad function
-    struct OutQuadFunction 
+    struct OutQuadFunction
     {
         inline static void getValueAt(float t, float& result) { result = - (t * (t -2.0));}
     };
 
-    struct InQuadFunction 
+    struct InQuadFunction
     {
         inline static void getValueAt(float t, float& result) { result = t*t;}
     };
 
-    struct InOutQuadFunction 
+    struct InOutQuadFunction
     {
-        inline static void getValueAt(float t, float& result) 
+        inline static void getValueAt(float t, float& result)
         {
             t *= 2.0;
-            if (t < 1.0) 
+            if (t < 1.0)
                 result = 0.5 * t * t;
-            else 
+            else
             {
                 t -= 1.0;
                 result = - 0.5 * (t * ( t - 2) - 1);
@@ -108,20 +108,20 @@ namespace osgAnimation
     };
 
     /// Cubic function
-    struct OutCubicFunction 
+    struct OutCubicFunction
     {
         inline static void getValueAt(float t, float& result) { t = t-1.0; result = t*t*t + 1;}
     };
 
-    struct InCubicFunction 
+    struct InCubicFunction
     {
         inline static void getValueAt(float t, float& result) { result = t*t*t;}
     };
 
-    struct InOutCubicFunction 
+    struct InOutCubicFunction
     {
-        inline static void getValueAt(float t, float& result) 
-        { 
+        inline static void getValueAt(float t, float& result)
+        {
             t *= 2.0f;
             if (t < 1.0f)
                 result = 0.5f * t * t * t;
@@ -131,9 +131,9 @@ namespace osgAnimation
             }
         }
     };
- 
+
     /// Quart function
-    struct InQuartFunction 
+    struct InQuartFunction
     {
         inline static void getValueAt(float t, float& result) { result = t*t*t*t*t;}
     };
@@ -145,7 +145,7 @@ namespace osgAnimation
 
     struct InOutQuartFunction
     {
-        inline static void getValueAt(float t, float& result) 
+        inline static void getValueAt(float t, float& result)
         {
             t = t * 2.0;
             if ( t < 1)
@@ -159,26 +159,26 @@ namespace osgAnimation
     };
 
     /// Elastic function
-    struct OutElasticFunction 
+    struct OutElasticFunction
     {
-        inline static void getValueAt(float t, float& result) 
+        inline static void getValueAt(float t, float& result)
         {
             result = pow(2.0f, -10.0f * t) * sinf((t - 0.3f / 4.0f) * (2.0f * osg::PI) / 0.3f) + 1.0f;
         }
     };
 
-    struct InElasticFunction 
+    struct InElasticFunction
     {
-        inline static void getValueAt(float t, float& result) 
+        inline static void getValueAt(float t, float& result)
         {
             OutElasticFunction::getValueAt(1.0f - t, result);
             result = 1.0f - result;
         }
     };
 
-    struct InOutElasticFunction 
+    struct InOutElasticFunction
     {
-        inline static void getValueAt(float t, float& result) 
+        inline static void getValueAt(float t, float& result)
         {
             t *= 2.0f;
             if (t < 1.0f)
@@ -243,7 +243,7 @@ namespace osgAnimation
         {
             float s = 1.70158 * 1.525f;
             t *= 2.0f;
-            if (t < 1.0f) 
+            if (t < 1.0f)
             {
                 result = 0.5f * (t * t * ((s + 1.0f) * t - s));
             }
@@ -317,7 +317,7 @@ namespace osgAnimation
             else
             {
                 result = powf(2.0f, 10.0f * (t - 1.0f));
-            }       
+            }
         }
     };
 
@@ -348,7 +348,7 @@ namespace osgAnimation
     {
     public:
         typedef float value_type;
-        enum TimeBehaviour 
+        enum TimeBehaviour
         {
             CLAMP,
             LOOP
@@ -359,7 +359,7 @@ namespace osgAnimation
         float getTime() const { return _time; }
         float evaluateTime(float time) const
         {
-            switch (_behaviour) 
+            switch (_behaviour)
             {
             case CLAMP:
                 if (time > _duration)
@@ -381,7 +381,7 @@ namespace osgAnimation
         {
             _time = evaluateTime(_time + dt);
         }
-    
+
         void setTime(float time) { _time = evaluateTime(time);}
         void getValue(value_type& result) const { getValueAt(_time, result); }
         value_type getValue() const
@@ -397,7 +397,7 @@ namespace osgAnimation
             result = result * _changeValue + _startValue;
         }
         value_type getValueAt(float time) const
-        { 
+        {
             value_type result;
             getValueAt(evaluateTime(time), result);
             return result;
@@ -406,7 +406,7 @@ namespace osgAnimation
         virtual void getValueInNormalizedRange(float t, value_type& result) const = 0;
 
         float getDuration() const { return _duration;}
-    protected:      
+    protected:
         float _time;
         float _startValue;
         float _changeValue;
@@ -431,8 +431,8 @@ namespace osgAnimation
         T& getSampler() { return _sampler;}
         const T& getSampler() const { return _sampler;}
         virtual void getValueInNormalizedRange(float t, value_type& result) const
-        { 
-            if (!_sampler.getKeyframeContainer()) 
+        {
+            if (!_sampler.getKeyframeContainer())
             {
                 result = 0;
                 return;
@@ -447,12 +447,12 @@ namespace osgAnimation
     {
         typedef std::vector<osg::ref_ptr<Motion> > MotionList;
         MotionList _motions;
-        
+
         MotionList& getMotionList() { return _motions; }
         const MotionList& getMotionList() const { return _motions; }
         CompositeMotion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : Motion(startValue, duration, changeValue, tb) {}
 
-        virtual void getValueInNormalizedRange(float t, value_type& result) const 
+        virtual void getValueInNormalizedRange(float t, value_type& result) const
         {
             if (_motions.empty())
             {
@@ -520,7 +520,7 @@ namespace osgAnimation
     typedef MathMotionTemplate<OutCircFunction > OutCircMotion;
     typedef MathMotionTemplate<InCircFunction > InCircMotion;
     typedef MathMotionTemplate<InOutCircFunction > InOutCircMotion;
-    
+
     // expo
     typedef MathMotionTemplate<OutExpoFunction > OutExpoMotion;
     typedef MathMotionTemplate<InExpoFunction > InExpoMotion;

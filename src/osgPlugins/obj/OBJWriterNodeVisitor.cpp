@@ -8,66 +8,66 @@
  * Modified by Robert Osfield to support per Drawable coord, normal and
  * texture coord arrays, bug fixes, and support for texture mapping.
  *
- * Writing support added 2007 by Stephan Huber, http://digitalmind.de, 
+ * Writing support added 2007 by Stephan Huber, http://digitalmind.de,
  * some ideas taken from the dae-plugin
  *
- * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
- * real-time rendering of large 3D photo-realistic models. 
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
+ * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
 #include <osg/io_utils>
 #include "OBJWriterNodeVisitor.h"
- 
+
 
 
 /** writes all values of an array out to a stream, applies a matrix beforehand if necessary */
 class ValueVisitor : public osg::ValueVisitor {
     public:
-        ValueVisitor(std::ostream& fout, const osg::Matrix& m = osg::Matrix::identity(), bool isNormal = false) :    
-            osg::ValueVisitor(), 
-            _fout(fout), 
-            _m(m), 
+        ValueVisitor(std::ostream& fout, const osg::Matrix& m = osg::Matrix::identity(), bool isNormal = false) :
+            osg::ValueVisitor(),
+            _fout(fout),
+            _m(m),
             _isNormal(isNormal)
-        { 
+        {
             _applyMatrix = (_m != osg::Matrix::identity());
             if (_isNormal) _origin = osg::Vec3(0,0,0) * _m;
         }
-        
-        virtual void apply (osg::Vec2 & inv) 
-        { 
-            _fout << inv[0] << ' ' << inv[1]; 
+
+        virtual void apply (osg::Vec2 & inv)
+        {
+            _fout << inv[0] << ' ' << inv[1];
         }
-        
-        virtual void apply (osg::Vec3 & inv) 
-        { 
+
+        virtual void apply (osg::Vec3 & inv)
+        {
             osg::Vec3 v(inv);
             if (_applyMatrix)  v = (_isNormal) ? (v * _m) - _origin : v * _m;
-            _fout << v[0] << ' ' << v[1] << ' ' << v[2]; 
+            _fout << v[0] << ' ' << v[1] << ' ' << v[2];
         }
-        
+
         virtual void apply (osg::Vec2b & inv)
-        { 
-            _fout << inv[0] << ' ' << inv[1]; 
+        {
+            _fout << inv[0] << ' ' << inv[1];
         }
-        
-        virtual void apply (osg::Vec3b & inv) 
-        { 
+
+        virtual void apply (osg::Vec3b & inv)
+        {
             osg::Vec3 v(inv[0], inv[1], inv[2]);
             if (_applyMatrix)  v = (_isNormal) ? (v * _m) - _origin : v * _m;
-            _fout << v[0] << ' ' << v[1] << ' ' << v[2]; 
+            _fout << v[0] << ' ' << v[1] << ' ' << v[2];
         }
-        
-        virtual void apply (osg::Vec2s & inv) 
-        {    
-            _fout << inv[0] << ' ' << inv[1]; 
+
+        virtual void apply (osg::Vec2s & inv)
+        {
+            _fout << inv[0] << ' ' << inv[1];
         }
-        
-        virtual void apply (osg::Vec3s & inv) 
-        { 
+
+        virtual void apply (osg::Vec3s & inv)
+        {
             osg::Vec3 v(inv[0], inv[1], inv[2]);
             if (_applyMatrix)  v = (_isNormal) ? (v * _m) - _origin : v * _m;
-            _fout << v[0] << ' ' << v[1] << ' ' << v[2]; 
+            _fout << v[0] << ' ' << v[1] << ' ' << v[2];
         }
     private:
 
@@ -81,10 +81,10 @@ class ValueVisitor : public osg::ValueVisitor {
 
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
 class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
-    
+
     public:
-        ObjPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo, unsigned int normalIndex, unsigned int lastVertexIndex, unsigned int  lastNormalIndex, unsigned int lastTexIndex) : 
-            osg::PrimitiveIndexFunctor(), 
+        ObjPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo, unsigned int normalIndex, unsigned int lastVertexIndex, unsigned int  lastNormalIndex, unsigned int lastTexIndex) :
+            osg::PrimitiveIndexFunctor(),
             _fout(fout),
             _lastVertexIndex(lastVertexIndex),
             _lastNormalIndex(lastNormalIndex),
@@ -95,29 +95,29 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             _normalIndex(normalIndex)
         {
         }
-        
+
         virtual void setVertexArray(unsigned int,const osg::Vec2*) {}
 
         virtual void setVertexArray(unsigned int ,const osg::Vec3* ) {}
 
         virtual void setVertexArray(unsigned int,const osg::Vec4* ) {}
-        
+
         virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
 
         virtual void setVertexArray(unsigned int ,const osg::Vec3d* ) {}
 
         virtual void setVertexArray(unsigned int,const osg::Vec4d* ) {}
-        
-        void write(unsigned int i) 
+
+        void write(unsigned int i)
         {
             _fout << (i + _lastVertexIndex) << "/";
-            
-            if (_hasTexCoords || _hasNormalCoords) 
+
+            if (_hasTexCoords || _hasNormalCoords)
             {
                 if (_hasTexCoords)
                     _fout << (i + _lastTexIndex);
                 _fout << "/";
-                if (_hasNormalCoords) 
+                if (_hasNormalCoords)
                 {
                     if (_geo->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
                         _fout << (i+_lastNormalIndex);
@@ -127,7 +127,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             }
             _fout << " ";
         }
-        
+
         // operator for triangles
         void writeTriangle(unsigned int i1, unsigned int i2, unsigned int i3)
          {
@@ -139,9 +139,9 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             // not sure if this is correct?
             if(_geo->getNormalBinding() && _geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE) ++_normalIndex;
         }
-        
+
         // operator for lines
-        void writeLine(unsigned int i1, unsigned int i2) 
+        void writeLine(unsigned int i1, unsigned int i2)
         {
             _fout << "l ";
             write(i1);
@@ -150,9 +150,9 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             // not sure if this is correct?
             if(_geo->getNormalBinding() && _geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE) ++_normalIndex;
         }
-        
+
         // operator for points
-        void writePoint(unsigned int i1) 
+        void writePoint(unsigned int i1)
         {
             _fout << "p ";
             write(i1);
@@ -180,8 +180,8 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             }
         }
 
-        virtual void drawArrays(GLenum mode,GLint first,GLsizei count);                    
-        
+        virtual void drawArrays(GLenum mode,GLint first,GLsizei count);
+
         virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
         {
             drawElementsImplementation<GLubyte>(mode, count, indices);
@@ -189,21 +189,21 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
         {
             drawElementsImplementation<GLushort>(mode, count, indices);
-        }    
+        }
 
         virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
         {
             drawElementsImplementation<GLuint>(mode, count, indices);
-        }    
+        }
 
     protected:
-        
-        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices) 
+
+        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices)
         {
             if (indices==0 || count==0) return;
 
             typedef const T* IndexPointer;
-        
+
             switch(mode)
             {
                 case(GL_TRIANGLES):
@@ -211,7 +211,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                         writeTriangle(*iptr,*(iptr+1),*(iptr+2));
-    
+
                     break;
                 }
                 case(GL_TRIANGLE_STRIP):
@@ -260,7 +260,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;++iptr)
-                    
+
                     {
                         writePoint(*iptr);
                     }
@@ -278,7 +278,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 }
                 case(GL_LINE_STRIP):
                 {
-                    
+
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices+1;iptr<ilast;iptr+=2)
 
@@ -302,8 +302,8 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     // uhm should never come to this point :)
                     break;
             }
-        }    
-    
+        }
+
     private:
 
         ObjPrimitiveIndexWriter& operator = (const ObjPrimitiveIndexWriter&) { return *this; }
@@ -373,7 +373,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         }
         case(GL_POINTS):
         {
-            
+
             for(GLsizei i=0;i<count;++i)
             {
                 writePoint(i);
@@ -407,11 +407,11 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             break;
         }
         default:
-            OSG_WARN << "OBJWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
+            OSG_WARN << "OBJWriterNodeVisitor :: can't handle mode " << mode << std::endl;
             break;
     }
 }
-                    
+
 
 OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex) :
     diffuse(1,1,1,1),
@@ -421,40 +421,40 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
 {
     static unsigned int s_objmaterial_id = 0;
     ++s_objmaterial_id;
-    std::stringstream ss; 
+    std::stringstream ss;
     ss << "material_" << s_objmaterial_id;
     name = ss.str();
-    
+
     if (mat) {
         diffuse = mat->getDiffuse(osg::Material::FRONT);
         ambient = mat->getAmbient(osg::Material::FRONT);
         specular = mat->getSpecular(osg::Material::FRONT);
     }
-    
+
     if (tex) {
         osg::Image* img = tex->getImage(0);
         if ((img) && (!img->getFileName().empty()))
             image = img->getFileName();
-        
+
     }
-        
+
 }
 
 std::ostream& operator<<(std::ostream& fout, const OBJWriterNodeVisitor::OBJMaterial& mat) {
-    
+
     fout << "newmtl " << mat.name << std::endl;
     fout << "       " << "Ka " << mat.ambient << std::endl;
     fout << "       " << "Kd " << mat.diffuse << std::endl;
     fout << "       " << "Ks " << mat.specular << std::endl;
-    
+
     if(!mat.image.empty())
         fout << "       " << "map_Kd " << mat.image << std::endl;
-    
+
     return fout;
-    
+
 }
 
-void OBJWriterNodeVisitor::writeMaterials(std::ostream& fout) 
+void OBJWriterNodeVisitor::writeMaterials(std::ostream& fout)
 {
     for(MaterialMap::iterator i = _materialMap.begin(); i != _materialMap.end(); ++i)
     {
@@ -464,19 +464,19 @@ void OBJWriterNodeVisitor::writeMaterials(std::ostream& fout)
 
 
 std::string OBJWriterNodeVisitor::getUniqueName(const std::string& defaultvalue) {
-    
+
     std::string name = "";
     for(std::list<std::string>::iterator i = _nameStack.begin(); i != _nameStack.end(); ++i) {
         if (!name.empty()) name+="_";
         name += (*i);
     }
-    
+
     if (!defaultvalue.empty())
         name += "_" +defaultvalue;
-    
+
     if (_nameMap.find(name) == _nameMap.end())
         _nameMap.insert(std::make_pair(name, 0u));
-        
+
     std::stringstream ss;
     ss << name << "_" << _nameMap[name];
     ++(_nameMap[name]);
@@ -488,7 +488,7 @@ void OBJWriterNodeVisitor::processArray(const std::string& key, osg::Array* arra
 {
     if (array == NULL)
         return;
-    
+
     ValueVisitor vv(_fout, m, isNormal);
     _fout << std::endl;
     for(unsigned int i = 0; i < array->getNumElements(); ++i) {
@@ -496,57 +496,57 @@ void OBJWriterNodeVisitor::processArray(const std::string& key, osg::Array* arra
         array->accept(i, vv);
         _fout << std::endl;
     }
-    
+
     _fout << "# " << array->getNumElements() << " elements written" << std::endl;
-    
+
 }
 
-void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss) 
+void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 {
     if (_materialMap.find(ss) != _materialMap.end()) {
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
         return;
     }
-    
+
     osg::Material* mat = dynamic_cast<osg::Material*>(ss->getAttribute(osg::StateAttribute::MATERIAL));
     osg::Texture* tex = dynamic_cast<osg::Texture*>(ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE));
-    
-    if (mat || tex) 
+
+    if (mat || tex)
     {
         _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex)));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
-    
+
 }
 
 
 void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
     _fout << std::endl;
     _fout << "o " << getUniqueName( geo->getName().empty() ? geo->className() : geo->getName() ) << std::endl;
-    
+
     processStateSet(_currentStateSet.get());
-    
+
     processArray("v", geo->getVertexArray(), m, false);
     processArray("vn", geo->getNormalArray(), m, true);
     processArray("vt", geo->getTexCoordArray(0)); // we support only tex-unit 0
     unsigned int normalIndex = 0;
-    for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) 
+    for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i)
     {
         osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
-        
+
         ObjPrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);
         ps->accept(pif);
-        
+
         if(geo->getNormalArray() && geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET)
             ++normalIndex;
     }
-    if (geo->getVertexArray()) 
+    if (geo->getVertexArray())
         _lastVertexIndex += geo->getVertexArray()->getNumElements();
     if (geo->getNormalArray())
         _lastNormalIndex += geo->getNormalArray()->getNumElements();
     if(geo->getTexCoordArray(0))
         _lastTexIndex += geo->getTexCoordArray(0)->getNumElements();
-    
+
 }
 
 void OBJWriterNodeVisitor::apply( osg::Geode &node )
@@ -562,9 +562,9 @@ void OBJWriterNodeVisitor::apply( osg::Geode &node )
         if ( g != NULL )
         {
             pushStateSet(g->getStateSet());
-            
+
             processGeometry(g,m);
-            
+
             popStateSet(g->getStateSet());
         }
     }

@@ -459,20 +459,23 @@ template< typename T >
 void daeReader::processSinglePPrimitive(osg::Geode* geode,
     const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode)
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
-    geode->addDrawable( geometry );
+    
 
-    osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(mode);
-    geometry->addPrimitiveSet(pDrawElements);
+    osg::ref_ptr<osg::DrawElementsUInt> pDrawElements = new osg::DrawElementsUInt(mode);
+    geometry->addPrimitiveSet(pDrawElements.get());
 
     domP_Array domPArray;
     domPArray.append(group->getP());
     std::vector<std::vector<GLuint> > indexLists;
-    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh,
-        geometry, sources, indexLists);
-    pDrawElements->asVector().swap(indexLists.front());
+    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry.get(), sources, indexLists);
+    if (!indexLists.front().empty())
+    {
+        pDrawElements->asVector().swap(indexLists.front());
+        geode->addDrawable( geometry.get() );
+    }
 }
 
 template< typename T >
@@ -945,6 +948,9 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     {
         if (daeElement* texcoord_source = texcoord_sources[texcoord_set])
         {
+            std::string id = std::string("#") + texcoord_source->getID();
+            //We keep somewhere the mapping between daeElement id and created arrays
+            _texCoordIdMap.insert(std::pair<std::string,size_t>(id,texcoord_set));
             // 2D Texcoords
             osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec2Array, osg::Vec2dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
             if (arrayData.array.valid())

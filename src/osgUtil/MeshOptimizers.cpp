@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2010 Tim Moore
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -98,7 +98,7 @@ struct GeometryArrayGatherer
             (*itr)->accept(av);
         }
     }
-    
+
     ArrayList _arrayList;
     // True if geometry contains bindings that are compatible with
     // DrawElements.
@@ -113,7 +113,7 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
         : GeometryArrayGatherer(geometry)
     {
     }
-    
+
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
         for(ArrayList::const_iterator itr=_arrayList.begin();
@@ -125,7 +125,7 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
             if (compare==1) return false;
         }
         return false;
-    }   
+    }
 
     int compare(unsigned int lhs, unsigned int rhs)
     {
@@ -141,7 +141,7 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     }
 
 protected:
-    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }    
+    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }
 
 };
 
@@ -150,9 +150,9 @@ class RemapArray : public osg::ArrayVisitor
 {
     public:
         RemapArray(const IndexList& remapping):_remapping(remapping) {}
-        
+
         const IndexList& _remapping;
-        
+
         template<class T>
         inline void remap(T& array)
         {
@@ -165,7 +165,7 @@ class RemapArray : public osg::ArrayVisitor
             }
             array.erase(array.begin()+_remapping.size(),array.end());
         }
-        
+
         virtual void apply(osg::Array&) {}
         virtual void apply(osg::ByteArray& array) { remap(array); }
         virtual void apply(osg::ShortArray& array) { remap(array); }
@@ -179,12 +179,12 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::Vec2Array& array) { remap(array); }
         virtual void apply(osg::Vec3Array& array) { remap(array); }
         virtual void apply(osg::Vec4Array& array) { remap(array); }
-        
+
         virtual void apply(osg::Vec4ubArray& array) { remap(array); }
 
-        virtual void apply(osg::Vec2bArray& array) { remap(array); }        
-        virtual void apply(osg::Vec3bArray& array) { remap(array); }        
-        virtual void apply(osg::Vec4bArray& array) { remap(array); }        
+        virtual void apply(osg::Vec2bArray& array) { remap(array); }
+        virtual void apply(osg::Vec3bArray& array) { remap(array); }
+        virtual void apply(osg::Vec4bArray& array) { remap(array); }
 
         virtual void apply(osg::Vec2sArray& array) { remap(array); }
         virtual void apply(osg::Vec3sArray& array) { remap(array); }
@@ -193,7 +193,7 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::Vec2dArray& array) { remap(array); }
         virtual void apply(osg::Vec3dArray& array) { remap(array); }
         virtual void apply(osg::Vec4dArray& array) { remap(array); }
-        
+
         virtual void apply(osg::MatrixfArray& array) { remap(array); }
 protected:
 
@@ -236,7 +236,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 
     if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
-    
+
     if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
@@ -275,7 +275,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
               || type == PrimitiveSet::DrawElementsUIntPrimitiveType))
             numNonIndexedPrimitives++;
     }
-    
+
     // nothing to index
     if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
 
@@ -289,7 +289,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 
 
     // compute duplicate vertices
-    
+
     typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
     IndexList indices(numVertices);
@@ -298,7 +298,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     {
         indices[i] = i;
     }
-    
+
     VertexAttribComparitor arrayComparitor(geom);
     std::sort(indices.begin(),indices.end(),arrayComparitor);
 
@@ -311,7 +311,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
             lastUnique = i;
             ++numUnique;
         }
-        
+
     }
     IndexList remapDuplicatesToOrignals(numVertices);
     lastUnique = 0;
@@ -332,7 +332,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
             }
             lastUnique = i;
         }
-        
+
     }
     unsigned int min_index = indices[lastUnique];
     for(j=lastUnique+1;j<i;++j)
@@ -345,30 +345,30 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     }
 
 
-    // copy the arrays.    
+    // copy the arrays.
     IndexList finalMapping(numVertices);
     IndexList copyMapping;
     copyMapping.reserve(numUnique);
     unsigned int currentIndex=0;
     for(i=0;i<numVertices;++i)
     {
-        if (remapDuplicatesToOrignals[i]==i) 
+        if (remapDuplicatesToOrignals[i]==i)
         {
             finalMapping[i] = currentIndex;
             copyMapping.push_back(i);
             currentIndex++;
         }
     }
-    
+
     for(i=0;i<numVertices;++i)
     {
-        if (remapDuplicatesToOrignals[i]!=i) 
+        if (remapDuplicatesToOrignals[i]!=i)
         {
             finalMapping[i] = finalMapping[remapDuplicatesToOrignals[i]];
         }
     }
-   
-    
+
+
     MyTriangleIndexFunctor taf;
     taf._remapIndices.swap(finalMapping);
 
@@ -838,7 +838,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         }
         assert(triToAdd != 0 && triToAdd->score > 0.0);
         // Add triangle vertices, and remove triangle from the
-        // vertices that use it. 
+        // vertices that use it.
         triToAdd->score = -1.0f;
         unsigned triToAddIdx = triToAdd - &triangles[0];
         for (unsigned i = 0; i < 3; ++i)
@@ -1055,12 +1055,12 @@ public:
     virtual void apply(osg::Vec2Array& array) { remap(array); }
     virtual void apply(osg::Vec3Array& array) { remap(array); }
     virtual void apply(osg::Vec4Array& array) { remap(array); }
-    
+
     virtual void apply(osg::Vec4ubArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2bArray& array) { remap(array); }        
-    virtual void apply(osg::Vec3bArray& array) { remap(array); }        
-    virtual void apply(osg::Vec4bArray& array) { remap(array); }        
+    virtual void apply(osg::Vec2bArray& array) { remap(array); }
+    virtual void apply(osg::Vec3bArray& array) { remap(array); }
+    virtual void apply(osg::Vec4bArray& array) { remap(array); }
 
     virtual void apply(osg::Vec2sArray& array) { remap(array); }
     virtual void apply(osg::Vec3sArray& array) { remap(array); }
@@ -1069,7 +1069,7 @@ public:
     virtual void apply(osg::Vec2dArray& array) { remap(array); }
     virtual void apply(osg::Vec3dArray& array) { remap(array); }
     virtual void apply(osg::Vec4dArray& array) { remap(array); }
-    
+
     virtual void apply(osg::MatrixfArray& array) { remap(array); }
 };
 
@@ -1081,10 +1081,10 @@ struct VertexReorderOperator
     unsigned seq;
     vector<unsigned> remap;
 
-    VertexReorderOperator() : seq(0) 
+    VertexReorderOperator() : seq(0)
     {
     }
-    
+
     void inline doVertex(unsigned v)
     {
         if (remap[v] == Remapper::invalidIndex)
@@ -1104,7 +1104,7 @@ struct VertexReorder : public TriangleIndexFunctor<VertexReorderOperator>
     {
         remap.resize(numVerts, Remapper::invalidIndex);
     }
-    
+
 };
 }
 

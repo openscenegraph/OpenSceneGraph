@@ -26,8 +26,6 @@ void PixelBufferCocoa::init()
 
 bool PixelBufferCocoa::realizeImplementation() 
 {
-    std::cout << "PixelBufferCocoa :: realizeImplementation not implemented yet " << std::endl;
-    
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
          
     NSOpenGLPixelFormatAttribute attr[32];

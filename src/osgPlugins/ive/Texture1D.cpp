@@ -6,7 +6,7 @@
  *
  *    CREATED BY:     Copied from Texture 2D.cpp and edited for Texture 1D
  *                     by Don Burns
- *                    
+ *
  *    HISTORY:        Created 27.1.2004
  *
  *    Copyright 2003 VR-C, OSGPL
@@ -50,7 +50,7 @@ void Texture1D::read(DataInputStream* in){
         else
             in_THROW_EXCEPTION("Texture1D::read(): Could not cast this osg::Texture1D to an osg::Texture.");
         // Read image.
-        
+
         // Should we read image data from stream
         osg::Image *image = in->readImage();
         if(image) {

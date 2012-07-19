@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //osgFX - Copyright (C) 2003 Marco Jez
@@ -26,7 +26,7 @@
 #include <string>
 
 /**
- An helper macro that defines the methods techniqueName() and 
+ An helper macro that defines the methods techniqueName() and
  techniqueDescription() making them return the strings passed as parameters.
  */
 #define META_Technique(name, description) \
@@ -87,14 +87,14 @@ namespace osgFX
         /** get the const StateSet object associated to the i-th pass */
         inline const osg::StateSet* getPassStateSet(int i) const;
 
-        /** 
+        /**
          traverse children with multipass if necessary. By default this method
          simply calls the protected method traverse_implementation(); you can
          override it to change the default behavior.
          Don't call this method directly as it is called by osgFX::Effect
          */
         inline virtual void traverse(osg::NodeVisitor& nv, Effect* fx);
-        
+
     protected:
         Technique(const Technique &): osg::Referenced() {}    // copying is nonsense ;)
         virtual ~Technique() {}
@@ -105,7 +105,7 @@ namespace osgFX
 
         /** create a new pass node, add it to the technique and associate a StateSet */
         void addPass(osg::StateSet* ss = 0);
-        
+
         /** optional: return a node that overrides the child node on a specified pass */
         inline virtual osg::Node* getOverrideChild(int)  { return 0; }
 
@@ -114,7 +114,7 @@ namespace osgFX
          implement this method in derived classes to add the required passes.
          */
         virtual void define_passes() = 0;
-        
+
         /**
          traverse children with multipass if necessary. Don't call this method
          directly unless you are in a customized version of traverse().
@@ -142,12 +142,12 @@ namespace osgFX
     {
         return _passes[i].get();
     }
-      
+
     inline void Technique::dirtyPasses()
     {
         _passes.clear();
     }
-    
+
     inline void Technique::traverse(osg::NodeVisitor& nv, Effect* fx)
     {
         traverse_implementation(nv, fx);

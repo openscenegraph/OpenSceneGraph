@@ -56,7 +56,7 @@ void DrawArrayLengths::read(DataInputStream* in){
 
         // Read properties
         setFirst(in->readInt());
-    
+
         // Read array length and its elements.
         int size = in->readInt();
         for(int i=0; i<size; i++){

@@ -47,7 +47,7 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
         void setPivot(const osg::Vec3d& pvt)
         {
             _pivot = pvt;
-            _usePivot = true; 
+            _usePivot = true;
             _dirty = true;
         }
 
@@ -56,12 +56,12 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
         void setPosition(const osg::Vec3d& pos)
         {
             _position = pos;
-            _usePosition = true; 
+            _usePosition = true;
             _dirty = true;
         }
 
         const osg::Vec3d& getPosition() const { return _position; }
-                    
+
         virtual ~AntiSquish();
 
         osg::Matrix computeUnSquishedMatrix(const osg::Matrix&, bool& flag);
@@ -78,7 +78,7 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
 
         bool _dirty;
         osg::Matrix _cachedLocalToWorld;
-}; 
+};
 
 }
 #endif

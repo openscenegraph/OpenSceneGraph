@@ -88,7 +88,7 @@ void ShapeDrawable::read(DataInputStream* in)
             else
                 in_THROW_EXCEPTION("ShapeDrawable::read(): Could not cast this osg::ShapeDrawable to an osg::Object.");
         }
-    
+
         // Read ShapeDrawable's properties
         setColor(in->readVec4());
 

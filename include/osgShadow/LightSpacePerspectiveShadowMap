@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
@@ -31,7 +31,7 @@ namespace osgShadow {
 
 class LispSM;
 
-class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapAlgorithm 
+class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapAlgorithm
 {
     public:
         LightSpacePerspectiveShadowMapAlgorithm();
@@ -39,14 +39,14 @@ class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapAlgorithm
 
         void operator() (
             const osgShadow::ConvexPolyhedron* hullShadowedView,
-            const osg::Camera* cameraMain, 
+            const osg::Camera* cameraMain,
             osg::Camera* cameraShadow ) const;
 
     protected:
         LispSM * lispsm;
 };
 
-// Optimized for draw traversal shadow bounds 
+// Optimized for draw traversal shadow bounds
 class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapDB: public ProjectionShadowMap< MinimalDrawBoundsShadowMap, LightSpacePerspectiveShadowMapAlgorithm >
 {
     public:
@@ -60,7 +60,7 @@ class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapDB: public ProjectionShadow
 
         /** Classic OSG cloning constructor */
         LightSpacePerspectiveShadowMapDB(
-            const LightSpacePerspectiveShadowMapDB& copy, 
+            const LightSpacePerspectiveShadowMapDB& copy,
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : BaseClass(copy,copyop)
         {
         }
@@ -69,21 +69,21 @@ class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapDB: public ProjectionShadow
         META_Object( osgShadow, LightSpacePerspectiveShadowMapDB );
 };
 
-// Optimized for cull traversal shadow bounds 
+// Optimized for cull traversal shadow bounds
 class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapCB: public ProjectionShadowMap< MinimalCullBoundsShadowMap, LightSpacePerspectiveShadowMapAlgorithm >
 {
     public:
         /** Convenient typedef used in definition of ViewData struct and methods */
         typedef ProjectionShadowMap< MinimalCullBoundsShadowMap, LightSpacePerspectiveShadowMapAlgorithm > BaseClass;
 
-        /** Classic OSG constructor */                
+        /** Classic OSG constructor */
         LightSpacePerspectiveShadowMapCB()
         {
         }
 
         /** Classic OSG cloning constructor */
         LightSpacePerspectiveShadowMapCB(
-            const LightSpacePerspectiveShadowMapCB& copy, 
+            const LightSpacePerspectiveShadowMapCB& copy,
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : BaseClass(copy,copyop)
         {
         }
@@ -92,7 +92,7 @@ class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapCB: public ProjectionShadow
         META_Object( osgShadow, LightSpacePerspectiveShadowMapCB );
 };
 
-// Optimized for view frustum bounds 
+// Optimized for view frustum bounds
 class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapVB: public ProjectionShadowMap< MinimalShadowMap, LightSpacePerspectiveShadowMapAlgorithm >
 {
     public:
@@ -106,7 +106,7 @@ class OSGSHADOW_EXPORT LightSpacePerspectiveShadowMapVB: public ProjectionShadow
 
         /** Classic OSG cloning constructor */
         LightSpacePerspectiveShadowMapVB(
-            const LightSpacePerspectiveShadowMapVB& copy, 
+            const LightSpacePerspectiveShadowMapVB& copy,
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : BaseClass(copy,copyop)
         {
         }

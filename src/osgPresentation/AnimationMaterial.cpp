@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -27,7 +27,7 @@ void AnimationMaterial::insert(double time,osg::Material* material)
 bool AnimationMaterial::getMaterial(double time,osg::Material& material) const
 {
     if (_timeControlPointMap.empty()) return false;
-    
+
     switch(_loopMode)
     {
         case(SWING):
@@ -35,7 +35,7 @@ bool AnimationMaterial::getMaterial(double time,osg::Material& material) const
             double modulated_time = (time - getFirstTime())/(getPeriod()*2.0);
             double fraction_part = modulated_time - floor(modulated_time);
             if (fraction_part>0.5) fraction_part = 1.0-fraction_part;
-            
+
             time = getFirstTime()+(fraction_part*2.0) * getPeriod();
             break;
         }
@@ -50,8 +50,8 @@ bool AnimationMaterial::getMaterial(double time,osg::Material& material) const
             // no need to modulate the time.
             break;
     }
-    
-    
+
+
 
     TimeControlPointMap::const_iterator second = _timeControlPointMap.lower_bound(time);
     if (second==_timeControlPointMap.begin())
@@ -61,8 +61,8 @@ bool AnimationMaterial::getMaterial(double time,osg::Material& material) const
     else if (second!=_timeControlPointMap.end())
     {
         TimeControlPointMap::const_iterator first = second;
-        --first;        
-        
+        --first;
+
         // we have both a lower bound and the next item.
 
         // deta_time = second.time - first.time
@@ -73,7 +73,7 @@ bool AnimationMaterial::getMaterial(double time,osg::Material& material) const
         else
         {
             interpolate(material,(time - first->first)/delta_time, *first->second, *second->second);
-        }        
+        }
     }
     else // (second==_timeControlPointMap.end())
     {
@@ -157,8 +157,8 @@ bool AnimationMaterial::requiresBlending() const
 
 void AnimationMaterialCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
-    if (_animationMaterial.valid() && 
-        nv->getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR && 
+    if (_animationMaterial.valid() &&
+        nv->getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR &&
         nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getReferenceTime();
@@ -173,10 +173,10 @@ void AnimationMaterialCallback::operator()(osg::Node* node, osg::NodeVisitor* nv
                 _firstTime = time;
             }
             update(*node);
-            
+
         }
     }
-    
+
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
 }
@@ -220,11 +220,11 @@ void AnimationMaterialCallback::setPause(bool pause)
     {
         return;
     }
-    
+
     _pause = pause;
-    
+
     if (_firstTime==DBL_MAX) return;
-    
+
     if (_pause)
     {
         _pauseTime = _latestTime;

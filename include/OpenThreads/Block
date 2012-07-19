@@ -22,10 +22,10 @@
 namespace OpenThreads {
 
 /** Block is a block that can be used to halt a thread that is waiting another thread to release it.*/
-class Block 
+class Block
 {
     public:
-    
+
         Block():
             _released(false) {}
 
@@ -75,7 +75,7 @@ class Block
             ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             _released = false;
         }
-        
+
         inline void set(bool doRelease)
         {
             if (doRelease!=_released)
@@ -97,10 +97,10 @@ class Block
 };
 
 /** BlockCount is a block that can be used to halt a thread that is waiting for a specified number of operations to be completed.*/
-class BlockCount 
+class BlockCount
 {
     public:
-    
+
         BlockCount(unsigned int blockCount):
             _blockCount(blockCount),
             _currentCount(0) {}
@@ -132,7 +132,7 @@ class BlockCount
             if (_currentCount)
                 _cond.wait(&_mut);
         }
-        
+
         inline void reset()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
@@ -154,9 +154,9 @@ class BlockCount
         }
 
         inline void setBlockCount(unsigned int blockCount) { _blockCount = blockCount; }
-        
+
         inline unsigned int getBlockCount() const { return _blockCount; }
-        
+
         inline unsigned int getCurrentCount() const { return _currentCount; }
 
     protected:
@@ -167,7 +167,7 @@ class BlockCount
         unsigned int _currentCount;
 
     private:
-    
+
         BlockCount(const BlockCount&) {}
 
 };

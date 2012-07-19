@@ -69,7 +69,7 @@ bool ScalarProperty_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
 
-    float value=0; 
+    float value=0;
     if (fr.read("value",value))
     {
         itrAdvanced = true;

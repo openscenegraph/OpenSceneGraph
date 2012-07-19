@@ -75,9 +75,9 @@ bool VolumeTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     if (volumeTile.getVolumeTechnique())
     {
         fw.writeObject(*volumeTile.getVolumeTechnique());
-    }    
+    }
 
     fw.precision(prec);
-    
+
     return true;
 }

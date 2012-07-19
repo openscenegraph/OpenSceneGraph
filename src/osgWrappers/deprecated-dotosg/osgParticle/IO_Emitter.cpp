@@ -46,7 +46,7 @@ bool Emitter_readLocalData(osg::Object &obj, osgDB::Input &fr)
         osgParticle::Particle P;
         if (read_particle(fr, P)) {
             myobj.setParticleTemplate(P);
-        }        
+        }
     }
 
     return itAdvanced;

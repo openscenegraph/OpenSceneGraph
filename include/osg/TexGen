@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -42,7 +42,7 @@ namespace osg {
 class OSG_EXPORT TexGen : public StateAttribute
 {
     public :
-    
+
         TexGen();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
@@ -55,7 +55,7 @@ class OSG_EXPORT TexGen : public StateAttribute
             _plane_q(texgen._plane_q) {}
 
         META_StateAttribute(osg, TexGen, TEXGEN);
-        
+
         virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
@@ -86,7 +86,7 @@ class OSG_EXPORT TexGen : public StateAttribute
             // So commenting out the following until OSG supports 3D textures.
             // I plan to revamp the OpenGL state management later so will
             // tidy up then.  Robert Osfield. Jan 2001.
-            
+
             // The tidy up is now happening, but will have a think before
             // resolving the below parameters.
 
@@ -118,7 +118,7 @@ class OSG_EXPORT TexGen : public StateAttribute
         Plane& getPlane(Coord which);
 
         const Plane& getPlane(Coord which) const;
-        
+
         /** Set the tex gen planes from specified matrix.
           * Typical usage would be to pass in a projection
           * matrix to set up projective texturing.

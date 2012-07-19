@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <stdio.h>
@@ -36,7 +36,7 @@ unsigned int Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
 unsigned int Drawable::s_numberNewDrawablesInLastFrame = 0;
 unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 
-// static cache of deleted display lists which can only 
+// static cache of deleted display lists which can only
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
 typedef std::multimap<unsigned int,GLuint> DisplayListMap;
@@ -56,7 +56,7 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHi
         ++s_numberNewDrawablesInLastFrame;
         return  glGenLists( 1 );
     }
-    else 
+    else
     {
         DisplayListMap::iterator itr = dll.lower_bound(sizeHint);
         if (itr!=dll.end())
@@ -64,12 +64,12 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHi
             // OSG_NOTICE<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
 
             ++s_numberDrawablesReusedLastInLastFrame;
-            
+
             GLuint globj = itr->second;
             dll.erase(itr);
-            
+
             return globj;
-        } 
+        }
         else
         {
             // OSG_NOTICE<<"Creating a new display list of size = "<<sizeHint<<" although "<<dll.size()<<" are available"<<std::endl;
@@ -123,7 +123,7 @@ void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
         glDeleteLists(ditr->second,1);
     }
 
-    dll.clear();         
+    dll.clear();
 #else
     OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
 #endif
@@ -134,7 +134,7 @@ void Drawable::discardAllDeletedDisplayLists(unsigned int contextID)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 
     DisplayListMap& dll = s_deletedDisplayListCache[contextID];
-    dll.clear();         
+    dll.clear();
 }
 
 void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availableTime)
@@ -178,7 +178,7 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
              if (noDeleted+dll.size() != prev_size)
              {
                 OSG_WARN<<"Error in delete"<<std::endl;
-             }    
+             }
         }
         else
         {
@@ -203,11 +203,11 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
              if (noDeleted+dll.size() != prev_size)
              {
                 OSG_WARN<<"Error in delete"<<std::endl;
-             }    
+             }
         }
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());
-    
+
     if (noDeleted!=0) OSG_INFO<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
@@ -290,14 +290,14 @@ void Drawable::computeDataVariance()
     if (getDataVariance() != UNSPECIFIED) return;
 
     bool dynamic = false;
-    
+
     if (getUpdateCallback() ||
         getEventCallback() ||
-        getCullCallback()) 
+        getCullCallback())
     {
         dynamic = true;
     }
-    
+
     setDataVariance(dynamic ? DYNAMIC : STATIC);
 }
 
@@ -321,22 +321,22 @@ void Drawable::setStateSet(osg::StateSet* stateset)
 {
     // do nothing if nothing changed.
     if (_stateset==stateset) return;
-    
+
     // track whether we need to account for the need to do a update or event traversal.
     int delta_update = 0;
     int delta_event = 0;
 
-    // remove this node from the current statesets parent list 
+    // remove this node from the current statesets parent list
     if (_stateset.valid())
     {
         _stateset->removeParent(this);
         if (_stateset->requiresUpdateTraversal()) --delta_update;
         if (_stateset->requiresEventTraversal()) --delta_event;
     }
-    
+
     // set the stateset.
     _stateset = stateset;
-    
+
     // add this node to the new stateset to the parent list.
     if (_stateset.valid())
     {
@@ -344,7 +344,7 @@ void Drawable::setStateSet(osg::StateSet* stateset)
         if (_stateset->requiresUpdateTraversal()) ++delta_update;
         if (_stateset->requiresEventTraversal()) ++delta_event;
     }
-    
+
 
     // only inform parents if change occurs and drawable doesn't already have an update callback
     if (delta_update!=0 && !_updateCallback)
@@ -381,7 +381,7 @@ void Drawable::setNumChildrenRequiringUpdateTraversal(unsigned int num)
     // _numChildrenRequiringUpdateTraversal so no need to inform them.
     if (!_updateCallback && !_parents.empty())
     {
-        // need to pass on changes to parents.        
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringUpdateTraversal>0) --delta;
         if (num>0) ++delta;
@@ -393,16 +393,16 @@ void Drawable::setNumChildrenRequiringUpdateTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringUpdateTraversal( (*itr)->getNumChildrenRequiringUpdateTraversal()+delta );
             }
 
         }
     }
-    
+
     // finally update this objects value.
     _numChildrenRequiringUpdateTraversal=num;
-    
+
 }
 
 
@@ -416,7 +416,7 @@ void Drawable::setNumChildrenRequiringEventTraversal(unsigned int num)
     // _numChildrenRequiringEventTraversal so no need to inform them.
     if (!_eventCallback && !_parents.empty())
     {
-        // need to pass on changes to parents.        
+        // need to pass on changes to parents.
         int delta = 0;
         if (_numChildrenRequiringEventTraversal>0) --delta;
         if (num>0) ++delta;
@@ -428,16 +428,16 @@ void Drawable::setNumChildrenRequiringEventTraversal(unsigned int num)
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
-            {    
+            {
                 (*itr)->setNumChildrenRequiringEventTraversal( (*itr)->getNumChildrenRequiringEventTraversal()+delta );
             }
 
         }
     }
-    
+
     // finally Event this objects value.
     _numChildrenRequiringEventTraversal=num;
-    
+
 }
 
 osg::StateSet* Drawable::getOrCreateStateSet()
@@ -468,7 +468,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
     if (!_useDisplayList) return;
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    // get the contextID (user defined ID of 0 upwards) for the 
+    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     unsigned int contextID = renderInfo.getContextID();
 
@@ -477,7 +477,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
     // call the globj if already set otherwise compile and execute.
     if( globj != 0 )
-    {   
+    {
         glDeleteLists( globj, 1 );
     }
 
@@ -486,7 +486,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
     if (_drawCallback.valid())
         _drawCallback->drawImplementation(renderInfo,this);
-    else 
+    else
         drawImplementation(renderInfo);
 
     glEndList();
@@ -521,10 +521,10 @@ void Drawable::releaseGLObjects(State* state) const
     if (_drawCallback.valid()) _drawCallback->releaseGLObjects(state);
 
     if (!_useDisplayList) return;
-    
+
     if (state)
     {
-        // get the contextID (user defined ID of 0 upwards) for the 
+        // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
         unsigned int contextID = state->getContextID();
 
@@ -536,7 +536,7 @@ void Drawable::releaseGLObjects(State* state) const
         {
             Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
             globj = 0;
-        }    
+        }
     }
     else
     {
@@ -561,7 +561,7 @@ void Drawable::setSupportsDisplayList(bool flag)
             _useDisplayList = false;
         }
     }
-    
+
     // set with new value.
     _supportsDisplayList=flag;
 #else
@@ -580,13 +580,13 @@ void Drawable::setUseDisplayList(bool flag)
     {
         dirtyDisplayList();
     }
-    
+
     if (_supportsDisplayList)
     {
-    
+
         // set with new value.
         _useDisplayList = flag;
-        
+
     }
     else // does not support display lists.
     {
@@ -594,7 +594,7 @@ void Drawable::setUseDisplayList(bool flag)
         {
             OSG_WARN<<"Warning: attempt to setUseDisplayList(true) on a drawable with does not support display lists."<<std::endl;
         }
-        else 
+        else
         {
             // set with new value.
             _useDisplayList = false;
@@ -643,13 +643,13 @@ void Drawable::dirtyDisplayList()
 void Drawable::setUpdateCallback(UpdateCallback* ac)
 {
     if (_updateCallback==ac) return;
-    
+
     int delta = 0;
     if (_updateCallback.valid()) --delta;
     if (ac) ++delta;
 
     _updateCallback = ac;
-    
+
     if (delta!=0 && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
     {
         for(ParentList::iterator itr=_parents.begin();
@@ -664,13 +664,13 @@ void Drawable::setUpdateCallback(UpdateCallback* ac)
 void Drawable::setEventCallback(EventCallback* ac)
 {
     if (_eventCallback==ac) return;
-    
+
     int delta = 0;
     if (_eventCallback.valid()) --delta;
     if (ac) ++delta;
 
     _eventCallback = ac;
-    
+
     if (delta!=0 && !(_stateset.valid() && _stateset->requiresEventTraversal()))
     {
         for(ParentList::iterator itr=_parents.begin();
@@ -687,10 +687,10 @@ struct ComputeBound : public PrimitiveFunctor
         ComputeBound()
         {
             _vertices2f = 0;
-            _vertices3f = 0;  
+            _vertices3f = 0;
             _vertices4f = 0;
-            _vertices2d = 0;  
-            _vertices3d = 0;  
+            _vertices2d = 0;
+            _vertices3d = 0;
             _vertices4d = 0;
         }
 
@@ -775,14 +775,14 @@ struct ComputeBound : public PrimitiveFunctor
         virtual void vertex(double x,double y,double z) { _bb.expandBy(x,y,z); }
         virtual void vertex(double x,double y,double z,double w) { if (w!=0.0f) _bb.expandBy(x/w,y/w,z/w); }
         virtual void end() {}
-       
+
         const Vec2*     _vertices2f;
         const Vec3*     _vertices3f;
         const Vec4*     _vertices4f;
         const Vec2d*    _vertices2d;
         const Vec3d*    _vertices3d;
         const Vec4d*    _vertices4d;
-        BoundingBox     _bb; 
+        BoundingBox     _bb;
 };
 
 BoundingBox Drawable::computeBound() const
@@ -792,12 +792,12 @@ BoundingBox Drawable::computeBound() const
     Drawable* non_const_this = const_cast<Drawable*>(this);
     non_const_this->accept(cb);
 
-#if 0    
+#if 0
     OSG_NOTICE<<"computeBound() "<<cb._bb.xMin()<<", "<<cb._bb.xMax()<<", "<<std::endl;
     OSG_NOTICE<<"               "<<cb._bb.yMin()<<", "<<cb._bb.yMax()<<", "<<std::endl;
     OSG_NOTICE<<"               "<<cb._bb.zMin()<<", "<<cb._bb.zMax()<<", "<<std::endl;
 #endif
-    
+
     return cb._bb;
 }
 
@@ -843,7 +843,7 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _isARBOcclusionQuerySupported = rhs._isARBOcclusionQuerySupported;
     _isTimerQuerySupported = rhs._isTimerQuerySupported;
     _isARBTimerQuerySupported = rhs._isARBTimerQuerySupported;
-    
+
     _glFogCoordfv = rhs._glFogCoordfv;
     _glSecondaryColor3ubv = rhs._glSecondaryColor3ubv;
     _glSecondaryColor3fv = rhs._glSecondaryColor3fv;
@@ -1024,7 +1024,7 @@ void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
     else
     {
         OSG_WARN<<"Error: glFogCoordfv not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glSecondaryColor3ubv(const GLubyte* coord) const
@@ -1055,7 +1055,7 @@ void Drawable::Extensions::glMultiTexCoord1f(GLenum target,GLfloat coord) const
 {
     if (_glMultiTexCoord1f)
     {
-        _glMultiTexCoord1f(target,coord); 
+        _glMultiTexCoord1f(target,coord);
     }
     else
     {
@@ -1067,7 +1067,7 @@ void Drawable::Extensions::glMultiTexCoord2fv(GLenum target,const GLfloat* coord
 {
     if (_glMultiTexCoord2fv)
     {
-        _glMultiTexCoord2fv(target,coord); 
+        _glMultiTexCoord2fv(target,coord);
     }
     else
     {
@@ -1079,7 +1079,7 @@ void Drawable::Extensions::glMultiTexCoord3fv(GLenum target,const GLfloat* coord
 {
     if (_glMultiTexCoord3fv)
     {
-        _glMultiTexCoord3fv(target,coord); 
+        _glMultiTexCoord3fv(target,coord);
     }
     else
     {
@@ -1091,7 +1091,7 @@ void Drawable::Extensions::glMultiTexCoord4fv(GLenum target,const GLfloat* coord
 {
     if (_glMultiTexCoord4fv)
     {
-        _glMultiTexCoord4fv(target,coord); 
+        _glMultiTexCoord4fv(target,coord);
     }
     else
     {
@@ -1103,7 +1103,7 @@ void Drawable::Extensions::glMultiTexCoord1d(GLenum target,GLdouble coord) const
 {
     if (_glMultiTexCoord1d)
     {
-        _glMultiTexCoord1d(target,coord); 
+        _glMultiTexCoord1d(target,coord);
     }
     else
     {
@@ -1115,7 +1115,7 @@ void Drawable::Extensions::glMultiTexCoord2dv(GLenum target,const GLdouble* coor
 {
     if (_glMultiTexCoord2dv)
     {
-        _glMultiTexCoord2dv(target,coord); 
+        _glMultiTexCoord2dv(target,coord);
     }
     else
     {
@@ -1127,7 +1127,7 @@ void Drawable::Extensions::glMultiTexCoord3dv(GLenum target,const GLdouble* coor
 {
     if (_glMultiTexCoord3dv)
     {
-        _glMultiTexCoord3dv(target,coord); 
+        _glMultiTexCoord3dv(target,coord);
     }
     else
     {
@@ -1139,7 +1139,7 @@ void Drawable::Extensions::glMultiTexCoord4dv(GLenum target,const GLdouble* coor
 {
     if (_glMultiTexCoord4dv)
     {
-        _glMultiTexCoord4dv(target,coord); 
+        _glMultiTexCoord4dv(target,coord);
     }
     else
     {
@@ -1151,7 +1151,7 @@ void Drawable::Extensions::glVertexAttrib1s(unsigned int index, GLshort s) const
 {
     if (_glVertexAttrib1s)
     {
-        _glVertexAttrib1s(index,s); 
+        _glVertexAttrib1s(index,s);
     }
     else
     {
@@ -1163,7 +1163,7 @@ void Drawable::Extensions::glVertexAttrib1f(unsigned int index, GLfloat f) const
 {
     if (_glVertexAttrib1f)
     {
-        _glVertexAttrib1f(index,f); 
+        _glVertexAttrib1f(index,f);
     }
     else
     {
@@ -1175,7 +1175,7 @@ void Drawable::Extensions::glVertexAttrib1d(unsigned int index, GLdouble f) cons
 {
     if (_glVertexAttrib1d)
     {
-        _glVertexAttrib1d(index,f); 
+        _glVertexAttrib1d(index,f);
     }
     else
     {
@@ -1187,7 +1187,7 @@ void Drawable::Extensions::glVertexAttrib2fv(unsigned int index, const GLfloat *
 {
     if (_glVertexAttrib2fv)
     {
-        _glVertexAttrib2fv(index,v); 
+        _glVertexAttrib2fv(index,v);
     }
     else
     {
@@ -1199,7 +1199,7 @@ void Drawable::Extensions::glVertexAttrib3fv(unsigned int index, const GLfloat *
 {
     if (_glVertexAttrib3fv)
     {
-        _glVertexAttrib3fv(index,v); 
+        _glVertexAttrib3fv(index,v);
     }
     else
     {
@@ -1211,7 +1211,7 @@ void Drawable::Extensions::glVertexAttrib4fv(unsigned int index, const GLfloat *
 {
     if (_glVertexAttrib4fv)
     {
-        _glVertexAttrib4fv(index,v); 
+        _glVertexAttrib4fv(index,v);
     }
     else
     {
@@ -1223,7 +1223,7 @@ void Drawable::Extensions::glVertexAttrib2dv(unsigned int index, const GLdouble 
 {
     if (_glVertexAttrib2dv)
     {
-        _glVertexAttrib2dv(index,v); 
+        _glVertexAttrib2dv(index,v);
     }
     else
     {
@@ -1235,7 +1235,7 @@ void Drawable::Extensions::glVertexAttrib3dv(unsigned int index, const GLdouble 
 {
     if (_glVertexAttrib3dv)
     {
-        _glVertexAttrib3dv(index,v); 
+        _glVertexAttrib3dv(index,v);
     }
     else
     {
@@ -1247,7 +1247,7 @@ void Drawable::Extensions::glVertexAttrib4dv(unsigned int index, const GLdouble 
 {
     if (_glVertexAttrib4dv)
     {
-        _glVertexAttrib4dv(index,v); 
+        _glVertexAttrib4dv(index,v);
     }
     else
     {
@@ -1259,7 +1259,7 @@ void Drawable::Extensions::glVertexAttrib4ubv(unsigned int index, const GLubyte 
 {
     if (_glVertexAttrib4ubv)
     {
-        _glVertexAttrib4ubv(index,v); 
+        _glVertexAttrib4ubv(index,v);
     }
     else
     {
@@ -1271,7 +1271,7 @@ void Drawable::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte
 {
     if (_glVertexAttrib4Nubv)
     {
-        _glVertexAttrib4Nubv(index,v); 
+        _glVertexAttrib4Nubv(index,v);
     }
     else
     {
@@ -1281,38 +1281,38 @@ void Drawable::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte
 
 void Drawable::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
 {
-    if (_glGenBuffers) _glGenBuffers(n, buffers); 
+    if (_glGenBuffers) _glGenBuffers(n, buffers);
     else OSG_WARN<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
 {
-    if (_glBindBuffer) _glBindBuffer(target, buffer); 
+    if (_glBindBuffer) _glBindBuffer(target, buffer);
     else OSG_WARN<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
 {
-    if (_glBufferData) _glBufferData(target, size, data, usage); 
+    if (_glBufferData) _glBufferData(target, size, data, usage);
     else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
 {
-    if (_glBufferSubData) _glBufferSubData(target, offset, size, data); 
+    if (_glBufferSubData) _glBufferSubData(target, offset, size, data);
     else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) const
 {
-    if (_glDeleteBuffers) _glDeleteBuffers(n, buffers); 
+    if (_glDeleteBuffers) _glDeleteBuffers(n, buffers);
     else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
 {
     if (_glIsBuffer) return _glIsBuffer(buffer);
-    else 
+    else
     {
         OSG_WARN<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
@@ -1328,7 +1328,7 @@ void Drawable::Extensions::glGetBufferSubData (GLenum target, GLintptrARB offset
 GLvoid* Drawable::Extensions::glMapBuffer (GLenum target, GLenum access) const
 {
     if (_glMapBuffer) return _glMapBuffer(target,access);
-    else 
+    else
     {
         OSG_WARN<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
         return 0;
@@ -1338,7 +1338,7 @@ GLvoid* Drawable::Extensions::glMapBuffer (GLenum target, GLenum access) const
 GLboolean Drawable::Extensions::glUnmapBuffer (GLenum target) const
 {
     if (_glUnmapBuffer) return _glUnmapBuffer(target);
-    else 
+    else
     {
         OSG_WARN<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
@@ -1367,7 +1367,7 @@ void Drawable::Extensions::glGenOcclusionQueries( GLsizei n, GLuint *ids ) const
     else
     {
         OSG_WARN<<"Error: glGenOcclusionQueries not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const
@@ -1379,7 +1379,7 @@ void Drawable::Extensions::glDeleteOcclusionQueries( GLsizei n, const GLuint *id
     else
     {
         OSG_WARN<<"Error: glDeleteOcclusionQueries not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 GLboolean Drawable::Extensions::glIsOcclusionQuery( GLuint id ) const
@@ -1391,7 +1391,7 @@ GLboolean Drawable::Extensions::glIsOcclusionQuery( GLuint id ) const
     else
     {
         OSG_WARN<<"Error: glIsOcclusionQuery not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 
     return GLboolean( 0 );
 }
@@ -1405,7 +1405,7 @@ void Drawable::Extensions::glBeginOcclusionQuery( GLuint id ) const
     else
     {
         OSG_WARN<<"Error: glBeginOcclusionQuery not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glEndOcclusionQuery() const
@@ -1417,7 +1417,7 @@ void Drawable::Extensions::glEndOcclusionQuery() const
     else
     {
         OSG_WARN<<"Error: glEndOcclusionQuery not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const
@@ -1429,7 +1429,7 @@ void Drawable::Extensions::glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint
     else
     {
         OSG_WARN<<"Error: glGetOcclusionQueryiv not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const
@@ -1441,7 +1441,7 @@ void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLui
     else
     {
         OSG_WARN<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void Drawable::Extensions::glGetQueryiv(GLenum target, GLenum pname, GLint *params) const
@@ -1494,7 +1494,7 @@ GLboolean Drawable::Extensions::glIsQuery(GLuint id) const
 
 void Drawable::Extensions::glDeleteQueries(GLsizei n, const GLuint *ids) const
 {
-    if (_gl_delete_queries_arb) 
+    if (_gl_delete_queries_arb)
         _gl_delete_queries_arb(n, ids);
     else
         OSG_WARN << "Error: glIsQuery not supported by OpenGL driver" << std::endl;

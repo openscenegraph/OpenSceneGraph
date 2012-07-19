@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -229,7 +229,7 @@ void RayTracedTechnique::init()
             texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_BORDER);
             texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_BORDER);
             texture3D->setBorderColor(osg::Vec4(0.0,0.0,0.0,0.0));
-            if (image_3d->getPixelFormat()==GL_ALPHA || 
+            if (image_3d->getPixelFormat()==GL_ALPHA ||
                 image_3d->getPixelFormat()==GL_LUMINANCE)
             {
                 texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
@@ -303,7 +303,7 @@ void RayTracedTechnique::init()
 
             }
             else
-            {    
+            {
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_mip.frag");
                 if (fragmentShader)
                 {
@@ -337,12 +337,12 @@ void RayTracedTechnique::init()
                 }
             }
             else
-            {    
+            {
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_iso.frag");
                 if (fragmentShader)
                 {
                     OSG_INFO<<"Shader found"<<std::endl;
-                
+
                     program->addShader(fragmentShader);
                 }
                 else
@@ -353,7 +353,7 @@ void RayTracedTechnique::init()
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
                 }
             }
-        } 
+        }
         else if (shadingModel==Light)
         {
             enableBlending = true;
@@ -373,7 +373,7 @@ void RayTracedTechnique::init()
 
             }
             else
-            {    
+            {
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
                 if (fragmentShader)
                 {
@@ -489,7 +489,7 @@ void RayTracedTechnique::init()
         drawElements->push_back(1);
         drawElements->push_back(2);
         drawElements->push_back(3);
-        
+
         // bottom
         drawElements->push_back(3);
         drawElements->push_back(2);
@@ -524,7 +524,7 @@ void RayTracedTechnique::init()
 
         geode->addDrawable(geom);
 
-    } 
+    }
 
     if (cpv._sampleDensityWhenMovingProperty.valid())
     {
@@ -599,8 +599,8 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
         {
             update(uv);
             return;
-        }        
-        
+        }
+
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
@@ -613,12 +613,12 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
     }
 
 
-    if (_volumeTile->getDirty()) 
+    if (_volumeTile->getDirty())
     {
         OSG_INFO<<"******* Doing init ***********"<<std::endl;
         _volumeTile->init();
     }
 }
-    
+
 
 } // end of osgVolume namespace

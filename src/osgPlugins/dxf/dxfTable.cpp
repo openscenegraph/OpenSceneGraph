@@ -1,12 +1,12 @@
 /* dxfReader for OpenSceneGraph  Copyright (C) 2005 by GraphArchitecture ( grapharchitecture.com )
  * Programmed by Paul de Repentigny <pdr@grapharchitecture.com>
- * 
+ *
  * OpenSceneGraph is (C) 2004 Robert Osfield
- * 
+ *
  * This library is provided as-is, without support of any kind.
  *
  * Read DXF docs or OSG docs for any related questions.
- * 
+ *
  * You may contact the author if you have suggestions/corrections/enhancements.
  */
 #include "dxfTable.h"
@@ -14,7 +14,7 @@
 #include "codeValue.h"
 
 
-void dxfLayer::assign(dxfFile*, codeValue& cv) 
+void dxfLayer::assign(dxfFile*, codeValue& cv)
 {
     switch (cv._groupCode) {
         case 2:
@@ -30,7 +30,7 @@ void dxfLayer::assign(dxfFile*, codeValue& cv)
     }
 }
 
-void dxfLayerTable::assign(dxfFile* dxf, codeValue& cv) 
+void dxfLayerTable::assign(dxfFile* dxf, codeValue& cv)
 {
     std::string s = cv._string;
     if (cv._groupCode == 0 ) {

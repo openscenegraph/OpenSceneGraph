@@ -18,12 +18,12 @@ static bool readMask( osgDB::InputStream& is, osg::PolygonStipple& attr )
     }
     else
     {
-        is >> osgDB::BEGIN_BRACKET;
+        is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<128; ++i )
         {
             is >> std::hex >> mask[i] >> std::dec;
         }
-        is >> osgDB::END_BRACKET;
+        is >> is.END_BRACKET;
     }
     attr.setMask( (GLubyte*)mask );
     return true;
@@ -39,12 +39,12 @@ static bool writeMask( osgDB::OutputStream& os, const osg::PolygonStipple& attr 
     else
     {
         const GLubyte* mask = attr.getMask();
-        os << osgDB::BEGIN_BRACKET << std::endl;
+        os << os.BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<128; ++i )
         {
             os << std::hex << mask[i] << std::dec << std::endl;
         }
-        os << osgDB::END_BRACKET << std::endl;
+        os << os.END_BRACKET << std::endl;
     }
     return true;
 }

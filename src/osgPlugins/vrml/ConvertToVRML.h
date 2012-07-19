@@ -3,7 +3,7 @@
  * OSG to VRML2  converter for OpenSceneGraph.
  *
  * authors :
- *           Johan Nouvel (johan_nouvel@yahoo.com) 
+ *           Johan Nouvel (johan_nouvel@yahoo.com)
  *
  *
  */

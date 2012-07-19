@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/DisplaySettings>
@@ -38,7 +38,7 @@ DisplaySettings::~DisplaySettings()
 {
 }
 
- 
+
  DisplaySettings& DisplaySettings::operator = (const DisplaySettings& vs)
 {
     if (this==&vs) return *this;
@@ -61,7 +61,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 
     _splitStereoVerticalEyeMapping = vs._splitStereoVerticalEyeMapping;
     _splitStereoVerticalSeparation = vs._splitStereoVerticalSeparation;
-    
+
     _splitStereoAutoAdjustAspectRatio = vs._splitStereoAutoAdjustAspectRatio;
 
     _doubleBuffer = vs._doubleBuffer;
@@ -76,13 +76,13 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 
     _maxNumOfGraphicsContexts = vs._maxNumOfGraphicsContexts;
     _numMultiSamples = vs._numMultiSamples;
-    
+
     _compileContextsHint = vs._compileContextsHint;
     _serializeDrawDispatch = vs._serializeDrawDispatch;
-    
+
     _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
     _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
-    
+
     _application = vs._application;
 
     _maxTexturePoolSize = vs._maxTexturePoolSize;
@@ -100,13 +100,13 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 void DisplaySettings::merge(const DisplaySettings& vs)
 {
     if (_stereo       || vs._stereo)        _stereo = true;
-    
+
     // need to think what to do about merging the stereo mode.
-    
+
     if (_doubleBuffer || vs._doubleBuffer)  _doubleBuffer = true;
     if (_RGB          || vs._RGB)           _RGB = true;
     if (_depthBuffer  || vs._depthBuffer)   _depthBuffer = true;
-    
+
     if (vs._minimumNumberAlphaBits>_minimumNumberAlphaBits) _minimumNumberAlphaBits = vs._minimumNumberAlphaBits;
     if (vs._minimumNumberStencilBits>_minimumNumberStencilBits) _minimumNumberStencilBits = vs._minimumNumberStencilBits;
     if (vs._numMultiSamples>_numMultiSamples) _numMultiSamples = vs._numMultiSamples;
@@ -122,7 +122,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     if (vs._maxTexturePoolSize>_maxTexturePoolSize) _maxTexturePoolSize = vs._maxTexturePoolSize;
     if (vs._maxBufferObjectPoolSize>_maxBufferObjectPoolSize) _maxBufferObjectPoolSize = vs._maxBufferObjectPoolSize;
 
-    // these are bit masks so merging them is like logical or 
+    // these are bit masks so merging them is like logical or
     _implicitBufferAttachmentRenderMask |= vs._implicitBufferAttachmentRenderMask;
     _implicitBufferAttachmentResolveMask |= vs._implicitBufferAttachmentResolveMask;
 
@@ -159,7 +159,7 @@ void DisplaySettings::setDefaults()
     _minimumNumberAccumGreenBits = 0;
     _minimumNumberAccumBlueBits = 0;
     _minimumNumberAccumAlphaBits = 0;
-    
+
     _maxNumOfGraphicsContexts = 32;
     _numMultiSamples = 0;
 
@@ -167,7 +167,7 @@ void DisplaySettings::setDefaults()
     // switch on anti-aliasing by default, just in case we have an Onyx :-)
     _numMultiSamples = 4;
     #endif
-    
+
     _compileContextsHint = false;
     _serializeDrawDispatch = true;
 
@@ -291,7 +291,7 @@ static ApplicationUsageProxy DisplaySetting_e26(ApplicationUsage::ENVIRONMENTAL_
 void DisplaySettings::readEnvironmentalVariables()
 {
     const char* ptr = 0;
-    
+
     if ((ptr = getenv("OSG_DISPLAY_TYPE")) != 0)
     {
         if (strcmp(ptr,"MONITOR")==0)
@@ -314,7 +314,7 @@ void DisplaySettings::readEnvironmentalVariables()
             _displayType = HEAD_MOUNTED_DISPLAY;
         }
     }
-    
+
     if( (ptr = getenv("OSG_STEREO_MODE")) != 0)
     {
         if (strcmp(ptr,"QUAD_BUFFER")==0)
@@ -419,7 +419,7 @@ void DisplaySettings::readEnvironmentalVariables()
             _splitStereoVerticalEyeMapping = LEFT_EYE_BOTTOM_VIEWPORT;
         }
     }
-    
+
     if( (ptr = getenv("OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
@@ -455,7 +455,7 @@ void DisplaySettings::readEnvironmentalVariables()
             _compileContextsHint = true;
         }
     }
-    
+
     if( (ptr = getenv("OSG_SERIALIZE_DRAW_DISPATCH")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
@@ -623,7 +623,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     {
         _RGB = true;
         _minimumNumberAlphaBits = 1;
-    }            
+    }
 
     while (arguments.read("--stencil"))
     {
@@ -668,7 +668,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
             "--implicit-buffer-attachment-resolve-mask",
         };
 
-        int * mask[] = { 
+        int * mask[] = {
             &_implicitBufferAttachmentRenderMask,
             &_implicitBufferAttachmentResolveMask,
         };

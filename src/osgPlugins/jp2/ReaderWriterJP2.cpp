@@ -301,8 +301,8 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             }
             jas_image_t* jimage = jas_image_decode(in, -1, opt); // last is the option string whatto put there?
             if(opt) delete[] opt;
-            
-            if (!jimage) return ReadResult::FILE_NOT_HANDLED; 
+
+            if (!jimage) return ReadResult::FILE_NOT_HANDLED;
 
             int internalFormat = jimage->numcmpts_;
 
@@ -511,7 +511,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             getdata(mem, jimage);
 
             jas_stream_t* out = jas_stream_memopen(0, 0);
-            if (!out) 
+            if (!out)
                 return WriteResult::ERROR_IN_WRITING_FILE;
 
             char* opt = 0;

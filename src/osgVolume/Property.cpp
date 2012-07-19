@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -133,7 +133,7 @@ AlphaFuncProperty::AlphaFuncProperty(const AlphaFuncProperty& afp,const osg::Cop
 
 void AlphaFuncProperty::setValue(float v)
 {
-    _uniform->set(v); 
+    _uniform->set(v);
     _alphaFunc->setReferenceValue(v);
 }
 
@@ -218,7 +218,7 @@ PropertyVisitor::PropertyVisitor(bool traverseOnlyActiveChildren):
 }
 
 void PropertyVisitor::apply(CompositeProperty& cp)
-{ 
+{
     for(unsigned int i=0; i<cp.getNumProperties(); ++i)
     {
         cp.getProperty(i)->accept(*this);
@@ -226,7 +226,7 @@ void PropertyVisitor::apply(CompositeProperty& cp)
 }
 
 void PropertyVisitor::apply(SwitchProperty& sp)
-{ 
+{
     if (_traverseOnlyActiveChildren)
     {
         if (sp.getActiveProperty()>=0 && sp.getActiveProperty()<static_cast<int>(sp.getNumProperties()))
@@ -268,12 +268,12 @@ void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyPr
 class CycleSwitchVisitor : public osgVolume::PropertyVisitor
 {
     public:
-    
+
         CycleSwitchVisitor(int delta):
             PropertyVisitor(false),
             _delta(delta),
             _switchModified(true) {}
-        
+
         virtual void apply(SwitchProperty& sp)
         {
             if (sp.getNumProperties()>=2)
@@ -289,7 +289,7 @@ class CycleSwitchVisitor : public osgVolume::PropertyVisitor
                     {
                         sp.setActiveProperty(0);
                     }
-                    
+
                     _switchModified = true;
                 }
                 else // _delta<0
@@ -307,10 +307,10 @@ class CycleSwitchVisitor : public osgVolume::PropertyVisitor
                     _switchModified = true;
                 }
             }
-            
+
             PropertyVisitor::apply(sp);
         }
-        
+
         int     _delta;
         bool    _switchModified;
 };
@@ -354,7 +354,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
     property->accept(cpv);
 
     bool passOnUpdates = false;
-    
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::MOVE):
@@ -394,7 +394,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
     {
         float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
         if (ea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS) v = 1.0f-v;
-        
+
         float v2 = v*v;
         float v4 = v2*v2;
 

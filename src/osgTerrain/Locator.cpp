@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -51,7 +51,7 @@ void Locator::setTransformAsExtents(double minX, double minY, double maxX, doubl
     _transform.set(maxX-minX, 0.0,       0.0, 0.0,
                    0.0,       maxY-minY, 0.0, 0.0,
                    0.0,       0.0,       1.0, 0.0,
-                   minX,      minY,      0.0, 1.0); 
+                   minX,      minY,      0.0, 1.0);
 
     _inverse.invert(_transform);
 }
@@ -101,7 +101,7 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
         topRight.x() = osg::maximum( topRight.x(), itr->x());
         topRight.y() = osg::maximum( topRight.y(), itr->y());
     }
-    
+
     return true;
 }
 
@@ -117,22 +117,22 @@ bool Locator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) co
         case(GEOCENTRIC):
         {
             osg::Vec3d geographic = local * _transform;
-                
+
             _ellipsoidModel->convertLatLongHeightToXYZ(geographic.y(), geographic.x(), geographic.z(),
                                                        world.x(), world.y(), world.z());
-            return true;      
+            return true;
         }
         case(GEOGRAPHIC):
-        {        
+        {
             world = local * _transform;
-            return true;      
+            return true;
         }
         case(PROJECTED):
-        {        
+        {
             world = local * _transform;
-            return true;      
+            return true;
         }
-    }    
+    }
 
     return false;
 }
@@ -142,7 +142,7 @@ bool Locator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) co
     switch(_coordinateSystemType)
     {
         case(GEOCENTRIC):
-        {        
+        {
             double longitude, latitude, height;
 
             _ellipsoidModel->convertXYZToLatLongHeight(world.x(), world.y(), world.z(),
@@ -150,20 +150,20 @@ bool Locator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) co
 
             local = osg::Vec3d(longitude, latitude, height) * _inverse;
 
-            return true;      
+            return true;
         }
         case(GEOGRAPHIC):
-        {        
+        {
             local = world * _inverse;
 
-            return true;      
+            return true;
         }
         case(PROJECTED):
-        {        
+        {
             local = world * _inverse;
-            return true;      
+            return true;
         }
-    }    
+    }
 
     return false;
 }

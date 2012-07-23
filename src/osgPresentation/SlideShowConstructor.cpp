@@ -1089,7 +1089,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
 
     bool usedTextureRectangle = false;
-    osg::Geometry* pictureQuad = createTexturedQuadGeometry(image_pos, positionData.rotate, image_width, image_height, image, usedTextureRectangle);
+    osg::Geometry* pictureQuad = createTexturedQuadGeometry(image_pos, positionData.rotate, image_width, image_height, image.get(), usedTextureRectangle);
     osg::StateSet* pictureStateSet = pictureQuad->getOrCreateStateSet();
 
     attachTexMat(pictureStateSet, imageData, s, t, usedTextureRectangle);

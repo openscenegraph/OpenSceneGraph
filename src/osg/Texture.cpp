@@ -2473,6 +2473,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
     std::string rendererString(renderer ? renderer : "");
 
     bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
+    bool fireGLHardwareDetected = (rendererString.find("FireGL")!=std::string::npos || rendererString.find("FIREGL")!=std::string::npos);
 
     bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
 
@@ -2511,7 +2512,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     _isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
 
-    _preferGenerateMipmapSGISForPowerOfTwo = radeonHardwareDetected ? false : true;
+    _preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
 
     _isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
 

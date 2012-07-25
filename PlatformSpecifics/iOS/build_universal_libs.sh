@@ -1,11 +1,13 @@
+#!/bin/bash
+
 ROOT=${PWD}
 SOURCE_DIR=${PWD}/../../
 INSTALL_DIR=${ROOT}/products
 DEVICE=iphoneos
 SIMULATOR=iphonesimulator
 COMPILER=com.apple.compilers.llvmgcc42
-
 UNIVERSAL_DIR=${INSTALL_DIR}/universal
+
 DEVICE_DIR=${ROOT}/build/device
 SIMULATOR_DIR=${ROOT}/build/simulator
 
@@ -27,11 +29,49 @@ CMAKE_OPTIONS="-D BUILD_OSG_APPLICATIONS:BOOL=OFF \
 
 CMAKE_DEVICE_OPTIONS="-DCMAKE_OSX_ARCHITECTURES:STRING=armv7"
 CMAKE_SIMULATOR_OPTIONS=""
-
+IGNORE_CMAKE_STEP=0
+OUTPUT_FILTER="/usr/bin/grep -v setenv"
 XCODEBUILD=/Developer/usr/bin/xcodebuild
 if [ ! -f ${XCODEBUILD} ]; then
   XCODEBUILD=/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
 fi
+
+
+# handle arguments 
+
+USAGE=$(
+cat <<EOF
+$0 [OPTION]
+-i          ignore cmake-config step
+-o VALUE    set the output-directory for libs + header
+-v          verbose compiler output
+EOF
+)
+
+while getopts "io:" OPTION; do
+  case "$OPTION" in
+    i)
+      IGNORE_CMAKE_STEP=1
+      ;;
+    o)
+      #the colon after b in the args string above signifies that
+      #  b should be accompanied with a user-defined value.
+      #that value will be stored in the OPTARG environment variable
+      UNIVERSAL_DIR="$OPTARG"
+      ;;
+    v)
+      OUTPUT_FILTER=/usr/bin/cat
+      ;;
+    *)
+      echo "unrecognized option"
+      echo "$USAGE"
+      exit 1
+      ;;
+  esac
+done
+
+echo "install dir      : ${UNIVERSAL_DIR}"
+echo "ignore cmake-step: ${IGNORE_CMAKE_STEP}"
 
 #create build dirs
 
@@ -84,10 +124,11 @@ create_universal_lib () {
 }
 
 
-
+if [ ${IGNORE_CMAKE_STEP} -eq 0 ]; then
 # create xcode-projects
-create_project device OSG_BUILD_PLATFORM_IPHONE ${CMAKE_DEVICE_OPTIONS}
-create_project simulator OSG_BUILD_PLATFORM_IPHONE_SIMULATOR ${CMAKE_SIMULATOR_OPTIONS}
+  create_project device OSG_BUILD_PLATFORM_IPHONE ${CMAKE_DEVICE_OPTIONS}
+  create_project simulator OSG_BUILD_PLATFORM_IPHONE_SIMULATOR ${CMAKE_SIMULATOR_OPTIONS}
+fi
 
 # build device
 cd ${ROOT}/build/device

@@ -741,6 +741,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("-4", "Use test model four - island scene.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
+    arguments.getApplicationUsage()->addCommandLineOption("--near-far-mode","COMPUTE_NEAR_USING_PRIMITIVES, COMPUTE_NEAR_FAR_USING_PRIMITIVES, COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES, DO_NOT_COMPUTE_NEAR_FAR");
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
@@ -840,6 +841,25 @@ int main(int argc, char** argv)
     settings->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
     settings->setCastsShadowTraversalMask(CastsShadowTraversalMask);
 
+    std::string nearFarMode("");
+    if (arguments.read("--near-far-mode",nearFarMode))
+    {
+        if (nearFarMode=="COMPUTE_NEAR_USING_PRIMITIVES")                settings->setComputeNearFarModeOverride(osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES);
+        else if (nearFarMode=="COMPUTE_NEAR_FAR_USING_PRIMITIVES")       settings->setComputeNearFarModeOverride(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+        else if (nearFarMode=="DO_NOT_COMPUTE_NEAR_FAR")                 settings->setComputeNearFarModeOverride(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
+        else if (nearFarMode=="COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES") settings->setComputeNearFarModeOverride(osg::CullSettings::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
+
+        OSG_NOTICE<<"ComputeNearFarModeOverride set to ";
+        switch(settings->getComputeNearFarModeOverride())
+        {
+            case(osg::CullSettings::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES): OSG_NOTICE<<"COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES"; break;
+            case(osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES): OSG_NOTICE<<"COMPUTE_NEAR_USING_PRIMITIVES"; break;
+            case(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES): OSG_NOTICE<<"COMPUTE_NEAR_FAR_USING_PRIMITIVES"; break;
+            case(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR): OSG_NOTICE<<"DO_NOT_COMPUTE_NEAR_FAR"; break;
+        }
+        OSG_NOTICE<<std::endl;
+    }
+    
     osg::ref_ptr<osgShadow::MinimalShadowMap> msm = NULL;
     if (arguments.read("--no-shadows"))
     {

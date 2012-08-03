@@ -836,8 +836,9 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
 
-    shadowedScene->getShadowSettings()->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
-    shadowedScene->getShadowSettings()->setCastsShadowTraversalMask(CastsShadowTraversalMask);
+    osgShadow::ShadowSettings* settings = shadowedScene->getShadowSettings();
+    settings->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
+    settings->setCastsShadowTraversalMask(CastsShadowTraversalMask);
 
     osg::ref_ptr<osgShadow::MinimalShadowMap> msm = NULL;
     if (arguments.read("--no-shadows"))
@@ -918,9 +919,6 @@ int main(int argc, char** argv)
     }
     else if( arguments.read("--vdsm") )
     {
-        osgShadow::ShadowSettings* settings = new osgShadow::ShadowSettings;
-        shadowedScene->setShadowSettings(settings);
-
         while( arguments.read("--debugHUD") ) settings->setDebugDraw( true );
         if (arguments.read("--persp")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::PERSPECTIVE_SHADOW_MAP);
         if (arguments.read("--ortho")) settings->setShadowMapProjectionHint(osgShadow::ShadowSettings::ORTHOGRAPHIC_SHADOW_MAP);

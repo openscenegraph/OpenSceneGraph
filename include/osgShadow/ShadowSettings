@@ -15,6 +15,7 @@
 #define OSGSHADOW_SHADOWSETTINGS 1
 
 #include <osg/Uniform>
+#include <osg/CullSettings>
 #include <osgShadow/Export>
 
 namespace osgShadow {
@@ -34,6 +35,10 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
         unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
 
+        void setComputeNearFarModeOverride(osg::CullSettings::ComputeNearFarMode cnfn) { _computeNearFearModeOverride = cnfn; }
+        osg::CullSettings::ComputeNearFarMode getComputeNearFarModeOverride() const { return _computeNearFearModeOverride; }
+
+        
         /** Set the LightNum of the light in the scene to assign a shadow for.
           * Default value is -1, which signifies that shadow technique should automatically select an active light
           * to assign a shadow, typically this will be the first active light found. */
@@ -112,6 +117,8 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         unsigned int            _receivesShadowTraversalMask;
         unsigned int            _castsShadowTraversalMask;
+
+        osg::CullSettings::ComputeNearFarMode _computeNearFearModeOverride;
 
         int                     _lightNum;
         unsigned int            _baseShadowTextureUnit;

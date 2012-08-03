@@ -746,6 +746,8 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
         return;
     }
 
+    ShadowSettings* settings = getShadowedScene()->getShadowSettings();
+
     OSG_INFO<<"cv->getProjectionMatrix()="<<*cv.getProjectionMatrix()<<std::endl;
 
     osg::CullSettings::ComputeNearFarMode cachedNearFarMode = cv.getComputeNearFarMode();
@@ -775,8 +777,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     }
 
     // set the compute near/far mode to the highest quality setting to ensure we push the near plan out as far as possible
-    cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    //cv.setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES);
+    if (settings->getComputeNearFarModeOverride()!=osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)
+    {
+        cv.setComputeNearFarMode(settings->getComputeNearFarModeOverride());
+    }
 
     // 1. Traverse main scene graph
     cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
@@ -795,6 +799,9 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
         cv.computeNearPlane();
     }
 
+    //minZNear = osg::maximum(10.0,minZNear);
+    //maxZFar = osg::minimum(60.0,maxZFar);
+
     Frustum frustum(&cv, minZNear, maxZFar);
 
     // return compute near far mode back to it's original settings
@@ -807,7 +814,6 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     //    create a list of light sources + their matrices to place them
     selectActiveLights(&cv, vdd);
 
-    ShadowSettings* settings = getShadowedScene()->getShadowSettings();
 
     unsigned int pos_x = 0;
     unsigned int textureUnit = settings->getBaseShadowTextureUnit();

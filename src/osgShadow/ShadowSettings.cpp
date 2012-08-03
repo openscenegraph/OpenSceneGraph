@@ -18,6 +18,7 @@ using namespace osgShadow;
 ShadowSettings::ShadowSettings():
     _receivesShadowTraversalMask(0xffffffff),
     _castsShadowTraversalMask(0xffffffff),
+    _computeNearFearModeOverride(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR),
     _lightNum(-1),
     _baseShadowTextureUnit(1),
     _useShadowMapTextureOverride(true),
@@ -31,12 +32,15 @@ ShadowSettings::ShadowSettings():
 //    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
 {
+    //_computeNearFearModeOverride = osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+    //_computeNearFearModeOverride = osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES);
 }
 
 ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copyop):
     Object(ss,copyop),
     _receivesShadowTraversalMask(ss._receivesShadowTraversalMask),
     _castsShadowTraversalMask(ss._castsShadowTraversalMask),
+    _computeNearFearModeOverride(ss._computeNearFearModeOverride),
     _lightNum(ss._lightNum),
     _baseShadowTextureUnit(ss._baseShadowTextureUnit),
     _useShadowMapTextureOverride(ss._useShadowMapTextureOverride),

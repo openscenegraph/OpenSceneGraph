@@ -1161,6 +1161,8 @@ void ViewDependentShadowMap::createShaders()
 
     unsigned int _baseTextureUnit = 0;
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_accessUnfiromsAndProgramMutex);
+
     _shadowCastingStateSet = new osg::StateSet;
 
     ShadowSettings* settings = getShadowedScene()->getShadowSettings();
@@ -2342,6 +2344,8 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
 
     osg::ref_ptr<osg::StateSet> stateset = vdd.getStateSet();
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_accessUnfiromsAndProgramMutex);
+    
     vdd.getStateSet()->clear();
 
     vdd.getStateSet()->setTextureAttributeAndModes(0, _fallbackBaseTexture.get(), osg::StateAttribute::ON);

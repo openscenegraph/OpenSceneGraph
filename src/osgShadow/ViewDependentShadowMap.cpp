@@ -799,9 +799,12 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
         cv.computeNearPlane();
     }
 
-    //minZNear = osg::maximum(10.0,minZNear);
-    //maxZFar = osg::minimum(60.0,maxZFar);
+    // clamp the minZNear and maxZFar to those provided by ShadowSettings
+    maxZFar = osg::minimum(settings->getMaximumShadowMapDistance(),maxZFar);
+    if (minZNear>maxZFar) minZNear = maxZFar*settings->getMinimumShadowMapNearFarRatio();
 
+    //OSG_NOTICE<<"maxZFar "<<maxZFar<<std::endl;
+    
     Frustum frustum(&cv, minZNear, maxZFar);
 
     // return compute near far mode back to it's original settings

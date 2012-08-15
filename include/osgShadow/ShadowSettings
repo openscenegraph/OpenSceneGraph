@@ -65,6 +65,10 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         void setMinimumShadowMapNearFarRatio(double ratio) { _minimumShadowMapNearFarRatio = ratio; }
         double getMinimumShadowMapNearFarRatio() const { return _minimumShadowMapNearFarRatio; }
 
+        void setMaximumShadowMapDistance(double distance) { _maximumShadowMapDistance = distance; }
+        double getMaximumShadowMapDistance() const { return _maximumShadowMapDistance; }
+        
+
         enum ShadowMapProjectionHint
         {
             ORTHOGRAPHIC_SHADOW_MAP,
@@ -126,6 +130,7 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         osg::Vec2s              _textureSize;
 
         double                  _minimumShadowMapNearFarRatio;
+        double                  _maximumShadowMapDistance;
         ShadowMapProjectionHint _shadowMapProjectionHint;
         double                  _perspectiveShadowMapCutOffAngle;
 

@@ -742,6 +742,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--near-far-mode","COMPUTE_NEAR_USING_PRIMITIVES, COMPUTE_NEAR_FAR_USING_PRIMITIVES, COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES, DO_NOT_COMPUTE_NEAR_FAR");
+    arguments.getApplicationUsage()->addCommandLineOption("--max-shadow-distance","<float> Maximum distance that the shadow map should extend from the eye point.");
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
@@ -859,6 +860,14 @@ int main(int argc, char** argv)
         }
         OSG_NOTICE<<std::endl;
     }
+
+    double distance;
+    if (arguments.read("--max-shadow-distance",distance))
+    {
+        settings->setMaximumShadowMapDistance(distance);
+        OSG_NOTICE<<"MaximumShadowMapDistance set to "<<settings->getMaximumShadowMapDistance()<<std::endl;
+    }
+
     
     osg::ref_ptr<osgShadow::MinimalShadowMap> msm = NULL;
     if (arguments.read("--no-shadows"))

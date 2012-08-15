@@ -12,6 +12,7 @@
 */
 
 #include <osgShadow/ShadowSettings>
+#include <float.h>
 
 using namespace osgShadow;
 
@@ -24,6 +25,7 @@ ShadowSettings::ShadowSettings():
     _useShadowMapTextureOverride(true),
     _textureSize(2048,2048),
     _minimumShadowMapNearFarRatio(0.05),
+    _maximumShadowMapDistance(DBL_MAX),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _perspectiveShadowMapCutOffAngle(2.0),
     _numShadowMapsPerLight(1),
@@ -46,6 +48,7 @@ ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copy
     _useShadowMapTextureOverride(ss._useShadowMapTextureOverride),
     _textureSize(ss._textureSize),
     _minimumShadowMapNearFarRatio(ss._minimumShadowMapNearFarRatio),
+    _maximumShadowMapDistance(ss._maximumShadowMapDistance),
     _shadowMapProjectionHint(ss._shadowMapProjectionHint),
     _perspectiveShadowMapCutOffAngle(ss._perspectiveShadowMapCutOffAngle),
     _numShadowMapsPerLight(ss._numShadowMapsPerLight),

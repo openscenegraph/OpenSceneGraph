@@ -785,7 +785,8 @@ void CompositeViewer::eventTraversal()
                                 ++citr)
                             {
                                 osg::Camera* camera = *citr;
-                                if (camera->getView() &&
+                                if ((camera->getNodeMask()!=0) &&
+                                    camera->getView() &&
                                     camera->getAllowEventFocus() &&
                                     camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
                                 {

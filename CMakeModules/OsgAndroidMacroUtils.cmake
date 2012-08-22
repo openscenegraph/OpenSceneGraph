@@ -175,7 +175,7 @@ MACRO(ANDROID_3RD_PARTY)
     #GDAL
     ################################################
     FIND_PATH(GDAL_DIR gdal.h
-        ${CMAKE_SOURCE_DIR}/3rdparty/gdal/include
+        HINTS ${CMAKE_SOURCE_DIR}/3rdparty/gdal/include
     )
     set(GDAL_INCLUDE_DIR "${GDAL_DIR}")
     if(GDAL_DIR)

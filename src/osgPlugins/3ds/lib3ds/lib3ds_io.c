@@ -323,8 +323,8 @@ lib3ds_io_write_word(Lib3dsIo *io, uint16_t w) {
     uint8_t b[2];
 
     assert(io);
-    b[1] = uint8_t((w & 0xFF00) >> 8);
-    b[0] = uint8_t(w & 0x00FF);
+    b[1] = (uint8_t)((w & 0xFF00) >> 8);
+    b[0] = (uint8_t)(w & 0x00FF);
     if (lib3ds_io_write(io, b, 2) != 2) {
         lib3ds_io_write_error(io);
     }
@@ -369,8 +369,8 @@ lib3ds_io_write_intw(Lib3dsIo *io, int16_t w) {
     uint8_t b[2];
 
     assert(io);
-    b[1] = uint8_t((w & 0xFF00) >> 8);
-    b[0] = uint8_t(w & 0x00FF);
+    b[1] = (uint8_t)((w & 0xFF00) >> 8);
+    b[0] = (uint8_t)(w & 0x00FF);
     if (lib3ds_io_write(io, b, 2) != 2) {
         lib3ds_io_write_error(io);
     }

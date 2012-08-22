@@ -31,7 +31,7 @@ extern OSG_EXPORT void flushAllDeletedGLObjects(unsigned int contextID);
 extern OSG_EXPORT void deleteAllGLObjects(unsigned int contextID);
 
 /** Discard all OpenGL objects.
-  * Note, unlike deleteAllObjectObjects discard does not
+  * Note, unlike deleteAllGLjects discard does not
   * do any OpenGL calls so can be called from any thread, but as a consequence it
   * also doesn't remove the associated OpenGL resource so discard should only be
   * called when the associated graphics context is being/has been closed. */

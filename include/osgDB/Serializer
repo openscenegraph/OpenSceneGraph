@@ -252,9 +252,9 @@ public:
         else if ( ParentType::_defaultValue!=value )
         {
             os << os.PROPERTY((ParentType::_name).c_str());
-            if ( _useHex ) os << std::hex;
+            if ( _useHex ) { os << std::hex << std::showbase; }
             os << value;
-            if ( _useHex ) os << std::dec;
+            if ( _useHex ) os << std::dec << std::noshowbase;
             os << std::endl;
         }
         return true;

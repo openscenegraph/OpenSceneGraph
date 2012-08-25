@@ -187,6 +187,7 @@ protected:
         osg::ref_ptr<osg::Texture2D>            _fallbackShadowMapTexture;
 
         typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
+        mutable OpenThreads::Mutex              _accessUnfiromsAndProgramMutex;
         Uniforms                                _uniforms;
         osg::ref_ptr<osg::Program>              _program;
 };

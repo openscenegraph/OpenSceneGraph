@@ -642,7 +642,6 @@ void GLBufferObjectSet::discardAllDeletedGLBufferObjects()
 
     // update the number of active and orphaned GLBufferObjects
     _parent->getNumberOrphanedGLBufferObjects() -= numDiscarded;
-    _parent->getNumberActiveGLBufferObjects() += numDiscarded;
     _parent->getNumberDeleted() += numDiscarded;
 
 
@@ -703,7 +702,6 @@ void GLBufferObjectSet::flushDeletedGLBufferObjects(double currentTime, double& 
 
     // update the number of active and orphaned TextureOjects
     _parent->getNumberOrphanedGLBufferObjects() -= numDeleted;
-    _parent->getNumberActiveGLBufferObjects() += numDeleted;
     _parent->getNumberDeleted() += numDeleted;
 
     availableTime -= timer.elapsedTime();

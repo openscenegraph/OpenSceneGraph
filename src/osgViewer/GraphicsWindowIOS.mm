@@ -267,7 +267,11 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         // Get the layer
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         
-        eaglLayer.opaque = YES;//need to look into this, can't remember why it's here, i.e. do I set it to no for alphaed window?
+        osgViewer::GraphicsWindowIOS::WindowData* win_data(NULL);
+        if (_win->getTraits()->inheritedWindowData.valid())
+            win_data = dynamic_cast<osgViewer::GraphicsWindowIOS::WindowData*>(_win->getTraits()->inheritedWindowData.get());
+        
+        eaglLayer.opaque = win_data ? !win_data->getCreateTransparentView() : YES ;
         if(_win->getTraits()->alpha > 0)
         {
             //create layer with alpha channel RGBA8
@@ -825,13 +829,13 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     // Attach view to window
     [_window addSubview: _view];
-    
+    _window.rootViewController = _viewController;
     [theView release];
     
     //if we own the window also make it visible
     if (_ownsWindow) 
     {
-        _window.rootViewController = _viewController;
+        
         //show window
         [_window makeKeyAndVisible];
     }

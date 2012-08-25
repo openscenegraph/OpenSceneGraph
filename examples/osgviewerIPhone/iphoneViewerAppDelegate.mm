@@ -50,8 +50,8 @@
     // Setup the traits parameters
     traits->x = 0;
     traits->y = 0;
-    traits->width = w;
-    traits->height = h;
+    traits->width = h;
+    traits->height = w;
     traits->depth = 16; //keep memory down, default is currently 24
     //traits->alpha = 8;
     //traits->stencil = 8;
@@ -135,7 +135,7 @@
     _viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);//SingleThreaded DrawThreadPerContext
     
     //
-    //_viewer->realize();
+    _viewer->realize();
     
     osg::setNotifyLevel(osg::DEBUG_FP);
     

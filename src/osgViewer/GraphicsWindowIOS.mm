@@ -824,11 +824,13 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     // Attach view to window
     [_window addSubview: _view];
+    
     [theView release];
     
     //if we own the window also make it visible
     if (_ownsWindow) 
     {
+        _window.rootViewController = _viewController;
         //show window
         [_window makeKeyAndVisible];
     }

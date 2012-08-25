@@ -12,17 +12,20 @@
 */
 
 #include <osgShadow/ShadowSettings>
+#include <float.h>
 
 using namespace osgShadow;
 
 ShadowSettings::ShadowSettings():
     _receivesShadowTraversalMask(0xffffffff),
     _castsShadowTraversalMask(0xffffffff),
+    _computeNearFearModeOverride(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR),
     _lightNum(-1),
     _baseShadowTextureUnit(1),
     _useShadowMapTextureOverride(true),
     _textureSize(2048,2048),
     _minimumShadowMapNearFarRatio(0.05),
+    _maximumShadowMapDistance(DBL_MAX),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _perspectiveShadowMapCutOffAngle(2.0),
     _numShadowMapsPerLight(1),
@@ -31,17 +34,21 @@ ShadowSettings::ShadowSettings():
 //    _shaderHint(PROVIDE_FRAGMENT_SHADER),
     _debugDraw(false)
 {
+    //_computeNearFearModeOverride = osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+    //_computeNearFearModeOverride = osg::CullSettings::COMPUTE_NEAR_USING_PRIMITIVES);
 }
 
 ShadowSettings::ShadowSettings(const ShadowSettings& ss, const osg::CopyOp& copyop):
     Object(ss,copyop),
     _receivesShadowTraversalMask(ss._receivesShadowTraversalMask),
     _castsShadowTraversalMask(ss._castsShadowTraversalMask),
+    _computeNearFearModeOverride(ss._computeNearFearModeOverride),
     _lightNum(ss._lightNum),
     _baseShadowTextureUnit(ss._baseShadowTextureUnit),
     _useShadowMapTextureOverride(ss._useShadowMapTextureOverride),
     _textureSize(ss._textureSize),
     _minimumShadowMapNearFarRatio(ss._minimumShadowMapNearFarRatio),
+    _maximumShadowMapDistance(ss._maximumShadowMapDistance),
     _shadowMapProjectionHint(ss._shadowMapProjectionHint),
     _perspectiveShadowMapCutOffAngle(ss._perspectiveShadowMapCutOffAngle),
     _numShadowMapsPerLight(ss._numShadowMapsPerLight),

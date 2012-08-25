@@ -148,7 +148,8 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 WindowData(UIView* window_or_view = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
                 :   _windowOrView(window_or_view),
                     _deviceOrientationFlags(orientationFlags),
-                    _viewContentScaleFactor(scaleFactor)
+                    _viewContentScaleFactor(scaleFactor),
+                    _createTransparentView(false)
                 {
                 }
                 

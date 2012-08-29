@@ -32,7 +32,7 @@ PROGRAM_LIST_FUNC( FragDataBinding, FragDataBindingList, BindFragDataLocation )
 
 #define PROGRAM_PARAMETER_FUNC( PROP, NAME ) \
     static bool check##PROP(const osg::Program& attr) \
-    { return attr.getParameter(NAME)!=GL_NONE; } \
+    { return true; } \
     static bool read##PROP(osgDB::InputStream& is, osg::Program& attr) { \
         int value; is >> is.PROPERTY(#NAME) >> value; \
         attr.setParameter(NAME, value); \

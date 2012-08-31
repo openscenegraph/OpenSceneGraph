@@ -97,7 +97,17 @@ void Terrain::traverse(osg::NodeVisitor& nv)
             TerrainTileList tiles;
             {
                 OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
-                std::copy(_updateTerrainTileSet.begin(), _updateTerrainTileSet.end(), std::back_inserter(tiles));
+                for(TerrainTileSet::iterator itr = _updateTerrainTileSet.begin(); itr !=_updateTerrainTileSet.end(); ++itr)
+                {
+                    // take a reference first to make sure that the referenceCount can be safely read without another thread decrementing it to zero.
+                    (*itr)->ref();
+
+                    // only if referenceCount is 2 or more indicating there is still a reference held elsewhere is it safe to add it to list of tiles to be updated
+                    if ((*itr)->referenceCount()>1) tiles.push_back(*itr);
+
+                    // use unref_nodelete to avoid any issues when the *itr TerrainTile has been deleted by another thread while this for loop has been running.
+                    (*itr)->unref_nodelete();
+                }
                 _updateTerrainTileSet.clear();
             }
 

@@ -185,7 +185,7 @@ void NVTTProcessor::convertRGBAToBGRA( std::vector<unsigned char>& outputData, c
         {
             outputData[n] = data[column*4+2];
             outputData[n+1] = data[column*4+1];
-            outputData[n+2] = data[column*4+n];
+            outputData[n+2] = data[column*4];
             outputData[n+3] = data[column*4+3];
             n+=4;
         }
@@ -203,7 +203,7 @@ void NVTTProcessor::convertRGBToBGRA( std::vector<unsigned char>& outputData, co
         {
             outputData[n] = data[column*3+2];
             outputData[n+1] = data[column*3+1];
-            outputData[n+2] = data[column*3+n];
+            outputData[n+2] = data[column*3];
             outputData[n+3] = 255;
             n+=4;
         }

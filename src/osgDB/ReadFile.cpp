@@ -82,7 +82,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& fileList,const Options* opt
         itr!=fileList.end();
         ++itr)
     {
-        osg::Node *node = osgDB::readNodeFile( *itr , Registry::instance()->getOptions() );
+        osg::Node *node = osgDB::readNodeFile( *itr , options );
 
         if( node != (osg::Node *)0L )
         {

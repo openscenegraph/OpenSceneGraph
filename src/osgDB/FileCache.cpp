@@ -47,7 +47,7 @@ std::string FileCache::createCacheFileName(const std::string& originalFileName) 
                                 serverAddress + (serverAddress.empty()?"":"/") +
                                 osgDB::getServerFileName(originalFileName);
 
-    OSG_INFO<<"FileCache::createCacheFileName("<<originalFileName<<") = "<<cacheFileName<<std::endl;
+    OSG_DEBUG<<"FileCache::createCacheFileName("<<originalFileName<<") = "<<cacheFileName<<std::endl;
 
     return cacheFileName;
 }

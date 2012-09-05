@@ -717,7 +717,7 @@ void GraphicsWindowX11::init()
     }
 
     // get any shared GLX contexts
-    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext);
+    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext.get());
     Context sharedContext = graphicsHandleX11 ? graphicsHandleX11->getContext() : 0;
 
     #ifdef OSG_USE_EGL

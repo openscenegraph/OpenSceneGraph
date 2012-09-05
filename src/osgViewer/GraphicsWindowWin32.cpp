@@ -1150,7 +1150,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
         setState( new osg::State );
         getState()->setGraphicsContext(this);
 
-        if (_traits.valid() && _traits->sharedContext)
+        if (_traits.valid() && _traits->sharedContext.valid())
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
             incrementContextIDUsageCount( getState()->getContextID() );
@@ -1903,7 +1903,7 @@ bool GraphicsWindowWin32::realizeImplementation()
         if (!_initialized) return false;
     }
 
-    if (_traits.valid() && (_traits->sharedContext || _traits->vsync || _traits->swapGroupEnabled))
+    if (_traits.valid() && (_traits->sharedContext.valid() || _traits->vsync || _traits->swapGroupEnabled))
     {
         // make context current so we can test capabilities and set up context sharing
         struct RestoreContext
@@ -1932,7 +1932,7 @@ bool GraphicsWindowWin32::realizeImplementation()
         }
 
         // set up sharing of contexts if required
-        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
+        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext.get());
         if (graphicsHandleWin32)
         {
             if (!wglShareLists(graphicsHandleWin32->getWGLContext(), getWGLContext()))

@@ -81,7 +81,7 @@ bool PixelBufferCarbon::realizeImplementation()
     AGLContext sharedContext = NULL;
 
     // get any shared AGL contexts
-    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext);
+    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext.get());
     if (graphicsHandleCarbon)
     {
         sharedContext = graphicsHandleCarbon->getAGLContext();

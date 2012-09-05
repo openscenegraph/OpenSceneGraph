@@ -85,7 +85,7 @@ class OSG_EXPORT Geometry : public Drawable
             inline bool empty() const { return !array.valid(); }
 
             ref_ptr<Array>          array;
-            ref_ptr<IndexArray>     indices;
+            ref_ptr<IndexArray>     indices;  // deprecated.
             AttributeBinding        binding;
             GLboolean               normalize;
         };
@@ -122,7 +122,7 @@ class OSG_EXPORT Geometry : public Drawable
             inline bool empty() const { return !array.valid(); }
 
             ref_ptr<Vec3Array>      array;
-            ref_ptr<IndexArray>     indices;
+            ref_ptr<IndexArray>     indices; // deprecated.
             AttributeBinding        binding;
             GLboolean               normalize;
         };

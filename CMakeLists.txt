@@ -233,21 +233,21 @@ IF(APPLE)
     IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
 
         #you need to manually set the default sdk version here
-        SET (IPHONE_SDKVER "3.2")
+        SET (IPHONE_SDKVER "5.1")
 
         #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
         # Force gcc <= 4.2 on iPhone
         include(CMakeForceCompiler)
-        CMAKE_FORCE_C_COMPILER(gcc-4.2 GNU)
-        CMAKE_FORCE_CXX_COMPILER(gcc-4.2 GNU)
+        CMAKE_FORCE_C_COMPILER(llvm-gcc-4.2 GNU)
+        CMAKE_FORCE_CXX_COMPILER(llvm-gcc-4.2 GNU)
         SET(GCC_THUMB_SUPPORT NO)
 
         #set either the device sdk or the simulator sdk. Can't find away to separate these in the same project
         IF(OSG_BUILD_PLATFORM_IPHONE)
-            SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneOS.platform/Developer")
+            SET (IPHONE_DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer")
             SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneOS${IPHONE_SDKVER}.sdk")
         ELSE()
-            SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneSimulator.platform/Developer")
+            SET (IPHONE_DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer")
             SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneSimulator${IPHONE_SDKVER}.sdk")
         ENDIF()
 
@@ -823,7 +823,7 @@ IF(APPLE)
         #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
         IF(OSG_BUILD_PLATFORM_IPHONE)
             SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=4.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ELSE()
             #simulator uses i386 architectures
             SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "Build architectures for iOS Simulator" FORCE)

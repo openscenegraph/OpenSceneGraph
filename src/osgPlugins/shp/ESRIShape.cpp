@@ -548,7 +548,7 @@ bool MultiPointM::read( int fd )
     }
 
     int X = 40 + (16 * numPoints);
-    if( rh.contentLength > X )
+    if( rh.contentLength*2 > X )
     {
         if( mRange.read(fd) == false )
             return false;
@@ -653,7 +653,7 @@ bool PolyLineM::read( int fd )
     int X = 44 + (4 * numParts);
     int Y = X + (16 * numPoints);
 
-    if( rh.contentLength > Y )
+    if( rh.contentLength*2 > Y )
     {
         mRange.read(fd);
         mArray = new Double[numPoints];
@@ -750,7 +750,7 @@ bool PolygonM::read( int fd )
     int X = 44 + (4 * numParts);
     int Y = X + (16 * numPoints);
 
-    if( rh.contentLength > Y )
+    if( rh.contentLength*2 > Y )
     {
         if( mRange.read(fd) == false )
             return false;
@@ -898,7 +898,7 @@ bool MultiPointZ::read( int fd )
 
     int X = 40 + (16*numPoints);
     int Y = X + 16 + (8*numPoints);
-    if( rh.contentLength > Y )
+    if( rh.contentLength*2 > Y )
     {
         if( mRange.read(fd) == false )
             return false;
@@ -1025,7 +1025,7 @@ bool PolyLineZ::read( int fd )
     int Y = X + (15 * numPoints);
     int Z = Y + 16 + (8 * numPoints);
 
-    if( rh.contentLength != Z )
+    if( rh.contentLength*2 != Z )
     {
         mRange.read(fd);
         mArray = new Double[numPoints];
@@ -1138,7 +1138,7 @@ bool PolygonZ::read( int fd )
     int  X = 44 + (4*numParts);
     int  Y = X + (16*numPoints);
     int  Z = Y + 16 + (8*numPoints);
-    if( rh.contentLength != Z )
+    if( rh.contentLength*2 != Z )
     {
         if( mRange.read(fd) == false )
             return false;
@@ -1288,7 +1288,7 @@ bool MultiPatch::read( int fd )
     int  X = W + (4 * numParts);
     int  Y = X + (16 *numPoints);
     int  Z = Y + 16 + (8 *numPoints);
-    if( rh.contentLength > Z )
+    if( rh.contentLength*2 > Z )
     {
         if( mRange.read(fd) == false )
             return false;

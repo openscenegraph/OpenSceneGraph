@@ -463,7 +463,7 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
         setState( new osg::State );
         getState()->setGraphicsContext( this );
 
-        if (_traits.valid() && _traits->sharedContext )
+        if (_traits.valid() && _traits->sharedContext.valid() )
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
             incrementContextIDUsageCount( getState()->getContextID() );
@@ -658,9 +658,9 @@ bool PixelBufferWin32::realizeImplementation()
 
     if (!_initialized) return false;
 
-    if ( _traits->sharedContext )
+    if ( _traits->sharedContext.valid() )
     {
-        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
+        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext.get());
         if (graphicsHandleWin32)
         {
             if ( !wglShareLists(graphicsHandleWin32->getWGLContext(), _hglrc) )

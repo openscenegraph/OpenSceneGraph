@@ -63,7 +63,7 @@ bool PixelBufferCocoa::realizeImplementation()
     // create the context
     NSOpenGLContext* sharedContext = NULL;
     
-    GraphicsHandleCocoa* graphicsHandleCocoa = dynamic_cast<GraphicsHandleCocoa*>(_traits->sharedContext);
+    GraphicsHandleCocoa* graphicsHandleCocoa = dynamic_cast<GraphicsHandleCocoa*>(_traits->sharedContext.get());
     if (graphicsHandleCocoa) 
     {
         sharedContext = graphicsHandleCocoa->getNSOpenGLContext();

@@ -45,7 +45,7 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext, public o
                 setState( new osg::State );
                 getState()->setGraphicsContext(this);
 
-                if (_traits.valid() && _traits->sharedContext)
+                if (_traits.valid() && _traits->sharedContext.valid())
                 {
                     getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
                     incrementContextIDUsageCount( getState()->getContextID() );   

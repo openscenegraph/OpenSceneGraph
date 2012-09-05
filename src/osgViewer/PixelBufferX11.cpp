@@ -43,7 +43,7 @@ PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
         setState( new osg::State );
         getState()->setGraphicsContext(this);
 
-        if (_traits.valid() && _traits->sharedContext)
+        if (_traits.valid() && _traits->sharedContext.valid())
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
             incrementContextIDUsageCount( getState()->getContextID() );
@@ -216,7 +216,7 @@ void PixelBufferX11::init()
     }
 
     // get any shared GLX contexts
-    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext);
+    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext.get());
     Context sharedContext = graphicsHandleX11 ? graphicsHandleX11->getContext() : 0;
 
     _context = glXCreateContext( _display, _visualInfo, sharedContext, True );

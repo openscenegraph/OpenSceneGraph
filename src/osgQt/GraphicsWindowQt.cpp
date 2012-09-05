@@ -382,7 +382,7 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
     {
         // shareWidget
         if ( !shareWidget ) {
-            GraphicsWindowQt* sharedContextQt = dynamic_cast<GraphicsWindowQt*>(_traits->sharedContext);
+            GraphicsWindowQt* sharedContextQt = dynamic_cast<GraphicsWindowQt*>(_traits->sharedContext.get());
             if ( sharedContextQt )
                 shareWidget = sharedContextQt->getGLWidget();
         }
@@ -422,7 +422,7 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
     getState()->setGraphicsContext(this);
 
     // initialize contextID
-    if ( _traits.valid() && _traits->sharedContext )
+    if ( _traits.valid() && _traits->sharedContext.valid() )
     {
         getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
         incrementContextIDUsageCount( getState()->getContextID() );

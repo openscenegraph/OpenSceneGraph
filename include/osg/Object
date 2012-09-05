@@ -42,6 +42,9 @@ class UserDataContainer;
         virtual const char* libraryName() const { return #library; }\
         virtual const char* className() const { return #name; }
 
+/** Helper macro that creates a static proxy object to call singleton function on it's construction, ensuring that the singleton gets initialized at startup.*/
+#define OSG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
+        
 /** Base class/standard interface for objects which require IO support,
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.

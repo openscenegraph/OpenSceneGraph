@@ -255,6 +255,9 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 
         osg::ref_ptr<osg::Group> osg_group = new osg::Group;
 
+        if (!obj->id().empty())
+            osg_group->setName(obj->id());
+
         try
         {
             std::auto_ptr<openvrml::field_value> fv = obj->field("children");
@@ -289,6 +292,9 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 
         openvrml::mat4f vrml_m = vrml_transform->transform();
         osg::ref_ptr<osg::MatrixTransform> osg_m = new osg::MatrixTransform(osg::Matrix(vrml_m[0][0], vrml_m[0][1], vrml_m[0][2], vrml_m[0][3], vrml_m[1][0], vrml_m[1][1], vrml_m[1][2], vrml_m[1][3], vrml_m[2][0], vrml_m[2][1], vrml_m[2][2], vrml_m[2][3], vrml_m[3][0], vrml_m[3][1], vrml_m[3][2], vrml_m[3][3]));
+
+        if (!obj->id().empty())
+            osg_m->setName(obj->id());
 
         try
         {
@@ -354,11 +360,16 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                     {
                         // other geometry types not handled yet
                     }
+
+                    if (osg_geom.valid() && !node_ptr->id().empty())
+                        osg_geom->setName(node_ptr->id());
                 }
             }
         }
 
         osg::ref_ptr<osg::Geode> osg_geode = new osg::Geode();
+        if (!obj->id().empty())
+            osg_geode->setName(obj->id());
         osg_geode->addDrawable(osg_geom.get());
         osg::StateSet *osg_stateset = osg_geode->getOrCreateStateSet();
 

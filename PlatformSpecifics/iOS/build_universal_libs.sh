@@ -5,7 +5,8 @@ SOURCE_DIR=${PWD}/../../
 INSTALL_DIR=${ROOT}/products
 DEVICE=iphoneos
 SIMULATOR=iphonesimulator
-COMPILER=com.apple.compilers.llvmgcc42
+#COMPILER=com.apple.compilers.llvmgcc42
+COMPILER=com.apple.compilers.llvm.clang.1_0
 UNIVERSAL_DIR=${INSTALL_DIR}/universal
 
 DEVICE_DIR=${ROOT}/build/device

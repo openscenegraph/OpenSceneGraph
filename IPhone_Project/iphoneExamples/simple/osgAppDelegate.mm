@@ -36,18 +36,14 @@
     osg::DisplaySettings* settings = osg::DisplaySettings::instance();
     settings->setNumMultiSamples(4);
 	
+    osg::ref_ptr<osg::Camera> hudCamera = new osg::Camera();
     
-	DebugTouchPointsEventHandler* touch_handler = new DebugTouchPointsEventHandler();
+	DebugTouchPointsEventHandler* touch_handler = new DebugTouchPointsEventHandler(hudCamera);
 	{
 		unsigned int w(640);
 		unsigned int h(480);
-		osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-		if (wsi) {
-			wsi->getScreenResolution(0, w, h);
-		}
-		//create and attach ortho camera for hud text
-		osg::ref_ptr<osg::Camera> hudCamera = new osg::Camera;
 		
+        
 		// set the projection matrix
 		hudCamera->setProjectionMatrix(osg::Matrix::ortho2D(0,w,0,h));
 		
@@ -71,6 +67,15 @@
 	_viewer->setCameraManipulator(new osgGA::MultiTouchTrackballManipulator);
 	_viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);//SingleThreaded DrawThreadPerContext
 	_viewer->realize();
+    
+    osgViewer::GraphicsWindow* win = dynamic_cast<osgViewer::GraphicsWindow*>(_viewer->getCamera()->getGraphicsContext());
+    if (win && hudCamera)
+    {
+        int l, t, w, h;
+        win->getWindowRectangle(l, t, w, h);
+        hudCamera->setProjectionMatrix(osg::Matrix::ortho2D(0,w,0,h));
+    }
+    // render first frame to prevent black frame
 	_viewer->frame();
 	osg::setNotifyLevel(osg::INFO);
 	

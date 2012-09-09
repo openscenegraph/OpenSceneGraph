@@ -10,11 +10,22 @@
 #include "DebugTouchPointsEventHandler.h"
 #include <iostream>
 
+DebugTouchPointsEventHandler::DebugTouchPointsEventHandler(osg::Camera* hud_camera)
+    : osgGA::GUIEventHandler()
+    , _hudCamera(hud_camera)
+{
+}
 
 
 bool DebugTouchPointsEventHandler::handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
 {
 	switch( ea.getEventType() ) {
+        case osgGA::GUIEventAdapter::RESIZE:
+            if (_hudCamera.valid()) {
+                _hudCamera->setProjectionMatrix(osg::Matrix::ortho2D(0,ea.getWindowWidth(),0,ea.getWindowHeight()));
+            }
+            break;
+            
 		case osgGA::GUIEventAdapter::PUSH:
 		case osgGA::GUIEventAdapter::DRAG:
 		case osgGA::GUIEventAdapter::RELEASE:
@@ -25,7 +36,7 @@ bool DebugTouchPointsEventHandler::handle (const osgGA::GUIEventAdapter &ea, osg
 				for(osgGA::GUIEventAdapter::TouchData::iterator i = data->begin(); i != data->end(); ++i) {
 					osg::notify(osg::DEBUG_INFO) << ea.getEventType() << " id: " << i->id << " phase: " << i->phase << " " << i->x << "/" << i->y << " tapCount:" << i->tapCount << std::endl;
 				}
-				if (_node.valid()) updateDebugNode(data);
+				if (_node.valid()) updateDebugNode(data, ea.getWindowWidth(), ea.getWindowHeight());
 			}
 			return false;
 			break;
@@ -55,11 +66,11 @@ void DebugTouchPointsEventHandler::createDebugNode()
 	_geo->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 	
 	_node = geode;
-	updateDebugNode(NULL);
+	updateDebugNode(NULL, 640, 480);
 }
 
 
-void DebugTouchPointsEventHandler::updateDebugNode(osgGA::GUIEventAdapter::TouchData* data)
+void DebugTouchPointsEventHandler::updateDebugNode(osgGA::GUIEventAdapter::TouchData* data, int width, int height)
 {
 	unsigned int num(data ? data->getNumTouchPoints() : 0);
 	
@@ -76,12 +87,7 @@ void DebugTouchPointsEventHandler::updateDebugNode(osgGA::GUIEventAdapter::Touch
 		return;
 		
 	}
-	unsigned int width(640);
-	unsigned int height(480);
-	osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-	if (wsi) {
-		wsi->getScreenResolution(0, width, height);
-	}
+	
 	
 	_vertices->resize(num * 4);
 	_colors->resize(num * 4);

@@ -120,7 +120,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 - (void)setGraphicsWindow: (osgViewer::GraphicsWindowIOS*) win;
 - (osgViewer::GraphicsWindowIOS*) getGraphicsWindow;
 - (void)setOpenGLContext: (EAGLContext*) context;
-
+- (void)updateDimensions;
 - (BOOL)createFramebuffer;
 - (void)destroyFramebuffer;
 - (void)swapBuffers;
@@ -302,13 +302,35 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 }
 
 - (void)layoutSubviews {
-    /*
-    [EAGLContext setCurrentContext:_context];
-    [self destroyFramebuffer];
-    [self createFramebuffer];
-    */
+    [super layoutSubviews];
+    [self updateDimensions];
 }
 
+
+- (void) setFrame:(CGRect)frame
+{
+    [super setFrame:frame];
+    [self updateDimensions];
+}
+
+
+- (void) updateDimensions
+{
+    if (_win)
+    {
+        CGRect frame = self.bounds;
+        osg::Vec2 pointOrigin = osg::Vec2(frame.origin.x,frame.origin.y);
+        osg::Vec2 pointSize = osg::Vec2(frame.size.width,frame.size.height);
+        osg::Vec2 pixelOrigin = [(GraphicsWindowIOSGLView*)(self) convertPointToPixel:pointOrigin];
+        osg::Vec2 pixelSize = [(GraphicsWindowIOSGLView*)(self) convertPointToPixel:pointSize];
+        
+        OSG_INFO << "updateDimensions, resize to "
+            <<  pixelOrigin.x() << " " << pixelOrigin.y() << " " 
+            << pixelSize.x() << " " << pixelSize.y() 
+            << std::endl;
+        _win->resized(pixelOrigin.x(), pixelOrigin.y(), pixelSize.x(), pixelSize.y());
+    }
+}
 
 - (BOOL)createFramebuffer {
 
@@ -634,20 +656,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration 
 {
-    osgViewer::GraphicsWindowIOS* win = [(GraphicsWindowIOSGLView*)(self.view) getGraphicsWindow];
-    if (win) {
-        CGRect frame = self.view.bounds;
-        osg::Vec2 pointOrigin = osg::Vec2(frame.origin.x,frame.origin.y);
-        osg::Vec2 pointSize = osg::Vec2(frame.size.width,frame.size.height);
-        osg::Vec2 pixelOrigin = [(GraphicsWindowIOSGLView*)(self.view) convertPointToPixel:pointOrigin];
-        osg::Vec2 pixelSize = [(GraphicsWindowIOSGLView*)(self.view) convertPointToPixel:pointSize];
-       OSG_INFO << "willAnimateRotationToInterfaceOrientation, resize to " 
-            <<  pixelOrigin.x() << " " << pixelOrigin.y() << " " 
-            << pixelSize.x() << " " << pixelSize.y() 
-            << std::endl;
-        win->resized(pixelOrigin.x(), pixelOrigin.y(), pixelSize.x(), pixelSize.y());
-    }
-
+    [(GraphicsWindowIOSGLView*)(self.view) updateDimensions];
 }
 
 

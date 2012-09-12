@@ -119,9 +119,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         typedef std::vector<std::string> Files;
         bool getDicomFilesInDirectory(const std::string& path, Files& files) const
         {
-            osgDB::DirectoryContents contents = osgDB::getDirectoryContents(path);
-
-            std::sort(contents.begin(), contents.end());
+            osgDB::DirectoryContents contents = osgDB::getSortedDirectoryContents(path);
 
             for(osgDB::DirectoryContents::iterator itr = contents.begin();
                 itr != contents.end();

@@ -71,6 +71,11 @@ typedef std::vector<std::string> DirectoryContents;
   * Returns an empty array on any error.*/
 extern OSGDB_EXPORT DirectoryContents getDirectoryContents(const std::string& dirName);
 
+/** Return the contents of a directory, sorting the names into alphabetic and numberical order.
+  * Return value will contain filenames only, not absolute paths.
+  * Returns an empty array on any error.*/
+extern OSGDB_EXPORT DirectoryContents getSortedDirectoryContents(const std::string& dirName);
+
 /** Return the list of filenames that match the given filename with wildcards.
   * Will only expand '*', and will not expand wildcards in directory, only in
   * filename part of the given filename.

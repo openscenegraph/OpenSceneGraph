@@ -549,6 +549,13 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 
 #endif // unix getDirectoryContexts
 
+osgDB::DirectoryContents osgDB::getSortedDirectoryContents(const std::string& dirName)
+{
+    osgDB::DirectoryContents filenames = osgDB::getDirectoryContents(dirName);
+    std::sort(filenames.begin(), filenames.end(), osgDB::FileNameComparator());
+    return filenames;
+}
+
 
 osgDB::DirectoryContents osgDB::expandWildcardsInFilename(const std::string& filename)
 {

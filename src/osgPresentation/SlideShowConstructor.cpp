@@ -857,54 +857,6 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     return pictureQuad;
 }
 
-struct FileNameComparator
-{
-    bool operator() (const std::string& lhs, const std::string& rhs) const
-    {
-        std::string::size_type size_lhs = lhs.size();
-        std::string::size_type size_rhs = rhs.size();
-        std::string::size_type pos_lhs = 0;
-        std::string::size_type pos_rhs = 0;
-        while(pos_lhs<size_lhs && pos_rhs<size_rhs)
-        {
-            char c_lhs = lhs[pos_rhs];
-            char c_rhs = rhs[pos_rhs];
-            bool numeric_lhs = lhs[pos_lhs]>='0' && lhs[pos_lhs]<='9';
-            bool numeric_rhs = rhs[pos_rhs]>='0' && rhs[pos_rhs]<='9';
-            if (numeric_lhs && numeric_rhs)
-            {
-                std::string::size_type start_lhs = pos_lhs;
-                ++pos_lhs;
-                while(pos_lhs<size_lhs && (lhs[pos_lhs]>='0' && lhs[pos_lhs]<='9')) ++pos_lhs;
-
-                std::string::size_type start_rhs = pos_rhs;
-                ++pos_rhs;
-                while(pos_rhs<size_rhs && (rhs[pos_rhs]>='0' && rhs[pos_rhs]<='9')) ++pos_rhs;
-
-                if (pos_lhs<pos_rhs) return true;
-                else if (pos_rhs<pos_lhs) return false;
-
-                while(start_lhs<pos_lhs && start_rhs<pos_rhs)
-                {
-                    if (lhs[start_lhs]<rhs[start_rhs]) return true;
-                    if (lhs[start_lhs]>rhs[start_rhs]) return false;
-                    ++start_lhs;
-                    ++start_rhs;
-                }                
-            }
-            else
-            {
-                if (c_lhs<c_rhs) return true;
-                else if (c_rhs<c_lhs) return false;
-
-                ++pos_lhs;
-                ++pos_rhs;
-            }
-        }
-
-        return pos_lhs<pos_rhs;
-    }
-};
 
 
 osg::Image* SlideShowConstructor::readImage(const std::string& filename, const ImageData& imageData)
@@ -982,7 +934,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
     else
     {
         // make sure images are in alphabetical order.
-        std::sort(filenames.begin(), filenames.end(), FileNameComparator());
+        std::sort(filenames.begin(), filenames.end(), osgDB::FileNameComparator());
 
         osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
 
@@ -1954,7 +1906,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         if (filenames.empty()) return;
 
         // make sure images are in alphabetical order.
-        std::sort(filenames.begin(), filenames.end());
+        std::sort(filenames.begin(), filenames.end(), osgDB::FileNameComparator());
 
         typedef std::vector< osg::ref_ptr<osg::Image> > Images;
         Images images;

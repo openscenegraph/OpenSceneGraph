@@ -66,7 +66,7 @@ class OSGMANIPULATOR_EXPORT Constraint : public osg::Referenced
         virtual bool constrain(Scale1DCommand& command) const          { return constrain((MotionCommand&)command); }
         virtual bool constrain(Scale2DCommand& command) const          { return constrain((MotionCommand&)command); }
         virtual bool constrain(ScaleUniformCommand& command) const     { return constrain((MotionCommand&)command); }
-        virtual bool constrain(const Rotate3DCommand& command)         { return constrain((MotionCommand&)command); }
+        virtual bool constrain(Rotate3DCommand& command) const         { return constrain((MotionCommand&)command); }
 
 protected:
 

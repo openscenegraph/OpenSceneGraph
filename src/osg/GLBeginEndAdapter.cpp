@@ -25,6 +25,8 @@ GLBeginEndAdapter::GLBeginEndAdapter(State* state):
     _normal(0.0f,0.0f,1.0f),
     _colorAssigned(false),
     _color(1.0f,1.0f,1.0f,1.0f),
+    _overallNormalAssigned(false),
+    _overallColorAssigned(false),
     _primitiveMode(0)
 {
 }
@@ -249,7 +251,7 @@ void GLBeginEndAdapter::End()
     {
         _state->setColorPointer(_colors.get());
     }
-    else
+    else if (_overallColorAssigned)
     {
         _state->Color(_overallColor.r(), _overallColor.g(), _overallColor.b(), _overallColor.a());
     }
@@ -258,7 +260,7 @@ void GLBeginEndAdapter::End()
     {
          _state->setNormalPointer(_normals.get());
     }
-    else
+    else if (_overallNormalAssigned)
     {
         _state->Normal(_overallNormal.x(), _overallNormal.y(), _overallNormal.z());
     }
@@ -295,4 +297,10 @@ void GLBeginEndAdapter::End()
     }
     else if (_primitiveMode==GL_POLYGON) glDrawArrays(GL_TRIANGLE_FAN, 0, _vertices->size());
     else glDrawArrays(_primitiveMode, 0, _vertices->size());
+}
+
+void GLBeginEndAdapter::reset()
+{
+    _overallNormalAssigned = false;
+    _overallColorAssigned = false;
 }

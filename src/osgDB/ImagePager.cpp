@@ -35,12 +35,19 @@ struct ImagePager::SortFileRequestFunctor
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//  ReadQueue
+//  RequestQueue
 //
 void ImagePager::RequestQueue::sort()
 {
     std::sort(_requestList.begin(),_requestList.end(),SortFileRequestFunctor());
 }
+
+unsigned int ImagePager::RequestQueue::size() const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
+    return _requestList.size();
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,8 +81,11 @@ void ImagePager::ReadQueue::clear()
 void ImagePager::ReadQueue::add(ImagePager::ImageRequest* databaseRequest)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
+    
     _requestList.push_back(databaseRequest);
     databaseRequest->_requestQueue = this;
+
+    OSG_INFO<<"ImagePager::ReadQueue::add(..), size()="<<size()<<std::endl;
 
     updateBlock();
 }

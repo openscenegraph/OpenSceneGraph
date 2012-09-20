@@ -166,6 +166,10 @@ typedef char GLchar;
 #define GL_COMPRESSED_SLUMINANCE_ALPHA    0x8C4B
 #endif
 
+#ifndef GL_ARB_framebuffer_sRGB
+#define GL_FRAMEBUFFER_SRGB               0x8DB9
+#endif
+
 // EXT_geometry_shader4
 #ifndef GL_EXT_geometry_shader4
 #define GL_GEOMETRY_SHADER_EXT                       0x8DD9

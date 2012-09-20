@@ -70,6 +70,7 @@ class OSG_EXPORT GLBeginEndAdapter
 
         void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
         {
+            _overallColorAssigned = true;
             _colorAssigned = true;
             _color.set(red,green,blue,alpha);
         }
@@ -80,6 +81,7 @@ class OSG_EXPORT GLBeginEndAdapter
 
         void Normal3f(GLfloat x, GLfloat y, GLfloat z)
         {
+            _overallNormalAssigned = true;
             _normalAssigned = true;
             _normal.set(x,y,z);
         }
@@ -125,6 +127,8 @@ class OSG_EXPORT GLBeginEndAdapter
         void Begin(GLenum mode);
         void End();
 
+        void reset();
+
     protected:
 
         State*                              _state;
@@ -140,6 +144,8 @@ class OSG_EXPORT GLBeginEndAdapter
         bool                                _colorAssigned;
         osg::Vec4f                          _color;
 
+        bool                                _overallNormalAssigned;
+        bool                                _overallColorAssigned;
         osg::Vec3f                          _overallNormal;
         osg::Vec4f                          _overallColor;
 

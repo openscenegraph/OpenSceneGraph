@@ -68,12 +68,13 @@ ELSE()
         IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
             SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Windowing system type for graphics window creation, options only IOS.")
         ELSE()
-            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.7" OR
-               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.6" OR
-               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.5")
-                SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
-            ELSE()
+            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.4" OR
+               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.3" OR
+               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.2" OR
+               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.1")
                 SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
+            ELSE()
+                SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
             ENDIF()
         ENDIF()
 

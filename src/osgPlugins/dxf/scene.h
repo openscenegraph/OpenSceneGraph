@@ -379,6 +379,9 @@ public:
             child = root;
         }
 //            root = mt;
+
+        child->setName("Layers");
+
         for (std::map<std::string, osg::ref_ptr<sceneLayer> >::iterator litr = _layers.begin();
             litr != _layers.end(); ++litr) {
             sceneLayer* ly = (*litr).second.get();

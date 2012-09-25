@@ -257,7 +257,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         virtual void setupDefaultGeometry() {}
 
         virtual bool receive(const MotionCommand& command);
-        void dispatch(MotionCommand& command);
+        virtual void dispatch(MotionCommand& command);
 
         void setDraggerActive(bool active) { _draggerActive = active; }
         bool getDraggerActive() const { return _draggerActive; }

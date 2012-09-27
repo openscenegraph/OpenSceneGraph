@@ -113,7 +113,8 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
 
     _packed_depth_stencil_supported = OSG_GL3_FEATURES ||
-        (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil"));
+        (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
+        (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
 }
 
 

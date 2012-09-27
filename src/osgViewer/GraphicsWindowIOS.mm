@@ -326,6 +326,37 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
     
     osg::notify(osg::DEBUG_INFO) << "GraphicsWindowIOS::createFramebuffer INFO: Created GL RenderBuffer of size " << _backingWidth << ", " << _backingHeight << " ." << std::endl;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000
+    //on ios 5 we have to use a packed depth stencil buffer if we want stencil
+    if(_win->getTraits()->depth > 0) {
+        //add stencil if requested
+        if(_win->getTraits()->stencil > 0) {
+            // Create a packed depth stencil buffer.
+            glGenRenderbuffersOES(1, &_depthRenderbuffer);
+            glBindRenderbufferOES(GL_RENDERBUFFER_OES, _depthRenderbuffer);
+            
+            glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH24_STENCIL8_OES, _backingWidth, _backingHeight);
+            
+            glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES,
+                                         GL_RENDERBUFFER_OES, _depthRenderbuffer);
+            glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_STENCIL_ATTACHMENT_OES,
+                                         GL_RENDERBUFFER_OES, _depthRenderbuffer);
+        }else{
+            //normal depth buffer
+            glGenRenderbuffersOES(1, &_depthRenderbuffer);
+            glBindRenderbufferOES(GL_RENDERBUFFER_OES, _depthRenderbuffer);
+            if(_win->getTraits()->depth == 16)
+            {
+                glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, _backingWidth, _backingHeight);
+            }else if(_win->getTraits()->depth == 24){
+                glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT24_OES, _backingWidth, _backingHeight);
+            }
+
+            glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _depthRenderbuffer);
+        }
+    }
+    
+#else
     //add depth if requested
     if(_win->getTraits()->depth > 0) {
         glGenRenderbuffersOES(1, &_depthRenderbuffer);
@@ -336,11 +367,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         }else if(_win->getTraits()->depth == 24){
             glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT24_OES, _backingWidth, _backingHeight);
         }
-#if defined(GL_DEPTH_COMPONENT32_OES)
-        else if(_win->getTraits()->depth == 32){
-            glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT32_OES, _backingWidth, _backingHeight);
-        }
-#endif
+
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _depthRenderbuffer);
     }
     
@@ -350,7 +377,8 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, _stencilBuffer);
         glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_STENCIL_INDEX8_OES, _backingWidth, _backingHeight);
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_STENCIL_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _stencilBuffer);
-    }    
+    }  
+#endif
     
     //MSAA only available for >= 4.0 sdk
     

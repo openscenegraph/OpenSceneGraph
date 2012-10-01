@@ -54,6 +54,10 @@ static RenderBinPrototypeList* renderBinPrototypeList()
     return s_renderBinPrototypeList.get();
 }
 
+// Use a proxy to force the initialization of the the RenderBinPrototypeListSingleton during static initialization
+OSG_INIT_SINGLETON_PROXY(RenderBinSingletonProxy, renderBinPrototypeList())
+
+
 RenderBin* RenderBin::getRenderBinPrototype(const std::string& binName)
 {
     RenderBinPrototypeList* list = renderBinPrototypeList();

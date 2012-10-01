@@ -16,7 +16,6 @@
 
 using namespace osgViewer;
 
-#define OSG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
 
 namespace osgViewer
 {

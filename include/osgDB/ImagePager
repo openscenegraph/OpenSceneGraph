@@ -122,8 +122,10 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
 
             void sort();
 
+            unsigned int size() const;
+
             RequestList         _requestList;
-            OpenThreads::Mutex  _requestMutex;
+            mutable OpenThreads::Mutex  _requestMutex;
         };
 
 

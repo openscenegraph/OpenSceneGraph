@@ -106,7 +106,15 @@
     #if defined(OSG_GL3_AVAILABLE)
 
         #define GL3_PROTOTYPES 1
-        #include <GL3/gl3.h>
+        #ifdef __APPLE__
+            #include <OpenGL/OpenGL.h> 
+            #include <OpenGL/gl3.h> 
+            #define GLint64EXT GLint64
+            #define GLuint64EXT GLuint64
+            #define GL_BGRA_EXT GL_BGRA
+        #else
+            #include <GL3/gl3.h>
+        #endif
 
     #else
         #ifndef __gl_h_

@@ -81,6 +81,56 @@ extern OSGDB_EXPORT std::string getRealPath(const std::string& path);
 /** Splits a path into elements between separators (including Windows' root, if any). */
 extern OSGDB_EXPORT void getPathElements(const std::string& path, std::vector<std::string> & out_elements);
 
+/** Functor for helping sort filename in alphabetical and numerical order when using in conjunction with std::sort.*/
+struct FileNameComparator
+{
+    inline bool operator() (const std::string& lhs, const std::string& rhs) const
+    {
+        std::string::size_type size_lhs = lhs.size();
+        std::string::size_type size_rhs = rhs.size();
+        std::string::size_type pos_lhs = 0;
+        std::string::size_type pos_rhs = 0;
+        while(pos_lhs<size_lhs && pos_rhs<size_rhs)
+        {
+            char c_lhs = lhs[pos_rhs];
+            char c_rhs = rhs[pos_rhs];
+            bool numeric_lhs = lhs[pos_lhs]>='0' && lhs[pos_lhs]<='9';
+            bool numeric_rhs = rhs[pos_rhs]>='0' && rhs[pos_rhs]<='9';
+            if (numeric_lhs && numeric_rhs)
+            {
+                std::string::size_type start_lhs = pos_lhs;
+                ++pos_lhs;
+                while(pos_lhs<size_lhs && (lhs[pos_lhs]>='0' && lhs[pos_lhs]<='9')) ++pos_lhs;
+
+                std::string::size_type start_rhs = pos_rhs;
+                ++pos_rhs;
+                while(pos_rhs<size_rhs && (rhs[pos_rhs]>='0' && rhs[pos_rhs]<='9')) ++pos_rhs;
+
+                if (pos_lhs<pos_rhs) return true;
+                else if (pos_rhs<pos_lhs) return false;
+
+                while(start_lhs<pos_lhs && start_rhs<pos_rhs)
+                {
+                    if (lhs[start_lhs]<rhs[start_rhs]) return true;
+                    if (lhs[start_lhs]>rhs[start_rhs]) return false;
+                    ++start_lhs;
+                    ++start_rhs;
+                }
+            }
+            else
+            {
+                if (c_lhs<c_rhs) return true;
+                else if (c_rhs<c_lhs) return false;
+
+                ++pos_lhs;
+                ++pos_rhs;
+            }
+        }
+
+        return pos_lhs<pos_rhs;
+    }
+};
+
 }
 
 #endif

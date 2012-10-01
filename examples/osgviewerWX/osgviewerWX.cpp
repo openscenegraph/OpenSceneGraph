@@ -299,7 +299,7 @@ void GraphicsWindowWX::init()
         setState( new osg::State );
         getState()->setGraphicsContext(this);
 
-        if (_traits.valid() && _traits->sharedContext)
+        if (_traits.valid() && _traits->sharedContext.valid())
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
             incrementContextIDUsageCount( getState()->getContextID() );

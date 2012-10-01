@@ -306,8 +306,6 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
     float angleDelta = osg::PI*2.0f/(float)numSegments;
     float texCoordHorzDelta = 1.0f/(float)numSegments;
 
-    gl.Begin(GL_QUAD_STRIP);
-
     if (drawBackFace)
     {
         float lBase=-osg::PI*0.5f;

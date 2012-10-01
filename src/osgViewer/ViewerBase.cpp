@@ -807,10 +807,9 @@ void ViewerBase::renderingTraversals()
     }
 
     for(itr = contexts.begin();
-        itr != contexts.end();
+        itr != contexts.end() && !_done;
         ++itr)
     {
-        if (_done) return;
         if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         {
             doneMakeCurrentInThisThread = true;
@@ -825,11 +824,9 @@ void ViewerBase::renderingTraversals()
     if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();
 
     for(itr = contexts.begin();
-        itr != contexts.end();
+        itr != contexts.end() && !_done;
         ++itr)
     {
-        if (_done) return;
-
         if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         {
             doneMakeCurrentInThisThread = true;

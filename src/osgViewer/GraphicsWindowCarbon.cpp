@@ -399,7 +399,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     // create the context
     AGLContext sharedContextCarbon = NULL;
 
-    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext);
+    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext.get());
     if (graphicsHandleCarbon)
     {
         sharedContextCarbon = graphicsHandleCarbon->getAGLContext();

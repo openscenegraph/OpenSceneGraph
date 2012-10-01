@@ -128,7 +128,7 @@ class OSG_EXPORT GraphicsContext : public Object
             bool getContextVersion(unsigned int& major, unsigned int& minor) const;
 
             // shared context
-            GraphicsContext* sharedContext;
+            osg::observer_ptr<GraphicsContext> sharedContext;
 
             osg::ref_ptr<osg::Referenced> inheritedWindowData;
 

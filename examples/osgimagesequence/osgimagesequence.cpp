@@ -29,6 +29,9 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
+
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -36,6 +39,32 @@
 #include <iostream>
 
 
+static osgDB::DirectoryContents getSuitableFiles(osg::ArgumentParser& arguments)
+{
+    osgDB::DirectoryContents files;
+    for(int i=1; i<arguments.argc(); ++i)
+    {
+        if (osgDB::fileType(arguments[i]) == osgDB::DIRECTORY)
+        {
+            const std::string& directory = arguments[i];
+            osgDB::DirectoryContents dc = osgDB::getSortedDirectoryContents(directory);
+            
+            for(osgDB::DirectoryContents::iterator itr = dc.begin(); itr != dc.end(); ++itr)
+            {
+                std::string full_file_name = directory + "/" + (*itr);
+                std::string ext = osgDB::getLowerCaseFileExtension(full_file_name);
+                if ((ext == "jpg") || (ext == "png") || (ext == "gif") ||  (ext == "rgb") || (ext == "dds") )
+                {
+                    files.push_back(full_file_name);
+                }
+            }
+        }
+        else {
+            files.push_back(arguments[i]);
+        }
+    }
+    return files;
+}
 
 
 //
@@ -72,13 +101,17 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     double fps = 30.0;
     while (arguments.read("--fps",fps)) {}
 
-    if (arguments.argc()>1)
+    osgDB::DirectoryContents files = getSuitableFiles(arguments);
+    if (!files.empty())
     {
-        for(int i=1; i<arguments.argc(); ++i)
+        for(osgDB::DirectoryContents::iterator itr = files.begin();
+            itr != files.end();
+            ++itr)
         {
+            const std::string& filename = *itr;
             if (preLoad)
             {
-                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(arguments[i]);
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
                 if (image.valid())
                 {
                     imageSequence->addImage(image.get());
@@ -86,10 +119,10 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
             }
             else
             {
-                imageSequence->addImageFile(arguments[i]);
+                imageSequence->addImageFile(filename);
             }
-        }
 
+        }
         
         if (length>0.0)
         {
@@ -180,6 +213,17 @@ public:
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     typedef std::vector< osg::observer_ptr<osg::ImageStream> > ImageStreamList;
+    
+    struct ImageStreamPlaybackSpeedData {
+        double fps;
+        unsigned char* lastData;
+        double timeStamp, lastOutput;
+        
+        ImageStreamPlaybackSpeedData() : fps(0), lastData(NULL), timeStamp(0), lastOutput(0) {}
+        
+    };
+    
+    typedef std::vector< ImageStreamPlaybackSpeedData > ImageStreamPlayBackSpeedList;
 
 protected:
 
@@ -244,6 +288,7 @@ protected:
     bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
+    ImageStreamPlayBackSpeedList _imageStreamPlayBackSpeedList;
     
 };
 
@@ -257,6 +302,7 @@ void MovieEventHandler::set(osg::Node* node)
         FindImageStreamsVisitor fisv(_imageStreamList);
         node->accept(fisv);
     }
+    _imageStreamPlayBackSpeedList.resize(_imageStreamList.size());
 }
 
 
@@ -264,6 +310,53 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 {
     switch(ea.getEventType())
     {
+        case(osgGA::GUIEventAdapter::FRAME):
+            {
+                double t = ea.getTime();
+                bool printed(false);
+                
+                ImageStreamPlayBackSpeedList::iterator fps_itr = _imageStreamPlayBackSpeedList.begin();
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr, ++fps_itr)
+                {
+                    if (((*itr)->getStatus()==osg::ImageStream::PLAYING) && ((*itr)->data() != (*fps_itr).lastData))
+                    {
+                        ImageStreamPlaybackSpeedData& data(*fps_itr);
+                        double dt = (data.timeStamp > 0) ? t - data.timeStamp : 1/60.0;
+                        data.lastData = (*itr)->data();
+                        data.fps = (*fps_itr).fps * 0.8 + 0.2 * (1/dt);
+                        data.timeStamp = t;
+                        
+                        if (t-data.lastOutput > 1)
+                        {
+                            std::cout << data.fps << " ";
+                            data.lastOutput = t;
+                            printed = true;
+                        }
+                        
+                    }
+                }
+                if (printed) 
+                    std::cout << std::endl;
+            }
+            break;
+        case(osgGA::GUIEventAdapter::MOVE):
+            {
+                if (_trackMouse)
+                {
+                    for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                        itr!=_imageStreamList.end();
+                        ++itr)
+                    {
+                        double dt = (*itr)->getLength() * ((1.0+ea.getXnormalized()) / 2.0);
+                        (*itr)->seek(dt);
+                        std::cout << "seeking to " << dt << " length: " <<(*itr)->getLength() << std::endl;
+                    }
+                }
+                return false;
+            }
+            
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
             if (ea.getKey()=='p')
@@ -317,16 +410,40 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 }
                 return true;
             }
+            else if (ea.getKey() == 'i') 
+            {
+                _trackMouse = !_trackMouse;
+                std::cout << "tracking mouse: " << (_trackMouse ? "ON" : "OFF") << std::endl;
+                
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    if ((*itr)->getStatus()==osg::ImageStream::PLAYING)
+                    {
+                        (*itr)->pause();
+                    }
+                    else
+                    {
+                        (*itr)->play();
+                    }
+                }
+                
+                
+            }
             return false;
         }
 
         default:
             return false;
     }
+
+    return false;
 }
 
 void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {
+    usage.addKeyboardMouseBinding("i","toggle interactive mode, scrub via mouse-move");
     usage.addKeyboardMouseBinding("p","Play/Pause movie");
     usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");

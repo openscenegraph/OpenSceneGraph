@@ -578,7 +578,9 @@ void ArrayDispatchers::reset()
     if (!_initialized) init();
 
     _useVertexAttribAlias = false;
-    _useGLBeginEndAdapter = false;
+    
+    _useGLBeginEndAdapter = false;    
+    _glBeginEndAdapter->reset();
 
     for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();
         itr != _activeDispatchList.end();

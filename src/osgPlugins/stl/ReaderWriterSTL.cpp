@@ -4,7 +4,9 @@
  * $Id$
  *
  * STL importer for OpenSceneGraph.
- * Copyright (c)2004 Ulrich Hertlein <u.hertlein@sandbox.de>
+ *
+ * Copyright (c) 2004 Ulrich Hertlein <u.hertlein@sandbox.de>
+ * Copyright (c) 2012 Piotr Domagalski <piotr@domagalski.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +44,8 @@
 
 #include <string.h>
 
+#include <memory>
+
 /**
  * STL importer for OpenSceneGraph.
  */
@@ -50,150 +54,259 @@ class ReaderWriterSTL : public osgDB::ReaderWriter
 public:
     ReaderWriterSTL()
     {
-        supportsExtension("stl","STL binary format");
-        supportsExtension("sta","STL ASCII format");
-        supportsOption("smooth", "run SmoothingVisitor");
-        supportsOption("separateFiles", "Save every geode in a different file. Can be a Huge amount of Files!!!");
+        supportsExtension("stl", "STL binary format");
+        supportsExtension("sta", "STL ASCII format");
+        supportsOption("smooth", "Run SmoothingVisitor");
+        supportsOption("separateFiles", "Save each geode in a different file. Can result in a huge amount of files!");
+        supportsOption("dontSaveNormals", "Set all normals to [0 0 0] when saving to a file.");
     }
 
-    virtual const char* className() const {
+    virtual const char* className() const
+    {
         return "STL Reader";
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
-    virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const ;
+    virtual WriteResult writeNode(const osg::Node& node, const std::string& fileName, const Options* = NULL) const;
+
 private:
-
-    struct ReaderObject
+    class ReaderObject
     {
-        ReaderObject():
-            _generateNormal(true),
-            _numFacets(0) {}
+    public:
+        ReaderObject(bool generateNormals = true):
+            _generateNormal(generateNormals),
+            _numFacets(0)
+        {
+        }
 
+        virtual ~ReaderObject()
+        {
+        }
+
+        enum ReadResult
+        {
+            ReadSuccess,
+            ReadError,
+            ReadEOF
+        };
+
+        virtual ReadResult read(FILE *fp) = 0;
+
+        osg::ref_ptr<osg::Geometry> asGeometry() const
+        {
+            osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+
+            geom->setVertexArray(_vertex.get());
+            geom->setNormalArray(_normal.get());
+            geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+            geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
+
+            if (_color.valid())
+            {
+                OSG_INFO << "STL file with color" << std::endl;
+                geom->setColorArray(_color.get());
+                geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+            }
+
+            osgUtil::TriStripVisitor tristripper;
+            tristripper.stripify(*geom);
+
+            return geom;
+        }
+
+        bool isEmpty()
+        {
+            return _numFacets == 0;
+        }
+
+        std::string& getName()
+        {
+            return _solidName;
+        }
+
+    protected:
         bool _generateNormal;
         unsigned int _numFacets;
 
+        std::string _solidName;
         osg::ref_ptr<osg::Vec3Array> _vertex;
         osg::ref_ptr<osg::Vec3Array> _normal;
         osg::ref_ptr<osg::Vec4Array> _color;
 
-        bool readStlAscii(FILE* fp);
-        bool readStlBinary(FILE* fp);
+        void clear()
+        {
+            _solidName = "";
+            _numFacets = 0;
+            _vertex = osg::ref_ptr<osg::Vec3Array>();
+            _normal = osg::ref_ptr<osg::Vec3Array>();
+            _color = osg::ref_ptr<osg::Vec4Array>();
+        }
     };
 
-  class CreateStlVisitor : public osg::NodeVisitor {
-  public:
-
-    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options)
+    class AsciiReaderObject : public ReaderObject
     {
-      if (options && (options->getOptionString() == "separateFiles"))
-      {
-        OSG_INFO << "ReaderWriterSTL::writeNode: Files are separated written" << std::endl;
-      } else {
-        m_f = new osgDB::ofstream(m_fout.c_str());
-        *m_f << "solid " << counter << std::endl;
-      }
+    public:
+        ReadResult read(FILE *fp);
     };
 
-    std::string i2s( int i) {
-      char buf[16];  // -2^31 == -2147483648 needs 11 chars + \0  -> 12 (+4 for security ;-)
-      sprintf(buf,"%d",i);
-      return buf;
-    }
+    class BinaryReaderObject : public ReaderObject
+    {
+    public:
+        BinaryReaderObject(unsigned int expectNumFacets, bool generateNormals = true)
+            : ReaderObject(generateNormals),
+            _expectNumFacets(expectNumFacets)
+        {
+        }
 
-    virtual void apply(  osg::Geode& node ){
-      osg::Matrix mat = osg::computeLocalToWorld( getNodePath() );
+        ReadResult read(FILE *fp);
 
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        std::string sepFile = m_fout + i2s(counter);
-        m_f = new osgDB::ofstream(sepFile.c_str());
-        *m_f << "solid " << std::endl;
-      }
-
-      for ( unsigned int i = 0; i < node.getNumDrawables(); ++i ) {
-        osg::TriangleFunctor<PushPoints> tf;
-        tf.m_stream = m_f;
-        tf.m_mat = mat;
-        node.getDrawable( i )->accept( tf );
-      }
-
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        *m_f << "endsolid " << std::endl;
-        m_f->close();
-        delete m_f;
-      }
-
-      ++counter;
-      traverse(node);
-
-    }
-    //        nHandle->SetLocation( Frame( mat ) );
-    ~CreateStlVisitor() {
-      if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        OSG_INFO << "ReaderWriterSTL::writeNode: " << counter-1 << "Files were written" << std::endl;
-      } else {
-        *m_f << "endsolid " << std::endl;
-        m_f->close();
-        delete m_f;
-      }
-    }
-
-    const std::string& getErrorString() const { return m_ErrorString; }
-
-  private:
-    int counter;
-    std::ofstream* m_f;
-    std::string m_fout;
-    osgDB::ReaderWriter::Options const * m_options;
-    std::string m_ErrorString;
-
-
-    struct PushPoints {
-      std::ofstream* m_stream;
-      osg::Matrix m_mat;
-      inline void operator () ( const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary ) {
-        osg::Vec3 v1 = _v1 * m_mat;
-        osg::Vec3 v2 = _v2 * m_mat;
-        osg::Vec3 v3 = _v3 * m_mat;
-        osg::Vec3 vV1V2 = v2-v1;
-        osg::Vec3 vV1V3 = v3-v1;
-        osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
-        *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
-        *m_stream << "outer loop" << std::endl;
-        *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
-        *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
-        *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
-        *m_stream << "endloop" << std::endl;
-        *m_stream << "endfacet " << std::endl;
-      }
-
+    protected:
+        unsigned int _expectNumFacets;
     };
 
+    class CreateStlVisitor : public osg::NodeVisitor
+    {
+    public:
+        CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0):
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+            counter(0),
+            m_options(options),
+            m_dontSaveNormals(false)
+        {
+            if (options && (options->getOptionString() == "separateFiles"))
+            {
+                OSG_INFO << "ReaderWriterSTL::writeNode: Files are written separately" << std::endl;
+                m_fout_ext = osgDB::getLowerCaseFileExtension(fout);
+                m_fout = fout.substr(0, fout.rfind(m_fout_ext) - 1);
+            }
+            else
+            {
+                m_fout = fout;
+                m_f = new osgDB::ofstream(m_fout.c_str());
+            }
 
-  };
+            if (options && (options->getOptionString() == "dontSaveNormals"))
+            {
+                OSG_INFO << "ReaderWriterSTL::writeNode: Not saving normals" << std::endl;
+                m_dontSaveNormals = true;
+            }
+        }
 
+        std::string i2s(int i)
+        {
+            char buf[16];  // -2^31 == -2147483648 needs 11 chars + \0  -> 12 (+4 for security ;-)
+            sprintf(buf, "%d", i);
+            return buf;
+        }
 
+        virtual void apply(osg::Geode& node)
+        {
+            osg::Matrix mat = osg::computeLocalToWorld(getNodePath());
 
+            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            {
+                std::string sepFile = m_fout + i2s(counter) + "." + m_fout_ext;
+                m_f = new osgDB::ofstream(sepFile.c_str());
+            }
+
+            if (node.getName().empty())
+                *m_f << "solid " << counter << std::endl;
+            else
+                *m_f << "solid " << node.getName() << std::endl;
+
+            for (unsigned int i = 0; i < node.getNumDrawables(); ++i)
+            {
+                osg::TriangleFunctor<PushPoints> tf;
+                tf.m_stream = m_f;
+                tf.m_mat = mat;
+                tf.m_dontSaveNormals = m_dontSaveNormals;
+                node.getDrawable(i)->accept(tf);
+            }
+
+            if (node.getName().empty())
+                *m_f << "endsolid " << counter << std::endl;
+            else
+                *m_f << "endsolid " << node.getName() << std::endl;
+
+            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            {
+                m_f->close();
+                delete m_f;
+            }
+
+            ++counter;
+            traverse(node);
+        }
+
+        ~CreateStlVisitor()
+        {
+            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            {
+                OSG_INFO << "ReaderWriterSTL::writeNode: " << counter - 1 << " files were written" << std::endl;
+            }
+            else
+            {
+                m_f->close();
+                delete m_f;
+            }
+        }
+
+        const std::string& getErrorString() const { return m_ErrorString; }
+
+    private:
+        int counter;
+        std::ofstream* m_f;
+        std::string m_fout;
+        std::string m_fout_ext;
+        osgDB::ReaderWriter::Options const * m_options;
+        std::string m_ErrorString;
+        bool m_dontSaveNormals;
+
+        struct PushPoints
+        {
+            std::ofstream* m_stream;
+            osg::Matrix m_mat;
+            bool m_dontSaveNormals;
+
+            inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary)
+            {
+                osg::Vec3 v1 = _v1 * m_mat;
+                osg::Vec3 v2 = _v2 * m_mat;
+                osg::Vec3 v3 = _v3 * m_mat;
+                osg::Vec3 vV1V2 = v2 - v1;
+                osg::Vec3 vV1V3 = v3 - v1;
+                osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
+                if (m_dontSaveNormals)
+                    *m_stream << "facet normal 0 0 0" << std::endl;
+                else
+                    *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
+                *m_stream << "outer loop" << std::endl;
+                *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
+                *m_stream << "endloop" << std::endl;
+                *m_stream << "endfacet" << std::endl;
+            }
+        };
+    };
 };
-
 
 // Register with Registry to instantiate the above reader/writer.
 REGISTER_OSGPLUGIN(stl, ReaderWriterSTL)
 
-
-/*
- * STL
- */
-struct StlHeader {
+struct StlHeader
+{
     char text[80];
     unsigned int numFacets;
 };
 const unsigned int sizeof_StlHeader = 84;
 
-struct StlVector {
-    float x,y,z;
+struct StlVector
+{
+    float x, y, z;
 };
-struct StlFacet {
+struct StlFacet
+{
     StlVector normal;
     StlVector vertex[3];
     unsigned short color;
@@ -204,29 +317,33 @@ const unsigned short StlHasColor = 0x8000;
 const unsigned short StlColorSize = 0x1f;        // 5 bit
 const float StlColorDepth = float(StlColorSize); // 2^5 - 1
 
-
-// Read node
 osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string fileName = osgDB::findDataFile( file, options );
+    std::string fileName = osgDB::findDataFile(file, options);
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    OSG_INFO << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";
+    if (sizeof(unsigned int) != 4)
+    {
+        OSG_NOTICE<<"Waring: STL reading not supported as unsigned int is not 4 bytes on this system."<<std::endl;
+        return ReadResult::ERROR_IN_READING_FILE;
+    }
+
+    OSG_INFO << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")" << std::endl;
 
     // determine ASCII vs. binary mode
     FILE* fp = osgDB::fopen(fileName.c_str(), "rb");
-    if (!fp) {
+    if (!fp)
+    {
         return ReadResult::FILE_NOT_FOUND;
     }
 
-    ReaderObject readerObject;
-
     // assumes "unsigned int" is 4 bytes...
     StlHeader header;
-    if (fread((void*) &header, sizeof(header), 1, fp) != 1) {
+    if (fread((void*) &header, sizeof(header), 1, fp) != 1)
+    {
         fclose(fp);
         return ReadResult::ERROR_IN_READING_FILE;
     }
@@ -234,7 +351,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     // calculate expected file length from number of facets
     unsigned int expectFacets = header.numFacets;
-    if (osg::getCpuByteOrder() == osg::BigEndian) {
+    if (osg::getCpuByteOrder() == osg::BigEndian)
+    {
         osg::swapBytes4((char*) &expectFacets);
     }
     off_t expectLen = sizeof_StlHeader + expectFacets * sizeof_StlFacet;
@@ -249,16 +367,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     if (stb.st_size == expectLen)
     {
-        // assume binary
-        readerObject._numFacets = expectFacets;
         isBinary = true;
     }
     else if (strstr(header.text, "solid") != 0)
     {
-        // assume ASCII
         isBinary = false;
     }
-    else {
+    else
+    {
         OSG_FATAL << "ReaderWriterSTL::readNode(" << fileName.c_str() << ") unable to determine file format" << std::endl;
         fclose(fp);
         return ReadResult::ERROR_IN_READING_FILE;
@@ -270,49 +386,53 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         fp = osgDB::fopen(fileName.c_str(), "r");
     }
 
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+
     // read
     rewind(fp);
-    bool ok = (isBinary ? readerObject.readStlBinary(fp) : readerObject.readStlAscii(fp));
+
+    ReaderObject *readerObject;
+
+    if (isBinary)
+        readerObject = new BinaryReaderObject(expectFacets);
+    else
+        readerObject = new AsciiReaderObject();
+
+    std::auto_ptr<ReaderObject> readerPtr(readerObject);
+
+    while (1)
+    {
+        ReaderObject::ReadResult result;
+
+        if ((result = readerPtr->read(fp)) == ReaderObject::ReadError)
+        {
+            fclose(fp);
+            return ReadResult::FILE_NOT_HANDLED;
+        }
+
+        if (!readerPtr->isEmpty())
+        {
+            osg::ref_ptr<osg::Geometry> geom = readerPtr->asGeometry();
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+            geode->addDrawable(geom.get());
+            geode->setName(readerPtr->getName());
+            group->addChild(geode.get());
+        }
+
+        if (result == ReaderObject::ReadEOF)
+            break;
+    }
+
     fclose(fp);
 
-    if (!ok)
+    if (options && (options->getOptionString() == "smooth"))
     {
-        return ReadResult::FILE_NOT_HANDLED;
+        osgUtil::SmoothingVisitor smoother;
+        group->accept(smoother);
     }
 
-    OSG_INFO << "STL loader found " << readerObject._numFacets << " facets" << std::endl;
-
-    /*
-     * setup geometry
-     */
-    osg::Geometry* geom = new osg::Geometry;
-    geom->setVertexArray(readerObject._vertex.get());
-
-    geom->setNormalArray(readerObject._normal.get());
-    geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-
-    if (readerObject._color.valid()) {
-        OSG_INFO << "STL file with color" << std::endl;
-        geom->setColorArray(readerObject._color.get());
-        geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-    }
-
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, readerObject._numFacets*3));
-
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geom);
-
-    if (options && (options->getOptionString() == "smooth")) {
-        osgUtil::SmoothingVisitor smooter;
-        geode->accept(smooter);
-    }
-
-    osgUtil::TriStripVisitor tristripper;
-    tristripper.stripify(*geom);
-
-    return geode;
+    return group.get();
 }
-
 
 /**********************************************************************
  *
@@ -320,38 +440,48 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
  *
  **********************************************************************/
 
-bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
+ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::AsciiReaderObject::read(FILE* fp)
 {
-
     unsigned int vertexCount = 0;
-    unsigned int facetIndex[] = { 0,0,0 };
+    unsigned int facetIndex[] = { 0, 0, 0 };
     unsigned int vertexIndex = 0;
     unsigned int normalIndex = 0;
 
     const int MaxLineSize = 256;
     char buf[MaxLineSize];
-    char sx[MaxLineSize],sy[MaxLineSize],sz[MaxLineSize];
+    char sx[MaxLineSize], sy[MaxLineSize], sz[MaxLineSize];
 
-    while (fgets(buf, sizeof(buf), fp)) {
+    if (!isEmpty())
+    {
+        clear();
+    }
 
+    while (fgets(buf, sizeof(buf), fp))
+    {
         // strip '\n' or '\r\n' and trailing whitespace
-        unsigned int len = strlen(buf)-1;
-        while (len && (buf[len] == '\n' || buf[len] == '\r' || isspace(buf[len]))) {
+        unsigned int len = strlen(buf) - 1;
+
+        while (len && (buf[len] == '\n' || buf[len] == '\r' || isspace(buf[len])))
+        {
             buf[len--] = '\0';
         }
-        if (len == 0 || buf[0] == '\0') {
+
+        if (len == 0 || buf[0] == '\0')
+        {
             continue;
         }
 
         // strip leading whitespace
         char* bp = buf;
-        while (isspace(*bp)) {
+        while (isspace(*bp))
+        {
             ++bp;
         }
 
         if (strncmp(bp, "vertex", 6) == 0)
         {
-            if (sscanf(bp+6, "%s %s %s", sx,sy,sz) == 3) {
+            if (sscanf(bp + 6, "%s %s %s", sx, sy, sz) == 3)
+            {
                 if (!_vertex.valid())
                     _vertex = new osg::Vec3Array;
 
@@ -360,11 +490,13 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
                 float vz = osg::asciiToFloat(sz);
 
                 vertexIndex = _vertex->size();
-                if (vertexCount < 3) {
-                    _vertex->push_back(osg::Vec3(vx,vy,vz));
+                if (vertexCount < 3)
+                {
+                    _vertex->push_back(osg::Vec3(vx, vy, vz));
                     facetIndex[vertexCount++] = vertexIndex;
                 }
-                else {
+                else
+                {
                     /*
                      * There are some invalid ASCII files around (at least one ;-)
                      * that have more than three vertices per facet - add an
@@ -373,7 +505,7 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
                     _normal->push_back((*_normal)[normalIndex]);
                     _vertex->push_back((*_vertex)[facetIndex[0]]);
                     _vertex->push_back((*_vertex)[facetIndex[2]]);
-                    _vertex->push_back(osg::Vec3(vx,vy,vz));
+                    _vertex->push_back(osg::Vec3(vx, vy, vz));
                     facetIndex[1] = facetIndex[2];
                     facetIndex[2] = vertexIndex;
                     _numFacets++;
@@ -382,8 +514,8 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
         }
         else if (strncmp(bp, "facet", 5) == 0)
         {
-            if (sscanf(bp+5, "%*s %s %s %s", sx,sy,sz) == 3) {
-
+            if (sscanf(bp + 5, "%*s %s %s %s", sx, sy, sz) == 3)
+            {
                 float nx = osg::asciiToFloat(sx);
                 float ny = osg::asciiToFloat(sy);
                 float nz = osg::asciiToFloat(sz);
@@ -391,7 +523,7 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
                 if (!_normal.valid())
                     _normal = new osg::Vec3Array;
 
-                osg::Vec3 normal(nx,ny,nz);
+                osg::Vec3 normal(nx, ny, nz);
                 normal.normalize();
 
                 normalIndex = _normal->size();
@@ -401,48 +533,67 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
                 vertexCount = 0;
             }
         }
-        else if (strncmp(bp, "solid", 5) == 0) {
+        else if (strncmp(bp, "solid", 5) == 0)
+        {
             OSG_INFO << "STL loader parsing '" << bp + 6 << "'" << std::endl;
+            _solidName = bp + 6;
+        }
+        else if (strncmp(bp, "endsolid", 8) == 0)
+        {
+            OSG_INFO << "STL loader done parsing '" << _solidName << "'" << std::endl;
+            return ReadSuccess;
         }
     }
 
-    return true;
+    return ReadEOF;
 }
 
-bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
+ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::read(FILE* fp)
 {
+    if (isEmpty())
+    {
+        clear();
+    }
+
+    _numFacets = _expectNumFacets;
+
     // seek to beginning of facets
     ::fseek(fp, sizeof_StlHeader, SEEK_SET);
 
     StlFacet facet;
-    for (unsigned int i = 0; i < _numFacets; ++i) {
-
-        if (::fread((void*) &facet, sizeof_StlFacet, 1, fp) != 1) {
+    for (unsigned int i = 0; i < _expectNumFacets; ++i)
+    {
+        if (::fread((void*) &facet, sizeof_StlFacet, 1, fp) != 1)
+        {
             OSG_FATAL << "ReaderWriterSTL::readStlBinary: Failed to read facet " << i << std::endl;
-            return false;
+            return ReadError;
         }
 
         // vertices
-        if (!_vertex)
+        if (!_vertex.valid())
             _vertex = new osg::Vec3Array;
-        osg::Vec3 v0(facet.vertex[0].x,facet.vertex[0].y,facet.vertex[0].z);
-        osg::Vec3 v1(facet.vertex[1].x,facet.vertex[1].y,facet.vertex[1].z);
-        osg::Vec3 v2(facet.vertex[2].x,facet.vertex[2].y,facet.vertex[2].z);
+
+        osg::Vec3 v0(facet.vertex[0].x, facet.vertex[0].y, facet.vertex[0].z);
+        osg::Vec3 v1(facet.vertex[1].x, facet.vertex[1].y, facet.vertex[1].z);
+        osg::Vec3 v2(facet.vertex[2].x, facet.vertex[2].y, facet.vertex[2].z);
         _vertex->push_back(v0);
         _vertex->push_back(v1);
         _vertex->push_back(v2);
 
         // per-facet normal
         osg::Vec3 normal;
-        if (_generateNormal) {
+        if (_generateNormal)
+        {
             osg::Vec3 d01 = v1 - v0;
             osg::Vec3 d02 = v2 - v0;
             normal = d01 ^ d02;
             normal.normalize();
         }
-        else {
-            normal.set(facet.normal.x,facet.normal.y,facet.normal.z);
+        else
+        {
+            normal.set(facet.normal.x, facet.normal.y, facet.normal.z);
         }
+
         if (!_normal.valid())
             _normal = new osg::Vec3Array;
         _normal->push_back(normal);
@@ -451,34 +602,35 @@ bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
          * color extension
          * RGB555 with most-significat bit indicating if color is present
          */
-        if (facet.color & StlHasColor) {
-            if (!_color) {
+        if (facet.color & StlHasColor)
+        {
+            if (!_color.valid())
+            {
                 _color = new osg::Vec4Array;
             }
             float r = ((facet.color >> 10) & StlColorSize) / StlColorDepth;
             float g = ((facet.color >> 5) & StlColorSize) / StlColorDepth;
             float b = (facet.color & StlColorSize) / StlColorDepth;
-            _color->push_back(osg::Vec4(r,g,b,1.0f));
+            _color->push_back(osg::Vec4(r, g, b, 1.0f));
         }
     }
 
-    return true;
+    return ReadEOF;
 }
 
-osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node,const std::string& fileName, const Options* opts) const
+osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node, const std::string& fileName, const Options* opts) const
 {
-    if (fileName.empty()) return WriteResult::FILE_NOT_HANDLED;
-
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-    if (ext != "stl" )
+    if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+    if (ext != "stl")
     {
-        // sta - extension implies STL-Binary...
-        OSG_INFO << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
+        OSG_FATAL << "ReaderWriterSTL::writeNode: Only STL ASCII files supported" << std::endl;
         return WriteResult::FILE_NOT_HANDLED;
     }
 
-    CreateStlVisitor createStlVisitor( fileName, opts );
-    const_cast<osg::Node&>(node).accept( createStlVisitor );
+    CreateStlVisitor createStlVisitor(fileName, opts);
+    const_cast<osg::Node&>(node).accept(createStlVisitor);
 
     if (createStlVisitor.getErrorString().empty())
     {
@@ -486,7 +638,9 @@ osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& nod
     }
     else
     {
-        OSG_NOTICE<<"Error: "<<createStlVisitor.getErrorString()<<std::endl;
+        OSG_FATAL << "Error: " << createStlVisitor.getErrorString() << std::endl;
         return WriteResult::ERROR_IN_WRITING_FILE;
     }
 }
+
+/* vim: set ts=4 sw=4 expandtab: */

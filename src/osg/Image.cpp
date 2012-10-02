@@ -27,6 +27,7 @@
 #include <osg/TextureCubeMap>
 #include <osg/Light>
 
+#include <algorithm>
 #include <string.h>
 #include <stdlib.h>
 
@@ -213,7 +214,8 @@ Image::Image()
     _packing(4),
     _pixelAspectRatio(1.0),
     _allocationMode(USE_NEW_DELETE),
-    _data(0L)
+    _data(0L),
+    _dimensionsChangedCallbacks()
 {
     setDataVariance(STATIC);
 }
@@ -232,7 +234,8 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _pixelAspectRatio(image._pixelAspectRatio),
     _allocationMode(USE_NEW_DELETE),
     _data(0L),
-    _mipmapData(image._mipmapData)
+    _mipmapData(image._mipmapData),
+    _dimensionsChangedCallbacks(image._dimensionsChangedCallbacks)
 {
     if (image._data)
     {
@@ -853,6 +856,8 @@ void Image::allocateImage(int s,int t,int r,
                         int packing)
 {
     _mipmapData.clear();
+    
+    bool callback_needed(false);
 
     unsigned int previousTotalSize = 0;
 
@@ -870,6 +875,7 @@ void Image::allocateImage(int s,int t,int r,
 
     if (_data)
     {
+        callback_needed = (_s != s) || (_t != t) || (_r != r);
         _s = s;
         _t = t;
         _r = r;
@@ -884,7 +890,8 @@ void Image::allocateImage(int s,int t,int r,
     }
     else
     {
-
+        callback_needed = (_s != 0) || (_t != 0) || (_r != 0);
+        
         // failed to allocate memory, for now, will simply set values to 0.
         _s = 0;
         _t = 0;
@@ -898,7 +905,10 @@ void Image::allocateImage(int s,int t,int r,
         // policy so that allocateImage honours previous settings of _internalTextureFormat.
         //_internalTextureFormat = 0;
     }
-
+    
+    if (callback_needed)
+        handleDimensionsChangedCallbacks();
+    
     dirty();
 }
 
@@ -911,7 +921,9 @@ void Image::setImage(int s,int t,int r,
                      int rowLength)
 {
     _mipmapData.clear();
-
+    
+    bool callback_needed = (_s != s) || (_t != t) || (_r != r);
+    
     _s = s;
     _t = t;
     _r = r;
@@ -926,6 +938,9 @@ void Image::setImage(int s,int t,int r,
     _rowLength = rowLength;
 
     dirty();
+    
+    if (callback_needed)
+        handleDimensionsChangedCallbacks();
 
 }
 
@@ -1757,4 +1772,15 @@ Vec4 Image::getColor(const Vec3& texcoord) const
     int r = int(texcoord.z()*float(_r-1)) % _r;
     //OSG_NOTICE<<"getColor("<<texcoord<<")="<<getColor(s,t,r)<<std::endl;
     return getColor(s,t,r);
+}
+
+void Image::addDimensionsChangedCallback(DimensionsChangedCallback* cb)
+{
+    _dimensionsChangedCallbacks.push_back(cb);
+}
+
+void Image::removeDimensionsChangedCallback(DimensionsChangedCallback* cb)
+{
+    DimensionsChangedCallbackVector::iterator itr = std::find(_dimensionsChangedCallbacks.begin(), _dimensionsChangedCallbacks.end(), cb);
+    if (itr!=_dimensionsChangedCallbacks.end()) _dimensionsChangedCallbacks.erase(itr);
 }

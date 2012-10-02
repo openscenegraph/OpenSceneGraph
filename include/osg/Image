@@ -442,12 +442,31 @@ class OSG_EXPORT Image : public BufferData
 
         /** Pass frame information to the custom Image classes, to be called only when objects associated with imagery are not culled.*/
         virtual void setFrameLastRendered(const osg::FrameStamp* /*frameStamp*/) {}
+        
+        class DimensionsChangedCallback : public osg::Referenced {
+        public:
+            DimensionsChangedCallback() : osg::Referenced() {}
+            virtual void operator()(osg::Image* image) = 0;
+        };
+        
+        typedef std::vector< osg::ref_ptr<DimensionsChangedCallback> > DimensionsChangedCallbackVector;
+        
+        void addDimensionsChangedCallback(DimensionsChangedCallback* cb);
+        void removeDimensionsChangedCallback(DimensionsChangedCallback* cb);
 
     protected :
 
         virtual ~Image();
 
         Image& operator = (const Image&) { return *this; }
+        
+        void handleDimensionsChangedCallbacks() 
+        {
+            for(DimensionsChangedCallbackVector::iterator i = _dimensionsChangedCallbacks.begin(); i != _dimensionsChangedCallbacks.end(); ++i)
+            {
+                (*i)->operator()(this);
+            }
+        }
 
         std::string _fileName;
         WriteHint   _writeHint;
@@ -473,6 +492,8 @@ class OSG_EXPORT Image : public BufferData
         MipmapDataType _mipmapData;
 
         ref_ptr<PixelBufferObject> _bufferObject;
+        
+        DimensionsChangedCallbackVector _dimensionsChangedCallbacks;
 };
 
 class Geode;

@@ -389,6 +389,14 @@ Registry::Registry()
     #endif
 #endif
 
+    #if defined(USE_AV_FOUNDATION)
+        addFileExtensionAlias("mov",  "AVFoundation");
+        addFileExtensionAlias("mpg",  "AVFoundation");
+        addFileExtensionAlias("mpv",  "AVFoundation");
+        addFileExtensionAlias("mp4",  "AVFoundation");
+        addFileExtensionAlias("m4v",  "AVFoundation");
+    #endif
+
     // remove geo to lwo alias as the new Carbon Graphics GEO format
     // also uses the .geo. It is still possible to load light wave .geo
     // files via loading the lwo plugin explicitly and then doing a readNodeFile.

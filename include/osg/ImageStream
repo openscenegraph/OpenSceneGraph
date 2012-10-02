@@ -57,7 +57,7 @@ class OSG_EXPORT ImageStream : public Image
 
         virtual void quit(bool /*waitForThreadToExit*/ = true) {}
 
-        StreamStatus getStatus() { return _status; }
+        StreamStatus getStatus() const { return _status; }
 
 
         enum LoopingMode
@@ -89,6 +89,10 @@ class OSG_EXPORT ImageStream : public Image
 
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
+        
+        /// set the balance of the audio: -1 = left, 0 = center,  1 = right
+        virtual float getAudioBalance() { return 0.0f; }
+        virtual void setAudioBalance(float b) {}
 
         typedef std::vector< osg::ref_ptr<osg::AudioStream> > AudioStreams;
         void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }

@@ -329,8 +329,9 @@ public:
             TOUCH_ENDED
         };
 
-        class TouchData : public osg::Referenced {
+        class TouchData : public osg::Object {
         public:
+            
             struct TouchPoint {
                 unsigned int id;
                 TouchPhase phase;
@@ -353,7 +354,15 @@ public:
             typedef TouchSet::iterator iterator;
             typedef TouchSet::const_iterator const_iterator;
 
-            TouchData() : osg::Referenced() {}
+            TouchData() : osg::Object() {}
+            
+            TouchData(const TouchData& td, const osg::CopyOp& copyop):
+                osg::Object(td,copyop),
+                _touches(td._touches) {}
+            
+
+            META_Object(osgGA, TouchData);
+            
 
             unsigned int getNumTouchPoints() const { return _touches.size(); }
 
@@ -366,6 +375,8 @@ public:
             const TouchPoint get(unsigned int i) const { return _touches[i]; }
 
         protected:
+
+            virtual ~TouchData() {}
 
             void addTouchPoint(unsigned int id, TouchPhase phase, float x, float y, unsigned int tap_count) {
                 _touches.push_back(TouchPoint(id, phase, x, y, tap_count));

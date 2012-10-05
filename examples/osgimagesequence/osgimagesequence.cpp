@@ -208,6 +208,32 @@ public:
     
     void set(osg::Node* node);
 
+    void setTrackMouse(bool tm)
+    {
+        if (tm==_trackMouse) return;
+
+        _trackMouse = tm;
+
+        std::cout << "tracking mouse: " << (_trackMouse ? "ON" : "OFF") << std::endl;
+
+        for(ImageStreamList::iterator itr=_imageStreamList.begin();
+            itr!=_imageStreamList.end();
+            ++itr)
+        {
+            if ((*itr)->getStatus()==osg::ImageStream::PLAYING)
+            {
+                (*itr)->pause();
+            }
+            else
+            {
+                (*itr)->play();
+            }
+        }
+
+    }
+
+    bool getTrackMouse() const { return _trackMouse; }
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -412,22 +438,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             }
             else if (ea.getKey() == 'i') 
             {
-                _trackMouse = !_trackMouse;
-                std::cout << "tracking mouse: " << (_trackMouse ? "ON" : "OFF") << std::endl;
-                
-                for(ImageStreamList::iterator itr=_imageStreamList.begin();
-                    itr!=_imageStreamList.end();
-                    ++itr)
-                {
-                    if ((*itr)->getStatus()==osg::ImageStream::PLAYING)
-                    {
-                        (*itr)->pause();
-                    }
-                    else
-                    {
-                        (*itr)->play();
-                    }
-                }
+                setTrackMouse(!_trackMouse);
                 
                 
             }
@@ -468,6 +479,9 @@ int main(int argc, char **argv)
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
     meh->set( viewer.getSceneData() );
+
+    if (arguments.read("--track-mouse")) meh->setTrackMouse(true);
+    
     viewer.addEventHandler( meh );
 
     viewer.addEventHandler( new osgViewer::StatsHandler());

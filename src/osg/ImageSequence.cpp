@@ -217,7 +217,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     bool looping = getLoopingMode()==LOOPING;
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
-
+    bool useDirectTimeRequest = _seekTimeSet;
+    
     if (_seekTimeSet || _status==PAUSED || _status==INVALID)
     {
         time = _seekTime;
@@ -248,12 +249,11 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     bool pruneOldImages = false;
 
-
     switch(_mode)
     {
         case(PRE_LOAD_ALL_IMAGES):
         {
-            if (_fileNames.size()>_images.size())
+            if (irh && _fileNames.size()>_images.size())
             {
                 FileNames::iterator itr = _fileNames.begin();
                 for(unsigned int i=0;i<_images.size();++i) ++itr;
@@ -286,12 +286,27 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     if (index>=0 && index<int(_images.size()))
     {
-
         if (pruneOldImages)
         {
-            while (index>=0 && !_images[index].valid())
+            if (_previousAppliedImageIndex<index)
             {
-                --index;
+                OSG_NOTICE<<"ImageSequence::update(..) Moving forward by "<<index-_previousAppliedImageIndex<<std::endl;
+                while (index>=0 && !_images[index].valid())
+                {
+                    --index;
+                }
+            }
+            else if (_previousAppliedImageIndex>index)
+            {
+                OSG_NOTICE<<"ImageSequence::update(..) Moving back by "<<_previousAppliedImageIndex-index<<std::endl;
+                while (index<static_cast<int>(_images.size()) && !_images[index].valid())
+                {
+                    ++index;
+                }
+            }
+            else
+            {
+                OSG_NOTICE<<"ImageSequence::update(..) Same index."<<std::endl;
             }
         }
 
@@ -317,7 +332,26 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     // OSG_NOTICE<<"time = "<<time<<std::endl;
 
-    if (irh)
+    if (!irh) return;
+
+    if (useDirectTimeRequest)
+    {
+        int i = int(time/_timePerImage);
+        if ((i>=int(_images.size()) || !_images[i]))
+        {
+             if (_filesRequested.count(_fileNames[i])==0)
+             {
+                 OSG_NOTICE<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
+                //_filesRequested.insert(_fileNames[i]);
+                irh->requestImageFile(_fileNames[i], this, i, time, fs);
+             }
+             else
+             {
+                 OSG_NOTICE<<"File already requested, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
+             }
+        }
+    }
+    else
     {
         double preLoadTime = time + osg::minimum(irh->getPreLoadTime()*_timeMultiplier, _length);
 

@@ -420,14 +420,26 @@ public:
         /** set window rectangle. */
         void setWindowRectangle(int x, int y, int width, int height, bool updateMouseRange = true);
 
+        /** set window x origin.*/
+        void setWindowX(int v) { _windowX = v; }
+
         /** get window x origin.*/
         int getWindowX() const { return _windowX; }
+
+        /** set window x origin.*/
+        void setWindowY(int v) { _windowY = v; }
 
         /** get window y origin.*/
         int getWindowY() const { return _windowY; }
 
+        /** set window width.*/
+        void setWindowWidth(int v) { _windowWidth = v; }
+
         /** get window width.*/
         int getWindowWidth() const { return _windowWidth; }
+
+        /** set window height.*/
+        void setWindowHeight(int v) { _windowHeight = v; }
 
         /** get window height.*/
         int getWindowHeight() const { return _windowHeight; }
@@ -455,14 +467,26 @@ public:
         /** set mouse input range. */
         void setInputRange(float Xmin, float Ymin, float Xmax, float Ymax);
 
+        /** set mouse minimum x. */
+        void setXmin(float v) { _Xmin = v; }
+        
         /** get mouse minimum x. */
         float getXmin() const { return _Xmin; }
+
+        /** set mouse maximum x. */
+        void setXmax(float v) { _Xmax = v; }
 
         /** get mouse maximum x. */
         float getXmax() const { return _Xmax; }
 
+        /** set mouse minimum x. */
+        void setYmin(float v) { _Ymin = v; }
+
         /** get mouse minimum y. */
         float getYmin() const { return _Ymin; }
+
+        /** set mouse maximum y. */
+        void setYmax(float v) { _Ymax = v; }
 
         /** get mouse maximum y. */
         float getYmax() const { return _Ymax; }
@@ -530,8 +554,14 @@ public:
             _scrolling.deltaY = y;
         }
 
+        /// set the scrolling x-delta.
+        void setScrollingDeltaX(float v) { _scrolling.deltaX = v; }
+
         /// get the scrolling x-delta.
         float getScrollingDeltaX() const { return _scrolling.deltaX; }
+
+        /// set the scrolling y-delta.
+        void setScrollingDeltaY(float v) { _scrolling.deltaY = v; }
 
         /// get the scrolling y-delta.
         float getScrollingDeltaY() const { return _scrolling.deltaY; }

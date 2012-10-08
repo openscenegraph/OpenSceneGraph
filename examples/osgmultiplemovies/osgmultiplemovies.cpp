@@ -528,7 +528,7 @@ private:
         _currentFile = new_ndx;
         if (_currentFile < 0)
             _currentFile = _files.size() - 1;
-        else if (_currentFile >= _files.size())
+        else if (_currentFile >= static_cast<int>(_files.size()))
             _currentFile = 0;
         
         osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(_files[_currentFile], _options);

@@ -33,6 +33,71 @@
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
 osgDB::ReaderWriter::ReadResult
+ReaderWriterDAE::readNode(std::istream& fin,
+        const osgDB::ReaderWriter::Options* options) const
+{
+    SERIALIZER();
+
+    bool bOwnDAE = false;
+    DAE* pDAE = NULL;
+
+    // Process options
+    osgDAE::daeReader::Options pluginOptions;
+    if( options )
+    {
+        pDAE = (DAE*)options->getPluginData("DAE");
+
+        pluginOptions.precisionHint = options->getPrecisionHint();
+
+        std::istringstream iss( options->getOptionString() );
+        std::string opt;
+        while (iss >> opt)
+        {
+            if( opt == "StrictTransparency") pluginOptions.strictTransparency = true;
+            else if (opt == "daeTessellateNone") pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_NONE;
+            else if (opt == "daeTessellatePolygonsAsTriFans") pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS_AS_TRIFAN;
+            else if (opt == "daeTessellatePolygons") pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS;
+            else if (opt == "daeUsePredefinedTextureUnits") pluginOptions.usePredefinedTextureUnits = true;
+            else if (opt == "daeUseSequencedTextureUnits") pluginOptions.usePredefinedTextureUnits = false;
+        }
+    }
+
+    if (NULL == pDAE)
+    {
+        bOwnDAE = true;
+        pDAE = new DAE;
+    }
+
+    std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
+
+    osgDAE::daeReader daeReader(pDAE, &pluginOptions);
+
+    if ( ! daeReader.convert( fin ) )
+    {
+        OSG_WARN << "Load failed in COLLADA DOM conversion" << std::endl;
+        return ReadResult::ERROR_IN_READING_FILE;
+    }
+
+    if ( options )
+    {
+        // Return the document URI
+        if (options->getPluginData("DAE-DocumentURI"))
+            *(std::string*)options->getPluginData("DAE-DocumentURI") = std::string("/dev/null");
+        // Return some additional information about the document
+        if (options->getPluginData("DAE-AssetUnitName"))
+             *(std::string*)options->getPluginData("DAE-AssetUnitName") = daeReader.getAssetUnitName();
+        if (options->getPluginData("DAE-AssetUnitMeter"))
+            *(float*)options->getPluginData("DAE-AssetUnitMeter") = daeReader.getAssetUnitMeter();
+        if (options->getPluginData("DAE-AssetUp_axis"))
+            *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.getAssetUpAxis();
+    }
+
+    osg::Node* rootNode( daeReader.getRootNode() );
+    return rootNode;
+}
+
+
+osgDB::ReaderWriter::ReadResult
 ReaderWriterDAE::readNode(const std::string& fname,
         const osgDB::ReaderWriter::Options* options) const
 {

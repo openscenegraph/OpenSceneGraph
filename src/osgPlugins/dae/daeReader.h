@@ -152,6 +152,7 @@ public:
     daeReader(DAE *dae_, const Options * pluginOptions);
     virtual ~daeReader();
 
+    bool convert( std::istream &fin );
     bool convert( const std::string &fileURI );
 
     osg::Node* getRootNode()    { return _rootNode; }
@@ -255,6 +256,9 @@ public:
     typedef std::multimap<std::pair<const domMesh*, unsigned>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
 
 private:
+    bool processDocument( const std::string& );
+    void clearCaches();
+
     // If the node is a bone then it should be added before any other types of
     // node, this function makes that happen.
     static void addChild(osg::Group*, osg::Node*);

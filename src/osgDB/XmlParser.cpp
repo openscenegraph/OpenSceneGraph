@@ -217,6 +217,26 @@ bool XmlNode::read(Input& input)
                 input += end;
             }
         }
+        else if (input.match("<![CDATA["))
+        {
+            XmlNode* commentNode = new XmlNode;
+            commentNode->type = XmlNode::INFORMATION;
+            children.push_back(commentNode);
+
+            input += 9;
+            XmlNode::Input::size_type end = input.find("]]>");
+            commentNode->contents = input.substr(0, end);
+            if (end!=std::string::npos)
+            {
+                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                input += (end+2);
+            }
+            else
+            {
+                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                input += end;
+            }
+        }
         else if (input.match("<?"))
         {
             XmlNode* commentNode = new XmlNode;

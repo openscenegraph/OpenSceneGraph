@@ -50,7 +50,9 @@ public:
 
     ObjectWrapper( osg::Object* proto, const std::string& name,
                    const std::string& associates );
+    
     void setUpdatedVersion( int ver ) { _version = ver; }
+    int getUpdatedVersion() const { return _version; }
 
     const osg::Object* getProto() const { return _proto.get(); }
     const std::string& getName() const { return _name; }
@@ -81,6 +83,23 @@ protected:
     std::vector<int> _typeList;
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
     int _version;  // Last updated version of the wrapper
+};
+
+struct UpdateWrapperVersionProxy
+{
+    UpdateWrapperVersionProxy( ObjectWrapper* w, int v ): _wrapper(w)
+    {
+        _lastVersion = w->getUpdatedVersion();
+        w->setUpdatedVersion(v);        
+    }
+    
+    ~UpdateWrapperVersionProxy()
+    {
+        _wrapper->setUpdatedVersion(_lastVersion);
+    }
+    
+    ObjectWrapper* _wrapper;
+    int _lastVersion;
 };
 
 class Registry;

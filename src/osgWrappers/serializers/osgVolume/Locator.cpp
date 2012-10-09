@@ -42,8 +42,8 @@ REGISTER_OBJECT_WRAPPER( osgVolume_Locator,
     ADD_MATRIXD_SERIALIZER( Transform, osg::Matrixd() );  // _transform
 
     ADD_USER_SERIALIZER( LocatorCallbacks );
-    UPDATE_TO_VERSION( 90 )
     {
+        UPDATE_TO_VERSION_SCOPED( 90 )
         REMOVE_SERIALIZER( LocatorCallbacks );
     }
 }

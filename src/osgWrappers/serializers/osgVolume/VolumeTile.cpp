@@ -28,8 +28,8 @@ REGISTER_OBJECT_WRAPPER( osgVolume_VolumeTile,
                          "osg::Object osg::Node osg::Group osgVolume::VolumeTile" )
 {
     ADD_OBJECT_SERIALIZER( Volume, osgVolume::Volume, NULL );  // _volume
-    UPDATE_TO_VERSION( 90 )
     {
+        UPDATE_TO_VERSION_SCOPED( 90 )
         REMOVE_SERIALIZER( Volume );
     }
 

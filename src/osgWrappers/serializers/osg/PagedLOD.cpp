@@ -145,8 +145,8 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
     ADD_USER_SERIALIZER( RangeDataList );  // _perRangeDataList
     ADD_USER_SERIALIZER( Children );  // _children (which are not loaded from external)
 
-    UPDATE_TO_VERSION( 70 )
     {
+        UPDATE_TO_VERSION_SCOPED( 70 )
         REMOVE_SERIALIZER( FrameNumberOfLastTraversal );
     }
 

@@ -381,7 +381,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             {
                 if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
-                    _filesRequested.insert(_fileNames[i]);
+                    //_filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
                 }
                 requestTime += _timePerImage;
@@ -391,7 +391,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             {
                 if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
-                    _filesRequested.insert(_fileNames[i]);
+                    //_filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
                 }
                 requestTime += _timePerImage;
@@ -403,7 +403,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             {
                 if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
-                    _filesRequested.insert(_fileNames[i]);
+                    //_filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
                 }
                 requestTime += _timePerImage;

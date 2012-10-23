@@ -645,6 +645,20 @@ void Viewer::eventTraversal()
     }
 
 
+    // get events from user Devices attached to Viewer.
+    for(Devices::iterator eitr = _eventSources.begin();
+        eitr != _eventSources.end();
+        ++eitr)
+    {
+        osgGA::Device* es = eitr->get();
+        es->checkEvents();
+
+        // open question, will we need to reproject mouse coordinates into current view's coordinate frame as is down for GraphicsWindow provided events?
+        // for now assume now and just get the events directly without any reprojection.
+        es->getEventQueue()->takeEvents(events, cutOffTime);
+    }
+
+    // get events from all windows attached to Viewer.
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
         ++citr)

@@ -2217,3 +2217,20 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
 }
 
 
+void View::addDevice(osgGA::Device* eventSource)
+{
+    Devices::iterator itr = std::find( _eventSources.begin(), _eventSources.end(), eventSource );
+    if (itr==_eventSources.end())
+    {
+        _eventSources.push_back(eventSource);
+    }
+}
+
+void View::removeDevice(osgGA::Device* eventSource)
+{
+    Devices::iterator itr = std::find( _eventSources.begin(), _eventSources.end(), eventSource );
+    if (itr!=_eventSources.end())
+    {
+        _eventSources.erase(itr);
+    }
+}

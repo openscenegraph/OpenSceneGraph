@@ -256,6 +256,15 @@ ENDIF()
 
 ADD_SUBDIRECTORY(pvr)
 
+####################################################
+#
+# Device integration plugins
+#
+IF   (SDL_FOUND)
+    ADD_SUBDIRECTORY(sdl)
+ENDIF(SDL_FOUND)
+
+
 ##########to get all the variables of Cmake
 #GET_CMAKE_PROPERTY(MYVARS VARIABLES)
 #FOREACH(myvar ${MYVARS})

@@ -735,6 +735,7 @@ void CompositeViewer::eventTraversal()
         masterCameraVPW *= viewport->computeWindowMatrix();
     }
 
+    // get events from all windows attached to Viewer.
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
         ++citr)
@@ -925,6 +926,20 @@ void CompositeViewer::eventTraversal()
         ++vitr)
     {
         View* view = vitr->get();
+
+        // get events from user Devices attached to Viewer.
+        for(osgViewer::View::Devices::iterator eitr = view->getDevices().begin();
+            eitr != view->getDevices().end();
+            ++eitr)
+        {
+            osgGA::Device* es = eitr->get();
+            es->checkEvents();
+
+            // open question, will we need to reproject mouse coordinates into current view's coordinate frame as is down for GraphicsWindow provided events?
+            // for now assume now and just get the events directly without any reprojection.
+            es->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
+        }
+
         view->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
     }
 

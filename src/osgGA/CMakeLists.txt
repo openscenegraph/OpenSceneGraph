@@ -10,6 +10,7 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/AnimationPathManipulator
     ${HEADER_PATH}/DriveManipulator
+    ${HEADER_PATH}/Device
     ${HEADER_PATH}/EventQueue
     ${HEADER_PATH}/EventVisitor
     ${HEADER_PATH}/Export
@@ -36,6 +37,7 @@ SET(TARGET_H
 SET(TARGET_SRC
     AnimationPathManipulator.cpp
     DriveManipulator.cpp
+    Device.cpp
     EventQueue.cpp
     EventVisitor.cpp
     FirstPersonManipulator.cpp

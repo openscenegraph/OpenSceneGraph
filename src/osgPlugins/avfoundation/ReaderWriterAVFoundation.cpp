@@ -59,13 +59,16 @@ class ReaderWriterAVFoundation : public osgDB::ReaderWriter
                 fileName = osgDB::findDataFile( fileName, options );
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             }
-
+            
+            static OpenThreads::Mutex mutex;
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
+            
             OSG_INFO<<"ReaderWriterAVFoundation::readImage "<< fileName<< std::endl;
 
             osg::ref_ptr<OSXAVFoundationVideo> video = new OSXAVFoundationVideo();
             
             bool disable_multi_threaded_frame_dispatching = options ? (options->getPluginStringData("disableMultiThreadedFrameDispatching") == "true") : false;
-            bool disable_core_video                       = true; // options ? (options->getPluginStringData("disableCoreVideo") == "true") : false;
+            bool disable_core_video                       = options ? (options->getPluginStringData("disableCoreVideo") == "true") : false;
             OSG_INFO << "disableMultiThreadedFrameDispatching: " << disable_multi_threaded_frame_dispatching << std::endl;
             OSG_INFO << "disableCoreVideo                    : " << disable_core_video << std::endl;
             

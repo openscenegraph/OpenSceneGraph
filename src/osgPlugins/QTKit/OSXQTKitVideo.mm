@@ -19,6 +19,7 @@
 
 #include "OSXQTKitVideo.h"
 #include "OSXCoreVideoAdapter.h"
+#include "OSXCoreVideoTexture.h"
 
 namespace {
 
@@ -88,12 +89,37 @@ struct OSXQTKitVideo::Data {
 };
 
 
+void OSXQTKitVideo::initializeQTKit()
+{
+    static bool inited(false);
+    if (!inited)
+    {
+        inited = true;
+        // force initialization of QTKit on the main-thread!
+        if (![NSThread isMainThread]) {
+            dispatch_apply(1, dispatch_get_main_queue(), ^(size_t n) {
+                EnterMovies();
+                QTMovie* movie = [QTMovie movie];
+                // release missing by intent, gets released by the block!
+            });
+        }
+        else
+        {
+            EnterMovies();
+            QTMovie* movie = [QTMovie movie];
+            [movie release];
+        }
+    }
+}
+
 
 OSXQTKitVideo::OSXQTKitVideo()
     : osgVideo::VideoImageStream()
     , _rate(0.0)
     , _coreVideoAdapter(NULL)
 {
+    initializeQTKit();
+    
     _status = INVALID;
     _data = new Data();
     _data->notificationHandler = [[NotificationHandler alloc] init];
@@ -211,9 +237,9 @@ void OSXQTKitVideo::open(const std::string& file_name)
     
     applyLoopingMode();
     
-     _waitForFirstFrame = true;
+    _waitForFirstFrame = true;
     requestNewFrame(true);
-
+    _fileName = file_name;
     _status = (valid) ? PAUSED : INVALID;
 }
 
@@ -367,4 +393,9 @@ void OSXQTKitVideo::decodeFrame(bool force)
         dirty();
     }
 }
- 
+
+
+osg::Texture* OSXQTKitVideo::createSuitableTexture()
+{
+    return new OSXCoreVideoTexture(this);
+}

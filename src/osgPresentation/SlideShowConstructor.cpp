@@ -59,6 +59,7 @@
 using namespace osgPresentation;
 
 #define USE_CLIENT_STORAGE_HINT 0
+#define USE_TEXTURE_FROM_VIDEO_PLUGIN 1
 
 class SetToTransparentBin : public osg::NodeVisitor
 {
@@ -770,7 +771,7 @@ void SlideShowConstructor::findImageStreamsAndAddCallbacks(osg::Node* node)
 osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3& pos, const osg::Vec4& rotation, float width, float height, osg::Image* image, bool& usedTextureRectangle)
 {
     osg::Geometry* pictureQuad = 0;
-    osg::Texture* texture = 0;
+    osg::ref_ptr<osg::Texture> texture = 0;
     osg::StateSet* stateset = 0;
 
     osg::Vec3 positionVec = pos;
@@ -782,7 +783,15 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     heightVec = heightVec*rotationMatrix;
 
     osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
-
+    
+    // let the video-plugin create a texture for us, if supported
+    #if USE_TEXTURE_FROM_VIDEO_PLUGIN
+    if(imageStream)
+    {
+        texture = imageStream->createSuitableTexture();
+    }
+    #endif
+    
     bool flipYAxis = image->getOrigin()==osg::Image::TOP_LEFT;
 
 #if 1
@@ -798,50 +807,47 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     // pass back info on wether texture 2D is used.
     usedTextureRectangle = useTextureRectangle;
 
-    if (useTextureRectangle)
+    if (!texture)
     {
-        pictureQuad = osg::createTexturedQuadGeometry(positionVec,
-                                           widthVec,
-                                           heightVec,
-                                           0.0f, flipYAxis ? image->t() : 0.0f,
-                                           image->s(), flipYAxis ? 0.0f : image->t());
+        if (useTextureRectangle)
+        {
+            texture = new osg::TextureRectangle(image);
+        }
+        else
+        {
+            texture = new osg::Texture2D(image);
 
-        stateset = pictureQuad->getOrCreateStateSet();
-
-        texture = new osg::TextureRectangle(image);
-        stateset->setTextureAttributeAndModes(0,
-                    texture,
-                    osg::StateAttribute::ON);
-
-
-
+            texture->setResizeNonPowerOfTwoHint(false);
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    #if USE_CLIENT_STORAGE_HINT        
+            texture->setClientStorageHint(true);
+    #endif
+            
+        }
     }
-    else
+    if (texture)
     {
+        float t(0), l(0);
+        float r = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->s() : 1;
+        float b = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->t() : 1;
+        
+        if (flipYAxis)
+            std::swap(t,b);
+        
         pictureQuad = osg::createTexturedQuadGeometry(positionVec,
-                                           widthVec,
-                                           heightVec,
-                                           0.0f, flipYAxis ? 1.0f : 0.0f,
-                                           1.0f, flipYAxis ? 0.0f : 1.0f);
-
+                                               widthVec,
+                                               heightVec,
+                                               l, t, r, b);
+        
         stateset = pictureQuad->getOrCreateStateSet();
-
-        texture = new osg::Texture2D(image);
-
-        texture->setResizeNonPowerOfTwoHint(false);
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-#if USE_CLIENT_STORAGE_HINT        
-        texture->setClientStorageHint(true);
-#endif
         stateset->setTextureAttributeAndModes(0,
-                    texture,
-                    osg::StateAttribute::ON);
-
+                        texture,
+                        osg::StateAttribute::ON);
     }
-
+    
     if (!pictureQuad) return 0;
-
+    
     if (imageStream)
     {
         imageStream->pause();

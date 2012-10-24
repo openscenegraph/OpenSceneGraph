@@ -57,6 +57,10 @@ public:
     /// jumps to a specific position 
     virtual void seek(double pos);
     
+    virtual void rewind() {
+        seek(0);
+    }
+    
       
     /// returns the current playing position
     virtual double     getCurrentTime () const;
@@ -91,6 +95,9 @@ public:
     bool isCoreVideoUsed() const { return _useCoreVideo; }
     void lazyInitCoreVideoTextureCache(osg::State& state);
     bool getCurrentCoreVideoTexture(GLenum& target, GLint& name, int& width, int& height) const;
+    
+    virtual osg::Texture* createSuitableTexture();
+
 protected:
    
     virtual bool needsDispatching() const;

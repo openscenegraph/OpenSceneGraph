@@ -67,7 +67,7 @@ class ReaderWriterQTKit : public osgDB::ReaderWriter
             
             supportsOption("disableCoreVideo", "disable the usage of coreVideo when using readObjectFile, returns an ImageStream instead");
             supportsOption("disableMultiThreadedFrameDispatching", "disable the usage of the multithreade VideoFrameDispatcher to decode video frames");
-                      
+            
         }
         
     
@@ -94,6 +94,9 @@ class ReaderWriterQTKit : public osgDB::ReaderWriter
                 fileName = osgDB::findDataFile( fileName, options );
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             }
+            
+            static OpenThreads::Mutex mutex;
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
 
             OSG_INFO<<"ReaderWriterQTKit::readImage "<< fileName<< std::endl;
 

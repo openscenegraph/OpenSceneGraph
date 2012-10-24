@@ -336,6 +336,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         //
         case 16:
         case 32:
+        case 64:
         {
 
             internal_format = GL_RGBA8;

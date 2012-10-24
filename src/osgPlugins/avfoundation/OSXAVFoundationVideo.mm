@@ -3,10 +3,12 @@
 #include <osgdB/FileNameUtils>
 #include <osgViewer/api/Cocoa/GraphicsWindowCocoa>
 #include <iostream>
+#include <deque>
 
 #import <AVFoundation/AVFoundation.h>
 #import <Cocoa/Cocoa.h>
 
+#include "OSXAVFoundationCoreVideoTexture.h"
 
 
 namespace {
@@ -99,7 +101,6 @@ private:
 class OSXAVFoundationVideo::Data {
 public:
     AVPlayer* avplayer;
-    AVPlayerItem* avplayeritem;
     AVPlayerItemVideoOutput* output;
     OSXAVFoundationVideoDelegate* delegate;
     std::vector<CVBufferRef> lastFrames;
@@ -108,7 +109,6 @@ public:
     
     Data()
         : avplayer(NULL)
-        , avplayeritem(NULL)
         , output(NULL)
         , delegate(NULL)
         , lastFrames(3)
@@ -117,12 +117,35 @@ public:
         , coreVideoTextureCache(0)
     {
     }
-    ~Data() {
+    
+    void clear()
+    {
+        if (delegate) {
+            [[NSNotificationCenter defaultCenter] removeObserver: delegate
+                name:AVPlayerItemDidPlayToEndTimeNotification
+                object:avplayer.currentItem
+            ];
+            [delegate release];
+        }
+        
+        if (avplayer) {
+            [avplayer cancelPendingPrerolls];
+            [avplayer.currentItem.asset cancelLoading];
+            [avplayer.currentItem removeOutput:output];
+        }
+        
         [output release];
-        [avplayeritem release];
         [avplayer release];
         
-        [delegate release];
+        
+        avplayer = NULL;
+        output = NULL;
+        delegate = NULL;
+    }
+    
+    ~Data() {
+        
+        clear();
         
         for(unsigned int i=0; i< lastFrames.size(); ++i)
         {
@@ -137,10 +160,6 @@ public:
             CVOpenGLTextureCacheRelease(coreVideoTextureCache);
             coreVideoTextureCache = NULL;
         }
-        output = NULL;
-        avplayer = NULL;
-        avplayeritem = NULL;
-        delegate = NULL;
     }
     
     void addFrame(CVBufferRef frame)
@@ -188,12 +207,16 @@ OSXAVFoundationVideo::OSXAVFoundationVideo()
     _data = new Data();
     _status = INVALID;
     setOrigin(TOP_LEFT);
+    
+    // std::cout << " OSXAVFoundationVideo " << this << std::endl;
 }
 
 
 OSXAVFoundationVideo::~OSXAVFoundationVideo()
 {
+    // std::cout << "~OSXAVFoundationVideo " << this << " " << _data->avplayer << std::endl;
     quit();
+    clear();
     if (_data)
         delete _data;
 }
@@ -226,33 +249,21 @@ double OSXAVFoundationVideo::getTimeMultiplier() const
 
 void OSXAVFoundationVideo::pause()
 {
+    setNeedsDispatching(StopUpdate);
+    
+    NSAutoreleasePoolHelper helper;
+
     if (_data->avplayer) {
         [_data->avplayer pause];
         _status = PAUSED;
-        setNeedsDispatching(StopUpdate);
     }
 }
 
 
 void OSXAVFoundationVideo::clear()
 {
-    [_data->output release];
-    [_data->avplayeritem release];
-    [_data->avplayer release];
-    
-    if (_data->delegate) {
-        [[NSNotificationCenter defaultCenter] removeObserver: _data->delegate
-            name:AVPlayerItemDidPlayToEndTimeNotification
-            object:[_data->avplayer currentItem]
-        ];
-    }
-    
-    [_data->delegate release];
-    
-    _data->output = NULL;
-    _data->avplayer = NULL;
-    _data->avplayeritem = NULL;
-    _data->delegate = NULL;
+    if (_data)
+        _data->clear();
 }
 
 
@@ -277,6 +288,8 @@ double OSXAVFoundationVideo::getCurrentTime () const
 
 void OSXAVFoundationVideo::open(const std::string& filename)
 {
+    NSAutoreleasePoolHelper helper;
+    
     clear();
     
     _data->delegate = [[OSXAVFoundationVideoDelegate alloc] init];
@@ -303,21 +316,24 @@ void OSXAVFoundationVideo::open(const std::string& filename)
         _data->output.suppressesPlayerRendering = YES;
     }
     
-    _data->avplayeritem = [[AVPlayerItem alloc] initWithURL: url];
-    _data->avplayer = [AVPlayer playerWithPlayerItem: _data->avplayeritem];
+    _data->avplayer = [AVPlayer playerWithURL: url]; // AVPlayerFactory::instance()->getOrCreate(url);
+    [_data->avplayer retain];
+    
     _data->avplayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     
-    [[_data->avplayer currentItem] addOutput:_data->output];
+    [_data->avplayer.currentItem addOutput:_data->output];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver: _data->delegate
         selector:@selector(playerItemDidReachEnd:)
         name:AVPlayerItemDidPlayToEndTimeNotification
-        object:[_data->avplayer currentItem]];
+        object:_data->avplayer.currentItem];
     
-    _videoDuration = CMTimeGetSeconds([[_data->avplayer currentItem] duration]);
+    
+    _videoDuration = CMTimeGetSeconds([_data->avplayer.currentItem duration]);
     
     // get the max size of the video-tracks
-    NSArray* tracks = [_data->avplayeritem.asset tracksWithMediaType: AVMediaTypeVideo];
+    NSArray* tracks = [_data->avplayer.currentItem.asset tracksWithMediaType: AVMediaTypeVideo];
     CGSize size;
     for(unsigned int i=0; i < [tracks count]; ++i)
     {
@@ -329,7 +345,11 @@ void OSXAVFoundationVideo::open(const std::string& filename)
     _s = size.width;
     _t = size.height;
     _r = 1;
+    unsigned char* buffer = (unsigned char*)calloc(_s*_t*4, 1);
+    setImage(_s, _t, 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE, buffer, USE_MALLOC_FREE);
     
+    _fileName = filename;
+        
     requestNewFrame();
     
     _status = PAUSED;
@@ -344,6 +364,7 @@ float OSXAVFoundationVideo::getVolume() const
 
 void OSXAVFoundationVideo::setVolume(float v)
 {
+    NSAutoreleasePoolHelper helper;
     _volume = v;
     if (_data->avplayer)
         [_data->avplayer setVolume: v];
@@ -511,4 +532,11 @@ void OSXAVFoundationVideo::lazyInitCoreVideoTextureCache(osg::State& state)
         }
     }
 }
+
+
+osg::Texture* OSXAVFoundationVideo::createSuitableTexture()
+{
+    return NULL; // new OSXAVFoundationCoreVideoTexture(this);
+}
+
     

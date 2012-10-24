@@ -81,6 +81,10 @@ public:
         return  _waitForFirstFrame || getNeedsDispatching();
     }
     
+    static void initializeQTKit();
+    
+    virtual osg::Texture* createSuitableTexture();
+    
 protected:
     
     virtual void applyLoopingMode();

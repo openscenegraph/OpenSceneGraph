@@ -138,9 +138,9 @@ void OSXCoreVideoTexture::apply(osg::State& state) const {
         else 
             _adapter = new OSXCoreVideoAdapter(state, _image.get());
     }
+    
     _adapter->getFrame();
     _textureTarget = _adapter->getTextureTarget();
-
     glBindTexture(_textureTarget, _adapter->getTextureName());
 }
 

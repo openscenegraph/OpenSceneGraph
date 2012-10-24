@@ -19,6 +19,9 @@
 
 namespace osg {
 
+// forward declare of osg::Texture
+class Texture;
+
 /**
   * Image Stream class.
 */
@@ -98,8 +101,13 @@ class OSG_EXPORT ImageStream : public Image
         void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }
         AudioStreams& getAudioStreams() { return _audioStreams; }
         const AudioStreams& getAudioStreams() const { return _audioStreams; }
-
-
+        
+        /** create a suitable texture for this imagestream, return NULL, if not supported
+         *  implement this method in subclasses to use special technologies like CoreVideo
+         *  or similar.
+         */
+        virtual osg::Texture* createSuitableTexture() { return NULL; }
+        
     protected:
         virtual void applyLoopingMode() {}
 

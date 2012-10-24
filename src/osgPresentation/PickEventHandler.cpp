@@ -50,6 +50,8 @@ PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos,bo
 
 bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
 {
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::MOVE):

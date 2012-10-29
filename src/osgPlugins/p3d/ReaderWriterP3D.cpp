@@ -889,6 +889,16 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read imageSequencePagingMode \""<<value.imageSequencePagingMode<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "interaction_mode", str))
+    {
+        propertiesRead = true;
+
+        if (str=="PLAY_AUTOMATICALLY_LIKE_MOVIE") value.imageSequenceInteractionMode = osgPresentation::SlideShowConstructor::ImageData::PLAY_AUTOMATICALLY_LIKE_MOVIE;
+        else if (str=="USE_MOUSE_X_POSITION") value.imageSequenceInteractionMode = osgPresentation::SlideShowConstructor::ImageData::USE_MOUSE_X_POSITION;
+
+        OSG_NOTIFY(_notifyLevel)<<"read imageSequencePagingMode \""<<value.imageSequenceInteractionMode<<"\""<<std::endl;
+    }
+
     /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {
@@ -1099,6 +1109,9 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
     osgPresentation::SlideShowConstructor::ImageData imageDataLeft;// = constructor.getImageData();
     osgPresentation::SlideShowConstructor::ImageData imageDataRight;// = constructor.getImageData();
 
+    getProperties(cur,imageDataLeft);
+    getProperties(cur,imageDataRight);
+
     for(osgDB::XmlNode::Children::iterator itr = cur->children.begin();
         itr != cur->children.end();
         ++itr)
@@ -1110,11 +1123,24 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
             getProperties(child,imageDataLeft);
             filenameLeft = child->getTrimmedContents();
         }
-        if (child->name == "image_right")
+        else if (child->name == "imagesequence_left")
+        {
+            imageDataLeft.imageSequence = true;
+            getProperties(child,imageDataLeft);
+            filenameLeft = child->getTrimmedContents();
+        }
+        else if (child->name == "image_right")
         {
             getProperties(child,imageDataRight);
             filenameRight = child->getTrimmedContents();
+
             getProperties(cur,imageDataRight);
+        }
+        else if (child->name == "imagesequence_right")
+        {
+            imageDataRight.imageSequence = true;
+            getProperties(child,imageDataRight);
+            filenameRight = child->getTrimmedContents();
         }
     }
 
@@ -1320,6 +1346,19 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             bool positionRead = getProperties(cur,positionData);
 
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+            getProperties(cur,imageData);
+
+            constructor.addImage(cur->getTrimmedContents(),
+                                    positionRead ? positionData : constructor.getImagePositionData(),
+                                    imageData);
+        }
+        else if (cur->name == "imagesequence")
+        {
+            osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+            bool positionRead = getProperties(cur,positionData);
+
+            osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+            imageData.imageSequence = true;
             getProperties(cur,imageData);
 
             constructor.addImage(cur->getTrimmedContents(),

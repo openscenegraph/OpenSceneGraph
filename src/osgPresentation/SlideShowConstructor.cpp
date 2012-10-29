@@ -879,11 +879,58 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
     std::string foundFile = filename;
 
-    // check for wild cards
-    if (filename.find('*')!=std::string::npos)
+    if (imageData.imageSequence)
     {
-        OSG_INFO<<"Expanding wildcard "<<std::endl;
-        filenames = osgDB::expandWildcardsInFilename(filename);
+        // check for wild cards
+        if (filename.find('*')!=std::string::npos)
+        {
+            OSG_INFO<<"Expanding wildcard "<<std::endl;
+            filenames = osgDB::expandWildcardsInFilename(filename);
+        }
+        else
+        {
+            std::string foundFile = filename;
+            osgDB::FileType fileType = osgDB::fileType(foundFile);
+            if (fileType == osgDB::FILE_NOT_FOUND)
+            {
+                foundFile = findFileAndRecordPath(foundFile);
+                fileType = osgDB::fileType(foundFile);
+            }
+
+            if (fileType == osgDB::DIRECTORY)
+            {
+                OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
+
+                filenames = osgDB::getDirectoryContents(foundFile);
+
+                // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
+                for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                    itr != filenames.end();
+                    ++itr)
+                {
+                    *itr = foundFile + osgDB::getNativePathSeparator() + *itr;
+                }
+
+                // prune any directory entries from the list.
+                for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                    itr != filenames.end();
+                    )
+                {
+                    if (osgDB::fileType(*itr)!=osgDB::REGULAR_FILE)
+                    {
+                        itr = filenames.erase(itr);
+                    }
+                    else
+                    {
+                        ++itr;
+                    }
+                }
+            }
+            else
+            {
+                filenames.push_back(foundFile);
+            }
+        }
     }
     else
     {
@@ -894,42 +941,9 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
             foundFile = findFileAndRecordPath(foundFile);
             fileType = osgDB::fileType(foundFile);
         }
-
-        if (fileType == osgDB::DIRECTORY)
-        {
-            OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
-
-            filenames = osgDB::getDirectoryContents(foundFile);
-
-            // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
-            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
-                itr != filenames.end();
-                ++itr)
-            {
-                *itr = foundFile + osgDB::getNativePathSeparator() + *itr;
-            }
-
-            // prune any directory entries from the list.
-            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
-                itr != filenames.end();
-                )
-            {
-                if (osgDB::fileType(*itr)!=osgDB::REGULAR_FILE)
-                {
-                    itr = filenames.erase(itr);
-                }
-                else
-                {
-                    ++itr;
-                }
-            }
-        }
-        else
-        {
-            filenames.push_back(foundFile);
-        }
+        filenames.push_back(foundFile);
     }
-
+    
     if (filenames.empty()) return 0;
 
     if (filenames.size()==1)
@@ -988,6 +1002,11 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
                                                imageSequence->getImages().size());
 
             imageSequence->setLength(double(maxNum)*(1.0/imageData.fps));
+        }
+
+        if (imageData.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+        {
+            imageSequence->setName("USE_MOUSE_X_POSITION");
         }
 
         imageSequence->play();
@@ -1288,7 +1307,6 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
         subgraph = animation_transform;
     }
-
 
     // attached any animation
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);

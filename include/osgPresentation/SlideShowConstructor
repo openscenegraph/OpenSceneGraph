@@ -242,7 +242,9 @@ public:
             backgroundColor(1.0f,1.0f,1.0f,1.0f),
             fps(30.0),
             duration(-1.0),
-            imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES)
+            imageSequence(false),
+            imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES),
+            imageSequenceInteractionMode(PLAY_AUTOMATICALLY_LIKE_MOVIE)
         {}
 
         std::string                     options;
@@ -256,7 +258,17 @@ public:
         osg::Vec4                       backgroundColor;
         double                          fps;
         double                          duration;
+        
+        bool                            imageSequence;
         osg::ImageSequence::Mode        imageSequencePagingMode;
+
+        enum ImageSequenceInteractionMode
+        {
+            PLAY_AUTOMATICALLY_LIKE_MOVIE,
+            USE_MOUSE_X_POSITION
+        };
+        ImageSequenceInteractionMode imageSequenceInteractionMode;
+        
     };
 
     struct VolumeData

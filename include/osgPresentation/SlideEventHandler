@@ -142,17 +142,20 @@ struct dereference_less
     }
 };
 
+// forward declare
+class SlideEventHandler;
+
 struct ObjectOperator : public osg::Referenced
 {
     inline bool operator < (const ObjectOperator& rhs) const { return ptr() < rhs.ptr(); }
 
     virtual void* ptr() const = 0;
 
-    virtual void enter() = 0;
-    virtual void maintain() = 0;
-    virtual void leave() = 0;
-    virtual void setPause(bool pause) = 0;
-    virtual void reset() = 0;
+    virtual void enter(SlideEventHandler*) = 0;
+    virtual void maintain(SlideEventHandler*) = 0;
+    virtual void leave(SlideEventHandler*) = 0;
+    virtual void setPause(SlideEventHandler*, bool pause) = 0;
+    virtual void reset(SlideEventHandler*) = 0;
 
     virtual ~ObjectOperator() {}
 };
@@ -165,21 +168,21 @@ public:
 
     void collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
-    void process();
+    void process(SlideEventHandler* seh);
 
-    void setPause(bool pause);
+    void setPause(SlideEventHandler* seh, bool pause);
     bool getPause() const { return _pause; }
 
-    void reset();
+    void reset(SlideEventHandler* seh);
 
     typedef std::set< osg::ref_ptr<ObjectOperator>, dereference_less >  OperatorList;
 
 protected:
 
-    void processOutgoing();
-    void processIncomming();
-    void processMaintained();
-
+    void processOutgoing(SlideEventHandler* seh);
+    void processIncomming(SlideEventHandler* seh);
+    void processMaintained(SlideEventHandler* seh);
+    
     bool            _pause;
 
     OperatorList    _previous;
@@ -266,6 +269,8 @@ public:
     void setRequestReload(bool flag);
     bool getRequestReload() const { return _requestReload; }
 
+    void setNormalizedMousePosition(const osg::Vec2& pos) { _normalizedMousePosition = pos; }
+    const osg::Vec2& getNormalizedMousePosition() const { return _normalizedMousePosition; }
 
 protected:
 
@@ -276,6 +281,8 @@ protected:
 
     void updateAlpha(bool, bool, float x, float y);
     void updateLight(float x, float y);
+
+    void updateOperators();
 
 
     osg::observer_ptr<osgViewer::Viewer>    _viewer;
@@ -320,8 +327,7 @@ protected:
 
     bool                                    _requestReload;
 
-    void updateOperators();
-
+    osg::Vec2                               _normalizedMousePosition;
 };
 
 }

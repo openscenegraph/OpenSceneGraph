@@ -58,6 +58,47 @@ void LayerAttributes::callLeaveCallbacks(osg::Node* node)
 }
 
 
+struct InteractiveImageSequenceOperator : public ObjectOperator
+{
+    InteractiveImageSequenceOperator(osg::ImageSequence* imageSequence):
+        _imageSequence(imageSequence) {}
+
+    virtual void* ptr() const { return _imageSequence.get(); }
+
+    virtual void enter(SlideEventHandler* seh)
+    {
+        set(seh);
+        // need to pause till the load has been completed.
+    }
+
+    virtual void maintain(SlideEventHandler* seh)
+    {
+    }
+
+    virtual void leave(SlideEventHandler* seh)
+    {
+    }
+
+    virtual void setPause(SlideEventHandler* seh, bool pause)
+    {
+    }
+
+    virtual void reset(SlideEventHandler* seh)
+    {
+        set(seh);
+    }
+
+    void set(SlideEventHandler* seh)
+    {
+        OSG_NOTICE<<"Mouse x position is : "<<seh->getNormalizedMousePosition().x()<<std::endl;
+        double position = (static_cast<double>(seh->getNormalizedMousePosition().x())+1.0)*0.5*_imageSequence->getLength();
+        
+        _imageSequence->seek(position);
+    }
+
+    osg::ref_ptr<osg::ImageSequence>  _imageSequence;
+};
+
 struct ImageStreamOperator : public ObjectOperator
 {
     ImageStreamOperator(osg::ImageStream* imageStream):
@@ -65,25 +106,25 @@ struct ImageStreamOperator : public ObjectOperator
 
     virtual void* ptr() const { return _imageStream.get(); }
 
-    virtual void enter()
+    virtual void enter(SlideEventHandler* seh)
     {
         OSG_INFO<<"enter() : _imageStream->rewind() + play"<<std::endl;
 
-        reset();
+        reset(seh);
     }
 
-    virtual void maintain()
+    virtual void maintain(SlideEventHandler*)
     {
     }
 
-    virtual void leave()
+    virtual void leave(SlideEventHandler*)
     {
        OSG_INFO<<"leave() : _imageStream->pause()"<<std::endl;
 
         _imageStream->pause();
     }
 
-    virtual void setPause(bool pause)
+    virtual void setPause(SlideEventHandler*, bool pause)
     {
        OSG_INFO<<"_imageStream->setPause("<<pause<<")"<<std::endl;
 
@@ -91,7 +132,7 @@ struct ImageStreamOperator : public ObjectOperator
         else _imageStream->play();
     }
 
-    virtual void reset()
+    virtual void reset(SlideEventHandler*)
     {
         osg::ImageStream::StreamStatus previousStatus = _imageStream->getStatus();
 
@@ -121,20 +162,20 @@ struct CallbackOperator : public ObjectOperator
 
     virtual void* ptr() const { return _callback.get(); }
 
-    virtual void enter()
+    virtual void enter(SlideEventHandler* seh)
     {
-        reset();
+        reset(seh);
     }
 
-    virtual void maintain()
-    {
-    }
-
-    virtual void leave()
+    virtual void maintain(SlideEventHandler*)
     {
     }
 
-    virtual void setPause(bool pause)
+    virtual void leave(SlideEventHandler*)
+    {
+    }
+
+    virtual void setPause(SlideEventHandler*, bool pause)
     {
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
@@ -156,7 +197,7 @@ struct CallbackOperator : public ObjectOperator
         }
     }
 
-    virtual void reset()
+    virtual void reset(SlideEventHandler*)
     {
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
@@ -191,7 +232,7 @@ struct LayerAttributesOperator : public ObjectOperator
 
     virtual void* ptr() const { return _layerAttribute.get(); }
 
-    virtual void enter()
+    virtual void enter(SlideEventHandler*)
     {
         _layerAttribute->callEnterCallbacks(_node.get());
 
@@ -235,22 +276,22 @@ struct LayerAttributesOperator : public ObjectOperator
 
     }
 
-    virtual void maintain()
+    virtual void maintain(SlideEventHandler*)
     {
     }
 
-    virtual void leave()
+    virtual void leave(SlideEventHandler*)
     {
         OSG_INFO<<"LayerAttribute leave"<<std::endl;
 
          _layerAttribute->callLeaveCallbacks(_node.get());
     }
 
-    virtual void setPause(bool pause)
+    virtual void setPause(SlideEventHandler*, bool pause)
     {
     }
 
-    virtual void reset()
+    virtual void reset(SlideEventHandler*)
     {
     }
 
@@ -279,7 +320,15 @@ public:
         LayerAttributes* la = dynamic_cast<LayerAttributes*>(node.getUserData());
         if (la)
         {
-            _operatorList.insert(new LayerAttributesOperator(&node, la));
+            if ((_objectsHandled[la]++)==0)
+            {
+                OSG_NOTICE<<"LayerAttributeOperator for "<<la<<" required, assigning one."<<std::endl;
+                _operatorList.insert(new LayerAttributesOperator(&node, la));
+            }
+            else
+            {
+                OSG_NOTICE<<"LayerAttributeOperator for "<<la<<" not required, as one already assigned."<<std::endl;
+            }
         }
 
         traverse(node);
@@ -301,13 +350,37 @@ public:
         {
             osg::Texture* texture = dynamic_cast<osg::Texture*>(ss->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
             osg::Image* image = texture ? texture->getImage(0) : 0;
-            osg::ImageStream* imageStream = image ? dynamic_cast<osg::ImageStream*>(image) : 0;
-            if (imageStream)
+            osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(image);
+            osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
+            if (imageSequence && imageSequence->getName()=="USE_MOUSE_X_POSITION")
             {
-                _operatorList.insert(new ImageStreamOperator(imageStream));
+                if ((_objectsHandled[image]++)==0)
+                {
+                    OSG_INFO<<"ImageSequenceOperator for"<<imageSequence<<" required, assigning one, name = '"<<image->getName()<<"'"<<std::endl;
+                    _operatorList.insert(new InteractiveImageSequenceOperator(imageSequence));
+                }
+                else
+                {
+                    OSG_INFO<<"ImageSequenceOperator for"<<imageSequence<<" not required, as one already assigned"<<std::endl;
+                }
+            }
+            else if (imageStream)
+            {
+                if ((_objectsHandled[image]++)==0)
+                {
+                    OSG_INFO<<"ImageStreamOperator for"<<imageStream<<" required, assigning one"<<std::endl;
+                    _operatorList.insert(new ImageStreamOperator(imageStream));
+                }
+                else
+                {
+                    OSG_INFO<<"ImageStreamOperator for"<<imageStream<<" not required, as one already assigned"<<std::endl;
+                }
             }
         }
     }
+
+    typedef std::map<osg::Referenced*,unsigned int> ObjectsHandled;
+    ObjectsHandled _objectsHandled;
 
     ActiveOperators::OperatorList& _operatorList;
 };
@@ -357,66 +430,66 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
     }
 }
 
-void ActiveOperators::setPause(bool pause)
+void ActiveOperators::setPause(SlideEventHandler* seh, bool pause)
 {
     _pause = pause;
     for(OperatorList::iterator itr = _current.begin();
         itr != _current.end();
         ++itr)
     {
-        (*itr)->setPause(_pause);
+        (*itr)->setPause(seh, _pause);
     }
 }
 
 
-void ActiveOperators::reset()
+void ActiveOperators::reset(SlideEventHandler* seh)
 {
     for(OperatorList::iterator itr = _current.begin();
         itr != _current.end();
         ++itr)
     {
-        (*itr)->reset();
+        (*itr)->reset(seh);
     }
 }
 
-void ActiveOperators::process()
+void ActiveOperators::process(SlideEventHandler* seh)
 {
-    processOutgoing();
-    processMaintained();
-    processIncomming();
+    processOutgoing(seh);
+    processMaintained(seh);
+    processIncomming(seh);
 }
 
-void ActiveOperators::processOutgoing()
+void ActiveOperators::processOutgoing(SlideEventHandler* seh)
 {
     OSG_INFO<<"  outgoing.size()="<<_outgoing.size()<<std::endl;
     for(OperatorList::iterator itr = _outgoing.begin();
         itr != _outgoing.end();
         ++itr)
     {
-        (*itr)->leave();
+        (*itr)->leave(seh);
     }
 }
 
-void ActiveOperators::processMaintained()
+void ActiveOperators::processMaintained(SlideEventHandler* seh)
 {
     OSG_INFO<<"  maintained.size()="<<_maintained.size()<<std::endl;
     for(OperatorList::iterator itr = _maintained.begin();
         itr != _maintained.end();
         ++itr)
     {
-        (*itr)->maintain();
+        (*itr)->maintain(seh);
     }
 }
 
-void ActiveOperators::processIncomming()
+void ActiveOperators::processIncomming(SlideEventHandler* seh)
 {
     OSG_INFO<<"  incomming.size()="<<_incomming.size()<<std::endl;
     for(OperatorList::iterator itr = _incomming.begin();
         itr != _incomming.end();
         ++itr)
     {
-        (*itr)->enter();
-        (*itr)->setPause(_pause);
+        (*itr)->enter(seh);
+        (*itr)->setPause(seh, _pause);
     }
 }
 
@@ -621,7 +694,8 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _timeDelayOnNewSlideWithMovies(0.25f),
     _minimumTimeBetweenKeyPresses(0.25),
     _timeLastKeyPresses(-1.0),
-    _requestReload(false)
+    _requestReload(false),
+    _normalizedMousePosition(0.0f,0.0f)
 {
     s_seh = this;
 }
@@ -647,7 +721,7 @@ void SlideEventHandler::set(osg::Node* model)
 
     ActiveOperators operators;
     operators.collect(model, osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    operators.setPause(true);
+    operators.setPause(this, true);
 
     FindNamedSwitchVisitor findPresentation("Presentation");
     model->accept(findPresentation);
@@ -747,6 +821,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
     }
     //else  OSG_NOTICE<<"SlideEventHandler::handle() "<<ea.getTime()<<std::endl;
 
+    _normalizedMousePosition.set(ea.getXnormalized(), ea.getYnormalized());
 
     if (ea.getHandled()) return false;
 
@@ -890,7 +965,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 #if 0
                     resetUpdateCallbackActivity(ALL_OBJECTS);
 #endif
-                    _activeOperators.setPause(_pause);
+                    _activeOperators.setPause(this, _pause);
                 }
 
                 return true;
@@ -904,7 +979,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 #if 0
                     resetUpdateCallbackActivity(ALL_OBJECTS);
 #endif
-                    _activeOperators.setPause(_pause);
+                    _activeOperators.setPause(this, _pause);
                 }
                 return true;
 
@@ -919,7 +994,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 #if 0
                 resetUpdateCallbacks(ALL_OBJECTS);
 #endif
-                _activeOperators.reset();
+                _activeOperators.reset(this);
                 return true;
             }
 /*
@@ -1221,7 +1296,7 @@ bool SlideEventHandler::previousLayer()
 void SlideEventHandler::updateOperators()
 {
     _activeOperators.collect(_slideSwitch.get());
-    _activeOperators.process();
+    _activeOperators.process(this);
 
     if (_viewer.valid())
     {

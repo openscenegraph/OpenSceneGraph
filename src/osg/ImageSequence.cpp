@@ -306,7 +306,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             }
             else
             {
-                OSG_NOTICE<<"ImageSequence::update(..) Same index."<<std::endl;
+                // OSG_NOTICE<<"ImageSequence::update(..) Same index."<<std::endl;
             }
         }
 

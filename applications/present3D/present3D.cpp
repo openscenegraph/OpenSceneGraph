@@ -402,6 +402,17 @@ int main( int argc, char **argv )
         doSetViewer = false;
     }
 
+    const char* p3dDevice = getenv("P3D_DEVICE");
+    if (p3dDevice)
+    {
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(p3dDevice);
+        if (dev.valid())
+        {
+            viewer.addDevice(dev.get());
+        }
+    }
+
+
     std::string device;
     while (arguments.read("--device", device))
     {

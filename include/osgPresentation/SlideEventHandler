@@ -15,6 +15,8 @@
 
 #include <osg/Switch>
 #include <osg/Timer>
+#include <osg/ValueObject>
+#include <osg/ImageSequence>
 
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
@@ -194,6 +196,69 @@ protected:
 
 };
 
+class PropertyManager : protected osg::Object
+{
+public:
+    
+    PropertyManager() {}
+    PropertyManager(const PropertyManager& pm, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(pm,copyop) {}
+
+    META_Object(osgPresentation, PropertyManager)
+    
+    /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
+        * To use this template method you need to include the osg/ValueObject header.*/
+    template<typename T>
+    bool getProperty(const std::string& name, T& value) const
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return getUserValue(name, value);
+    }
+
+    /** Convinience method that creates the osg::TemplateValueObject<T> to store the
+        * specified value and adds it as a named UserObject.
+        * To use this template method you need to include the osg/ValueObject header. */
+    template<typename T>
+    void setProperty(const std::string& name, const T& value)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return setUserValue(name, value);
+    }
+
+    int ref() const { return osg::Referenced::ref(); }
+    int unref() const { return osg::Referenced::unref(); }
+    
+protected:
+
+    mutable OpenThreads::Mutex _mutex;
+
+};
+
+
+struct OSGPRESENTATION_EXPORT ImageSequenceUpdateCallback : public osg::NodeCallback
+{
+    ImageSequenceUpdateCallback(osg::ImageSequence* is, PropertyManager* pm, const std::string& propertyName):
+        _imageSequence(is),
+        _propertyManager(pm),
+        _propertyName(propertyName) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
+    osg::ref_ptr<osg::ImageSequence> _imageSequence;
+    osg::ref_ptr<PropertyManager> _propertyManager;
+    std::string _propertyName;
+};
+
+struct OSGPRESENTATION_EXPORT PropertyEventCallback : public osgGA::GUIEventHandler
+{
+    PropertyEventCallback(PropertyManager* pm):
+        _propertyManager(pm) {}
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
+
+    osg::ref_ptr<PropertyManager> _propertyManager;
+};
+
 class OSGPRESENTATION_EXPORT SlideEventHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -269,9 +334,6 @@ public:
     void setRequestReload(bool flag);
     bool getRequestReload() const { return _requestReload; }
 
-    void setNormalizedMousePosition(const osg::Vec2& pos) { _normalizedMousePosition = pos; }
-    const osg::Vec2& getNormalizedMousePosition() const { return _normalizedMousePosition; }
-
 protected:
 
     ~SlideEventHandler() {}
@@ -326,8 +388,6 @@ protected:
     osg::ref_ptr<CompileSlideCallback>      _compileSlideCallback;
 
     bool                                    _requestReload;
-
-    osg::Vec2                               _normalizedMousePosition;
 };
 
 }

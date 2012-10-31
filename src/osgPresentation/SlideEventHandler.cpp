@@ -57,6 +57,40 @@ void LayerAttributes::callLeaveCallbacks(osg::Node* node)
     }
 }
 
+void ImageSequenceUpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    float x;
+    if (_propertyManager->getProperty(_propertyName,x))
+    {
+        double xMin = -1.0;
+        double xMax = 1.0;
+        double position = ((double)x-xMin)/(xMax-xMin)*_imageSequence->getLength();
+        
+        _imageSequence->seek(position);
+    }
+    else
+    {
+        OSG_INFO<<"ImageSequenceUpdateCallback::operator() Could not find property : "<<_propertyName<<std::endl;
+    }
+    
+    // note, callback is responsible for scenegraph traversal so
+    // they must call traverse(node,nv) to ensure that the
+    // scene graph subtree (and associated callbacks) are traversed.
+    traverse(node,nv);
+}
+
+
+bool PropertyEventCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+{
+    _propertyManager->setProperty("mouse.x",ea.getX());
+    _propertyManager->setProperty("mouse.x_normalized",ea.getXnormalized());
+    _propertyManager->setProperty("mouse.y",ea.getX());
+    _propertyManager->setProperty("mouse.y_normalized",ea.getYnormalized());
+
+    return false;
+}
+
+
 
 struct InteractiveImageSequenceOperator : public ObjectOperator
 {
@@ -90,10 +124,7 @@ struct InteractiveImageSequenceOperator : public ObjectOperator
 
     void set(SlideEventHandler* seh)
     {
-        OSG_NOTICE<<"Mouse x position is : "<<seh->getNormalizedMousePosition().x()<<std::endl;
-        double position = (static_cast<double>(seh->getNormalizedMousePosition().x())+1.0)*0.5*_imageSequence->getLength();
-        
-        _imageSequence->seek(position);
+        OSG_NOTICE<<"InteractiveImageSequenceOperator::set(..)"<<std::endl;
     }
 
     osg::ref_ptr<osg::ImageSequence>  _imageSequence;
@@ -694,8 +725,7 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _timeDelayOnNewSlideWithMovies(0.25f),
     _minimumTimeBetweenKeyPresses(0.25),
     _timeLastKeyPresses(-1.0),
-    _requestReload(false),
-    _normalizedMousePosition(0.0f,0.0f)
+    _requestReload(false)
 {
     s_seh = this;
 }
@@ -789,7 +819,6 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
     return _timePerSlide;
 }
 
-
 void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
@@ -820,8 +849,6 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         OSG_NOTICE<<"Assigned viewer. to SlideEventHandler"<<std::endl;
     }
     //else  OSG_NOTICE<<"SlideEventHandler::handle() "<<ea.getTime()<<std::endl;
-
-    _normalizedMousePosition.set(ea.getXnormalized(), ea.getYnormalized());
 
     if (ea.getHandled()) return false;
 

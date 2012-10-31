@@ -156,6 +156,9 @@ SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
 {
     const osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
 
+    _propertyManager = new osgPresentation::PropertyManager;
+    _propertyEventCallback = new osgPresentation::PropertyEventCallback(_propertyManager.get());
+
     _slideHeight = ds->getScreenHeight();
     _slideWidth = ds->getScreenWidth();
     _slideDistance = ds->getScreenDistance();
@@ -263,6 +266,10 @@ void SlideShowConstructor::createPresentation()
 
     if (_loopPresentation) _root->addDescription("loop");
     if (_autoSteppingActive) _root->addDescription("auto");
+
+    //_root->addEventCallback(_propertyEventCallback.get());
+
+    _presentationSwitch->setEventCallback(_propertyEventCallback.get());
 }
 
 LayerAttributes* SlideShowConstructor::getOrCreateLayerAttributes(osg::Node* node)
@@ -1101,6 +1108,12 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         pictureStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
     }
 
+    osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(image.get());
+    if (imageSequence && imageData.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+    {
+        subgraph->setUpdateCallback(new osgPresentation::ImageSequenceUpdateCallback(imageSequence, _propertyManager.get(), "mouse.x_normalized"));
+    }
+        
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
     {
@@ -1115,7 +1128,6 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
         subgraph = animation_transform;
     }
-
 
     // attached any animation
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
@@ -1282,6 +1294,12 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     osg::Group* subgraph = new osg::Group;
     subgraph->addChild(pictureLeft);
     subgraph->addChild(pictureRight);
+
+    osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(imageLeft.get());
+    if (imageSequence && imageDataLeft.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+    {
+        subgraph->setUpdateCallback(new osgPresentation::ImageSequenceUpdateCallback(imageSequence, _propertyManager.get(), "mouse.x_normalized"));
+    }
 
     // attach any meterial animation.
     if (positionData.requiresMaterialAnimation())

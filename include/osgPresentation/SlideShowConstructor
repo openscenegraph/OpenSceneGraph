@@ -521,6 +521,9 @@ protected:
     std::string _presentationName;
     double      _presentationDuration;
 
+    osg::ref_ptr<osgPresentation::PropertyManager> _propertyManager;
+    osg::ref_ptr<osgPresentation::PropertyEventCallback> _propertyEventCallback;
+    
     osg::ref_ptr<osg::Group>        _root;
     osg::ref_ptr<osg::Switch>       _presentationSwitch;
 

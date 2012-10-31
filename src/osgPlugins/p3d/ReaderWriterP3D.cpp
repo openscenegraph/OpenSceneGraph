@@ -2179,7 +2179,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
             {
                 osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler;
                 seh->set(presentation_node.get());
-                presentation_node->setEventCallback(seh);
+                presentation_node->addEventCallback(seh);
             }
         }
         return presentation_node.release();

@@ -339,6 +339,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         int i = int(time/_timePerImage);
         if ((i>=int(_images.size()) || !_images[i]))
         {
+             i = osg::clampTo<int>(i, 0, _fileNames.size()-1);
              if (_filesRequested.count(_fileNames[i])==0)
              {
                  OSG_NOTICE<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;

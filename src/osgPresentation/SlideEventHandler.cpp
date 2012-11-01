@@ -82,11 +82,19 @@ void ImageSequenceUpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* 
 
 bool PropertyEventCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
-    _propertyManager->setProperty("mouse.x",ea.getX());
-    _propertyManager->setProperty("mouse.x_normalized",ea.getXnormalized());
-    _propertyManager->setProperty("mouse.y",ea.getX());
-    _propertyManager->setProperty("mouse.y_normalized",ea.getYnormalized());
 
+    bool mouseEvent =  (ea.getEventType()==osgGA::GUIEventAdapter::MOVE ||
+                        ea.getEventType()==osgGA::GUIEventAdapter::DRAG ||
+                        ea.getEventType()==osgGA::GUIEventAdapter::PUSH ||
+                        ea.getEventType()==osgGA::GUIEventAdapter::RELEASE);
+    if(mouseEvent)
+    {    
+        _propertyManager->setProperty("mouse.x",ea.getX());
+        _propertyManager->setProperty("mouse.x_normalized",ea.getXnormalized());
+        _propertyManager->setProperty("mouse.y",ea.getX());
+        _propertyManager->setProperty("mouse.y_normalized",ea.getYnormalized());
+    }
+    
     return false;
 }
 

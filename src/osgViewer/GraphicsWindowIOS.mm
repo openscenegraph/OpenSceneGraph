@@ -871,7 +871,8 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     // Attach view to window
     [_window addSubview: _view];
-    _window.rootViewController = _viewController;
+    if ([_window isKindOfClass:[UIWindow class]])
+        _window.rootViewController = _viewController;
     [theView release];
     
     //if we own the window also make it visible

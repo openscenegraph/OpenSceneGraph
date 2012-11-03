@@ -397,6 +397,12 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     osg::ref_ptr<osg::RefMatrix> matrix = _modelStack.empty() ? new osg::RefMatrix() : new osg::RefMatrix(*_modelStack.back());
     transform.computeLocalToWorldMatrix(*matrix,this);
 
+    // We want to ignore the view matrix if the transform is an absolute reference
+    if (transform.getReferenceFrame() != osg::Transform::RELATIVE_RF)
+    {
+        pushViewMatrix(new osg::RefMatrix());
+    }
+
     pushModelMatrix(matrix.get());
 
     // now push an new intersector clone transform to the new local coordinates
@@ -408,6 +414,11 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     pop_clone();
 
     popModelMatrix();
+
+    if (transform.getReferenceFrame() != osg::Transform::RELATIVE_RF)
+    {
+        popViewMatrix();
+    }
 
     // tidy up an cached cull variables in the current intersector.
     leave();

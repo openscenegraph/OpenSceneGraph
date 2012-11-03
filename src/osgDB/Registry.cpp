@@ -317,7 +317,7 @@ Registry::Registry()
 
 #endif
 
-#if defined(DARWIN_QTKIT)
+#if defined(USE_QTKIT)
     addFileExtensionAlias("mov",  "QTKit");
     addFileExtensionAlias("mp4",  "QTKit");
     addFileExtensionAlias("mov",  "QTKit");
@@ -326,7 +326,6 @@ Registry::Registry()
     addFileExtensionAlias("mpv",  "QTKit");
     addFileExtensionAlias("m4v",  "QTKit");
     addFileExtensionAlias("3gp",  "QTKit");
-    addFileExtensionAlias("live", "QTKit");
     // Requires Perian
     addFileExtensionAlias("avi",  "QTKit");
     addFileExtensionAlias("xvid",  "QTKit");
@@ -347,8 +346,8 @@ Registry::Registry()
     addFileExtensionAlias("tga",  "qt");
     addFileExtensionAlias("flv",  "qt");
     addFileExtensionAlias("dv",   "qt");
-    #if !defined(DARWIN_QTKIT)
-
+    
+    #if !defined(USE_QTKIT)
         addFileExtensionAlias("mov",  "qt");
         addFileExtensionAlias("avi",  "qt");
         addFileExtensionAlias("mpg",  "qt");
@@ -380,7 +379,7 @@ Registry::Registry()
     // support QuickTime for Windows
     // Logic error here. It is possible for Apple to not define Quicktime and end up in
     // this Quicktime for Windows block. So add an extra check to avoid QTKit clashes.
-    #if defined(USE_QUICKTIME) && !defined(DARWIN_QTKIT)
+    #if defined(USE_QUICKTIME) && !defined(USE_QTKIT)
 
         addFileExtensionAlias("mov",  "qt");
         addFileExtensionAlias("live", "qt");
@@ -388,6 +387,14 @@ Registry::Registry()
         addFileExtensionAlias("avi",  "qt");
     #endif
 #endif
+
+    #if defined(USE_AV_FOUNDATION)
+        addFileExtensionAlias("mov",  "AVFoundation");
+        addFileExtensionAlias("mpg",  "AVFoundation");
+        addFileExtensionAlias("mpv",  "AVFoundation");
+        addFileExtensionAlias("mp4",  "AVFoundation");
+        addFileExtensionAlias("m4v",  "AVFoundation");
+    #endif
 
     // remove geo to lwo alias as the new Carbon Graphics GEO format
     // also uses the .geo. It is still possible to load light wave .geo

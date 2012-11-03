@@ -59,6 +59,7 @@
 using namespace osgPresentation;
 
 #define USE_CLIENT_STORAGE_HINT 0
+#define USE_TEXTURE_FROM_VIDEO_PLUGIN 1
 
 class SetToTransparentBin : public osg::NodeVisitor
 {
@@ -154,6 +155,9 @@ SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _options(options)
 {
     const osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+
+    _propertyManager = new osgPresentation::PropertyManager;
+    _propertyEventCallback = new osgPresentation::PropertyEventCallback(_propertyManager.get());
 
     _slideHeight = ds->getScreenHeight();
     _slideWidth = ds->getScreenWidth();
@@ -262,6 +266,10 @@ void SlideShowConstructor::createPresentation()
 
     if (_loopPresentation) _root->addDescription("loop");
     if (_autoSteppingActive) _root->addDescription("auto");
+
+    //_root->addEventCallback(_propertyEventCallback.get());
+
+    _presentationSwitch->setEventCallback(_propertyEventCallback.get());
 }
 
 LayerAttributes* SlideShowConstructor::getOrCreateLayerAttributes(osg::Node* node)
@@ -770,7 +778,7 @@ void SlideShowConstructor::findImageStreamsAndAddCallbacks(osg::Node* node)
 osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3& pos, const osg::Vec4& rotation, float width, float height, osg::Image* image, bool& usedTextureRectangle)
 {
     osg::Geometry* pictureQuad = 0;
-    osg::Texture* texture = 0;
+    osg::ref_ptr<osg::Texture> texture = 0;
     osg::StateSet* stateset = 0;
 
     osg::Vec3 positionVec = pos;
@@ -782,7 +790,15 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     heightVec = heightVec*rotationMatrix;
 
     osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
-
+    
+    // let the video-plugin create a texture for us, if supported
+    #if USE_TEXTURE_FROM_VIDEO_PLUGIN
+    if(imageStream)
+    {
+        texture = imageStream->createSuitableTexture();
+    }
+    #endif
+    
     bool flipYAxis = image->getOrigin()==osg::Image::TOP_LEFT;
 
 #if 1
@@ -798,50 +814,47 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     // pass back info on wether texture 2D is used.
     usedTextureRectangle = useTextureRectangle;
 
-    if (useTextureRectangle)
+    if (!texture)
     {
-        pictureQuad = osg::createTexturedQuadGeometry(positionVec,
-                                           widthVec,
-                                           heightVec,
-                                           0.0f, flipYAxis ? image->t() : 0.0f,
-                                           image->s(), flipYAxis ? 0.0f : image->t());
+        if (useTextureRectangle)
+        {
+            texture = new osg::TextureRectangle(image);
+        }
+        else
+        {
+            texture = new osg::Texture2D(image);
 
-        stateset = pictureQuad->getOrCreateStateSet();
-
-        texture = new osg::TextureRectangle(image);
-        stateset->setTextureAttributeAndModes(0,
-                    texture,
-                    osg::StateAttribute::ON);
-
-
-
+            texture->setResizeNonPowerOfTwoHint(false);
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    #if USE_CLIENT_STORAGE_HINT        
+            texture->setClientStorageHint(true);
+    #endif
+            
+        }
     }
-    else
+    if (texture)
     {
+        float t(0), l(0);
+        float r = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->s() : 1;
+        float b = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->t() : 1;
+        
+        if (flipYAxis)
+            std::swap(t,b);
+        
         pictureQuad = osg::createTexturedQuadGeometry(positionVec,
-                                           widthVec,
-                                           heightVec,
-                                           0.0f, flipYAxis ? 1.0f : 0.0f,
-                                           1.0f, flipYAxis ? 0.0f : 1.0f);
-
+                                               widthVec,
+                                               heightVec,
+                                               l, t, r, b);
+        
         stateset = pictureQuad->getOrCreateStateSet();
-
-        texture = new osg::Texture2D(image);
-
-        texture->setResizeNonPowerOfTwoHint(false);
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-#if USE_CLIENT_STORAGE_HINT        
-        texture->setClientStorageHint(true);
-#endif
         stateset->setTextureAttributeAndModes(0,
-                    texture,
-                    osg::StateAttribute::ON);
-
+                        texture,
+                        osg::StateAttribute::ON);
     }
-
+    
     if (!pictureQuad) return 0;
-
+    
     if (imageStream)
     {
         imageStream->pause();
@@ -873,11 +886,58 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
     std::string foundFile = filename;
 
-    // check for wild cards
-    if (filename.find('*')!=std::string::npos)
+    if (imageData.imageSequence)
     {
-        OSG_INFO<<"Expanding wildcard "<<std::endl;
-        filenames = osgDB::expandWildcardsInFilename(filename);
+        // check for wild cards
+        if (filename.find('*')!=std::string::npos)
+        {
+            OSG_INFO<<"Expanding wildcard "<<std::endl;
+            filenames = osgDB::expandWildcardsInFilename(filename);
+        }
+        else
+        {
+            std::string foundFile = filename;
+            osgDB::FileType fileType = osgDB::fileType(foundFile);
+            if (fileType == osgDB::FILE_NOT_FOUND)
+            {
+                foundFile = findFileAndRecordPath(foundFile);
+                fileType = osgDB::fileType(foundFile);
+            }
+
+            if (fileType == osgDB::DIRECTORY)
+            {
+                OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
+
+                filenames = osgDB::getDirectoryContents(foundFile);
+
+                // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
+                for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                    itr != filenames.end();
+                    ++itr)
+                {
+                    *itr = foundFile + osgDB::getNativePathSeparator() + *itr;
+                }
+
+                // prune any directory entries from the list.
+                for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+                    itr != filenames.end();
+                    )
+                {
+                    if (osgDB::fileType(*itr)!=osgDB::REGULAR_FILE)
+                    {
+                        itr = filenames.erase(itr);
+                    }
+                    else
+                    {
+                        ++itr;
+                    }
+                }
+            }
+            else
+            {
+                filenames.push_back(foundFile);
+            }
+        }
     }
     else
     {
@@ -888,42 +948,9 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
             foundFile = findFileAndRecordPath(foundFile);
             fileType = osgDB::fileType(foundFile);
         }
-
-        if (fileType == osgDB::DIRECTORY)
-        {
-            OSG_INFO<<"Reading directory "<<foundFile<<std::endl;
-
-            filenames = osgDB::getDirectoryContents(foundFile);
-
-            // need to insert the directory path in front of the filenames so it's relative to the appropriate directory.
-            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
-                itr != filenames.end();
-                ++itr)
-            {
-                *itr = foundFile + osgDB::getNativePathSeparator() + *itr;
-            }
-
-            // prune any directory entries from the list.
-            for(osgDB::DirectoryContents::iterator itr = filenames.begin();
-                itr != filenames.end();
-                )
-            {
-                if (osgDB::fileType(*itr)!=osgDB::REGULAR_FILE)
-                {
-                    itr = filenames.erase(itr);
-                }
-                else
-                {
-                    ++itr;
-                }
-            }
-        }
-        else
-        {
-            filenames.push_back(foundFile);
-        }
+        filenames.push_back(foundFile);
     }
-
+    
     if (filenames.empty()) return 0;
 
     if (filenames.size()==1)
@@ -982,6 +1009,11 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
                                                imageSequence->getImages().size());
 
             imageSequence->setLength(double(maxNum)*(1.0/imageData.fps));
+        }
+
+        if (imageData.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+        {
+            imageSequence->setName("USE_MOUSE_X_POSITION");
         }
 
         imageSequence->play();
@@ -1076,6 +1108,12 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         pictureStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
     }
 
+    osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(image.get());
+    if (imageSequence && imageData.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+    {
+        subgraph->setUpdateCallback(new osgPresentation::ImageSequenceUpdateCallback(imageSequence, _propertyManager.get(), "mouse.x_normalized"));
+    }
+        
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
     {
@@ -1090,7 +1128,6 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
         subgraph = animation_transform;
     }
-
 
     // attached any animation
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
@@ -1258,6 +1295,12 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     subgraph->addChild(pictureLeft);
     subgraph->addChild(pictureRight);
 
+    osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(imageLeft.get());
+    if (imageSequence && imageDataLeft.imageSequenceInteractionMode==ImageData::USE_MOUSE_X_POSITION)
+    {
+        subgraph->setUpdateCallback(new osgPresentation::ImageSequenceUpdateCallback(imageSequence, _propertyManager.get(), "mouse.x_normalized"));
+    }
+
     // attach any meterial animation.
     if (positionData.requiresMaterialAnimation())
         subgraph = attachMaterialAnimation(subgraph,positionData)->asGroup();
@@ -1282,7 +1325,6 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
         subgraph = animation_transform;
     }
-
 
     // attached any animation
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);

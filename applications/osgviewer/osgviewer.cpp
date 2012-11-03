@@ -28,6 +28,8 @@
 #include <osgGA/TerrainManipulator>
 #include <osgGA/SphericalManipulator>
 
+#include <osgGA/Device>
+
 #include <iostream>
 
 #include <osg/GLExtensions>
@@ -147,6 +149,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
+    arguments.getApplicationUsage()->addCommandLineOption("--device <device-name>","add named device to the viewer");
 
     osgViewer::Viewer viewer(arguments);
 
@@ -180,6 +183,16 @@ int main(int argc, char** argv)
                 url,
                 new osgDB::AuthenticationDetails(username, password)
             );
+        }
+    }
+    
+    std::string device;
+    while(arguments.read("--device", device))
+    {
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        if (dev.valid())
+        {
+            viewer.addDevice(dev.get());
         }
     }
 

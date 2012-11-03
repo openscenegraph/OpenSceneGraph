@@ -80,12 +80,17 @@ void ImagePager::ReadQueue::clear()
 
 void ImagePager::ReadQueue::add(ImagePager::ImageRequest* databaseRequest)
 {
+    // tempo hack to avoid the ImagePager accumulating requests when it can keep up,
+    // note this will mean that only one ImageSequence can be properly managed at one time,
+    // this hack will be removed once a better system for managing expiry of requests is introduced.
+    clear();
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
     
     _requestList.push_back(databaseRequest);
     databaseRequest->_requestQueue = this;
 
-    OSG_INFO<<"ImagePager::ReadQueue::add(..), size()="<<size()<<std::endl;
+    OSG_INFO<<"ImagePager::ReadQueue::add(..), size()="<<_requestList.size()<<std::endl;
 
     updateBlock();
 }
@@ -97,6 +102,8 @@ void ImagePager::ReadQueue::takeFirst(osg::ref_ptr<ImageRequest>& databaseReques
     if (!_requestList.empty())
     {
         sort();
+
+        OSG_INFO<<"ImagePager::ReadQueue::takeFirst(..), size()="<<_requestList.size()<<std::endl;
 
         databaseRequest = _requestList.front();
         databaseRequest->_requestQueue = 0;

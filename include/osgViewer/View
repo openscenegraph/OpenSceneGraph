@@ -24,6 +24,7 @@
 #include <osgGA/CameraManipulator>
 #include <osgGA/EventVisitor>
 #include <osgGA/EventQueue>
+#include <osgGA/Device>
 
 #include <osgViewer/Scene>
 #include <osgViewer/ViewerBase>
@@ -107,6 +108,19 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Get the const View's image pager.*/
         const osgDB::ImagePager* getImagePager() const;
+
+       
+        /** Add a Device.
+         * The Device is polled on each new frame via it's Device::checkEvents() method and any events generated then collected via Device::getEventQueue()*/
+        void addDevice(osgGA::Device* eventSource);
+
+        /** Remove a Device. /*/
+        void removeDevice(osgGA::Device* eventSource);
+
+        typedef std::vector< osg::ref_ptr<osgGA::Device> > Devices;
+
+        Devices& getDevices() { return _eventSources; }
+        const Devices& getDevices() const { return _eventSources; }
 
 
         /* Set the EventQueue that the View uses to integrate external non window related events.*/
@@ -249,6 +263,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
 
         osg::Timer_t                            _startTick;
+
+        Devices                            _eventSources;
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;

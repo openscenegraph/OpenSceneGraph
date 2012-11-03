@@ -63,4 +63,10 @@ IF(APPLE)
             SET(QUICKTIME_FOUND "NO")
         ENDIF()
     ENDIF()
+    # Disable quicktime for >= 10.7, as it's officially deprecated
+    
+    IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.7" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9")
+        MESSAGE("disabling quicktime because it's not supported by the selected SDK ${OSG_OSX_SDK_NAME}")
+        SET(QUICKTIME_FOUND "NO")
+    ENDIF()
 ENDIF()

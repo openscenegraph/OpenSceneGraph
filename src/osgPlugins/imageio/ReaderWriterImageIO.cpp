@@ -336,6 +336,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         //
         case 16:
         case 32:
+        case 64:
         {
 
             internal_format = GL_RGBA8;
@@ -501,7 +502,8 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         {
             bitmap_info = kCGImageAlphaNone;
             target_bytes_per_row = (image_width * 8 + 7)/8;
-            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+            color_space = CGColorSpaceCreateDeviceGray();
             if(NULL == color_space)
             {
                 return NULL;
@@ -584,8 +586,9 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         {
             bitmap_info = kCGImageAlphaNoneSkipFirst;
             target_bytes_per_row = (image_width * 8 * 4 + 7)/8;
-            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-            if(NULL == color_space)
+            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+            color_space = CGColorSpaceCreateDeviceRGB();
+             if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
@@ -638,7 +641,8 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         {
             bitmap_info = kCGImageAlphaPremultipliedLast;
             target_bytes_per_row = osg_image.getRowSizeInBytes();
-            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+            color_space = CGColorSpaceCreateDeviceRGB();
             if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
@@ -686,7 +690,8 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             }
 
             target_bytes_per_row = osg_image.getRowSizeInBytes();
-            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+            color_space = CGColorSpaceCreateDeviceRGB();
             if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;

@@ -51,19 +51,13 @@ daeReader::~daeReader()
 {
 }
 
-bool daeReader::convert( const std::string &fileURI )
+bool daeReader::processDocument( const std::string& fileURI)
 {
-    // Clear caches
-    _geometryMap.clear();
-    _materialMap.clear();
-    _materialMap2.clear();
 
     daeElement *colladaElement;
 
 
     daeInt count, result;
-
-    _document = _dae->open(fileURI);
 
     if (!_document)
     {
@@ -276,6 +270,43 @@ bool daeReader::convert( const std::string &fileURI )
     }
 
     return true;
+}
+
+void daeReader::clearCaches ()
+{
+    _geometryMap.clear();
+    _materialMap.clear();
+    _materialMap2.clear();
+}
+
+bool daeReader::convert( std::istream& fin )
+{
+    clearCaches();
+
+    // set fileURI to null device
+    const std::string fileURI("from std::istream");
+
+    // get the size of the file and rewind
+    fin.seekg(0, std::ios::end);
+    std::streampos length = fin.tellg();
+    fin.seekg(0, std::ios::beg);
+
+    // use a vector as buffer and read from stream
+    std::vector<char> buffer(length);
+    fin.read(&buffer[0], length);
+
+    _document = _dae->openFromMemory(fileURI, buffer.data());
+
+    return processDocument (fileURI);
+}
+
+bool daeReader::convert( const std::string &fileURI )
+{
+    clearCaches();
+
+    _document = _dae->open(fileURI);
+
+    return processDocument (fileURI);
 }
 
 void daeReader::addChild(osg::Group* group, osg::Node* node)

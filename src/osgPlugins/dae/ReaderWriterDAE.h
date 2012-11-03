@@ -37,9 +37,10 @@ public:
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
 
-    ReadResult readNode(const std::string&, const Options*) const;
+    ReadResult readNode(std::istream&, const Options* = NULL) const;
+    ReadResult readNode(const std::string&, const Options* = NULL) const;
 
-    WriteResult writeNode(const osg::Node&, const std::string&, const Options*) const;
+    WriteResult writeNode(const osg::Node&, const std::string&, const Options* = NULL) const;
 
     static std::string ConvertFilePathToColladaCompatibleURI(const std::string& FilePath);
     static std::string ConvertColladaCompatibleURIToFilePath(const std::string& uri);

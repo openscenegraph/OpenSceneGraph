@@ -42,9 +42,8 @@ REGISTER_OBJECT_WRAPPER( Object,
     END_ENUM_SERIALIZER();  // _dataVariance
 
     ADD_USER_SERIALIZER( UserData );  // _userData, deprecated
-
-    UPDATE_TO_VERSION( 77 )
     {
+        UPDATE_TO_VERSION_SCOPED( 77 )
         REMOVE_SERIALIZER( UserData );
         ADD_OBJECT_SERIALIZER( UserDataContainer, osg::UserDataContainer, NULL );
     }

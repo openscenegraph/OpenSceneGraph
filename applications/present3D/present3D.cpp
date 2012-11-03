@@ -401,6 +401,47 @@ int main( int argc, char **argv )
         viewer.readConfiguration(configurationFile);
         doSetViewer = false;
     }
+
+    const char* p3dDevice = getenv("P3D_DEVICE");
+    if (p3dDevice)
+    {
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(p3dDevice);
+        if (dev.valid())
+        {
+            viewer.addDevice(dev.get());
+        }
+    }
+
+
+    std::string device;
+    while (arguments.read("--device", device))
+    {
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        if (dev.valid())
+        {
+            viewer.addDevice(dev.get());
+        }
+    }
+
+    if (arguments.read("--http-control"))
+    {
+    
+        std::string server_address = "localhost";
+        std::string server_port = "8080";
+        std::string document_root = "htdocs";
+
+        while (arguments.read("--http-server-address", server_address)) {}
+        while (arguments.read("--http-server-port", server_port)) {}
+        while (arguments.read("--http-document-root", document_root)) {}
+
+        osg::ref_ptr<osgDB::Options> device_options = new osgDB::Options("documentRegisteredHandlers");
+
+        osg::ref_ptr<osgGA::Device> rest_http_device = osgDB::readFile<osgGA::Device>(server_address+":"+server_port+"/"+document_root+".resthttp", device_options);
+        if (rest_http_device.valid())
+        {
+            viewer.addDevice(rest_http_device.get());
+        }
+    }
     
     // set up stereo masks
     viewer.getCamera()->setCullMask(0xffffffff);

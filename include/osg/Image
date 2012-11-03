@@ -35,9 +35,7 @@
     #define GL_UNSIGNED_SHORT_4_4_4_4       0x8033
     #define GL_UNSIGNED_SHORT_4_4_4_4_REV   0x8365
     #define GL_UNSIGNED_SHORT_5_5_5_1       0x8034
-#ifndef GL_UNSIGNED_SHORT_1_5_5_5_REV
     #define GL_UNSIGNED_SHORT_1_5_5_5_REV   0x8366
-#endif
     #define GL_UNSIGNED_INT_8_8_8_8         0x8035
     #define GL_UNSIGNED_INT_8_8_8_8_REV     0x8367
     #define GL_UNSIGNED_INT_10_10_10_2      0x8036

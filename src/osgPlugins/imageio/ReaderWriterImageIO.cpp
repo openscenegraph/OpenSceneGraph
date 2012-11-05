@@ -336,6 +336,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         //
         case 16:
         case 32:
+        case 48:
         case 64:
         {
 

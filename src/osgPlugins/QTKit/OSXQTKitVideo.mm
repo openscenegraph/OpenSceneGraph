@@ -101,6 +101,7 @@ void OSXQTKitVideo::initializeQTKit()
                 EnterMovies();
                 QTMovie* movie = [QTMovie movie];
                 // release missing by intent, gets released by the block!
+                movie = NULL;
             });
         }
         else

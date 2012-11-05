@@ -37,11 +37,13 @@ server::server(const std::string& address, const std::string& port,
 
 void server::run()
 {
+  OSG_INFO << "RestHttpDevice :: server::run" << std::endl;
   io_service_pool_.run();
 }
 
 void server::stop()
 {
+  OSG_INFO << "RestHttpDevice :: server::stop" << std::endl;
   io_service_pool_.stop();
 }
 
@@ -49,12 +51,17 @@ void server::handle_accept(const asio::error_code& e)
 {
   if (!e)
   {
+    OSG_INFO << "RestHttpDevice :: server::handle_accept" << std::endl;
     new_connection_->start();
     new_connection_.reset(new connection(
           io_service_pool_.get_io_service(), request_handler_));
     acceptor_.async_accept(new_connection_->socket(),
         boost::bind(&server::handle_accept, this,
           asio::placeholders::error));
+  }
+  else
+  {
+    OSG_WARN << "RestHttpDevice :: server::handle_accept error: " << e.message() << std::endl;
   }
 }
 

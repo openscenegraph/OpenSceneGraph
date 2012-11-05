@@ -12,6 +12,7 @@
 #include <vector>
 #include <boost/bind.hpp>
 #include "request_handler.hpp"
+#include <osg/Notify>
 
 namespace http {
 namespace server {
@@ -21,8 +22,13 @@ connection::connection(asio::io_service& io_service,
   : socket_(io_service),
     request_handler_(handler)
 {
+    OSG_INFO << "RestHttpDevice :: connection::connection" << std::endl;
 }
 
+connection::~connection()
+{
+    OSG_INFO << "RestHttpDevice :: connection::~connection" << std::endl;
+}
 asio::ip::tcp::socket& connection::socket()
 {
   return socket_;
@@ -30,6 +36,8 @@ asio::ip::tcp::socket& connection::socket()
 
 void connection::start()
 {
+  OSG_INFO << "RestHttpDevice :: connection::start" << std::endl;
+  
   socket_.async_read_some(asio::buffer(buffer_),
       boost::bind(&connection::handle_read, shared_from_this(),
         asio::placeholders::error,

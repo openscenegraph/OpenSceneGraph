@@ -364,6 +364,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         }
 
     }
+    
 
     // Sets up a context to be drawn to with image_data as the area to be drawn to
     CGContextRef bitmap_context = CGBitmapContextCreate(
@@ -380,6 +381,9 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     CGContextDrawImage(bitmap_context, the_rect, image_ref);
 
     CGContextRelease(bitmap_context);
+    
+    if (!image_data)
+        return NULL;
 
     //
     // Reverse the premultiplied alpha for avoiding unexpected darker edges
@@ -1173,7 +1177,9 @@ public:
         osg::Image* osg_image = CreateOSGImageFromCGImage(cg_image_ref);
 
         CFRelease(cg_image_ref);
-
+        if (!osg_image)
+            return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
+        
         return osg_image;
     }
 

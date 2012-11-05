@@ -290,7 +290,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             if (_previousAppliedImageIndex<index)
             {
-                OSG_NOTICE<<"ImageSequence::update(..) Moving forward by "<<index-_previousAppliedImageIndex<<std::endl;
+                OSG_DEBUG<<"ImageSequence::update(..) Moving forward by "<<index-_previousAppliedImageIndex<<std::endl;
                 while (index>=0 && !_images[index].valid())
                 {
                     --index;
@@ -298,7 +298,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             }
             else if (_previousAppliedImageIndex>index)
             {
-                OSG_NOTICE<<"ImageSequence::update(..) Moving back by "<<_previousAppliedImageIndex-index<<std::endl;
+                OSG_DEBUG<<"ImageSequence::update(..) Moving back by "<<_previousAppliedImageIndex-index<<std::endl;
                 while (index<static_cast<int>(_images.size()) && !_images[index].valid())
                 {
                     ++index;
@@ -342,13 +342,13 @@ void ImageSequence::update(osg::NodeVisitor* nv)
              i = osg::clampTo<int>(i, 0, _fileNames.size()-1);
              if (_filesRequested.count(_fileNames[i])==0)
              {
-                 OSG_NOTICE<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
+                 OSG_INFO<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
                 //_filesRequested.insert(_fileNames[i]);
                 irh->requestImageFile(_fileNames[i], this, i, time, fs);
              }
              else
              {
-                 OSG_NOTICE<<"File already requested, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
+                 OSG_DEBUG<<"File already requested, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
              }
         }
     }

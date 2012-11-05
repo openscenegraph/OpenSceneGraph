@@ -39,7 +39,7 @@ public:
 
   /// Start the first asynchronous operation for the connection.
   void start();
-
+  ~connection();
 private:
   /// Handle completion of a read operation.
   void handle_read(const asio::error_code& e,

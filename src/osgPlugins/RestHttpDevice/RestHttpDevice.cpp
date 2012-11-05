@@ -22,10 +22,10 @@ public:
     StandardRequestHandler() : RestHttpDevice::RequestHandler("") {}
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        std::cout << "unhandled request: " << full_request_path << std::endl;
+        OSG_NOTICE << "RestHttpDevice :: unhandled request: " << full_request_path << std::endl;
         for(Arguments::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         {
-            std::cout << "    " << i->first << ": " << i->second << std::endl;
+            OSG_NOTICE << "RestHttpDevice ::    " << i->first << ": " << i->second << std::endl;
         }
         
         return false;
@@ -359,14 +359,15 @@ bool RestHttpDevice::handleRequest(const std::string& in_request_path,  http::se
 
 void RestHttpDevice::describeTo(std::ostream& out) const
 {
-    out << "Server:        " << _serverAddress << std::endl;
-    out << "Port:          " << _serverPort << std::endl;
-    out << "Document-Root: " << _documentRoot << std::endl;
+    out << "RestHttpDevice :: Server:        " << _serverAddress << std::endl;
+    out << "RestHttpDevice :: Port:          " << _serverPort << std::endl;
+    out << "RestHttpDevice :: Document-Root: " << _documentRoot << std::endl;
     out << std::endl;
     
     for(RequestHandlerMap::const_iterator i = _map.begin(); i != _map.end(); ++i)
     {
         const RequestHandler* handler(i->second.get());
+        out << "RestHttpDevice :: ";
         handler->describeTo(out);
         out << std::endl;
     }

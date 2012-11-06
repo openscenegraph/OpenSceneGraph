@@ -651,7 +651,7 @@ int main(int argc, char** argv)
     {
         movie_event_handler = new MovieEventHandler();
 
-        unsigned int num_files_per_row = std::max(osg::round(sqrt(static_cast<float>(std::min(max_videos, static_cast<unsigned int>(files.size()))))), 1.0f);
+        unsigned int num_files_per_row = std::max(osg::round(sqrt(static_cast<double>(std::min(max_videos, static_cast<unsigned int>(files.size()))))), 1.0);
         static const float new_row_at = num_files_per_row * desired_height * 16 / 9.0;
                 
         unsigned int num_videos = 0;

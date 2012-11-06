@@ -376,7 +376,9 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         color_space,
         bitmap_info
     );
-
+    
+    CGContextTranslateCTM(bitmap_context, 0, the_height);
+    CGContextScaleCTM(bitmap_context, 1.0, -1.0);
     // Draws the image into the context's image_data
     CGContextDrawImage(bitmap_context, the_rect, image_ref);
 
@@ -385,42 +387,15 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     if (!image_data)
         return NULL;
 
-    //
-    // Reverse the premultiplied alpha for avoiding unexpected darker edges
-    // by Tatsuhiro Nishioka (based on SDL's workaround on the similar issue)
-    // http://bugzilla.libsdl.org/show_bug.cgi?id=868
-    //
-    if (bits_per_pixel > 8 && (bitmap_info & kCGBitmapAlphaInfoMask) == kCGImageAlphaPremultipliedFirst) {
-        int i, j;
-        GLubyte *pixels = (GLubyte *)image_data;
-        for (i = the_height * the_width; i--; ) {
-
-#if __BIG_ENDIAN__
-            // That value is a temporary one and only needed for endianess conversion
-            GLuint *value = (GLuint *)pixels;
-            //
-            // swap endian of each pixel for avoiding weird colors on ppc macs
-            // by Tatsuhiro Nishioka
-            // FIXME: I've tried many combinations of pixel_format, internal_format, and data_type
-            // but none worked well. Therefore I tried endian swapping, which seems working with gif,png,tiff,tga,and psd.
-            // (for grayscaled tga and non-power-of-two tga, I can't guarantee since test images (made with Gimp)
-            // get corrupted on Preview.app ...
-            *value = ((*value) >> 24) | (((*value) << 8) & 0x00FF0000) | (((*value) >> 8) & 0x0000FF00) | ((*value) << 24);
-#endif
-            GLubyte alpha = pixels[3];
-            if (alpha) {
-                for (j = 0; j < 3; ++j) {
-                    pixels[j] = (pixels[j] * 255) / alpha;
-                }
-            }
-            pixels += 4;
-        }
-    }
-
-    //
-    // Workaround for ignored alpha channel
-    // by Tatsuhiro Nishioka
-    // FIXME: specifying GL_UNSIGNED_INT_8_8_8_8_REV or GL_UNSIGNED_INT_8_8_8_8 ignores the alpha channel.
+    // alpha is premultiplied with rgba, undo it
+    
+    vImage_Buffer vb;
+    vb.data = image_data;
+    vb.height = the_height;
+    vb.width = the_width;
+    vb.rowBytes = the_width * 4;
+    vImageUnpremultiplyData_RGBA8888(&vb, &vb, 0);
+    
     // changing it to GL_UNSIGNED_BYTE seems working, but I'm not sure if this is a right way.
     //
     data_type = GL_UNSIGNED_BYTE;
@@ -437,7 +412,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         osg::Image::USE_MALLOC_FREE // Assumption: osg_image takes ownership of image_data and will free
     );
 
-    osg_image->flipVertical();
     return osg_image;
 
 

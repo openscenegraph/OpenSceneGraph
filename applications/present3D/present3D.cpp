@@ -133,20 +133,23 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
 {
     public:
 
+        FollowMouseCallback():
+            _mousePostition(0.5,0.5) {}
+
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
         {
             osg::AutoTransform* transform = dynamic_cast<osg::AutoTransform*>(object);
             if (!transform) return false;
 
+            osg::NotifySeverity level = osg::INFO;
+            
             switch(ea.getEventType())
             {
-                case(osgGA::GUIEventAdapter::FRAME):
-                //case(osgGA::GUIEventAdapter::MOVE):
-                //case(osgGA::GUIEventAdapter::DRAG):
-                {
-                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                case(osgGA::GUIEventAdapter::PUSH):
+                case(osgGA::GUIEventAdapter::RELEASE):
+                case(osgGA::GUIEventAdapter::MOVE):
+                case(osgGA::GUIEventAdapter::DRAG):
 
-                    osg::NotifySeverity level = osg::INFO;
                     osg::notify(level)<<std::endl<<"ea.getGraphicsContext()="<<ea.getGraphicsContext()<<std::endl;
                     osg::notify(level)<<"ea.getWindowWidth()="<<ea.getWindowWidth()<<std::endl;
                     osg::notify(level)<<"ea.getWindowHeight()="<<ea.getWindowHeight()<<std::endl;
@@ -157,14 +160,22 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
                     osg::notify(level)<<"ea.getYin()="<<ea.getYmin()<<std::endl;
                     osg::notify(level)<<"ea.getYmax()="<<ea.getYmax()<<std::endl;
 
+                    _mousePostition.set(ea.getXnormalized(), ea.getYnormalized());
+                    break;
+
+                case(osgGA::GUIEventAdapter::FRAME):
+                {
+                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+
+
                     osg::Camera* camera = view->getCamera();
                     osg::Matrix VP =  camera->getViewMatrix() * camera->getProjectionMatrix();
 
                     osg::Matrix inverse_VP;
                     inverse_VP.invert(VP);
 
-                    osg::Vec3d start_eye(ea.getXnormalized(), ea.getYnormalized(), 0.0);
-                    osg::Vec3d end_eye(ea.getXnormalized(), ea.getYnormalized(), 1.0);
+                    osg::Vec3d start_eye(_mousePostition.x(), _mousePostition.y(), 0.0);
+                    osg::Vec3d end_eye(_mousePostition.x(), _mousePostition.y(), 1.0);
 
                     osg::Vec3d start_world = start_eye * inverse_VP;
                     osg::Vec3d end_world = start_eye * inverse_VP;
@@ -206,6 +217,7 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
             v.visit(*this);
         }
 
+        osg::Vec2d _mousePostition;
 };
 
 osg::Node* createCursorSubgraph(const std::string& filename, float size)

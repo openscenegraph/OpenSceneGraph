@@ -48,8 +48,18 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual void setTimeMultiplier(double tm) { _timeMultiplier = tm; }
         virtual double getTimeMultiplier() const { return _timeMultiplier; }
 
-        typedef std::vector< osg::ref_ptr<osg::Image> >   Images;
-        typedef std::vector< std::string >                FileNames;
+        struct OSG_EXPORT ImageData
+        {
+            ImageData();
+            ImageData(const ImageData& id);
+            ImageData& operator = (const ImageData& id);
+
+            std::string                     _filename;
+            osg::ref_ptr<osg::Image>        _image;
+            osg::ref_ptr<osg::Referenced>   _imageRequest;
+        };
+
+        typedef std::vector<ImageData> ImageDataList;
 
         virtual void seek(double time);
 
@@ -78,11 +88,6 @@ class OSG_EXPORT ImageSequence : public ImageStream
         void setImageFile(unsigned int pos, const std::string& fileName);
         std::string getImageFile(unsigned int pos) const;
 
-        unsigned int getNumImageFiles() const { return _fileNames.size(); }
-
-        FileNames& getFileNames() { return _fileNames; }
-        const FileNames& getFileNames() const { return _fileNames; }
-
         void addImage(osg::Image* image);
 
         void setImage(int s,int t,int r,
@@ -96,24 +101,35 @@ class OSG_EXPORT ImageSequence : public ImageStream
         Image* getImage(unsigned int pos);
         const Image* getImage(unsigned int pos) const;
 
-        unsigned int getNumImages() const { return _images.size(); }
+        unsigned int getNumImageData() const { return _imageDataList.size(); }
 
-        Images& getImages() { return _images; }
-        const Images& getImages() const { return _images; }
+        ImageDataList& getImageDataList() { return _imageDataList; }
+        const ImageDataList& getImageDataList() const { return _imageDataList; }
 
+        
         /** ImageSequence requires a call to update(NodeVisitor*) during the update traversal so return true.*/
         virtual bool requiresUpdateCall() const { return true; }
 
         /** update method for osg::Image subclasses that update themselves during the update traversal.*/
         virtual void update(NodeVisitor* nv);
 
-    protected:
+
+        /** Set the optional osgDB::Options object to use when reading images.*/
+        void setReadOptions(osg::Referenced* options) { _readOptions = options; }
+
+        /** Get the optional osgDB::Options object used when reading images.*/
+        osg::Referenced* getReadOptions() { return _readOptions.get(); }
+
+        /** Get the optional osgDB::Options object used when reading images.*/
+        const osg::Referenced* getReadOptions() const { return _readOptions.get(); }
+
+protected:
 
         virtual ~ImageSequence() {}
 
         virtual void applyLoopingMode();
 
-        void setImageToChild(const osg::Image* image);
+        void setImageToChild(int pos);
 
         void computeTimePerImage();
 
@@ -129,12 +145,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         double                          _timePerImage;
 
         mutable OpenThreads::Mutex      _mutex;
-        FileNames                       _fileNames;
 
-        Images                          _images;
-
-        typedef std::set< std::string > FilesRequested;
-        FilesRequested                  _filesRequested;
+        ImageDataList                   _imageDataList;
 
         int                             _previousAppliedImageIndex;
 
@@ -142,7 +154,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         bool                            _seekTimeSet;
         double                          _seekTime;
 
-
+        osg::ref_ptr<osg::Referenced>       _readOptions;
 
 };
 

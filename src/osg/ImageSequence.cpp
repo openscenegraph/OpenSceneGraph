@@ -22,6 +22,28 @@
 
 using namespace osg;
 
+ImageSequence::ImageData::ImageData()
+{
+}
+
+ImageSequence::ImageData::ImageData(const ImageData& id):
+    _filename(id._filename),
+    _image(id._image),
+    _imageRequest(id._imageRequest)
+{
+}
+
+ImageSequence::ImageData& ImageSequence::ImageData::operator = (const ImageSequence::ImageData& rhs)
+{
+    if (&rhs!=this)
+    {
+        _filename = rhs._filename;
+        _image = rhs._image;
+        _imageRequest = rhs._imageRequest;
+    }
+    return *this;
+}
+
 ImageSequence::ImageSequence()
 {
     _referenceTime = DBL_MAX;
@@ -96,8 +118,7 @@ void ImageSequence::setLength(double length)
 
 void ImageSequence::computeTimePerImage()
 {
-    if (!_fileNames.empty()) _timePerImage = _length / double(_fileNames.size());
-    else if (!_images.empty()) _timePerImage = _length / double(_images.size());
+    if (!_imageDataList.empty()) _timePerImage = _length / double(_imageDataList.size());
     else _timePerImage = _length;
 }
 
@@ -105,20 +126,21 @@ void ImageSequence::setImageFile(unsigned int pos, const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    if (pos>=_fileNames.size()) _fileNames.resize(pos);
-    _fileNames[pos] = fileName;
+    if (pos>=_imageDataList.size()) _imageDataList.resize(pos);
+    _imageDataList[pos]._filename = fileName;
 }
 
 std::string ImageSequence::getImageFile(unsigned int pos) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    return pos<_fileNames.size() ? _fileNames[pos] : std::string();
+    return pos<_imageDataList.size() ? _imageDataList[pos]._filename : std::string();
 }
 
 void ImageSequence::addImageFile(const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    _fileNames.push_back(fileName);
+    _imageDataList.push_back(ImageData());
+    _imageDataList.back()._filename = fileName;
     computeTimePerImage();
 }
 
@@ -126,27 +148,22 @@ void ImageSequence::setImage(unsigned int pos, osg::Image* image)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    OSG_INFO<<"ImageSequence::setImage("<<pos<<","<<image->getFileName()<<")"<<std::endl;
+    if (pos>=_imageDataList.size()) _imageDataList.resize(pos+1);
 
-    if (pos>=_images.size()) _images.resize(pos+1);
-
-    _images[pos] = image;
-
-    // prune from file requested list.
-    FilesRequested::iterator itr = _filesRequested.find(image->getFileName());
-    if (itr!=_filesRequested.end()) _filesRequested.erase(itr);
+    _imageDataList[pos]._image = image;
+    _imageDataList[pos]._filename = image->getFileName();
 }
 
 Image* ImageSequence::getImage(unsigned int pos)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    return pos<_images.size() ? _images[pos].get() : 0;
+    return pos<_imageDataList.size() ? _imageDataList[pos]._image.get() : 0;
 }
 
 const Image* ImageSequence::getImage(unsigned int pos) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    return pos<_images.size() ? _images[pos].get() : 0;
+    return pos<_imageDataList.size() ? _imageDataList[pos]._image.get() : 0;
 }
 
 void ImageSequence::addImage(osg::Image* image)
@@ -156,24 +173,56 @@ void ImageSequence::addImage(osg::Image* image)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     // OSG_NOTICE<<"merging image in order expected : "<<image->getFileName()<<std::endl;
-    _images.push_back(image);
+    _imageDataList.push_back(ImageData());
+    _imageDataList.back()._image = image;
 
     computeTimePerImage();
 
     if (data()==0)
     {
-        setImageToChild(_images.front().get());
+        setImageToChild(_imageDataList.size()-1);
     }
 }
 
-void ImageSequence::setImageToChild(const osg::Image* image)
+void ImageSequence::setImageToChild(int pos)
 {
-    // OSG_NOTICE<<"setImageToChild("<<image<<")"<<std::endl;
-
+    
+    const osg::Image* image = (pos>=0 && pos<static_cast<int>(_imageDataList.size())) ? _imageDataList[pos]._image.get() : 0;
     if (image==0) return;
 
     // check to see if data is changing, if not don't apply
-    if (image->data() == data()) return;
+    if (image->data() == data())
+    {
+        return;
+    }
+
+
+    if (_mode==PAGE_AND_DISCARD_USED_IMAGES && _previousAppliedImageIndex>=0)
+    {
+        if (_previousAppliedImageIndex<pos)
+        {
+            OSG_INFO<<"Moving forward from "<<_previousAppliedImageIndex<<" to "<<pos<<std::endl;
+            while(_previousAppliedImageIndex<pos)
+            {
+                _imageDataList[_previousAppliedImageIndex]._image = 0;
+                OSG_INFO<<"   deleting "<<_previousAppliedImageIndex<<std::endl;
+                ++_previousAppliedImageIndex;
+            }
+        }
+        else if (_previousAppliedImageIndex>pos)
+        {
+            OSG_INFO<<"Moving back from "<<_previousAppliedImageIndex<<" to "<<pos<<std::endl;
+            while(_previousAppliedImageIndex>pos)
+            {
+                _imageDataList[_previousAppliedImageIndex]._image = 0;
+                OSG_INFO<<"   deleting "<<_previousAppliedImageIndex<<std::endl;
+                --_previousAppliedImageIndex;
+            }
+        }        
+    }
+    
+
+    _previousAppliedImageIndex = pos;
 
     setImage(image->s(),image->t(),image->r(),
              image->getInternalTextureFormat(),
@@ -197,7 +246,7 @@ int ImageSequence::imageIndex(double time)
 
     if (time<0.0) return 0;
     int index = int(time/_timePerImage);
-    if (index>=int(_images.size())) return int(_images.size())-1;
+    if (index>=int(_imageDataList.size())) return int(_imageDataList.size())-1;
     return index;
 }
 
@@ -222,6 +271,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     if (_seekTimeSet || _status==PAUSED || _status==INVALID)
     {
         time = _seekTime;
+        useDirectTimeRequest = true;
         _referenceTime =  fs->getSimulationTime() - time/_timeMultiplier;
     }
     else
@@ -247,51 +297,33 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     _seekTime = time;
     _seekTimeSet = false;
 
-    bool pruneOldImages = false;
-
-    switch(_mode)
+    if (irh && _mode==PRE_LOAD_ALL_IMAGES)
     {
-        case(PRE_LOAD_ALL_IMAGES):
+        for(ImageDataList::iterator itr = _imageDataList.begin();
+            itr != _imageDataList.end();
+            ++itr)
         {
-            if (irh && _fileNames.size()>_images.size())
+            if (!(itr->_image) && !(itr->_filename.empty()))
             {
-                FileNames::iterator itr = _fileNames.begin();
-                for(unsigned int i=0;i<_images.size();++i) ++itr;
-
-                for(; itr!=_fileNames.end(); ++itr)
-                {
-                    osg::Image* image = irh->readImageFile(*itr);
-                    _images.push_back(image);
-                }
+                itr->_image = irh->readImageFile(itr->_filename);
             }
-
-            irh = 0;
-            break;
-        }
-        case(PAGE_AND_RETAIN_IMAGES):
-        {
-            break;
-        }
-        case(PAGE_AND_DISCARD_USED_IMAGES):
-        {
-            pruneOldImages = true;
-            break;
         }
     }
 
     int index = int(time/_timePerImage);
     // OSG_NOTICE<<"time= "<<time<<" _timePerImage="<<_timePerImage<<" index="<<index<<" _length="<<_length<<std::endl;
 
-    if (index>=int(_images.size())) index = int(_images.size())-1;
+    if (index>=int(_imageDataList.size())) index = int(_imageDataList.size())-1;
 
-    if (index>=0 && index<int(_images.size()))
+    if (index>=0 && index<int(_imageDataList.size()))
     {
-        if (pruneOldImages)
-        {
+        // need to find the nearest relevant change.
+        if (!_imageDataList[index]._image)
+        {            
             if (_previousAppliedImageIndex<index)
             {
                 OSG_DEBUG<<"ImageSequence::update(..) Moving forward by "<<index-_previousAppliedImageIndex<<std::endl;
-                while (index>=0 && !_images[index].valid())
+                while (index>=0 && !_imageDataList[index]._image.valid())
                 {
                     --index;
                 }
@@ -299,34 +331,16 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             else if (_previousAppliedImageIndex>index)
             {
                 OSG_DEBUG<<"ImageSequence::update(..) Moving back by "<<_previousAppliedImageIndex-index<<std::endl;
-                while (index<static_cast<int>(_images.size()) && !_images[index].valid())
+                while (index<static_cast<int>(_imageDataList.size()) && !_imageDataList[index]._image.valid())
                 {
                     ++index;
                 }
             }
-            else
-            {
-                // OSG_NOTICE<<"ImageSequence::update(..) Same index."<<std::endl;
-            }
         }
-
-        if (index>=0)
+        
+        if (index>=0 && index!=_previousAppliedImageIndex)
         {
-            // OSG_NOTICE<<"at time "<<time<<" setting child = "<<index<<std::endl;
-
-            if (_previousAppliedImageIndex!=index)
-            {
-                if (_previousAppliedImageIndex >= 0 &&
-                    _previousAppliedImageIndex<int(_images.size()) &&
-                    pruneOldImages)
-                {
-                    _images[_previousAppliedImageIndex] = 0;
-                }
-
-                setImageToChild(_images[index].get());
-
-                _previousAppliedImageIndex = index;
-            }
+            setImageToChild(index);
         }
     }
 
@@ -337,19 +351,12 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     if (useDirectTimeRequest)
     {
         int i = int(time/_timePerImage);
-        if ((i>=int(_images.size()) || !_images[i]))
+        if ((i>=int(_imageDataList.size()) || !_imageDataList[i]._image))
         {
-             i = osg::clampTo<int>(i, 0, _fileNames.size()-1);
-             if (_filesRequested.count(_fileNames[i])==0)
-             {
-                 OSG_INFO<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
-                //_filesRequested.insert(_fileNames[i]);
-                irh->requestImageFile(_fileNames[i], this, i, time, fs);
-             }
-             else
-             {
-                 OSG_DEBUG<<"File already requested, entry="<<i<<" : _fileNames[i]="<<_fileNames[i]<<std::endl;
-             }
+             i = osg::clampTo<int>(i, 0, _imageDataList.size()-1);
+
+             OSG_INFO<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
+             irh->requestImageFile(_imageDataList[i]._filename, this, i, time, fs, _imageDataList[i]._imageRequest, _readOptions.get());
         }
     }
     else
@@ -357,19 +364,19 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         double preLoadTime = time + osg::minimum(irh->getPreLoadTime()*_timeMultiplier, _length);
 
         int startLoadIndex = int(time/_timePerImage);
-        if (startLoadIndex>=int(_images.size())) startLoadIndex = int(_images.size())-1;
+        if (startLoadIndex>=int(_imageDataList.size())) startLoadIndex = int(_imageDataList.size())-1;
         if (startLoadIndex<0) startLoadIndex = 0;
 
         int endLoadIndex = int(preLoadTime/_timePerImage);
-        if (endLoadIndex>=int(_fileNames.size()))
+        if (endLoadIndex>=int(_imageDataList.size()))
         {
             if (looping)
             {
-                endLoadIndex -= int(_fileNames.size());
+                endLoadIndex -= int(_imageDataList.size());
             }
             else
             {
-                endLoadIndex = int(_fileNames.size())-1;
+                endLoadIndex = int(_imageDataList.size())-1;
             }
         }
         if (endLoadIndex<0) endLoadIndex = 0;
@@ -378,22 +385,20 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
         if (endLoadIndex<startLoadIndex)
         {
-            for(int i=startLoadIndex; i<int(_fileNames.size()); ++i)
+            for(int i=startLoadIndex; i<int(_imageDataList.size()); ++i)
             {
-                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if (!_imageDataList[i]._image)
                 {
-                    //_filesRequested.insert(_fileNames[i]);
-                    irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
+                    irh->requestImageFile(_imageDataList[i]._filename, this, i, requestTime, fs, _imageDataList[i]._imageRequest, _readOptions.get());
                 }
                 requestTime += _timePerImage;
             }
 
             for(int i=0; i<=endLoadIndex; ++i)
             {
-                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if (!_imageDataList[i]._image)
                 {
-                    //_filesRequested.insert(_fileNames[i]);
-                    irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
+                    irh->requestImageFile(_imageDataList[i]._filename, this, i, requestTime, fs, _imageDataList[i]._imageRequest, _readOptions.get());
                 }
                 requestTime += _timePerImage;
             }
@@ -402,15 +407,13 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             for(int i=startLoadIndex; i<=endLoadIndex; ++i)
             {
-                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if (!_imageDataList[i]._image)
                 {
-                    //_filesRequested.insert(_fileNames[i]);
-                    irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
+                    irh->requestImageFile(_imageDataList[i]._filename, this, i, requestTime, fs, _imageDataList[i]._imageRequest, _readOptions.get());
                 }
                 requestTime += _timePerImage;
             }
         }
-
 
     }
 

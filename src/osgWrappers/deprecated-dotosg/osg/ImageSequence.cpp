@@ -107,33 +107,17 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent()<<"Length "<<is.getLength()<<std::endl;
 
-    if (!is.getFileNames().empty())
+    if (is.getNumImageData()>0)
     {
         fw.indent()<<"FileNames {"<<std::endl;
         fw.moveIn();
 
-        const osg::ImageSequence::FileNames& names = is.getFileNames();
-        for(osg::ImageSequence::FileNames::const_iterator itr = names.begin();
-            itr != names.end();
+        const osg::ImageSequence::ImageDataList& id = is.getImageDataList();
+        for(osg::ImageSequence::ImageDataList::const_iterator itr = id.begin();
+            itr != id.end();
             ++itr)
         {
-            fw.indent()<<fw.wrapString(*itr)<<std::endl;
-        }
-
-        fw.moveOut();
-        fw.indent()<<"}"<<std::endl;
-    }
-    else
-    {
-        fw.indent()<<"Images {"<<std::endl;
-        fw.moveIn();
-
-        const osg::ImageSequence::Images& images = is.getImages();
-        for(osg::ImageSequence::Images::const_iterator itr = images.begin();
-            itr != images.end();
-            ++itr)
-        {
-            if (!(*itr)->getFileName().empty()) fw.indent()<<fw.wrapString((*itr)->getFileName())<<std::endl;
+            fw.indent()<<fw.wrapString(itr->_filename)<<std::endl;
         }
 
         fw.moveOut();

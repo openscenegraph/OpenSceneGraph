@@ -999,15 +999,37 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
             }
         }
 
+#if 0
+        if (imageSequence->getMode()==osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES)
+        {
+
+            if (_options.valid())
+            {
+                OSG_NOTICE<<"Object cache usage _options "<<options->getObjectCacheHint()<<std::endl;
+            }
+            else
+            {
+                OSG_NOTICE<<"No Object _options assigned"<<std::endl;
+            }
+
+            
+            osg::ref_ptr<osgDB::Options> options = _options.valid() ? _options->cloneOptions() : (new osgDB::Options);
+            if (!imageData.options.empty())
+            {
+                options->setOptionString(imageData.options);
+            }
+            OSG_NOTICE<<"Disabling object cache usage"<<std::endl;
+            options->setObjectCacheHint(osgDB::Options::CACHE_NONE);
+            imageSequence->setReadOptions(options);
+        }
+#endif
         if (imageData.duration>0.0)
         {
             imageSequence->setLength(imageData.duration);
         }
         else
         {
-            unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
-                                               imageSequence->getImages().size());
-
+            unsigned int maxNum = imageSequence->getNumImageData();
             imageSequence->setLength(double(maxNum)*(1.0/imageData.fps));
         }
 

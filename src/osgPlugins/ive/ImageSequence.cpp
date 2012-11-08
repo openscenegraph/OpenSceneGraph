@@ -37,23 +37,17 @@ void ImageSequence::write(DataOutputStream* out)
     out->writeInt(getMode());
     out->writeDouble(getLength());
 
-    out->writeUInt(getFileNames().size());
-    for(FileNames::iterator itr = getFileNames().begin();
-        itr != getFileNames().end();
+    out->writeUInt(getImageDataList().size());
+    for(ImageDataList::iterator itr = getImageDataList().begin();
+        itr != getImageDataList().end();
         ++itr)
     {
-        out->writeString(*itr);
+        out->writeString(itr->_filename);
     }
 
-    if (getFileNames().empty())
+    if (getImageDataList().empty())
     {
-        out->writeUInt(getImages().size());
-        for(Images::iterator itr = getImages().begin();
-            itr != getImages().end();
-            ++itr)
-        {
-            out->writeImage(itr->get());
-        }
+        out->writeUInt(0);
     }
 
 }

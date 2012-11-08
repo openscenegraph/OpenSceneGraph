@@ -83,14 +83,14 @@ void ImagePager::ReadQueue::add(ImagePager::ImageRequest* databaseRequest)
     // tempo hack to avoid the ImagePager accumulating requests when it can keep up,
     // note this will mean that only one ImageSequence can be properly managed at one time,
     // this hack will be removed once a better system for managing expiry of requests is introduced.
-    clear();
+    // clear();
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
     
     _requestList.push_back(databaseRequest);
     databaseRequest->_requestQueue = this;
 
-    OSG_INFO<<"ImagePager::ReadQueue::add(..), size()="<<_requestList.size()<<std::endl;
+    OSG_INFO<<"ImagePager::ReadQueue::add("<<databaseRequest->_fileName<<"), size()="<<_requestList.size()<<std::endl;
 
     updateBlock();
 }
@@ -206,9 +206,12 @@ void ImagePager::ImageThread::run()
 
         if (imageRequest.valid())
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageRequest->_fileName);
+            // OSG_NOTICE<<"doing readImageFile("<<imageRequest->_fileName<<") index to assign = "<<imageRequest->_attachmentIndex<<std::endl;
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageRequest->_fileName, imageRequest->_readOptions.get());
             if (image.valid())
             {
+                // OSG_NOTICE<<"   successful readImageFile("<<imageRequest->_fileName<<") index to assign = "<<imageRequest->_attachmentIndex<<std::endl;
+                
                 osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(imageRequest->_attachmentPoint.get());
                 if (is)
                 {
@@ -266,12 +269,13 @@ ImagePager::ImagePager():
     _readQueue = new ReadQueue(this,"Image Queue");
     _completedQueue = new RequestQueue;
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
+#if 1
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 4"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 5"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 6"));
-
+#endif
     // 1 second
     _preLoadTime = 1.0;
 }
@@ -314,9 +318,21 @@ osg::Image* ImagePager::readImageFile(const std::string& fileName)
     return osgDB::readImageFile(fileName);
 }
 
-void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp*)
+void ImagePager::requestImageFile(const std::string& fileName, osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options)
 {
-    OSG_INFO<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
+
+    osgDB::Options* readOptions = dynamic_cast<osgDB::Options*>(const_cast<osg::Referenced*>(options));
+    if (!readOptions)
+    {
+       readOptions = Registry::instance()->getOptions();
+    }
+
+    bool alreadyAssigned = dynamic_cast<ImageRequest*>(imageRequest.get()) && (imageRequest->referenceCount()>1);
+    if (alreadyAssigned)
+    {
+        // OSG_NOTICE<<"ImagePager::requestImageFile("<<fileName<<") alreadyAssigned"<<std::endl;
+        return;
+    }
 
     osg::ref_ptr<ImageRequest> request = new ImageRequest;
     request->_timeToMergeBy = timeToMergeBy;
@@ -324,6 +340,11 @@ void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attac
     request->_attachmentPoint = attachmentPoint;
     request->_attachmentIndex = attachmentIndex;
     request->_requestQueue = _readQueue.get();
+    request->_readOptions = readOptions;
+
+    imageRequest = request;
+
+    // OSG_NOTICE<<"ImagePager::requestImageFile("<<fileName<<") new request."<<std::endl;
 
     _readQueue->add(request.get());
 

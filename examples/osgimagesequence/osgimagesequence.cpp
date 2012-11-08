@@ -130,9 +130,7 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         }
         else
         {
-            unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
-                                               imageSequence->getImages().size());
-                                               
+            unsigned int maxNum = imageSequence->getNumImageData();
             imageSequence->setLength(double(maxNum)*(1.0/fps));
         }
     }

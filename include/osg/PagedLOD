@@ -44,13 +44,13 @@ class OSG_EXPORT PagedLOD : public LOD
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove=1);
 
 
-        /** Set the optional database osgDB::Options object to use when loaded children.*/
+        /** Set the optional database osgDB::Options object to use when reading children.*/
         void setDatabaseOptions(osg::Referenced* options) { _databaseOptions = options; }
 
-        /** Get the optional database osgDB::Options object used when loaded children.*/
+        /** Get the optional database osgDB::Options object used when reading children.*/
         osg::Referenced* getDatabaseOptions() { return _databaseOptions.get(); }
 
-        /** Get the optional database osgDB::Options object used when loaded children.*/
+        /** Get the optional database osgDB::Options object used when reading children.*/
         const osg::Referenced* getDatabaseOptions() const { return _databaseOptions.get(); }
 
 

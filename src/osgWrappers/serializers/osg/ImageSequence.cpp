@@ -6,7 +6,7 @@
 // _fileNames
 static bool checkFileNames( const osg::ImageSequence& image )
 {
-    return image.getNumImageFiles()>0;
+    return image.getNumImageData()>0;
 }
 
 static bool readFileNames( osgDB::InputStream& is, osg::ImageSequence& image )
@@ -23,12 +23,13 @@ static bool readFileNames( osgDB::InputStream& is, osg::ImageSequence& image )
 
 static bool writeFileNames( osgDB::OutputStream& os, const osg::ImageSequence& image )
 {
-    const osg::ImageSequence::FileNames& files = image.getFileNames();
-    os.writeSize(files.size()); os << os.BEGIN_BRACKET << std::endl;
-    for ( osg::ImageSequence::FileNames::const_iterator itr=files.begin();
-          itr!=files.end(); ++itr )
+    const osg::ImageSequence::ImageDataList& imageDataList = image.getImageDataList();
+    os.writeSize(imageDataList.size()); os << os.BEGIN_BRACKET << std::endl;
+    for ( osg::ImageSequence::ImageDataList::const_iterator itr=imageDataList.begin();
+          itr!=imageDataList.end();
+          ++itr )
     {
-        os.writeWrappedString( *itr );
+        os.writeWrappedString( itr->_filename );
         os << std::endl;
     }
     os << os.END_BRACKET << std::endl;
@@ -38,7 +39,7 @@ static bool writeFileNames( osgDB::OutputStream& os, const osg::ImageSequence& i
 // _images
 static bool checkImages( const osg::ImageSequence& image )
 {
-    return image.getNumImages()>0;
+    return false;
 }
 
 static bool readImages( osgDB::InputStream& is, osg::ImageSequence& image )
@@ -53,14 +54,15 @@ static bool readImages( osgDB::InputStream& is, osg::ImageSequence& image )
     return true;
 }
 
-static bool writeImages( osgDB::OutputStream& os, const osg::ImageSequence& image )
+static bool writeImages( osgDB::OutputStream& os, const osg::ImageSequence& image)
 {
-    const osg::ImageSequence::Images& images = image.getImages();
-    os.writeSize(images.size()); os << os.BEGIN_BRACKET << std::endl;
-    for ( osg::ImageSequence::Images::const_iterator itr=images.begin();
-          itr!=images.end(); ++itr )
+    const osg::ImageSequence::ImageDataList& imageDataList = image.getImageDataList();
+    os.writeSize(imageDataList.size()); os << os.BEGIN_BRACKET << std::endl;
+    for ( osg::ImageSequence::ImageDataList::const_iterator itr=imageDataList.begin();
+          itr!=imageDataList.end();
+          ++itr )
     {
-        os.writeObject( (*itr).get() );
+        os.writeObject( (*itr)._image.get() );
     }
     os << os.END_BRACKET << std::endl;
     return true;

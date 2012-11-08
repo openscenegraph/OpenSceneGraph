@@ -1299,6 +1299,7 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
         const Options* options=readFunctor._options;
         useObjectCache=options ? (options->getObjectCacheHint()&cacheHint)!=0: false;
     }
+
     if (useObjectCache)
     {
         // search for entry in the object cache.
@@ -1307,7 +1308,7 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             ObjectCache::iterator oitr=_objectCache.find(file);
             if (oitr!=_objectCache.end())
             {
-                OSG_NOTIFY(INFO)<<"returning cached instanced of "<<file<<std::endl;
+                OSG_INFO<<"returning cached instanced of "<<file<<std::endl;
                 if (readFunctor.isValid(oitr->second.first.get())) return ReaderWriter::ReadResult(oitr->second.first.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
                 else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
             }
@@ -1317,12 +1318,12 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
         if (rr.validObject())
         {
             // update cache with new entry.
-            OSG_NOTIFY(INFO)<<"Adding to object cache "<<file<<std::endl;
+            OSG_INFO<<"Adding to object cache "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
         else
         {
-            OSG_NOTIFY(INFO)<<"No valid object found for "<<file<<std::endl;
+            OSG_INFO<<"No valid object found for "<<file<<std::endl;
         }
 
         return rr;

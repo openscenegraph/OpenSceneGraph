@@ -183,6 +183,8 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         std::map<std::pair<int, int>, bool> _keyMap;
 
+        std::set<int> _capturedMouseButtons;
+
         bool   _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues;
 };
 

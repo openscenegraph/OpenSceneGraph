@@ -2508,6 +2508,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 else if (uMsg==WM_MBUTTONDOWN) button = 2;
                 else button = 3;
 
+                _capturedMouseButtons.insert(button);
+
                 float mx = GET_X_LPARAM(lParam);
                 float my = GET_Y_LPARAM(lParam);
                 transformMouseXY(mx, my);
@@ -2522,13 +2524,16 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         /////////////////////
 
             {
-                ::ReleaseCapture();
-
                 int button;
 
                 if (uMsg==WM_LBUTTONUP)      button = 1;
                 else if (uMsg==WM_MBUTTONUP) button = 2;
                 else button = 3;
+
+                _capturedMouseButtons.erase(button);
+
+                if(_capturedMouseButtons.empty())
+                  ::ReleaseCapture();
 
                 float mx = GET_X_LPARAM(lParam);
                 float my = GET_Y_LPARAM(lParam);
@@ -2551,6 +2556,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 if (uMsg==WM_LBUTTONDBLCLK)            button = 1;
                 else if (uMsg==WM_MBUTTONDBLCLK)    button = 2;
                 else button = 3;
+
+                _capturedMouseButtons.insert(button);
 
                 float mx = GET_X_LPARAM(lParam);
                 float my = GET_Y_LPARAM(lParam);
@@ -2703,6 +2710,9 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                     key->second = false;
                 }
             }
+
+            _capturedMouseButtons.clear();
+
             break;
 
         ///////////////////

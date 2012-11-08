@@ -254,6 +254,9 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
+    // if imageDataList is empty then there is nothing update can do.
+    if (_imageDataList.empty()) return;
+
     osg::NodeVisitor::ImageRequestHandler* irh = nv->getImageRequestHandler();
     const osg::FrameStamp* fs = nv->getFrameStamp();
 

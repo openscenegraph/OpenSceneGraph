@@ -265,7 +265,8 @@ public:
         enum ImageSequenceInteractionMode
         {
             PLAY_AUTOMATICALLY_LIKE_MOVIE,
-            USE_MOUSE_X_POSITION
+            USE_MOUSE_X_POSITION,
+            USE_MOUSE_Y_POSITION
         };
         ImageSequenceInteractionMode imageSequenceInteractionMode;
         

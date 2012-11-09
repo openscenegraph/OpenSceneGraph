@@ -79,6 +79,7 @@ public:
     enum CoordinateFrame { SLIDE, MODEL };
 
 
+    
     LayerAttributes* getOrCreateLayerAttributes(osg::Node* node);
 
     void setDuration(osg::Node* node,double duration)
@@ -96,9 +97,9 @@ public:
         getOrCreateLayerAttributes(node)->addRunString(runString);
     }
 
-    void setJump(osg::Node* node, bool relativeJump, int slideNum, int layerNum)
+    void setJump(osg::Node* node, const JumpData& jumpData)
     {
-        getOrCreateLayerAttributes(node)->setJump(relativeJump, slideNum, layerNum);
+        getOrCreateLayerAttributes(node)->setJump(jumpData);
     }
 
     void addPresentationKey(const KeyPosition& kp)
@@ -125,10 +126,10 @@ public:
         if (_slide.valid()) addRunString(_slide.get(),runString);
     }
 
-    void setSlideJump(bool relativeJump, int switchNum, int layerNum)
+    void setSlideJump(const JumpData& jumpData)
     {
         if (!_slide) addSlide();
-        if (_slide.valid()) setJump(_slide.get(),relativeJump, switchNum, layerNum);
+        if (_slide.valid()) setJump(_slide.get(),jumpData);
     }
 
     void addLayerKey(const KeyPosition& kp)
@@ -144,10 +145,10 @@ public:
     }
 
 
-    void setLayerJump(bool relativeJump, int switchNum, int layerNum)
+    void setLayerJump(const JumpData& jumpData)
     {
         if (!_currentLayer) addLayer();
-        if (_currentLayer.valid()) setJump(_currentLayer.get(),relativeJump, switchNum, layerNum);
+        if (_currentLayer.valid()) setJump(_currentLayer.get(),jumpData);
     }
 
 
@@ -334,7 +335,6 @@ public:
         osg::Vec4                           color;
     };
 
-
     SlideShowConstructor(osgDB::Options* options);
 
     void createPresentation();
@@ -404,9 +404,21 @@ public:
     PositionData& getModelPositionDataDefault() { return _modelPositionDataDefault; }
 
 
-    void layerClickToDoOperation(Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
-    void layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
-    void layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
+    enum PresentationContext {
+        CURRENT_PRESENTATION,
+        CURRENT_SLIDE,
+        CURRENT_LAYER
+    };
+    
+    void addEventHandler(PresentationContext presentationContext, osg::ref_ptr<osgGA::GUIEventHandler> handler);
+
+    void keyToDoOperation(PresentationContext presentationContext, int key, Operation operation, const JumpData& jumpData=JumpData());
+    void keyToDoOperation(PresentationContext presentationContext, int key, const std::string& command, Operation operation,  const JumpData& jumpData=JumpData());
+    void keyEventOperation(PresentationContext presentationContext, int key, const KeyPosition& keyPos,  const JumpData& jumpData=JumpData());
+
+    void layerClickToDoOperation(Operation operation,  const JumpData& jumpData=JumpData());
+    void layerClickToDoOperation(const std::string& command, Operation operation,  const JumpData& jumpData=JumpData());
+    void layerClickEventOperation(const KeyPosition& keyPos,  const JumpData& jumpData=JumpData());
 
     void addToCurrentLayer(osg::Node* subgraph);
 
@@ -540,7 +552,9 @@ protected:
     osg::ref_ptr<FilePathData>      _filePathData;
 
     osg::ref_ptr<osg::Group>                _layerToApplyEventCallbackTo;
-    osg::ref_ptr<osgGA::GUIEventHandler>    _currentEventCallbackToApply;
+
+    typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
+    EventHandlerList _currentEventCallbacksToApply;
 
 
     std::string findFileAndRecordPath(const std::string& filename);

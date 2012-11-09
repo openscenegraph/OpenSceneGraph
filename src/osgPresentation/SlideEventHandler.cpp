@@ -23,6 +23,8 @@
 #include <osgUtil/TransformCallback>
 #include <osgUtil/GLObjectsVisitor>
 
+#include <osgDB/WriteFile>
+
 #include <osgGA/AnimationPathManipulator>
 
 #include <osgPresentation/AnimationMaterial>
@@ -34,6 +36,75 @@ using namespace osgPresentation;
 static osg::observer_ptr<SlideEventHandler> s_seh;
 
 SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
+
+bool JumpData::jump(SlideEventHandler* seh) const
+{
+        OSG_INFO<<"Requires jump "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
+
+        int slideNumToUse = slideNum;
+        int layerNumToUse = layerNum;
+        
+        if (!slideName.empty())
+        {
+            osg::Switch* presentation = seh->getPresentationSwitch();
+
+            for(unsigned int i=0; i<presentation->getNumChildren(); ++i)
+            {
+                osg::Node* node = seh->getSlide(i);
+                std::string name;
+                if (node->getUserValue("name",name) && slideName==name)
+                {
+                    slideNumToUse = i;
+                    break;
+                }
+            }
+        }
+        else if (relativeJump)
+        {
+            slideNumToUse = seh->getActiveSlide() + slideNum;
+        }
+        
+
+        if (!layerName.empty())
+        {
+            osg::Switch* slide = seh->getSlide(slideNumToUse);
+            if (slide)
+            {
+                unsigned int i;
+                for(i=0; i<slide->getNumChildren(); ++i)
+                {
+                    osg::Node* node = slide->getChild(i);
+                    std::string name;
+                    if (node->getUserValue("name",name))
+                    {
+                        if (layerName==name)
+                        {
+                            layerNumToUse = i;
+                            break;
+                        }
+                    }
+                }
+                if (i==slide->getNumChildren())
+                {
+                    OSG_INFO<<"Could not find layer with "<<layerName<<std::endl;
+                }
+            }
+            else
+            {
+                OSG_INFO<<"No appropriate Slide found."<<std::endl;
+            }
+        }
+        else if (relativeJump)
+        {
+            layerNumToUse = seh->getActiveLayer() + layerNum;
+        }
+        
+        if (slideNumToUse<0) slideNumToUse = 0;
+        if (layerNumToUse<0) layerNumToUse = 0;
+        
+        OSG_INFO<<"   jump to "<<slideNumToUse<<", "<<layerNumToUse<<std::endl;
+        return seh->selectSlide(slideNumToUse,layerNumToUse);
+}
 
 void LayerAttributes::callEnterCallbacks(osg::Node* node)
 {
@@ -441,7 +512,15 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
     _current.clear();
 
     FindOperatorsVisitor fov(_current, tm);
-    incommingNode->accept(fov);
+
+    if (incommingNode)
+    {
+        incommingNode->accept(fov);
+    }
+    else
+    {
+        OSG_NOTICE<<"ActiveOperators::collect() incommingNode="<<incommingNode<<std::endl;
+    }
 
     OSG_INFO<<"ActiveOperators::collect("<<incommingNode<<")"<<std::endl;
     OSG_INFO<<"  _previous.size()="<<_previous.size()<<std::endl;
@@ -1098,6 +1177,21 @@ unsigned int SlideEventHandler::getNumSlides()
     else return 0;
 }
 
+osg::Switch* SlideEventHandler::getSlide(int slideNum)
+{
+    if (slideNum<0 || slideNum>static_cast<int>(_presentationSwitch->getNumChildren())) return 0;
+    
+    FindNamedSwitchVisitor findSlide("Slide");
+    _presentationSwitch->getChild(slideNum)->accept(findSlide);
+    return findSlide._switch;
+}
+
+osg::Node* SlideEventHandler::getLayer(int slideNum, int layerNum)
+{
+    osg::Switch* slide = getSlide(slideNum);
+    return (slide && (layerNum>=0 && layerNum<static_cast<int>(slide->getNumChildren()))) ? slide->getChild(layerNum) : 0;
+}
+
 
 bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 {
@@ -1245,25 +1339,9 @@ bool SlideEventHandler::nextSlide()
 {
     OSG_INFO<<"nextSlide()"<<std::endl;
     LayerAttributes* la = _slideSwitch.valid() ? dynamic_cast<LayerAttributes*>(_slideSwitch->getUserData()) : 0;
-    if (la && la->requiresJump())
+    if (la && la->getJumpData().requiresJump())
     {
-        if (la->getRelativeJump())
-        {
-            int previousSlide = getActiveSlide();
-            int previousLayer = getActiveLayer();
-            int newSlide = previousSlide + la->getSlideNum();
-            int newLayer = previousLayer + la->getLayerNum();
-            if (newLayer<0)
-            {
-                newLayer = 0;
-            }
-
-            return selectSlide(newSlide, newLayer);
-        }
-        else
-        {
-            return selectSlide(la->getSlideNum(),la->getLayerNum());
-        }
+        return la->getJumpData().jump(this);
     }
 
     if (selectSlide(_activeSlide+1)) return true;
@@ -1294,25 +1372,9 @@ bool SlideEventHandler::nextLayer()
     {
         la->callLeaveCallbacks(_slideSwitch->getChild(_activeLayer));
 
-        if (la->requiresJump())
+        if (la->getJumpData().requiresJump())
         {
-            if (la->getRelativeJump())
-            {
-                int previousSlide = getActiveSlide();
-                int previousLayer = getActiveLayer();
-                int newSlide = previousSlide + la->getSlideNum();
-                int newLayer = previousLayer + la->getLayerNum();
-                if (newLayer<0)
-                {
-                    newLayer = 0;
-                }
-
-                return selectSlide(newSlide, newLayer);
-            }
-            else
-            {
-                return selectSlide(la->getSlideNum(),la->getLayerNum());
-            }
+            return la->getJumpData().jump(this);
         }
     }
 

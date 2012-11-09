@@ -51,6 +51,7 @@
 
 #include <osgPresentation/AnimationMaterial>
 #include <osgPresentation/PickEventHandler>
+#include <osgPresentation/KeyEventHandler>
 
 #include <osgManipulator/TabBoxDragger>
 #include <osgManipulator/TabBoxTrackballDragger>
@@ -199,7 +200,7 @@ SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _slideBackgroundAsHUD = false;
 
     _layerToApplyEventCallbackTo = 0;
-    _currentEventCallbackToApply = 0;
+    _currentEventCallbacksToApply.clear();
 }
 
 void SlideShowConstructor::setPresentationAspectRatio(float aspectRatio)
@@ -393,6 +394,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
     if (!_slide) addSlide();
 
     _currentLayer = new osg::Group;
+    _currentLayer->setName("Layer");
 
     // OSG_NOTICE<<"addLayer"<<std::endl;
 
@@ -542,14 +544,22 @@ void SlideShowConstructor::addToCurrentLayer(osg::Node* subgraph)
 
     if (!_currentLayer) addLayer();
 
-    if (_currentEventCallbackToApply.valid())
+    OSG_NOTICE<<"_currentEventCallbacksToApply.size()="<<_currentEventCallbacksToApply.size()<<std::endl;
+    if (!_currentEventCallbacksToApply.empty())
     {
+        OSG_NOTICE<<"  subgraph->getEventCallback()=="<<subgraph->getEventCallback()<<std::endl;
         if (subgraph->getEventCallback()==0)
         {
             if (_layerToApplyEventCallbackTo==0 || _currentLayer==_layerToApplyEventCallbackTo)
             {
-                OSG_INFO<<"Assigning event callback."<<std::endl;
-                subgraph->setEventCallback(_currentEventCallbackToApply.get());
+                OSG_NOTICE<<"Assigning event callbacks."<<std::endl;
+
+                for(EventHandlerList::iterator itr = _currentEventCallbacksToApply.begin();
+                    itr != _currentEventCallbacksToApply.end();
+                    ++itr)
+                {
+                    subgraph->addEventCallback(itr->get());
+                }                
             }
             else
             {
@@ -560,29 +570,65 @@ void SlideShowConstructor::addToCurrentLayer(osg::Node* subgraph)
         {
             OSG_NOTICE<<"Warning: subgraph already has event callback assigned, cannot add second event callback."<<std::endl;
         }
-        _currentEventCallbackToApply = 0;
+        _currentEventCallbacksToApply.clear();
     }
     _currentLayer->addChild(subgraph);
 }
 
-void SlideShowConstructor::layerClickToDoOperation(Operation operation, bool relativeJump, int slideNum, int layerNum)
+void SlideShowConstructor::addEventHandler(PresentationContext presentationContext, osg::ref_ptr<osgGA::GUIEventHandler> handler)
 {
-    _layerToApplyEventCallbackTo = _currentLayer;
-    _currentEventCallbackToApply = new PickEventHandler(operation, relativeJump, slideNum, layerNum);
+    switch(presentationContext)
+    {
+        case(CURRENT_PRESENTATION):
+            OSG_NOTICE<<"Need to add event handler to presentation."<<std::endl;
+            break;
+        case(CURRENT_SLIDE):
+            OSG_NOTICE<<"Need to add event handler to slide."<<std::endl;
+            break;
+        case(CURRENT_LAYER):
+            OSG_INFO<<"Add event handler to layer."<<std::endl;
+            _layerToApplyEventCallbackTo = _currentLayer;
+            _currentEventCallbacksToApply.push_back(handler);
+            break;
+    }
+}
+
+void SlideShowConstructor::keyToDoOperation(PresentationContext presentationContext, int key, Operation operation, const JumpData& jumpData)
+{
+    OSG_INFO<<"keyToDoOperation(key="<<key<<", operation="<<operation<<")"<<std::endl;
+    addEventHandler(presentationContext, new KeyEventHandler(key, operation, jumpData));
 }
 
 
-void SlideShowConstructor::layerClickToDoOperation(const std::string& command, Operation operation, bool relativeJump, int slideNum, int layerNum)
+void SlideShowConstructor::keyToDoOperation(PresentationContext presentationContext, int key, const std::string& command, Operation operation, const JumpData& jumpData)
 {
-    _layerToApplyEventCallbackTo = _currentLayer;
-    _currentEventCallbackToApply = new PickEventHandler(command, operation, relativeJump, slideNum, layerNum);
+    OSG_INFO<<"keyToDoOperation(key="<<key<<",command="<<command<<")"<<std::endl;
+    addEventHandler(presentationContext, new KeyEventHandler(key, command, operation, jumpData));
 }
 
 
-void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump, int slideNum, int layerNum)
+void SlideShowConstructor::keyEventOperation(PresentationContext presentationContext, int key, const KeyPosition& keyPos,  const JumpData& jumpData)
 {
-    _layerToApplyEventCallbackTo = _currentLayer;
-    _currentEventCallbackToApply = new PickEventHandler(keyPos, relativeJump, slideNum, layerNum);
+    OSG_INFO<<"keyEventOperation(key="<<key<<")"<<std::endl;
+    addEventHandler(presentationContext, new KeyEventHandler(key, keyPos, jumpData));
+}
+
+
+void SlideShowConstructor::layerClickToDoOperation(Operation operation, const JumpData& jumpData)
+{
+    addEventHandler(CURRENT_LAYER, new PickEventHandler(operation, jumpData));
+}
+
+
+void SlideShowConstructor::layerClickToDoOperation(const std::string& command, Operation operation, const JumpData& jumpData)
+{
+    addEventHandler(CURRENT_LAYER, new PickEventHandler(command, operation, jumpData));
+}
+
+
+void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, const JumpData& jumpData)
+{
+    addEventHandler(CURRENT_LAYER, new PickEventHandler(keyPos, jumpData));
 }
 
 

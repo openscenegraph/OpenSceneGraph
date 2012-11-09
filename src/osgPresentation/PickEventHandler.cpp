@@ -21,29 +21,23 @@
 
 using namespace osgPresentation;
 
-PickEventHandler::PickEventHandler(osgPresentation::Operation operation,bool relativeJump, int slideNum, int layerNum):
+PickEventHandler::PickEventHandler(osgPresentation::Operation operation, const JumpData& jumpData):
     _operation(operation),
-    _relativeJump(relativeJump),
-    _slideNum(slideNum),
-    _layerNum(layerNum)
+    _jumpData(jumpData)
 {
 }
 
-PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Operation operation,bool relativeJump, int slideNum, int layerNum):
+PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Operation operation, const JumpData& jumpData):
     _command(str),
     _operation(operation),
-    _relativeJump(relativeJump),
-    _slideNum(slideNum),
-    _layerNum(layerNum)
+    _jumpData(jumpData)
 {
 }
 
-PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos,bool relativeJump, int slideNum, int layerNum):
+PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos, const JumpData& jumpData):
     _keyPos(keyPos),
     _operation(osgPresentation::EVENT),
-    _relativeJump(relativeJump),
-    _slideNum(slideNum),
-    _layerNum(layerNum)
+    _jumpData(jumpData)
 {
 }
 
@@ -100,21 +94,6 @@ void PickEventHandler::accept(osgGA::GUIEventHandlerVisitor& v)
 void PickEventHandler::getUsage(osg::ApplicationUsage& /*usage*/) const
 {
 }
-
-void PickEventHandler::setRelativeJump(int slideNum, int layerNum)
-{
-    _relativeJump = true;
-    _slideNum = slideNum;
-    _layerNum = layerNum;
-}
-
-void PickEventHandler::setAbsoluteJump(int slideNum, int layerNum)
-{
-    _relativeJump = false;
-    _slideNum = slideNum;
-    _layerNum = layerNum;
-}
-
 
 void PickEventHandler::doOperation()
 {
@@ -198,29 +177,9 @@ void PickEventHandler::doOperation()
         }
     }
 
-    if (requiresJump())
+    if (_jumpData.requiresJump())
     {
-        OSG_NOTICE<<"Requires jump "<<_relativeJump<<", "<<_slideNum<<", "<<_layerNum<<std::endl;
-
-        if (_relativeJump)
-        {
-            int previousSlide = SlideEventHandler::instance()->getActiveSlide();
-            int previousLayer = SlideEventHandler::instance()->getActiveLayer();
-            int newSlide = previousSlide + _slideNum;
-            int newLayer = previousLayer + _layerNum;
-            if (newLayer<0)
-            {
-                newLayer = 0;
-            }
-
-            OSG_NOTICE<<"   jump to "<<newSlide<<", "<<newLayer<<std::endl;
-
-            SlideEventHandler::instance()->selectSlide(newSlide, newLayer);
-        }
-        else
-        {
-            SlideEventHandler::instance()->selectSlide(_slideNum,_layerNum);
-        }
+        _jumpData.jump(SlideEventHandler::instance());
     }
     else
     {

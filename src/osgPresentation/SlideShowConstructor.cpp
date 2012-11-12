@@ -544,32 +544,24 @@ void SlideShowConstructor::addToCurrentLayer(osg::Node* subgraph)
 
     if (!_currentLayer) addLayer();
 
-    OSG_NOTICE<<"_currentEventCallbacksToApply.size()="<<_currentEventCallbacksToApply.size()<<std::endl;
     if (!_currentEventCallbacksToApply.empty())
     {
-        OSG_NOTICE<<"  subgraph->getEventCallback()=="<<subgraph->getEventCallback()<<std::endl;
-        if (subgraph->getEventCallback()==0)
+        if (_layerToApplyEventCallbackTo==0 || _currentLayer==_layerToApplyEventCallbackTo)
         {
-            if (_layerToApplyEventCallbackTo==0 || _currentLayer==_layerToApplyEventCallbackTo)
-            {
-                OSG_NOTICE<<"Assigning event callbacks."<<std::endl;
+            OSG_NOTICE<<"Assigning event callbacks."<<std::endl;
 
-                for(EventHandlerList::iterator itr = _currentEventCallbacksToApply.begin();
-                    itr != _currentEventCallbacksToApply.end();
-                    ++itr)
-                {
-                    subgraph->addEventCallback(itr->get());
-                }                
-            }
-            else
+            for(EventHandlerList::iterator itr = _currentEventCallbacksToApply.begin();
+                itr != _currentEventCallbacksToApply.end();
+                ++itr)
             {
-                OSG_INFO<<"Ignoring event callback from previous layer."<<std::endl;
+                subgraph->addEventCallback(itr->get());
             }
         }
         else
         {
-            OSG_NOTICE<<"Warning: subgraph already has event callback assigned, cannot add second event callback."<<std::endl;
+            OSG_INFO<<"Ignoring event callback from previous layer."<<std::endl;
         }
+
         _currentEventCallbacksToApply.clear();
     }
     _currentLayer->addChild(subgraph);
@@ -2156,12 +2148,18 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
         layer->rescaleToZeroToOneRange();
 
+        osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
+                            osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
+
         if (matrix.valid())
         {
             layer->setLocator(new osgVolume::Locator(*matrix));
-            osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
-                            osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
             tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
+        }
+        else
+        {
+            layer->setLocator(new osgVolume::Locator());
+            tile->setLocator(new osgVolume::Locator(tm));
         }
 
 

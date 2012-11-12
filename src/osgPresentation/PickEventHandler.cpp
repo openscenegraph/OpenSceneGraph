@@ -25,6 +25,7 @@ PickEventHandler::PickEventHandler(osgPresentation::Operation operation, const J
     _operation(operation),
     _jumpData(jumpData)
 {
+    OSG_INFO<<"PickEventHandler::PickEventHandler(operation="<<operation<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
 
 PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Operation operation, const JumpData& jumpData):
@@ -32,6 +33,7 @@ PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Oper
     _operation(operation),
     _jumpData(jumpData)
 {
+    OSG_INFO<<"PickEventHandler::PickEventHandler(str="<<str<<", operation="<<operation<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
 
 PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos, const JumpData& jumpData):
@@ -39,6 +41,7 @@ PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos, c
     _operation(osgPresentation::EVENT),
     _jumpData(jumpData)
 {
+    OSG_INFO<<"PickEventHandler::PickEventHandler(keyPos="<<keyPos._key<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
 
 
@@ -166,13 +169,13 @@ void PickEventHandler::doOperation()
         }
         case(osgPresentation::EVENT):
         {
-            OSG_INFO<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
+            OSG_NOTICE<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
             if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_keyPos);
             break;
         }
         case(osgPresentation::JUMP):
         {
-            OSG_NOTICE<<"Requires jump "<<std::endl;
+            OSG_INFO<<"Requires jump "<<std::endl;
             break;
         }
     }
@@ -183,7 +186,7 @@ void PickEventHandler::doOperation()
     }
     else
     {
-        OSG_NOTICE<<"No jump required."<<std::endl;
+        OSG_INFO<<"No jump required."<<std::endl;
     }
 }
 

@@ -203,7 +203,7 @@ struct InteractiveImageSequenceOperator : public ObjectOperator
 
     void set(SlideEventHandler* seh)
     {
-        OSG_NOTICE<<"InteractiveImageSequenceOperator::set(..)"<<std::endl;
+        //OSG_NOTICE<<"InteractiveImageSequenceOperator::set(..)"<<std::endl;
     }
 
     osg::ref_ptr<osg::ImageSequence>  _imageSequence;

@@ -41,7 +41,7 @@ enum Operation
 struct JumpData
 {
     JumpData():
-        relativeJump(false),
+        relativeJump(true),
         slideNum(0),
         layerNum(0) {}
         
@@ -51,9 +51,9 @@ struct JumpData
         layerNum(in_layerNum) {}
 
     JumpData(const std::string& in_slideName, const std::string& in_layerName):
-        relativeJump(false),
-        slideNum(-1),
-        layerNum(-1),
+        relativeJump(true),
+        slideNum(0),
+        layerNum(0),
         slideName(in_slideName),
         layerName(in_layerName) {}
 

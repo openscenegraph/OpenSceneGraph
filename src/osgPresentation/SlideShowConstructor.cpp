@@ -1115,6 +1115,16 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         isImageTranslucent = image->isImageTranslucent();
     }
 
+    if (imageData.blendingHint==ImageData::ON)
+    {
+        isImageTranslucent = true;
+    }
+    else if (imageData.blendingHint==ImageData::OFF)
+    {
+        isImageTranslucent = false;
+    }
+
+    
     float s = image->s();
     float t = image->t();
 
@@ -1272,6 +1282,15 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     else if (!isImageTranslucent)
     {
         isImageTranslucent = imageRight->isImageTranslucent();
+    }
+
+    if (imageDataLeft.blendingHint==ImageData::ON || imageDataRight.blendingHint==ImageData::ON)
+    {
+        isImageTranslucent = true;
+    }
+    else if (imageDataLeft.blendingHint==ImageData::OFF || imageDataRight.blendingHint==ImageData::OFF)
+    {
+        isImageTranslucent = false;
     }
 
 

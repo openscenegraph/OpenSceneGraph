@@ -935,6 +935,16 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read imageSequencePagingMode \""<<value.imageSequenceInteractionMode<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "blending", str))
+    {
+        propertiesRead = true;
+
+        if (str=="ON" || str=="On" || str=="on" || str=="enable" ) value.blendingHint = osgPresentation::SlideShowConstructor::ImageData::ON;
+        else if (str=="OFF" || str=="Off" || str=="off" || str=="disable" ) value.blendingHint = osgPresentation::SlideShowConstructor::ImageData::OFF;
+
+        OSG_NOTIFY(_notifyLevel)<<"read blendingHint \""<<value.blendingHint<<"\""<<std::endl;
+    }
+
     /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {

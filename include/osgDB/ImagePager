@@ -21,6 +21,7 @@
 #include <osg/FrameStamp>
 
 #include <OpenThreads/Mutex>
+#include <OpenThreads/Atomic>
 
 #include <osgDB/ReaderWriter>
 #include <osgDB/Options>
@@ -87,6 +88,14 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         /** Merge the changes to the scene graph. */
         virtual void updateSceneGraph(const osg::FrameStamp &frameStamp);
 
+        /** Signal the image thread that the update, cull and draw has begun for a new frame.
+          * Note, this is called by the application so that the image pager can go to sleep while the CPU is busy on the main rendering threads. */
+        virtual void signalBeginFrame(const osg::FrameStamp* framestamp);
+
+        /** Signal the image thread that the update, cull and draw dispatch has completed.
+          * Note, this is called by the application so that the image pager can go to wake back up now the main rendering threads are iddle waiting for the next frame.*/
+        virtual void signalEndFrame();
+
         int cancel();
 
     protected:
@@ -105,6 +114,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
                 _timeToMergeBy(0.0),
                 _attachmentIndex(-1) {}
 
+            unsigned int                        _frameNumber;
             double                              _timeToMergeBy;
             std::string                         _fileName;
             osg::ref_ptr<Options> _loadOptions;
@@ -160,6 +170,9 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         bool                        _done;
         bool                        _databasePagerThreadPaused;
 
+        OpenThreads::Atomic         _frameNumber;
+
+        OpenThreads::Mutex          _ir_mutex;
         osg::ref_ptr<ReadQueue>     _readQueue;
 
         typedef std::vector< osg::ref_ptr<ImageThread> > ImageThreads;

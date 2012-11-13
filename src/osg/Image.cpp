@@ -1183,6 +1183,32 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 #endif
 }
 
+void Image::swap(osg::Image& rhs)
+{
+    std::swap(_fileName, rhs._fileName);
+    std::swap(_writeHint, rhs._writeHint);
+
+    std::swap(_origin, rhs._origin);
+
+    std::swap(_s, rhs._s); std::swap(_t, rhs._t); std::swap(_r, rhs._r);
+    std::swap(_rowLength, rhs._rowLength);
+    std::swap(_internalTextureFormat, rhs._internalTextureFormat);
+    std::swap(_pixelFormat, rhs._pixelFormat);
+    std::swap(_dataType, rhs._dataType);
+    std::swap(_packing, rhs._packing);
+    std::swap(_pixelAspectRatio, rhs._pixelAspectRatio);
+
+    std::swap(_allocationMode, rhs._allocationMode);
+    std::swap(_data, rhs._data);
+
+    std::swap(_mipmapData, rhs._mipmapData);
+
+    std::swap(_bufferObject, rhs._bufferObject);
+
+    std::swap(_dimensionsChangedCallbacks, rhs._dimensionsChangedCallbacks);
+}
+
+
 void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 {
     if (_s==s && _t==t && _r==r) return;

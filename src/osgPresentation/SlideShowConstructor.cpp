@@ -2081,6 +2081,17 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
     if (!image && !volume) return;
 
+
+    if (volumeData.colorSpaceOperation!=osg::NO_COLOUR_SPACE_OPERATION)
+    {
+        OSG_NOTICE<<"Doing colour space conversion"<<std::endl;
+        osg::ref_ptr<osg::Image> converted_image = osg::colorSpaceConversion(volumeData.colorSpaceOperation, image.get(), volumeData.colorModulate);
+        if (converted_image!=image)
+        {
+            image->swap(*converted_image);
+        }
+    }
+    
     if (positionData.scale.x()<0.0)
     {
         image->flipHorizontal();

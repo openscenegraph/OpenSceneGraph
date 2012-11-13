@@ -615,9 +615,10 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
 }
 
 
-struct ModulateAlphaByColourOperator
+
+struct ModulateAlphaByColorOperator
 {
-    ModulateAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
+    ModulateAlphaByColorOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
 
     osg::Vec4 _colour;
     float _lum;
@@ -650,10 +651,10 @@ osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, cons
             osg::modifyImage(image, ModulateAlphaByLuminanceOperator());
             return image;
         }
-        case (MODULATE_ALPHA_BY_COLOUR):
+        case (MODULATE_ALPHA_BY_COLOR):
         {
             OSG_NOTICE<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
-            osg::modifyImage(image, ModulateAlphaByColourOperator(colour));
+            osg::modifyImage(image, ModulateAlphaByColorOperator(colour));
             return image;
         }
         case (REPLACE_ALPHA_WITH_LUMINANCE):

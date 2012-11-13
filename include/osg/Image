@@ -179,6 +179,8 @@ class OSG_EXPORT Image : public BufferData
         */
         virtual void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type = GL_UNSIGNED_BYTE, unsigned int face = 0);
 
+        /** swap the data and settings between two image objects.*/
+        void swap(osg::Image& rhs);
 
         /** Scale image to specified size. */
         void scaleImage(int s,int t,int r) { scaleImage(s,t,r, getDataType()); }
@@ -470,7 +472,6 @@ class OSG_EXPORT Image : public BufferData
 
         std::string _fileName;
         WriteHint   _writeHint;
-
 
         Origin _origin;
 

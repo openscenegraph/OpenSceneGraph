@@ -1098,6 +1098,23 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
     if (getProperty(cur, "sampleDensityWhenMoving", volumeData.sampleDensityWhenMovingValue)) {}
 
+
+    if (getProperty(cur, "colourModulate", volumeData.colorModulate)) {}
+    if (getProperty(cur, "colorModulate", volumeData.colorModulate)) {}
+
+    std::string operation;
+    if (getProperty(cur, "colorSpaceOperation", operation) || getProperty(cur, "colourSpaceOperation", operation))
+    {
+        osg::ColorSpaceOperation colorOp = osg::NO_COLOUR_SPACE_OPERATION;
+        if (operation=="NO_COLOUR_SPACE_OPERATION") volumeData.colorSpaceOperation = osg::NO_COLOUR_SPACE_OPERATION;
+        else if (operation=="MODULATE_ALPHA_BY_LUMINANCE") volumeData.colorSpaceOperation = osg::MODULATE_ALPHA_BY_LUMINANCE;
+        else if (operation=="MODULATE_ALPHA_BY_COLOUR") volumeData.colorSpaceOperation = osg::MODULATE_ALPHA_BY_COLOUR;
+        else if (operation=="REPLACE_ALPHA_WITH_LUMINANCE") volumeData.colorSpaceOperation = osg::REPLACE_ALPHA_WITH_LUMINANCE;
+        else if (operation=="REPLACE_RGB_WITH_LUMINANCE") volumeData.colorSpaceOperation = osg::REPLACE_RGB_WITH_LUMINANCE;
+    }
+    
+    
+
     // check for any transfer function required
     std::string transferFunctionFile;
     if (getTrimmedProperty(cur, "tf", transferFunctionFile))

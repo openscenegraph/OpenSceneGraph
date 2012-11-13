@@ -15,6 +15,7 @@
 
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/ImageUtils>
 #include <osg/Group>
 #include <osg/ClearNode>
 #include <osg/Switch>
@@ -291,7 +292,9 @@ public:
             alphaValue(1.0),
             cutoffValue(0.1),
             sampleDensityValue(0.005),
-            sampleDensityWhenMovingValue(0.0)
+            sampleDensityWhenMovingValue(0.0),
+            colorSpaceOperation(osg::NO_COLOUR_SPACE_OPERATION),
+            colorModulate(1.0f,1.0f,1.0f,1.0f)
         {
             region[0] = region[1] = region[2] = 0.0f;
             region[3] = region[4] = region[5] = 1.0f;
@@ -308,6 +311,9 @@ public:
         float                                   cutoffValue;
         float                                   sampleDensityValue;
         float                                   sampleDensityWhenMovingValue;
+
+        osg::ColorSpaceOperation                colorSpaceOperation;
+        osg::Vec4                               colorModulate;
     };
 
 

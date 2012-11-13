@@ -615,5 +615,68 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
 }
 
 
+struct ModulateAlphaByColourOperator
+{
+    ModulateAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
+
+    osg::Vec4 _colour;
+    float _lum;
+
+    inline void luminance(float&) const {}
+    inline void alpha(float&) const {}
+    inline void luminance_alpha(float& l,float& a) const { a*= l*_lum; }
+    inline void rgb(float&,float&,float&) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const { a = (r*_colour.r()+g*_colour.g()+b*_colour.b()+a*_colour.a()); }
+};
+
+struct ReplaceAlphaWithLuminanceOperator
+{
+    ReplaceAlphaWithLuminanceOperator() {}
+
+    inline void luminance(float&) const {}
+    inline void alpha(float&) const {}
+    inline void luminance_alpha(float& l,float& a) const { a= l; }
+    inline void rgb(float&,float&,float&) const { }
+    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a = l; }
+};
+
+osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, const osg::Vec4& colour)
+{
+    switch(op)
+    {
+        case (MODULATE_ALPHA_BY_LUMINANCE):
+        {
+            OSG_NOTICE<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
+            osg::modifyImage(image, ModulateAlphaByLuminanceOperator());
+            return image;
+        }
+        case (MODULATE_ALPHA_BY_COLOUR):
+        {
+            OSG_NOTICE<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
+            osg::modifyImage(image, ModulateAlphaByColourOperator(colour));
+            return image;
+        }
+        case (REPLACE_ALPHA_WITH_LUMINANCE):
+        {
+            OSG_NOTICE<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
+            osg::modifyImage(image, ReplaceAlphaWithLuminanceOperator());
+            return image;
+        }
+        case (REPLACE_RGB_WITH_LUMINANCE):
+        {
+            OSG_NOTICE<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
+            osg::Image* newImage = new osg::Image;
+            newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
+            osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
+                        newImage, 0, 0, 0, false);
+            return newImage;
+        }
+        default:
+            return image;
+    }
+}
+
+
+
 }
 

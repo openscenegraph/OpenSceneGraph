@@ -115,18 +115,6 @@ osg::Image* createTexture3D(osg::ImageList& imageList,
     }
 }
 
-struct ModulateAlphaByLuminanceOperator
-{
-    ModulateAlphaByLuminanceOperator() {}
-
-    inline void luminance(float&) const {}
-    inline void alpha(float&) const {}
-    inline void luminance_alpha(float& l,float& a) const { a*= l; }
-    inline void rgb(float&,float&,float&) const {}
-    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
-};
-
-
 struct ScaleOperator
 {
     ScaleOperator():_scale(1.0f) {}
@@ -308,76 +296,6 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     return image.release();
 
 
-}
-
-enum ColourSpaceOperation
-{
-    NO_COLOUR_SPACE_OPERATION,
-    MODULATE_ALPHA_BY_LUMINANCE,
-    MODULATE_ALPHA_BY_COLOUR,
-    REPLACE_ALPHA_WITH_LUMINANCE,
-    REPLACE_RGB_WITH_LUMINANCE
-};
-
-struct ModulateAlphaByColourOperator
-{
-    ModulateAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
-
-    osg::Vec4 _colour;
-    float _lum;
-
-    inline void luminance(float&) const {}
-    inline void alpha(float&) const {}
-    inline void luminance_alpha(float& l,float& a) const { a*= l*_lum; }
-    inline void rgb(float&,float&,float&) const {}
-    inline void rgba(float& r,float& g,float& b,float& a) const { a = (r*_colour.r()+g*_colour.g()+b*_colour.b()+a*_colour.a()); }
-};
-
-struct ReplaceAlphaWithLuminanceOperator
-{
-    ReplaceAlphaWithLuminanceOperator() {}
-
-    inline void luminance(float&) const {}
-    inline void alpha(float&) const {}
-    inline void luminance_alpha(float& l,float& a) const { a= l; }
-    inline void rgb(float&,float&,float&) const { }
-    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a = l; }
-};
-
-osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Vec4& colour)
-{
-    switch(op)
-    {
-        case (MODULATE_ALPHA_BY_LUMINANCE):
-        {
-            std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
-            osg::modifyImage(image,ModulateAlphaByLuminanceOperator());
-            return image;
-        }
-        case (MODULATE_ALPHA_BY_COLOUR):
-        {
-            std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
-            osg::modifyImage(image,ModulateAlphaByColourOperator(colour));
-            return image;
-        }
-        case (REPLACE_ALPHA_WITH_LUMINANCE):
-        {
-            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
-            osg::modifyImage(image,ReplaceAlphaWithLuminanceOperator());
-            return image;
-        }
-        case (REPLACE_RGB_WITH_LUMINANCE):
-        {
-            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
-            osg::Image* newImage = new osg::Image;
-            newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
-            osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
-                        newImage, 0, 0, 0, false);
-            return newImage;
-        }
-        default:
-            return image;
-    }
 }
 
 
@@ -671,12 +589,12 @@ int main( int argc, char **argv )
     while(arguments.read("--r_maxTextureSize",r_maximumTextureSize)) {}
 
     // set up colour space operation.
-    ColourSpaceOperation colourSpaceOperation = NO_COLOUR_SPACE_OPERATION;
+    osg::ColorSpaceOperation colourSpaceOperation = osg::NO_COLOUR_SPACE_OPERATION;
     osg::Vec4 colourModulate(0.25f,0.25f,0.25f,0.25f);
-    while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = MODULATE_ALPHA_BY_LUMINANCE; }
-    while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
-    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINANCE; }
-    while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = REPLACE_RGB_WITH_LUMINANCE; }
+    while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = osg::MODULATE_ALPHA_BY_LUMINANCE; }
+    while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = osg::MODULATE_ALPHA_BY_COLOUR; }
+    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = osg::REPLACE_ALPHA_WITH_LUMINANCE; }
+    while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = osg::REPLACE_RGB_WITH_LUMINANCE; }
 
 
     enum RescaleOperation
@@ -1018,13 +936,13 @@ int main( int argc, char **argv )
     }
 
 
-    if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
+    if (colourSpaceOperation!=osg::NO_COLOUR_SPACE_OPERATION)
     {
         for(Images::iterator itr = images.begin();
             itr != images.end();
             ++itr)
         {
-            (*itr) = doColourSpaceConversion(colourSpaceOperation, itr->get(), colourModulate);
+            (*itr) = osg::colorSpaceConversion(colourSpaceOperation, itr->get(), colourModulate);
         }
     }
 

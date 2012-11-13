@@ -759,10 +759,10 @@ void ViewerBase::renderingTraversals()
     {
         Scene* scene = *sitr;
         osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
-        if (dp)
-        {
-            dp->signalBeginFrame(frameStamp);
-        }
+        if (dp) dp->signalBeginFrame(frameStamp);
+
+        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        if (ip) ip->signalBeginFrame(frameStamp);
 
         if (scene->getSceneData())
         {
@@ -841,10 +841,10 @@ void ViewerBase::renderingTraversals()
     {
         Scene* scene = *sitr;
         osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
-        if (dp)
-        {
-            dp->signalEndFrame();
-        }
+        if (dp) dp->signalEndFrame();
+
+        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        if (ip) ip->signalEndFrame();
     }
 
     // wait till the dynamic draw is complete.

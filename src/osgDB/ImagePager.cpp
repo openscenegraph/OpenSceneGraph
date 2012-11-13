@@ -78,19 +78,14 @@ void ImagePager::ReadQueue::clear()
     updateBlock();
 }
 
-void ImagePager::ReadQueue::add(ImagePager::ImageRequest* databaseRequest)
+void ImagePager::ReadQueue::add(ImagePager::ImageRequest* imageRequest)
 {
-    // tempo hack to avoid the ImagePager accumulating requests when it can keep up,
-    // note this will mean that only one ImageSequence can be properly managed at one time,
-    // this hack will be removed once a better system for managing expiry of requests is introduced.
-    // clear();
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
     
-    _requestList.push_back(databaseRequest);
-    databaseRequest->_requestQueue = this;
+    _requestList.push_back(imageRequest);
+    imageRequest->_requestQueue = this;
 
-    OSG_INFO<<"ImagePager::ReadQueue::add("<<databaseRequest->_fileName<<"), size()="<<_requestList.size()<<std::endl;
+    OSG_INFO<<"ImagePager::ReadQueue::add("<<imageRequest->_fileName<<"), size()="<<_requestList.size()<<std::endl;
 
     updateBlock();
 }
@@ -176,6 +171,21 @@ int ImagePager::ImageThread::cancel()
     //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
     return result;
 }
+
+void ImagePager::signalBeginFrame(const osg::FrameStamp* framestamp)
+{
+    if (framestamp)
+    {
+        //OSG_INFO << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
+        _frameNumber.exchange(framestamp->getFrameNumber());
+
+    } //else OSG_INFO << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
+}
+
+void ImagePager::signalEndFrame()
+{
+}
+
 
 void ImagePager::ImageThread::run()
 {
@@ -269,9 +279,9 @@ ImagePager::ImagePager():
     _readQueue = new ReadQueue(this,"Image Queue");
     _completedQueue = new RequestQueue;
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
-#if 1
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
+#if 0
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 4"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 5"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 6"));

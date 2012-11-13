@@ -536,11 +536,25 @@ int main( int argc, char **argv )
     bool loopPresentation = false;
     while (arguments.read("--loop")) loopPresentation = true;
 
+    {
+        // set update hte default traversal mode settings for update visitor
+        osg::NodeVisitor::TraversalMode updateTraversalMode = viewer.getUpdateVisitor()->getTraversalMode();
 
-    while(arguments.read("--update-active")) viewer.getUpdateVisitor()->setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-    while(arguments.read("--update-all")) viewer.getUpdateVisitor()->setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+        const char* p3dUpdateStr = getenv("P3D_UPDATE");
+        if (p3dUpdateStr)
+        {
+            std::string updateStr(p3dUpdateStr);
+            if (updateStr=="active" || updateStr=="Active" || updateStr=="ACTIVE") updateTraversalMode = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
+            else if (updateStr=="all" || updateStr=="All" || updateStr=="ALL") updateTraversalMode = osg::NodeVisitor::TRAVERSE_ALL_CHILDREN;
+        }
 
+        while(arguments.read("--update-active")) updateTraversalMode = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
+        while(arguments.read("--update-all")) updateTraversalMode = osg::NodeVisitor::TRAVERSE_ALL_CHILDREN;
 
+        viewer.getUpdateVisitor()->setTraversalMode(updateTraversalMode);
+    }
+
+    
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     osg::ref_ptr<osgPresentation::SlideEventHandler> seh = new osgPresentation::SlideEventHandler(&viewer);
     viewer.addEventHandler(seh.get());

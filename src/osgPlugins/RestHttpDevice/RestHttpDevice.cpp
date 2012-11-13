@@ -68,7 +68,7 @@ public:
     
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        int x_min, y_min, x_max, y_max;
+        int x_min(0), y_min(0), x_max(0), y_max(0);
         
         if (   getIntArgument(arguments, "x_min", reply, x_min)
             && getIntArgument(arguments, "y_min", reply, y_min)
@@ -101,7 +101,7 @@ public:
     
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        int keycode;
+        int keycode(0);
         
         if (getHexArgument(arguments, "code", reply, keycode))
         {
@@ -132,7 +132,7 @@ public:
     
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        int x,y;
+        int x(0),y(0);
         if (getIntArgument(arguments, "x", reply, x) && getIntArgument(arguments, "y", reply, y))
         {
             double time_stamp = getTimeStamp(arguments, reply);
@@ -176,7 +176,7 @@ public:
     
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        int x,y, button;
+        int x(0),y(0), button(0);
 
         if (getIntArgument(arguments, "x", reply, x)
             && getIntArgument(arguments, "y", reply, y)

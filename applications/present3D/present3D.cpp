@@ -537,6 +537,10 @@ int main( int argc, char **argv )
     while (arguments.read("--loop")) loopPresentation = true;
 
 
+    while(arguments.read("--update-active")) viewer.getUpdateVisitor()->setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+    while(arguments.read("--update-all")) viewer.getUpdateVisitor()->setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+
+
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     osg::ref_ptr<osgPresentation::SlideEventHandler> seh = new osgPresentation::SlideEventHandler(&viewer);
     viewer.addEventHandler(seh.get());

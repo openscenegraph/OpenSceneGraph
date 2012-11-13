@@ -2082,7 +2082,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     if (!image && !volume) return;
 
 
-    if (volumeData.colorSpaceOperation!=osg::NO_COLOUR_SPACE_OPERATION)
+    if (volumeData.colorSpaceOperation!=osg::NO_COLOR_SPACE_OPERATION)
     {
         OSG_NOTICE<<"Doing colour space conversion"<<std::endl;
         osg::ref_ptr<osg::Image> converted_image = osg::colorSpaceConversion(volumeData.colorSpaceOperation, image.get(), volumeData.colorModulate);

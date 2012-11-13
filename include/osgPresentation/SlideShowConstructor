@@ -293,7 +293,7 @@ public:
             cutoffValue(0.1),
             sampleDensityValue(0.005),
             sampleDensityWhenMovingValue(0.0),
-            colorSpaceOperation(osg::NO_COLOUR_SPACE_OPERATION),
+            colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
             colorModulate(1.0f,1.0f,1.0f,1.0f)
         {
             region[0] = region[1] = region[2] = 0.0f;

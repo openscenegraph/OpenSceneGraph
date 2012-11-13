@@ -589,10 +589,10 @@ int main( int argc, char **argv )
     while(arguments.read("--r_maxTextureSize",r_maximumTextureSize)) {}
 
     // set up colour space operation.
-    osg::ColorSpaceOperation colourSpaceOperation = osg::NO_COLOUR_SPACE_OPERATION;
+    osg::ColorSpaceOperation colourSpaceOperation = osg::NO_COLOR_SPACE_OPERATION;
     osg::Vec4 colourModulate(0.25f,0.25f,0.25f,0.25f);
     while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = osg::MODULATE_ALPHA_BY_LUMINANCE; }
-    while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = osg::MODULATE_ALPHA_BY_COLOUR; }
+    while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = osg::MODULATE_ALPHA_BY_COLOR; }
     while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = osg::REPLACE_ALPHA_WITH_LUMINANCE; }
     while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = osg::REPLACE_RGB_WITH_LUMINANCE; }
 
@@ -936,7 +936,7 @@ int main( int argc, char **argv )
     }
 
 
-    if (colourSpaceOperation!=osg::NO_COLOUR_SPACE_OPERATION)
+    if (colourSpaceOperation!=osg::NO_COLOR_SPACE_OPERATION)
     {
         for(Images::iterator itr = images.begin();
             itr != images.end();

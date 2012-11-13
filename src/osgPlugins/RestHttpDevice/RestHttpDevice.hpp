@@ -106,7 +106,7 @@ public:
         
         double getTimeStamp(const Arguments& arguments, http::server::reply& reply)
         {
-            double time_stamp;
+            double time_stamp(0.0);
             getDoubleArgument(arguments, "time", reply, time_stamp);
             return time_stamp;
         }

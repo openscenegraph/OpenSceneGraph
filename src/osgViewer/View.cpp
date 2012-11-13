@@ -250,6 +250,13 @@ void View::init()
 void View::setStartTick(osg::Timer_t tick)
 {
     _startTick = tick;
+    
+    for(Devices::iterator eitr = _eventSources.begin();
+        eitr != _eventSources.end();
+        ++eitr)
+    {
+        (*eitr)->getEventQueue()->setStartTick(_startTick);
+    }
 }
 
 void View::setSceneData(osg::Node* node)
@@ -2224,6 +2231,9 @@ void View::addDevice(osgGA::Device* eventSource)
     {
         _eventSources.push_back(eventSource);
     }
+    
+    if (eventSource)
+        eventSource->getEventQueue()->setStartTick(getStartTick());
 }
 
 void View::removeDevice(osgGA::Device* eventSource)

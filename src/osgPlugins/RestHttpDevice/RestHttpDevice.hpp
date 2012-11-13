@@ -151,11 +151,12 @@ public:
     {
         if (_firstEventRemoteTimeStamp < 0)
         {
-            _firstEventLocalTimeStamp = osg::Timer::instance()->time_s();
+            _firstEventLocalTimeStamp = getEventQueue()->getTime();
             _firstEventRemoteTimeStamp = time_stamp;
         }
-        
-        return  _firstEventLocalTimeStamp + (time_stamp - _firstEventRemoteTimeStamp) / 1000.0;;
+        double local_time = _firstEventLocalTimeStamp + (time_stamp - _firstEventRemoteTimeStamp);
+        // std::cout << "ts: "<< time_stamp << " -> " << local_time << std::endl;
+        return  local_time;
     }
     
     bool isNewer(double time_stamp)
@@ -186,10 +187,13 @@ private:
 class SendKeystrokeRequestHandler : public RestHttpDevice::RequestHandler {
 public:
     SendKeystrokeRequestHandler(const std::string& request_path, int key) : RestHttpDevice::RequestHandler(request_path), _key(key) {}
+    
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        getDevice()->getEventQueue()->keyPress(_key);
-        getDevice()->getEventQueue()->keyRelease(_key);
+        double local_time = getLocalTime(arguments, reply);
+        
+        getDevice()->getEventQueue()->keyPress(_key, local_time);
+        getDevice()->getEventQueue()->keyRelease(_key, local_time);
         
         return sendOkReply(reply);
     }

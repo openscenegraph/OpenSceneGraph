@@ -246,7 +246,8 @@ public:
             duration(-1.0),
             imageSequence(false),
             imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES),
-            imageSequenceInteractionMode(PLAY_AUTOMATICALLY_LIKE_MOVIE)
+            imageSequenceInteractionMode(PLAY_AUTOMATICALLY_LIKE_MOVIE),
+            blendingHint(USE_IMAGE_ALPHA)
         {}
 
         std::string                     options;
@@ -271,7 +272,16 @@ public:
             USE_MOUSE_Y_POSITION
         };
         ImageSequenceInteractionMode imageSequenceInteractionMode;
+
+        enum BlendingHint
+        {
+            USE_IMAGE_ALPHA,
+            OFF,
+            ON
+        };
         
+        BlendingHint blendingHint;
+
     };
 
     struct VolumeData

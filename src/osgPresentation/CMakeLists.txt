@@ -12,6 +12,7 @@ SET(TARGET_H
     ${HEADER_PATH}/AnimationMaterial
     ${HEADER_PATH}/CompileSlideCallback
     ${HEADER_PATH}/PickEventHandler
+    ${HEADER_PATH}/PropertyManager
     ${HEADER_PATH}/KeyEventHandler
     ${HEADER_PATH}/SlideEventHandler
     ${HEADER_PATH}/SlideShowConstructor
@@ -22,6 +23,7 @@ SET(TARGET_SRC
     AnimationMaterial.cpp
     CompileSlideCallback.cpp
     PickEventHandler.cpp
+    PropertyManager.cpp
     KeyEventHandler.cpp
     SlideEventHandler.cpp
     SlideShowConstructor.cpp

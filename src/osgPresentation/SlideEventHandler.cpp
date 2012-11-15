@@ -128,48 +128,6 @@ void LayerAttributes::callLeaveCallbacks(osg::Node* node)
     }
 }
 
-void ImageSequenceUpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
-{
-    float x;
-    if (_propertyManager->getProperty(_propertyName,x))
-    {
-        double xMin = -1.0;
-        double xMax = 1.0;
-        double position = ((double)x-xMin)/(xMax-xMin)*_imageSequence->getLength();
-        
-        _imageSequence->seek(position);
-    }
-    else
-    {
-        OSG_INFO<<"ImageSequenceUpdateCallback::operator() Could not find property : "<<_propertyName<<std::endl;
-    }
-    
-    // note, callback is responsible for scenegraph traversal so
-    // they must call traverse(node,nv) to ensure that the
-    // scene graph subtree (and associated callbacks) are traversed.
-    traverse(node,nv);
-}
-
-
-bool PropertyEventCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
-{
-
-    bool mouseEvent =  (ea.getEventType()==osgGA::GUIEventAdapter::MOVE ||
-                        ea.getEventType()==osgGA::GUIEventAdapter::DRAG ||
-                        ea.getEventType()==osgGA::GUIEventAdapter::PUSH ||
-                        ea.getEventType()==osgGA::GUIEventAdapter::RELEASE);
-    if(mouseEvent)
-    {    
-        _propertyManager->setProperty("mouse.x",ea.getX());
-        _propertyManager->setProperty("mouse.x_normalized",ea.getXnormalized());
-        _propertyManager->setProperty("mouse.y",ea.getX());
-        _propertyManager->setProperty("mouse.y_normalized",ea.getYnormalized());
-    }
-    
-    return false;
-}
-
-
 
 struct InteractiveImageSequenceOperator : public ObjectOperator
 {
@@ -287,6 +245,7 @@ struct CallbackOperator : public ObjectOperator
 
     virtual void setPause(SlideEventHandler*, bool pause)
     {
+        osg::NodeCallback* nc = dynamic_cast<osg::NodeCallback*>(_callback.get());
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
         AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
@@ -295,20 +254,26 @@ struct CallbackOperator : public ObjectOperator
             OSG_INFO<<"apc->setPause("<<pause<<")"<<std::endl;
             apc->setPause(pause);
         }
-        if (tc)
+        else if (tc)
         {
             OSG_INFO<<"tc->setPause("<<pause<<")"<<std::endl;
             tc->setPause(pause);
         }
-        if (amc)
+        else if (amc)
         {
             OSG_INFO<<"amc->setPause("<<pause<<")"<<std::endl;
             amc->setPause(pause);
         }
+        else if (nc)
+        {
+            OSG_NOTICE<<"Need to pause callback : "<<nc->className()<<std::endl;
+        }
+        
     }
 
     virtual void reset(SlideEventHandler*)
     {
+        osg::NodeCallback* nc = dynamic_cast<osg::NodeCallback*>(_callback.get());
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
         AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
@@ -317,13 +282,17 @@ struct CallbackOperator : public ObjectOperator
             apc->reset();
             apc->update(*_node);
         }
-        if (tc)
+        else if (tc)
         {
         }
-        if (amc)
+        else if (amc)
         {
             amc->reset();
             amc->update(*_node);
+        }
+        else
+        {
+            OSG_NOTICE<<"Need to reset callback : "<<nc->className()<<std::endl;
         }
     }
 

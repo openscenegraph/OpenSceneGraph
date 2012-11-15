@@ -2020,6 +2020,40 @@ bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& com
     }
 }
 
+class VolumeTileCallback : public osg::NodeCallback
+{
+    public:
+
+        VolumeTileCallback()
+        {
+        }
+
+        VolumeTileCallback(const VolumeTileCallback& vtc,const osg::CopyOp& copyop):
+            osg::NodeCallback(vtc,copyop) {}
+
+        META_Object(osgPresentation, VolumeTileCallback);
+
+        void reset() {}
+        void update(osg::Node* node) {}
+        void setPause(bool pause) {}
+        
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(node);
+            osgVolume::Locator* locator = tile ? tile->getLocator() : 0;
+            if (tile)
+            {
+                OSG_NOTICE<<"VolumeTileCallback : Have locator matrix "<<locator->getTransform()<<std::endl;
+            }
+            
+            // note, callback is responsible for scenegraph traversal so
+            // they must call traverse(node,nv) to ensure that the
+            // scene graph subtree (and associated callbacks) are traversed.
+            traverse(node,nv);
+        }
+    
+};
+
 void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& in_positionData, const VolumeData& volumeData)
 {
     // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
@@ -2300,6 +2334,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         model = group.get();
     }
 
+    tile->setUpdateCallback(new VolumeTileCallback());
 
 
     ModelData modelData;

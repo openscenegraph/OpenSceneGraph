@@ -13,6 +13,7 @@
 #ifndef PROPERTYMANAGER
 #define PROPERTYMANAGER 1
 
+#include <osg/UserDataContainer>
 #include <osg/ValueObject>
 #include <osg/NodeCallback>
 #include <osg/ImageSequence>
@@ -60,6 +61,54 @@ protected:
     mutable OpenThreads::Mutex _mutex;
 
 };
+
+class PropertyAnimation : public osg::NodeCallback
+{
+public:
+    PropertyAnimation():
+            _firstTime(DBL_MAX),
+            _latestTime(0.0),
+            _pause(false),
+            _pauseTime(0.0) {}
+
+    void setPropertyManager(PropertyManager* pm) { _pm = pm; }
+    PropertyManager* getPropertyManager() const { return _pm.get(); }
+
+    typedef std::map<double, osg::ref_ptr<osg::UserDataContainer> > KeyFrameMap;
+
+    KeyFrameMap& getKeyFrameMap() { return _keyFrameMap; }
+    const KeyFrameMap& getKeyFrameMap() const { return _keyFrameMap; }
+
+    void addKeyFrame(double time, osg::UserDataContainer* udc)
+    {
+        _keyFrameMap[time] = udc;
+    }
+
+    virtual void reset();
+
+    void setPause(bool pause);
+    bool getPause() const { return _pause; }
+
+    double getAnimationTime() const;
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
+    virtual void update();
+
+protected:
+
+    osg::ref_ptr<PropertyManager> _pm;
+
+    KeyFrameMap _keyFrameMap;
+
+    double      _firstTime;
+    double      _latestTime;
+    bool        _pause;
+    double      _pauseTime;
+    
+};
+
+
 
 struct OSGPRESENTATION_EXPORT ImageSequenceUpdateCallback : public osg::NodeCallback
 {

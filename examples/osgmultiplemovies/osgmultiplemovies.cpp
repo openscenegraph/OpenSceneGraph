@@ -383,7 +383,7 @@ static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, fl
         
         if (img_stream)
         {
-            tex = new osg::Texture2D(img_stream);
+            tex = new osg::Texture2D(img_stream.get());
             tex->setResizeNonPowerOfTwoHint(false);
             
         }
@@ -402,7 +402,7 @@ static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, fl
             osgText::Text* text = new osgText::Text();
             text->setFont("arial.ttf");
             text->setDataVariance(osg::Object::DYNAMIC);
-            text->setUpdateCallback(new ImageStreamStateCallback(text, img));
+            text->setUpdateCallback(new ImageStreamStateCallback(text, img.get()));
             text->setCharacterSize(24);
             text->setPosition(p + osg::Vec3(10,-10,10));
             text->setAxisAlignment(osgText::TextBase::XZ_PLANE);
@@ -424,7 +424,7 @@ static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, fl
         
         geode->addDrawable(geo);
 
-        geo->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex);
+        geo->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex.get());
         
         osg::Vec4Array* colors = new osg::Vec4Array();
         colors->push_back(osg::Vec4(0.7, 0.7, 0.7, 1));
@@ -434,7 +434,7 @@ static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, fl
         
         p[0] += w + 10;
         
-        img->addDimensionsChangedCallback(new MyDimensionsChangedCallback(tex, geo));
+        img->addDimensionsChangedCallback(new MyDimensionsChangedCallback(tex.get(), geo));
         
         return geode;
     }
@@ -476,7 +476,7 @@ public:
     void apply(osg::StateSet* ss)
     {
         if (ss && ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
-            ss->setTextureAttribute(0, _tex);
+            ss->setTextureAttribute(0, _tex.get());
     }
 private:
     osg::ref_ptr<osg::Texture> _tex;
@@ -531,16 +531,16 @@ private:
         else if (_currentFile >= static_cast<int>(_files.size()))
             _currentFile = 0;
         
-        osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(_files[_currentFile], _options);
+        osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(_files[_currentFile], _options.get());
         osg::ref_ptr<osg::Texture> tex = dynamic_cast<osg::Texture*>(obj.get());
         if (!tex) {
             osg::ref_ptr<osg::ImageStream> stream = dynamic_cast<osg::ImageStream*>(obj.get());
             if (!stream)
-                stream = dynamic_cast<osg::ImageStream*>(osgDB::readImageFile(_files[_currentFile], _options));
+                stream = dynamic_cast<osg::ImageStream*>(osgDB::readImageFile(_files[_currentFile], _options.get()));
             
             if (stream)
             {
-                tex = new osg::Texture2D(stream);
+                tex = new osg::Texture2D(stream.get());
                 tex->setResizeNonPowerOfTwoHint(false);
             }
         }
@@ -548,7 +548,7 @@ private:
             osg::ref_ptr<osg::ImageStream> stream = dynamic_cast<osg::ImageStream*>(tex->getImage(0));
             if (stream)
                 stream->play();
-            ReplaceTextureVisitor v(tex);
+            ReplaceTextureVisitor v(tex.get());
             _node->accept(v);
         }
     }
@@ -643,9 +643,9 @@ int main(int argc, char** argv)
     
     if (slide_show)
     {
-        osg::Node* node = readImageStream(files[0], pos, desired_height, options);
+        osg::Node* node = readImageStream(files[0], pos, desired_height, options.get());
         group->addChild(node);
-        movie_event_handler = new SlideShowEventHandler(node, files, options);
+        movie_event_handler = new SlideShowEventHandler(node, files, options.get());
     }
     else
     {
@@ -657,7 +657,7 @@ int main(int argc, char** argv)
         unsigned int num_videos = 0;
         for(osgDB::DirectoryContents::iterator i = files.begin(); (i != files.end()) && (num_videos < max_videos); ++i)
         {
-            osg::Node* node = readImageStream(*i, pos, desired_height, options);
+            osg::Node* node = readImageStream(*i, pos, desired_height, options.get());
             if (node)
                 group->addChild(node);
             

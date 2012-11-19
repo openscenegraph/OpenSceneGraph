@@ -887,7 +887,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         
         stateset = pictureQuad->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0,
-                        texture,
+                        texture.get(),
                         osg::StateAttribute::ON);
     }
     

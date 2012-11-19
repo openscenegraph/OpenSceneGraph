@@ -428,10 +428,22 @@ int main( int argc, char **argv )
     std::string device;
     while (arguments.read("--device", device))
     {
-        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(device);
+        
+        osg::ref_ptr<osgGA::Device> dev = dynamic_cast<osgGA::Device*>(obj.get());
         if (dev.valid())
         {
+            OSG_NOTICE<<"Adding Device : "<<device<<std::endl;
             viewer.addDevice(dev.get());
+        }
+        else
+        {
+            osgGA::GUIEventHandler* handler = dynamic_cast<osgGA::GUIEventHandler*>(obj.get());
+            if (handler)
+            {
+                OSG_NOTICE<<"Adding Device event handler : "<<device<<std::endl;
+                viewer.getEventHandlers().push_front(handler);
+            }
         }
     }
 
@@ -448,7 +460,7 @@ int main( int argc, char **argv )
 
         osg::ref_ptr<osgDB::Options> device_options = new osgDB::Options("documentRegisteredHandlers");
 
-        osg::ref_ptr<osgGA::Device> rest_http_device = osgDB::readFile<osgGA::Device>(server_address+":"+server_port+"/"+document_root+".resthttp", device_options);
+        osg::ref_ptr<osgGA::Device> rest_http_device = osgDB::readFile<osgGA::Device>(server_address+":"+server_port+"/"+document_root+".resthttp", device_options.get());
         if (rest_http_device.valid())
         {
             viewer.addDevice(rest_http_device.get());

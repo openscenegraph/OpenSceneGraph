@@ -171,7 +171,7 @@ enum ColorSpaceOperation
 };
 
 /** Convert the RGBA values in a Image based on a ColorSpaceOperation defined scheme.*/
-extern osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, const osg::Vec4& colour);
+extern OSG_EXPORT osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, const osg::Vec4& colour);
 
 
 }

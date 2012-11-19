@@ -7,7 +7,7 @@ void EventProperty::update(osgViewer::View* view)
 {
     if (view && view->getEventQueue() && _event.valid())
     {
-        view->getEventQueue()->addEvent(_event);
+        view->getEventQueue()->addEvent(_event.get());
     }
 }
 

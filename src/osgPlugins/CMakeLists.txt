@@ -255,6 +255,7 @@ IF(LIBVNCSERVER_FOUND)
 ENDIF()
 
 ADD_SUBDIRECTORY(pvr)
+ADD_SUBDIRECTORY(osc)
 
 ####################################################
 #

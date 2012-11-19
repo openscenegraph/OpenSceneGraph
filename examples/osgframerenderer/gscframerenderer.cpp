@@ -274,7 +274,7 @@ int main( int argc, char **argv )
 
 
         viewer.getCamera()->setGraphicsContext(gc.get());
-        viewer.getCamera()->setDisplaySettings(ds);
+        viewer.getCamera()->setDisplaySettings(ds.get());
 
         osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
         if (gw)
@@ -322,14 +322,14 @@ int main( int argc, char **argv )
                 ++itr, ++cameraNum)
             {
                 osg::Camera* camera = *itr;
-                camera->setFinalDrawCallback(screenShot);
+                camera->setFinalDrawCallback(screenShot.get());
                 screenShot->_cameraNumMap[camera] = cameraNum;
             }
         }
         else if (cameras.size()==1)
         {
             osg::Camera* camera = cameras.front();
-            camera->setFinalDrawCallback(screenShot);
+            camera->setFinalDrawCallback(screenShot.get());
         }
         else
         {

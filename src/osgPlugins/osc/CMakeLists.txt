@@ -30,6 +30,7 @@ SET(TARGET_H
 )
 
 if(WIN32)
+    SET(TARGET_EXTERNAL_LIBRARIES ws2_32)
     SET(TARGET_SRC
         ${TARGET_SRC}
         ip/win32/NetworkingUtils.cpp 

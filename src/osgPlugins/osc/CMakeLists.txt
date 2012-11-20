@@ -30,12 +30,12 @@ SET(TARGET_H
 )
 
 if(WIN32)
-    SET(TARGET_EXTERNAL_LIBRARIES ws2_32)
     SET(TARGET_SRC
         ${TARGET_SRC}
         ip/win32/NetworkingUtils.cpp 
         ip/win32/UdpSocket.cpp
     )
+    SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES} "Ws2_32.lib winmm")
 ELSE()
     SET(TARGET_SRC
         ${TARGET_SRC}
@@ -44,7 +44,7 @@ ELSE()
     )
 ENDIF()
 
-SET(TARGET_ADDED_LIBRARIES osgPresentation )
+SET(TARGET_ADDED_LIBRARIES osgGA )
 
 #### end var setup  ###
 SETUP_PLUGIN(osc)

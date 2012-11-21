@@ -70,6 +70,7 @@ public:
     virtual void run();
     
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+    virtual void ProcessPacket( const char *data, int size, const IpEndpointName& remoteEndpoint );
     
     void addRequestHandler(RequestHandler* handler);
     

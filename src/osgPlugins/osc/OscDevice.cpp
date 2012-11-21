@@ -397,6 +397,22 @@ void OscDevice::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointN
 
 }
 
+void OscDevice::ProcessPacket( const char *data, int size, const IpEndpointName& remoteEndpoint )
+{
+    OSG_INFO << "OscDevice :: receiving " << size << " bytes of data ..." << std::endl;
+    
+    try {
+        osc::OscPacketListener::ProcessPacket(data, size, remoteEndpoint);
+    }
+    catch(const osc::Exception& e) {
+        OSG_WARN << "OscDevice :: could not process UDP-packet: " << e.what() << std::endl;
+    }
+    catch(...) {
+        OSG_WARN << "OscDevice :: could not process UDP-packet because of an exception!" << std::endl;
+    }
+        
+}
+
 void OscDevice::addRequestHandler(RequestHandler* handler)
 {
     if (handler)

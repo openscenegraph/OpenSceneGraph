@@ -220,9 +220,14 @@ ENDIF(OSG_MAINTAINER)
 IF(NOT ANDROID)
 IF(APPLE)
     # Determine the canonical name of the selected Platform SDK
-    EXECUTE_PROCESS(COMMAND "defaults" "read" "${CMAKE_OSX_SYSROOT}/SDKSettings.plist" "CanonicalName"
-                    OUTPUT_VARIABLE OSG_OSX_SDK_NAME
+    EXECUTE_PROCESS(COMMAND "sw_vers"
+                    OUTPUT_VARIABLE OSG_OSX_SW_VER_STRING
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REGEX MATCHALL "(10.[0-9])" DUMMYSTRING "${OSG_OSX_SW_VER_STRING}")
+    LIST(GET DUMMYSTRING 0 OSG_OSX_VER_NUM)
+    SET(OSG_OSX_SDK_VERSION "macosx")
+    LIST(APPEND OSG_OSX_SDK_VERSION ${OSG_OSX_VER_NUM})
+    STRING(REPLACE ";" "" OSG_OSX_SDK_NAME ${OSG_OSX_SDK_VERSION})
 
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below

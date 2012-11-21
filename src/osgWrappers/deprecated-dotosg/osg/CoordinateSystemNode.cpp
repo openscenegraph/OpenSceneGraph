@@ -45,9 +45,7 @@ bool CoordinateSystemNode_readLocalData(Object& obj, Input& fr)
         fr+=2;
     }
 
-    static ref_ptr<EllipsoidModel> s_ellipsoidModel = new EllipsoidModel;
-
-    EllipsoidModel* em = static_cast<EllipsoidModel*>(fr.readObjectOfType(*s_ellipsoidModel));
+    EllipsoidModel* em = fr.readObjectOfType<osg::EllipsoidModel>();
     if (em) csn.setEllipsoidModel(em);
 
     return iteratorAdvanced;

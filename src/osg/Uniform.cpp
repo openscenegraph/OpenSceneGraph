@@ -967,13 +967,12 @@ GLenum Uniform::getInternalArrayType( Type t )
     }
 }
 
+typedef std::map<std::string, unsigned int> UniformNameIDMap;
+static OpenThreads::Mutex s_mutex_uniformNameIDMap;
+static UniformNameIDMap s_uniformNameIDMap;
 
 unsigned int Uniform::getNameID(const std::string& name)
 {
-    typedef std::map<std::string, unsigned int> UniformNameIDMap;
-    static OpenThreads::Mutex s_mutex_uniformNameIDMap;
-    static UniformNameIDMap s_uniformNameIDMap;
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_uniformNameIDMap);
     UniformNameIDMap::iterator it = s_uniformNameIDMap.find(name);
     if (it != s_uniformNameIDMap.end())

@@ -40,25 +40,6 @@ extern "C"
 
 namespace osgDB {
 
-/** basic structure for custom runtime inheritance checking */
-struct basic_type_wrapper {
-    virtual ~basic_type_wrapper() {}
-    virtual bool matches(const osg::Object *proto) const = 0;
-};
-
-/** a class template that checks inheritance between a given
-    Object's class and a class defined at compile time through
-        the template parameter T.
-        This is used in conjunction with readObjectOfType() to
-        specify an abstract class as reference type.
-**/
-template<class T>
-struct type_wrapper: basic_type_wrapper {
-    bool matches(const osg::Object *proto) const
-    {
-        return dynamic_cast<const T*>(proto) != 0;
-    }
-};
 
 /**
     Registry is a singleton factory which stores

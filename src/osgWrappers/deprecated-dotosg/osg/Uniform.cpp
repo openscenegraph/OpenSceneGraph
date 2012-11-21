@@ -210,12 +210,11 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     }
 #endif //]
 
-    static ref_ptr<Uniform::Callback> s_callback = new osg::Uniform::Callback;
     while (fr.matchSequence("UpdateCallback {"))
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        Uniform::Callback* callback = dynamic_cast<Uniform::Callback*>(fr.readObjectOfType(*s_callback));
+        Uniform::Callback* callback = fr.readObjectOfType<Uniform::Callback>();
         if (callback) {
             uniform.setUpdateCallback(callback);
         }
@@ -226,7 +225,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        Uniform::Callback* callback = dynamic_cast<Uniform::Callback*>(fr.readObjectOfType(*s_callback));
+        Uniform::Callback* callback = fr.readObjectOfType<Uniform::Callback>();
         if (callback) {
             uniform.setEventCallback(callback);
         }

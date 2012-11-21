@@ -29,7 +29,25 @@
 
 namespace osgDB {
 
-struct basic_type_wrapper;
+/** basic structure for custom runtime inheritance checking */
+struct basic_type_wrapper {
+    virtual ~basic_type_wrapper() {}
+    virtual bool matches(const osg::Object *proto) const = 0;
+};
+
+/** a class template that checks inheritance between a given
+    Object's class and a class defined at compile time through
+        the template parameter T.
+        This is used in conjunction with readObjectOfType() to
+        specify an abstract class as reference type.
+**/
+template<class T>
+struct type_wrapper: basic_type_wrapper {
+    bool matches(const osg::Object *proto) const
+    {
+        return dynamic_cast<const T*>(proto) != 0;
+    }
+};
 
 /** deprecated. */
 class OSGDB_EXPORT Field
@@ -254,6 +272,13 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
 
         virtual osg::Object*         readObjectOfType(const osg::Object& compObj);
         virtual osg::Object*         readObjectOfType(const basic_type_wrapper &btw);
+
+
+        template<typename T>
+        inline T* readObjectOfType()
+        {
+            return dynamic_cast<T*>(readObjectOfType(osgDB::type_wrapper<T>()));
+        }
 
         virtual osg::Object*         readObject();
         virtual osg::Image*          readImage();

@@ -28,12 +28,10 @@ bool NodeCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
 
-    static osg::ref_ptr<NodeCallback> s_nc = new NodeCallback;
-    osg::ref_ptr<osg::Object> object = fr.readObjectOfType(*s_nc);
-    if (object.valid())
+    NodeCallback* ncc = fr.readObjectOfType<NodeCallback>();
+    if (ncc)
     {
-        NodeCallback* ncc = dynamic_cast<NodeCallback*>(object.get());
-        if (ncc) nc.setNestedCallback(ncc);
+        nc.setNestedCallback(ncc);
         itrAdvanced = true;
     }
 

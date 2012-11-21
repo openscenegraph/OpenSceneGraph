@@ -65,26 +65,61 @@ REGISTER_DOTOSGWRAPPER(GeoState)
 //
 // Set up the maps from name to GLMode and visa versa.
 //
-typedef std::map<std::string,StateAttribute::GLMode>    GLNameToGLModeMap;
-typedef std::map<StateAttribute::GLMode,std::string>    GLModeToGLNameMap;
-typedef std::set<StateAttribute::GLMode>                TextureGLModeSet;
 
-GLNameToGLModeMap s_GLNameToGLModeMap;
-GLModeToGLNameMap s_GLModeToGLNameMap;
-TextureGLModeSet s_TextureGLModeSet;
+#define ADD_NAME(name,mode) _GLNameToGLModeMap[name]=mode; _GLModeToGLNameMap[mode]=name;
 
-#define ADD_NAME(name,mode) s_GLNameToGLModeMap[name]=mode; s_GLModeToGLNameMap[mode]=name;
-
-void initGLNames()
+struct ModesAndNames
 {
-    static bool first_time = true;
-    if (!first_time) return;
+    ModesAndNames();
 
-    static OpenThreads::Mutex s_initGLNames;
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_initGLNames);
+    typedef std::map<std::string,StateAttribute::GLMode>    GLNameToGLModeMap;
+    typedef std::map<StateAttribute::GLMode,std::string>    GLModeToGLNameMap;
+    typedef std::set<StateAttribute::GLMode>                TextureGLModeSet;
 
-    if (!first_time) return;
+    inline bool isTextureMode(int mode) const
+    {
+        return _TextureGLModeSet.find(mode)!=_TextureGLModeSet.end();
+    }
 
+    inline bool getGLModeForName(const std::string& str, osg::StateAttribute::GLMode& mode) const
+    {
+        GLNameToGLModeMap::const_iterator nitr = _GLNameToGLModeMap.find(str);
+        if (nitr!=_GLNameToGLModeMap.end())
+        {
+            mode = nitr->second;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+            
+    }
+
+    inline bool getNameForGLMode(const osg::StateAttribute::GLMode& mode, std::string& str) const
+    {
+        GLModeToGLNameMap::const_iterator nitr = _GLModeToGLNameMap.find(mode);
+        if (nitr!=_GLModeToGLNameMap.end())
+        {
+            str = nitr->second;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    GLNameToGLModeMap _GLNameToGLModeMap;
+    GLModeToGLNameMap _GLModeToGLNameMap;
+    TextureGLModeSet _TextureGLModeSet;
+};
+
+static ModesAndNames s_ModesAndNames;
+
+ModesAndNames::ModesAndNames()
+{
     ADD_NAME("GL_ALPHA_TEST",GL_ALPHA_TEST)
     ADD_NAME("GL_BLEND",GL_BLEND)
     ADD_NAME("GL_COLOR_MATERIAL",GL_COLOR_MATERIAL)
@@ -138,17 +173,17 @@ void initGLNames()
     ADD_NAME("GL_VERTEX_PROGRAM_POINT_SIZE", GL_VERTEX_PROGRAM_POINT_SIZE)
     ADD_NAME("GL_VERTEX_PROGRAM_TWO_SIDE", GL_VERTEX_PROGRAM_TWO_SIDE)
 
-    s_TextureGLModeSet.insert(GL_TEXTURE_1D);
-    s_TextureGLModeSet.insert(GL_TEXTURE_2D);
-    s_TextureGLModeSet.insert(GL_TEXTURE_3D);
+    _TextureGLModeSet.insert(GL_TEXTURE_1D);
+    _TextureGLModeSet.insert(GL_TEXTURE_2D);
+    _TextureGLModeSet.insert(GL_TEXTURE_3D);
 
-    s_TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
-    s_TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE);
+    _TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
+    _TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE);
 
-    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
-    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_R);
-    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_S);
-    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_T);
+    _TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
+    _TextureGLModeSet.insert(GL_TEXTURE_GEN_R);
+    _TextureGLModeSet.insert(GL_TEXTURE_GEN_S);
+    _TextureGLModeSet.insert(GL_TEXTURE_GEN_T);
 
 
 //     for(GLNameToGLModeMap::iterator itr=s_GLNameToGLModeMap.begin();
@@ -157,8 +192,6 @@ void initGLNames()
 //     {
 //         cout << "Name ["<<itr->first<<","<<itr->second<<"]"<< std::endl;
 //     }
-
-    first_time = false;
 }
 
 
@@ -294,8 +327,6 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     // note, StateSet replaced GeoState April 2001.
     StateSet& stateset = static_cast<StateSet&>(obj);
 
-    initGLNames();
-
     // read the rendering hint value.
     if (fr[0].matchWord("rendering_hint"))
     {
@@ -359,12 +390,11 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         stateset.setRenderBinDetails(binNumber,binName,rbmode);
     }
 
-    static ref_ptr<StateSet::Callback> s_callback = new osg::StateSet::Callback;
     while (fr.matchSequence("UpdateCallback {"))
     {
         // int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
+        StateSet::Callback* callback = fr.readObjectOfType<StateSet::Callback>();
         if (callback) {
             stateset.setUpdateCallback(callback);
         }
@@ -375,7 +405,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
+        StateSet::Callback* callback = fr.readObjectOfType<StateSet::Callback>();
         if (callback) {
             stateset.setEventCallback(callback);
         }
@@ -395,7 +425,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                 int mode;
                 fr[0].getInt(mode);
 
-                if (s_TextureGLModeSet.find(mode)!=s_TextureGLModeSet.end())
+                if (s_ModesAndNames.isTextureMode(mode))
                 {
                     // remap to a texture unit.
                     stateset.setTextureMode(0,(StateAttribute::GLMode)mode,value);
@@ -414,11 +444,10 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         {
             if (StateSet_matchModeStr(fr[1].getStr(),value))
             {
-                GLNameToGLModeMap::iterator nitr = s_GLNameToGLModeMap.find(fr[0].getStr());
-                if (nitr!=s_GLNameToGLModeMap.end())
+                StateAttribute::GLMode mode;
+                if (s_ModesAndNames.getGLModeForName(fr[0].getStr(), mode))
                 {
-                    StateAttribute::GLMode mode = nitr->second;
-                    if (s_TextureGLModeSet.find(mode)!=s_TextureGLModeSet.end())
+                    if (s_ModesAndNames.isTextureMode(mode))
                     {
                         // remap to a texture unit.
                         stateset.setTextureMode(0,mode,value);
@@ -494,10 +523,9 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                 {
                     if (StateSet_matchModeStr(fr[1].getStr(),value))
                     {
-                        GLNameToGLModeMap::iterator nitr = s_GLNameToGLModeMap.find(fr[0].getStr());
-                        if (nitr!=s_GLNameToGLModeMap.end())
+                        StateAttribute::GLMode mode;
+                        if (s_ModesAndNames.getGLModeForName(fr[0].getStr(), mode))
                         {
-                            StateAttribute::GLMode mode = nitr->second;
                             stateset.setTextureMode(unit,mode,value);
                             fr+=2;
                             localIteratorAdvanced = true;
@@ -543,8 +571,6 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
 
     const StateSet& stateset = static_cast<const StateSet&>(obj);
 
-    initGLNames();
-
     // write the rendering hint value.
     fw.indent()<<"rendering_hint ";
     switch(stateset.getRenderingHint())
@@ -575,11 +601,11 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
   for(StateSet::ModeList::const_iterator mitr=ml.begin();
         mitr!=ml.end();
         ++mitr)
-    {
-         GLModeToGLNameMap::iterator nitr = s_GLModeToGLNameMap.find(mitr->first);
-         if (nitr!=s_GLModeToGLNameMap.end())
+     {
+         std::string str;
+         if (s_ModesAndNames.getNameForGLMode(mitr->first, str))
          {
-             fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << std::endl;
+             fw.indent() << str << " " << StateSet_getModeStr(mitr->second) << std::endl;
          }
          else
          {
@@ -620,16 +646,16 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
                 mitr!=ml.end();
                 ++mitr)
             {
-                 GLModeToGLNameMap::iterator nitr = s_GLModeToGLNameMap.find(mitr->first);
-                 if (nitr!=s_GLModeToGLNameMap.end())
-                 {
-                     fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << std::endl;
-                 }
-                 else
-                 {
+                std::string str;
+                if (s_ModesAndNames.getNameForGLMode(mitr->first, str))
+                {
+                    fw.indent() << str << " " << StateSet_getModeStr(mitr->second) << std::endl;
+                }
+                else
+                {
                     // no name defined for GLMode so just pass its value to fw.
                     fw.indent() << "0x" << hex << (unsigned int)mitr->first << dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
-                 }
+                }
             }
         }
 

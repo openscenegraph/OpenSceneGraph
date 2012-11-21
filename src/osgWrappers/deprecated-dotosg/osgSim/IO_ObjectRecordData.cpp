@@ -24,19 +24,6 @@ REGISTER_DOTOSGWRAPPER(ObjectRecordData_Proxy)
     osgDB::DotOsgWrapper::READ_AND_WRITE
 );
 
-#if 0
-// if deffing out as values are not used anywhere.
-static const int numBits( 6 );
-typedef std::pair< std::string, osgSim::ObjectRecordData::Flags> FlagBits;
-static FlagBits flagBits[numBits] = {
-    FlagBits( std::string("DONT_DISPLAY_IN_DAYLIGHT"), osgSim::ObjectRecordData::DONT_DISPLAY_IN_DAYLIGHT ),
-    FlagBits( "DONT_DISPLAY_AT_DUSK", osgSim::ObjectRecordData::DONT_DISPLAY_AT_DUSK ),
-    FlagBits( "DONT_DISPLAY_AT_NIGHT", osgSim::ObjectRecordData::DONT_DISPLAY_AT_NIGHT ),
-    FlagBits( "DONT_ILLUMINATE", osgSim::ObjectRecordData::DONT_ILLUMINATE ),
-    FlagBits( "FLAT_SHADED", osgSim::ObjectRecordData::FLAT_SHADED ),
-    FlagBits( "GROUPS_SHADOW_OBJECT", osgSim::ObjectRecordData::GROUPS_SHADOW_OBJECT )
-};
-#endif
 bool ObjectRecordData_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     bool iteratorAdvanced = false;

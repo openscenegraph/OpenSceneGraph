@@ -74,15 +74,14 @@ bool Node_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    static ref_ptr<StateSet> s_drawstate = new osg::StateSet;
-    if (StateSet* readState = static_cast<StateSet*>(fr.readObjectOfType(*s_drawstate)))
+    StateSet* readState = fr.readObjectOfType<StateSet>();
+    if (readState)
     {
         node.setStateSet(readState);
         iteratorAdvanced = true;
     }
 
 
-    static ref_ptr<NodeCallback> s_nodecallback = new osg::NodeCallback;
     while (fr.matchSequence("UpdateCallback {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -90,7 +89,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            NodeCallback* nodecallback = fr.readObjectOfType<NodeCallback>();
             if (nodecallback) {
                 if (node.getUpdateCallback() == NULL) {
                     node.setUpdateCallback(nodecallback);
@@ -111,7 +110,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            NodeCallback* nodecallback = fr.readObjectOfType<NodeCallback>();
             if (nodecallback) {
                 if (node.getEventCallback() == NULL) {
                     node.setEventCallback(nodecallback);
@@ -132,7 +131,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            NodeCallback* nodecallback = fr.readObjectOfType<NodeCallback>();
             if (nodecallback) {
                 if (node.getCullCallback() == NULL) {
                     node.setCullCallback(nodecallback);
@@ -165,7 +164,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            Node::ComputeBoundingSphereCallback* callback = dynamic_cast<Node::ComputeBoundingSphereCallback*>(fr.readObjectOfType(type_wrapper<Node::ComputeBoundingSphereCallback>()));
+            Node::ComputeBoundingSphereCallback* callback = fr.readObjectOfType<Node::ComputeBoundingSphereCallback>();
             if (callback) {
                 node.setComputeBoundingSphereCallback(callback);
             }

@@ -29,12 +29,11 @@ bool StateAttribute_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
     StateAttribute& stateAttribute = static_cast<StateAttribute&>(obj);
 
-    static ref_ptr<StateAttributeCallback> s_callback = new osg::StateAttributeCallback;
     while (fr.matchSequence("UpdateCallback {"))
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        StateAttributeCallback* callback = dynamic_cast<StateAttributeCallback*>(fr.readObjectOfType(*s_callback));
+        StateAttributeCallback* callback = fr.readObjectOfType<StateAttributeCallback>();
         if (callback) {
             stateAttribute.setUpdateCallback(callback);
         }
@@ -45,7 +44,7 @@ bool StateAttribute_readLocalData(Object& obj, Input& fr)
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        StateAttributeCallback* callback = dynamic_cast<StateAttributeCallback*>(fr.readObjectOfType(*s_callback));
+        StateAttributeCallback* callback = fr.readObjectOfType<StateAttributeCallback>();
         if (callback) {
             stateAttribute.setEventCallback(callback);
         }

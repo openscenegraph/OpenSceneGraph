@@ -27,35 +27,35 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
 
     Drawable& drawable = static_cast<Drawable&>(obj);
 
-    static ref_ptr<StateSet> s_drawstate = new osg::StateSet;
-    if (StateSet* readState = static_cast<StateSet*>(fr.readObjectOfType(*s_drawstate)))
+    osg::StateSet* readState = fr.readObjectOfType<osg::StateSet>();
+    if (readState)
     {
         drawable.setStateSet(readState);
         iteratorAdvanced = true;
     }
 
-    Shape* shape = static_cast<Shape *>(fr.readObjectOfType(type_wrapper<Shape>()));
+    Shape* shape = fr.readObjectOfType<Shape>();
     if (shape)
     {
         drawable.setShape(shape);
         iteratorAdvanced = true;
     }
 
-    Drawable::UpdateCallback* uc = dynamic_cast<Drawable::UpdateCallback *>(fr.readObjectOfType(type_wrapper<Drawable::UpdateCallback>()));
+    Drawable::UpdateCallback* uc = fr.readObjectOfType<Drawable::UpdateCallback>();
     if (uc)
     {
         drawable.setUpdateCallback(uc);
         iteratorAdvanced = true;
     }
 
-    Drawable::CullCallback* cc = dynamic_cast<Drawable::CullCallback *>(fr.readObjectOfType(type_wrapper<Drawable::CullCallback>()));
+    Drawable::CullCallback* cc = fr.readObjectOfType<Drawable::CullCallback>();
     if (cc)
     {
         drawable.setCullCallback(cc);
         iteratorAdvanced = true;
     }
 
-    Drawable::DrawCallback* dc = dynamic_cast<Drawable::DrawCallback *>(fr.readObjectOfType(type_wrapper<Drawable::DrawCallback>()));
+    Drawable::DrawCallback* dc = fr.readObjectOfType<Drawable::DrawCallback>();
     if (dc)
     {
         drawable.setDrawCallback(dc);
@@ -76,7 +76,7 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    Drawable::ComputeBoundingBoxCallback* cbc = dynamic_cast<Drawable::ComputeBoundingBoxCallback *>(fr.readObjectOfType(type_wrapper<Drawable::ComputeBoundingBoxCallback>()));
+    Drawable::ComputeBoundingBoxCallback* cbc = fr.readObjectOfType<Drawable::ComputeBoundingBoxCallback>();
     if (cbc)
     {
         drawable.setComputeBoundingBoxCallback(cbc);

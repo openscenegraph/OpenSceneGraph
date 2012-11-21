@@ -198,12 +198,10 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
         iteratorAdvanced = true;
     }
 
-    static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
-    ref_ptr<osg::Object> object = fr.readObjectOfType(*s_path);
-    if (object.valid())
+    osg::ref_ptr<osg::AnimationPath> animpath = fr.readObjectOfType<osg::AnimationPath>();
+    if (animpath.valid())
     {
-        osg::AnimationPath* animpath = dynamic_cast<osg::AnimationPath*>(object.get());
-        if (animpath) apc->setAnimationPath(animpath);
+        apc->setAnimationPath(animpath.get());
         iteratorAdvanced = true;
     }
 

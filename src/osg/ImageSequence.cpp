@@ -353,10 +353,10 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     if (useDirectTimeRequest)
     {
-        int i = int(time/_timePerImage);
+        int i = osg::maximum<int>(0, int(time/_timePerImage));
         if ((i>=int(_imageDataList.size()) || !_imageDataList[i]._image))
         {
-             i = osg::clampTo<int>(i, 0, _imageDataList.size()-1);
+             i = osg::minimum<int>(i, _imageDataList.size()-1);
 
              OSG_INFO<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
              irh->requestImageFile(_imageDataList[i]._filename, this, i, time, fs, _imageDataList[i]._imageRequest, _readOptions.get());

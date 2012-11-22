@@ -191,7 +191,12 @@ public:
 	{
 		struct sockaddr_in bindSockAddr;
 		SockaddrFromIpEndpointName( bindSockAddr, localEndpoint );
-
+        {
+            IpEndpointName temp = IpEndpointNameFromSockaddr(bindSockAddr);
+            char address[30];
+            temp.AddressAndPortAsString(address);
+            printf("UdpSocket::Bind() %s \n", address);
+        }
         if (bind(socket_, (struct sockaddr *)&bindSockAddr, sizeof(bindSockAddr)) < 0) {
             throw std::runtime_error("unable to bind udp socket\n");
         }
@@ -420,7 +425,7 @@ public:
 				timeout.tv_usec = (long)((timeoutMs - (timeout.tv_sec * 1000)) * 1000);
 				timeoutPtr = &timeout;
 			}
-
+            printf("UdpSocket::Run() waiting for select \n");
 			if( select( fdmax + 1, &tempfds, 0, 0, timeoutPtr ) < 0 && errno != EINTR ){
    				throw std::runtime_error("select failed\n");
 			}
@@ -438,7 +443,7 @@ public:
 					i != socketListeners_.end(); ++i ){
 
 				if( FD_ISSET( i->second->impl_->Socket(), &tempfds ) ){
-
+                    printf("UdpSocket::Run() reading from socket \n");
 					int size = i->second->ReceiveFrom( remoteEndpoint, data, MAX_BUFFER_SIZE );
 					if( size > 0 ){
 						i->first->ProcessPacket( data, size, remoteEndpoint );

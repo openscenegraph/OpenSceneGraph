@@ -49,7 +49,7 @@
 #define OSC_HOST_LITTLE_ENDIAN 1
 #undef OSC_HOST_BIG_ENDIAN
 
-#elif defined(__APPLE__)
+#else
 
     #if defined(__GLIBC__)
         #include <endian.h>

@@ -13,6 +13,7 @@
 
 
 #include "OscProxyEventHandler.hpp"
+#include "osc/OscHostEndianness.h"
 
 static const unsigned long BUFFER_SIZE = 2048;
 
@@ -23,7 +24,14 @@ OscProxyEventHandler::OscProxyEventHandler(const std::string& address, int port)
     , _oscStream(_buffer, BUFFER_SIZE)
     , _firstRun(true)
 {
-    OSG_INFO << "OscDevice :: sending events to " << address << ":" << port << std::endl;
+    OSG_NOTICE << "OscDevice :: sending events to " << address << ":" << port << " ";
+    #ifdef OSC_HOST_LITTLE_ENDIAN
+        OSG_NOTICE << "(little endian)";
+    #elif OSC_HOST_BIG_ENDIAN
+        OSG_NOTICE << "(big endian)";
+    #endif
+    OSG_NOTICE << std::endl;
+    
 }
 
 
@@ -45,24 +53,63 @@ OscProxyEventHandler::~OscProxyEventHandler()
                 do_send = true;
             }
             break;
-            
         case osgGA::GUIEventAdapter::RESIZE:
             sendInit(ea);
             do_send = true;
-            
             break;
+            
+        case osgGA::GUIEventAdapter::SCROLL:
+            _oscStream << osc::BeginMessage("/osgga/mouse/scroll") << ea.getScrollingMotion() << ea.getScrollingDeltaX() << ea.getScrollingDeltaY() << osc::EndMessage;
+            do_send = true;
+            break;
+        
+        case osgGA::GUIEventAdapter::PEN_PRESSURE:
+            _oscStream
+                << osc::BeginMessage("/osgga/pen/pressure")
+                << ea.getPenPressure()
+                << osc::EndMessage;
+            do_send = true;
+            break;
+            
+        case osgGA::GUIEventAdapter::PEN_ORIENTATION:
+            
+             _oscStream
+                << osc::BeginMessage("/osgga/pen/orientation")
+                << ea.getPenRotation()
+                << ea.getPenTiltX()
+                << ea.getPenTiltY()
+                << osc::EndMessage;
+            do_send = true;
+            break;
+            
+        case osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER:
+            _oscStream
+                << osc::BeginMessage("/osgga/pen/proximity/enter")
+                << ea.getTabletPointerType()
+                << osc::EndMessage;
+            do_send = true;
+            break;
+        
+        case osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE:
+            _oscStream
+                << osc::BeginMessage("/osgga/pen/proximity/leave")
+                << ea.getTabletPointerType()
+                << osc::EndMessage;
+            do_send = true;
+            break;
+        
         case osgGA::GUIEventAdapter::PUSH:
-            _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << ea.getButton() << osc::EndMessage;
+            _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             do_send = true;
             break;
             
         case osgGA::GUIEventAdapter::RELEASE:
-            _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << ea.getButton() << osc::EndMessage;
+            _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             do_send = true;
             break;
         
         case osgGA::GUIEventAdapter::DOUBLECLICK:
-            _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << ea.getButton() << osc::EndMessage;
+            _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << getButtonNum(ea) << osc::EndMessage;
             do_send = true;
             break;
             
@@ -95,6 +142,25 @@ OscProxyEventHandler::~OscProxyEventHandler()
     }
     
     return false;
+}
+
+int OscProxyEventHandler::getButtonNum(const osgGA::GUIEventAdapter& ea)
+{
+    switch(ea.getButton())
+    {
+        case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+            return 1;
+            break;
+        case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
+            return 2;
+            break;
+        case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+            return 3;
+            break;
+        default:
+            return -1;
+    }
+    return -1;
 }
 
 void OscProxyEventHandler::sendInit(const osgGA::GUIEventAdapter &ea)

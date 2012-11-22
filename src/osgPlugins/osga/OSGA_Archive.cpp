@@ -753,7 +753,7 @@ struct OSGA_Archive::WriteImageFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Image& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeImage(_object, output, _options); }
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { OSG_NOTICE<<"doWrite() rw.writeImage(), "<<std::endl; return rw.writeImage(_object, output, _options); }
 };
 
 struct OSGA_Archive::WriteHeightFieldFunctor : public OSGA_Archive::WriteFunctor
@@ -812,7 +812,15 @@ ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
     pos_type final_position = ARCHIVE_POS( _output.tellp() );
     size_type size = size_type( final_position-position );
 
-    if (result.success()) addFileReference(position, size, writeFunctor._filename);
+    if (result.success())
+    {
+        OSG_INFO<<"Adding file "<<writeFunctor._filename<<" reference to archive."<<std::endl;
+        addFileReference(position, size, writeFunctor._filename);
+    }
+    else
+    {
+        OSG_INFO<<"writeFunctor unsuccessful."<<std::endl;
+    }
 
     return result;
 }

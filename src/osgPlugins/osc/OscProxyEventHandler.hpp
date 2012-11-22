@@ -28,6 +28,8 @@ public:
     
 private:
     void sendInit(const osgGA::GUIEventAdapter& ea);
+    int getButtonNum(const osgGA::GUIEventAdapter& ea);
+    
     UdpTransmitSocket _transmitSocket;
     char* _buffer;
     osc::OutboundPacketStream _oscStream;

@@ -15,6 +15,7 @@
 #include <OpenThreads/Thread>
 #include <osgDB/FileUtils>
 #include "osc/OscPrintReceivedElements.h"
+#include "osc/OscHostEndianness.h"
 
 
 class StandardRequestHandler : public OscDevice::RequestHandler {
@@ -178,6 +179,8 @@ private:
 };
 
 
+
+
 class MouseMotionRequestHandler : public OscDevice::RequestHandler {
 public:
     MouseMotionRequestHandler()
@@ -213,6 +216,46 @@ public:
 private:
     float _lastX, _lastY;
 };
+
+
+class MouseScrollRequestHandler : public OscDevice::RequestHandler {
+public:
+    MouseScrollRequestHandler()
+        : OscDevice::RequestHandler("/osgga/mouse/scroll")
+    {
+    }
+    
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    {
+        
+        try {
+            osc::int32 sm(osgGA::GUIEventAdapter::SCROLL_NONE);
+            float delta_x(0.0f), delta_y(0.0f);
+            
+            osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+            args >> sm >> delta_x >> delta_y >> osc::EndMessage;
+        
+            if (sm != osgGA::GUIEventAdapter::SCROLL_NONE)
+                getDevice()->getEventQueue()->mouseScroll((osgGA::GUIEventAdapter::ScrollingMotion)sm, getLocalTime());
+            
+            if ((delta_x != 0.0f) || (delta_y != 0.0f))
+                getDevice()->getEventQueue()->mouseScroll2D(delta_x, delta_y, getLocalTime());
+            
+            return true;
+        }
+        catch (osc::Exception e) {
+            handleException(e);
+        }
+        return false;
+    }
+    
+    virtual void describeTo(std::ostream& out) const
+    {
+        out << getRequestPath() << "(int scroll_motion, float x, float y): send mouse scroll-motion";
+    }
+};
+
+
 
 class MouseButtonToggleRequestHandler : public OscDevice::RequestHandler {
 public:
@@ -321,6 +364,108 @@ private:
 };
 
 
+class PenPressureRequestHandler : public OscDevice::RequestHandler {
+public:
+    PenPressureRequestHandler()
+        : OscDevice::RequestHandler("/osgga/pen/pressure")
+    {
+    }
+    
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    {
+        try {
+            float pressure(0.0f);
+            osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+            args >> pressure >> osc::EndMessage;
+        
+            getDevice()->getEventQueue()->penPressure(pressure, getLocalTime());
+            
+            return true;
+        }
+        catch (osc::Exception e) {
+            handleException(e);
+        }
+        return false;
+    }
+    
+    virtual void describeTo(std::ostream& out) const
+    {
+        out << getRequestPath() << "(float pressure): send pen pressure";
+    }
+};
+
+class PenProximityRequestHandler : public OscDevice::RequestHandler {
+public:
+    PenProximityRequestHandler(bool handle_enter)
+        : OscDevice::RequestHandler(std::string("/osgga/pen/proximity/") + ((handle_enter) ? std::string("enter") : std::string("leave")))
+        , _handleEnter(handle_enter)
+    {
+    }
+    
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    {
+        try {
+            osc::int32 pt(osgGA::GUIEventAdapter::UNKNOWN);
+            
+            osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+            args >> pt >> osc::EndMessage;
+        
+            getDevice()->getEventQueue()->penProximity((osgGA::GUIEventAdapter::TabletPointerType)pt, _handleEnter, getLocalTime());
+            
+            return true;
+        }
+        catch (osc::Exception e) {
+            handleException(e);
+        }
+        return false;
+    }
+    
+    virtual void describeTo(std::ostream& out) const
+    {
+        out << getRequestPath() << "(int table_pointer_type): send pen proximity " << (_handleEnter ? "enter":"leave");
+    }
+private:
+    bool _handleEnter;
+};
+
+
+class PenOrientationRequestHandler : public OscDevice::RequestHandler {
+public:
+    PenOrientationRequestHandler()
+        : OscDevice::RequestHandler("/osgga/pen/orientation")
+        , _lastX(0.0f)
+        , _lastY(0.0f)
+    {
+    }
+    
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    {
+        try {
+            float rotation(0.0f), tilt_x(0.0f), tilt_y(0.0f);
+            osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+            args >> rotation >> tilt_x >> tilt_y >> osc::EndMessage;
+        
+            getDevice()->getEventQueue()->penOrientation(tilt_x, tilt_y, rotation, getLocalTime());
+            
+            return true;
+        }
+        catch (osc::Exception e) {
+            handleException(e);
+        }
+        return false;
+    }
+    
+    virtual void describeTo(std::ostream& out) const
+    {
+        out << getRequestPath() << "(float rotation, float tilt_x, float tilt_y): send pen orientation";
+    }
+    float getLastX() const { return _lastX; }
+    float getLastY() const { return _lastY; }
+private:
+    float _lastX, _lastY;
+};
+
+
 
 OscDevice::OscDevice(const std::string& server_address, int listening_port)
     : osgGA::Device()
@@ -331,6 +476,15 @@ OscDevice::OscDevice(const std::string& server_address, int listening_port)
     , _socket(NULL)
     , _map()
 {
+    
+    OSG_NOTICE << "OscDevice :: listening on " << server_address << ":" << listening_port << " ";
+    #ifdef OSC_HOST_LITTLE_ENDIAN
+        OSG_NOTICE << "(little endian)";
+    #elif OSC_HOST_BIG_ENDIAN
+        OSG_NOTICE << "(big endian)";
+    #endif
+    OSG_NOTICE << std::endl;
+    
     _socket = new UdpListeningReceiveSocket(IpEndpointName( server_address.c_str(), listening_port ), this);
     
     addRequestHandler(new KeyCodeRequestHandler(false));
@@ -345,10 +499,16 @@ OscDevice::OscDevice(const std::string& server_address, int listening_port)
     addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::PRESS));
     addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::RELEASE));
     addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::DOUBLE_PRESS));
+    addRequestHandler(new MouseScrollRequestHandler());
     
     addRequestHandler(new MouseButtonToggleRequestHandler("1", mm_handler));
     addRequestHandler(new MouseButtonToggleRequestHandler("2", mm_handler));
     addRequestHandler(new MouseButtonToggleRequestHandler("3", mm_handler));
+    
+    addRequestHandler(new PenPressureRequestHandler());
+    addRequestHandler(new PenOrientationRequestHandler());
+    addRequestHandler(new PenProximityRequestHandler(true));
+    addRequestHandler(new PenProximityRequestHandler(false));
     
     addRequestHandler(new StandardRequestHandler());
     

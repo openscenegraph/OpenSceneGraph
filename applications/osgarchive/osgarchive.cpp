@@ -139,7 +139,15 @@ int main( int argc, char **argv )
                 if (obj.valid())
                 {
                     std::cout<<"  write to archive "<<*itr<<std::endl;
-                    archive->writeObject(*obj, *itr);
+                    osg::Image* image = dynamic_cast<osg::Image*>(obj.get());
+                    osg::HeightField* hf = dynamic_cast<osg::HeightField*>(obj.get());
+                    osg::Node* node = dynamic_cast<osg::Node*>(obj.get());
+                    osg::Shader* shader = dynamic_cast<osg::Shader*>(obj.get());
+                    if (image) archive->writeImage(*image, *itr);
+                    else if (hf) archive->writeHeightField(*hf, *itr);
+                    else if (node) archive->writeNode(*node, *itr);
+                    else if (shader) archive->writeShader(*shader, *itr);
+                    else archive->writeObject(*obj, *itr);
                 }
             }
         }

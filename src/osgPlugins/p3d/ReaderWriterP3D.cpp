@@ -1,4 +1,4 @@
-    /* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
  * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
@@ -122,6 +122,9 @@ public:
 
     osg::Node* parseXmlGraph(osgDB::XmlNode* root, bool readOnlyHoldingPage, osgDB::Options* options) const;
 
+    bool parseProperties(osgDB::XmlNode* root, osg::UserDataContainer& udc) const;
+    bool parsePropertyAnimation(osgDB::XmlNode* root, osgPresentation::PropertyAnimation& pa) const;
+
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float scale) const;
@@ -196,6 +199,7 @@ public:
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::FontData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ModelData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ImageData& value) const;
+
     bool getJumpProperties(osgDB::XmlNode*cur, osgPresentation::JumpData& jumpData) const;
 
     bool getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation::KeyPosition& keyPosition) const;
@@ -967,7 +971,101 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     return propertiesRead;
 }
 
-bool ReaderWriterP3DXML::getJumpProperties(osgDB::XmlNode*cur, osgPresentation::JumpData& jumpData) const
+bool ReaderWriterP3DXML::parseProperties(osgDB::XmlNode* root, osg::UserDataContainer& udc) const
+{
+    bool readProperties = false;
+    OSG_NOTICE<<"Doing parseProperties()"<<std::endl;
+    for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
+        itr != root->children.end();
+        ++itr)
+    {
+        osgDB::XmlNode* cur = itr->get();
+
+        if (cur->name == "property")
+        {
+            std::string name;
+            std::string type;
+
+            getProperty(cur, "name", name);
+            getProperty(cur, "type", type);
+
+            if (type=="float")
+            {
+                float value;
+                std::stringstream str(cur->contents);
+                str>>value;
+                
+                udc.setUserValue(name, value);
+                readProperties = true;
+
+                OSG_NOTICE<<"Adding property float "<<value<<std::endl;
+            }
+            else if (type=="int")
+            {
+                int value;
+                std::stringstream str(cur->contents);
+                str>>value;
+
+                udc.setUserValue(name, value);
+                readProperties = true;
+
+                OSG_NOTICE<<"Adding property int "<<value<<std::endl;
+            }
+            else
+            {
+                udc.setUserValue(name, cur->contents);
+                readProperties = true;
+                OSG_NOTICE<<"Adding property string "<<cur->contents<<std::endl;
+            }
+        }
+        else
+        {
+            OSG_NOTICE<<"Unhandled tag["<<cur->name<<"] expecting <property>"<<std::endl;
+        }
+    }
+    return readProperties;
+}
+
+bool ReaderWriterP3DXML::parsePropertyAnimation(osgDB::XmlNode* root, osgPresentation::PropertyAnimation& pa) const
+{
+    bool readKeyframes = false;
+    OSG_NOTICE<<"Doing parsePropertyAnimation()"<<std::endl;
+    for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
+        itr != root->children.end();
+        ++itr)
+    {
+        osgDB::XmlNode* cur = itr->get();
+
+        if (cur->name == "key_frame")
+        {
+
+            double time;
+            if (getProperty(cur, "time", time))
+            {
+                osg::ref_ptr<osg::UserDataContainer> udc = new osg::DefaultUserDataContainer;
+                if (parseProperties(cur, *udc))
+                {
+                    OSG_NOTICE<<"Adding keyframe"<<std::endl;
+                    pa.addKeyFrame(time, udc);
+                    readKeyframes = true;
+                }
+            }
+            else
+            {
+                OSG_NOTICE<<"No time assigned to key_frame, ignoring <key_frame>"<<std::endl;
+            }
+        }
+        else
+        {
+            OSG_NOTICE<<"Unhandled tag["<<cur->name<<"] expecting <key_frame>"<<std::endl;
+        }
+    }
+
+    return readKeyframes;
+}
+
+
+bool ReaderWriterP3DXML::getJumpProperties(osgDB::XmlNode* cur, osgPresentation::JumpData& jumpData) const
 {
     bool propertyRead = false;
 
@@ -1556,6 +1654,14 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         {
             constructor.setLayerDuration(osg::asciiToDouble(cur->contents.c_str()));
         }
+        else if (cur->name == "property_animation")
+        {
+            osg::ref_ptr<osgPresentation::PropertyAnimation> pa = new osgPresentation::PropertyAnimation;
+            if (parsePropertyAnimation(cur,*pa))
+            {
+                constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_LAYER, pa.get());
+            }
+        }
         else if (getKeyPosition(cur, keyPosition))
         {
             constructor.addLayerKey(keyPosition);
@@ -1821,6 +1927,14 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             else if (cur->name == "duration")
             {
                 constructor.setSlideDuration(osg::asciiToDouble(cur->contents.c_str()));
+            }
+            else if (cur->name == "property_animation")
+            {
+                osg::ref_ptr<osgPresentation::PropertyAnimation> pa = new osgPresentation::PropertyAnimation;
+                if (parsePropertyAnimation(cur,*pa))
+                {
+                    constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_SLIDE, pa.get());
+                }
             }
             else if (getKeyPosition(cur, keyPosition))
             {
@@ -2516,6 +2630,14 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             {
                 _templateMap[name] = cur;
                 std::cout<<"Defining template slide "<<name<<std::endl;
+            }
+        }
+        else if (!readOnlyHoldingPage && cur->name == "property_animation")
+        {
+            osg::ref_ptr<osgPresentation::PropertyAnimation> pa = new osgPresentation::PropertyAnimation;
+            if (parsePropertyAnimation(cur,*pa))
+            {
+                constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_PRESENTATION, pa.get());
             }
         }
     }

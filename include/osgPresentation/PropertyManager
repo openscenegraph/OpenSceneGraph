@@ -62,7 +62,7 @@ protected:
 
 };
 
-class PropertyAnimation : public osg::NodeCallback
+class OSGPRESENTATION_EXPORT PropertyAnimation : public osg::NodeCallback
 {
 public:
     PropertyAnimation():
@@ -93,11 +93,15 @@ public:
 
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
-    virtual void update();
+    virtual void update(osg::Node* node);
+
 
 protected:
 
     osg::ref_ptr<PropertyManager> _pm;
+
+    void assign(osg::UserDataContainer* destination, osg::UserDataContainer* source);
+    void assign(osg::UserDataContainer* udc, osg::Object* obj);
 
     KeyFrameMap _keyFrameMap;
 

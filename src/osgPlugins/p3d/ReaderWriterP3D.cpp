@@ -1662,6 +1662,18 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
                 constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_LAYER, pa.get());
             }
         }
+        else if (cur->name == "properties")
+        {
+            if (!constructor.getCurrentLayer()) constructor.addLayer();
+            if (constructor.getCurrentLayer())
+            {
+                osg::ref_ptr<osg::UserDataContainer> udc = constructor.getCurrentLayer()->getOrCreateUserDataContainer();
+                if (parseProperties(cur, *udc))
+                {
+                    OSG_NOTICE<<"Assigned properties to Layer"<<std::endl;
+                }
+            }
+        }
         else if (getKeyPosition(cur, keyPosition))
         {
             constructor.addLayerKey(keyPosition);
@@ -1934,6 +1946,18 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
                 if (parsePropertyAnimation(cur,*pa))
                 {
                     constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_SLIDE, pa.get());
+                }
+            }
+            else if (cur->name == "properties")
+            {
+                if (!constructor.getCurrentSlide()) constructor.addSlide();
+                if (constructor.getCurrentSlide())
+                {
+                    osg::ref_ptr<osg::UserDataContainer> udc = constructor.getCurrentSlide()->getOrCreateUserDataContainer();
+                    if (parseProperties(cur, *udc))
+                    {
+                        OSG_NOTICE<<"Assigned properties to Slide"<<std::endl;
+                    }
                 }
             }
             else if (getKeyPosition(cur, keyPosition))
@@ -2640,6 +2664,18 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
                 constructor.addPropertyAnimation(osgPresentation::SlideShowConstructor::CURRENT_PRESENTATION, pa.get());
             }
         }
+        else if (!readOnlyHoldingPage && cur->name == "properties")
+        {
+                if (!constructor.getPresentationSwitch()) constructor.createPresentation();
+                if (constructor.getPresentationSwitch())
+                {
+                    osg::ref_ptr<osg::UserDataContainer> udc = constructor.getPresentationSwitch()->getOrCreateUserDataContainer();
+                    if (parseProperties(cur, *udc))
+                    {
+                        OSG_NOTICE<<"Assigned properties to Presentation"<<std::endl;
+                    }
+                }
+            }
     }
 
     osgDB::getDataFilePathList() = previousPaths;

@@ -11,6 +11,7 @@
 */
 
 #include <osgPresentation/PropertyManager>
+#include <osg/io_utils>
 
 using namespace osgPresentation;
 
@@ -61,7 +62,7 @@ void PropertyAnimation::operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
             // Only update _firstTime the first time, when its value is still DBL_MAX
             if (_firstTime==DBL_MAX) _firstTime = time;
-            update();
+            update(node);
         }
     }
 
@@ -72,7 +73,8 @@ class MySetValueVisitor : public osg::ValueObject::SetValueVisitor
 {
 public:
 
-    MySetValueVisitor(double r1, double r2, osg::ValueObject* object2)
+    MySetValueVisitor(double in_r1, double in_r2, osg::ValueObject* in_object2):
+        _r1(in_r1), _r2(in_r2), _object2(in_object2)
     {
     }
 
@@ -80,22 +82,24 @@ public:
     void combineRealUserValue(T& value) const
     {
         typedef osg::TemplateValueObject<T> UserValueObject;
-        const UserValueObject* uvo = object2 ? dynamic_cast<const UserValueObject*>(object2) : 0;
+        const UserValueObject* uvo = _object2 ? dynamic_cast<const UserValueObject*>(_object2) : 0;
         if (uvo)
         {
             value = value*_r1 + uvo->getValue()*_r2;
         }
+        OSG_NOTICE<<"combineRealUserValue r1="<<_r1<<", r2="<<_r2<<", value="<<value<<std::endl;
     }
 
     template<typename T>
     void combineIntegerUserValue(T& value) const
     {
         typedef osg::TemplateValueObject<T> UserValueObject;
-        const UserValueObject* uvo = object2 ? dynamic_cast<const UserValueObject*>(object2) : 0;
+        const UserValueObject* uvo = _object2 ? dynamic_cast<const UserValueObject*>(_object2) : 0;
         if (uvo)
         {
             value = static_cast<T>(static_cast<double>(value)*_r1 + static_cast<double>(uvo->getValue())*_r2);
         }
+        OSG_NOTICE<<"combineIntegerUserValue "<<value<<std::endl;
     }
 
     template<typename T>
@@ -104,12 +108,13 @@ public:
         if (_r1<_r2) // choose value2 if possible
         {
             typedef osg::TemplateValueObject<T> UserValueObject;
-            const UserValueObject* uvo = object2 ? dynamic_cast<const UserValueObject*>(object2) : 0;
+            const UserValueObject* uvo = _object2 ? dynamic_cast<const UserValueObject*>(_object2) : 0;
             if (uvo)
             {
                 value = uvo->getValue();
             }
         }
+        OSG_NOTICE<<"combineDiscretUserValue "<<value<<std::endl;
     }
 
     template<typename T>
@@ -153,14 +158,14 @@ public:
     virtual void apply(osg::Matrixd& value)     { combineMatrixUserValue(value); }
 
     double _r1, _r2;
-    osg::ValueObject* object2;
+    osg::ValueObject* _object2;
 };
 
-void PropertyAnimation::update()
+void PropertyAnimation::update(osg::Node* node)
 {
-    double time = getAnimationTime();
+    OSG_NOTICE<<"PropertyAnimation::update()"<<this<<std::endl;
 
-    osg::ref_ptr<osg::UserDataContainer> result;
+    double time = getAnimationTime();
 
     if (_keyFrameMap.empty()) return;
     
@@ -169,7 +174,7 @@ void PropertyAnimation::update()
     {
         // need to copy first UserDataContainer
         OSG_NOTICE<<"PropertyAnimation::update() : copy first UserDataContainer"<<std::endl;
-        result = osg::clone(itr->second.get(), osg::CopyOp::DEEP_COPY_ALL);
+        assign(node->getOrCreateUserDataContainer(), itr->second.get());
     }
     else if (itr!=_keyFrameMap.end())
     {
@@ -186,49 +191,93 @@ void PropertyAnimation::update()
         }
         else
         {
-            r1 = (time - itr_1->first)/delta_time;
-            r2 = 1.0-r1;
+            r2 = (time - itr_1->first)/delta_time;
+            r1 = 1.0-r2;
         }
 
         osg::UserDataContainer* p1 = itr_1->second.get();
         osg::UserDataContainer* p2 = itr_2->second.get();
 
         // clone all the properties from p1;
-        result = osg::clone(p1, osg::CopyOp::DEEP_COPY_ALL);
+
+        osg::ref_ptr<osg::UserDataContainer> destination = node->getOrCreateUserDataContainer();
+        
+        assign(destination.get(), p1);
         
         for(unsigned int i2=0; i2<p2->getNumUserObjects(); ++i2)
         {
             osg::Object* obj_2 = p2->getUserObject(i2);
-            unsigned int i1 = result->getUserObjectIndex(obj_2->getName());
-            if (i1<result->getNumUserObjects())
+            unsigned int i1 = p1->getUserObjectIndex(obj_2->getName());
+            if (i1<p1->getNumUserObjects())
             {
-                osg::Object* obj_1 = result->getUserObject(i1);
+                osg::Object* obj_1 = p1->getUserObject(i1);
                 osg::ValueObject* valueobject_1 = dynamic_cast<osg::ValueObject*>(obj_1);
                 osg::ValueObject* valueobject_2 = dynamic_cast<osg::ValueObject*>(obj_2);
-                if (valueobject_1)
+                if (valueobject_1 && valueobject_2)
                 {
+                    osg::ref_ptr<osg::ValueObject> vo = osg::clone(valueobject_1);
                     MySetValueVisitor mySetValue(r1, r2, valueobject_2);
-                    valueobject_1->set(mySetValue);
+                    vo->set(mySetValue);
+                    assign(destination.get(), vo.get());
+                }
+                else if (obj_1)
+                {
+                    assign(destination.get(), obj_1);
+                }
+                else if (obj_2)
+                {
+                    assign(destination.get(), obj_2);
                 }
             }
             else
             {
                 // need to insert property;
-                result->addUserObject(obj_2->clone(osg::CopyOp::DEEP_COPY_ALL));
+                assign(destination.get(), obj_2);
             }
             
         }
-        
-
-        OSG_NOTICE<<"PropertyAnimation::update() : Need to interpolate between two UserDataContainer, r1="<<r1<<", r2="<<r2<<std::endl;
 
     }
     else // (itr==_keyFrameMap.end())
     {
         OSG_NOTICE<<"PropertyAnimation::update() : copy last UserDataContainer"<<std::endl;
-        result = osg::clone(_keyFrameMap.rbegin()->second.get(), osg::CopyOp::DEEP_COPY_ALL);
+        assign(node->getOrCreateUserDataContainer(), _keyFrameMap.rbegin()->second.get());
     }
     
+}
+
+void PropertyAnimation::assign(osg::UserDataContainer* destination, osg::UserDataContainer* source)
+{
+    if (!destination) return;
+    if (!source) return;
+
+    for(unsigned int i=0; i<source->getNumUserObjects(); ++i)
+    {
+        assign(destination, source->getUserObject(i));
+    }
+}
+
+void PropertyAnimation::assign(osg::UserDataContainer* udc, osg::Object* obj)
+{
+    if (!obj) return;
+    
+    unsigned int index = udc->getUserObjectIndex(obj);
+    if (index != udc->getNumUserObjects())
+    {
+        OSG_NOTICE<<"Object already assigned to UserDataContainer"<<std::endl;
+        return;
+    }
+    
+    index = udc->getUserObjectIndex(obj->getName());
+    if (index != udc->getNumUserObjects())
+    {
+        OSG_NOTICE<<"Replacing object in UserDataContainer"<<std::endl;
+        udc->setUserObject(index, obj);
+        return;
+    }
+
+    OSG_NOTICE<<"Assigned object to UserDataContainer"<<std::endl;
+    udc->addUserObject(obj);
 }
 
 

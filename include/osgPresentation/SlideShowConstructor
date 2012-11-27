@@ -30,6 +30,7 @@
 
 #include <osgPresentation/AnimationMaterial>
 #include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/PropertyManager>
 
 namespace osgPresentation
 {
@@ -435,6 +436,8 @@ public:
     void layerClickToDoOperation(Operation operation,  const JumpData& jumpData=JumpData());
     void layerClickToDoOperation(const std::string& command, Operation operation,  const JumpData& jumpData=JumpData());
     void layerClickEventOperation(const KeyPosition& keyPos,  const JumpData& jumpData=JumpData());
+
+    void addPropertyAnimation(PresentationContext presentationContext, PropertyAnimation* propertyAnimation);
 
     void addToCurrentLayer(osg::Node* subgraph);
 

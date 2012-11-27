@@ -624,6 +624,29 @@ void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, c
 }
 
 
+void SlideShowConstructor::addPropertyAnimation(PresentationContext presentationContext, PropertyAnimation* propertyAnimation)
+{
+    switch(presentationContext)
+    {
+        case(CURRENT_PRESENTATION):
+            OSG_NOTICE<<"Need to add PropertyAnimation to presentation."<<std::endl;
+            if (!_presentationSwitch) createPresentation();
+            if (_presentationSwitch.valid()) _presentationSwitch->addUpdateCallback(propertyAnimation);
+            break;
+        case(CURRENT_SLIDE):
+            OSG_NOTICE<<"Need to add PropertyAnimation to slide."<<std::endl;
+            if (!_slide) addSlide();
+            if (_slide.valid()) _slide->addUpdateCallback(propertyAnimation);
+            break;
+        case(CURRENT_LAYER):
+            OSG_NOTICE<<"Need to add PropertyAnimation to layer."<<std::endl;
+            if (!_currentLayer) addLayer();
+            if (_currentLayer.valid()) _currentLayer->addUpdateCallback(propertyAnimation);
+            break;
+    }
+}
+
+
 osg::Node* SlideShowConstructor::decorateSubgraphForPosition(osg::Node* node, PositionData& positionData)
 {
     osg::Node* subgraph = node;

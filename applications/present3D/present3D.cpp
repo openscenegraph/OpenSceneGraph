@@ -28,6 +28,7 @@
 
 #include <OpenThreads/Thread>
 
+#include <osgGA/GUIEventHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
@@ -128,6 +129,21 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
 
     viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 0.1, 1000.0);
 }
+
+class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
+public:
+    ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::GUIEventHandler(), _device(device) {}
+    
+    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    {
+        _device->sendEvent(ea);
+        return false;
+    }
+    
+private:
+    osg::ref_ptr<osgGA::Device> _device;
+};
+
 
 class FollowMouseCallback: public osgGA::GUIEventHandler
 {
@@ -428,23 +444,17 @@ int main( int argc, char **argv )
     std::string device;
     while (arguments.read("--device", device))
     {
-        osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(device);
-        
-        osg::ref_ptr<osgGA::Device> dev = dynamic_cast<osgGA::Device*>(obj.get());
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
         if (dev.valid())
         {
             OSG_NOTICE<<"Adding Device : "<<device<<std::endl;
-            viewer.addDevice(dev.get());
+            if (dev->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
+                viewer.addDevice(dev.get());
+            
+            if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
+                viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));
         }
-        else
-        {
-            osgGA::GUIEventHandler* handler = dynamic_cast<osgGA::GUIEventHandler*>(obj.get());
-            if (handler)
-            {
-                OSG_NOTICE<<"Adding Device event handler : "<<device<<std::endl;
-                viewer.getEventHandlers().push_front(handler);
-            }
-        }
+        
     }
 
     if (arguments.read("--http-control"))

@@ -24,26 +24,39 @@ namespace osgGA {
 class OSGGA_EXPORT Device : public osg::Object
 {
     public:
-
+        enum {
+            UNKNOWN         = 0,
+            RECEIVE_EVENTS  = 1,
+            SEND_EVENTS     = 2
+        } Capabilities;
+        
         Device();
         Device(const Device& es, const osg::CopyOp& copyop);
 
         META_Object(osgGA,Device);
-
+        
+        int getCapabilities() const { return _capabilities; }
+    
         virtual void checkEvents() {};
+        virtual void sendEvent(const GUIEventAdapter& ea);
+        virtual void sendEvents(const EventQueue::Events& events);
 
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
     protected:
-
+        void setCapabilities(int capabilities) { _capabilities = capabilities; }
+        
         virtual ~Device();
 
         /** Prevent unwanted copy operator.*/
         Device& operator = (const Device&) { return *this; }
 
         osg::ref_ptr<osgGA::EventQueue> _eventQueue;
+    
+    private:   
+        int _capabilities;
         
 };
 

@@ -17,6 +17,9 @@
  * 
  *  the osc-plugin can return an osgGA::Device which handles various osc-messages 
  *  and puts them into the event-queue of the app
+ *  you can set arbitrary values via /osg/set_user_value, these values
+ *  are set on the attached UserDataConntainer (see below)
+ *
  *  To open the osc-device for receiving do something like this:
  *
  *  std::string filename = "<your-port-number-to-listen-on>.receiver.osc";
@@ -26,6 +29,12 @@
  *  The plugin supports the following option: documentRegisteredHandlers, which will 
  *  dump all registered handlers to the console. The device registers some convenient
  *  handlers to remote control a p3d-presentation.
+ * 
+ *  you can feed a osgPresentation::PropertyManager into the plugin and set values on it via 
+ *  "/p3d/set_value key value" or "/p3d/set_value/key value"
+ *  Additionally the plugin listens for
+ *  "/osg/set_user_value key value" or "/osg/set_user_value/key value" and set the transmitted value on the 
+ *  UserDataContainer of the device.
  *
  *
  *  The plugin supports forwarding most of the events per osc to another host. 
@@ -48,8 +57,9 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
-#include "OscDevice.hpp"
-#include "OscProxyEventHandler.hpp"
+#include "OscSendingDevice.hpp"
+#include "OscReceivingDevice.hpp"
+#include <osgPresentation/PropertyManager>
 
 
 
@@ -80,7 +90,7 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                     std::string server_address = file_name.substr(0,file_name.find(':'));
                     std::string server_port = file_name.substr(file_name.find(':') + 1);
                     
-                    return new OscProxyEventHandler(server_address, atoi(server_port.c_str()));
+                    return new OscSendingDevice(server_address, atoi(server_port.c_str()));
                 }
                 else
                 {
@@ -99,7 +109,7 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                     }
                     try {
                     
-                        osg::ref_ptr<OscDevice> device = new OscDevice(server_address, port);
+                        osg::ref_ptr<OscReceivingDevice> device = new OscReceivingDevice(server_address, port);
                             
                         
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slide/first", osgGA::GUIEventAdapter::KEY_Home));
@@ -120,7 +130,8 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/osgviewer/home", ' '));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/osgviewer/stats", 's'));
                         
-            
+                        
+                        
                         
                         if ((options && (options->getPluginStringData("documentRegisteredHandlers") == "true")))
                         {

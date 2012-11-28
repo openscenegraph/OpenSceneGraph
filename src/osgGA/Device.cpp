@@ -16,6 +16,8 @@
 using namespace osgGA;
 
 Device::Device()
+    : osg::Object()
+    , _capabilities(UNKNOWN)
 {
     setEventQueue(new EventQueue);
 }
@@ -25,6 +27,21 @@ Device::Device(const Device& es, const osg::CopyOp& copyop):
 {
     setEventQueue(new EventQueue);
 }
+
+void Device::sendEvent(const GUIEventAdapter& event)
+{
+    OSG_WARN << "Device::sendEvent not implemented!" << std::endl;
+}
+
+
+void Device::sendEvents(const EventQueue::Events& events)
+{
+    for(EventQueue::Events::const_iterator i = events.begin(); i != events.end(); i++)
+    {
+        sendEvent(**i);
+    }
+}
+
 
 Device::~Device()
 {

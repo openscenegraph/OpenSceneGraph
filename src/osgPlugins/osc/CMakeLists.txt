@@ -6,8 +6,8 @@ SET(TARGET_SRC
     osc/OscPrintReceivedElements.cpp
     osc/OscReceivedElements.cpp
     osc/OscTypes.cpp
-    OscDevice.cpp
-    OscProxyEventHandler.cpp
+    OscReceivingDevice.cpp
+    OscSendingDevice.cpp
     ReaderWriterOscDevice.cpp
 )
 
@@ -25,8 +25,8 @@ SET(TARGET_H
     osc/OscPrintReceivedElements.h
     osc/OscReceivedElements.h
     osc/OscTypes.h
-    OscProxyEventHandler.hpp
-    OscDevice.hpp
+    OscReceivingDevice.hpp
+    OscSendingDevice.hpp
 )
 
 if(WIN32)

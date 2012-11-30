@@ -158,7 +158,7 @@ public:
 
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
-    virtual void update(osg::Node* node);
+    virtual void update(osg::Node& node);
 
 
 protected:

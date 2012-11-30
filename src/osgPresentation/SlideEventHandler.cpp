@@ -249,6 +249,7 @@ struct CallbackOperator : public ObjectOperator
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
         AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
+        PropertyAnimation* pa = dynamic_cast<PropertyAnimation*>(_callback.get());
         if (apc)
         {
             OSG_INFO<<"apc->setPause("<<pause<<")"<<std::endl;
@@ -264,6 +265,10 @@ struct CallbackOperator : public ObjectOperator
             OSG_INFO<<"amc->setPause("<<pause<<")"<<std::endl;
             amc->setPause(pause);
         }
+        else if (pa)
+        {
+            pa->setPause(pause);
+        }
         else if (nc)
         {
             OSG_NOTICE<<"Need to pause callback : "<<nc->className()<<std::endl;
@@ -277,6 +282,7 @@ struct CallbackOperator : public ObjectOperator
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
         AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
+        PropertyAnimation* pa = dynamic_cast<PropertyAnimation*>(_callback.get());
         if (apc)
         {
             apc->reset();
@@ -289,6 +295,11 @@ struct CallbackOperator : public ObjectOperator
         {
             amc->reset();
             amc->update(*_node);
+        }
+        else if (pa)
+        {
+            pa->reset();
+            pa->update(*_node);
         }
         else
         {

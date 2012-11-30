@@ -21,6 +21,8 @@
 
 #include <osgPresentation/Export>
 
+#include <sstream>
+
 namespace osgPresentation
 {
 
@@ -61,6 +63,69 @@ protected:
     mutable OpenThreads::Mutex _mutex;
 
 };
+
+const osg::Object* OSGPRESENTATION_EXPORT getUserObject(const osg::NodePath& nodepath, const std::string& name);
+
+template<typename T>
+bool getUserValue(const osg::NodePath& nodepath, const std::string& name, T& value)
+{
+    typedef osg::TemplateValueObject<T> UserValueObject;
+    const osg::Object* object = getUserObject(nodepath, name);
+    const UserValueObject* uvo = dynamic_cast<const UserValueObject*>(object);
+
+    if (uvo)
+    {
+        value = uvo->getValue();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool OSGPRESENTATION_EXPORT containsPropertyReference(const std::string& str);
+
+struct PropertyReader
+{
+    PropertyReader(const osg::NodePath& nodePath, const std::string& str):
+        _nodePath(nodePath),
+        _sstream(str) {}
+
+    template<typename T>
+    bool read(T& value)
+    {
+        // skip white space.
+        while(!_sstream.fail() && _sstream.peek()==' ') _sstream.ignore();
+
+        // check to see if a &propertyName is used.
+        if (_sstream.peek()=='$')
+        {
+            std::string propertyName;
+            _sstream.ignore(1);
+            _sstream >> propertyName;
+            OSG_NOTICE<<"Reading propertyName="<<propertyName<<std::endl;
+            if (!_sstream.fail() && !propertyName.empty()) return getUserValue(_nodePath, propertyName, value);
+            else return false;
+        }
+        else
+        {
+            _sstream >> value;
+            OSG_NOTICE<<"Reading value="<<value<<std::endl;
+            return !_sstream.fail();
+        }
+    }
+
+    template<typename T>
+    PropertyReader& operator>>( T& value ) { read(value); return *this; }
+
+    bool ok() { return !_sstream.fail(); }
+    bool fail() { return _sstream.fail(); }
+
+    osg::NodePath       _nodePath;
+    std::istringstream  _sstream;    
+};
+
 
 class OSGPRESENTATION_EXPORT PropertyAnimation : public osg::NodeCallback
 {

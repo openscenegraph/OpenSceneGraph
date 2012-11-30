@@ -624,6 +624,7 @@ void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, c
 }
 
 
+
 void SlideShowConstructor::addPropertyAnimation(PresentationContext presentationContext, PropertyAnimation* propertyAnimation)
 {
     switch(presentationContext)
@@ -641,7 +642,10 @@ void SlideShowConstructor::addPropertyAnimation(PresentationContext presentation
         case(CURRENT_LAYER):
             OSG_NOTICE<<"Need to add PropertyAnimation to layer."<<std::endl;
             if (!_currentLayer) addLayer();
-            if (_currentLayer.valid()) _currentLayer->addUpdateCallback(propertyAnimation);
+            if (_currentLayer.valid())
+            {
+                _currentLayer->addUpdateCallback(propertyAnimation);
+            }
             break;
     }
 }
@@ -2077,6 +2081,118 @@ class VolumeTileCallback : public osg::NodeCallback
     
 };
 
+
+struct VolumeRegionCallback : public osg::NodeCallback
+{
+public:
+    VolumeRegionCallback(const osg::Matrixd& originalMatrix, const std::string& str):
+        _matrix(originalMatrix),
+        _source(str) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(node);
+        osgVolume::Locator* locator = tile ? tile->getLocator() : 0;
+        if (locator)
+        {
+            PropertyReader pr(nv->getNodePath(), _source);
+
+            float xMin=0.0;
+            float yMin=0.0;
+            float zMin=0.0;
+            float xMax=1.0;
+            float yMax=1.0;
+            float zMax=1.0;
+
+            pr>>xMin>>yMin>>zMin>>xMax>>yMax>>zMax;
+
+            if (pr.ok())
+            {
+                OSG_NOTICE<<"VolumeRegionCallback : xMin="<<xMin<<", yMin="<<yMin<<", zMin="<<zMin<<", xMax="<<xMax<<", yMax="<<yMax<<", zMax="<<zMax<<std::endl;
+            }
+            else
+            {
+                OSG_NOTICE<<"Problem in reading, VolumeRegionCallback : xMin="<<xMin<<", yMin="<<yMin<<", zMin="<<zMin<<", xMax="<<xMax<<", yMax="<<yMax<<", zMax="<<zMax<<std::endl;
+            }
+
+            osg::Matrixd tm = osg::Matrix::scale(xMax-xMin, yMax-yMin, zMax-zMin) *
+                              osg::Matrix::translate(xMin,yMin,zMin);
+
+            locator->setTransform(tm * _matrix);
+
+        }
+        else
+        {
+            OSG_NOTICE<<"VolumeRegionCallback not attached to VolumeTile, unable to update any values."<<std::endl;
+        }
+        
+        // note, callback is responsible for scenegraph traversal so
+        // they must call traverse(node,nv) to ensure that the
+        // scene graph subtree (and associated callbacks) are traversed.
+        traverse(node, nv);
+    }
+
+protected:
+
+    osg::Matrixd _matrix;
+    std::string  _source;
+};
+
+struct ScalarPropertyCallback : public osg::NodeCallback
+{
+public:
+    ScalarPropertyCallback(osgVolume::ScalarProperty* sp, const std::string& str):
+        _sp(sp),
+        _source(str) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        PropertyReader pr(nv->getNodePath(), _source);
+
+        float value=0.0;
+        pr>>value;
+
+        if (pr.ok())
+        {
+            OSG_NOTICE<<"ScalarPropertyCallback : value ["<<_source<<"]="<<value<<std::endl;
+            _sp->setValue(value);
+        }
+        else
+        {
+            OSG_NOTICE<<"Problem in reading, ScalarPropertyCallback : value="<<value<<std::endl;
+        }
+
+        // note, callback is responsible for scenegraph traversal so
+        // they must call traverse(node,nv) to ensure that the
+        // scene graph subtree (and associated callbacks) are traversed.
+        traverse(node, nv);
+    }
+
+protected:
+
+    osgVolume::ScalarProperty* _sp;
+    std::string  _source;
+};            
+
+void SlideShowConstructor::setUpVolumeScalarProperty(osgVolume::VolumeTile* tile, osgVolume::ScalarProperty* property, const std::string& source)
+{
+    if (!source.empty())
+    {
+        if (containsPropertyReference(source))
+        {
+            tile->addUpdateCallback(new ScalarPropertyCallback( property, source));
+        }
+        else
+        {
+            float value;
+            std::istringstream sstream(source);
+            sstream>>value;
+            property->setValue(value);
+        }
+    }
+}
+
+
 void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& in_positionData, const VolumeData& volumeData)
 {
     // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
@@ -2235,30 +2351,66 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
         layer->rescaleToZeroToOneRange();
 
-        osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
-                            osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
-
         if (matrix.valid())
         {
             layer->setLocator(new osgVolume::Locator(*matrix));
-            tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
+            tile->setLocator(new osgVolume::Locator(*matrix));
         }
         else
         {
             layer->setLocator(new osgVolume::Locator());
-            tile->setLocator(new osgVolume::Locator(tm));
+            tile->setLocator(new osgVolume::Locator());
         }
+        
+        if (!volumeData.region.empty())
+        {
+            if (containsPropertyReference(volumeData.region))
+            {
+                tile->addUpdateCallback(new VolumeRegionCallback((matrix.valid() ? *matrix : osg::Matrixd::identity()), volumeData.region));
+            }
+            else
+            {
+                float region[6];
+                std::istringstream sstream(volumeData.region);
+                sstream>>region[0]>>region[1]>>region[2]>>region[3]>>region[4]>>region[5];
 
+                osg::Matrix tm = osg::Matrix::scale(region[3]-region[0], region[4]-region[1], region[5]-region[2]) *
+                                osg::Matrix::translate(region[0],region[1],region[2]);
 
+                if (matrix.valid())
+                {
+                    tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
+                }
+                else
+                {
+                    tile->setLocator(new osgVolume::Locator(tm));
+                }
+            }
+        }
+            
         tile->setLayer(layer.get());
 
         osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
         sp->setActiveProperty(0);
 
-        osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(volumeData.cutoffValue);
-        osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(volumeData.alphaValue);
-        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(volumeData.sampleDensityValue);
-        osgVolume::SampleDensityWhenMovingProperty* sdm = (volumeData.sampleDensityWhenMovingValue > 0.0f) ? (new osgVolume::SampleDensityWhenMovingProperty(volumeData.sampleDensityWhenMovingValue)) : 0;
+
+        
+        osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(0.1f);
+        setUpVolumeScalarProperty(tile, ap, volumeData.cutoffValue);
+
+        osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0f);
+        setUpVolumeScalarProperty(tile, tp, volumeData.alphaValue);
+
+        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
+        setUpVolumeScalarProperty(tile, sd, volumeData.sampleDensityValue);
+
+        osgVolume::SampleDensityWhenMovingProperty* sdm = 0;
+        if (!volumeData.sampleDensityWhenMovingValue.empty())
+        {
+            sdm = new osgVolume::SampleDensityWhenMovingProperty(0.005);
+            setUpVolumeScalarProperty(tile, sdm, volumeData.sampleDensityWhenMovingValue);
+        }
+        
         osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
 
         {
@@ -2291,7 +2443,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(sd);
             cp->addProperty(tp);
-            cp->addProperty(new osgVolume::IsoSurfaceProperty(volumeData.cutoffValue));
+
+            
+            osgVolume::IsoSurfaceProperty* isp = new osgVolume::IsoSurfaceProperty(0.1);
+            setUpVolumeScalarProperty(tile, isp, volumeData.alphaValue);
+            cp->addProperty(isp);
+
             if (sdm) cp->addProperty(sdm);
             if (tfp) cp->addProperty(tfp);
 
@@ -2321,9 +2478,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         layer->addProperty(sp);
         tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
-        tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
+        tile->addEventCallback(new osgVolume::PropertyAdjustmentCallback());
     }
 
+
+
+    
     osg::ref_ptr<osg::Node> model = volume.get();
 
     if (volumeData.useTabbedDragger || volumeData.useTrackballDragger)
@@ -2356,9 +2516,6 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         model = group.get();
     }
-
-    tile->setUpdateCallback(new VolumeTileCallback());
-
 
     ModelData modelData;
     addModel(model.get(), positionData, modelData);

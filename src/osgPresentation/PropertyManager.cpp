@@ -15,6 +15,24 @@
 
 using namespace osgPresentation;
 
+const osg::Object* osgPresentation::getUserObject(const osg::NodePath& nodepath, const std::string& name)
+{
+    for(osg::NodePath::const_reverse_iterator itr = nodepath.rbegin();
+        itr != nodepath.rend();
+        ++itr)
+    {
+        const osg::UserDataContainer* udc = (*itr)->getUserDataContainer();
+        const osg::Object* object = udc ? udc->getUserObject(name) : 0;
+        if (object) return object;
+    }
+    return 0;
+}
+
+bool osgPresentation::containsPropertyReference(const std::string& str)
+{
+    return (str.find('$')!=std::string::npos);
+}
+
 
 
 void PropertyAnimation::reset()

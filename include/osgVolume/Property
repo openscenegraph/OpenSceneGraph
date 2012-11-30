@@ -216,7 +216,7 @@ class OSGVOLUME_EXPORT IsoSurfaceProperty : public ScalarProperty
 {
     public:
 
-        IsoSurfaceProperty(float value=1.0);
+        IsoSurfaceProperty(float value=1.0f);
 
         IsoSurfaceProperty(const IsoSurfaceProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -233,7 +233,7 @@ class OSGVOLUME_EXPORT AlphaFuncProperty : public ScalarProperty
 {
     public:
 
-        AlphaFuncProperty(float value=1.0);
+        AlphaFuncProperty(float value=1.0f);
 
         AlphaFuncProperty(const AlphaFuncProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -296,7 +296,7 @@ class OSGVOLUME_EXPORT SampleDensityProperty : public ScalarProperty
 {
     public:
 
-        SampleDensityProperty(float value=1.0);
+        SampleDensityProperty(float value=1.0f);
 
         SampleDensityProperty(const SampleDensityProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -314,7 +314,7 @@ class OSGVOLUME_EXPORT SampleDensityWhenMovingProperty : public ScalarProperty
 {
     public:
 
-        SampleDensityWhenMovingProperty(float value=1.0);
+        SampleDensityWhenMovingProperty(float value=1.0f);
 
         SampleDensityWhenMovingProperty(const SampleDensityWhenMovingProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -331,7 +331,7 @@ class OSGVOLUME_EXPORT TransparencyProperty : public ScalarProperty
 {
     public:
 
-        TransparencyProperty(float value=1.0);
+        TransparencyProperty(float value=1.0f);
 
         TransparencyProperty(const TransparencyProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 

@@ -1202,7 +1202,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
 
     if (getProperty(cur, "alpha", volumeData.alphaValue)) {}
     if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
-    if (getProperty(cur, "region", 6, volumeData.region)) {}
+    if (getProperty(cur, "region", volumeData.region)) {}
     if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
     if (getProperty(cur, "sampleDensityWhenMoving", volumeData.sampleDensityWhenMovingValue)) {}
 

@@ -402,19 +402,20 @@ bool ReaderWriterP3DXML::getKeyProperty(osgDB::XmlNode*cur, const char* token, i
     {
         std::istringstream iss(itr->second);
         iss>>std::hex>>value;
+        OSG_NOTICE<<"ReaderWriterP3DXML::getKeyProperty() hex result = "<<value<<std::endl;
         return true;
     }
     else if (itr->second.size()>1 && (itr->second[0]>='0' && itr->second[0]<='9'))
     {
         std::istringstream iss(itr->second);
         iss>>value;
-        OSG_NOTICE<<"   numeric result = "<<value<<std::endl;
+        OSG_NOTICE<<"ReaderWriterP3DXML::getKeyProperty() numeric result = "<<value<<std::endl;
         return true;
     }
     else
     {
         value = itr->second[0];
-        OSG_NOTICE<<"   alphanumeric result = "<<value<<std::endl;
+        OSG_NOTICE<<"ReaderWriterP3DXML::getKeyProperty() alphanumeric result = "<<value<<std::endl;
         return true;
     }
 }
@@ -1532,6 +1533,10 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
                 OSG_NOTICE<<"key_to_jump"<<std::endl;
 
                 constructor.keyEventOperation(osgPresentation::SlideShowConstructor::CURRENT_LAYER, key, osgPresentation::JUMP, jumpData);
+            }
+            else
+            {
+                OSG_NOTICE<<"key_to_jump failed."<<std::endl;
             }
         }
 

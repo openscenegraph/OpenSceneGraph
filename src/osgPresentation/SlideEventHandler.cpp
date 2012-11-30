@@ -1244,10 +1244,13 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     // refersh the viewer.
     //_viewer->getKeySwitchMatrixManipulator()->setMinimumDistance(0.001);
 
-    _viewer->getCameraManipulator()->setNode(_slideSwitch.get());
+    if (_viewer->getCameraManipulator())
+    {
+        _viewer->getCameraManipulator()->setNode(_slideSwitch.get());
 
-    _viewer->computeActiveCoordinateSystemNodePath();
-
+        _viewer->computeActiveCoordinateSystemNodePath();
+    }
+    
     // resetUpdateCallbacks(ALL_OBJECTS);
 
     bool _useSlideFilePaths = false;
@@ -1387,22 +1390,25 @@ bool SlideEventHandler::home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAd
     osg::Node* node = _viewer->getSceneData();
     if (node) node->accept(fhpv);
 
-    if (fhpv._homePosition.valid())
+    if (_viewer->getCameraManipulator())
     {
-        OSG_INFO<<"Doing home for stored home position."<<std::endl;
+        if (fhpv._homePosition.valid())
+        {
+            OSG_INFO<<"Doing home for stored home position."<<std::endl;
 
-        _viewer->getCameraManipulator()->setAutoComputeHomePosition(false);
-        _viewer->getCameraManipulator()->setHomePosition(
-                                             fhpv._homePosition->eye,
-                                             fhpv._homePosition->center,
-                                             fhpv._homePosition->up);
+            _viewer->getCameraManipulator()->setAutoComputeHomePosition(false);
+            _viewer->getCameraManipulator()->setHomePosition(
+                                                fhpv._homePosition->eye,
+                                                fhpv._homePosition->center,
+                                                fhpv._homePosition->up);
+        }
+        else
+        {
+            _viewer->getCameraManipulator()->setAutoComputeHomePosition(true);
+        }
+        _viewer->getCameraManipulator()->home(ea,aa);
     }
-    else
-    {
-        _viewer->getCameraManipulator()->setAutoComputeHomePosition(true);
-    }
-    _viewer->getCameraManipulator()->home(ea,aa);
-
+    
     return true;
 }
 

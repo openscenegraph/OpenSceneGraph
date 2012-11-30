@@ -1371,13 +1371,32 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     std::string key = cur->getTrimmedContents();
     unsigned int keyValue = 0;
 
+    if (key.empty())
+    {
+        OSG_NOTICE<<"Warning: empty <key></key> is invalid, ignoring tag."<<std::endl;
+        return false;
+    }
+
     StringKeyMap::const_iterator itr=_stringKeyMap.find(key);
     if (itr != _stringKeyMap.end())
     {
         keyValue = itr->second;
     }
+    if (key.find("0x",0,2)!=std::string::npos)
+    {
+        std::istringstream iss(key);
+        iss>>std::hex>>keyValue;
+        OSG_INFO<<"ReaderWriterP3DXML::getKeyPositionInner() hex result = "<<keyValue<<std::endl;
+    }
+    else if (key.size()>1 && (key[0]>='0' && key[0]<='9'))
+    {
+        std::istringstream iss(key);
+        iss>>keyValue;
+        OSG_INFO<<"ReaderWriterP3DXML::getKeyPositionInner() numeric result = "<<keyValue<<std::endl;
+    }
     else if (key.length()==1)
     {
+        OSG_INFO<<"ReaderWriterP3DXML::getKeyPositionInner() alphanumeric result = "<<keyValue<<std::endl;
         keyValue = key[0];
     }
     else

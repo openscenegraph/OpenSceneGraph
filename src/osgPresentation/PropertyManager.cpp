@@ -39,10 +39,14 @@ void PropertyAnimation::reset()
 {
     _firstTime = DBL_MAX;
     _pauseTime = DBL_MAX;
+
+    OSG_NOTICE<<"PropertyAnimation::reset()"<<std::endl;
 }
 
 void PropertyAnimation::setPause(bool pause)
 {
+    OSG_NOTICE<<"PropertyAnimation::setPause("<<pause<<")"<<std::endl;
+
     if (_pause==pause)
     {
         return;
@@ -80,7 +84,7 @@ void PropertyAnimation::operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
             // Only update _firstTime the first time, when its value is still DBL_MAX
             if (_firstTime==DBL_MAX) _firstTime = time;
-            update(node);
+            update(*node);
         }
     }
 
@@ -179,7 +183,7 @@ public:
     osg::ValueObject* _object2;
 };
 
-void PropertyAnimation::update(osg::Node* node)
+void PropertyAnimation::update(osg::Node& node)
 {
     OSG_NOTICE<<"PropertyAnimation::update()"<<this<<std::endl;
 
@@ -192,7 +196,7 @@ void PropertyAnimation::update(osg::Node* node)
     {
         // need to copy first UserDataContainer
         OSG_NOTICE<<"PropertyAnimation::update() : copy first UserDataContainer"<<std::endl;
-        assign(node->getOrCreateUserDataContainer(), itr->second.get());
+        assign(node.getOrCreateUserDataContainer(), itr->second.get());
     }
     else if (itr!=_keyFrameMap.end())
     {
@@ -218,7 +222,7 @@ void PropertyAnimation::update(osg::Node* node)
 
         // clone all the properties from p1;
 
-        osg::ref_ptr<osg::UserDataContainer> destination = node->getOrCreateUserDataContainer();
+        osg::ref_ptr<osg::UserDataContainer> destination = node.getOrCreateUserDataContainer();
         
         assign(destination.get(), p1);
         
@@ -259,7 +263,7 @@ void PropertyAnimation::update(osg::Node* node)
     else // (itr==_keyFrameMap.end())
     {
         OSG_NOTICE<<"PropertyAnimation::update() : copy last UserDataContainer"<<std::endl;
-        assign(node->getOrCreateUserDataContainer(), _keyFrameMap.rbegin()->second.get());
+        assign(node.getOrCreateUserDataContainer(), _keyFrameMap.rbegin()->second.get());
     }
     
 }

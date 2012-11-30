@@ -136,6 +136,7 @@ public:
     
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
+        OSG_INFO<<"ForwardToDeviceEventHandler::setEvent("<<ea.getKey()<<")"<<std::endl;
         _device->sendEvent(ea);
         return false;
     }

@@ -28,6 +28,9 @@
 
 #include <osgDB/FileUtils>
 
+#include <osgVolume/VolumeTile>
+#include <osgVolume/Property>
+
 #include <osgPresentation/AnimationMaterial>
 #include <osgPresentation/SlideEventHandler>
 #include <osgPresentation/PropertyManager>
@@ -300,10 +303,9 @@ public:
             useTabbedDragger(false),
             useTrackballDragger(false),
             region_in_pixel_coords(false),
-            alphaValue(1.0),
-            cutoffValue(0.1),
-            sampleDensityValue(0.005),
-            sampleDensityWhenMovingValue(0.0),
+            alphaValue("1.0"),
+            cutoffValue("0.1"),
+            sampleDensityValue("0.005"),
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
             colorModulate(1.0f,1.0f,1.0f,1.0f)
         {
@@ -316,12 +318,12 @@ public:
         osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
         bool                                    useTabbedDragger;
         bool                                    useTrackballDragger;
-        float                                   region[6];
+        std::string                             region;
         bool                                    region_in_pixel_coords;
-        float                                   alphaValue;
-        float                                   cutoffValue;
-        float                                   sampleDensityValue;
-        float                                   sampleDensityWhenMovingValue;
+        std::string                             alphaValue;
+        std::string                             cutoffValue;
+        std::string                             sampleDensityValue;
+        std::string                             sampleDensityWhenMovingValue;
 
         osg::ColorSpaceOperation                colorSpaceOperation;
         osg::Vec4                               colorModulate;
@@ -461,6 +463,8 @@ public:
 
     void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData);
 
+    void setUpVolumeScalarProperty(osgVolume::VolumeTile* tile, osgVolume::ScalarProperty* property, const std::string& source);
+    
     void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData);
 
     osg::Group* takePresentation() { return _root.release(); }

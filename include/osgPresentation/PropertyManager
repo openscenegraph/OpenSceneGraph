@@ -64,7 +64,7 @@ protected:
 
 };
 
-const osg::Object* OSGPRESENTATION_EXPORT getUserObject(const osg::NodePath& nodepath, const std::string& name);
+extern OSGPRESENTATION_EXPORT const osg::Object* getUserObject(const osg::NodePath& nodepath, const std::string& name);
 
 template<typename T>
 bool getUserValue(const osg::NodePath& nodepath, const std::string& name, T& value)
@@ -84,7 +84,7 @@ bool getUserValue(const osg::NodePath& nodepath, const std::string& name, T& val
     }
 }
 
-bool OSGPRESENTATION_EXPORT containsPropertyReference(const std::string& str);
+extern OSGPRESENTATION_EXPORT bool containsPropertyReference(const std::string& str);
 
 struct PropertyReader
 {

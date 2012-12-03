@@ -2,7 +2,7 @@ SET(TARGET_SRC
     CameraPathProperty.cpp
     CaptureSettings.cpp
     EventProperty.cpp
-    gscframerenderer.cpp
+    osgframerenderer.cpp
     UpdateProperty.cpp
 )
 

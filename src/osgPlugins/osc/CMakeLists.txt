@@ -44,6 +44,8 @@ ELSE()
     )
 ENDIF()
 
+INCLUDE_DIRECTORIES(${OpenSceneGraph_SOURCE_DIR}/src/osgPlugins/osc)
+
 SET(TARGET_ADDED_LIBRARIES osgGA )
 
 #### end var setup  ###

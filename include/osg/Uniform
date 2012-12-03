@@ -374,7 +374,7 @@ class Matrix4x3Template : public MatrixTemplate<T, 4, 3>
                   value_type a20, value_type a21, value_type a22,
                   value_type a30, value_type a31, value_type a32 )
          {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a01;
+             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
              base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
              base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22;
              base_class::_mat[3][0]=a30; base_class::_mat[3][1]=a31; base_class::_mat[3][2]=a32;

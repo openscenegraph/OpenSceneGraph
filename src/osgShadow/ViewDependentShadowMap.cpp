@@ -2303,9 +2303,8 @@ bool ViewDependentShadowMap::assignTexGenSettings(osgUtil::CullVisitor* cv, osg:
     osg::ref_ptr<osg::RefMatrix> refMatrix =
         new osg::RefMatrix( camera->getInverseViewMatrix() * (*(cv->getModelViewMatrix())) );
 
-    cv->getRenderStage()->getPositionalStateContainer()->addPositionedTextureAttribute( textureUnit, refMatrix.get(), texgen );
-
-
+    osgUtil::RenderStage* currentStage = cv->getCurrentRenderBin()->getStage();
+    currentStage->getPositionalStateContainer()->addPositionedTextureAttribute( textureUnit, refMatrix.get(), texgen );
     return true;
 }
 

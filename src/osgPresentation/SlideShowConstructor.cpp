@@ -1751,7 +1751,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filename)
 {
     std::string foundFile = osgDB::findDataFile(filename, _options.get());
-    if (foundFile.empty()) return foundFile;
+    if (foundFile.empty()) return filename;
 
     OSG_INFO<<"foundFile "<<foundFile<<std::endl;
 
@@ -2366,7 +2366,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         {
             if (containsPropertyReference(volumeData.region))
             {
-                tile->addUpdateCallback(new VolumeRegionCallback((matrix.valid() ? *matrix : osg::Matrixd::identity()), volumeData.region));
+                tile->addUpdateCallback(new VolumeRegionCallback((matrix.valid() ? *matrix : osg::Matrix::identity()), volumeData.region));
             }
             else
             {

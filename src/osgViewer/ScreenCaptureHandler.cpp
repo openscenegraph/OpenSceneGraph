@@ -772,7 +772,8 @@ bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
             {
                 _stopCapture = false;
                 removeCallbackFromViewer(*viewer);
-            }
+            }            
+            break;
         }
 
         case(osgGA::GUIEventAdapter::KEYUP):
@@ -805,7 +806,6 @@ bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
                 }
                 return true;
             }
-
             break;
         }
     default:

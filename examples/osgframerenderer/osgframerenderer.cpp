@@ -5,6 +5,7 @@
 #include <osg/AnimationPath>
 
 #include "UpdateProperty.h"
+#include "CameraProperty.h"
 #include "CameraPathProperty.h"
 #include "EventProperty.h"
 
@@ -65,6 +66,12 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--center x y z","View center");
+    arguments.getApplicationUsage()->addCommandLineOption("--eye x y z","Camera eye point");
+    arguments.getApplicationUsage()->addCommandLineOption("--up x y z","Camera up vector");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-center x y z","Position to rotatate around");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-axis x y z","Axis to rotate around");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-speed v","Degrees per second");
 
     osgViewer::Viewer viewer;
 
@@ -77,12 +84,13 @@ int main( int argc, char **argv )
     double fps = 0.0f;
     unsigned int nframes = 0;
 
+    bool readCaptureSettings = false;
     std::string filename;
     if (arguments.read("--cs",filename))
     {
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
         gsc::CaptureSettings* input_cs = dynamic_cast<gsc::CaptureSettings*>(object.get());
-        if (input_cs) fc = input_cs;
+        if (input_cs) { fc = input_cs; readCaptureSettings = true; }
         else OSG_NOTICE<<"Unable to read CaptureSettings from file: "<<filename<<std::endl;            
     }
     if (arguments.read("-i",filename)) fc->setInputFileName(filename);
@@ -117,8 +125,34 @@ int main( int argc, char **argv )
 
         fc->addUpdateProperty(cpp.get());
     }
+    else
+    {
+        osg::ref_ptr<gsc::CameraProperty> cp = fc->getPropertyOfType<gsc::CameraProperty>();
+
+        if (!cp)
+        {
+            cp = new gsc::CameraProperty;
+
+            osg::ref_ptr<osg::Node> node = fc->getInputFileName().empty() ? 0 : osgDB::readNodeFile(fc->getInputFileName());
+            if (node.valid()) cp->setToModel(node.get());
+            
+            fc->addUpdateProperty(cp.get());
+        }
+        
+        osg::Vec3d vec;
+        while (arguments.read("--center",vec.x(), vec.y(), vec.z())) { cp->setCenter(vec); }
+        while (arguments.read("--eye",vec.x(), vec.y(), vec.z())) { cp->setEyePoint(vec); }
+        while (arguments.read("--up",vec.x(), vec.y(), vec.z())) { cp->setUpVector(vec); }
+        while (arguments.read("--rotation-center",vec.x(), vec.y(), vec.z())) { cp->setRotationCenter(vec); }
+        while (arguments.read("--rotation-axis",vec.x(), vec.y(), vec.z())) { cp->setRotationAxis(vec); }
+
+        double speed;
+        while (arguments.read("--rotation-speed",speed)) { cp->setRotationSpeed(speed); }
+        
+    }
 
     if (arguments.read("--offscreen")) fc->setOffscreen(true);
+    if (arguments.read("--screen")) fc->setOffscreen(false);
 
     unsigned int width = 1024;
     if (arguments.read("-w",width)) fc->setWidth(width);
@@ -196,28 +230,31 @@ int main( int argc, char **argv )
     }
 
 
-    if (duration!=0.0)
+    if (!readCaptureSettings)
     {
-        if (fps!=0.0) nframes = static_cast<unsigned int>(ceil(duration*fps));
-        else if (nframes!=0) fps = duration/static_cast<double>(nframes);
-        else
+        if (duration!=0.0)
         {
-            fps = 60.0;
-            nframes = static_cast<unsigned int>(ceil(duration/fps));
+            if (fps!=0.0) nframes = static_cast<unsigned int>(ceil(duration*fps));
+            else if (nframes!=0) fps = duration/static_cast<double>(nframes);
+            else
+            {
+                fps = 60.0;
+                nframes = static_cast<unsigned int>(ceil(duration/fps));
+            }
         }
+        else // duration == 0.0
+        {
+            if (fps==0.0) fps=60.0;
+            if (nframes==0) nframes=1;
+
+            duration = static_cast<double>(nframes)/fps;
+        }
+
+        fc->setNumberOfFrames(nframes);
+        fc->setFrameRate(fps);
+        OSG_NOTICE<<"Duration="<<duration<<", FPS="<<fps<<", Number of Frames="<<nframes<<std::endl;
     }
-    else // duration == 0.0
-    {
-        if (fps==0.0) fps=60.0;
-        if (nframes==0) nframes=1;
-
-        duration = static_cast<double>(nframes)/fps;
-    }
-
-    fc->setNumberOfFrames(nframes);
-    fc->setFrameRate(fps);
-
-    OSG_NOTICE<<"Duration="<<duration<<", FPS="<<fps<<", Number of Frames="<<nframes<<std::endl;
+    
 
 
 

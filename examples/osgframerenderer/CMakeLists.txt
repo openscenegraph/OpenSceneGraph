@@ -1,5 +1,6 @@
 SET(TARGET_SRC
     CameraPathProperty.cpp
+    CameraProperty.cpp
     CaptureSettings.cpp
     EventProperty.cpp
     osgframerenderer.cpp

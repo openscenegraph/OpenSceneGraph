@@ -81,13 +81,20 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-f <fps>","Number of frames per second in simulation time.");
     arguments.getApplicationUsage()->addCommandLineOption("-n <frames>","Number of frames to render/images to create.");
     arguments.getApplicationUsage()->addCommandLineOption("-d <time>","Duration of rendering run (duration = frames/fps).");
-    arguments.getApplicationUsage()->addCommandLineOption("--center x y z","View center.");
-    arguments.getApplicationUsage()->addCommandLineOption("--eye x y z","Camera eye point.");
-    arguments.getApplicationUsage()->addCommandLineOption("--up x y z","Camera up vector.");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-center x y z","Position to rotatate around.");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-axis x y z","Axis to rotate around.");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-speed v","Degrees per second.");
-    arguments.getApplicationUsage()->addCommandLineOption("--stereo mode","OFF | HORIZONTAL_SPLIT | VERTICAL_SPLIT");
+    arguments.getApplicationUsage()->addCommandLineOption("--center <x> <y> <z>","View center.");
+    arguments.getApplicationUsage()->addCommandLineOption("--eye <x> <y> <z>","Camera eye point.");
+    arguments.getApplicationUsage()->addCommandLineOption("--up <x> <y> <z>","Camera up vector.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-center <x> <y> <z>","Position to rotatate around.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-axis <x> <y> <z>","Axis to rotate around.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-speed <v>","Degrees per second.");
+    arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","OFF | HORIZONTAL_SPLIT | VERTICAL_SPLIT");
+
+    unsigned int helpType = 0;
+    if ((helpType = arguments.readHelpType()))
+    {
+        arguments.getApplicationUsage()->write(std::cout, helpType);
+        return 1;
+    }
 
     osgViewer::Viewer viewer;
 

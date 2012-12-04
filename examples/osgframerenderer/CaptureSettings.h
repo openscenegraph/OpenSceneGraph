@@ -66,6 +66,19 @@ public:
     Properties& getProperties() { return _properties; }
     const Properties& getProperties() const { return _properties; }
 
+    template<typename T>
+    T* getPropertyOfType()
+    {
+        for(Properties::iterator itr = _properties.begin();
+            itr != _properties.end();
+            ++itr)
+        {
+            T* p = dynamic_cast<T*>(itr->get());
+            if (p) return p;
+        }
+        return 0;
+    }
+    
     bool valid() const;
 
 protected:

@@ -16,7 +16,7 @@ class CaptureSettings : public osg::Object
 {
 public:
     CaptureSettings();
-    CaptureSettings(const CaptureSettings& cs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+    CaptureSettings(const CaptureSettings& cs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
     META_Object(gsc, CaptureSettings);
 
@@ -28,6 +28,16 @@ public:
     
     std::string getOutputFileName(unsigned int frameNumber) const;
     std::string getOutputFileName(unsigned int cameraNumber, unsigned int frameNumber) const;
+
+    enum StereoMode
+    {
+        OFF,
+        HORIZONTAL_SPLIT,
+        VERTICAL_SPLIT
+    };
+
+    void setStereoMode(StereoMode mode) { _stereoMode = mode; }
+    StereoMode getStereoMode() const { return _stereoMode; }
 
     void setOffscreen(bool o) { _offscreen = o; }
     bool getOffscreen() const { return _offscreen; }
@@ -43,9 +53,6 @@ public:
 
     void setSampleBuffers(unsigned int s) { _sampleBuffers = s; }
     unsigned int getSampleBuffers() const { return _sampleBuffers; }
-
-    void setStereo(bool on) { _stereo = on; }
-    bool getStereo() const { return _stereo; }
 
     void setFrameRate(double fr) { _frameRate = fr; }
     double getFrameRate() const { return _frameRate; }
@@ -91,20 +98,19 @@ protected:
     std::string _outputBaseFileName;
     std::string _outputExtension;
 
-    bool         _offscreen;
+    StereoMode                          _stereoMode;
+    bool                                _offscreen;
     
-    unsigned int _width;
-    unsigned int _height;
-    unsigned int _samples;
-    unsigned int _sampleBuffers;
-
-    bool          _stereo;
+    unsigned int                        _width;
+    unsigned int                        _height;
+    unsigned int                        _samples;
+    unsigned int                        _sampleBuffers;
     
-    double       _frameRate;
-    unsigned int _numberOfFrames;
+    double                              _frameRate;
+    unsigned int                        _numberOfFrames;
 
-    EventHandlers _eventHandlers;
-    Properties    _properties;
+    EventHandlers                       _eventHandlers;
+    Properties                          _properties;
     
 };
     

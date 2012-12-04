@@ -2,16 +2,36 @@
 
 using namespace gsc;
 
-CaptureSettings::CaptureSettings()
+CaptureSettings::CaptureSettings():
+    _stereoMode(OFF),
+    _offscreen(false),
+    _width(1024),
+    _height(512),
+    _samples(0),
+    _sampleBuffers(0),
+    _frameRate(60.0),
+    _numberOfFrames(0.0)
 {
-    _offscreen = false;
-    _width = 1024;
-    _height = 524;
-    _samples = 0;
-    _sampleBuffers = 0;
-    _stereo = false;
-    _frameRate = 60.0;
-    _numberOfFrames = 0;
+}
+
+CaptureSettings::CaptureSettings(const CaptureSettings& cs, const osg::CopyOp& copyop):
+    osg::Object(cs, copyop),
+    _inputFileName(cs._inputFileName),
+    _outputFileName(cs._outputFileName),
+    _outputDirectoryName(cs._outputDirectoryName),
+    _outputBaseFileName(cs._outputBaseFileName),
+    _outputExtension(cs._outputExtension),
+    _stereoMode(cs._stereoMode),
+    _offscreen(cs._offscreen),
+    _width(cs._width),
+    _height(cs._height),
+    _samples(cs._samples),
+    _sampleBuffers(cs._sampleBuffers),
+    _frameRate(cs._frameRate),
+    _numberOfFrames(cs._numberOfFrames),
+    _eventHandlers(cs._eventHandlers),
+    _properties(cs._properties)
+{
 }
 
 void CaptureSettings::setOutputFileName(const std::string& filename)
@@ -125,14 +145,18 @@ REGISTER_OBJECT_WRAPPER( gsc_CaptureSettings,
     ADD_STRING_SERIALIZER( OutputFileName, "" );
     ADD_DOUBLE_SERIALIZER( FrameRate, 60.0 );
 
+    BEGIN_ENUM_SERIALIZER( StereoMode, OFF );
+        ADD_ENUM_VALUE( OFF );
+        ADD_ENUM_VALUE( HORIZONTAL_SPLIT );
+        ADD_ENUM_VALUE( VERTICAL_SPLIT );
+    END_ENUM_SERIALIZER();  // _renderTargetImplementation
+
     ADD_BOOL_SERIALIZER( Offscreen, false );
 
     ADD_UINT_SERIALIZER( Width, 1024 );
     ADD_UINT_SERIALIZER( Height, 512 );
     ADD_UINT_SERIALIZER( Samples, 0 );
     ADD_UINT_SERIALIZER( SampleBuffers, 0 );
-
-    ADD_BOOL_SERIALIZER( Stereo, false );
     
     ADD_UINT_SERIALIZER( NumberOfFrames, 0 );
     ADD_USER_SERIALIZER( EventHandlers );

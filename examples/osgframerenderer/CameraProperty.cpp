@@ -8,7 +8,7 @@ void CameraProperty::setToModel(const osg::Node* node)
     osg::BoundingSphere bs = node->getBound();
     
     _center = bs.center();
-    _eye = _center - osg::Vec3d(0.0, -bs.radius()*distanceRatio, 0.0);
+    _eye = _center - osg::Vec3d(0.0, bs.radius()*distanceRatio, 0.0);
     _up = osg::Vec3d(0.0, 0.0, 1.0);
     
     _rotationCenter = _center;

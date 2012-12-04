@@ -66,12 +66,28 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--center x y z","View center");
-    arguments.getApplicationUsage()->addCommandLineOption("--eye x y z","Camera eye point");
-    arguments.getApplicationUsage()->addCommandLineOption("--up x y z","Camera up vector");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-center x y z","Position to rotatate around");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-axis x y z","Axis to rotate around");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-speed v","Degrees per second");
+    arguments.getApplicationUsage()->addCommandLineOption("-i <filename>","Input scene (or presentation) filename.");
+    arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Base ouput filename of the images, recommended to use something like Images/image.png");
+    arguments.getApplicationUsage()->addCommandLineOption("--cs <filename>","Load pre-generated configuration file for run.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ouput-cs <filename>","Output configuration file with settings provided on commandline.");
+    arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specificied camera path file to control camera position.");
+    arguments.getApplicationUsage()->addCommandLineOption("--offscreen","Use an pbuffer to render the images offscreen.");
+    arguments.getApplicationUsage()->addCommandLineOption("--screen","Use an window to render the images.");
+    arguments.getApplicationUsage()->addCommandLineOption("-w <width>","Window/output image width");
+    arguments.getApplicationUsage()->addCommandLineOption("-h <height>","Window/output image height");
+    arguments.getApplicationUsage()->addCommandLineOption("--ms <s>","Number of multi-samples to use when rendering, an enable a single sample buffer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--samples <s>","Number of multi-samples to use when rendering.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sampleBuffers <sb>","Number of sample buffers to use when rendering.");
+    arguments.getApplicationUsage()->addCommandLineOption("-f <fps>","Number of frames per second in simulation time.");
+    arguments.getApplicationUsage()->addCommandLineOption("-n <frames>","Number of frames to render/images to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <time>","Duration of rendering run (duration = frames/fps).");
+    arguments.getApplicationUsage()->addCommandLineOption("--center x y z","View center.");
+    arguments.getApplicationUsage()->addCommandLineOption("--eye x y z","Camera eye point.");
+    arguments.getApplicationUsage()->addCommandLineOption("--up x y z","Camera up vector.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-center x y z","Position to rotatate around.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-axis x y z","Axis to rotate around.");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-speed v","Degrees per second.");
+    arguments.getApplicationUsage()->addCommandLineOption("--stereo mode","OFF | HORIZONTAL_SPLIT | VERTICAL_SPLIT");
 
     osgViewer::Viewer viewer;
 
@@ -91,7 +107,12 @@ int main( int argc, char **argv )
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
         gsc::CaptureSettings* input_cs = dynamic_cast<gsc::CaptureSettings*>(object.get());
         if (input_cs) { fc = input_cs; readCaptureSettings = true; }
-        else OSG_NOTICE<<"Unable to read CaptureSettings from file: "<<filename<<std::endl;            
+        else
+        {
+            OSG_NOTICE<<"Unable to read CaptureSettings from file: "<<filename<<std::endl;
+            if (object.valid()) OSG_NOTICE<<"Object read, "<<object.get()<<", className()="<<object->className()<<std::endl;
+            return 1;
+        }
     }
     if (arguments.read("-i",filename)) fc->setInputFileName(filename);
     if (arguments.read("-o",filename)) fc->setOutputFileName(filename);
@@ -151,6 +172,14 @@ int main( int argc, char **argv )
         
     }
 
+    std::string stereoMode;
+    if (arguments.read("--stereo", stereoMode))
+    {        
+        if      (stereoMode=="HORIZONTAL_SPLIT") fc->setStereoMode(gsc::CaptureSettings::HORIZONTAL_SPLIT);
+        else if (stereoMode=="VERTICAL_SPLIT") fc->setStereoMode(gsc::CaptureSettings::VERTICAL_SPLIT);
+        else if (stereoMode=="OFF") fc->setStereoMode(gsc::CaptureSettings::OFF);
+    }
+
     if (arguments.read("--offscreen")) fc->setOffscreen(true);
     if (arguments.read("--screen")) fc->setOffscreen(false);
 
@@ -173,15 +202,11 @@ int main( int argc, char **argv )
         fc->setSampleBuffers(1);
     }
 
-    if (arguments.read("--stereo"))
-    {
-        OSG_NOTICE<<"Enabling stereo"<<std::endl;
-        fc->setStereo(true);
-    }
-
     if (arguments.read("-f",fps)) fc->setFrameRate(fps);
 
     if (arguments.read("-n",nframes)) fc->setNumberOfFrames(nframes);
+
+    if (arguments.read("-d",duration)) {}
 
 
     std::string key;
@@ -278,13 +303,19 @@ int main( int argc, char **argv )
     }
 
 
-
     // setup viewer
     {
         osg::ref_ptr<osg::DisplaySettings> ds = new osg::DisplaySettings;
 
-        ds->setStereoMode(osg::DisplaySettings::HORIZONTAL_SPLIT);
-        ds->setStereo(fc->getStereo());
+        osg::DisplaySettings::StereoMode stereoMode = osg::DisplaySettings::HORIZONTAL_SPLIT;
+        switch(fc->getStereoMode())
+        {
+            case(gsc::CaptureSettings::HORIZONTAL_SPLIT): stereoMode = osg::DisplaySettings::HORIZONTAL_SPLIT; break;
+            case(gsc::CaptureSettings::VERTICAL_SPLIT): stereoMode = osg::DisplaySettings::VERTICAL_SPLIT; break;
+            default: break;
+        }
+        ds->setStereoMode(stereoMode);
+        ds->setStereo(fc->getStereoMode()!=gsc::CaptureSettings::OFF);
 
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds.get());
 

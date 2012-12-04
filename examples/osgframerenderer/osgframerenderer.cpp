@@ -73,8 +73,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specificied camera path file to control camera position.");
     arguments.getApplicationUsage()->addCommandLineOption("--offscreen","Use an pbuffer to render the images offscreen.");
     arguments.getApplicationUsage()->addCommandLineOption("--screen","Use an window to render the images.");
-    arguments.getApplicationUsage()->addCommandLineOption("-w <width>","Window/output image width");
-    arguments.getApplicationUsage()->addCommandLineOption("-h <height>","Window/output image height");
+    arguments.getApplicationUsage()->addCommandLineOption("--width <width>","Window/output image width");
+    arguments.getApplicationUsage()->addCommandLineOption("--height <height>","Window/output image height");
     arguments.getApplicationUsage()->addCommandLineOption("--ms <s>","Number of multi-samples to use when rendering, an enable a single sample buffer.");
     arguments.getApplicationUsage()->addCommandLineOption("--samples <s>","Number of multi-samples to use when rendering.");
     arguments.getApplicationUsage()->addCommandLineOption("--sampleBuffers <sb>","Number of sample buffers to use when rendering.");
@@ -191,10 +191,10 @@ int main( int argc, char **argv )
     if (arguments.read("--screen")) fc->setOffscreen(false);
 
     unsigned int width = 1024;
-    if (arguments.read("-w",width)) fc->setWidth(width);
+    if (arguments.read("--width",width)) fc->setWidth(width);
 
     unsigned int height = 512;
-    if (arguments.read("-h",height)) fc->setHeight(height);
+    if (arguments.read("--height",height)) fc->setHeight(height);
 
     unsigned int samples = 0;
     if (arguments.read("--samples",samples)) fc->setSamples(samples);

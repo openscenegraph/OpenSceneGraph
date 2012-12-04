@@ -64,7 +64,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-i <filename>","Input scene (or presentation) filename.");
     arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Base ouput filename of the images, recommended to use something like Images/image.png");

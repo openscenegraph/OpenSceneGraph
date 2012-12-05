@@ -206,5 +206,5 @@ void HelpHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
 void HelpHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("h","Onscreen help.");
+    if (_keyEventTogglesOnScreenHelp) usage.addKeyboardMouseBinding(_keyEventTogglesOnScreenHelp,"Onscreen help.");
 }

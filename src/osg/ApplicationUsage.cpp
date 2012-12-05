@@ -18,6 +18,8 @@
 #include <osg/Math>
 #include <osg/ref_ptr>
 
+#include <sstream>
+
 using namespace osg;
 
 ApplicationUsage::ApplicationUsage(const std::string& commandLineUsage):
@@ -42,7 +44,7 @@ void ApplicationUsage::addUsageExplanation(Type type,const std::string& option,c
             addEnvironmentalVariable(option,explanation);
             break;
         case(KEYBOARD_MOUSE_BINDING):
-            addKeyboardMouseBinding(option,explanation);
+            //addKeyboardMouseBinding(option,explanation);
             break;
         default:
             break;
@@ -59,6 +61,32 @@ void ApplicationUsage::addEnvironmentalVariable(const std::string& option,const 
 {
     _environmentalVariables[option]=explanation;
     _environmentalVariablesDefaults[option]=defaultValue;
+}
+
+void ApplicationUsage::addKeyboardMouseBinding(const std::string& prefix, int key, const std::string& explanation)
+{
+    if (key!=0)
+    {
+        std::ostringstream ostr;
+        ostr<<prefix;
+        
+        if (key==' ')
+        {
+            ostr<<"Space";
+        }
+        else if (key!=0)
+        {
+            ostr<<char(key);
+        }
+
+        _keyboardMouse[ostr.str()]=explanation;
+    }
+}
+
+
+void ApplicationUsage::addKeyboardMouseBinding(int key,const std::string& explanation)
+{
+    addKeyboardMouseBinding("",key,explanation);
 }
 
 void ApplicationUsage::addKeyboardMouseBinding(const std::string& option,const std::string& explanation)

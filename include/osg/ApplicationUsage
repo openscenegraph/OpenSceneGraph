@@ -77,6 +77,8 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
         const UsageMap& getEnvironmentalVariablesDefaults() const { return _environmentalVariablesDefaults; }
 
 
+        void addKeyboardMouseBinding(const std::string& prefix, int key, const std::string& explanation);
+        void addKeyboardMouseBinding(int key, const std::string& explanation);
         void addKeyboardMouseBinding(const std::string& option,const std::string& explanation);
 
         void setKeyboardMouseBindings(const UsageMap& usageMap) { _keyboardMouse=usageMap; }

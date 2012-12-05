@@ -11,8 +11,6 @@
 * OpenSceneGraph Public License for more details.
 */
 
-#include <sstream>
-
 #include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
@@ -851,17 +849,8 @@ void ScreenCaptureHandler::stopCapture()
 /** Get the keyboard and mouse usage of this manipulator.*/
 void ScreenCaptureHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    {
-        std::ostringstream ostr;
-        ostr<<char(_keyEventTakeScreenShot);
-        usage.addKeyboardMouseBinding(ostr.str(),"Take screenshot.");
-    }
-
-    {
-        std::ostringstream ostr;
-        ostr<<char(_keyEventToggleContinuousCapture);
-        usage.addKeyboardMouseBinding(ostr.str(),"Toggle continuous screen capture.");
-    }
+    usage.addKeyboardMouseBinding(_keyEventTakeScreenShot,"Take screenshot.");
+    usage.addKeyboardMouseBinding(_keyEventToggleContinuousCapture,"Toggle continuous screen capture.");
 }
 
 }

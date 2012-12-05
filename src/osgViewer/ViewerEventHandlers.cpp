@@ -68,9 +68,9 @@ WindowSizeHandler::WindowSizeHandler() :
 
 void WindowSizeHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleFullscreen), "Toggle full screen.");
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventWindowedResolutionUp), "Increase the screen resolution (in windowed mode).");
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventWindowedResolutionDown), "Decrease the screen resolution (in windowed mode).");
+    usage.addKeyboardMouseBinding(_keyEventToggleFullscreen, "Toggle full screen.");
+    usage.addKeyboardMouseBinding(_keyEventWindowedResolutionUp, "Increase the screen resolution (in windowed mode).");
+    usage.addKeyboardMouseBinding(_keyEventWindowedResolutionDown, "Decrease the screen resolution (in windowed mode).");
 }
 
 bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -308,8 +308,8 @@ ThreadingHandler::ThreadingHandler() :
 
 void ThreadingHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventChangeThreadingModel), "Toggle threading model.");
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventChangeEndBarrierPosition), "Toggle the placement of the end of frame barrier.");
+    usage.addKeyboardMouseBinding(_keyEventChangeThreadingModel, "Toggle threading model.");
+    usage.addKeyboardMouseBinding(_keyEventChangeEndBarrierPosition, "Toggle the placement of the end of frame barrier.");
 }
 
 bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -420,8 +420,8 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, fl
 
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleRecord), "Toggle camera path recording.");
-    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventTogglePlayback), "Toggle camera path playback.");
+    usage.addKeyboardMouseBinding(_keyEventToggleRecord, "Toggle camera path recording.");
+    usage.addKeyboardMouseBinding(_keyEventTogglePlayback, "Toggle camera path playback.");
 }
 
 bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -631,17 +631,8 @@ bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 
 void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    {
-        std::ostringstream ostr;
-        ostr<<char(_keyEventIncreaseLODScale);
-        usage.addKeyboardMouseBinding(ostr.str(),"Increase LODScale.");
-    }
-
-    {
-        std::ostringstream ostr;
-        ostr<<char(_keyEventDecreaseLODScale);
-        usage.addKeyboardMouseBinding(ostr.str(),"Decrease LODScale.");
-    }
+    usage.addKeyboardMouseBinding(_keyEventIncreaseLODScale,"Increase LODScale.");
+    usage.addKeyboardMouseBinding(_keyEventDecreaseLODScale,"Decrease LODScale.");
 }
 
 ToggleSyncToVBlankHandler::ToggleSyncToVBlankHandler():
@@ -696,11 +687,7 @@ bool ToggleSyncToVBlankHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::
 
 void ToggleSyncToVBlankHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    {
-        std::ostringstream ostr;
-        ostr<<char(_keyEventToggleSyncToVBlank);
-        usage.addKeyboardMouseBinding(ostr.str(),"Toggle SyncToVBlank.");
-    }
+    usage.addKeyboardMouseBinding(_keyEventToggleSyncToVBlank,"Toggle SyncToVBlank.");
 }
 
 

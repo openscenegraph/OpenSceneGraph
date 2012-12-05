@@ -1707,8 +1707,8 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
 
 void StatsHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("s","On screen stats.");
-    usage.addKeyboardMouseBinding("S","Output stats to console.");
+    usage.addKeyboardMouseBinding(_keyEventTogglesOnScreenStats,"On screen stats.");
+    usage.addKeyboardMouseBinding(_keyEventPrintsOutStats,"Output stats to console.");
 }
 
 }

@@ -1,13 +1,18 @@
 #include "OSXAVFoundationVideo.h"
 
 #include <osgdB/FileNameUtils>
-#include <osgViewer/api/Cocoa/GraphicsWindowCocoa>
 #include <iostream>
 #include <deque>
 
 #import <AVFoundation/AVFoundation.h>
+#import "TargetConditionals.h" 
+#if (TARGET_OS_IPHONE)
+#import <UIKit/UIKit.h>
+#include <osgViewer/api/IOS/GraphicsWindowIOS>
+#else
 #import <Cocoa/Cocoa.h>
-
+#include <osgViewer/api/Cocoa/GraphicsWindowCocoa>
+#endif
 #include "OSXAVFoundationCoreVideoTexture.h"
 
 
@@ -105,7 +110,11 @@ public:
     OSXAVFoundationVideoDelegate* delegate;
     std::vector<CVBufferRef> lastFrames;
     int readFrameNdx, writeFrameNdx;
+    #if (TARGET_OS_IPHONE)
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    #else
     CVOpenGLTextureCacheRef coreVideoTextureCache;
+    #endif
     
     Data()
         : avplayer(NULL)
@@ -157,7 +166,11 @@ public:
         
         if (coreVideoTextureCache)
         {
+            #if (TARGET_OS_IPHONE)
+            CFRelease(coreVideoTextureCache); // huh, there's no CVOpenGLESTextureCacheRelease?
+            #else
             CVOpenGLTextureCacheRelease(coreVideoTextureCache);
+            #endif
             coreVideoTextureCache = NULL;
         }
     }
@@ -416,20 +429,30 @@ void OSXAVFoundationVideo::decodeFrame()
             if (isCoreVideoUsed())
             {
                 CVPixelBufferLockBaseAddress(newframe, kCVPixelBufferLock_ReadOnly);
-
-                CVOpenGLTextureRef texture = NULL;
-                CVReturn err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _data->coreVideoTextureCache, newframe, 0, &texture);
-                if (err)
-                {
-                    OSG_WARN << "OSXAVFoundationVideo :: could not create texture from image, err: " << err << std::endl;
-                }
                 int w = CVPixelBufferGetWidth(newframe);
                 int h = CVPixelBufferGetHeight(newframe);
+
+                #if (TARGET_OS_IPHONE)
+                    CVOpenGLESTextureRef texture = NULL;
+                    CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _data->coreVideoTextureCache, newframe, NULL, GL_TEXTURE_2D, GL_RGBA, w, h, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
+                    if (err)
+                    {
+                        OSG_WARN << "OSXAVFoundationVideo :: could not create texture from image, err: " << err << std::endl;
+                    }
+                    _data->addFrame(texture);
+                #else
+                    CVOpenGLTextureRef texture = NULL;
+                    CVReturn err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _data->coreVideoTextureCache, newframe, 0, &texture);
+                    if (err)
+                    {
+                        OSG_WARN << "OSXAVFoundationVideo :: could not create texture from image, err: " << err << std::endl;
+                    }
+                            
+                    _data->addFrame(texture);
+                #endif
                 _dimensionsChangedCallbackNeeded = (_s != w) || (_t != h);
                 _s = w; _t = h; _r = 1;
-                
-                _data->addFrame(texture);
-            
+
                 CVPixelBufferUnlockBaseAddress(newframe, kCVPixelBufferLock_ReadOnly);
                 CVPixelBufferRelease(newframe);
             }
@@ -500,17 +523,29 @@ void OSXAVFoundationVideo::requestNewFrame()
 
 bool OSXAVFoundationVideo::getCurrentCoreVideoTexture(GLenum& target, GLint& name, int& width, int& height) const
 {
-    CVOpenGLTextureCacheFlush(_data->coreVideoTextureCache, 0);
-    CVOpenGLTextureRef texture = _data->getLastFrame();
-    if (texture)
-    {
-        target = CVOpenGLTextureGetTarget(texture);
-        name = CVOpenGLTextureGetName(texture);
-        width = _s;
-        height = _t;
-    }
-    
-    return (texture != NULL);
+    #if (TARGET_OS_IPHONE)
+        CVOpenGLESTextureCacheFlush(_data->coreVideoTextureCache, 0);
+        CVOpenGLESTextureRef texture = _data->getLastFrame();
+        if(texture) {
+            target = GL_TEXTURE_2D;
+            name = CVOpenGLESTextureGetName(texture);
+            width = _s;
+            height = _t;
+        }
+        return (texture != NULL);
+    #else
+        CVOpenGLTextureCacheFlush(_data->coreVideoTextureCache, 0);
+        CVOpenGLTextureRef texture = _data->getLastFrame();
+        if (texture)
+        {
+            target = CVOpenGLTextureGetTarget(texture);
+            name = CVOpenGLTextureGetName(texture);
+            width = _s;
+            height = _t;
+        }
+        
+        return (texture != NULL);
+    #endif
 }
 
 
@@ -518,25 +553,42 @@ void OSXAVFoundationVideo::lazyInitCoreVideoTextureCache(osg::State& state)
 {
     if (_data->coreVideoTextureCache)
         return;
-    
-    osgViewer::GraphicsWindowCocoa* win = dynamic_cast<osgViewer::GraphicsWindowCocoa*>(state.getGraphicsContext());
-    if (win)
-    {
-        NSOpenGLContext* context = win->getContext();
-        CGLContextObj cglcntx = (CGLContextObj)[context CGLContextObj];
-        CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[ win->getPixelFormat() CGLPixelFormatObj];
-        CVReturn cvRet = CVOpenGLTextureCacheCreate(kCFAllocatorDefault, 0, cglcntx, cglPixelFormat, 0, &_data->coreVideoTextureCache);
-        if (cvRet != kCVReturnSuccess)
+    #if (TARGET_OS_IPHONE)
+        osgViewer::GraphicsWindowIOS* win = dynamic_cast<osgViewer::GraphicsWindowIOS*>(state.getGraphicsContext());
+        if (win)
         {
-            OSG_WARN << "OSXAVFoundationVideo : could not create texture cache :" << cvRet << std::endl;
+            EAGLContext* context = win->getContext();
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, context, NULL, &_data->coreVideoTextureCache);
+            if (err) 
+            {
+                 OSG_WARN << "OSXAVFoundationVideo : could not create texture cache :" << err << std::endl;
+            }
         }
-    }
+    
+    #else
+        osgViewer::GraphicsWindowCocoa* win = dynamic_cast<osgViewer::GraphicsWindowCocoa*>(state.getGraphicsContext());
+        if (win)
+        {
+            NSOpenGLContext* context = win->getContext();
+            CGLContextObj cglcntx = (CGLContextObj)[context CGLContextObj];
+            CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[ win->getPixelFormat() CGLPixelFormatObj];
+            CVReturn cvRet = CVOpenGLTextureCacheCreate(kCFAllocatorDefault, 0, cglcntx, cglPixelFormat, 0, &_data->coreVideoTextureCache);
+            if (cvRet != kCVReturnSuccess)
+            {
+                OSG_WARN << "OSXAVFoundationVideo : could not create texture cache :" << cvRet << std::endl;
+            }
+        }
+    #endif
 }
 
 
 osg::Texture* OSXAVFoundationVideo::createSuitableTexture()
 {
-    return NULL; // new OSXAVFoundationCoreVideoTexture(this);
+    #if (TARGET_OS_IPHONE)
+        return new OSXAVFoundationCoreVideoTexture(this);
+    #else
+        return NULL; // new OSXAVFoundationCoreVideoTexture(this);
+    #endif
 }
 
     

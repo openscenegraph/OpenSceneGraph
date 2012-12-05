@@ -18,13 +18,23 @@
 // probably especially important for istream which lacks extension information.
 // Is there information we can use in the OSG options parameter?
 
-// For ImageIO framework and also LaunchServices framework (for UTIs)
-#include <ApplicationServices/ApplicationServices.h>
+
+#import "TargetConditionals.h"
+#if (TARGET_OS_IPHONE)
+    #import <UIKit/UIKit.h>
+    #import <ImageIO/ImageIO.h>
+    #import <CoreGraphics/CoreGraphics.h>
+    #import <Foundation/Foundation.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
+#else
+    #include <ApplicationServices/ApplicationServices.h>
+#endif
 // For the vImage framework (part of the Accerlate framework)
 #include <Accelerate/Accelerate.h>
 
 // Used because CGDataProviderCreate became deprecated in 10.5
 #include <AvailabilityMacros.h>
+
 
 #include <osg/GL>
 #include <osg/Notify>

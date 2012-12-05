@@ -233,7 +233,7 @@ IF(APPLE)
     IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
 
         #you need to manually set the default sdk version here
-        SET (IPHONE_SDKVER "5.1")
+        SET (IPHONE_SDKVER "5.1" CACHE STRING "IOS SDK-Version")
 
         #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
         # Force gcc <= 4.2 on iPhone
@@ -517,6 +517,7 @@ ELSE()
     FIND_PACKAGE(DirectInput)
     FIND_PACKAGE(NVTT)
     FIND_PACKAGE(Asio)
+    FIND_PACKAGE(ZeroConf)
 ENDIF()
 
 IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 8)
@@ -584,7 +585,6 @@ IF(NOT ANDROID)
         FIND_PACKAGE(JPEG)
         FIND_PACKAGE(PNG)
         FIND_PACKAGE(TIFF)
-
         # QuickTime is required for OS X, but optional for Windows.
         IF(WIN32)
             FIND_PACKAGE(QuickTime)

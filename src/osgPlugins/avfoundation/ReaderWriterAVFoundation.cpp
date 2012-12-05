@@ -104,8 +104,11 @@ class ReaderWriterAVFoundation : public osgDB::ReaderWriter
             if (!video || !use_core_video)
                 return rr;
             
-            osg::ref_ptr<OSXAVFoundationCoreVideoTexture> texture = new OSXAVFoundationCoreVideoTexture(video);
-            return texture.release();
+            osg::ref_ptr<osg::Texture> texture = video->createSuitableTexture();
+            if (texture.valid())
+                return texture.release();
+            
+            return video.release();
         }
 
     protected:
@@ -117,4 +120,4 @@ class ReaderWriterAVFoundation : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-REGISTER_OSGPLUGIN(AVFoundation, ReaderWriterAVFoundation)
+REGISTER_OSGPLUGIN(avfoundation, ReaderWriterAVFoundation)

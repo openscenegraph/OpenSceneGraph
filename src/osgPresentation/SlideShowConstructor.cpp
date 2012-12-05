@@ -60,7 +60,7 @@
 using namespace osgPresentation;
 
 #define USE_CLIENT_STORAGE_HINT 0
-#define USE_TEXTURE_FROM_VIDEO_PLUGIN 1
+
 
 class SetToTransparentBin : public osg::NodeVisitor
 {
@@ -857,12 +857,10 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
     
     // let the video-plugin create a texture for us, if supported
-    #if USE_TEXTURE_FROM_VIDEO_PLUGIN
-    if(imageStream)
+    if(imageStream && getenv("P3D_ENABLE_CORE_VIDEO"))
     {
         texture = imageStream->createSuitableTexture();
     }
-    #endif
     
     bool flipYAxis = image->getOrigin()==osg::Image::TOP_LEFT;
 

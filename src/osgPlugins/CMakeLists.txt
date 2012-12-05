@@ -269,6 +269,11 @@ IF(ASIO_FOUND)
     ADD_SUBDIRECTORY(RestHttpDevice)
 ENDIF(ASIO_FOUND)
 
+
+IF(ZEROCONF_FOUND)
+    ADD_SUBDIRECTORY(ZeroConfDevice)
+ENDIF()
+
 ##########to get all the variables of Cmake
 #GET_CMAKE_PROPERTY(MYVARS VARIABLES)
 #FOREACH(myvar ${MYVARS})

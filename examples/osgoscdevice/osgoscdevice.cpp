@@ -356,8 +356,43 @@ public:
         return false;
     }
     
-private:
+protected:
     osg::ref_ptr<osgGA::Device> _device;
+};
+
+class OscServiceDiscoveredEventHandler: public ForwardToDeviceEventHandler {
+public:
+    OscServiceDiscoveredEventHandler() : ForwardToDeviceEventHandler(NULL) {}
+    
+    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *o, osg::NodeVisitor *nv)
+    {
+        if (_device.valid())
+            return ForwardToDeviceEventHandler::handle(ea, aa, o, nv);
+        
+        if (ea.getEventType() == osgGA::GUIEventAdapter::USER)
+        {
+            if (ea.getName() == "/zeroconf/service-added")
+            {
+                std::string host;
+                unsigned int port;
+                ea.getUserValue("host", host);
+                ea.getUserValue("port", port);
+                
+                OSG_ALWAYS << "new osc-service discovered: " << host << ":" << port << std::endl;
+                
+                std::ostringstream ss ;
+                ss << host << ":" << port << ".sender.osc";
+                _device = osgDB::readFile<osgGA::Device>(ss.str());
+                
+                osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                if (view)
+                    view->addEventHandler(new PickHandler(_device));
+                return true;
+            }
+        }
+        return false;
+    }
+    
 };
 
 int main( int argc, char **argv )
@@ -365,6 +400,9 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
+    
+    arguments.getApplicationUsage()->addCommandLineOption("--zeroconf","uses zeroconf to advertise the osc-plugin and to discover it");
+
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
@@ -374,6 +412,9 @@ int main( int argc, char **argv )
         std::cout << argv[0] << ": requires filename argument." << std::endl;
         return 1;
     }
+    
+    bool use_zeroconf(false);
+    if(arguments.find("--zeroconf") > 0) { use_zeroconf = true; }
 
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);
@@ -418,10 +459,20 @@ int main( int argc, char **argv )
         view->addEventHandler( new osgViewer::StatsHandler );
         view->addEventHandler( new UserEventHandler(text) );
 
-        osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("localhost:9000.receiver.osc");
+        osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("0.0.0.0:9000.receiver.osc");
         if (device.valid() && (device->getCapabilities() & osgGA::Device::RECEIVE_EVENTS))
         {
             view->addDevice(device);
+            
+            // add a zeroconf device, advertising the osc-device
+            if(use_zeroconf)
+            {
+                osgGA::Device* zeroconf_device = osgDB::readFile<osgGA::Device>("_osc._udp:9000.advertise.zeroconf");
+                if (zeroconf_device)
+                {
+                    view->addDevice(zeroconf_device);
+                }
+            }
         }
         else {
             OSG_WARN << "could not open osc-device, receiving will not work" << std::endl;
@@ -463,19 +514,29 @@ int main( int argc, char **argv )
         view->addEventHandler( statesetManipulator.get() );
         view->addEventHandler( new osgViewer::StatsHandler );
         
-        // get device
-        
-        osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("localhost:9000.sender.osc");
-        if (device.valid() && (device->getCapabilities() & osgGA::Device::SEND_EVENTS))
+        if (use_zeroconf)
         {
-            // add as first event handler, so it gets ALL events ...
-            view->getEventHandlers().push_front(new ForwardToDeviceEventHandler(device));
-            
-            // add the demo-pick-event-handler
-            view->addEventHandler(new PickHandler(device));
+            osgGA::Device* zeroconf_device = osgDB::readFile<osgGA::Device>("_osc._udp.discover.zeroconf");
+            if(zeroconf_device) {
+                view->addDevice(zeroconf_device);
+                view->getEventHandlers().push_front(new OscServiceDiscoveredEventHandler());
+                
+            }
         }
-        else {
-            OSG_WARN << "could not open osc-device, sending will not work" << std::endl;
+        else
+        {
+            osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("localhost:9000.sender.osc");
+            if (device.valid() && (device->getCapabilities() & osgGA::Device::SEND_EVENTS))
+            {
+                // add as first event handler, so it gets ALL events ...
+                view->getEventHandlers().push_front(new ForwardToDeviceEventHandler(device));
+                
+                // add the demo-pick-event-handler
+                view->addEventHandler(new PickHandler(device));
+            }
+            else {
+                OSG_WARN << "could not open osc-device, sending will not work" << std::endl;
+            }
         }
     }
 

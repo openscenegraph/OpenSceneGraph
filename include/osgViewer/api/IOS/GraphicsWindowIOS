@@ -148,7 +148,8 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 WindowData(UIView* window_or_view = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
                 :   _windowOrView(window_or_view),
                     _deviceOrientationFlags(orientationFlags),
-                    _viewContentScaleFactor(scaleFactor)
+                    _viewContentScaleFactor(scaleFactor),
+                    _createTransparentView(false)
                 {
                 }
                 
@@ -157,11 +158,15 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
                 
                 UIView* getWindowOrParentView() const { return _windowOrView; }
+                
+                bool getCreateTransparentView() { return _createTransparentView; }
+                void setCreateTransparentView(bool b) { _createTransparentView = b; }
             private:
 
                 UIView*                _windowOrView;
                 DeviceOrientationFlags _deviceOrientationFlags;
                 float                  _viewContentScaleFactor; 
+                bool                   _createTransparentView;
         
             friend class GraphicsWindowIOS;
 

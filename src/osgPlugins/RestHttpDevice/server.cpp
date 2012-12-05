@@ -51,7 +51,7 @@ void server::handle_accept(const asio::error_code& e)
 {
   if (!e)
   {
-    OSG_INFO << "RestHttpDevice :: server::handle_accept" << std::endl;
+    OSG_DEBUG << "RestHttpDevice :: server::handle_accept" << std::endl;
     new_connection_->start();
     new_connection_.reset(new connection(
           io_service_pool_.get_io_service(), request_handler_));

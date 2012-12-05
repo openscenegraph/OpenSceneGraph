@@ -76,5 +76,6 @@ class OSXCoreVideoTexture : public osg::Texture {
         
         typedef osg::buffered_value<unsigned int> ImageModifiedCount;
         mutable ImageModifiedCount _modifiedCount;
+        mutable OpenThreads::Mutex _mutex;
 
 };

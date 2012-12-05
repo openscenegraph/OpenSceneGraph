@@ -303,6 +303,25 @@ void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_opti
     }
 }
 
+void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name)
+{
+    osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device_name);
+    if (dev.valid())
+    {
+        OSG_INFO << "Adding Device : " << device_name << std::endl;
+        if (dev->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
+            viewer.addDevice(dev.get());
+        
+        if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
+            viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));
+    }
+    else
+    {
+        OSG_WARN << "could not open device: " << device_name << std::endl;
+    }
+}
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -434,27 +453,15 @@ int main( int argc, char **argv )
     const char* p3dDevice = getenv("P3D_DEVICE");
     if (p3dDevice)
     {
-        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(p3dDevice);
-        if (dev.valid())
-        {
-            viewer.addDevice(dev.get());
-        }
+         addDeviceTo(viewer, p3dDevice);
+         
     }
 
 
     std::string device;
     while (arguments.read("--device", device))
     {
-        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
-        if (dev.valid())
-        {
-            OSG_NOTICE<<"Adding Device : "<<device<<std::endl;
-            if (dev->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
-                viewer.addDevice(dev.get());
-            
-            if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
-                viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));
-        }
+        addDeviceTo(viewer, device);
         
     }
 

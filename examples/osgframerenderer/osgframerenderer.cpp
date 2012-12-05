@@ -73,8 +73,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specificied camera path file to control camera position.");
     arguments.getApplicationUsage()->addCommandLineOption("--offscreen","Use an pbuffer to render the images offscreen.");
     arguments.getApplicationUsage()->addCommandLineOption("--screen","Use an window to render the images.");
-    arguments.getApplicationUsage()->addCommandLineOption("--width <width>","Window/output image width");
-    arguments.getApplicationUsage()->addCommandLineOption("--height <height>","Window/output image height");
+    arguments.getApplicationUsage()->addCommandLineOption("--width <width>","Window/output image width.");
+    arguments.getApplicationUsage()->addCommandLineOption("--height <height>","Window/output image height.");
+    arguments.getApplicationUsage()->addCommandLineOption("--screen-distance <distance>","Set the distance of the viewer from the physical screen.");
+    arguments.getApplicationUsage()->addCommandLineOption("--screen-width <width>","Set the width of the physical screen.");
+    arguments.getApplicationUsage()->addCommandLineOption("--screen-height <height>","Set the height of the physical screen.");
     arguments.getApplicationUsage()->addCommandLineOption("--ms <s>","Number of multi-samples to use when rendering, an enable a single sample buffer.");
     arguments.getApplicationUsage()->addCommandLineOption("--samples <s>","Number of multi-samples to use when rendering.");
     arguments.getApplicationUsage()->addCommandLineOption("--sampleBuffers <sb>","Number of sample buffers to use when rendering.");
@@ -157,26 +160,37 @@ int main( int argc, char **argv )
     {
         osg::ref_ptr<gsc::CameraProperty> cp = fc->getPropertyOfType<gsc::CameraProperty>();
 
+        bool newCameraProperty = false;
+        bool valueSet = false;
+        
         if (!cp)
         {
+            newCameraProperty = true;
             cp = new gsc::CameraProperty;
 
             osg::ref_ptr<osg::Node> node = fc->getInputFileName().empty() ? 0 : osgDB::readNodeFile(fc->getInputFileName());
-            if (node.valid()) cp->setToModel(node.get());
+            if (node.valid())
+            {
+                cp->setToModel(node.get());
+                valueSet = true;
+            }
             
-            fc->addUpdateProperty(cp.get());
         }
         
         osg::Vec3d vec;
-        while (arguments.read("--center",vec.x(), vec.y(), vec.z())) { cp->setCenter(vec); }
-        while (arguments.read("--eye",vec.x(), vec.y(), vec.z())) { cp->setEyePoint(vec); }
-        while (arguments.read("--up",vec.x(), vec.y(), vec.z())) { cp->setUpVector(vec); }
-        while (arguments.read("--rotation-center",vec.x(), vec.y(), vec.z())) { cp->setRotationCenter(vec); }
-        while (arguments.read("--rotation-axis",vec.x(), vec.y(), vec.z())) { cp->setRotationAxis(vec); }
+        while (arguments.read("--center",vec.x(), vec.y(), vec.z())) { cp->setCenter(vec); valueSet = true; }
+        while (arguments.read("--eye",vec.x(), vec.y(), vec.z())) { cp->setEyePoint(vec); valueSet = true; }
+        while (arguments.read("--up",vec.x(), vec.y(), vec.z())) { cp->setUpVector(vec); valueSet = true; }
+        while (arguments.read("--rotation-center",vec.x(), vec.y(), vec.z())) { cp->setRotationCenter(vec); valueSet = true; }
+        while (arguments.read("--rotation-axis",vec.x(), vec.y(), vec.z())) { cp->setRotationAxis(vec); valueSet = true; }
 
         double speed;
-        while (arguments.read("--rotation-speed",speed)) { cp->setRotationSpeed(speed); }
-        
+        while (arguments.read("--rotation-speed",speed)) { cp->setRotationSpeed(speed); valueSet = true; }
+
+        if (newCameraProperty && valueSet)
+        {
+            fc->addUpdateProperty(cp.get());
+        }
     }
 
     std::string stereoMode;
@@ -195,6 +209,14 @@ int main( int argc, char **argv )
 
     unsigned int height = 512;
     if (arguments.read("--height",height)) fc->setHeight(height);
+
+
+    float value;
+    if (arguments.read("--screen-width",value)) fc->setScreenWidth(value);
+    if (arguments.read("--screen-height",value)) fc->setScreenHeight(value);
+    if (arguments.read("--screen-distance",value)) fc->setScreenDistance(value);
+
+    
 
     unsigned int samples = 0;
     if (arguments.read("--samples",samples)) fc->setSamples(samples);
@@ -324,6 +346,11 @@ int main( int argc, char **argv )
         ds->setStereoMode(stereoMode);
         ds->setStereo(fc->getStereoMode()!=gsc::CaptureSettings::OFF);
 
+        if (fc->getScreenWidth()!=0.0) ds->setScreenWidth(fc->getScreenWidth());
+        if (fc->getScreenHeight()!=0.0) ds->setScreenHeight(fc->getScreenHeight());
+        if (fc->getScreenDistance()!=0.0) ds->setScreenDistance(fc->getScreenDistance());
+
+        
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds.get());
 
         traits->readDISPLAY();

@@ -7,6 +7,9 @@ CaptureSettings::CaptureSettings():
     _offscreen(false),
     _width(1024),
     _height(512),
+    _screenWidth(0.0),
+    _screenHeight(0.0),
+    _screenDistance(0.0),
     _samples(0),
     _sampleBuffers(0),
     _frameRate(60.0),
@@ -25,6 +28,9 @@ CaptureSettings::CaptureSettings(const CaptureSettings& cs, const osg::CopyOp& c
     _offscreen(cs._offscreen),
     _width(cs._width),
     _height(cs._height),
+    _screenWidth(cs._screenWidth),
+    _screenHeight(cs._screenHeight),
+    _screenDistance(cs._screenDistance),
     _samples(cs._samples),
     _sampleBuffers(cs._sampleBuffers),
     _frameRate(cs._frameRate),
@@ -155,6 +161,11 @@ REGISTER_OBJECT_WRAPPER( gsc_CaptureSettings,
 
     ADD_UINT_SERIALIZER( Width, 1024 );
     ADD_UINT_SERIALIZER( Height, 512 );
+
+    ADD_FLOAT_SERIALIZER( ScreenWidth, 0.0 );
+    ADD_FLOAT_SERIALIZER( ScreenHeight, 0.0 );
+    ADD_FLOAT_SERIALIZER( ScreenDistance, 0.0 );
+    
     ADD_UINT_SERIALIZER( Samples, 0 );
     ADD_UINT_SERIALIZER( SampleBuffers, 0 );
     

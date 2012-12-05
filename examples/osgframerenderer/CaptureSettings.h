@@ -47,7 +47,16 @@ public:
 
     void setHeight(unsigned int height) { _height = height; }
     unsigned int getHeight() const { return _height; }
-    
+
+    void setScreenWidth(float width) { _screenWidth = width; }
+    float getScreenWidth() const { return _screenWidth; }
+
+    void setScreenHeight(float height) { _screenHeight = height; }
+    float getScreenHeight() const { return _screenHeight; }
+
+    void setScreenDistance(float distance) { _screenDistance = distance; }
+    float getScreenDistance() const { return _screenDistance; }
+
     void setSamples(unsigned int s) { _samples = s; }
     unsigned int getSamples() const { return _samples; }
 
@@ -103,6 +112,11 @@ protected:
     
     unsigned int                        _width;
     unsigned int                        _height;
+    
+    float                               _screenWidth;
+    float                               _screenHeight;
+    float                               _screenDistance;
+
     unsigned int                        _samples;
     unsigned int                        _sampleBuffers;
     

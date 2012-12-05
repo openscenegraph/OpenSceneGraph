@@ -130,13 +130,16 @@ void OSXCoreVideoTexture::setImage(osg::Image* image)
 void OSXCoreVideoTexture::apply(osg::State& state) const {
     if (!_image.valid())
         return;
-        
+    
     if (!_adapter.valid()) {
-        OSXQTKitVideo* m = dynamic_cast<OSXQTKitVideo*>(_image.get());
-        if ((m) && (m->getCoreVideoAdapter()))
-            _adapter = m->getCoreVideoAdapter();
-        else 
-            _adapter = new OSXCoreVideoAdapter(state, _image.get());
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        if (!_adapter.valid()) {
+            OSXQTKitVideo* m = dynamic_cast<OSXQTKitVideo*>(_image.get());
+            if ((m) && (m->getCoreVideoAdapter()))
+                _adapter = m->getCoreVideoAdapter();
+            else 
+                _adapter = new OSXCoreVideoAdapter(state, _image.get());
+        }
     }
     
     _adapter->getFrame();

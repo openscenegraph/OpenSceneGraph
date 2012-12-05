@@ -10,8 +10,6 @@
 
 
 
-
-
 #include <osg/Timer>
 #include "../QTKit/VideoFrameDispatcher.h"
 
@@ -117,3 +115,4 @@ private:
     double _framerate;
  
 };
+

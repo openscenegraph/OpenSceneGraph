@@ -11,14 +11,23 @@
  * OpenSceneGraph Public License for more details.
 */
 
+
+#import "TargetConditionals.h" 
+#if (TARGET_OS_IPHONE)
+#define COREVIDEO_TEXTURE_TARGET GL_TEXTURE_2D
+#else
+#define COREVIDEO_TEXTURE_TARGET GL_TEXTURE_RECTANGLE_EXT
+#endif
+
 #include "OSXAVFoundationCoreVideoTexture.h"
 #include "OSXAVFoundationVideo.H"
 #include <CoreVideo/CoreVideo.h>
 
 
+
 OSXAVFoundationCoreVideoTexture::OSXAVFoundationCoreVideoTexture()
     : osg::Texture()
-    , _textureTarget(GL_TEXTURE_RECTANGLE_EXT)
+    , _textureTarget(COREVIDEO_TEXTURE_TARGET)
     , _textureWidth(0)
     , _textureHeight(0)
     , _inited(false)
@@ -28,7 +37,7 @@ OSXAVFoundationCoreVideoTexture::OSXAVFoundationCoreVideoTexture()
 
 OSXAVFoundationCoreVideoTexture::OSXAVFoundationCoreVideoTexture(osg::Image* image)
     : osg::Texture()
-    , _textureTarget(GL_TEXTURE_RECTANGLE_EXT)
+    , _textureTarget(COREVIDEO_TEXTURE_TARGET)
     , _textureWidth(0)
     , _textureHeight(0)
     , _inited(false)

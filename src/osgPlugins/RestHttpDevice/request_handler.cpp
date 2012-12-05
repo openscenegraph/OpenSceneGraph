@@ -68,6 +68,10 @@ void request_handler::handle_request(const request& req, reply& rep)
     }
     return;
   }
+  else
+  {
+    OSG_INFO << "RestHttpDevice :: serving file " << full_path << std::endl;
+  }
 
   // Fill out the reply to be sent to the client.
   rep.status = reply::ok;

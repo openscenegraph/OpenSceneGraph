@@ -13,8 +13,10 @@
 
 #include "RestHttpDevice.hpp"
 #include <OpenThreads/Thread>
+#include <osg/ValueObject>
 #include <osgDB/FileUtils>
 #include "request_handler.hpp"
+
 
 
 class StandardRequestHandler : public RestHttpDevice::RequestHandler {
@@ -22,13 +24,20 @@ public:
     StandardRequestHandler() : RestHttpDevice::RequestHandler("") {}
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
-        OSG_NOTICE << "RestHttpDevice :: unhandled request: " << full_request_path << std::endl;
+        OSG_INFO << "RestHttpDevice :: handling request " << full_request_path << " as user-event" << std::endl;
+        
+        osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter();
+        event->setEventType(osgGA::GUIEventAdapter::USER);
+        event->setName(full_request_path);
+        event->setTime(getDevice()->getEventQueue()->getTime());
+        
         for(Arguments::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         {
-            OSG_NOTICE << "RestHttpDevice ::    " << i->first << ": " << i->second << std::endl;
+            event->setUserValue(i->first,i->second);
         }
+        getDevice()->getEventQueue()->addEvent(event.get());
         
-        return false;
+        return sendOkReply(reply);
     }
     
     virtual void describeTo(std::ostream& out) const
@@ -138,7 +147,10 @@ public:
             double time_stamp = getTimeStamp(arguments, reply);
             
             if (getDevice()->isNewer(time_stamp))
-                getDevice()->getEventQueue()->mouseMotion(x,y, getLocalTime(time_stamp));
+            {
+                //getDevice()->getEventQueue()->mouseMotion(x,y, getLocalTime(time_stamp));
+                getDevice()->setTargetMousePosition(x,y);
+            }
         }
         
         return sendOkReply(reply);
@@ -182,6 +194,7 @@ public:
             && getIntArgument(arguments, "y", reply, y)
             && getIntArgument(arguments, "button", reply, button))
         {
+            getDevice()->setTargetMousePosition(x,y, true);
             switch (_mode) {
                 case PRESS:
                     getDevice()->getEventQueue()->mouseButtonPress(x,y, button, getLocalTime(arguments, reply));
@@ -253,7 +266,9 @@ RestHttpDevice::RestHttpDevice(const std::string& listening_address, const std::
     , _firstEventRemoteTimeStamp(-1)
     , _lastEventRemoteTimeStamp(0)
 {
-    OSG_INFO << "RestHttpDevice :: listening on " << listening_address << ":" << listening_port << ", document root: " << doc_root << std::endl;
+    setCapabilities(RECEIVE_EVENTS);
+    
+    OSG_NOTICE << "RestHttpDevice :: listening on " << listening_address << ":" << listening_port << ", document root: " << doc_root << std::endl;
     
     if (osgDB::findDataFile(doc_root).empty())
     {

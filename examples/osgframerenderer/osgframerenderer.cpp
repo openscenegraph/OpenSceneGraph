@@ -1,4 +1,5 @@
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
@@ -406,6 +407,30 @@ int main( int argc, char **argv )
         viewer.getCamera()->setDrawBuffer(buffer);
         viewer.getCamera()->setReadBuffer(buffer);
     }
+
+    std::string outputPath = osgDB::getFilePath(fc->getOutputFileName());
+    if (!outputPath.empty())
+    {
+        osgDB::FileType type = osgDB::fileType(outputPath);
+        switch(type)
+        {
+            case(osgDB::FILE_NOT_FOUND):
+                if (!osgDB::makeDirectory(outputPath))
+                {
+                    OSG_NOTICE<<"Error: could not create directory ["<<outputPath<<"]."<<std::endl;                    
+                    return 1;
+                }
+                OSG_NOTICE<<"Created directory ["<<outputPath<<"]."<<std::endl;
+                break;
+            case(osgDB::REGULAR_FILE):
+                OSG_NOTICE<<"Error: filepath for output files is regular file, not a directory as required."<<std::endl;
+                return 1;
+            case(osgDB::DIRECTORY):
+                OSG_NOTICE<<"Valid path["<<outputPath<<"] provided for output files."<<std::endl;
+                break;
+        }
+    }
+    
 
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     viewer.realize();

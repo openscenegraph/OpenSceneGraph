@@ -30,6 +30,7 @@ ELSE()
             AutoDiscoveryBonjourImpl.h
             AutoDiscoveryBonjourImpl.mm
         )
+        SET(TARGET_LIBRARIES_VARS COCOA_LIBRARY )
     ENDIF(APPLE)
 ENDIF(WIN32)
 

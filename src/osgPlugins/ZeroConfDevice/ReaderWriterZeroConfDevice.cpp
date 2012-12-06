@@ -47,7 +47,7 @@ public:
         if (event.getName() == "/zeroconf/advertise")
         {
             std::string type;
-            unsigned int port;
+            unsigned int port = 0;
             event.getUserValue("type",type);
             event.getUserValue("port", port);
             if (type.empty() || (port == 0))

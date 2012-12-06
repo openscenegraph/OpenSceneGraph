@@ -627,7 +627,7 @@ int main( int argc, char **argv )
     viewer.addEventHandler(peh.get());
 
     // add the screen capture handler
-    std::string screenCaptureFilename = "screen_short.jpg";
+    std::string screenCaptureFilename = "screen_shot.jpg";
     while(arguments.read("--screenshot", screenCaptureFilename)) {}
     osg::ref_ptr<osgViewer::ScreenCaptureHandler::WriteToFile> writeFile = new osgViewer::ScreenCaptureHandler::WriteToFile(
         osgDB::getNameLessExtension(screenCaptureFilename),

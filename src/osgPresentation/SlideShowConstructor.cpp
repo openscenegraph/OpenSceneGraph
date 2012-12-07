@@ -248,6 +248,7 @@ void SlideShowConstructor::createPresentation()
     _presentationSwitch->setName(std::string("Presentation_")+_presentationName);
 
     _root->addChild(_presentationSwitch.get());
+    _root->setName(std::string("Presentation_")+_presentationName);
 
     osg::Vec3 slideCenter = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.5f);
 

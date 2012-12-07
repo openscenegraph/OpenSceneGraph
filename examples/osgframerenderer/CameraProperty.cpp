@@ -6,17 +6,24 @@ void CameraProperty::setToModel(const osg::Node* node)
 {
     osg::BoundingSphere bs = node->getBound();
 
-    double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
-    double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
-    double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
+    double dist = osg::DisplaySettings::instance()->getScreenDistance();
+
+    OSG_NOTICE<<"Node name "<<node->getName()<<std::endl;
     
-    double vfov = atan2(screenHeight/2.0,screenDistance)*2.0;
-    double hfov = atan2(screenWidth/2.0,screenDistance)*2.0;
-    double viewAngle = vfov<hfov ? vfov : hfov;
+#if 1
+    if (node->getName().find("Presentation")==std::string::npos)
+    {
+        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
 
-    double dist = bs.radius() / sin(viewAngle*0.5);
+        double vfov = atan2(screenHeight/2.0,screenDistance)*2.0;
+        double hfov = atan2(screenWidth/2.0,screenDistance)*2.0;
+        double viewAngle = vfov<hfov ? vfov : hfov;
 
-    // dist = osg::DisplaySettings::instance()->getScreenDistance();
+        dist = bs.radius() / sin(viewAngle*0.5);
+    }
+#endif
 
     _center = bs.center();
     _eye = _center - osg::Vec3d(0.0, dist, 0.0);

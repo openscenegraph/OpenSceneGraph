@@ -472,7 +472,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             osg::Vec3 localPosition = computePositionInModelCoords(_titlePositionData);
 
             osgText::Text* text = new osgText::Text;
-            text->setFont(_titleFontData.font);
+            text->setFont(osgText::readFontFile(_titleFontData.font, _options));
             text->setColor(_titleFontData.color);
             text->setCharacterSize(_titleFontData.characterSize*_slideHeight);
             text->setFontResolution(110,120);
@@ -691,7 +691,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
     osg::Vec3 localPosition = computePositionInModelCoords(positionData);
 
-    text->setFont(fontData.font);
+    text->setFont(osgText::readFontFile(fontData.font, _options));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);
@@ -739,7 +739,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     osgText::Text* text = new osgText::Text;
 
-    text->setFont(fontData.font);
+    text->setFont(osgText::readFontFile(fontData.font, _options));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);

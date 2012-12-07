@@ -64,6 +64,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         /** Return true if ReaderWriter accepts specified file extension.*/
         virtual bool acceptsExtension(const std::string& /*extension*/) const;
+        
+        virtual bool acceptsProtocol(const std::string& protocol) const;
 
         /// Bit mask for setting up which feature types are available for read and/or write
         enum Features

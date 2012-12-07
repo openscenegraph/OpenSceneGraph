@@ -1224,11 +1224,15 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
     }
 
-    //If the filename contains a server address and wasn't loaded by any of the plugins, try to use the CURL plugin
-    //to download the file and use the stream reading functionality of the plugins to load the file
+    //If the filename contains a server address and wasn't loaded by any of the plugins, try to find a plugin which supports the server
+    //protocol and supports wildcards. If not successfully use curl as a last fallback
     if (containsServerAddress(readFunctor._filename))
     {
-        ReaderWriter* rw = getReaderWriterForExtension("curl");
+        ReaderWriter* rw = getReaderWriterForProtocolAndExtension(
+            osgDB::getServerProtocol(readFunctor._filename),
+            osgDB::getFileExtension(readFunctor._filename)
+        );
+                
         if (rw)
         {
             return readFunctor.doRead(*rw);
@@ -1777,3 +1781,34 @@ bool Registry::isProtocolRegistered(const std::string& protocol)
     return (_registeredProtocols.find( convertToLowerCase(protocol) ) != _registeredProtocols.end());
 }
 
+void Registry::getReaderWriterListForProtocol(const std::string& protocol, ReaderWriterList& results) const
+{
+    for(ReaderWriterList::const_iterator i = _rwList.begin(); i != _rwList.end(); ++i)
+    {        if ((*i)->acceptsProtocol(protocol))
+            results.push_back(*i);
+    }
+}
+
+
+ReaderWriter* Registry::getReaderWriterForProtocolAndExtension(const std::string& protocol, const std::string& extension)
+{
+    // try first the registered ReaderWriter
+    ReaderWriter* result = getReaderWriterForExtension(extension);
+    if (result->acceptsProtocol(protocol))
+        return result;
+    
+    result = NULL;
+    ReaderWriterList results;
+    getReaderWriterListForProtocol(protocol, results);
+    
+    for(ReaderWriterList::const_iterator i = results.begin(); i != results.end(); ++i)
+    {
+        // if we have a readerwriter which supports wildcards, save it as a fallback
+        if ((*i)->acceptsExtension("*"))
+            result = *i;
+        else if ((*i)->acceptsExtension(extension))
+            return *i;
+    }
+    
+    return result ? result : getReaderWriterForExtension("curl");
+}

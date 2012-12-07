@@ -176,7 +176,7 @@ class ReaderWriterZeroConf : public osgDB::ReaderWriter
                 }
             }
             
-            return ReadResult::FILE_NOT_FOUND;
+            return ReadResult::FILE_NOT_HANDLED;
         }
 private:        
         

@@ -375,6 +375,10 @@ osgDB::ReaderWriter::ReadResult EasyCurl::processResponse(CURLcode res, const st
 ReaderWriterCURL::ReaderWriterCURL()
 {
     supportsProtocol("http","Read from http port using libcurl.");
+    supportsProtocol("https","Read from https port using libcurl.");
+    supportsProtocol("ftp","Read from ftp port using libcurl.");
+    supportsProtocol("ftps","Read from ftps port using libcurl.");
+    
     supportsExtension("curl","Psuedo file extension, used to select curl plugin.");
     supportsExtension("*","Passes all read files to other plugins to handle actual model loading.");
     supportsOption("OSG_CURL_PROXY","Specify the http proxy.");

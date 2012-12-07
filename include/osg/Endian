@@ -80,6 +80,9 @@ inline void swapBytes16( char* in )
     std::swap(in[7],in[8]);
 }
 
+template<typename T>
+void swapBytes(T& t) { swapBytes(reinterpret_cast<char*>(&t), sizeof(T)); }
+
 }
 
 #endif

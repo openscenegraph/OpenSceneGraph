@@ -453,8 +453,12 @@ int main( int argc, char **argv )
     const char* p3dDevice = getenv("P3D_DEVICE");
     if (p3dDevice)
     {
-         addDeviceTo(viewer, p3dDevice);
-         
+        osgDB::StringList devices;
+        osgDB::split(p3dDevice, devices);
+        for(osgDB::StringList::iterator i = devices.begin(); i != devices.end(); ++i)
+        {
+            addDeviceTo(viewer, *i);
+        }
     }
 
 

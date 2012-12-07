@@ -41,10 +41,13 @@ bool ReaderWriter::acceptsExtension(const std::string& extension) const
 {
     // check for an exact match
     std::string lowercase_ext = convertToLowerCase(extension);
-    if (_supportedExtensions.count(lowercase_ext)!=0) return true;
+    return (_supportedExtensions.count(lowercase_ext)!=0);
+}
 
-    // if plugin supports wildcard extension then passthrough all types
-    return (_supportedExtensions.count("*")!=0);
+bool ReaderWriter::acceptsProtocol(const std::string& protocol) const
+{
+    std::string lowercase_protocol = convertToLowerCase(protocol);
+    return (_supportedProtocols.count(lowercase_protocol)!=0);
 }
 
 void ReaderWriter::supportsProtocol(const std::string& fmt, const std::string& description)

@@ -2142,7 +2142,12 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
             OSG_INFO<<"Trying server file "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
-            osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
+            
+            // get a specific readerwriter capable of handling the protocol and extension, will return a registered fallback readerwriter for extension '*'
+            osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForProtocolAndExtension(
+                osgDB::getServerProtocol(filename),
+                osgDB::getFileExtension(filename));
+                        
             if (!rw) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 
             switch(type)

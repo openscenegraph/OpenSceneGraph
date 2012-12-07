@@ -104,11 +104,6 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "HTTP Protocol Model Reader"; }
 
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"curl");
-        }
-
         virtual bool fileExists(const std::string& filename, const osgDB::Options* options) const;
 
         virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const

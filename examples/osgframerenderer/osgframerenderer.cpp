@@ -125,6 +125,27 @@ int main( int argc, char **argv )
             return 1;
         }
     }
+
+    float screenWidth = fc->getScreenWidth()!=0.0 ? fc->getScreenWidth() : osg::DisplaySettings::instance()->getScreenWidth();
+    if (arguments.read("--screen-width",screenWidth)) {}
+
+    float screenHeight = fc->getScreenHeight()!=0.0 ? fc->getScreenHeight() : osg::DisplaySettings::instance()->getScreenHeight();
+    if (arguments.read("--screen-height",screenHeight)) {}
+
+    float screenDistance = fc->getScreenDistance()!=0.0 ? fc->getScreenDistance() : osg::DisplaySettings::instance()->getScreenDistance();
+    if (arguments.read("--screen-distance",screenDistance)) {}
+
+    fc->setScreenWidth(screenWidth);
+    osg::DisplaySettings::instance()->setScreenWidth(screenWidth);
+    
+    fc->setScreenHeight(screenHeight);
+    osg::DisplaySettings::instance()->setScreenHeight(screenHeight);
+
+    fc->setScreenDistance(screenDistance);
+    osg::DisplaySettings::instance()->setScreenDistance(screenDistance);
+
+    bool useScreenSizeForProjectionMatrix = true;
+
     if (arguments.read("-i",filename)) fc->setInputFileName(filename);
     if (arguments.read("-o",filename)) fc->setOutputFileName(filename);
     if (arguments.read("-p",filename))
@@ -211,14 +232,8 @@ int main( int argc, char **argv )
     unsigned int height = 512;
     if (arguments.read("--height",height)) fc->setHeight(height);
 
-
-    float value;
-    if (arguments.read("--screen-width",value)) fc->setScreenWidth(value);
-    if (arguments.read("--screen-height",value)) fc->setScreenHeight(value);
-    if (arguments.read("--screen-distance",value)) fc->setScreenDistance(value);
-
     
-
+    
     unsigned int samples = 0;
     if (arguments.read("--samples",samples)) fc->setSamples(samples);
 
@@ -390,15 +405,32 @@ int main( int argc, char **argv )
             OSG_NOTICE<<"PixelBuffer has been created succseffully "<<traits->width<<", "<<traits->height<<std::endl;
         }
 
-        double fovy, aspectRatio, zNear, zFar;
-        viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
-
-        double newAspectRatio = double(traits->width) / double(traits->height);
-        double aspectRatioChange = newAspectRatio / aspectRatio;
-        if (aspectRatioChange != 1.0)
+        if (useScreenSizeForProjectionMatrix)
         {
-            viewer.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+            OSG_NOTICE<<"Setting projection matrix"<<std::endl;
+            
+            double vfov = osg::RadiansToDegrees(atan2(screenHeight/2.0f,screenDistance)*2.0);
+            // double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
+
+            viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, screenWidth/screenHeight, 0.1, 1000.0);
         }
+        else
+        {
+            double fovy, aspectRatio, zNear, zFar;
+            viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
+
+            double newAspectRatio = double(traits->width) / double(traits->height);
+            double aspectRatioChange = newAspectRatio / aspectRatio;
+            if (aspectRatioChange != 1.0)
+            {
+                viewer.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+            }
+        }
+
+        // set up stereo masks
+        viewer.getCamera()->setCullMask(0xffffffff);
+        viewer.getCamera()->setCullMaskLeft(0x00000001);
+        viewer.getCamera()->setCullMaskRight(0x00000002);
 
         viewer.getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 

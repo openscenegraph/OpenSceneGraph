@@ -4,11 +4,22 @@ using namespace gsc;
 
 void CameraProperty::setToModel(const osg::Node* node)
 {
-    double distanceRatio = 3.5;
     osg::BoundingSphere bs = node->getBound();
+
+    double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+    double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+    double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
     
+    double vfov = atan2(screenHeight/2.0,screenDistance)*2.0;
+    double hfov = atan2(screenWidth/2.0,screenDistance)*2.0;
+    double viewAngle = vfov<hfov ? vfov : hfov;
+
+    double dist = bs.radius() / sin(viewAngle*0.5);
+
+    // dist = osg::DisplaySettings::instance()->getScreenDistance();
+
     _center = bs.center();
-    _eye = _center - osg::Vec3d(0.0, bs.radius()*distanceRatio, 0.0);
+    _eye = _center - osg::Vec3d(0.0, dist, 0.0);
     _up = osg::Vec3d(0.0, 0.0, 1.0);
     
     _rotationCenter = _center;

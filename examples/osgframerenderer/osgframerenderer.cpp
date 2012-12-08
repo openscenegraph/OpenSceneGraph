@@ -17,7 +17,8 @@
 
 struct ScreenShot : public osg::Camera::DrawCallback
 {
-    ScreenShot() {}
+    ScreenShot(bool flip):
+        _flip(flip) {}
 
     virtual void operator () (osg::RenderInfo& renderInfo) const
     {
@@ -48,6 +49,8 @@ struct ScreenShot : public osg::Camera::DrawCallback
             image->readPixels(viewport->x(),viewport->y(),viewport->width(),viewport->height(),
                               GL_RGB, GL_UNSIGNED_BYTE, 1);
 
+            if (_flip) image->flipVertical();
+
             osgDB::writeImageFile(*image, outputFileName);
         }
         
@@ -55,8 +58,9 @@ struct ScreenShot : public osg::Camera::DrawCallback
 
     typedef std::map<const osg::Camera*, unsigned int> CameraNumMap;
 
-    osg::ref_ptr<gsc::CaptureSettings>   _frameCapture;
-    CameraNumMap _cameraNumMap;
+    bool                                        _flip;
+    osg::ref_ptr<gsc::CaptureSettings>          _frameCapture;
+    CameraNumMap                                _cameraNumMap;
 };
 
 int main( int argc, char **argv )
@@ -225,6 +229,9 @@ int main( int argc, char **argv )
 
     if (arguments.read("--offscreen")) fc->setOffscreen(true);
     if (arguments.read("--screen")) fc->setOffscreen(false);
+
+    if (arguments.read("--flip")) fc->setOutputImageFlip(true);
+    if (arguments.read("--no-flip")) fc->setOutputImageFlip(false);
 
     unsigned int width = 1024;
     if (arguments.read("--width",width)) fc->setWidth(width);
@@ -468,7 +475,7 @@ int main( int argc, char **argv )
     viewer.realize();
 
     // set up screen shot
-    osg::ref_ptr<ScreenShot> screenShot = new ScreenShot;
+    osg::ref_ptr<ScreenShot> screenShot = new ScreenShot(fc->getOutputImageFlip());;
     {
 
         osgViewer::Viewer::Cameras cameras;

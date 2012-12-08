@@ -42,6 +42,9 @@ public:
     void setOffscreen(bool o) { _offscreen = o; }
     bool getOffscreen() const { return _offscreen; }
 
+    void setOutputImageFlip(bool flip) { _outputImageFlip = flip; }
+    bool getOutputImageFlip() const { return _outputImageFlip; }
+
     void setWidth(unsigned int width) { _width = width; }
     unsigned int getWidth() const { return _width; }
 
@@ -109,6 +112,7 @@ protected:
 
     StereoMode                          _stereoMode;
     bool                                _offscreen;
+    bool                                _outputImageFlip;
     
     unsigned int                        _width;
     unsigned int                        _height;

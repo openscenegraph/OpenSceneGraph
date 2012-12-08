@@ -5,6 +5,7 @@ using namespace gsc;
 CaptureSettings::CaptureSettings():
     _stereoMode(OFF),
     _offscreen(false),
+    _outputImageFlip(false),
     _width(1024),
     _height(512),
     _screenWidth(0.0),
@@ -26,6 +27,7 @@ CaptureSettings::CaptureSettings(const CaptureSettings& cs, const osg::CopyOp& c
     _outputExtension(cs._outputExtension),
     _stereoMode(cs._stereoMode),
     _offscreen(cs._offscreen),
+    _outputImageFlip(cs._outputImageFlip),
     _width(cs._width),
     _height(cs._height),
     _screenWidth(cs._screenWidth),
@@ -158,6 +160,7 @@ REGISTER_OBJECT_WRAPPER( gsc_CaptureSettings,
     END_ENUM_SERIALIZER();  // _renderTargetImplementation
 
     ADD_BOOL_SERIALIZER( Offscreen, false );
+    ADD_BOOL_SERIALIZER( OutputImageFlip, false );
 
     ADD_UINT_SERIALIZER( Width, 1024 );
     ADD_UINT_SERIALIZER( Height, 512 );

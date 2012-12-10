@@ -51,6 +51,10 @@ void CameraProperty::update(osgViewer::View* view)
     }
     
     camera->setViewMatrix( matrix );
+
+    // set the fusion distance up so that the left and right eye images are co-incedent on the image plane at the center of ration.
+    view->setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,(_center-_eye).length());
+    // view->setFusionDistance(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE, 1.0);
 }
 
 

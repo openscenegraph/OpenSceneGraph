@@ -112,7 +112,16 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
             osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
             geode->addDrawable(geometry.get());
+
+            osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+            stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+            geometry->setStateSet(stateset.get());
             
+            osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+            geometry->setColorArray(colours.get());
+            geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+            colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+
             osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
             geometry->setVertexArray(vertices.get());
 

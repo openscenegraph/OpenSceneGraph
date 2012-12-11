@@ -643,6 +643,31 @@ struct ReplaceAlphaWithLuminanceOperator
 
 osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, const osg::Vec4& colour)
 {
+    GLenum requiredPixelFormat = image->getPixelFormat();
+    switch(op)
+    {
+        case (MODULATE_ALPHA_BY_LUMINANCE):
+        case (MODULATE_ALPHA_BY_COLOR):
+        case (REPLACE_ALPHA_WITH_LUMINANCE):
+            if (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_BGR) requiredPixelFormat = GL_RGBA;
+            break;
+        case (REPLACE_RGB_WITH_LUMINANCE):
+            if (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_BGR) requiredPixelFormat = GL_LUMINANCE;
+            break;
+        default:
+            break;
+    }
+
+    if (requiredPixelFormat!=image->getPixelFormat())
+    {
+        osg::Image* newImage = new osg::Image;
+        newImage->allocateImage(image->s(), image->t(), image->r(), requiredPixelFormat, image->getDataType());
+        osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
+                    newImage, 0, 0, 0, false);
+
+        image = newImage;
+    }
+
     switch(op)
     {
         case (MODULATE_ALPHA_BY_LUMINANCE):
@@ -660,29 +685,14 @@ osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, cons
         case (REPLACE_ALPHA_WITH_LUMINANCE):
         {
             OSG_NOTICE<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
-            if (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_BGR)
-            {
-                osg::Image* newImage = new osg::Image;
-                newImage->allocateImage(image->s(), image->t(), image->r(), GL_RGBA, image->getDataType());
-                osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
-                            newImage, 0, 0, 0, false);
-                osg::modifyImage(newImage, ReplaceAlphaWithLuminanceOperator());
-                return newImage;
-            }
-            else
-            {
-                osg::modifyImage(image, ReplaceAlphaWithLuminanceOperator());
-            }
+            osg::modifyImage(image, ReplaceAlphaWithLuminanceOperator());
             return image;
         }
         case (REPLACE_RGB_WITH_LUMINANCE):
         {
             OSG_NOTICE<<"doing conversion REPLACE_RGB_WITH_LUMINANCE"<<std::endl;
-            osg::Image* newImage = new osg::Image;
-            newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
-            osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
-                        newImage, 0, 0, 0, false);
-            return newImage;
+            // no work here required to be done as it'll already be done by copyImage above.
+            return image;
         }
         default:
             return image;

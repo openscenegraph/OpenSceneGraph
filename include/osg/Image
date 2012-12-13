@@ -413,10 +413,10 @@ class OSG_EXPORT Image : public BufferData
         void setPixelBufferObject(PixelBufferObject* buffer) { setBufferObject(buffer); }
 
         /** Get the PixelBufferObject.*/
-        PixelBufferObject* getPixelBufferObject() { return dynamic_cast<PixelBufferObject*>(_bufferObject.get()); }
+        PixelBufferObject* getPixelBufferObject() { return dynamic_cast<PixelBufferObject*>(getBufferObject()); }
 
         /** Get the const PixelBufferObject.*/
-        const PixelBufferObject* getPixelBufferObject() const { return dynamic_cast<const PixelBufferObject*>(_bufferObject.get()); }
+        const PixelBufferObject* getPixelBufferObject() const { return dynamic_cast<const PixelBufferObject*>(getBufferObject()); }
 
         /** Return whether the update(NodeVisitor* nv) should be required on each frame to enable proper working of osg::Image.*/
         virtual bool requiresUpdateCall() const { return false; }
@@ -491,8 +491,6 @@ class OSG_EXPORT Image : public BufferData
         void setData(unsigned char* data,AllocationMode allocationMode);
 
         MipmapDataType _mipmapData;
-
-        ref_ptr<PixelBufferObject> _bufferObject;
         
         DimensionsChangedCallbackVector _dimensionsChangedCallbacks;
 };

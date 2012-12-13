@@ -7,6 +7,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgDB/Registry>
 
 struct TrkHeader
@@ -34,6 +35,147 @@ struct TrkHeader
     int                 n_count;
     int                 version;
     int                 hdr_size;
+};
+
+const char vert_shader_str[] =
+"void main(void)\n"
+"{\n"
+"    vec4 eye = gl_ModelViewMatrixInverse * vec4(0.0,0.0,0.0,1.0);\n"
+"    vec3 rayVector = normalize(gl_Vertex.xyz-eye.xyz);\n"
+"\n"
+"    vec3 dv = gl_Normal;\n"
+"    float d = dot(rayVector, dv);\n"
+"    float d2 = abs(d);//*d;\n"
+"    const float base=1.5;\n"
+"    float l = (base-d2)/base;\n"
+"    float half_l = l*0.5;\n"
+"\n"
+"    gl_FrontColor = vec4( (dv.x+1.0)*half_l, (dv.y+1.0)*half_l, (dv.z+1.0)*half_l, 1.0);\n"
+"    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+"}\n";
+
+
+struct AssignDirectionColour
+{
+    AssignDirectionColour() {}
+
+    void assign(osg::Geometry* geometry)
+    {
+        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if (!vertices) return;
+
+        // allocate colours
+        osg::ref_ptr<osg::Vec4Array> colours = dynamic_cast<osg::Vec4Array*>(geometry->getColorArray());
+        if (!colours)
+        {
+            colours = new osg::Vec4Array;
+            geometry->setColorArray(colours);
+        }
+        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        colours->resize(vertices->size(), osg::Vec4(0.0,0.0,0.0,0.0));
+#if 1        
+        // allocate normals
+        osg::ref_ptr<osg::Vec3Array> normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
+        if (!normals)
+        {
+            normals = new osg::Vec3Array;
+            geometry->setNormalArray(normals);
+        }
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        normals->resize(vertices->size(), osg::Vec3(0.0,0.0,0.0));
+#endif
+
+        typedef std::vector<float> Divisors;
+        Divisors divisors;
+        divisors.resize(vertices->size(), 0.0f);
+
+        for(unsigned int i=0; i<geometry->getNumPrimitiveSets(); ++i)
+        {
+            osg::PrimitiveSet* pset = geometry->getPrimitiveSet(i);
+            if (pset->getMode()==GL_LINES)
+            {
+                for(unsigned int pi=0; pi<pset->getNumIndices()-1; pi+=2)
+                {
+                    unsigned int vi_0 = pset->index(pi);
+                    unsigned int vi_1 = pset->index(pi+1);
+                    osg::Vec3& v0 = (*vertices)[vi_0];
+                    osg::Vec3& v1 = (*vertices)[vi_1];
+
+                    osg::Vec3 dv(v1-v0);
+                    dv.normalize();
+
+                    // assign colours
+                    osg::Vec4& c0 = (*colours)[vi_0];
+                    osg::Vec4& c1 = (*colours)[vi_1];
+
+                    osg::Vec4 colour( (dv.x()+1.0f/2.0f), (dv.y()+1.0f/2.0f), (dv.z()+1.0f/2.0f), 1.0f );
+
+                    if (divisors[vi_0]==0.0f) c0 = colour;
+                    else c0 += colour;
+
+                    if (divisors[vi_1]==0.0f) c1 = colour;
+                    else c1 += colour;
+
+                    // assign normals
+                    osg::Vec3& n0 = (*normals)[vi_0];
+                    osg::Vec3& n1 = (*normals)[vi_1];
+
+#if 1
+                    if (divisors[vi_0]==0.0f) n0 = dv;
+                    else n0 += dv;
+
+                    if (divisors[vi_1]==0.0f) n1 = dv;
+                    else n1 += dv;
+#else
+                    float len_xy = sqrtf(dv.x()*dv.x() + dv.y()*dv.y());
+                    osg::Vec3 normal(0.0f, 0.0f, 0.0f);
+                    if (len_xy!=0.0)
+                    {
+                        normal.set((-dv.x()/len_xy)*dv.z(), (-dv.y()/len_xy)*dv.z(), len_xy);
+                    }
+                    else
+                    {
+                        normal.set(1.0f, 0.0f, 0.0f);
+                    }
+
+                    if (divisors[vi_0]==0.0f) n0 = normal;
+                    else n0 += normal;
+
+                    if (divisors[vi_1]==0.0f) n1 = normal;
+                    else n1 += normal;
+#endif
+                    
+                    divisors[vi_0] += 1.0f;
+                    divisors[vi_1] += 1.0f;
+                }
+            }            
+        }
+
+        for(unsigned int vi=0; vi<vertices->size(); ++vi)
+        {
+            if (divisors[vi]>0.0f)
+            {
+                (*colours)[vi] /= divisors[vi];
+                (*normals)[vi].normalize();
+                
+            }
+        }
+
+        std::string vertexShaderFile("track.vert");
+        
+        osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+
+        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readShaderFile(osg::Shader::VERTEX, vertexShaderFile);
+        if (!vertexShader)
+        {
+            vertexShader = new osg::Shader(osg::Shader::VERTEX, vert_shader_str);
+        }
+
+        program->addShader(vertexShader);
+
+        stateset->setAttribute(program.get());
+    }
 };
 
 
@@ -112,11 +254,11 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
             osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
             geode->addDrawable(geometry.get());
-
+#if 0
             osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
             stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
             geometry->setStateSet(stateset.get());
-            
+#endif       
             osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
             geometry->setColorArray(colours.get());
             geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
@@ -183,6 +325,9 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
                 OSG_NOTICE<<"Error on reading track file."<<std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;
             }
+
+            AssignDirectionColour colourer;
+            colourer.assign(geometry.get());
 
             return geode.release();
         }

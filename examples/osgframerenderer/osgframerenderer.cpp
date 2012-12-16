@@ -359,15 +359,12 @@ int main( int argc, char **argv )
     {
         osg::ref_ptr<osg::DisplaySettings> ds = new osg::DisplaySettings;
 
-        osg::DisplaySettings::StereoMode stereoMode = osg::DisplaySettings::HORIZONTAL_SPLIT;
-        switch(fc->getStereoMode())
-        {
-            case(gsc::CaptureSettings::HORIZONTAL_SPLIT): stereoMode = osg::DisplaySettings::HORIZONTAL_SPLIT; break;
-            case(gsc::CaptureSettings::VERTICAL_SPLIT): stereoMode = osg::DisplaySettings::VERTICAL_SPLIT; break;
-            default: break;
-        }
+        bool stereo = fc->getStereoMode()!=gsc::CaptureSettings::OFF;
+        osg::DisplaySettings::StereoMode stereoMode = fc->getStereoMode()==gsc::CaptureSettings::VERTICAL_SPLIT ? osg::DisplaySettings::VERTICAL_SPLIT : osg::DisplaySettings::HORIZONTAL_SPLIT;
+        double fovx_multiple = fc->getStereoMode()==gsc::CaptureSettings::HORIZONTAL_SPLIT ? 2.0 : 1;
+        double fovy_multiple = fc->getStereoMode()==gsc::CaptureSettings::VERTICAL_SPLIT ? 2.0 : 1;
         ds->setStereoMode(stereoMode);
-        ds->setStereo(fc->getStereoMode()!=gsc::CaptureSettings::OFF);
+        ds->setStereo(stereo);
 
         if (fc->getScreenWidth()!=0.0) ds->setScreenWidth(fc->getScreenWidth());
         if (fc->getScreenHeight()!=0.0) ds->setScreenHeight(fc->getScreenHeight());
@@ -419,7 +416,7 @@ int main( int argc, char **argv )
             double vfov = osg::RadiansToDegrees(atan2(screenHeight/2.0f,screenDistance)*2.0);
             // double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
 
-            viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, screenWidth/screenHeight, 0.1, 1000.0);
+            viewer.getCamera()->setProjectionMatrixAsPerspective( vfov*fovy_multiple, (screenWidth/screenHeight)*fovx_multiple, 0.1, 1000.0);
         }
         else
         {
@@ -430,7 +427,7 @@ int main( int argc, char **argv )
             double aspectRatioChange = newAspectRatio / aspectRatio;
             if (aspectRatioChange != 1.0)
             {
-                viewer.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+                viewer.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(fovx_multiple/aspectRatioChange,fovy_multiple,1.0);
             }
         }
 

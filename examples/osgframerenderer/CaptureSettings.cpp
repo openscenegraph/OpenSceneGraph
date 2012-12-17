@@ -157,7 +157,7 @@ REGISTER_OBJECT_WRAPPER( gsc_CaptureSettings,
         ADD_ENUM_VALUE( OFF );
         ADD_ENUM_VALUE( HORIZONTAL_SPLIT );
         ADD_ENUM_VALUE( VERTICAL_SPLIT );
-    END_ENUM_SERIALIZER();  // _renderTargetImplementation
+    END_ENUM_SERIALIZER();
 
     ADD_BOOL_SERIALIZER( Offscreen, false );
     ADD_BOOL_SERIALIZER( OutputImageFlip, false );
@@ -168,6 +168,11 @@ REGISTER_OBJECT_WRAPPER( gsc_CaptureSettings,
     ADD_FLOAT_SERIALIZER( ScreenWidth, 0.0 );
     ADD_FLOAT_SERIALIZER( ScreenHeight, 0.0 );
     ADD_FLOAT_SERIALIZER( ScreenDistance, 0.0 );
+
+    BEGIN_ENUM_SERIALIZER( PixelFormat, RGB );
+        ADD_ENUM_VALUE( RGB );
+        ADD_ENUM_VALUE( RGBA );
+    END_ENUM_SERIALIZER();
     
     ADD_UINT_SERIALIZER( Samples, 0 );
     ADD_UINT_SERIALIZER( SampleBuffers, 0 );

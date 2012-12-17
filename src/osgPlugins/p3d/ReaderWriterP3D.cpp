@@ -41,15 +41,15 @@ class ReaderWriterP3DXML : public osgDB::ReaderWriter
 public:
     ReaderWriterP3DXML()
     {
-        _colorMap["WHITE"]  .set(1.0f,1.0f,1.0f,1.0f);
-        _colorMap["BLACK"]  .set(0.0f,0.0f,0.0f,1.0f);
-        _colorMap["PURPLE"] .set(1.0f,0.0f,1.0f,1.0f);
-        _colorMap["BLUE"]   .set(0.0f,0.0f,1.0f,1.0f);
-        _colorMap["RED"]    .set(1.0f,0.0f,0.0f,1.0f);
-        _colorMap["CYAN"]   .set(0.0f,1.0f,1.0f,1.0f);
-        _colorMap["YELLOW"] .set(1.0f,1.0f,0.0f,1.0f);
-        _colorMap["GREEN"]  .set(0.0f,1.0f,0.0f,1.0f);
-        _colorMap["SKY"]    .set(0.2f, 0.2f, 0.4f, 1.0f);
+        _colorMap["WHITE"]  .set(1.0f,1.0f,1.0f,0.0f);
+        _colorMap["BLACK"]  .set(0.0f,0.0f,0.0f,0.0f);
+        _colorMap["PURPLE"] .set(1.0f,0.0f,1.0f,0.0f);
+        _colorMap["BLUE"]   .set(0.0f,0.0f,1.0f,0.0f);
+        _colorMap["RED"]    .set(1.0f,0.0f,0.0f,0.0f);
+        _colorMap["CYAN"]   .set(0.0f,1.0f,1.0f,0.0f);
+        _colorMap["YELLOW"] .set(1.0f,1.0f,0.0f,0.0f);
+        _colorMap["GREEN"]  .set(0.0f,1.0f,0.0f,0.0f);
+        _colorMap["SKY"]    .set(0.2f, 0.2f, 0.4f, 0.0f);
 
         _layoutMap["LEFT_TO_RIGHT"] = osgText::Text::LEFT_TO_RIGHT;
         _layoutMap["RIGHT_TO_LEFT"] = osgText::Text::RIGHT_TO_LEFT;

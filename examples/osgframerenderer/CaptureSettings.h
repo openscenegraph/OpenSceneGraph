@@ -60,6 +60,16 @@ public:
     void setScreenDistance(float distance) { _screenDistance = distance; }
     float getScreenDistance() const { return _screenDistance; }
 
+
+    enum PixelFormat
+    {
+        RGB,
+        RGBA
+    };
+    
+    void setPixelFormat(PixelFormat format) { _pixelFormat = format; }
+    PixelFormat getPixelFormat() const { return _pixelFormat; }
+
     void setSamples(unsigned int s) { _samples = s; }
     unsigned int getSamples() const { return _samples; }
 
@@ -121,6 +131,7 @@ protected:
     float                               _screenHeight;
     float                               _screenDistance;
 
+    PixelFormat                         _pixelFormat;
     unsigned int                        _samples;
     unsigned int                        _sampleBuffers;
     

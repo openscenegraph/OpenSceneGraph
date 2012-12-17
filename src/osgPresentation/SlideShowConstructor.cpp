@@ -168,7 +168,7 @@ SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
 
     _hudSettings = new HUDSettings(_slideDistance, ds->getEyeSeparation()*0.5, _leftEyeMask, _rightEyeMask);
 
-    _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
+    _backgroundColor.set(0.0f,0.0f,0.0f,0.0f);
 
     _presentationDuration = -1.0;
 

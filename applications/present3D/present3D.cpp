@@ -128,6 +128,8 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
     // double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
 
     viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 0.1, 1000.0);
+
+    OSG_NOTICE<<"setProjectionMatrixAsPerspective( "<<vfov<<", "<<width/height<<", "<<0.1<<", "<<1000.0<<");"<<std::endl;
 }
 
 class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {

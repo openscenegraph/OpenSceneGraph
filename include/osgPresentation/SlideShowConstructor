@@ -309,8 +309,6 @@ public:
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
             colorModulate(1.0f,1.0f,1.0f,1.0f)
         {
-            region[0] = region[1] = region[2] = 0.0f;
-            region[3] = region[4] = region[5] = 1.0f;
         }
 
         std::string                             options;

@@ -469,17 +469,17 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
     }
     
     if(_stencilBuffer) {
-        glDeleteFramebuffersOES(1, &_stencilBuffer);
+        glDeleteRenderbuffersOES(1, &_stencilBuffer);
         _stencilBuffer = 0;
     }
     
     if(_msaaRenderBuffer) {
-        glDeleteFramebuffersOES(1, &_msaaRenderBuffer);
+        glDeleteRenderbuffersOES(1, &_msaaRenderBuffer);
         _msaaRenderBuffer = 0;
     }
     
     if(_msaaDepthBuffer) {
-        glDeleteFramebuffersOES(1, &_msaaDepthBuffer);
+        glDeleteRenderbuffersOES(1, &_msaaDepthBuffer);
         _msaaDepthBuffer = 0;
     }
 

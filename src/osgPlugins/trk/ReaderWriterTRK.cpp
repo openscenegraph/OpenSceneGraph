@@ -50,8 +50,10 @@ const char vert_shader_str[] =
 "    float l = (base-d2)/base;\n"
 "    float half_l = l*0.5;\n"
 "\n"
-"    gl_FrontColor = vec4( (dv.x+1.0)*half_l, (dv.y+1.0)*half_l, (dv.z+1.0)*half_l, 1.0);\n"
+"    // gl_FrontColor = vec4( (dv.x+1.0)*half_l, (dv.y+1.0)*half_l, (dv.z+1.0)*half_l, 1.0);\n"
+"    gl_FrontColor = vec4( abs(dv.x)*half_l, abs(dv.y)*half_l, abs(dv.z)*half_l, 1.0);\n"
 "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+"    gl_ClipVertex = gl_ModelViewMatrix * gl_Vertex;\n"
 "}\n";
 
 

@@ -574,7 +574,8 @@ int main( int argc, char **argv )
 
     {
         // set update hte default traversal mode settings for update visitor
-        osg::NodeVisitor::TraversalMode updateTraversalMode = viewer.getUpdateVisitor()->getTraversalMode();
+        // default to osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN.
+        osg::NodeVisitor::TraversalMode updateTraversalMode = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN; // viewer.getUpdateVisitor()->getTraversalMode();
 
         const char* p3dUpdateStr = getenv("P3D_UPDATE");
         if (p3dUpdateStr)

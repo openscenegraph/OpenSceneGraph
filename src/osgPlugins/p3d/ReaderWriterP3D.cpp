@@ -832,6 +832,12 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 
     OSG_NOTIFY(_notifyLevel)<<"in getProperties(ModelData)"<<std::endl;
 
+    if (getProperty(cur, "region", value.region))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read region \""<<value.region<<"\""<<std::endl;
+    }
+
     if (getProperty(cur, "effect", value.effect))
     {
         propertiesRead = true;

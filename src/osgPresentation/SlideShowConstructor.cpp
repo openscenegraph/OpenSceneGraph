@@ -23,6 +23,8 @@
 #include <osg/ShapeDrawable>
 #include <osg/ImageSequence>
 #include <osg/ImageUtils>
+#include <osg/ClipNode>
+#include <osg/ComputeBoundsVisitor>
 #include <osg/Notify>
 #include <osg/io_utils>
 
@@ -1769,6 +1771,62 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
 
 }
 
+struct ClipRegionCallback : public osg::NodeCallback
+{
+public:
+    ClipRegionCallback(const osg::Matrixd& originalMatrix, const std::string& str):
+        _matrix(originalMatrix),
+        _source(str) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);
+        if (transform)
+        {
+            PropertyReader pr(nv->getNodePath(), _source);
+
+            float xMin=0.0;
+            float yMin=0.0;
+            float zMin=0.0;
+            float xMax=1.0;
+            float yMax=1.0;
+            float zMax=1.0;
+
+            pr>>xMin>>yMin>>zMin>>xMax>>yMax>>zMax;
+
+            if (pr.ok())
+            {
+                OSG_NOTICE<<"ClipRegionCallback : xMin="<<xMin<<", yMin="<<yMin<<", zMin="<<zMin<<", xMax="<<xMax<<", yMax="<<yMax<<", zMax="<<zMax<<std::endl;
+            }
+            else
+            {
+                OSG_NOTICE<<"Problem in reading, ClipRegionCallback : xMin="<<xMin<<", yMin="<<yMin<<", zMin="<<zMin<<", xMax="<<xMax<<", yMax="<<yMax<<", zMax="<<zMax<<std::endl;
+            }
+
+            osg::Matrixd tm = osg::Matrix::scale(xMax-xMin, yMax-yMin, zMax-zMin) *
+                              osg::Matrix::translate(xMin,yMin,zMin);
+
+            transform->setMatrix(tm * _matrix);
+
+        }
+        else
+        {
+            OSG_NOTICE<<"ClipRegionCallback not attached to MatrixTransform, unable to update any values."<<std::endl;
+        }
+
+        // note, callback is responsible for scenegraph traversal so
+        // they must call traverse(node,nv) to ensure that the
+        // scene graph subtree (and associated callbacks) are traversed.
+        traverse(node, nv);
+    }
+
+protected:
+
+    osg::Matrixd _matrix;
+    std::string  _source;
+};
+
+
 void SlideShowConstructor::addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData)
 {
     OSG_INFO<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
@@ -1780,7 +1838,7 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         options->setOptionString(modelData.options);
     }
 
-    osg::Node* subgraph = 0;
+    osg::ref_ptr<osg::Node> subgraph;
 
     if (filename=="sphere")
     {
@@ -1802,9 +1860,58 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         if (subgraph) recordOptionsFilePath(options.get());
     }
 
-    if (subgraph)
+    if (!modelData.region.empty())
     {
-        addModel(subgraph, positionData, modelData);
+        osg::ref_ptr<osg::ClipNode> clipnode = new osg::ClipNode;
+        clipnode->createClipBox(osg::BoundingBox(0.0,0.0,0.0,1.0,1.0,1.0),0);
+        clipnode->setCullingActive(false);
+        
+        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+        transform->addChild(clipnode.get());
+
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+        group->addChild(subgraph.get());
+        group->addChild(transform.get());
+        
+        //clipnode->setStateSetModes(*(group->getOrCreateStateSet()), osg::StateAttribute::ON);
+        group->setStateSet(clipnode->getStateSet());
+
+        osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+        subgraph->accept(cbbv);
+        osg::BoundingBox bb = cbbv.getBoundingBox();
+        double width = bb.xMax()-bb.xMin();
+        double length = bb.yMax()-bb.yMin();
+        double height = bb.zMax()-bb.zMin();
+
+        osg::Matrixd matrix = osg::Matrixd::translate(-0.5,-0.5,-0.5)*osg::Matrixd::scale(width,length,height)*osg::Matrixd::translate(bb.center());
+        transform->setMatrix(matrix);
+
+        if (containsPropertyReference(modelData.region))
+        {
+            transform->addUpdateCallback(new ClipRegionCallback(matrix, modelData.region));
+        }
+        else
+        {
+            double region[6];
+            std::istringstream sstream(modelData.region);
+            sstream>>region[0]>>region[1]>>region[2]>>region[3]>>region[4]>>region[5];
+
+            osg::Matrix tm = osg::Matrix::scale(region[3]-region[0], region[4]-region[1], region[5]-region[2]) *
+                             osg::Matrix::translate(region[0],region[1],region[2]);
+
+            transform->setMatrix( tm * matrix );
+        }
+
+        subgraph = group;
+
+        osgDB::writeNodeFile(*subgraph, "output.osgt");
+        
+    }
+
+    
+    if (subgraph.valid())
+    {
+        addModel(subgraph.get(), positionData, modelData);
     }
 
     OSG_INFO<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;

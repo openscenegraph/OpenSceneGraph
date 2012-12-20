@@ -231,6 +231,7 @@ public:
     {
         ModelData() {}
 
+        std::string region;
         std::string effect;
         std::string options;
     };

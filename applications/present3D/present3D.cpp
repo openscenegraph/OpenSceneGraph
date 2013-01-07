@@ -539,6 +539,12 @@ int main( int argc, char **argv )
     std::string cursorFileName( p3dCursor ? p3dCursor : "");
     while (arguments.read("--cursor",cursorFileName)) {}
 
+    const char* p3dShowCursor = getenv("P3D_SHOW_CURSOR");
+    std::string showCursor( p3dShowCursor ? p3dShowCursor : "YES");
+    while (arguments.read("--show-cursor")) { showCursor="YES"; }
+    while (arguments.read("--hide-cursor")) { showCursor="NO"; }
+
+    bool hideCursor = (showCursor=="No" || showCursor=="NO" || showCursor=="no");
 
     while (arguments.read("--set-viewer")) { doSetViewer = true; }
     
@@ -836,7 +842,7 @@ int main( int argc, char **argv )
     }
     
 
-    if (!cursorFileName.empty())
+    if (!cursorFileName.empty() || hideCursor)
     {
         // have to add a frame in here to avoid problems with X11 threading issue on switching off the cursor
         // not yet sure why it makes a difference, but it at least fixes the crash that would otherwise occur

@@ -271,16 +271,18 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         if (_win->getTraits()->inheritedWindowData.valid())
             win_data = dynamic_cast<osgViewer::GraphicsWindowIOS::WindowData*>(_win->getTraits()->inheritedWindowData.get());
         
-        eaglLayer.opaque = win_data ? !win_data->getCreateTransparentView() : YES ;
+        eaglLayer.opaque = win_data ? !win_data->getCreateTransparentView() : YES;
+        bool retained_backing = win_data ? win_data->getUseRetainedBacking() : NO;
+
         if(_win->getTraits()->alpha > 0)
         {
             //create layer with alpha channel RGBA8
             eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+                                            [NSNumber numberWithBool:retained_backing], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
         }else{
             //else no alpha, IOS uses RBG565
             eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat, nil];
+                                            [NSNumber numberWithBool:retained_backing], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat, nil];
 
         }
     }

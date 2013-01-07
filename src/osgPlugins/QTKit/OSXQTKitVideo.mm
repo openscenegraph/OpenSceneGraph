@@ -99,9 +99,19 @@ void OSXQTKitVideo::initializeQTKit()
         if (![NSThread isMainThread]) {
             dispatch_apply(1, dispatch_get_main_queue(), ^(size_t n) {
                 EnterMovies();
-                QTMovie* movie = [QTMovie movie];
-                // release missing by intent, gets released by the block!
-                movie = NULL;
+                {
+                    // workaround for gcc bug. See discussion here
+                    // http://stackoverflow.com/questions/6525928/objective-c-block-vs-objective-c-block
+                    
+                    #if (GCC_VERSION <= 40201) && !(__clang__)
+                        QTMovie* ::temp_movie = [QTMovie movie];
+                    #else
+                        QTMovie* temp_movie = [QTMovie movie];
+                    #endif
+                    
+                    // release missing by intent, gets released by the block!
+                    temp_movie = NULL;
+                }
             });
         }
         else

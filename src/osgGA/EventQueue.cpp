@@ -409,7 +409,7 @@ GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::Touch
     {
         // emulate left mouse button press
 
-        _accumulateEventState->setButtonMask((1) | _accumulateEventState->getButtonMask());
+        _accumulateEventState->setButtonMask(GUIEventAdapter::LEFT_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
         _accumulateEventState->setX(x);
         _accumulateEventState->setY(y);
     }
@@ -418,7 +418,9 @@ GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::Touch
     event->setEventType(GUIEventAdapter::PUSH);
     event->setTime(time);
     event->addTouchPoint(id, phase, x, y, 0);
-
+    if(_firstTouchEmulatesMouse)
+        event->setButton(GUIEventAdapter::LEFT_MOUSE_BUTTON);
+    
     addEvent(event);
 
     return event;
@@ -446,7 +448,7 @@ GUIEventAdapter*  EventQueue::touchEnded(unsigned int id, GUIEventAdapter::Touch
 {
     if (_firstTouchEmulatesMouse)
     {
-        _accumulateEventState->setButtonMask(~(1) & _accumulateEventState->getButtonMask());
+        _accumulateEventState->setButtonMask(~GUIEventAdapter::LEFT_MOUSE_BUTTON & _accumulateEventState->getButtonMask());
         _accumulateEventState->setX(x);
         _accumulateEventState->setY(y);
     }
@@ -455,6 +457,9 @@ GUIEventAdapter*  EventQueue::touchEnded(unsigned int id, GUIEventAdapter::Touch
     event->setEventType(GUIEventAdapter::RELEASE);
     event->setTime(time);
     event->addTouchPoint(id, phase, x, y, tap_count);
+    if(_firstTouchEmulatesMouse)
+        event->setButton(GUIEventAdapter::LEFT_MOUSE_BUTTON);
+    
     addEvent(event);
 
     return event;

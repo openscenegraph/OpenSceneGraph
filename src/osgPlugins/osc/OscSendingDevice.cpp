@@ -24,7 +24,6 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port)
     , _transmitSocket(IpEndpointName(address.c_str(), port))
     , _buffer(new  char[BUFFER_SIZE])
     , _oscStream(_buffer, BUFFER_SIZE)
-    , _firstRun(true)
 {
     setCapabilities(SEND_EVENTS);
     
@@ -50,12 +49,14 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
     switch(ea.getEventType())
     {
         case osgGA::GUIEventAdapter::RESIZE:
-            sendInit(ea);
+            _oscStream << osc::BeginMessage("/osgga/resize") << ea.getWindowX() << ea.getWindowY() << ea.getWindowWidth() << ea.getWindowHeight() << osc::EndMessage;
             do_send = true;
             break;
             
         case osgGA::GUIEventAdapter::SCROLL:
+            beginSendInputRange(ea);
             _oscStream << osc::BeginMessage("/osgga/mouse/scroll") << ea.getScrollingMotion() << ea.getScrollingDeltaX() << ea.getScrollingDeltaY() << osc::EndMessage;
+            _oscStream << osc::EndBundle;
             do_send = true;
             break;
         
@@ -95,32 +96,31 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
             break;
         
         case osgGA::GUIEventAdapter::PUSH:
+            beginSendInputRange(ea);
             _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
+            _oscStream << osc::EndBundle;
             do_send = true;
             break;
             
         case osgGA::GUIEventAdapter::RELEASE:
+            beginSendInputRange(ea);
             _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
+            _oscStream << osc::EndBundle;
             do_send = true;
             break;
         
         case osgGA::GUIEventAdapter::DOUBLECLICK:
+            beginSendInputRange(ea);
             _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << getButtonNum(ea) << osc::EndMessage;
+            _oscStream << osc::EndBundle;
             do_send = true;
             break;
             
         case osgGA::GUIEventAdapter::MOVE:
-            if (_firstRun)
-            {
-                _firstRun = false;
-                sendInit(ea);
-                do_send = true;
-                break;
-            }
-            // break missing by intent;
-            
         case osgGA::GUIEventAdapter::DRAG:
+            beginSendInputRange(ea);
             _oscStream << osc::BeginMessage("/osgga/mouse/motion") << ea.getX() << ea.getY() << osc::EndMessage;
+            _oscStream << osc::EndBundle;
             do_send = true;
             break;
         
@@ -150,6 +150,7 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
             break;
         
     }
+    
     if (do_send)
     {
         OSG_INFO << "OscDevice :: sending event per OSC " << std::endl;
@@ -178,13 +179,11 @@ int OscSendingDevice::getButtonNum(const osgGA::GUIEventAdapter& ea)
     return -1;
 }
 
-void OscSendingDevice::sendInit(const osgGA::GUIEventAdapter &ea)
+void OscSendingDevice::beginSendInputRange(const osgGA::GUIEventAdapter &ea)
 {
     _oscStream << osc::BeginBundle();
-    _oscStream << osc::BeginMessage("/osgga/resize") << ea.getWindowX() << ea.getWindowY() << ea.getWindowWidth() << ea.getWindowHeight() << osc::EndMessage;
     _oscStream << osc::BeginMessage("/osgga/mouse/set_input_range") << ea.getXmin() << ea.getYmin() << ea.getXmax() << ea.getYmax() << osc::EndMessage;
     _oscStream << osc::BeginMessage("/osgga/mouse/y_orientation_increasing_upwards") << (bool)(ea.getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)  << osc::EndMessage;
-    _oscStream << osc::EndBundle;
 }
 
 

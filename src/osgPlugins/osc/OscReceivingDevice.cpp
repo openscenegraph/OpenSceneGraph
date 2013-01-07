@@ -21,6 +21,7 @@
 #include "osc/OscPrintReceivedElements.h"
 #include "osc/OscHostEndianness.h"
 
+namespace OscDevice {
 
 template <class T, int SIZE>
 struct NativeTypeTraits {
@@ -709,6 +710,7 @@ public:
 };
 
 
+} // end of namespace
 
 
 
@@ -732,32 +734,32 @@ OscReceivingDevice::OscReceivingDevice(const std::string& server_address, int li
     
     _socket = new UdpListeningReceiveSocket(IpEndpointName( server_address.c_str(), listening_port ), this);
     
-    addRequestHandler(new KeyCodeRequestHandler(false));
-    addRequestHandler(new KeyCodeRequestHandler(true));
-    addRequestHandler(new KeyPressAndReleaseRequestHandler());
+    addRequestHandler(new OscDevice::KeyCodeRequestHandler(false));
+    addRequestHandler(new OscDevice::KeyCodeRequestHandler(true));
+    addRequestHandler(new OscDevice::KeyPressAndReleaseRequestHandler());
     
-    addRequestHandler(new SetMouseInputRangeRequestHandler());
-    addRequestHandler(new SetMouseOrientationRequestHandler());
+    addRequestHandler(new OscDevice::SetMouseInputRangeRequestHandler());
+    addRequestHandler(new OscDevice::SetMouseOrientationRequestHandler());
     
-    MouseMotionRequestHandler* mm_handler = new MouseMotionRequestHandler();
+    OscDevice::MouseMotionRequestHandler* mm_handler = new OscDevice::MouseMotionRequestHandler();
     addRequestHandler(mm_handler);
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::PRESS));
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::RELEASE));
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::DOUBLE_PRESS));
-    addRequestHandler(new MouseScrollRequestHandler());
+    addRequestHandler(new OscDevice::MouseButtonRequestHandler(OscDevice::MouseButtonRequestHandler::PRESS));
+    addRequestHandler(new OscDevice::MouseButtonRequestHandler(OscDevice::MouseButtonRequestHandler::RELEASE));
+    addRequestHandler(new OscDevice::MouseButtonRequestHandler(OscDevice::MouseButtonRequestHandler::DOUBLE_PRESS));
+    addRequestHandler(new OscDevice::MouseScrollRequestHandler());
     
-    addRequestHandler(new MouseButtonToggleRequestHandler("1", mm_handler));
-    addRequestHandler(new MouseButtonToggleRequestHandler("2", mm_handler));
-    addRequestHandler(new MouseButtonToggleRequestHandler("3", mm_handler));
+    addRequestHandler(new OscDevice::MouseButtonToggleRequestHandler("1", mm_handler));
+    addRequestHandler(new OscDevice::MouseButtonToggleRequestHandler("2", mm_handler));
+    addRequestHandler(new OscDevice::MouseButtonToggleRequestHandler("3", mm_handler));
     
-    addRequestHandler(new PenPressureRequestHandler());
-    addRequestHandler(new PenOrientationRequestHandler());
-    addRequestHandler(new PenProximityRequestHandler(true));
-    addRequestHandler(new PenProximityRequestHandler(false));
+    addRequestHandler(new OscDevice::PenPressureRequestHandler());
+    addRequestHandler(new OscDevice::PenOrientationRequestHandler());
+    addRequestHandler(new OscDevice::PenProximityRequestHandler(true));
+    addRequestHandler(new OscDevice::PenProximityRequestHandler(false));
     
-    addRequestHandler(new StandardRequestHandler("/osg/set_user_value", true));
+    addRequestHandler(new OscDevice::StandardRequestHandler("/osg/set_user_value", true));
     
-    addRequestHandler(new StandardRequestHandler("", false));
+    addRequestHandler(new OscDevice::StandardRequestHandler("", false));
     
     start();
 }

@@ -16,6 +16,7 @@
 #include <osgViewer/Viewer>
 #include <osg/Notify>
 #include <osgDB/FileUtils>
+#include <osg/io_utils>
 
 #include <stdlib.h>
 
@@ -23,7 +24,8 @@ using namespace osgPresentation;
 
 PickEventHandler::PickEventHandler(osgPresentation::Operation operation, const JumpData& jumpData):
     _operation(operation),
-    _jumpData(jumpData)
+    _jumpData(jumpData),
+    _drawablesOnPush()
 {
     OSG_INFO<<"PickEventHandler::PickEventHandler(operation="<<operation<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
@@ -31,7 +33,8 @@ PickEventHandler::PickEventHandler(osgPresentation::Operation operation, const J
 PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Operation operation, const JumpData& jumpData):
     _command(str),
     _operation(operation),
-    _jumpData(jumpData)
+    _jumpData(jumpData),
+    _drawablesOnPush()
 {
     OSG_INFO<<"PickEventHandler::PickEventHandler(str="<<str<<", operation="<<operation<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
@@ -39,7 +42,8 @@ PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Oper
 PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos, const JumpData& jumpData):
     _keyPos(keyPos),
     _operation(osgPresentation::EVENT),
-    _jumpData(jumpData)
+    _jumpData(jumpData),
+    _drawablesOnPush()
 {
     OSG_INFO<<"PickEventHandler::PickEventHandler(keyPos="<<keyPos._key<<", jumpData.relativeJump="<<jumpData.relativeJump<<", jumpData.="<<jumpData.slideNum<<", jumpData.layerNum="<<jumpData.layerNum<<std::endl;
 }
@@ -53,8 +57,13 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
     {
         case(osgGA::GUIEventAdapter::MOVE):
         case(osgGA::GUIEventAdapter::PUSH):
+        case(osgGA::GUIEventAdapter::DRAG):
         case(osgGA::GUIEventAdapter::RELEASE):
         {
+            if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH)
+            {
+                _drawablesOnPush.clear();
+            }
             osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
             osgUtil::LineSegmentIntersector::Intersections intersections;
             if (viewer->computeIntersections(ea.getX(),ea.getY(), nv->getNodePath(), intersections))
@@ -63,14 +72,48 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     hitr!=intersections.end();
                     ++hitr)
                 {
-                    if (ea.getEventType()==osgGA::GUIEventAdapter::MOVE)
+                    if (_operation == FORWARD_EVENT)
                     {
-                        OSG_INFO<<"Tooltip..."<<std::endl;
+                        osg::ref_ptr<osgGA::GUIEventAdapter> cloned_ea = osg::clone(&ea);
+                        const osg::BoundingBox bb(hitr->drawable->getBound());
+                        const osg::Vec3& p(hitr->localIntersectionPoint);
+                        
+                        float transformed_x = (p.x() - bb.xMin()) / (bb.xMax() - bb.xMin());
+                        float transformed_y = (p.z() - bb.zMin()) / (bb.zMax() - bb.zMin());
+                        
+                        cloned_ea->setX(ea.getXmin() + transformed_x * (ea.getXmax() - ea.getXmin()));
+                        cloned_ea->setY(ea.getYmin() + transformed_y * (ea.getYmax() - ea.getYmin()));
+                        cloned_ea->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+                        
+                        // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
+                        
+                        
+                        // dispatch cloned event to devices
+                        osgViewer::View::Devices& devices = viewer->getDevices();
+                        for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
+                        {
+                            if((*i)->getCapabilities() & osgGA::Device::SEND_EVENTS)
+                            {
+                                (*i)->sendEvent(*cloned_ea);
+                            }
+                        }
                     }
-                    else if (ea.getEventType()==osgGA::GUIEventAdapter::RELEASE)
+                    else 
                     {
-                        doOperation();
-                        return true;
+                        if (ea.getEventType()==osgGA::GUIEventAdapter::PUSH)
+                        {
+                            _drawablesOnPush.insert( hitr->drawable );
+                        }
+                        else if (ea.getEventType()==osgGA::GUIEventAdapter::MOVE)
+                        {
+                            OSG_INFO<<"Tooltip..."<<std::endl;
+                        }
+                        else if (ea.getEventType()==osgGA::GUIEventAdapter::RELEASE)
+                        {
+                            if (_drawablesOnPush.find(hitr->drawable) != _drawablesOnPush.end())
+                                doOperation();
+                            return true;
+                        }
                     }
                 }
             }
@@ -178,6 +221,8 @@ void PickEventHandler::doOperation()
             OSG_INFO<<"Requires jump "<<std::endl;
             break;
         }
+        case(osgPresentation::FORWARD_EVENT):
+            break;
     }
 
     if (_jumpData.requiresJump())

@@ -1458,6 +1458,13 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             OSG_INFO<<"click_to_run ["<<cur->contents<<"]"<<std::endl;
             constructor.layerClickToDoOperation(cur->contents,osgPresentation::RUN, jumpData);
         }
+        else if (cur->name == "forward_mouse_event_to_device")
+        {
+            osgPresentation::JumpData jumpData;
+            
+            OSG_ALWAYS<<"forward_mouse_event_to_device ["<<cur->contents<<"]"<<std::endl;
+            constructor.layerClickToDoOperation(cur->contents,osgPresentation::FORWARD_EVENT, jumpData);
+        }
         else if (cur->name == "click_to_load")
         {
             osgPresentation::JumpData jumpData;
@@ -2217,7 +2224,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
                 ++itr)
             {
                 const std::string& path = *itr;
-                std::string newpath = path.empty() ? filename : osgDB::concatPaths(path, filename);
+                std::string newpath = osgDB::containsServerAddress(filename) ? filename : path.empty() ? filename : osgDB::concatPaths(path, filename);
                 osgDB::ReaderWriter::ReadResult result;
                 if (osgDB::containsServerAddress(newpath))
                 {
@@ -2381,7 +2388,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setReadFileCallback(new MyReadFileCallback);
-
+    local_opt->setFindFileCallback(new MyFindFileCallback);
+        
     return readNode(input, local_opt.get());
 }
 

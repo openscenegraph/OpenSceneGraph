@@ -311,8 +311,7 @@ void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name)
     if (dev.valid())
     {
         OSG_INFO << "Adding Device : " << device_name << std::endl;
-        if (dev->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
-            viewer.addDevice(dev.get());
+        viewer.addDevice(dev.get());
         
         if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
             viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));

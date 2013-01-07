@@ -1794,7 +1794,7 @@ ReaderWriter* Registry::getReaderWriterForProtocolAndExtension(const std::string
 {
     // try first the registered ReaderWriter
     ReaderWriter* result = getReaderWriterForExtension(extension);
-    if (result->acceptsProtocol(protocol))
+    if (result && result->acceptsProtocol(protocol))
         return result;
     
     result = NULL;

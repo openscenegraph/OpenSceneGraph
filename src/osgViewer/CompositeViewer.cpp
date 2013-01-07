@@ -933,7 +933,8 @@ void CompositeViewer::eventTraversal()
             ++eitr)
         {
             osgGA::Device* es = eitr->get();
-            es->checkEvents();
+            if (es->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
+                es->checkEvents();
 
             // open question, will we need to reproject mouse coordinates into current view's coordinate frame as is down for GraphicsWindow provided events?
             // for now assume now and just get the events directly without any reprojection.

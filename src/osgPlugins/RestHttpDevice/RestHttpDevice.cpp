@@ -17,6 +17,7 @@
 #include <osgDB/FileUtils>
 #include "request_handler.hpp"
 
+namespace RestHttp {
 
 
 class StandardRequestHandler : public RestHttpDevice::RequestHandler {
@@ -254,6 +255,7 @@ bool RequestHandlerDispatcherCallback::operator()(const std::string& request_pat
     return _parent->handleRequest(request_path, reply);
 }
 
+}
 
 RestHttpDevice::RestHttpDevice(const std::string& listening_address, const std::string& listening_port, const std::string& doc_root)
     : osgGA::Device()
@@ -274,20 +276,20 @@ RestHttpDevice::RestHttpDevice(const std::string& listening_address, const std::
     {
         OSG_WARN << "RestHttpDevice :: warning, can't locate document-root '" << doc_root << "'for the http-server, starting anyway" << std::endl;
     }
-    _server.setCallback(new RequestHandlerDispatcherCallback(this));
+    _server.setCallback(new RestHttp::RequestHandlerDispatcherCallback(this));
     
-    addRequestHandler(new KeyCodeRequestHandler(false));
-    addRequestHandler(new KeyCodeRequestHandler(true));
+    addRequestHandler(new RestHttp::KeyCodeRequestHandler(false));
+    addRequestHandler(new RestHttp::KeyCodeRequestHandler(true));
     
-    addRequestHandler(new SetMouseInputRangeRequestHandler());
-    addRequestHandler(new MouseMotionRequestHandler());
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::PRESS));
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::RELEASE));
-    addRequestHandler(new MouseButtonRequestHandler(MouseButtonRequestHandler::DOUBLE_PRESS));
+    addRequestHandler(new RestHttp::SetMouseInputRangeRequestHandler());
+    addRequestHandler(new RestHttp::MouseMotionRequestHandler());
+    addRequestHandler(new RestHttp::MouseButtonRequestHandler(RestHttp::MouseButtonRequestHandler::PRESS));
+    addRequestHandler(new RestHttp::MouseButtonRequestHandler(RestHttp::MouseButtonRequestHandler::RELEASE));
+    addRequestHandler(new RestHttp::MouseButtonRequestHandler(RestHttp::MouseButtonRequestHandler::DOUBLE_PRESS));
     
-    addRequestHandler(new HomeRequestHandler());
+    addRequestHandler(new RestHttp::HomeRequestHandler());
     
-    addRequestHandler(new StandardRequestHandler());
+    addRequestHandler(new RestHttp::StandardRequestHandler());
     
     // start the thread
     start();

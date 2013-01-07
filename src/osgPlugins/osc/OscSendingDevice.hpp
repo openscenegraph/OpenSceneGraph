@@ -27,13 +27,12 @@ public:
     virtual void sendEvent(const osgGA::GUIEventAdapter &ea);
     
 private:
-    void sendInit(const osgGA::GUIEventAdapter& ea);
+    void beginSendInputRange(const osgGA::GUIEventAdapter& ea);
     int getButtonNum(const osgGA::GUIEventAdapter& ea);
     void sendUserDataContainer(const std::string& key, const osg::UserDataContainer* udc, bool asBundle);
     std::string transliterateKey(const std::string& key) const;
     UdpTransmitSocket _transmitSocket;
     char* _buffer;
     osc::OutboundPacketStream _oscStream;
-    bool _firstRun;    
 };
 

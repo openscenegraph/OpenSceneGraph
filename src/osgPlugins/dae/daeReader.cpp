@@ -295,7 +295,7 @@ bool daeReader::convert( std::istream& fin )
     std::vector<char> buffer(length);
     fin.read(&buffer[0], length);
 
-    _document = _dae->openFromMemory(fileURI, buffer.data());
+    _document = _dae->openFromMemory(fileURI, &buffer[0]);
 
     return processDocument (fileURI);
 }

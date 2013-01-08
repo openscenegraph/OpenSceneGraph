@@ -155,6 +155,8 @@ void KeyEventHandler::doOperation()
             OSG_NOTICE<<"Requires jump "<<std::endl;
             break;
         }
+        case(osgPresentation::FORWARD_EVENT):
+            break;
     }
 
     if (_jumpData.requiresJump())

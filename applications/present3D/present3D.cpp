@@ -549,6 +549,9 @@ int main( int argc, char **argv )
     while (arguments.read("--set-viewer")) { doSetViewer = true; }
     
     while (arguments.read("--no-set-viewer")) { doSetViewer = false; }
+
+    // if we want to hide the cursor override the custom cursor.
+    if (hideCursor) cursorFileName.clear();
     
 
     // cluster related entries.

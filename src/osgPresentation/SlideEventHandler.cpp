@@ -176,18 +176,19 @@ struct ImageStreamOperator : public ObjectOperator
 
     virtual void enter(SlideEventHandler* seh)
     {
-        OSG_INFO<<"enter() : _imageStream->rewind() + play"<<std::endl;
+        OSG_NOTICE<<"enter() : _imageStream->rewind() + play"<<std::endl;
 
         reset(seh);
     }
 
     virtual void maintain(SlideEventHandler*)
     {
+        OSG_NOTICE<<"ImageStreamOperator::maintain()"<<std::endl;
     }
 
     virtual void leave(SlideEventHandler*)
     {
-       OSG_INFO<<"leave() : _imageStream->pause()"<<std::endl;
+       OSG_NOTICE<<"leave() : _imageStream->pause()"<<std::endl;
 
         _imageStream->pause();
     }
@@ -202,10 +203,19 @@ struct ImageStreamOperator : public ObjectOperator
 
     virtual void reset(SlideEventHandler*)
     {
+        OSG_NOTICE<<"ImageStreamOperator::reset()"<<std::endl;
+
         osg::ImageStream::StreamStatus previousStatus = _imageStream->getStatus();
 
-        _imageStream->rewind();
-
+        double startTime;
+        if (_imageStream->getUserValue("start",startTime))
+        {
+            _imageStream->seek(startTime);
+        }
+        else
+        {
+            _imageStream->rewind();
+        }
 
         //_imageStream->setVolume(previousVolume);
 

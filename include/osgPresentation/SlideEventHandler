@@ -197,6 +197,7 @@ struct ObjectOperator : public osg::Referenced
     virtual void* ptr() const = 0;
 
     virtual void enter(SlideEventHandler*) = 0;
+    virtual void frame(SlideEventHandler*) {} ;
     virtual void maintain(SlideEventHandler*) = 0;
     virtual void leave(SlideEventHandler*) = 0;
     virtual void setPause(SlideEventHandler*, bool pause) = 0;
@@ -214,6 +215,8 @@ public:
     void collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
     void process(SlideEventHandler* seh);
+
+    void frame(SlideEventHandler*);
 
     void setPause(SlideEventHandler* seh, bool pause);
     bool getPause() const { return _pause; }
@@ -319,6 +322,8 @@ public:
     void setRequestReload(bool flag);
     bool getRequestReload() const { return _requestReload; }
 
+    double getReferenceTime() const { return _referenceTime; }
+
 protected:
 
     ~SlideEventHandler() {}
@@ -344,6 +349,7 @@ protected:
     int                                     _activeLayer;
 
     bool                                    _firstTraversal;
+    double                                  _referenceTime;
     double                                  _previousTime;
     double                                  _timePerSlide;
     bool                                    _autoSteppingActive;

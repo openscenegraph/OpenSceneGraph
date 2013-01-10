@@ -956,6 +956,24 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read blendingHint \""<<value.blendingHint<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "delay", value.delayTime))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read delay \""<<value.delayTime<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "start", value.startTime))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read start \""<<value.startTime<<"\""<<std::endl;
+    }
+
+    if (getProperty(cur, "stop", value.stopTime))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read stop \""<<value.stopTime<<"\""<<std::endl;
+    }
+
     /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {

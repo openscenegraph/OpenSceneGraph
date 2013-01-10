@@ -252,7 +252,10 @@ public:
             imageSequence(false),
             imageSequencePagingMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES),
             imageSequenceInteractionMode(PLAY_AUTOMATICALLY_LIKE_MOVIE),
-            blendingHint(USE_IMAGE_ALPHA)
+            blendingHint(USE_IMAGE_ALPHA),
+            delayTime(0.0),
+            startTime(0.0),
+            stopTime(-1.0)            
         {}
 
         std::string                     options;
@@ -285,7 +288,11 @@ public:
             ON
         };
         
-        BlendingHint blendingHint;
+        BlendingHint    blendingHint;
+
+        double          delayTime;
+        double          startTime;
+        double          stopTime;
 
     };
 

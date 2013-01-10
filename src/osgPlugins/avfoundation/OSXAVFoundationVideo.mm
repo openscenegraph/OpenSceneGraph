@@ -491,10 +491,11 @@ void OSXAVFoundationVideo::update(osg::NodeVisitor *)
        
         size_t width = CVPixelBufferGetWidth(newframe);
         size_t height = CVPixelBufferGetHeight(newframe);
+        size_t bpr = CVPixelBufferGetBytesPerRow(newframe);
 
         // Get the base address of the pixel buffer
         void *baseAddress = CVPixelBufferGetBaseAddress(newframe);
-        setImage(width, height, 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE, (unsigned char*)baseAddress, NO_DELETE);
+        setImage(width, height, 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE, (unsigned char*)baseAddress, NO_DELETE, 1, bpr/4);
         // std::cout << this << " new frame: " << width << "x" << height << " " << baseAddress << std::endl;
         CVPixelBufferUnlockBaseAddress(newframe, kCVPixelBufferLock_ReadOnly);
     }

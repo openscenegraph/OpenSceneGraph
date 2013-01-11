@@ -255,7 +255,8 @@ public:
             blendingHint(USE_IMAGE_ALPHA),
             delayTime(0.0),
             startTime(0.0),
-            stopTime(-1.0)            
+            stopTime(-1.0),
+            volume("")
         {}
 
         std::string                     options;
@@ -293,6 +294,7 @@ public:
         double          delayTime;
         double          startTime;
         double          stopTime;
+        std::string     volume;
 
     };
 
@@ -499,6 +501,7 @@ protected:
     void findImageStreamsAndAddCallbacks(osg::Node* node);
 
     osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos, const osg::Vec4& rotation, float width,float height, osg::Image* image, bool& usedTextureRectangle);
+    void setUpMovieVolume(osg::Node* subgraph, osg::ImageStream* imageStream, const ImageData& imageData);
 
     osg::Vec3 computePositionInModelCoords(const PositionData& positionData) const;
     void updatePositionFromInModelCoords(const osg::Vec3& vertex, PositionData& positionData) const;

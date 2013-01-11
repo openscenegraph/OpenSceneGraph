@@ -89,6 +89,7 @@ extern OSGPRESENTATION_EXPORT bool containsPropertyReference(const std::string& 
 struct PropertyReader
 {
     PropertyReader(const osg::NodePath& nodePath, const std::string& str):
+        _errorGenerated(false),
         _nodePath(nodePath),
         _sstream(str) {}
 
@@ -117,11 +118,12 @@ struct PropertyReader
     }
 
     template<typename T>
-    PropertyReader& operator>>( T& value ) { read(value); return *this; }
+    PropertyReader& operator>>( T& value ) { if (!read(value)) _errorGenerated=true; return *this; }
 
-    bool ok() { return !_sstream.fail(); }
-    bool fail() { return _sstream.fail(); }
+    bool ok() { return !_sstream.fail() && !_errorGenerated; }
+    bool fail() { return _sstream.fail() || _errorGenerated; }
 
+    bool                _errorGenerated;
     osg::NodePath       _nodePath;
     std::istringstream  _sstream;    
 };

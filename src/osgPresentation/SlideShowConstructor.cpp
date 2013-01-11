@@ -1121,6 +1121,67 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
     return image.release();
 }
 
+struct VolumeCallback : public osg::NodeCallback
+{
+public:
+    VolumeCallback(osg::ImageStream* movie, const std::string& str):
+        _movie(movie),
+        _source(str) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        PropertyReader pr(nv->getNodePath(), _source);
+
+        float volume=0.0f;
+        pr>>volume;
+
+        if (pr.ok())
+        {
+            OSG_NOTICE<<"VolumeCallback : volume="<<volume<<", from "<<_source<<std::endl;
+            _movie->setVolume(volume);
+        }
+        else
+        {
+            OSG_NOTICE<<"Problem in reading, VolumeCallback : volume="<<volume<<std::endl;
+        }
+
+
+        // note, callback is responsible for scenegraph traversal so
+        // they must call traverse(node,nv) to ensure that the
+        // scene graph subtree (and associated callbacks) are traversed.
+        traverse(node, nv);
+    }
+
+protected:
+
+    osg::ref_ptr<osg::ImageStream> _movie;
+    std::string  _source;
+};
+
+void SlideShowConstructor::setUpMovieVolume(osg::Node* subgraph, osg::ImageStream* imageStream, const ImageData& imageData)
+{
+    if (containsPropertyReference(imageData.volume))
+    {
+        subgraph->addUpdateCallback(new VolumeCallback(imageStream, imageData.volume));
+    }
+    else
+    {
+        float volume;
+        std::istringstream sstream(imageData.volume);
+        sstream>>volume;
+
+        if (!sstream.fail())
+        {
+            OSG_NOTICE<<"Setting volume "<<volume<<std::endl;
+            imageStream->setVolume( volume );
+        }
+        else
+        {
+            OSG_NOTICE<<"Invalid volume setting: "<<imageData.volume<<std::endl;
+        }
+    }
+}
+
 void SlideShowConstructor::addImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
 {
 
@@ -1213,6 +1274,12 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         SetToTransparentBin sttb;
         subgraph->accept(sttb);
         pictureStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    }
+
+
+    if (imageStream && !imageData.volume.empty()) 
+    {
+        setUpMovieVolume(subgraph, imageStream, imageData);
     }
 
     osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(image.get());
@@ -1417,6 +1484,16 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     osg::Group* subgraph = new osg::Group;
     subgraph->addChild(pictureLeft);
     subgraph->addChild(pictureRight);
+
+    if (imageStreamLeft && !imageDataLeft.volume.empty())
+    {
+        setUpMovieVolume(subgraph, imageStreamLeft, imageDataLeft);
+    }
+
+    if (imageStreamRight && !imageDataRight.volume.empty())
+    {
+        setUpMovieVolume(subgraph, imageStreamRight, imageDataRight);
+    }
 
     osg::ImageSequence* imageSequence = dynamic_cast<osg::ImageSequence*>(imageLeft.get());
     if (imageSequence)
@@ -1774,6 +1851,7 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
     return foundFile;
 
 }
+
 
 struct ClipRegionCallback : public osg::NodeCallback
 {

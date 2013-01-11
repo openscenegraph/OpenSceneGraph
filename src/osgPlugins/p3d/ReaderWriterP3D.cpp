@@ -974,6 +974,12 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read stop \""<<value.stopTime<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "volume", value.volume))
+    {
+        propertiesRead = true;
+        OSG_NOTIFY(_notifyLevel)<<"read volume \""<<value.volume<<"\""<<std::endl;
+    }
+
     /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {

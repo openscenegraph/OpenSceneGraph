@@ -1,0 +1,43 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGPRESENTATION_TIMOUTOUT
+#define OSGPRESENTATION_TIMOUTOUT 1
+
+#include <osg/Group>
+#include <osgPresentation/Export>
+
+namespace osgPresentation {
+
+class OSGPRESENTATION_EXPORT Timeout : public osg::Group
+{
+    public:
+
+        Timeout();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Timeout(const Timeout&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgPresentation, Timeout);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+    protected:
+
+        virtual ~Timeout();
+
+};
+
+}
+
+#endif

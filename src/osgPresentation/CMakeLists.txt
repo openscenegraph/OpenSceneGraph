@@ -16,6 +16,7 @@ SET(TARGET_H
     ${HEADER_PATH}/KeyEventHandler
     ${HEADER_PATH}/SlideEventHandler
     ${HEADER_PATH}/SlideShowConstructor
+    ${HEADER_PATH}/Timeout
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -27,6 +28,7 @@ SET(TARGET_SRC
     KeyEventHandler.cpp
     SlideEventHandler.cpp
     SlideShowConstructor.cpp
+    Timeout.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

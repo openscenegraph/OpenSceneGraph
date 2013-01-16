@@ -14,21 +14,50 @@
 #ifndef OSGPRESENTATION_TIMOUTOUT
 #define OSGPRESENTATION_TIMOUTOUT 1
 
-#include <osg/Group>
+#include <osg/Transform>
 #include <osgPresentation/Export>
 
 namespace osgPresentation {
 
-class OSGPRESENTATION_EXPORT Timeout : public osg::Group
+class OSGPRESENTATION_EXPORT HUDSettings : public osg::Referenced
+{
+    public:
+        HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask);
+
+        virtual bool getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        virtual bool getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        double          _slideDistance;
+        double          _eyeOffset;
+        unsigned int    _leftMask;
+        unsigned int    _rightMask;
+
+protected:
+
+        virtual ~HUDSettings();
+};
+    
+class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 {
     public:
 
-        Timeout();
+        Timeout(HUDSettings* hudSettings=0);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Timeout(const Timeout&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        Timeout(const Timeout& timeout,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Node(osgPresentation, Timeout);
+
+        void setIdleDurationBeforeTimeoutDisplay(double t) { _idleDurationBeforeTimeoutDisplay = t; }
+        double getIdleDurationBeforeTimeoutDisplay() const { return _idleDurationBeforeTimeoutDisplay; }
+        
+        void setIdleDurationBeforeTimeoutAction(double t) { _idleDurationBeforeTimeoutAction = t; }
+        double getIdleDurationBeforeTimeoutAction() const { return _idleDurationBeforeTimeoutAction; }
+
+        virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
+
+        virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const;
 
         virtual void traverse(osg::NodeVisitor& nv);
 
@@ -36,6 +65,12 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Group
 
         virtual ~Timeout();
 
+        osg::ref_ptr<HUDSettings> _hudSettings;
+
+        int     _previousFrameNumber;
+        double  _timeOfLastEvent;
+        double  _idleDurationBeforeTimeoutDisplay;
+        double  _idleDurationBeforeTimeoutAction;
 };
 
 }

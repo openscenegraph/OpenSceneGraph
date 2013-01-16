@@ -34,28 +34,11 @@
 #include <osgPresentation/AnimationMaterial>
 #include <osgPresentation/SlideEventHandler>
 #include <osgPresentation/PropertyManager>
+#include <osgPresentation/Timeout>
 
 namespace osgPresentation
 {
 
-class OSGPRESENTATION_EXPORT HUDSettings : public osg::Referenced
-{
-    public:
-        HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask);
-
-        virtual bool getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
-
-        virtual bool getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
-
-        double          _slideDistance;
-        double          _eyeOffset;
-        unsigned int    _leftMask;
-        unsigned int    _rightMask;
-
-protected:
-
-        virtual ~HUDSettings();
-};
 
 
 class OSGPRESENTATION_EXPORT HUDTransform : public osg::Transform
@@ -398,6 +381,7 @@ public:
 
     void setSlideDuration(double duration);
 
+    void addTimeout();
 
     void addLayer(bool inheritPreviousLayers=true, bool defineAsBaseLayer=false);
 
@@ -483,6 +467,9 @@ public:
 
     osg::Switch* getCurrentSlide() { return _slide.get(); }
 
+    void pushCurrentLayer();
+    void popCurrentLayer();
+    
     osg::Group* getCurrentLayer() { return _currentLayer.get(); }
 
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
@@ -580,6 +567,8 @@ protected:
 
     osg::ref_ptr<osg::Group>        _previousLayer;
     osg::ref_ptr<osg::Group>        _currentLayer;
+    typedef std::vector< osg::ref_ptr<osg::Group> > LayerStack;
+    LayerStack                      _layerStack;
 
     osg::ref_ptr<FilePathData>      _filePathData;
 

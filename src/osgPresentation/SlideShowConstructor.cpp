@@ -99,42 +99,6 @@ public:
 };
 
 
-HUDSettings::HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask):
-    _slideDistance(slideDistance),
-    _eyeOffset(eyeOffset),
-    _leftMask(leftMask),
-    _rightMask(rightMask)
-{
-}
-
-HUDSettings::~HUDSettings()
-{
-}
-
-bool HUDSettings::getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const
-{
-    matrix.makeLookAt(osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,_slideDistance,0.0),osg::Vec3d(0.0,0.0,1.0));
-
-    if (nv->getTraversalMask()==_leftMask)
-    {
-        matrix.postMultTranslate(osg::Vec3(_eyeOffset,0.0,0.0));
-    }
-    else if (nv->getTraversalMask()==_rightMask)
-    {
-        matrix.postMultTranslate(osg::Vec3(-_eyeOffset,0.0,0.0));
-    }
-    return true;
-}
-
-bool HUDSettings::getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const
-{
-    osg::Matrix modelView;
-    getModelViewMatrix(modelView,nv);
-    matrix.invert(modelView);
-    return true;
-}
-
-
 HUDTransform::HUDTransform(HUDSettings* hudSettings):
     _hudSettings(hudSettings)
 {
@@ -389,6 +353,28 @@ void SlideShowConstructor::setSlideDuration(double duration)
     if (_slide.valid())
     {
         setDuration(_slide.get(),duration);
+    }
+}
+
+
+void SlideShowConstructor::addTimeout()
+{
+    osg::ref_ptr<osgPresentation::Timeout> timeout = new osgPresentation::Timeout(_hudSettings.get());
+    if (_currentLayer.valid()) _currentLayer->addChild(timeout.get());
+    _currentLayer = timeout.get();
+}
+
+void SlideShowConstructor::pushCurrentLayer()
+{
+    _layerStack.push_back(_currentLayer.get());
+}
+
+void SlideShowConstructor::popCurrentLayer()
+{
+    if (!_layerStack.empty())
+    {
+        _currentLayer = _layerStack.back();
+        _layerStack.pop_back();
     }
 }
 

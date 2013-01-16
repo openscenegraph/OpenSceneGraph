@@ -132,6 +132,8 @@ public:
 
     void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
+    void parseTimeout(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
+
     void parseLayer(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     void parseBullets(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
@@ -1441,6 +1443,17 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
 }
 
 
+void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
+{
+    // to allow the timeout to be nested with a Layer but still behave like a Layer itself we push the timeout as a Layer, saving the original Layer
+    constructor.pushCurrentLayer();
+
+    constructor.addTimeout();
+
+    parseLayer(constructor, cur);
+
+    constructor.popCurrentLayer(); // return the
+}
 
 
 void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* root) const
@@ -1710,6 +1723,10 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         else if (cur->name == "volume")
         {
             parseVolume(constructor, cur);
+        }
+        else if (cur->name == "timeout")
+        {
+            parseTimeout(constructor, cur);
         }
         else if (cur->name == "duration")
         {

@@ -50,14 +50,32 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 
         META_Node(osgPresentation, Timeout);
 
+        
         void setIdleDurationBeforeTimeoutDisplay(double t) { _idleDurationBeforeTimeoutDisplay = t; }
         double getIdleDurationBeforeTimeoutDisplay() const { return _idleDurationBeforeTimeoutDisplay; }
-        
+
         void setIdleDurationBeforeTimeoutAction(double t) { _idleDurationBeforeTimeoutAction = t; }
         double getIdleDurationBeforeTimeoutAction() const { return _idleDurationBeforeTimeoutAction; }
 
-        void setJumpData(const JumpData& jumpData) { _jumpData = jumpData; }
-        const JumpData& getJumpData() const { return _jumpData; }
+        
+        void setKeyStartsTimoutDisplay(int key) { _keyStartsTimoutDisplay = key; }
+        int getKeyStartsTimoutDisplay() const { return _keyStartsTimoutDisplay; }
+
+        void setKeyDismissTimoutDisplay(int key) { _keyDismissTimoutDisplay = key; }
+        int getKeyDismissTimoutDisplay() const { return _keyDismissTimoutDisplay; }
+
+        void setKeyRunTimoutAction(int key) { _keyRunTimeoutAction = key; }
+        int getKeyRunTimoutAction() const { return _keyRunTimeoutAction; }
+
+        
+        void setActionKeyPosition(const osgPresentation::KeyPosition& keyPos) { _actionKeyPos = keyPos; }
+        const osgPresentation::KeyPosition&  getActionKeyPosition() const { return _actionKeyPos; }
+
+        void setActionBroadcastKeyPosition(const osgPresentation::KeyPosition& keyPos) { _actionBroadcastKeyPos = keyPos; }
+        const osgPresentation::KeyPosition&  getActionBroadcastKeyPosition() const { return _actionBroadcastKeyPos; }
+
+        void setActionJumpData(const JumpData& jumpData) { _actionJumpData = jumpData; }
+        const JumpData& getActionJumpData() const { return _actionJumpData; }
 
         virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
 
@@ -73,10 +91,18 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 
         int     _previousFrameNumber;
         double  _timeOfLastEvent;
+        bool    _displayTimout;
+
         double  _idleDurationBeforeTimeoutDisplay;
         double  _idleDurationBeforeTimeoutAction;
 
-        JumpData _jumpData;
+        int _keyStartsTimoutDisplay;
+        int _keyDismissTimoutDisplay;
+        int _keyRunTimeoutAction;
+
+        osgPresentation::KeyPosition _actionKeyPos;
+        osgPresentation::KeyPosition _actionBroadcastKeyPos;
+        JumpData _actionJumpData;
 };
 
 }

@@ -63,8 +63,12 @@ bool HUDSettings::getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisito
 Timeout::Timeout(HUDSettings* hudSettings):
     _previousFrameNumber(-1),
     _timeOfLastEvent(0.0),
-    _idleDurationBeforeTimeoutDisplay(5.0),
-    _idleDurationBeforeTimeoutAction(6.0)
+    _displayTimout(false),
+    _idleDurationBeforeTimeoutDisplay(4.0),
+    _idleDurationBeforeTimeoutAction(8.0),
+    _keyStartsTimoutDisplay(0),
+    _keyDismissTimoutDisplay(0),
+    _keyRunTimeoutAction(0)
 {
     _hudSettings = hudSettings;
     setCullingActive(false);
@@ -101,7 +105,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
         double timeSinceLastEvent = nv.getFrameStamp() ? nv.getFrameStamp()->getReferenceTime()-_timeOfLastEvent : 0.0;
-        bool needToDisplay = (timeSinceLastEvent>_idleDurationBeforeTimeoutDisplay);
+        bool needToDisplay = _displayTimout || (timeSinceLastEvent>_idleDurationBeforeTimeoutDisplay);
 
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (needToDisplay && cv)
@@ -145,26 +149,48 @@ void Timeout::traverse(osg::NodeVisitor& nv)
         _previousFrameNumber = nv.getFrameStamp()->getFrameNumber();
 
         bool needToRecordEventTime = false;
-        
+        bool needToAction = false;
+
         if (deltaFrameNumber>1)
         {
             needToRecordEventTime = true;
         }
-        else
-        {        
-            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
-            if (ev)
+
+        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgViewer::Viewer* viewer = ev ? dynamic_cast<osgViewer::Viewer*>(ev->getActionAdapter()) : 0;
+        if (ev)
+        {
+            osgGA::EventQueue::Events& events = ev->getEvents();
+            for(osgGA::EventQueue::Events::iterator itr = events.begin();
+                itr != events.end();
+                ++itr)
             {
-                osgGA::EventQueue::Events& events = ev->getEvents();
-                for(osgGA::EventQueue::Events::iterator itr = events.begin();
-                    itr != events.end();
-                    ++itr)
+                osgGA::GUIEventAdapter* event = itr->get();
+
+                bool keyEvent = event->getEventType()==osgGA::GUIEventAdapter::KEYDOWN ||  event->getEventType()==osgGA::GUIEventAdapter::KEYUP;
+
+                if (keyEvent && event->getKey()==_keyStartsTimoutDisplay)
                 {
-                    osgGA::GUIEventAdapter* event = itr->get();
-                    if (event->getEventType()!=osgGA::GUIEventAdapter::FRAME)
-                    {
-                        needToRecordEventTime = true;
-                    }
+                    OSG_NOTICE<<"_keyStartsTimoutDisplay pressed"<<std::endl;
+                    _displayTimout = true;
+                }
+                else if (keyEvent && event->getKey()==_keyDismissTimoutDisplay)
+                {
+                    OSG_NOTICE<<"_keyDismissTimoutDisplay pressed"<<std::endl;
+                    _displayTimout = false;
+                    needToRecordEventTime = true;
+                }
+                else if (keyEvent && event->getKey()==_keyRunTimeoutAction)
+                {
+                    OSG_NOTICE<<"_keyRunTimeoutAction pressed"<<std::endl;
+                    _displayTimout = false;
+                    needToRecordEventTime = true;
+
+                    needToAction = true;
+                }
+                else if (event->getEventType()!=osgGA::GUIEventAdapter::FRAME)
+                {
+                    needToRecordEventTime = true;
                 }
             }
         }
@@ -172,24 +198,59 @@ void Timeout::traverse(osg::NodeVisitor& nv)
         if (needToRecordEventTime)
         {
             _timeOfLastEvent = nv.getFrameStamp()->getReferenceTime();
+            _displayTimout = false;
         }
         
         Transform::traverse(nv);
 
         double timeSinceLastEvent = nv.getFrameStamp() ? nv.getFrameStamp()->getReferenceTime()-_timeOfLastEvent : 0.0;
-        bool needToAction = (timeSinceLastEvent>_idleDurationBeforeTimeoutAction);
+        if (timeSinceLastEvent>_idleDurationBeforeTimeoutAction) needToAction = true;
 
         if (needToAction)
         {
-            OSG_NOTICE<<"Do action"<<std::endl;
+            OSG_NOTICE<<"Do timeout action"<<std::endl;
             _previousFrameNumber = -1;
             _timeOfLastEvent = nv.getFrameStamp()->getReferenceTime();
 
-            if (_jumpData.requiresJump())
+
+            if (_actionJumpData.requiresJump())
             {
-                OSG_NOTICE<<"Doing jump"<<std::endl;
-                _jumpData.jump(SlideEventHandler::instance());
+                OSG_NOTICE<<"Doing timeout jump"<<std::endl;
+                _actionJumpData.jump(SlideEventHandler::instance());
             }
+
+            if (_actionKeyPos._key!=0 || _actionKeyPos._x!=FLT_MAX || _actionKeyPos._y!=FLT_MAX)
+            {
+                OSG_NOTICE<<"Doing timeout key event"<<_actionKeyPos._key<<std::endl;
+                if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_actionKeyPos);
+            }
+
+            if (viewer && (_actionBroadcastKeyPos._key!=0 || _actionBroadcastKeyPos._x!=FLT_MAX || _actionBroadcastKeyPos._y!=FLT_MAX))
+            {
+                OSG_NOTICE<<"Doing timeout broadcast key event"<<_actionBroadcastKeyPos._key<<std::endl;
+
+                osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter;
+                
+                if (_actionBroadcastKeyPos._key!=0) event->setEventType(osgGA::GUIEventAdapter::KEYDOWN);
+                else event->setEventType(osgGA::GUIEventAdapter::MOVE);
+
+                if (_actionBroadcastKeyPos._key!=0) event->setKey(_actionBroadcastKeyPos._key);
+                if (_actionBroadcastKeyPos._x!=FLT_MAX) event->setX(_actionBroadcastKeyPos._x);
+                if (_actionBroadcastKeyPos._y!=FLT_MAX) event->setY(_actionBroadcastKeyPos._y);
+                
+                event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
+                // dispatch cloned event to devices
+                osgViewer::View::Devices& devices = viewer->getDevices();
+                for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
+                {
+                    if((*i)->getCapabilities() & osgGA::Device::SEND_EVENTS)
+                    {
+                        (*i)->sendEvent(*event);
+                    }
+                }
+            }
+            
         }
         
     }

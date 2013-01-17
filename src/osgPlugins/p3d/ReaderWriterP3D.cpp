@@ -1467,17 +1467,84 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
         }
         else if (cur->name == "timeout_jump")
         {
-            OSG_NOTICE<<"Parsed Jump "<<std::endl;
-
             osgPresentation::JumpData jumpData;
             if (getJumpProperties(cur, jumpData))
             {
                 OSG_NOTICE<<"Timeout Jump "<<jumpData.relativeJump<<","<< jumpData.slideNum<<", "<<jumpData.layerNum<<std::endl;
-                timeout->setJumpData(jumpData);
+                timeout->setActionJumpData(jumpData);
             }
         }
+        else if (cur->name == "timeout_event")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition))
+            {
+                OSG_NOTICE<<"timeout event ["<<keyPosition._key<<"]"<<std::endl;
+                timeout->setActionKeyPosition(keyPosition);
+            }
+        }
+        else if (cur->name == "timeout_broadcast_event")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition))
+            {
+                OSG_NOTICE<<"timeout broadcast event ["<<keyPosition._key<<"]"<<std::endl;
+                timeout->setActionBroadcastKeyPosition(keyPosition);
+            }
+        }
+        else if (cur->name == "idle_duration_before_timeout")
+        {
+            std::istringstream iss(cur->getTrimmedContents());
+            double duration;
+            iss>>duration;
+            if (!iss.fail())
+            {
+                OSG_NOTICE<<"timeout->setIdleDurationBeforeTimeoutDisplay("<<duration<<")"<<std::endl;
+                timeout->setIdleDurationBeforeTimeoutDisplay(duration);
+            }
+        }
+        else if (cur->name == "idle_duration_before_action")
+        {
+            std::istringstream iss(cur->getTrimmedContents());
+            double duration;
+            iss>>duration;
+            if (!iss.fail())
+            {
+                OSG_NOTICE<<"timeout->setIdleDurationBeforeTimeoutAction("<<duration<<")"<<std::endl;
+                timeout->setIdleDurationBeforeTimeoutAction(duration);
+            }
+        }
+        else if (cur->name == "key_starts_timeout_display")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition) && keyPosition._key!=0)
+            {
+                OSG_NOTICE<<"timeout->setKeyStartsTimoutDisplay("<<keyPosition._key<<")"<<std::endl;
+                timeout->setKeyStartsTimoutDisplay(keyPosition._key);
+            }
+        }
+        else if (cur->name == "key_dismiss_timeout_display")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition) && keyPosition._key!=0)
+            {
+                OSG_NOTICE<<"timeout->setKeyDismissTimoutDisplay("<<keyPosition._key<<")"<<std::endl;
+                timeout->setKeyDismissTimoutDisplay(keyPosition._key);
+            }
+        }
+        else if (cur->name == "key_run_action")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition) && keyPosition._key!=0)
+            {
+                OSG_NOTICE<<"timeout->setKeyRunTimoutAction("<<keyPosition._key<<")"<<std::endl;
+                timeout->setKeyRunTimoutAction(keyPosition._key);
+            }
+        }
+        
     }
 
+    
     constructor.popCurrentLayer(); // return the
 }
 

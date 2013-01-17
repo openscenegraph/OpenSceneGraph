@@ -15,7 +15,8 @@
 #define OSGPRESENTATION_TIMOUTOUT 1
 
 #include <osg/Transform>
-#include <osgPresentation/Export>
+
+#include <osgPresentation/SlideEventHandler>
 
 namespace osgPresentation {
 
@@ -55,6 +56,9 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
         void setIdleDurationBeforeTimeoutAction(double t) { _idleDurationBeforeTimeoutAction = t; }
         double getIdleDurationBeforeTimeoutAction() const { return _idleDurationBeforeTimeoutAction; }
 
+        void setJumpData(const JumpData& jumpData) { _jumpData = jumpData; }
+        const JumpData& getJumpData() const { return _jumpData; }
+
         virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
 
         virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const;
@@ -71,6 +75,8 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
         double  _timeOfLastEvent;
         double  _idleDurationBeforeTimeoutDisplay;
         double  _idleDurationBeforeTimeoutAction;
+
+        JumpData _jumpData;
 };
 
 }

@@ -1483,6 +1483,24 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
                 timeout->setActionKeyPosition(keyPosition);
             }
         }
+        else if (cur->name == "display_broadcast_event")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition))
+            {
+                OSG_NOTICE<<"display broadcast event ["<<keyPosition._key<<"]"<<std::endl;
+                timeout->setDisplayBroadcastKeyPosition(keyPosition);
+            }
+        }
+        else if (cur->name == "dismiss_broadcast_event")
+        {
+            osgPresentation::KeyPosition keyPosition;
+            if (getKeyPositionInner( cur, keyPosition))
+            {
+                OSG_NOTICE<<"dismiss broadcast event ["<<keyPosition._key<<"]"<<std::endl;
+                timeout->setDismissBroadcastKeyPosition(keyPosition);
+            }
+        }
         else if (cur->name == "timeout_broadcast_event")
         {
             osgPresentation::KeyPosition keyPosition;
@@ -1492,7 +1510,7 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
                 timeout->setActionBroadcastKeyPosition(keyPosition);
             }
         }
-        else if (cur->name == "idle_duration_before_timeout")
+        else if (cur->name == "idle_duration_before_timeout_display")
         {
             std::istringstream iss(cur->getTrimmedContents());
             double duration;
@@ -1503,7 +1521,7 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
                 timeout->setIdleDurationBeforeTimeoutDisplay(duration);
             }
         }
-        else if (cur->name == "idle_duration_before_action")
+        else if (cur->name == "idle_duration_before_timeout_action")
         {
             std::istringstream iss(cur->getTrimmedContents());
             double duration;

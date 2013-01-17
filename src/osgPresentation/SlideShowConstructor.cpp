@@ -357,11 +357,12 @@ void SlideShowConstructor::setSlideDuration(double duration)
 }
 
 
-void SlideShowConstructor::addTimeout()
+Timeout* SlideShowConstructor::addTimeout()
 {
     osg::ref_ptr<osgPresentation::Timeout> timeout = new osgPresentation::Timeout(_hudSettings.get());
     if (_currentLayer.valid()) _currentLayer->addChild(timeout.get());
     _currentLayer = timeout.get();
+    return timeout.release();
 }
 
 void SlideShowConstructor::pushCurrentLayer()

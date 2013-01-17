@@ -381,7 +381,7 @@ public:
 
     void setSlideDuration(double duration);
 
-    void addTimeout();
+    Timeout* addTimeout();
 
     void addLayer(bool inheritPreviousLayers=true, bool defineAsBaseLayer=false);
 

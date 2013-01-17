@@ -184,6 +184,12 @@ void Timeout::traverse(osg::NodeVisitor& nv)
             OSG_NOTICE<<"Do action"<<std::endl;
             _previousFrameNumber = -1;
             _timeOfLastEvent = nv.getFrameStamp()->getReferenceTime();
+
+            if (_jumpData.requiresJump())
+            {
+                OSG_NOTICE<<"Doing jump"<<std::endl;
+                _jumpData.jump(SlideEventHandler::instance());
+            }
         }
         
     }

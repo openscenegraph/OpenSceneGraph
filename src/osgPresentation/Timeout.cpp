@@ -64,8 +64,8 @@ Timeout::Timeout(HUDSettings* hudSettings):
     _previousFrameNumber(-1),
     _timeOfLastEvent(0.0),
     _displayTimout(false),
-    _idleDurationBeforeTimeoutDisplay(4.0),
-    _idleDurationBeforeTimeoutAction(8.0),
+    _idleDurationBeforeTimeoutDisplay(DBL_MAX),
+    _idleDurationBeforeTimeoutAction(DBL_MAX),
     _keyStartsTimoutDisplay(0),
     _keyDismissTimoutDisplay(0),
     _keyRunTimeoutAction(0)

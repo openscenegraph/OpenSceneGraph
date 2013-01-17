@@ -68,6 +68,12 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
         int getKeyRunTimoutAction() const { return _keyRunTimeoutAction; }
 
         
+        void setDisplayBroadcastKeyPosition(const osgPresentation::KeyPosition& keyPos) { _displayBroadcastKeyPos = keyPos; }
+        const osgPresentation::KeyPosition&  getDisplayBroadcastKeyPosition() const { return _displayBroadcastKeyPos; }
+
+        void setDismissBroadcastKeyPosition(const osgPresentation::KeyPosition& keyPos) { _dismissBroadcastKeyPos = keyPos; }
+        const osgPresentation::KeyPosition&  getDismissBroadcastKeyPosition() const { return _dismissBroadcastKeyPos; }
+
         void setActionKeyPosition(const osgPresentation::KeyPosition& keyPos) { _actionKeyPos = keyPos; }
         const osgPresentation::KeyPosition&  getActionKeyPosition() const { return _actionKeyPos; }
 
@@ -87,11 +93,13 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 
         virtual ~Timeout();
 
+        void broadcastEvent(osgViewer::Viewer* viewer, const osgPresentation::KeyPosition& keyPos);
+
         osg::ref_ptr<HUDSettings> _hudSettings;
 
         int     _previousFrameNumber;
         double  _timeOfLastEvent;
-        bool    _displayTimout;
+        bool    _displayTimeout;
 
         double  _idleDurationBeforeTimeoutDisplay;
         double  _idleDurationBeforeTimeoutAction;
@@ -99,6 +107,9 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
         int _keyStartsTimoutDisplay;
         int _keyDismissTimoutDisplay;
         int _keyRunTimeoutAction;
+
+        osgPresentation::KeyPosition _displayBroadcastKeyPos;
+        osgPresentation::KeyPosition _dismissBroadcastKeyPos;
 
         osgPresentation::KeyPosition _actionKeyPos;
         osgPresentation::KeyPosition _actionBroadcastKeyPos;

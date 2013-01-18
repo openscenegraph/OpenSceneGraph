@@ -935,6 +935,8 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         if (str=="PRE_LOAD_ALL_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PRE_LOAD_ALL_IMAGES;
         else if (str=="PAGE_AND_RETAIN_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PAGE_AND_RETAIN_IMAGES;
         else if (str=="PAGE_AND_DISCARD_USED_IMAGES") value.imageSequencePagingMode = osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES;
+        else if (str=="LOAD_AND_RETAIN_IN_UPDATE_TRAVERSAL") value.imageSequencePagingMode = osg::ImageSequence::LOAD_AND_RETAIN_IN_UPDATE_TRAVERSAL;
+        else if (str=="LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL") value.imageSequencePagingMode = osg::ImageSequence::LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL;
 
         OSG_NOTIFY(_notifyLevel)<<"read imageSequencePagingMode \""<<value.imageSequencePagingMode<<"\""<<std::endl;
     }

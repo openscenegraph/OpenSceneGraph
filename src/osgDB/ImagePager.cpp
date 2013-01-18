@@ -323,9 +323,10 @@ int ImagePager::cancel()
     return result;
 }
 
-osg::Image* ImagePager::readImageFile(const std::string& fileName)
+osg::Image* ImagePager::readImageFile(const std::string& fileName, const osg::Referenced* options)
 {
-    return osgDB::readImageFile(fileName);
+    osgDB::Options* readOptions = dynamic_cast<osgDB::Options*>(const_cast<osg::Referenced*>(options));
+    return osgDB::readImageFile(fileName, readOptions);
 }
 
 void ImagePager::requestImageFile(const std::string& fileName, osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options)

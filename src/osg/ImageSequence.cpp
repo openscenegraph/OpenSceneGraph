@@ -313,7 +313,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             if (!(itr->_image) && !(itr->_filename.empty()))
             {
-                itr->_image = irh->readImageFile(itr->_filename);
+                itr->_image = irh->readImageFile(itr->_filename, _readOptions.get());
             }
         }
     }
@@ -368,7 +368,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
              if (loadDirectly)
              {
                  OSG_NOTICE<<"Reading file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
-                 osg::ref_ptr<osg::Image> image = irh->readImageFile(_imageDataList[i]._filename); // TODO, need _readOptions object.
+                 osg::ref_ptr<osg::Image> image = irh->readImageFile(_imageDataList[i]._filename, _readOptions.get());
                  if (image.valid())
                  {
                      OSG_NOTICE<<"   Assigning image "<<_imageDataList[i]._filename<<std::endl;

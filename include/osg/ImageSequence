@@ -73,7 +73,9 @@ class OSG_EXPORT ImageSequence : public ImageStream
         {
             PRE_LOAD_ALL_IMAGES,
             PAGE_AND_RETAIN_IMAGES,
-            PAGE_AND_DISCARD_USED_IMAGES
+            PAGE_AND_DISCARD_USED_IMAGES,
+            LOAD_AND_RETAIN_IN_UPDATE_TRAVERSAL,
+            LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL
         };
 
         void setMode(Mode mode);
@@ -135,6 +137,8 @@ protected:
 
         int imageIndex(double time);
 
+        // setImage without aquiring mutex.
+        void _setImage(unsigned int pos, osg::Image* image);
 
         double                          _referenceTime;
         double                          _timeMultiplier;

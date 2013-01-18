@@ -148,6 +148,11 @@ void ImageSequence::setImage(unsigned int pos, osg::Image* image)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
+    _setImage(pos,image);
+}
+
+void ImageSequence::_setImage(unsigned int pos, osg::Image* image)
+{
     if (pos>=_imageDataList.size()) _imageDataList.resize(pos+1);
 
     _imageDataList[pos]._image = image;
@@ -196,8 +201,8 @@ void ImageSequence::setImageToChild(int pos)
         return;
     }
 
-
-    if (_mode==PAGE_AND_DISCARD_USED_IMAGES && _previousAppliedImageIndex>=0)
+    bool discardOldImages = _mode==PAGE_AND_DISCARD_USED_IMAGES || _mode==LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL;
+    if (discardOldImages && _previousAppliedImageIndex>=0)
     {
         if (_previousAppliedImageIndex<pos)
         {
@@ -351,6 +356,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     if (!irh) return;
 
+    bool loadDirectly = (_mode==LOAD_AND_RETAIN_IN_UPDATE_TRAVERSAL) || (_mode==LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL);
+    
     if (useDirectTimeRequest)
     {
         int i = osg::maximum<int>(0, int(time/_timePerImage));
@@ -358,8 +365,26 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
              i = osg::minimum<int>(i, _imageDataList.size()-1);
 
-             OSG_INFO<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
-             irh->requestImageFile(_imageDataList[i]._filename, this, i, time, fs, _imageDataList[i]._imageRequest, _readOptions.get());
+             if (loadDirectly)
+             {
+                 OSG_NOTICE<<"Reading file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
+                 osg::ref_ptr<osg::Image> image = irh->readImageFile(_imageDataList[i]._filename); // TODO, need _readOptions object.
+                 if (image.valid())
+                 {
+                     OSG_NOTICE<<"   Assigning image "<<_imageDataList[i]._filename<<std::endl;
+                     _setImage(i, image);
+                     setImageToChild(i);
+                 }
+                 else
+                 {
+                    OSG_NOTICE<<"   Failed to read file "<<_imageDataList[i]._filename<<std::endl;
+                 }
+             }
+             else
+             {
+                OSG_NOTICE<<"Requesting file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
+                irh->requestImageFile(_imageDataList[i]._filename, this, i, time, fs, _imageDataList[i]._imageRequest, _readOptions.get());
+             }
         }
     }
     else

@@ -2124,17 +2124,33 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             if (cur->name == "base")
             {
                 constructor.addLayer(true, true);
+                std::string inherit;
+                if (getProperty(cur, "inherit", inherit) && !inherit.empty() && _templateMap.count(inherit)!=0)
+                {
+                    parseLayer(constructor, _templateMap[inherit].get());
+                }
                 parseLayer (constructor, cur);
 
             }
             else if (cur->name == "layer")
             {
                 constructor.addLayer(true, false);
+                std::string inherit;
+                if (getProperty(cur, "inherit", inherit) && !inherit.empty() && _templateMap.count(inherit)!=0)
+                {
+                    parseLayer(constructor, _templateMap[inherit].get());
+                }
+                
                 parseLayer (constructor, cur);
             }
             else if (cur->name == "clean_layer")
             {
                 constructor.addLayer(false, false);
+                std::string inherit;
+                if (getProperty(cur, "inherit", inherit) && !inherit.empty() && _templateMap.count(inherit)!=0)
+                {
+                    parseLayer(constructor, _templateMap[inherit].get());
+                }
                 parseLayer (constructor, cur);
             }
             else if (cur->name == "modify_layer")
@@ -2879,6 +2895,15 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             {
                 _templateMap[name] = cur;
                 std::cout<<"Defining template slide "<<name<<std::endl;
+            }
+        }
+        else if (!readOnlyHoldingPage && cur->name == "template_layer")
+        {
+            std::string name;
+            if (getProperty(cur, "name", name))
+            {
+                _templateMap[name] = cur;
+                std::cout<<"Defining template layer "<<name<<std::endl;
             }
         }
         else if (!readOnlyHoldingPage && cur->name == "property_animation")

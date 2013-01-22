@@ -1,6 +1,7 @@
 #include "OSXAVFoundationVideo.h"
 
-#include <osgdB/FileNameUtils>
+#include <osgDB/FileNameUtils>
+#include <osg/ValueObject>
 #include <iostream>
 #include <deque>
 
@@ -14,6 +15,7 @@
 #include <osgViewer/api/Cocoa/GraphicsWindowCocoa>
 #endif
 #include "OSXAVFoundationCoreVideoTexture.h"
+
 
 
 namespace {
@@ -353,8 +355,27 @@ void OSXAVFoundationVideo::open(const std::string& filename)
         AVAssetTrack* track = [tracks objectAtIndex:i];
         size = track.naturalSize;
         _framerate = track.nominalFrameRate;
+
+        CGAffineTransform txf = [track preferredTransform];
+
+        osg::Matrixf mat;
+        mat.makeIdentity();
+
+        if(!CGAffineTransformIsIdentity(txf))
+        {
+            // user should take this into account and transform accordingly...
+            mat(0,0) = txf.a;
+            mat(1,0) = txf.c;
+            mat(3,0) = txf.tx;
+
+            mat(0,1) = txf.b;
+            mat(1,1) = txf.d;
+            mat(3,1) = txf.ty;
+        }
+
+        this->setUserValue("preferredTransform", mat);
     }
-    
+
     _s = size.width;
     _t = size.height;
     _r = 1;

@@ -1355,7 +1355,8 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
     {
         // only remove empty groups, but not empty occluders.
         if (group.getNumChildren()==0 && isOperationPermissibleForObject(&group) &&
-            (typeid(group)==typeid(osg::Group) || (dynamic_cast<osg::Transform*>(&group) && !dynamic_cast<osg::CameraView*>(&group))))
+            (typeid(group)==typeid(osg::Group) || (dynamic_cast<osg::Transform*>(&group) && !dynamic_cast<osg::CameraView*>(&group))) &&
+            (group.getNumChildrenRequiringUpdateTraversal()==0 && group.getNumChildrenRequiringEventTraversal()==0) )
         {
             _redundantNodeList.insert(&group);
         }

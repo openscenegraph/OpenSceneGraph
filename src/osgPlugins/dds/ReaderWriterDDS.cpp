@@ -241,6 +241,147 @@ struct DXT1TexelsBlock
 #define FOURCC_ATI1  (MAKEFOURCC('A','T','I','1'))
 #define FOURCC_ATI2  (MAKEFOURCC('A','T','I','2'))
 
+/*
+* FOURCC codes for DX10 files
+*/
+#define FOURCC_DX10  (MAKEFOURCC('D','X','1','0'))
+
+typedef enum OSG_DXGI_FORMAT { 
+  OSG_DXGI_FORMAT_UNKNOWN                     = 0,
+  OSG_DXGI_FORMAT_R32G32B32A32_TYPELESS       = 1,
+  OSG_DXGI_FORMAT_R32G32B32A32_FLOAT          = 2,
+  OSG_DXGI_FORMAT_R32G32B32A32_UINT           = 3,
+  OSG_DXGI_FORMAT_R32G32B32A32_SINT           = 4,
+  OSG_DXGI_FORMAT_R32G32B32_TYPELESS          = 5,
+  OSG_DXGI_FORMAT_R32G32B32_FLOAT             = 6,
+  OSG_DXGI_FORMAT_R32G32B32_UINT              = 7,
+  OSG_DXGI_FORMAT_R32G32B32_SINT              = 8,
+  OSG_DXGI_FORMAT_R16G16B16A16_TYPELESS       = 9,
+  OSG_DXGI_FORMAT_R16G16B16A16_FLOAT          = 10,
+  OSG_DXGI_FORMAT_R16G16B16A16_UNORM          = 11,
+  OSG_DXGI_FORMAT_R16G16B16A16_UINT           = 12,
+  OSG_DXGI_FORMAT_R16G16B16A16_SNORM          = 13,
+  OSG_DXGI_FORMAT_R16G16B16A16_SINT           = 14,
+  OSG_DXGI_FORMAT_R32G32_TYPELESS             = 15,
+  OSG_DXGI_FORMAT_R32G32_FLOAT                = 16,
+  OSG_DXGI_FORMAT_R32G32_UINT                 = 17,
+  OSG_DXGI_FORMAT_R32G32_SINT                 = 18,
+  OSG_DXGI_FORMAT_R32G8X24_TYPELESS           = 19,
+  OSG_DXGI_FORMAT_D32_FLOAT_S8X24_UINT        = 20,
+  OSG_DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS    = 21,
+  OSG_DXGI_FORMAT_X32_TYPELESS_G8X24_UINT     = 22,
+  OSG_DXGI_FORMAT_R10G10B10A2_TYPELESS        = 23,
+  OSG_DXGI_FORMAT_R10G10B10A2_UNORM           = 24,
+  OSG_DXGI_FORMAT_R10G10B10A2_UINT            = 25,
+  OSG_DXGI_FORMAT_R11G11B10_FLOAT             = 26,
+  OSG_DXGI_FORMAT_R8G8B8A8_TYPELESS           = 27,
+  OSG_DXGI_FORMAT_R8G8B8A8_UNORM              = 28,
+  OSG_DXGI_FORMAT_R8G8B8A8_UNORM_SRGB         = 29,
+  OSG_DXGI_FORMAT_R8G8B8A8_UINT               = 30,
+  OSG_DXGI_FORMAT_R8G8B8A8_SNORM              = 31,
+  OSG_DXGI_FORMAT_R8G8B8A8_SINT               = 32,
+  OSG_DXGI_FORMAT_R16G16_TYPELESS             = 33,
+  OSG_DXGI_FORMAT_R16G16_FLOAT                = 34,
+  OSG_DXGI_FORMAT_R16G16_UNORM                = 35,
+  OSG_DXGI_FORMAT_R16G16_UINT                 = 36,
+  OSG_DXGI_FORMAT_R16G16_SNORM                = 37,
+  OSG_DXGI_FORMAT_R16G16_SINT                 = 38,
+  OSG_DXGI_FORMAT_R32_TYPELESS                = 39,
+  OSG_DXGI_FORMAT_D32_FLOAT                   = 40,
+  OSG_DXGI_FORMAT_R32_FLOAT                   = 41,
+  OSG_DXGI_FORMAT_R32_UINT                    = 42,
+  OSG_DXGI_FORMAT_R32_SINT                    = 43,
+  OSG_DXGI_FORMAT_R24G8_TYPELESS              = 44,
+  OSG_DXGI_FORMAT_D24_UNORM_S8_UINT           = 45,
+  OSG_DXGI_FORMAT_R24_UNORM_X8_TYPELESS       = 46,
+  OSG_DXGI_FORMAT_X24_TYPELESS_G8_UINT        = 47,
+  OSG_DXGI_FORMAT_R8G8_TYPELESS               = 48,
+  OSG_DXGI_FORMAT_R8G8_UNORM                  = 49,
+  OSG_DXGI_FORMAT_R8G8_UINT                   = 50,
+  OSG_DXGI_FORMAT_R8G8_SNORM                  = 51,
+  OSG_DXGI_FORMAT_R8G8_SINT                   = 52,
+  OSG_DXGI_FORMAT_R16_TYPELESS                = 53,
+  OSG_DXGI_FORMAT_R16_FLOAT                   = 54,
+  OSG_DXGI_FORMAT_D16_UNORM                   = 55,
+  OSG_DXGI_FORMAT_R16_UNORM                   = 56,
+  OSG_DXGI_FORMAT_R16_UINT                    = 57,
+  OSG_DXGI_FORMAT_R16_SNORM                   = 58,
+  OSG_DXGI_FORMAT_R16_SINT                    = 59,
+  OSG_DXGI_FORMAT_R8_TYPELESS                 = 60,
+  OSG_DXGI_FORMAT_R8_UNORM                    = 61,
+  OSG_DXGI_FORMAT_R8_UINT                     = 62,
+  OSG_DXGI_FORMAT_R8_SNORM                    = 63,
+  OSG_DXGI_FORMAT_R8_SINT                     = 64,
+  OSG_DXGI_FORMAT_A8_UNORM                    = 65,
+  OSG_DXGI_FORMAT_R1_UNORM                    = 66,
+  OSG_DXGI_FORMAT_R9G9B9E5_SHAREDEXP          = 67,
+  OSG_DXGI_FORMAT_R8G8_B8G8_UNORM             = 68,
+  OSG_DXGI_FORMAT_G8R8_G8B8_UNORM             = 69,
+  OSG_DXGI_FORMAT_BC1_TYPELESS                = 70,
+  OSG_DXGI_FORMAT_BC1_UNORM                   = 71,
+  OSG_DXGI_FORMAT_BC1_UNORM_SRGB              = 72,
+  OSG_DXGI_FORMAT_BC2_TYPELESS                = 73,
+  OSG_DXGI_FORMAT_BC2_UNORM                   = 74,
+  OSG_DXGI_FORMAT_BC2_UNORM_SRGB              = 75,
+  OSG_DXGI_FORMAT_BC3_TYPELESS                = 76,
+  OSG_DXGI_FORMAT_BC3_UNORM                   = 77,
+  OSG_DXGI_FORMAT_BC3_UNORM_SRGB              = 78,
+  OSG_DXGI_FORMAT_BC4_TYPELESS                = 79,
+  OSG_DXGI_FORMAT_BC4_UNORM                   = 80,
+  OSG_DXGI_FORMAT_BC4_SNORM                   = 81,
+  OSG_DXGI_FORMAT_BC5_TYPELESS                = 82,
+  OSG_DXGI_FORMAT_BC5_UNORM                   = 83,
+  OSG_DXGI_FORMAT_BC5_SNORM                   = 84,
+  OSG_DXGI_FORMAT_B5G6R5_UNORM                = 85,
+  OSG_DXGI_FORMAT_B5G5R5A1_UNORM              = 86,
+  OSG_DXGI_FORMAT_B8G8R8A8_UNORM              = 87,
+  OSG_DXGI_FORMAT_B8G8R8X8_UNORM              = 88,
+  OSG_DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM  = 89,
+  OSG_DXGI_FORMAT_B8G8R8A8_TYPELESS           = 90,
+  OSG_DXGI_FORMAT_B8G8R8A8_UNORM_SRGB         = 91,
+  OSG_DXGI_FORMAT_B8G8R8X8_TYPELESS           = 92,
+  OSG_DXGI_FORMAT_B8G8R8X8_UNORM_SRGB         = 93,
+  OSG_DXGI_FORMAT_BC6H_TYPELESS               = 94,
+  OSG_DXGI_FORMAT_BC6H_UF16                   = 95,
+  OSG_DXGI_FORMAT_BC6H_SF16                   = 96,
+  OSG_DXGI_FORMAT_BC7_TYPELESS                = 97,
+  OSG_DXGI_FORMAT_BC7_UNORM                   = 98,
+  OSG_DXGI_FORMAT_BC7_UNORM_SRGB              = 99,
+  OSG_DXGI_FORMAT_AYUV                        = 100,
+  OSG_DXGI_FORMAT_Y410                        = 101,
+  OSG_DXGI_FORMAT_Y416                        = 102,
+  OSG_DXGI_FORMAT_NV12                        = 103,
+  OSG_DXGI_FORMAT_P010                        = 104,
+  OSG_DXGI_FORMAT_P016                        = 105,
+  OSG_DXGI_FORMAT_420_OPAQUE                  = 106,
+  OSG_DXGI_FORMAT_YUY2                        = 107,
+  OSG_DXGI_FORMAT_Y210                        = 108,
+  OSG_DXGI_FORMAT_Y216                        = 109,
+  OSG_DXGI_FORMAT_NV11                        = 110,
+  OSG_DXGI_FORMAT_AI44                        = 111,
+  OSG_DXGI_FORMAT_IA44                        = 112,
+  OSG_DXGI_FORMAT_P8                          = 113,
+  OSG_DXGI_FORMAT_A8P8                        = 114,
+  OSG_DXGI_FORMAT_B4G4R4A4_UNORM              = 115,
+  OSG_DXGI_FORMAT_FORCE_UINT                  = 0xffffffffUL
+} OSG_DXGI_FORMAT;
+
+typedef enum OSG_D3D10_RESOURCE_DIMENSION { 
+  OSG_D3D10_RESOURCE_DIMENSION_UNKNOWN    = 0,
+  OSG_D3D10_RESOURCE_DIMENSION_BUFFER     = 1,
+  OSG_D3D10_RESOURCE_DIMENSION_TEXTURE1D  = 2,
+  OSG_D3D10_RESOURCE_DIMENSION_TEXTURE2D  = 3,
+  OSG_D3D10_RESOURCE_DIMENSION_TEXTURE3D  = 4
+} OSG_D3D10_RESOURCE_DIMENSION;
+
+typedef struct {
+  OSG_DXGI_FORMAT              dxgiFormat;
+  OSG_D3D10_RESOURCE_DIMENSION resourceDimension;
+  UI32                     miscFlag;
+  UI32                     arraySize;
+  UI32                     reserved;
+} OSG_DDS_HEADER_DXT10;
+
 static unsigned int ComputeImageSizeInBytes
     ( int width, int height, int depth,
       unsigned int pixelFormat, unsigned int pixelType,
@@ -594,6 +735,208 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         case 0x00000075: // CxV8U8
             OSG_INFO << "ReadDDSFile info : CxV8U8 format is not supported" << std::endl;
             return NULL;
+
+        case FOURCC_DX10:
+            OSG_INFO << "ReadDDSFile info : format = DX10 file" << std::endl;
+            {
+                OSG_DDS_HEADER_DXT10 header10;
+                _istream.read((char*)(&header10), sizeof(header10));
+                switch (header10.dxgiFormat) {
+                case OSG_DXGI_FORMAT_R32G32B32A32_FLOAT:
+                    internalFormat = GL_RGBA32F_ARB;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32B32A32_UINT:
+                    internalFormat = GL_RGBA32UI_EXT;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_UNSIGNED_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32B32A32_SINT:
+                    internalFormat = GL_RGBA32I_EXT;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32B32_FLOAT:
+                    internalFormat = GL_RGB32F_ARB;
+                    pixelFormat    = GL_RGB;
+                    dataType       = GL_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32B32_UINT:
+                    internalFormat = GL_RGB32UI_EXT;
+                    pixelFormat    = GL_RGB;
+                    dataType       = GL_UNSIGNED_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32B32_SINT:
+                    internalFormat = GL_RGB32I_EXT;
+                    pixelFormat    = GL_RGB;
+                    dataType       = GL_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16B16A16_FLOAT:
+                    internalFormat = GL_RGBA16F_ARB;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_HALF_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16B16A16_UNORM:
+                    internalFormat = GL_RGBA16;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16B16A16_UINT:
+                    internalFormat = GL_RGBA16UI_EXT;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16B16A16_SNORM:
+                    internalFormat = GL_RGBA16_SNORM;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16B16A16_SINT:
+                    internalFormat = GL_RGBA16I_EXT;
+                    pixelFormat    = GL_RGBA;
+                    dataType       = GL_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32_FLOAT:
+                    internalFormat = GL_RG32F;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32_UINT:
+                    internalFormat = GL_RG32UI;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32G32_SINT:
+                    internalFormat = GL_RG32I;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16_FLOAT:
+                    internalFormat = GL_RG16F;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_HALF_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16_UNORM:
+                    internalFormat = GL_RG16;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16_UINT:
+                    internalFormat = GL_RG16UI;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16_SNORM:
+                    internalFormat = GL_RG16_SNORM;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16G16_SINT:
+                    internalFormat = GL_RG16I;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32_FLOAT:
+                    internalFormat = GL_R32F;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32_UINT:
+                    internalFormat = GL_R32UI;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_UNSIGNED_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R32_SINT:
+                    internalFormat = GL_R32I;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_INT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R8G8_UNORM:
+                    internalFormat = GL_RG;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_BYTE;
+                    break;
+
+                case OSG_DXGI_FORMAT_R8G8_UINT:
+                    internalFormat = GL_RG8UI;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_UNSIGNED_BYTE;
+                    break;
+
+                case OSG_DXGI_FORMAT_R8G8_SNORM:
+                    internalFormat = GL_RG_SNORM;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_BYTE;
+                    break;
+
+                case OSG_DXGI_FORMAT_R8G8_SINT:
+                    internalFormat = GL_RG8I;
+                    pixelFormat    = GL_RG;
+                    dataType       = GL_BYTE;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16_FLOAT:
+                    internalFormat = GL_R16F;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_HALF_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16_UNORM:
+                    internalFormat = GL_RED;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_HALF_FLOAT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16_UINT:
+                    internalFormat = GL_R16UI;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_UNSIGNED_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16_SNORM:
+                    internalFormat = GL_RED_SNORM;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_SHORT;
+                    break;
+
+                case OSG_DXGI_FORMAT_R16_SINT:
+                    internalFormat = GL_R16I;
+                    pixelFormat    = GL_RED;
+                    dataType       = GL_SHORT;
+                    break;
+
+                default:
+                    OSG_WARN << "ReadDDSFile warning: unhandled DX10 pixel format 0x"
+                             << std::hex << std::setw(8) << std::setfill('0')
+                             << header10.dxgiFormat << std::dec
+                             << " in dds file, image not loaded." << std::endl;
+                    return NULL;
+                }
+            }
+            break;
 
         case MAKEFOURCC( 'U', 'Y', 'V', 'Y' ): // not supported in OSG
         case MAKEFOURCC( 'U', 'Y', 'V', '2' ): // not supported in OSG

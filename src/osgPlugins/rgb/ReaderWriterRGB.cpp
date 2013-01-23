@@ -481,18 +481,19 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             int s = raw->sizeX;
             int t = raw->sizeY;
             int r = 1;
-
-        #if 0
-            int internalFormat = raw->sizeZ == 3 ? GL_RGB5 :
-            raw->sizeZ == 4 ? GL_RGB5_A1 : GL_RGB;
-        #else
-            int internalFormat = raw->sizeZ;
-        #endif
+        
             unsigned int pixelFormat =
                 raw->sizeZ == 1 ? GL_LUMINANCE :
                 raw->sizeZ == 2 ? GL_LUMINANCE_ALPHA :
                 raw->sizeZ == 3 ? GL_RGB :
                 raw->sizeZ == 4 ? GL_RGBA : (GLenum)-1;
+        #if 0
+            int internalFormat = raw->sizeZ == 3 ? GL_RGB5 :
+            raw->sizeZ == 4 ? GL_RGB5_A1 : GL_RGB;
+        #else
+            int internalFormat = pixelFormat;
+        #endif
+
 
             unsigned int dataType = raw->bpc == 1 ? GL_UNSIGNED_BYTE :
               GL_UNSIGNED_SHORT;

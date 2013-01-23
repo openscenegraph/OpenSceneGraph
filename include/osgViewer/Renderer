@@ -69,6 +69,8 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
 
         virtual void release();
 
+        virtual void reset();
+
         /** Force update of state associated with cameras. */
         void setCameraRequiresSetUp(bool flag);
         bool getCameraRequiresSetUp() const;
@@ -100,6 +102,9 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
 
             /** Release any thread waiting on the queue, even if the queue is empty. */
             void release();
+
+            /** Reset to fefault state (_isReleased = false)*/
+            void reset();
 
             /** Take a SceneView from the queue. Can return 0 if release() is called when the queue is empty. */
             osgUtil::SceneView* takeFront();

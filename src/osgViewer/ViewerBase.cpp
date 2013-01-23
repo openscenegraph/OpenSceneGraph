@@ -336,6 +336,7 @@ void ViewerBase::startThreading()
         {
             renderer->setGraphicsThreadDoesCull(graphicsThreadsDoesCull);
             renderer->setDone(false);
+            renderer->reset();
             ++numViewerDoubleBufferedRenderingOperation;
         }
     }

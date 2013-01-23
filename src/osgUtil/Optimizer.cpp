@@ -4631,6 +4631,8 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         if(parent_group)
         {
             parent_group->replaceChild(&group, new_group);
+            // also replace the node in the nodepath
+            _nodePath[nodepathsize-1] = new_group;
             // traverse the new Group
             traverse(*(new_group));
         }
@@ -4672,6 +4674,8 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         if(parent_group)
         {
             parent_group->replaceChild(&transform, group.get());
+            // also replace the node in the nodepath
+            _nodePath[nodepathsize-1] = group;
             // traverse the new Group
             traverse(*(group.get()));
         }
@@ -4706,7 +4710,8 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         if(parent_group)
         {
             parent_group->replaceChild(&lod, new_lod.get());
-
+            // also replace the node in the nodepath
+            _nodePath[nodepathsize-1] = new_lod;
             // move center point
             if(!_matrixStack.empty())
                 new_lod->setCenter(new_lod->getCenter() * _matrixStack.back());

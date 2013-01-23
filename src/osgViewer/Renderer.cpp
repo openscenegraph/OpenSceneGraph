@@ -304,6 +304,13 @@ void Renderer::ThreadSafeQueue::release()
     _cond.broadcast();
 }
 
+void Renderer::ThreadSafeQueue::reset()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    _queue.clear();
+    _isReleased = false;
+}
+
 osgUtil::SceneView* Renderer::ThreadSafeQueue::takeFront()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -900,6 +907,13 @@ void Renderer::release()
 
     _availableQueue.release();
     _drawQueue.release();
+}
+
+void Renderer::reset(){
+    _availableQueue.reset();
+    _availableQueue.add(_sceneView[0].get());
+    _availableQueue.add(_sceneView[1].get());
+    _drawQueue.reset();
 }
 
 void Renderer::setCameraRequiresSetUp(bool flag)

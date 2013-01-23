@@ -620,7 +620,7 @@ void IncrementalCompileOperation::remove(CompileSet* compileSet)
         {
             if (*itr == compileSet)
             {
-                _toCompile.erase(itr);
+                _compiled.erase(itr);
                 return;
             }
         }

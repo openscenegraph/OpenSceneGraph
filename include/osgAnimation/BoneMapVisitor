@@ -27,7 +27,7 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT BoneMapVisitor : public osg::NodeVisitor
     {
     public:
-        META_NodeVisitor("osgAnimation","BoneMapVisitor")
+        META_NodeVisitor(osgAnimation, BoneMapVisitor)
         BoneMapVisitor();
 
         void apply(osg::Node&);

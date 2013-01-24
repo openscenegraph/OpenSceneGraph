@@ -44,7 +44,7 @@ class CameraView;
 
 const unsigned int UNINITIALIZED_FRAME_NUMBER=0xffffffff;
 
-#define META_NodeVisitor(library,name) \
+#define META_NodeVisitor(library, name) \
         virtual const char* libraryName() const { return #library; }\
         virtual const char* className() const { return #name; }
 

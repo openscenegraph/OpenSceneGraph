@@ -30,7 +30,7 @@ namespace osgAnimation
     public:
         LinkVisitor();
 
-        META_NodeVisitor("osgAnimation","LinkVisitor");
+        META_NodeVisitor(osgAnimation, LinkVisitor);
 
         void apply(osg::Node& node);
         void apply(osg::Geode& node);

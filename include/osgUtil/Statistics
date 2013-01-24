@@ -181,7 +181,7 @@ public:
 
     StatsVisitor();
 
-    META_NodeVisitor("osgUtil","StatsVisitor")
+    META_NodeVisitor(osgUtil, StatsVisitor)
 
     virtual void reset();
 

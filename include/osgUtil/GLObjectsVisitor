@@ -54,7 +54,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
           */
         GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES|CHECK_BLACK_LISTED_MODES);
 
-        META_NodeVisitor("osg","GLObjectsVisitor")
+        META_NodeVisitor(osgUtil, GLObjectsVisitor)
 
         virtual void reset()
         {

@@ -41,7 +41,7 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         UpdateVisitor();
         virtual ~UpdateVisitor();
 
-        META_NodeVisitor("osgUtil","UpdateVisitor")
+        META_NodeVisitor(osgUtil, UpdateVisitor)
 
         virtual void reset();
 

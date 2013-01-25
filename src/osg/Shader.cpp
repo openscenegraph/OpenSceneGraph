@@ -330,6 +330,7 @@ const char* Shader::getTypename() const
         case TESSEVALUATION: return "TESSEVALUATION";
         case GEOMETRY:  return "GEOMETRY";
         case FRAGMENT:  return "FRAGMENT";
+        case COMPUTE:  return "COMPUTE";
         default:        return "UNDEFINED";
     }
 }
@@ -342,6 +343,7 @@ Shader::Type Shader::getTypeId( const std::string& tname )
     if( tname == "TESSEVALUATION") return TESSEVALUATION;
     if( tname == "GEOMETRY" )   return GEOMETRY;
     if( tname == "FRAGMENT" )   return FRAGMENT;
+    if( tname == "COMPUTE" )   return COMPUTE;
     return UNDEFINED;
 }
 

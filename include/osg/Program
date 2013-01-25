@@ -101,6 +101,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         void setParameterfv( GLenum pname, const GLfloat* value );
         const GLfloat* getParameterfv( GLenum pname ) const;
+        
+        /** Set/get compute shader work groups */
+        void setComputeGroups( GLint numGroupsX, GLint numGroupsY, GLint numGroupsZ );
+        void getComputeGroups( GLint& numGroupsX, GLint& numGroupsY, GLint& numGroupsZ ) const;
 
         /** Add an attribute location binding. */
         void addBindAttribLocation( const std::string& name, GLuint index );
@@ -388,6 +392,11 @@ class OSG_EXPORT Program : public osg::StateAttribute
         // todo add tessellation default level
         //GLfloat _patchDefaultInnerLevel[2];
         //GLfloat _patchDefaultOuterLevel[4];
+        
+        /** Parameter maintained with glDispatchCompute */
+        GLint _numGroupsX;
+        GLint _numGroupsY;
+        GLint _numGroupsZ;
 
     private:
         Program& operator=(const Program&);        // disallowed

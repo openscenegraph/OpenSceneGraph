@@ -23,6 +23,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("glsl","OpenGL Shader Language format");
             supportsExtension("tctrl","OpenGL Shader Language format");
             supportsExtension("teval","OpenGL Shader Language format");
+            supportsExtension("compute","OpenGL Shader Language format");
         }
 
         virtual const char* className() const { return "GLSL Shader Reader"; }
@@ -100,6 +101,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 if (options->getOptionString().find("geometry")!=std::string::npos) shader->setType(osg::Shader::GEOMETRY);
                 if (options->getOptionString().find("tesscontrol")!=std::string::npos) shader->setType(osg::Shader::TESSCONTROL);
                 if (options->getOptionString().find("tessevaluation")!=std::string::npos) shader->setType(osg::Shader::TESSEVALUATION);
+                if (options->getOptionString().find("compute")!=std::string::npos) shader->setType(osg::Shader::COMPUTE);
             }
 
             // return valid shader
@@ -129,6 +131,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                     if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
                     if (ext == "tctrl") shader->setType(osg::Shader::TESSCONTROL);
                     if (ext == "teval") shader->setType(osg::Shader::TESSEVALUATION);
+                    if (ext == "compute") shader->setType(osg::Shader::COMPUTE);
                 }
             }
             return rr;

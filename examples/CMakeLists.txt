@@ -180,6 +180,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgphotoalbum)
     ADD_SUBDIRECTORY(osgtessellate)
     ADD_SUBDIRECTORY(osgtessellationshaders)
+    ADD_SUBDIRECTORY(osgcomputeshaders)
 
     ADD_SUBDIRECTORY(osgpdf)
 

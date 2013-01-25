@@ -214,6 +214,9 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
 
     // ARB_shader_atomic_counters
     _glGetActiveAtomicCounterBufferiv = rhs._glGetActiveAtomicCounterBufferiv;
+
+    // ARB_compute_shader
+    _glDispatchCompute = rhs._glDispatchCompute;
 }
 
 
@@ -399,6 +402,9 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
 
     // ARB_shader_atomic_counters
     if(!rhs._glGetActiveAtomicCounterBufferiv) _glGetActiveAtomicCounterBufferiv = 0;
+
+    // ARB_compute_shder
+    if(!rhs._glDispatchCompute) _glDispatchCompute = 0;
 }
 
 
@@ -588,6 +594,9 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 
         // ARB_shader_atomic_counters
         _glGetActiveAtomicCounterBufferiv= 0;
+
+        // ARB_compute_shader
+        _glDispatchCompute= 0;
 
         return;
     }
@@ -794,6 +803,9 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 
     // ARB_shader_atomic_counters
     setGLExtensionFuncPtr(_glGetActiveAtomicCounterBufferiv,  "glGetActiveAtomicCounterBufferiv" );
+
+    // ARB_compute_shader
+    setGLExtensionFuncPtr(_glDispatchCompute,  "glDispatchCompute" );
 }
 
 
@@ -2823,6 +2835,18 @@ void GL2Extensions::glGetActiveAtomicCounterBufferiv( GLuint program, GLuint buf
     else
     {
         NotSupported( "glGetActiveAtomicCounterBufferiv" );
+    }
+}
+
+void GL2Extensions::glDispatchCompute( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ ) const
+{
+    if (_glDispatchCompute)
+    {
+        _glDispatchCompute( numGroupsX, numGroupsY, numGroupsZ );
+    }
+    else
+    {
+        NotSupported( "glDispatchCompute" );
     }
 }
 

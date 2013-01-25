@@ -292,6 +292,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     }
     else
     {
+        OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<std::endl;
         Transform::traverse(nv);
     }
 

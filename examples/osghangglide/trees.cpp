@@ -166,10 +166,10 @@ static Geometry *makeTree( _tree *tree, StateSet *dstate )
 {
     float vv[][3] =
     {
-        { -tree->w/2.0, 0.0, 0.0 },
-        {  tree->w/2.0,  0.0, 0.0 },
-        {  tree->w/2.0, 0.0, 2 * tree->h },
-        { -tree->w/2.0, 0.0, 2 * tree->h },
+        { -tree->w/2.0f, 0.0f, 0.0f },
+        {  tree->w/2.0f, 0.0f, 0.0f },
+        {  tree->w/2.0f, 0.0f, 2.0f * tree->h },
+        { -tree->w/2.0f, 0.0f, 2.0f * tree->h },
     };
 
     Vec3Array& v = *(new Vec3Array(4));

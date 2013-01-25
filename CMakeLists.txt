@@ -233,7 +233,7 @@ IF(APPLE)
     IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
 
         #you need to manually set the default sdk version here
-        SET (IPHONE_SDKVER "5.1" CACHE STRING "IOS SDK-Version")
+        SET (IPHONE_SDKVER "6.0" CACHE STRING "IOS SDK-Version")
 
         #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
         # Force gcc <= 4.2 on iPhone
@@ -591,6 +591,7 @@ IF(NOT ANDROID)
         ENDIF()
 
     ELSE()
+        FIND_PACKAGE(TIFF)
         FIND_PACKAGE(QuickTime)
         FIND_PACKAGE(QTKit)
         FIND_PACKAGE(CoreVideo)

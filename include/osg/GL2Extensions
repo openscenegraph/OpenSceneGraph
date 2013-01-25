@@ -442,6 +442,21 @@ typedef char GLchar;
 #define GL_UNSIGNED_INT_ATOMIC_COUNTER    0x92DB
 #endif
 
+#ifndef GL_ARB_depth_clamp
+#define GL_DEPTH_CLAMP                    0x864F
+#endif
+
+#ifndef GL_ARB_provoking_vertex
+#define GL_QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION 0x8E4C
+#define GL_FIRST_VERTEX_CONVENTION        0x8E4D
+#define GL_LAST_VERTEX_CONVENTION         0x8E4E
+#define GL_PROVOKING_VERTEX               0x8E4F
+#endif
+
+#ifndef GL_ARB_seamless_cube_map
+#define GL_TEXTURE_CUBE_MAP_SEAMLESS      0x884F
+#endif
+
 namespace osg {
 
 class OSG_EXPORT GL2Extensions : public osg::Referenced

@@ -92,6 +92,7 @@ class OSG_EXPORT Shader : public osg::Object
             TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
             GEOMETRY = GL_GEOMETRY_SHADER_EXT,
             FRAGMENT = GL_FRAGMENT_SHADER,
+            COMPUTE = GL_COMPUTE_SHADER,
             UNDEFINED = -1
         };
 

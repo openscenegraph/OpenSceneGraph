@@ -70,6 +70,30 @@ static bool writeInternalFormat( osgDB::OutputStream& os, const osg::Texture& te
     return true;
 }
 
+// _imageAttachment
+static bool checkImageAttachment( const osg::Texture& attr )
+{
+    return attr.getImageAttachment().access!=0;
+}
+
+static bool readImageAttachment( osgDB::InputStream& is, osg::Texture& attr )
+{
+    osg::Texture::ImageAttachment attachment;
+    is >> attachment.unit >> attachment.level >> attachment.layered
+       >> attachment.layer >> attachment.access >> attachment.format;
+    attr.bindToImageUnit( attachment.unit, attachment.access, attachment.format,
+                          attachment.level, attachment.layered!=GL_FALSE, attachment.layer );
+    return true;
+}
+
+static bool writeImageAttachment( osgDB::OutputStream& os, const osg::Texture& attr )
+{
+    const osg::Texture::ImageAttachment& attachment = attr.getImageAttachment();
+    os << attachment.unit << attachment.level << attachment.layered
+       << attachment.layer << attachment.access << attachment.format << std::endl;
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( Texture,
                          /*new osg::Texture*/NULL,
                          osg::Texture,
@@ -127,4 +151,9 @@ REGISTER_OBJECT_WRAPPER( Texture,
     END_ENUM_SERIALIZER();  // _shadow_texture_mode
 
     ADD_FLOAT_SERIALIZER( ShadowAmbient, 0.0f );  // _shadow_ambient
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 95 )
+        ADD_USER_SERIALIZER( ImageAttachment );  // _imageAttachment
+    }
 }

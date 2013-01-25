@@ -466,6 +466,8 @@ public:
         osg::NodeVisitor(tm),
         _operatorList(operatorList) {}
 
+    META_NodeVisitor(osgPresentation, FindOperatorsVisitor)
+
     void apply(osg::Node& node)
     {
         if (node.getStateSet()) process(node.getStateSet());

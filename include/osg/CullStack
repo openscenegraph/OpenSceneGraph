@@ -109,7 +109,15 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
         inline bool isCulled(const osg::Node& node)
         {
-            return node.isCullingActive() && getCurrentCullingSet().isCulled(node.getBound());
+            if (node.isCullingActive())
+            {
+                return getCurrentCullingSet().isCulled(node.getBound());
+            }
+            else 
+            {
+                getCurrentCullingSet().resetCullingMask();
+                return false;
+            }
         }
 
         inline void pushCurrentMask()

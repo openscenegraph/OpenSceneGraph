@@ -481,10 +481,11 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
 
 osg::Image* InputStream::readImage(bool readFromExternal)
 {
+    std::string className = "osg::Image";
+    if ( _fileVersion>94 )  // ClassName property is only supported in 3.1.4 and higher
+        *this >> PROPERTY("ClassName") >> className;
 
-    std::string className="osg::Image";
     unsigned int id = 0;
-
     *this >> PROPERTY("UniqueID") >> id;
     if ( getException() ) return NULL;
 
@@ -501,14 +502,11 @@ osg::Image* InputStream::readImage(bool readFromExternal)
     if ( getException() ) return NULL;
 
     osg::ref_ptr<osg::Image> image = NULL;
-
     switch ( decision )
     {
     case IMAGE_INLINE_DATA:
         if ( isBinary() )
         {
-            image = new osg::Image;
-
             // _origin, _s & _t & _r, _internalTextureFormat
             int origin, s, t, r, internalFormat;
             *this >> origin >> s >> t >> r >> internalFormat;
@@ -527,6 +525,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                 if ( getException() ) return NULL;
 
                 readCharArray( data, size );
+                image = new osg::Image;
                 image->setOrigin( (osg::Image::Origin)origin );
                 image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
                     (unsigned char*)data, (osg::Image::AllocationMode)mode, packing );
@@ -539,7 +538,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
             {
                 *this >> levels[i];
             }
-            if ( levelSize>0 )
+            if ( image && levelSize>0 )
                 image->setMipmapLevels( levels );
             readFromExternal = false;
         }
@@ -591,20 +590,19 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         break;
     }
 
-    if ( readFromExternal )
+    if ( readFromExternal && !name.empty() )
     {
         image = osgDB::readImageFile( name, getOptions() );
         if ( !image && _forceReadingImage ) image = new osg::Image;
     }
+
+    image = static_cast<osg::Image*>( readObjectFields(className, id, image.get()) );
     if ( image.valid() )
     {
         image->setFileName( name );
         image->setWriteHint( (osg::Image::WriteHint)writeHint );
     }
-
-    image = static_cast<osg::Image*>( readObjectFields(className, id, image.get()) );
-
-   return image.release();
+    return image.release();
 }
 
 osg::Object* InputStream::readObject( osg::Object* existingObj )
@@ -654,7 +652,6 @@ osg::Object* InputStream::readObjectFields( const std::string& className, unsign
                 continue;
             }
             _fields.push_back( assocWrapper->getName() );
-
             assocWrapper->read( *this, *obj );
             if ( getException() ) return NULL;
 

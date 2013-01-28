@@ -306,14 +306,14 @@ void OutputStream::writeImage( const osg::Image* img )
 {
     if ( !img ) return;
 
-    // std::string name = img->libraryName();
-    // name += std::string("::") + img->className();
+    std::string name = img->libraryName();
+    name += std::string("::") + img->className();
 
     bool newID = false;
     unsigned int id = findOrCreateObjectID( img, newID );
 
-    // *this << name << BEGIN_BRACKET << std::endl;       // Write object name
-    *this << PROPERTY("UniqueID") << id << std::endl;  // Write image ID
+    *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
+    *this << PROPERTY("UniqueID") << id << std::endl;      // Write image ID
     if ( getException() ) return;
 
     if (newID)

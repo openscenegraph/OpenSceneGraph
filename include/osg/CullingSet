@@ -326,6 +326,11 @@ class OSG_EXPORT CullingSet : public Referenced
 #endif
         }
 
+        inline void resetCullingMask()
+        {
+            _frustum.setResultMask(_frustum.getCurrentMask());
+        }
+
         void disableAndPushOccludersCurrentMask(NodePath& nodePath);
 
         void popOccludersCurrentMask(NodePath& nodePath);

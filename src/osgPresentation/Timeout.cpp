@@ -290,10 +290,22 @@ void Timeout::traverse(osg::NodeVisitor& nv)
         }
         
     }
+    else if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        if (_displayTimeout) Transform::traverse(nv);
+    }
     else
     {
-        OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<std::endl;
-        Transform::traverse(nv);
+        if (strcmp(nv.className(),"FindOperatorsVisitor")==0)
+        {
+            OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;            
+        }
+        else
+        {
+            Transform::traverse(nv);
+        }
     }
 
+
+    
 }

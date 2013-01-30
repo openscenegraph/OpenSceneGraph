@@ -1100,11 +1100,12 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
         image = imageSequence;
     }
-
-    if (imageData.delayTime>0.0) image->setUserValue("delay",imageData.delayTime);
-    if (imageData.startTime>0.0) image->setUserValue("start",imageData.startTime);
-    if (imageData.stopTime>0.0) image->setUserValue("stop",imageData.stopTime);
-
+    if (image.valid())
+    {
+        if (imageData.delayTime>0.0) image->setUserValue("delay",imageData.delayTime);
+        if (imageData.startTime>0.0) image->setUserValue("start",imageData.startTime);
+        if (imageData.stopTime>0.0) image->setUserValue("stop",imageData.stopTime);
+    }
     return image.release();
 }
 

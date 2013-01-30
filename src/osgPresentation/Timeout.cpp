@@ -18,6 +18,75 @@
 using namespace osgPresentation;
 
 
+class OperationVisitor : public osg::NodeVisitor
+{
+public:
+
+    enum Operation
+    {
+        ENTER,
+        LEAVE,
+        RESET
+    };
+    
+    OperationVisitor(Operation op) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _operation(op), _sleepTime(0.0) {}
+
+    void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) process(node.getStateSet());
+        traverse(node);
+    }
+
+    void apply(osg::Geode& geode)
+    {
+        apply(static_cast<osg::Node&>(geode));
+
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            osg::Drawable* drawable = geode.getDrawable(i);
+            if (drawable->getStateSet()) process(drawable->getStateSet());
+        }
+    }
+
+    virtual void process(osg::StateSet* ss)
+    {
+        for(unsigned int i=0;i<ss->getTextureAttributeList().size();++i)
+        {
+            osg::Texture* texture = dynamic_cast<osg::Texture*>(ss->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+            osg::Image* image = texture ? texture->getImage(0) : 0;
+            osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
+            if (imageStream) process(imageStream);
+        }
+    }
+
+    void process(osg::ImageStream* video)
+    {
+        if (_operation==ENTER)
+        {
+            video->rewind();
+            video->play();
+
+            _sleepTime = 0.2;
+        }
+        else if (_operation==LEAVE)
+        {
+            video->pause();
+        }
+        else if (_operation==RESET)
+        {
+            video->rewind();
+
+            _sleepTime = 0.2;
+        }
+    }
+
+    double sleepTime() const { return _sleepTime; }
+
+    Operation   _operation;
+    double      _sleepTime;    
+};
+
+
 HUDSettings::HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask):
     _slideDistance(slideDistance),
     _eyeOffset(eyeOffset),
@@ -247,6 +316,17 @@ void Timeout::traverse(osg::NodeVisitor& nv)
                 OSG_NOTICE<<"Doing display broadcast key event"<<_displayBroadcastKeyPos._key<<std::endl;
                 broadcastEvent(viewer, _displayBroadcastKeyPos);
             }
+
+            OperationVisitor leave(OperationVisitor::ENTER);
+            accept(leave);
+
+            if (leave.sleepTime()!=0.0)
+            {
+                OSG_NOTICE<<"Pausing for "<<leave.sleepTime()<<std::endl;
+                OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*leave.sleepTime()));
+                OSG_NOTICE<<"Finished Pause "<<std::endl;
+            }
+
         }
 
 
@@ -257,6 +337,9 @@ void Timeout::traverse(osg::NodeVisitor& nv)
                 OSG_NOTICE<<"Doing dismiss broadcast key event"<<_dismissBroadcastKeyPos._key<<std::endl;
                 broadcastEvent(viewer, _dismissBroadcastKeyPos);
             }
+
+            OperationVisitor leave(OperationVisitor::LEAVE);
+            accept(leave);
         }
 
         Transform::traverse(nv);

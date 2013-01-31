@@ -690,7 +690,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             OSG_INFO << "ReadDDSFile info : format = A16B16G16R16F" << std::endl;
             internalFormat = GL_RGBA; // why no transparency?
             pixelFormat    = GL_RGBA;
-            dataType       = GL_HALF_FLOAT_NV;
+            dataType       = GL_HALF_FLOAT;
             break;
         case 0x0000006E: // Q16W16V16U16
             OSG_INFO << "ReadDDSFile info : format = Q16W16V16U16" << std::endl;
@@ -704,7 +704,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             return NULL;
 //             internalFormat = GL_RGB;
 //             pixelFormat    = must be GL_RED and GL_GREEN
-//             dataType       = GL_HALF_FLOAT_NV;
+//             dataType       = GL_HALF_FLOAT;
             break;
         case 0x00000073: // G32R32F
             OSG_INFO << "ReadDDSFile info : G32R32F format is not supported"
@@ -724,7 +724,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             OSG_INFO << "ReadDDSFile info : format = R16F" << std::endl;
             internalFormat = GL_RGB;
             pixelFormat    = GL_RED;
-            dataType       = GL_HALF_FLOAT_NV;
+            dataType       = GL_HALF_FLOAT;
             break;
         case 0x00000074: // A32B32G32R32F
             OSG_INFO << "ReadDDSFile info : format = A32B32G32R32F" << std::endl;

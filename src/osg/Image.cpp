@@ -653,7 +653,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_BYTE):
         case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
 
-        case(GL_HALF_FLOAT_NV):
+        case(GL_HALF_FLOAT):
         case(GL_SHORT):
         case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
 
@@ -1651,7 +1651,7 @@ bool Image::isImageTranslucent() const
                                                         0xc0000000u, 1))
                         return true;
                     break;
-                case(GL_HALF_FLOAT_NV):
+                case(GL_HALF_FLOAT):
                     if (_findLowerAlphaValueInRow(s(), (unsigned short*)d + offset,
                                                   (unsigned short)0x3c00, delta))
                         return true;

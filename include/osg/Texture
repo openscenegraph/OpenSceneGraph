@@ -90,8 +90,8 @@
     #define GL_LUMINANCE_ALPHA16F_ARB                0x881F
 #endif
 
-#ifndef GL_ARB_PIXEL_DATA
-    #define GL_HALF_FLOAT_ARB                        0x140B
+#ifndef GL_HALF_FLOAT
+    #define GL_HALF_FLOAT                            0x140B
 #endif
 
 #ifndef GL_NV_texture_shader
@@ -134,10 +134,6 @@
     #define GL_FLOAT_RGB32_NV                       0x8889
     #define GL_FLOAT_RGBA16_NV                      0x888A
     #define GL_FLOAT_RGBA32_NV                      0x888B
-#endif
-
-#ifndef GL_NV_half_float
-    #define GL_HALF_FLOAT_NV                        0x140B
 #endif
 
 #ifndef GL_ATI_texture_float
@@ -392,10 +388,6 @@
     #define GL_MAX_GEOMETRY_IMAGE_UNIFORMS    0x90CD
     #define GL_MAX_FRAGMENT_IMAGE_UNIFORMS    0x90CE
     #define GL_MAX_COMBINED_IMAGE_UNIFORMS    0x90CF
-#endif
-
-#ifndef GL_ARB_half_float_pixel
-    #define GL_HALF_FLOAT                     0x140B
 #endif
 
 namespace osg {

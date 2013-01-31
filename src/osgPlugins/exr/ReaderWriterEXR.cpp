@@ -103,7 +103,7 @@ unsigned char *exr_load(std::istream& fin,
         /*RgbaChannels channels =*/ rgbafile.channels();
         (*width_ret) = width = dw.max.x - dw.min.x + 1;
         (*height_ret)=height = dw.max.y - dw.min.y + 1;
-        (*dataType_ret) = GL_HALF_FLOAT_ARB;
+        (*dataType_ret) = GL_HALF_FLOAT;
 
         pixels.resizeErase (height, width);
 
@@ -261,7 +261,7 @@ protected:
             writeOK = false;
             return false;
         }
-        if (!(    dataType == GL_HALF_FLOAT_ARB ||
+        if (!(    dataType == GL_HALF_FLOAT ||
                 dataType == GL_FLOAT))
         {
             writeOK = false;
@@ -274,7 +274,7 @@ protected:
          //Copy data from texture to rgba pixel format
         Array2D<Rgba> outPixels(height,width);
          //If texture is half format
-         if (dataType == GL_HALF_FLOAT_ARB)
+         if (dataType == GL_HALF_FLOAT)
          {
              for (long i = height-1; i >= 0; i--)
              {
@@ -361,7 +361,7 @@ protected:
         int t = height_ret;
         int r = 1;
 
-        if (dataType_ret == GL_HALF_FLOAT_ARB)
+        if (dataType_ret == GL_HALF_FLOAT)
         {
             interNalTextureFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE16F_ARB :

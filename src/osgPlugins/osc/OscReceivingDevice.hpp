@@ -19,13 +19,15 @@
 #include <osgGA/Device>
 #include <osc/OscPacketListener.h>
 #include <ip/UdpSocket.h>
-
+#include "OscSendingDevice.hpp"
 
 
 
 class OscReceivingDevice : public osgGA::Device, OpenThreads::Thread, osc::OscPacketListener {
 
 public:
+    typedef OscSendingDevice::MsgIdType MsgIdType;
+    
     class RequestHandler : public osg::Referenced {
     public:
         RequestHandler(const std::string& request_path)
@@ -75,7 +77,7 @@ public:
     
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
     virtual void ProcessPacket( const char *data, int size, const IpEndpointName& remoteEndpoint );
-    
+    virtual void ProcessBundle( const osc::ReceivedBundle& b, const IpEndpointName& remoteEndpoint );
     void addRequestHandler(RequestHandler* handler);
     
     void describeTo(std::ostream& out) const;
@@ -96,12 +98,16 @@ public:
         return _userDataEvent.get();
     }
     
+    virtual const char* className() const { return "OSC receiving device"; }
+    
 private:
     std::string _listeningAddress;
     unsigned int _listeningPort;
     UdpListeningReceiveSocket* _socket;
     RequestHandlerMap _map;
     osg::ref_ptr<osgGA::GUIEventAdapter> _userDataEvent;
+    MsgIdType _lastMsgId;
+    osg::Timer_t _lastMsgTimeStamp;
 
 };
 

@@ -72,6 +72,8 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
         {
             supportsExtension("osc", "Virtual Device Integration via a OSC_receiver");
             supportsOption("documentRegisteredHandlers", "dump a documentation of all registered REST-handler to the console");
+            supportsOption("numMessagesPerEvent", "set the number of osc-messages to send for one event (sender-only)");
+            
             
         }
 
@@ -90,7 +92,19 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                     std::string server_address = file_name.substr(0,file_name.find(':'));
                     std::string server_port = file_name.substr(file_name.find(':') + 1);
                     
-                    return new OscSendingDevice(server_address, atoi(server_port.c_str()));
+                    unsigned int num_messages_per_event = 1;
+                    if (options && !options->getPluginStringData("numMessagesPerEvent").empty()) {
+                        std::string num_messages_per_event_str = options->getPluginStringData("numMessagesPerEvent");
+                        num_messages_per_event = osg::maximum(1, atoi(num_messages_per_event_str.c_str()));
+                    }
+                    
+                    unsigned int delay_between_sends_in_millisecs = 0;
+                    if (options && !options->getPluginStringData("delayBetweenSendsInMillisecs").empty()) {
+                        std::string delay_between_sends_in_millisecs_str = options->getPluginStringData("delayBetweenSendsInMillisecs");
+                        delay_between_sends_in_millisecs = atoi(delay_between_sends_in_millisecs_str.c_str());
+                    }
+                    
+                    return new OscSendingDevice(server_address, atoi(server_port.c_str()), num_messages_per_event, delay_between_sends_in_millisecs);
                 }
                 else
                 {

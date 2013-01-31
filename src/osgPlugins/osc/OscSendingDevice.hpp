@@ -22,17 +22,22 @@
 
 class OscSendingDevice : public osgGA::Device {
 public:
-    OscSendingDevice(const std::string& address, int port);
+    typedef osc::int64 MsgIdType;
+    OscSendingDevice(const std::string& address, int port, unsigned int numMessagesPerEvent = 1, unsigned int delay_between_sends_in_millisecs = 0);
     ~OscSendingDevice();
     virtual void sendEvent(const osgGA::GUIEventAdapter &ea);
+    virtual const char* className() const { return "OSC sending device"; }
     
 private:
-    void beginSendInputRange(const osgGA::GUIEventAdapter& ea);
+    bool sendEventImpl(const osgGA::GUIEventAdapter &ea,MsgIdType msg_id);
+    void beginBundle(MsgIdType msg_id);
+    void beginSendInputRange(const osgGA::GUIEventAdapter& ea, MsgIdType msg_id);
     int getButtonNum(const osgGA::GUIEventAdapter& ea);
-    void sendUserDataContainer(const std::string& key, const osg::UserDataContainer* udc, bool asBundle);
+    void sendUserDataContainer(const std::string& key, const osg::UserDataContainer* udc, bool asBundle, MsgIdType msg_id);
     std::string transliterateKey(const std::string& key) const;
     UdpTransmitSocket _transmitSocket;
     char* _buffer;
     osc::OutboundPacketStream _oscStream;
+    unsigned int _numMessagesPerEvent, _delayBetweenSendsInMilliSecs;
 };
 

@@ -722,6 +722,7 @@ OscReceivingDevice::OscReceivingDevice(const std::string& server_address, int li
     , _listeningPort(listening_port)
     , _socket(NULL)
     , _map()
+    , _lastMsgId(0)
 {
     setCapabilities(RECEIVE_EVENTS);
     OSG_NOTICE << "OscDevice :: listening on " << server_address << ":" << listening_port << " ";
@@ -760,7 +761,7 @@ OscReceivingDevice::OscReceivingDevice(const std::string& server_address, int li
     addRequestHandler(new OscDevice::StandardRequestHandler("/osg/set_user_value", true));
     
     addRequestHandler(new OscDevice::StandardRequestHandler("", false));
-    
+    setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_LOW);
     start();
 }
 
@@ -782,6 +783,10 @@ void OscReceivingDevice::run()
 void OscReceivingDevice::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
     std::string in_request_path(m.AddressPattern());
+    
+    if (in_request_path == "/osc/msg_id")
+        return;
+    
     std::string request_path = in_request_path + "/";
 
     std::size_t pos(std::string::npos);
@@ -807,10 +812,58 @@ void OscReceivingDevice::ProcessMessage( const osc::ReceivedMessage& m, const Ip
 
 }
 
+void OscReceivingDevice::ProcessBundle( const osc::ReceivedBundle& b,
+                           const IpEndpointName& remoteEndpoint )
+{
+    // find msg-id
+    MsgIdType msg_id(0);
+    
+    for( osc::ReceivedBundle::const_iterator i = b.ElementsBegin(); i != b.ElementsEnd(); ++i ){
+        const osc::ReceivedMessage& m = osc::ReceivedMessage(*i);
+        std::string address_pattern(m.AddressPattern());
+        if(address_pattern == "/osc/msg_id")
+        {
+            osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+            args >> msg_id;
+            break;
+        }
+    }
+    if (msg_id)
+    {
+        osg::Timer_t now(osg::Timer::instance()->tick());
+        if (osg::Timer::instance()->delta_s(_lastMsgTimeStamp, now) > 0.5) {
+            OSG_INFO << "OscReceiver :: resetting msg_id to 0 " << std::endl;
+            _lastMsgId = 0;
+        }
+        _lastMsgTimeStamp = now;
+        
+        if (msg_id <= _lastMsgId) {
+            // already handled
+            // OSG_WARN << "OscReceiver :: message with lower id received: " << msg_id << std::endl;
+            return;
+        }
+        else {
+            if ((msg_id > _lastMsgId+1) && (_lastMsgId > 0)) {
+                OSG_WARN << "OscReceiver :: missed " << (msg_id - _lastMsgId) << " messages, (" << msg_id << "/" << _lastMsgId << ")" << std::endl;
+            }
+            _lastMsgId = msg_id;
+        }
+    }
+        
+    
+    for( osc::ReceivedBundle::const_iterator i = b.ElementsBegin(); i != b.ElementsEnd(); ++i ){
+        if( i->IsBundle() )
+            ProcessBundle( osc::ReceivedBundle(*i), remoteEndpoint );
+        else
+        {
+            ProcessMessage( osc::ReceivedMessage(*i), remoteEndpoint );
+        }
+    }
+}
+
+
 void OscReceivingDevice::ProcessPacket( const char *data, int size, const IpEndpointName& remoteEndpoint )
 {
-    OSG_INFO << "OscDevice :: receiving " << size << " bytes of data ..." << std::endl;
-    
     try {
         osc::OscPacketListener::ProcessPacket(data, size, remoteEndpoint);
     }

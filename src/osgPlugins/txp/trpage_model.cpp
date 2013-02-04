@@ -432,7 +432,7 @@ trpgModel *trpgModelTable::GetModelRef(int id)
     //return &models[id];
     ModelMapType::iterator itr = modelsMap.find(id);
     if(itr == modelsMap.end())    {
-        return false;
+        return 0;
     }
     return &(itr->second);
 }

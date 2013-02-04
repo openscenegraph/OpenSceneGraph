@@ -1022,7 +1022,7 @@ void *trpgr_ChildRefCB::Parse(trpgToken tok, trpgReadBuffer& rbuf)
         if(childRef.Read(rbuf))
             return &childRef;
         else
-            return false;
+            return 0;
 
     }
     else

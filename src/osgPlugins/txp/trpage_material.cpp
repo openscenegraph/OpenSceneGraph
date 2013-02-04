@@ -224,7 +224,7 @@ const trpgMaterial *trpgMatTable::GetMaterialRef(int nt,int nm) const
 {
     MaterialMapType::const_iterator itr = materialMap.find((nt*numMat)+nm);
     if(itr == materialMap.end())
-        return false;
+        return 0;
     return const_cast<trpgMaterial *>(&(*itr).second);
 }
 
@@ -1744,10 +1744,10 @@ bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 const trpgTexture *trpgTexTable::GetTextureRef(int id) const
 {
     if (id < 0)
-        return false;
+        return 0;
     TextureMapType::const_iterator itr = textureMap.find(id);
     if(itr == textureMap.end()) {
-        return false;
+        return 0;
     }
     const trpgTexture *ret = &(itr->second);
     return ret;
@@ -1766,7 +1766,7 @@ const trpgTexture *trpgTexTable::FindByName(const char *name, int &texid) const
             return &(itr->second);
         }
     }
-    return false;
+    return 0;
 
 }
 

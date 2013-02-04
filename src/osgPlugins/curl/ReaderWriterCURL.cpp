@@ -723,7 +723,7 @@ bool ReaderWriterCURL::fileExists(const std::string& filename, const osgDB::Opti
         curl_easy_setopt(curl_handle, CURLOPT_NOBODY, 1);
         curl_easy_setopt(curl_handle, CURLOPT_HEADER, 1);
         curl_easy_setopt(curl_handle, CURLOPT_FILETIME, 1);
-        curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, (void*)&empty_write_data);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &empty_write_data);
 
         int result = curl_easy_perform(curl_handle);
         

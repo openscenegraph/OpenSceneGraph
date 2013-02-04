@@ -29,6 +29,7 @@
 
 #include <X11/Xmd.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 #include <X11/cursorfont.h>
 
 #include <X11/Xmd.h>        /* For CARD16 */
@@ -1619,7 +1620,7 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, int& unmod
         keySymbol = buffer_return[0];
     }
 
-    unmodifiedKeySymbol = XKeycodeToKeysym(keyevent.display, keyevent.keycode, 0);
+    unmodifiedKeySymbol = XkbKeycodeToKeysym(keyevent.display, keyevent.keycode, 0, 0);
 }
 
 // Function to inject artificial key presses/releases.

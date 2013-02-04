@@ -101,10 +101,10 @@ class Logos: public osg::Drawable
                 return;
 
 
-            float vx = 0.0;
-            float vy = 0.0;
-            float vw = 1.0;
-            float vh = 1.0;
+            float vx = 0.0f;
+            float vy = 0.0f;
+            float vw = 1.0f;
+            float vh = 1.0f;
             if (_viewport.valid())
             {
                 vx = _viewport->x();
@@ -122,7 +122,7 @@ class Logos: public osg::Drawable
             glPushMatrix();
             glLoadIdentity();
 
-            glColor4f( 1, 1, 1, 1 );
+            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
             Images::const_iterator p;
             float th = 0.0;
@@ -132,13 +132,13 @@ class Logos: public osg::Drawable
             }
 
             float place[][4] = {
-                { vw*0.5, ((vh*0.5) + th*0.5), -0.5, -1.0 },
-                { vx, vh, 0.0, -1.0 },
-                { vw, vh, -1.0, -1.0 },
-                { vx, vy, 0.0, 1.0 },
-                { vw, vy, -1.0, 1.0 },
-                { vw*0.5, vh , -0.5, -1.0 },
-                { vw*0.5, 0.0 , -0.5, 1.0 },
+                { vw*0.5f, ((vh*0.5f) + th*0.5f), -0.5f, -1.0f },
+                { vx, vh, 0.0f, -1.0f },
+                { vw, vh, -1.0f, -1.0f },
+                { vx, vy, 0.0f, 1.0f },
+                { vw, vy, -1.0f, 1.0f },
+                { vw*0.5f, vh , -0.5f, -1.0f },
+                { vw*0.5f, 0.0f , -0.5f, 1.0f },
             };
 
             for( int i = Center; i < last_position; i++ )

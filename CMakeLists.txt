@@ -986,10 +986,10 @@ IF(BUILD_DOCUMENTATION)
     SET_TARGET_PROPERTIES(doc_openthreads PROPERTIES FOLDER "Documentation")
 ENDIF(BUILD_DOCUMENTATION)
 
-OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph" OFF)
+OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://cdash.openscenegraph.org/index.php?project=OpenSceneGraph" OFF)
 IF(BUILD_DASHBOARD_REPORTS)
 # The following are required to uses Dart and the Cdash dashboard
-# viewable here : http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph
+# viewable here : http://cdash.openscenegraph.org/index.php?project=OpenSceneGraph 
     INCLUDE(Dart)
 ENDIF()
 

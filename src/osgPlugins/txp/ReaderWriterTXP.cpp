@@ -858,7 +858,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc)
 {
     if ( archive == 0 )
-        return false;
+        return 0;
 
     int majorVersion, minorVersion;
     archive->GetVersion(majorVersion, minorVersion);
@@ -895,7 +895,7 @@ osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, int
 osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, const TXPArchive::TileLocationInfo& loc, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc)
 {
     if ( archive == 0 )
-        return false;
+        return 0;
 
     // int numLods = archive->getNumLODs();
 

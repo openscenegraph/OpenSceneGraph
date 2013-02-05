@@ -1805,9 +1805,9 @@ ReaderWriter* Registry::getReaderWriterForProtocolAndExtension(const std::string
     {
         // if we have a readerwriter which supports wildcards, save it as a fallback
         if ((*i)->acceptsExtension("*"))
-            result = *i;
+            result = i->get();
         else if ((*i)->acceptsExtension(extension))
-            return *i;
+            return i->get();
     }
     
     return result ? result : getReaderWriterForExtension("curl");

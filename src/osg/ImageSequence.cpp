@@ -372,7 +372,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                  if (image.valid())
                  {
                      OSG_NOTICE<<"   Assigning image "<<_imageDataList[i]._filename<<std::endl;
-                     _setImage(i, image);
+                     _setImage(i, image.get());
                      setImageToChild(i);
                  }
                  else

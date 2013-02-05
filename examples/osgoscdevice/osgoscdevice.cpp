@@ -386,7 +386,7 @@ public:
                 
                 osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                 if (view)
-                    view->addEventHandler(new PickHandler(_device));
+                    view->addEventHandler(new PickHandler(_device.get()));
                 return true;
             }
         }
@@ -468,7 +468,7 @@ int main( int argc, char **argv )
         osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("0.0.0.0:9000.receiver.osc");
         if (device.valid() && (device->getCapabilities() & osgGA::Device::RECEIVE_EVENTS))
         {
-            view->addDevice(device);
+            view->addDevice(device.get());
             
             // add a zeroconf device, advertising the osc-device
             if(use_zeroconf)
@@ -505,7 +505,7 @@ int main( int argc, char **argv )
         viewer.addView(view);
         
         osg::Group* g = new osg::Group();
-        g->addChild(scene);
+        g->addChild(scene.get());
         g->addChild(createHUD());
         view->setSceneData(g);
         view->getCamera()->setName("Cam one");
@@ -535,10 +535,10 @@ int main( int argc, char **argv )
             if (device.valid() && (device->getCapabilities() & osgGA::Device::SEND_EVENTS))
             {
                 // add as first event handler, so it gets ALL events ...
-                view->getEventHandlers().push_front(new ForwardToDeviceEventHandler(device));
+                view->getEventHandlers().push_front(new ForwardToDeviceEventHandler(device.get()));
                 
                 // add the demo-pick-event-handler
-                view->addEventHandler(new PickHandler(device));
+                view->addEventHandler(new PickHandler(device.get()));
             }
             else {
                 OSG_WARN << "could not open osc-device, sending will not work" << std::endl;

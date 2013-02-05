@@ -462,7 +462,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             osg::Vec3 localPosition = computePositionInModelCoords(_titlePositionData);
 
             osgText::Text* text = new osgText::Text;
-            text->setFont(osgText::readFontFile(_titleFontData.font, _options));
+            text->setFont(osgText::readFontFile(_titleFontData.font, _options.get()));
             text->setColor(_titleFontData.color);
             text->setCharacterSize(_titleFontData.characterSize*_slideHeight);
             text->setFontResolution(110,120);
@@ -681,7 +681,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
     osg::Vec3 localPosition = computePositionInModelCoords(positionData);
 
-    text->setFont(osgText::readFontFile(fontData.font, _options));
+    text->setFont(osgText::readFontFile(fontData.font, _options.get()));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);
@@ -729,7 +729,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     osgText::Text* text = new osgText::Text;
 
-    text->setFont(osgText::readFontFile(fontData.font, _options));
+    text->setFont(osgText::readFontFile(fontData.font, _options.get()));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);
@@ -2572,19 +2572,19 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(0.1f);
-        setUpVolumeScalarProperty(tile, ap, volumeData.cutoffValue);
+        setUpVolumeScalarProperty(tile.get(), ap, volumeData.cutoffValue);
 
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0f);
-        setUpVolumeScalarProperty(tile, tp, volumeData.alphaValue);
+        setUpVolumeScalarProperty(tile.get(), tp, volumeData.alphaValue);
 
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
-        setUpVolumeScalarProperty(tile, sd, volumeData.sampleDensityValue);
+        setUpVolumeScalarProperty(tile.get(), sd, volumeData.sampleDensityValue);
 
         osgVolume::SampleDensityWhenMovingProperty* sdm = 0;
         if (!volumeData.sampleDensityWhenMovingValue.empty())
         {
             sdm = new osgVolume::SampleDensityWhenMovingProperty(0.005);
-            setUpVolumeScalarProperty(tile, sdm, volumeData.sampleDensityWhenMovingValue);
+            setUpVolumeScalarProperty(tile.get(), sdm, volumeData.sampleDensityWhenMovingValue);
         }
         
         osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
@@ -2622,7 +2622,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
             
             osgVolume::IsoSurfaceProperty* isp = new osgVolume::IsoSurfaceProperty(0.1);
-            setUpVolumeScalarProperty(tile, isp, volumeData.alphaValue);
+            setUpVolumeScalarProperty(tile.get(), isp, volumeData.alphaValue);
             cp->addProperty(isp);
 
             if (sdm) cp->addProperty(sdm);

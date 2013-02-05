@@ -1083,7 +1083,7 @@ bool ReaderWriterP3DXML::parsePropertyAnimation(osgDB::XmlNode* root, osgPresent
                 if (parseProperties(cur, *udc))
                 {
                     OSG_NOTICE<<"Adding keyframe"<<std::endl;
-                    pa.addKeyFrame(time, udc);
+                    pa.addKeyFrame(time, udc.get());
                     readKeyframes = true;
                 }
             }

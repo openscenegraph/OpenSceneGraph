@@ -72,7 +72,7 @@ struct AssignDirectionColour
         if (!colours)
         {
             colours = new osg::Vec4Array;
-            geometry->setColorArray(colours);
+            geometry->setColorArray(colours.get());
         }
         geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
         colours->resize(vertices->size(), osg::Vec4(0.0,0.0,0.0,0.0));
@@ -82,7 +82,7 @@ struct AssignDirectionColour
         if (!normals)
         {
             normals = new osg::Vec3Array;
-            geometry->setNormalArray(normals);
+            geometry->setNormalArray(normals.get());
         }
         geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         normals->resize(vertices->size(), osg::Vec3(0.0,0.0,0.0));
@@ -175,7 +175,7 @@ struct AssignDirectionColour
             vertexShader = new osg::Shader(osg::Shader::VERTEX, vert_shader_str);
         }
 
-        program->addShader(vertexShader);
+        program->addShader(vertexShader.get());
 
         stateset->setAttribute(program.get());
     }

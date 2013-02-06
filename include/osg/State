@@ -818,7 +818,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
             if (_useVertexAttributeAliasing)
             {
-                setVertexAttribPointer(_colorAlias._location, size, type, GL_FALSE, stride, ptr);
+                setVertexAttribPointer(_colorAlias._location, size, type, GL_TRUE, stride, ptr);
             }
             else
             {
@@ -836,7 +836,7 @@ class OSG_EXPORT State : public Referenced, public Observer
                 _colorArray._dirty = false;
             }
         #else
-            setVertexAttribPointer(_colorAlias._location, size, type, GL_FALSE, stride, ptr);
+            setVertexAttribPointer(_colorAlias._location, size, type, GL_TRUE, stride, ptr);
         #endif
         }
 

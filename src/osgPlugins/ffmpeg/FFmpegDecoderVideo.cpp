@@ -8,6 +8,9 @@
 
 namespace osgFFmpeg {
 
+// TODO - add support for using RGB or RGBA pixel format.
+// Note from Jason Daly in a osg-submissions thread, "The pix_fmt field of AVCodecContext will indicate the pixel format of the decoded video"
+    
 
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),

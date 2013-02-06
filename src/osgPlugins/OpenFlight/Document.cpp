@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlightï¿½ loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -32,6 +32,7 @@ Document::Document() :
     _useBillboardCenter(false),
     _doUnitsConversion(true),
     _readObjectRecordData(false),
+    _preserveNonOsgAttrsAsUserData(false),
     _desiredUnits(METERS),
     _done(false),
     _level(0),

@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlightï¿½ loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -28,6 +28,8 @@
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
+
+#include <osg/ValueObject>
 
 #include <algorithm>
 
@@ -347,7 +349,7 @@ protected:
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        /*int32 IRColor =*/ in.readInt32();
+        int32 IRColor = in.readInt32();
         /*int16 relativePriority =*/ in.readInt16();
         _drawFlag = in.readUInt8(SOLID_NO_BACKFACE);
         uint8 texturedWhite = in.readUInt8();
@@ -358,8 +360,8 @@ protected:
         /*int detailTexture =*/ in.readInt16(-1);
         int textureIndex = in.readInt16(-1);
         int materialIndex = in.readInt16(-1);
-        /*int16 surface =*/ in.readInt16();
-        /*int16 feature =*/ in.readInt16();
+        int16 surface = in.readInt16();
+        int16 feature = in.readInt16();
         /*int32 IRMaterial =*/ in.readInt32(-1);
         _transparency = in.readUInt16(0);
         // version > 13
@@ -447,6 +449,24 @@ protected:
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);
             stateset->setAttribute(material);
+        }
+
+        // IRColor (IRC)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != IRColor)
+        {
+          _geometry->setUserValue("<UA:IRC>", IRColor);
+        }
+
+        // surface (SMC)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != surface)
+        {
+          _geometry->setUserValue("<UA:SMC>", surface);
+        }
+
+        // feature (FID)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != feature)
+        {
+          _geometry->setUserValue("<UA:FID>", feature);
         }
 
         // Shaders
@@ -920,7 +940,7 @@ protected:
     {
         std::string id = in.readString(8);
         in.forward(4);
-        /*int32 IRColor =*/ in.readInt32();
+        int32 IRColor = in.readInt32();
         /*int16 relativePriority =*/ in.readInt16();
         _drawFlag = in.readUInt8(SOLID_NO_BACKFACE);
         uint8 texturedWhite = in.readUInt8();
@@ -931,8 +951,8 @@ protected:
         /*int detailTexture =*/ in.readInt16(-1);
         int textureIndex = in.readInt16(-1);
         int materialIndex = in.readInt16(-1);
-        /*int16 surface =*/ in.readInt16();
-        /*int16 feature =*/ in.readInt16();
+        int16 surface = in.readInt16();
+        int16 feature = in.readInt16();
         /*int32 IRMaterial =*/ in.readInt32(-1);
         _transparency = in.readUInt16(0);
         // version > 13
@@ -1016,6 +1036,24 @@ protected:
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);
             stateset->setAttribute(material);
+        }
+
+        // IRColor (IRC)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != IRColor)
+        {
+          _geode->setUserValue("<UA:IRC>", IRColor);
+        }
+
+        // surface (SMC)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != surface)
+        {
+          _geode->setUserValue("<UA:SMC>", surface);
+        }
+
+        // feature (FID)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != feature)
+        {
+          _geode->setUserValue("<UA:FID>", feature);
         }
 
         // Shaders

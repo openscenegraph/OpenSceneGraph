@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlightï¿½ loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -236,6 +236,7 @@ class FLTReaderWriter : public ReaderWriter
             supportsOption("billboardCenter","Import option");
             supportsOption("noTextureAlphaForTransparancyBinning","Import option");
             supportsOption("readObjectRecordData","Import option");
+            supportsOption("preserveNonOsgAttrsAsUserData","Import option: If present in the Options string, following OpenFlight specific attributes will be stored as UserValue: surface: <UA:SMC>, feature: <UA:FID>, IRColor: <UA:IRC>");
             supportsOption("noUnitsConversion","Import option");
             supportsOption("convertToFeet","Import option");
             supportsOption("convertToInches","Import option");
@@ -375,6 +376,9 @@ class FLTReaderWriter : public ReaderWriter
 
                 document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")==std::string::npos);
                 OSG_DEBUG << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
+
+                document.setPreserveNonOsgAttrsAsUserData((options->getOptionString().find("preserveNonOsgAttrsAsUserData")!=std::string::npos));
+                OSG_DEBUG << readerMsg << "preserveNonOsgAttrsAsUserData=" << document.getPreserveNonOsgAttrsAsUserData() << std::endl;
 
                 document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
                 OSG_DEBUG << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;

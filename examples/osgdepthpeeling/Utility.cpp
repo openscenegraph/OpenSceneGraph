@@ -51,14 +51,14 @@ osg::Program* Utility::createProgram(std::string vs, std::string fs)
   if(!readFile((char*)vs.c_str(), vertSource))
     {
       printf("shader source not found\n");
-      return false;
+      return 0;
     }
   
   std::string fragSource;
   if(!readFile((char*)fs.c_str(), fragSource))
     {
       printf("shader source not found\n");
-      return false;
+      return 0;
     }
 
   

@@ -46,8 +46,13 @@ class FormatContextPtr
         {
             if (_ptr) 
             {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53, 17, 0)
+                OSG_NOTICE<<"Calling avformat_close_input("<<&_ptr<<")"<<std::endl;
+                avformat_close_input(&_ptr);
+#else
                 OSG_NOTICE<<"Calling av_close_input_file("<<_ptr<<")"<<std::endl;
                 av_close_input_file(_ptr);
+#endif
             }
             _ptr = 0;
         }
@@ -100,8 +105,6 @@ protected:
 
     typedef BoundedMessageQueue<FFmpegPacket> PacketQueue;
 
-    void findAudioStream();
-    void findVideoStream();
     void flushAudioQueue();
     void flushVideoQueue();
     bool readNextPacketNormal();
@@ -151,13 +154,13 @@ inline bool FFmpegDecoder::loop() const
 
 inline double FFmpegDecoder::creation_time() const
 {
-   if(m_format_context) return m_format_context->timestamp;
+   if(m_format_context) return m_format_context->start_time;
    else return HUGE_VAL;
 }
 
 inline double FFmpegDecoder::duration() const
 {
-    return double(m_format_context->duration) / AV_TIME_BASE;    
+    return double(m_format_context->duration) / AV_TIME_BASE;
 }
 
 inline double FFmpegDecoder::reference()

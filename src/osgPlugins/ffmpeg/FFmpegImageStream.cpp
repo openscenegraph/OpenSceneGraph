@@ -69,7 +69,7 @@ bool FFmpegImageStream::open(const std::string & filename, FFmpegParameters* par
         return false;
 
     setImage(
-        m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
+        m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
 
@@ -329,7 +329,7 @@ void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_
 
 #if 1
     this_->setImage(
-        this_->m_decoder->video_decoder().width(), this_->m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
+        this_->m_decoder->video_decoder().width(), this_->m_decoder->video_decoder().height(), 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(this_->m_decoder->video_decoder().image()), NO_DELETE
     );
 #else

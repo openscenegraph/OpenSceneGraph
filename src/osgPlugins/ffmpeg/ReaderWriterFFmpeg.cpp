@@ -26,7 +26,46 @@
     #define USE_AV_LOCK_MANAGER
 #endif
 
+extern "C" {
 
+static void log_to_osg(void *ptr, int level, const char *fmt, va_list vl)
+{
+    char logbuf[256];
+    vsnprintf(logbuf, sizeof(logbuf), fmt, vl);
+    logbuf[sizeof(logbuf) - 1] = '\0';
+
+    osg::NotifySeverity severity = osg::DEBUG_FP;
+
+    switch (level) {
+    case AV_LOG_PANIC:
+        severity = osg::ALWAYS;
+        break;
+    case AV_LOG_FATAL:
+        severity = osg::FATAL;
+        break;
+    case AV_LOG_ERROR:
+        severity = osg::WARN;
+        break;
+    case AV_LOG_WARNING:
+        severity = osg::NOTICE;
+        break;
+    case AV_LOG_INFO:
+        severity = osg::INFO;
+        break;
+    case AV_LOG_VERBOSE:
+        severity = osg::DEBUG_INFO;
+        break;
+    default:
+    case AV_LOG_DEBUG:
+        severity = osg::DEBUG_FP;
+        break;
+    }
+
+    // Most av_logs have a trailing newline already
+    osg::notify(severity) << logbuf;
+}
+
+} // extern "C"
 
 /** Implementation heavily inspired by http://www.dranger.com/ffmpeg/ */
 
@@ -38,6 +77,8 @@ public:
     {
         supportsProtocol("http","Read video/audio from http using ffmpeg.");
         supportsProtocol("rtsp","Read video/audio from rtsp using ffmpeg.");
+        supportsProtocol("rtp","Read video/audio from rtp using ffmpeg.");
+        supportsProtocol("tcp","Read video/audio from tcp using ffmpeg.");
 
         supportsExtension("ffmpeg", "");
         supportsExtension("avi",    "");
@@ -61,6 +102,9 @@ public:
         supportsOption("frame_size",              "Set frame size (e.g. 320x240)");
         supportsOption("frame_rate",        "Set frame rate (e.g. 25)");
         supportsOption("audio_sample_rate", "Set audio sampling rate (e.g. 44100)");
+        supportsOption("context",            "AVIOContext* for custom IO");
+
+        av_log_set_callback(log_to_osg);
 
 #ifdef USE_AV_LOCK_MANAGER
         // enable thread locking
@@ -68,6 +112,8 @@ public:
 #endif
         // Register all FFmpeg formats/codecs
         av_register_all();
+
+        avformat_network_init();
     }
 
     virtual ~ReaderWriterFFmpeg()
@@ -133,6 +179,14 @@ private:
             {
                 const std::string& name = itr->first;
                 parameters->parse(name, options->getPluginStringData(name));
+            }
+        }
+        if (options && options->getNumPluginData()>0)
+        {
+            AVIOContext* context = (AVIOContext*)options->getPluginData("context");
+            if (context != NULL)
+            {
+                parameters->setContext(context);
             }
         }
     }

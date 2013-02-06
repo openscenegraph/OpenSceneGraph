@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlightï¿½ loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -202,6 +202,9 @@ class Document
         void setReadObjectRecordData(bool flag) { _readObjectRecordData = flag; }
         bool getReadObjectRecordData() const { return _readObjectRecordData; }
 
+        void setPreserveNonOsgAttrsAsUserData(bool flag) { _preserveNonOsgAttrsAsUserData = flag; }
+        bool getPreserveNonOsgAttrsAsUserData() const { return _preserveNonOsgAttrsAsUserData; }
+
     protected:
 
         // Options
@@ -215,6 +218,7 @@ class Document
         bool                        _useBillboardCenter;
         bool                        _doUnitsConversion;
         bool                        _readObjectRecordData;
+        bool                        _preserveNonOsgAttrsAsUserData;
         CoordUnits                  _desiredUnits;
 
         bool                        _keepExternalReferences;

@@ -11,7 +11,8 @@
 
 
 #In ffmpeg code, old version use "#include <header.h>" and newer use "#include <libname/header.h>"
-#In OSG ffmpeg plugin, we use "#include <header.h>" for compatibility with old version of ffmpeg
+#In OSG ffmpeg plugin, we used "#include <header.h>" for compatibility with old version of ffmpeg
+#With the new version of FFmpeg, a file named "time.h" was added that breaks compatability with the old version of ffmpeg.
 
 #We have to search the path which contain the header.h (usefull for old version)
 #and search the path which contain the libname/header.h (usefull for new version)
@@ -131,20 +132,17 @@ IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODE
     SET(FFMPEG_FOUND "YES")
 
     SET(FFMPEG_INCLUDE_DIRS
-        ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS} ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS}/libavformat
-        ${FFMPEG_LIBAVDEVICE_INCLUDE_DIRS} ${FFMPEG_LIBAVDEVICE_INCLUDE_DIRS}/libavdevice
-        ${FFMPEG_LIBAVCODEC_INCLUDE_DIRS} ${FFMPEG_LIBAVCODEC_INCLUDE_DIRS}/libavcodec
-        ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS} ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS}/libavutil
+        ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS}
+        ${FFMPEG_LIBAVDEVICE_INCLUDE_DIRS}
+        ${FFMPEG_LIBAVCODEC_INCLUDE_DIRS}
+        ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS}
     )
 
+# Using the new include style for FFmpeg prevents issues with #include <time.h>
     IF (FFMPEG_STDINT_INCLUDE_DIR)
         SET(FFMPEG_INCLUDE_DIRS
             ${FFMPEG_INCLUDE_DIRS}
             ${FFMPEG_STDINT_INCLUDE_DIR}
-            ${FFMPEG_STDINT_INCLUDE_DIR}/libavformat
-            ${FFMPEG_STDINT_INCLUDE_DIR}/libavdevice
-            ${FFMPEG_STDINT_INCLUDE_DIR}/libavcodec
-            ${FFMPEG_STDINT_INCLUDE_DIR}/libavutil
         )
     ENDIF()
 

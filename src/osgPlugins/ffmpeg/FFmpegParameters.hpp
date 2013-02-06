@@ -21,14 +21,17 @@ public:
     bool isFormatAvailable() const { return m_format!=NULL; }
     
     AVInputFormat* getFormat() { return m_format; }
-    AVFormatParameters* getFormatParameter() { return &m_parameters; }
+    AVDictionary** getOptions() { return &m_options; }
+    void setContext(AVIOContext* context) { m_context = context; }
+    AVIOContext* getContext() { return m_context; }
     
     void parse(const std::string& name, const std::string& value);
 
 protected:
 
     AVInputFormat* m_format;
-    AVFormatParameters m_parameters;
+    AVIOContext* m_context;
+    AVDictionary* m_options;
 };
 
 

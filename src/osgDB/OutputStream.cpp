@@ -261,7 +261,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWARRAYS);
         {
             const osg::DrawArrays* da = static_cast<const osg::DrawArrays*>(p);
-            *this << MAPPEE(PrimitiveType, da->getMode())
+            *this << MAPPEE(PrimitiveType, da->getMode()) << da->getNumInstances()
                   << da->getFirst() << da->getCount() << std::endl;
         }
         break;
@@ -269,7 +269,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWARRAY_LENGTH);
         {
             const osg::DrawArrayLengths* dl = static_cast<const osg::DrawArrayLengths*>(p);
-            *this << MAPPEE(PrimitiveType, dl->getMode()) << dl->getFirst();
+            *this << MAPPEE(PrimitiveType, dl->getMode()) << dl->getNumInstances() << dl->getFirst();
             writeArrayImplementation( dl, dl->size(), 4 );
         }
         break;
@@ -277,7 +277,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_UBYTE);
         {
             const osg::DrawElementsUByte* de = static_cast<const osg::DrawElementsUByte*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode());
+            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -285,7 +285,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_USHORT);
         {
             const osg::DrawElementsUShort* de = static_cast<const osg::DrawElementsUShort*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode());
+            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -293,7 +293,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_UINT);
         {
             const osg::DrawElementsUInt* de = static_cast<const osg::DrawElementsUInt*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode());
+            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;

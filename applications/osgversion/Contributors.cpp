@@ -249,7 +249,10 @@ const char* invalidNames[] =
     "Vec3",
     "Plugin",
     "Get",
-    "LightSource"
+    "LightSource",
+    "SlideEventHandler",
+    "GraphicsContext*",
+    "Apple"
 };
 
 
@@ -270,6 +273,7 @@ TypoCorrection typoCorrections[] =
     {"AndrÃ©",         "André"},
     {"Antione",        "Antoine"},
     {"Antonoine",      "Antoine"},
+    {"Aurelein",       "Aurelien"},
     {"Atr",            "Art"},
     {"Baverage",       "Beverage"},
     {"Bistroviae",     "Bistrovic"},
@@ -315,6 +319,7 @@ TypoCorrection typoCorrections[] =
     {"Hertlien",       "Hertlein"},
     {"Hatwig",         "Hartwig"},
     {"Hauknes",        "Haukness"},
+    {"Hunber",        "Huber"},
     {"Hi",             "He"},
     {"Hooper",         "Hopper"},
     {"Inverson",       "Iverson"},
@@ -460,6 +465,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Jaap","Gas",
+     "Jaap", "Glas"},
     {"Philip","Lamp",
      "Philip", "Lamb"},
     {"Dimi","Christop",

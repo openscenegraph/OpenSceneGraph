@@ -599,18 +599,37 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
             meshAppliedMatPtr = &meshMat;
         }
 
+        // MIKEC: "group" handles the node transform, siblings, and our child geometry if we don't want an MT node for it
+        // if noMatrixTransforms is not set, we create a transform node for the mesh's matrix
+        osg::Group* meshTransform=NULL;
+
+        if ((noMatrixTransforms==false) && meshAppliedMatPtr) { // we are allowed to have, and need another matrixtransform
+            meshTransform=new osg::MatrixTransform(meshMat);
+            meshAppliedMatPtr=NULL; // since meshTransform applies it
+
+            meshTransform->setName("3DSMeshMatrix"); 
+            if (group) group->addChild(meshTransform);
+        } else {
+            meshTransform=group; // don't need the meshTransform node - note group can be NULL
+        }
+
         if (group)
         {
             // add our geometry to group (where our children already are)
             // creates geometry under modifier node
-            processMesh(drawStateMap,group,mesh,meshAppliedMatPtr);
+            processMesh(drawStateMap,meshTransform,mesh,meshAppliedMatPtr);
             return group;
         }
         else
         {
-            // didnt use group for children
-            // return a ptr directly to the Geode for this mesh
-            return processMesh(drawStateMap,NULL,mesh,meshAppliedMatPtr);
+            // didnt use group for children, return a ptr directly to the Geode for this mesh
+            // there is no group node but may have a meshTransform node to hold the meshes matrix
+            if (meshTransform) {
+                processMesh(drawStateMap,meshTransform,mesh,meshAppliedMatPtr);
+                return meshTransform;
+            } else { // no group or meshTransform nodes - create a new Geode and return that
+                return processMesh(drawStateMap,NULL,mesh,meshAppliedMatPtr);
+            }
         }
 
     }
@@ -792,19 +811,19 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     // We can traverse by meshes (old method, broken for pivot points, but otherwise works), or by nodes (new method, not so well tested yet)
     // if your model is broken, especially wrt object positions try setting this flag. If that fixes it,
     // send me the model
-    bool traverse_nodes=false;
+    bool traverse_nodes=true;
 
     // MIKEC: have found 3ds files with NO node structure - only meshes, for this case we fall back to the old traverse-by-meshes code
     // Loading and re-exporting these files from 3DS produces a file with correct node structure, so perhaps these are not 100% conformant?
     if (f->nodes == NULL)
     {
         OSG_WARN<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
-        traverse_nodes=true;
+        traverse_nodes=false;
     }
 
     osg::Node* group = NULL;
 
-    if (traverse_nodes) // old method
+    if (!traverse_nodes) // old method, traverse by mesh
     {
         group = new osg::Group();
         for (int imesh=0; imesh<f->nmeshes; ++imesh)
@@ -1127,8 +1146,9 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
             }
             else
             {
-                OSG_WARN << "texture '"<<texture->name<<"' not found"<< std::endl;
-                return NULL;
+                // MIKEC: We can still continue to call osgDB::readRefImageFile in case user has a ReadFileCallback registered 
+                //        in that case we just use the image's filename as it exists in the 3DS file
+                fileName=texture->name;
             }
         }
 

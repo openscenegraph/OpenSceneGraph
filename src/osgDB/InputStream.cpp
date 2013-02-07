@@ -403,7 +403,12 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
 
     DEF_MAPPEE(PrimitiveType, type);
     DEF_MAPPEE(PrimitiveType, mode);
+    unsigned int numInstances = 0u;
     *this >> type >> mode;
+    if ( _fileVersion>96 )
+    {
+        *this >> numInstances;
+    }
 
     switch ( type.get() )
     {
@@ -413,6 +418,7 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
             *this >> first >> count;
             osg::DrawArrays* da = new osg::DrawArrays( mode.get(), first, count );
             primitive = da;
+            primitive->setNumInstances( numInstances );
         }
         break;
     case ID_DRAWARRAY_LENGTH:
@@ -427,6 +433,7 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
             }
             *this >> END_BRACKET;
             primitive = dl;
+            primitive->setNumInstances( numInstances );
         }
         break;
     case ID_DRAWELEMENTS_UBYTE:
@@ -441,6 +448,7 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
             }
             *this >> END_BRACKET;
             primitive = de;
+            primitive->setNumInstances( numInstances );
         }
         break;
     case ID_DRAWELEMENTS_USHORT:
@@ -455,6 +463,7 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
             }
             *this >> END_BRACKET;
             primitive = de;
+            primitive->setNumInstances( numInstances );
         }
         break;
     case ID_DRAWELEMENTS_UINT:
@@ -469,6 +478,7 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
             }
             *this >> END_BRACKET;
             primitive = de;
+            primitive->setNumInstances( numInstances );
         }
         break;
     default:

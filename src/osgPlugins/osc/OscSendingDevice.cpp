@@ -25,7 +25,7 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port, unsigne
     , _transmitSocket(IpEndpointName(address.c_str(), port))
     , _buffer(new  char[BUFFER_SIZE])
     , _oscStream(_buffer, BUFFER_SIZE)
-    , _numMessagesPerEvent(osg::minimum(1u,num_messages_per_event))
+    , _numMessagesPerEvent(osg::maximum(1u,num_messages_per_event))
     , _delayBetweenSendsInMilliSecs( (_numMessagesPerEvent > 1) ? delay_between_sends_in_millisecs : 0)
 {
     setCapabilities(SEND_EVENTS);
@@ -36,7 +36,7 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port, unsigne
     #elif OSC_HOST_BIG_ENDIAN
         OSG_NOTICE << "(big endian)";
     #endif
-    OSG_NOTICE << " (" << num_messages_per_event << "msgs/event)";
+    OSG_NOTICE << " (" << _numMessagesPerEvent << "msgs/event, " << _delayBetweenSendsInMilliSecs << "ms delay between msgs)";
     OSG_NOTICE << std::endl;
     
 }

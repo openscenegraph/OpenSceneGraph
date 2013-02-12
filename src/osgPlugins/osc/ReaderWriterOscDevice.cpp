@@ -73,6 +73,7 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
             supportsExtension("osc", "Virtual Device Integration via a OSC_receiver");
             supportsOption("documentRegisteredHandlers", "dump a documentation of all registered REST-handler to the console");
             supportsOption("numMessagesPerEvent", "set the number of osc-messages to send for one event (sender-only)");
+            supportsOption("delayBetweenSendsInMillisecs", "when sending multiple msgs per event you can specify an optional delay between the sends (sender-only)");
             
             
         }

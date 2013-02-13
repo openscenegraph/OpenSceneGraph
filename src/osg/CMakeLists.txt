@@ -134,6 +134,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Referenced
     ${HEADER_PATH}/ref_ptr
     ${HEADER_PATH}/RenderInfo
+    ${HEADER_PATH}/SampleMaski
     ${HEADER_PATH}/Scissor
     ${HEADER_PATH}/Sequence
     ${HEADER_PATH}/ShadeModel
@@ -305,6 +306,7 @@ SET(TARGET_SRC
     ProxyNode.cpp
     Quat.cpp
     Referenced.cpp
+    SampleMaski.cpp
     Scissor.cpp
     Sequence.cpp
     ShadeModel.cpp

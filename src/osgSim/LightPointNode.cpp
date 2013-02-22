@@ -57,6 +57,7 @@ LightPointNode::LightPointNode():
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
 LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copyop):
     osg::Node(lpn,copyop),
+    _bbox(lpn._bbox),
     _lightPointList(lpn._lightPointList),
     _minPixelSize(lpn._minPixelSize),
     _maxPixelSize(lpn._maxPixelSize),

@@ -86,6 +86,7 @@ bool Group::insertChild( unsigned int index, Node *child )
         // note ref_ptr<> automatically handles incrementing child's reference count.
         if (index >= _children.size())
         {
+            index = _children.size();      // set correct index value to be passed to the "childInserted" method
             _children.push_back(child);
         }
         else

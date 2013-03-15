@@ -17,6 +17,8 @@
 */
 
 #include <osg/Notify>
+#include <osg/io_utils>
+
 #include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
@@ -30,6 +32,18 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgViewer::Viewer viewer(arguments);
 
+    osg::Vec2d translate(0.0,0.0);
+    osg::Vec2d scale(1.0,1.0);
+    osg::Vec2d taper(1.0,1.0);
+    double angle = 0; // osg::inDegrees(45.0);
+
+    if (arguments.read("-a",angle)) { OSG_NOTICE<<"angle = "<<angle<<std::endl; angle = osg::inDegrees(angle); }
+    if (arguments.read("-t",translate.x(), translate.y())) { OSG_NOTICE<<"translate = "<<translate<<std::endl;}
+    if (arguments.read("-s",scale.x(), scale.y())) { OSG_NOTICE<<"scale = "<<scale<<std::endl;}
+    if (arguments.read("-k",taper.x(), taper.y())) { OSG_NOTICE<<"taper = "<<taper<<std::endl;}
+
+    
+
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
 
     if (!model)
@@ -42,5 +56,26 @@ int main( int argc, char **argv )
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
+    viewer.realize();
+
+    viewer.getCamera()->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+
+    osg::Matrixd& pm = viewer.getCamera()->getProjectionMatrix();
+
+    pm.postMultRotate(osg::Quat(angle, osg::Vec3d(0.0,0.0,1.0)));
+    pm.postMultScale(osg::Vec3d(scale.x(),scale.y(),1.0));
+    pm.postMultTranslate(osg::Vec3d(translate.x(),translate.y(),0.0));
+
+    if (taper.x()!=1.0)
+    {
+        double x0 = (1.0+taper.x())/(1-taper.x());
+        OSG_NOTICE<<"x0 = "<<x0<<std::endl;
+
+        pm.postMult(osg::Matrixd(1.0-x0, 0.0,    0.0,    1.0,
+                                 0.0,    1.0-x0, 0.0,    0.0,
+                                 0.0,    0.0,    (1.0-x0)*0.5, 0.0,
+                                 0.0,    0.0,    0.0,    -x0));
+    }
+    
     return viewer.run();
 }

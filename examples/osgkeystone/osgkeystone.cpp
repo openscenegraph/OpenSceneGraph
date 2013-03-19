@@ -68,16 +68,54 @@ public:
     {
     }
 
+    double angleBetweenVectors(const osg::Vec2d& v1, const osg::Vec2d& v2) const
+    {
+        osg::Vec2d v3(-v2.y(), v2.x());
+        double p1 = v1*v2;
+        double p2 = v1*v3;
+        double a = atan2(p2, p1);
+        return a;
+    }
+
+    osg::Vec2d rotateVector(osg::Vec2d& v, double s, double c) const
+    {
+        return osg::Vec2d(v.x()*c-v.y()*s, v.y()*c+v.x()*s);
+    }
+    
+
     void updateKeystone(ControlPoints cp)
     {
         // compute translation
         translate = (cp.bottom_left+cp.bottom_right+cp.top_left+cp.top_right)*0.25;
 
         // adjust control points to fit translation
-        cp.top_left += translate;
-        cp.top_right += translate;
-        cp.bottom_right += translate;
-        cp.bottom_left += translate;
+        cp.top_left -= translate;
+        cp.top_right -= translate;
+        cp.bottom_right -= translate;
+        cp.bottom_left -= translate;
+
+        angle = (angleBetweenVectors(cp.top_left, osg::Vec2d(-1.0,1.0)) +
+                   angleBetweenVectors(cp.top_right, osg::Vec2d(1.0,1.0)) +
+                   angleBetweenVectors(cp.bottom_right, osg::Vec2d(1.0,-1.0)) +
+                   angleBetweenVectors(cp.bottom_left, osg::Vec2d(-1.0,-1.0)))*0.25;
+
+        OSG_NOTICE<<"cp.top_left="<<cp.top_left<<std::endl;
+        OSG_NOTICE<<"cp.top_right="<<cp.top_right<<std::endl;
+        OSG_NOTICE<<"cp.bottom_right="<<cp.bottom_right<<std::endl;
+        OSG_NOTICE<<"cp.bottom_left="<<cp.bottom_left<<std::endl;
+
+        double s = sin(angle);
+        double c = cos(angle);
+        cp.top_left = rotateVector(cp.top_left, s, c);
+        cp.top_right = rotateVector(cp.top_right, s, c);
+        cp.bottom_right = rotateVector(cp.bottom_right, s, c);
+        cp.bottom_left = rotateVector(cp.bottom_left, s, c);
+
+        OSG_NOTICE<<"after rotate cp.top_left="<<cp.top_left<<std::endl;
+        OSG_NOTICE<<"             cp.top_right="<<cp.top_right<<std::endl;
+        OSG_NOTICE<<"             cp.bottom_right="<<cp.bottom_right<<std::endl;
+        OSG_NOTICE<<"             cp.bottom_left="<<cp.bottom_left<<std::endl;
+        
 
         // compute scaling
         scale.x() = ( (cp.top_right.x()-cp.top_left.x()) + (cp.bottom_right.x()-cp.bottom_left.x()) )/4.0;
@@ -92,10 +130,9 @@ public:
         cp.top_right.y() *= scale.y();
         cp.bottom_right.y() *= scale.y();
         cp.bottom_left.y() *= scale.y();
-        
-        //angle = atan2(-cp.bottom_left.x(),(-cp.bottom_left.y())
-        //taper.x() = (cp.top_left-cp.bottom_left).length() / (cp.top_right-cp.bottom_right).length();
-        //taper.y() = (cp.top_right-cp.top_left).length() / (cp.bottom_right-cp.bottom_left).length();
+
+        taper.x() = (cp.top_left-cp.bottom_left).length() / (cp.top_right-cp.bottom_right).length();
+        taper.y() = (cp.bottom_right-cp.bottom_left).length() / (cp.top_right-cp.top_left).length();
         OSG_NOTICE<<"translate="<<translate<<std::endl;
         OSG_NOTICE<<"scale="<<scale<<std::endl;
         OSG_NOTICE<<"taper="<<taper<<std::endl;
@@ -114,7 +151,7 @@ public:
             double x0 = (1.0+taper.x())/(1-taper.x());
             pm.postMult(osg::Matrixd(1.0-x0, 0.0,    0.0,    1.0,
                                     0.0,    1.0-x0, 0.0,    0.0,
-                                    0.0,    0.0,    (1.0-x0)*0.5, 0.0,
+                                    0.0,    0.0,    (1.0-x0)*0.25, 0.0,
                                     0.0,    0.0,    0.0,    -x0));
         }
         if (taper.y()!=1.0)
@@ -122,7 +159,7 @@ public:
             double y0 = (1.0+taper.y())/(1-taper.y());
             pm.postMult(osg::Matrixd(1.0-y0, 0.0,    0.0,    0.0,
                                     0.0,    1.0-y0, 0.0,    1.0,
-                                    0.0,    0.0,    (1.0-y0)*0.5, 0.0,
+                                    0.0,    0.0,    (1.0-y0)*0.25, 0.0,
                                     0.0,    0.0,    0.0,    -y0));
         }
         return pm;
@@ -185,10 +222,8 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
     {
         case(osgGA::GUIEventAdapter::PUSH):
         {
-            OSG_NOTICE<<"Push with ea.getModKeyMask()="<<ea.getModKeyMask()<<std::endl;
             if (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL )
             {
-                OSG_NOTICE<<"Mouse "<<ea.getXnormalized()<<", "<<ea.getYnormalized()<<std::endl;
                 float x = ea.getXnormalized();
                 float y = ea.getYnormalized();
                 if (x<-0.33)

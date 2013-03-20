@@ -20,8 +20,10 @@
 #include <osg/io_utils>
 
 #include <osgDB/ReadFile>
+#include <osgGA/StateSetManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 
 class ControlPoints : public osg::Referenced
@@ -196,9 +198,19 @@ public:
         CENTER
     };
 
+    osg::Vec2d incrementScale(const osgGA::GUIEventAdapter& ea) const;
+    Region computeRegion(const osgGA::GUIEventAdapter& ea) const;
+    void move(Region region, const osg::Vec2d& delta);
+    
 protected:
 
+
     osg::ref_ptr<Keystone>      _keystone;
+
+    osg::Vec2d                  _defaultIncrement;
+    osg::Vec2d                  _ctrlIncrement;
+    osg::Vec2d                  _shiftIncrement;
+    osg::Vec2d                  _keyIncrement;
 
     osg::Vec2d                  _startPosition;
     osg::ref_ptr<ControlPoints> _startControlPoints;
@@ -210,10 +222,93 @@ protected:
 
 KeystoneHandler::KeystoneHandler(Keystone* keystone):
     _keystone(keystone),
+    _defaultIncrement(0.0,0.0),
+    _ctrlIncrement(1.0,1.0),
+    _shiftIncrement(0.1,0.1),
+    _keyIncrement(0.005, 0.005),
     _selectedRegion(NONE_SELECTED)
 {
     _startControlPoints = new ControlPoints;
     _currentControlPoints = new ControlPoints;
+}
+
+KeystoneHandler::Region KeystoneHandler::computeRegion(const osgGA::GUIEventAdapter& ea) const
+{
+    float x = ea.getXnormalized();
+    float y = ea.getYnormalized();
+    if (x<-0.33)
+    {
+        // left side
+        if (y<-0.33) return BOTTOM_LEFT;
+        else if (y<0.33) return LEFT;
+        else return TOP_LEFT;
+    }
+    else if (x<0.33)
+    {
+        // center side
+        if (y<-0.33) return BOTTOM;
+        else if (y<0.33) return CENTER;
+        else return TOP;
+    }
+    else
+    {
+        // right side
+        if (y<-0.33) return BOTTOM_RIGHT;
+        else if (y<0.33) return RIGHT;
+        else return TOP_RIGHT;
+    }
+    return NONE_SELECTED;
+}
+
+void KeystoneHandler::move(Region region, const osg::Vec2d& delta)
+{
+    switch(region)
+    {
+        case(TOP_LEFT):
+            _currentControlPoints->top_left += delta;
+            break;
+        case(TOP):
+            _currentControlPoints->top_left += delta;
+            _currentControlPoints->top_right += delta;
+            break;
+        case(TOP_RIGHT):
+            _currentControlPoints->top_right += delta;
+            break;
+        case(RIGHT):
+            _currentControlPoints->top_right += delta;
+            _currentControlPoints->bottom_right += delta;
+            break;
+        case(BOTTOM_RIGHT):
+            _currentControlPoints->bottom_right += delta;
+            break;
+        case(BOTTOM):
+            _currentControlPoints->bottom_right += delta;
+            _currentControlPoints->bottom_left += delta;
+            break;
+        case(BOTTOM_LEFT):
+            _currentControlPoints->bottom_left += delta;
+            break;
+        case(LEFT):
+            _currentControlPoints->bottom_left += delta;
+            _currentControlPoints->top_left += delta;
+            break;
+        case(CENTER):
+            _currentControlPoints->bottom_left += delta;
+            _currentControlPoints->top_left += delta;
+            _currentControlPoints->bottom_right += delta;
+            _currentControlPoints->top_right += delta;
+            break;
+        case(NONE_SELECTED):
+            break;
+    }
+    _keystone->updateKeystone(*_currentControlPoints);
+}
+
+osg::Vec2d KeystoneHandler::incrementScale(const osgGA::GUIEventAdapter& ea) const
+{
+    if (_ctrlIncrement!=osg::Vec2d(0.0,0.0) && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL )) return _ctrlIncrement;
+    if (_shiftIncrement!=osg::Vec2d(0.0,0.0) && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT )) return _shiftIncrement;
+    return _defaultIncrement;
 }
 
 bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -222,34 +317,12 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
     {
         case(osgGA::GUIEventAdapter::PUSH):
         {
-            if (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL )
+            osg::Vec2d scale = incrementScale(ea);
+            if (scale.length2()!=0.0)
             {
-                float x = ea.getXnormalized();
-                float y = ea.getYnormalized();
-                if (x<-0.33)
-                {
-                    // left side
-                    if (y<-0.33) _selectedRegion = BOTTOM_LEFT;
-                    else if (y<0.33) _selectedRegion = LEFT;
-                    else _selectedRegion = TOP_LEFT;
-                }
-                else if (x<0.33)
-                {
-                    // center side
-                    if (y<-0.33) _selectedRegion = BOTTOM;
-                    else if (y<0.33) _selectedRegion = CENTER;
-                    else _selectedRegion = TOP;
-                }
-                else
-                {
-                    // right side
-                    if (y<-0.33) _selectedRegion = BOTTOM_RIGHT;
-                    else if (y<0.33) _selectedRegion = RIGHT;
-                    else _selectedRegion = TOP_RIGHT;
-                }
+                _selectedRegion = computeRegion(ea);
                 (*_startControlPoints) = (*_currentControlPoints);
-                _startPosition.set(x,y);
-                OSG_NOTICE<<"Region "<<_selectedRegion<<std::endl;
+                _startPosition.set(ea.getXnormalized(),ea.getYnormalized());
             }
             else
             {
@@ -264,47 +337,8 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
                 (*_currentControlPoints) = (*_startControlPoints);
                 osg::Vec2d currentPosition(ea.getXnormalized(), ea.getYnormalized());
                 osg::Vec2d delta(currentPosition-_startPosition);
-                OSG_NOTICE<<"Moving region "<<_selectedRegion<<", moving by "<<currentPosition-_startPosition<<std::endl;
-                switch(_selectedRegion)
-                {
-                    case(TOP_LEFT):
-                        _currentControlPoints->top_left += delta;
-                        break;
-                    case(TOP):
-                        _currentControlPoints->top_left += delta;
-                        _currentControlPoints->top_right += delta;
-                        break;
-                    case(TOP_RIGHT):
-                        _currentControlPoints->top_right += delta;
-                        break;
-                    case(RIGHT):
-                        _currentControlPoints->top_right += delta;
-                        _currentControlPoints->bottom_right += delta;
-                        break;
-                    case(BOTTOM_RIGHT):
-                        _currentControlPoints->bottom_right += delta;
-                        break;
-                    case(BOTTOM):
-                        _currentControlPoints->bottom_right += delta;
-                        _currentControlPoints->bottom_left += delta;
-                        break;
-                    case(BOTTOM_LEFT):
-                        _currentControlPoints->bottom_left += delta;
-                        break;
-                    case(LEFT):
-                        _currentControlPoints->bottom_left += delta;
-                        _currentControlPoints->top_left += delta;
-                        break;
-                    case(CENTER):
-                        _currentControlPoints->bottom_left += delta;
-                        _currentControlPoints->top_left += delta;
-                        _currentControlPoints->bottom_right += delta;
-                        _currentControlPoints->top_right += delta;
-                        break;
-                    case(NONE_SELECTED):
-                        break;
-                }
-                _keystone->updateKeystone(*_currentControlPoints);
+                osg::Vec2d scale = incrementScale(ea);
+                move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
                 return true;
             }
 
@@ -312,7 +346,6 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
         }
         case(osgGA::GUIEventAdapter::RELEASE):
         {
-            OSG_NOTICE<<"Mouse released "<<std::endl;
             _selectedRegion = NONE_SELECTED;
             return false;
         }
@@ -324,6 +357,22 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
                 _startControlPoints->reset();
                 _currentControlPoints->reset();
                 _keystone->updateKeystone(*_currentControlPoints);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
+            {
+                move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
+            {
+                move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
+            {
+                move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
+            {
+                move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
             }
             return false;
         }
@@ -367,6 +416,13 @@ int main( int argc, char **argv )
 
     viewer.setSceneData(model.get());
 
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
     viewer.realize();
@@ -375,6 +431,7 @@ int main( int argc, char **argv )
 
     osg::Matrixd original_pm = viewer.getCamera()->getProjectionMatrix();
 
+    // Add keystone handler
     viewer.addEventHandler(new KeystoneHandler(keystone));
 
     while(!viewer.done())

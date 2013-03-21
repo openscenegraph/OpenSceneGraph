@@ -32,11 +32,11 @@ Martin Lavery
 Tree 
 Luigi Calori
 Mike Wittman
+Chris Hanson
 Roland Smeenk
 Roger James
 Jeremy Moles
 Jason Beverage
-Chris Hanson
 Jan Peciva
 J.P. Delport
 Mattias Helsing
@@ -81,6 +81,7 @@ Daniel Sjölie
 Bryan Thrall
 Torben Dannhauer
 Fabien Lavignotte
+Mike Connell
 Melchior Franz
 Martin Naylor
 Johannes Baeuerle
@@ -88,7 +89,6 @@ Jan Ciger
 Andreas Ekstrand
 Rafa Gaitan
 Neil Hughes
-Mike Connell
 Martin Beckett
 Joran Jessurun
 Gino van den Bergen
@@ -107,6 +107,7 @@ Riccardo Corsi
 Rainer Oder
 Martin Aumueller
 Mario Valle
+Lukasz Izdebski
 Jorge Izquierdo
 Gordon Tomlinson
 Frederic Bouvier
@@ -123,6 +124,7 @@ Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
+Aurelien Albert
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
@@ -139,14 +141,12 @@ Mihai Radu
 Michael Hartman
 Martins Innus
 Maciej Krol
-Lukasz Izdebski
 Leandro Motta Barros
 Johan Nouvel
 Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
-Aurelien Albert
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
@@ -158,6 +158,7 @@ Maria Ten
 Lilin Xiong
 Liang Aibin
 Katharina Plugge
+Jordi Torres
 John Vidar Larring
 John Kelso
 John Ivar
@@ -409,7 +410,6 @@ Julian Scheid
 Juergen Rensen
 Juan Hernando
 Josh Portway
-Jordi Torres
 John Tan
 John Grant
 John Donovan

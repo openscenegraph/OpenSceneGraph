@@ -614,7 +614,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -705,7 +705,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -795,7 +795,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -890,7 +890,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -957,7 +957,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -1024,7 +1024,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
@@ -1199,7 +1199,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);

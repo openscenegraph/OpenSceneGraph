@@ -381,6 +381,78 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
     }
 }
 
+osg::Node* createGrid(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, const osg::Vec4& colour)
+{
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geode->addDrawable(geometry.get());
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    colours->push_back(colour);
+    geometry->setColorArray(colours.get());
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+    
+    // border line
+    {
+        unsigned int vi = vertices->size();
+        vertices->push_back(origin);
+        vertices->push_back(origin+widthVector);
+        vertices->push_back(origin+widthVector+heightVector);
+        vertices->push_back(origin+heightVector);
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_LOOP, vi, 4));
+    }
+    
+    // cross lines
+    {
+        unsigned int vi = vertices->size();
+        vertices->push_back(origin);
+        vertices->push_back(origin+widthVector+heightVector);
+        vertices->push_back(origin+heightVector);
+        vertices->push_back(origin+widthVector);
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 4));
+    }
+    
+    // vertices lines
+    {
+        unsigned int vi = vertices->size();
+        osg::Vec3 dv = widthVector/6.0;
+        osg::Vec3 bv = origin+dv;
+        osg::Vec3 tv = bv+heightVector;
+        for(unsigned int i=0; i<5; ++i)
+        {
+            vertices->push_back(bv);
+            vertices->push_back(tv);
+            bv += dv;
+            tv += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
+    }
+
+    // horizontal lines
+    {
+        unsigned int vi = vertices->size();
+        osg::Vec3 dv = heightVector/6.0;
+        osg::Vec3 bv = origin+dv;
+        osg::Vec3 tv = bv+widthVector;
+        for(unsigned int i=0; i<5; ++i)
+        {
+            vertices->push_back(bv);
+            vertices->push_back(tv);
+            bv += dv;
+            tv += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
+    }
+
+    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    
+    return geode.release();
+}
+
 
 int main( int argc, char **argv )
 {
@@ -414,7 +486,22 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    viewer.setSceneData(model.get());
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->addChild(model.get());
+
+    double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+    double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+    double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
+    double fovy = osg::RadiansToDegrees(2.0*atan2(screenHeight/2.0,screenDistance));
+    double aspectRatio = screenWidth/screenHeight;
+    
+    osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+    camera->setClearMask(0x0);
+    camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+    camera->setProjectionMatrixAsPerspective(fovy, aspectRatio, 0.1, 1000.0);
+    camera->addChild(createGrid(osg::Vec3(-screenWidth*0.5, -screenHeight*0.5, -screenDistance), osg::Vec3(screenWidth, 0.0, 0.0), osg::Vec3(0.0, screenHeight, 0.0), osg::Vec4(1.0,0.0,0.0,1.0)));
+
+    viewer.setSceneData(group.get());
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
@@ -430,6 +517,10 @@ int main( int argc, char **argv )
     viewer.getCamera()->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
 
     osg::Matrixd original_pm = viewer.getCamera()->getProjectionMatrix();
+    osg::Matrixd original_grid_pm = camera->getProjectionMatrix();
+
+    group->addChild(camera.get());
+
 
     // Add keystone handler
     viewer.addEventHandler(new KeystoneHandler(keystone));
@@ -443,6 +534,7 @@ int main( int argc, char **argv )
         if (keystone.valid())
         {
             viewer.getCamera()->setProjectionMatrix(original_pm * keystone->computeKeystoneMatrix());
+            camera->setProjectionMatrix(original_grid_pm * keystone->computeKeystoneMatrix());
         }
         viewer.renderingTraversals();
     }

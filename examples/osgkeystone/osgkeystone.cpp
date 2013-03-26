@@ -66,6 +66,7 @@ class Keystone : public osg::Referenced
 public:
     Keystone():
         translate(0.0,0.0),
+        shear(0.0,0.0),
         scale(1.0,1.0),
         taper(1.0,1.0),
         angle(0.0)
@@ -98,11 +99,28 @@ public:
         cp.bottom_right -= translate;
         cp.bottom_left -= translate;
 
+        osg::Vec2d mid_left = (cp.top_left+cp.bottom_left)*0.5;
+        osg::Vec2d mid_right = (cp.top_right+cp.bottom_right)*0.5;
+        osg::Vec2d mid_top = (cp.top_left+cp.top_right)*0.5;
+        osg::Vec2d mid_bottom = (cp.bottom_left+cp.bottom_right)*0.5;
+        shear.x() = (mid_top.x()-mid_bottom.x())/(mid_top.y()-mid_bottom.y());
+        shear.y() = (mid_right.y()-mid_left.y())/(mid_right.x()-mid_left.x());
+
+        cp.top_left.x() += cp.top_left.y() * shear.x();
+        cp.top_left.y() += cp.top_left.x() * shear.y();
+        cp.top_right.x() += cp.top_right.y() * shear.x();
+        cp.top_right.y() += cp.top_right.x() * shear.y();
+        cp.bottom_left.x() += cp.bottom_left.y() * shear.x();
+        cp.bottom_left.y() += cp.bottom_left.x() * shear.y();
+        cp.bottom_right.x() += cp.bottom_right.y() * shear.x();
+        cp.bottom_right.y() += cp.bottom_right.x() * shear.y();
+
+#if 0        
         angle = (angleBetweenVectors(cp.top_left, osg::Vec2d(-1.0,1.0)) +
                    angleBetweenVectors(cp.top_right, osg::Vec2d(1.0,1.0)) +
                    angleBetweenVectors(cp.bottom_right, osg::Vec2d(1.0,-1.0)) +
                    angleBetweenVectors(cp.bottom_left, osg::Vec2d(-1.0,-1.0)))*0.25;
-
+#endif
         OSG_NOTICE<<"cp.top_left="<<cp.top_left<<std::endl;
         OSG_NOTICE<<"cp.top_right="<<cp.top_right<<std::endl;
         OSG_NOTICE<<"cp.bottom_right="<<cp.bottom_right<<std::endl;
@@ -122,8 +140,8 @@ public:
         
 
         // compute scaling
-        scale.x() = ( (cp.top_right.x()-cp.top_left.x()) + (cp.bottom_right.x()-cp.bottom_left.x()) )/4.0;
-        scale.y() = ( (cp.top_right.y()-cp.bottom_right.y()) + (cp.top_left.y()-cp.bottom_left.y()) )/4.0;
+        scale.x() = 1.0; // ( (cp.top_right.x()-cp.top_left.x()) + (cp.bottom_right.x()-cp.bottom_left.x()) )/4.0;
+        scale.y() = 1.0; //( (cp.top_right.y()-cp.bottom_right.y()) + (cp.top_left.y()-cp.bottom_left.y()) )/4.0;
 
         // adjust control points to fit scaling
         cp.top_left.x() *= scale.x();
@@ -170,6 +188,7 @@ public:
     }
     
     osg::Vec2d translate;
+    osg::Vec2d shear;
     osg::Vec2d scale;
     osg::Vec2d taper;
     double angle;
@@ -491,13 +510,16 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         double tx = _keystone->translate.x();
         double ty = _keystone->translate.y();
 
+        double shx = _keystone->shear.x();
+        double shy = _keystone->shear.y();
+
         osg::Matrixd pm;
         pm.postMultRotate(osg::Quat(_keystone->angle, osg::Vec3d(0.0,0.0,1.0)));
 
-        (*vertices)[0] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left, screenHeight*sy*0.5 + ty*screenHeight*0.5 ,-screenDistance*r_left) * pm;
-        (*vertices)[1] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right, screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_right) * pm;
-        (*vertices)[2] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right,-screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_right) * pm;
-        (*vertices)[3] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left,-screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_left) * pm;
+        (*vertices)[0] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left + shx*screenHeight, screenHeight*sy*0.5 + ty*screenHeight*0.5 - shy*screenWidth*0.5, -screenDistance*r_left) * pm;
+        (*vertices)[1] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right + shx*screenHeight, screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
+        (*vertices)[2] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
+        (*vertices)[3] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 - shy*screenWidth*0.5, -screenDistance*r_left) * pm;
 
         geometry->dirtyBound();
     }

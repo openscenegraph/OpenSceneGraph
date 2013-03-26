@@ -567,10 +567,10 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         state.convertVertexShaderSourceToOsgBuiltIns(source);
     }
 
-    std::string sourceWithLineNumbers = insertLineNumbers(source);
 
     if (osg::getNotifyLevel()>=osg::INFO)
     {
+        std::string sourceWithLineNumbers = insertLineNumbers(source);
         OSG_INFO << "\nCompiling " << _shader->getTypename()
                  << " source:\n" << sourceWithLineNumbers << std::endl;
     }

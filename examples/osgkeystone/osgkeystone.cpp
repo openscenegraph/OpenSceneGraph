@@ -18,6 +18,8 @@
 
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/TextureRectangle>
+#include <osg/TexMat>
 
 #include <osgDB/ReadFile>
 #include <osgGA/StateSetManipulator>
@@ -389,7 +391,7 @@ osg::Node* createGrid(const osg::Vec3& origin, const osg::Vec3& widthVector, con
     geode->addDrawable(geometry.get());
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    colours->push_back(colour);
+    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     geometry->setColorArray(colours.get());
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
@@ -453,6 +455,226 @@ osg::Node* createGrid(const osg::Vec3& origin, const osg::Vec3& widthVector, con
     return geode.release();
 }
 
+struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
+{
+    KeystoneUpdateCallback(Keystone* keystone=0):_keystone(keystone) {}
+    KeystoneUpdateCallback(const KeystoneUpdateCallback&, const osg::CopyOp&) {}
+
+    META_Object(osg,KeystoneUpdateCallback);
+
+    /** do customized update code.*/
+    virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
+    {
+        update(dynamic_cast<osg::Geometry*>(drawable));
+    }
+
+    void update(osg::Geometry* geometry)
+    {
+        if (!geometry) return;
+
+        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if (!vertices) return;
+
+        
+        
+        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
+        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+
+        double tr = _keystone->taper.x();
+        double r_right = sqrt(tr);
+        double r_left = r_right/tr;
+
+        double sx = _keystone->scale.x();
+        double sy = _keystone->scale.y();
+
+        double tx = _keystone->translate.x();
+        double ty = _keystone->translate.y();
+
+        osg::Matrixd pm;
+        pm.postMultRotate(osg::Quat(_keystone->angle, osg::Vec3d(0.0,0.0,1.0)));
+
+        (*vertices)[0] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left, screenHeight*sy*0.5 + ty*screenHeight*0.5 ,-screenDistance*r_left) * pm;
+        (*vertices)[1] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right, screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_right) * pm;
+        (*vertices)[2] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right,-screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_right) * pm;
+        (*vertices)[3] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left,-screenHeight*sy*0.5 + ty*screenHeight*0.5,-screenDistance*r_left) * pm;
+
+        geometry->dirtyBound();
+    }
+    
+
+    osg::ref_ptr<Keystone> _keystone;
+};
+
+
+
+osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
+{
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setUseDisplayList(false);
+
+    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(cp);
+    geometry->setUpdateCallback(kuc.get());
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    geometry->setColorArray(colours.get());
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+
+    unsigned int vi = vertices->size();
+    vertices->resize(4);
+
+    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
+    geometry->setTexCoordArray(0, texcoords.get());
+
+    texcoords->push_back(osg::Vec2(0.0f,1.0f));
+    texcoords->push_back(osg::Vec2(1.0f,1.0f));
+    texcoords->push_back(osg::Vec2(1.0f,0.0f));
+    texcoords->push_back(osg::Vec2(0.0f,0.0f));
+
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, vi, 4));
+
+    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+    kuc->update(geometry.get());
+
+    return geometry.release();
+}
+
+void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
+{
+    int screenNum = 0;
+    
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi)
+    {
+        OSG_NOTICE<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        return;
+    }
+
+    osg::GraphicsContext::ScreenIdentifier si;
+    si.readDISPLAY();
+
+    // displayNum has not been set so reset it to 0.
+    if (si.displayNum<0) si.displayNum = 0;
+
+    si.screenNum = screenNum;
+
+    unsigned int width, height;
+    wsi->getScreenResolution(si, width, height);
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->hostName = si.hostName;
+    traits->displayNum = si.displayNum;
+    traits->screenNum = si.screenNum;
+    traits->x = 0;
+    traits->y = 0;
+    traits->width = width;
+    traits->height = height;
+    traits->windowDecoration = false;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+    if (!gc)
+    {
+        OSG_NOTICE<<"GraphicsWindow has not been created successfully."<<std::endl;
+        return;
+    }
+
+    int tex_width = width;
+    int tex_height = height;
+
+    int camera_width = tex_width;
+    int camera_height = tex_height;
+
+    osg::TextureRectangle* texture = new osg::TextureRectangle;
+
+    texture->setTextureSize(tex_width, tex_height);
+    texture->setInternalFormat(GL_RGB);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+
+#if 0
+    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
+    GLenum buffer = GL_FRONT;
+#else
+    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
+    GLenum buffer = GL_FRONT;
+#endif
+
+    // front face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setName("Render to texture camera");
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
+
+        // attach the texture and use it as the color buffer.
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+
+        view->addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+    }
+
+    // distortion correction set up.
+    {
+
+        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
+        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+        double fovy = osg::RadiansToDegrees(2.0*atan2(screenHeight/2.0,screenDistance));
+        double aspectRatio = screenWidth/screenHeight;
+
+        
+        osg::Geode* geode = new osg::Geode();
+        geode->addDrawable(createKeystoneDistortionMesh(keystone));
+
+        // new we need to add the texture to the mesh, we do so by creating a
+        // StateSet to contain the Texture StateAttribute.
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
+        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+        osg::TexMat* texmat = new osg::TexMat;
+        texmat->setScaleByTextureRectangleSize(true);
+        stateset->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
+
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
+        camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
+        camera->setViewport(new osg::Viewport(0, 0, width, height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+        camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+        camera->setAllowEventFocus(false);
+        camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
+        //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
+
+        camera->setViewMatrix(osg::Matrix::identity());
+        camera->setProjectionMatrixAsPerspective(fovy, aspectRatio, 0.1, 1000.0);
+
+        // add subgraph to render
+        camera->addChild(geode);
+
+        camera->setName("DistortionCorrectionCamera");
+
+        view->addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
+    }
+}
 
 int main( int argc, char **argv )
 {
@@ -477,7 +699,9 @@ int main( int argc, char **argv )
     if (arguments.read("-s",keystone->scale.x(), keystone->scale.y())) { OSG_NOTICE<<"scale = "<<keystone->scale<<std::endl;}
     if (arguments.read("-k",keystone->taper.x(), keystone->taper.y())) { OSG_NOTICE<<"taper = "<<keystone->taper<<std::endl;}
     
-
+    bool oldStyleKeystone = false;
+    if (arguments.read("--old")) oldStyleKeystone = true;
+    
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
 
     if (!model)
@@ -498,11 +722,13 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
     camera->setClearMask(0x0);
     camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+    camera->setRenderOrder(osg::Camera::NESTED_RENDER);
     camera->setProjectionMatrixAsPerspective(fovy, aspectRatio, 0.1, 1000.0);
     camera->addChild(createGrid(osg::Vec3(-screenWidth*0.5, -screenHeight*0.5, -screenDistance), osg::Vec3(screenWidth, 0.0, 0.0), osg::Vec3(0.0, screenHeight, 0.0), osg::Vec4(1.0,0.0,0.0,1.0)));
 
     viewer.setSceneData(group.get());
 
+    
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
@@ -512,6 +738,12 @@ int main( int argc, char **argv )
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
+    
+    if (!oldStyleKeystone)
+    {
+        setUpViewForKeystone(&viewer, keystone);
+    }
+    
     viewer.realize();
 
     viewer.getCamera()->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
@@ -520,7 +752,6 @@ int main( int argc, char **argv )
     osg::Matrixd original_grid_pm = camera->getProjectionMatrix();
 
     group->addChild(camera.get());
-
 
     // Add keystone handler
     viewer.addEventHandler(new KeystoneHandler(keystone));
@@ -531,7 +762,7 @@ int main( int argc, char **argv )
         viewer.eventTraversal();
         viewer.updateTraversal();
         
-        if (keystone.valid())
+        if (oldStyleKeystone && keystone.valid())
         {
             viewer.getCamera()->setProjectionMatrix(original_pm * keystone->computeKeystoneMatrix());
             camera->setProjectionMatrix(original_grid_pm * keystone->computeKeystoneMatrix());

@@ -395,6 +395,30 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             {
                 move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
             }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
+            {
+                _currentControlPoints->top_left.set(ea.getXnormalized(), ea.getYnormalized());
+                _keystone->updateKeystone(*_currentControlPoints);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
+            {
+                _currentControlPoints->top_right.set(ea.getXnormalized(), ea.getYnormalized());
+                _keystone->updateKeystone(*_currentControlPoints);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
+            {
+                _currentControlPoints->bottom_right.set(ea.getXnormalized(), ea.getYnormalized());
+                _keystone->updateKeystone(*_currentControlPoints);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
+            {
+                _currentControlPoints->bottom_left.set(ea.getXnormalized(), ea.getYnormalized());
+                _keystone->updateKeystone(*_currentControlPoints);
+            }
+            else
+            {
+                OSG_NOTICE<<"key = 0x"<<std::hex<<ea.getKey()<<std::dec<<std::endl;
+            }
             return false;
         }
         default:
@@ -588,6 +612,8 @@ void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
 
     unsigned int width, height;
     wsi->getScreenResolution(si, width, height);
+
+    width/=2; height/=2;
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->hostName = si.hostName;

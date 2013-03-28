@@ -90,6 +90,8 @@ public:
 
     void updateKeystone(ControlPoints cp)
     {
+        controlPoints = cp;
+        
         // compute translation
         translate = (cp.bottom_left+cp.bottom_right+cp.top_left+cp.top_right)*0.25;
 
@@ -186,7 +188,8 @@ public:
         }
         return pm;
     }
-    
+
+    ControlPoints controlPoints;
     osg::Vec2d translate;
     osg::Vec2d shear;
     osg::Vec2d scale;
@@ -518,8 +521,25 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
         if (!vertices) return;
 
+#if 1
+        double tr_x = ((_keystone->controlPoints.top_right-_keystone->controlPoints.bottom_right).length()) / ((_keystone->controlPoints.top_left-_keystone->controlPoints.bottom_left).length());
+        double r_left = sqrt(tr_x);
+        double r_right = r_left/tr_x;
+
+        double tr_y = ((_keystone->controlPoints.top_right-_keystone->controlPoints.top_left).length()) / ((_keystone->controlPoints.bottom_right-_keystone->controlPoints.bottom_left).length());
+        double r_bottom = sqrt(tr_y);
+        double r_top = r_bottom/tr_y;
+
+        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
+        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
+        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
+
+        (*vertices)[0] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.top_left.x(), screenHeight*0.5*_keystone->controlPoints.top_left.y(), -screenDistance)*r_left*r_top;
+        (*vertices)[1] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.top_right.x(), screenHeight*0.5*_keystone->controlPoints.top_right.y(), -screenDistance)*r_right*r_top;
+        (*vertices)[2] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.bottom_right.x(), screenHeight*0.5*_keystone->controlPoints.bottom_right.y(), -screenDistance)*r_right*r_bottom;
+        (*vertices)[3] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.bottom_left.x(), screenHeight*0.5*_keystone->controlPoints.bottom_left.y(), -screenDistance)*r_left*r_bottom;
         
-        
+#else
         double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
         double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
         double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
@@ -544,7 +564,7 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         (*vertices)[1] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right + shx*screenHeight, screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
         (*vertices)[2] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
         (*vertices)[3] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 - shy*screenWidth*0.5, -screenDistance*r_left) * pm;
-
+#endif
         geometry->dirtyBound();
     }
     
@@ -613,7 +633,7 @@ void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
     unsigned int width, height;
     wsi->getScreenResolution(si, width, height);
 
-    width/=2; height/=2;
+//    width/=2; height/=2;
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->hostName = si.hostName;

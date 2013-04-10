@@ -28,10 +28,10 @@
 #include <osgViewer/ViewerEventHandlers>
 
 
-class ControlPoints : public osg::Referenced
+class Keystone : public osg::Referenced
 {
 public:
-    ControlPoints():
+    Keystone():
         bottom_left(-1.0,-1.0),
         bottom_right(1.0,-1.0),
         top_left(-1.0,1.0),
@@ -45,7 +45,7 @@ public:
         top_right.set(1.0,1.0);
     }
 
-    ControlPoints& operator = (const ControlPoints& rhs)
+    Keystone& operator = (const Keystone& rhs)
     {
         if (&rhs==this) return *this;
         bottom_left = rhs.bottom_left;
@@ -61,141 +61,6 @@ public:
     osg::Vec2d top_right;
 };
 
-class Keystone : public osg::Referenced
-{
-public:
-    Keystone():
-        translate(0.0,0.0),
-        shear(0.0,0.0),
-        scale(1.0,1.0),
-        taper(1.0,1.0),
-        angle(0.0)
-    {
-    }
-
-    double angleBetweenVectors(const osg::Vec2d& v1, const osg::Vec2d& v2) const
-    {
-        osg::Vec2d v3(-v2.y(), v2.x());
-        double p1 = v1*v2;
-        double p2 = v1*v3;
-        double a = atan2(p2, p1);
-        return a;
-    }
-
-    osg::Vec2d rotateVector(osg::Vec2d& v, double s, double c) const
-    {
-        return osg::Vec2d(v.x()*c-v.y()*s, v.y()*c+v.x()*s);
-    }
-    
-
-    void updateKeystone(ControlPoints cp)
-    {
-        controlPoints = cp;
-        
-        // compute translation
-        translate = (cp.bottom_left+cp.bottom_right+cp.top_left+cp.top_right)*0.25;
-
-        // adjust control points to fit translation
-        cp.top_left -= translate;
-        cp.top_right -= translate;
-        cp.bottom_right -= translate;
-        cp.bottom_left -= translate;
-
-        osg::Vec2d mid_left = (cp.top_left+cp.bottom_left)*0.5;
-        osg::Vec2d mid_right = (cp.top_right+cp.bottom_right)*0.5;
-        osg::Vec2d mid_top = (cp.top_left+cp.top_right)*0.5;
-        osg::Vec2d mid_bottom = (cp.bottom_left+cp.bottom_right)*0.5;
-        shear.x() = (mid_top.x()-mid_bottom.x())/(mid_top.y()-mid_bottom.y());
-        shear.y() = (mid_right.y()-mid_left.y())/(mid_right.x()-mid_left.x());
-
-        cp.top_left.x() += cp.top_left.y() * shear.x();
-        cp.top_left.y() += cp.top_left.x() * shear.y();
-        cp.top_right.x() += cp.top_right.y() * shear.x();
-        cp.top_right.y() += cp.top_right.x() * shear.y();
-        cp.bottom_left.x() += cp.bottom_left.y() * shear.x();
-        cp.bottom_left.y() += cp.bottom_left.x() * shear.y();
-        cp.bottom_right.x() += cp.bottom_right.y() * shear.x();
-        cp.bottom_right.y() += cp.bottom_right.x() * shear.y();
-
-#if 0        
-        angle = (angleBetweenVectors(cp.top_left, osg::Vec2d(-1.0,1.0)) +
-                   angleBetweenVectors(cp.top_right, osg::Vec2d(1.0,1.0)) +
-                   angleBetweenVectors(cp.bottom_right, osg::Vec2d(1.0,-1.0)) +
-                   angleBetweenVectors(cp.bottom_left, osg::Vec2d(-1.0,-1.0)))*0.25;
-#endif
-        OSG_NOTICE<<"cp.top_left="<<cp.top_left<<std::endl;
-        OSG_NOTICE<<"cp.top_right="<<cp.top_right<<std::endl;
-        OSG_NOTICE<<"cp.bottom_right="<<cp.bottom_right<<std::endl;
-        OSG_NOTICE<<"cp.bottom_left="<<cp.bottom_left<<std::endl;
-
-        double s = sin(angle);
-        double c = cos(angle);
-        cp.top_left = rotateVector(cp.top_left, s, c);
-        cp.top_right = rotateVector(cp.top_right, s, c);
-        cp.bottom_right = rotateVector(cp.bottom_right, s, c);
-        cp.bottom_left = rotateVector(cp.bottom_left, s, c);
-
-        OSG_NOTICE<<"after rotate cp.top_left="<<cp.top_left<<std::endl;
-        OSG_NOTICE<<"             cp.top_right="<<cp.top_right<<std::endl;
-        OSG_NOTICE<<"             cp.bottom_right="<<cp.bottom_right<<std::endl;
-        OSG_NOTICE<<"             cp.bottom_left="<<cp.bottom_left<<std::endl;
-        
-
-        // compute scaling
-        scale.x() = 1.0; // ( (cp.top_right.x()-cp.top_left.x()) + (cp.bottom_right.x()-cp.bottom_left.x()) )/4.0;
-        scale.y() = 1.0; //( (cp.top_right.y()-cp.bottom_right.y()) + (cp.top_left.y()-cp.bottom_left.y()) )/4.0;
-
-        // adjust control points to fit scaling
-        cp.top_left.x() *= scale.x();
-        cp.top_right.x() *= scale.x();
-        cp.bottom_right.x() *= scale.x();
-        cp.bottom_left.x() *= scale.x();
-        cp.top_left.y() *= scale.y();
-        cp.top_right.y() *= scale.y();
-        cp.bottom_right.y() *= scale.y();
-        cp.bottom_left.y() *= scale.y();
-
-        taper.x() = (cp.top_left-cp.bottom_left).length() / (cp.top_right-cp.bottom_right).length();
-        taper.y() = (cp.bottom_right-cp.bottom_left).length() / (cp.top_right-cp.top_left).length();
-        OSG_NOTICE<<"translate="<<translate<<std::endl;
-        OSG_NOTICE<<"scale="<<scale<<std::endl;
-        OSG_NOTICE<<"taper="<<taper<<std::endl;
-        OSG_NOTICE<<"angle="<<osg::RadiansToDegrees(angle)<<std::endl;
-    }
-
-    osg::Matrixd computeKeystoneMatrix() const
-    {
-        osg::Matrixd pm;
-        pm.postMultRotate(osg::Quat(angle, osg::Vec3d(0.0,0.0,1.0)));
-        pm.postMultScale(osg::Vec3d(scale.x(),scale.y(),1.0));
-        pm.postMultTranslate(osg::Vec3d(translate.x(),translate.y(),0.0));
-
-        if (taper.x()!=1.0)
-        {
-            double x0 = (1.0+taper.x())/(1-taper.x());
-            pm.postMult(osg::Matrixd(1.0-x0, 0.0,    0.0,    1.0,
-                                    0.0,    1.0-x0, 0.0,    0.0,
-                                    0.0,    0.0,    (1.0-x0)*0.25, 0.0,
-                                    0.0,    0.0,    0.0,    -x0));
-        }
-        if (taper.y()!=1.0)
-        {
-            double y0 = (1.0+taper.y())/(1-taper.y());
-            pm.postMult(osg::Matrixd(1.0-y0, 0.0,    0.0,    0.0,
-                                    0.0,    1.0-y0, 0.0,    1.0,
-                                    0.0,    0.0,    (1.0-y0)*0.25, 0.0,
-                                    0.0,    0.0,    0.0,    -y0));
-        }
-        return pm;
-    }
-
-    ControlPoints controlPoints;
-    osg::Vec2d translate;
-    osg::Vec2d shear;
-    osg::Vec2d scale;
-    osg::Vec2d taper;
-    double angle;
-};
 
 
 class KeystoneHandler : public osgGA::GUIEventHandler
@@ -237,10 +102,10 @@ protected:
     osg::Vec2d                  _keyIncrement;
 
     osg::Vec2d                  _startPosition;
-    osg::ref_ptr<ControlPoints> _startControlPoints;
+    osg::ref_ptr<Keystone>      _startControlPoints;
     
     Region                      _selectedRegion;
-    osg::ref_ptr<ControlPoints> _currentControlPoints;
+    osg::ref_ptr<Keystone>      _currentControlPoints;
 
 };
 
@@ -252,8 +117,8 @@ KeystoneHandler::KeystoneHandler(Keystone* keystone):
     _keyIncrement(0.005, 0.005),
     _selectedRegion(NONE_SELECTED)
 {
-    _startControlPoints = new ControlPoints;
-    _currentControlPoints = new ControlPoints;
+    _startControlPoints = new Keystone;
+    _currentControlPoints = keystone; //new Keystone;
 }
 
 KeystoneHandler::Region KeystoneHandler::computeRegion(const osgGA::GUIEventAdapter& ea) const
@@ -325,7 +190,6 @@ void KeystoneHandler::move(Region region, const osg::Vec2d& delta)
         case(NONE_SELECTED):
             break;
     }
-    _keystone->updateKeystone(*_currentControlPoints);
 }
 
 osg::Vec2d KeystoneHandler::incrementScale(const osgGA::GUIEventAdapter& ea) const
@@ -380,7 +244,6 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
                 _selectedRegion = NONE_SELECTED;
                 _startControlPoints->reset();
                 _currentControlPoints->reset();
-                _keystone->updateKeystone(*_currentControlPoints);
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
             {
@@ -401,22 +264,18 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
             {
                 _currentControlPoints->top_left.set(ea.getXnormalized(), ea.getYnormalized());
-                _keystone->updateKeystone(*_currentControlPoints);
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
             {
                 _currentControlPoints->top_right.set(ea.getXnormalized(), ea.getYnormalized());
-                _keystone->updateKeystone(*_currentControlPoints);
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
             {
                 _currentControlPoints->bottom_right.set(ea.getXnormalized(), ea.getYnormalized());
-                _keystone->updateKeystone(*_currentControlPoints);
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
             {
                 _currentControlPoints->bottom_left.set(ea.getXnormalized(), ea.getYnormalized());
-                _keystone->updateKeystone(*_currentControlPoints);
             }
             else
             {
@@ -522,11 +381,11 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         if (!vertices) return;
 
 #if 1
-        double tr_x = ((_keystone->controlPoints.top_right-_keystone->controlPoints.bottom_right).length()) / ((_keystone->controlPoints.top_left-_keystone->controlPoints.bottom_left).length());
+        double tr_x = ((_keystone->top_right-_keystone->bottom_right).length()) / ((_keystone->top_left-_keystone->bottom_left).length());
         double r_left = sqrt(tr_x);
         double r_right = r_left/tr_x;
 
-        double tr_y = ((_keystone->controlPoints.top_right-_keystone->controlPoints.top_left).length()) / ((_keystone->controlPoints.bottom_right-_keystone->controlPoints.bottom_left).length());
+        double tr_y = ((_keystone->top_right-_keystone->top_left).length()) / ((_keystone->bottom_right-_keystone->bottom_left).length());
         double r_bottom = sqrt(tr_y);
         double r_top = r_bottom/tr_y;
 
@@ -534,10 +393,10 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
         double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
 
-        (*vertices)[0] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.top_left.x(), screenHeight*0.5*_keystone->controlPoints.top_left.y(), -screenDistance)*r_left*r_top;
-        (*vertices)[1] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.top_right.x(), screenHeight*0.5*_keystone->controlPoints.top_right.y(), -screenDistance)*r_right*r_top;
-        (*vertices)[2] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.bottom_right.x(), screenHeight*0.5*_keystone->controlPoints.bottom_right.y(), -screenDistance)*r_right*r_bottom;
-        (*vertices)[3] = osg::Vec3(screenWidth*0.5*_keystone->controlPoints.bottom_left.x(), screenHeight*0.5*_keystone->controlPoints.bottom_left.y(), -screenDistance)*r_left*r_bottom;
+        (*vertices)[0] = osg::Vec3(screenWidth*0.5*_keystone->top_left.x(), screenHeight*0.5*_keystone->top_left.y(), -screenDistance)*r_left*r_top;
+        (*vertices)[1] = osg::Vec3(screenWidth*0.5*_keystone->top_right.x(), screenHeight*0.5*_keystone->top_right.y(), -screenDistance)*r_right*r_top;
+        (*vertices)[2] = osg::Vec3(screenWidth*0.5*_keystone->bottom_right.x(), screenHeight*0.5*_keystone->bottom_right.y(), -screenDistance)*r_right*r_bottom;
+        (*vertices)[3] = osg::Vec3(screenWidth*0.5*_keystone->bottom_left.x(), screenHeight*0.5*_keystone->bottom_left.y(), -screenDistance)*r_left*r_bottom;
         
 #else
         double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
@@ -753,23 +612,6 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<Keystone> keystone = new Keystone;
 
-    double distance, width, view_angle;
-    if (arguments.read("-p",distance, width, view_angle))
-    {
-        keystone->taper.x() = (2.0 + (width/distance) * sin(osg::inDegrees(view_angle))) / (2.0 - (width/distance) * sin(osg::inDegrees(view_angle)));
-        //scale.x() = 1.0/cos(osg::inDegrees(view_angle));
-        OSG_NOTICE<<"scale "<<keystone->scale<<std::endl;
-        OSG_NOTICE<<"taper "<<keystone->taper<<std::endl;
-    }
-
-    if (arguments.read("-a",keystone->angle)) { OSG_NOTICE<<"angle = "<<keystone->angle<<std::endl; keystone->angle = osg::inDegrees(keystone->angle); }
-    if (arguments.read("-t",keystone->translate.x(), keystone->translate.y())) { OSG_NOTICE<<"translate = "<<keystone->translate<<std::endl;}
-    if (arguments.read("-s",keystone->scale.x(), keystone->scale.y())) { OSG_NOTICE<<"scale = "<<keystone->scale<<std::endl;}
-    if (arguments.read("-k",keystone->taper.x(), keystone->taper.y())) { OSG_NOTICE<<"taper = "<<keystone->taper<<std::endl;}
-    
-    bool oldStyleKeystone = false;
-    if (arguments.read("--old")) oldStyleKeystone = true;
-    
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
 
     if (!model)
@@ -806,11 +648,7 @@ int main( int argc, char **argv )
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-    
-    if (!oldStyleKeystone)
-    {
-        setUpViewForKeystone(&viewer, keystone);
-    }
+    setUpViewForKeystone(&viewer, keystone);
     
     viewer.realize();
 
@@ -829,12 +667,6 @@ int main( int argc, char **argv )
         viewer.advance();
         viewer.eventTraversal();
         viewer.updateTraversal();
-        
-        if (oldStyleKeystone && keystone.valid())
-        {
-            viewer.getCamera()->setProjectionMatrix(original_pm * keystone->computeKeystoneMatrix());
-            camera->setProjectionMatrix(original_grid_pm * keystone->computeKeystoneMatrix());
-        }
         viewer.renderingTraversals();
     }
     return 0;

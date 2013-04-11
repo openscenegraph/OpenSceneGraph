@@ -59,6 +59,26 @@ public:
     osg::Vec2d bottom_right;
     osg::Vec2d top_left;
     osg::Vec2d top_right;
+
+    void compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::Vec3& tr, osg::Vec3& br, osg::Vec3& bl) const
+    {
+        double tr_x = ((top_right-bottom_right).length()) / ((top_left-bottom_left).length());
+        double r_left = sqrt(tr_x);
+        double r_right = r_left/tr_x;
+
+        double tr_y = ((top_right-top_left).length()) / ((bottom_right-bottom_left).length());
+        double r_bottom = sqrt(tr_y);
+        double r_top = r_bottom/tr_y;
+
+        double screenDistance = ds->getScreenDistance();
+        double screenWidth = ds->getScreenWidth();
+        double screenHeight = ds->getScreenHeight();
+
+        tl = osg::Vec3(screenWidth*0.5*top_left.x(), screenHeight*0.5*top_left.y(), -screenDistance)*r_left*r_top;
+        tr = osg::Vec3(screenWidth*0.5*top_right.x(), screenHeight*0.5*top_right.y(), -screenDistance)*r_right*r_top;
+        br = osg::Vec3(screenWidth*0.5*bottom_right.x(), screenHeight*0.5*bottom_right.y(), -screenDistance)*r_right*r_bottom;
+        bl = osg::Vec3(screenWidth*0.5*bottom_left.x(), screenHeight*0.5*bottom_left.y(), -screenDistance)*r_left*r_bottom;
+    }
 };
 
 
@@ -380,50 +400,7 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
         if (!vertices) return;
 
-#if 1
-        double tr_x = ((_keystone->top_right-_keystone->bottom_right).length()) / ((_keystone->top_left-_keystone->bottom_left).length());
-        double r_left = sqrt(tr_x);
-        double r_right = r_left/tr_x;
-
-        double tr_y = ((_keystone->top_right-_keystone->top_left).length()) / ((_keystone->bottom_right-_keystone->bottom_left).length());
-        double r_bottom = sqrt(tr_y);
-        double r_top = r_bottom/tr_y;
-
-        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
-        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
-        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
-
-        (*vertices)[0] = osg::Vec3(screenWidth*0.5*_keystone->top_left.x(), screenHeight*0.5*_keystone->top_left.y(), -screenDistance)*r_left*r_top;
-        (*vertices)[1] = osg::Vec3(screenWidth*0.5*_keystone->top_right.x(), screenHeight*0.5*_keystone->top_right.y(), -screenDistance)*r_right*r_top;
-        (*vertices)[2] = osg::Vec3(screenWidth*0.5*_keystone->bottom_right.x(), screenHeight*0.5*_keystone->bottom_right.y(), -screenDistance)*r_right*r_bottom;
-        (*vertices)[3] = osg::Vec3(screenWidth*0.5*_keystone->bottom_left.x(), screenHeight*0.5*_keystone->bottom_left.y(), -screenDistance)*r_left*r_bottom;
-        
-#else
-        double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
-        double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
-        double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
-
-        double tr = _keystone->taper.x();
-        double r_right = sqrt(tr);
-        double r_left = r_right/tr;
-
-        double sx = _keystone->scale.x();
-        double sy = _keystone->scale.y();
-
-        double tx = _keystone->translate.x();
-        double ty = _keystone->translate.y();
-
-        double shx = _keystone->shear.x();
-        double shy = _keystone->shear.y();
-
-        osg::Matrixd pm;
-        pm.postMultRotate(osg::Quat(_keystone->angle, osg::Vec3d(0.0,0.0,1.0)));
-
-        (*vertices)[0] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left + shx*screenHeight, screenHeight*sy*0.5 + ty*screenHeight*0.5 - shy*screenWidth*0.5, -screenDistance*r_left) * pm;
-        (*vertices)[1] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right + shx*screenHeight, screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
-        (*vertices)[2] = osg::Vec3(screenWidth*sx*0.5*r_right + tx*screenWidth*0.5*r_right - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 + shy*screenWidth*0.5, -screenDistance*r_right) * pm;
-        (*vertices)[3] = osg::Vec3(-screenWidth*sx*0.5*r_left + tx*screenWidth*0.5*r_left - shx*screenHeight,-screenHeight*sy*0.5 + ty*screenHeight*0.5 - shy*screenWidth*0.5, -screenDistance*r_left) * pm;
-#endif
+        _keystone->compute3DPositions(osg::DisplaySettings::instance().get(), (*vertices)[0], (*vertices)[1], (*vertices)[2], (*vertices)[3]);
         geometry->dirtyBound();
     }
     

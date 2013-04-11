@@ -400,11 +400,25 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
         if (!vertices) return;
 
-        _keystone->compute3DPositions(osg::DisplaySettings::instance().get(), (*vertices)[0], (*vertices)[1], (*vertices)[2], (*vertices)[3]);
+        osg::Vec2Array* texcoords = dynamic_cast<osg::Vec2Array*>(geometry->getTexCoordArray(0));
+        if (!texcoords) return;
+
+        osg::Vec3 tl, tr, br, bl;
+
+        _keystone->compute3DPositions(osg::DisplaySettings::instance().get(), tl, tr, br, bl);
+
+        for(unsigned int i=0; i<vertices->size(); ++i)
+        {
+            osg::Vec3& v = (*vertices)[i];
+            osg::Vec2& t = (*texcoords)[i];
+            v = bl * ((1.0f-t.x())*(1.0f-t.y())) +
+                br * ((t.x())*(1.0f-t.y())) +
+                tl * ((1.0f-t.x())*(t.y())) +
+                tr * ((t.x())*(t.y()));
+        }
         geometry->dirtyBound();
     }
     
-
     osg::ref_ptr<Keystone> _keystone;
 };
 
@@ -426,12 +440,47 @@ osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
 
-
-    unsigned int vi = vertices->size();
-    vertices->resize(4);
-
     osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
     geometry->setTexCoordArray(0, texcoords.get());
+
+#if 1
+    unsigned int numRows = 7;
+    unsigned int numColumns = 7;
+    unsigned int numVertices = numRows*numColumns;
+
+    vertices->resize(numVertices);
+    texcoords->resize(numVertices);
+
+    for(unsigned j=0; j<numRows; j++)
+    {
+        for(unsigned i=0; i<numColumns; i++)
+        {
+            osg::Vec2& t = (*texcoords)[j*numColumns+i];
+            t.set(static_cast<float>(i)/static_cast<float>(numColumns-1), static_cast<float>(j)/static_cast<float>(numRows-1));
+        }
+    }
+
+    osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+    geometry->addPrimitiveSet(elements.get());
+    for(unsigned j=0; j<numRows-1; j++)
+    {
+        for(unsigned i=0; i<numColumns-1; i++)
+        {
+            unsigned int vi = j*numColumns+i;
+            
+            elements->push_back(vi+numColumns);
+            elements->push_back(vi);
+            elements->push_back(vi+1);
+
+            elements->push_back(vi+numColumns);
+            elements->push_back(vi+1);
+            elements->push_back(vi+1+numColumns);
+        }
+    }
+    
+#else
+    unsigned int vi = vertices->size();
+    vertices->resize(4);
 
     texcoords->push_back(osg::Vec2(0.0f,1.0f));
     texcoords->push_back(osg::Vec2(1.0f,1.0f));
@@ -439,7 +488,8 @@ osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
     texcoords->push_back(osg::Vec2(0.0f,0.0f));
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, vi, 4));
-
+#endif
+    
     geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     kuc->update(geometry.get());

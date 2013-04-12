@@ -652,6 +652,8 @@ void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
 
         camera->setName("DistortionCorrectionCamera");
 
+        camera->addEventCallback(new KeystoneHandler(keystone));
+
         view->addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
     }
 }
@@ -663,8 +665,6 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    osg::ref_ptr<Keystone> keystone = new Keystone;
-
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
 
     if (!model)
@@ -673,10 +673,7 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(model.get());
-
-    viewer.setSceneData(group.get());
+    viewer.setSceneData(model.get());
     
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
@@ -687,12 +684,9 @@ int main( int argc, char **argv )
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-    setUpViewForKeystone(&viewer, keystone);
+    setUpViewForKeystone(&viewer, new Keystone);
     
     viewer.realize();
-
-    // Add keystone handler
-    viewer.addEventHandler(new KeystoneHandler(keystone));
 
     while(!viewer.done())
     {

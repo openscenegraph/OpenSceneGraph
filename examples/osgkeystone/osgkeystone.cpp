@@ -32,6 +32,7 @@ class Keystone : public osg::Referenced
 {
 public:
     Keystone():
+        keystoneEditingEnabled(false),
         bottom_left(-1.0,-1.0),
         bottom_right(1.0,-1.0),
         top_left(-1.0,1.0),
@@ -48,6 +49,7 @@ public:
     Keystone& operator = (const Keystone& rhs)
     {
         if (&rhs==this) return *this;
+        keystoneEditingEnabled = rhs.keystoneEditingEnabled;
         bottom_left = rhs.bottom_left;
         bottom_right = rhs.bottom_right;
         top_left = rhs.top_left;
@@ -55,10 +57,12 @@ public:
         return *this;
     }
 
-    osg::Vec2d bottom_left;
-    osg::Vec2d bottom_right;
-    osg::Vec2d top_left;
-    osg::Vec2d top_right;
+    bool        keystoneEditingEnabled;
+
+    osg::Vec2d  bottom_left;
+    osg::Vec2d  bottom_right;
+    osg::Vec2d  top_left;
+    osg::Vec2d  top_right;
 
     void compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::Vec3& tr, osg::Vec3& br, osg::Vec3& bl) const
     {
@@ -92,6 +96,9 @@ public:
     ~KeystoneHandler() {}
 
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
+
+    void setKeystoneEditingEnabled(bool enabled) { if (_currentControlPoints.valid()) _currentControlPoints->keystoneEditingEnabled = enabled; }
+    bool getKeystoneEditingEnabled() const { return _currentControlPoints.valid() ? _currentControlPoints->keystoneEditingEnabled : false; }
 
     enum Region
     {
@@ -225,81 +232,96 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
     {
         case(osgGA::GUIEventAdapter::PUSH):
         {
-            osg::Vec2d scale = incrementScale(ea);
-            if (scale.length2()!=0.0)
+            if (getKeystoneEditingEnabled())
             {
-                _selectedRegion = computeRegion(ea);
-                (*_startControlPoints) = (*_currentControlPoints);
-                _startPosition.set(ea.getXnormalized(),ea.getYnormalized());
-            }
-            else
-            {
-                _selectedRegion = NONE_SELECTED;
+                osg::Vec2d scale = incrementScale(ea);
+                if (scale.length2()!=0.0)
+                {
+                    _selectedRegion = computeRegion(ea);
+                    (*_startControlPoints) = (*_currentControlPoints);
+                    _startPosition.set(ea.getXnormalized(),ea.getYnormalized());
+                }
+                else
+                {
+                    _selectedRegion = NONE_SELECTED;
+                }
             }
             return false;
         }
         case(osgGA::GUIEventAdapter::DRAG):
         {
-            if (_selectedRegion!=NONE_SELECTED)
+            if (getKeystoneEditingEnabled())
             {
-                (*_currentControlPoints) = (*_startControlPoints);
-                osg::Vec2d currentPosition(ea.getXnormalized(), ea.getYnormalized());
-                osg::Vec2d delta(currentPosition-_startPosition);
-                osg::Vec2d scale = incrementScale(ea);
-                move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
-                return true;
+                if (_selectedRegion!=NONE_SELECTED)
+                {
+                    (*_currentControlPoints) = (*_startControlPoints);
+                    osg::Vec2d currentPosition(ea.getXnormalized(), ea.getYnormalized());
+                    osg::Vec2d delta(currentPosition-_startPosition);
+                    osg::Vec2d scale = incrementScale(ea);
+                    move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
+                    return true;
+                }
             }
-
             return false;
         }
         case(osgGA::GUIEventAdapter::RELEASE):
         {
-            _selectedRegion = NONE_SELECTED;
+            if (getKeystoneEditingEnabled())
+            {
+                _selectedRegion = NONE_SELECTED;
+            }
             return false;
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()=='r')
+            if (getKeystoneEditingEnabled())
             {
-                _selectedRegion = NONE_SELECTED;
-                _startControlPoints->reset();
-                _currentControlPoints->reset();
+                if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
+                {
+                    setKeystoneEditingEnabled(false);
+                }
+                else if (ea.getKey()=='r')
+                {
+                    _selectedRegion = NONE_SELECTED;
+                    _startControlPoints->reset();
+                    _currentControlPoints->reset();
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
+                {
+                    move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
+                {
+                    move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
+                {
+                    move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
+                {
+                    move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
+                {
+                    _currentControlPoints->top_left.set(ea.getXnormalized(), ea.getYnormalized());
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
+                {
+                    _currentControlPoints->top_right.set(ea.getXnormalized(), ea.getYnormalized());
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
+                {
+                    _currentControlPoints->bottom_right.set(ea.getXnormalized(), ea.getYnormalized());
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
+                {
+                    _currentControlPoints->bottom_left.set(ea.getXnormalized(), ea.getYnormalized());
+                }
             }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
+            else if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
             {
-                move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
-            {
-                move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
-            {
-                move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
-            {
-                move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
-            {
-                _currentControlPoints->top_left.set(ea.getXnormalized(), ea.getYnormalized());
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
-            {
-                _currentControlPoints->top_right.set(ea.getXnormalized(), ea.getYnormalized());
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
-            {
-                _currentControlPoints->bottom_right.set(ea.getXnormalized(), ea.getYnormalized());
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
-            {
-                _currentControlPoints->bottom_left.set(ea.getXnormalized(), ea.getYnormalized());
-            }
-            else
-            {
-                OSG_NOTICE<<"key = 0x"<<std::hex<<ea.getKey()<<std::dec<<std::endl;
+                setKeystoneEditingEnabled(true);
             }
             return false;
         }
@@ -307,6 +329,22 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             return false;
     }
 }
+struct KeystoneCullCallback : public osg::Drawable::CullCallback
+{
+    KeystoneCullCallback(Keystone* keystone=0):_keystone(keystone) {}
+    KeystoneCullCallback(const KeystoneCullCallback&, const osg::CopyOp&) {}
+
+    META_Object(osg,KeystoneCullCallback);
+
+    /** do customized cull code, return true if drawable should be culled.*/
+    virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const
+    {
+        return _keystone.valid() ? !_keystone->keystoneEditingEnabled : true;
+    }
+
+    osg::ref_ptr<Keystone> _keystone;
+};
+
 
 struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
 {
@@ -428,6 +466,8 @@ osg::Node* createGrid(Keystone* keystone, const osg::Vec4& colour)
 
     osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(keystone);
     geometry->setUpdateCallback(kuc.get());
+
+    geometry->setCullCallback(new KeystoneCullCallback(keystone));
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
     colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));

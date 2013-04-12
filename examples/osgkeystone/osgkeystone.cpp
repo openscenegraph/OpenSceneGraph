@@ -308,78 +308,6 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
     }
 }
 
-osg::Node* createGrid(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, const osg::Vec4& colour)
-{
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-    
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    geode->addDrawable(geometry.get());
-
-    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices.get());
-    
-    // border line
-    {
-        unsigned int vi = vertices->size();
-        vertices->push_back(origin);
-        vertices->push_back(origin+widthVector);
-        vertices->push_back(origin+widthVector+heightVector);
-        vertices->push_back(origin+heightVector);
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_LOOP, vi, 4));
-    }
-    
-    // cross lines
-    {
-        unsigned int vi = vertices->size();
-        vertices->push_back(origin);
-        vertices->push_back(origin+widthVector+heightVector);
-        vertices->push_back(origin+heightVector);
-        vertices->push_back(origin+widthVector);
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 4));
-    }
-    
-    // vertices lines
-    {
-        unsigned int vi = vertices->size();
-        osg::Vec3 dv = widthVector/6.0;
-        osg::Vec3 bv = origin+dv;
-        osg::Vec3 tv = bv+heightVector;
-        for(unsigned int i=0; i<5; ++i)
-        {
-            vertices->push_back(bv);
-            vertices->push_back(tv);
-            bv += dv;
-            tv += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
-    }
-
-    // horizontal lines
-    {
-        unsigned int vi = vertices->size();
-        osg::Vec3 dv = heightVector/6.0;
-        osg::Vec3 bv = origin+dv;
-        osg::Vec3 tv = bv+widthVector;
-        for(unsigned int i=0; i<5; ++i)
-        {
-            vertices->push_back(bv);
-            vertices->push_back(tv);
-            bv += dv;
-            tv += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
-    }
-
-    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    
-    return geode.release();
-}
-
 struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
 {
     KeystoneUpdateCallback(Keystone* keystone=0):_keystone(keystone) {}
@@ -424,12 +352,16 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
 
 
 
-osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
+osg::Geode* createKeystoneDistortionMesh(Keystone* keystone)
 {
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geode->addDrawable(geometry.get());
+
     geometry->setUseDisplayList(false);
 
-    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(cp);
+    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(keystone);
     geometry->setUpdateCallback(kuc.get());
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
@@ -443,7 +375,6 @@ osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
     osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
     geometry->setTexCoordArray(0, texcoords.get());
 
-#if 1
     unsigned int numRows = 7;
     unsigned int numColumns = 7;
     unsigned int numVertices = numRows*numColumns;
@@ -478,24 +409,119 @@ osg::Geometry* createKeystoneDistortionMesh(Keystone* cp)
         }
     }
     
-#else
-    unsigned int vi = vertices->size();
-    vertices->resize(4);
-
-    texcoords->push_back(osg::Vec2(0.0f,1.0f));
-    texcoords->push_back(osg::Vec2(1.0f,1.0f));
-    texcoords->push_back(osg::Vec2(1.0f,0.0f));
-    texcoords->push_back(osg::Vec2(0.0f,0.0f));
-
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, vi, 4));
-#endif
-    
     geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    geometry->getOrCreateStateSet()->setRenderBinDetails(0, "RenderBin");
 
     kuc->update(geometry.get());
 
-    return geometry.release();
+    return geode.release();
 }
+
+osg::Node* createGrid(Keystone* keystone, const osg::Vec4& colour)
+{
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geode->addDrawable(geometry.get());
+
+    geometry->setUseDisplayList(false);
+
+    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(keystone);
+    geometry->setUpdateCallback(kuc.get());
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    geometry->setColorArray(colours.get());
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
+    geometry->setTexCoordArray(0, texcoords.get());
+
+    osg::Vec2 origin(0.0f, 0.0f);
+    osg::Vec2 widthVector(1.0f, 0.0f);
+    osg::Vec2 heightVector(0.0f, 1.0f);
+
+    unsigned int numIntervals = 7;
+    
+    // border line
+    {
+        unsigned int vi = texcoords->size();
+        texcoords->push_back(origin);
+        texcoords->push_back(origin+widthVector);
+        texcoords->push_back(origin+widthVector+heightVector);
+        texcoords->push_back(origin+heightVector);
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_LOOP, vi, 4));
+    }
+
+    // cross lines
+    {
+        unsigned int vi = texcoords->size();
+        osg::Vec2 v = origin;
+        osg::Vec2 dv = (widthVector+heightVector)/static_cast<float>(numIntervals-1);
+        for(unsigned int i=0; i<numIntervals; ++i)
+        {
+            texcoords->push_back(v);
+            v += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, vi, numIntervals));
+
+        vi = texcoords->size();
+        v = origin+heightVector;
+        dv = (widthVector-heightVector)/static_cast<float>(numIntervals-1);
+        for(unsigned int i=0; i<numIntervals; ++i)
+        {
+            texcoords->push_back(v);
+            v += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, vi, numIntervals));
+    }
+
+    // vertices lines
+    {
+        unsigned int vi = texcoords->size();
+        osg::Vec2 dv = widthVector/6.0;
+        osg::Vec2 bv = origin+dv;
+        osg::Vec2 tv = bv+heightVector;
+        for(unsigned int i=0; i<5; ++i)
+        {
+            texcoords->push_back(bv);
+            texcoords->push_back(tv);
+            bv += dv;
+            tv += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
+    }
+
+    // horizontal lines
+    {
+        unsigned int vi = texcoords->size();
+        osg::Vec2 dv = heightVector/6.0;
+        osg::Vec2 bv = origin+dv;
+        osg::Vec2 tv = bv+widthVector;
+        for(unsigned int i=0; i<5; ++i)
+        {
+            texcoords->push_back(bv);
+            texcoords->push_back(tv);
+            bv += dv;
+            tv += dv;
+        }
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
+    }
+
+    vertices->resize(texcoords->size());
+
+    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    geometry->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    geometry->getOrCreateStateSet()->setRenderBinDetails(1, "RenderBin");
+
+    kuc->update(geometry.get());
+
+    return geode.release();
+}
+
 
 void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
 {
@@ -591,9 +617,7 @@ void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
         double fovy = osg::RadiansToDegrees(2.0*atan2(screenHeight/2.0,screenDistance));
         double aspectRatio = screenWidth/screenHeight;
 
-        
-        osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(createKeystoneDistortionMesh(keystone));
+        osg::Geode* geode = createKeystoneDistortionMesh(keystone);
 
         // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
@@ -624,6 +648,8 @@ void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
         // add subgraph to render
         camera->addChild(geode);
 
+        camera->addChild(createGrid(keystone, osg::Vec4(1.0,1.0,1.0,1.0)));
+
         camera->setName("DistortionCorrectionCamera");
 
         view->addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
@@ -650,21 +676,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Group> group = new osg::Group;
     group->addChild(model.get());
 
-    double screenWidth = osg::DisplaySettings::instance()->getScreenWidth();
-    double screenHeight = osg::DisplaySettings::instance()->getScreenHeight();
-    double screenDistance = osg::DisplaySettings::instance()->getScreenDistance();
-    double fovy = osg::RadiansToDegrees(2.0*atan2(screenHeight/2.0,screenDistance));
-    double aspectRatio = screenWidth/screenHeight;
-    
-    osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-    camera->setClearMask(0x0);
-    camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
-    camera->setRenderOrder(osg::Camera::NESTED_RENDER);
-    camera->setProjectionMatrixAsPerspective(fovy, aspectRatio, 0.1, 1000.0);
-    camera->addChild(createGrid(osg::Vec3(-screenWidth*0.5, -screenHeight*0.5, -screenDistance), osg::Vec3(screenWidth, 0.0, 0.0), osg::Vec3(0.0, screenHeight, 0.0), osg::Vec4(1.0,0.0,0.0,1.0)));
-
     viewer.setSceneData(group.get());
-
     
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
@@ -678,13 +690,6 @@ int main( int argc, char **argv )
     setUpViewForKeystone(&viewer, keystone);
     
     viewer.realize();
-
-    viewer.getCamera()->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
-
-    osg::Matrixd original_pm = viewer.getCamera()->getProjectionMatrix();
-    osg::Matrixd original_grid_pm = camera->getProjectionMatrix();
-
-    group->addChild(camera.get());
 
     // Add keystone handler
     viewer.addEventHandler(new KeystoneHandler(keystone));

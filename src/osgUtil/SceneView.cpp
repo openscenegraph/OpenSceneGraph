@@ -429,48 +429,15 @@ void SceneView::updateUniforms()
 
 osg::Matrixd SceneView::computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const
 {
-    double iod = _displaySettings->getEyeSeparation();
-    double sd = _displaySettings->getScreenDistance();
-    double scale_x = 1.0;
-    double scale_y = 1.0;
-
-    if (_displaySettings->getSplitStereoAutoAdjustAspectRatio())
-    {
-        switch(_displaySettings->getStereoMode())
-        {
-            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
-                scale_x = 2.0;
-                break;
-            case(osg::DisplaySettings::VERTICAL_SPLIT):
-                scale_y = 2.0;
-                break;
-            default:
-                break;
-        }
-    }
-
-    if (_displaySettings->getDisplayType()==osg::DisplaySettings::HEAD_MOUNTED_DISPLAY)
-    {
-        // head mounted display has the same projection matrix for left and right eyes.
-        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
-               projection;
-    }
-    else
-    {
-        // all other display types assume working like a projected power wall
-        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
-        return osg::Matrixd(1.0,0.0,0.0,0.0,
-                           0.0,1.0,0.0,0.0,
-                           iod/(2.0*sd),0.0,1.0,0.0,
-                           0.0,0.0,0.0,1.0) *
-               osg::Matrixd::scale(scale_x,scale_y,1.0) *
-               projection;
-    }
+    return _displaySettings.valid() ? _displaySettings->computeLeftEyeProjectionImplementation(projection) : projection;
 }
 
 osg::Matrixd SceneView::computeLeftEyeViewImplementation(const osg::Matrixd& view) const
 {
-    double fusionDistance = _displaySettings->getScreenDistance();
+    if (!_displaySettings) return view;
+
+    double sd = _displaySettings->getScreenDistance();
+    double fusionDistance = sd;
     switch(_fusionDistanceMode)
     {
         case(USE_FUSION_DISTANCE_VALUE):
@@ -480,62 +447,22 @@ osg::Matrixd SceneView::computeLeftEyeViewImplementation(const osg::Matrixd& vie
             fusionDistance *= _fusionDistanceValue;
             break;
     }
+    double eyeScale = (fusionDistance/sd);
 
-    double iod = _displaySettings->getEyeSeparation();
-    double sd = _displaySettings->getScreenDistance();
-    double es = 0.5f*iod*(fusionDistance/sd);
-
-    return view *
-           osg::Matrixd(1.0,0.0,0.0,0.0,
-                       0.0,1.0,0.0,0.0,
-                       0.0,0.0,1.0,0.0,
-                       es,0.0,0.0,1.0);
+    return _displaySettings->computeLeftEyeViewImplementation(view, eyeScale);
 }
 
 osg::Matrixd SceneView::computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const
 {
-    double iod = _displaySettings->getEyeSeparation();
-    double sd = _displaySettings->getScreenDistance();
-    double scale_x = 1.0;
-    double scale_y = 1.0;
-
-    if (_displaySettings->getSplitStereoAutoAdjustAspectRatio())
-    {
-        switch(_displaySettings->getStereoMode())
-        {
-            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
-                scale_x = 2.0;
-                break;
-            case(osg::DisplaySettings::VERTICAL_SPLIT):
-                scale_y = 2.0;
-                break;
-            default:
-                break;
-        }
-    }
-
-    if (_displaySettings->getDisplayType()==osg::DisplaySettings::HEAD_MOUNTED_DISPLAY)
-    {
-        // head mounted display has the same projection matrix for left and right eyes.
-        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
-               projection;
-    }
-    else
-    {
-        // all other display types assume working like a projected power wall
-        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
-        return osg::Matrixd(1.0,0.0,0.0,0.0,
-                           0.0,1.0,0.0,0.0,
-                           -iod/(2.0*sd),0.0,1.0,0.0,
-                           0.0,0.0,0.0,1.0) *
-               osg::Matrixd::scale(scale_x,scale_y,1.0) *
-               projection;
-    }
+    return _displaySettings.valid() ? _displaySettings->computeRightEyeProjectionImplementation(projection) : projection;
 }
 
 osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& view) const
 {
-    float fusionDistance = _displaySettings->getScreenDistance();
+    if (!_displaySettings) return view;
+    
+    double sd = _displaySettings->getScreenDistance();
+    double fusionDistance = sd;
     switch(_fusionDistanceMode)
     {
         case(USE_FUSION_DISTANCE_VALUE):
@@ -545,16 +472,9 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
             fusionDistance *= _fusionDistanceValue;
             break;
     }
+    double eyeScale = (fusionDistance/sd);
 
-    double iod = _displaySettings->getEyeSeparation();
-    double sd = _displaySettings->getScreenDistance();
-    double es = 0.5*iod*(fusionDistance/sd);
-
-    return view *
-           osg::Matrixd(1.0,0.0,0.0,0.0,
-                       0.0,1.0,0.0,0.0,
-                       0.0,0.0,1.0,0.0,
-                       -es,0.0,0.0,1.0);
+    return _displaySettings->computeRightEyeViewImplementation(view, eyeScale);
 }
 
 void SceneView::computeLeftEyeViewport(const osg::Viewport *viewport)
@@ -562,6 +482,12 @@ void SceneView::computeLeftEyeViewport(const osg::Viewport *viewport)
     if(!viewport) return;
 
     if(!_viewportLeft.valid()) _viewportLeft = new osg::Viewport;
+
+    if (!_displaySettings)
+    {
+        (*_viewportLeft) = *viewport;
+        return;
+    }
 
     switch(_displaySettings->getStereoMode())
     {
@@ -603,7 +529,7 @@ void SceneView::computeLeftEyeViewport(const osg::Viewport *viewport)
         break;
 
         default:
-            _viewportLeft->setViewport(viewport->x(),viewport->y(),viewport->width(),viewport->height());
+            *(_viewportLeft) = *viewport;
             break;
     }
 }
@@ -612,8 +538,14 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
 {
     if(!viewport) return;
 
-    if(!_viewportRight.valid()) _viewportRight = new osg::Viewport;
+    if(!_viewportRight) _viewportRight = new osg::Viewport;
 
+    if (!_displaySettings)
+    {
+        (*_viewportRight) = *viewport;
+        return;
+    }
+        
     switch(_displaySettings->getStereoMode())
     {
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
@@ -653,7 +585,7 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
         break;
 
         default:
-            _viewportRight->setViewport(viewport->x(),viewport->y(),viewport->width(),viewport->height());
+            *(_viewportRight) = *viewport;
             break;
     }
 }
@@ -740,19 +672,11 @@ void SceneView::cull()
         _renderInfo.setState(new osg::State);
     }
 
-    osg::State* state = _renderInfo.getState();
 
     if (!_localStateSet)
     {
         _localStateSet = new osg::StateSet;
     }
-
-    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
-    //_state->reset();
-
-    state->setFrameStamp(_frameStamp.get());
-    state->setDisplaySettings(_displaySettings.get());
-
 
     if (!_cullVisitor)
     {
@@ -1043,6 +967,16 @@ void SceneView::draw()
     if (_camera->getNodeMask()==0) return;
 
     osg::State* state = _renderInfo.getState();
+
+    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
+    //_state->reset();
+    state->setFrameStamp(_frameStamp.get());
+
+    if (_displaySettings.valid())
+    {
+        state->setDisplaySettings(_displaySettings.get());
+    }
+
     state->initializeExtensionProcs();
 
     osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID()).get();

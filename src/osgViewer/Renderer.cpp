@@ -34,7 +34,6 @@ using namespace osgViewer;
 //#define DEBUG_MESSAGE OSG_NOTICE
 #define DEBUG_MESSAGE OSG_DEBUG
 
-
 OpenGLQuerySupport::OpenGLQuerySupport():
     _extensions(0)
 {
@@ -357,6 +356,7 @@ Renderer::Renderer(osg::Camera* camera):
     _done(false),
     _graphicsThreadDoesCull(true),
     _compileOnNextDraw(true),
+    _serializeDraw(false),
     _initialized(false),
     _startTick(0)
 {
@@ -388,6 +388,8 @@ Renderer::Renderer(osg::Camera* camera):
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
+    _serializeDraw = ds ? ds->getSerializeDrawDispatch() : false;
+                               
     unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
     if (view)
     {
@@ -410,9 +412,12 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0]->setDefaults(sceneViewOptions);
     _sceneView[1]->setDefaults(sceneViewOptions);
 
-    _sceneView[0]->setDisplaySettings(ds);
-    _sceneView[1]->setDisplaySettings(ds);
-
+    if (ds->getUseSceneViewForStereoHint())
+    {
+        _sceneView[0]->setDisplaySettings(ds);
+        _sceneView[1]->setDisplaySettings(ds);
+    }
+    
     _sceneView[0]->setCamera(_camera.get(), false);
     _sceneView[1]->setCamera(_camera.get(), false);
 
@@ -520,7 +525,10 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
-    sceneView->setDisplaySettings(ds);
+    if (ds->getUseSceneViewForStereoHint())
+    {
+        sceneView->setDisplaySettings(ds);
+    }
 
     if (view)
     {
@@ -691,7 +699,7 @@ void Renderer::draw()
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
-        unsigned int frameNumber = state->getFrameStamp()->getFrameNumber();
+        unsigned int frameNumber = sceneView->getFrameStamp()->getFrameNumber();
 
         if (!_initialized)
         {
@@ -723,9 +731,7 @@ void Renderer::draw()
         osg::Timer_t beforeDrawTick;
 
 
-        bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
-
-        if (serializeDraw)
+        if (_serializeDraw)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
             beforeDrawTick = osg::Timer::instance()->tick();
@@ -794,7 +800,7 @@ void Renderer::cull_draw()
 
     osg::Stats* stats = sceneView->getCamera()->getStats();
     osg::State* state = sceneView->getState();
-    const osg::FrameStamp* fs = state->getFrameStamp();
+    const osg::FrameStamp* fs = sceneView->getFrameStamp();
     unsigned int frameNumber = fs ? fs->getFrameNumber() : 0;
 
     if (!_initialized)
@@ -839,9 +845,7 @@ void Renderer::cull_draw()
 
     osg::Timer_t beforeDrawTick;
 
-    bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
-
-    if (serializeDraw)
+    if (_serializeDraw)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
 

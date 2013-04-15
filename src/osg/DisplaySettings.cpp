@@ -79,6 +79,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 
     _compileContextsHint = vs._compileContextsHint;
     _serializeDrawDispatch = vs._serializeDrawDispatch;
+    _useSceneViewForStereoHint = vs._useSceneViewForStereoHint;
 
     _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
     _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
@@ -113,6 +114,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
 
     if (vs._compileContextsHint) _compileContextsHint = vs._compileContextsHint;
     if (vs._serializeDrawDispatch) _serializeDrawDispatch = vs._serializeDrawDispatch;
+    if (vs._useSceneViewForStereoHint) _useSceneViewForStereoHint = vs._useSceneViewForStereoHint;
 
     if (vs._numDatabaseThreadsHint>_numDatabaseThreadsHint) _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
     if (vs._numHttpDatabaseThreadsHint>_numHttpDatabaseThreadsHint) _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
@@ -170,6 +172,7 @@ void DisplaySettings::setDefaults()
 
     _compileContextsHint = false;
     _serializeDrawDispatch = true;
+    _useSceneViewForStereoHint = true;
 
     _numDatabaseThreadsHint = 2;
     _numHttpDatabaseThreadsHint = 1;
@@ -251,39 +254,42 @@ static ApplicationUsageProxy DisplaySetting_e14(ApplicationUsage::ENVIRONMENTAL_
         "OSG_SERIALIZE_DRAW_DISPATCH <mode>",
         "OFF | ON Disable/enable the use of a mutex to serialize the draw dispatch when there are multiple graphics threads.");
 static ApplicationUsageProxy DisplaySetting_e15(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_USE_SCENEVIEW_FOR_STEREO <mode>",
+        "OFF | ON Disable/enable the hint to use osgUtil::SceneView to implement stereo when required..");
+static ApplicationUsageProxy DisplaySetting_e16(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_NUM_DATABASE_THREADS <int>",
         "Set the hint for the total number of threads to set up in the DatabasePager.");
-static ApplicationUsageProxy DisplaySetting_e16(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e17(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_NUM_HTTP_DATABASE_THREADS <int>",
         "Set the hint for the total number of threads dedicated to http requests to set up in the DatabasePager.");
-static ApplicationUsageProxy DisplaySetting_e17(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e18(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_MULTI_SAMPLES <int>",
         "Set the hint for the number of samples to use when multi-sampling.");
-static ApplicationUsageProxy DisplaySetting_e18(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e19(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_TEXTURE_POOL_SIZE <int>",
         "Set the hint for the size of the texture pool to manage.");
-static ApplicationUsageProxy DisplaySetting_e19(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e20(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_BUFFER_OBJECT_POOL_SIZE <int>",
         "Set the hint for the size of the vertex buffer object pool to manage.");
-static ApplicationUsageProxy DisplaySetting_e20(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e21(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_FBO_POOL_SIZE <int>",
         "Set the hint for the size of the frame buffer object pool to manage.");
-static ApplicationUsageProxy DisplaySetting_e21(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e22(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_IMPLICIT_BUFFER_ATTACHMENT_RENDER_MASK",
         "OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for render FBO.");
-static ApplicationUsageProxy DisplaySetting_e22(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e23(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_IMPLICIT_BUFFER_ATTACHMENT_RESOLVE_MASK",
         "OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for resolve FBO.");
-static ApplicationUsageProxy DisplaySetting_e23(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e24(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_GL_CONTEXT_VERSION <major.minor>",
         "Set the hint for the GL version to create contexts for.");
-static ApplicationUsageProxy DisplaySetting_e24(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e25(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_GL_CONTEXT_FLAGS <uint>",
         "Set the hint for the GL context flags to use when creating contexts.");
-static ApplicationUsageProxy DisplaySetting_e25(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e26(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_GL_CONTEXT_PROFILE_MASK <uint>",
         "Set the hint for the GL context profile mask to use when creating contexts.");
-static ApplicationUsageProxy DisplaySetting_e26(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+static ApplicationUsageProxy DisplaySetting_e27(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SWAP_METHOD <method>",
         "DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
 
@@ -466,6 +472,19 @@ void DisplaySettings::readEnvironmentalVariables()
         if (strcmp(ptr,"ON")==0)
         {
             _serializeDrawDispatch = true;
+        }
+    }
+
+    if( (ptr = getenv("OSG_USE_SCENEVIEW_FOR_STEREO")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _useSceneViewForStereoHint = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _useSceneViewForStereoHint = true;
         }
     }
 
@@ -707,4 +726,114 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     }
 
 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Helper funciotns for computing projection and view matrices of left and right eyes
+//
+osg::Matrixd DisplaySettings::computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const
+{
+    double iod = getEyeSeparation();
+    double sd = getScreenDistance();
+    double scale_x = 1.0;
+    double scale_y = 1.0;
+
+    if (getSplitStereoAutoAdjustAspectRatio())
+    {
+        switch(getStereoMode())
+        {
+            case(HORIZONTAL_SPLIT):
+                scale_x = 2.0;
+                break;
+            case(VERTICAL_SPLIT):
+                scale_y = 2.0;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (getDisplayType()==HEAD_MOUNTED_DISPLAY)
+    {
+        // head mounted display has the same projection matrix for left and right eyes.
+        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+    else
+    {
+        // all other display types assume working like a projected power wall
+        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        return osg::Matrixd(1.0,0.0,0.0,0.0,
+                           0.0,1.0,0.0,0.0,
+                           iod/(2.0*sd),0.0,1.0,0.0,
+                           0.0,0.0,0.0,1.0) *
+               osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+}
+
+osg::Matrixd DisplaySettings::computeLeftEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale) const
+{
+    double iod = getEyeSeparation();
+    double es = 0.5f*iod*eyeSeperationScale;
+
+    return view *
+           osg::Matrixd(1.0,0.0,0.0,0.0,
+                       0.0,1.0,0.0,0.0,
+                       0.0,0.0,1.0,0.0,
+                       es,0.0,0.0,1.0);
+}
+
+osg::Matrixd DisplaySettings::computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const
+{
+    double iod = getEyeSeparation();
+    double sd = getScreenDistance();
+    double scale_x = 1.0;
+    double scale_y = 1.0;
+
+    if (getSplitStereoAutoAdjustAspectRatio())
+    {
+        switch(getStereoMode())
+        {
+            case(HORIZONTAL_SPLIT):
+                scale_x = 2.0;
+                break;
+            case(VERTICAL_SPLIT):
+                scale_y = 2.0;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (getDisplayType()==HEAD_MOUNTED_DISPLAY)
+    {
+        // head mounted display has the same projection matrix for left and right eyes.
+        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+    else
+    {
+        // all other display types assume working like a projected power wall
+        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        return osg::Matrixd(1.0,0.0,0.0,0.0,
+                           0.0,1.0,0.0,0.0,
+                           -iod/(2.0*sd),0.0,1.0,0.0,
+                           0.0,0.0,0.0,1.0) *
+               osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+}
+
+osg::Matrixd DisplaySettings::computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale) const
+{
+    double iod = getEyeSeparation();
+    double es = 0.5*iod*eyeSeperationScale;
+
+    return view *
+           osg::Matrixd(1.0,0.0,0.0,0.0,
+                       0.0,1.0,0.0,0.0,
+                       0.0,0.0,1.0,0.0,
+                       -es,0.0,0.0,1.0);
 }

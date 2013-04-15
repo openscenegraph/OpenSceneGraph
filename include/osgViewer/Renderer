@@ -86,6 +86,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
         bool                                                _done;
         bool                                                _graphicsThreadDoesCull;
         bool                                                _compileOnNextDraw;
+        bool                                                _serializeDraw;
 
         osg::ref_ptr<osgUtil::SceneView>                    _sceneView[2];
 

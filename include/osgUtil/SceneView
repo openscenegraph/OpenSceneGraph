@@ -406,8 +406,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         inline const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
-
-
         inline osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection)  const
         {
             if (_computeStereoMatricesCallback.valid()) return _computeStereoMatricesCallback->computeLeftEyeProjection(projection);
@@ -432,11 +430,18 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
             else return computeRightEyeViewImplementation(view);
         }
 
+        /** helper function for computing the left eye projection matrix.*/
         virtual osg::Matrixd computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const;
+
+        /** helper function for computing the left eye view matrix.*/
         virtual osg::Matrixd computeLeftEyeViewImplementation(const osg::Matrixd& view) const;
 
+        /** helper function for computing the right eye view matrix.*/
         virtual osg::Matrixd computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const;
+
+        /** helper function for computing the right eye view matrix.*/
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view) const;
+
 
         /** Inherit the local cull settings variable from a specified CullSettings object, according to the inheritance mask.*/
         virtual void inheritCullSettings(const osg::CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }

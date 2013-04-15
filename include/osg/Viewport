@@ -64,6 +64,18 @@ class OSG_EXPORT Viewport : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
+        Viewport& operator = (const Viewport& rhs)
+        {
+            if (&rhs==this) return *this;
+            
+            _x = rhs._x;
+            _y = rhs._y;
+            _width = rhs._width;
+            _height = rhs._height;
+            
+            return *this;
+        }
+
         inline void setViewport(value_type x,value_type y,value_type width,value_type height)
         {
             _x = x;

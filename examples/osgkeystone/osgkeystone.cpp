@@ -562,6 +562,262 @@ osg::Node* createGrid(Keystone* keystone, const osg::Vec4& colour)
     return geode.release();
 }
 
+struct StereoSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
+{
+    StereoSlaveCallback(osg::DisplaySettings* ds, double eyeScale):_ds(ds), _eyeScale(eyeScale) {}
+
+    virtual void updateSlave(osg::View& view, osg::View::Slave& slave)
+    {
+        osg::Camera* camera = slave._camera.get();
+        osgViewer::View* viewer_view = dynamic_cast<osgViewer::View*>(&view);
+
+        if (_ds.valid() && camera && viewer_view)
+        {
+
+            // set projection matrix
+            if (_eyeScale<0.0)
+            {
+                camera->setProjectionMatrix(_ds->computeLeftEyeProjectionImplementation(view.getCamera()->getProjectionMatrix()));
+            }
+            else
+            {
+                camera->setProjectionMatrix(_ds->computeRightEyeProjectionImplementation(view.getCamera()->getProjectionMatrix()));
+            }
+            
+            double sd = _ds->getScreenDistance();
+            double fusionDistance = sd;
+            switch(viewer_view->getFusionDistanceMode())
+            {
+                case(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE):
+                    fusionDistance = viewer_view->getFusionDistanceValue();
+                    break;
+                case(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE):
+                    fusionDistance *= viewer_view->getFusionDistanceValue();
+                    break;
+            }
+            double eyeScale = osg::absolute(_eyeScale) * (fusionDistance/sd);
+
+            if (_eyeScale<0.0)
+            {                
+                camera->setViewMatrix(_ds->computeLeftEyeViewImplementation(view.getCamera()->getViewMatrix(), eyeScale));
+            }
+            else
+            {
+                camera->setViewMatrix(_ds->computeRightEyeViewImplementation(view.getCamera()->getViewMatrix(), eyeScale));
+            }
+        }
+        else
+        {
+            slave.updateSlaveImplementation(view);
+        }
+    }
+
+    osg::ref_ptr<osg::DisplaySettings> _ds;
+    double _eyeScale;
+};
+
+void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
+{
+    if (!ds->getStereo()) return;
+
+    ds->setUseSceneViewForStereoHint(false);
+
+    int screenNum = 0;
+
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi)
+    {
+        OSG_NOTICE<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        return;
+    }
+
+    osg::GraphicsContext::ScreenIdentifier si;
+    si.readDISPLAY();
+
+    // displayNum has not been set so reset it to 0.
+    if (si.displayNum<0) si.displayNum = 0;
+
+    si.screenNum = screenNum;
+
+    unsigned int width, height;
+    wsi->getScreenResolution(si, width, height);
+
+//    width/=2; height/=2;
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->hostName = si.hostName;
+    traits->displayNum = si.displayNum;
+    traits->screenNum = si.screenNum;
+    traits->x = 0;
+    traits->y = 0;
+    traits->width = width;
+    traits->height = height;
+    traits->windowDecoration = false;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+    if (!gc)
+    {
+        OSG_NOTICE<<"GraphicsWindow has not been created successfully."<<std::endl;
+        return;
+    }
+
+    osg::ref_ptr<osg::Camera> left_camera;
+    osg::ref_ptr<osg::Camera> right_camera;
+    
+    switch(ds->getStereoMode())
+    {
+        case(osg::DisplaySettings::QUAD_BUFFER):
+            // create window with quad buffer visual
+            // left and right cameras share viewports and context
+            // each camera select left or right draw/read buffers
+            break;
+        case(osg::DisplaySettings::ANAGLYPHIC):
+        {
+            // create single window,
+            // left camera with color mask to select RED
+            // right camera with color mask to select CYAN
+
+            // left Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,0, traits->width, traits->height));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+                camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+                // red
+                camera->getOrCreateStateSet()->setAttribute(new osg::ColorMask(true, false, false, true));
+                
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(0.1,0.0,0.0), osg::Matrixd::translate(0.0,0.0,0.0));
+
+                // assign update callback to maintain the correct view and projection matrices
+                osg::View::Slave& slave = view->getSlave(view->getNumSlaves()-1);
+                slave._updateSlaveCallback =  new StereoSlaveCallback(ds, -1.0);
+            }
+
+            // right Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,0, traits->width, traits->height));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+                camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+
+                // cyan
+                camera->getOrCreateStateSet()->setAttribute(new osg::ColorMask(false, true, true, true));
+
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(-0.1,0.0,0.0), osg::Matrixd::translate(0.0,0.0,0.0));
+
+                // assign update callback to maintain the correct view and projection matrices
+                osg::View::Slave& slave = view->getSlave(view->getNumSlaves()-1);
+                slave._updateSlaveCallback =  new StereoSlaveCallback(ds, 1.0);
+            }
+
+            break;
+        }
+        case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+        {
+            // single window or two windows
+            // left camera selecting left viewport half or right viewport half honouring SplitStereoHorizontalEyeMapping
+            // right camera selecting left viewport half or right viewport half honouring SplitStereoHorizontalEyeMapping
+            
+            // left Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,0, traits->width/2, traits->height));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(0.0,0.0,0.0), osg::Matrixd());
+            }
+
+
+            // right Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(traits->width/2,0, traits->width/2, traits->height));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(0.0,0.0,0.0), osg::Matrixd());
+            }
+            break;
+        }
+        case(osg::DisplaySettings::VERTICAL_SPLIT):
+        {
+            // single window or two windows
+            // left camera selecting left viewport half or right viewport half honouring SplitStereoVerticalEyeMapping
+            // right camera selecting left viewport half or right viewport half honouring SplitStereoVerticalEyeMapping
+
+            // left Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,0, traits->width, traits->height/2));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(0.0,0.0,0.0), osg::Matrixd());
+            }
+
+
+            // right Camera
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,traits->height/2, traits->width, traits->height/2));
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                // add this slave camera to the viewer, with a shift left of the projection matrix
+                view->addSlave(camera.get(), osg::Matrixd::translate(0.0,0.0,0.0), osg::Matrixd());
+            }
+            break;
+        }
+        case(osg::DisplaySettings::LEFT_EYE):
+            // single window, whole window, just left eye offsets
+            break;
+        case(osg::DisplaySettings::RIGHT_EYE):
+            // single window, whole window, just right eye offsets
+            break;
+        case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
+            // create single window with stencil buffer
+            // left camera selects left stencil mask,
+            // right camera selects right stencil mask
+            break;
+        case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            // create single window with stencil buffer
+            // left camera selects left stencil mask,
+            // right camera selects right stencil mask
+            break;
+        case(osg::DisplaySettings::CHECKERBOARD):
+            // create single window with stencil buffer
+            // left camera selects left stencil mask,
+            // right camera selects right stencil mask
+            break;
+    }
+
+
+}
+
 
 void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
 {
@@ -713,6 +969,12 @@ int main( int argc, char **argv )
         return 1;
     }
 
+
+    osg::DisplaySettings* ds = viewer.getDisplaySettings() ? viewer.getDisplaySettings() : osg::DisplaySettings::instance().get();
+
+    OSG_NOTICE<<"Stereo "<<ds->getStereo()<<std::endl;
+    OSG_NOTICE<<"StereoMode "<<ds->getStereoMode()<<std::endl;
+
     viewer.setSceneData(model.get());
     
     // add the state manipulator
@@ -724,7 +986,14 @@ int main( int argc, char **argv )
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-    setUpViewForKeystone(&viewer, new Keystone);
+    if (ds->getStereo())
+    {
+        setUpViewForStereo(&viewer, ds);
+    }
+    else
+    {
+        setUpViewForKeystone(&viewer, new Keystone);
+    }
     
     viewer.realize();
 

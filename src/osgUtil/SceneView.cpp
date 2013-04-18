@@ -161,6 +161,8 @@ SceneView::SceneView(DisplaySettings* ds)
     _interlacedStereoStencilHeight = 0;
 
     _dynamicObjectCount = 0;
+
+    _resetColorMaskToAllEnabled = true;
 }
 
 SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
@@ -194,6 +196,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _interlacedStereoStencilHeight = rhs._interlacedStereoStencilHeight;
 
     _dynamicObjectCount = 0;
+
+    _resetColorMaskToAllEnabled = rhs._resetColorMaskToAllEnabled;
 }
 
 SceneView::~SceneView()
@@ -1358,20 +1362,22 @@ void SceneView::draw()
 
         _localStateSet->setAttribute(getViewport());
 
-
-        // ensure that all color planes are active.
-        osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
-        if (cmask)
+        if (_resetColorMaskToAllEnabled)
         {
-            cmask->setMask(true,true,true,true);
+            // ensure that all color planes are active.
+            osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+            if (cmask)
+            {
+                cmask->setMask(true,true,true,true);
+            }
+            else
+            {
+                cmask = new osg::ColorMask(true,true,true,true);
+                _localStateSet->setAttribute(cmask);
+            }
+            _renderStage->setColorMask(cmask);
         }
-        else
-        {
-            cmask = new osg::ColorMask(true,true,true,true);
-            _localStateSet->setAttribute(cmask);
-        }
-        _renderStage->setColorMask(cmask);
-
+        
         // bog standard draw.
         _renderStage->drawPreRenderStages(_renderInfo,previous);
         _renderStage->draw(_renderInfo,previous);

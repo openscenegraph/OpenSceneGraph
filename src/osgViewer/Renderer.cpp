@@ -417,6 +417,11 @@ Renderer::Renderer(osg::Camera* camera):
         _sceneView[0]->setDisplaySettings(ds);
         _sceneView[1]->setDisplaySettings(ds);
     }
+    else
+    {
+        _sceneView[0]->setResetColorMaskToAllOn(false);
+        _sceneView[1]->setResetColorMaskToAllOn(false);
+    }
     
     _sceneView[0]->setCamera(_camera.get(), false);
     _sceneView[1]->setCamera(_camera.get(), false);

@@ -489,6 +489,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         void setAutomaticFlush(bool automaticFlush) { _automaticFlush = automaticFlush; }
         bool getAutomaticFlush() const { return _automaticFlush; }
 
+        void setResetColorMaskToAllOn(bool enable) { _resetColorMaskToAllEnabled = enable; }
+        bool setResetColorMaskToAllOn() const { return _resetColorMaskToAllEnabled; }
+
     protected:
 
         virtual ~SceneView();
@@ -557,6 +560,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         int                                         _interlacedStereoStencilHeight;
 
         unsigned int                                _dynamicObjectCount;
+
+        bool                                        _resetColorMaskToAllEnabled;
 };
 
 }

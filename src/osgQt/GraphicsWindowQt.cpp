@@ -432,6 +432,9 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
         getState()->setContextID( osg::GraphicsContext::createNewContextID() );
     }
 
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    
     return true;
 }
 
@@ -647,6 +650,9 @@ bool GraphicsWindowQt::realizeImplementation()
 
     _realized = true;
 
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    
     // make this window's context not current
     // note: this must be done as we will probably make the context current from another thread
     //       and it is not allowed to have one context current in two threads

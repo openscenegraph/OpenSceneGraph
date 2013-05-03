@@ -63,7 +63,7 @@ public:
     
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
 
-    std::string pick(float x, float y);
+    std::string pick(const osgGA::GUIEventAdapter& event);
     
     void highlight(const std::string& name)
     {
@@ -83,15 +83,15 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
     case(osgGA::GUIEventAdapter::FRAME):
     case(osgGA::GUIEventAdapter::MOVE):
     {
-        //osg::notify(osg::NOTICE)<<"MOVE "<<ea.getX()<<ea.getY()<<std::endl;
-        std::string picked_name = pick(ea.getX(),ea.getY());
+        // osg::notify(osg::NOTICE)<<"MOVE "<<ea.getX()<<", "<<ea.getY()<<std::endl;
+        std::string picked_name = pick(ea);
         highlight(picked_name);
         return false;
     }
     case(osgGA::GUIEventAdapter::PUSH):
     {
-        //osg::notify(osg::NOTICE)<<"PUSH "<<ea.getX()<<ea.getY()<<std::endl;
-        std::string picked_name = pick(ea.getX(),ea.getY());
+        // osg::notify(osg::NOTICE)<<"PUSH "<<ea.getX()<<", "<<ea.getY()<<std::endl;
+        std::string picked_name = pick(ea);
         if (!picked_name.empty())
         {
             runApp(picked_name);
@@ -108,10 +108,10 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 }
 
 
-std::string PickHandler::pick(float x, float y)
+std::string PickHandler::pick(const osgGA::GUIEventAdapter& event)
 {
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (_viewer->computeIntersections(x, y, intersections))
+    if (_viewer->computeIntersections(event, intersections))
     {
         for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
             hitr != intersections.end();

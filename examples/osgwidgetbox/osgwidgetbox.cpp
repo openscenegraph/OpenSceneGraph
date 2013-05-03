@@ -38,6 +38,7 @@ struct ColorWidget: public osgWidget::Widget {
     }
 
     bool mouseOver(double x, double y, const osgWidget::WindowManager*) {
+        
         osgWidget::Color c = getImageColorAtPointerXY(x, y);
 
         if(c.a() < 0.001f) {
@@ -45,7 +46,6 @@ struct ColorWidget: public osgWidget::Widget {
 
             return false;
         }
-
         return true;
     }
 

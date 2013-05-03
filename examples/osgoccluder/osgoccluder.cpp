@@ -72,7 +72,7 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
             {
                 osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                 osgUtil::LineSegmentIntersector::Intersections intersections;
-                if (view && view->computeIntersections(ea.getX(), ea.getY(), intersections))
+                if (view && view->computeIntersections(ea, intersections))
                 {
                     const osgUtil::LineSegmentIntersector::Intersection& hit = *(intersections.begin());
                     if (hit.matrix.valid()) addPoint(hit.localIntersectionPoint * (*hit.matrix));

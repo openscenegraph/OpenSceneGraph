@@ -251,6 +251,9 @@ void GraphicsWindowCarbon::init()
     }
     _valid = (_pixelFormat != NULL);
     _initialized = true;
+    
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
 }
 
 bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
@@ -452,6 +455,10 @@ bool GraphicsWindowCarbon::realizeImplementation()
     _currentVSync = _traits->vsync;
 
     _realized = true;
+
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    
     return _realized;
 }
 

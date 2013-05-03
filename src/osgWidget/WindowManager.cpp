@@ -208,7 +208,7 @@ void WindowManager::_updatePickWindow(const WidgetList* wl, point_type x, point_
     _getPointerXYDiff(xdiff, ydiff);
 
     ss
-        << "At XY Coords: " << x << ", " << _height - y
+        << "At XY Coords: " << x << ", " << y
         << " ( diff " << xdiff << ", " << ydiff << " )"
         << std::endl
     ;
@@ -296,10 +296,20 @@ void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
 // This method performs intersection testing at the given XY coords, and returns true if
 // any intersections were found. It will break after processing the first pickable Window
 // it finds.
-bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
+bool WindowManager::pickAtXY(float x, float y, WidgetList& wl)
+{
     Intersections intr;
 
-    if(_view->computeIntersections(x, y, intr, _nodeMask)) {
+    
+    osg::Camera* camera = _view->getCamera();
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
+    if (gw)
+    {
+        _view->computeIntersections(camera, osgUtil::Intersector::WINDOW, x, y, intr, _nodeMask);
+    }
+        
+    if (!intr.empty())
+    {
         // Get the first Window at the XY coordinates; if you want a Window to be
         // non-pickable, set the NodeMask to something else.
         Window* activeWin = 0;
@@ -347,48 +357,6 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
     return false;
 }
 
-/*
-bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
-    Intersections intr;
-
-    if(!_view->computeIntersections(x, y, intr, _nodeMask)) return false;
-
-    typedef std::vector<osg::observer_ptr<Window> > WindowVector;
-
-    WindowVector windows;
-
-    Window* activeWin = 0;
-
-    for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
-        Window* win = dynamic_cast<Window*>(i->nodePath.back()->getParent(0));
-
-        if(
-            !win ||
-            (win->getVisibilityMode() == Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))
-        ) {
-            continue;
-        }
-
-        if(activeWin != win) {
-            activeWin = win;
-
-            windows.push_back(win);
-        }
-    }
-
-    if(!windows.size()) return false;
-
-    std::sort(windows.begin(), windows.end(), WindowBinNumberCompare());
-
-    for(WindowVector::iterator i = windows.begin(); i != windows.end(); i++) {
-        warn() << "- " << i->get()->getName() << " " << i->get()->getOrCreateStateSet()->getBinNumber() << std::endl;
-    }
-
-    warn() << std::endl;
-
-    return false;
-}
-*/
 
 bool WindowManager::setFocused(Window* window) {
     Event ev(this);

@@ -368,7 +368,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
 
                 _pointer.reset();
 
-                if (view->computeIntersections(ea.getX(),ea.getY(),intersections, _intersectionMask))
+                if (view->computeIntersections(ea ,intersections, _intersectionMask))
                 {
                     for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
                         hitr != intersections.end();

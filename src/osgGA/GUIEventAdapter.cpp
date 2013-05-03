@@ -122,3 +122,14 @@ void GUIEventAdapter::addTouchPoint(unsigned int id, TouchPhase phase, float x, 
 
     _touchData->addTouchPoint(id, phase, x, y, tapCount);
 }
+
+void GUIEventAdapter::copyPointerDataFrom(const osgGA::GUIEventAdapter& sourceEvent)
+{
+    setGraphicsContext(const_cast<osg::GraphicsContext*>(sourceEvent.getGraphicsContext()));
+    setX(sourceEvent.getX());
+    setY(sourceEvent.getY());
+    setInputRange(sourceEvent.getXmin(), sourceEvent.getYmin(), sourceEvent.getXmax(), sourceEvent.getYmax());
+    setButtonMask(sourceEvent.getButtonMask());
+    setMouseYOrientation(sourceEvent.getMouseYOrientation());
+    setPointerDataList(sourceEvent.getPointerDataList());
+}

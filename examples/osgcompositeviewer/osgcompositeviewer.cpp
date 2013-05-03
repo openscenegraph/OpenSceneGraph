@@ -54,7 +54,7 @@ public:
 
     ~PickHandler() {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
         if (!view) return false;
@@ -71,7 +71,7 @@ public:
             {
                 if (_mx==ea.getX() && _my==ea.getY())
                 {
-                    pick(view, ea.getX(), ea.getY());
+                    pick(view, ea);
                 }
                 break;
             }
@@ -81,13 +81,13 @@ public:
         return false;
     }
 
-    void pick(osgViewer::View* view, float x, float y)
+    void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& event)
     {
         osg::Node* node = 0;
         osg::Group* parent = 0;
 
         osgUtil::LineSegmentIntersector::Intersections intersections;
-        if (view->computeIntersections(x, y, intersections))
+        if (view->computeIntersections(event, intersections))
         {
             osgUtil::LineSegmentIntersector::Intersection intersection = *intersections.begin();
             osg::NodePath& nodePath = intersection.nodePath;
@@ -98,7 +98,6 @@ public:
         // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
         if (parent && node)
         {
-
             osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
             if (!parentAsScribe)
             {

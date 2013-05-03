@@ -227,20 +227,29 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;
 
-        /** Get the camera which contains the pointer position x,y specified in the master camera's window/eye coordinates.
-          * Also passes back the local window coordinatess for the graphics context associated with the camera. */
+        
+        /** deprecated. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
 
-        /** Compute intersections between a ray through the specified master camera's window/eye coordinates and a specified node.
-          * Note, when a master camera has slaves and no viewport itself, its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
-          * while if it has a viewport the coordintates will be relative to its viewport dimensions.
-          * Mouse events handled by the view will automatically be attached to the master camera window/clip coordinates so that they can be passed
-          * directly to the computeIntersections method. */
+        /** deprecated. */
         bool computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
-        /** Compute intersections between a ray through the specified master camera's window/eye coordinates and a specified nodePath's subgraph. */
+        /** deprecated. */
         bool computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
+        
+        /** Compute intersections of a ray, starting the current mouse position, through the specified camera. */
+        bool computeIntersections(const osgGA::GUIEventAdapter& ea, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
+
+        /** Compute intersections of a ray, starting the current mouse position, through the specified master camera's window/eye coordinates and a specified nodePath's subgraph. */
+        bool computeIntersections(const osgGA::GUIEventAdapter& ea, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
+
+        
+        /** Compute intersections of a ray through the specified camera. */
+        bool computeIntersections(const osg::Camera* camera, osgUtil::Intersector::CoordinateFrame cf, float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
+
+        /** Compute intersections of a ray through the specified camera and a specified nodePath's subgraph. */
+        bool computeIntersections(const osg::Camera* camera, osgUtil::Intersector::CoordinateFrame cf, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);

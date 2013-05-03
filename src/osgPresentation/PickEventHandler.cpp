@@ -66,7 +66,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             }
             osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
             osgUtil::LineSegmentIntersector::Intersections intersections;
-            if (viewer->computeIntersections(ea.getX(),ea.getY(), nv->getNodePath(), intersections))
+            if (viewer->computeIntersections(ea, nv->getNodePath(), intersections))
             {
                 for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr=intersections.begin();
                     hitr!=intersections.end();

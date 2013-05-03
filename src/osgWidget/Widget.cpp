@@ -511,7 +511,13 @@ Color Widget::getImageColorAtXY(point_type x, point_type y) const {
     point_type height = fabs((*texs)[LR].y() - (*texs)[UR].y());
 
     point_type X = ((x / getWidth()) * width) + (*texs)[LL].x();
-    point_type Y = (((getHeight() - y) / getHeight()) * height) + (*texs)[UR].y();
+    point_type Y = ((y / getHeight()) * height) + (*texs)[LR].y();
+    
+    if (X<0.0 || X>1.0 || Y<0.0 || Y>1.0) 
+    {
+        OSG_INFO<<"Widget::getImageColorAtXY("<<x<<", "<<y<<") Texture coordinate out of range, X="<<X<<", Y="<<Y<<std::endl;
+        return Color();
+    }
 
     return image->getColor(TexCoord(X, Y));
 }

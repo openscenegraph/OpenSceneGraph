@@ -727,6 +727,9 @@ void GraphicsWindowIOS::init()
     //if -1.0 we use the screens scale factor
     _viewContentScaleFactor = -1.0f;
     _valid = _initialized = true;
+
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
 }
 
 
@@ -889,6 +892,9 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     // IOSs origin is top/left:
     getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
+
+    // make sure the event queue has the correct window rectangle size and input range
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
     
     _valid = _initialized = _realized = true;
     return _valid;

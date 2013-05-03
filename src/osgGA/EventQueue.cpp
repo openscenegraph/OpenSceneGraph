@@ -496,7 +496,7 @@ void EventQueue::frame(double time)
     event->setEventType(GUIEventAdapter::FRAME);
     event->setTime(time);
     
-    OSG_NOTICE<<"frame("<<time<<"), event->getX()="<<event->getX()<<", event->getY()="<<event->getY()<<", event->getXmin()="<<event->getXmin()<<", event->getYmin()="<<event->getYmin()<<", event->getXmax()="<<event->getXmax()<<", event->getYmax()="<<event->getYmax()<<std::endl;
+    // OSG_NOTICE<<"frame("<<time<<"), event->getX()="<<event->getX()<<", event->getY()="<<event->getY()<<", event->getXmin()="<<event->getXmin()<<", event->getYmin()="<<event->getYmin()<<", event->getXmax()="<<event->getXmax()<<", event->getYmax()="<<event->getYmax()<<std::endl;
 
     addEvent(event);
 }

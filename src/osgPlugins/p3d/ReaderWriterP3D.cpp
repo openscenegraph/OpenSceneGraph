@@ -1419,7 +1419,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     {
         keyValue = itr->second;
     }
-    if (key.find("0x",0,2)!=std::string::npos)
+    else if (key.find("0x",0,2)!=std::string::npos)
     {
         std::istringstream iss(key);
         iss>>std::hex>>keyValue;
@@ -1438,7 +1438,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     }
     else
     {
-        OSG_NOTICE<<"Warning: invalid key used in <key>"<<key<<"</key>, ignoring tag."<<std::endl;
+        OSG_NOTICE<<"Warning: invalid key used in <key>"<<key<<"</key>, ignoring tag. key=["<<key<<"]"<<std::endl;
         return false;
     }
 

@@ -841,8 +841,7 @@ void GraphicsWindowX11::init()
         }
     }
 
-
-
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
 }
 
 bool GraphicsWindowX11::createWindow()
@@ -995,7 +994,7 @@ bool GraphicsWindowX11::createWindow()
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
     rescanModifierMapping();
-
+    
     return true;
 }
 
@@ -1056,7 +1055,9 @@ bool GraphicsWindowX11::realizeImplementation()
 
     XMapWindow( _display, _window );
 
-//    Window temp = _window;
+    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+
+    //    Window temp = _window;
 //    XSetWMColormapWindows( _display, _window, &temp, 1);
 
     _realized = true;

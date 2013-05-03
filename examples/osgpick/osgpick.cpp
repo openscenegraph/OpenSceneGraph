@@ -106,19 +106,9 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
     osgUtil::LineSegmentIntersector::Intersections intersections;
 
     std::string gdlist="";
-    float x = ea.getX();
-    float y = ea.getY();
-#if 0
-    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
-    osgUtil::IntersectionVisitor iv(picker.get());
-    view->getCamera()->accept(iv);
-    if (picker->containsIntersections())
+    
+    if (view->computeIntersections(ea,intersections))
     {
-        intersections = picker->getIntersections();
-#else
-    if (view->computeIntersections(x,y,intersections))
-    {
-#endif
         for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
             hitr != intersections.end();
             ++hitr)

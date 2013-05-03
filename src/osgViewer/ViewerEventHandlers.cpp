@@ -716,90 +716,13 @@ InteractiveImageHandler::InteractiveImageHandler(osg::Image* image, osg::Texture
     }
 }
 
-bool InteractiveImageHandler::computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask) const
-{
-    float local_x, local_y = 0.0;
-    const osg::Camera* camera;
-    if (_fullscreen)
-    {
-        if (!_camera) return false;
-        camera = _camera.get();
-        local_x = x;
-        local_y = y;
-    }
-    else
-    {
-        if (!view->getCamera() || nodePath.empty()) return false;
-        camera = view->getCameraContainingPosition(x, y, local_x, local_y);
-        if (!camera) camera = view->getCamera();
-    }
-
-    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker;
-    if (_fullscreen)
-    {
-        picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, local_x, local_y);
-    }
-    else
-    {
-        osg::Matrixd matrix;
-        if (nodePath.size()>1)
-        {
-            osg::NodePath prunedNodePath(nodePath.begin(),nodePath.end()-1);
-            matrix = osg::computeLocalToWorld(prunedNodePath);
-        }
-
-        matrix.postMult(camera->getViewMatrix());
-        matrix.postMult(camera->getProjectionMatrix());
-
-        double zNear = -1.0;
-        double zFar = 1.0;
-        if (camera->getViewport())
-        {
-            matrix.postMult(camera->getViewport()->computeWindowMatrix());
-            zNear = 0.0;
-            zFar = 1.0;
-        }
-
-        osg::Matrixd inverse;
-        inverse.invert(matrix);
-
-        osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;
-        osg::Vec3d endVertex = osg::Vec3d(local_x,local_y,zFar) * inverse;
-
-        picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
-    }
-
-    osgUtil::IntersectionVisitor iv(picker.get());
-    iv.setTraversalMask(traversalMask);
-
-    if (_fullscreen)
-    {
-        const_cast<osg::Camera*>(camera)->accept(iv);
-    }
-    else
-    {
-        nodePath.back()->accept(iv);
-    }
-
-    if (picker->containsIntersections())
-    {
-        intersections = picker->getIntersections();
-        return true;
-    }
-    else
-    {
-        intersections.clear();
-        return false;
-    }
-}
-
 bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const
 {
+    if (!view) return false;
+    
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    bool foundIntersection = view==0 ? false :
-        (nv==0 ? view->computeIntersections(ea.getX(), ea.getY(), intersections) :
-                 //view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections));
-                 computeIntersections(view, ea.getX(), ea.getY(), nv->getNodePath(), intersections));
+    bool foundIntersection = (nv==0) ? view->computeIntersections(ea, intersections) :
+                                       view->computeIntersections(ea, nv->getNodePath(), intersections);
 
     if (foundIntersection)
     {

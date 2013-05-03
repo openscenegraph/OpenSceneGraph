@@ -1062,7 +1062,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
-        camera->setAllowEventFocus(false);
+        camera->setAllowEventFocus(true);
         camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
@@ -1956,7 +1956,7 @@ void View::requestContinuousUpdate(bool flag)
 void View::requestWarpPointer(float x,float y)
 {
     OSG_INFO<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
-
+    
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (camera)
@@ -1991,45 +1991,55 @@ bool View::containsCamera(const osg::Camera* camera) const
     return false;
 }
 
+
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
     const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
-
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+    
+    // OSG_NOTICE<<"getCameraContainingPosition("<<x<<", "<<y<<") view_invert_y = "<<view_invert_y<<", Xmin() = "<<eventState->getXmin()<<", Xmax() = "<<eventState->getXmax()<<", Ymin() = "<<eventState->getYmin()<<", Ymax() = "<<eventState->getYmax()<<std::endl;
 
     double epsilon = 0.5;
-
-    if (_camera->getGraphicsContext() &&
-        (!gw || _camera->getGraphicsContext()==gw) &&
-        _camera->getViewport())
+    
+       
+    // if master camera has graphics context and eventState context matches then assume coordinates refer
+    // to master camera
+    bool masterActive = (_camera->getGraphicsContext()!=0 && _camera->getViewport());
+    bool eventStateMatchesMaster = (gw!=0) ? _camera->getGraphicsContext()==gw : false; 
+    
+    if (masterActive && eventStateMatchesMaster)
     {
+        // OSG_NOTICE<<"Event state matches master"<<std::endl;
         const osg::Viewport* viewport = _camera->getViewport();
-
-        double new_x = x;
-        double new_y = y;
-
-        if (!gw)
-        {
-            new_x = static_cast<double>(_camera->getGraphicsContext()->getTraits()->width) * (x - eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
-            new_y = view_invert_y ?
-                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin())/(eventState->getYmax()-eventState->getYmin())) :
-                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (y - eventState->getYmin())/(eventState->getYmax()-eventState->getYmin());
-        }
-
-        if (viewport &&
-            new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
+        
+        // rescale mouse x,y first to 0 to 1 range
+        double new_x = (x-eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
+        double new_y = (y-eventState->getYmin())/(eventState->getYmax()-eventState->getYmin());
+        
+        // flip y if required
+        if (view_invert_y) new_y = 1.0f-new_y;
+        
+        // rescale mouse x, y to window dimensions so we can check against master Camera's viewport
+        new_x *= static_cast<double>(_camera->getGraphicsContext()->getTraits()->width);
+        new_y *= static_cast<double>(_camera->getGraphicsContext()->getTraits()->height);
+        
+        if (new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
             new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
         {
             local_x = new_x;
             local_y = new_y;
 
-            OSG_INFO<<"Returning master camera"<<std::endl;
+            //OSG_NOTICE<<"Returning master camera"<<std::endl;
 
             return _camera.get();
         }
+        else
+        {
+            // OSG_NOTICE<<"master camera viewport not matched."<<std::endl;
+        }
     }
-
+    
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
 
     // convert to non dimensional
@@ -2088,77 +2098,67 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
 bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections, osg::Node::NodeMask traversalMask)
 {
-    if (!_camera.valid()) return false;
-
-    float local_x, local_y = 0.0;
+    float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
-    if (!camera) camera = _camera.get();
+    
+    OSG_NOTICE<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
+    
+    if (camera) return computeIntersections(camera, (camera->getViewport()==0)?osgUtil::Intersector::PROJECTION : osgUtil::Intersector::WINDOW, local_x, local_y, intersections, traversalMask);
+    else return false;
+}
 
+bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections, osg::Node::NodeMask traversalMask)
+{
+    float local_x, local_y;
+    const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
+    
+    OSG_NOTICE<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
 
-    osgUtil::LineSegmentIntersector::CoordinateFrame cf = camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
-    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
+    if (camera) return computeIntersections(camera, (camera->getViewport()==0)?osgUtil::Intersector::PROJECTION : osgUtil::Intersector::WINDOW, local_x, local_y, nodePath, intersections, traversalMask);
+    else return false;
+}
 
-#if 0
-    OSG_NOTICE<<"View::computeIntersections(x="<<x<<", y="<<y<<", local_x="<<local_x<<", local_y="<<local_y<<") "<<cf<<std::endl;
-    OSG_NOTICE<<"  viewport ("<<camera->getViewport()->x()<<","<<camera->getViewport()->y()<<","<<camera->getViewport()->width()<<","<<camera->getViewport()->height()<<")"<<std::endl;
-
-    const osg::GraphicsContext::Traits* traits = camera->getGraphicsContext() ? camera->getGraphicsContext()->getTraits() : 0;
-    if (traits)
+bool View::computeIntersections(const osgGA::GUIEventAdapter& ea, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+{
+#if 1
+    if (ea.getNumPointerData()>=1)
     {
-        OSG_NOTICE<<"  window ("<<traits->x<<","<<traits->y<<","<<traits->width<<","<<traits->height<<")"<<std::endl;
+        const osgGA::PointerData* pd = ea.getPointerData(ea.getNumPointerData()-1);
+        const osg::Camera* camera = dynamic_cast<const osg::Camera*>(pd->object.get());
+        if (camera) 
+        {
+            return computeIntersections(camera, osgUtil::Intersector::PROJECTION, pd->getXnormalized(), pd->getYnormalized(), intersections, traversalMask);
+        }
     }
 #endif
+    return computeIntersections(ea.getX(), ea.getY(), intersections, traversalMask);
+}
 
+bool View::computeIntersections(const osgGA::GUIEventAdapter& ea, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+{
+#if 1
+    if (ea.getNumPointerData()>=1)
+    {
+        const osgGA::PointerData* pd = ea.getPointerData(ea.getNumPointerData()-1);
+        const osg::Camera* camera = dynamic_cast<const osg::Camera*>(pd->object.get());
+        if (camera) 
+        {
+            return computeIntersections(camera, osgUtil::Intersector::PROJECTION, pd->getXnormalized(), pd->getYnormalized(), nodePath, intersections, traversalMask);
+        }
+    }
+#endif
+    return computeIntersections(ea.getX(), ea.getY(), nodePath, intersections, traversalMask);
+}
+
+bool View::computeIntersections(const osg::Camera* camera, osgUtil::Intersector::CoordinateFrame cf, float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections, osg::Node::NodeMask traversalMask)
+{
+    if (!camera) return false;
+
+    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(cf, x, y);
     osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
 
-
-#if 1
     const_cast<osg::Camera*>(camera)->accept(iv);
-#else
-
-    // timing test code paths for comparing KdTree based intersections vs conventional intersections
-
-    iv.setUseKdTreeWhenAvailable(true);
-    iv.setDoDummyTraversal(true);
-
-    const_cast<osg::Camera*>(camera)->accept(iv);
-
-
-    osg::Timer_t before = osg::Timer::instance()->tick();
-    const_cast<osg::Camera*>(camera)->accept(iv);
-
-    osg::Timer_t after_dummy = osg::Timer::instance()->tick();
-
-    int intersectsBeforeKdTree = picker->getIntersections().size();
-
-    iv.setDoDummyTraversal(false);
-    const_cast<osg::Camera*>(camera)->accept(iv);
-    osg::Timer_t after_kdTree_2 = osg::Timer::instance()->tick();
-
-    int intersectsBeforeConventional = picker->getIntersections().size();
-
-    iv.setUseKdTreeWhenAvailable(false);
-    const_cast<osg::Camera*>(camera)->accept(iv);
-    osg::Timer_t after = osg::Timer::instance()->tick();
-
-    int intersectsAfterConventional = picker->getIntersections().size();
-
-    double timeDummy = osg::Timer::instance()->delta_m(before, after_dummy);
-    double timeKdTree = osg::Timer::instance()->delta_m(after_dummy, after_kdTree_2);
-    double timeConventional = osg::Timer::instance()->delta_m(after_kdTree_2, after);
-
-    OSG_NOTICE<<"Using Dummy                    "<<timeDummy<<std::endl;
-    OSG_NOTICE<<"      KdTrees                  "<<timeKdTree
-                            <<"\tNum intersects = "<<intersectsBeforeConventional-intersectsBeforeKdTree<<std::endl;
-    OSG_NOTICE<<"      KdTrees - Traversal      "<<timeKdTree-timeDummy<<std::endl;
-    OSG_NOTICE<<"      Conventional             "<<timeConventional
-                            <<"\tNum intersects = "<<intersectsAfterConventional-intersectsBeforeConventional<<std::endl;
-    OSG_NOTICE<<"      Conventional - Traversal "<<timeConventional-timeDummy<<std::endl;
-    OSG_NOTICE<<"      Delta                    "<<timeConventional/timeKdTree<<std::endl;
-    OSG_NOTICE<<"      Delta sans Traversal     "<<(timeConventional-timeDummy)/(timeKdTree-timeDummy)<<std::endl;
-    OSG_NOTICE<<std::endl;
-#endif
 
     if (picker->containsIntersections())
     {
@@ -2172,13 +2172,9 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     }
 }
 
-bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+bool View::computeIntersections(const osg::Camera* camera, osgUtil::Intersector::CoordinateFrame cf, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
 {
-    if (!_camera.valid() || nodePath.empty()) return false;
-
-    float local_x, local_y = 0.0;
-    const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
-    if (!camera) camera = _camera.get();
+    if (!camera || nodePath.empty()) return false;
 
     osg::Matrixd matrix;
     if (nodePath.size()>1)
@@ -2192,7 +2188,7 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
 
     double zNear = -1.0;
     double zFar = 1.0;
-    if (camera->getViewport())
+    if (cf==osgUtil::Intersector::WINDOW && camera->getViewport())
     {
         matrix.postMult(camera->getViewport()->computeWindowMatrix());
         zNear = 0.0;
@@ -2202,8 +2198,8 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
     osg::Matrixd inverse;
     inverse.invert(matrix);
 
-    osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;
-    osg::Vec3d endVertex = osg::Vec3d(local_x,local_y,zFar) * inverse;
+    osg::Vec3d startVertex = osg::Vec3d(x,y,zNear) * inverse;
+    osg::Vec3d endVertex = osg::Vec3d(x,y,zFar) * inverse;
 
     osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
 
@@ -2222,7 +2218,6 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
         return false;
     }
 }
-
 
 void View::addDevice(osgGA::Device* eventSource)
 {

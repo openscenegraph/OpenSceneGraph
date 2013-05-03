@@ -123,6 +123,10 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
 
         virtual void viewerInit();
 
+        void generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapter& event);
+        void generatePointerData(osgGA::GUIEventAdapter& event);
+        void reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::GUIEventAdapter& dest_event);
+
         typedef std::vector< osg::ref_ptr<osgViewer::View> > RefViews;
         RefViews _views;
 
@@ -135,6 +139,8 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
 
         osg::observer_ptr<osg::Camera>      _cameraWithFocus;
         osg::observer_ptr<osgViewer::View>  _viewWithFocus;
+        
+        osg::ref_ptr<osgGA::GUIEventAdapter> _previousEvent;
 
 };
 

@@ -528,7 +528,6 @@ protected:
         osg::Object(), osgGA::GUIEventHandler(), osg::Drawable::CullCallback(), _fullscreen(false) {}
 
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
-    bool computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff) const;
 
     void resize(int width, int height);
 

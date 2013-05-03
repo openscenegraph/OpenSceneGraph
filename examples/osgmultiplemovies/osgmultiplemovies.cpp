@@ -164,7 +164,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
             osgUtil::LineSegmentIntersector::Intersections intersections;
-            bool foundIntersection = view==0 ? false : view->computeIntersections(ea.getX(), ea.getY(), intersections);
+            bool foundIntersection = view==0 ? false : view->computeIntersections(ea, intersections);
 
             if (foundIntersection)
             {

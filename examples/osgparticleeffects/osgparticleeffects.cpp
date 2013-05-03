@@ -268,9 +268,9 @@ public:
     {
         osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());       
         if (!root) return;
-
+        
         osgUtil::LineSegmentIntersector::Intersections intersections;
-        if (viewer->computeIntersections(ea.getX(),ea.getY(),intersections))
+        if (viewer->computeIntersections(ea,intersections))
         {
             const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
 

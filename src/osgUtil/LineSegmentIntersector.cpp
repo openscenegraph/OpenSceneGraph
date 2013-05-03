@@ -20,6 +20,7 @@
 #include <osg/TriangleFunctor>
 #include <osg/KdTree>
 #include <osg/Timer>
+#include <osg/TexMat>
 
 using namespace osgUtil;
 
@@ -612,4 +613,112 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     // if (s==e) return false;
 
     return true;
+}
+
+osg::Texture* LineSegmentIntersector::Intersection::getTextureLookUp(osg::Vec3& tc) const
+{
+    osg::Geometry* geometry = drawable.valid() ? drawable->asGeometry() : 0;
+    osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
+    
+    if (vertices)
+    {
+        if (indexList.size()==3 && ratioList.size()==3)
+        {
+            unsigned int i1 = indexList[0];
+            unsigned int i2 = indexList[1];
+            unsigned int i3 = indexList[2];
+
+            float r1 = ratioList[0];
+            float r2 = ratioList[1];
+            float r3 = ratioList[2];
+
+            osg::Array* texcoords = (geometry->getNumTexCoordArrays()>0) ? geometry->getTexCoordArray(0) : 0;
+            osg::FloatArray* texcoords_FloatArray = dynamic_cast<osg::FloatArray*>(texcoords);
+            osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
+            osg::Vec3Array* texcoords_Vec3Array = dynamic_cast<osg::Vec3Array*>(texcoords);
+            if (texcoords_FloatArray)
+            {
+                // we have tex coord array so now we can compute the final tex coord at the point of intersection.
+                float tc1 = (*texcoords_FloatArray)[i1];
+                float tc2 = (*texcoords_FloatArray)[i2];
+                float tc3 = (*texcoords_FloatArray)[i3];
+                tc.x() = tc1*r1 + tc2*r2 + tc3*r3;
+            }
+            else if (texcoords_Vec2Array)
+            {
+                // we have tex coord array so now we can compute the final tex coord at the point of intersection.
+                const osg::Vec2& tc1 = (*texcoords_Vec2Array)[i1];
+                const osg::Vec2& tc2 = (*texcoords_Vec2Array)[i2];
+                const osg::Vec2& tc3 = (*texcoords_Vec2Array)[i3];
+                tc.x() = tc1.x()*r1 + tc2.x()*r2 + tc3.x()*r3;
+                tc.y() = tc1.y()*r1 + tc2.y()*r2 + tc3.y()*r3;
+            }
+            else if (texcoords_Vec3Array)
+            {
+                // we have tex coord array so now we can compute the final tex coord at the point of intersection.
+                const osg::Vec3& tc1 = (*texcoords_Vec3Array)[i1];
+                const osg::Vec3& tc2 = (*texcoords_Vec3Array)[i2];
+                const osg::Vec3& tc3 = (*texcoords_Vec3Array)[i3];
+                tc.x() = tc1.x()*r1 + tc2.x()*r2 + tc3.x()*r3;
+                tc.y() = tc1.y()*r1 + tc2.y()*r2 + tc3.y()*r3;
+                tc.z() = tc1.z()*r1 + tc2.z()*r2 + tc3.z()*r3;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        const osg::TexMat* activeTexMat = 0;
+        const osg::Texture* activeTexture = 0;
+
+        if (drawable->getStateSet())
+        {
+            const osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
+            if (texMat) activeTexMat = texMat;
+
+            const osg::Texture* texture = dynamic_cast<osg::Texture*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+            if (texture) activeTexture = texture;
+        }
+
+        for(osg::NodePath::const_reverse_iterator itr = nodePath.rbegin();
+            itr != nodePath.rend() && (!activeTexMat || !activeTexture);
+            ++itr)
+        {
+            const osg::Node* node = *itr;
+            if (node->getStateSet())
+            {
+                if (!activeTexMat)
+                {
+                    const osg::TexMat* texMat = dynamic_cast<const osg::TexMat*>(node->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
+                    if (texMat) activeTexMat = texMat;
+                }
+
+                if (!activeTexture)
+                {
+                    const osg::Texture* texture = dynamic_cast<const osg::Texture*>(node->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+                    if (texture) activeTexture = texture;
+                }
+            }
+        }
+
+        if (activeTexMat)
+        {
+            osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), tc.z() ,0.0f) * activeTexMat->getMatrix();
+            tc.x() = tc_transformed.x();
+            tc.y() = tc_transformed.y();
+            tc.z() = tc_transformed.z();
+
+            if (activeTexture && activeTexMat->getScaleByTextureRectangleSize())
+            {
+                tc.x() *= static_cast<float>(activeTexture->getTextureWidth());
+                tc.y() *= static_cast<float>(activeTexture->getTextureHeight());
+                tc.z() *= static_cast<float>(activeTexture->getTextureDepth());
+            }
+        }
+
+        return const_cast<osg::Texture*>(activeTexture);
+        
+    }
+    return 0;
 }

@@ -30,7 +30,10 @@
 #include <osgViewer/ViewerEventHandlers>
 
 
-class Keystone : public osg::Referenced
+namespace osg
+{
+    
+class Keystone : public osg::Object
 {
 public:
     Keystone():
@@ -40,6 +43,16 @@ public:
         bottom_right(1.0,-1.0),
         top_left(-1.0,1.0),
         top_right(1.0,1.0) {}
+
+    Keystone(const Keystone& rhs, const osg::CopyOp&):
+        keystoneEditingEnabled(rhs.keystoneEditingEnabled),
+        gridColour(rhs.gridColour),
+        bottom_left(rhs.bottom_left),
+        bottom_right(rhs.bottom_right),
+        top_left(rhs.top_left),
+        top_right(rhs.top_right) {}
+        
+    META_Object(osg, Keystone)
 
     void reset()
     {
@@ -89,15 +102,22 @@ public:
         br = osg::Vec3(screenWidth*0.5*bottom_right.x(), screenHeight*0.5*bottom_right.y(), -screenDistance)*r_right*r_bottom;
         bl = osg::Vec3(screenWidth*0.5*bottom_left.x(), screenHeight*0.5*bottom_left.y(), -screenDistance)*r_left*r_bottom;
     }
+
+protected:
+
+    virtual ~Keystone() {}
+    
+    
 };
 
+}
 
 
 class KeystoneHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    KeystoneHandler(Keystone* keystone);
+    KeystoneHandler(osg::Keystone* keystone);
 
     ~KeystoneHandler() {}
 
@@ -127,22 +147,22 @@ public:
 protected:
 
 
-    osg::ref_ptr<Keystone>      _keystone;
+    osg::ref_ptr<osg::Keystone>         _keystone;
 
-    osg::Vec2d                  _defaultIncrement;
-    osg::Vec2d                  _ctrlIncrement;
-    osg::Vec2d                  _shiftIncrement;
-    osg::Vec2d                  _keyIncrement;
+    osg::Vec2d                          _defaultIncrement;
+    osg::Vec2d                          _ctrlIncrement;
+    osg::Vec2d                          _shiftIncrement;
+    osg::Vec2d                          _keyIncrement;
 
-    osg::Vec2d                  _startPosition;
-    osg::ref_ptr<Keystone>      _startControlPoints;
+    osg::Vec2d                          _startPosition;
+    osg::ref_ptr<osg::Keystone>         _startControlPoints;
     
-    Region                      _selectedRegion;
-    osg::ref_ptr<Keystone>      _currentControlPoints;
+    Region                              _selectedRegion;
+    osg::ref_ptr<osg::Keystone>         _currentControlPoints;
 
 };
 
-KeystoneHandler::KeystoneHandler(Keystone* keystone):
+KeystoneHandler::KeystoneHandler(osg::Keystone* keystone):
     _keystone(keystone),
     _defaultIncrement(0.0,0.0),
     _ctrlIncrement(1.0,1.0),
@@ -150,7 +170,7 @@ KeystoneHandler::KeystoneHandler(Keystone* keystone):
     _keyIncrement(0.005, 0.005),
     _selectedRegion(NONE_SELECTED)
 {
-    _startControlPoints = new Keystone;
+    _startControlPoints = new osg::Keystone;
     _currentControlPoints = keystone; //new Keystone;
 }
 
@@ -239,6 +259,15 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 
     if (!viewport) return false;
 
+    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
+    {
+        if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
+        {
+            setKeystoneEditingEnabled(!getKeystoneEditingEnabled());
+            return true;
+        }
+    }
+
     bool haveCameraMatch = false;
     float x = ea.getXnormalized();
     float y = ea.getYnormalized();
@@ -254,103 +283,82 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
         }
     }
 
-
-    if (!haveCameraMatch) return false;
+    if (!haveCameraMatch || !getKeystoneEditingEnabled()) return false;
 
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::PUSH):
         {
-            if (getKeystoneEditingEnabled())
+            osg::Vec2d scale = incrementScale(ea);
+            if (scale.length2()!=0.0)
             {
-                osg::Vec2d scale = incrementScale(ea);
-                if (scale.length2()!=0.0)
-                {
-                    _selectedRegion = computeRegion(ea);
-                    (*_startControlPoints) = (*_currentControlPoints);
-                    _startPosition.set(x,y);
-                }
-                else
-                {
-                    _selectedRegion = NONE_SELECTED;
-                }
+                _selectedRegion = computeRegion(ea);
+                (*_startControlPoints) = (*_currentControlPoints);
+                _startPosition.set(x,y);
             }
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::DRAG):
-        {
-            if (getKeystoneEditingEnabled())
-            {
-                if (_selectedRegion!=NONE_SELECTED)
-                {
-                    (*_currentControlPoints) = (*_startControlPoints);
-                    osg::Vec2d currentPosition(x, y);
-                    osg::Vec2d delta(currentPosition-_startPosition);
-                    osg::Vec2d scale = incrementScale(ea);
-                    move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
-                    return true;
-                }
-            }
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::RELEASE):
-        {
-            if (getKeystoneEditingEnabled())
+            else
             {
                 _selectedRegion = NONE_SELECTED;
             }
             return false;
         }
+        case(osgGA::GUIEventAdapter::DRAG):
+        {
+            if (_selectedRegion!=NONE_SELECTED)
+            {
+                (*_currentControlPoints) = (*_startControlPoints);
+                osg::Vec2d currentPosition(x, y);
+                osg::Vec2d delta(currentPosition-_startPosition);
+                osg::Vec2d scale = incrementScale(ea);
+                move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
+                return true;
+            }
+            return false;
+        }
+        case(osgGA::GUIEventAdapter::RELEASE):
+        {
+            _selectedRegion = NONE_SELECTED;
+            return false;
+        }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (getKeystoneEditingEnabled())
+            if (ea.getKey()=='r')
             {
-                if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
-                {
-                    setKeystoneEditingEnabled(false);
-                }
-                else if (ea.getKey()=='r')
-                {
-                    _selectedRegion = NONE_SELECTED;
-                    _startControlPoints->reset();
-                    _currentControlPoints->reset();
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
-                {
-                    move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
-                {
-                    move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
-                {
-                    move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
-                {
-                    move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
-                {
-                    _currentControlPoints->top_left.set(x, y);
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
-                {
-                    _currentControlPoints->top_right.set(x, y);
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
-                {
-                    _currentControlPoints->bottom_right.set(x, y);
-                }
-                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
-                {
-                    _currentControlPoints->bottom_left.set(x, y);
-                }
+                _selectedRegion = NONE_SELECTED;
+                _startControlPoints->reset();
+                _currentControlPoints->reset();
             }
-            else if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
             {
-                setKeystoneEditingEnabled(true);
+                move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
+            {
+                move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
+            {
+                move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
+            {
+                move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
+            {
+                _currentControlPoints->top_left.set(x, y);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
+            {
+                _currentControlPoints->top_right.set(x, y);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
+            {
+                _currentControlPoints->bottom_right.set(x, y);
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
+            {
+                _currentControlPoints->bottom_left.set(x, y);
             }
             return false;
         }
@@ -360,7 +368,7 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 }
 struct KeystoneCullCallback : public osg::Drawable::CullCallback
 {
-    KeystoneCullCallback(Keystone* keystone=0):_keystone(keystone) {}
+    KeystoneCullCallback(osg::Keystone* keystone=0):_keystone(keystone) {}
     KeystoneCullCallback(const KeystoneCullCallback&, const osg::CopyOp&) {}
 
     META_Object(osg,KeystoneCullCallback);
@@ -371,13 +379,13 @@ struct KeystoneCullCallback : public osg::Drawable::CullCallback
         return _keystone.valid() ? !_keystone->keystoneEditingEnabled : true;
     }
 
-    osg::ref_ptr<Keystone> _keystone;
+    osg::ref_ptr<osg::Keystone> _keystone;
 };
 
 
 struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
 {
-    KeystoneUpdateCallback(Keystone* keystone=0):_keystone(keystone) {}
+    KeystoneUpdateCallback(osg::Keystone* keystone=0):_keystone(keystone) {}
     KeystoneUpdateCallback(const KeystoneUpdateCallback&, const osg::CopyOp&) {}
 
     META_Object(osg,KeystoneUpdateCallback);
@@ -414,11 +422,11 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         geometry->dirtyBound();
     }
     
-    osg::ref_ptr<Keystone> _keystone;
+    osg::ref_ptr<osg::Keystone> _keystone;
 };
 
 
-osg::Geode* createKeystoneDistortionMesh(Keystone* keystone)
+osg::Geode* createKeystoneDistortionMesh(osg::Keystone* keystone)
 {
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
@@ -483,7 +491,7 @@ osg::Geode* createKeystoneDistortionMesh(Keystone* keystone)
     return geode.release();
 }
 
-osg::Node* createGrid(Keystone* keystone, const osg::Vec4& colour)
+osg::Node* createGrid(osg::Keystone* keystone, const osg::Vec4& colour)
 {
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
@@ -623,7 +631,7 @@ osg::Camera* assignKeystoneRenderToTextureCamera(osgViewer::View* view, osg::Gra
     return camera.release();
 }
 
-osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, Keystone* keystone)
+osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, osg::Keystone* keystone)
 {
     double screenDistance = ds->getScreenDistance();
     double screenWidth = ds->getScreenWidth();
@@ -845,7 +853,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
     ds->setUseSceneViewForStereoHint(false);
 
 
-    osg::ref_ptr<Keystone> keystone = new Keystone;
+    osg::ref_ptr<osg::Keystone> keystone = new osg::Keystone;
 
    
     // set up view's main camera
@@ -1114,7 +1122,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
 
 
-                osg::ref_ptr<Keystone> right_keystone = new Keystone;
+                osg::ref_ptr<osg::Keystone> right_keystone = new osg::Keystone;
                 right_keystone->gridColour.set(0.0f,1.0f,0.0,1.0);
                 
                 // create Keystone right distortion camera
@@ -1207,7 +1215,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
 
 
-                osg::ref_ptr<Keystone> right_keystone = new Keystone;
+                osg::ref_ptr<osg::Keystone> right_keystone = new osg::Keystone;
                 right_keystone->gridColour.set(0.0f,1.0f,0.0,1.0);
                 
                 // create Keystone right distortion camera
@@ -1399,7 +1407,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
 }
 
 
-void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
+void setUpViewForKeystone(osgViewer::View* view, osg::Keystone* keystone)
 {
     int screenNum = 0;
     
@@ -1501,7 +1509,7 @@ int main( int argc, char **argv )
     }
     else
     {
-        setUpViewForKeystone(&viewer, new Keystone);
+        setUpViewForKeystone(&viewer, new osg::Keystone);
     }
     
     viewer.realize();

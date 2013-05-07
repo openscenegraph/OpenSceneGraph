@@ -993,15 +993,19 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
         }
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
         {
+            bool left_eye_left_viewport = ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT;
+            int left_start = (left_eye_left_viewport) ? 0 : traits->width/2;
+            int right_start = (left_eye_left_viewport) ? traits->width/2 : 0;
+
             // left viewport Camera
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(view, ds, gc,
-                               0, 0, traits->width/2, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               (ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT) ? -1.0 : 1.0);
+                               left_start, 0, traits->width/2, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                               1.0);
 
             // right viewport Camera
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(view, ds, gc,
-                               traits->width/2,0, traits->width/2, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               (ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT) ? -1.0 : 1.0);
+                               right_start, 0, traits->width/2, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                               1.0);
 
             if (keystone.valid())
             {
@@ -1043,7 +1047,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // create Keystone left distortion camera
                 keystone->gridColour.set(1.0f,0.0f,0.0,1.0);
                 osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
-                                                                                0, 0, traits->width/2, traits->height,
+                                                                                left_start, 0, traits->width/2, traits->height,
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                                                                 left_texture, keystone.get());
 
@@ -1058,7 +1062,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 
                 // create Keystone right distortion camera
                 osg::ref_ptr<osg::Camera> right_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
-                                                                                traits->width/2, 0, traits->width/2, traits->height,
+                                                                                right_start, 0, traits->width/2, traits->height,
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                                                                 right_texture, right_keystone.get());
 
@@ -1075,15 +1079,19 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
         }
         case(osg::DisplaySettings::VERTICAL_SPLIT):
         {
+            bool left_eye_bottom_viewport = ds->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT;
+            int left_start = (left_eye_bottom_viewport) ? 0 : traits->height/2;
+            int right_start = (left_eye_bottom_viewport) ? traits->height/2 : 0;
+            
             // bottom viewport Camera
-            assignStereoCamera(view, ds, gc,
-                               0, 0, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               (ds->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT) ? -1.0 : 1.0);
+            osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(view, ds, gc,
+                               0, left_start, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                               1.0);
 
             // top vieport camera
-            assignStereoCamera(view, ds, gc,
-                               0,traits->height/2, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               (ds->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT) ? -1.0 : 1.0);
+            osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(view, ds, gc,
+                               0, right_start, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                               1.0);
 
             // for keystone:
             // left camera to render to left texture using whole viewport of left texture
@@ -1091,6 +1099,74 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
             // left keystone camera to render to left viewport/window
             // right keystone camera to render to right viewport/window
             // two keystone, one for each of the left and right viewports/windows
+
+            if (keystone.valid())
+            {
+                // for keystone:
+                // left camera to render to left texture using whole viewport of left texture
+                // right camera to render to right texture using whole viewport of right texture
+                // left keystone camera to render to left viewport/window
+                // right keystone camera to render to right viewport/window
+                // two keystone, one for each of the left and right viewports/windows
+
+                // create distortion texture
+                osg::ref_ptr<osg::Texture> left_texture = createKestoneDistortionTexture(traits->width, traits->height/2);
+
+                // convert to RTT Camera
+                left_camera->setViewport(0, 0, traits->width, traits->height/2);
+                left_camera->setDrawBuffer(GL_FRONT);
+                left_camera->setReadBuffer(GL_FRONT);
+                left_camera->setAllowEventFocus(true);
+                left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+
+                // attach the texture and use it as the color buffer.
+                left_camera->attach(osg::Camera::COLOR_BUFFER, left_texture.get());
+
+
+                // create distortion texture
+                osg::ref_ptr<osg::Texture> right_texture = createKestoneDistortionTexture(traits->width, traits->height/2);
+
+                // convert to RTT Camera
+                right_camera->setViewport(0, 0, traits->width, traits->height/2);
+                right_camera->setDrawBuffer(GL_FRONT);
+                right_camera->setReadBuffer(GL_FRONT);
+                right_camera->setAllowEventFocus(true);
+                right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+
+                // attach the texture and use it as the color buffer.
+                right_camera->attach(osg::Camera::COLOR_BUFFER, right_texture.get());
+                
+
+                // create Keystone left distortion camera
+                keystone->gridColour.set(1.0f,0.0f,0.0,1.0);
+                osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
+                                                                                0, left_start, traits->width, traits->height/2,
+                                                                                traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                left_texture, keystone.get());
+
+                left_keystone_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+
+                // attach Keystone editing event handler.
+                left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
+
+
+                osg::ref_ptr<Keystone> right_keystone = new Keystone;
+                right_keystone->gridColour.set(0.0f,1.0f,0.0,1.0);
+                
+                // create Keystone right distortion camera
+                osg::ref_ptr<osg::Camera> right_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
+                                                                                0, right_start, traits->width, traits->height/2,
+                                                                                traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                right_texture, right_keystone.get());
+
+                right_keystone_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 3);
+
+                // attach Keystone editing event handler.
+                right_keystone_camera->addEventCallback(new KeystoneHandler(right_keystone.get()));
+
+                view->getCamera()->setAllowEventFocus(false);
+                
+            }
 
             break;
         }

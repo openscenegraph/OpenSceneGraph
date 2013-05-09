@@ -12,6 +12,7 @@ SET(TARGET_H
     ${HEADER_PATH}/CompositeViewer
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GraphicsWindow
+    ${HEADER_PATH}/Keystone
     ${HEADER_PATH}/Renderer
     ${HEADER_PATH}/Scene
     ${HEADER_PATH}/Version
@@ -25,6 +26,7 @@ SET(LIB_COMMON_FILES
     CompositeViewer.cpp
     GraphicsWindow.cpp
     HelpHandler.cpp
+    Keystone.cpp
     Renderer.cpp
     Scene.cpp
     ScreenCaptureHandler.cpp

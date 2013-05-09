@@ -283,9 +283,17 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         /** Get the hint of the profile mask to use in when creating graphic contexts.*/
         unsigned int getGLContextProfileMask() const { return _glContextProfileMask; }
-
-
-
+        
+        
+        typedef std::vector<std::string> FileNames;
+        void setKeystoneFileNames(const FileNames& filenames) { _keystoneFileNames = filenames; }
+        FileNames& getKeystoneFileNames() { return _keystoneFileNames; }
+        const FileNames& getKeystoneFileNames() const { return _keystoneFileNames; }
+        
+        typedef std::vector< osg::ref_ptr<osg::Object> > Objects;
+        void setKeystones(const Objects& objects) { _keystones = objects; }
+        Objects& getKeystones() { return _keystones; }
+        const Objects& getKeystones() const { return _keystones; }
 
 
         /** helper function for computing the left eye projection matrix.*/
@@ -298,7 +306,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         virtual osg::Matrixd computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const;
 
         /** helper function for computing the right eye view matrix.*/
-        virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale=1.0) const;        
+        virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale=1.0) const;
 
     protected:
 
@@ -353,6 +361,11 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _glContextProfileMask;
 
         SwapMethod                      _swapMethod;
+
+    
+        FileNames                       _keystoneFileNames;
+        Objects                         _keystones; 
+        
 };
 
 }

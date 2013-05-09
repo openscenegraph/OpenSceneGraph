@@ -1,0 +1,143 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+
+#ifndef OSGVIEWER_Keystone
+#define OSGVIEWER_Keystone 1
+
+#include <osg/Geometry>
+#include <osg/Geode>
+#include <osg/DisplaySettings>
+
+#include <osgGA/GUIEventHandler>
+#include <osgViewer/Export>
+
+namespace osgViewer
+{
+    
+class OSGVIEWER_EXPORT Keystone : public osg::Object
+{
+public:
+    Keystone();
+
+    Keystone(const Keystone& rhs, const osg::CopyOp& copop=osg::CopyOp::SHALLOW_COPY);
+        
+    META_Object(osg, Keystone)
+
+    void reset();
+
+    Keystone& operator = (const Keystone& rhs);
+    
+    void setKeystoneEditingEnabled(bool flag) { keystoneEditingEnabled = flag; }
+    bool getKeystoneEditingEnabled() const { return keystoneEditingEnabled; }
+    
+    void setGridColor(const osg::Vec4& color) { gridColour = color; }
+    osg::Vec4& getGridColor() { return gridColour; }
+    const osg::Vec4& getGridColor() const { return gridColour; }
+
+    void setBottomLeft(const osg::Vec2d& v) { bottom_left = v; }
+    osg::Vec2d& getBottomLeft() { return bottom_left; }
+    const osg::Vec2d& getBottomLeft() const { return bottom_left; }
+
+    void setBottomRight(const osg::Vec2d& v) { bottom_right = v; }
+    osg::Vec2d& getBottomRight() { return bottom_right; }
+    const osg::Vec2d& getBottomRight() const { return bottom_right; }
+
+    void setTopLeft(const osg::Vec2d& v) { top_left = v; }
+    osg::Vec2d& getTopLeft() { return top_left; }
+    const osg::Vec2d& getTopLeft() const { return top_left; }
+
+    void setTopRight(const osg::Vec2d& v) { top_right = v; }
+    osg::Vec2d& getTopRight() { return top_right; }
+    const osg::Vec2d& getTopRight() const { return top_right; }
+
+    
+    
+    void compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::Vec3& tr, osg::Vec3& br, osg::Vec3& bl) const;
+    
+    osg::Geode* createKeystoneDistortionMesh();
+    
+    osg::Node* createGrid();
+
+
+protected:    
+    
+    bool        keystoneEditingEnabled;
+
+    osg::Vec4   gridColour;
+
+    osg::Vec2d  bottom_left;
+    osg::Vec2d  bottom_right;
+    osg::Vec2d  top_left;
+    osg::Vec2d  top_right;
+
+
+protected:
+
+    virtual ~Keystone() {}
+    
+    
+};
+
+class OSGVIEWER_EXPORT KeystoneHandler : public osgGA::GUIEventHandler
+{
+public:
+
+    KeystoneHandler(Keystone* keystone);
+
+    ~KeystoneHandler() {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* obj, osg::NodeVisitor* nv);
+
+    void setKeystoneEditingEnabled(bool enabled) { if (_currentControlPoints.valid()) _currentControlPoints->setKeystoneEditingEnabled(enabled); }
+    bool getKeystoneEditingEnabled() const { return _currentControlPoints.valid() ? _currentControlPoints->getKeystoneEditingEnabled() : false; }
+
+    enum Region
+    {
+        NONE_SELECTED,
+        TOP_LEFT,
+        TOP,
+        TOP_RIGHT,
+        RIGHT,
+        BOTTOM_RIGHT,
+        BOTTOM,
+        BOTTOM_LEFT,
+        LEFT,
+        CENTER
+    };
+
+    osg::Vec2d incrementScale(const osgGA::GUIEventAdapter& ea) const;
+    Region computeRegion(const osgGA::GUIEventAdapter& ea) const;
+    void move(Region region, const osg::Vec2d& delta);
+    
+protected:
+
+
+    osg::ref_ptr<Keystone>              _keystone;
+
+    osg::Vec2d                          _defaultIncrement;
+    osg::Vec2d                          _ctrlIncrement;
+    osg::Vec2d                          _shiftIncrement;
+    osg::Vec2d                          _keyIncrement;
+
+    osg::Vec2d                          _startPosition;
+    osg::ref_ptr<Keystone>              _startControlPoints;
+    
+    Region                              _selectedRegion;
+    osg::ref_ptr<Keystone>              _currentControlPoints;
+
+};
+
+}
+
+#endif

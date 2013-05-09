@@ -22,583 +22,22 @@
 #include <osg/TexMat>
 #include <osg/Stencil>
 #include <osg/PolygonStipple>
+#include <osg/ValueObject>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgGA/StateSetManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <osgViewer/Keystone>
 
-namespace osg
-{
-    
-class Keystone : public osg::Object
-{
-public:
-    Keystone():
-        keystoneEditingEnabled(false),
-        gridColour(1.0f,1.0f,1.0f,1.0f),
-        bottom_left(-1.0,-1.0),
-        bottom_right(1.0,-1.0),
-        top_left(-1.0,1.0),
-        top_right(1.0,1.0) {}
+using namespace osgViewer;
 
-    Keystone(const Keystone& rhs, const osg::CopyOp&):
-        keystoneEditingEnabled(rhs.keystoneEditingEnabled),
-        gridColour(rhs.gridColour),
-        bottom_left(rhs.bottom_left),
-        bottom_right(rhs.bottom_right),
-        top_left(rhs.top_left),
-        top_right(rhs.top_right) {}
-        
-    META_Object(osg, Keystone)
 
-    void reset()
-    {
-        bottom_left.set(-1.0,-1.0);
-        bottom_right.set(1.0,-1.0);
-        top_left.set(-1.0,1.0);
-        top_right.set(1.0,1.0);
-    }
 
-    Keystone& operator = (const Keystone& rhs)
-    {
-        if (&rhs==this) return *this;
-        keystoneEditingEnabled = rhs.keystoneEditingEnabled;
-        gridColour = rhs.gridColour;
-        bottom_left = rhs.bottom_left;
-        bottom_right = rhs.bottom_right;
-        top_left = rhs.top_left;
-        top_right = rhs.top_right;
-        return *this;
-    }
-
-    bool        keystoneEditingEnabled;
-
-    osg::Vec4   gridColour;
-
-    osg::Vec2d  bottom_left;
-    osg::Vec2d  bottom_right;
-    osg::Vec2d  top_left;
-    osg::Vec2d  top_right;
-
-    void compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::Vec3& tr, osg::Vec3& br, osg::Vec3& bl) const
-    {
-        double tr_x = ((top_right-bottom_right).length()) / ((top_left-bottom_left).length());
-        double r_left = sqrt(tr_x);
-        double r_right = r_left/tr_x;
-
-        double tr_y = ((top_right-top_left).length()) / ((bottom_right-bottom_left).length());
-        double r_bottom = sqrt(tr_y);
-        double r_top = r_bottom/tr_y;
-
-        double screenDistance = ds->getScreenDistance();
-        double screenWidth = ds->getScreenWidth();
-        double screenHeight = ds->getScreenHeight();
-
-        tl = osg::Vec3(screenWidth*0.5*top_left.x(), screenHeight*0.5*top_left.y(), -screenDistance)*r_left*r_top;
-        tr = osg::Vec3(screenWidth*0.5*top_right.x(), screenHeight*0.5*top_right.y(), -screenDistance)*r_right*r_top;
-        br = osg::Vec3(screenWidth*0.5*bottom_right.x(), screenHeight*0.5*bottom_right.y(), -screenDistance)*r_right*r_bottom;
-        bl = osg::Vec3(screenWidth*0.5*bottom_left.x(), screenHeight*0.5*bottom_left.y(), -screenDistance)*r_left*r_bottom;
-    }
-
-protected:
-
-    virtual ~Keystone() {}
-    
-    
-};
-
-}
-
-
-class KeystoneHandler : public osgGA::GUIEventHandler
-{
-public:
-
-    KeystoneHandler(osg::Keystone* keystone);
-
-    ~KeystoneHandler() {}
-
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* obj, osg::NodeVisitor* nv);
-
-    void setKeystoneEditingEnabled(bool enabled) { if (_currentControlPoints.valid()) _currentControlPoints->keystoneEditingEnabled = enabled; }
-    bool getKeystoneEditingEnabled() const { return _currentControlPoints.valid() ? _currentControlPoints->keystoneEditingEnabled : false; }
-
-    enum Region
-    {
-        NONE_SELECTED,
-        TOP_LEFT,
-        TOP,
-        TOP_RIGHT,
-        RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM,
-        BOTTOM_LEFT,
-        LEFT,
-        CENTER
-    };
-
-    osg::Vec2d incrementScale(const osgGA::GUIEventAdapter& ea) const;
-    Region computeRegion(const osgGA::GUIEventAdapter& ea) const;
-    void move(Region region, const osg::Vec2d& delta);
-    
-protected:
-
-
-    osg::ref_ptr<osg::Keystone>         _keystone;
-
-    osg::Vec2d                          _defaultIncrement;
-    osg::Vec2d                          _ctrlIncrement;
-    osg::Vec2d                          _shiftIncrement;
-    osg::Vec2d                          _keyIncrement;
-
-    osg::Vec2d                          _startPosition;
-    osg::ref_ptr<osg::Keystone>         _startControlPoints;
-    
-    Region                              _selectedRegion;
-    osg::ref_ptr<osg::Keystone>         _currentControlPoints;
-
-};
-
-KeystoneHandler::KeystoneHandler(osg::Keystone* keystone):
-    _keystone(keystone),
-    _defaultIncrement(0.0,0.0),
-    _ctrlIncrement(1.0,1.0),
-    _shiftIncrement(0.1,0.1),
-    _keyIncrement(0.005, 0.005),
-    _selectedRegion(NONE_SELECTED)
-{
-    _startControlPoints = new osg::Keystone;
-    _currentControlPoints = keystone; //new Keystone;
-}
-
-KeystoneHandler::Region KeystoneHandler::computeRegion(const osgGA::GUIEventAdapter& ea) const
-{
-    float x = ea.getXnormalized();
-    float y = ea.getYnormalized();
-    if (x<-0.33)
-    {
-        // left side
-        if (y<-0.33) return BOTTOM_LEFT;
-        else if (y<0.33) return LEFT;
-        else return TOP_LEFT;
-    }
-    else if (x<0.33)
-    {
-        // center side
-        if (y<-0.33) return BOTTOM;
-        else if (y<0.33) return CENTER;
-        else return TOP;
-    }
-    else
-    {
-        // right side
-        if (y<-0.33) return BOTTOM_RIGHT;
-        else if (y<0.33) return RIGHT;
-        else return TOP_RIGHT;
-    }
-    return NONE_SELECTED;
-}
-
-void KeystoneHandler::move(Region region, const osg::Vec2d& delta)
-{
-    switch(region)
-    {
-        case(TOP_LEFT):
-            _currentControlPoints->top_left += delta;
-            break;
-        case(TOP):
-            _currentControlPoints->top_left += delta;
-            _currentControlPoints->top_right += delta;
-            break;
-        case(TOP_RIGHT):
-            _currentControlPoints->top_right += delta;
-            break;
-        case(RIGHT):
-            _currentControlPoints->top_right += delta;
-            _currentControlPoints->bottom_right += delta;
-            break;
-        case(BOTTOM_RIGHT):
-            _currentControlPoints->bottom_right += delta;
-            break;
-        case(BOTTOM):
-            _currentControlPoints->bottom_right += delta;
-            _currentControlPoints->bottom_left += delta;
-            break;
-        case(BOTTOM_LEFT):
-            _currentControlPoints->bottom_left += delta;
-            break;
-        case(LEFT):
-            _currentControlPoints->bottom_left += delta;
-            _currentControlPoints->top_left += delta;
-            break;
-        case(CENTER):
-            _currentControlPoints->bottom_left += delta;
-            _currentControlPoints->top_left += delta;
-            _currentControlPoints->bottom_right += delta;
-            _currentControlPoints->top_right += delta;
-            break;
-        case(NONE_SELECTED):
-            break;
-    }
-}
-
-osg::Vec2d KeystoneHandler::incrementScale(const osgGA::GUIEventAdapter& ea) const
-{
-    if (_ctrlIncrement!=osg::Vec2d(0.0,0.0) && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL )) return _ctrlIncrement;
-    if (_shiftIncrement!=osg::Vec2d(0.0,0.0) && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT )) return _shiftIncrement;
-    return _defaultIncrement;
-}
-
-bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* obj, osg::NodeVisitor* nv)
-{
-    osg::Camera* camera = dynamic_cast<osg::Camera*>(obj);
-    osg::Viewport* viewport = camera ?  camera->getViewport() : 0;
-
-    if (!viewport) return false;
-
-    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
-    {
-        if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
-        {
-            setKeystoneEditingEnabled(!getKeystoneEditingEnabled());
-            return true;
-        }
-    }
-
-    bool haveCameraMatch = false;
-    float x = ea.getXnormalized();
-    float y = ea.getYnormalized();
-    for(unsigned int i=0; i<ea.getNumPointerData(); ++i)
-    {
-        const osgGA::PointerData* pd = ea.getPointerData(i);
-        if (pd->object==obj)
-        {
-            haveCameraMatch = true;
-            x = pd->getXnormalized();
-            y = pd->getYnormalized();
-            break;
-        }
-    }
-
-    if (!haveCameraMatch || !getKeystoneEditingEnabled()) return false;
-
-    switch(ea.getEventType())
-    {
-        case(osgGA::GUIEventAdapter::PUSH):
-        {
-            osg::Vec2d scale = incrementScale(ea);
-            if (scale.length2()!=0.0)
-            {
-                _selectedRegion = computeRegion(ea);
-                (*_startControlPoints) = (*_currentControlPoints);
-                _startPosition.set(x,y);
-            }
-            else
-            {
-                _selectedRegion = NONE_SELECTED;
-            }
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::DRAG):
-        {
-            if (_selectedRegion!=NONE_SELECTED)
-            {
-                (*_currentControlPoints) = (*_startControlPoints);
-                osg::Vec2d currentPosition(x, y);
-                osg::Vec2d delta(currentPosition-_startPosition);
-                osg::Vec2d scale = incrementScale(ea);
-                move(_selectedRegion, osg::Vec2d(delta.x()*scale.x(), delta.y()*scale.y()) );
-                return true;
-            }
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::RELEASE):
-        {
-            _selectedRegion = NONE_SELECTED;
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::KEYDOWN):
-        {
-            if (ea.getKey()=='r')
-            {
-                _selectedRegion = NONE_SELECTED;
-                _startControlPoints->reset();
-                _currentControlPoints->reset();
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
-            {
-                move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down)
-            {
-                move(computeRegion(ea), osg::Vec2d(0.0, -_keyIncrement.y()*incrementScale(ea).y()) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
-            {
-                move(computeRegion(ea), osg::Vec2d(-_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
-            {
-                move(computeRegion(ea), osg::Vec2d(_keyIncrement.x()*incrementScale(ea).x(), 0.0) );
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_7 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Home)
-            {
-                _currentControlPoints->top_left.set(x, y);
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_9 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)
-            {
-                _currentControlPoints->top_right.set(x, y);
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_3 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Down)
-            {
-                _currentControlPoints->bottom_right.set(x, y);
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_1 || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_End)
-            {
-                _currentControlPoints->bottom_left.set(x, y);
-            }
-            return false;
-        }
-        default:
-            return false;
-    }
-}
-struct KeystoneCullCallback : public osg::Drawable::CullCallback
-{
-    KeystoneCullCallback(osg::Keystone* keystone=0):_keystone(keystone) {}
-    KeystoneCullCallback(const KeystoneCullCallback&, const osg::CopyOp&) {}
-
-    META_Object(osg,KeystoneCullCallback);
-
-    /** do customized cull code, return true if drawable should be culled.*/
-    virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const
-    {
-        return _keystone.valid() ? !_keystone->keystoneEditingEnabled : true;
-    }
-
-    osg::ref_ptr<osg::Keystone> _keystone;
-};
-
-
-struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
-{
-    KeystoneUpdateCallback(osg::Keystone* keystone=0):_keystone(keystone) {}
-    KeystoneUpdateCallback(const KeystoneUpdateCallback&, const osg::CopyOp&) {}
-
-    META_Object(osg,KeystoneUpdateCallback);
-
-    /** do customized update code.*/
-    virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
-    {
-        update(dynamic_cast<osg::Geometry*>(drawable));
-    }
-
-    void update(osg::Geometry* geometry)
-    {
-        if (!geometry) return;
-
-        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-        if (!vertices) return;
-
-        osg::Vec2Array* texcoords = dynamic_cast<osg::Vec2Array*>(geometry->getTexCoordArray(0));
-        if (!texcoords) return;
-
-        osg::Vec3 tl, tr, br, bl;
-
-        _keystone->compute3DPositions(osg::DisplaySettings::instance().get(), tl, tr, br, bl);
-
-        for(unsigned int i=0; i<vertices->size(); ++i)
-        {
-            osg::Vec3& v = (*vertices)[i];
-            osg::Vec2& t = (*texcoords)[i];
-            v = bl * ((1.0f-t.x())*(1.0f-t.y())) +
-                br * ((t.x())*(1.0f-t.y())) +
-                tl * ((1.0f-t.x())*(t.y())) +
-                tr * ((t.x())*(t.y()));
-        }
-        geometry->dirtyBound();
-    }
-    
-    osg::ref_ptr<osg::Keystone> _keystone;
-};
-
-
-osg::Geode* createKeystoneDistortionMesh(osg::Keystone* keystone)
-{
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    geode->addDrawable(geometry.get());
-
-    geometry->setUseDisplayList(false);
-
-    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(keystone);
-    geometry->setUpdateCallback(kuc.get());
-
-    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices.get());
-
-    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
-    geometry->setTexCoordArray(0, texcoords.get());
-
-    unsigned int numRows = 7;
-    unsigned int numColumns = 7;
-    unsigned int numVertices = numRows*numColumns;
-
-    vertices->resize(numVertices);
-    texcoords->resize(numVertices);
-
-    for(unsigned j=0; j<numRows; j++)
-    {
-        for(unsigned i=0; i<numColumns; i++)
-        {
-            osg::Vec2& t = (*texcoords)[j*numColumns+i];
-            t.set(static_cast<float>(i)/static_cast<float>(numColumns-1), static_cast<float>(j)/static_cast<float>(numRows-1));
-        }
-    }
-
-    osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES);
-    geometry->addPrimitiveSet(elements.get());
-    for(unsigned j=0; j<numRows-1; j++)
-    {
-        for(unsigned i=0; i<numColumns-1; i++)
-        {
-            unsigned int vi = j*numColumns+i;
-            
-            elements->push_back(vi+numColumns);
-            elements->push_back(vi);
-            elements->push_back(vi+1);
-
-            elements->push_back(vi+numColumns);
-            elements->push_back(vi+1);
-            elements->push_back(vi+1+numColumns);
-        }
-    }
-    
-    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    geometry->getOrCreateStateSet()->setRenderBinDetails(0, "RenderBin");
-
-    kuc->update(geometry.get());
-
-    return geode.release();
-}
-
-osg::Node* createGrid(osg::Keystone* keystone, const osg::Vec4& colour)
-{
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    geode->addDrawable(geometry.get());
-
-    geometry->setUseDisplayList(false);
-
-    osg::ref_ptr<KeystoneUpdateCallback> kuc = new KeystoneUpdateCallback(keystone);
-    geometry->setUpdateCallback(kuc.get());
-
-    geometry->setCullCallback(new KeystoneCullCallback(keystone));
-
-    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    colours->push_back(keystone->gridColour);
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices.get());
-
-    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
-    geometry->setTexCoordArray(0, texcoords.get());
-
-    osg::Vec2 origin(0.0f, 0.0f);
-    osg::Vec2 widthVector(1.0f, 0.0f);
-    osg::Vec2 heightVector(0.0f, 1.0f);
-
-    unsigned int numIntervals = 7;
-    
-    // border line
-    {
-        unsigned int vi = texcoords->size();
-        texcoords->push_back(origin);
-        texcoords->push_back(origin+widthVector);
-        texcoords->push_back(origin+widthVector+heightVector);
-        texcoords->push_back(origin+heightVector);
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_LOOP, vi, 4));
-    }
-
-    // cross lines
-    {
-        unsigned int vi = texcoords->size();
-        osg::Vec2 v = origin;
-        osg::Vec2 dv = (widthVector+heightVector)/static_cast<float>(numIntervals-1);
-        for(unsigned int i=0; i<numIntervals; ++i)
-        {
-            texcoords->push_back(v);
-            v += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, vi, numIntervals));
-
-        vi = texcoords->size();
-        v = origin+heightVector;
-        dv = (widthVector-heightVector)/static_cast<float>(numIntervals-1);
-        for(unsigned int i=0; i<numIntervals; ++i)
-        {
-            texcoords->push_back(v);
-            v += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, vi, numIntervals));
-    }
-
-    // vertices lines
-    {
-        unsigned int vi = texcoords->size();
-        osg::Vec2 dv = widthVector/6.0;
-        osg::Vec2 bv = origin+dv;
-        osg::Vec2 tv = bv+heightVector;
-        for(unsigned int i=0; i<5; ++i)
-        {
-            texcoords->push_back(bv);
-            texcoords->push_back(tv);
-            bv += dv;
-            tv += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
-    }
-
-    // horizontal lines
-    {
-        unsigned int vi = texcoords->size();
-        osg::Vec2 dv = heightVector/6.0;
-        osg::Vec2 bv = origin+dv;
-        osg::Vec2 tv = bv+widthVector;
-        for(unsigned int i=0; i<5; ++i)
-        {
-            texcoords->push_back(bv);
-            texcoords->push_back(tv);
-            bv += dv;
-            tv += dv;
-        }
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, vi, 10));
-    }
-
-    vertices->resize(texcoords->size());
-
-    geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    geometry->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
-    geometry->getOrCreateStateSet()->setRenderBinDetails(1, "RenderBin");
-
-    kuc->update(geometry.get());
-
-    return geode.release();
-}
-
-osg::Texture* createKestoneDistortionTexture(int width, int height)
+osg::Texture* createDistortionTexture(int width, int height)
 {
     osg::ref_ptr<osg::TextureRectangle> texture = new osg::TextureRectangle;
 
@@ -612,7 +51,7 @@ osg::Texture* createKestoneDistortionTexture(int width, int height)
     return texture.release();
 }
 
-osg::Camera* assignKeystoneRenderToTextureCamera(osgViewer::View* view, osg::GraphicsContext* gc, int width, int height, osg::Texture* texture)
+osg::Camera* assignRenderToTextureCamera(osgViewer::View* view, osg::GraphicsContext* gc, int width, int height, osg::Texture* texture)
 {
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
     camera->setName("Render to texture camera");
@@ -631,7 +70,7 @@ osg::Camera* assignKeystoneRenderToTextureCamera(osgViewer::View* view, osg::Gra
     return camera.release();
 }
 
-osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, osg::Keystone* keystone)
+osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, Keystone* keystone)
 {
     double screenDistance = ds->getScreenDistance();
     double screenWidth = ds->getScreenWidth();
@@ -639,7 +78,7 @@ osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplayS
     double fovy = osg::RadiansToDegrees(2.0*atan2(screenHeight/2.0,screenDistance));
     double aspectRatio = screenWidth/screenHeight;
 
-    osg::Geode* geode = createKeystoneDistortionMesh(keystone);
+    osg::Geode* geode = keystone->createKeystoneDistortionMesh();
 
     // new we need to add the texture to the mesh, we do so by creating a
     // StateSet to contain the Texture StateAttribute.
@@ -668,7 +107,7 @@ osg::Camera* assignKeystoneDistortionCamera(osgViewer::View* view, osg::DisplayS
     // add subgraph to render
     camera->addChild(geode);
 
-    camera->addChild(createGrid(keystone, osg::Vec4(1.0,1.0,1.0,1.0)));
+    camera->addChild(keystone->createGrid());
 
     camera->setName("DistortionCorrectionCamera");
 
@@ -853,7 +292,13 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
     ds->setUseSceneViewForStereoHint(false);
 
 
-    osg::ref_ptr<osg::Keystone> keystone = new osg::Keystone;
+    std::string filename("keystone.osgt");
+    osg::ref_ptr<Keystone> keystone = osgDB::readFile<Keystone>(filename);
+    keystone->setUserValue("filename",filename);
+    
+    OSG_NOTICE<<"Keystone "<<keystone.get()<<std::endl;
+    
+    if (!keystone) keystone = new Keystone;
 
    
     // set up view's main camera
@@ -944,7 +389,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // two keystone, one for each of the left and right viewports/windows
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> left_texture = createKestoneDistortionTexture(traits->width, traits->height);
+                osg::ref_ptr<osg::Texture> left_texture = createDistortionTexture(traits->width, traits->height);
 
                 // convert to RTT Camera
                 left_camera->setViewport(0, 0, traits->width, traits->height);
@@ -958,7 +403,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
 
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> right_texture = createKestoneDistortionTexture(traits->width, traits->height);
+                osg::ref_ptr<osg::Texture> right_texture = createDistortionTexture(traits->width, traits->height);
 
                 // convert to RTT Camera
                 right_camera->setViewport(0, 0, traits->width, traits->height);
@@ -972,7 +417,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 
 
                 // create Keystone left distortion camera
-                keystone->gridColour.set(1.0f,0.0f,0.0,1.0);
+                keystone->setGridColor(osg::Vec4(1.0f,0.0f,0.0,1.0));
                 osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
                                                                                 0, 0, traits->width, traits->height,
                                                                                 traits->doubleBuffer ? GL_BACK_LEFT : GL_FRONT_LEFT,
@@ -1020,7 +465,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // one keystone and editing for the one window
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> texture = createKestoneDistortionTexture(traits->width, traits->height);
+                osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
 
                 // convert to RTT Camera
                 left_camera->setDrawBuffer(GL_FRONT);
@@ -1080,9 +525,11 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // left keystone camera to render to left viewport/window
                 // right keystone camera to render to right viewport/window
                 // two keystone, one for each of the left and right viewports/windows
+                
+                keystone->setName("left");
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> left_texture = createKestoneDistortionTexture(traits->width/2, traits->height);
+                osg::ref_ptr<osg::Texture> left_texture = createDistortionTexture(traits->width/2, traits->height);
 
                 // convert to RTT Camera
                 left_camera->setViewport(0, 0, traits->width/2, traits->height);
@@ -1096,7 +543,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
 
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> right_texture = createKestoneDistortionTexture(traits->width/2, traits->height);
+                osg::ref_ptr<osg::Texture> right_texture = createDistortionTexture(traits->width/2, traits->height);
 
                 // convert to RTT Camera
                 right_camera->setViewport(0, 0, traits->width/2, traits->height);
@@ -1110,7 +557,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 
 
                 // create Keystone left distortion camera
-                keystone->gridColour.set(1.0f,0.0f,0.0,1.0);
+                keystone->setGridColor(osg::Vec4(1.0f,0.0f,0.0,1.0));
                 osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
                                                                                 left_start, 0, traits->width/2, traits->height,
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
@@ -1122,9 +569,11 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
 
 
-                osg::ref_ptr<osg::Keystone> right_keystone = new osg::Keystone;
-                right_keystone->gridColour.set(0.0f,1.0f,0.0,1.0);
+                osg::ref_ptr<Keystone> right_keystone = new Keystone;
+                right_keystone->setGridColor(osg::Vec4(0.0f,1.0f,0.0,1.0));
                 
+                right_keystone->setName("right");
+
                 // create Keystone right distortion camera
                 osg::ref_ptr<osg::Camera> right_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
                                                                                 right_start, 0, traits->width/2, traits->height,
@@ -1175,7 +624,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // two keystone, one for each of the left and right viewports/windows
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> left_texture = createKestoneDistortionTexture(traits->width, traits->height/2);
+                osg::ref_ptr<osg::Texture> left_texture = createDistortionTexture(traits->width, traits->height/2);
 
                 // convert to RTT Camera
                 left_camera->setViewport(0, 0, traits->width, traits->height/2);
@@ -1189,7 +638,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
 
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> right_texture = createKestoneDistortionTexture(traits->width, traits->height/2);
+                osg::ref_ptr<osg::Texture> right_texture = createDistortionTexture(traits->width, traits->height/2);
 
                 // convert to RTT Camera
                 right_camera->setViewport(0, 0, traits->width, traits->height/2);
@@ -1203,7 +652,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 
 
                 // create Keystone left distortion camera
-                keystone->gridColour.set(1.0f,0.0f,0.0,1.0);
+                keystone->setGridColor(osg::Vec4(1.0f,0.0f,0.0,1.0));
                 osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
                                                                                 0, left_start, traits->width, traits->height/2,
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
@@ -1215,8 +664,8 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
 
 
-                osg::ref_ptr<osg::Keystone> right_keystone = new osg::Keystone;
-                right_keystone->gridColour.set(0.0f,1.0f,0.0,1.0);
+                osg::ref_ptr<Keystone> right_keystone = new Keystone;
+                right_keystone->setGridColor(osg::Vec4(0.0f,1.0f,0.0,1.0));
                 
                 // create Keystone right distortion camera
                 osg::ref_ptr<osg::Camera> right_keystone_camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
@@ -1255,7 +704,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // one keystone and editing for the one window
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> texture = createKestoneDistortionTexture(traits->width, traits->height);
+                osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
 
                 // convert to RTT Camera
                 left_camera->setDrawBuffer(GL_FRONT);
@@ -1300,7 +749,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
                 // one keystone and editing for the one window
 
                 // create distortion texture
-                osg::ref_ptr<osg::Texture> texture = createKestoneDistortionTexture(traits->width, traits->height);
+                osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
 
                 // convert to RTT Camera
                 right_camera->setDrawBuffer(GL_FRONT);
@@ -1407,7 +856,7 @@ void setUpViewForStereo(osgViewer::View* view, osg::DisplaySettings* ds)
 }
 
 
-void setUpViewForKeystone(osgViewer::View* view, osg::Keystone* keystone)
+void setUpViewForKeystone(osgViewer::View* view, Keystone* keystone)
 {
     int screenNum = 0;
     
@@ -1455,10 +904,10 @@ void setUpViewForKeystone(osgViewer::View* view, osg::Keystone* keystone)
 
 
     // create distortion texture
-    osg::ref_ptr<osg::Texture> texture = createKestoneDistortionTexture(width, height);
+    osg::ref_ptr<osg::Texture> texture = createDistortionTexture(width, height);
 
     // create RTT Camera
-    assignKeystoneRenderToTextureCamera(view, gc.get(), width, height, texture);
+    assignRenderToTextureCamera(view, gc.get(), width, height, texture);
 
     // create Keystone distortion camera
     osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(view, ds, gc.get(),
@@ -1509,7 +958,7 @@ int main( int argc, char **argv )
     }
     else
     {
-        setUpViewForKeystone(&viewer, new osg::Keystone);
+        setUpViewForKeystone(&viewer, new Keystone);
     }
     
     viewer.realize();

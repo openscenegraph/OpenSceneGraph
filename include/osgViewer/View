@@ -28,6 +28,7 @@
 
 #include <osgViewer/Scene>
 #include <osgViewer/ViewerBase>
+#include <osgViewer/Keystone>
 
 namespace osgViewer {
 
@@ -254,6 +255,27 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);
         virtual void requestWarpPointer(float x,float y);
+
+
+    public:
+        
+        osg::Texture* createDistortionTexture(int width, int height);
+        osg::Camera* assignRenderToTextureCamera(osg::GraphicsContext* gc, int width, int height, osg::Texture* texture);
+        osg::Camera* assignKeystoneDistortionCamera(osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, Keystone* keystone);
+        osg::Camera* assignStereoCamera(osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, double eyeScale);
+        void setUpViewForStereo(osg::DisplaySettings* ds);
+        void setUpViewForKeystone(Keystone* keystone);
+
+        struct StereoSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
+        {
+            StereoSlaveCallback(osg::DisplaySettings* ds, double eyeScale):_ds(ds), _eyeScale(eyeScale) {}
+
+            virtual void updateSlave(osg::View& view, osg::View::Slave& slave);
+
+            osg::ref_ptr<osg::DisplaySettings> _ds;
+            double _eyeScale;
+        };
+        
 
     public:
 

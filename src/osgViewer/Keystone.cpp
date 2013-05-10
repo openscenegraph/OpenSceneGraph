@@ -22,6 +22,7 @@
 #include <osg/ValueObject>
 
 #include <osgDB/WriteFile>
+#include <osgDB/ReadFile>
 
 #include <osgViewer/Keystone>
 
@@ -484,23 +485,15 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()=='r')
+            if (ea.getUnmodifiedKey()=='r' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
             {
                 _selectedRegion = NONE_SELECTED;
                 _startControlPoints->reset();
                 _currentControlPoints->reset();
             }
-            else if (ea.getKey()=='s')
+            else if (ea.getUnmodifiedKey()=='s' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
             {
-                std::string filename("keystone_new.osgt");
-                if (_keystone->getUserValue("filename",filename))
-                {
-                    OSG_NOTICE<<"Got filename field "<<filename<<std::endl;
-                    // remove the user data container so that it isn't written out to file.
-                    _keystone->setUserDataContainer(0);
-                }
-                OSG_NOTICE<<"Writing file "<<filename<<std::endl;
-                osgDB::writeObjectFile(*_keystone, filename);
+                _keystone->writeToFile();
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
             {
@@ -539,6 +532,62 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
         default:
             return false;
     }
+}
+
+bool Keystone::writeToFile()
+{
+    std::string filename;
+    if (getUserDataContainer()!=0 && getUserValue("filename", filename))
+    {
+        // we don't want to write the UDC to the keystone file so take a reference to it, and set the pointer to NULL.
+        osg::ref_ptr<osg::UserDataContainer> temp_udc = getUserDataContainer();
+        setUserDataContainer(0);
+        
+        OSG_NOTICE<<"Writing keystone to: "<<filename<<std::endl;
+        
+        // write the keystone out to disk
+        osgDB::writeObjectFile(*this, filename);
+        
+        // reassign the UDC
+        setUserDataContainer(temp_udc);
+        
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool Keystone::loadKeystoneFiles(osg::DisplaySettings* ds)
+{
+    bool keystonesLoaded = false;
+    if (!ds->getKeystoneFileNames().empty())
+    {
+        for(osg::DisplaySettings::FileNames::iterator itr = ds->getKeystoneFileNames().begin();
+            itr != ds->getKeystoneFileNames().end();
+            ++itr)
+        {
+            const std::string& filename = *itr;
+            osg::ref_ptr<osgViewer::Keystone> keystone = osgDB::readFile<osgViewer::Keystone>(filename);
+            if (keystone.valid()) 
+            {
+                keystone->setUserValue("filename",filename);
+                ds->getKeystones().push_back(keystone.get());
+                keystonesLoaded = true;
+            }
+            else
+            {
+                OSG_NOTICE<<"Creating Keystone for filename entry: "<<filename<<std::endl;
+                keystone = new Keystone;
+                keystone->setUserValue("filename",filename);
+                ds->getKeystones().push_back(keystone.get());
+                keystonesLoaded = true;                
+            }
+        }        
+    }
+    return keystonesLoaded;
 }
 
 

@@ -66,25 +66,44 @@ int main( int argc, char **argv )
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
     
     
-    OSG_NOTICE<<"KeystoneFileNames.size()="<<osg::DisplaySettings::instance()->getKeystoneFileNames().size()<<std::endl;
-    for(osg::DisplaySettings::FileNames::iterator itr = osg::DisplaySettings::instance()->getKeystoneFileNames().begin();
-        itr != osg::DisplaySettings::instance()->getKeystoneFileNames().end();
+    OSG_NOTICE<<"KeystoneFileNames.size()="<<ds->getKeystoneFileNames().size()<<std::endl;
+    for(osg::DisplaySettings::FileNames::iterator itr = ds->getKeystoneFileNames().begin();
+        itr != ds->getKeystoneFileNames().end();
         ++itr)
     {
-        OSG_NOTICE<<"   keystone ="<<*itr<<std::endl;
+        OSG_NOTICE<<"   keystone filename = "<<*itr<<std::endl;
     }
     
     
+    if (!ds->getKeystoneFileNames().empty())
+    {
+        for(osg::DisplaySettings::Objects::iterator itr = ds->getKeystones().begin();
+            itr != ds->getKeystones().end();
+            ++itr)
+        {
+            osgViewer::Keystone* keystone = dynamic_cast<osgViewer::Keystone*>(itr->get());
+            if (keystone) 
+            {
+                std::string filename;
+                keystone->getUserValue("filename",filename);
+                OSG_NOTICE<<"Loaded keystone "<<filename<<", "<<keystone<<std::endl;
+            }
+        }
+    }
     
-    
+    osgViewer::Keystone::loadKeystoneFiles(ds);
 
     if (ds->getStereo())
     {
         viewer.setUpViewForStereo(ds);
     }
     else
-    {
-        viewer.setUpViewForKeystone(new osgViewer::Keystone);
+    {  
+        osg::ref_ptr<osgViewer::Keystone> keystone = 0;
+        if (!(ds->getKeystones().empty())) keystone = dynamic_cast<osgViewer::Keystone*>(ds->getKeystones().front().get());
+        if (!keystone) keystone = new osgViewer::Keystone;
+        
+        viewer.setUpViewForKeystone(keystone.get());
     }
     
     viewer.realize();

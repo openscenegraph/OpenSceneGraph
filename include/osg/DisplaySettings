@@ -285,6 +285,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int getGLContextProfileMask() const { return _glContextProfileMask; }
         
         
+        void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
+        bool getKeystoneHint() const { return _keystoneHint; }
+        
         typedef std::vector<std::string> FileNames;
         void setKeystoneFileNames(const FileNames& filenames) { _keystoneFileNames = filenames; }
         FileNames& getKeystoneFileNames() { return _keystoneFileNames; }
@@ -363,6 +366,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         SwapMethod                      _swapMethod;
 
     
+        bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;
         Objects                         _keystones; 
         

@@ -92,6 +92,11 @@ int main( int argc, char **argv )
     }
     
     osgViewer::Keystone::loadKeystoneFiles(ds);
+    
+    if (!ds->getKeystoneHint())
+    {
+        OSG_NOTICE<<"Keystone disabled"<<std::endl;
+    }
 
     if (ds->getStereo())
     {

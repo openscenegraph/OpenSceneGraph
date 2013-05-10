@@ -96,6 +96,10 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _glContextFlags = vs._glContextFlags;
     _glContextProfileMask = vs._glContextProfileMask;
     _swapMethod = vs._swapMethod;
+    
+    _keystoneHint = vs._keystoneHint;
+    _keystoneFileNames = vs._keystoneFileNames;
+    _keystones = vs._keystones;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -131,6 +135,28 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     // merge swap method to higher value
     if( vs._swapMethod > _swapMethod )
         _swapMethod = vs._swapMethod;
+
+    _keystoneHint = _keystoneHint | vs._keystoneHint;
+    
+    // insert any unique filenames into the local list
+    for(FileNames::const_iterator itr = vs._keystoneFileNames.begin();
+        itr != vs._keystoneFileNames.end();
+        ++itr)
+    {
+        const std::string& filename = *itr;
+        FileNames::iterator found_itr = std::find(_keystoneFileNames.begin(), _keystoneFileNames.end(), filename);
+        if (found_itr == _keystoneFileNames.end()) _keystoneFileNames.push_back(filename);
+    }    
+
+    // insert unique Keystone object into local list
+    for(Objects::const_iterator itr = vs._keystones.begin();
+        itr != vs._keystones.end();
+        ++itr)
+    {
+        const osg::Object* object = itr->get();
+        Objects::iterator found_itr = std::find(_keystones.begin(), _keystones.end(), object);
+        if (found_itr == _keystones.end()) _keystones.push_back(const_cast<osg::Object*>(object));
+    }    
 }
 
 void DisplaySettings::setDefaults()
@@ -187,6 +213,8 @@ void DisplaySettings::setDefaults()
     _glContextProfileMask = 0;
 
     _swapMethod = SWAP_DEFAULT;
+
+    _keystoneHint = false;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -293,6 +321,9 @@ static ApplicationUsageProxy DisplaySetting_e27(ApplicationUsage::ENVIRONMENTAL_
         "OSG_SWAP_METHOD <method>",
         "DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
 static ApplicationUsageProxy DisplaySetting_e28(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_KEYSTONE ON | OFF",
+        "Specify the hint to whether the viewer should set up keystone correction.");
+static ApplicationUsageProxy DisplaySetting_e29(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_KEYSTONE_FILES <filename>[:filename]..",
         "Specify filenames of keystone parameter files. Under Windows use ; to deliminate files, otherwise use :");
 
@@ -588,6 +619,20 @@ void DisplaySettings::readEnvironmentalVariables()
         }
 
     }
+
+    if( (ptr = getenv("OSG_KEYSTONE")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _keystoneHint = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _keystoneHint = true;
+        }
+    }
+
     
     if ((ptr = getenv("OSG_KEYSTONE_FILES")) != 0)
     {
@@ -638,6 +683,9 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--gl-flags <mask>","Set the hint of which GL flags projfile mask to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-profile-mask <mask>","Set the hint of which GL context profile mask to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--swap-method <method>","DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
+        arguments.getApplicationUsage()->addCommandLineOption("--keystone <filename>","Specify a keystone file to be used by the viewer for keystone correction.");
+        arguments.getApplicationUsage()->addCommandLineOption("--keystone-on","Set the keystone hint to true to tell the viewer to do keystone correction.");
+        arguments.getApplicationUsage()->addCommandLineOption("--keystone-off","Set the keystone hint to false.");
     }
 
     std::string str;
@@ -694,6 +742,8 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
 
     if (arguments.read("--keystone",str))
     {
+        _keystoneHint = true;
+        
         if (!_keystoneFileNames.empty()) _keystoneFileNames.clear();
         _keystoneFileNames.push_back(str);
         
@@ -701,6 +751,16 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         {
             _keystoneFileNames.push_back(str);
         }
+    }
+
+    if (arguments.read("--keystone-on"))
+    {
+        _keystoneHint = true;
+    }
+
+    if (arguments.read("--keystone-off"))
+    {
+        _keystoneHint = false;
     }
 
     while(arguments.read("--cc"))

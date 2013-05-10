@@ -32,7 +32,7 @@ public:
 
     Keystone(const Keystone& rhs, const osg::CopyOp& copop=osg::CopyOp::SHALLOW_COPY);
         
-    META_Object(osg, Keystone)
+    META_Object(osgViewer, Keystone)
 
     void reset();
 

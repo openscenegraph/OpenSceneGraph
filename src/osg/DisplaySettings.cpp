@@ -292,6 +292,9 @@ static ApplicationUsageProxy DisplaySetting_e26(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e27(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SWAP_METHOD <method>",
         "DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
+static ApplicationUsageProxy DisplaySetting_e28(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_KEYSTONE_FILES <filename>[:filename]..",
+        "Specify filenames of keystone parameter files. Under Windows use ; to deliminate files, otherwise use :");
 
 
 void DisplaySettings::readEnvironmentalVariables()
@@ -585,6 +588,31 @@ void DisplaySettings::readEnvironmentalVariables()
         }
 
     }
+    
+    if ((ptr = getenv("OSG_KEYSTONE_FILES")) != 0)
+    {
+    #if defined(WIN32) && !defined(__CYGWIN__)
+        char delimitor = ';';
+    #else
+        char delimitor = ':';
+    #endif
+    
+        std::string paths(ptr);
+        if (!paths.empty())
+        {
+            std::string::size_type start = 0;
+            std::string::size_type end;
+            while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+            {
+                _keystoneFileNames.push_back(std::string(paths,start,end-start));
+                start = end+1;
+            }
+
+            std::string lastPath(paths,start,std::string::npos);
+            if (!lastPath.empty())
+                _keystoneFileNames.push_back(lastPath);
+        }
+    }
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -662,6 +690,17 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while(arguments.read("--samples",str))
     {
         _numMultiSamples = atoi(str.c_str());
+    }
+
+    if (arguments.read("--keystone",str))
+    {
+        if (!_keystoneFileNames.empty()) _keystoneFileNames.clear();
+        _keystoneFileNames.push_back(str);
+        
+        while(arguments.read("--keystone",str))
+        {
+            _keystoneFileNames.push_back(str);
+        }
     }
 
     while(arguments.read("--cc"))

@@ -64,6 +64,19 @@ int main( int argc, char **argv )
 
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+    
+    
+    OSG_NOTICE<<"KeystoneFileNames.size()="<<osg::DisplaySettings::instance()->getKeystoneFileNames().size()<<std::endl;
+    for(osg::DisplaySettings::FileNames::iterator itr = osg::DisplaySettings::instance()->getKeystoneFileNames().begin();
+        itr != osg::DisplaySettings::instance()->getKeystoneFileNames().end();
+        ++itr)
+    {
+        OSG_NOTICE<<"   keystone ="<<*itr<<std::endl;
+    }
+    
+    
+    
+    
 
     if (ds->getStereo())
     {

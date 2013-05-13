@@ -171,9 +171,9 @@ IF (OSG_MAINTAINER)
     # Provide target for tagging a release
     #
     SET(SVNCOMMAND svn)
-    SET(SVNTRUNKDIR     http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk)
-    SET(SVNTAGDIR       http://www.openscenegraph.org/svn/osg/OpenSceneGraph/tags)
-    SET(SVNBRANCHDIR    http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branches)
+    SET(SVNTRUNKDIR     http://svn.openscenegraph.org/osg/OpenSceneGraph/trunk)
+    SET(SVNTAGDIR       http://svn.openscenegraph.org/osg/OpenSceneGraph/tags)
+    SET(SVNBRANCHDIR    http://svn.openscenegraph.org/osg/OpenSceneGraph/branches)
 
     IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
         SET(SVNSOURCEDIR ${SVNTRUNKDIR})

@@ -37,7 +37,7 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
           * In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1).*/
         LineSegmentIntersector(CoordinateFrame cf, double x, double y);
 
-        struct Intersection
+        struct OSGUTIL_EXPORT Intersection
         {
             Intersection():
                 ratio(-1.0),

@@ -551,7 +551,7 @@ bool Keystone::writeToFile()
         osgDB::writeObjectFile(*this, filename);
         
         // reassign the UDC
-        setUserDataContainer(temp_udc);
+        setUserDataContainer(temp_udc.get());
         
         return true;
     }

@@ -693,7 +693,7 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
                         // look up Texture in RTT Camera's.
                         for(unsigned int i=0; i<getNumSlaves();++i)
                         {
-                            osg::Camera* slave_camera = getSlave(i)._camera;
+                            osg::Camera* slave_camera = getSlave(i)._camera.get();
                             if (slave_camera)
                             {
                                 osg::Camera::BufferAttachmentMap::const_iterator ba_itr = slave_camera->getBufferAttachmentMap().find(osg::Camera::COLOR_BUFFER);

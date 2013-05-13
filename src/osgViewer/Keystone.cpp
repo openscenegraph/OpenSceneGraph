@@ -422,11 +422,23 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 
     if (!viewport) return false;
 
-    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
+    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN && ((ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))) 
     {
-        if (ea.getUnmodifiedKey()=='g' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
+        if (ea.getUnmodifiedKey()=='g')
         {
             setKeystoneEditingEnabled(!getKeystoneEditingEnabled());
+            return true;
+        }
+        if (ea.getUnmodifiedKey()=='r')
+        {
+            _selectedRegion = NONE_SELECTED;
+            _startControlPoints->reset();
+            _currentControlPoints->reset();
+            return true;
+        }
+        else if (ea.getUnmodifiedKey()=='s')
+        {
+            _keystone->writeToFile();
             return true;
         }
     }
@@ -485,17 +497,7 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getUnmodifiedKey()=='r' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
-            {
-                _selectedRegion = NONE_SELECTED;
-                _startControlPoints->reset();
-                _currentControlPoints->reset();
-            }
-            else if (ea.getUnmodifiedKey()=='s' && (ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))
-            {
-                _keystone->writeToFile();
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
+            if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up)
             {
                 move(computeRegion(ea), osg::Vec2d(0.0, _keyIncrement.y()*incrementScale(ea).y()) );
             }

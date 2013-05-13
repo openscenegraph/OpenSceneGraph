@@ -100,7 +100,7 @@ int main( int argc, char **argv )
 
     if (ds->getStereo())
     {
-        viewer.setUpViewForStereo(ds);
+        viewer.setUpViewForStereo();
     }
     else
     {  

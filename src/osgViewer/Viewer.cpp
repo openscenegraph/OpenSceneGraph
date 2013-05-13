@@ -464,13 +464,29 @@ void Viewer::realize()
                 if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
                 else setUpViewInWindow(x,y,width,height);
             }
-            else if (screenNum>=0)
-            {
-                setUpViewOnSingleScreen(screenNum);
-            }
             else
             {
-                setUpViewAcrossAllScreens();
+                osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();
+                if (ds->getKeystoneHint() && !ds->getKeystoneFileNames().empty()) osgViewer::Keystone::loadKeystoneFiles(ds);
+                bool useKeystones = ds->getKeystoneHint() && !ds->getKeystones().empty();
+
+                if (ds->getStereo() && (!ds->getUseSceneViewForStereoHint() || useKeystones))
+                {
+                    setUpViewForStereo();
+                }
+                else if (useKeystones)
+                {
+                    osgViewer::Keystone* keystone = dynamic_cast<osgViewer::Keystone*>(ds->getKeystones().front().get());
+                    setUpViewForKeystone(keystone);
+                }
+                else if (screenNum>=0)
+                {
+                    setUpViewOnSingleScreen(screenNum);
+                }
+                else
+                {
+                    setUpViewAcrossAllScreens();
+                }
             }
         }
 

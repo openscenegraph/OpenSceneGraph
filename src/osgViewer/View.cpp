@@ -2490,8 +2490,9 @@ static const GLubyte patternCheckerboard[] = {
     0xAA, 0xAA, 0xAA, 0xAA};
 
 
-void View::setUpViewForStereo(osg::DisplaySettings* ds)
+void View::setUpViewForStereo()
 {
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();    
     if (!ds->getStereo()) return;
 
     ds->setUseSceneViewForStereoHint(false);

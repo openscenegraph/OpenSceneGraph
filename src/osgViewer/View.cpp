@@ -2690,6 +2690,7 @@ void View::setUpViewForStereo()
                 left_camera->setDrawBuffer(GL_FRONT);
                 left_camera->setReadBuffer(GL_FRONT);
                 left_camera->setAllowEventFocus(false);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
                 left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2700,6 +2701,7 @@ void View::setUpViewForStereo()
                 right_camera->setDrawBuffer(GL_FRONT);
                 right_camera->setReadBuffer(GL_FRONT);
                 right_camera->setAllowEventFocus(false);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
                 right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2756,6 +2758,7 @@ void View::setUpViewForStereo()
                 left_camera->setDrawBuffer(GL_FRONT);
                 left_camera->setReadBuffer(GL_FRONT);
                 left_camera->setAllowEventFocus(true);
+                left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
                 left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2770,6 +2773,7 @@ void View::setUpViewForStereo()
                 right_camera->setDrawBuffer(GL_FRONT);
                 right_camera->setReadBuffer(GL_FRONT);
                 right_camera->setAllowEventFocus(true);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
                 right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2850,6 +2854,7 @@ void View::setUpViewForStereo()
                 left_camera->setDrawBuffer(GL_FRONT);
                 left_camera->setReadBuffer(GL_FRONT);
                 left_camera->setAllowEventFocus(true);
+                left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
                 left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2864,6 +2869,7 @@ void View::setUpViewForStereo()
                 right_camera->setDrawBuffer(GL_FRONT);
                 right_camera->setReadBuffer(GL_FRONT);
                 right_camera->setAllowEventFocus(true);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
                 right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2929,6 +2935,7 @@ void View::setUpViewForStereo()
                 left_camera->setDrawBuffer(GL_FRONT);
                 left_camera->setReadBuffer(GL_FRONT);
                 left_camera->setAllowEventFocus(false);
+                left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
                 left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2976,6 +2983,7 @@ void View::setUpViewForStereo()
                 right_camera->setDrawBuffer(GL_FRONT);
                 right_camera->setReadBuffer(GL_FRONT);
                 right_camera->setAllowEventFocus(false);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
                 right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
                 // attach the texture and use it as the color buffer.
@@ -2987,7 +2995,7 @@ void View::setUpViewForStereo()
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                                                                 texture, keystone.get());
 
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
                 
                 // attach Keystone editing event handler.
                 camera->addEventCallback(new KeystoneHandler(keystone.get()));

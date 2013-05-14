@@ -134,7 +134,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         const DatabaseThread* getDatabaseThread(unsigned int i) const { return _databaseThreads[i].get(); }
 
-        unsigned int getNumDatabaseThreads() const { return _databaseThreads.size(); }
+        unsigned int getNumDatabaseThreads() const { return static_cast<unsigned int>(_databaseThreads.size()); }
 
         /** Set whether the database pager thread should be paused or not.*/
         void setDatabasePagerThreadPause(bool pause);
@@ -245,13 +245,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
 
         /** Report how many items are in the _fileRequestList queue */
-        unsigned int getFileRequestListSize() const { return _fileRequestQueue->size() + _httpRequestQueue->size(); }
+        unsigned int getFileRequestListSize() const { return static_cast<unsigned int>(_fileRequestQueue->size() + _httpRequestQueue->size()); }
 
         /** Report how many items are in the _dataToCompileList queue */
-        unsigned int getDataToCompileListSize() const { return _dataToCompileList->size(); }
+        unsigned int getDataToCompileListSize() const { return static_cast<unsigned int>(_dataToCompileList->size()); }
 
         /** Report how many items are in the _dataToMergeList queue */
-        unsigned int getDataToMergeListSize() const { return _dataToMergeList->size(); }
+        unsigned int getDataToMergeListSize() const { return static_cast<unsigned int>(_dataToMergeList->size()); }
 
         /** Report whether any requests are in the pager.*/
         bool getRequestsInProgress() const;

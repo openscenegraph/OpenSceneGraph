@@ -661,7 +661,7 @@ class OSG_EXPORT Uniform : public Object
          * Get the number of parents of this Uniform.
          * @return the number of parents of this Uniform.
          */
-        inline unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
 
         /** convenient scalar (non-array) value assignment */

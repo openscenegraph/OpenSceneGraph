@@ -40,7 +40,7 @@ public:
     typedef std::map<Value, std::string> ValueToString;
 
     IntLookup() {}
-    unsigned int size() const { return _stringToValue.size(); }
+    unsigned int size() const { return static_cast<unsigned int>(_stringToValue.size()); }
 
     void add( const char* str, Value value )
     {

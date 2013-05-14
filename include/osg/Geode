@@ -90,7 +90,7 @@ class OSG_EXPORT Geode : public Node
         /** Return the number of <tt>Drawable</tt>s currently attached to the
           * \c Geode.
         */
-        inline unsigned int getNumDrawables() const { return _drawables.size(); }
+        inline unsigned int getNumDrawables() const { return static_cast<unsigned int>(_drawables.size()); }
 
         /** Return the \c Drawable at position \c i.*/
         inline Drawable* getDrawable( unsigned int i ) { return _drawables[i].get(); }
@@ -121,7 +121,7 @@ class OSG_EXPORT Geode : public Node
             {
                 if (_drawables[drawableNum]==drawable) return drawableNum;
             }
-            return _drawables.size(); // drawable not found.
+            return static_cast<unsigned int>(_drawables.size()); // drawable not found.
         }
 
         /** Get the list of drawables.*/

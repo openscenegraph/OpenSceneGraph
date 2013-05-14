@@ -416,7 +416,7 @@ public:
             META_Object(osgGA, TouchData);
             
 
-            unsigned int getNumTouchPoints() const { return _touches.size(); }
+            unsigned int getNumTouchPoints() const { return static_cast<unsigned int>(_touches.size()); }
 
             iterator begin() { return _touches.begin(); }
             const_iterator begin() const { return _touches.begin(); }

@@ -175,7 +175,7 @@ class OSGDB_EXPORT Options : public osg::Object
         void removePluginData(const std::string& s) const { _pluginData.erase(s); }
 
         /** Get number of PluginData values */
-        unsigned int getNumPluginData() const { return _pluginData.size(); }
+        unsigned int getNumPluginData() const { return static_cast<unsigned int>(_pluginData.size()); }
 
 
         /** Sets a plugindata value PluginData with a string */
@@ -195,7 +195,7 @@ class OSGDB_EXPORT Options : public osg::Object
         void removePluginStringData(const std::string& s) const { _pluginStringData.erase(s); }
 
         /** Get number of PluginStrData values */
-        unsigned int getNumPluginStringData() const { return _pluginStringData.size(); }
+        unsigned int getNumPluginStringData() const { return static_cast<unsigned int>(_pluginStringData.size()); }
 
         /** Parse string into plugin string data. This will be automatically done in Options(const std::string&) */
         void parsePluginStringData(const std::string& str, char separator1=' ', char separator2='=');

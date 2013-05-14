@@ -53,7 +53,7 @@ class OSG_EXPORT ShaderBinary : public osg::Object
         void assign(unsigned int size, const unsigned char* data);
 
         /** Get the size of the shader binary data.*/
-        unsigned int getSize() const { return _data.size(); }
+        unsigned int getSize() const { return static_cast<unsigned int>(_data.size()); }
 
         /** Get a ptr to the shader binary data.*/
         unsigned char* getData() { return _data.empty() ? 0 : &(_data.front()); }
@@ -294,7 +294,7 @@ class OSG_EXPORT ShaderComponent : public osg::Object
         osg::Shader* getShader(unsigned int i) { return _shaders[i].get(); }
         const osg::Shader* getShader(unsigned int i) const { return _shaders[i].get(); }
 
-        unsigned int getNumShaders() const { return _shaders.size(); }
+        unsigned int getNumShaders() const { return static_cast<unsigned int>(_shaders.size()); }
 
         virtual void compileGLObjects(State& state) const;
         virtual void resizeGLObjectBuffers(unsigned int maxSize);

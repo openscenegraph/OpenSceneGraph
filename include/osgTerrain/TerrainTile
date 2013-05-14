@@ -139,7 +139,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         const Layer* getColorLayer(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].get() : 0; }
 
         /** Get the number of colour layers.*/
-        unsigned int getNumColorLayers() const { return _colorLayers.size(); }
+        unsigned int getNumColorLayers() const { return static_cast<unsigned int>(_colorLayers.size()); }
 
 
         /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/

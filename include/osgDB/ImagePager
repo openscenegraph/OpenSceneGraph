@@ -72,7 +72,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
 
         const ImageThread* getImageThread(unsigned int i) const { return _imageThreads[i].get(); }
 
-        unsigned int getNumImageThreads() const { return _imageThreads.size(); }
+        unsigned int getNumImageThreads() const { return static_cast<unsigned int>(_imageThreads.size()); }
 
 
         void setPreLoadTime(double preLoadTime) { _preLoadTime=preLoadTime; }

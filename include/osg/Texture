@@ -1276,8 +1276,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             unsigned int computeNumTextureObjectsInList() const;
             unsigned int getNumOfTextureObjects() const { return _numOfTextureObjects; }
-            unsigned int getNumOrphans() const { return _orphanedTextureObjects.size(); }
-            unsigned int getNumPendingOrphans() const { return _pendingOrphanedTextureObjects.size(); }
+            unsigned int getNumOrphans() const { return static_cast<unsigned int>(_orphanedTextureObjects.size()); }
+            unsigned int getNumPendingOrphans() const { return static_cast<unsigned int>(_pendingOrphanedTextureObjects.size()); }
 
         protected:
 

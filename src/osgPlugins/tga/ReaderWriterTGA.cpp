@@ -87,11 +87,11 @@ convert_16_to_24(const unsigned char * const src, unsigned char * const dest)
     unsigned int t0 = src[0];
     unsigned int t1 = src[1];
                                  /* r */
-    dest[0] = (unsigned char) (t0 & 0x1f) << 2;
+    dest[0] = (unsigned char) (t1 & 0x7c) << 1;
                                  /* g */
-    dest[1] = (unsigned char) (t1 & 0x7c) >> 2;
+    dest[1] = (unsigned char) ((t1 & 0x03) << 6) | ((t0 & 0xe0) >> 2);
                                  /*b */
-    dest[2] = (unsigned char) ((t1 & 0x3)<<3) | ((t0&0xe)>>5);
+    dest[2] = (unsigned char) (t0 & 0x1f) << 3;
 }
 
 
@@ -102,12 +102,12 @@ convert_16_to_32(const unsigned char * const src, unsigned char * const dest)
     unsigned int t0 = src[0];
     unsigned int t1 = src[1];
                                  /* r */
-    dest[0] = (unsigned char) (t0 & 0x1f) << 2;
+    dest[0] = (unsigned char) (t1 & 0x7c) << 1;
                                  /* g */
-    dest[1] = (unsigned char) (t1 & 0x7c) >> 2;
+    dest[1] = (unsigned char) ((t1 & 0x03) << 6) | ((t0 & 0xe0) >> 2);
                                  /*b */
-    dest[2] = (unsigned char) ((t1 & 0x3)<<3) | ((t0&0xe)>>5);
-    dest[3] = (t1&0x70)?255:0;   /* a */
+    dest[2] = (unsigned char) (t0 & 0x1f) << 3;
+    dest[3] = (t1 & 0x80)?255:0;   /* a */
 }
 
 

@@ -65,7 +65,15 @@ struct NotifyStreamBuffer : public std::stringbuf
     osg::NotifyHandler *getNotifyHandler() const { return _handler.get(); }
 
     /** Sets severity for next call of notify handler */
-    void setCurrentSeverity(osg::NotifySeverity severity) { _severity = severity; }
+    void setCurrentSeverity(osg::NotifySeverity severity)
+    {
+        if (_severity != severity)
+        {
+            sync();
+            _severity = severity;
+        }
+    }
+
     osg::NotifySeverity getCurrentSeverity() const { return _severity; }
 
 private:

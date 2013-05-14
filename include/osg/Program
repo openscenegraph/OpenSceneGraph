@@ -158,7 +158,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 GLenum getFormat() const {return _format;}
 
                 /** Get the size of the program binary data.*/
-                unsigned int getSize() const { return _data.size(); }
+                unsigned int getSize() const { return static_cast<unsigned int>(_data.size()); }
 
                 /** Get a ptr to the program binary data.*/
                 unsigned char* getData() { return _data.empty() ? 0 : &(_data.front()); }

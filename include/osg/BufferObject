@@ -406,8 +406,8 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
 
         unsigned int computeNumGLBufferObjectsInList() const;
         unsigned int getNumOfGLBufferObjects() const { return _numOfGLBufferObjects; }
-        unsigned int getNumOrphans() const { return _orphanedGLBufferObjects.size(); }
-        unsigned int getNumPendingOrphans() const { return _pendingOrphanedGLBufferObjects.size(); }
+        unsigned int getNumOrphans() const { return static_cast<unsigned int>(_orphanedGLBufferObjects.size()); }
+        unsigned int getNumPendingOrphans() const { return static_cast<unsigned int>(_pendingOrphanedGLBufferObjects.size()); }
 
 
     protected:
@@ -565,7 +565,7 @@ class OSG_EXPORT BufferObject : public Object
         BufferData* getBufferData(unsigned int index) { return _bufferDataList[index]; }
         const BufferData* getBufferData(unsigned int index) const { return _bufferDataList[index]; }
 
-        unsigned int getNumBufferData() const { return _bufferDataList.size(); }
+        unsigned int getNumBufferData() const { return static_cast<unsigned int>(_bufferDataList.size()); }
 
         void setGLBufferObject(unsigned int contextID, GLBufferObject* glbo) { _glBufferObjects[contextID] = glbo; }
 

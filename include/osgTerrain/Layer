@@ -526,7 +526,7 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
 
         void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
 
-        unsigned int getNumLayers() const { return _layers.size(); }
+        unsigned int getNumLayers() const { return static_cast<unsigned int>(_layers.size()); }
 
     protected:
 

@@ -82,35 +82,35 @@ class OSG_EXPORT PagedLOD : public LOD
 
         void setFileName(unsigned int childNo, const std::string& filename) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._filename=filename; }
         const std::string& getFileName(unsigned int childNo) const { return _perRangeDataList[childNo]._filename; }
-        unsigned int getNumFileNames() const { return _perRangeDataList.size(); }
+        unsigned int getNumFileNames() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
 
         void setPriorityOffset(unsigned int childNo, float priorityOffset) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._priorityOffset=priorityOffset; }
         float getPriorityOffset(unsigned int childNo) const { return _perRangeDataList[childNo]._priorityOffset; }
-        unsigned int getNumPriorityOffsets() const { return _perRangeDataList.size(); }
+        unsigned int getNumPriorityOffsets() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
         void setPriorityScale(unsigned int childNo, float priorityScale) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._priorityScale=priorityScale; }
         float getPriorityScale(unsigned int childNo) const { return _perRangeDataList[childNo]._priorityScale; }
-        unsigned int getNumPriorityScales() const { return _perRangeDataList.size(); }
+        unsigned int getNumPriorityScales() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
         /** Sets the minimum amount of time, in seconds, that must pass without a child being traversed before it can be expired. */
         void setMinimumExpiryTime(unsigned int childNo, double minTime) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._minExpiryTime=minTime; }
         double getMinimumExpiryTime(unsigned int childNo) const { return _perRangeDataList[childNo]._minExpiryTime; }
-        unsigned int getNumMinimumExpiryTimes() const { return _perRangeDataList.size(); }
+        unsigned int getNumMinimumExpiryTimes() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
          /** Sets the minimum number of frames that must be rendered without a child being traversed before it can be expired. */
         void setMinimumExpiryFrames(unsigned int childNo, unsigned int minFrames) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._minExpiryFrames=minFrames; }
         unsigned int getMinimumExpiryFrames(unsigned int childNo) const { return _perRangeDataList[childNo]._minExpiryFrames; }
-        unsigned int getNumMinimumExpiryFrames() const { return _perRangeDataList.size(); }
+        unsigned int getNumMinimumExpiryFrames() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
 
         void setTimeStamp(unsigned int childNo, double timeStamp) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._timeStamp=timeStamp; }
         double getTimeStamp(unsigned int childNo) const { return _perRangeDataList[childNo]._timeStamp; }
-        unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
+        unsigned int getNumTimeStamps() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
         void setFrameNumber(unsigned int childNo, unsigned int frameNumber) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._frameNumber=frameNumber; }
         unsigned getFrameNumber(unsigned int childNo) const { return _perRangeDataList[childNo]._frameNumber; }
-        unsigned int getNumFrameNumbers() const { return _perRangeDataList.size(); }
+        unsigned int getNumFrameNumbers() const { return static_cast<unsigned int>(_perRangeDataList.size()); }
 
 
         /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests

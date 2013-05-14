@@ -519,16 +519,16 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isGpuShader4Supported() const { return _isGpuShader4Supported; }
 
         void setUniformBufferObjectSupported(bool flag) { _isUniformBufferObjectSupported = flag; }
-        bool isUniformBufferObjectSupported() {return _isUniformBufferObjectSupported; }
+        bool isUniformBufferObjectSupported() const {return _isUniformBufferObjectSupported; }
 
         void setGetProgramBinarySupported(bool flag) { _isGetProgramBinarySupported = flag; }
-        bool isGetProgramBinarySupported() {return _isGetProgramBinarySupported; }
+        bool isGetProgramBinarySupported() const {return _isGetProgramBinarySupported; }
 
         void setGpuShaderFp64Supported(bool flag) { _isGpuShaderFp64Supported = flag; }
-        bool isGpuShaderFp64Supported() {return _isGpuShaderFp64Supported; }
+        bool isGpuShaderFp64Supported() const {return _isGpuShaderFp64Supported; }
 
         void setShaderAtomicCounterSupported(bool flag) { _isShaderAtomicCountersSupported = flag; }
-        bool isShaderAtomicCounterSupported() {return _isShaderAtomicCountersSupported; }
+        bool isShaderAtomicCounterSupported() const {return _isShaderAtomicCountersSupported; }
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then

@@ -1,0 +1,262 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_CONFIG
+#define OSGVIEWER_CONFIG 1
+
+#include <osg/Object>
+#include <osgViewer/Export>
+
+namespace osgViewer {
+
+// forward declare
+class View;
+    
+/** Config base class for encapsulating view configuration.*/
+class Config : public osg::Object
+{
+    public:
+
+        Config() {}
+
+        Config(const Config& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(rhs,copyop) {}
+
+        META_Object(osgViewer,Config);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& /*view*/) const {}
+};
+
+class OSGVIEWER_EXPORT ViewAcrossAllScreens : public Config
+{
+    public:
+        
+        ViewAcrossAllScreens() {}
+        ViewAcrossAllScreens(const ViewAcrossAllScreens& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): Config(rhs,copyop) {}
+        
+        META_Object(osgViewer,ViewAcrossAllScreens);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view) const;
+};
+
+/** single camera on a single window.*/
+class OSGVIEWER_EXPORT ViewInWindow : public Config
+{
+    public:
+        
+        ViewInWindow():_x(0),_y(0),_width(-1),_height(-1),_screenNum(0) {}
+        ViewInWindow(int x, int y, int width, int height, unsigned int screenNum=0):_x(x),_y(y),_width(width),_height(height),_screenNum(screenNum) {}
+        ViewInWindow(const ViewInWindow& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):Config(rhs,copyop), _x(rhs._x),_y(rhs._y),_width(rhs._width),_height(rhs._height),_screenNum(rhs._screenNum) {}
+        
+        META_Object(osgViewer,ViewInWindow);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view) const;
+        
+        void setX(int x) { _x = x; }
+        int getX() const { return _x; }
+        
+        void setY(int y) { _y = y; }
+        int getY() const { return _y; }
+        
+        void setWidth(int w) { _width = w; }
+        int getWidth() const { return _width; }
+
+        void setHeight(int h) { _height = h; }
+        int getHeight() const { return _height; }
+
+        void setScreenNum(unsigned int sn) { _screenNum = sn; }
+        unsigned int getScreenNum() const { return _screenNum; }
+        
+    protected:
+        
+        int _x, _y, _width, _height;
+        unsigned int _screenNum;
+};
+
+#if 0
+
+/** single camera associated with a single full screen GraphicsWindow.*/
+class OSGVIEWER_EXPORT ViewOnSingleScreen : public Config
+{
+    public:
+        
+        ViewOnSingleScreen(unsigned int screenNum=0);
+        ViewOnSingleScreen(const ViewOnSingleScreen& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgViewer,ViewOnSingleScreen);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view);
+
+        void setScreenNum(int sn) { _screenNum = sn; }
+        int getScreenNum() const { return _screenNum; }
+        
+    protected:
+        
+        unsigned int _screenNum;
+};
+
+/** spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
+class OSGVIEWER_EXPORT ViewFor3DSphericalDisplay : public Config
+{
+    public:
+        
+        ViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
+        ViewFor3DSphericalDisplay(const ViewFor3DSphericalDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgViewer,ViewOnSingleScreen);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view);
+        
+        void setRadius(double r) { _radius = r; }
+        double getRadius() const { return _radius; }
+        
+        void setCollar(double r) { _collar = r; }
+        double getCollar() const { return _collar; }
+        
+        void setScreenNum(unsigned int n) { _screenNum = n; }
+        unsigned int getScreenNum() const { return _screenNum; }
+        
+        void setIntensityMap(osg::Image* im) { _intensityMap = im; }
+        osg::Image* getIntensityMap() const { return _intensityMap; }
+        
+        void setProjectionMatrix(const osg::Matrixd& m) { _intensityMap = m; }
+        osg::Matrixd& getIntensityMap() const { return _intensityMap; }
+        
+    protected:
+        
+        double _radius;
+        double _collar;
+        unsigned int _screenNum;
+        osg::ref_ref<osg::Image> _intensityMap;
+        const osg::Matrixd _projectorMatrix;
+};
+
+/** spherical display by rendering main scene to a panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
+class OSGVIEWER_EXPORT ViewForPanoramicSphericalDisplay : public Config
+{
+    public:
+        
+        ViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
+        ViewForPanoramicSphericalDisplay(const ViewForPanoramicSphericalDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgViewer,ViewOnSingleScreen);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view);
+        
+        void setRadius(double r) { _radius = r; }
+        double getRadius() const { return _radius; }
+        
+        void setCollar(double r) { _collar = r; }
+        double getCollar() const { return _collar; }
+        
+        void setScreenNum(unsigned int n) { _screenNum = n; }
+        unsigned int getScreenNum() const { return _screenNum; }
+        
+        void setIntensityMap(osg::Image* im) { _intensityMap = im; }
+        osg::Image* getIntensityMap() const { return _intensityMap; }
+        
+        void setProjectionMatrix(const osg::Matrixd& m) { _intensityMap = m; }
+        osg::Matrixd& getIntensityMap() const { return _intensityMap; }
+        
+    protected:
+        
+        double _radius;
+        double _collar;
+        unsigned int _screenNum;
+        osg::ref_ref<osg::Image> _intensityMap;
+        const osg::Matrixd _projectorMatrix;
+};
+
+/** autostereoscopic Philips WoWvx display.*/
+class OSGVIEWER_EXPORT ViewForWoWVxDisplay : public Config
+{
+    public:
+        
+        ViewForWoWVxDisplay();
+        ViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
+        ViewForWoWVxDisplay(const ViewForWoWVxDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgViewer,ViewForWoWVxDisplay);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& view);
+        
+        void setScreenNum(unsigned int n) { _screenNum = n; }
+        unsigned int getScreenNum() const { return _screenNum; }
+
+        void set(unsigned char c) { _wow_content = c; }
+        double get() const { return _wow_content; }
+
+        void set(unsigned char c) { _wow_factor = c; }
+        double get() const { return _wow_factor; }
+
+        void set(unsigned char c) { _wow_offset = c; }
+        double get() const { return _wow_offset; }
+
+        void setWowDisparityZD(float c) { _wow_disparity_Zd = c; }
+        float getWowDisparityZD() const { return _wow_disparity_Zd; }
+        
+        void setWowDisparityVZ(float c) { _wow_disparity_vz = c; }
+        float getWowDisparityVZ() const { return _wow_disparity_vz; }
+        
+        void setWowDisparityM(float c) { _wow_disparity_M = c; }
+        float getWowDisparityM() const { return _wow_disparity_M; }
+        
+        void setWowDisparityC(float c) { _wow_disparity_C = c; }
+        float getWowDisparityC() const { return _wow_disparity_C; }
+        
+    protected:
+    
+        unsigned int _screenNum;
+        unsigned char _wow_content;
+        unsigned char _wow_factor;
+        unsigned char _wow_offset;
+        float _wow_disparity_Zd;
+        float _wow_disparity_vz;
+        float _wow_disparity_M;
+        float _wow_disparity_C;
+};
+        
+/** Configure view with DepthPartition.*/
+class OSGVIEWER_EXPORT DepthPartition : public Config
+{
+    public:
+        
+        DepthPartition(DepthPartitionSettings* dsp=0);
+
+        DepthPartition(const ViewForWoWVxDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgViewer,DepthPartition);
+
+        void setDepthPartionSettings(DepthPartitionSettings* dsp) const { _dps = dps; }
+        const DepthPartitionSettings* getDepthPartionSettings() const { return _dps; }
+
+        /** for setting up depth partitioning on the specified camera.*/
+        bool setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* dps=0);
+
+        virtual void configure(osgViewer::View& view);
+        
+    protected:
+};
+
+#endif
+
+}
+
+
+#endif

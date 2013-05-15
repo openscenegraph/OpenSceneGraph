@@ -10,6 +10,7 @@ SET(LIB_NAME osgViewer)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/CompositeViewer
+    ${HEADER_PATH}/Config
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GraphicsWindow
     ${HEADER_PATH}/Keystone
@@ -24,6 +25,7 @@ SET(TARGET_H
 
 SET(LIB_COMMON_FILES
     CompositeViewer.cpp
+    Config.cpp
     GraphicsWindow.cpp
     HelpHandler.cpp
     Keystone.cpp

@@ -26,6 +26,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
 #include <osgViewer/CompositeViewer>
+#include <osgViewer/Config>
 
 #include <sstream>
 #include <string.h>
@@ -299,6 +300,15 @@ bool Viewer::readConfiguration(const std::string& filename)
         //OSG_NOTICE<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
         return false;
     }
+    
+    Config* config = dynamic_cast<Config*>(object.get());
+    if (config)
+    {
+        OSG_NOTICE<<"Using osgViewer::Config : "<<config->className()<<std::endl;
+        config->configure(*this);
+        return true;
+    }
+    
 
     CompositeViewer* compositeViewer = dynamic_cast<CompositeViewer*>(object.get());
     if (compositeViewer)

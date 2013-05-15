@@ -23,7 +23,10 @@ SET(TARGET_H
     ${HEADER_PATH}/ViewerEventHandlers
 )
 
+FILE(GLOB LIB_COMMON_FILES config/*.cpp)
+
 SET(LIB_COMMON_FILES
+    ${LIB_COMMON_FILES}
     CompositeViewer.cpp
     Config.cpp
     GraphicsWindow.cpp
@@ -41,6 +44,7 @@ SET(LIB_COMMON_FILES
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
+# Collect all the configuration files
 SET(LIB_EXTRA_LIBS)
 
 IF(WIN32 AND NOT ANDROID)

@@ -30,15 +30,30 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/config/SingleWindow>
 
 
 int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
     
+    
+    osg::ref_ptr<osgViewer::Config> config;
+    std::string configFile;
+    if (arguments.read("-c",configFile)) 
+    {
+        config = osgDB::readFile<osgViewer::Config>(configFile);
+    }
+    if (!config) 
+    {
+        config = new osgViewer::SingleWindow(100,100,800,600,0);
+    }
+    
+    OSG_NOTICE<<"Config "<<config.get()<<std::endl;
+    
     // initialize the viewer.
     osgViewer::Viewer viewer(arguments);
-
+    
     osg::DisplaySettings* ds = viewer.getDisplaySettings() ? viewer.getDisplaySettings() : osg::DisplaySettings::instance().get();
     ds->readCommandLine(arguments);
 
@@ -56,6 +71,13 @@ int main( int argc, char **argv )
 
     viewer.setSceneData(model.get());
     
+    if (config.valid())
+    {
+        config->configure(viewer);
+        
+        osgDB::writeObjectFile(*config,"myconfig.osgx");
+    }
+    
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
@@ -64,6 +86,8 @@ int main( int argc, char **argv )
 
     // add camera manipulator
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+#if 0
     
     
     OSG_NOTICE<<"KeystoneFileNames.size()="<<ds->getKeystoneFileNames().size()<<std::endl;
@@ -110,7 +134,7 @@ int main( int argc, char **argv )
         
         viewer.setUpViewForKeystone(keystone.get());
     }
-    
+#endif    
     viewer.realize();
 
     while(!viewer.done())

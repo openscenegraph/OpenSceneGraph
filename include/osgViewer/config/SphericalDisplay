@@ -11,119 +11,26 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGVIEWER_CONFIG
-#define OSGVIEWER_CONFIG 1
+#ifndef OSGVIEWER_SphericalDisplay
+#define OSGVIEWER_SphericalDisplay 1
 
-#include <osg/DisplaySettings>
-#include <osg/Geometry>
-#include <osg/Image>
-
-#include <osgViewer/Export>
+#include <osgViewer/Config>
 
 namespace osgViewer {
 
-// forward declare
-class View;
-    
-/** Config base class for encapsulating view configuration.*/
-class OSGVIEWER_EXPORT Config : public osg::Object
-{
-    public:
-
-        Config() {}
-
-        Config(const Config& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(rhs,copyop) {}
-
-        META_Object(osgViewer,Config);
-        
-        /** configure method that is overridden by Config subclasses.*/
-        virtual void configure(osgViewer::View& /*view*/) const {}
-        
-        virtual osg::DisplaySettings* getActiveDisplaySetting(osgViewer::View& view) const;
-};
-#if 0
-
-class OSGVIEWER_EXPORT ViewAcrossAllScreens : public Config
-{
-    public:
-        
-        ViewAcrossAllScreens() {}
-        ViewAcrossAllScreens(const ViewAcrossAllScreens& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): Config(rhs,copyop) {}
-        
-        META_Object(osgViewer,ViewAcrossAllScreens);
-        
-        virtual void configure(osgViewer::View& view) const;
-};
-
-/** single camera on a single window.*/
-class OSGVIEWER_EXPORT ViewInWindow : public Config
-{
-    public:
-        
-        ViewInWindow():_x(0),_y(0),_width(-1),_height(-1),_screenNum(0) {}
-        ViewInWindow(int x, int y, int width, int height, unsigned int screenNum=0):_x(x),_y(y),_width(width),_height(height),_screenNum(screenNum) {}
-        ViewInWindow(const ViewInWindow& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):Config(rhs,copyop), _x(rhs._x),_y(rhs._y),_width(rhs._width),_height(rhs._height),_screenNum(rhs._screenNum) {}
-        
-        META_Object(osgViewer,ViewInWindow);
-        
-        virtual void configure(osgViewer::View& view) const;
-        
-        void setX(int x) { _x = x; }
-        int getX() const { return _x; }
-        
-        void setY(int y) { _y = y; }
-        int getY() const { return _y; }
-        
-        void setWidth(int w) { _width = w; }
-        int getWidth() const { return _width; }
-
-        void setHeight(int h) { _height = h; }
-        int getHeight() const { return _height; }
-
-        void setScreenNum(unsigned int sn) { _screenNum = sn; }
-        unsigned int getScreenNum() const { return _screenNum; }
-        
-    protected:
-        
-        int _x, _y, _width, _height;
-        unsigned int _screenNum;
-};
-
-
-/** single camera associated with a single full screen GraphicsWindow.*/
-class OSGVIEWER_EXPORT ViewOnSingleScreen : public Config
-{
-    public:
-        
-        ViewOnSingleScreen(unsigned int screenNum=0) : _screenNum(screenNum) {}
-        ViewOnSingleScreen(const ViewOnSingleScreen& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : Config(rhs,copyop), _screenNum(rhs._screenNum) {}
-        
-        META_Object(osgViewer,ViewOnSingleScreen);
-        
-        virtual void configure(osgViewer::View& view) const;
-
-        void setScreenNum(unsigned int sn) { _screenNum = sn; }
-        unsigned int getScreenNum() const { return _screenNum; }
-        
-    protected:
-        
-        unsigned int _screenNum;
-};
-
-
 /** spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
-class OSGVIEWER_EXPORT ViewFor3DSphericalDisplay : public Config
+class OSGVIEWER_EXPORT SphericalDisplay : public Config
 {
     public:
         
-        ViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd()):
+        SphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd()):
             _radius(radius),
             _collar(collar),
             _screenNum(screenNum),
             _intensityMap(intensityMap),
             _projectorMatrix(projectorMatrix) {}
             
-        ViewFor3DSphericalDisplay(const ViewFor3DSphericalDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        SphericalDisplay(const SphericalDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             Config(rhs,copyop),
             _radius(rhs._radius),
             _collar(rhs._collar),
@@ -131,7 +38,7 @@ class OSGVIEWER_EXPORT ViewFor3DSphericalDisplay : public Config
             _intensityMap(rhs._intensityMap),
             _projectorMatrix(rhs._projectorMatrix) {}
         
-        META_Object(osgViewer,ViewFor3DSphericalDisplay);
+        META_Object(osgViewer,SphericalDisplay);
         
         virtual void configure(osgViewer::View& view) const;
         
@@ -161,6 +68,7 @@ class OSGVIEWER_EXPORT ViewFor3DSphericalDisplay : public Config
         osg::Matrixd _projectorMatrix;
 };
 
+#if 0
 /** spherical display by rendering main scene to a panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
 class OSGVIEWER_EXPORT ViewForPanoramicSphericalDisplay : public Config
 {

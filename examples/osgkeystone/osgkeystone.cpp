@@ -31,6 +31,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/config/SingleWindow>
+#include <osgViewer/config/WoWVxDisplay>
 
 
 int main( int argc, char **argv )
@@ -46,7 +47,7 @@ int main( int argc, char **argv )
     }
     if (!config) 
     {
-        config = new osgViewer::SingleWindow(100,100,800,600,0);
+        config = new osgViewer::WoWVxDisplay(); // new osgViewer::SingleWindow(100,100,800,600,0);
     }
     
     OSG_NOTICE<<"Config "<<config.get()<<std::endl;

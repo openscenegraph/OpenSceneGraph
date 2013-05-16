@@ -33,6 +33,25 @@
 namespace osgViewer {
 
 
+/** Base class for View configurations for setting up Camera and Windowing.*/
+class OSGVIEWER_EXPORT ViewConfig : public osg::Object
+{
+    public:
+
+        ViewConfig() {}
+
+        ViewConfig(const ViewConfig& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(rhs,copyop) {}
+
+        META_Object(osgViewer,ViewConfig);
+        
+        /** configure method that is overridden by Config subclasses.*/
+        virtual void configure(osgViewer::View& /*view*/) const {}
+        
+        /** convinience method for getting the relavent display settings to use.*/
+        virtual osg::DisplaySettings* getActiveDisplaySetting(osgViewer::View& view) const;
+};
+
+
 struct OSGVIEWER_EXPORT DepthPartitionSettings : public osg::Referenced
 {
     enum DepthMode
@@ -197,26 +216,33 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.*/
         float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
-
-        /** Convenience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
+        
+        /** Apply a viewer configuration to set up Cameras and Windowing. */
+        void apply(ViewConfig* config);
+        
+        ViewConfig* getLastAppliedViewConfig() { return _lastAppliedViewConfig.get(); }
+        const ViewConfig* getLastAppliedViewConfig() const { return _lastAppliedViewConfig.get(); }
+        
+        
+        /** deprecated, use view.apply(new osgViewer::AcrossAllWindows()). */
         void setUpViewAcrossAllScreens();
 
-        /** Convenience method for a single camera on a single window.*/
+        /** depreacted, use view.apply(new osgViewer::SingleWindow(x,y,width,screenNum)). */
         void setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum=0);
 
-        /** Convenience method for a single camera associated with a single full screen GraphicsWindow.*/
+        /** deprecated, use view.apply(new osgViewer::SingleScreen(screenNum)). */
         void setUpViewOnSingleScreen(unsigned int screenNum=0);
 
-
-        /** Convenience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
+        /** deprecated, use view.apply(new osgViewer::SphericalDisplay(radius, collar, screenNum, intensityMap, projectorMatrix)). */
         void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
-        /** Convenience method for spherical display by rendering main scene to a panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
+        /** depreacted, use view.apply(new osgViewer::PanoramicSphericalDisplay(radius, collar, screenNum, intensityMap, projectorMatrix)). */
         void setUpViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
-        /** Convenience method for autostereoscopic Philips WoWvx display.*/
+        /** deprecated. use view.apply(new osgViewer::WoWVxDisplay(type (20 to 42), screenNum). */
         void setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
 
+        
 
         /** Convenience method for setting up depth partitioning on the specified camera.*/
         bool setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* dps=0);
@@ -307,6 +333,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;
+
+        osg::ref_ptr<ViewConfig>                _lastAppliedViewConfig;
+        
 };
 
 }

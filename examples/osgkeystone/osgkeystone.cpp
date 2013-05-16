@@ -39,11 +39,11 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
     
     
-    osg::ref_ptr<osgViewer::Config> config;
+    osg::ref_ptr<osgViewer::ViewConfig> config;
     std::string configFile;
     if (arguments.read("-c",configFile)) 
     {
-        config = osgDB::readFile<osgViewer::Config>(configFile);
+        config = osgDB::readFile<osgViewer::ViewConfig>(configFile);
     }
     if (!config) 
     {
@@ -74,7 +74,7 @@ int main( int argc, char **argv )
     
     if (config.valid())
     {
-        config->configure(viewer);
+        viewer.apply(config.get());
         
         osgDB::writeObjectFile(*config,"myconfig.osgx");
     }

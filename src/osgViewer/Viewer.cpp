@@ -27,6 +27,10 @@
 #include <osgViewer/Renderer>
 #include <osgViewer/CompositeViewer>
 
+#include <osgViewer/config/SphericalDisplay>
+#include <osgViewer/config/PanoramicSphericalDisplay>
+#include <osgViewer/config/WoWVxDisplay>
+
 #include <sstream>
 #include <string.h>
 
@@ -129,32 +133,23 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     bool wowvx42 = false;
     if ((wowvx20=arguments.read("--wowvx-20")) || (wowvx42=arguments.read("--wowvx-42")) || arguments.read("--wowvx"))
     {
-        int wow_content=0x02, wow_factor=0x40, wow_offset=0x80;
-        float wow_Zd, wow_vz, wow_M, wow_C;
-        if (wowvx20){
-            wow_Zd = 0.459813f;
-            wow_vz = 6.180772f;
-            wow_M = -1586.34f;
-            wow_C = 127.5f;
-        }
-        else if (wowvx42){
-            wow_Zd = 0.467481f;
-            wow_vz = 7.655192f;
-            wow_M = -1960.37f;
-            wow_C = 127.5f;
-        }
+        osg::ref_ptr<WoWVxDisplay> wow = new WoWVxDisplay;
 
-        while (arguments.read("--wow-content",wow_content)) {}
-        while (arguments.read("--wow-factor",wow_factor)) {}
-        while (arguments.read("--wow-offset",wow_offset)) {}
-        while (arguments.read("--wow-zd",wow_Zd)) {}
-        while (arguments.read("--wow-vz",wow_vz)) {}
-        while (arguments.read("--wow-M",wow_M)) {}
-        while (arguments.read("--wow-C",wow_C)) {}
+        if (screenNum>=0) wow->setScreenNum(screenNum);
+        if (wowvx20) wow->WoWVx20();
+        if (wowvx42) wow->WoWVx42();
 
-        if (screenNum<0) screenNum = 0;
+        unsigned int c;
+        float v;
+        while (arguments.read("--wow-content",c)) { wow->setContent(c); }
+        while (arguments.read("--wow-factor",c)) { wow->setFactor(c); }
+        while (arguments.read("--wow-offset",c)) { wow->setOffset(c); }
+        while (arguments.read("--wow-zd",v)) { wow->setDisparityZD(v); }
+        while (arguments.read("--wow-vz",v)) { wow->setDisparityVZ(v); }
+        while (arguments.read("--wow-M",v)) { wow->setDisparityM(v); }
+        while (arguments.read("--wow-C",v)) { wow->setDisparityC(v); }
 
-        setUpViewForWoWVxDisplay( screenNum, wow_content, wow_factor, wow_offset, wow_Zd, wow_vz, wow_M, wow_C );
+        apply(wow.get());
     }
     else if ((ss3d=arguments.read("--3d-sd")) || arguments.read("--panoramic-sd"))
     {
@@ -303,7 +298,8 @@ bool Viewer::readConfiguration(const std::string& filename)
     ViewConfig* config = dynamic_cast<ViewConfig*>(object.get());
     if (config)
     {
-        apply(config);
+        OSG_NOTICE<<"Using osgViewer::Config : "<<config->className()<<std::endl;
+        config->configure(*this);
         return true;
     }
     

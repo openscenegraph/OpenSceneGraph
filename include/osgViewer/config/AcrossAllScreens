@@ -14,16 +14,16 @@
 #ifndef OSGVIEWER_AcrossAllScreens
 #define OSGVIEWER_AcrossAllScreens 1
 
-#include <osgViewer/Config>
+#include <osgViewer/View>
 
 namespace osgViewer {
 
-class OSGVIEWER_EXPORT AcrossAllScreens : public Config
+class OSGVIEWER_EXPORT AcrossAllScreens : public ViewConfig
 {
     public:
         
         AcrossAllScreens() {}
-        AcrossAllScreens(const AcrossAllScreens& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): Config(rhs,copyop) {}
+        AcrossAllScreens(const AcrossAllScreens& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): ViewConfig(rhs,copyop) {}
         
         META_Object(osgViewer, AcrossAllScreens);
         

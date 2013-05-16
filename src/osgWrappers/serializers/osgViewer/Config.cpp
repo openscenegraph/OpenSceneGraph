@@ -1,12 +1,12 @@
-#include <osgViewer/Config>
+#include <osgViewer/View>
 
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-REGISTER_OBJECT_WRAPPER( osgViewer_Config,
-                         new osgViewer::Config,
-                         osgViewer::Config,
-                         "osg::Object osgViewer::Config" )
+REGISTER_OBJECT_WRAPPER( osgViewer_ViewConfig,
+                         new osgViewer::ViewConfig,
+                         osgViewer::ViewConfig,
+                         "osg::Object osgViewer::ViewConfig" )
 {
 }

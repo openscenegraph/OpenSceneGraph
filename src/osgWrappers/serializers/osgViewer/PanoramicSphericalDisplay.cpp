@@ -7,7 +7,7 @@
 REGISTER_OBJECT_WRAPPER( osgViewer_PanoramicSphericalDisplay,
                          new osgViewer::PanoramicSphericalDisplay,
                          osgViewer::PanoramicSphericalDisplay,
-                         "osg::Object osgViewer::Config osgViewer::PanoramicSphericalDisplay" )
+                         "osg::Object osgViewer::ViewConfig osgViewer::PanoramicSphericalDisplay" )
 {
     ADD_DOUBLE_SERIALIZER(Radius, 1.0);
     ADD_DOUBLE_SERIALIZER(Collar, 0.45);

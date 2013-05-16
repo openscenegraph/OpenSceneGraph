@@ -26,7 +26,6 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
 #include <osgViewer/CompositeViewer>
-#include <osgViewer/Config>
 
 #include <sstream>
 #include <string.h>
@@ -301,11 +300,10 @@ bool Viewer::readConfiguration(const std::string& filename)
         return false;
     }
     
-    Config* config = dynamic_cast<Config*>(object.get());
+    ViewConfig* config = dynamic_cast<ViewConfig*>(object.get());
     if (config)
     {
-        OSG_NOTICE<<"Using osgViewer::Config : "<<config->className()<<std::endl;
-        config->configure(*this);
+        apply(config);
         return true;
     }
     

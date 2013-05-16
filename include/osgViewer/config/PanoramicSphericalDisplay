@@ -14,12 +14,12 @@
 #ifndef OSGVIEWER_PanoramicSphericalDisplay
 #define OSGVIEWER_PanoramicSphericalDisplay 1
 
-#include <osgViewer/Config>
+#include <osgViewer/View>
 
 namespace osgViewer {
 
 /** spherical display by rendering main scene to a panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
-class OSGVIEWER_EXPORT PanoramicSphericalDisplay : public Config
+class OSGVIEWER_EXPORT PanoramicSphericalDisplay : public ViewConfig
 {
     public:
         
@@ -31,7 +31,7 @@ class OSGVIEWER_EXPORT PanoramicSphericalDisplay : public Config
             _projectorMatrix(projectorMatrix) {}
             
         PanoramicSphericalDisplay(const PanoramicSphericalDisplay& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Config(rhs, copyop),
+            ViewConfig(rhs, copyop),
             _radius(rhs._radius),
             _collar(rhs._collar),
             _screenNum(rhs._screenNum),

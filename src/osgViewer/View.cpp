@@ -1224,7 +1224,18 @@ void View::StereoSlaveCallback::updateSlave(osg::View& view, osg::View::Slave& s
 
     if (_ds.valid() && camera && viewer_view)
     {
-
+        // inherit any settings applied to the master Camera.
+        camera->inheritCullSettings(*(view.getCamera()), camera->getInheritanceMask());
+        
+        if (_eyeScale<0.0)
+        {
+            camera->setCullMask(camera->getCullMaskLeft());
+        }
+        else
+        {
+            camera->setCullMask(camera->getCullMaskRight());
+        }
+            
         // set projection matrix
         if (_eyeScale<0.0)
         {

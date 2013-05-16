@@ -1615,7 +1615,7 @@ void View::setUpViewForStereo()
             // left viewport Camera
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(),
                                left_start, 0, traits->width/2, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               1.0);
+                               -1.0);
 
             // right viewport Camera
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(),
@@ -1704,7 +1704,7 @@ void View::setUpViewForStereo()
             // bottom viewport Camera
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(),
                                0, left_start, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                               1.0);
+                               -1.0);
 
             // top vieport camera
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(),

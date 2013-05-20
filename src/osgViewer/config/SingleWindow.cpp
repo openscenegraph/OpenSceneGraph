@@ -41,7 +41,8 @@ void SingleWindow::configure(osgViewer::View& view) const
     traits->y = _y;
     traits->width = _width;
     traits->height = _height;
-    traits->windowDecoration = true;
+    traits->windowDecoration = _border;
+    traits->overrideRedirect = _overrideRedirect;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
     
@@ -60,7 +61,7 @@ void SingleWindow::configure(osgViewer::View& view) const
         if (traits->width<=0) traits->width = width;
         if (traits->height<=0) traits->height = height;
     }
-
+    
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
     view.getCamera()->setGraphicsContext(gc.get());

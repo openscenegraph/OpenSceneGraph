@@ -14,4 +14,6 @@ REGISTER_OBJECT_WRAPPER( osgViewer_SingleWindow,
     ADD_INT_SERIALIZER( Width, -1);
     ADD_INT_SERIALIZER( Height, -1);
     ADD_UINT_SERIALIZER( ScreenNum, 0u);
+    ADD_BOOL_SERIALIZER( Border, true);
+    ADD_BOOL_SERIALIZER( OverrideRedirect, true);
 }

@@ -16,73 +16,15 @@
 #include <osgViewer/View>
 #include <osgViewer/GraphicsWindow>
 
+#include <osgViewer/config/SingleWindow>
+
 #include <osg/io_utils>
 
 using namespace osgViewer;
 
 void SingleScreen::configure(osgViewer::View& view) const
 {
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
-    {
-        OSG_NOTICE<<"SingleScreen::configure() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    osg::DisplaySettings* ds = getActiveDisplaySetting(view);;
-
-    osg::GraphicsContext::ScreenIdentifier si;
-    si.readDISPLAY();
-
-    // displayNum has not been set so reset it to 0.
-    if (si.displayNum<0) si.displayNum = 0;
-
-    si.screenNum = _screenNum;
-
-    unsigned int width, height;
-    wsi->getScreenResolution(si, width, height);
-
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
-    traits->hostName = si.hostName;
-    traits->displayNum = si.displayNum;
-    traits->screenNum = si.screenNum;
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width;
-    traits->height = height;
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-    view.getCamera()->setGraphicsContext(gc.get());
-
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-    if (gw)
-    {
-        OSG_INFO<<"SingleScreen::configure() - GraphicsWindow has been created successfully."<<std::endl;
-        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-    }
-    else
-    {
-        OSG_NOTICE<<"  GraphicsWindow has not been created successfully."<<std::endl;
-    }
-
-    double fovy, aspectRatio, zNear, zFar;
-    view.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
-
-    double newAspectRatio = double(traits->width) / double(traits->height);
-    double aspectRatioChange = newAspectRatio / aspectRatio;
-    if (aspectRatioChange != 1.0)
-    {
-        view.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
-    }
-
-    view.getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-
-    GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-
-    view.getCamera()->setDrawBuffer(buffer);
-    view.getCamera()->setReadBuffer(buffer);
+    osg::ref_ptr<osgViewer::SingleWindow> singleWindow = new SingleWindow(0,0,-1,-1,_screenNum);
+    singleWindow->setWindowDecoration(false);
+    singleWindow->configure(view);
 }

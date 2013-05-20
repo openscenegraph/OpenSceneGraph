@@ -289,8 +289,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::Camera* assignRenderToTextureCamera(osg::GraphicsContext* gc, int width, int height, osg::Texture* texture);
         osg::Camera* assignKeystoneDistortionCamera(osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, Keystone* keystone);
         osg::Camera* assignStereoCamera(osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, double eyeScale);
-        void setUpViewForStereo();
-        void setUpViewForKeystone(Keystone* keystone);
+        void assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySettings* ds);
 
         struct StereoSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
         {

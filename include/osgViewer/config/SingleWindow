@@ -23,9 +23,9 @@ class OSGVIEWER_EXPORT SingleWindow : public ViewConfig
 {
     public:
         
-        SingleWindow():_x(0),_y(0),_width(-1),_height(-1),_screenNum(0) {}
-        SingleWindow(int x, int y, int width, int height, unsigned int screenNum=0):_x(x),_y(y),_width(width),_height(height),_screenNum(screenNum) {}
-        SingleWindow(const SingleWindow& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):ViewConfig(rhs,copyop), _x(rhs._x),_y(rhs._y),_width(rhs._width),_height(rhs._height),_screenNum(rhs._screenNum) {}
+        SingleWindow():_x(0),_y(0),_width(-1),_height(-1),_screenNum(0),_border(true),_overrideRedirect(false) {}
+        SingleWindow(int x, int y, int width, int height, unsigned int screenNum=0):_x(x),_y(y),_width(width),_height(height),_screenNum(screenNum),_border(true),_overrideRedirect(false) {}
+        SingleWindow(const SingleWindow& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):ViewConfig(rhs,copyop), _x(rhs._x),_y(rhs._y),_width(rhs._width),_height(rhs._height),_screenNum(rhs._screenNum),_border(rhs._border), _overrideRedirect(rhs._overrideRedirect) {}
         
         META_Object(osgViewer,SingleWindow);
         
@@ -46,10 +46,18 @@ class OSGVIEWER_EXPORT SingleWindow : public ViewConfig
         void setScreenNum(unsigned int sn) { _screenNum = sn; }
         unsigned int getScreenNum() const { return _screenNum; }
         
+        void setBorder(bool border) { _border = border; }
+        bool getBorder() const { return _border; }
+        
+        void setOverrideRedirect(bool override) { _overrideRedirect = override; }
+        bool getOverrideRedirect() const { return _overrideRedirect; }
+        
     protected:
         
         int _x, _y, _width, _height;
         unsigned int _screenNum;
+        bool _border;
+        bool _overrideRedirect;
 };
 
 }

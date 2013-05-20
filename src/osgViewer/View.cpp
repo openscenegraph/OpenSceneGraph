@@ -1577,42 +1577,107 @@ void View::setUpViewForStereo()
                 // one keystone and editing for the one window
 
                 osg::ref_ptr<Keystone> keystone = keystones.front();
-
-                // create distortion texture
-                osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
-
-                // convert to RTT Camera
-                left_camera->setDrawBuffer(GL_FRONT);
-                left_camera->setReadBuffer(GL_FRONT);
-                left_camera->setAllowEventFocus(false);
-                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
-                left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-
-                // attach the texture and use it as the color buffer.
-                left_camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
-
-
-                // convert to RTT Camera
-                right_camera->setDrawBuffer(GL_FRONT);
-                right_camera->setReadBuffer(GL_FRONT);
-                right_camera->setAllowEventFocus(false);
-                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
-                right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-
-                // attach the texture and use it as the color buffer.
-                right_camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
-
-
-                // create Keystone distortion camera
-                osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
-                                                                                0, 0, traits->width, traits->height,
-                                                                                traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                                                                                texture.get(), keystone.get());
-
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
                 
-                // attach Keystone editing event handler.
-                camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                bool useTwoTexture = true;
+                
+                if (useTwoTexture)
+                {
+                    
+                    // create left distortion texture
+                    osg::ref_ptr<osg::Texture> left_texture = createDistortionTexture(traits->width, traits->height);
+
+                    // convert to RTT Camera
+                    left_camera->setDrawBuffer(GL_FRONT);
+                    left_camera->setReadBuffer(GL_FRONT);
+                    left_camera->setAllowEventFocus(false);
+                    left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
+                    left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+                    left_camera->getOrCreateStateSet()->removeAttribute(osg::StateAttribute::COLORMASK);
+                    left_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+                    // attach the texture and use it as the color buffer.
+                    left_camera->attach(osg::Camera::COLOR_BUFFER, left_texture.get());
+
+                    // create left distortion texture
+                    osg::ref_ptr<osg::Texture> right_texture = createDistortionTexture(traits->width, traits->height);
+
+                    // convert to RTT Camera
+                    right_camera->setDrawBuffer(GL_FRONT);
+                    right_camera->setReadBuffer(GL_FRONT);
+                    right_camera->setAllowEventFocus(false);
+                    right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
+                    right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+                    right_camera->getOrCreateStateSet()->removeAttribute(osg::StateAttribute::COLORMASK);
+                    right_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+                    // attach the texture and use it as the color buffer.
+                    right_camera->attach(osg::Camera::COLOR_BUFFER, right_texture.get());
+
+                    // create Keystone left distortion camera
+                    osg::ref_ptr<osg::Camera> left_keystone_camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                                                                                    0, 0, traits->width, traits->height,
+                                                                                    traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                    left_texture.get(), keystone.get());
+
+                    left_keystone_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                    left_keystone_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+                    left_keystone_camera->getOrCreateStateSet()->setAttribute(new osg::ColorMask(true, false, false, true));
+
+
+                    // create Keystone right distortion camera
+                    osg::ref_ptr<osg::Camera> right_keystone_camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                                                                                    0, 0, traits->width, traits->height,
+                                                                                    traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                    right_texture.get(), keystone.get());
+
+                    right_keystone_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 3);
+                    right_keystone_camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+                    right_keystone_camera->getOrCreateStateSet()->setAttribute(new osg::ColorMask(false, true, true, true));
+
+                    // attach Keystone editing event handler.
+                    right_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
+
+                    getCamera()->setAllowEventFocus(false);
+                    
+                }
+                else
+                {                    
+                    // create distortion texture
+                    osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
+
+                    // convert to RTT Camera
+                    left_camera->setDrawBuffer(GL_FRONT);
+                    left_camera->setReadBuffer(GL_FRONT);
+                    left_camera->setAllowEventFocus(false);
+                    left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
+                    left_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+
+                    // attach the texture and use it as the color buffer.
+                    left_camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
+
+
+                    // convert to RTT Camera
+                    right_camera->setDrawBuffer(GL_FRONT);
+                    right_camera->setReadBuffer(GL_FRONT);
+                    right_camera->setAllowEventFocus(false);
+                    right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
+                    right_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+
+                    // attach the texture and use it as the color buffer.
+                    right_camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
+
+
+                    // create Keystone distortion camera
+                    osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                                                                                    0, 0, traits->width, traits->height,
+                                                                                    traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                    texture.get(), keystone.get());
+
+                    camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                    
+                    // attach Keystone editing event handler.
+                    camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                }
             }
 
             break;

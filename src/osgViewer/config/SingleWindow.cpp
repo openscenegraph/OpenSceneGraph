@@ -15,6 +15,13 @@
 #include <osgViewer/Renderer>
 #include <osgViewer/View>
 #include <osgViewer/GraphicsWindow>
+#include <osgViewer/Keystone>
+
+#include <osg/TextureRectangle>
+#include <osg/Texture1D>
+#include <osg/TexMat>
+#include <osg/Stencil>
+#include <osg/PolygonStipple>
 
 #include <osg/io_utils>
 
@@ -29,8 +36,8 @@ void SingleWindow::configure(osgViewer::View& view) const
         return;
     }
 
-    osg::DisplaySettings* ds = getActiveDisplaySetting(view);;
-
+    osg::DisplaySettings* ds = getActiveDisplaySetting(view);
+    
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 
     traits->readDISPLAY();
@@ -41,7 +48,7 @@ void SingleWindow::configure(osgViewer::View& view) const
     traits->y = _y;
     traits->width = _width;
     traits->height = _height;
-    traits->windowDecoration = _border;
+    traits->windowDecoration = _windowDecoration;
     traits->overrideRedirect = _overrideRedirect;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
@@ -93,4 +100,21 @@ void SingleWindow::configure(osgViewer::View& view) const
 
     view.getCamera()->setDrawBuffer(buffer);
     view.getCamera()->setReadBuffer(buffer);
+
+    OSG_NOTICE<<"Here"<<std::endl;
+    
+    if (ds->getKeystoneHint())
+    {
+        if (ds->getKeystoneHint() && !ds->getKeystoneFileNames().empty()) 
+        {
+            osgViewer::Keystone::loadKeystoneFiles(ds);
+        }
+        if (ds->getKeystones().empty()) ds->getKeystones().push_back(new Keystone);
+        
+        view.assignStereoOrKeystoneToCamera(view.getCamera(), ds);
+    }
+    else if (ds->getStereo() && ds->getUseSceneViewForStereoHint())
+    {
+        view.assignStereoOrKeystoneToCamera(view.getCamera(), ds);
+    }
 }

@@ -31,6 +31,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/config/SingleWindow>
+#include <osgViewer/config/SingleScreen>
 #include <osgViewer/config/WoWVxDisplay>
 
 
@@ -74,7 +75,8 @@ int main( int argc, char **argv )
     {
         OSG_NOTICE<<"   keystone filename = "<<*itr<<std::endl;
     }
-    
+
+    ds->setKeystoneHint(true);
     
     if (!ds->getKeystoneFileNames().empty())
     {
@@ -88,30 +90,14 @@ int main( int argc, char **argv )
                 std::string filename;
                 keystone->getUserValue("filename",filename);
                 OSG_NOTICE<<"Loaded keystone "<<filename<<", "<<keystone<<std::endl;
+                
+                ds->getKeystones().push_back(keystone);
             }
         }
     }
     
-    osgViewer::Keystone::loadKeystoneFiles(ds);
+    viewer.apply(new osgViewer::SingleScreen(0));
     
-    if (!ds->getKeystoneHint())
-    {
-        OSG_NOTICE<<"Keystone disabled"<<std::endl;
-    }
-
-    if (ds->getStereo())
-    {
-        viewer.setUpViewForStereo();
-    }
-    else
-    {  
-        osg::ref_ptr<osgViewer::Keystone> keystone = 0;
-        if (!(ds->getKeystones().empty())) keystone = dynamic_cast<osgViewer::Keystone*>(ds->getKeystones().front().get());
-        if (!keystone) keystone = new osgViewer::Keystone;
-        
-        viewer.setUpViewForKeystone(keystone.get());
-    }
-
     viewer.realize();
 
     while(!viewer.done())

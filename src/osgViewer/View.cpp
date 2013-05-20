@@ -1385,11 +1385,11 @@ static const GLubyte patternCheckerboard[] = {
     0xAA, 0xAA, 0xAA, 0xAA};
 
 
-void View::setUpViewForStereo()
+void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySettings* ds)
 {
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();    
-    if (!ds->getStereo()) return;
-
+    if (!camera || camera->getGraphicsContext()==0) return;
+    if (!ds->getStereo() && !ds->getKeystoneHint()) return;
+    
     ds->setUseSceneViewForStereoHint(false);
 
     typedef std::vector< osg::ref_ptr<Keystone> > Keystones;
@@ -1418,60 +1418,47 @@ void View::setUpViewForStereo()
         double distance = osg::DisplaySettings::instance()->getScreenDistance();
         double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
 
-        getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 1.0f,10000.0f);
+        camera->setProjectionMatrixAsPerspective( vfov, width/height, 1.0f,10000.0f);
     }
     
 
-    int screenNum = 0;
-
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
-    {
-        OSG_NOTICE<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    // unsigned int numScreens = wsi->getNumScreens(si);
+    osg::ref_ptr<osg::GraphicsContext> gc = camera->getGraphicsContext();
     
-    osg::GraphicsContext::ScreenIdentifier si;
-    si.readDISPLAY();
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = const_cast<osg::GraphicsContext::Traits*>(camera->getGraphicsContext()->getTraits());
 
-    // displayNum has not been set so reset it to 0.
-    if (si.displayNum<0) si.displayNum = 0;
-
-    si.screenNum = screenNum;
-
-    unsigned int width, height;
-    wsi->getScreenResolution(si, width, height);
-
-//    width/=2; height/=2;
-
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
-    traits->hostName = si.hostName;
-    traits->displayNum = si.displayNum;
-    traits->screenNum = si.screenNum;
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width;
-    traits->height = height;
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-
-    OSG_NOTICE<<"traits->stencil="<<traits->stencil<<std::endl;
-
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    if (!gc)
+    if (!ds->getStereo())
     {
-        OSG_NOTICE<<"GraphicsWindow has not been created successfully."<<std::endl;
+        // load or create a Keystone object
+        osg::ref_ptr<osgViewer::Keystone> keystone = 0;
+        if (!(ds->getKeystones().empty())) keystone = dynamic_cast<osgViewer::Keystone*>(ds->getKeystones().front().get());
+        if (!keystone) keystone = new osgViewer::Keystone;
+        
+        // create distortion texture
+        osg::ref_ptr<osg::Texture> texture = createDistortionTexture(traits->width, traits->height);
+
+        // create RTT Camera
+        assignRenderToTextureCamera(gc.get(), traits->width, traits->height, texture.get());
+
+        // create Keystone distortion camera
+        osg::ref_ptr<osg::Camera> distortion_camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                                                                        0, 0, traits->width, traits->height,
+                                                                        traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                        texture.get(), keystone.get());
+        // attach Keystone editing event handler.
+        distortion_camera->addEventCallback(new KeystoneHandler(keystone.get()));
+        
+        camera->setGraphicsContext(0);
+        
         return;
     }
-
+    
     switch(ds->getStereoMode())
     {
         case(osg::DisplaySettings::QUAD_BUFFER):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             // left Camera left buffer
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK_LEFT : GL_FRONT_LEFT, -1.0);
             left_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -1556,6 +1543,9 @@ void View::setUpViewForStereo()
         }
         case(osg::DisplaySettings::ANAGLYPHIC):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             // left Camera red
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, -1.0);
             left_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -1635,9 +1625,9 @@ void View::setUpViewForStereo()
                     right_keystone_camera->getOrCreateStateSet()->setAttribute(new osg::ColorMask(false, true, true, true));
 
                     // attach Keystone editing event handler.
-                    right_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                    left_keystone_camera->addEventCallback(new KeystoneHandler(keystone.get()));
 
-                    getCamera()->setAllowEventFocus(false);
+                    camera->setAllowEventFocus(false);
                     
                 }
                 else
@@ -1668,15 +1658,17 @@ void View::setUpViewForStereo()
 
 
                     // create Keystone distortion camera
-                    osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                    osg::ref_ptr<osg::Camera> distortion_camera = assignKeystoneDistortionCamera(ds, gc.get(),
                                                                                     0, 0, traits->width, traits->height,
                                                                                     traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                                                                     texture.get(), keystone.get());
 
-                    camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                    distortion_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
                     
                     // attach Keystone editing event handler.
-                    camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                    distortion_camera->addEventCallback(new KeystoneHandler(keystone.get()));
+
+                    camera->setAllowEventFocus(false);
                 }
             }
 
@@ -1684,6 +1676,9 @@ void View::setUpViewForStereo()
         }
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             bool left_eye_left_viewport = ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT;
             int left_start = (left_eye_left_viewport) ? 0 : traits->width/2;
             int right_start = (left_eye_left_viewport) ? traits->width/2 : 0;
@@ -1765,7 +1760,7 @@ void View::setUpViewForStereo()
                 // attach Keystone editing event handler.
                 right_keystone_camera->addEventCallback(new KeystoneHandler(right_keystone.get()));
 
-                getCamera()->setAllowEventFocus(false);
+                camera->setAllowEventFocus(false);
                 
             }
             
@@ -1773,6 +1768,9 @@ void View::setUpViewForStereo()
         }
         case(osg::DisplaySettings::VERTICAL_SPLIT):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             bool left_eye_bottom_viewport = ds->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT;
             int left_start = (left_eye_bottom_viewport) ? 0 : traits->height/2;
             int right_start = (left_eye_bottom_viewport) ? traits->height/2 : 0;
@@ -1861,7 +1859,7 @@ void View::setUpViewForStereo()
                 // attach Keystone editing event handler.
                 right_keystone_camera->addEventCallback(new KeystoneHandler(right_keystone.get()));
 
-                getCamera()->setAllowEventFocus(false);
+                camera->setAllowEventFocus(false);
                 
             }
 
@@ -1869,6 +1867,9 @@ void View::setUpViewForStereo()
         }
         case(osg::DisplaySettings::LEFT_EYE):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             // single window, whole window, just left eye offsets
             osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, -1.0);
 
@@ -1903,20 +1904,23 @@ void View::setUpViewForStereo()
 
 
                 // create Keystone distortion camera
-                osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                osg::ref_ptr<osg::Camera> distortion_camera = assignKeystoneDistortionCamera(ds, gc.get(),
                                                                                 0, 0, traits->width, traits->height,
                                                                                 traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                                                                 texture.get(), keystone.get());
 
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                distortion_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
                 
                 // attach Keystone editing event handler.
-                camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                distortion_camera->addEventCallback(new KeystoneHandler(keystone.get()));
             }
             break;
         }
         case(osg::DisplaySettings::RIGHT_EYE):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             // single window, whole window, just right eye offsets
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, 1.0);
 
@@ -1950,15 +1954,15 @@ void View::setUpViewForStereo()
                 right_camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
 
                 // create Keystone distortion camera
-                osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
-                                                                                0, 0, traits->width, traits->height,
-                                                                                traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                                                                                texture.get(), keystone.get());
+                osg::ref_ptr<osg::Camera> distortion_camera = assignKeystoneDistortionCamera(ds, gc.get(),
+                                                                                             0, 0, traits->width, traits->height,
+                                                                                             traits->doubleBuffer ? GL_BACK : GL_FRONT,
+                                                                                             texture.get(), keystone.get());
 
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
+                distortion_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
                 
                 // attach Keystone editing event handler.
-                camera->addEventCallback(new KeystoneHandler(keystone.get()));
+                distortion_camera->addEventCallback(new KeystoneHandler(keystone.get()));
             }
             break;
         }
@@ -1966,6 +1970,9 @@ void View::setUpViewForStereo()
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
         case(osg::DisplaySettings::CHECKERBOARD):
         {
+            // disconect the camera from the graphics context.
+            camera->setGraphicsContext(0);
+
             // set up the stencil buffer
             {
                 osg::ref_ptr<osg::Camera> camera = new osg::Camera;
@@ -2016,93 +2023,29 @@ void View::setUpViewForStereo()
 
             // left Camera
             {
-                osg::ref_ptr<osg::Camera> camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, -1.0);
-                camera->setClearMask(0);
-                camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
+                osg::ref_ptr<osg::Camera> left_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, -1.0);
+                left_camera->setClearMask(0);
+                left_camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+                left_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
 
                 osg::ref_ptr<osg::Stencil> stencil = new osg::Stencil;
                 stencil->setFunction(osg::Stencil::EQUAL, 0, ~0u);
                 stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-                camera->getOrCreateStateSet()->setAttributeAndModes(stencil.get(), osg::StateAttribute::ON);
+                left_camera->getOrCreateStateSet()->setAttributeAndModes(stencil.get(), osg::StateAttribute::ON);
             }
 
             // right Camera
             {
-                osg::ref_ptr<osg::Camera> camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, 1.0);
-                camera->setClearMask(GL_DEPTH_BUFFER_BIT);
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
+                osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK : GL_FRONT, 1.0);
+                right_camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+                right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 2);
 
                 osg::ref_ptr<osg::Stencil> stencil = new osg::Stencil;
                 stencil->setFunction(osg::Stencil::NOTEQUAL, 0, ~0u);
                 stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-                camera->getOrCreateStateSet()->setAttributeAndModes(stencil.get(), osg::StateAttribute::ON);
+                right_camera->getOrCreateStateSet()->setAttributeAndModes(stencil.get(), osg::StateAttribute::ON);
             }
             break;
         }
     }
 }
-
-
-void View::setUpViewForKeystone(Keystone* keystone)
-{
-    int screenNum = 0;
-    
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
-    {
-        OSG_NOTICE<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    osg::GraphicsContext::ScreenIdentifier si;
-    si.readDISPLAY();
-
-    // displayNum has not been set so reset it to 0.
-    if (si.displayNum<0) si.displayNum = 0;
-
-    si.screenNum = screenNum;
-
-    unsigned int width, height;
-    wsi->getScreenResolution(si, width, height);
-
-//    width/=2; height/=2;
-
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->hostName = si.hostName;
-    traits->displayNum = si.displayNum;
-    traits->screenNum = si.screenNum;
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width;
-    traits->height = height;
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    if (!gc)
-    {
-        OSG_NOTICE<<"GraphicsWindow has not been created successfully."<<std::endl;
-        return;
-    }
-
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();    
-
-    // create distortion texture
-    osg::ref_ptr<osg::Texture> texture = createDistortionTexture(width, height);
-
-    // create RTT Camera
-    assignRenderToTextureCamera(gc.get(), width, height, texture.get());
-
-    // create Keystone distortion camera
-    osg::ref_ptr<osg::Camera> camera = assignKeystoneDistortionCamera(ds, gc.get(),
-                                                                      0, 0, width, height,
-                                                                      traits->doubleBuffer ? GL_BACK : GL_FRONT,
-                                                                      texture.get(), keystone);
-    // attach Keystone editing event handler.
-    camera->addEventCallback(new KeystoneHandler(keystone));
-    
-}
-

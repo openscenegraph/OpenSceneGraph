@@ -500,6 +500,9 @@ void State::apply(const StateSet* dstate)
 
     if (dstate)
     {
+        // push the stateset on the stack so it can be querried from within StateAttribute
+        _stateStateStack.push_back(dstate);
+        
         _currentShaderCompositionUniformList.clear();
 
         applyModeList(_modeMap,dstate->getModeList());
@@ -546,7 +549,9 @@ void State::apply(const StateSet* dstate)
         {
             applyUniformList(_uniformMap,dstate->getUniformList());
         }
-
+        
+        // pop the stateset from the stack
+        _stateStateStack.pop_back();
     }
     else
     {

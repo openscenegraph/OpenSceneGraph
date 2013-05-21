@@ -69,7 +69,7 @@ IF(WIN32 AND NOT ANDROID)
         PixelBufferWin32.cpp
     )
 ELSE()
-    IF(APPLE)
+    IF(APPLE AND NOT ANDROID) 
 
         IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
             SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Windowing system type for graphics window creation, options only IOS.")

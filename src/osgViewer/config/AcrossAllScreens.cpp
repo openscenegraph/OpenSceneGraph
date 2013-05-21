@@ -12,6 +12,7 @@
 */
 
 #include <osgViewer/config/AcrossAllScreens>
+#include <osgViewer/config/SingleScreen>
 #include <osgViewer/Renderer>
 #include <osgViewer/View>
 #include <osgViewer/GraphicsWindow>
@@ -43,52 +44,8 @@ void AcrossAllScreens::configure(osgViewer::View& view) const
     unsigned int numScreens = wsi->getNumScreens(si);
     if (numScreens==1)
     {
-        if (si.screenNum<0) si.screenNum = 0;
-
-        unsigned int width, height;
-        wsi->getScreenResolution(si, width, height);
-
-        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
-        traits->hostName = si.hostName;
-        traits->displayNum = si.displayNum;
-        traits->screenNum = si.screenNum;
-        traits->x = 0;
-        traits->y = 0;
-        traits->width = width;
-        traits->height = height;
-        traits->windowDecoration = false;
-        traits->doubleBuffer = true;
-        traits->sharedContext = 0;
-
-        osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-        view.getCamera()->setGraphicsContext(gc.get());
-
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-        if (gw)
-        {
-            OSG_INFO<<"  GraphicsWindow has been created successfully."<<std::endl;
-            gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-        }
-        else
-        {
-            OSG_NOTICE<<"  GraphicsWindow has not been created successfully."<<std::endl;
-        }
-
-        double newAspectRatio = double(traits->width) / double(traits->height);
-        double aspectRatioChange = newAspectRatio / aspectRatio;
-        if (aspectRatioChange != 1.0)
-        {
-            view.getCamera()->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
-        }
-
-        view.getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-
-        view.getCamera()->setDrawBuffer(buffer);
-        view.getCamera()->setReadBuffer(buffer);
-
+        osg::ref_ptr<SingleScreen> ss = new SingleScreen(0);
+        ss->configure(view);
     }
     else
     {

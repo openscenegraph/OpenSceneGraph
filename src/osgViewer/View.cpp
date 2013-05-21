@@ -452,7 +452,7 @@ void View::apply(ViewConfig* config)
 {
     if (config)
     {
-        OSG_NOTICE<<"Applying osgViewer::ViewConfig : "<<config->className()<<std::endl;
+        OSG_INFO<<"Applying osgViewer::ViewConfig : "<<config->className()<<std::endl;
         config->configure(*this);
     }
     _lastAppliedViewConfig = config;
@@ -1413,9 +1413,9 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
    
     // set up view's main camera
     {
-        double height = osg::DisplaySettings::instance()->getScreenHeight();
-        double width = osg::DisplaySettings::instance()->getScreenWidth();
-        double distance = osg::DisplaySettings::instance()->getScreenDistance();
+        double height = ds->getScreenHeight();
+        double width = ds->getScreenWidth();
+        double distance = ds->getScreenDistance();
         double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
 
         camera->setProjectionMatrixAsPerspective( vfov, width/height, 1.0f,10000.0f);

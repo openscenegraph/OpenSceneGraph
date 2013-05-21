@@ -82,6 +82,7 @@ void SingleWindow::configure(osgViewer::View& view) const
     else
     {
         OSG_NOTICE<<"  GraphicsWindow has not been created successfully."<<std::endl;
+        return;
     }
 
     double fovy, aspectRatio, zNear, zFar;
@@ -101,8 +102,6 @@ void SingleWindow::configure(osgViewer::View& view) const
     view.getCamera()->setDrawBuffer(buffer);
     view.getCamera()->setReadBuffer(buffer);
 
-    OSG_NOTICE<<"Here"<<std::endl;
-    
     if (ds->getKeystoneHint())
     {
         if (ds->getKeystoneHint() && !ds->getKeystoneFileNames().empty()) 

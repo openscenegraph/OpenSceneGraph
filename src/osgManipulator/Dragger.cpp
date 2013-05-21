@@ -403,9 +403,11 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                                 _pointer.setCamera(rootCamera);
                                 _pointer.setMousePosition(ea.getX(), ea.getY());
 
-                                dragger->handle(_pointer, ea, aa);
-                                dragger->setDraggerActive(true);
-                                handled = true;
+                                if(dragger->handle(_pointer, ea, aa))
+                                {
+                                    dragger->setDraggerActive(true);
+                                    handled = true;
+                                }
                             }
                         }
                     }
@@ -421,9 +423,10 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
 //                    _pointer.setCamera(view->getCamera());
                     _pointer.setMousePosition(ea.getX(), ea.getY());
 
-                    handle(_pointer, ea, aa);
-
-                    handled = true;
+                    if(handle(_pointer, ea, aa))
+                    {
+                        handled = true;
+                    }
                 }
                 break;
             }

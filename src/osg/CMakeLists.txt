@@ -165,6 +165,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Texture2DMultisample
     ${HEADER_PATH}/Texture2DArray
     ${HEADER_PATH}/Texture3D
+    ${HEADER_PATH}/TextureBuffer
     ${HEADER_PATH}/TextureCubeMap
     ${HEADER_PATH}/TextureRectangle
     ${HEADER_PATH}/Timer
@@ -335,6 +336,7 @@ SET(TARGET_SRC
     Texture2DMultisample.cpp
     Texture3D.cpp
     Texture.cpp
+    TextureBuffer.cpp
     TextureCubeMap.cpp
     TextureRectangle.cpp
     Timer.cpp

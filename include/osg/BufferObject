@@ -271,6 +271,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
             bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
             bool isPBOSupported() const { return _isPBOSupported; }
             bool isUniformBufferObjectSupported() const { return _isUniformBufferObjectSupported; }
+            bool isTBOSupported() const { return _isTBOSupported; }
 
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
@@ -285,6 +286,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
             void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const;
             void glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
             void glBindBufferBase (GLenum target, GLuint index, GLuint buffer);
+            void glTexBuffer( GLenum target, GLenum internalFormat, GLuint buffer ) const;
 
         protected:
 
@@ -301,6 +303,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
             typedef void (GL_APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
             typedef void (GL_APIENTRY * BindBufferRangeProc) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
             typedef void (GL_APIENTRY * BindBufferBaseProc) (GLenum target, GLuint index, GLuint buffer);
+            typedef void (GL_APIENTRY *TexBufferProc ) ( GLenum target, GLenum internalFormat, GLuint buffer );
 
 
             GenBuffersProc          _glGenBuffers;
@@ -316,9 +319,11 @@ class OSG_EXPORT GLBufferObject : public Referenced
             GetBufferPointervProc   _glGetBufferPointerv;
             BindBufferRangeProc     _glBindBufferRange;
             BindBufferBaseProc      _glBindBufferBase;
+            TexBufferProc           _glTexBuffer;
 
             bool _isPBOSupported;
             bool _isUniformBufferObjectSupported;
+            bool _isTBOSupported;
         };
 
         /** Function to call to get the extension of a specified context.

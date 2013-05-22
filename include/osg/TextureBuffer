@@ -1,0 +1,146 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2013 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+// -*-c++-*-
+
+#ifndef OSG_TEXTUREBUFFEROBJECT
+#define OSG_TEXTUREBUFFEROBJECT 1
+
+#include <osg/Texture>
+#include <osg/BufferObject>
+
+#ifndef GL_ARB_texture_buffer_object
+    #define GL_TEXTURE_BUFFER_ARB                    0x8C2A
+    #define GL_MAX_TEXTURE_BUFFER_SIZE_ARB           0x8C2B
+    #define GL_TEXTURE_BINDING_BUFFER_ARB            0x8C2C
+    #define GL_TEXTURE_BUFFER_DATA_STORE_BINDING_ARB 0x8C2D
+    #define GL_TEXTURE_BUFFER_FORMAT_ARB             0x8C2E    
+#endif
+
+namespace osg {
+
+/** Encapsulates OpenGL texture buffer functionality.
+*/
+class OSG_EXPORT TextureBuffer : public Texture
+{
+
+    public :
+
+        TextureBuffer();
+
+        TextureBuffer(Image* image);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        TextureBuffer(const TextureBuffer& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, TextureBuffer, TEXTURE);
+
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& rhs) const;
+
+        virtual GLenum getTextureTarget() const { return GL_TEXTURE_BUFFER_ARB; }
+
+        /** Sets the texture image. */
+        void setImage(Image* image);
+
+        /** Gets the texture image. */
+        Image* getImage() { return _image.get(); }
+
+        /** Gets the const texture image. */
+        inline const Image* getImage() const { return _image.get(); }
+
+        inline unsigned int& getModifiedCount(unsigned int contextID) const
+        {
+            // get the modified count for the current contextID.
+            return _modifiedCount[contextID];
+        }
+
+
+        /** Sets the texture image, ignoring face. */
+        virtual void setImage(unsigned int, Image* image) { setImage(image); }
+
+        /** Gets the texture image, ignoring face. */
+        virtual Image* getImage(unsigned int) { return _image.get(); }
+
+        /** Gets the const texture image, ignoring face. */
+        virtual const Image* getImage(unsigned int) const { return _image.get(); }
+
+        /** Gets the number of images that can be assigned to the Texture. */
+        virtual unsigned int getNumImages() const { return 1; }
+
+
+        /** Sets the texture width. If width is zero, calculate the value
+          * from the source image width. */
+        inline void setTextureWidth(int width) { _textureWidth = width; }
+
+        /** Gets the texture width. */
+        virtual int getTextureWidth() const { return _textureWidth; }
+        virtual int getTextureHeight() const { return 1; }
+        virtual int getTextureDepth() const { return 1; }
+        
+        inline void setUsageHint( GLenum usageHint ) { _usageHint=usageHint; }
+        inline GLenum getUsageHint() const { return _usageHint; }
+
+        virtual void allocateMipmap(State& state) const {};
+
+        /** Bind the texture buffer.*/
+        virtual void apply(State& state) const;
+        
+        /** Bind buffer to different target. */
+        void bindBufferAs(unsigned int contextID, GLenum target);
+        void unbindBufferAs(unsigned int contextID, GLenum target);
+
+    protected :
+
+        virtual ~TextureBuffer();
+
+        virtual void computeInternalFormat() const;
+
+        ref_ptr<Image> _image;
+
+        mutable GLsizei _textureWidth;
+        GLenum _usageHint;
+
+        typedef buffered_value<unsigned int> ImageModifiedCount;
+        mutable ImageModifiedCount _modifiedCount;
+        
+        class TextureBufferObject : public osg::Referenced
+        {
+        public:
+            TextureBufferObject(unsigned int contextID, GLenum usageHint) : 
+                _id(0),
+                _usageHint(usageHint)
+            {
+                _extensions = osg::GLBufferObject::getExtensions(contextID, true);
+            }
+
+            void bindBuffer(GLenum target);
+            void unbindBuffer(GLenum target);
+        
+            void texBuffer(GLenum internalFormat);
+            void bufferData( osg::Image* image );
+            void bufferSubData( osg::Image* image );
+
+        public:
+            GLuint _id;
+            GLenum _usageHint;
+            osg::GLBufferObject::Extensions* _extensions;
+        };
+        
+        typedef osg::buffered_object<osg::ref_ptr<TextureBufferObject> > TextureBufferObjectList;        
+        mutable TextureBufferObjectList _textureBufferObjects;
+};
+
+}
+
+#endif

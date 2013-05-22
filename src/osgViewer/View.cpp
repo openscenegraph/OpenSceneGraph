@@ -991,7 +991,7 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     
-    OSG_NOTICE<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
+    OSG_INFO<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
     
     if (camera) return computeIntersections(camera, (camera->getViewport()==0)?osgUtil::Intersector::PROJECTION : osgUtil::Intersector::WINDOW, local_x, local_y, intersections, traversalMask);
     else return false;
@@ -1002,7 +1002,7 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     
-    OSG_NOTICE<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
+    OSG_INFO<<"computeIntersections("<<x<<", "<<y<<") local_x="<<local_x<<", local_y="<<local_y<<std::endl;
 
     if (camera) return computeIntersections(camera, (camera->getViewport()==0)?osgUtil::Intersector::PROJECTION : osgUtil::Intersector::WINDOW, local_x, local_y, nodePath, intersections, traversalMask);
     else return false;

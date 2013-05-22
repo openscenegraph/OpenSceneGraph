@@ -23,7 +23,6 @@ ShaderAttribute::ShaderAttribute():
     _type(osg::StateAttribute::Type(-1))
 {
     _shaderComponent = new osg::ShaderComponent;
-    OSG_NOTICE<<"Creating default constructed ShaderAttribute() "<<this<<std::endl;
 }
 
 ShaderAttribute::ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop):
@@ -31,7 +30,6 @@ ShaderAttribute::ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop)
     _type(sa._type),
     _uniforms(sa._uniforms)
 {
-    OSG_NOTICE<<"Creating copy constructed ShaderAttribute("<<&sa<<") "<<this<<std::endl;
 }
 
 ShaderAttribute::~ShaderAttribute()
@@ -42,7 +40,6 @@ osg::Object* ShaderAttribute::cloneType() const
 {
     ShaderAttribute* sa = new ShaderAttribute;
     sa->setType(getType());
-    OSG_NOTICE<<"  cloneType ="<<getType()<<" sa = "<<sa<<std::endl;
     return sa;
 }
 
@@ -85,14 +82,11 @@ void ShaderAttribute::removeUniform(unsigned int i)
 
 bool ShaderAttribute::getModeUsage(StateAttribute::ModeUsage& usage) const
 {
-    OSG_NOTICE<<"ShaderAttribute::getModeUsage(..)"<<std::endl;
     return false;
 }
 
 void ShaderAttribute::apply(State& state) const
 {
-    OSG_INFO<<"ShaderAttribute::apply(State&) this="<<this<<" type = "<<getType()<<std::endl;
-
     for(Uniforms::const_iterator itr = _uniforms.begin();
         itr != _uniforms.end();
         ++itr)

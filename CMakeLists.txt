@@ -890,7 +890,7 @@ IF(APPLE AND NOT ANDROID)
 
     ENDIF()
 
-ENDIF(APPLE)
+ENDIF()
 
 
 # For Doxygen

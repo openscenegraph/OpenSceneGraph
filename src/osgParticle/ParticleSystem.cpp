@@ -139,16 +139,33 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
         if (cv)
         {
             osg::Matrixd modelview = *(cv->getModelViewMatrix());
-            float scale = (_sortMode==SORT_FRONT_TO_BACK ? -1.0f : 1.0f);
+            double scale = (_sortMode==SORT_FRONT_TO_BACK ? -1.0 : 1.0);
+            double deadDistance = DBL_MAX;
             for (unsigned int i=0; i<_particles.size(); ++i)
             {
                 Particle& particle = _particles[i];
                 if (particle.isAlive())
                     particle.setDepth(distance(particle.getPosition(), modelview) * scale);
                 else
-                    particle.setDepth(0.0f);
+                    particle.setDepth(deadDistance);
             }
             std::sort<Particle_vector::iterator>(_particles.begin(), _particles.end());
+
+            // Repopulate the death stack as it will have been invalidated by the sort.
+            unsigned int numDead = _deadparts.size();
+            if (numDead>0)
+            {            
+                 // clear the death stack
+                _deadparts = Death_stack();
+                
+                // copy the tail of the _particles vector as this will contain all the dead Particle thanks to the depth sort against DBL_MAX
+                Particle* first_dead_ptr  = &_particles[_particles.size()-numDead];
+                Particle* last_dead_ptr  = &_particles[_particles.size()-1];
+                for(Particle* dead_ptr  = first_dead_ptr; dead_ptr<=last_dead_ptr; ++dead_ptr)
+                {
+                    _deadparts.push(dead_ptr);
+                }
+            }
         }
     }
 

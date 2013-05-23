@@ -41,13 +41,13 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
 
         void setState(osg::State* state);
 
-        AttributeDispatch* vertexDispatcher(Array* array, IndexArray* indices);
-        AttributeDispatch* normalDispatcher(Array* array, IndexArray* indices);
-        AttributeDispatch* colorDispatcher(Array* array, IndexArray* indices);
-        AttributeDispatch* secondaryColorDispatcher(Array* array, IndexArray* indices);
-        AttributeDispatch* fogCoordDispatcher(Array* array, IndexArray* indices);
-        AttributeDispatch* texCoordDispatcher(unsigned int unit, Array* array, IndexArray* indices);
-        AttributeDispatch* vertexAttribDispatcher(unsigned int unit, Array* array, IndexArray* indices);
+        AttributeDispatch* vertexDispatcher(Array* array, IndexArray* indices, GLboolean normalize=GL_FALSE);
+        AttributeDispatch* normalDispatcher(Array* array, IndexArray* indices, GLboolean normalize=GL_FALSE);
+        AttributeDispatch* colorDispatcher(Array* array, IndexArray* indices, GLboolean normalize=GL_TRUE);
+        AttributeDispatch* secondaryColorDispatcher(Array* array, IndexArray* indices, GLboolean normalize=GL_TRUE);
+        AttributeDispatch* fogCoordDispatcher(Array* array, IndexArray* indices, GLboolean normalize=GL_FALSE);
+        AttributeDispatch* texCoordDispatcher(unsigned int unit, Array* array, IndexArray* indices, GLboolean normalize=GL_FALSE);
+        AttributeDispatch* vertexAttribDispatcher(unsigned int unit, Array* array, IndexArray* indices, GLboolean normalize=GL_FALSE);
 
         void reset();
 
@@ -62,13 +62,13 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
             if (at) _activeDispatchList[binding].push_back(at);
         }
 
-        void activateVertexArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, vertexDispatcher(array, indices)); }
-        void activateColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, colorDispatcher(array, indices)); }
-        void activateNormalArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, normalDispatcher(array, indices)); }
-        void activateSecondaryColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, secondaryColorDispatcher(array, indices)); }
-        void activateFogCoordArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, fogCoordDispatcher(array, indices)); }
-        void activateTexCoordArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, texCoordDispatcher(unit, array, indices)); }
-        void activateVertexAttribArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, vertexAttribDispatcher(unit, array, indices)); }
+        void activateVertexArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_FALSE) { if (binding && array) activate(binding, vertexDispatcher(array, indices, normalize)); }
+        void activateColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_TRUE) { if (binding && array) activate(binding, colorDispatcher(array, indices, normalize)); }
+        void activateNormalArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_FALSE) { if (binding && array) activate(binding, normalDispatcher(array, indices, normalize)); }
+        void activateSecondaryColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_TRUE) { if (binding && array) activate(binding, secondaryColorDispatcher(array, indices, normalize)); }
+        void activateFogCoordArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_FALSE) { if (binding && array) activate(binding, fogCoordDispatcher(array, indices, normalize)); }
+        void activateTexCoordArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_FALSE) { if (binding && array) activate(binding, texCoordDispatcher(unit, array, indices, normalize)); }
+        void activateVertexAttribArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices, GLboolean normalize=GL_FALSE) { if (binding && array) activate(binding, vertexAttribDispatcher(unit, array, indices, normalize)); }
 
         void dispatch(unsigned int binding, unsigned int index)
         {

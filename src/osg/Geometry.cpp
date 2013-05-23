@@ -1030,16 +1030,17 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     arrayDispatchers.setUseVertexAttribAlias(useFastPath && state.getUseVertexAttributeAliasing());
     arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
 
-    arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get());
-    arrayDispatchers.activateColorArray(_colorData.binding, _colorData.array.get(), _colorData.indices.get());
-    arrayDispatchers.activateSecondaryColorArray(_secondaryColorData.binding, _secondaryColorData.array.get(), _secondaryColorData.indices.get());
-    arrayDispatchers.activateFogCoordArray(_fogCoordData.binding, _fogCoordData.array.get(), _fogCoordData.indices.get());
+    arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get(), _normalData.normalize);
+    arrayDispatchers.activateColorArray(_colorData.binding, _colorData.array.get(), _colorData.indices.get(), _colorData.normalize);
+    arrayDispatchers.activateSecondaryColorArray(_secondaryColorData.binding, _secondaryColorData.array.get(), _secondaryColorData.indices.get(), _secondaryColorData.normalize);
+    arrayDispatchers.activateFogCoordArray(_fogCoordData.binding, _fogCoordData.array.get(), _fogCoordData.indices.get(), _fogCoordData.normalize);
 
     if (handleVertexAttributes)
     {
         for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
         {
-            arrayDispatchers.activateVertexAttribArray(_vertexAttribList[unit].binding, unit, _vertexAttribList[unit].array.get(), _vertexAttribList[unit].indices.get());
+            const ArrayData& vertexAttrib = _vertexAttribList[unit];
+            arrayDispatchers.activateVertexAttribArray(vertexAttrib.binding, unit, vertexAttrib.array.get(), vertexAttrib.indices.get(), vertexAttrib.normalize);
         }
     }
 
@@ -1052,24 +1053,24 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     {
         // set up arrays
         if( _vertexData.array.valid() )
-            state.setVertexPointer(_vertexData.array.get());
+            state.setVertexPointer(_vertexData.array.get(), _vertexData.normalize);
 
         if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
-            state.setNormalPointer(_normalData.array.get());
+            state.setNormalPointer(_normalData.array.get(), _normalData.normalize);
 
         if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
-            state.setColorPointer(_colorData.array.get());
+            state.setColorPointer(_colorData.array.get(), _colorData.normalize);
 
         if (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
-            state.setSecondaryColorPointer(_secondaryColorData.array.get());
+            state.setSecondaryColorPointer(_secondaryColorData.array.get(), _secondaryColorData.normalize);
 
         if (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.array.valid())
-            state.setFogCoordPointer(_fogCoordData.array.get());
+            state.setFogCoordPointer(_fogCoordData.array.get(), _fogCoordData.normalize);
 
         for(unsigned int unit=0;unit<_texCoordList.size();++unit)
         {
-            const Array* array = _texCoordList[unit].array.get();
-            if (array) state.setTexCoordPointer(unit,array);
+            const ArrayData& arrayData = _texCoordList[unit];
+            if (arrayData.array) state.setTexCoordPointer(unit, arrayData.array, arrayData.normalize);
         }
 
         if( handleVertexAttributes )
@@ -1089,10 +1090,11 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     {
         for(unsigned int unit=0;unit<_texCoordList.size();++unit)
         {
-            arrayDispatchers.activateTexCoordArray(BIND_PER_VERTEX, unit, _texCoordList[unit].array.get(), _texCoordList[unit].indices.get());
+            const ArrayData& texCoord = _texCoordList[unit];
+            arrayDispatchers.activateTexCoordArray(BIND_PER_VERTEX, unit, texCoord.array.get(), texCoord.indices.get(), texCoord.normalize);
         }
 
-        arrayDispatchers.activateVertexArray(BIND_PER_VERTEX, _vertexData.array.get(), _vertexData.indices.get());
+        arrayDispatchers.activateVertexArray(BIND_PER_VERTEX, _vertexData.array.get(), _vertexData.indices.get(), _vertexData.normalize);
     }
 
     state.applyDisablingOfVertexAttributes();

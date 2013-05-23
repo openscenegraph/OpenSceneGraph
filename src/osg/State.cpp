@@ -502,7 +502,7 @@ void State::apply(const StateSet* dstate)
     {
         // push the stateset on the stack so it can be querried from within StateAttribute
         _stateStateStack.push_back(dstate);
-        
+
         _currentShaderCompositionUniformList.clear();
 
         applyModeList(_modeMap,dstate->getModeList());
@@ -549,7 +549,7 @@ void State::apply(const StateSet* dstate)
         {
             applyUniformList(_uniformMap,dstate->getUniformList());
         }
-        
+
         // pop the stateset from the stack
         _stateStateStack.pop_back();
     }
@@ -971,12 +971,12 @@ bool State::setClientActiveTextureUnit( unsigned int unit )
     return true;
 }
 
-void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
+void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (_useVertexAttributeAliasing)
     {
-        setVertexAttribPointer(_fogCoordAlias._location, 1, type, GL_FALSE, stride, ptr);
+        setVertexAttribPointer(_fogCoordAlias._location, 1, type, normalized, stride, ptr);
     }
     else
     {
@@ -998,17 +998,17 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
         }
     }
 #else
-        setVertexAttribPointer(_fogCoordAlias._location, 1, type, GL_FALSE, stride, ptr);
+        setVertexAttribPointer(_fogCoordAlias._location, 1, type, normalized, stride, ptr);
 #endif
 }
 
 void State::setSecondaryColorPointer( GLint size, GLenum type,
-                                      GLsizei stride, const GLvoid *ptr )
+                                      GLsizei stride, const GLvoid *ptr, GLboolean normalized )
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (_useVertexAttributeAliasing)
     {
-        setVertexAttribPointer(_secondaryColorAlias._location, size, type, GL_FALSE, stride, ptr);
+        setVertexAttribPointer(_secondaryColorAlias._location, size, type, normalized, stride, ptr);
     }
     else
     {
@@ -1029,7 +1029,7 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
         }
     }
 #else
-        setVertexAttribPointer(_secondaryColorAlias._location, size, type, GL_FALSE, stride, ptr);
+        setVertexAttribPointer(_secondaryColorAlias._location, size, type, normalized, stride, ptr);
 #endif
 }
 

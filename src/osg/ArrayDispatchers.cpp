@@ -494,7 +494,7 @@ void ArrayDispatchers::init()
 
     _colorDispatchers->assign<GLbyte>( Array::Vec4bArrayType,   glColor4bv,  4);
     _colorDispatchers->assign<GLshort>( Array::Vec4sArrayType,  glColor4sv,  4);
-    _colorDispatchers->assign<GLubyte>( Array::Vec4ubArrayType, glColor4ubv, 4");
+    _colorDispatchers->assign<GLubyte>( Array::Vec4ubArrayType, glColor4ubv, 4);
     _colorDispatchers->assign<GLfloat>( Array::Vec4ArrayType,   glColor4fv,  4);
     _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType,  glColor4dv,  4);
 

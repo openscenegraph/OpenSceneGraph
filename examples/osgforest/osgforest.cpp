@@ -31,6 +31,8 @@
 #include <osg/StateSet>
 #include <osg/Switch>
 #include <osg/Texture2D>
+#include <osg/TextureBuffer>
+#include <osg/Image>
 #include <osg/TexEnv>
 #include <osg/VertexProgram>
 #include <osg/FragmentProgram>
@@ -141,11 +143,14 @@ public:
     osg::Node* createShaderGraph(Cell* cell,osg::StateSet* stateset);
 
     osg::Node* createGeometryShaderGraph(Cell* cell, osg::StateSet* stateset);
+    
+    osg::Node* createTextureBufferGraph(Cell* cell, osg::Geometry* templateGeometry);
+    
     void CollectTreePositions(Cell* cell, std::vector< osg::Vec3 >& positions);
 
     osg::Node* createHUDWithText(const std::string& text);
 
-    osg::Node* createScene(unsigned int numTreesToCreates);
+    osg::Node* createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell);
 
     void advanceToNextTechnique(int delta=1)
     {
@@ -1005,6 +1010,59 @@ osg::Node* ForestTechniqueManager::createGeometryShaderGraph(Cell* cell, osg::St
     else return geode;
 }
 
+osg::Node* ForestTechniqueManager::createTextureBufferGraph(Cell* cell, osg::Geometry* templateGeometry)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needTrees = !(cell->_trees.empty());
+
+    osg::Geode* geode = 0;
+    osg::Group* group = 0;
+
+    if (needTrees)
+    {
+        osg::Geometry* geometry = (osg::Geometry*)templateGeometry->clone( osg::CopyOp::DEEP_COPY_PRIMITIVES );
+        osg::DrawArrays* primSet = dynamic_cast<osg::DrawArrays*>( geometry->getPrimitiveSet(0) );
+        primSet->setNumInstances( cell->_trees.size() );
+        geode = new osg::Geode;
+        geode->addDrawable(geometry);
+        
+        osg::ref_ptr<osg::Image> treeParamsImage = new osg::Image;
+        treeParamsImage->allocateImage( 3*cell->_trees.size(), 1, 1, GL_RGBA, GL_FLOAT );
+        
+        unsigned int i=0;
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr,++i)
+        {
+            osg::Vec4f* ptr = (osg::Vec4f*)treeParamsImage->data(3*i);
+            Tree& tree = **itr;
+            ptr[0] = osg::Vec4f(tree._position.x(),tree._position.y(),tree._position.z(),1.0);
+            ptr[1] = osg::Vec4f((float)tree._color.r()/255.0f,(float)tree._color.g()/255.0f, (float)tree._color.b()/255.0f, 1.0);
+            ptr[2] = osg::Vec4f(tree._width, tree._height, 1.0, 1.0);
+        }
+        osg::ref_ptr<osg::TextureBuffer> tbo = new osg::TextureBuffer;
+        tbo->setImage( treeParamsImage.get() );
+        tbo->setInternalFormat(GL_RGBA32F);
+        geometry->getOrCreateStateSet()->setTextureAttribute(1, tbo.get());
+        geometry->setInitialBound( cell->_bb );
+    }
+
+    if (needGroup)
+    {
+        group = new osg::Group;
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            group->addChild(createTextureBufferGraph(itr->get(),templateGeometry));
+        }
+
+        if (geode) group->addChild(geode);
+
+    }
+    if (group) return group;
+    else return geode;
+}
 
 
 osg::Node* ForestTechniqueManager::createShaderGraph(Cell* cell,osg::StateSet* stateset)
@@ -1103,7 +1161,7 @@ osg::Node* ForestTechniqueManager::createHUDWithText(const std::string& str)
     return projection;
 }
 
-osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
+osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell)
 {
     osg::Vec3 origin(0.0f,0.0f,0.0f);
     osg::Vec3 size(1000.0f,1000.0f,200.0f);
@@ -1120,7 +1178,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     std::cout<<"Creating cell subdivision...";
     osg::ref_ptr<Cell> cell = new Cell;
     cell->addTrees(trees);
-    cell->divide();
+    cell->divide(maxNumTreesPerCell);
     std::cout<<"done."<<std::endl;
 
 
@@ -1153,7 +1211,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         std::cout<<"Creating osg::Billboard based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createBillboardGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram shader based forest\nPress right cursor key to select double quad based forest"));
+        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select geometry instancing with Texture Buffer Object\nPress right cursor key to select double quad based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
@@ -1306,11 +1364,80 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
 
         osg::Group* group = new osg::Group;
         group->addChild(createGeometryShaderGraph(cell.get(), stateset));
-        group->addChild(createHUDWithText("Using osg::Vertex/Geometry/FragmentProgram to create a forest\n\nPress left cursor key to select OpenGL Shader based forest\nPress right cursor key to select osg::Billboard based forest"));
+        group->addChild(createHUDWithText("Using osg::Vertex/Geometry/FragmentProgram to create a forest\n\nPress left cursor key to select OpenGL Shader based forest\nPress right cursor key to select geometry instancing with Texture Buffer Object"));
 
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
+    
+    {
+        std::cout<<"Creating forest using geometry instancing and texture buffer objects ...";
+
+        osg::StateSet* stateset = new osg::StateSet(*dstate, osg::CopyOp::DEEP_COPY_ALL);
+        {
+            osg::Program* program = new osg::Program;
+            stateset->setAttribute(program);
+
+            char vertexShaderSource[] =
+                "#version 420 compatibility\n"
+                "uniform samplerBuffer dataBuffer;\n"
+                "layout(location = 0) in vec3 VertexPosition;\n"
+                "layout(location = 8) in vec3 VertexTexCoord;\n"
+                "out vec2 TexCoord;\n"
+                "out vec4 Color;\n"
+                "void main()\n"
+                "{\n"
+                "   int instanceAddress = gl_InstanceID * 3;\n"
+                "   vec3 position = texelFetch(dataBuffer, instanceAddress).xyz;\n"
+                "   Color         = texelFetch(dataBuffer, instanceAddress + 1);\n"
+                "   vec2 size     = texelFetch(dataBuffer, instanceAddress + 2).xy;\n"
+                "   mat4 mvpMatrix = gl_ModelViewProjectionMatrix *\n" 
+                "        mat4( size.x, 0.0, 0.0, 0.0,\n"
+                "              0.0, size.x, 0.0, 0.0,\n"
+                "              0.0, 0.0, size.y, 0.0,\n"
+                "              position.x, position.y, position.z, 1.0);\n"
+                "   gl_Position = mvpMatrix * vec4(VertexPosition,1.0) ;\n"
+                "   TexCoord = VertexTexCoord.xy;\n"
+                "}\n";
+
+            char fragmentShaderSource[] =
+                "#version 420 core\n"
+                "uniform sampler2D baseTexture; \n"
+                "in vec2 TexCoord;\n"
+                "in vec4 Color;\n"
+                "layout(location = 0, index = 0) out vec4 FragData0;\n"
+                "void main(void) \n"
+                "{\n"
+                "    FragData0 = Color*texture(baseTexture, TexCoord);\n"
+                "}\n";
+
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+            program->addShader(vertex_shader);
+
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+            program->addShader(fragment_shader);
+
+            osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+            stateset->addUniform(baseTextureSampler);
+            
+            osg::Uniform* dataBufferSampler = new osg::Uniform("dataBuffer",1);
+            stateset->addUniform(dataBufferSampler);
+        }
+        
+        osg::ref_ptr<osg::Geometry> templateGeometry = createOrthogonalQuadsNoColor(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f);
+        templateGeometry->setUseVertexBufferObjects(true);
+        templateGeometry->setUseDisplayList(false);
+        osg::Node* textureBufferGraph = createTextureBufferGraph(cell.get(), templateGeometry.get());
+        textureBufferGraph->setStateSet( stateset );
+        osg::Group* group = new osg::Group;
+        group->addChild(textureBufferGraph);
+        group->addChild(createHUDWithText("Using geometry instancing to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
+
+        _techniqueSwitch->addChild(group);
+        
+        std::cout<<"done."<<std::endl;
+    }
+    
 
     _currentTechnique = 0;
     _techniqueSwitch->setSingleChildOn(_currentTechnique);
@@ -1333,11 +1460,15 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    float numTreesToCreates = 10000;
-    arguments.read("--trees",numTreesToCreates);
+    unsigned int numTreesToCreate = 10000;
+    arguments.read("--trees",numTreesToCreate);
+    
+    unsigned int maxNumTreesPerCell = sqrtf(static_cast<float>(numTreesToCreate));
+    
+    arguments.read("--trees-per-cell",maxNumTreesPerCell);
 
     osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
-
+    
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -1345,7 +1476,7 @@ int main( int argc, char **argv )
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 
     // add model to viewer.
-    viewer.setSceneData( ttm->createScene((unsigned int)numTreesToCreates) );
+    viewer.setSceneData( ttm->createScene(numTreesToCreate, maxNumTreesPerCell) );
 
 
     return viewer.run();

@@ -1091,6 +1091,10 @@ Texture::Texture():
             _shadow_texture_mode(LUMINANCE),
             _shadow_ambient(0)
 {
+    _swizzle[0] = GL_RED;
+    _swizzle[1] = GL_GREEN;
+    _swizzle[2] = GL_BLUE;
+    _swizzle[3] = GL_ALPHA;
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
@@ -1117,6 +1121,10 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _shadow_texture_mode(text._shadow_texture_mode),
             _shadow_ambient(text._shadow_ambient)
 {
+    _swizzle[0] = text._swizzle[0];
+    _swizzle[1] = text._swizzle[1];
+    _swizzle[2] = text._swizzle[2];
+    _swizzle[3] = text._swizzle[3];
 }
 
 Texture::~Texture()
@@ -1133,6 +1141,10 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_min_filter)
     COMPARE_StateAttribute_Parameter(_mag_filter)
     COMPARE_StateAttribute_Parameter(_maxAnisotropy)
+    COMPARE_StateAttribute_Parameter(_swizzle[0])
+    COMPARE_StateAttribute_Parameter(_swizzle[1])
+    COMPARE_StateAttribute_Parameter(_swizzle[2])
+    COMPARE_StateAttribute_Parameter(_swizzle[3])
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
 
@@ -1702,6 +1714,13 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
         // by gl.h (or via glext.h) or by include/osg/Texture.
         glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
+    }
+
+    if (extensions->isTextureSwizzleSupported())
+    {
+        // note, GL_TEXTURE_SWIZZLE_RGBA will either be defined
+        // by gl.h (or via glext.h) or by include/osg/Texture.
+        glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, _swizzle);
     }
 
     if (extensions->isTextureBorderClampSupported())
@@ -2505,6 +2524,8 @@ Texture::Extensions::Extensions(unsigned int contextID)
                                  isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f);
 
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
+
+    _isTextureSwizzleSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
 
     _isTextureCompressionARBSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f);
 

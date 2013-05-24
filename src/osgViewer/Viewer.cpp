@@ -826,11 +826,7 @@ void Viewer::eventTraversal()
 {
     if (_done) return;
 
-#if 1
     double cutOffTime = _frameStamp->getReferenceTime();
-#else    
-    double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
-#endif
     
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 

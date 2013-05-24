@@ -37,7 +37,7 @@ class OSGGA_EXPORT Device : public osg::Object
         
         int getCapabilities() const { return _capabilities; }
     
-        virtual void checkEvents() {};
+        virtual bool checkEvents() { return _eventQueue.valid() ? !(getEventQueue()->empty()) : false; }
         virtual void sendEvent(const GUIEventAdapter& ea);
         virtual void sendEvents(const EventQueue::Events& events);
 

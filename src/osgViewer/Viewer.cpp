@@ -361,13 +361,41 @@ bool Viewer::checkNeedToDoFrame()
     if (_camera->getUpdateCallback()) return true;
     if (getSceneData()!=0 && getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
 
-    // now do a eventTraversal to see if any events might require a new frame.
-    eventTraversal();
-
+    // check if events are available and need processing
+    if (checkEvents()) return true;
+    
     // now check if any of the event handles have prompted a redraw.
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
+    return false;
+}
+
+bool Viewer::checkEvents()
+{
+    // check events from any attached sources
+    for(Devices::iterator eitr = _eventSources.begin();
+        eitr != _eventSources.end();
+        ++eitr)
+    {
+        osgGA::Device* es = eitr->get();
+        if (es->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
+        {
+            if (es->checkEvents()) return true;
+        }
+
+    }
+
+    // get events from all windows attached to Viewer.
+    Windows windows;
+    getWindows(windows);
+    for(Windows::iterator witr = windows.begin();
+        witr != windows.end();
+        ++witr)
+    {
+        if ((*witr)->checkEvents()) return true;
+    }
+    
     return false;
 }
 
@@ -798,8 +826,12 @@ void Viewer::eventTraversal()
 {
     if (_done) return;
 
+#if 1
+    double cutOffTime = _frameStamp->getReferenceTime();
+#else    
     double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
-
+#endif
+    
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // OSG_NOTICE<<"Viewer::frameEventTraversal()."<<std::endl;

@@ -266,12 +266,50 @@ bool CompositeViewer::checkNeedToDoFrame()
         }
     }
 
-    // now do a eventTraversal to see if any events might require a new frame.
-    eventTraversal();
+    // check if events are available and need processing
+    if (checkEvents()) return true;
 
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
+    return false;
+}
+
+
+bool CompositeViewer::checkEvents()
+{
+    for(RefViews::iterator itr = _views.begin();
+        itr != _views.end();
+        ++itr)
+    {
+        osgViewer::View* view = itr->get();
+        if (view)
+        {
+            // check events from any attached sources
+            for(View::Devices::iterator eitr = view->getDevices().begin();
+                eitr != view->getDevices().end();
+                ++eitr)
+            {
+                osgGA::Device* es = eitr->get();
+                if (es->getCapabilities() & osgGA::Device::RECEIVE_EVENTS)
+                {
+                    if (es->checkEvents()) return true;
+                }
+
+            }
+        }
+    }
+    
+    // get events from all windows attached to Viewer.
+    Windows windows;
+    getWindows(windows);
+    for(Windows::iterator witr = windows.begin();
+        witr != windows.end();
+        ++witr)
+    {
+        if ((*witr)->checkEvents()) return true;
+    }
+    
     return false;
 }
 
@@ -874,7 +912,11 @@ void CompositeViewer::eventTraversal()
 
     if (_views.empty()) return;
 
+#if 1
+    double cutOffTime = _frameStamp->getReferenceTime();
+#else    
     double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
+#endif
 
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 

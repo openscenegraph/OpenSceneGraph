@@ -1197,9 +1197,9 @@ void GraphicsWindowX11::swapBuffersImplementation()
     }
 }
 
-void GraphicsWindowX11::checkEvents()
+bool GraphicsWindowX11::checkEvents()
 {
-    if (!_realized) return;
+    if (!_realized) return false;
 
     Display* display = _eventDisplay;
 
@@ -1564,6 +1564,8 @@ void GraphicsWindowX11::checkEvents()
             requestRedraw();
         }
     }
+    
+    return !(getEventQueue()->empty());
 }
 
 void GraphicsWindowX11::grabFocus()

@@ -320,7 +320,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         osg::Timer_t                            _startTick;
 
-        Devices                            _eventSources;
+        Devices                                 _eventSources;
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;

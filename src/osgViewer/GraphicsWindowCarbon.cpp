@@ -844,9 +844,9 @@ bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent)
 
 
 
-void GraphicsWindowCarbon::checkEvents()
+bool GraphicsWindowCarbon::checkEvents()
 {
-    if (!_realized) return;
+    if (!_realized) return false;
 
     EventRef theEvent;
     EventTargetRef theTarget = GetEventDispatcherTarget();
@@ -869,7 +869,7 @@ void GraphicsWindowCarbon::checkEvents()
                     if ((fwres == inMenuBar) && (mouseButton >= 1)) {
                         MenuSelect(wheresMyMouse);
                         HiliteMenu(0);
-                        return;
+                        return !(getEventQueue()->empty());
                     }
                     break;
                 }
@@ -903,6 +903,7 @@ void GraphicsWindowCarbon::checkEvents()
         s_quit_requested = false;
     }
 
+    return !(getEventQueue()->empty());
 }
 
 

@@ -2054,9 +2054,9 @@ void GraphicsWindowWin32::swapBuffersImplementation()
     }
 }
 
-void GraphicsWindowWin32::checkEvents()
+bool GraphicsWindowWin32::checkEvents()
 {
-    if (!_realized) return;
+    if (!_realized) return false;
 
     MSG msg;
     while (::PeekMessage(&msg, _hwnd, 0, 0, PM_REMOVE))
@@ -2076,6 +2076,8 @@ void GraphicsWindowWin32::checkEvents()
         _destroyWindow = false;
         destroyWindow(false);
     }
+           
+    return !(getEventQueue()->empty());
 }
 
 void GraphicsWindowWin32::grabFocus()

@@ -37,9 +37,10 @@ public:
         _autoDiscovery->registerService(type, port);
     }
     
-    virtual void checkEvents()
+    virtual bool checkEvents()
     {
         _autoDiscovery->update();
+        return !(getEventQueue()->empty());
     }
     
     virtual void sendEvent(const osgGA::GUIEventAdapter& event)
@@ -72,9 +73,10 @@ class ZeroConfDiscoverDevice : public osgGA::Device {
 public:
     ZeroConfDiscoverDevice(const std::string& type);
     
-    virtual void checkEvents()
+    virtual bool checkEvents()
     {
         _autoDiscovery->update();
+        return !(getEventQueue()->empty());
     }
     
 private:

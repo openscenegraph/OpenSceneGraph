@@ -71,7 +71,6 @@ public:
     ~OscReceivingDevice();
     
         
-    virtual void checkEvents() {}
     virtual void run();
     
     

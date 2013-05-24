@@ -70,7 +70,7 @@ static SceneSingleton& getSceneSingleton()
     return s_sceneSingleton;
 }
 
-// Use a proxy to force the initialization of the the SceneSingleton during static initialization
+// Use a proxy to force the initialization of the SceneSingleton during static initialization
 OSG_INIT_SINGLETON_PROXY(SceneSingletonProxy, getSceneSingleton())
 
 }

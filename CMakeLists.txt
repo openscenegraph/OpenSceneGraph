@@ -895,10 +895,10 @@ ENDIF()
 
 # For Doxygen
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
-OPTION(BUILD_DOCUMENTATION "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
+OPTION(BUILD_DOCUMENTATION "Build OpenSceneGraph reference documentation using doxygen (use: make doc_openscenegraph doc_openthreads)" OFF)
 MARK_AS_ADVANCED(CLEAR BUILD_DOCUMENTATION)
 # To build the documention, you will have to enable it
-# and then do the equivalent of "make DoxygenDoc".
+# and then do the equivalent of "make doc_openscenegraph doc_openthreads".
 IF(BUILD_DOCUMENTATION)
 
     OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)

@@ -109,7 +109,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         virtual void swapBuffersImplementation();
         
         /** Check to see if any events have been generated.*/
-        virtual void checkEvents();
+        virtual bool checkEvents();
 
         /** Set Window decoration.*/
         virtual bool setWindowDecorationImplementation(bool flag);

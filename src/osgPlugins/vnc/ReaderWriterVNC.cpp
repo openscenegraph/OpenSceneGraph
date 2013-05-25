@@ -34,7 +34,6 @@ class LibVncImage : public osgWidget::VncImage
 
         virtual bool sendPointerEvent(int x, int y, int buttonMask);
 
-        double getTimeOfLastUpdate() const { return _timeOfLastUpdate; }
         double getTimeOfLastRender() const { return _timeOfLastRender; }
 
         double time() const { return osg::Timer::instance()->time_s(); }
@@ -42,8 +41,6 @@ class LibVncImage : public osgWidget::VncImage
         virtual bool sendKeyEvent(int key, bool keyDown);
 
         virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
-
-        void updated();
 
         static rfbBool resizeImage(rfbClient* client);
 
@@ -56,10 +53,8 @@ class LibVncImage : public osgWidget::VncImage
         std::string                 _username;
         std::string                 _password;
 
-        double                      _timeOfLastUpdate;
         double                      _timeOfLastRender;
 
-        bool                        _active;
         osg::ref_ptr<osg::RefBlock> _inactiveBlock;
 
     protected:
@@ -88,39 +83,39 @@ class LibVncImage : public osgWidget::VncImage
             {
                 do
                 {
-                    if (_image->_active)
+                    // OSG_NOTICE<<"RfThread::run()"<<std::endl;
+                    int i=WaitForMessage(_client,1000000);
+                    if (i)
                     {
-                        int i=WaitForMessage(_client,5000);
-                        if(i<0)
-                            return;
-
-                        if(i)
+                        if(!HandleRFBServerMessage(_client))
                         {
-                            OSG_INFO<<"VNC Handling "<<i<<" messages"<<std::endl;
-
-                            if(!HandleRFBServerMessage(_client))
-                            return;
-
-                            _image->updated();
+                            OSG_NOTICE<<"HandleRFBServerMessage returned non zero value."<<std::endl;
                         }
+                        // _image->updated();
                     }
                     else
                     {
+                        // OSG_NOTICE<<"Timed out"<<std::endl;
+                    }
+                    
+                    
+                    
+                    double currentTime = _image->time();
+                    double timeBeforeIdle = 0.1;
+
+                    if (currentTime > _image->getTimeOfLastRender()+timeBeforeIdle)
+                    {
+                        //OSG_NOTICE<<"New: Time to idle"<<std::endl;
+                        _image->_inactiveBlock->reset();
                         _image->_inactiveBlock->block();
-                    }
-
-
-                    double deltaTime = _image->getTimeOfLastRender() - _image->getTimeOfLastUpdate();
-                    if (deltaTime<-0.01)
-                    {
-                        //OSG_NOTICE<<"Inactive"<<std::endl;
-                        //_image->_active = false;
+                        //OSG_NOTICE<<"   Finished block."<<std::endl;
                     }
                     else
                     {
-                        _image->_active = true;
+                        //OSG_NOTICE<<"New: Should still be active"<<std::endl;
                     }
 
+                    
                 } while (!_done && !testCancel());
             }
 
@@ -234,9 +229,17 @@ bool LibVncImage::connect(const std::string& hostname)
 
     rfbClientSetClientData(_client, 0, this);
 
-    _client->serverHost = strdup(hostname.c_str());
+    size_t pos = hostname.find(":");
+    if (pos == std::string::npos)
+    {
+        _client->serverHost = strdup(hostname.c_str());
+    }
+    else
+    {
+        _client->serverHost = strdup(hostname.substr(0, pos).c_str());
+        _client->serverPort = atoi(hostname.substr(pos+1).c_str());
+    }
 
-    // _client->serverPort = ;
     // _client->appData.qualityLevel = ;
     // _client->appData.encodings = ;
     // _client->appData.compressLevel = ;
@@ -317,8 +320,9 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
 
 void LibVncImage::updateImage(rfbClient* client,int x,int y,int w,int h)
 {
-    osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
-    image->dirty();
+    LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
+    
+    image->dirty();    
 }
 
 bool LibVncImage::sendPointerEvent(int x, int y, int buttonMask)
@@ -344,15 +348,11 @@ bool LibVncImage::sendKeyEvent(int key, bool keyDown)
 
 void LibVncImage::setFrameLastRendered(const osg::FrameStamp*)
 {
+    
     _timeOfLastRender = time();
-
-    if (!_active) _inactiveBlock->release();
-    _active = true;
-}
-
-void LibVncImage::updated()
-{
-    _timeOfLastUpdate = time();
+    
+    // release block
+    _inactiveBlock->release();
 }
 
 class ReaderWriterVNC : public osgDB::ReaderWriter

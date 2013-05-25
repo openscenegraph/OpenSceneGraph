@@ -1069,10 +1069,10 @@ bool GraphicsWindowIOS::setWindowRectangleImplementation(int x, int y, int width
 }
 
     
-void GraphicsWindowIOS::checkEvents()
+bool GraphicsWindowIOS::checkEvents()
 {
-    
-    
+
+    return !(getEventQueue()->empty());
 }
 
 

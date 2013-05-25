@@ -967,12 +967,13 @@ GLenum Uniform::getInternalArrayType( Type t )
     }
 }
 
-typedef std::map<std::string, unsigned int> UniformNameIDMap;
-static OpenThreads::Mutex s_mutex_uniformNameIDMap;
-static UniformNameIDMap s_uniformNameIDMap;
 
 unsigned int Uniform::getNameID(const std::string& name)
 {
+    typedef std::map<std::string, unsigned int> UniformNameIDMap;
+    static OpenThreads::Mutex s_mutex_uniformNameIDMap;
+    static UniformNameIDMap s_uniformNameIDMap;
+    
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_uniformNameIDMap);
     UniformNameIDMap::iterator it = s_uniformNameIDMap.find(name);
     if (it != s_uniformNameIDMap.end())
@@ -983,6 +984,9 @@ unsigned int Uniform::getNameID(const std::string& name)
     s_uniformNameIDMap.insert(UniformNameIDMap::value_type(name, id));
     return id;
 }
+
+// Use a proxy to force the initialization of the static variables in the Unifrom::getNameID() method during static initialization
+OSG_INIT_SINGLETON_PROXY(UniformNameIDStaticInitializationProxy, Uniform::getNameID(std::string()))
 
 
 ///////////////////////////////////////////////////////////////////////////

@@ -85,7 +85,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow, public osgViewer:
         virtual void swapBuffersImplementation();
         
         /** Check to see if any events have been generated.*/
-        virtual void checkEvents();
+        virtual bool checkEvents();
 
         /** Set the window's position and size.*/
         virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);

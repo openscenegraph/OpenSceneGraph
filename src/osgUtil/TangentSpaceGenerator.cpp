@@ -103,6 +103,32 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
                 }
                 break;
 
+            case osg::PrimitiveSet::QUAD_STRIP:
+                if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
+                    osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
+                    unsigned int j = 0;
+                    for (osg::DrawArrayLengths::const_iterator pi=dal->begin(); pi!=dal->end(); ++pi) {
+                        unsigned int iN = static_cast<unsigned int>(*pi-2);
+                        for (i=0; i<iN; ++i, ++j) {
+                            if ((i%2) == 0) {
+                                compute(pset, vx, nx, tx, j, j+2, j+1);
+                            } else {
+                                compute(pset, vx, nx, tx, j, j+1, j+2);
+                            }
+                        }
+                        j += 2;
+                    }
+                } else {
+                    for (i=0; i<N-2; ++i) {
+                        if ((i%2) == 0) {
+                            compute(pset, vx, nx, tx, i, i+2, i+1);
+                        } else {
+                            compute(pset, vx, nx, tx, i, i+1, i+2);
+                        }
+                    }
+                }
+                break;
+
             case osg::PrimitiveSet::TRIANGLE_FAN:
             case osg::PrimitiveSet::POLYGON:
                 if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {

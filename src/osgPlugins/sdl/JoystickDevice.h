@@ -31,7 +31,7 @@ class JoystickDevice : public osgGA::Device
         typedef std::vector<int> ValueList;
         typedef std::map<int, int> ButtonMap;
 
-        virtual void checkEvents();
+        virtual bool checkEvents();
         
         void addMouseButtonMapping(int joystickButton, int mouseButton)
         {

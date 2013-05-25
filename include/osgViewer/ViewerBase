@@ -224,6 +224,9 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** check to see if the new frame is required, called by run(..) when FrameScheme is set to ON_DEMAND.*/
         virtual bool checkNeedToDoFrame() = 0;
+        
+        /** check to see if events have been received, return true if events are now available.*/
+        virtual bool checkEvents() = 0;
 
         /** Render a complete new frame.
           * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */

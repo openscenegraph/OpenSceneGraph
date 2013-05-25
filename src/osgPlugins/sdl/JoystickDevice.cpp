@@ -103,7 +103,7 @@ void JoystickDevice::capture(ValueList& axisValues, ValueList& buttonValues) con
     }
 }
 
-void JoystickDevice::checkEvents()
+bool JoystickDevice::checkEvents()
 {
     if (_joystick)
     {
@@ -180,6 +180,6 @@ void JoystickDevice::checkEvents()
         _buttonValues.swap(newButtonValues);
         
     }
-
+    return !(getEventQueue()->empty());
 }
         

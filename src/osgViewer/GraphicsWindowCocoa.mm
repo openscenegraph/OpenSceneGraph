@@ -1327,10 +1327,10 @@ void GraphicsWindowCocoa::swapBuffersImplementation()
 // checkEvents
 // process all pending events
 // ----------------------------------------------------------------------------------------------------------
-void GraphicsWindowCocoa::checkEvents()
+bool GraphicsWindowCocoa::checkEvents()
 {
     if (!_checkForEvents)
-        return;
+        return false;
 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -1362,6 +1362,8 @@ void GraphicsWindowCocoa::checkEvents()
     }
 
     [pool release];
+    
+    return !(getEventQueue()->empty());
 }
 
 

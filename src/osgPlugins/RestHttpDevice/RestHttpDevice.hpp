@@ -169,7 +169,7 @@ public:
     
 
     
-    virtual void checkEvents()
+    virtual bool checkEvents()
     {
         if ((fabs(_currentMouseX - _targetMouseY) > 0.1f) || (fabs(_currentMouseY - _targetMouseY) > 0.1))
         {
@@ -178,6 +178,7 @@ public:
             _currentMouseY = (1.0f - scalar) * _currentMouseY + scalar * _targetMouseY;
             getEventQueue()->mouseMotion(_currentMouseX, _currentMouseY, getEventQueue()->getTime());
         }
+        return !(getEventQueue()->empty());
     }
     
     void setTargetMousePosition(float x, float y, bool force = false)

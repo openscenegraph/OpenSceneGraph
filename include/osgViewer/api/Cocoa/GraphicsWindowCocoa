@@ -113,7 +113,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         virtual void swapBuffersImplementation();
         
         /** Check to see if any events have been generated.*/
-        virtual void checkEvents();
+        virtual bool checkEvents();
 
         /** Set Window decoration.*/
         virtual bool setWindowDecorationImplementation(bool flag);

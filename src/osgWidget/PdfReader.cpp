@@ -66,7 +66,10 @@ bool PdfReader::assign(PdfImage* pdfImage, const GeometryHints& hints)
                 texture,
                 osg::StateAttribute::ON);
 
-    pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(_pdfImage.get()));
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> iih = new osgViewer::InteractiveImageHandler(_pdfImage.get());
+    
+    pictureQuad->setEventCallback(iih.get());
+    pictureQuad->setCullCallback(iih.get());
 
     addDrawable(pictureQuad);
 

@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.1.6
+OpenSceneGraph Library 3.1.7
 
-495 Contributors:
+498 Contributors:
 
 Firstname Surname
 -----------------
@@ -8,13 +8,13 @@ Robert Osfield
 Don Burns
 Stephan Huber
 Paul Martz
-Mathias Fröhlich
+Mathias Frhlich
 Marco Jez
-Jean-Sébastien Guay
+Jean-Sbastien Guay
 Mike Weiblen
+Farshid Lashkari
 Wang Rui
 Ulrich Hertlein
-Farshid Lashkari
 Eric Wing
 Cedric Pinson
 Sukender Fix
@@ -40,9 +40,9 @@ Jason Beverage
 Jan Peciva
 J.P. Delport
 Mattias Helsing
+David Fries
 Andy Skinner
 Paul Melis
-David Fries
 Magnus Kessler
 Tom Jolley
 Pavel Moloshtan
@@ -63,7 +63,7 @@ Mathieu Marache
 Chris Denham
 Alberto Farre
 Sherman Wilcox
-André Garneau
+Andr Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -73,19 +73,19 @@ Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
-Romano José Magacho da Silva
+Romano Jos Magacho da Silva
 Michael Gronager
 Joakim Simonsson
 David Spilling
-Daniel Sjölie
+Daniel Sjlie
 Bryan Thrall
 Torben Dannhauer
+Jan Ciger
 Fabien Lavignotte
 Mike Connell
 Melchior Franz
 Martin Naylor
 Johannes Baeuerle
-Jan Ciger
 Andreas Ekstrand
 Rafa Gaitan
 Neil Hughes
@@ -105,10 +105,11 @@ Simon Julier
 Rune Schmidt Jensen
 Riccardo Corsi
 Rainer Oder
+Nico Kruithof
 Martin Aumueller
 Mario Valle
 Lukasz Izdebski
-Jorge Izquierdo
+Jorge Izquierdo Ciges
 Gordon Tomlinson
 Frederic Bouvier
 Carlo Camporesi
@@ -117,7 +118,6 @@ Thibault Genessay
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
-Nico Kruithof
 Neil Groves
 Markus Trenkwalder
 Loic Dachary
@@ -130,7 +130,7 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautré
+Tanguy Fautr
 Sean Spicer
 Richard Schmidt
 Peter Hrenka
@@ -142,11 +142,13 @@ Michael Hartman
 Martins Innus
 Maciej Krol
 Leandro Motta Barros
+Jordi Torres
 Johan Nouvel
 Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
+Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
@@ -158,7 +160,6 @@ Maria Ten
 Lilin Xiong
 Liang Aibin
 Katharina Plugge
-Jordi Torres
 John Vidar Larring
 John Kelso
 John Ivar
@@ -172,7 +173,6 @@ Bruce Clay
 Bradley Anderegg
 Andreas Goebel
 Alok Priyadarshi
-Alexander Sinditskiy
 Alberto Barbati
 Alan Dickinson
 Vladimir Shabanov
@@ -233,12 +233,13 @@ Pjotr Svetachov
 Piotr Gwiazdowski
 Pierre Haritchabalet
 Perry Miller
+Pawel Ksiezopolski
 Paul Palumbo
 Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
+Morn Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -304,8 +305,9 @@ Vincent Vivanloc
 Vincent Gadoury
 Vasily Radostev
 Valery Bickov
+Valeriy Dubov
 Vaclav Bilek
-Tyge Løvset
+Tyge Lvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -346,7 +348,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mächler
+Philipp Mchler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -366,12 +368,13 @@ Ole-Morten Duesund
 Nicolas Brodu
 Mojtaba Fathi
 Mirko Viviani
-Mikkel GjÃ¸l
+Mikkel Gjl
 Mike Garrity
 Miha Ravsel
 Michael Polak
 Michael Morrison
 Michael Logan
+Michael Kapelko
 Max Rhiener
 Max Behensky
 Mauricio Hofmam
@@ -462,7 +465,7 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-César L. B. Silveira
+Csar L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
@@ -477,7 +480,7 @@ Bruno Herbelin
 Brian Keener
 Brandon Hamm
 Bora Utka
-Björn Hein
+Bjrn Hein
 Bjorn Blissing
 Bill Prendergast
 Bernardt Duvenhage

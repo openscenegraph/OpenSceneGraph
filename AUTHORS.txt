@@ -80,11 +80,11 @@ David Spilling
 Daniel Sjlie
 Bryan Thrall
 Torben Dannhauer
+Martin Naylor
 Jan Ciger
 Fabien Lavignotte
 Mike Connell
 Melchior Franz
-Martin Naylor
 Johannes Baeuerle
 Andreas Ekstrand
 Rafa Gaitan

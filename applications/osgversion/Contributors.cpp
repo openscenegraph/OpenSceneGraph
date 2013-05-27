@@ -481,6 +481,8 @@ NameCorrection nameCorrections[] =
      "Sukender", ""},
     {"Sukender","Here",
      "Sukender", ""},
+    {"Sukender","Fix",
+     "Sukender", ""},
     {"Ewe","Woessner",
      "Uwe", "Woessner"},
     {"Martin","von",

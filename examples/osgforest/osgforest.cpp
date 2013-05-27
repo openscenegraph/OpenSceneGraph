@@ -1042,7 +1042,7 @@ osg::Node* ForestTechniqueManager::createTextureBufferGraph(Cell* cell, osg::Geo
         }
         osg::ref_ptr<osg::TextureBuffer> tbo = new osg::TextureBuffer;
         tbo->setImage( treeParamsImage.get() );
-        tbo->setInternalFormat(GL_RGBA32F);
+        tbo->setInternalFormat(GL_RGBA32F_ARB);
         geometry->getOrCreateStateSet()->setTextureAttribute(1, tbo.get());
         geometry->setInitialBound( cell->_bb );
     }

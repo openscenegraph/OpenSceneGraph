@@ -8,9 +8,9 @@ Robert Osfield
 Don Burns
 Stephan Huber
 Paul Martz
-Mathias Frhlich
+Mathias Fröhlich
 Marco Jez
-Jean-Sbastien Guay
+Jean-Sébastien Guay
 Mike Weiblen
 Farshid Lashkari
 Wang Rui
@@ -63,7 +63,7 @@ Mathieu Marache
 Chris Denham
 Alberto Farre
 Sherman Wilcox
-Andr Garneau
+André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -73,11 +73,11 @@ Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
-Romano Jos Magacho da Silva
+Romano José Magacho da Silva
 Michael Gronager
 Joakim Simonsson
 David Spilling
-Daniel Sjlie
+Daniel Sjölie
 Bryan Thrall
 Torben Dannhauer
 Martin Naylor
@@ -130,7 +130,7 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautr
+Tanguy Fautré
 Sean Spicer
 Richard Schmidt
 Peter Hrenka
@@ -239,7 +239,7 @@ Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morn Pistorius
+Morné Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -307,7 +307,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Lvset
+Tyge Løvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -348,7 +348,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mchler
+Philipp Mächler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -368,7 +368,7 @@ Ole-Morten Duesund
 Nicolas Brodu
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjl
+Mikkel GjÃ¸l
 Mike Garrity
 Miha Ravsel
 Michael Polak
@@ -465,7 +465,7 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-Csar L. B. Silveira
+César L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
@@ -480,7 +480,7 @@ Bruno Herbelin
 Brian Keener
 Brandon Hamm
 Bora Utka
-Bjrn Hein
+Björn Hein
 Bjorn Blissing
 Bill Prendergast
 Bernardt Duvenhage

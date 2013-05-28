@@ -1404,14 +1404,23 @@ void Image::flipVertical()
     unsigned int rowSize = getRowSizeInBytes();
     unsigned int rowStep = getRowStepInBytes();
 
+    const bool dxtc(dxtc_tool::isDXTC(_pixelFormat));
     if (_mipmapData.empty())
     {
         // no mipmaps,
         // so we can safely handle 3d textures
         for(int r=0;r<_r;++r)
         {
-            if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
+            if (dxtc)
             {
+                if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
+                {
+                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+                }
+            }
+            else
+            {
+                if (isCompressed()) OSG_NOTICE << "Notice Image::flipVertical(): image is compressed but normal v-flip is used" << std::endl;
                 // its not a compressed image, so implement flip oursleves.
                 unsigned char* top = data(0,0,r);
                 unsigned char* bottom = top + (_t-1)*rowStep;
@@ -1422,8 +1431,16 @@ void Image::flipVertical()
     }
     else if (_r==1)
     {
-        if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
+        if (dxtc)
         {
+            if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
+            {
+                OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+            }
+        }
+        else
+        {
+            if (isCompressed()) OSG_NOTICE << "Notice Image::flipVertical(): image is compressed but normal v-flip is used" << std::endl;
             // its not a compressed image, so implement flip oursleves.
             unsigned char* top = data(0,0,0);
             unsigned char* bottom = top + (_t-1)*rowStep;
@@ -1441,7 +1458,14 @@ void Image::flipVertical()
             t >>= 1;
             if (s==0) s=1;
             if (t==0) t=1;
-            if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
+            if (dxtc)
+            {
+                if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
+                {
+                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+                }
+            }
+            else
             {
                 // its not a compressed image, so implement flip oursleves.
                 unsigned char* top = _data+_mipmapData[i];

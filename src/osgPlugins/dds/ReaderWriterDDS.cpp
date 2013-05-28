@@ -400,53 +400,15 @@ typedef struct {
   UI32                     reserved;
 } OSG_DDS_HEADER_DXT10;
 
-static unsigned int ComputeImageSizeInBytes
-    ( int width, int height, int depth,
-      unsigned int pixelFormat, unsigned int pixelType,
-      int packing = 1, int slice_packing = 1, int image_packing = 1 )
+static unsigned int ComputeImageSizeInBytes( int width, int height, int depth,
+                                             unsigned int pixelFormat, unsigned int pixelType,
+                                             int packing = 1, int slice_packing = 1, int image_packing = 1 )
 {
     if( width < 1 )  width = 1;
     if( height < 1 ) height = 1;
     if( depth < 1 )  depth = 1;
-
-    // Taking advantage of the fact that
-    // DXT formats are defined as 4 successive numbers:
-    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
-    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
-    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
-    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
-    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
-        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
-    }
-    // 3dc ATI formats
-    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
-    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
-    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
-    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
-    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
-        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
-    }
-    // compute size of one row
-    unsigned int size = osg::Image::computeRowWidthInBytes
-                            ( width, pixelFormat, pixelType, packing );
-
-    // now compute size of slice
-    size *= height;
-    size += slice_packing - 1;
-    size -= size % slice_packing;
-
-    // compute size of whole image
-    size *= depth;
-    size += image_packing - 1;
-    size -= size % image_packing;
-
-    return size;
+    
+    return osg::Image::computeImageSizeInBytes(width, height, depth, packing, slice_packing, image_packing);
 }
 
 osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)

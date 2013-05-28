@@ -497,6 +497,8 @@ NameCorrection nameCorrections[] =
      "Thomas",         "Hogarth"},
     {"Marin",          "Lavery",
      "Martin",         "Lavery"},
+    {"Michael",        "Bach",
+     "Michael",        "Bach Jensen"},
     {"Nguyen",         "Van",
      "Nguyen",         "Van Truong"},
     {"Thom",           "Carlo",

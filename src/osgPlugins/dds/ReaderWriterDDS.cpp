@@ -494,6 +494,8 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // while compressed formats will use DDPF_FOURCC with a four-character code.
 
     bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
+    int packing(1);
+    bool isDXTC(false);
 
     // Uncompressed formats.
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
@@ -659,16 +661,22 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                 internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
             }
+            packing = 2;        // 4 bits/pixel. 4 px = 2 bytes
+            isDXTC = true;
             break;
         case FOURCC_DXT3:
             OSG_INFO << "ReadDDSFile info : format = DXT3" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            packing = 4;        // 8 bits/pixel. 4 px = 4 bytes
+            isDXTC = true;
             break;
         case FOURCC_DXT5:
             OSG_INFO << "ReadDDSFile info : format = DXT5" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            packing = 4;        // 8 bits/pixel. 4 px = 4 bytes
+            isDXTC = true;
             break;
         case FOURCC_ATI1:
             OSG_INFO << "ReadDDSFile info : format = ATI1" << std::endl;
@@ -965,7 +973,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         return NULL;
     }
 
-    unsigned int size = ComputeImageSizeInBytes( s, t, r, pixelFormat, dataType );
+    unsigned int size = ComputeImageSizeInBytes( s, t, r, pixelFormat, dataType, packing );
 
     // Take care of mipmaps if any.
     unsigned int sizeWithMipmaps = size;
@@ -990,7 +998,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
            depth = osg::maximum( depth >> 1, 1 );
 
            sizeWithMipmaps +=
-                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType );
+                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType, packing );
         }
     }
 
@@ -1020,7 +1028,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         // this memory will not be used but it will not cause leak in worst meaning of this word.
     }
 
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE, packing);
 
     if (mipmap_offsets.size()>0) osgImage->setMipmapLevels(mipmap_offsets);
 
@@ -1059,6 +1067,19 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     //unsigned int components     = osg::Image::computeNumComponents(pixelFormat);
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
     unsigned int imageSize      = img->getImageSizeInBytes();
+
+    // Check that theorical image size (computation taking into account DXTC blocks) is not bigger than actual image size.
+    // This may happen, for instance, if some operation tuncated the data buffer non block-aligned. Example:
+    //  - Read DXT1 image, size = 8x7. Actually, image data is 8x8 because it stores 4x4 blocks.
+    //  - Some hypothetical operation wrongly assumes the data buffer is 8x7 and truncates the buffer. This may even lead to access violations.
+    //  - Then we write the DXT1 image: last block(s) is (are) corrupt.
+    // Actually what could be very nice is to handle some "lines packing" (?) in DDS reading, indicating that the image buffer has "additional lines to reach a multiple of 4".
+    // Please note this can also produce false positives (ie. when data buffer is large enough, but getImageSizeInBytes() returns a smaller value). There is no way to detect this, until we fix getImageSizeInBytes() with "line packing".
+    unsigned int imageSizeTheorical = ComputeImageSizeInBytes( img->s(), img->t(), img->r(), pixelFormat, dataType, img->getPacking() );
+    if (imageSize < imageSizeTheorical) {
+        OSG_FATAL << "Image cannot be written as DDS (Maybe a corrupt S3TC-DXTC image, with non %4 dimensions)." << std::endl;
+        return false;
+    }
 
     ddsd.dwWidth  = img->s();
     ddsd.dwHeight = img->t();

@@ -722,14 +722,49 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum t
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
-unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing)
+unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing, int slice_packing, int image_packing)
 {
-    if (width==0 || height==0 || depth==0) return 0;
+    if (width<=0 || height<=0 || depth<=0) return 0;
 
-    return osg::maximum(
-            Image::computeRowWidthInBytes(width,pixelFormat,type,packing)*height*depth,
-            computeBlockSize(pixelFormat, packing)
-        );
+    // Taking advantage of the fact that
+    // DXT formats are defined as 4 successive numbers:
+    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
+    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
+    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
+    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
+    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
+        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
+    
+    // 3dc ATI formats
+    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
+    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
+    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
+    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
+    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
+        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
+    
+    // compute size of one row
+    unsigned int size = osg::Image::computeRowWidthInBytes( width, pixelFormat, type, packing );
+
+    // now compute size of slice
+    size *= height;
+    size += slice_packing - 1;
+    size -= size % slice_packing;
+
+    // compute size of whole image
+    size *= depth;
+    size += image_packing - 1;
+    size -= size % image_packing;
+
+    return osg::maximum( size, computeBlockSize(pixelFormat, packing) );
 }
 
 int Image::computeNearestPowerOfTwo(int s,float bias)

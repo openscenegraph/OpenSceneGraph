@@ -603,7 +603,8 @@ void State::applyShaderComposition()
     {
         if (_shaderCompositionDirty)
         {
-            print(notify(osg::INFO));
+            if (isNotifyEnabled(osg::INFO))
+                print(notify(osg::INFO));
 
             // build lits of current ShaderComponents
             ShaderComponents shaderComponents;

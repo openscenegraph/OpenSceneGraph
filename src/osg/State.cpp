@@ -505,9 +505,7 @@ void State::apply(const StateSet* dstate)
         
         _currentShaderCompositionUniformList.clear();
 
-        applyModeList(_modeMap,dstate->getModeList());
-        applyAttributeList(_attributeMap,dstate->getAttributeList());
-
+        // apply all texture state and modes
         const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
         const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
 
@@ -523,6 +521,9 @@ void State::apply(const StateSet* dstate)
             if (unit<ds_textureAttributeList.size()) applyAttributeListOnTexUnit(unit,getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
+
+        applyModeList(_modeMap,dstate->getModeList());
+        applyAttributeList(_attributeMap,dstate->getAttributeList());
 
         if (_shaderCompositionEnabled)
         {
@@ -569,13 +570,7 @@ void State::apply()
 
     if (_shaderCompositionEnabled) _currentShaderCompositionUniformList.clear();
 
-    // go through all active OpenGL modes, enabling/disable where
-    // appropriate.
-    applyModeMap(_modeMap);
-
-    // go through all active StateAttribute's, applying where appropriate.
-    applyAttributeMap(_attributeMap);
-
+    // apply all texture state and modes
     unsigned int unit;
     unsigned int unitMax = maximum(_textureModeMapList.size(),_textureAttributeMapList.size());
     for(unit=0;unit<unitMax;++unit)
@@ -583,6 +578,14 @@ void State::apply()
         if (unit<_textureModeMapList.size()) applyModeMapOnTexUnit(unit,_textureModeMapList[unit]);
         if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
     }
+
+    // go through all active OpenGL modes, enabling/disable where
+    // appropriate.
+    applyModeMap(_modeMap);
+
+    // go through all active StateAttribute's, applying where appropriate.
+    applyAttributeMap(_attributeMap);
+
 
     if (_shaderCompositionEnabled)
     {

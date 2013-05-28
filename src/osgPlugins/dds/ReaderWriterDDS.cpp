@@ -35,6 +35,24 @@
 #include <stdio.h>
 #include <string.h>
 
+// Macro similar to what's in FLT/TRP plugins (except it uses wide char under Windows if OSG_USE_UTF8_FILENAME)
+#if defined(_WIN32)
+    #include <windows.h>
+    #include <osg/Config>
+    #include <osgDB/ConvertUTF>
+    #ifdef OSG_USE_UTF8_FILENAME
+        #define DELETEFILE(file) DeleteFileW(osgDB::convertUTF8toUTF16((file)).c_str())
+    #else
+        #define DELETEFILE(file) DeleteFileA((file))
+    #endif
+
+#else   // Unix
+
+    #include <stdio.h>
+    #define DELETEFILE(file) remove((file))
+
+#endif
+
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     #define GL_RED                  0x1903
     #define GL_LUMINANCE4_ALPHA4    0x8043
@@ -1458,7 +1476,13 @@ public:
         osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
-        return writeImage(image,fout,options);
+        WriteResult res( writeImage(image,fout,options) );
+        if (!res.success()) {
+            // Remove file on failure
+            fout.close();
+            DELETEFILE(file.c_str());
+        }
+        return res;
     }
 
     virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options* options) const

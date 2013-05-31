@@ -303,6 +303,7 @@ std::string& osg::getGLExtensionDisableString()
     return s_GLExtensionDisableString;
 }
 
+OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGLExtensionDisableString())
 
 #ifdef OSG_GL_LIBRARY_STATIC
 

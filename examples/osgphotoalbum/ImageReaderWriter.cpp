@@ -170,6 +170,7 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::local_readNode(const std::str
         // set up the texture.
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
+        texture->setResizeNonPowerOfTwoHint(false);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
 

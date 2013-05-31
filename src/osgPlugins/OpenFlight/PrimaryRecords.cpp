@@ -1029,10 +1029,13 @@ protected:
             // Apply yaw and pitch for infinite and spot light.
             if ((w==0.0) || (light->getSpotCutoff()<180.0))
             {
-                // TODO: What direction is zero yaw and pitch?
-                osg::Quat rotation = ( osg::Quat(osg::inDegrees(double(yaw)),osg::Vec3(0.0,0.0,1.0)) *
-                                       osg::Quat(osg::inDegrees(double(pitch)),osg::Vec3(1.0,0.0,0.0)) );
-                light->setDirection(rotation*osg::Vec3(0.0,1.0,0.0));
+                // assume yaw is zero along y axis, increase positive clockwise
+                // assume patch is zero along xy plane, increase positive upwards
+                float cos_yaw = cosf(osg::inDegrees(yaw));
+                float sin_yaw = sinf(osg::inDegrees(yaw));
+                float cos_pitch = cosf(osg::inDegrees(pitch));
+                float sin_pitch = sinf(osg::inDegrees(pitch));
+                light->setDirection(osg::Vec3(sin_yaw*cos_pitch, cos_yaw*cos_pitch, sin_pitch));
             }
 
             _lightSource->setLight(light);

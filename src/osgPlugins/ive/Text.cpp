@@ -129,7 +129,8 @@ void Text::write(DataOutputStream* out){
     else
     {
         // do it the hardway...output each character as an int
-        osg::ref_ptr<osg::UIntArray> strarr = new osg::UIntArray(textstring.size());
+        osg::ref_ptr<osg::UIntArray> strarr = new osg::UIntArray();
+        strarr->reserve(textstring.size());
 
         for(itr=textstring.begin();
             itr!=textstring.end();

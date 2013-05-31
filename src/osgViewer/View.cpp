@@ -465,7 +465,7 @@ void View::setUpViewAcrossAllScreens()
 
 void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum)
 {
-    apply(new osgViewer::SingleWindow(x,y,width,screenNum));
+    apply(new osgViewer::SingleWindow(x, y, width, height, screenNum));
 }
 
 void View::setUpViewOnSingleScreen(unsigned int screenNum)

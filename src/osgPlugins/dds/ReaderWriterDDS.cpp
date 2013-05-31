@@ -35,6 +35,24 @@
 #include <stdio.h>
 #include <string.h>
 
+// Macro similar to what's in FLT/TRP plugins (except it uses wide char under Windows if OSG_USE_UTF8_FILENAME)
+#if defined(_WIN32)
+    #include <windows.h>
+    #include <osg/Config>
+    #include <osgDB/ConvertUTF>
+    #ifdef OSG_USE_UTF8_FILENAME
+        #define DELETEFILE(file) DeleteFileW(osgDB::convertUTF8toUTF16((file)).c_str())
+    #else
+        #define DELETEFILE(file) DeleteFileA((file))
+    #endif
+
+#else   // Unix
+
+    #include <stdio.h>
+    #define DELETEFILE(file) remove((file))
+
+#endif
+
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     #define GL_RED                  0x1903
     #define GL_LUMINANCE4_ALPHA4    0x8043
@@ -382,56 +400,18 @@ typedef struct {
   UI32                     reserved;
 } OSG_DDS_HEADER_DXT10;
 
-static unsigned int ComputeImageSizeInBytes
-    ( int width, int height, int depth,
-      unsigned int pixelFormat, unsigned int pixelType,
-      int packing = 1, int slice_packing = 1, int image_packing = 1 )
+static unsigned int ComputeImageSizeInBytes( int width, int height, int depth,
+                                             unsigned int pixelFormat, unsigned int pixelType,
+                                             int packing = 1, int slice_packing = 1, int image_packing = 1 )
 {
     if( width < 1 )  width = 1;
     if( height < 1 ) height = 1;
     if( depth < 1 )  depth = 1;
-
-    // Taking advantage of the fact that
-    // DXT formats are defined as 4 successive numbers:
-    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
-    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
-    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
-    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
-    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
-        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
-    }
-    // 3dc ATI formats
-    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
-    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
-    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
-    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
-    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
-        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
-    }
-    // compute size of one row
-    unsigned int size = osg::Image::computeRowWidthInBytes
-                            ( width, pixelFormat, pixelType, packing );
-
-    // now compute size of slice
-    size *= height;
-    size += slice_packing - 1;
-    size -= size % slice_packing;
-
-    // compute size of whole image
-    size *= depth;
-    size += image_packing - 1;
-    size -= size % image_packing;
-
-    return size;
+    
+    return osg::Image::computeImageSizeInBytes(width, height, depth, packing, slice_packing, image_packing);
 }
 
-osg::Image* ReadDDSFile(std::istream& _istream)
+osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
 {
     DDSURFACEDESC2 ddsd;
 
@@ -494,6 +474,8 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // while compressed formats will use DDPF_FOURCC with a four-character code.
 
     bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
+    int packing(1);
+    bool isDXTC(false);
 
     // Uncompressed formats.
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
@@ -659,16 +641,22 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                 internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
             }
+            packing = 2;        // 4 bits/pixel. 4 px = 2 bytes
+            isDXTC = true;
             break;
         case FOURCC_DXT3:
             OSG_INFO << "ReadDDSFile info : format = DXT3" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            packing = 4;        // 8 bits/pixel. 4 px = 4 bytes
+            isDXTC = true;
             break;
         case FOURCC_DXT5:
             OSG_INFO << "ReadDDSFile info : format = DXT5" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            packing = 4;        // 8 bits/pixel. 4 px = 4 bytes
+            isDXTC = true;
             break;
         case FOURCC_ATI1:
             OSG_INFO << "ReadDDSFile info : format = ATI1" << std::endl;
@@ -965,7 +953,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         return NULL;
     }
 
-    unsigned int size = ComputeImageSizeInBytes( s, t, r, pixelFormat, dataType );
+    unsigned int size = ComputeImageSizeInBytes( s, t, r, pixelFormat, dataType, packing );
 
     // Take care of mipmaps if any.
     unsigned int sizeWithMipmaps = size;
@@ -990,7 +978,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
            depth = osg::maximum( depth >> 1, 1 );
 
            sizeWithMipmaps +=
-                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType );
+                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType, packing );
         }
     }
 
@@ -1020,16 +1008,29 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         // this memory will not be used but it will not cause leak in worst meaning of this word.
     }
 
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE, packing);
 
     if (mipmap_offsets.size()>0) osgImage->setMipmapLevels(mipmap_offsets);
+
+    if (flipDDSRead) {
+        osgImage->setOrigin(osg::Image::BOTTOM_LEFT);
+        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<4))        // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
+        {
+            osgImage->flipVertical();
+        }
+        else
+        {
+            OSG_WARN << "ReadDDSFile warning: Vertical flip was skipped. Image dimensions have to be multiple of 4." << std::endl;
+        }
+    }
 
     // Return Image.
     return osgImage.release();
 }
 
-bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
+bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWrite)
 {
+    bool isDXTC(false);
 
     // Initialize ddsd structure and its members
     DDSURFACEDESC2 ddsd;
@@ -1059,6 +1060,19 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     //unsigned int components     = osg::Image::computeNumComponents(pixelFormat);
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
     unsigned int imageSize      = img->getImageSizeInBytes();
+
+    // Check that theorical image size (computation taking into account DXTC blocks) is not bigger than actual image size.
+    // This may happen, for instance, if some operation tuncated the data buffer non block-aligned. Example:
+    //  - Read DXT1 image, size = 8x7. Actually, image data is 8x8 because it stores 4x4 blocks.
+    //  - Some hypothetical operation wrongly assumes the data buffer is 8x7 and truncates the buffer. This may even lead to access violations.
+    //  - Then we write the DXT1 image: last block(s) is (are) corrupt.
+    // Actually what could be very nice is to handle some "lines packing" (?) in DDS reading, indicating that the image buffer has "additional lines to reach a multiple of 4".
+    // Please note this can also produce false positives (ie. when data buffer is large enough, but getImageSizeInBytes() returns a smaller value). There is no way to detect this, until we fix getImageSizeInBytes() with "line packing".
+    unsigned int imageSizeTheorical = ComputeImageSizeInBytes( img->s(), img->t(), img->r(), pixelFormat, dataType, img->getPacking() );
+    if (imageSize < imageSizeTheorical) {
+        OSG_FATAL << "Image cannot be written as DDS (Maybe a corrupt S3TC-DXTC image, with non %4 dimensions)." << std::endl;
+        return false;
+    }
 
     ddsd.dwWidth  = img->s();
     ddsd.dwHeight = img->t();
@@ -1154,6 +1168,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         //Compressed
     case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
         {
+            isDXTC = true;
             ddpf.dwFourCC = FOURCC_DXT1;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_FOURCC);
             ddsd.dwLinearSize = imageSize;
@@ -1162,6 +1177,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
         {
+            isDXTC = true;
             ddpf.dwFourCC = FOURCC_DXT3;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_FOURCC);
             ddsd.dwLinearSize = imageSize;
@@ -1170,6 +1186,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
         {
+            isDXTC = true;
             ddpf.dwFourCC = FOURCC_DXT5;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_FOURCC);
             ddsd.dwLinearSize = imageSize;
@@ -1178,6 +1195,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
         {
+            isDXTC = true;
             ddpf.dwFourCC = FOURCC_DXT1;
             PF_flags |= DDPF_FOURCC;  /* No alpha here */
             ddsd.dwLinearSize = imageSize;
@@ -1226,9 +1244,9 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 
        OSG_INFO<<"no mipmaps to write out."<<std::endl;
 
-    } else if( img->getPacking() > 1 ) {
+    //} else if( img->getPacking() > 1 ) {
 
-       OSG_WARN<<"Warning: mipmaps not written. DDS requires packing == 1."<<std::endl;
+    //   OSG_WARN<<"Warning: mipmaps not written. DDS requires packing == 1."<<std::endl;
 
     } else { // image contains mipmaps and has 1 byte alignment
 
@@ -1249,11 +1267,32 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     ddsd.ddpfPixelFormat = ddpf;
     ddsd.ddsCaps = ddsCaps;
 
+    osg::ref_ptr<const osg::Image> source;
+    if (autoFlipDDSWrite && img->getOrigin() == osg::Image::BOTTOM_LEFT)
+    {
+        osg::ref_ptr<osg::Image> copy( new osg::Image(*img,osg::CopyOp::DEEP_COPY_ALL) );
+        const int s(copy->s());
+        const int t(copy->t());
+        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<4))        // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
+        {
+            copy->flipVertical();
+        }
+        else
+        {
+            OSG_WARN << "WriteDDSFile warning: Vertical flip was skipped. Image dimensions have to be multiple of 4." << std::endl;
+        }
+        source = copy;
+    } 
+    else
+    {
+        source = img;
+    }
+
     // Write DDS file
     fout.write("DDS ", 4); /* write FOURCC */
     fout.write(reinterpret_cast<char*>(&ddsd), sizeof(ddsd)); /* write file header */
 
-    for(osg::Image::DataIterator itr(img); itr.valid(); ++itr)
+    for(osg::Image::DataIterator itr(source.get()); itr.valid(); ++itr)
     {
         fout.write(reinterpret_cast<const char*>(itr.data()), itr.size() );
     }
@@ -1277,7 +1316,8 @@ public:
         supportsOption("dds_dxt1_rgb","Set the pixel format of DXT1 encoded images to be RGB variant of DXT1");
         supportsOption("dds_dxt1_rgba","Set the pixel format of DXT1 encoded images to be RGBA variant of DXT1");
         supportsOption("dds_dxt1_detect_rgba","For DXT1 encode images set the pixel format according to presence of transparent pixels");
-        supportsOption("dds_flip","Flip the image about the horizontl axis");
+        supportsOption("dds_flip","Flip the image about the horizontal axis");
+        supportsOption("ddsNoAutoFlipWrite", "(Write option) Avoid automatically flipping the image vertically when writing, depending on the origin (Image::getOrigin()).");
     }
 
     virtual const char* className() const
@@ -1313,23 +1353,39 @@ public:
 
     virtual ReadResult readImage(std::istream& fin, const Options* options) const
     {
-        osg::Image* osgImage = ReadDDSFile(fin);
+        bool dds_flip(false);
+        bool dds_dxt1_rgba(false);
+        bool dds_dxt1_rgb(false);
+        bool dds_dxt1_detect_rgba(false);
+        if (options)
+        {
+            std::istringstream iss(options->getOptionString());
+            std::string opt; 
+            while (iss >> opt)
+            {
+                if (opt == "dds_flip") dds_flip = true;
+                if (opt == "dds_dxt1_rgba") dds_dxt1_rgba = true;
+                if (opt == "dds_dxt1_rgb") dds_dxt1_rgb = true;
+                if (opt == "dds_dxt1_detect_rgba") dds_dxt1_detect_rgba = true;
+            }
+        }
+        osg::Image* osgImage = ReadDDSFile(fin, dds_flip);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
 
         if (osgImage->getPixelFormat()==GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
             osgImage->getPixelFormat()==GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
         {
-            if (options && options->getOptionString().find("dds_dxt1_rgba")!=std::string::npos)
+            if (dds_dxt1_rgba)
             {
                 osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
                 osgImage->setInternalTextureFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
             }
-            else if (options && options->getOptionString().find("dds_dxt1_rgb")!=std::string::npos)
+            else if (dds_dxt1_rgb)
             {
                 osgImage->setPixelFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
                 osgImage->setInternalTextureFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
             }
-            else if (options && options->getOptionString().find("dds_dxt1_detect_rgba")!=std::string::npos)
+            else if (dds_dxt1_detect_rgba)
             {
                 // check to see if DXT1c (RGB_S3TC_DXT1) format image might actually be
                 // a DXT1a format image
@@ -1352,11 +1408,6 @@ public:
                     OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT has transparency, setting format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT."<<std::endl;
                 }
             }
-        }
-
-        if (options && options->getOptionString().find("dds_flip")!=std::string::npos)
-        {
-            osgImage->flipVertical();
         }
 
         return osgImage;
@@ -1387,12 +1438,19 @@ public:
         osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
-        return writeImage(image,fout,options);
+        WriteResult res( writeImage(image,fout,options) );
+        if (!res.success()) {
+            // Remove file on failure
+            fout.close();
+            DELETEFILE(file.c_str());
+        }
+        return res;
     }
 
-    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
+    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options* options) const
     {
-        bool success = WriteDDSFile(&image, fout);
+        bool noAutoFlipDDSWrite = options && options->getOptionString().find("ddsNoAutoFlipWrite")!=std::string::npos;
+        bool success = WriteDDSFile(&image, fout, !noAutoFlipDDSWrite);
 
         if(success)
             return WriteResult::FILE_SAVED;

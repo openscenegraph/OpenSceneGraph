@@ -602,6 +602,7 @@ public:
             else return -(2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f);
         }
 #endif
+
         /// set mouse-Y orientation (mouse-Y increases upwards or downwards).
         void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
 
@@ -690,7 +691,7 @@ public:
         PointerDataList& getPointerDataList() { return _pointerDataList; }
         const PointerDataList& getPointerDataList() const { return _pointerDataList; }
 
-        unsigned int getNumPointerData() const { return _pointerDataList.size(); }
+        unsigned int getNumPointerData() const { return static_cast<unsigned int>(_pointerDataList.size()); }
         PointerData* getPointerData(unsigned int i) { return _pointerDataList[i].get(); }
         const PointerData* getPointerData(unsigned int i) const { return _pointerDataList[i].get(); }
 

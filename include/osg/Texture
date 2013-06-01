@@ -33,6 +33,12 @@
     #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
 #endif
 
+// If not defined, use the definition found in:
+// http://www.opengl.org/registry/specs/ARB/texture_swizzle.txt
+#ifndef GL_TEXTURE_SWIZZLE_RGBA
+    #define GL_TEXTURE_SWIZZLE_RGBA 0x8E46
+#endif
+
 #ifndef GL_ARB_texture_compression
     #define GL_COMPRESSED_ALPHA_ARB                 0x84E9
     #define GL_COMPRESSED_LUMINANCE_ARB             0x84EA
@@ -481,7 +487,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST
         };
 
-
         /** Sets the texture filter mode. */
         void setFilter(FilterParameter which, FilterMode filter);
 
@@ -497,6 +502,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Gets the maximum anisotropy value. */
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
+
+        /** Configure the source of texture swizzling for all channels */
+        inline void setSwizzle(GLint red, GLint green, GLint blue, GLint alpha) { _swizzle[0] = red; _swizzle[1] = green; _swizzle[2] = blue; _swizzle[3] = alpha; };
+
+        /** Gets the source of texture swizzling for all channels */
+        inline void getSwizzle(GLint& red, GLint& green, GLint& blue, GLint& alpha) const { red = _swizzle[0]; green = _swizzle[1]; blue = _swizzle[2]; alpha = _swizzle[3]; }
 
         /** Sets the hardware mipmap generation hint. If enabled, it will
           * only be used if supported in the graphics system. */
@@ -764,6 +775,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
 
+                void setTextureSwizzleSupported(bool flag) { _isTextureSwizzleSupported=flag; }
+                bool isTextureSwizzleSupported() const { return _isTextureSwizzleSupported; }
+
                 void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
 
@@ -895,6 +909,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 bool    _isMultiTexturingSupported;
                 bool    _isTextureFilterAnisotropicSupported;
+                bool    _isTextureSwizzleSupported;
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;
                 bool    _isTextureCompressionPVRTC2BPPSupported;
@@ -1017,6 +1032,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         FilterMode      _min_filter;
         FilterMode      _mag_filter;
         float           _maxAnisotropy;
+        GLint           _swizzle[4];
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;
         bool            _clientStorageHint;

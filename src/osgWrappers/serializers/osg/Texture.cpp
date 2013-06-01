@@ -94,6 +94,108 @@ static bool writeImageAttachment( osgDB::OutputStream& os, const osg::Texture& a
     return true;
 }
 
+// _swizzle
+static bool checkSwizzle( const osg::Texture& attr )
+{
+    return true;
+}
+
+static unsigned char swizzleToCharacter(GLint swizzle, unsigned char defaultCharacter)
+{
+    switch (swizzle)
+    {
+    case GL_RED:
+        return 'R';
+    case GL_GREEN:
+        return 'G';
+    case GL_BLUE:
+        return 'B';
+    case GL_ALPHA:
+        return 'A';
+    case GL_ZERO:
+        return '0';
+    case GL_ONE:
+        return '1';
+    default:
+        break;
+    }
+
+    return defaultCharacter;
+}
+
+static GLint characterToSwizzle(unsigned char character, GLint defaultSwizzle)
+{
+    switch (character)
+    {
+    case 'R':
+        return GL_RED;
+    case 'G':
+        return GL_GREEN;
+    case 'B':
+        return GL_BLUE;
+    case 'A':
+        return GL_ALPHA;
+    case '0':
+        return GL_ZERO;
+    case '1':
+        return GL_ONE;
+    default:
+        break;
+    }
+
+    return defaultSwizzle;
+}
+
+static std::string swizzleToString(GLint red, GLint green, GLint blue, GLint alpha)
+{
+    std::string result;
+
+    result.push_back(swizzleToCharacter(red, 'R'));
+    result.push_back(swizzleToCharacter(green, 'G'));
+    result.push_back(swizzleToCharacter(blue, 'B'));
+    result.push_back(swizzleToCharacter(alpha, 'A'));
+
+    return result;
+}
+
+static void stringToSwizzle(const std::string& swizzleString, GLint& red, GLint& green, GLint& blue, GLint& alpha)
+{
+    red   = characterToSwizzle(swizzleString[0], GL_RED);
+    green = characterToSwizzle(swizzleString[1], GL_GREEN);
+    blue  = characterToSwizzle(swizzleString[2], GL_BLUE);
+    alpha = characterToSwizzle(swizzleString[3], GL_ALPHA);
+}
+
+static bool readSwizzle( osgDB::InputStream& is, osg::Texture& attr )
+{
+    GLint red;
+    GLint green;
+    GLint blue;
+    GLint alpha;
+
+    std::string swizzleString;
+    is >> swizzleString;
+
+    stringToSwizzle(swizzleString, red, green, blue, alpha);
+
+    attr.setSwizzle(red, green, blue, alpha);
+
+    return true;
+}
+
+static bool writeSwizzle( osgDB::OutputStream& os, const osg::Texture& attr )
+{
+    GLint red;
+    GLint green;
+    GLint blue;
+    GLint alpha;
+    attr.getSwizzle(red, green, blue, alpha);
+
+    os << swizzleToString(red, green, blue, alpha) << std::endl;
+
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( Texture,
                          /*new osg::Texture*/NULL,
                          osg::Texture,
@@ -156,4 +258,11 @@ REGISTER_OBJECT_WRAPPER( Texture,
         UPDATE_TO_VERSION_SCOPED( 95 )
         ADD_USER_SERIALIZER( ImageAttachment );  // _imageAttachment
     }
+//#define SERIALIZE_TEXTURE_SWIZZLE
+#ifdef SERIALIZE_TEXTURE_SWIZZLE
+    { 
+        UPDATE_TO_VERSION_SCOPED( 97 ) 
+        ADD_USER_SERIALIZER( Swizzle );  // _swizzle
+    }
+#endif
 }

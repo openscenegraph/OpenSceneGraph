@@ -344,7 +344,13 @@ IF(WIN32 AND NOT ANDROID)
             STRING(REGEX REPLACE "/STACK:[0-9]+" "" CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
             STRING(REGEX REPLACE "/STACK:[0-9]+" "" CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
         ENDIF(MSVC_USE_DEFAULT_STACK_SIZE)
-
+        get_filename_component( CMAKE_MAKE_PROGRAM_NAME ${CMAKE_MAKE_PROGRAM} NAME)
+        IF (CMAKE_MAKE_PROGRAM_NAME STREQUAL "VCExpress.exe")
+            OPTION(MSVC_BUILD_USE_SOLUTION_FOLDERS "Enable project grouping in VS - VCExpress detected, not supported in VCExpress )" OFF)
+        ELSE()
+            OPTION(MSVC_BUILD_USE_SOLUTION_FOLDERS "Enable project grouping in VS" ON)
+        ENDIF()
+        SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${MSVC_BUILD_USE_SOLUTION_FOLDERS})
     ENDIF()
 
     #needed for net plugin
@@ -507,7 +513,6 @@ ELSE()
     FIND_PACKAGE(CURL)
     FIND_PACKAGE(LibVNCServer)
     FIND_PACKAGE(OurDCMTK)
-    FIND_PACKAGE(OpenAL)
     FIND_PACKAGE(FFmpeg)
     FIND_PACKAGE(DirectShow)
     FIND_PACKAGE(SDL)
@@ -761,7 +766,9 @@ ELSE()
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
         SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4706 /wd4127 /wd4100)
-
+        IF(MSVC11)
+            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} /wd4250)
+        ENDIF()
 
     ELSE()
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need

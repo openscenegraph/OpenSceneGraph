@@ -73,10 +73,9 @@
 
 namespace dxtc_tool {
 
-
-
-
 // C-like function wrappers
+bool isDXTC(GLenum pixelFormat);
+
 bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
 bool CompressedImageTranslucent(size_t Width, size_t Height, GLenum Format, void * pPixels);
@@ -140,6 +139,20 @@ protected:
 //////////////////////////////////////////////////////////////////////
 // C-Like Function Wrappers
 //////////////////////////////////////////////////////////////////////
+
+inline bool isDXTC(GLenum pixelFormat)
+{
+    switch(pixelFormat)
+    {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+            return true;
+        default:
+            return false;
+    }
+}
 
 inline bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels) {
     return (dxtc_pixels(Width, Height, Format, pPixels)).VFlip(); 

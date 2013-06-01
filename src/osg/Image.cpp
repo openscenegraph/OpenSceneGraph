@@ -722,14 +722,49 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum t
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
-unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing)
+unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat,GLenum type,int packing, int slice_packing, int image_packing)
 {
-    if (width==0 || height==0 || depth==0) return 0;
+    if (width<=0 || height<=0 || depth<=0) return 0;
 
-    return osg::maximum(
-            Image::computeRowWidthInBytes(width,pixelFormat,type,packing)*height*depth,
-            computeBlockSize(pixelFormat, packing)
-        );
+    // Taking advantage of the fact that
+    // DXT formats are defined as 4 successive numbers:
+    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
+    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
+    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
+    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
+    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
+        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
+    
+    // 3dc ATI formats
+    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
+    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
+    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
+    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
+    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
+        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
+    
+    // compute size of one row
+    unsigned int size = osg::Image::computeRowWidthInBytes( width, pixelFormat, type, packing );
+
+    // now compute size of slice
+    size *= height;
+    size += slice_packing - 1;
+    size -= size % slice_packing;
+
+    // compute size of whole image
+    size *= depth;
+    size += image_packing - 1;
+    size -= size % image_packing;
+
+    return osg::maximum( size, computeBlockSize(pixelFormat, packing) );
 }
 
 int Image::computeNearestPowerOfTwo(int s,float bias)
@@ -1404,14 +1439,23 @@ void Image::flipVertical()
     unsigned int rowSize = getRowSizeInBytes();
     unsigned int rowStep = getRowStepInBytes();
 
+    const bool dxtc(dxtc_tool::isDXTC(_pixelFormat));
     if (_mipmapData.empty())
     {
         // no mipmaps,
         // so we can safely handle 3d textures
         for(int r=0;r<_r;++r)
         {
-            if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
+            if (dxtc)
             {
+                if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
+                {
+                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+                }
+            }
+            else
+            {
+                if (isCompressed()) OSG_NOTICE << "Notice Image::flipVertical(): image is compressed but normal v-flip is used" << std::endl;
                 // its not a compressed image, so implement flip oursleves.
                 unsigned char* top = data(0,0,r);
                 unsigned char* bottom = top + (_t-1)*rowStep;
@@ -1422,8 +1466,16 @@ void Image::flipVertical()
     }
     else if (_r==1)
     {
-        if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
+        if (dxtc)
         {
+            if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
+            {
+                OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+            }
+        }
+        else
+        {
+            if (isCompressed()) OSG_NOTICE << "Notice Image::flipVertical(): image is compressed but normal v-flip is used" << std::endl;
             // its not a compressed image, so implement flip oursleves.
             unsigned char* top = data(0,0,0);
             unsigned char* bottom = top + (_t-1)*rowStep;
@@ -1441,7 +1493,14 @@ void Image::flipVertical()
             t >>= 1;
             if (s==0) s=1;
             if (t==0) t=1;
-            if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
+            if (dxtc)
+            {
+                if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
+                {
+                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+                }
+            }
+            else
             {
                 // its not a compressed image, so implement flip oursleves.
                 unsigned char* top = _data+_mipmapData[i];

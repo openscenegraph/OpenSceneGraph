@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.1.6
+OpenSceneGraph Library 3.1.7
 
-495 Contributors:
+498 Contributors:
 
 Firstname Surname
 -----------------
@@ -12,12 +12,12 @@ Mathias Fröhlich
 Marco Jez
 Jean-Sébastien Guay
 Mike Weiblen
+Farshid Lashkari
 Wang Rui
 Ulrich Hertlein
-Farshid Lashkari
 Eric Wing
 Cedric Pinson
-Sukender Fix
+Sukender 
 Brede Johansen
 Bob Kuehne
 Michael Platings
@@ -40,9 +40,9 @@ Jason Beverage
 Jan Peciva
 J.P. Delport
 Mattias Helsing
+David Fries
 Andy Skinner
 Paul Melis
-David Fries
 Magnus Kessler
 Tom Jolley
 Pavel Moloshtan
@@ -80,12 +80,12 @@ David Spilling
 Daniel Sjölie
 Bryan Thrall
 Torben Dannhauer
+Martin Naylor
+Jan Ciger
 Fabien Lavignotte
 Mike Connell
 Melchior Franz
-Martin Naylor
 Johannes Baeuerle
-Jan Ciger
 Andreas Ekstrand
 Rafa Gaitan
 Neil Hughes
@@ -105,10 +105,11 @@ Simon Julier
 Rune Schmidt Jensen
 Riccardo Corsi
 Rainer Oder
+Nico Kruithof
 Martin Aumueller
 Mario Valle
 Lukasz Izdebski
-Jorge Izquierdo
+Jorge Izquierdo Ciges
 Gordon Tomlinson
 Frederic Bouvier
 Carlo Camporesi
@@ -117,7 +118,6 @@ Thibault Genessay
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
-Nico Kruithof
 Neil Groves
 Markus Trenkwalder
 Loic Dachary
@@ -142,11 +142,13 @@ Michael Hartman
 Martins Innus
 Maciej Krol
 Leandro Motta Barros
+Jordi Torres
 Johan Nouvel
 Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
+Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
@@ -158,7 +160,6 @@ Maria Ten
 Lilin Xiong
 Liang Aibin
 Katharina Plugge
-Jordi Torres
 John Vidar Larring
 John Kelso
 John Ivar
@@ -172,7 +173,6 @@ Bruce Clay
 Bradley Anderegg
 Andreas Goebel
 Alok Priyadarshi
-Alexander Sinditskiy
 Alberto Barbati
 Alan Dickinson
 Vladimir Shabanov
@@ -233,6 +233,7 @@ Pjotr Svetachov
 Piotr Gwiazdowski
 Pierre Haritchabalet
 Perry Miller
+Pawel Ksiezopolski
 Paul Palumbo
 Paul Obermeier
 Nguyen Van Truong
@@ -304,6 +305,7 @@ Vincent Vivanloc
 Vincent Gadoury
 Vasily Radostev
 Valery Bickov
+Valeriy Dubov
 Vaclav Bilek
 Tyge Løvset
 Troy Yee
@@ -372,6 +374,7 @@ Miha Ravsel
 Michael Polak
 Michael Morrison
 Michael Logan
+Michael Kapelko
 Max Rhiener
 Max Behensky
 Mauricio Hofmam

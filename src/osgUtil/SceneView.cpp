@@ -32,12 +32,6 @@
 using namespace osg;
 using namespace osgUtil;
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-    // define under GLES to keep the main SceneView.cpp clean.
-    #define GL_BACK_LEFT        0x0402
-    #define GL_BACK_RIGHT       0x0403
-#endif
-
 static const GLubyte patternVertEven[] = {
     0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
     0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,

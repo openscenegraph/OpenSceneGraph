@@ -1264,10 +1264,10 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     }
 
     // opacity
-    osg::Texture* opacity_map = createTexture(&(mat->opacity_map),"opacity_map", textureTransparency);
-    if (opacity_map && texture1_map)
+    osg::Texture2D* opacity_map = createTexture(&(mat->opacity_map),"opacity_map", textureTransparency);
+    if (opacity_map)
     {
-        if(texture1_map->getImage()->isImageTranslucent())
+        if(opacity_map->getImage()->isImageTranslucent())
         {
             transparency = true;
 

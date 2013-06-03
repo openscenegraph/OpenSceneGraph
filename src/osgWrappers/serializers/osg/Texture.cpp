@@ -94,6 +94,98 @@ static bool writeImageAttachment( osgDB::OutputStream& os, const osg::Texture& a
     return true;
 }
 
+// _swizzle
+static bool checkSwizzle( const osg::Texture& attr )
+{
+    return true;
+}
+
+static unsigned char swizzleToCharacter(GLint swizzle, unsigned char defaultCharacter)
+{
+    switch (swizzle)
+    {
+    case GL_RED:
+        return 'R';
+    case GL_GREEN:
+        return 'G';
+    case GL_BLUE:
+        return 'B';
+    case GL_ALPHA:
+        return 'A';
+    case GL_ZERO:
+        return '0';
+    case GL_ONE:
+        return '1';
+    default:
+        break;
+    }
+
+    return defaultCharacter;
+}
+
+static GLint characterToSwizzle(unsigned char character, GLint defaultSwizzle)
+{
+    switch (character)
+    {
+    case 'R':
+        return GL_RED;
+    case 'G':
+        return GL_GREEN;
+    case 'B':
+        return GL_BLUE;
+    case 'A':
+        return GL_ALPHA;
+    case '0':
+        return GL_ZERO;
+    case '1':
+        return GL_ONE;
+    default:
+        break;
+    }
+
+    return defaultSwizzle;
+}
+
+static std::string swizzleToString(const osg::Vec4i& swizzle)
+{
+    std::string result;
+
+    result.push_back(swizzleToCharacter(swizzle.r(), 'R'));
+    result.push_back(swizzleToCharacter(swizzle.g(), 'G'));
+    result.push_back(swizzleToCharacter(swizzle.b(), 'B'));
+    result.push_back(swizzleToCharacter(swizzle.a(), 'A'));
+
+    return result;
+}
+
+static osg::Vec4i stringToSwizzle(const std::string& swizzleString)
+{
+    osg::Vec4i swizzle;
+
+    swizzle.r() = characterToSwizzle(swizzleString[0], GL_RED);
+    swizzle.g() = characterToSwizzle(swizzleString[1], GL_GREEN);
+    swizzle.b() = characterToSwizzle(swizzleString[2], GL_BLUE);
+    swizzle.a() = characterToSwizzle(swizzleString[3], GL_ALPHA);
+
+    return swizzle;
+}
+
+static bool readSwizzle( osgDB::InputStream& is, osg::Texture& attr )
+{
+    std::string swizzleString;
+    is >> swizzleString;
+    attr.setSwizzle(stringToSwizzle(swizzleString));
+
+    return true;
+}
+
+static bool writeSwizzle( osgDB::OutputStream& os, const osg::Texture& attr )
+{
+    os << swizzleToString(attr.getSwizzle()) << std::endl;
+
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( Texture,
                          /*new osg::Texture*/NULL,
                          osg::Texture,
@@ -155,5 +247,10 @@ REGISTER_OBJECT_WRAPPER( Texture,
     {
         UPDATE_TO_VERSION_SCOPED( 95 )
         ADD_USER_SERIALIZER( ImageAttachment );  // _imageAttachment
+    }
+
+    { 
+        UPDATE_TO_VERSION_SCOPED( 98 ) 
+        ADD_USER_SERIALIZER( Swizzle );  // _swizzle
     }
 }

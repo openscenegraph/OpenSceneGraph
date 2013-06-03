@@ -22,8 +22,8 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(KFbxNode* pNode, int&
     osg::Light* osgLight = new osg::Light;
     osg::LightSource* osgLightSource = new osg::LightSource;
 
-    osgLightSource->setLight(osgLight);
     osgLight->setLightNum(nLightCount++);
+    osgLightSource->setLight(osgLight);
 
     KFbxLight::ELightType fbxLightType = fbxLight->LightType.IsValid() ?
         fbxLight->LightType.Get() : KFbxLight::ePOINT;
@@ -39,11 +39,11 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(KFbxNode* pNode, int&
         osgLight->setSpotCutoff(static_cast<float>(coneAngle));
 
         //Approximate the hotspot using the GL light exponent.
-        //This formula maps a hotspot of 180° to exponent 0 (uniform light
-        // distribution) and a hotspot of 45° to exponent 1 (effective light
+        //This formula maps a hotspot of 180 to exponent 0 (uniform light
+        // distribution) and a hotspot of 45 to exponent 1 (effective light
         // intensity is attenuated by the cosine of the angle between the
         // direction of the light and the direction from the light to the vertex
-        // being lighted). A hotspot close to 0° maps to exponent 128 (maximum).
+        // being lighted). A hotspot close to 0 maps to exponent 128 (maximum).
         float exponent = (180.0f / (std::max)(static_cast<float>(hotSpot),
             MIN_HOTSPOT) - 1.0f) / 3.0f;
         osgLight->setSpotExponent(exponent);

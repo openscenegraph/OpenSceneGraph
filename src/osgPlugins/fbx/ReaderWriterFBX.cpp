@@ -344,6 +344,9 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 resolveBindMatrices(*res.getNode(), reader.boneBindMatrices, reader.nodeMap);
 
                 osg::Node* osgNode = res.getNode();
+                for (int light = 0; light < nLightCount; ++light)
+                    osgNode->getOrCreateStateSet()->setMode(GL_LIGHT0 + light, osg::StateAttribute::ON);
+
                 osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
                 osgNode->getOrCreateStateSet()->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
 

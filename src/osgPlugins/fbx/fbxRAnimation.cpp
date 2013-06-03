@@ -10,26 +10,24 @@
     #pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
-#include <fbxfilesdk/fbxfilesdk_nsuse.h>
-
 #include "fbxReader.h"
 
-osg::Quat makeQuat(const fbxDouble3&, ERotationOrder);
+osg::Quat makeQuat(const FbxDouble3&, EFbxRotationOrder);
 
-osg::Quat makeQuat(const osg::Vec3& radians, ERotationOrder fbxRotOrder)
+osg::Quat makeQuat(const osg::Vec3& radians, EFbxRotationOrder fbxRotOrder)
 {
-    fbxDouble3 degrees(
+    FbxDouble3 degrees(
         osg::RadiansToDegrees(radians.x()),
         osg::RadiansToDegrees(radians.y()),
         osg::RadiansToDegrees(radians.z()));
     return makeQuat(degrees, fbxRotOrder);
 }
 
-void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curveZ,
-              const fbxDouble3& defaultValue,
+void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
+              const FbxDouble3& defaultValue,
               std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> >& keyFrameCntr, float scalar = 1.0f)
 {
-    KFbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
+    FbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
 
     typedef std::set<double> TimeSet;
     typedef std::map<double, float> TimeFloatMap;
@@ -38,7 +36,7 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
 
     for (int nCurve = 0; nCurve < 3; ++nCurve)
     {
-        KFbxAnimCurve* pCurve = curves[nCurve];
+        FbxAnimCurve* pCurve = curves[nCurve];
 
         int nKeys = pCurve ? pCurve->KeyGetCount() : 0;
 
@@ -50,7 +48,7 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
 
         for (int i = 0; i < nKeys; ++i)
         {
-            KFbxAnimCurveKey key = pCurve->KeyGet(i);
+            FbxAnimCurveKey key = pCurve->KeyGet(i);
             double fTime = key.GetTime().GetSecondDouble();
             times.insert(fTime);
             curveTimeMap[nCurve][fTime] = static_cast<float>(key.GetValue()) * scalar;
@@ -73,11 +71,11 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
     }
 }
 
-void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curveZ,
-              const fbxDouble3& defaultValue,
+void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
+              const FbxDouble3& defaultValue,
               std::vector<osgAnimation::Vec3CubicBezierKeyframe>& keyFrameCntr, float scalar = 1.0f)
 {
-    KFbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
+    FbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
 
     typedef std::set<double> TimeSet;
     typedef std::map<double, osgAnimation::FloatCubicBezier> TimeValueMap;
@@ -86,7 +84,7 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
 
     for (int nCurve = 0; nCurve < 3; ++nCurve)
     {
-        KFbxAnimCurve* pCurve = curves[nCurve];
+        FbxAnimCurve* pCurve = curves[nCurve];
 
         int nKeys = pCurve ? pCurve->KeyGetCount() : 0;
 
@@ -101,8 +99,8 @@ void readKeys(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curve
             double fTime = pCurve->KeyGetTime(i).GetSecondDouble();
             float val = pCurve->KeyGetValue(i);
             times.insert(fTime);
-            KFCurveTangeantInfo leftTangent = pCurve->KeyGetLeftDerivativeInfo(i);
-            KFCurveTangeantInfo rightTangent = pCurve->KeyGetRightDerivativeInfo(i);
+            FbxAnimCurveTangentInfo leftTangent = pCurve->KeyGetLeftDerivativeInfo(i);
+            FbxAnimCurveTangentInfo rightTangent = pCurve->KeyGetRightDerivativeInfo(i);
 
             if (i > 0)
             {
@@ -176,9 +174,9 @@ void reorderControlPoints(osgAnimation::TemplateKeyframeContainer<osgAnimation::
     vkfCont.back().setValue(last);
 }
 
-osgAnimation::Channel* readFbxChannels(KFbxAnimCurve* curveX, KFbxAnimCurve* curveY,
-    KFbxAnimCurve* curveZ,
-    const fbxDouble3& defaultValue,
+osgAnimation::Channel* readFbxChannels(FbxAnimCurve* curveX, FbxAnimCurve* curveY,
+    FbxAnimCurve* curveZ,
+    const FbxDouble3& defaultValue,
     const char* targetName, const char* channelName)
 {
     if (!(curveX && curveX->KeyGetCount()) &&
@@ -188,14 +186,14 @@ osgAnimation::Channel* readFbxChannels(KFbxAnimCurve* curveX, KFbxAnimCurve* cur
         return 0;
     }
 
-    KFbxAnimCurveDef::EInterpolationType interpolationType = KFbxAnimCurveDef::eINTERPOLATION_CONSTANT;
+    FbxAnimCurveDef::EInterpolationType interpolationType = FbxAnimCurveDef::eInterpolationConstant;
     if (curveX && curveX->KeyGetCount()) interpolationType = curveX->KeyGetInterpolation(0);
     else if (curveY && curveY->KeyGetCount()) interpolationType = curveY->KeyGetInterpolation(0);
     else if (curveZ && curveZ->KeyGetCount()) interpolationType = curveZ->KeyGetInterpolation(0);
 
     osgAnimation::Channel* pChannel = 0;
 
-    if (interpolationType == KFbxAnimCurveDef::eINTERPOLATION_CUBIC)
+    if (interpolationType == FbxAnimCurveDef::eInterpolationCubic)
     {
         osgAnimation::Vec3CubicBezierKeyframeContainer* pKeyFrameCntr = new osgAnimation::Vec3CubicBezierKeyframeContainer;
         readKeys(curveX, curveY, curveZ, defaultValue, *pKeyFrameCntr);
@@ -210,7 +208,7 @@ osgAnimation::Channel* readFbxChannels(KFbxAnimCurve* curveX, KFbxAnimCurve* cur
         osgAnimation::Vec3KeyframeContainer* pKeyFrameCntr = new osgAnimation::Vec3KeyframeContainer;
         readKeys(curveX, curveY, curveZ, defaultValue, *pKeyFrameCntr);
 
-        if (interpolationType == KFbxAnimCurveDef::eINTERPOLATION_CONSTANT)
+        if (interpolationType == FbxAnimCurveDef::eInterpolationConstant)
         {
             osgAnimation::Vec3StepChannel* pStepChannel = new osgAnimation::Vec3StepChannel;
             pStepChannel->getOrCreateSampler()->setKeyframeContainer(pKeyFrameCntr);
@@ -231,23 +229,23 @@ osgAnimation::Channel* readFbxChannels(KFbxAnimCurve* curveX, KFbxAnimCurve* cur
 }
 
 osgAnimation::Channel* readFbxChannels(
-    KFbxTypedProperty<fbxDouble3>& fbxProp, KFbxAnimLayer* pAnimLayer,
+    FbxPropertyT<FbxDouble3>& fbxProp, FbxAnimLayer* pAnimLayer,
     const char* targetName, const char* channelName)
 {
     if (!fbxProp.IsValid()) return 0;
 
     return readFbxChannels(
-        fbxProp.GetCurve<KFbxAnimCurve>(pAnimLayer, "X"),
-        fbxProp.GetCurve<KFbxAnimCurve>(pAnimLayer, "Y"),
-        fbxProp.GetCurve<KFbxAnimCurve>(pAnimLayer, "Z"),
+        fbxProp.GetCurve(pAnimLayer, "X"),
+        fbxProp.GetCurve(pAnimLayer, "Y"),
+        fbxProp.GetCurve(pAnimLayer, "Z"),
         fbxProp.Get(),
         targetName, channelName);
 }
 
 osgAnimation::Channel* readFbxChannelsQuat(
-    KFbxAnimCurve* curveX, KFbxAnimCurve* curveY, KFbxAnimCurve* curveZ,
-    const fbxDouble3& defaultValue,
-    const char* targetName, ERotationOrder rotOrder)
+    FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
+    const FbxDouble3& defaultValue,
+    const char* targetName, EFbxRotationOrder rotOrder)
 {
     if (!(curveX && curveX->KeyGetCount()) &&
         !(curveY && curveY->KeyGetCount()) &&
@@ -324,46 +322,46 @@ osgAnimation::Animation* addChannels(
 }
 
 void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
-    KFbxNode* pNode,
-    KFbxAnimLayer* pAnimLayer, const char* targetName)
+    FbxNode* pNode,
+    FbxAnimLayer* pAnimLayer, const char* targetName)
 {
     if (!pNode->LclRotation.IsValid())
     {
         return;
     }
 
-    ERotationOrder rotOrder = pNode->RotationOrder.IsValid() ? pNode->RotationOrder.Get() : eEULER_XYZ;
+    EFbxRotationOrder rotOrder = pNode->RotationOrder.IsValid() ? pNode->RotationOrder.Get() : eEulerXYZ;
 
     if (pNode->QuaternionInterpolate.IsValid() && pNode->QuaternionInterpolate.Get())
     {
         channels[0] = readFbxChannelsQuat(
-            pNode->LclRotation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_R_X),
-            pNode->LclRotation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_R_Y),
-            pNode->LclRotation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_R_Z),
+            pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X),
+            pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y),
+            pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z),
             pNode->LclRotation.Get(),
             targetName, rotOrder);
     }
     else
     {
-        const char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
+        const char* curveNames[3] = {FBXSDK_CURVENODE_COMPONENT_X, FBXSDK_CURVENODE_COMPONENT_Y, FBXSDK_CURVENODE_COMPONENT_Z};
 
-        fbxDouble3 fbxPropValue = pNode->LclRotation.Get();
+        FbxDouble3 fbxPropValue = pNode->LclRotation.Get();
         fbxPropValue[0] = osg::DegreesToRadians(fbxPropValue[0]);
         fbxPropValue[1] = osg::DegreesToRadians(fbxPropValue[1]);
         fbxPropValue[2] = osg::DegreesToRadians(fbxPropValue[2]);
 
         for (int i = 0; i < 3; ++i)
         {
-            KFbxAnimCurve* curve = pNode->LclRotation.GetCurve<KFbxAnimCurve>(pAnimLayer, curveNames[i]);
+            FbxAnimCurve* curve = pNode->LclRotation.GetCurve(pAnimLayer, curveNames[i]);
             if (!curve)
             {
                 continue;
             }
 
-            KFbxAnimCurveDef::EInterpolationType interpolationType = KFbxAnimCurveDef::eINTERPOLATION_CONSTANT;
+            FbxAnimCurveDef::EInterpolationType interpolationType = FbxAnimCurveDef::eInterpolationConstant;
             if (curve && curve->KeyGetCount()) interpolationType = curve->KeyGetInterpolation(0);
 
-            if (interpolationType == KFbxAnimCurveDef::eINTERPOLATION_CUBIC)
+            if (interpolationType == FbxAnimCurveDef::eInterpolationCubic)
             {
                 osgAnimation::FloatCubicBezierKeyframeContainer* pKeyFrameCntr = new osgAnimation::FloatCubicBezierKeyframeContainer;
 
@@ -371,10 +369,10 @@ void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
                 {
                     double fTime = curve->KeyGetTime(j).GetSecondDouble();
                     float angle = curve->KeyGetValue(j);
-                    //KFbxAnimCurveDef::EWeightedMode tangentWeightMode = curve->KeyGet(j).GetTangentWeightMode();
+                    //FbxAnimCurveDef::EWeightedMode tangentWeightMode = curve->KeyGet(j).GetTangentWeightMode();
 
-                    KFCurveTangeantInfo leftTangent = curve->KeyGetLeftDerivativeInfo(j);
-                    KFCurveTangeantInfo rightTangent = curve->KeyGetRightDerivativeInfo(j);
+                    FbxAnimCurveTangentInfo leftTangent = curve->KeyGetLeftDerivativeInfo(j);
+                    FbxAnimCurveTangentInfo rightTangent = curve->KeyGetRightDerivativeInfo(j);
                     if (j > 0)
                     {
                         leftTangent.mDerivative *= fTime - curve->KeyGetTime(j - 1).GetSecondDouble();
@@ -405,13 +403,13 @@ void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
 
                 for (int j = 0; j < curve->KeyGetCount(); ++j)
                 {
-                    KFbxAnimCurveKey key = curve->KeyGet(j);
+                    FbxAnimCurveKey key = curve->KeyGet(j);
                     keys->push_back(osgAnimation::FloatKeyframe(
                         key.GetTime().GetSecondDouble(),
                         static_cast<float>(osg::DegreesToRadians(key.GetValue()))));
                 }
 
-                if (interpolationType == KFbxAnimCurveDef::eINTERPOLATION_CONSTANT)
+                if (interpolationType == FbxAnimCurveDef::eInterpolationConstant)
                 {
                     osgAnimation::FloatStepChannel* pStepChannel = new osgAnimation::FloatStepChannel();
                     pStepChannel->getOrCreateSampler()->setKeyframeContainer(keys);
@@ -431,8 +429,8 @@ void readFbxRotationAnimation(osgAnimation::Channel* channels[3],
     }
 }
 
-osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
-    KFbxAnimLayer* pAnimLayer, const char* pTakeName, const char* targetName,
+osgAnimation::Animation* readFbxAnimation(FbxNode* pNode,
+    FbxAnimLayer* pAnimLayer, const char* pTakeName, const char* targetName,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager)
 {
     osgAnimation::Channel* pTranslationChannel = 0;
@@ -443,9 +441,9 @@ osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
     if (pNode->LclTranslation.IsValid())
     {
         pTranslationChannel = readFbxChannels(
-            pNode->LclTranslation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_T_X),
-            pNode->LclTranslation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_T_Y),
-            pNode->LclTranslation.GetCurve<KFbxAnimCurve>(pAnimLayer, KFCURVENODE_T_Z),
+            pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X),
+            pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y),
+            pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z),
             pNode->LclTranslation.Get(),
             targetName, "translate");
     }
@@ -456,14 +454,14 @@ osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
     return addChannels(pTranslationChannel, pRotationChannels, pScaleChannel, pAnimManager, pTakeName);
 }
 
-std::string OsgFbxReader::readFbxAnimation(KFbxNode* pNode, const char* targetName)
+std::string OsgFbxReader::readFbxAnimation(FbxNode* pNode, const char* targetName)
 {
     std::string result;
-    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
+    for (int i = 0; i < fbxScene.GetSrcObjectCount<FbxAnimStack>(); ++i)
     {
-        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
+        FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject<FbxAnimStack>(i));
 
-        int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+        int nbAnimLayers = pAnimStack->GetMemberCount<FbxAnimLayer>();
 
         const char* pTakeName = pAnimStack->GetName();
 
@@ -472,7 +470,7 @@ std::string OsgFbxReader::readFbxAnimation(KFbxNode* pNode, const char* targetNa
 
         for (int j = 0; j < nbAnimLayers; j++)
         {
-            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
+            FbxAnimLayer* pAnimLayer = pAnimStack->GetMember<FbxAnimLayer>(j);
             osgAnimation::Animation* pAnimation = ::readFbxAnimation(pNode, pAnimLayer, pTakeName, targetName, pAnimationManager);
             if (pAnimation)
             {

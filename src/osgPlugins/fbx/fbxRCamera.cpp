@@ -11,9 +11,9 @@
 
 #include "fbxReader.h"
 
-osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxCamera(KFbxNode* pNode)
+osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxCamera(FbxNode* pNode)
 {
-    const KFbxCamera* fbxCamera = KFbxCast<KFbxCamera>(pNode->GetNodeAttribute());
+    const FbxCamera* fbxCamera = FbxCast<FbxCamera>(pNode->GetNodeAttribute());
 
     if (!fbxCamera)
     {
@@ -36,14 +36,14 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxCamera(KFbxNode* pNode)
     {
         switch (fbxCamera->ApertureMode.Get())
         {
-        case KFbxCamera::eHORIZONTAL:
+        case FbxCamera::eHorizontal:
             osgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
             break;
-        case KFbxCamera::eVERTICAL:
+        case FbxCamera::eVertical:
             osgCameraView->setFieldOfViewMode(osg::CameraView::VERTICAL);
             break;
-        case KFbxCamera::eHORIZONTAL_AND_VERTICAL:
-        case KFbxCamera::eFOCAL_LENGTH:
+        case FbxCamera::eHorizAndVert:
+        case FbxCamera::eFocalLength:
         default:
             OSG_WARN << "readFbxCamera: Unsupported Camera aperture mode." << std::endl;
             break;

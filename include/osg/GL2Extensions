@@ -637,6 +637,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void glVertexAttrib4uiv(GLuint index, const GLuint *v) const;
         void glVertexAttrib4usv(GLuint index, const GLushort *v) const;
         void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) const;
+        void glVertexAttribDivisor(GLuint index, GLuint divisor) const;
 
         // C++-friendly convenience wrapper methods
         GLuint getCurrentProgram() const;
@@ -828,6 +829,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
         typedef void (GL_APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
         typedef void (GL_APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * VertexAttribDivisorProc)(GLuint index, GLuint divisor);
         typedef void (GL_APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         typedef void (GL_APIENTRY * UniformMatrix3x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         typedef void (GL_APIENTRY * UniformMatrix2x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
@@ -974,6 +976,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         VertexAttrib4uivProc _glVertexAttrib4uiv;
         VertexAttrib4usvProc _glVertexAttrib4usv;
         VertexAttribPointerProc _glVertexAttribPointer;
+        VertexAttribDivisorProc _glVertexAttribDivisor;
 
         GetInfoLogARBProc _glGetInfoLogARB;
         GetObjectParameterivARBProc _glGetObjectParameterivARB;

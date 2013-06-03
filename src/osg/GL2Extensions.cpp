@@ -147,6 +147,7 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glVertexAttrib4uiv = rhs._glVertexAttrib4uiv;
     _glVertexAttrib4usv = rhs._glVertexAttrib4usv;
     _glVertexAttribPointer = rhs._glVertexAttribPointer;
+    _glVertexAttribDivisor = rhs._glVertexAttribDivisor;
 
     _glGetInfoLogARB = rhs._glGetInfoLogARB;
     _glGetObjectParameterivARB = rhs._glGetObjectParameterivARB;
@@ -331,6 +332,7 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glVertexAttrib4uiv) _glVertexAttrib4uiv = 0;
     if (!rhs._glVertexAttrib4usv) _glVertexAttrib4usv = 0;
     if (!rhs._glVertexAttribPointer) _glVertexAttribPointer = 0;
+    if (!rhs._glVertexAttribDivisor) _glVertexAttribDivisor = 0;
 
     if (!rhs._glGetInfoLogARB) _glGetInfoLogARB = 0;
     if (!rhs._glGetObjectParameterivARB) _glGetObjectParameterivARB = 0;
@@ -523,6 +525,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
         _glVertexAttrib4uiv= 0;
         _glVertexAttrib4usv= 0;
         _glVertexAttribPointer= 0;
+        _glVertexAttribDivisor= 0;
 
         _glGetInfoLogARB= 0;
         _glGetObjectParameterivARB= 0;
@@ -732,6 +735,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glVertexAttrib4uiv, "glVertexAttrib4uiv");
     setGLExtensionFuncPtr(_glVertexAttrib4usv, "glVertexAttrib4usv");
     setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer");
+    setGLExtensionFuncPtr(_glVertexAttribDivisor, "glVertexAttribDivisor");
 
     // v1.5-only ARB entry points, in case they're needed for fallback
     setGLExtensionFuncPtr(_glGetInfoLogARB, "glGetInfoLogARB");
@@ -2165,6 +2169,17 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
     }
 }
 
+void GL2Extensions::glVertexAttribDivisor(GLuint index, GLuint divisor) const
+{
+    if (_glVertexAttribDivisor)
+    {
+        _glVertexAttribDivisor(index, divisor);
+    }
+    else
+    {
+        NotSupported( "glVertexAttribDivisor" );
+    }
+}
 
 void GL2Extensions::glUniformMatrix2x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
 {

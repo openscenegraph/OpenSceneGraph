@@ -21,6 +21,7 @@
 #include <osg/ref_ptr>
 #include <osg/Vec4>
 #include <osg/Vec4d>
+#include <osg/Vec4i>
 #include <osg/buffered_value>
 #include <osg/GL2Extensions>
 
@@ -31,6 +32,12 @@
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
 #ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
     #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+#endif
+
+// If not defined, use the definition found in:
+// http://www.opengl.org/registry/specs/ARB/texture_swizzle.txt
+#ifndef GL_TEXTURE_SWIZZLE_RGBA
+    #define GL_TEXTURE_SWIZZLE_RGBA 0x8E46
 #endif
 
 #ifndef GL_ARB_texture_compression
@@ -481,7 +488,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST
         };
 
-
         /** Sets the texture filter mode. */
         void setFilter(FilterParameter which, FilterMode filter);
 
@@ -497,6 +503,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Gets the maximum anisotropy value. */
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
+
+        /** Configure the source of texture swizzling for all channels */
+        inline void setSwizzle(const Vec4i& swizzle) { _swizzle = swizzle; dirtyTextureParameters(); };
+
+        /** Gets the source of texture swizzling for all channels */
+        inline const Vec4i& getSwizzle() const { return _swizzle; }
 
         /** Sets the hardware mipmap generation hint. If enabled, it will
           * only be used if supported in the graphics system. */
@@ -764,6 +776,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
 
+                void setTextureSwizzleSupported(bool flag) { _isTextureSwizzleSupported=flag; }
+                bool isTextureSwizzleSupported() const { return _isTextureSwizzleSupported; }
+
                 void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
 
@@ -895,6 +910,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 bool    _isMultiTexturingSupported;
                 bool    _isTextureFilterAnisotropicSupported;
+                bool    _isTextureSwizzleSupported;
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;
                 bool    _isTextureCompressionPVRTC2BPPSupported;
@@ -1017,6 +1033,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         FilterMode      _min_filter;
         FilterMode      _mag_filter;
         float           _maxAnisotropy;
+        Vec4i           _swizzle;
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;
         bool            _clientStorageHint;

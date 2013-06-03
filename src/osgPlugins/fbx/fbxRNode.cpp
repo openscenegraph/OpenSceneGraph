@@ -29,16 +29,16 @@
 
 #include "fbxReader.h"
 
-bool isAnimated(KFbxProperty& prop, KFbxScene& fbxScene)
+bool isAnimated(FbxProperty& prop, FbxScene& fbxScene)
 {
-    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
+    for (int i = 0; i < fbxScene.GetSrcObjectCount<FbxAnimStack>(); ++i)
     {
-        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
+        FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject<FbxAnimStack>(i));
 
-        const int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+        const int nbAnimLayers = pAnimStack->GetMemberCount<FbxAnimLayer>();
         for (int j = 0; j < nbAnimLayers; j++)
         {
-            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
+            FbxAnimLayer* pAnimLayer = pAnimStack->GetMember<FbxAnimLayer>(j);
             if (prop.GetCurveNode(pAnimLayer, false))
             {
                 return true;
@@ -48,17 +48,17 @@ bool isAnimated(KFbxProperty& prop, KFbxScene& fbxScene)
     return false;
 }
 
-bool isAnimated(KFbxProperty& prop, const char* channel, KFbxScene& fbxScene)
+bool isAnimated(FbxProperty& prop, const char* channel, FbxScene& fbxScene)
 {
-    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
+    for (int i = 0; i < fbxScene.GetSrcObjectCount<FbxAnimStack>(); ++i)
     {
-        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
+        FbxAnimStack* pAnimStack = FbxCast<FbxAnimStack>(fbxScene.GetSrcObject<FbxAnimStack>(i));
 
-        const int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+        const int nbAnimLayers = pAnimStack->GetMemberCount<FbxAnimLayer>();
         for (int j = 0; j < nbAnimLayers; j++)
         {
-            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
-            if (prop.GetCurve<KFbxAnimCurve>(pAnimLayer, channel, false))
+            FbxAnimLayer* pAnimLayer = pAnimStack->GetMember<FbxAnimLayer>(j);
+            if (prop.GetCurve(pAnimLayer, channel, false))
             {
                 return true;
             }
@@ -67,7 +67,7 @@ bool isAnimated(KFbxProperty& prop, const char* channel, KFbxScene& fbxScene)
     return false;
 }
 
-osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
+osg::Quat makeQuat(const FbxDouble3& degrees, EFbxRotationOrder fbxRotOrder)
 {
     double radiansX = osg::DegreesToRadians(degrees[0]);
     double radiansY = osg::DegreesToRadians(degrees[1]);
@@ -75,37 +75,37 @@ osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
 
     switch (fbxRotOrder)
     {
-    case eEULER_XYZ:
+    case eEulerXYZ:
         return osg::Quat(
             radiansX, osg::Vec3d(1,0,0),
             radiansY, osg::Vec3d(0,1,0),
             radiansZ, osg::Vec3d(0,0,1));
-    case eEULER_XZY:
+    case eEulerXZY:
         return osg::Quat(
             radiansX, osg::Vec3d(1,0,0),
             radiansZ, osg::Vec3d(0,0,1),
             radiansY, osg::Vec3d(0,1,0));
-    case eEULER_YZX:
+    case eEulerYZX:
         return osg::Quat(
             radiansY, osg::Vec3d(0,1,0),
             radiansZ, osg::Vec3d(0,0,1),
             radiansX, osg::Vec3d(1,0,0));
-    case eEULER_YXZ:
+    case eEulerYXZ:
         return osg::Quat(
             radiansY, osg::Vec3d(0,1,0),
             radiansX, osg::Vec3d(1,0,0),
             radiansZ, osg::Vec3d(0,0,1));
-    case eEULER_ZXY:
+    case eEulerZXY:
         return osg::Quat(
             radiansZ, osg::Vec3d(0,0,1),
             radiansX, osg::Vec3d(1,0,0),
             radiansY, osg::Vec3d(0,1,0));
-    case eEULER_ZYX:
+    case eEulerZYX:
         return osg::Quat(
             radiansZ, osg::Vec3d(0,0,1),
             radiansY, osg::Vec3d(0,1,0),
             radiansX, osg::Vec3d(1,0,0));
-    case eSPHERIC_XYZ:
+    case eSphericXYZ:
         {
             //I don't know what eSPHERIC_XYZ means, so this is a complete guess.
             osg::Quat quat;
@@ -118,7 +118,7 @@ osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
     }
 }
 
-void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
+void makeLocalMatrix(const FbxNode* pNode, osg::Matrix& m)
 {
     /*From http://area.autodesk.com/forum/autodesk-fbx/fbx-sdk/the-makeup-of-the-local-matrix-of-an-kfbxnode/
 
@@ -143,17 +143,17 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
     // values and the rotation limits should be ignored.
     bool rotationActive = pNode->RotationActive.Get();
 
-    ERotationOrder fbxRotOrder = rotationActive ? pNode->RotationOrder.Get() : eEULER_XYZ;
+    EFbxRotationOrder fbxRotOrder = rotationActive ? pNode->RotationOrder.Get() : eEulerXYZ;
 
-    fbxDouble3 fbxLclPos = pNode->LclTranslation.Get();
-    fbxDouble3 fbxRotOff = pNode->RotationOffset.Get();
-    fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
-    fbxDouble3 fbxPreRot = pNode->PreRotation.Get();
-    fbxDouble3 fbxLclRot = pNode->LclRotation.Get();
-    fbxDouble3 fbxPostRot = pNode->PostRotation.Get();
-    fbxDouble3 fbxSclOff = pNode->ScalingOffset.Get();
-    fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
-    fbxDouble3 fbxLclScl = pNode->LclScaling.Get();
+    FbxDouble3 fbxLclPos = pNode->LclTranslation.Get();
+    FbxDouble3 fbxRotOff = pNode->RotationOffset.Get();
+    FbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
+    FbxDouble3 fbxPreRot = pNode->PreRotation.Get();
+    FbxDouble3 fbxLclRot = pNode->LclRotation.Get();
+    FbxDouble3 fbxPostRot = pNode->PostRotation.Get();
+    FbxDouble3 fbxSclOff = pNode->ScalingOffset.Get();
+    FbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
+    FbxDouble3 fbxLclScl = pNode->LclScaling.Get();
 
     m.makeTranslate(osg::Vec3d(
         fbxLclPos[0] + fbxRotOff[0] + fbxRotPiv[0],
@@ -181,12 +181,12 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
         -fbxSclPiv[2]));
 }
 
-void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
+void readTranslationElement(FbxPropertyT<FbxDouble3>& prop,
                             osgAnimation::UpdateMatrixTransform* pUpdate,
                             osg::Matrix& staticTransform,
-                            KFbxScene& fbxScene)
+                            FbxScene& fbxScene)
 {
-    fbxDouble3 fbxPropValue = prop.Get();
+    FbxDouble3 fbxPropValue = prop.Get();
     osg::Vec3d val(
         fbxPropValue[0],
         fbxPropValue[1],
@@ -207,23 +207,23 @@ void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
     }
 }
 
-void getRotationOrder(ERotationOrder fbxRotOrder, int order[/*3*/])
+void getRotationOrder(EFbxRotationOrder fbxRotOrder, int order[/*3*/])
 {
     switch (fbxRotOrder)
     {
-    case eEULER_XZY:
+    case eEulerXZY:
         order[0] = 0; order[1] = 2; order[2] = 1;
         break;
-    case eEULER_YZX:
+    case eEulerYZX:
         order[0] = 1; order[1] = 2; order[2] = 0;
         break;
-    case eEULER_YXZ:
+    case eEulerYXZ:
         order[0] = 1; order[1] = 0; order[2] = 2;
         break;
-    case eEULER_ZXY:
+    case eEulerZXY:
         order[0] = 2; order[1] = 0; order[2] = 1;
         break;
-    case eEULER_ZYX:
+    case eEulerZYX:
         order[0] = 2; order[1] = 1; order[2] = 0;
         break;
     default:
@@ -231,12 +231,12 @@ void getRotationOrder(ERotationOrder fbxRotOrder, int order[/*3*/])
     }
 }
 
-void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
-                         ERotationOrder fbxRotOrder,
+void readRotationElement(FbxPropertyT<FbxDouble3>& prop,
+                         EFbxRotationOrder fbxRotOrder,
                          bool quatInterpolate,
                          osgAnimation::UpdateMatrixTransform* pUpdate,
                          osg::Matrix& staticTransform,
-                         KFbxScene& fbxScene)
+                         FbxScene& fbxScene)
 {
     if (isAnimated(prop, fbxScene))
     {
@@ -253,10 +253,10 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
         }
         else
         {
-            const char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
+            const char* curveNames[3] = {FBXSDK_CURVENODE_COMPONENT_X, FBXSDK_CURVENODE_COMPONENT_Y, FBXSDK_CURVENODE_COMPONENT_Z};
             osg::Vec3 axes[3] = {osg::Vec3(1,0,0), osg::Vec3(0,1,0), osg::Vec3(0,0,1)};
 
-            fbxDouble3 fbxPropValue = prop.Get();
+            FbxDouble3 fbxPropValue = prop.Get();
             fbxPropValue[0] = osg::DegreesToRadians(fbxPropValue[0]);
             fbxPropValue[1] = osg::DegreesToRadians(fbxPropValue[1]);
             fbxPropValue[2] = osg::DegreesToRadians(fbxPropValue[2]);
@@ -291,12 +291,12 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
     }
 }
 
-void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
+void readScaleElement(FbxPropertyT<FbxDouble3>& prop,
                       osgAnimation::UpdateMatrixTransform* pUpdate,
                       osg::Matrix& staticTransform,
-                      KFbxScene& fbxScene)
+                      FbxScene& fbxScene)
 {
-    fbxDouble3 fbxPropValue = prop.Get();
+    FbxDouble3 fbxPropValue = prop.Get();
     osg::Vec3d val(
         fbxPropValue[0],
         fbxPropValue[1],
@@ -317,14 +317,14 @@ void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
     }
 }
 
-void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFbxNode* pNode, KFbxScene& fbxScene)
+void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, FbxNode* pNode, FbxScene& fbxScene)
 {
     osg::Matrix staticTransform;
 
     readTranslationElement(pNode->LclTranslation, pUpdate, staticTransform, fbxScene);
 
-    fbxDouble3 fbxRotOffset = pNode->RotationOffset.Get();
-    fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
+    FbxDouble3 fbxRotOffset = pNode->RotationOffset.Get();
+    FbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
     staticTransform.preMultTranslate(osg::Vec3d(
         fbxRotPiv[0] + fbxRotOffset[0],
         fbxRotPiv[1] + fbxRotOffset[1],
@@ -334,8 +334,8 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
     // values and the rotation limits should be ignored.
     bool rotationActive = pNode->RotationActive.Get();
 
-    ERotationOrder fbxRotOrder = (rotationActive && pNode->RotationOrder.IsValid()) ?
-        pNode->RotationOrder.Get() : eEULER_XYZ;
+    EFbxRotationOrder fbxRotOrder = (rotationActive && pNode->RotationOrder.IsValid()) ?
+        pNode->RotationOrder.Get() : eEulerXYZ;
 
     if (rotationActive)
     {
@@ -351,8 +351,8 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
         staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), fbxRotOrder));
     }
 
-    fbxDouble3 fbxSclOffset = pNode->ScalingOffset.Get();
-    fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
+    FbxDouble3 fbxSclOffset = pNode->ScalingOffset.Get();
+    FbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
     staticTransform.preMultTranslate(osg::Vec3d(
         fbxSclOffset[0] + fbxSclPiv[0] - fbxRotPiv[0],
         fbxSclOffset[1] + fbxSclPiv[1] - fbxRotPiv[1],
@@ -371,9 +371,9 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
     }
 }
 
-osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
+osg::Group* createGroupNode(FbxManager& pSdkManager, FbxNode* pNode,
     const std::string& animName, const osg::Matrix& localMatrix, bool bNeedSkeleton,
-    std::map<KFbxNode*, osg::Node*>& nodeMap, KFbxScene& fbxScene)
+    std::map<FbxNode*, osg::Node*>& nodeMap, FbxScene& fbxScene)
 {
     if (bNeedSkeleton)
     {
@@ -384,7 +384,7 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
         readUpdateMatrixTransform(pUpdate, pNode, fbxScene);
         osgBone->setUpdateCallback(pUpdate);
 
-        nodeMap.insert(std::pair<KFbxNode*, osg::Node*>(pNode, osgBone));
+        nodeMap.insert(std::pair<FbxNode*, osg::Node*>(pNode, osgBone));
 
         return osgBone;
     }
@@ -413,21 +413,25 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
 }
 
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
-    KFbxNode* pNode,
+    FbxNode* pNode,
     bool& bIsBone, int& nLightCount)
 {
-    if (KFbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
+    if (FbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
     {
-        KFbxNodeAttribute::EAttributeType attrType = lNodeAttribute->GetAttributeType();
+        FbxNodeAttribute::EType attrType = lNodeAttribute->GetAttributeType();
         switch (attrType)
         {
-        case KFbxNodeAttribute::eNURB:
-        case KFbxNodeAttribute::ePATCH:
-        case KFbxNodeAttribute::eNURBS_CURVE:
-        case KFbxNodeAttribute::eNURBS_SURFACE:
+        case FbxNodeAttribute::eNurbs:
+        case FbxNodeAttribute::ePatch:
+        case FbxNodeAttribute::eNurbsCurve:
+        case FbxNodeAttribute::eNurbsSurface:
             {
-                KFbxGeometryConverter lConverter(&pSdkManager);
+                FbxGeometryConverter lConverter(&pSdkManager);
+#if FBXSDK_VERSION_MAJOR < 2014
                 if (!lConverter.TriangulateInPlace(pNode))
+#else
+                if (!lConverter.Triangulate(lNodeAttribute,true,false))
+#endif
                 {
                     OSG_WARN << "Unable to triangulate FBX NURBS " << pNode->GetName() << std::endl;
                 }
@@ -441,11 +445,11 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
     bIsBone = false;
     bool bCreateSkeleton = false;
 
-    KFbxNodeAttribute::EAttributeType lAttributeType = KFbxNodeAttribute::eUNIDENTIFIED;
+    FbxNodeAttribute::EType lAttributeType = FbxNodeAttribute::eUnknown;
     if (pNode->GetNodeAttribute())
     {
         lAttributeType = pNode->GetNodeAttribute()->GetAttributeType();
-        if (lAttributeType == KFbxNodeAttribute::eSKELETON)
+        if (lAttributeType == FbxNodeAttribute::eSkeleton)
         {
             bIsBone = true;
         }
@@ -461,7 +465,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
 
     for (unsigned i = 0; i < nMaterials; ++i)
     {
-        KFbxSurfaceMaterial* fbxMaterial = pNode->GetMaterial(i);
+        FbxSurfaceMaterial* fbxMaterial = pNode->GetMaterial(i);
         assert(fbxMaterial);
         stateSetList.push_back(fbxMaterialToOsgStateSet.convert(fbxMaterial));
     }
@@ -471,7 +475,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
     int nChildCount = pNode->GetChildCount();
     for (int i = 0; i < nChildCount; ++i)
     {
-        KFbxNode* pChildNode = pNode->GetChild(i);
+        FbxNode* pChildNode = pNode->GetChild(i);
 
         if (pChildNode->GetParent() != pNode)
         {
@@ -512,7 +516,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
 
     switch (lAttributeType)
     {
-    case KFbxNodeAttribute::eMESH:
+    case FbxNodeAttribute::eMesh:
         {
             size_t bindMatrixCount = boneBindMatrices.size();
             osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pNode, stateSetList);
@@ -543,11 +547,11 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
             }
         }
         break;
-    case KFbxNodeAttribute::eCAMERA:
-    case KFbxNodeAttribute::eLIGHT:
+    case FbxNodeAttribute::eCamera:
+    case FbxNodeAttribute::eLight:
         {
             osgDB::ReaderWriter::ReadResult res =
-                lAttributeType == KFbxNodeAttribute::eCAMERA ?
+                lAttributeType == FbxNodeAttribute::eCamera ?
                 readFbxCamera(pNode) : readFbxLight(pNode, nLightCount);
             if (res.error())
             {
@@ -601,25 +605,25 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
     return osgDB::ReaderWriter::ReadResult(osgGroup.get());
 }
 
-osgAnimation::Skeleton* getSkeleton(KFbxNode* fbxNode,
-    const std::set<const KFbxNode*>& fbxSkeletons,
-    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+osgAnimation::Skeleton* getSkeleton(FbxNode* fbxNode,
+    const std::set<const FbxNode*>& fbxSkeletons,
+    std::map<FbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     //Find the first non-skeleton ancestor of the node.
     while (fbxNode &&
         ((fbxNode->GetNodeAttribute() &&
-        fbxNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eSKELETON) ||
+        fbxNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eSkeleton) ||
         fbxSkeletons.find(fbxNode) != fbxSkeletons.end()))
     {
         fbxNode = fbxNode->GetParent();
     }
 
-    std::map<KFbxNode*, osgAnimation::Skeleton*>::const_iterator it = skeletonMap.find(fbxNode);
+    std::map<FbxNode*, osgAnimation::Skeleton*>::const_iterator it = skeletonMap.find(fbxNode);
     if (it == skeletonMap.end())
     {
         osgAnimation::Skeleton* skel = new osgAnimation::Skeleton;
         skel->setDefaultUpdateCallback();
-        skeletonMap.insert(std::pair<KFbxNode*, osgAnimation::Skeleton*>(fbxNode, skel));
+        skeletonMap.insert(std::pair<FbxNode*, osgAnimation::Skeleton*>(fbxNode, skel));
         return skel;
     }
     else

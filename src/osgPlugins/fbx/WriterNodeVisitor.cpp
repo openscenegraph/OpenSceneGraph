@@ -220,7 +220,7 @@ private:
     int                  _material;
     unsigned int         _curNormalIndex;
     osg::Geometry::AttributeBinding _normalBinding;
-    KFbxMesh*            _mesh;
+    FbxMesh*            _mesh;
 };
 
 void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
@@ -284,7 +284,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                                       const osg::StateSet* stateset,
                                       const osg::Material* mat,
                                       const osg::Texture* tex,
-                                      KFbxSdkManager* pSdkManager,
+                                      FbxManager* pSdkManager,
                                       const osgDB::ReaderWriter::Options * options,
                                       int index) :
     _fbxMaterial(NULL),
@@ -326,28 +326,28 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
             }
         }
 
-        _fbxMaterial = KFbxSurfacePhong::Create(pSdkManager, mat->getName().c_str());
+        _fbxMaterial = FbxSurfacePhong::Create(pSdkManager, mat->getName().c_str());
         if (_fbxMaterial)
         {
-            _fbxMaterial->DiffuseFactor.Set(1, true);
-            _fbxMaterial->Diffuse.Set(fbxDouble3(
+            _fbxMaterial->DiffuseFactor.Set(1);
+            _fbxMaterial->Diffuse.Set(FbxDouble3(
                 diffuse.x(),
                 diffuse.y(),
                 diffuse.z()));
 
             _fbxMaterial->TransparencyFactor.Set(transparency);
 
-            _fbxMaterial->Ambient.Set(fbxDouble3(
+            _fbxMaterial->Ambient.Set(FbxDouble3(
                 ambient.x(),
                 ambient.y(),
                 ambient.z()));
 
-            _fbxMaterial->Emissive.Set(fbxDouble3(
+            _fbxMaterial->Emissive.Set(FbxDouble3(
                 emission.x(),
                 emission.y(),
                 emission.z()));
 
-            _fbxMaterial->Specular.Set(fbxDouble3(
+            _fbxMaterial->Specular.Set(FbxDouble3(
                 specular.x(),
                 specular.y(),
                 specular.z()));
@@ -362,15 +362,15 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
         std::string relativePath;
         externalWriter.write(*_osgImage, options, NULL, &relativePath);
 
-        _fbxTexture = KFbxFileTexture::Create(pSdkManager, relativePath.c_str());
+        _fbxTexture = FbxFileTexture::Create(pSdkManager, relativePath.c_str());
         _fbxTexture->SetFileName(relativePath.c_str());
         // Create a FBX material if needed
         if (!_fbxMaterial)
         {
-            _fbxMaterial = KFbxSurfacePhong::Create(pSdkManager, relativePath.c_str());
+            _fbxMaterial = FbxSurfacePhong::Create(pSdkManager, relativePath.c_str());
         }
         // Connect texture to material's diffuse
-        // Note there should be no reason KFbxSurfacePhong::Create() would return NULL, but as previous code made this secirity test, here we keep the same way.
+        // Note there should be no reason FbxSurfacePhong::Create() would return NULL, but as previous code made this secirity test, here we keep the same way.
         if (_fbxMaterial)
         {
             _fbxMaterial->Diffuse.ConnectSrcObject(_fbxTexture);
@@ -416,7 +416,7 @@ unsigned int addPolygon(MapIndices & index_vert, unsigned int vertIndex, unsigne
     return itIndex->second;
 }
 
-void addPolygon(KFbxMesh * mesh, MapIndices & index_vert, const Triangle & tri, unsigned int drawableNum)
+void addPolygon(FbxMesh * mesh, MapIndices & index_vert, const Triangle & tri, unsigned int drawableNum)
 {
     mesh->AddPolygon(addPolygon(index_vert, tri.t1, tri.normalIndex1, drawableNum));
     mesh->AddPolygon(addPolygon(index_vert, tri.t2, tri.normalIndex2, drawableNum));
@@ -425,15 +425,15 @@ void addPolygon(KFbxMesh * mesh, MapIndices & index_vert, const Triangle & tri, 
 
 
 void
-WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
+WriterNodeVisitor::setLayerTextureAndMaterial(FbxMesh* mesh)
 {
-    KFbxLayerElementTexture* lTextureDiffuseLayer = KFbxLayerElementTexture::Create(mesh, "Diffuse");
-    lTextureDiffuseLayer->SetMappingMode(KFbxLayerElement::eBY_POLYGON);
-    lTextureDiffuseLayer->SetReferenceMode(KFbxLayerElement::eINDEX_TO_DIRECT);
+    FbxLayerElementTexture* lTextureDiffuseLayer = FbxLayerElementTexture::Create(mesh, "Diffuse");
+    lTextureDiffuseLayer->SetMappingMode(FbxLayerElement::eByPolygon);
+    lTextureDiffuseLayer->SetReferenceMode(FbxLayerElement::eIndexToDirect);
 
-    KFbxLayerElementMaterial* lMaterialLayer = KFbxLayerElementMaterial::Create(mesh, "materialLayer");
-    lMaterialLayer->SetMappingMode(KFbxLayerElement::eBY_POLYGON);
-    lMaterialLayer->SetReferenceMode(KFbxLayerElement::eINDEX_TO_DIRECT);
+    FbxLayerElementMaterial* lMaterialLayer = FbxLayerElementMaterial::Create(mesh, "materialLayer");
+    lMaterialLayer->SetMappingMode(FbxLayerElement::eByPolygon);
+    lMaterialLayer->SetReferenceMode(FbxLayerElement::eIndexToDirect);
 
     lTextureDiffuseLayer->GetDirectArray().SetCount(_lastMaterialIndex);
     lMaterialLayer->mDirectArray->SetCount(_lastMaterialIndex);
@@ -442,37 +442,37 @@ WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
     {
         if (it->second.getIndex() != -1)
         {
-            KFbxSurfaceMaterial* lMaterial = it->second.getFbxMaterial();
-            KFbxFileTexture* lTexture = it->second.getFbxTexture();
+            FbxSurfaceMaterial* lMaterial = it->second.getFbxMaterial();
+            FbxFileTexture* lTexture = it->second.getFbxTexture();
             lTextureDiffuseLayer->GetDirectArray().SetAt(it->second.getIndex(), lTexture);
             lMaterialLayer->mDirectArray->SetAt(it->second.getIndex(), lMaterial);
         }
     }
     mesh->GetLayer(0)->SetMaterials(lMaterialLayer);
-    mesh->GetLayer(0)->SetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES, lTextureDiffuseLayer);
+    mesh->GetLayer(0)->SetTextures(FbxLayerElement::eTextureDiffuse, lTextureDiffuseLayer);
 }
 
 void
 WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
                                                   MapIndices&       index_vert,
                                                   bool              texcoords,
-                                                  KFbxMesh*         mesh)
+                                                  FbxMesh*         mesh)
 {
     mesh->InitControlPoints(index_vert.size());
-    KFbxLayerElementNormal* lLayerElementNormal= KFbxLayerElementNormal::Create(mesh, "");
+    FbxLayerElementNormal* lLayerElementNormal= FbxLayerElementNormal::Create(mesh, "");
     // For now, FBX writer only supports normals bound per vertices
-    lLayerElementNormal->SetMappingMode(KFbxLayerElement::eBY_CONTROL_POINT);
-    lLayerElementNormal->SetReferenceMode(KFbxLayerElement::eDIRECT);
+    lLayerElementNormal->SetMappingMode(FbxLayerElement::eByControlPoint);
+    lLayerElementNormal->SetReferenceMode(FbxLayerElement::eDirect);
     lLayerElementNormal->GetDirectArray().SetCount(index_vert.size());
     mesh->GetLayer(0)->SetNormals(lLayerElementNormal);
-    KFbxLayerElementUV* lUVDiffuseLayer = KFbxLayerElementUV::Create(mesh, "DiffuseUV");
+    FbxLayerElementUV* lUVDiffuseLayer = FbxLayerElementUV::Create(mesh, "DiffuseUV");
 
     if (texcoords)
     {
-        lUVDiffuseLayer->SetMappingMode(KFbxLayerElement::eBY_CONTROL_POINT);
-        lUVDiffuseLayer->SetReferenceMode(KFbxLayerElement::eDIRECT);
+        lUVDiffuseLayer->SetMappingMode(FbxLayerElement::eByControlPoint);
+        lUVDiffuseLayer->SetReferenceMode(FbxLayerElement::eDirect);
         lUVDiffuseLayer->GetDirectArray().SetCount(index_vert.size());
-        mesh->GetLayer(0)->SetUVs(lUVDiffuseLayer, KFbxLayerElement::eDIFFUSE_TEXTURES);
+        mesh->GetLayer(0)->SetUVs(lUVDiffuseLayer, FbxLayerElement::eTextureDiffuse);
     }
 
     for (MapIndices::iterator it = index_vert.begin(); it != index_vert.end(); ++it)
@@ -488,7 +488,7 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
             //OSG_NOTIFY()
             continue;
         }
-        KFbxVector4 vertex;
+        FbxVector4 vertex;
         if (basevecs->getType() == osg::Array::Vec3ArrayType)
         {
             const osg::Vec3  & vec = (*static_cast<const osg::Vec3Array  *>(basevecs))[vertexIndex];
@@ -513,7 +513,7 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
 
         if (basenormals && basenormals->getNumElements()>0)
         {
-            KFbxVector4 normal;
+            FbxVector4 normal;
             if (basenormals->getType() == osg::Array::Vec3ArrayType)
             {
                 const osg::Vec3  & vec = (*static_cast<const osg::Vec3Array  *>(basenormals))[normalIndex];
@@ -547,7 +547,7 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
             const osg::Array * basetexcoords = pGeometry->getTexCoordArray(0);
             if (basetexcoords && basetexcoords->getNumElements()>0)
             {
-                KFbxVector2 texcoord;
+                FbxVector2 texcoord;
                 if (basetexcoords->getType() == osg::Array::Vec2ArrayType)
                 {
                     const osg::Vec2 & vec = (*static_cast<const osg::Vec2Array *>(basetexcoords))[vertexIndex];
@@ -577,17 +577,17 @@ void WriterNodeVisitor::buildFaces(const osg::Geode& geo,
                                    bool              texcoords)
 {
     MapIndices index_vert;
-    KFbxMesh* mesh = KFbxMesh::Create(_pSdkManager, geo.getName().c_str());
+    FbxMesh* mesh = FbxMesh::Create(_pSdkManager, geo.getName().c_str());
     _curFbxNode->AddNodeAttribute(mesh);
-    _curFbxNode->SetShadingMode(KFbxNode::eTEXTURE_SHADING);
-    KFbxLayer* lLayer = mesh->GetLayer(0);
+    _curFbxNode->SetShadingMode(FbxNode::eTextureShading);
+    FbxLayer* lLayer = mesh->GetLayer(0);
     if (lLayer == NULL)
     {
         mesh->CreateLayer();
         lLayer = mesh->GetLayer(0);
     }
     setLayerTextureAndMaterial(mesh);
-    lLayer->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES)->GetIndexArray().SetCount(listTriangles.size());
+    lLayer->GetTextures(FbxLayerElement::eTextureDiffuse)->GetIndexArray().SetCount(listTriangles.size());
     lLayer->GetMaterials()->GetIndexArray().SetCount(listTriangles.size());
 
     unsigned int i = 0;
@@ -600,7 +600,7 @@ void WriterNodeVisitor::buildFaces(const osg::Geode& geo,
         else
         {
             mesh->BeginPolygon(i);
-            lLayer->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES)->GetIndexArray().SetAt(i, it->first.material);
+            lLayer->GetTextures(FbxLayerElement::eTextureDiffuse)->GetIndexArray().SetAt(i, it->first.material);
             lLayer->GetMaterials()->GetIndexArray().SetAt(i, it->first.material);
         }
         addPolygon(mesh, index_vert, it->first, it->second);
@@ -650,8 +650,8 @@ void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
 
 void WriterNodeVisitor::apply(osg::Geode& node)
 {
-    KFbxNode* parent = _curFbxNode;
-    KFbxNode* nodeFBX = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
+    FbxNode* parent = _curFbxNode;
+    FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     _curFbxNode->AddChild(nodeFBX);
     _curFbxNode = nodeFBX;
     unsigned int count = node.getNumDrawables();
@@ -687,9 +687,9 @@ void WriterNodeVisitor::apply(osg::Geode& node)
 
 void WriterNodeVisitor::apply(osg::Group& node)
 {
-    KFbxNode* parent = _curFbxNode;
+    FbxNode* parent = _curFbxNode;
 
-    KFbxNode* nodeFBX = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
+    FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     _curFbxNode->AddChild(nodeFBX);
     _curFbxNode = nodeFBX;
     traverse(node);
@@ -698,8 +698,8 @@ void WriterNodeVisitor::apply(osg::Group& node)
 
 void WriterNodeVisitor::apply(osg::MatrixTransform& node)
 {
-    KFbxNode* parent = _curFbxNode;
-    _curFbxNode = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
+    FbxNode* parent = _curFbxNode;
+    _curFbxNode = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     parent->AddChild(_curFbxNode);
 
     const osg::Matrix& matrix = node.getMatrix();
@@ -707,16 +707,16 @@ void WriterNodeVisitor::apply(osg::MatrixTransform& node)
     osg::Quat rot, so;
 
     matrix.decompose(pos, rot, scl, so);
-    _curFbxNode->LclTranslation.Set(fbxDouble3(pos.x(), pos.y(), pos.z()));
-    _curFbxNode->LclScaling.Set(fbxDouble3(scl.x(), scl.y(), scl.z()));
+    _curFbxNode->LclTranslation.Set(FbxDouble3(pos.x(), pos.y(), pos.z()));
+    _curFbxNode->LclScaling.Set(FbxDouble3(scl.x(), scl.y(), scl.z()));
 
-    KFbxXMatrix mat;
+    FbxAMatrix mat;
 
-    KFbxQuaternion q(rot.x(), rot.y(), rot.z(), rot.w());
+    FbxQuaternion q(rot.x(), rot.y(), rot.z(), rot.w());
     mat.SetQ(q);
-    KFbxVector4 vec4 = mat.GetR();
+    FbxVector4 vec4 = mat.GetR();
 
-    _curFbxNode->LclRotation.Set(fbxDouble3(vec4[0], vec4[1], vec4[2]));
+    _curFbxNode->LclRotation.Set(FbxDouble3(vec4[0], vec4[1], vec4[2]));
 
     traverse(node);
     _curFbxNode = parent;

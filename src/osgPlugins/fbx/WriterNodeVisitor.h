@@ -70,8 +70,8 @@ namespace pluginfbx
 class WriterNodeVisitor: public osg::NodeVisitor
 {
     public:
-        WriterNodeVisitor(KFbxScene* pScene,
-                          KFbxSdkManager* pSdkManager,
+        WriterNodeVisitor(FbxScene* pScene,
+                          FbxManager* pSdkManager,
                           const std::string& fileName,
                           const osgDB::ReaderWriter::Options* options,
                           const std::string& srcDirectory) :
@@ -144,16 +144,16 @@ class WriterNodeVisitor: public osg::NodeVisitor
                      const osg::StateSet* stateset,
                      const osg::Material* mat,
                      const osg::Texture*  tex,
-                     KFbxSdkManager*      pSdkManager,
+                     FbxManager*      pSdkManager,
                      const osgDB::ReaderWriter::Options * options,
                      int                  index = -1);
 
-            KFbxFileTexture* getFbxTexture() const
+            FbxFileTexture* getFbxTexture() const
             {
                 return _fbxTexture;
             }
 
-            KFbxSurfaceMaterial* getFbxMaterial() const
+            FbxSurfaceMaterial* getFbxMaterial() const
             {
                 return _fbxMaterial;
             }
@@ -174,8 +174,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
             }
 
         private:
-            KFbxSurfacePhong*  _fbxMaterial;
-            KFbxFileTexture*   _fbxTexture;
+            FbxSurfacePhong*  _fbxMaterial;
+            FbxFileTexture*   _fbxTexture;
             int                _index;///< Index in the Map
             const osg::Image*  _osgImage;
         };
@@ -203,13 +203,13 @@ class WriterNodeVisitor: public osg::NodeVisitor
                         bool                texcoords);
 
         /// Set the layer for texture and Material in layer 0.
-        void setLayerTextureAndMaterial(KFbxMesh* mesh);
+        void setLayerTextureAndMaterial(FbxMesh* mesh);
 
         /// Set Vertices, normals, and UVs
         void setControlPointAndNormalsAndUV(const osg::Geode& geo,
                                             MapIndices&       index_vert,
                                             bool              texcoords,
-                                            KFbxMesh*         fbxMesh);
+                                            FbxMesh*         fbxMesh);
 
         /**
         *  Create the list of faces from the geode.
@@ -230,7 +230,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         typedef std::map<osg::ref_ptr<const osg::StateSet>, Material, CompareStateSet> MaterialMap;
 
         ///We need this for every new Node we create.
-        KFbxSdkManager* _pSdkManager;
+        FbxManager* _pSdkManager;
 
         ///Tell us if the last apply succeed, useful to stop going through the graph.
         bool _succeedLastApply;
@@ -239,10 +239,10 @@ class WriterNodeVisitor: public osg::NodeVisitor
         std::string _directory;
 
         ///The Scene to save.
-        KFbxScene* _pScene;
+        FbxScene* _pScene;
 
         ///The current Fbx Node.
-        KFbxNode* _curFbxNode;
+        FbxNode* _curFbxNode;
 
         ///The Stack of different stateSet.
         StateSetStack _stateSetStack;

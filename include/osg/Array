@@ -101,17 +101,50 @@ class OSG_EXPORT Array : public BufferData
           * 1 if lhs element is greater than rhs element. */
         virtual int compare(unsigned int lhs,unsigned int rhs) const = 0;
 
-        Type                    getType() const { return _arrayType; }
-        GLint                   getDataSize() const { return _dataSize; }
-        GLenum                  getDataType() const { return _dataType; }
-
+        Type getType() const { return _arrayType; }
+        GLint getDataSize() const { return _dataSize; }
+        GLenum getDataType() const { return _dataType; }
+        
         virtual osg::Array* asArray() { return this; }
         virtual const osg::Array* asArray() const { return this; }
 
-        virtual const GLvoid*   getDataPointer() const = 0;
-        virtual unsigned int    getTotalDataSize() const = 0;
-        virtual unsigned int    getNumElements() const = 0;
+        virtual const GLvoid* getDataPointer() const = 0;
+        virtual unsigned int getTotalDataSize() const = 0;
+        virtual unsigned int getNumElements() const = 0;
 
+        /** Specify whether the array data should be normalized by OpenGL.*/
+        void setNormalize(bool normalize) { _normalize = normalize; }
+
+        /** Get whether the array data should be normalized by OpenGL.*/
+        bool getNormalize() const { return _normalize; }
+        
+        /** Set hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
+        void setPreserveDataType(bool preserve) { _preserveDataType = preserve; }
+
+        /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
+        bool getPreserveDataType() const { return _preserveDataType; }
+        
+        /** Set the rate at which generic vertex attributes advance during instanced rendering. Uses the glVertexAttribDivisor feature of OpenGL 4.0*/
+        void setAttribDivisor(GLuint divisor) { _attribDivisor = divisor; }
+        
+        /** Get the rate at which generic vertex attributes advance during instanced rendering.*/
+        GLuint getAttribDivisor() const { return _attribDivisor; }
+        
+        enum Binding
+        {
+            BIND_OFF=0,
+            BIND_OVERALL,
+            BIND_PER_PRIMITIVE_SET,
+            BIND_PER_VERTEX
+        };
+        
+        /** Specify how this array should be passed to OpenGL.*/
+        void setBinding(Binding binding) { _binding = binding; }
+
+        /** Get how this array should be passed to OpenGL.*/
+        Binding getBinding() const { return _binding; }
+
+            
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
         virtual void trim() {}
 
@@ -128,9 +161,13 @@ class OSG_EXPORT Array : public BufferData
 
         virtual ~Array() {}
 
-        Type                                    _arrayType;
-        GLint                                   _dataSize;
-        GLenum                                  _dataType;
+        Type    _arrayType;
+        GLint   _dataSize;
+        GLenum  _dataType;
+        bool    _normalize;
+        bool    _preserveDataType;
+        GLuint  _attribDivisor;
+        Binding _binding;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

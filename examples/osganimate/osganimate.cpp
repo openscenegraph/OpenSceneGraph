@@ -93,45 +93,38 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f)); // white
     colors->push_back(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
-    int numColors=colors->size();
     
+    osg::ref_ptr<osg::DrawElementsUShort> whitePrimitives = new osg::DrawElementsUShort(GL_QUADS);
+    osg::ref_ptr<osg::DrawElementsUShort> blackPrimitives = new osg::DrawElementsUShort(GL_QUADS);
     
     int numIndicesPerRow=numTilesX+1;
-    osg::UByteArray* coordIndices = new osg::UByteArray; // assumes we are using less than 256 points...
-    osg::UByteArray* colorIndices = new osg::UByteArray;
     for(iy=0;iy<numTilesY;++iy)
     {
         for(int ix=0;ix<numTilesX;++ix)
         {
-            // four vertices per quad.
-            coordIndices->push_back(ix    +(iy+1)*numIndicesPerRow);
-            coordIndices->push_back(ix    +iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+(iy+1)*numIndicesPerRow);
-            
-            // one color per quad
-            colorIndices->push_back((ix+iy)%numColors);
+            osg::DrawElementsUShort* primitives = ((iy+ix)%2==0) ? whitePrimitives.get() : blackPrimitives.get();
+            primitives->push_back(ix    +(iy+1)*numIndicesPerRow);
+            primitives->push_back(ix    +iy*numIndicesPerRow);
+            primitives->push_back((ix+1)+iy*numIndicesPerRow);
+            primitives->push_back((ix+1)+(iy+1)*numIndicesPerRow);
         }
     }
-    
 
     // set up a single normal
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
-    
 
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(coords);
-    geom->setVertexIndices(coordIndices);
     
     geom->setColorArray(colors);
-    geom->setColorIndices(colorIndices);
-    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
     
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coordIndices->size()));
+    geom->addPrimitiveSet(whitePrimitives.get());
+    geom->addPrimitiveSet(blackPrimitives.get());
     
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);

@@ -465,6 +465,10 @@ void ArrayDispatchers::init()
     _activeDispatchList.resize(5);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  With inidices
+//
 AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?

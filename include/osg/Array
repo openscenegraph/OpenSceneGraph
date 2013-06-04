@@ -76,16 +76,33 @@ class OSG_EXPORT Array : public BufferData
             MatrixArrayType   = 22
         };
 
+        enum Binding
+        {
+            BIND_OFF=0,
+            BIND_OVERALL=1,
+            BIND_PER_PRIMITIVE_SET=2,
+            BIND_PER_VERTEX=4,
+            BIND_AUTO=5
+        };
+        
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
             _arrayType(arrayType),
             _dataSize(dataSize),
-            _dataType(dataType) {}
+            _dataType(dataType),
+            _normalize(false),
+            _preserveDataType(false),
+            _attribDivisor(false),
+            _binding(BIND_AUTO) {}
 
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(array,copyop),
             _arrayType(array._arrayType),
             _dataSize(array._dataSize),
-            _dataType(array._dataType) {}
+            _dataType(array._dataType),
+            _normalize(array._normalize),
+            _preserveDataType(array._preserveDataType),
+            _attribDivisor(array._attribDivisor),
+            _binding(array._binding) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -123,20 +140,10 @@ class OSG_EXPORT Array : public BufferData
 
         /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
         bool getPreserveDataType() const { return _preserveDataType; }
-        
         /** Set the rate at which generic vertex attributes advance during instanced rendering. Uses the glVertexAttribDivisor feature of OpenGL 4.0*/
         void setAttribDivisor(GLuint divisor) { _attribDivisor = divisor; }
-        
         /** Get the rate at which generic vertex attributes advance during instanced rendering.*/
         GLuint getAttribDivisor() const { return _attribDivisor; }
-        
-        enum Binding
-        {
-            BIND_OFF=0,
-            BIND_OVERALL,
-            BIND_PER_PRIMITIVE_SET,
-            BIND_PER_VERTEX
-        };
         
         /** Specify how this array should be passed to OpenGL.*/
         void setBinding(Binding binding) { _binding = binding; }
@@ -144,7 +151,7 @@ class OSG_EXPORT Array : public BufferData
         /** Get how this array should be passed to OpenGL.*/
         Binding getBinding() const { return _binding; }
 
-            
+        
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
         virtual void trim() {}
 

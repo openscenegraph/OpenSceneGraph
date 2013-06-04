@@ -208,46 +208,45 @@ Page::Page(Album* album, unsigned int pageNo, const std::string& frontFileName, 
         osg::Geometry* geom = new osg::Geometry;
         geom->setStateSet(album->getBackgroundStateSet());
 
-        osg::Vec3Array* coords = new osg::Vec3Array(4);
-        (*coords)[0].set(0.0f,0.0,height);
-        (*coords)[1].set(0.0f,0.0,0);
-        (*coords)[2].set(width,0.0,0);
-        (*coords)[3].set(width,0.0,height);
+        osg::Vec3Array* coords = new osg::Vec3Array(8);
+        (*coords)[0].set(0.0f,0.0f,0.0f);
+        (*coords)[1].set(0.0f,0.0f,height);
+        (*coords)[2].set(0.0f,0.0f,height);
+        (*coords)[3].set(width,0.0f,height);
+        (*coords)[4].set(width,0.0f,height);
+        (*coords)[5].set(width,0.0f,0.0f);
+        (*coords)[6].set(width,0.0f,0.0f);
+        (*coords)[7].set(0.0f,0.0f,0.0f);
         geom->setVertexArray(coords);
         
 
-        osg::Vec3Array* normals = new osg::Vec3Array(4);
+        osg::Vec3Array* normals = new osg::Vec3Array(8);
         (*normals)[0].set(-1.0f,0.0f,0.0f);
-        (*normals)[1].set(0.0f,0.0f,-1.0f);
-        (*normals)[2].set(1.0f,0.0f,0.0f);
-        (*normals)[3].set(0.0f,0.0f,1.0f);
+        (*normals)[1].set(-1.0f,0.0f,0.0f);
+        (*normals)[2].set(0.0f,0.0f,-1.0f);
+        (*normals)[3].set(0.0f,0.0f,-1.0f);
+        (*normals)[4].set(1.0f,0.0f,0.0f);
+        (*normals)[5].set(1.0f,0.0f,0.0f);
+        (*normals)[6].set(0.0f,0.0f,1.0f);
+        (*normals)[7].set(0.0f,0.0f,1.0f);
         geom->setNormalArray(normals);
-        geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
-        osg::Vec2Array* tcoords = new osg::Vec2Array(4);
-        (*tcoords)[0].set(0.0f,1.0f);
-        (*tcoords)[1].set(0.0f,0.0f);
-        (*tcoords)[2].set(1.0f,0.0f);
+        osg::Vec2Array* tcoords = new osg::Vec2Array(8);
+        (*tcoords)[0].set(0.0f,0.0f);
+        (*tcoords)[1].set(0.0f,1.0f);
+        (*tcoords)[2].set(0.0f,1.0f);
         (*tcoords)[3].set(1.0f,1.0f);
+        (*tcoords)[4].set(1.0f,1.0f);
+        (*tcoords)[5].set(0.0f,1.0f);
+        (*tcoords)[6].set(0.0f,1.0f);
+        (*tcoords)[7].set(0.0f,0.0f);
         geom->setTexCoordArray(0,tcoords);
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
         geom->setColorArray(colours);
         geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-        osg::UByteArray* vindices = new osg::UByteArray(8);
-        (*vindices)[0]=0;
-        (*vindices)[1]=1;
-        (*vindices)[2]=1;
-        (*vindices)[3]=2;
-        (*vindices)[4]=2;
-        (*vindices)[5]=3;
-        (*vindices)[6]=3;
-        (*vindices)[7]=0;
-
-        geom->setVertexIndices(vindices);
-        geom->setTexCoordIndices(0,vindices);
 
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,8));
 

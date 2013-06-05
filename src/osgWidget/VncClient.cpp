@@ -61,7 +61,10 @@ bool VncClient::assign(VncImage* vncImage, const GeometryHints& hints)
                 texture,
                 osg::StateAttribute::ON);
 
-    pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(_vncImage.get()));
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> iih = new osgViewer::InteractiveImageHandler(_vncImage.get());
+    
+    pictureQuad->setEventCallback(iih.get());
+    pictureQuad->setCullCallback(iih.get());
 
     addDrawable(pictureQuad);
 

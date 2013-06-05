@@ -41,6 +41,8 @@ protected:
         /// Indicate the start of a new compressed image that's part of the final texture.
         virtual void beginImage(int size, int width, int height, int depth, int face, int miplevel);
 
+        virtual void endImage() {}
+
         /// Output data. Compressed data is output as soon as it's generated to minimize memory allocations.
         virtual bool writeData(const void * data, int size);
     };
@@ -76,6 +78,7 @@ void NVTTProcessor::VPBErrorHandler::error(nvtt::Error e)
         case nvtt::Error_FileWrite:
         OSG_WARN<<" NVTT : file write error"<<std::endl;
         break;
+    default: break;
     }
 }
 

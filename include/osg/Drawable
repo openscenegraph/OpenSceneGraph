@@ -610,33 +610,55 @@ class OSG_EXPORT Drawable : public Object
             bool isTimerQuerySupported() const { return _isTimerQuerySupported; }
             void setARBTimerQuerySupported(bool flag) { _isARBTimerQuerySupported = flag; }
             bool isARBTimerQuerySupported() const { return _isARBTimerQuerySupported; }
+            void glSecondaryColor3bv(const GLbyte* coord) const;
             void glSecondaryColor3ubv(const GLubyte* coord) const;
+            void glSecondaryColor3sv(const GLshort* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
+            void glSecondaryColor3dv(const GLdouble* coord) const;
 
             void glFogCoordfv(const GLfloat* coord) const;
+            void glFogCoorddv(const GLdouble* coord) const;
+
+            void glMultiTexCoord1sv(GLenum target,const GLshort* coord) const;
+            void glMultiTexCoord1iv(GLenum target,const GLint* coord) const;
+            void glMultiTexCoord1fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord1dv(GLenum target,const GLdouble* coord) const;
+            void glMultiTexCoord2sv(GLenum target,const GLshort* coord) const;
+            void glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord2dv(GLenum target,const GLdouble* coord) const;
+            void glMultiTexCoord3sv(GLenum target,const GLshort* coord) const;
+            void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord3dv(GLenum target,const GLdouble* coord) const;
+            void glMultiTexCoord4sv(GLenum target,const GLshort* coord) const;
+            void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord4dv(GLenum target,const GLdouble* coord) const;
 
             void glMultiTexCoord1f(GLenum target,GLfloat coord) const;
-            void glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const;
-            void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
-            void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
-
             void glMultiTexCoord1d(GLenum target,GLdouble coord) const;
-            void glMultiTexCoord2dv(GLenum target,const GLdouble* coord) const;
-            void glMultiTexCoord3dv(GLenum target,const GLdouble* coord) const;
-            void glMultiTexCoord4dv(GLenum target,const GLdouble* coord) const;
 
             void glVertexAttrib1s(unsigned int index, GLshort s) const;
             void glVertexAttrib1f(unsigned int index, GLfloat f) const;
             void glVertexAttrib1d(unsigned int index, GLdouble f) const;
+
+            void glVertexAttrib1sv(unsigned int index, const GLshort * v) const;
+            void glVertexAttribI1iv(unsigned int index, const GLint * v) const;
+            void glVertexAttribI1uiv(unsigned int index, const GLuint * v) const;
+            void glVertexAttrib1fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib1dv(unsigned int index, const GLdouble * v) const;
+            void glVertexAttrib2sv(unsigned int index, const GLshort * v) const;
             void glVertexAttrib2fv(unsigned int index, const GLfloat * v) const;
-            void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
-            void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
             void glVertexAttrib2dv(unsigned int index, const GLdouble * v) const;
+            void glVertexAttrib3sv(unsigned int index, const GLshort * v) const;
+            void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
             void glVertexAttrib3dv(unsigned int index, const GLdouble * v) const;
-            void glVertexAttrib4dv(unsigned int index, const GLdouble * v) const;
+            void glVertexAttrib4bv(unsigned int index, const GLbyte * v) const;
+            void glVertexAttrib4Nbv(unsigned int index, const GLbyte * v) const;
             void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
             void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
-
+            void glVertexAttrib4sv(unsigned int index, const GLshort * v) const;
+            void glVertexAttrib4Nsv(unsigned int index, const GLshort * v) const;
+            void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib4dv(unsigned int index, const GLdouble * v) const;
 
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
@@ -675,22 +697,42 @@ class OSG_EXPORT Drawable : public Object
 
             friend class ArrayDispatchers;
 
-            typedef void (GL_APIENTRY * FogCoordProc) (const GLfloat* coord);
+            typedef void (GL_APIENTRY * FogCoordfProc) (const GLfloat* coord);
+            typedef void (GL_APIENTRY * FogCoorddProc) (const GLdouble* coord);
 
             typedef void (GL_APIENTRY * VertexAttrib1sProc) (GLuint index, GLshort s);
             typedef void (GL_APIENTRY * VertexAttrib1fProc) (GLuint index, GLfloat f);
             typedef void (GL_APIENTRY * VertexAttrib1dProc) (GLuint index, GLdouble f);
+            typedef void (GL_APIENTRY * VertexAttribbvProc) (GLuint index, const GLbyte * v);
+            typedef void (GL_APIENTRY * VertexAttribubvProc) (GLuint index, const GLubyte * v);
+            typedef void (GL_APIENTRY * VertexAttribsvProc) (GLuint index, const GLshort * v);
+            typedef void (GL_APIENTRY * VertexAttribivProc) (GLuint index, const GLint * v);
+            typedef void (GL_APIENTRY * VertexAttribuivProc) (GLuint index, const GLuint * v);
             typedef void (GL_APIENTRY * VertexAttribfvProc) (GLuint index, const GLfloat * v);
             typedef void (GL_APIENTRY * VertexAttribdvProc) (GLuint index, const GLdouble * v);
-            typedef void (GL_APIENTRY * VertexAttribubvProc) (GLuint index, const GLubyte * v);
 
+            typedef void (GL_APIENTRY * SecondaryColor3bvProc) (const GLbyte* coord);
             typedef void (GL_APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+            typedef void (GL_APIENTRY * SecondaryColor3svProc) (const GLshort* coord);
             typedef void (GL_APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+            typedef void (GL_APIENTRY * SecondaryColor3dvProc) (const GLdouble* coord);
+
+            typedef void (GL_APIENTRY * MultiTexCoord1svProc) (GLenum target,const GLshort* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord1ivProc) (GLenum target,const GLint* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord1fvProc) (GLenum target,const GLfloat* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord1dvProc) (GLenum target,const GLdouble* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord2svProc) (GLenum target,const GLshort* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord2fvProc) (GLenum target,const GLfloat* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord2dvProc) (GLenum target,const GLdouble* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord3svProc) (GLenum target,const GLshort* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord3fvProc) (GLenum target,const GLfloat* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord3dvProc) (GLenum target,const GLdouble* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord4svProc) (GLenum target,const GLshort* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord4fvProc) (GLenum target,const GLfloat* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord4dvProc) (GLenum target,const GLdouble* coord);
 
             typedef void (GL_APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
-            typedef void (GL_APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
             typedef void (GL_APIENTRY * MultiTexCoord1dProc) (GLenum target,GLdouble coord);
-            typedef void (GL_APIENTRY * MultiTexCoorddvProc) (GLenum target,const GLdouble* coord);
 
 
             typedef void (GL_APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
@@ -737,33 +779,55 @@ class OSG_EXPORT Drawable : public Object
             bool _isTimerQuerySupported;
             bool _isARBTimerQuerySupported;
 
-            FogCoordProc _glFogCoordfv;
+            FogCoordfProc _glFogCoordfv;
+            FogCoorddProc _glFogCoorddv;
 
+            SecondaryColor3bvProc _glSecondaryColor3bv;
             SecondaryColor3ubvProc _glSecondaryColor3ubv;
+            SecondaryColor3svProc _glSecondaryColor3sv;
             SecondaryColor3fvProc _glSecondaryColor3fv;
+            SecondaryColor3dvProc _glSecondaryColor3dv;
 
             VertexAttrib1sProc _glVertexAttrib1s;
             VertexAttrib1fProc _glVertexAttrib1f;
             VertexAttrib1dProc _glVertexAttrib1d;
+
+            VertexAttribsvProc _glVertexAttrib1sv;
+            VertexAttribivProc _glVertexAttribI1iv;
+            VertexAttribuivProc _glVertexAttribI1uiv;
             VertexAttribfvProc _glVertexAttrib1fv;
+            VertexAttribdvProc _glVertexAttrib1dv;
+            VertexAttribsvProc _glVertexAttrib2sv;
             VertexAttribfvProc _glVertexAttrib2fv;
-            VertexAttribfvProc _glVertexAttrib3fv;
-            VertexAttribfvProc _glVertexAttrib4fv;
             VertexAttribdvProc _glVertexAttrib2dv;
+            VertexAttribsvProc _glVertexAttrib3sv;
+            VertexAttribfvProc _glVertexAttrib3fv;
             VertexAttribdvProc _glVertexAttrib3dv;
-            VertexAttribdvProc _glVertexAttrib4dv;
+            VertexAttribbvProc _glVertexAttrib4bv;
+            VertexAttribbvProc _glVertexAttrib4Nbv;
             VertexAttribubvProc _glVertexAttrib4ubv;
             VertexAttribubvProc _glVertexAttrib4Nubv;
+            VertexAttribsvProc _glVertexAttrib4sv;
+            VertexAttribsvProc _glVertexAttrib4Nsv;
+            VertexAttribfvProc _glVertexAttrib4fv;
+            VertexAttribdvProc _glVertexAttrib4dv;
+
+            MultiTexCoord1svProc _glMultiTexCoord1sv;
+            MultiTexCoord1ivProc _glMultiTexCoord1iv;
+            MultiTexCoord1fvProc _glMultiTexCoord1fv;
+            MultiTexCoord1dvProc _glMultiTexCoord1dv;
+            MultiTexCoord2svProc _glMultiTexCoord2sv;
+            MultiTexCoord2fvProc _glMultiTexCoord2fv;
+            MultiTexCoord2dvProc _glMultiTexCoord2dv;
+            MultiTexCoord3svProc _glMultiTexCoord3sv;
+            MultiTexCoord3fvProc _glMultiTexCoord3fv;
+            MultiTexCoord3dvProc _glMultiTexCoord3dv;
+            MultiTexCoord4svProc _glMultiTexCoord4sv;
+            MultiTexCoord4fvProc _glMultiTexCoord4fv;
+            MultiTexCoord4dvProc _glMultiTexCoord4dv;
 
             MultiTexCoord1fProc _glMultiTexCoord1f;
-            MultiTexCoordfvProc _glMultiTexCoord1fv;
-            MultiTexCoordfvProc _glMultiTexCoord2fv;
-            MultiTexCoordfvProc _glMultiTexCoord3fv;
-            MultiTexCoordfvProc _glMultiTexCoord4fv;
             MultiTexCoord1dProc _glMultiTexCoord1d;
-            MultiTexCoorddvProc _glMultiTexCoord2dv;
-            MultiTexCoorddvProc _glMultiTexCoord3dv;
-            MultiTexCoorddvProc _glMultiTexCoord4dv;
 
             GenBuffersProc          _glGenBuffers;
             BindBufferProc          _glBindBuffer;

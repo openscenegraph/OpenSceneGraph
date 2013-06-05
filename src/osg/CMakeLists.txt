@@ -182,16 +182,22 @@ SET(TARGET_H
     ${HEADER_PATH}/Vec2d
     ${HEADER_PATH}/Vec2f
     ${HEADER_PATH}/Vec2s
+    ${HEADER_PATH}/Vec2i
+    ${HEADER_PATH}/Vec2ui
     ${HEADER_PATH}/Vec3
     ${HEADER_PATH}/Vec3b
     ${HEADER_PATH}/Vec3d
     ${HEADER_PATH}/Vec3f
     ${HEADER_PATH}/Vec3s
+    ${HEADER_PATH}/Vec3i
+    ${HEADER_PATH}/Vec3ui
     ${HEADER_PATH}/Vec4
     ${HEADER_PATH}/Vec4b
     ${HEADER_PATH}/Vec4d
     ${HEADER_PATH}/Vec4f
     ${HEADER_PATH}/Vec4s
+    ${HEADER_PATH}/Vec4i
+    ${HEADER_PATH}/Vec4ui
     ${HEADER_PATH}/Vec4ub
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/VertexProgram
@@ -251,6 +257,7 @@ SET(TARGET_SRC
     FrontFace.cpp
     Geode.cpp
     Geometry.cpp
+    GeometryNew.cpp
     GL2Extensions.cpp
     GLExtensions.cpp
     GLBeginEndAdapter.cpp

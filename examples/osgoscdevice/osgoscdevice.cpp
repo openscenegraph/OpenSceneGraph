@@ -306,7 +306,7 @@ osg::Node* createHUD()
         colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(0.8-0.1*i,0.1*i,0.2*i, 1.0));
         quad->setColorArray(colors);
-        quad->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        quad->setColorBinding(osg::Geometry::BIND_OVERALL);
         (*vertices)[0]=position;
         (*vertices)[1]=position+dx;
         (*vertices)[2]=position+dx+dy;

@@ -97,6 +97,27 @@ InputStream& InputStream::operator>>( osg::Vec3s& v )
 InputStream& InputStream::operator>>( osg::Vec4s& v )
 { *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
 
+
+InputStream& InputStream::operator>>( osg::Vec2i& v )
+{ *this >> v.x() >> v.y(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec3i& v )
+{ *this >> v.x() >> v.y() >> v.z(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec4i& v )
+{ *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
+
+
+InputStream& InputStream::operator>>( osg::Vec2ui& v )
+{ *this >> v.x() >> v.y(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec3ui& v )
+{ *this >> v.x() >> v.y() >> v.z(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec4ui& v )
+{ *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
+
+
 InputStream& InputStream::operator>>( osg::Vec2f& v )
 { *this >> v.x() >> v.y(); return *this; }
 
@@ -106,6 +127,7 @@ InputStream& InputStream::operator>>( osg::Vec3f& v )
 InputStream& InputStream::operator>>( osg::Vec4f& v )
 { *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
 
+
 InputStream& InputStream::operator>>( osg::Vec2d& v )
 { *this >> v.x() >> v.y(); return *this; }
 
@@ -114,6 +136,7 @@ InputStream& InputStream::operator>>( osg::Vec3d& v )
 
 InputStream& InputStream::operator>>( osg::Vec4d& v )
 { *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
+
 
 InputStream& InputStream::operator>>( osg::Quat& q )
 { *this >> q.x() >> q.y() >> q.z() >> q.w(); return *this; }

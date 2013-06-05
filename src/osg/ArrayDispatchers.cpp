@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 
+
 namespace osg
 {
 
@@ -266,19 +267,7 @@ public:
     void assign(Array::Type type, void (GL_APIENTRY *functionPtr) (const T*), unsigned int stride)
     {
         if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
-        _attributeDispatchList[type].first = functionPtr ? new TemplateAttributeDispatch<T>(functionPtr, stride) : 0;
-        _attributeDispatchList[type].second = functionPtr ? new TemplateAttributeDispatch<T>(functionPtr, stride) : 0;
-
-        if ((unsigned int)type >= _attributeDispatchWithIndicesList.size()) _attributeDispatchWithIndicesList.resize(type+1);
-        _attributeDispatchWithIndicesList[type] = functionPtr ? new TemplateAttributeWithIndicesDispatch<T>(functionPtr, stride) : 0;
-    }
-
-    template<typename T>
-    void assign(Array::Type type, void (GL_APIENTRY *functionPtr) (const T*), void (GL_APIENTRY *normalizeFunctionPtr) (const T*), unsigned int stride)
-    {
-        if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
-        _attributeDispatchList[type].first = functionPtr ? new TemplateAttributeDispatch<T>(functionPtr, stride) : 0;
-        _attributeDispatchList[type].second = normalizeFunctionPtr ? new TemplateAttributeDispatch<T>(normalizeFunctionPtr, stride) : 0;
+        _attributeDispatchList[type] = functionPtr ? new TemplateAttributeDispatch<T>(functionPtr, stride) : 0;
 
         if ((unsigned int)type >= _attributeDispatchWithIndicesList.size()) _attributeDispatchWithIndicesList.resize(type+1);
         _attributeDispatchWithIndicesList[type] = functionPtr ? new TemplateAttributeWithIndicesDispatch<T>(functionPtr, stride) : 0;
@@ -288,19 +277,7 @@ public:
     void targetAssign(I target, Array::Type type, void (GL_APIENTRY *functionPtr) (I, const T*), unsigned int stride)
     {
         if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
-        _attributeDispatchList[type].first = functionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, functionPtr, stride) : 0;
-        _attributeDispatchList[type].second = functionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, functionPtr, stride) : 0;
-
-        if ((unsigned int)type >= _attributeDispatchWithIndicesList.size()) _attributeDispatchWithIndicesList.resize(type+1);
-        _attributeDispatchWithIndicesList[type] = functionPtr ? new TemplateTargetAttributeWithIndicesDispatch<I,T>(target, functionPtr, stride) : 0;
-    }
-
-    template<typename I, typename T>
-    void targetAssign(I target, Array::Type type, void (GL_APIENTRY *functionPtr) (I, const T*), void (GL_APIENTRY *normalizeFunctionPtr) (I, const T*), unsigned int stride)
-    {
-        if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
-        _attributeDispatchList[type].first = functionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, functionPtr, stride) : 0;
-        _attributeDispatchList[type].second = normalizeFunctionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, normalizeFunctionPtr, stride) : 0;
+        _attributeDispatchList[type] = functionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, functionPtr, stride) : 0;
 
         if ((unsigned int)type >= _attributeDispatchWithIndicesList.size()) _attributeDispatchWithIndicesList.resize(type+1);
         _attributeDispatchWithIndicesList[type] = functionPtr ? new TemplateTargetAttributeWithIndicesDispatch<I,T>(target, functionPtr, stride) : 0;
@@ -327,9 +304,9 @@ public:
     }
 
 
-    AttributeDispatch* dispatcher(bool useGLBeginEndAdapter, const Array* array, const IndexArray* indices, GLboolean normalize)
+    AttributeDispatch* dispatcher(bool useGLBeginEndAdapter, const Array* array, const IndexArray* indices)
     {
-        // OSG_NOTICE<<"dispatcher("<<useGLBeginEndAdapter<<", "<<array<<", "<<indices<<", "<<normalize<<")"<<std::endl;
+        // OSG_NOTICE<<"dispatcher("<<useGLBeginEndAdapter<<", "<<array<<", "<<indices<<")"<<std::endl;
 
         if (!array) return 0;
 
@@ -367,10 +344,7 @@ public:
             }
             else if ((unsigned int)type<_attributeDispatchList.size())
             {
-                if (normalize == GL_FALSE)
-                    dispatcher = _attributeDispatchList[array->getType()].first.get();
-                else
-                    dispatcher = _attributeDispatchList[array->getType()].second.get();
+                dispatcher = _attributeDispatchList[array->getType()].get();
             }
         }
 
@@ -388,9 +362,8 @@ public:
     }
 
     typedef std::vector< ref_ptr<AttributeDispatch> >  AttributeDispatchList;
-    typedef std::vector< std::pair< ref_ptr<AttributeDispatch>, ref_ptr<AttributeDispatch> > >  AttributeDispatchNormalizeList;
     GLBeginEndAdapter*                  _glBeginEndAdapter;
-    AttributeDispatchNormalizeList      _attributeDispatchList;
+    AttributeDispatchList               _attributeDispatchList;
     AttributeDispatchList               _attributeDispatchWithIndicesList;
     AttributeDispatchList               _glBeginEndAttributeDispatchList;
     AttributeDispatchList               _glBeginEndAttributeDispatchWithIndicesList;
@@ -466,100 +439,83 @@ void ArrayDispatchers::init()
     Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
 
     #ifndef OSG_GLES1_AVAILABLE
-        // http://www.opengl.org/sdk/docs/man2/xhtml/glVertex.xml - TODO : add Vec2i/Vec3i/Vec4i array management
-        _vertexDispatchers->assign<GLshort>( Array::Vec2sArrayType, glVertex2sv, 2);
-        _vertexDispatchers->assign<GLfloat>( Array::Vec2ArrayType,  glVertex2fv, 2);
+        _vertexDispatchers->assign<GLfloat>(Array::Vec2ArrayType, glVertex2fv, 2);
+        _vertexDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glVertex3fv, 3);
         _vertexDispatchers->assign<GLdouble>(Array::Vec2dArrayType, glVertex2dv, 2);
-
-        _vertexDispatchers->assign<GLshort>( Array::Vec3sArrayType, glVertex3sv, 3);
         _vertexDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glVertex3dv, 3);
-        _vertexDispatchers->assign<GLfloat>( Array::Vec3ArrayType,  glVertex3fv, 3);
-
-        _vertexDispatchers->assign<GLshort>( Array::Vec4sArrayType, glVertex4sv, 4);
-        _vertexDispatchers->assign<GLfloat>( Array::Vec4ArrayType,  glVertex4fv, 4);
-        _vertexDispatchers->assign<GLdouble>(Array::Vec4dArrayType, glVertex4dv, 4);
     #endif
 
-    // http://www.opengl.org/sdk/docs/man2/xhtml/glNormal.xml - TODO : add Vec3i array management
-    _normalDispatchers->assign<GLbyte>(  Array::Vec3bArrayType, glNormal3bv, 3);
-    _normalDispatchers->assign<GLshort>( Array::Vec3sArrayType, glNormal3sv, 3);
-    _normalDispatchers->assign<GLfloat>( Array::Vec3ArrayType,  glNormal3fv, 3);
+    _normalDispatchers->assign<GLbyte>(Array::Vec3bArrayType, glNormal3bv, 3);
+    _normalDispatchers->assign<GLshort>(Array::Vec3sArrayType, glNormal3sv, 3);
+    _normalDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glNormal3fv, 3);
     _normalDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glNormal3dv, 3);
 
-    // http://www.opengl.org/sdk/docs/man2/xhtml/glColor.xml - TODO : add Vec3i/Vec4i/Vec3ub/Vec3us/Vec4us/Vec3ui/Vec4ui array management
-    _colorDispatchers->assign<GLbyte>( Array::Vec3bArrayType,   glColor3bv, 3);
-    _colorDispatchers->assign<GLshort>( Array::Vec3sArrayType,  glColor3sv, 3);
-    _colorDispatchers->assign<GLfloat>( Array::Vec3ArrayType,   glColor3fv, 3);
-    _colorDispatchers->assign<GLdouble>(Array::Vec3dArrayType,  glColor3dv, 3);
+    _colorDispatchers->assign<GLubyte>(Array::Vec4ubArrayType, glColor4ubv, 4);
+    _colorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glColor3fv, 3);
+    _colorDispatchers->assign<GLfloat>(Array::Vec4ArrayType, glColor4fv, 4);
+    _colorDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glColor3dv, 3);
+    _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType, glColor4dv, 4);
 
-    _colorDispatchers->assign<GLbyte>( Array::Vec4bArrayType,   glColor4bv,  4);
-    _colorDispatchers->assign<GLshort>( Array::Vec4sArrayType,  glColor4sv,  4);
-    _colorDispatchers->assign<GLubyte>( Array::Vec4ubArrayType, glColor4ubv, 4);
-    _colorDispatchers->assign<GLfloat>( Array::Vec4ArrayType,   glColor4fv,  4);
-    _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType,  glColor4dv,  4);
+    _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);
 
-    // http://www.opengl.org/sdk/docs/man2/xhtml/glSecondaryColor.xml - TODO : add Vec3i/Vec3ub/Vec3us/Vec3ui array management
-    _secondaryColorDispatchers->assign<GLbyte>(  Array::Vec3bArrayType, extensions->_glSecondaryColor3bv, 3);
-    _secondaryColorDispatchers->assign<GLshort>( Array::Vec3sArrayType, extensions->_glSecondaryColor3sv, 3);
-    _secondaryColorDispatchers->assign<GLfloat>( Array::Vec3ArrayType,  extensions->_glSecondaryColor3fv, 3);
-    _secondaryColorDispatchers->assign<GLdouble>(Array::Vec3dArrayType, extensions->_glSecondaryColor3dv, 3);
-
-    // http://www.opengl.org/sdk/docs/man2/xhtml/glFogCoord.xml
-    _fogCoordDispatchers->assign<GLfloat>( Array::FloatArrayType,  extensions->_glFogCoordfv, 1);
-    _fogCoordDispatchers->assign<GLdouble>(Array::DoubleArrayType, extensions->_glFogCoorddv, 1);
+    _fogCoordDispatchers->assign<GLfloat>(Array::FloatArrayType, extensions->_glFogCoordfv, 1);
 #endif
 
     // pre allocate.
     _activeDispatchList.resize(5);
 }
 
-AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices, GLboolean normalize)
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  With inidices
+//
+AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?
-           vertexAttribDispatcher(_state->getVertexAlias()._location, array, indices, normalize) :
-           _vertexDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+           vertexAttribDispatcher(_state->getVertexAlias()._location, array, indices) :
+           _vertexDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::normalDispatcher(Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::normalDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?
-           vertexAttribDispatcher(_state->getNormalAlias()._location, array, indices, normalize) :
-           _normalDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+           vertexAttribDispatcher(_state->getNormalAlias()._location, array, indices) :
+           _normalDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::colorDispatcher(Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::colorDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?
-           vertexAttribDispatcher(_state->getColorAlias()._location, array, indices, normalize) :
-           _colorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+           vertexAttribDispatcher(_state->getColorAlias()._location, array, indices) :
+           _colorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::secondaryColorDispatcher(Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::secondaryColorDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?
-           vertexAttribDispatcher(_state->getSecondaryColorAlias()._location, array, indices, normalize) :
-           _secondaryColorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+           vertexAttribDispatcher(_state->getSecondaryColorAlias()._location, array, indices) :
+           _secondaryColorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::fogCoordDispatcher(Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::fogCoordDispatcher(Array* array, IndexArray* indices)
 {
     return _useVertexAttribAlias ?
-           vertexAttribDispatcher(_state->getFogCoordAlias()._location, array, indices, normalize) :
-           _fogCoordDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+           vertexAttribDispatcher(_state->getFogCoordAlias()._location, array, indices) :
+           _fogCoordDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::texCoordDispatcher(unsigned int unit, Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::texCoordDispatcher(unsigned int unit, Array* array, IndexArray* indices)
 {
-    if (_useVertexAttribAlias) return vertexAttribDispatcher(_state->getTexCoordAliasList()[unit]._location, array, indices, normalize);
+    if (_useVertexAttribAlias) return vertexAttribDispatcher(_state->getTexCoordAliasList()[unit]._location, array, indices);
 
     if (unit>=_texCoordDispatchers.size()) assignTexCoordDispatchers(unit);
-    return _texCoordDispatchers[unit]->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+    return _texCoordDispatchers[unit]->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
-AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, Array* array, IndexArray* indices, GLboolean normalize)
+AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, Array* array, IndexArray* indices)
 {
     if (unit>=_vertexAttribDispatchers.size()) assignVertexAttribDispatchers(unit);
-    return _vertexAttribDispatchers[unit]->dispatcher(_useGLBeginEndAdapter, array, indices, normalize);
+    return _vertexAttribDispatchers[unit]->dispatcher(_useGLBeginEndAdapter, array, indices);
 }
 
 void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
@@ -575,23 +531,10 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
         if (i==0)
         {
             #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-            // http://www.opengl.org/sdk/docs/man2/xhtml/glTexCoord.xml - TODO : add Vec2i/Vec3i/Vec4i
-            texCoordDispatcher.assign<GLshort>( Array::ShortArrayType,  glTexCoord1sv, 1);
-            texCoordDispatcher.assign<GLint>(   Array::IntArrayType,    glTexCoord1iv, 1);
-            texCoordDispatcher.assign<GLfloat>( Array::FloatArrayType,  glTexCoord1fv, 1);
-            texCoordDispatcher.assign<GLdouble>(Array::DoubleArrayType, glTexCoord1dv, 1);
-
-            texCoordDispatcher.assign<GLshort>( Array::Vec2ArrayType, glTexCoord2sv, 2);
-            texCoordDispatcher.assign<GLfloat>( Array::Vec2ArrayType, glTexCoord2fv, 2);
-            texCoordDispatcher.assign<GLdouble>(Array::Vec2ArrayType, glTexCoord2dv, 2);
-
-            texCoordDispatcher.assign<GLshort>( Array::Vec3ArrayType, glTexCoord3sv, 3);
-            texCoordDispatcher.assign<GLfloat>( Array::Vec3ArrayType, glTexCoord3fv, 3);
-            texCoordDispatcher.assign<GLdouble>(Array::Vec3ArrayType, glTexCoord3dv, 3);
-
-            texCoordDispatcher.assign<GLshort>( Array::Vec4ArrayType, glTexCoord4sv, 4);
-            texCoordDispatcher.assign<GLfloat>( Array::Vec4ArrayType, glTexCoord4fv, 4);
-            texCoordDispatcher.assign<GLdouble>(Array::Vec4ArrayType, glTexCoord4dv, 4);
+            texCoordDispatcher.assign<GLfloat>(Array::FloatArrayType, glTexCoord1fv, 1);
+            texCoordDispatcher.assign<GLfloat>(Array::Vec2ArrayType, glTexCoord2fv, 2);
+            texCoordDispatcher.assign<GLfloat>(Array::Vec3ArrayType, glTexCoord3fv, 3);
+            texCoordDispatcher.assign<GLfloat>(Array::Vec4ArrayType, glTexCoord4fv, 4);
             #endif
             texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::FloatArrayType, &GLBeginEndAdapter::TexCoord1fv, 1);
             texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::Vec2ArrayType, &GLBeginEndAdapter::TexCoord2fv, 2);
@@ -601,23 +544,10 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
         else
         {
             #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-            // http://www.opengl.org/sdk/docs/man2/xhtml/glMultiTexCoord.xml - TODO : add Vec2i/Vec3i/Vec4i
-            texCoordDispatcher.targetAssign<GLenum, GLshort>( (GLenum)(GL_TEXTURE0+i), Array::ShortArrayType,  extensions->_glMultiTexCoord1sv, 1);
-            texCoordDispatcher.targetAssign<GLenum, GLint>(   (GLenum)(GL_TEXTURE0+i), Array::IntArrayType,    extensions->_glMultiTexCoord1iv, 1);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>( (GLenum)(GL_TEXTURE0+i), Array::FloatArrayType,  extensions->_glMultiTexCoord1fv, 1);
-            texCoordDispatcher.targetAssign<GLenum, GLdouble>((GLenum)(GL_TEXTURE0+i), Array::DoubleArrayType, extensions->_glMultiTexCoord1dv, 1);
-
-            texCoordDispatcher.targetAssign<GLenum, GLshort>( (GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType,   extensions->_glMultiTexCoord2sv, 2);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>( (GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType,   extensions->_glMultiTexCoord2fv, 2);
-            texCoordDispatcher.targetAssign<GLenum, GLdouble>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType,   extensions->_glMultiTexCoord2dv, 2);
-
-            texCoordDispatcher.targetAssign<GLenum, GLshort>( (GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType,   extensions->_glMultiTexCoord3sv, 3);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>( (GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType,   extensions->_glMultiTexCoord3fv, 3);
-            texCoordDispatcher.targetAssign<GLenum, GLdouble>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType,   extensions->_glMultiTexCoord3dv, 3);
-
-            texCoordDispatcher.targetAssign<GLenum, GLshort>( (GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType,   extensions->_glMultiTexCoord4sv, 4);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>( (GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType,   extensions->_glMultiTexCoord4fv, 4);
-            texCoordDispatcher.targetAssign<GLenum, GLdouble>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType,   extensions->_glMultiTexCoord4dv, 4);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, extensions->_glMultiTexCoord1fv, 1);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, extensions->_glMultiTexCoord2fv, 2);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, extensions->_glMultiTexCoord3fv, 3);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, extensions->_glMultiTexCoord4fv, 4);
             #endif
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, &GLBeginEndAdapter::MultiTexCoord1fv, 1);
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, &GLBeginEndAdapter::MultiTexCoord2fv, 2);
@@ -636,28 +566,10 @@ void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
     {
         _vertexAttribDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));
         AttributeDispatchMap& vertexAttribDispatcher = *_vertexAttribDispatchers[i];
-
-        // http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttrib.xml - TODO : add Vec2i/Vec2ui/Vec3i/Vec3ui/Vec4i/Vec4us/Vec4ui
-        vertexAttribDispatcher.targetAssign<GLuint, GLshort>( i, Array::ShortArrayType,  extensions->_glVertexAttrib1sv,   1);
-        vertexAttribDispatcher.targetAssign<GLuint, GLint>(   i, Array::IntArrayType,    extensions->_glVertexAttribI1iv,  1);
-        vertexAttribDispatcher.targetAssign<GLuint, GLuint>(  i, Array::UIntArrayType,   extensions->_glVertexAttribI1uiv, 1);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>( i, Array::FloatArrayType,  extensions->_glVertexAttrib1fv,   1);
-        vertexAttribDispatcher.targetAssign<GLuint, GLdouble>(i, Array::DoubleArrayType, extensions->_glVertexAttrib1dv,   1);
-
-        vertexAttribDispatcher.targetAssign<GLuint, GLshort>( i, Array::Vec2sArrayType, extensions->_glVertexAttrib2sv, 2);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>( i, Array::Vec2ArrayType,  extensions->_glVertexAttrib2fv, 2);
-        vertexAttribDispatcher.targetAssign<GLuint, GLdouble>(i, Array::Vec2dArrayType, extensions->_glVertexAttrib2dv, 2);
-
-        vertexAttribDispatcher.targetAssign<GLuint, GLshort>( i, Array::Vec3sArrayType, extensions->_glVertexAttrib3sv, 3);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>( i, Array::Vec3ArrayType,  extensions->_glVertexAttrib3fv, 3);
-        vertexAttribDispatcher.targetAssign<GLuint, GLdouble>(i, Array::Vec3dArrayType, extensions->_glVertexAttrib3dv, 3);
-
-        vertexAttribDispatcher.targetAssign<GLuint, GLshort>( i, Array::Vec4sArrayType,  extensions->_glVertexAttrib4sv,  extensions->_glVertexAttrib4Nsv,  4);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>( i, Array::Vec4ArrayType,   extensions->_glVertexAttrib4fv,                                    4);
-        vertexAttribDispatcher.targetAssign<GLuint, GLdouble>(i, Array::Vec4dArrayType,  extensions->_glVertexAttrib4dv,                                    4);
-        vertexAttribDispatcher.targetAssign<GLuint, GLbyte>(  i, Array::Vec4bArrayType,  extensions->_glVertexAttrib4bv,  extensions->_glVertexAttrib4Nbv,  4);
-        vertexAttribDispatcher.targetAssign<GLuint, GLubyte>( i, Array::Vec4ubArrayType, extensions->_glVertexAttrib4ubv, extensions->_glVertexAttrib4Nubv, 4);
-
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
         vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::FloatArrayType, &GLBeginEndAdapter::VertexAttrib1fv, 1);
         vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::Vec2ArrayType, &GLBeginEndAdapter::VertexAttrib2fv, 2);
         vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::Vec3ArrayType, &GLBeginEndAdapter::VertexAttrib3fv, 3);

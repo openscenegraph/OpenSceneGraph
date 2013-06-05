@@ -369,8 +369,12 @@ GifImageStream** obj)
     /* The way an interlaced image should be read - offsets and jumps */
     int interlacedoffset[] = { 0, 4, 2, 1 };
     int interlacedjumps[] = { 8, 8, 4, 2 };
-
+#if (GIFLIB_MAJOR >= 5)
+    int Error;
+    giffile = DGifOpen(&fin,gif_read_stream, &Error);
+#else
     giffile = DGifOpen(&fin,gif_read_stream);
+#endif
     if (!giffile)
     {
         giferror = ERR_OPEN;

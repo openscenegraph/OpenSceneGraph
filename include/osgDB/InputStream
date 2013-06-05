@@ -19,6 +19,12 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec2i>
+#include <osg/Vec3i>
+#include <osg/Vec4i>
+#include <osg/Vec2ui>
+#include <osg/Vec3ui>
+#include <osg/Vec4ui>
 #include <osg/Quat>
 #include <osg/Matrix>
 #include <osg/Array>
@@ -101,6 +107,12 @@ public:
     InputStream& operator>>( osg::Vec2s& v );
     InputStream& operator>>( osg::Vec3s& v );
     InputStream& operator>>( osg::Vec4s& v );
+    InputStream& operator>>( osg::Vec2i& v );
+    InputStream& operator>>( osg::Vec3i& v );
+    InputStream& operator>>( osg::Vec4i& v );
+    InputStream& operator>>( osg::Vec2ui& v );
+    InputStream& operator>>( osg::Vec3ui& v );
+    InputStream& operator>>( osg::Vec4ui& v );
     InputStream& operator>>( osg::Vec2f& v );
     InputStream& operator>>( osg::Vec3f& v );
     InputStream& operator>>( osg::Vec4f& v );

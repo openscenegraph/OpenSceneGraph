@@ -78,11 +78,19 @@ class OSG_EXPORT Array : public BufferData
 
         enum Binding
         {
+            BIND_UNDEFINED=-1,
             BIND_OFF=0,
             BIND_OVERALL=1,
             BIND_PER_PRIMITIVE_SET=2,
             BIND_PER_VERTEX=4,
-            BIND_AUTO=5
+            BIND_INSTANCE_DIVISOR_0=6,
+            BIND_INSTANCE_DIVISOR_1=BIND_INSTANCE_DIVISOR_0+1,
+            BIND_INSTANCE_DIVISOR_2=BIND_INSTANCE_DIVISOR_0+2,
+            BIND_INSTANCE_DIVISOR_3=BIND_INSTANCE_DIVISOR_0+3,
+            BIND_INSTANCE_DIVISOR_4=BIND_INSTANCE_DIVISOR_0+4,
+            BIND_INSTANCE_DIVISOR_5=BIND_INSTANCE_DIVISOR_0+5,
+            BIND_INSTANCE_DIVISOR_6=BIND_INSTANCE_DIVISOR_0+6,
+            BIND_INSTANCE_DIVISOR_7=BIND_INSTANCE_DIVISOR_0+7
         };
         
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
@@ -91,8 +99,7 @@ class OSG_EXPORT Array : public BufferData
             _dataType(dataType),
             _normalize(false),
             _preserveDataType(false),
-            _attribDivisor(false),
-            _binding(BIND_AUTO) {}
+            _binding(BIND_UNDEFINED) {}
 
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(array,copyop),
@@ -101,7 +108,6 @@ class OSG_EXPORT Array : public BufferData
             _dataType(array._dataType),
             _normalize(array._normalize),
             _preserveDataType(array._preserveDataType),
-            _attribDivisor(array._attribDivisor),
             _binding(array._binding) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
@@ -140,16 +146,12 @@ class OSG_EXPORT Array : public BufferData
 
         /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
         bool getPreserveDataType() const { return _preserveDataType; }
-        /** Set the rate at which generic vertex attributes advance during instanced rendering. Uses the glVertexAttribDivisor feature of OpenGL 4.0*/
-        void setAttribDivisor(GLuint divisor) { _attribDivisor = divisor; }
-        /** Get the rate at which generic vertex attributes advance during instanced rendering.*/
-        GLuint getAttribDivisor() const { return _attribDivisor; }
-        
+
         /** Specify how this array should be passed to OpenGL.*/
-        void setBinding(Binding binding) { _binding = binding; }
+        void setBinding(int binding) { _binding = binding; }
 
         /** Get how this array should be passed to OpenGL.*/
-        Binding getBinding() const { return _binding; }
+        int getBinding() const { return _binding; }
 
         
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
@@ -173,8 +175,7 @@ class OSG_EXPORT Array : public BufferData
         GLenum  _dataType;
         bool    _normalize;
         bool    _preserveDataType;
-        GLuint  _attribDivisor;
-        Binding _binding;
+        int     _binding;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

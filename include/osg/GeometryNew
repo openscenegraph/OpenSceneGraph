@@ -83,7 +83,7 @@ class OSG_EXPORT GeometryNew : public Drawable
 
         void setSecondaryColorArray(Array* array);
         Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
-        const Array* getSecondaryColorArray() const;
+        const Array* getSecondaryColorArray() const  { return _secondaryColorArray.get(); }
 
 
         void setFogCoordBinding(AttributeBinding ab);
@@ -177,19 +177,6 @@ class OSG_EXPORT GeometryNew : public Drawable
         osg::ElementBufferObject* getOrCreateElementBufferObject();
 
 
-        bool verifyBindings() const;
-
-        void computeCorrectBindingsAndArraySizes();
-
-        /** check whether the arrays, indices, bindings and primitives all match correctly, return false is .*/
-        bool verifyArrays(std::ostream& out) const;
-
-
-        bool containsSharedArrays() const;
-
-        void duplicateSharedArrays();
-
-
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
           * This size is used a hint for reuse of deleted display lists/vertex buffer objects. */
@@ -237,9 +224,6 @@ class OSG_EXPORT GeometryNew : public Drawable
 
         virtual ~GeometryNew();
 
-        bool verifyBindings(const osg::ref_ptr<Array>& array) const;
-
-        void computeCorrectBindingsAndArraySizes(osg::ref_ptr<Array>& ,const char* arrayName);
 
         void addVertexBufferObjectIfRequired(osg::Array* array);
         void addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);

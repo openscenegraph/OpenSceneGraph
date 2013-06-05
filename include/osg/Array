@@ -96,19 +96,19 @@ class OSG_EXPORT Array : public BufferData
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
             _arrayType(arrayType),
             _dataSize(dataSize),
-            _dataType(dataType),
+            _dataType(dataType),            
+            _binding(BIND_UNDEFINED),
             _normalize(false),
-            _preserveDataType(false),
-            _binding(BIND_UNDEFINED) {}
+            _preserveDataType(false) {}
 
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(array,copyop),
             _arrayType(array._arrayType),
             _dataSize(array._dataSize),
             _dataType(array._dataType),
+            _binding(array._binding),
             _normalize(array._normalize),
-            _preserveDataType(array._preserveDataType),
-            _binding(array._binding) {}
+            _preserveDataType(array._preserveDataType) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -135,23 +135,26 @@ class OSG_EXPORT Array : public BufferData
         virtual unsigned int getTotalDataSize() const = 0;
         virtual unsigned int getNumElements() const = 0;
 
-        /** Specify whether the array data should be normalized by OpenGL.*/
-        void setNormalize(bool normalize) { _normalize = normalize; }
-
-        /** Get whether the array data should be normalized by OpenGL.*/
-        bool getNormalize() const { return _normalize; }
-        
-        /** Set hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
-        void setPreserveDataType(bool preserve) { _preserveDataType = preserve; }
-
-        /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
-        bool getPreserveDataType() const { return _preserveDataType; }
 
         /** Specify how this array should be passed to OpenGL.*/
         void setBinding(int binding) { _binding = binding; }
 
         /** Get how this array should be passed to OpenGL.*/
         int getBinding() const { return _binding; }
+
+        
+        /** Specify whether the array data should be normalized by OpenGL.*/
+        void setNormalize(bool normalize) { _normalize = normalize; }
+
+        /** Get whether the array data should be normalized by OpenGL.*/
+        bool getNormalize() const { return _normalize; }
+        
+        
+        /** Set hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
+        void setPreserveDataType(bool preserve) { _preserveDataType = preserve; }
+
+        /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
+        bool getPreserveDataType() const { return _preserveDataType; }
 
         
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
@@ -173,9 +176,9 @@ class OSG_EXPORT Array : public BufferData
         Type    _arrayType;
         GLint   _dataSize;
         GLenum  _dataType;
+        int     _binding;
         bool    _normalize;
         bool    _preserveDataType;
-        int     _binding;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

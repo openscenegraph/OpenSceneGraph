@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include <osg/GLExtensions>
+#include <OpenThreads/ReentrantMutex>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/GLObjectsVisitor>
@@ -344,7 +345,7 @@ void Renderer::ThreadSafeQueue::add(osgUtil::SceneView* sv)
     _cond.broadcast();
 }
 
-static OpenThreads::Mutex s_drawSerializerMutex;
+static OpenThreads::ReentrantMutex s_drawSerializerMutex;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -852,7 +853,7 @@ void Renderer::cull_draw()
 
     if (_serializeDraw)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(s_drawSerializerMutex);
 
         beforeDrawTick = osg::Timer::instance()->tick();
         sceneView->draw();

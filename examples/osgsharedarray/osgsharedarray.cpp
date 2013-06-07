@@ -131,8 +131,100 @@ private:
 /** The data values for the example. Simply defines a cube with 
   * per-face colors and normals.
   */
-namespace {
-}
+
+const osg::Vec3 myVertices[] = { osg::Vec3(-1.,-1., 1.),
+                                 osg::Vec3( 1.,-1., 1.),
+                                 osg::Vec3( 1., 1., 1.),
+                                 osg::Vec3(-1., 1., 1.),
+
+                                 osg::Vec3( 1.,-1., 1.),
+                                 osg::Vec3( 1.,-1.,-1.),
+                                 osg::Vec3( 1., 1.,-1.),
+                                 osg::Vec3( 1., 1., 1.),
+
+                                 osg::Vec3( 1.,-1.,-1.),
+                                 osg::Vec3(-1.,-1.,-1.),
+                                 osg::Vec3(-1., 1.,-1.),
+                                 osg::Vec3( 1., 1.,-1.),
+
+                                 osg::Vec3(-1.,-1.,-1.),
+                                 osg::Vec3(-1.,-1., 1.),
+                                 osg::Vec3(-1., 1., 1.),
+                                 osg::Vec3(-1., 1.,-1.),
+
+                                 osg::Vec3(-1., 1., 1.),
+                                 osg::Vec3( 1., 1., 1.),
+                                 osg::Vec3( 1., 1.,-1.),
+                                 osg::Vec3(-1., 1.,-1.),
+
+                                 osg::Vec3(-1.,-1.,-1.),
+                                 osg::Vec3( 1.,-1.,-1.),
+                                 osg::Vec3( 1.,-1., 1.),
+                                 osg::Vec3(-1.,-1., 1.),
+                               };
+
+
+const osg::Vec3 myNormals[] = { osg::Vec3( 0., 0., 1.),
+                                osg::Vec3( 0., 0., 1.),
+                                osg::Vec3( 0., 0., 1.),
+                                osg::Vec3( 0., 0., 1.),
+
+                                osg::Vec3( 1., 0., 0.),
+                                osg::Vec3( 1., 0., 0.),
+                                osg::Vec3( 1., 0., 0.),
+                                osg::Vec3( 1., 0., 0.),
+
+                                osg::Vec3( 0., 0.,-1.),
+                                osg::Vec3( 0., 0.,-1.),
+                                osg::Vec3( 0., 0.,-1.),
+                                osg::Vec3( 0., 0.,-1.),
+
+                                osg::Vec3(-1., 0., 0.),
+                                osg::Vec3(-1., 0., 0.),
+                                osg::Vec3(-1., 0., 0.),
+                                osg::Vec3(-1., 0., 0.),
+
+                                osg::Vec3( 0., 1., 0.),
+                                osg::Vec3( 0., 1., 0.),
+                                osg::Vec3( 0., 1., 0.),
+                                osg::Vec3( 0., 1., 0.),
+
+                                osg::Vec3( 0.,-1., 0.),
+                                osg::Vec3( 0.,-1., 0.),
+                                osg::Vec3( 0.,-1., 0.),
+                                osg::Vec3( 0.,-1., 0.)
+                              };
+
+const osg::Vec4 myColors[] = { osg::Vec4( 1., 0., 0., 1.),
+                               osg::Vec4( 1., 0., 0., 1.),
+                               osg::Vec4( 1., 0., 0., 1.),
+                               osg::Vec4( 1., 0., 0., 1.),
+
+                               osg::Vec4( 0., 1., 0., 1.),
+                               osg::Vec4( 0., 1., 0., 1.),
+                               osg::Vec4( 0., 1., 0., 1.),
+                               osg::Vec4( 0., 1., 0., 1.),
+
+                               osg::Vec4( 1., 1., 0., 1.),
+                               osg::Vec4( 1., 1., 0., 1.),
+                               osg::Vec4( 1., 1., 0., 1.),
+                               osg::Vec4( 1., 1., 0., 1.),
+
+                               osg::Vec4( 0., 0., 1., 1.),
+                               osg::Vec4( 0., 0., 1., 1.),
+                               osg::Vec4( 0., 0., 1., 1.),
+                               osg::Vec4( 0., 0., 1., 1.),
+
+                               osg::Vec4( 1., 0., 1., 1.),
+                               osg::Vec4( 1., 0., 1., 1.),
+                               osg::Vec4( 1., 0., 1., 1.),
+                               osg::Vec4( 1., 0., 1., 1.),
+
+                               osg::Vec4( 0., 1., 1., 1.),
+                               osg::Vec4( 0., 1., 1., 1.),
+                               osg::Vec4( 0., 1., 1., 1.),
+                               osg::Vec4( 0., 1., 1., 1.)
+                             };
 
 /** Create a Geode that describes a cube using our own 
   * subclass of osg::Array for the vertices. It uses 
@@ -160,40 +252,6 @@ namespace {
   */
 osg::Geode* createGeometry()
 {
-    const osg::Vec3 myVertices[] = { osg::Vec3(-1.,-1.,-1.),
-                                     osg::Vec3( 1.,-1.,-1.),
-                                     osg::Vec3(-1., 1.,-1.),
-                                     osg::Vec3( 1., 1.,-1.),
-                                     osg::Vec3(-1.,-1., 1.),
-                                     osg::Vec3( 1.,-1., 1.),
-                                     osg::Vec3(-1., 1., 1.),
-                                     osg::Vec3( 1., 1., 1.)
-                                   };
-
-    const osg::Vec3 myNormals[] = { osg::Vec3( 0., 0., 1.),
-                                    osg::Vec3( 1., 0., 0.),
-                                    osg::Vec3( 0., 0.,-1.),
-                                    osg::Vec3(-1., 0., 0.),
-                                    osg::Vec3( 0., 1., 0.),
-                                    osg::Vec3( 0.,-1., 0.)
-                                  };
-
-    const osg::Vec4 myColors[] = { osg::Vec4( 1., 0., 0., 1.),
-                                   osg::Vec4( 0., 1., 0., 1.),
-                                   osg::Vec4( 1., 1., 0., 1.),
-                                   osg::Vec4( 0., 0., 1., 1.),
-                                   osg::Vec4( 1., 0., 1., 1.),
-                                   osg::Vec4( 0., 1., 1., 1.)
-                                 };
-
-    const unsigned short myIndices[] = { 4, 5, 7, 6,
-                                        5, 1, 3, 7,
-                                        1, 0, 2, 3,
-                                        0, 4, 6, 2,
-                                        6, 7, 3, 2,
-                                        0, 1, 5, 4
-                                       };
-
     osg::Geode* geode = new osg::Geode();
 
     // create Geometry
@@ -206,19 +264,16 @@ osg::Geode* createGeometry()
     // add normals
     unsigned int numNormals = sizeof(myNormals)/sizeof(myNormals[0]);
     geom->setNormalArray(new osg::Vec3Array(numNormals,const_cast<osg::Vec3*>(&myNormals[0])));
-    geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     // add colors
     unsigned int numColors = sizeof(myColors)/sizeof(myColors[0]);
     osg::Vec4Array* normal_array = new osg::Vec4Array(numColors,const_cast<osg::Vec4*>(&myColors[0]));
     geom->setColorArray(normal_array);
-    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     // add PrimitiveSet
-    unsigned int numIndices = sizeof(myIndices)/sizeof(myIndices[0]);
-    geom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::QUADS,
-                                                      numIndices,
-                                                      const_cast<unsigned short *>(myIndices)));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, numVertices));
 
     // Changing these flags will tickle different cases in 
     // Geometry::drawImplementation. They should all work fine 

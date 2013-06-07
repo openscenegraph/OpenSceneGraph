@@ -408,7 +408,7 @@ static unsigned int ComputeImageSizeInBytes( int width, int height, int depth,
     if( height < 1 ) height = 1;
     if( depth < 1 )  depth = 1;
     
-    return osg::Image::computeImageSizeInBytes(width, height, depth, packing, slice_packing, image_packing);
+    return osg::Image::computeImageSizeInBytes(width, height, depth, pixelFormat, pixelType, packing, slice_packing, image_packing);
 }
 
 osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)

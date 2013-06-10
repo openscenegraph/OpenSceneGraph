@@ -58,8 +58,7 @@ class OSG_EXPORT NodeCallback : public virtual Object {
             {
                 if (_nestedCallback.valid())
                 {
-                    nc->addNestedCallback(_nestedCallback.get());
-                    _nestedCallback = nc;
+                    _nestedCallback->addNestedCallback(nc);
                 }
                 else
                 {
@@ -74,7 +73,9 @@ class OSG_EXPORT NodeCallback : public virtual Object {
             {
                 if (_nestedCallback==nc)
                 {
-                    _nestedCallback = _nestedCallback->getNestedCallback();
+                    ref_ptr<NodeCallback> new_nested_callback = _nestedCallback->getNestedCallback();
+                    _nestedCallback->setNestedCallback(0);
+                    _nestedCallback = new_nested_callback;
                 }
                 else if (_nestedCallback.valid())
                 {

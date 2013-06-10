@@ -21,8 +21,8 @@
 
 #include <osg/NodeVisitor>
 #include <osg/io_utils>
-#include <QtGui/QGraphicsItem>
-#include <QtGui/QGraphicsProxyWidget>
+#include <QGraphicsItem>
+#include <QGraphicsProxyWidget>
 
 #define MYQKEYEVENT 2000
 #define MYQPOINTEREVENT 2001

@@ -20,7 +20,7 @@
 #define _QTMUTEXPRIVATEDATA_H_
 
 #include <OpenThreads/Mutex>
-#include <QtCore/QMutex>
+#include <QMutex>
 
 class QtMutexPrivateData : public QMutex
 {

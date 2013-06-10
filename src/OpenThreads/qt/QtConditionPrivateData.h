@@ -20,7 +20,7 @@
 #define _QTCONDITIONPRIVATEDATA_H_
 
 #include <OpenThreads/Condition>
-#include <QtCore/QWaitCondition>
+#include <QWaitCondition>
 
 class QtConditionPrivateData : public QWaitCondition
 {

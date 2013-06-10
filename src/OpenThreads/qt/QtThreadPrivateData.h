@@ -21,7 +21,7 @@
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Block>
-#include <QtCore/QThread>
+#include <QThread>
 
 struct QtThreadCanceled {};
 

@@ -36,17 +36,16 @@
 #include <osgWidget/Browser>
 
 
-//#include <QtWebKit/QWebSettings>
-//#include <QtWebKit/QtWebKit>
-#include <QtGui/QGraphicsScene>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QApplication>
-#include <QtGui/QPainter>
-#include <QtGui/QtEvents>
-#include <QtGui/QDialog>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMainWindow>
-#include <QtOpenGL/QtOpenGL>
+//#include <QWebSettings>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QApplication>
+#include <QPainter>
+#include <QtEvents>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QMainWindow>
+#include <QtOpenGL>
 
 #include <osgQt/QGraphicsViewAdapter>
 #include <osgQt/QWebViewImage>
@@ -98,7 +97,11 @@ protected:
     virtual void mousePressEvent(QMouseEvent* e)
     {
         bool ok = false;
+#if QT_VERSION >= 0x040500
+        int val = QInputDialog::getInt(this, "Get integer", "Please enter an integer between 0 and pi", 0, 0, 3, 1, &ok);
+#else
         int val = QInputDialog::getInteger(this, "Get integer", "Please enter an integer between 0 and pi", 0, 0, 3, 1, &ok);
+#endif
         std::cout << "Ok was " << (ok ? "" : "not") << " pressed, val is " << val << std::endl;
     }
 };

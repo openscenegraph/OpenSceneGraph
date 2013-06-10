@@ -14,7 +14,7 @@
 #include <osg/DeleteHandler>
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/ViewerBase>
-#include <QtGui/QInputEvent>
+#include <QInputEvent>
 
 using namespace osgQt;
 
@@ -96,7 +96,7 @@ public:
         KeyMap::iterator itr = mKeyMap.find(event->key());
         if (itr == mKeyMap.end())
         {
-            return int(*(event->text().toAscii().data()));
+            return int(*(event->text().toLatin1().data()));
         }
         else
             return itr->second;

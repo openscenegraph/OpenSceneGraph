@@ -1,6 +1,6 @@
-#include <QtCore/QTimer>
-#include <QtGui/QApplication>
-#include <QtGui/QGridLayout>
+#include <QTimer>
+#include <QApplication>
+#include <QGridLayout>
 
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -19,6 +19,9 @@ public:
     ViewerWidget(osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::CompositeViewer::SingleThreaded) : QWidget()
     {
         setThreadingModel(threadingModel);
+        
+        // disable the default setting of viewer.done() by pressing Escape.
+        setKeyEventSetsDone(0);
 
         QWidget* widget1 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("cow.osgt") );
         QWidget* widget2 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("glider.osgt") );

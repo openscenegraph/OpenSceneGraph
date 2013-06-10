@@ -12,7 +12,7 @@
 */
 
 #include <osgQt/QWidgetImage>
-#include <QtGui/QLayout>
+#include <QLayout>
 
 namespace osgQt
 {

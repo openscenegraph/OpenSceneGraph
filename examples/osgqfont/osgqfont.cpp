@@ -16,9 +16,9 @@
 *  THE SOFTWARE.
 */
 
-#include <QtGui/QApplication>
-#include <QtGui/QGridLayout>
-#include <QtGui/QWidget>
+#include <QApplication>
+#include <QGridLayout>
+#include <QWidget>
 
 #include <osgQt/GraphicsWindowQt>
 #include <osgQt/QFontImplementation>

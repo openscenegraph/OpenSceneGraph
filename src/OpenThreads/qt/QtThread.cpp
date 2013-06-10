@@ -16,7 +16,7 @@
 // ~~~~~~~~~~~
 
 #include "QtThreadPrivateData.h"
-#include <QtCore/QCoreApplication>
+#include <QCoreApplication>
 #include <iostream>
 
 using namespace OpenThreads;

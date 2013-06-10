@@ -536,10 +536,13 @@ OPTION(OSG_USE_QT "Enable to use Qt (build Qt-dependent libraries, plugins and e
 
 IF(OSG_USE_QT AND NOT ANDROID)
 # To select a specific version of QT define DESIRED_QT_VERSION
-# via cmake -DDESIRED_QT_VERSION=4
-    IF  (DESIRED_QT_VERSION)
+# via cmake -DDESIRED_QT_VERSION=5
+# QUIET option disables messages if the package cannot be found.
 
-        IF  (DESIRED_QT_VERSION MATCHES 4)
+    IF  (DESIRED_QT_VERSION)
+        IF  (DESIRED_QT_VERSION MATCHES 5)
+              FIND_PACKAGE(Qt5Widgets)
+        ELSEIF (DESIRED_QT_VERSION MATCHES 4)
               FIND_PACKAGE(Qt4)
         ELSE()
               FIND_PACKAGE(Qt3)
@@ -547,13 +550,35 @@ IF(OSG_USE_QT AND NOT ANDROID)
 
     ELSE()
 
-        FIND_PACKAGE(Qt4)
+        FIND_PACKAGE(Qt5Widgets QUIET)
+        
+        IF ( Qt5Widgets_FOUND )
+            # CMake 2.8.8 or greater required
+            BUILDER_VERSION_GREATER(2 8 7)
+            IF(NOT VALID_BUILDER_VERSION)
+                MESSAGE(
+                SEND_ERROR
+                "Qt5 requires CMake version 2.8.8 or greater!\n"
+                "Update CMake or set DESIRED_QT_VERSION to less than 5
+                or disable OSG_USE_QT."
+                )
+            ENDIF( )
+        ENDIF( )
 
-        IF  (NOT QT4_FOUND)
-            FIND_PACKAGE(Qt3)
+        IF ( NOT Qt5Widgets_FOUND )
+            FIND_PACKAGE(Qt4)
+
+            IF (NOT QT4_FOUND)
+                FIND_PACKAGE(Qt3)
+            ENDIF()
         ENDIF()
-
     ENDIF()
+
+    #If we have found Qt5, let's try to top off by getting the webkit as well
+    IF ( Qt5Widgets_FOUND )
+        FIND_PACKAGE(Qt5WebKitWidgets)
+    ENDIF()
+
 ENDIF()
 
 #optional example related dependencies
@@ -1029,9 +1054,9 @@ SET(PKGCONFIG_FILES
   openscenegraph-osgVolume
 )
 
-IF(QT4_FOUND)
+IF(QT4_FOUND OR Qt5Widgets_FOUND )
   SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgQt)
-ENDIF(QT4_FOUND)
+ENDIF()
 
 FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in

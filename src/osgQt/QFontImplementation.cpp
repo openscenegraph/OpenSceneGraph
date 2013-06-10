@@ -16,10 +16,10 @@
 #include <osgDB/Registry>
 #include <osgText/Font>
 
-#include <QtGui/QFont>
-#include <QtGui/QFontMetrics>
-#include <QtGui/QImage>
-#include <QtGui/QPainter>
+#include <QFont>
+#include <QFontMetrics>
+#include <QImage>
+#include <QPainter>
 
 namespace osgQt {
 

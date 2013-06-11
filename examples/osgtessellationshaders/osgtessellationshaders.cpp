@@ -4,6 +4,7 @@
  */
 
 #include <osg/Program>
+#include <osg/PatchParameter>
 #include <osg/ShapeDrawable>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -175,7 +176,6 @@ osg::ref_ptr<osg::Program> createProgram(){
     program->setParameter(GL_GEOMETRY_VERTICES_OUT_EXT, 3);
     program->setParameter(GL_GEOMETRY_INPUT_TYPE_EXT, GL_TRIANGLES);
     program->setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP);
-    program->setParameter(GL_PATCH_VERTICES,3);
     return program;
 }
 
@@ -213,6 +213,7 @@ public:
         return osgGA::GUIEventHandler::handle(ea,gaa);
     }
 };
+
 int main(int argc, char* argv[])
 {
     osgViewer::Viewer viewer;
@@ -226,6 +227,7 @@ int main(int argc, char* argv[])
     state->addUniform(new osg::Uniform("LightPosition",osg::Vec3(0.25f, 0.25f, 1.0f)));
     state->addUniform(tessInnerU.get());
     state->addUniform(tessOuterU.get());
+    state->setAttribute(new osg::PatchParameter(3));
     state->setAttribute(program.get());
     
     // switch on the uniforms that track the modelview and projection matrices

@@ -137,7 +137,6 @@ void Program::ProgramBinary::assign(unsigned int size, const unsigned char* data
 Program::Program() :
     _geometryVerticesOut(1), _geometryInputType(GL_TRIANGLES),
     _geometryOutputType(GL_TRIANGLE_STRIP),
-    _patchVertices(3),
     _numGroupsX(0), _numGroupsY(0), _numGroupsZ(0)
 {
 }
@@ -167,8 +166,6 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     _geometryInputType = rhs._geometryInputType;
     _geometryOutputType = rhs._geometryOutputType;
 
-    _patchVertices = rhs._patchVertices;
-    
     _numGroupsX = rhs._numGroupsX;
     _numGroupsY = rhs._numGroupsY;
     _numGroupsZ = rhs._numGroupsZ;
@@ -206,9 +203,6 @@ int Program::compare(const osg::StateAttribute& sa) const
     if( _geometryOutputType < rhs._geometryOutputType ) return -1;
     if( rhs._geometryOutputType < _geometryOutputType ) return 1;
 
-    if( _patchVertices < rhs._patchVertices ) return -1;
-    if( rhs._patchVertices < _patchVertices ) return 1;
-    
     if( _numGroupsX < rhs._numGroupsX ) return -1;
     if( rhs._numGroupsX < _numGroupsX ) return 1;
     
@@ -360,42 +354,12 @@ void Program::setParameter( GLenum pname, GLint value )
             //dirtyProgram();    // needed?
             break;
         case GL_PATCH_VERTICES:
-            _patchVertices = value;
-            dirtyProgram();
+            OSG_WARN << "Program::setParameter invalid param " << GL_PATCH_VERTICES << ", use osg::PatchParameter when setting GL_PATCH_VERTICES."<<std::endl;
             break;
         default:
-            OSG_WARN << "setParameter invalid param " << pname << std::endl;
+            OSG_WARN << "Program::setParameter invalid param " << pname << std::endl;
             break;
     }
-}
-
-void Program::setParameterfv( GLenum pname, const GLfloat* /*value*/ )
-{
-    switch( pname )
-    {
-      // todo tessellation default level
-        case GL_PATCH_DEFAULT_INNER_LEVEL:
-            break;
-        case GL_PATCH_DEFAULT_OUTER_LEVEL:
-            break;
-        default:
-            OSG_WARN << "setParameter invalid param " << pname << std::endl;
-            break;
-    }
-}
-
-const GLfloat* Program::getParameterfv( GLenum pname ) const
-{
-    /*switch( pname )
-    {
-      ;
-      // todo tessellation default level
-      //        case GL_PATCH_DEFAULT_INNER_LEVEL: return _patchDefaultInnerLevel;
-      //        case GL_PATCH_DEFAULT_OUTER_LEVEL: return _patchDefaultOuterLevel;
-
-    }*/
-    OSG_WARN << "getParameter invalid param " << pname << std::endl;
-    return 0;
 }
 
 GLint Program::getParameter( GLenum pname ) const
@@ -405,7 +369,6 @@ GLint Program::getParameter( GLenum pname ) const
         case GL_GEOMETRY_VERTICES_OUT_EXT: return _geometryVerticesOut;
         case GL_GEOMETRY_INPUT_TYPE_EXT:   return _geometryInputType;
         case GL_GEOMETRY_OUTPUT_TYPE_EXT:  return _geometryOutputType;
-        case GL_PATCH_VERTICES:            return _patchVertices;
     }
     OSG_WARN << "getParameter invalid param " << pname << std::endl;
     return 0;
@@ -604,13 +567,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
             _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
         }
-
-        if (_extensions->areTessellationShadersSupported() )
-        {
-            _extensions->glPatchParameteri( GL_PATCH_VERTICES, _program->_patchVertices );
-            // todo: add default tessellation level
-        }
-
+        
         // Detach removed shaders
         for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
         {

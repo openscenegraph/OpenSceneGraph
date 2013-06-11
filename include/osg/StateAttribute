@@ -190,7 +190,9 @@ class OSG_EXPORT StateAttribute : public Object
             UNIFORMBUFFERBINDING,
             TRANSFORMFEEDBACKBUFFERBINDING,
 
-            ATOMICCOUNTERBUFFERBINDING
+            ATOMICCOUNTERBUFFERBINDING,
+            
+            PATCH_PARAMETER
         };
 
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

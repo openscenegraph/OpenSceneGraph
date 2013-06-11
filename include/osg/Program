@@ -99,9 +99,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         void setParameter( GLenum pname, GLint value );
         GLint getParameter( GLenum pname ) const;
 
-        void setParameterfv( GLenum pname, const GLfloat* value );
-        const GLfloat* getParameterfv( GLenum pname ) const;
-        
         /** Set/get compute shader work groups */
         void setComputeGroups( GLint numGroupsX, GLint numGroupsY, GLint numGroupsZ );
         void getComputeGroups( GLint& numGroupsX, GLint& numGroupsY, GLint& numGroupsZ ) const;
@@ -385,13 +382,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _geometryInputType;
         GLint _geometryOutputType;
 
-        /** Parameter maintained with glPatchParameteri */
-        GLint _patchVertices;
-
-        /** Parameter maintained with glPatchParameterfv */
-        // todo add tessellation default level
-        //GLfloat _patchDefaultInnerLevel[2];
-        //GLfloat _patchDefaultOuterLevel[4];
         
         /** Parameter maintained with glDispatchCompute */
         GLint _numGroupsX;

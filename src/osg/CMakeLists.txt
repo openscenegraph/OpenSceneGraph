@@ -117,6 +117,7 @@ SET(TARGET_H
     ${HEADER_PATH}/OccluderNode
     ${HEADER_PATH}/OcclusionQueryNode
     ${HEADER_PATH}/OperationThread
+    ${HEADER_PATH}/PatchParameter
     ${HEADER_PATH}/PagedLOD
     ${HEADER_PATH}/Plane
     ${HEADER_PATH}/Point
@@ -301,6 +302,7 @@ SET(TARGET_SRC
     OccluderNode.cpp
     OcclusionQueryNode.cpp
     OperationThread.cpp
+    PatchParameter.cpp
     PagedLOD.cpp
     Point.cpp
     PointSprite.cpp

@@ -14,7 +14,7 @@ static const char* vertSource = {
 "in vec4 osg_Vertex;\n"
 "out vec3 vPosition;\n"
 "void main(){\n"
-"	vPosition = osg_Vertex.xyz;\n"
+"    vPosition = osg_Vertex.xyz;\n"
 "}\n"
 };
 static const char* tessControlSource = {
@@ -113,9 +113,9 @@ static const char* fragSource = {
 };
 
 osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program){
-	osg::Geode *geode=new osg::Geode();
-	osg::Geometry *geometry = new osg::Geometry();
-	const unsigned int Faces[] = {
+    osg::Geode *geode=new osg::Geode();
+    osg::Geometry *geometry = new osg::Geometry();
+    const unsigned int Faces[] = {
         2, 1, 0,
         3, 2, 0,
         4, 3, 0,
@@ -139,7 +139,7 @@ osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program){
         4,  9, 8,
         5, 10, 9,
         1, 6, 10 };
-	int IndexCount = sizeof(Faces) / sizeof(Faces[0]);
+    int IndexCount = sizeof(Faces) / sizeof(Faces[0]);
     const float Verts[] = {
          0.000f,  0.000f,  1.000f,
          0.894f,  0.000f,  0.447f,
@@ -155,28 +155,28 @@ osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program){
          0.000f,  0.000f, -1.000f };
 
     int VertexCount = sizeof(Verts)/sizeof(float);
-	osg::Vec3Array* vertices = new osg::Vec3Array();
-	for(int i=0;i<VertexCount;i+=3){
-		vertices->push_back(osg::Vec3(Verts[i],Verts[i+1],Verts[i+2]));
-	}
-	geometry->setVertexArray(vertices);
-	geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::PATCHES,IndexCount,Faces));
+    osg::Vec3Array* vertices = new osg::Vec3Array();
+    for(int i=0;i<VertexCount;i+=3){
+        vertices->push_back(osg::Vec3(Verts[i],Verts[i+1],Verts[i+2]));
+    }
+    geometry->setVertexArray(vertices);
+    geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::PATCHES,IndexCount,Faces));
 
-	geode->addDrawable(geometry);
-	return geode;
+    geode->addDrawable(geometry);
+    return geode;
 }
 osg::ref_ptr<osg::Program> createProgram(){
-	osg::Program *program = new osg::Program();
-	program->addShader(new osg::Shader(osg::Shader::VERTEX,vertSource));
-	program->addShader(new osg::Shader(osg::Shader::TESSCONTROL,tessControlSource));
-	program->addShader(new osg::Shader(osg::Shader::TESSEVALUATION,tessEvalSource));
-	program->addShader(new osg::Shader(osg::Shader::GEOMETRY,geomSource));
-	program->addShader(new osg::Shader(osg::Shader::FRAGMENT,fragSource));
-	program->setParameter(GL_GEOMETRY_VERTICES_OUT_EXT, 3);
-	program->setParameter(GL_GEOMETRY_INPUT_TYPE_EXT, GL_TRIANGLES);
-	program->setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP);
-	program->setParameter(GL_PATCH_VERTICES,3);
-	return program;
+    osg::Program *program = new osg::Program();
+    program->addShader(new osg::Shader(osg::Shader::VERTEX,vertSource));
+    program->addShader(new osg::Shader(osg::Shader::TESSCONTROL,tessControlSource));
+    program->addShader(new osg::Shader(osg::Shader::TESSEVALUATION,tessEvalSource));
+    program->addShader(new osg::Shader(osg::Shader::GEOMETRY,geomSource));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT,fragSource));
+    program->setParameter(GL_GEOMETRY_VERTICES_OUT_EXT, 3);
+    program->setParameter(GL_GEOMETRY_INPUT_TYPE_EXT, GL_TRIANGLES);
+    program->setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP);
+    program->setParameter(GL_PATCH_VERTICES,3);
+    return program;
 }
 
 float tessInner=1.0f;
@@ -186,62 +186,62 @@ osg::ref_ptr<osg::Uniform> tessOuterU = new osg::Uniform("TessLevelOuter",tessOu
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler {
 public:
-	KeyboardEventHandler():osgGA::GUIEventHandler(){}
-	virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& gaa){
-		if(ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN){
-			switch (ea.getKey()){
-				case osgGA::GUIEventAdapter::KEY_Up:
-					tessOuter++;
-					tessOuterU->set(tessOuter);
-					return true;
-				case osgGA::GUIEventAdapter::KEY_Down:
-					tessOuter--;
-					tessOuter=std::max(1.0f,tessOuter);
-					tessOuterU->set(tessOuter);
-					return true;
-				case osgGA::GUIEventAdapter::KEY_Left:
-					tessInner--;
-					tessInner=std::max(1.0f,tessInner);
-					tessInnerU->set(tessInner);
-					return true;
-				case osgGA::GUIEventAdapter::KEY_Right:
-					tessInner++;
-					tessInnerU->set(tessInner);
-					return true;
-			}
-		}
-		return osgGA::GUIEventHandler::handle(ea,gaa);
-	}
+    KeyboardEventHandler():osgGA::GUIEventHandler(){}
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& gaa){
+        if(ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN){
+            switch (ea.getKey()){
+                case osgGA::GUIEventAdapter::KEY_Up:
+                    tessOuter++;
+                    tessOuterU->set(tessOuter);
+                    return true;
+                case osgGA::GUIEventAdapter::KEY_Down:
+                    tessOuter--;
+                    tessOuter=std::max(1.0f,tessOuter);
+                    tessOuterU->set(tessOuter);
+                    return true;
+                case osgGA::GUIEventAdapter::KEY_Left:
+                    tessInner--;
+                    tessInner=std::max(1.0f,tessInner);
+                    tessInnerU->set(tessInner);
+                    return true;
+                case osgGA::GUIEventAdapter::KEY_Right:
+                    tessInner++;
+                    tessInnerU->set(tessInner);
+                    return true;
+            }
+        }
+        return osgGA::GUIEventHandler::handle(ea,gaa);
+    }
 };
 int main(int argc, char* argv[])
 {
-	osgViewer::Viewer viewer;
-	viewer.setUpViewInWindow(100,100,800,600);
-	osg::ref_ptr<osg::Program> program = createProgram();
-	osg::ref_ptr<osg::Geode> geode = CreateIcosahedron(program.get());
-	osg::StateSet *state;
-	state = geode->getOrCreateStateSet();
-	state->addUniform(new osg::Uniform("AmbientMaterial",osg::Vec3(0.04f, 0.04f, 0.04f)));
-	state->addUniform(new osg::Uniform("DiffuseMaterial",osg::Vec3(0.0f, 0.75f, 0.75f)));
-	state->addUniform(new osg::Uniform("LightPosition",osg::Vec3(0.25f, 0.25f, 1.0f)));
-	state->addUniform(tessInnerU.get());
-	state->addUniform(tessOuterU.get());
-	state->setAttribute(program.get());
+    osgViewer::Viewer viewer;
+    viewer.setUpViewInWindow(100,100,800,600);
+    osg::ref_ptr<osg::Program> program = createProgram();
+    osg::ref_ptr<osg::Geode> geode = CreateIcosahedron(program.get());
+    osg::StateSet *state;
+    state = geode->getOrCreateStateSet();
+    state->addUniform(new osg::Uniform("AmbientMaterial",osg::Vec3(0.04f, 0.04f, 0.04f)));
+    state->addUniform(new osg::Uniform("DiffuseMaterial",osg::Vec3(0.0f, 0.75f, 0.75f)));
+    state->addUniform(new osg::Uniform("LightPosition",osg::Vec3(0.25f, 0.25f, 1.0f)));
+    state->addUniform(tessInnerU.get());
+    state->addUniform(tessOuterU.get());
+    state->setAttribute(program.get());
     
-	// switch on the uniforms that track the modelview and projection matrices
+    // switch on the uniforms that track the modelview and projection matrices
     osgViewer::Viewer::Windows windows;
     viewer.getWindows(windows);
     for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
         itr != windows.end();
         ++itr)
     {
-		osg::State *s=(*itr)->getState();
+        osg::State *s=(*itr)->getState();
         s->setUseModelViewAndProjectionUniforms(true);
-		s->setUseVertexAttributeAliasing(true);
+        s->setUseVertexAttributeAliasing(true);
     }
-	
-	viewer.addEventHandler(new KeyboardEventHandler());
-	viewer.setSceneData(geode.get());
-	return viewer.run();
+    
+    viewer.addEventHandler(new KeyboardEventHandler());
+    viewer.setSceneData(geode.get());
+    return viewer.run();
 }
 

@@ -1166,52 +1166,6 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
     }
 
-
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        Results::iterator ritr;
-        for(ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::NOT_IMPLEMENTED) ++num_FILE_NOT_HANDLED;//Freetype and others
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
-            {
-                if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
-                {
-                    // OSG_NOTICE<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
-                    return *ritr;
-                }
-            }
-
-            //If the filename is a URL, don't return FILE_NOT_FOUND until the CURL plugin is given a chance
-            if (!osgDB::containsServerAddress(readFunctor._filename))
-            {
-                for(ritr=results.begin(); ritr!=results.end(); ++ritr)
-                {
-                    if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
-                    {
-                        //OSG_NOTICE<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
-                        return *ritr;
-                    }
-                }
-            }
-        }
-    }
-
-    results.clear();
-
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(readFunctor._filename);
     if (loadLibrary(libraryName)!=NOT_LOADED)
@@ -1243,49 +1197,27 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
     }
 
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        Results::iterator ritr;
-        for(ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
-            {
-                if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
-                {
-                    // OSG_NOTICE<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
-                    return *ritr;
-                }
-            }
-
-            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
-            {
-                if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
-                {
-                    // OSG_NOTICE<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
-                    return *ritr;
-                }
-            }
-        }
-    }
-    else
+    if (results.empty())
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+readFunctor._filename+"\".");
     }
 
-    return results.front();
+    // sort the results so the most relevant (i.e. ERROR_IN_READING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::ReadResult result = results.back();
+    
+    if (result.message().empty())
+    {
+        switch(result.status())
+        {
+            case(ReaderWriter::ReadResult::FILE_NOT_HANDLED): result.message() = "Warning: reading \""+readFunctor._filename+"\" not supported."; break;
+            case(ReaderWriter::ReadResult::FILE_NOT_FOUND): result.message() = "Warning: could not find file \""+readFunctor._filename+"\"."; break;
+            case(ReaderWriter::ReadResult::ERROR_IN_READING_FILE): result.message() = "Warning: Error in reading to \""+readFunctor._filename+"\"."; break;
+            default: break;
+        }
+    }
+
+    return result;
 }
 
 ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFunctor,Options::CacheHintOptions cacheHint)
@@ -1392,17 +1324,21 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write objects to file \""+fileName+"\".");
     }
 
-    if (results.front().message().empty())
+    // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::WriteResult result = results.back();
+    
+    if (result.message().empty())
     {
-        switch(results.front().status())
+        switch(result.status())
         {
-            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
-            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): result.message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): result.message() = "Warning: Error in writing to \""+fileName+"\"."; break;
             default: break;
         }
     }
 
-    return results.front();
+    return result;
 }
 
 
@@ -1427,8 +1363,6 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
         else results.push_back(rr);
     }
 
-    results.clear();
-
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName)==LOADED)
@@ -1446,17 +1380,21 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write image to file \""+fileName+"\".");
     }
 
-    if (results.front().message().empty())
+    // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::WriteResult result = results.back();
+    
+    if (result.message().empty())
     {
-        switch(results.front().status())
+        switch(result.status())
         {
-            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
-            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): result.message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): result.message() = "Warning: Error in writing to \""+fileName+"\"."; break;
             default: break;
         }
     }
 
-    return results.front();
+    return result;
 }
 
 
@@ -1480,8 +1418,6 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
         else results.push_back(rr);
     }
 
-    results.clear();
-
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName)==LOADED)
@@ -1498,18 +1434,22 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write HeightField to file \""+fileName+"\".");
     }
-
-    if (results.front().message().empty())
+    
+    // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::WriteResult result = results.back();
+    
+    if (result.message().empty())
     {
-        switch(results.front().status())
+        switch(result.status())
         {
-            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
-            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): result.message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): result.message() = "Warning: Error in writing to \""+fileName+"\"."; break;
             default: break;
         }
     }
 
-    return results.front();
+    return result;
 }
 
 
@@ -1545,11 +1485,8 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
         else results.push_back(rr);
     }
 
-    results.clear();
-
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-
 
     if (loadLibrary(libraryName)==LOADED)
     {
@@ -1567,17 +1504,21 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write nodes to file \""+fileName+"\".");
     }
 
-    if (results.front().message().empty())
+    // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::WriteResult result = results.back();
+    
+    if (result.message().empty())
     {
-        switch(results.front().status())
+        switch(result.status())
         {
-            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
-            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): result.message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): result.message() = "Warning: Error in writing to \""+fileName+"\"."; break;
             default: break;
         }
     }
 
-    return results.front();
+    return result;
 }
 
 ReaderWriter::ReadResult Registry::readShaderImplementation(const std::string& fileName,const Options* options)
@@ -1619,17 +1560,21 @@ ReaderWriter::WriteResult Registry::writeShaderImplementation(const Shader& shad
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write shader to file \""+fileName+"\".");
     }
 
-    if (results.front().message().empty())
+    // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
+    std::sort(results.begin(), results.end());
+    ReaderWriter::WriteResult result = results.back();
+    
+    if (result.message().empty())
     {
-        switch(results.front().status())
+        switch(result.status())
         {
-            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
-            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): result.message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): result.message() = "Warning: Error in writing to \""+fileName+"\"."; break;
             default: break;
         }
     }
 
-    return results.front();
+    return result;
 }
 
 void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)

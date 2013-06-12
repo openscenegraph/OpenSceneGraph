@@ -12,6 +12,8 @@
 */
 
 #include <osgDB/fstream>
+
+
 #include <osgDB/ConvertUTF>
 
 #include <osg/Config>
@@ -25,16 +27,12 @@ namespace osgDB
 #define OSGDB_CONVERT_UTF8_FILENAME(s) s
 #endif
 
-    fstream::fstream(){}
-    fstream::fstream(const char* filename,
-        std::ios_base::openmode mode) : std::fstream(OSGDB_CONVERT_UTF8_FILENAME(filename), mode)
-    {}
-    fstream::~fstream(){}
-    void fstream::open(const char* filename,
-        std::ios_base::openmode mode)
+
+    void open(std::fstream &fs, const char* filename,std::ios_base::openmode mode) 
     {
-        std::fstream::open(OSGDB_CONVERT_UTF8_FILENAME(filename), mode);
+        fs.open(OSGDB_CONVERT_UTF8_FILENAME(filename), mode);  
     }
+
 
     ifstream::ifstream(){}
     ifstream::ifstream(const char* filename,

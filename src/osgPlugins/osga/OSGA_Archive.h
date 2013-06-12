@@ -217,7 +217,7 @@ class OSGA_Archive : public osgDB::Archive
         float               _version;
         ArchiveStatus       _status;
         osgDB::ifstream     _input;
-        osgDB::fstream      _output;
+        std::fstream        _output;
 
         std::string         _archiveFileName;
         std::string         _masterFileName;

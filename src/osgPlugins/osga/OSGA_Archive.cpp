@@ -373,7 +373,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
             _input.close();
             _status = WRITE;
 
-            _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+            osgDB::open(_output, filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
             OSG_INFO<<"File position after open = "<<ARCHIVE_POS( _output.tellp() )<<" is_open "<<_output.is_open()<<std::endl;
 
@@ -391,7 +391,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
             OSG_INFO<<"OSGA_Archive::open("<<filename<<"), archive being created."<<std::endl;
 
             _status = WRITE;
-            _output.open(filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+            osgDB::open(_output, filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
             _output<<"osga";
             _output.write(reinterpret_cast<const char*>(&ENDIAN_TEST_NUMBER),4);
             _output.write(reinterpret_cast<char*>(&s_currentSupportedVersion),sizeof(float));

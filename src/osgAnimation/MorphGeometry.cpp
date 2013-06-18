@@ -40,8 +40,6 @@ MorphGeometry::MorphGeometry(const osg::Geometry& b) :
     setUpdateCallback(new UpdateVertex);
     setDataVariance(osg::Object::DYNAMIC);
     setUseVertexBufferObjects(true);
-    if (b.getInternalOptimizedGeometry())
-        computeInternalOptimizedGeometry();
 }
 
 MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) :
@@ -55,8 +53,6 @@ MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) 
 {
     setUseDisplayList(false);
     setUseVertexBufferObjects(true);
-    if (b.getInternalOptimizedGeometry())
-        computeInternalOptimizedGeometry();
 }
 
 void MorphGeometry::transformSoftwareMethod()
@@ -65,8 +61,6 @@ void MorphGeometry::transformSoftwareMethod()
     {
         // See if we have an internal optimized geometry
         osg::Geometry* morphGeometry = this;
-        if (_internalOptimizedGeometry.valid())
-            morphGeometry = _internalOptimizedGeometry.get();
 
         osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(morphGeometry->getVertexArray());
         if (pos && _positionSource.size() != pos->size())
@@ -134,9 +128,7 @@ void MorphGeometry::transformSoftwareMethod()
                 if (_morphTargets[i].getWeight() > 0)
                 {
                     // See if any the targets use the internal optimized geometry
-                    osg::Geometry* targetGeometry = _morphTargets[i].getGeometry()->getInternalOptimizedGeometry();
-                    if (!targetGeometry)
-                        targetGeometry = _morphTargets[i].getGeometry();
+                    osg::Geometry* targetGeometry = _morphTargets[i].getGeometry();
 
                     osg::Vec3Array* targetPos = dynamic_cast<osg::Vec3Array*>(targetGeometry->getVertexArray());
                     osg::Vec3Array* targetNormals = dynamic_cast<osg::Vec3Array*>(targetGeometry->getNormalArray());

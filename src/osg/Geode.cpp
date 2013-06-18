@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Geode>
+#include <osg/Geometry>
 #include <osg/Notify>
 
 #include <stdio.h>
@@ -51,6 +52,10 @@ bool Geode::addDrawable( Drawable *drawable )
 {
     if (drawable /* && !containsDrawable(drawable)*/)
     {
+        // fallback for handling geometry with deprecated data
+        osg::Geometry* geometry = drawable->asGeometry();
+        if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
+        
         // note ref_ptr<> automatically handles incrementing drawable's reference count.
         _drawables.push_back(drawable);
 

@@ -1,4 +1,5 @@
 #include <osg/Geode>
+#include <osg/Geometry>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
@@ -14,7 +15,10 @@ static bool readDrawables( osgDB::InputStream& is, osg::Geode& node )
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Drawable* drawable = dynamic_cast<osg::Drawable*>( is.readObject() );
-        if ( drawable ) node.addDrawable( drawable );
+        if ( drawable ) 
+        {
+            node.addDrawable( drawable );
+        }
     }
     is >> is.END_BRACKET;
     return true;

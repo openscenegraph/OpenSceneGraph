@@ -106,6 +106,8 @@ public:
         return 0;
     }
 
+    virtual unsigned int getElementSize() const { return sizeof(osg::Vec3); }
+
     /** Returns a pointer to the first element of the array. */
     virtual const GLvoid* getDataPointer() const {
         return _ptr;
@@ -122,6 +124,9 @@ public:
     virtual unsigned int getTotalDataSize() const {
         return _numElements * sizeof(osg::Vec3);
     }
+
+    virtual void reserveArray(unsigned int num) { OSG_NOTICE<<"reserveArray() not supported"<<std::endl; }
+    virtual void resizeArray(unsigned int num) { OSG_NOTICE<<"resizeArray() not supported"<<std::endl; }
 
 private:
     unsigned int _numElements;
@@ -277,11 +282,9 @@ osg::Geode* createGeometry()
 
     // Changing these flags will tickle different cases in 
     // Geometry::drawImplementation. They should all work fine 
-    // with the shared array. Setting VertexIndices will hit 
-    // some other cases.
+    // with the shared array. 
     geom->setUseVertexBufferObjects(false);
     geom->setUseDisplayList(false);
-    geom->setFastPathHint(false);
 
     geode->addDrawable( geom.get() );
 

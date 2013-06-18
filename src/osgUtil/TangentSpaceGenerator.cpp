@@ -11,6 +11,9 @@ TangentSpaceGenerator::TangentSpaceGenerator()
     B_(new osg::Vec4Array),
     N_(new osg::Vec4Array)
 {
+    T_->setBinding(osg::Geometry::BIND_PER_VERTEX); T_->setNormalize(false);
+    B_->setBinding(osg::Geometry::BIND_PER_VERTEX); T_->setNormalize(false);
+    N_->setBinding(osg::Geometry::BIND_PER_VERTEX); T_->setNormalize(false);
 }
 
 TangentSpaceGenerator::TangentSpaceGenerator(const TangentSpaceGenerator &copy, const osg::CopyOp &copyop)
@@ -23,14 +26,6 @@ TangentSpaceGenerator::TangentSpaceGenerator(const TangentSpaceGenerator &copy, 
 
 void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit)
 {
-    // check to see if vertex attributes indices exists, if so expand them to remove them
-    if (geo->suitableForOptimization())
-    {
-        // removing coord indices so we don't have to deal with them in the binormal code.
-        OSG_INFO<<"TangentSpaceGenerator::generate(Geometry*,int): Removing attribute indices"<<std::endl;
-        geo->copyToAndOptimize(*geo);
-    }
-
     const osg::Array *vx = geo->getVertexArray();
     const osg::Array *nx = geo->getNormalArray();
     const osg::Array *tx = geo->getTexCoordArray(normal_map_tex_unit);
@@ -39,21 +34,9 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
 
 
     unsigned int vertex_count = vx->getNumElements();
-    if (geo->getVertexIndices() == NULL) {
-        T_->assign(vertex_count, osg::Vec4());
-        B_->assign(vertex_count, osg::Vec4());
-        N_->assign(vertex_count, osg::Vec4());
-    } else {
-        unsigned int index_count = geo->getVertexIndices()->getNumElements();
-        T_->assign(index_count, osg::Vec4());
-        B_->assign(index_count, osg::Vec4());
-        N_->assign(index_count, osg::Vec4());
-        indices_ = new osg::UIntArray();
-        unsigned int i;
-        for (i=0;i<index_count;i++) {
-            indices_->push_back(i);
-        }
-    }
+    T_->assign(vertex_count, osg::Vec4());
+    B_->assign(vertex_count, osg::Vec4());
+    N_->assign(vertex_count, osg::Vec4());
 
     unsigned int i; // VC6 doesn't like for-scoped variables
 
@@ -163,9 +146,6 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
     // normalize basis vectors and force the normal vector to match
     // the triangle normal's direction
     unsigned int attrib_count = vx->getNumElements();
-    if (geo->getVertexIndices() != NULL) {
-        attrib_count = geo->getVertexIndices()->getNumElements();
-    }
     for (i=0; i<attrib_count; ++i) {
         osg::Vec4 &vT = (*T_)[i];
         osg::Vec4 &vB = (*B_)[i];

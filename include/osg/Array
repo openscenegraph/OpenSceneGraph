@@ -82,6 +82,9 @@ class OSG_EXPORT Array : public BufferData
             BIND_OFF=0,
             BIND_OVERALL=1,
             BIND_PER_PRIMITIVE_SET=2,
+#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
+            BIND_PER_PRIMITIVE=3,
+#endif
             BIND_PER_VERTEX=4,
             BIND_INSTANCE_DIVISOR_0=6,
             BIND_INSTANCE_DIVISOR_1=BIND_INSTANCE_DIVISOR_0+1,
@@ -93,7 +96,7 @@ class OSG_EXPORT Array : public BufferData
             BIND_INSTANCE_DIVISOR_7=BIND_INSTANCE_DIVISOR_0+7
         };
         
-        Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
+        Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0, Binding=BIND_UNDEFINED):
             _arrayType(arrayType),
             _dataSize(dataSize),
             _dataType(dataType),            
@@ -101,7 +104,7 @@ class OSG_EXPORT Array : public BufferData
             _normalize(false),
             _preserveDataType(false) {}
 
-        Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+       Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(array,copyop),
             _arrayType(array._arrayType),
             _dataSize(array._dataSize),
@@ -131,9 +134,12 @@ class OSG_EXPORT Array : public BufferData
         virtual osg::Array* asArray() { return this; }
         virtual const osg::Array* asArray() const { return this; }
 
+        virtual unsigned int getElementSize() const = 0;
         virtual const GLvoid* getDataPointer() const = 0;
         virtual unsigned int getTotalDataSize() const = 0;
         virtual unsigned int getNumElements() const = 0;
+        virtual void reserveArray(unsigned int num) = 0;
+        virtual void resizeArray(unsigned int num) = 0;
 
 
         /** Specify how this array should be passed to OpenGL.*/
@@ -186,7 +192,7 @@ class TemplateArray : public Array, public MixinVector<T>
 {
     public:
 
-        TemplateArray() : Array(ARRAYTYPE,DataSize,DataType) {}
+        TemplateArray(Binding binding=BIND_UNDEFINED) : Array(ARRAYTYPE,DataSize,DataType, binding) {}
 
         TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Array(ta,copyop),
@@ -198,6 +204,14 @@ class TemplateArray : public Array, public MixinVector<T>
 
         TemplateArray(unsigned int no,const T* ptr) :
             Array(ARRAYTYPE,DataSize,DataType),
+            MixinVector<T>(ptr,ptr+no) {}
+
+        TemplateArray(Binding binding, unsigned int no) :
+            Array(ARRAYTYPE,DataSize,DataType, binding),
+            MixinVector<T>(no) {}
+
+        TemplateArray(Binding binding, unsigned int no,const T* ptr) :
+            Array(ARRAYTYPE,DataSize,DataType, binding),
             MixinVector<T>(ptr,ptr+no) {}
 
         template <class InputIterator>
@@ -236,9 +250,12 @@ class TemplateArray : public Array, public MixinVector<T>
             MixinVector<T>( *this ).swap( *this );
         }
 
+        virtual unsigned int getElementSize() const { return sizeof(ElementDataType); }
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
-        virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
+        virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(ElementDataType)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
+        virtual void reserveArray(unsigned int num) { this->reserve(num); }
+        virtual void resizeArray(unsigned int num) { this->resize(num); }
 
         typedef T ElementDataType; // expose T
 
@@ -322,9 +339,12 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
             MixinVector<T>( *this ).swap( *this );
         }
 
+        virtual unsigned int getElementSize() const { return sizeof(ElementDataType); }
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
+        virtual void reserveArray(unsigned int num) { this->reserve(num); }
+        virtual void resizeArray(unsigned int num) { this->resize(num); }
 
         virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
 

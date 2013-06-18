@@ -527,19 +527,6 @@ void POVWriterNodeVisitor::processGeometry( const Geometry *g,
    if( g->getVertexArray() == NULL || g->getVertexArray()->getNumElements() == 0 )
       return;
 
-   if(( g->getVertexIndices() != NULL &&
-        g->getVertexIndices()->getNumElements() != 0 ) ||
-      ( g->getNormalIndices() != NULL &&
-        g->getNormalIndices()->getNumElements() != 0 ) ||
-      ( g->getTexCoordIndices(0) != NULL &&
-        g->getTexCoordIndices(0)->getNumElements() != 0 ))
-   {
-      notify( WARN ) << "POV Writer WARNING: "
-            "Geometry with indices is not " << endl <<
-            "supported yet by POV plugin. Skipping geometry." << endl;
-      return;
-   }
-
    // mesh2
    _fout << "mesh2" << endl;
    _fout << "{" << endl;

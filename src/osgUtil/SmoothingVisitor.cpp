@@ -143,9 +143,7 @@ static void smooth_old(osg::Geometry& geom)
         nitr->normalize();
     }
     geom.setNormalArray( normals );
-    geom.setNormalIndices( geom.getVertexIndices() );
     geom.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-
 
     geom.dirtyDisplayList();
 }

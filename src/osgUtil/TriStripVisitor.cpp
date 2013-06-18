@@ -230,14 +230,6 @@ void TriStripVisitor::stripify(Geometry& geom)
     // no point tri stripping if we don't have enough vertices.
     if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements()<3) return;
 
-    // check to see if vertex attributes indices exists, if so expand them to remove them
-    if (geom.suitableForOptimization())
-    {
-        // removing coord indices
-        OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
-        geom.copyToAndOptimize(geom);
-    }
-
     // check for the existence of surface primitives
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;

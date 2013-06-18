@@ -130,40 +130,6 @@ struct Extents
     osg::Vec2d      _max;
 };
 
-class CheckValidVisitor : public osg::NodeVisitor
-{
-public:
-
-    CheckValidVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _numInvalidGeometries(0) {}
-
-    void apply(osg::Geode& geode)
-    {
-        unsigned int local_numInvalidGeometries = 0;
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-            if (geometry)
-            {
-                if (!geometry->verifyArrays(_errorReports)) ++local_numInvalidGeometries;
-            }
-        }
-        if (local_numInvalidGeometries)
-        {
-            _errorReports<<"Geode "<<geode.getName()<<" contains problem geometries"<<std::endl;
-            _numInvalidGeometries += local_numInvalidGeometries;
-        }
-    }
-
-    bool valid() const { return _numInvalidGeometries==0; }
-
-    unsigned int _numInvalidGeometries;
-    std::stringstream _errorReports;
-    
-};
-
-
 class LoadDataVisitor : public osg::NodeVisitor
 {
 public:
@@ -333,17 +299,6 @@ public:
         {
             osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
             node = osgDB::readNodeFile(filename);
-        }
-
-        if (node)
-        {
-            CheckValidVisitor cvv;
-            node->accept(cvv);
-            if (!cvv.valid())
-            {
-                OSG_NOTICE<<"Warning, errors in geometry found in file "<<filename<<std::endl;
-                OSG_NOTICE<<cvv._errorReports.str()<<std::endl;
-            }
         }
         return node;
     }

@@ -115,7 +115,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
         {
             std::stringstream ss;
             ss << "boneWeight" << i;
-            geom.setVertexAttribData(attribIndex + i, osg::Geometry::ArrayData(getVertexAttrib(i),osg::Geometry::BIND_PER_VERTEX));
+            geom.setVertexAttribArray(attribIndex + i, getVertexAttrib(i));
         }
 
         osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;

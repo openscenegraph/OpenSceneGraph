@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_GEOMETRY
-#define OSG_GEOMETRY 1
+#ifndef OSG_GEOMETRYNEW
+#define OSG_GEOMETRYNEW 1
 
 #include <osg/Drawable>
 #include <osg/Vec2>
@@ -22,7 +22,6 @@
 #include <osg/PrimitiveSet>
 
 namespace osg {
-
 
 class OSG_EXPORT Geometry : public Drawable
 {
@@ -44,164 +43,42 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool empty() const;
 
-        enum AttributeBinding
-        {
-            BIND_OFF=0,
-            BIND_OVERALL,
-            BIND_PER_PRIMITIVE_SET,
-            BIND_PER_PRIMITIVE,
-            BIND_PER_VERTEX
-        };
-
-        struct OSG_EXPORT ArrayData
-        {
-            ArrayData():
-                binding(BIND_OFF),
-                normalize(GL_FALSE) {}
-
-            ArrayData(const ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-
-            ArrayData(Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
-                array(a),
-                indices(0),
-                binding(b),
-                normalize(n) {}
-
-            ArrayData(Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
-                array(a),
-                indices(i),
-                binding(b),
-                normalize(n) {}
-
-            ArrayData& operator = (const ArrayData& rhs)
-            {
-                array = rhs.array;
-                indices = rhs.indices;
-                binding = rhs.binding;
-                normalize = rhs.normalize;
-                return *this;
-            }
-
-            inline bool empty() const { return !array.valid(); }
-
-            ref_ptr<Array>          array;
-            ref_ptr<IndexArray>     indices;  // deprecated.
-            AttributeBinding        binding;
-            GLboolean               normalize;
-        };
-
-        struct OSG_EXPORT Vec3ArrayData
-        {
-            Vec3ArrayData():
-                binding(BIND_OFF),
-                normalize(GL_FALSE) {}
-
-            Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-
-            Vec3ArrayData(Vec3Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
-                array(a),
-                indices(0),
-                binding(b),
-                normalize(n) {}
-
-            Vec3ArrayData(Vec3Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
-                array(a),
-                indices(i),
-                binding(b),
-                normalize(n) {}
-
-            Vec3ArrayData& operator = (const Vec3ArrayData& rhs)
-            {
-                array = rhs.array;
-                indices = rhs.indices;
-                binding = rhs.binding;
-                normalize = rhs.normalize;
-                return *this;
-            }
-
-            inline bool empty() const { return !array.valid(); }
-
-            ref_ptr<Vec3Array>      array;
-            ref_ptr<IndexArray>     indices; // deprecated.
-            AttributeBinding        binding;
-            GLboolean               normalize;
-        };
-
-        /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const
-          * when i is out of range.
-        */
-        static const ArrayData s_InvalidArrayData;
-
-        typedef std::vector< ArrayData >  ArrayDataList;
-
+        typedef std::vector< osg::ref_ptr<osg::Array> >  ArrayList;
 
         void setVertexArray(Array* array);
-        Array* getVertexArray() { return _vertexData.array.get(); }
-        const Array* getVertexArray() const  { return _vertexData.array.get(); }
+        Array* getVertexArray() { return _vertexArray.get(); }
+        const Array* getVertexArray() const  { return _vertexArray.get(); }
 
-        void setVertexData(const ArrayData& arrayData);
-        ArrayData& getVertexData() { return _vertexData; }
-        const ArrayData& getVertexData() const { return _vertexData; }
-
-
-        void setNormalBinding(AttributeBinding ab);
-        AttributeBinding getNormalBinding() const { return _normalData.binding; }
 
         void setNormalArray(Array* array);
-        Array* getNormalArray() { return _normalData.array.get(); }
-        const Array* getNormalArray() const { return _normalData.array.get(); }
+        Array* getNormalArray() { return _normalArray.get(); }
+        const Array* getNormalArray() const { return _normalArray.get(); }
 
-        void setNormalData(const ArrayData& arrayData);
-        ArrayData& getNormalData() { return _normalData; }
-        const ArrayData& getNormalData() const { return _normalData; }
-
-        void setColorBinding(AttributeBinding ab);
-        AttributeBinding getColorBinding() const { return _colorData.binding; }
+        
 
         void setColorArray(Array* array);
-        Array* getColorArray() { return _colorData.array.get(); }
-        const Array* getColorArray() const { return _colorData.array.get(); }
-
-        void setColorData(const ArrayData& arrayData);
-        ArrayData& getColorData() { return _colorData; }
-        const ArrayData& getColorData() const { return _colorData; }
+        Array* getColorArray() { return _colorArray.get(); }
+        const Array* getColorArray() const { return _colorArray.get(); }
 
 
-        void setSecondaryColorBinding(AttributeBinding ab);
-        AttributeBinding getSecondaryColorBinding() const { return _secondaryColorData.binding; }
 
         void setSecondaryColorArray(Array* array);
-        Array* getSecondaryColorArray() { return _secondaryColorData.array.get(); }
-        const Array* getSecondaryColorArray() const { return _secondaryColorData.array.get(); }
+        Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
+        const Array* getSecondaryColorArray() const  { return _secondaryColorArray.get(); }
 
-        void setSecondaryColorData(const ArrayData& arrayData);
-        ArrayData& getSecondaryColorData() { return _secondaryColorData; }
-        const ArrayData& getSecondaryColorData() const { return _secondaryColorData; }
-
-
-        void setFogCoordBinding(AttributeBinding ab);
-        AttributeBinding getFogCoordBinding() const { return _fogCoordData.binding; }
 
         void setFogCoordArray(Array* array);
-        Array* getFogCoordArray() { return _fogCoordData.array.get(); }
-        const Array* getFogCoordArray() const { return _fogCoordData.array.get(); }
-
-        void setFogCoordData(const ArrayData& arrayData);
-        ArrayData& getFogCoordData() { return _fogCoordData; }
-        const ArrayData& getFogCoordData() const { return _fogCoordData; }
+        Array* getFogCoordArray() { return _fogCoordArray.get(); }
+        const Array* getFogCoordArray() const { return _fogCoordArray.get(); }
 
 
         void setTexCoordArray(unsigned int unit,Array*);
         Array* getTexCoordArray(unsigned int unit);
         const Array* getTexCoordArray(unsigned int unit) const;
 
-        void setTexCoordData(unsigned int index,const ArrayData& arrayData);
-        ArrayData& getTexCoordData(unsigned int index);
-        const ArrayData& getTexCoordData(unsigned int index) const;
-
         unsigned int getNumTexCoordArrays() const {  return static_cast<unsigned int>(_texCoordList.size()); }
-        ArrayDataList& getTexCoordArrayList() { return _texCoordList; }
-        const ArrayDataList& getTexCoordArrayList() const { return _texCoordList; }
+        ArrayList& getTexCoordArrayList() { return _texCoordList; }
+        const ArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
 
@@ -209,19 +86,10 @@ class OSG_EXPORT Geometry : public Drawable
         Array *getVertexAttribArray(unsigned int index);
         const Array *getVertexAttribArray(unsigned int index) const;
 
-        void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
-        AttributeBinding getVertexAttribBinding(unsigned int index) const;
-
-        void setVertexAttribNormalize(unsigned int index,GLboolean norm);
-        GLboolean getVertexAttribNormalize(unsigned int index) const;
-
-        void setVertexAttribData(unsigned int index,const ArrayData& arrayData);
-        ArrayData& getVertexAttribData(unsigned int index);
-        const ArrayData& getVertexAttribData(unsigned int index) const;
 
         unsigned int getNumVertexAttribArrays() const { return static_cast<unsigned int>(_vertexAttribList.size()); }
-        ArrayDataList& getVertexAttribArrayList() { return _vertexAttribList; }
-        const ArrayDataList& getVertexAttribArrayList() const { return _vertexAttribList; }
+        ArrayList& getVertexAttribArrayList() { return _vertexAttribList; }
+        const ArrayList& getVertexAttribArrayList() const { return _vertexAttribList; }
 
 
 
@@ -255,43 +123,11 @@ class OSG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
+        /** return true if any arrays are shared.*/
+        bool containsSharedArrays() const;
 
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setVertexIndices(IndexArray* array);
-        IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
-        const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setNormalIndices(IndexArray* array);
-        IndexArray* getNormalIndices() { return _normalData.indices.get(); }
-        const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setColorIndices(IndexArray* array);
-        IndexArray* getColorIndices() { return _colorData.indices.get(); }
-        const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setSecondaryColorIndices(IndexArray* array);
-        IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
-        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setFogCoordIndices(IndexArray* array);
-        IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
-        const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setTexCoordIndices(unsigned int unit,IndexArray*);
-        IndexArray* getTexCoordIndices(unsigned int unit);
-        const IndexArray* getTexCoordIndices(unsigned int unit) const;
-
-        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
-        void setVertexAttribIndices(unsigned int index,IndexArray* array);
-        IndexArray* getVertexAttribIndices(unsigned int index);
-        const IndexArray* getVertexAttribIndices(unsigned int index) const;
-
-
+        /** duplicate any shared arrays.*/
+        void duplicateSharedArrays();
 
 
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation
@@ -310,67 +146,13 @@ class OSG_EXPORT Geometry : public Drawable
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
-        typedef std::vector<osg::Array*>  ArrayList;
         bool getArrayList(ArrayList& arrayList) const;
 
         typedef std::vector<osg::DrawElements*>  DrawElementsList;
         bool getDrawElementsList(DrawElementsList& drawElementsList) const;
 
         osg::VertexBufferObject* getOrCreateVertexBufferObject();
-
         osg::ElementBufferObject* getOrCreateElementBufferObject();
-
-
-        /** Set whether fast paths should be used when supported. */
-        void setFastPathHint(bool on) {  _fastPathHint = on; }
-
-        /** Get whether fast paths should be used when supported. */
-        bool getFastPathHint() const { return _fastPathHint; }
-
-
-        /** Return true if OpenGL fast paths will be used with drawing this Geometry.
-          * Fast paths directly use vertex arrays, and glDrawArrays/glDrawElements so have low CPU overhead.
-          * With Slow paths the osg::Geometry::drawImplementation has to dynamically assemble OpenGL
-          * compatible vertex arrays from the osg::Geometry arrays data and then dispatch these to OpenGL,
-          * so have higher CPU overhead than the Fast paths.
-          * Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path.
-        */
-        inline bool areFastPathsUsed() const
-        {
-            if (_internalOptimizedGeometry.valid())
-                return _internalOptimizedGeometry->areFastPathsUsed();
-            else
-                return _fastPath && _fastPathHint;
-        }
-
-        bool computeFastPathsUsed();
-
-        bool verifyBindings() const;
-
-        void computeCorrectBindingsAndArraySizes();
-
-        /** check whether the arrays, indices, bindings and primitives all match correctly, return false is .*/
-        bool verifyArrays(std::ostream& out) const;
-
-        bool suitableForOptimization() const;
-
-        void copyToAndOptimize(Geometry& target);
-
-
-        bool containsSharedArrays() const;
-
-        void duplicateSharedArrays();
-
-
-        void computeInternalOptimizedGeometry();
-
-        void removeInternalOptimizedGeometry() { _internalOptimizedGeometry = 0; }
-
-        void setInternalOptimizedGeometry(osg::Geometry* geometry) { _internalOptimizedGeometry = geometry; }
-
-        osg::Geometry* getInternalOptimizedGeometry() { return _internalOptimizedGeometry.get(); }
-
-        const osg::Geometry* getInternalOptimizedGeometry() const { return _internalOptimizedGeometry.get(); }
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
@@ -419,29 +201,97 @@ class OSG_EXPORT Geometry : public Drawable
 
         virtual ~Geometry();
 
-        bool verifyBindings(const ArrayData& arrayData) const;
-        bool verifyBindings(const Vec3ArrayData& arrayData) const;
-
-        void computeCorrectBindingsAndArraySizes(ArrayData& arrayData,const char* arrayName);
-        void computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData,const char* arrayName);
 
         void addVertexBufferObjectIfRequired(osg::Array* array);
         void addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
 
 
         PrimitiveSetList                _primitives;
-        ArrayData                       _vertexData;
-        ArrayData                       _normalData;
-        ArrayData                       _colorData;
-        ArrayData                       _secondaryColorData;
-        ArrayData                       _fogCoordData;
-        ArrayDataList                   _texCoordList;
-        ArrayDataList                   _vertexAttribList;
+        osg::ref_ptr<Array>             _vertexArray;
+        osg::ref_ptr<Array>             _normalArray;
+        osg::ref_ptr<Array>             _colorArray;
+        osg::ref_ptr<Array>             _secondaryColorArray;
+        osg::ref_ptr<Array>             _fogCoordArray;
+        ArrayList                       _texCoordList;
+        ArrayList                       _vertexAttribList;
+        
+        bool                            _containsDeprecatedData;
+        
+    public:
+        
+        
+        /** Return true if the deprecated use array indicies or BIND_PER_PRIMITIVE binding has been assigned to arrays.*/
+        bool containsDeprecatedData() const { return  _containsDeprecatedData; }
 
-        mutable bool                    _fastPath;
-        bool                            _fastPathHint;
+        /** fallback for deprecated functionality. Return true if the Geometry contains any array indices or BIND_PER_PRIMITIVE arrays. */
+        bool checkForDeprecatedData();
 
-        ref_ptr<Geometry>               _internalOptimizedGeometry;
+        /** fallback for deprecated functionality. Removes any array indices and BIND_PER_PRIMITIVE arrays.*/
+        void fixDeprecatedData();
+
+        /** Same values as Array::Binding.*/
+        enum AttributeBinding
+        {
+            BIND_OFF=0,
+            BIND_OVERALL=1,
+            BIND_PER_PRIMITIVE_SET=2,
+            BIND_PER_PRIMITIVE=3, /// no longer supported
+            BIND_PER_VERTEX=4
+        };
+
+        /** deprecated, use array->setBinding(..). */
+        void setNormalBinding(AttributeBinding ab);
+        AttributeBinding getNormalBinding() const;
+
+        /** deprecated, use array->setBinding(..). */
+        void setColorBinding(AttributeBinding ab);
+        AttributeBinding getColorBinding() const;
+
+        /** deprecated, use array->setBinding(..). */
+        void setSecondaryColorBinding(AttributeBinding ab);
+        AttributeBinding getSecondaryColorBinding() const;
+
+        /** deprecated, use array->setBinding(..). */
+        void setFogCoordBinding(AttributeBinding ab);
+        AttributeBinding getFogCoordBinding() const;
+
+        /** deprecated, use array->setBinding(..). */
+        void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
+        AttributeBinding getVertexAttribBinding(unsigned int index) const;
+
+        /** deprecated, use array->setNormalize(..). */
+        void setVertexAttribNormalize(unsigned int index,GLboolean norm);
+        GLboolean getVertexAttribNormalize(unsigned int index) const;
+
+#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
+        /** no longer supported.*/
+        inline void setVertexIndices(IndexArray* array);
+        inline const IndexArray* getVertexIndices() const;
+
+        /** no longer supported.*/
+        inline void setNormalIndices(IndexArray* array);
+        inline const IndexArray* getNormalIndices() const;
+
+        /** no longer supported.*/
+        inline void setColorIndices(IndexArray* array);
+        inline const IndexArray* getColorIndices() const;
+
+        /** no longer supported.*/
+        inline void setSecondaryColorIndices(IndexArray* array);
+        inline const IndexArray* getSecondaryColorIndices() const;
+
+        /** no longer supported.*/
+        inline void setFogCoordIndices(IndexArray* array);
+        inline const IndexArray* getFogCoordIndices() const;
+
+        /** no longer supported.*/
+        inline void setTexCoordIndices(unsigned int unit,IndexArray*);
+        inline const IndexArray* getTexCoordIndices(unsigned int unit) const;
+
+        /** no longer supported.*/
+        inline void setVertexAttribIndices(unsigned int index,IndexArray* array);
+        inline const IndexArray* getVertexAttribIndices(unsigned int index) const;
+#endif    
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
@@ -458,6 +308,89 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
 }
 
 
+#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
+
+#include <osg/Notify>
+
+inline void Geometry::setVertexIndices(IndexArray* array)
+{
+    if (_vertexArray.valid()) { _vertexArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexIndicies(..) function failed as there is no vertex array to associate inidices with."<<std::endl; }
+}
+
+inline const IndexArray* Geometry::getVertexIndices() const
+{
+    if (_vertexArray.valid()) return dynamic_cast<IndexArray*>(_vertexArray->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setNormalIndices(IndexArray* array)
+{
+    if (_normalArray.valid()) { _normalArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setNormalIndicies(..) function failed as there is no normal array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getNormalIndices() const
+{
+    if (_normalArray.valid()) return dynamic_cast<IndexArray*>(_normalArray->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setColorIndices(IndexArray* array)
+{
+    if (_colorArray.valid()) { _colorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setColorIndicies(..) function failed as there is no color array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getColorIndices() const
+{
+    if (_colorArray.valid()) return dynamic_cast<IndexArray*>(_colorArray->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setSecondaryColorIndices(IndexArray* array)
+{
+    if (_secondaryColorArray.valid()) { _secondaryColorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setSecondaryColorArray(..) function failed as there is no secondary color array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getSecondaryColorIndices() const
+{
+    if (_secondaryColorArray.valid()) return dynamic_cast<IndexArray*>(_secondaryColorArray->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setFogCoordIndices(IndexArray* array)
+{
+    if (_fogCoordArray.valid()) { _fogCoordArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setFogCoordIndicies(..) function failed as there is no fog coord array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getFogCoordIndices() const
+{
+    if (_fogCoordArray.valid()) return dynamic_cast<IndexArray*>(_fogCoordArray->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setTexCoordIndices(unsigned int unit,IndexArray* array)
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) { _texCoordList[unit]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setTexCoordIndices(..) function failed as there is no texcoord array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getTexCoordIndices(unsigned int unit) const
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) return dynamic_cast<IndexArray*>(_texCoordList[unit]->getUserData());
+    else return 0;
+}
+
+inline void Geometry::setVertexAttribIndices(unsigned int index,IndexArray* array)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) { _vertexAttribList[index]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexAttribIndices(..) function failed as there is no vertex attrib array to associate inidices with."<<std::endl; }
+}
+inline const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) const
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return dynamic_cast<IndexArray*>(_vertexAttribList[index]->getUserData());
+    else return 0;
+}
+#endif
+    
 }
 
 #endif

@@ -182,20 +182,6 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
 
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
-
-    // we currently don't handle geometry which use indices...
-    if (geom.getVertexIndices() ||
-        geom.getNormalIndices() ||
-        geom.getColorIndices() ||
-        geom.getSecondaryColorIndices() ||
-        geom.getFogCoordIndices()) return;
-
-    // not even text coord indices don't handle geometry which use indices...
-    for(unsigned int unit=0;unit<geom.getNumTexCoordArrays();++unit)
-    {
-        if (geom.getTexCoordIndices(unit)) return;
-    }
-
     if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) _numberVerts=0; // 09.04.04 GWM reset Tessellator
     // the reset is needed by the flt loader which reuses a Tessellator for triangulating polygons.
     // as such it might be reset by other loaders/developers in future.
@@ -470,14 +456,14 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
             arrays.push_back(geom.getFogCoordArray());
         }
 
-        osg::Geometry::ArrayDataList& tcal = geom.getTexCoordArrayList();
-        for(osg::Geometry::ArrayDataList::iterator tcalItr=tcal.begin();
+        osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
+        for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
             tcalItr!=tcal.end();
             ++tcalItr)
         {
-            if (tcalItr->array.valid())
+            if (tcalItr->valid())
             {
-                arrays.push_back(tcalItr->array.get());
+                arrays.push_back(tcalItr->get());
             }
         }
 

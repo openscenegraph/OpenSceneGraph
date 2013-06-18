@@ -153,28 +153,28 @@ void RigGeometry::copyFrom(osg::Geometry& from)
         if (!copyToSelf) target.setVertexArray(from.getVertexArray());
     }
 
-    target.setNormalBinding(from.getNormalBinding());
     if (from.getNormalArray())
     {
         if (!copyToSelf) target.setNormalArray(from.getNormalArray());
+        target.setNormalBinding(from.getNormalBinding());
     }
 
-    target.setColorBinding(from.getColorBinding());
     if (from.getColorArray())
     {
         if (!copyToSelf) target.setColorArray(from.getColorArray());
+        target.setColorBinding(from.getColorBinding());
     }
 
-    target.setSecondaryColorBinding(from.getSecondaryColorBinding());
     if (from.getSecondaryColorArray())
     {
         if (!copyToSelf) target.setSecondaryColorArray(from.getSecondaryColorArray());
+        target.setSecondaryColorBinding(from.getSecondaryColorBinding());
     }
 
-    target.setFogCoordBinding(from.getFogCoordBinding());
     if (from.getFogCoordArray())
     {
         if (!copyToSelf) target.setFogCoordArray(from.getFogCoordArray());
+        target.setFogCoordBinding(from.getFogCoordBinding());
     }
 
     for(unsigned int ti=0;ti<from.getNumTexCoordArrays();++ti)
@@ -185,13 +185,13 @@ void RigGeometry::copyFrom(osg::Geometry& from)
         }
     }
 
-    ArrayDataList& arrayList = from.getVertexAttribArrayList();
+    osg::Geometry::ArrayList& arrayList = from.getVertexAttribArrayList();
     for(unsigned int vi=0;vi< arrayList.size();++vi)
     {
-        ArrayData& arrayData = arrayList[vi];
-        if (arrayData.array.valid())
+        osg::Array* array = arrayList[vi].get();
+        if (array)
         {
-            if (!copyToSelf) target.setVertexAttribData(vi,arrayData);
+            if (!copyToSelf) target.setVertexAttribArray(vi,array);
         }
     }
 }

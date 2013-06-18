@@ -17,7 +17,7 @@
 */
 
 #include <osg/Geode>
-#include <osg/GeometryNew>
+#include <osg/Geometry>
 #include <osg/Material>
 #include <osg/Vec3>
 #include <osg/MatrixTransform>
@@ -93,7 +93,7 @@ osg::Node* createScene()
     // create POINTS
     {
         // create Geometry object to store all the vertices and points primitive.
-        osg::GeometryNew* pointsGeom = new osg::GeometryNew();
+        osg::Geometry* pointsGeom = new osg::Geometry();
         
         // create a Vec3Array and add to it all my coordinates.
         // Like all the *Array variants (see include/osg/Array) , Vec3Array is derived from both osg::Array 
@@ -122,14 +122,14 @@ osg::Node* createScene()
         // pass the color array to points geometry, note the binding to tell the geometry
         // that only use one color for the whole object.
         pointsGeom->setColorArray(colors);
-        pointsGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        pointsGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
         
         // set the normal in the same way color.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         pointsGeom->setNormalArray(normals);
-        pointsGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        pointsGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
         // create and add a DrawArray Primitive (see include/osg/Primitive).  The first
@@ -147,7 +147,7 @@ osg::Node* createScene()
     // create LINES
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* linesGeom = new osg::GeometryNew();
+        osg::Geometry* linesGeom = new osg::Geometry();
         
         // this time we'll preallocate the vertex array to the size we
         // need and then simple set them as array elements, 8 points
@@ -170,14 +170,14 @@ osg::Node* createScene()
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
-        linesGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // set the normal in the same way color.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals);
-        linesGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -192,7 +192,7 @@ osg::Node* createScene()
     // create LINE_STRIP
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* linesGeom = new osg::GeometryNew();
+        osg::Geometry* linesGeom = new osg::Geometry();
         
         // this time we'll preallocate the vertex array to the size 
         // and then use an iterator to fill in the values, a bit perverse
@@ -212,14 +212,14 @@ osg::Node* createScene()
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
-        linesGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 
         // set the normal in the same way color.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals);
-        linesGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -234,7 +234,7 @@ osg::Node* createScene()
     // create LINE_LOOP
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* linesGeom = new osg::GeometryNew();
+        osg::Geometry* linesGeom = new osg::Geometry();
         
         // this time we'll a C arrays to initialize the vertices.
         
@@ -259,14 +259,14 @@ osg::Node* createScene()
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
-        linesGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // set the normal in the same way color.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals);
-        linesGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
         
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -307,7 +307,7 @@ osg::Node* createScene()
     // create POLYGON
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* polyGeom = new osg::GeometryNew();
+        osg::Geometry* polyGeom = new osg::Geometry();
         
         // this time we'll use C arrays to initialize the vertices.
         // note, anticlockwise ordering.
@@ -333,12 +333,12 @@ osg::Node* createScene()
         
         // use the shared color array.
         polyGeom->setColorArray(shared_colors.get());
-        polyGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // use the shared normal array.
         polyGeom->setNormalArray(shared_normals.get());
-        polyGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
         
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -355,7 +355,7 @@ osg::Node* createScene()
     // create QUADS
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* polyGeom = new osg::GeometryNew();
+        osg::Geometry* polyGeom = new osg::Geometry();
         
         // note, anticlockwise ordering.
         osg::Vec3 myCoords[] =
@@ -380,12 +380,12 @@ osg::Node* createScene()
         
         // use the shared color array.
         polyGeom->setColorArray(shared_colors.get());
-        polyGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // use the shared normal array.
         polyGeom->setNormalArray(shared_normals.get());
-        polyGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
         
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -402,7 +402,7 @@ osg::Node* createScene()
     // create QUAD_STRIP
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* polyGeom = new osg::GeometryNew();
+        osg::Geometry* polyGeom = new osg::Geometry();
         
         // note, first coord at top, second at bottom, reverse to that buggy OpenGL image..
         osg::Vec3 myCoords[] =
@@ -429,12 +429,12 @@ osg::Node* createScene()
         
         // use the shared color array.
         polyGeom->setColorArray(shared_colors.get());
-        polyGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // use the shared normal array.
         polyGeom->setNormalArray(shared_normals.get());
-        polyGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
         
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -451,7 +451,7 @@ osg::Node* createScene()
     // create TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN all in one Geometry/
     {
         // create Geometry object to store all the vertices and lines primitive.
-        osg::GeometryNew* polyGeom = new osg::GeometryNew();
+        osg::Geometry* polyGeom = new osg::Geometry();
         
         // note, first coord at top, second at bottom, reverse to that buggy OpenGL image..
         osg::Vec3 myCoords[] =
@@ -497,12 +497,12 @@ osg::Node* createScene()
         
         // use the shared color array.
         polyGeom->setColorArray(shared_colors.get());
-        polyGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
         
 
         // use the shared normal array.
         polyGeom->setNormalArray(shared_normals.get());
-        polyGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+        polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
         
 
         // This time we simply use primitive, and hardwire the number of coords to use 
@@ -571,7 +571,7 @@ osg::Node* createBackground()
     
  
     // create Geometry object to store all the vertices and lines primitive.
-    osg::GeometryNew* polyGeom = new osg::GeometryNew();
+    osg::Geometry* polyGeom = new osg::Geometry();
 
     // note, anticlockwise ordering.
     osg::Vec3 myCoords[] =
@@ -590,14 +590,14 @@ osg::Node* createBackground()
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     polyGeom->setColorArray(colors);
-    polyGeom->setColorBinding(osg::GeometryNew::BIND_OVERALL);
+    polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 
     // set the normal in the same way color.
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
     polyGeom->setNormalArray(normals);
-    polyGeom->setNormalBinding(osg::GeometryNew::BIND_OVERALL);
+    polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
     osg::Vec2 myTexCoords[] =
     {

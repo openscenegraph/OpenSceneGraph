@@ -278,11 +278,8 @@ void StatsVisitor::apply(osg::Drawable& drawable)
         ++_numInstancedGeometry;
         _geometrySet.insert(geometry);
 
-        if (geometry->areFastPathsUsed())
-        {
-            ++_numInstancedFastGeometry;
-            _fastGeometrySet.insert(geometry);
-        }
+        ++_numInstancedFastGeometry;
+        _fastGeometrySet.insert(geometry);
     }
 }
 

@@ -129,40 +129,52 @@ void Geometry::write(DataOutputStream* out){
         out->writeArray(getFogCoordIndices());
     }
     // Write texture coord arrays
-    Geometry::ArrayDataList& tcal = getTexCoordArrayList();
+    Geometry::ArrayList& tcal = getTexCoordArrayList();
     out->writeInt(tcal.size());
     unsigned int j;
     for(j=0;j<tcal.size();j++)
     {
         // Write coords if valid
-        out->writeBool(tcal[j].array.valid());
-        if (tcal[j].array.valid()){
-            out->writeArray(tcal[j].array.get());
+        out->writeBool(tcal[j].valid());
+        if (tcal[j].valid()){
+            out->writeArray(tcal[j].get());
         }
+        
         // Write indices if valid
-        out->writeBool(tcal[j].indices.valid());
-        if (tcal[j].indices.valid()){
-            out->writeArray(tcal[j].indices.get());
+        const osg::IndexArray* indices = getTexCoordIndices(j);
+        out->writeBool(indices!=0);
+        if (indices!=0){
+            out->writeArray(indices);
         }
     }
 
     // Write vertex attributes
-    Geometry::ArrayDataList& vaal = getVertexAttribArrayList();
+    Geometry::ArrayList& vaal = getVertexAttribArrayList();
     out->writeInt(vaal.size());
     for(j=0;j<vaal.size();j++)
     {
         // Write coords if valid
-        const osg::Geometry::ArrayData& arrayData = vaal[j];
-        out->writeBinding(arrayData.binding);
-        out->writeBool(arrayData.normalize==GL_TRUE);
-        out->writeBool(arrayData.array.valid());
-        if (arrayData.array.valid()){
-            out->writeArray(arrayData.array.get());
+        const osg::Array* array = vaal[j].get();
+        if (array)
+        {
+            out->writeBinding(static_cast<osg::Geometry::AttributeBinding>(array->getBinding()));
+            out->writeBool(array->getNormalize());
+            out->writeBool(true);
+            out->writeArray(array);
+        
+            // Write indices if valid
+            const osg::IndexArray* indices = getVertexAttribIndices(j);
+            out->writeBool(indices!=0);
+            if (indices!=0){
+                out->writeArray(indices);
+            }
         }
-        // Write indices if valid
-        out->writeBool(arrayData.indices.valid());
-        if (arrayData.indices.valid()){
-            out->writeArray(arrayData.indices.get());
+        else
+        {
+            out->writeBinding(BIND_OFF);
+            out->writeBool(false);
+            out->writeBool(false);
+            out->writeBool(false);
         }
     }
 }

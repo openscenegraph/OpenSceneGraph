@@ -43,7 +43,7 @@ typedef NodeContainer::iterator    NodeIterator;
 NodeContainer                    nodes;
 
 //
-osg::Group * Root = 0;
+osg::ref_ptr<osg::Group> Root = 0;
 
 const int HOUSES_SIZE = 25000;        // total number of houses
 double XDim = 5000.0f;                // area dimension +/- XDim
@@ -81,11 +81,11 @@ void CreateHouses()
     };
 
     // use the same color, normal and indices for all houses.
-        osg::Vec4Array* colors = new osg::Vec4Array(1);
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
     (*colors)[0] = osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     // normals
-    osg::Vec3Array * normals = new osg::Vec3Array(16);
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array(16);
     (*normals)[0] = osg::Vec3( 0.0f,  -0.0f, -1.0f);
     (*normals)[1] = osg::Vec3( 0.0f,  -0.0f, -1.0f);
     (*normals)[2] = osg::Vec3( 0.0f,  -1.0f,  0.0f);
@@ -104,10 +104,10 @@ void CreateHouses()
     (*normals)[15] = osg::Vec3(-0.707107f,  0.0f, 0.707107f);
 
     // coordIndices
-    osg::UByteArray* coordIndices = new osg::UByteArray(48,indices);
+    osg::ref_ptr<osg::UByteArray> coordIndices = new osg::UByteArray(48,indices);
 
-        // share the primitive set.
-        osg::PrimitiveSet* primitives = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,48);
+    // share the primitive set.
+    osg::PrimitiveSet* primitives = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,48);
 
     for (int q = 0; q < HOUSES_SIZE; q++)
     {
@@ -121,10 +121,10 @@ void CreateHouses()
 
         float scale = 10.0f;
                 
-                osg::Vec3 offset(xPos,yPos,0.0f);
+        osg::Vec3 offset(xPos,yPos,0.0f);
 
         // coords
-        osg::Vec3Array* coords = new osg::Vec3Array(10);
+        osg::ref_ptr<osg::Vec3Array> coords = new osg::Vec3Array(10);
         (*coords)[0] = osg::Vec3( 0.5f, -0.7f, 0.0f);
         (*coords)[1] = osg::Vec3( 0.5f,  0.7f, 0.0f);
         (*coords)[2] = osg::Vec3(-0.5f, 0.7f, 0.0f);
@@ -143,23 +143,23 @@ void CreateHouses()
 
 
         // create geometry
-        osg::Geometry * geometry = new osg::Geometry();
+        osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
                 
         geometry->addPrimitiveSet(primitives);
                 
-        geometry->setVertexArray(coords);
-                geometry->setVertexIndices(coordIndices);
+        geometry->setVertexArray(coords.get());
+        geometry->setVertexIndices(coordIndices.get());
                 
-        geometry->setColorArray(colors);
+        geometry->setColorArray(colors.get());
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
                 
-        geometry->setNormalArray(normals);
+        geometry->setNormalArray(normals.get());
         geometry->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
 
-        osg::Geode * geode = new osg::Geode();
-        geode->addDrawable(geometry);
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode();
+        geode->addDrawable(geometry.get());
         
-        nodes.push_back(geode);
+        nodes.push_back(geode.get());
     }
 }
 

@@ -758,8 +758,8 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                 if (NULL != pVertexArray)
                 {
                     const unsigned int iNumVertices = pVertexArray->getNumElements(); // size();
-                    const osg::IndexArray *pVertexIndices = pGeometry->getVertexIndices();
-                    const osg::IndexArray * pTexIndices = pGeometry->getTexCoordIndices(0);
+                    const osg::IndexArray *pVertexIndices = 0;
+                    const osg::IndexArray * pTexIndices = 0;
                     const osg::Vec2 *pTexCoords = NULL;
                     fout << "OBJECT poly" << std::endl;
                     fout << "name \"" << getName() << "\"" << std::endl;

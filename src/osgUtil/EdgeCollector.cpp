@@ -448,14 +448,6 @@ void EdgeCollector::setGeometry(osg::Geometry* geometry)
 {
     _geometry = geometry;
 
-    // check to see if vertex attributes indices exists, if so expand them to remove them
-    if (_geometry->suitableForOptimization())
-    {
-        // removing coord indices
-        OSG_INFO<<"EdgeCollector::setGeometry(..): Removing attribute indices"<<std::endl;
-        _geometry->copyToAndOptimize(*_geometry);
-    }
-
     unsigned int numVertices = geometry->getVertexArray()->getNumElements();
 
     _originalPointList.resize(numVertices);

@@ -25,6 +25,9 @@
 //  but you are not forced to do so.
 //
 
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
 
 #include <osg/BlendFunc>
 #include <osg/Billboard>

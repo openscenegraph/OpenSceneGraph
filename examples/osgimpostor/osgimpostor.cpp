@@ -16,6 +16,8 @@
 *  THE SOFTWARE.
 */
 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/MatrixTransform>

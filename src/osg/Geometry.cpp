@@ -12,7 +12,9 @@
 */
 #include <stdlib.h>
 
-// #define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+//#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
+//#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+//#endif
 
 #include <osg/Geometry>
 #include <osg/ArrayDispatchers>
@@ -146,11 +148,11 @@ void Geometry::setFogCoordArray(Array* array)
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
 }
 
-#define SET_BINDING(array)\
+#define SET_BINDING(array, ab)\
     if (!array) \
     { \
+        if (ab==BIND_OFF) return; \
         OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl; \
-        abort(); \
         return; \
     } \
     if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
@@ -1095,7 +1097,7 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
 //
 void Geometry::setNormalBinding(AttributeBinding ab)
 {
-    SET_BINDING(_normalArray.get())
+    SET_BINDING(_normalArray.get(), ab)
 
     dirtyDisplayList();
 }
@@ -1107,7 +1109,7 @@ Geometry::AttributeBinding Geometry::getNormalBinding() const
         
 void Geometry::setColorBinding(AttributeBinding ab)
 {
-    SET_BINDING(_colorArray.get())
+    SET_BINDING(_colorArray.get(), ab)
 
     dirtyDisplayList();
 }
@@ -1119,7 +1121,7 @@ Geometry::AttributeBinding Geometry::getColorBinding() const
         
 void Geometry::setSecondaryColorBinding(AttributeBinding ab)
 {
-    SET_BINDING(_secondaryColorArray.get())
+    SET_BINDING(_secondaryColorArray.get(), ab)
 
     dirtyDisplayList();
 }
@@ -1131,7 +1133,7 @@ Geometry::AttributeBinding Geometry::getSecondaryColorBinding() const
         
 void Geometry::setFogCoordBinding(AttributeBinding ab)
 {
-    SET_BINDING(_fogCoordArray.get())
+    SET_BINDING(_fogCoordArray.get(), ab)
 
     dirtyDisplayList();
 }

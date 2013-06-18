@@ -6,6 +6,9 @@
  * Author(s):  Vladimir Vukicevic <vladimir@pobox.com>
  *
  */
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
 
 #include <osg/TexEnv>
 #include <osg/CullFace>

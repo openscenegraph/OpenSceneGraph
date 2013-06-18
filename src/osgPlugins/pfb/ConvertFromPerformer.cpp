@@ -1,6 +1,8 @@
 // -*-c++-*-
 
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
 #define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
 
 #include "ConvertFromPerformer.h"
 
@@ -907,6 +909,9 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                 }
 
                 geom->setColorArray(osg_colors);
+
+                // set the color binding type.
+                geom->setColorBinding(_gsetBindMap[bind]);
             }
         }
         else
@@ -915,9 +920,6 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                      bind == PFGS_OVERALL ? 1 :
                      bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
                      bind == PFGS_PER_VERTEX ? nv : 0;
-
-            // set the normal binding type.
-            geom->setColorBinding(_gsetBindMap[bind]);
 
             // calc the maximum num of vertex from the index list.
             int cc;
@@ -941,6 +943,10 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             }
 
             geom->setColorArray(osg_colors);
+
+            // set the color binding type.
+            geom->setColorBinding(_gsetBindMap[bind]);
+
 
             if(ilist)
             {

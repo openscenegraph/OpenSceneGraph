@@ -1236,28 +1236,43 @@ void Geometry::duplicateSharedArrays()
     }
 }
 
+inline osg::IndexArray* getIndexArray(osg::Array* array)
+{
+    return array ? dynamic_cast<osg::IndexArray*>(array->getUserData()) : 0;
+}
+
+inline bool containsDeprecatedUsage(osg::Array* array)
+{
+    if (array)
+    {
+        if (array->getBinding()==3 /* BIND_PER_PRIMITIVE */) return true;
+        if (dynamic_cast<osg::IndexArray*>(array->getUserData())!=0) return true;
+    }
+    return true;
+}
+
 bool Geometry::checkForDeprecatedData()
 {
     _containsDeprecatedData = false;
     
-    if (getVertexIndices()) _containsDeprecatedData = true;
+    if (containsDeprecatedUsage(_vertexArray.get())) _containsDeprecatedData = true;
 
-    if (getNormalIndices() || getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+    if (containsDeprecatedUsage(_normalArray.get())) _containsDeprecatedData = true;
 
-    if (getColorIndices() || getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+    if (containsDeprecatedUsage(_colorArray.get())) _containsDeprecatedData = true;
 
-    if (getSecondaryColorIndices() || getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+    if (containsDeprecatedUsage(_secondaryColorArray.get())) _containsDeprecatedData = true;
 
-    if (getFogCoordIndices() || getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+    if (containsDeprecatedUsage(_fogCoordArray.get())) _containsDeprecatedData = true;
 
     for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
     {
-        if (getTexCoordIndices(ti)) _containsDeprecatedData = true;
+        if (containsDeprecatedUsage(_texCoordList[ti].get())) _containsDeprecatedData = true;
     }
 
     for(unsigned int vi=0;vi<getNumVertexAttribArrays();++vi)
     {
-        if (getVertexAttribIndices(vi) || getVertexAttribBinding(vi)==osg::Geometry::BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+        if (containsDeprecatedUsage(_vertexAttribList[vi].get())) _containsDeprecatedData = true;
     }
 
     return _containsDeprecatedData;
@@ -1336,50 +1351,36 @@ void Geometry::fixDeprecatedData()
     OSG_NOTICE<<"Geometry::fixDeprecatedData()"<<std::endl;
 
     // copy over attribute arrays.
-    if (getVertexIndices() && getVertexArray())
-    {
-        setVertexArray(expandIndexArray(getVertexArray(), getVertexIndices()));
-    }
+    osg::IndexArray* indices = getIndexArray(_vertexArray.get());
+    if (indices) setVertexArray(expandIndexArray(_vertexArray.get(), indices));
 
     if (getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
-    if (getNormalIndices() && getNormalArray())
-    {
-        setNormalArray(expandIndexArray(getNormalArray(), getNormalIndices()));
-    }
+    indices = getIndexArray(_normalArray.get());
+    if (indices) setNormalArray(expandIndexArray(getNormalArray(), indices));
 
     if (getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
-    if (getColorIndices() && getColorArray())
-    {
-        setColorArray(expandIndexArray(getColorArray(), getColorIndices()));
-    }
+    indices = getIndexArray(_colorArray.get());
+    if (indices) setColorArray(expandIndexArray(getColorArray(), indices));
 
     if (getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
-    if (getSecondaryColorIndices() && getSecondaryColorArray())
-    {
-        setSecondaryColorArray(expandIndexArray(getSecondaryColorArray(), getSecondaryColorIndices()));
-    }
+    indices = getIndexArray(_secondaryColorArray.get());
+    if (indices) setSecondaryColorArray(expandIndexArray(getSecondaryColorArray(), indices));
 
     if (getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
-    if (getFogCoordIndices() && getFogCoordArray())
-    {
-        setFogCoordArray(expandIndexArray(getFogCoordArray(), getFogCoordIndices()));
-    }
+    indices = getIndexArray(_fogCoordArray.get());
+    if (indices) setFogCoordArray(expandIndexArray(getFogCoordArray(), indices));
 
     for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
     {
-        if (getTexCoordIndices(ti) && getTexCoordArray(ti))
-        {
-            setTexCoordArray(ti, expandIndexArray(getTexCoordArray(ti), getTexCoordIndices(ti)));
-        }
+        indices = getIndexArray(_texCoordList[ti].get());
+        if (indices) setTexCoordArray(ti, expandIndexArray(getTexCoordArray(ti), indices));
     }
 
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
         if (getVertexAttribBinding(vi)==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
-        if (getVertexAttribIndices(vi) && getVertexAttribArray(vi))
-        {
-            setVertexAttribArray(vi, expandIndexArray(getVertexAttribArray(vi), getVertexAttribIndices(vi)));
-        }
+        indices = getIndexArray(_vertexAttribList[vi].get());
+        if (indices) setVertexAttribArray(vi, expandIndexArray(getVertexAttribArray(vi), indices));
     }
 
     // if none of the arrays are bind per primitive our job is done!
@@ -1452,25 +1453,25 @@ void Geometry::fixDeprecatedData()
     if (_normalArray.valid())
     {
         if (_normalArray->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, _normalArray, numVertices);
-        else if (_normalArray->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, _normalArray, numVertices);
+        else if (_normalArray->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, _normalArray, numVertices);
     }
     
     if (_colorArray.valid())
     {
         if (_colorArray->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, _colorArray, numVertices);
-        else if (_colorArray->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, _colorArray, numVertices);
+        else if (_colorArray->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, _colorArray, numVertices);
     }
     
     if (_secondaryColorArray.valid())
     {
         if (_secondaryColorArray->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, _secondaryColorArray, numVertices);
-        else if (_secondaryColorArray->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, _secondaryColorArray, numVertices);
+        else if (_secondaryColorArray->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, _secondaryColorArray, numVertices);
     }
     
     if (_fogCoordArray.valid())
     {
         if (_fogCoordArray->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, _fogCoordArray, numVertices);
-        else if (_fogCoordArray->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, _fogCoordArray, numVertices);
+        else if (_fogCoordArray->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, _fogCoordArray, numVertices);
     }
     
     for(ArrayList::iterator itr = _texCoordList.begin();
@@ -1480,7 +1481,7 @@ void Geometry::fixDeprecatedData()
         if (itr->valid())
         {
             if ((*itr)->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, *itr, numVertices);
-            else if ((*itr)->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, *itr, numVertices);
+            else if ((*itr)->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, *itr, numVertices);
         }
     }
     
@@ -1491,7 +1492,7 @@ void Geometry::fixDeprecatedData()
         if (itr->valid())
         {
             if ((*itr)->getBinding()==osg::Array::BIND_PER_VERTEX) duplicateArray(perVertexArrays, *itr, numVertices);
-            else if ((*itr)->getBinding()==osg::Array::BIND_PER_PRIMITIVE) duplicateArray(perPrimitiveArrays, *itr, numVertices);
+            else if ((*itr)->getBinding()==3 /*osg::Array::BIND_PER_PRIMITIVE*/) duplicateArray(perPrimitiveArrays, *itr, numVertices);
         }
     }
 

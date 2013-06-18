@@ -279,17 +279,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     // nothing to index
     if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
 
-    // check to see if vertex attributes indices exists, if so expand them to remove them
-    if (geom.suitableForOptimization())
-    {
-        // removing coord indices
-        OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
-        geom.copyToAndOptimize(geom);
-    }
-
-
     // compute duplicate vertices
-
     typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
     IndexList indices(numVertices);

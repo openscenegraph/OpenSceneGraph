@@ -543,8 +543,7 @@ bool RenderBin::getStats(Statistics& stats) const
         const Geometry* geom = dw->asGeometry();
         if (geom)
         {
-            if (geom->areFastPathsUsed())
-                stats.addFastDrawable();
+            stats.addFastDrawable();
         }
 
         if (rl->_modelview.get())
@@ -576,8 +575,7 @@ bool RenderBin::getStats(Statistics& stats) const
             const Geometry* geom = dw->asGeometry();
             if (geom)
             {
-                if (geom->areFastPathsUsed())
-                    stats.addFastDrawable();
+                stats.addFastDrawable();
             }
 
             if (rl->_modelview.get()) stats.addMatrix(); // number of matrices

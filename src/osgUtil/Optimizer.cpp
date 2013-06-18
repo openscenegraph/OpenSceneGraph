@@ -50,6 +50,7 @@
 
 using namespace osgUtil;
 
+// #define GEOMETRYDEPRECATED                
 
 void Optimizer::reset()
 {
@@ -1684,32 +1685,17 @@ struct LessGeometry
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
         if (rhs->getStateSet()<lhs->getStateSet()) return false;
 
-        if (rhs->getVertexIndices()) { if (!lhs->getVertexIndices()) return true; }
-        else if (lhs->getVertexIndices()) return false;
-
         if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
         if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
-
-        if (rhs->getNormalIndices()) { if (!lhs->getNormalIndices()) return true; }
-        else if (lhs->getNormalIndices()) return false;
 
         if (lhs->getColorBinding()<rhs->getColorBinding()) return true;
         if (rhs->getColorBinding()<lhs->getColorBinding()) return false;
 
-        if (rhs->getColorIndices()) { if (!lhs->getColorIndices()) return true; }
-        else if (lhs->getColorIndices()) return false;
-
         if (lhs->getSecondaryColorBinding()<rhs->getSecondaryColorBinding()) return true;
         if (rhs->getSecondaryColorBinding()<lhs->getSecondaryColorBinding()) return false;
 
-        if (rhs->getSecondaryColorIndices()) { if (!lhs->getSecondaryColorIndices()) return true; }
-        else if (lhs->getSecondaryColorIndices()) return false;
-
         if (lhs->getFogCoordBinding()<rhs->getFogCoordBinding()) return true;
         if (rhs->getFogCoordBinding()<lhs->getFogCoordBinding()) return false;
-
-        if (rhs->getFogCoordIndices()) { if (!lhs->getFogCoordIndices()) return true; }
-        else if (lhs->getFogCoordIndices()) return false;
 
         if (lhs->getNumTexCoordArrays()<rhs->getNumTexCoordArrays()) return true;
         if (rhs->getNumTexCoordArrays()<lhs->getNumTexCoordArrays()) return false;
@@ -1724,9 +1710,6 @@ struct LessGeometry
                 if (!lhs->getTexCoordArray(i)) return true;
             }
             else if (lhs->getTexCoordArray(i)) return false;
-
-            if (rhs->getTexCoordIndices(i)) { if (!lhs->getTexCoordIndices(i)) return true; }
-            else if (lhs->getTexCoordIndices(i)) return false;
         }
 
         for(i=0;i<lhs->getNumVertexAttribArrays();++i)
@@ -1736,9 +1719,6 @@ struct LessGeometry
                 if (!lhs->getVertexAttribArray(i)) return true;
             }
             else if (lhs->getVertexAttribArray(i)) return false;
-
-            if (rhs->getVertexAttribIndices(i)) { if (!lhs->getVertexAttribIndices(i)) return true; }
-            else if (lhs->getVertexAttribIndices(i)) return false;
         }
 
 
@@ -1828,7 +1808,10 @@ void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
             osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
             if (geom && isOperationPermissibleForObject(geom))
             {
-                geom->computeCorrectBindingsAndArraySizes();
+#ifdef GEOMETRYDEPRECATED                
+                geom1829
+                ->computeCorrectBindingsAndArraySizes();
+#endif                
             }
         }
     }
@@ -1836,6 +1819,7 @@ void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
 
 void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
 {
+    // GeometryDeprecated CAN REMOVED
     if (isOperationPermissibleForObject(&geode))
     {
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
@@ -1843,9 +1827,9 @@ void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
             osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
             if (geom && isOperationPermissibleForObject(geom))
             {
-                if (!geom->areFastPathsUsed() && !geom->getInternalOptimizedGeometry())
+                if (geom->checkForDeprecatedData())
                 {
-                    geom->computeInternalOptimizedGeometry();
+                    geom->fixDeprecatedData();
                 }
             }
         }
@@ -2457,7 +2441,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     MergeArrayVisitor merger;
 
     unsigned int base = 0;
-    unsigned int vbase = lhs.getVertexArray() ? lhs.getVertexArray()->getNumElements() : 0;
     if (lhs.getVertexArray() && rhs.getVertexArray())
     {
 
@@ -2473,23 +2456,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setVertexArray(rhs.getVertexArray());
     }
 
-    if (lhs.getVertexIndices() && rhs.getVertexIndices())
-    {
 
-        base = lhs.getVertexIndices()->getNumElements();
-        if (!merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices(),vbase))
-        {
-            OSG_DEBUG << "MergeGeometry: vertex indices not merged. Some data may be lost." <<std::endl;
-        }
-    }
-    else if (rhs.getVertexIndices())
-    {
-        base = 0;
-        lhs.setVertexIndices(rhs.getVertexIndices());
-    }
-
-
-    unsigned int nbase = lhs.getNormalArray() ? lhs.getNormalArray()->getNumElements() : 0;
     if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getNormalArray(),rhs.getNormalArray()))
@@ -2502,21 +2469,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setNormalArray(rhs.getNormalArray());
     }
 
-    if (lhs.getNormalIndices() && rhs.getNormalIndices() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
-    {
-        if (!merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices(),nbase))
-        {
-            OSG_DEBUG << "MergeGeometry: Vertex Array not merged. Some data may be lost." <<std::endl;
-        }
-    }
-    else if (rhs.getNormalIndices())
-    {
-        // this assignment makes the assumption that lhs.NormalArray is empty as well and NormalIndices
-        lhs.setNormalIndices(rhs.getNormalIndices());
-    }
 
-
-    unsigned int cbase = lhs.getColorArray() ? lhs.getColorArray()->getNumElements() : 0;
     if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getColorArray(),rhs.getColorArray()))
@@ -2529,20 +2482,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setColorArray(rhs.getColorArray());
     }
 
-    if (lhs.getColorIndices() && rhs.getColorIndices() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
-    {
-        if (!merger.merge(lhs.getColorIndices(),rhs.getColorIndices(),cbase))
-        {
-            OSG_DEBUG << "MergeGeometry: color indices not merged. Some data may be lost." <<std::endl;
-        }
-    }
-    else if (rhs.getColorIndices())
-    {
-        // this assignment makes the assumption that lhs.ColorArray is empty as well and ColorIndices
-        lhs.setColorIndices(rhs.getColorIndices());
-    }
-
-    unsigned int scbase = lhs.getSecondaryColorArray() ? lhs.getSecondaryColorArray()->getNumElements() : 0;
     if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray()))
@@ -2555,20 +2494,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setSecondaryColorArray(rhs.getSecondaryColorArray());
     }
 
-    if (lhs.getSecondaryColorIndices() && rhs.getSecondaryColorIndices() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
-    {
-        if (!merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices(),scbase))
-        {
-            OSG_DEBUG << "MergeGeometry: secondary color indices not merged. Some data may be lost." <<std::endl;
-        }
-    }
-    else if (rhs.getSecondaryColorIndices())
-    {
-        // this assignment makes the assumption that lhs.SecondaryColorArray is empty as well and SecondaryColorIndices
-        lhs.setSecondaryColorIndices(rhs.getSecondaryColorIndices());
-    }
-
-    unsigned int fcbase = lhs.getFogCoordArray() ? lhs.getFogCoordArray()->getNumElements() : 0;
     if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray()))
@@ -2581,52 +2506,21 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setFogCoordArray(rhs.getFogCoordArray());
     }
 
-    if (lhs.getFogCoordIndices() && rhs.getFogCoordIndices() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
-    {
-        if (!merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices(),fcbase))
-        {
-            OSG_DEBUG << "MergeGeometry: fog coord indices not merged. Some data may be lost." <<std::endl;
-        }
-    }
-    else if (rhs.getFogCoordIndices())
-    {
-        // this assignment makes the assumption that lhs.FogCoordArray is empty as well and FogCoordIndices
-        lhs.setFogCoordIndices(rhs.getFogCoordIndices());
-    }
-
 
     unsigned int unit;
     for(unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
-        unsigned int tcbase = lhs.getTexCoordArray(unit) ? lhs.getTexCoordArray(unit)->getNumElements() : 0;
         if (!merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit)))
         {
             OSG_DEBUG << "MergeGeometry: tex coord array not merged. Some data may be lost." <<std::endl;
-        }
-
-        if (lhs.getTexCoordIndices(unit) && rhs.getTexCoordIndices(unit))
-        {
-            if (!merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit),tcbase))
-            {
-                OSG_DEBUG << "MergeGeometry: tex coord indices not merged. Some data may be lost." <<std::endl;
-            }
         }
     }
 
     for(unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
     {
-        unsigned int vabase = lhs.getVertexAttribArray(unit) ? lhs.getVertexAttribArray(unit)->getNumElements() : 0;
         if (!merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit)))
         {
             OSG_DEBUG << "MergeGeometry: vertex attrib array not merged. Some data may be lost." <<std::endl;
-        }
-
-        if (lhs.getVertexAttribIndices(unit) && rhs.getVertexAttribIndices(unit))
-        {
-            if (!merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit),vabase))
-            {
-                OSG_DEBUG << "MergeGeometry: vertex attrib indices not merged. Some data may be lost." <<std::endl;
-            }
         }
     }
 

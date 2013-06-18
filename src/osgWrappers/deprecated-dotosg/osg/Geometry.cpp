@@ -132,7 +132,6 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     Geometry::AttributeBinding normalBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("NormalBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),normalBinding))
     {
-        geom.setNormalBinding(normalBinding);
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -182,6 +181,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             }
             iteratorAdvanced = true;
         }
+
+        geom.setNormalBinding(normalBinding);
     }
     if (fr[0].matchWord("NormalIndices"))
     {
@@ -197,7 +198,6 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     Geometry::AttributeBinding colorBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("ColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),colorBinding))
     {
-        geom.setColorBinding(colorBinding);
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -209,6 +209,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (colors)
         {
             geom.setColorArray(colors);
+            geom.setColorBinding(colorBinding);
         }
         iteratorAdvanced = true;
     }
@@ -228,7 +229,6 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     Geometry::AttributeBinding secondaryColorBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("SecondaryColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
     {
-        geom.setSecondaryColorBinding(secondaryColorBinding);
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -240,6 +240,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (colors)
         {
             geom.setSecondaryColorArray(colors);
+            geom.setSecondaryColorBinding(secondaryColorBinding);
         }
         iteratorAdvanced = true;
     }
@@ -259,7 +260,6 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     Geometry::AttributeBinding fogCoordBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("FogCoordBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),fogCoordBinding))
     {
-        geom.setFogCoordBinding(fogCoordBinding);
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -271,6 +271,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (fogcoords)
         {
             geom.setFogCoordArray(fogcoords);
+            geom.setFogCoordBinding(fogCoordBinding);
         }
         iteratorAdvanced = true;
     }
@@ -1361,43 +1362,48 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(*geom.getFogCoordIndices(),fw);
     }
 
-    const Geometry::ArrayDataList& tcal=geom.getTexCoordArrayList();
+    const Geometry::ArrayList& tcal=geom.getTexCoordArrayList();
     unsigned int i;
     for(i=0;i<tcal.size();++i)
     {
-        if (tcal[i].array.valid())
+        const osg::Array* array = tcal[i].get();
+        if (array)
         {
             fw.indent()<<"TexCoordArray "<<i<<" ";
-            Array_writeLocalData(*(tcal[i].array),fw);
+            Array_writeLocalData(*array,fw);
         }
-        if (tcal[i].indices.valid())
+        
+        const osg::IndexArray* indices = (array!=0) ? dynamic_cast<const osg::IndexArray*>(array->getUserData()) : 0;
+        if (indices)
         {
             fw.indent()<<"TexCoordIndices "<<i<<" ";
-            Array_writeLocalData(*(tcal[i].indices),fw);
+            Array_writeLocalData(*indices,fw);
         }
     }
 
-    const Geometry::ArrayDataList& vaal=geom.getVertexAttribArrayList();
+    const Geometry::ArrayList& vaal=geom.getVertexAttribArrayList();
     for(i=0;i<vaal.size();++i)
     {
-        const osg::Geometry::ArrayData& arrayData = vaal[i];
+        const osg::Array* array = vaal[i].get();
 
-        if (arrayData.array.valid())
+        if (array)
         {
-            fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(arrayData.binding)<<std::endl;
+            fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(static_cast<osg::Geometry::AttributeBinding>(array->getBinding()))<<std::endl;
 
-            if (arrayData.normalize)
+            if (array->getNormalize())
                 fw.indent()<<"VertexAttribNormalize "<<i<<" TRUE"<<std::endl;
             else
                 fw.indent()<<"VertexAttribNormalize "<<i<<" FALSE"<<std::endl;
 
-            fw.indent()<<"VertexAttribArray "<<i<<" ";
-            Array_writeLocalData(*(arrayData.array),fw);
+            fw.indent()<<"VertexAttribArray "<<i<<" ";            
+            Array_writeLocalData(*array,fw);
         }
-        if (arrayData.indices.valid())
+
+        const osg::IndexArray* indices = (array!=0) ? dynamic_cast<const osg::IndexArray*>(array->getUserData()) : 0;
+        if (indices)
         {
             fw.indent()<<"VertexAttribIndices "<<i<<" ";
-            Array_writeLocalData(*(arrayData.indices),fw);
+            Array_writeLocalData(*indices,fw);
         }
     }
 

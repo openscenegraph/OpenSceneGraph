@@ -52,7 +52,7 @@ void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometry) const
 {
 
-    bool usesVBO = geometry->getUseVertexBufferObjects() && geometry->areFastPathsUsed();
+    bool usesVBO = geometry->getUseVertexBufferObjects();
     bool usesDL = !usesVBO && geometry->getUseDisplayList() && geometry->getSupportsDisplayList();
 
     if (usesVBO || usesDL)

@@ -433,6 +433,7 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
+
 OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON)
 OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." ON)
 OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF)
@@ -455,6 +456,8 @@ OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL 
 OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." ${OSG_GL1_AVAILABLE})
 
 OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
+
+OPTION(OSG_USE_DEPRECATED_GEOMETRY_METHODS "Set to ON to enable use of deprecated osg::Geometry functions." ON)
 
 ################################################################################
 # Set Config file

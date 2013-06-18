@@ -1,5 +1,7 @@
 // -*-c++-*-
 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+
 #include "ConvertFromPerformer.h"
 
 #include <osg/Group>
@@ -715,8 +717,6 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             // handle flat shaded skip of normals.
             int nn = nv-flat_shaded_skip_all_primitives;
 
-            // set the normal binding type.
-            geom->setNormalBinding(_gsetBindMap[bind]);
 
             if (ilist)
             {
@@ -735,6 +735,9 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     (*osg_norms)[i][2] = norms[i][2];
                 }
                 geom->setNormalArray(osg_norms);
+
+                // set the normal binding type.
+                geom->setNormalBinding(_gsetBindMap[bind]);
 
                 osg::UShortArray* osg_indices = new osg::UShortArray;
                 osg_indices->reserve(nv);
@@ -791,9 +794,6 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                      bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
                      bind == PFGS_PER_VERTEX ? nv : 0;
 
-            // set the normal binding type.
-            geom->setNormalBinding(_gsetBindMap[bind]);
-
             // calc the maximum num of vertex from the index list.
             int cc;
             if (ilist)
@@ -814,6 +814,9 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                 (*osg_norms)[i][2] = norms[i][2];
             }
             geom->setNormalArray(osg_norms);
+
+            // set the normal binding type.
+            geom->setNormalBinding(_gsetBindMap[bind]);
 
             if(ilist)
             {
@@ -836,9 +839,6 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             // handle flat shaded skip of normals.
             int nn = nv-flat_shaded_skip_all_primitives;
 
-            // set the normal binding type.
-            geom->setColorBinding(_gsetBindMap[bind]);
-
             if (ilist)
             {
                 // calc the maximum num of vertex from the index list.
@@ -857,6 +857,10 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                     (*osg_colors)[i][3] = colors[i][3];
                 }
                 geom->setColorArray(osg_colors);
+
+                // set the color binding type.
+                geom->setColorBinding(_gsetBindMap[bind]);
+
 
                 osg::UShortArray* osg_indices = new osg::UShortArray;
                 osg_indices->reserve(nv);

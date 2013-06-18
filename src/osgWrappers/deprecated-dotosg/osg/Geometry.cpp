@@ -1,3 +1,5 @@
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -322,24 +324,22 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     {
         int unit=0;
         fr[1].getInt(unit);
-        geom.setVertexAttribBinding(unit,vertexAttribBinding);
         fr+=3;
         iteratorAdvanced = true;
     }
 
+    bool vertexAttribNormalize = false;
     if (fr.matchSequence("VertexAttribNormalize %i %w"))
     {
         int unit=0;
         fr[1].getInt(unit);
 
-        if (fr[2].matchString("TRUE"))
-            geom.setVertexAttribNormalize(unit,GL_TRUE);
-        else
-            geom.setVertexAttribNormalize(unit,GL_FALSE);
+        vertexAttribNormalize = fr[2].matchString("TRUE");
 
         fr+=3;
         iteratorAdvanced = true;
     }
+
 
     if (fr.matchSequence("VertexAttribArray %i"))
     {
@@ -351,6 +351,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (vertexattrib)
         {
             geom.setVertexAttribArray(unit,vertexattrib);
+            geom.setVertexAttribBinding(unit,vertexAttribBinding);
+            geom.setVertexAttribNormalize(unit,vertexAttribNormalize);
         }
         iteratorAdvanced = true;
 

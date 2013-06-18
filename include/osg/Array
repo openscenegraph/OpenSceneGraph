@@ -82,9 +82,6 @@ class OSG_EXPORT Array : public BufferData
             BIND_OFF=0,
             BIND_OVERALL=1,
             BIND_PER_PRIMITIVE_SET=2,
-#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
-            BIND_PER_PRIMITIVE=3,
-#endif
             BIND_PER_VERTEX=4,
             BIND_INSTANCE_DIVISOR_0=6,
             BIND_INSTANCE_DIVISOR_1=BIND_INSTANCE_DIVISOR_0+1,

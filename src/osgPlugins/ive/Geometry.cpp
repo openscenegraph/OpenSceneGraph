@@ -12,6 +12,8 @@
  *    Copyright 2003 VR-C
  **********************************************************************/
 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+
 #include "Exception.h"
 #include "Geometry.h"
 #include "Drawable.h"
@@ -248,16 +250,18 @@ void Geometry::read(DataInputStream* in){
         {
             bool na =in->readBool();
             if(na){
-                setNormalBinding(in->readBinding());
+                osg::Geometry::AttributeBinding binding = in->readBinding();
                 setNormalArray(in->readVec3Array());
+                setNormalBinding(binding);
             }
         }
         else
         {
             bool na =in->readBool();
             if(na){
-                setNormalBinding(in->readBinding());
+                osg::Geometry::AttributeBinding binding = in->readBinding();
                 setNormalArray(in->readArray());
+                setNormalBinding(binding);
             }
         }
 
@@ -268,8 +272,9 @@ void Geometry::read(DataInputStream* in){
         }
         // Read color array if any.
         if(in->readBool()){
-            setColorBinding(in->readBinding());
+            osg::Geometry::AttributeBinding binding = in->readBinding();
             setColorArray(in->readArray());
+            setColorBinding(binding);
         }
         // Read color indices if any
         if(in->readBool()){
@@ -277,8 +282,9 @@ void Geometry::read(DataInputStream* in){
         }
         // Read secondary color array if any
         if(in->readBool()){
-            setSecondaryColorBinding(in->readBinding());
+            osg::Geometry::AttributeBinding binding = in->readBinding();
             setSecondaryColorArray(in->readArray());
+            setSecondaryColorBinding(binding);
         }
         // Read second color indices if any
         if(in->readBool()){
@@ -286,8 +292,9 @@ void Geometry::read(DataInputStream* in){
         }
         // Read fog coord array if any
         if(in->readBool()){
-            setFogCoordBinding(in->readBinding());
+            osg::Geometry::AttributeBinding binding = in->readBinding();
             setFogCoordArray(in->readArray());
+            setFogCoordBinding(binding);
         }
         // Read fog coord indices if any
         if(in->readBool()){
@@ -311,13 +318,16 @@ void Geometry::read(DataInputStream* in){
         size = in->readInt();
         for(i =0;i<size;i++)
         {
-            setVertexAttribBinding(i,in->readBinding());
-            setVertexAttribNormalize(i,in->readBool()?GL_TRUE:GL_FALSE);
+            osg::Geometry::AttributeBinding binding = in->readBinding();
+            bool normalize = in->readBool();
 
             // Read coords if valid
             bool coords_valid = in->readBool();
             if(coords_valid)
                 setVertexAttribArray(i, in->readArray());
+
+            setVertexAttribNormalize(i,normalize);
+            setVertexAttribBinding(i,binding);
 
             // Read Indices if valid
             bool indices_valid = in->readBool();

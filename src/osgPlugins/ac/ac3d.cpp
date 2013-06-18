@@ -1012,10 +1012,10 @@ class SurfaceBin : public PrimitiveBin {
         geometry->setDataVariance(osg::Object::STATIC);
         geometry->setColorArray(material.getColorArray());
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         osg::Vec3Array* normalArray = new osg::Vec3Array;
         normalArray->setDataVariance(osg::Object::STATIC);
         geometry->setNormalArray(normalArray);
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         osg::Vec3Array* vertexArray = new osg::Vec3Array;
         vertexArray->setDataVariance(osg::Object::STATIC);
         geometry->setVertexArray(vertexArray);

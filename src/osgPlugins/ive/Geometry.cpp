@@ -12,7 +12,9 @@
  *    Copyright 2003 VR-C
  **********************************************************************/
 
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
 #define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
 
 #include "Exception.h"
 #include "Geometry.h"

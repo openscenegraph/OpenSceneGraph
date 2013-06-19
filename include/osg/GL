@@ -122,6 +122,12 @@
                 #include <OpenGL/gl.h>
             #else
                 #include <GL/gl.h>
+
+                // hack required to avoid conflicts with Qt
+                // Qt expects GLdouble to be a macro ?!
+                #ifndef GLdouble
+                    #define GLdouble double
+                #endif
             #endif
         #endif
     #endif

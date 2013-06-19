@@ -22,6 +22,11 @@
 * exist in the triangulation.
 */
 
+#include <osg/Config>
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
+#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
+
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>

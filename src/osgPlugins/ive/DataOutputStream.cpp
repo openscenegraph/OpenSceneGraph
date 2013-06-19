@@ -509,11 +509,11 @@ void DataOutputStream::writeQuat(const osg::Quat& q){
 
 void DataOutputStream::writeBinding(osg::Geometry::AttributeBinding b){
     switch(b){
-        case osg::Geometry::BIND_OFF:                writeChar((char) 0); break;
-        case osg::Geometry::BIND_OVERALL:            writeChar((char) 1); break;
-        case osg::Geometry::BIND_PER_PRIMITIVE:        writeChar((char) 2); break;
-        case osg::Geometry::BIND_PER_PRIMITIVE_SET:    writeChar((char) 3); break;
-        case osg::Geometry::BIND_PER_VERTEX:        writeChar((char) 4); break;
+        case osg::Geometry::BIND_OFF:                           writeChar((char) 0); break;
+        case osg::Geometry::BIND_OVERALL:                       writeChar((char) 1); break;
+        case static_cast<osg::Geometry::AttributeBinding>(3):   writeChar((char) 2); break;  /*osg::Geometry::BIND_PER_PRIMITIVE*/
+        case osg::Geometry::BIND_PER_PRIMITIVE_SET:             writeChar((char) 3); break;
+        case osg::Geometry::BIND_PER_VERTEX:                    writeChar((char) 4); break;
         default: throwException("Unknown binding in DataOutputStream::writeBinding()");
     }
 

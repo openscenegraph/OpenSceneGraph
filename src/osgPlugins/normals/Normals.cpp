@@ -59,6 +59,8 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
         Geometry *geom = dynamic_cast<Geometry *>(geode.getDrawable(i));
         if( geom )
         {
+            if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
+            
             Vec3Array *coords   = dynamic_cast<Vec3Array*>(geom->getVertexArray());
             if( coords == 0L )
                 continue;
@@ -85,7 +87,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                 _local_coords->push_back( v );
                 _local_coords->push_back( (v + n));
             }
-            else // BIND_PER_PRIMITIVE_SET, BIND_PER_PRIMITIVE, BIND_PER_VERTEX
+            else // BIND_PER_PRIMITIVE_SET, BIND_PER_VERTEX
             {
                 Geometry::PrimitiveSetList& primitiveSets = geom->getPrimitiveSetList();
                 Geometry::PrimitiveSetList::iterator itr;
@@ -121,10 +123,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                 {
                                     _processPrimitive( 3, coord_index, normals_index, binding );
                                     coord_index += 3;
-                                    if( binding == Geometry::BIND_PER_PRIMITIVE )
-                                        normals_index++;
-                                    else
-                                        normals_index+=3;
+                                    normals_index+=3;
                                 }
                                 break;
                             }
@@ -150,10 +149,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                 {
                                     _processPrimitive( 4, coord_index, normals_index, binding );
                                     coord_index += 4;
-                                    if( binding == Geometry::BIND_PER_PRIMITIVE )
-                                        normals_index++;
-                                    else
-                                        normals_index+=4;
+                                    normals_index +=4;
                                 }
                                 break;
                             }
@@ -169,11 +165,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                         //OSG_WARN << "j=" << j << " num_prim=" << num_prim << std::endl;
                                         _processPrimitive(num_prim, coord_index, normals_index, binding);
                                         coord_index += num_prim;
-                                        if (binding == Geometry::BIND_PER_PRIMITIVE) {
-                                            ++normals_index;
-                                        } else {
-                                            normals_index += num_prim;
-                                        }
+                                        normals_index += num_prim;
                                     }
                                 }
                                 break;
@@ -198,13 +190,9 @@ void Normals::MakeNormalsVisitor::_processPrimitive(  unsigned int nv,
 {
     Vec3 v(0,0,0);
     Vec3 n(0,0,0);
-    if( _mode == SurfaceNormals || binding == Geometry::BIND_PER_PRIMITIVE )
+    if( _mode == SurfaceNormals )
     {
-        if( binding == Geometry::BIND_PER_PRIMITIVE )
-        {
-            n = *(normals++);
-        }
-        else if( binding == Geometry::BIND_PER_VERTEX )
+        if( binding == Geometry::BIND_PER_VERTEX )
         {
             for( unsigned int i = 0; i < nv; i++ )
                 n += *(normals++);

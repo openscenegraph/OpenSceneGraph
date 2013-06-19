@@ -85,8 +85,6 @@ struct GeometryArrayGatherer
             if (array)
                 _arrayList.push_back(array);
         }
-        else if (binding == osg::Geometry::BIND_PER_PRIMITIVE)
-            _useDrawElements = false;
     }
 
     void accept(osg::ArrayVisitor& av)
@@ -231,17 +229,15 @@ typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
 
 void IndexMeshVisitor::makeMesh(Geometry& geom)
 {
-        if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
 
-    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+
+    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
     // no point optimizing if we don't have enough vertices.
     if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements()<3) return;

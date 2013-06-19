@@ -268,6 +268,8 @@ void ToVRML::apply(osg::Drawable* drawable) {
 /////////////////////////////////////////////////////////////////////////
 void ToVRML::apply(osg::Geometry* geom) {
 
+  if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
+    
   // are all primitives faces or line ?
   GLenum mode;
   osg::PrimitiveSet::Type type;
@@ -1128,12 +1130,6 @@ void ToVRML::writeNormal(osg::Geometry* geom, std::vector<int>& primitiveSetFace
       _fout << indent() << n[0] << " " << n[1] << " " << n[2] << ",\n";
     }
 
-  } else if (geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE) {
-    for (unsigned int j = 0; j < (*nArray).size(); j++) {
-      n = (*nArray)[j];
-      _fout << indent() << n[0] << " " << n[1] << " " << n[2] << ",\n";
-    }
-
   } else if (geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) {
     for (unsigned int j = 0; j < (*nArray).size(); j++) {
       n = (*nArray)[j];
@@ -1279,12 +1275,6 @@ void ToVRML::writeColor(osg::Geometry* geom, std::vector<int>& primitiveSetFaces
     c = (*cArray)[0];
     int size = ((osg::Vec3Array*) (geom->getVertexArray()))->size();
     for (int j = 0; j < size; j++) {
-      _fout << indent() << c[0] << " " << c[1] << " " << c[2] << ",\n";
-    }
-
-  } else if (geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE) {
-    for (unsigned int j = 0; j < (*cArray).size(); j++) {
-      c = (*cArray)[j];
       _fout << indent() << c[0] << " " << c[1] << " " << c[2] << ",\n";
     }
 

@@ -50,7 +50,7 @@
 
 using namespace osgUtil;
 
-// #define GEOMETRYDEPRECATED                
+// #define GEOMETRYDEPRECATED
 
 void Optimizer::reset()
 {
@@ -258,7 +258,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
             ++i;
         } while (result);
 
-        // no combine any adjacent static transforms.
+        // now combine any adjacent static transforms.
         CombineStaticTransformsVisitor cstv(this);
         node->accept(cstv);
         cstv.removeTransforms(node);
@@ -268,7 +268,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         OSG_INFO<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
 
-        // no combine any adjacent static transforms.
+        // now combine any adjacent static transforms.
         FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor fstdssv(this);
         node->accept(fstdssv);
 
@@ -1284,7 +1284,7 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
 {
     if (nodeWeCannotRemove && nodeWeCannotRemove->asTransform()!=0 && nodeWeCannotRemove->asTransform()->asMatrixTransform()!=0)
     {
-        // remove topmost node if it exists in the transform set.
+        // remove topmost node from transform set if it exists there.
         TransformSet::iterator itr = _transformSet.find(nodeWeCannotRemove->asTransform()->asMatrixTransform());
         if (itr!=_transformSet.end()) _transformSet.erase(itr);
     }

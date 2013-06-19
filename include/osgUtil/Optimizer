@@ -257,7 +257,7 @@ class OSGUTIL_EXPORT Optimizer
 
         /** Flatten Static Transform nodes by applying their transform to the
           * geometry on the leaves of the scene graph, then removing the
-          * now redundant transforms.  Static transformed Subgraphs that have multiple
+          * now redundant transforms.  Static transformed subgraphs that have multiple
           * parental paths above them are not flattened, if you require this then
           * the subgraphs have to be duplicated - for this use the
           * FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor. */
@@ -292,11 +292,11 @@ class OSGUTIL_EXPORT Optimizer
                 TransformSet    _transformSet;
         };
 
-        /** FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor is similar to
-          * to FlattenStaticTransformsVisitor in that is desgined to remove static transforms
+        /** FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor is similar
+          * to FlattenStaticTransformsVisitor in that it is designed to remove static transforms
           * from the scene graph, pushing down the transforms to the geometry leaves of the scene graph,
           * but with the difference that any subgraphs that are shared between different transforms
-          * of duplicated and flatten individually.  This results in more static transforms
+          * are duplicated and flattened individually.  This results in more static transforms
           * being removed, but also means that more data is generated, and as a result may
           * not always be the most appropriate flatten visitor to use.*/
         class OSGUTIL_EXPORT FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor : public BaseOptimizerVisitor
@@ -794,7 +794,7 @@ class OSGUTIL_EXPORT Optimizer
 
         /** Optimize texture usage in the scene graph by combining textures into texture atlas
           * Use of texture atlas cuts down on the number of seperate states in the scene, reducing
-          * state changes and improving the chances of use larger batches of geomertry.*/
+          * state changes and improving the chances of using larger batches of geometry.*/
         class OSGUTIL_EXPORT TextureAtlasVisitor : public BaseOptimizerVisitor
         {
             public:

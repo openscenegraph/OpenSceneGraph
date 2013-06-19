@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2004 Tanguy Fautré.
+// Copyright (C) 2004 Tanguy Fautr.
 // For conditions of distribution and use,
 // see copyright notice in tri_stripper.h
 //
@@ -372,7 +372,6 @@ inline tri_stripper::const_link_iterator tri_stripper::BackLinkToNeighbour(const
 
 void tri_stripper::MarkTriAsTaken(const size_t i)
 {
-    typedef triangle_graph::node_iterator tri_node_iter;
     typedef triangle_graph::out_arc_iterator tri_link_iter;
 
     // Mark the triangle node

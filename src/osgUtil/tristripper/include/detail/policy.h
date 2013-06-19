@@ -18,7 +18,7 @@
 
 namespace triangle_stripper {
 
-	namespace detail {
+    namespace detail {
 
 
 
@@ -26,19 +26,19 @@ namespace triangle_stripper {
 class policy
 {
 public:
-	policy(size_t MinStripSize, bool Cache);
+    policy(size_t MinStripSize, bool Cache);
 
-	strip BestStrip() const;
-	void Challenge(strip Strip, size_t Degree, size_t CacheHits);
+    strip BestStrip() const;
+    void Challenge(strip Strip, size_t Degree, size_t CacheHits);
 
 private:
         policy& operator = (const policy&) { return *this; }
-	strip	m_Strip;
-	size_t	m_Degree;
-	size_t	m_CacheHits;
+    strip    m_Strip;
+    size_t    m_Degree;
+    size_t    m_CacheHits;
 
-	const size_t	m_MinStripSize;
-	const bool		m_Cache;
+    const size_t    m_MinStripSize;
+    const bool        m_Cache;
 };
 
 
@@ -51,13 +51,13 @@ inline policy::policy(size_t MinStripSize, bool Cache)
 
 inline strip policy::BestStrip() const
 {
-	return m_Strip;
+    return m_Strip;
 }
 
 
 
 
-	} // namespace detail
+    } // namespace detail
 
 } // namespace triangle_stripper
 

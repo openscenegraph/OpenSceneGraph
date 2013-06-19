@@ -27,7 +27,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
-static char* computeSrc = {
+static const char* computeSrc = {
     "#version 430\n"
     "uniform float osg_FrameTime;\n"
     "uniform image2D targetTex;\n"

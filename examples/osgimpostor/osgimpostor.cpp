@@ -16,7 +16,10 @@
 *  THE SOFTWARE.
 */
 
+#include <osg/Config>
+#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
 #define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
+#endif
 
 #include <osg/Geometry>
 #include <osg/Material>
@@ -246,14 +249,14 @@ int main( int argc, char **argv )
 
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model)
     {
         // the osgSim::InsertImpostorsVisitor used lower down to insert impostors
         // only operators on subclass of Group's, if the model top node is not
         // a group then it won't be able to insert an impostor.  We therefore
         // manually insert an impostor above the model.
-        if (dynamic_cast<osg::Group*>(model)==0)
+        if (dynamic_cast<osg::Group*>(model.get())==0)
         {
             const osg::BoundingSphere& bs = model->getBound();
             if (bs.valid())
@@ -262,7 +265,7 @@ int main( int argc, char **argv )
                 osgSim::Impostor* impostor = new osgSim::Impostor;
 
                 // standard LOD settings
-                impostor->addChild(model);
+                impostor->addChild(model.get());
                 impostor->setRange(0,0.0f,1e7f);
                 impostor->setCenter(bs.center());
 
@@ -281,8 +284,8 @@ int main( int argc, char **argv )
         // up from model.  This is really what should be done, but I'll pass
         // on it right now as it requires a getRoots() method to be added to
         // osg::Node, and we're about to make a release so no new features! 
-        osg::Group* rootnode = new osg::Group;
-        rootnode->addChild(model);
+        osg::ref_ptr<osg::Group> rootnode = new osg::Group;
+        rootnode->addChild(model.get());
 
 
         // now insert impostors in the model using the InsertImpostorsVisitor.
@@ -306,7 +309,7 @@ int main( int argc, char **argv )
     }
 
     // add model to viewer.
-    viewer.setSceneData(model);
+    viewer.setSceneData(model.get());
 
     return viewer.run();
 }

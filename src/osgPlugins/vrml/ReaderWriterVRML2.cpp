@@ -250,9 +250,6 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
     if (obj->type().id() == "Group") // Group node
 
     {
-        openvrml::grouping_node *vrml_group;
-        vrml_group = dynamic_cast<openvrml::grouping_node *>(obj);
-
         osg::ref_ptr<osg::Group> osg_group = new osg::Group;
 
         if (!obj->id().empty())

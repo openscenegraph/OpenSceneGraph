@@ -109,7 +109,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedLineSet(openv
                 osg_geom->setColorIndices(osg_color_index.get());
             } else
                 // unspecified, use coordIndices field
-                osg_geom->setColorIndices(osg_geom->getVertexIndices());
+                osg_geom->setColorIndices(const_cast<osg::IndexArray*>(osg_geom->getVertexIndices()));
 
             // get color binding
             std::auto_ptr<openvrml::field_value> fv3 = vrml_ifs->field("colorPerVertex");

@@ -1,3 +1,4 @@
+#include <osg/Config>
 #ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
 #define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
 #endif

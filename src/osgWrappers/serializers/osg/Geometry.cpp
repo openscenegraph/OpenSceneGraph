@@ -98,7 +98,7 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData, FogCoordArray )
         for ( osg::Geometry::ArrayList::const_iterator itr=LISTNAME.begin(); \
               itr!=LISTNAME.end(); ++itr ) { \
             os << os.PROPERTY("Data") << os.BEGIN_BRACKET << std::endl; \
-            writeArray(os, *itr); os << os.END_BRACKET << std::endl; \
+            writeArray(os, itr->get()); os << os.END_BRACKET << std::endl; \
         } \
         os << os.END_BRACKET << std::endl; \
         return true; \

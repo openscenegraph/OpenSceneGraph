@@ -153,7 +153,7 @@ void Geometry::setFogCoordArray(Array* array)
     } \
     if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
     array->setBinding(static_cast<osg::Array::Binding>(ab));\
-    if (ab==BIND_PER_PRIMITIVE) _containsDeprecatedData = true;
+    if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true;
         
 
 #define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF) 
@@ -1352,19 +1352,19 @@ void Geometry::fixDeprecatedData()
     osg::IndexArray* indices = getIndexArray(_vertexArray.get());
     if (indices) setVertexArray(expandIndexArray(_vertexArray.get(), indices));
 
-    if (getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
+    if (getNormalBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = getIndexArray(_normalArray.get());
     if (indices) setNormalArray(expandIndexArray(getNormalArray(), indices));
 
-    if (getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
+    if (getColorBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = getIndexArray(_colorArray.get());
     if (indices) setColorArray(expandIndexArray(getColorArray(), indices));
 
-    if (getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
+    if (getSecondaryColorBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = getIndexArray(_secondaryColorArray.get());
     if (indices) setSecondaryColorArray(expandIndexArray(getSecondaryColorArray(), indices));
 
-    if (getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
+    if (getFogCoordBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = getIndexArray(_fogCoordArray.get());
     if (indices) setFogCoordArray(expandIndexArray(getFogCoordArray(), indices));
 
@@ -1376,7 +1376,7 @@ void Geometry::fixDeprecatedData()
 
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
-        if (getVertexAttribBinding(vi)==osg::Geometry::BIND_PER_PRIMITIVE) containsBindPerPrimitive = true;
+        if (getVertexAttribBinding(vi)==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
         indices = getIndexArray(_vertexAttribList[vi].get());
         if (indices) setVertexAttribArray(vi, expandIndexArray(getVertexAttribArray(vi), indices));
     }

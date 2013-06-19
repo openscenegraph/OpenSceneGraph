@@ -214,18 +214,15 @@ typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
 
 void TriStripVisitor::stripify(Geometry& geom)
 {
+    if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
 
-    if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-        geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
     // no point tri stripping if we don't have enough vertices.
     if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements()<3) return;

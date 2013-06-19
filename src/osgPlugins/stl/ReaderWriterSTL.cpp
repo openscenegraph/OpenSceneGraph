@@ -97,16 +97,40 @@ private:
             osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
             geom->setVertexArray(_vertex.get());
-            geom->setNormalArray(_normal.get());
-            geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-            geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
-
+            
+            if (_normal.valid())
+            {
+                // need to convert per triangle normals to per vertex
+                osg::ref_ptr<osg::Vec3Array> perVertexNormals = new osg::Vec3Array;
+                perVertexNormals->reserveArray(_normal->size() * 3);
+                for(osg::Vec3Array::iterator itr = _normal->begin();
+                    itr != _normal->end();
+                    ++itr)
+                {
+                    perVertexNormals->push_back(*itr);
+                }
+                
+                geom->setNormalArray(perVertexNormals.get());
+                geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            }
+            
             if (_color.valid())
             {
+                // need to convert per triangle colours to per vertex
                 OSG_INFO << "STL file with color" << std::endl;
-                geom->setColorArray(_color.get());
-                geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                osg::ref_ptr<osg::Vec4Array> perVertexColours = new osg::Vec4Array;
+                perVertexColours->reserveArray(_color->size() * 3);
+                for(osg::Vec4Array::iterator itr = _color->begin();
+                    itr != _color->end();
+                    ++itr)
+                {
+                    perVertexColours->push_back(*itr);
+                }
+                geom->setColorArray(perVertexColours.get());
+                geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
             }
+
+            geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
             osgUtil::TriStripVisitor tristripper;
             tristripper.stripify(*geom);

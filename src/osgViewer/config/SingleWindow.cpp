@@ -114,6 +114,6 @@ void SingleWindow::configure(osgViewer::View& view) const
     }
     else if (ds->getStereo() && ds->getUseSceneViewForStereoHint())
     {
-        view.assignStereoOrKeystoneToCamera(view.getCamera(), ds);
+        //view.assignStereoOrKeystoneToCamera(view.getCamera(), ds);
     }
 }

@@ -252,7 +252,8 @@ const char* invalidNames[] =
     "LightSource",
     "SlideEventHandler",
     "GraphicsContext*",
-    "Apple"
+    "Apple",
+    "GeometryNew"
 };
 
 
@@ -465,6 +466,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Juan","Manuel",
+     "Juan", "Manuel Alvarez"},
     {"Jaap","Gas",
      "Jaap", "Glas"},
     {"Philip","Lamp",

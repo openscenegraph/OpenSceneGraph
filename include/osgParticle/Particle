@@ -260,6 +260,10 @@ namespace osgParticle
         /// Same as above, range starts at 0 and ends at end
         inline void setTextureTile(int sTile, int tTile, int end = -1);
 
+        inline int getStartTile() const;
+
+        inline int getEndTile() const;
+
         /// Set the previous particle
         inline void setPreviousParticle(int previous) { _previousParticle = previous; }
 
@@ -630,6 +634,15 @@ namespace osgParticle
        }
     }
 
+    inline int Particle::getStartTile() const
+    {
+        return _start_tile;
+    }
+
+    inline int Particle::getEndTile() const
+    {
+        return _end_tile;
+    }
 }
 
 #endif

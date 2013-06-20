@@ -674,14 +674,23 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
         bool invert_y = event.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
         if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
 
+        double master_min_x = -1.0;
+        double master_max_x = 1.0;
+        double master_min_y = -1.0;
+        double master_max_y = 1.0;
+        
         osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
         if (getCamera()->getViewport())
         {
             osg::Viewport* viewport = getCamera()->getViewport();
+            master_min_x = viewport->x();
+            master_min_y = viewport->y();
+            master_max_x = viewport->x()+viewport->width();
+            master_max_y = viewport->y()+viewport->height();
             masterCameraVPW *= viewport->computeWindowMatrix();
         }
 
-        // slave Camera tahnks to sharing the same View
+        // slave Camera if it shares the same View
         osg::View::Slave* slave = findSlaveForCamera(camera);
         if (slave)
         {
@@ -689,13 +698,15 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
             {
                 osg::Viewport* viewport = camera->getViewport();
                 osg::Matrix localCameraVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
-                if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
+                if (viewport)
+                {
+                    localCameraVPW *= viewport->computeWindowMatrix();
+                }
 
                 osg::Matrix matrix( osg::Matrix::inverse(localCameraVPW) * masterCameraVPW );
                 osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
-                //OSG_NOTICE<<"    pointer event new_coord.x()="<<new_coord.x()<<" new_coord.y()="<<new_coord.y()<<std::endl;
-                event.addPointerData(new osgGA::PointerData(getCamera(), new_coord.x(), -1.0, 1.0,
-                                                                         new_coord.y(), -1.0, 1.0));
+                event.addPointerData(new osgGA::PointerData(getCamera(), new_coord.x(), master_min_x, master_max_x,
+                                                                         new_coord.y(), master_min_y, master_max_y));
             }
             else if (!slave->_useMastersSceneData)
             {

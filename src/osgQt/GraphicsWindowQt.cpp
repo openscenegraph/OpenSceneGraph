@@ -269,9 +269,16 @@ void GLWidget::keyPressEvent( QKeyEvent* event )
 
 void GLWidget::keyReleaseEvent( QKeyEvent* event )
 {
-    setKeyboardModifiers( event );
-    int value = s_QtKeyboardMap.remapKey( event );
-    _gw->getEventQueue()->keyRelease( value );
+    if( event->isAutoRepeat() )
+    {
+        event->ignore();
+    }
+    else
+    {
+        setKeyboardModifiers( event );
+        int value = s_QtKeyboardMap.remapKey( event );
+        _gw->getEventQueue()->keyRelease( value );
+    }
 
     // this passes the event to the regular Qt key event processing,
     // among others, it closes popup windows on ESC and forwards the event to the parent widgets

@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.1.7
+OpenSceneGraph Library 3.1.8
 
-498 Contributors:
+502 Contributors:
 
 Firstname Surname
 -----------------
@@ -8,11 +8,11 @@ Robert Osfield
 Don Burns
 Stephan Huber
 Paul Martz
-Mathias Fröhlich
+Mathias Frhlich
 Marco Jez
-Jean-Sébastien Guay
-Mike Weiblen
+Jean-Sbastien Guay
 Farshid Lashkari
+Mike Weiblen
 Wang Rui
 Ulrich Hertlein
 Eric Wing
@@ -40,53 +40,54 @@ Jason Beverage
 Jan Peciva
 J.P. Delport
 Mattias Helsing
+Magnus Kessler
+Laurens Voerman
 David Fries
 Andy Skinner
 Paul Melis
-Magnus Kessler
 Tom Jolley
 Pavel Moloshtan
 Luc Frauciel
 Brad Christiansen
 Alberto Luaces
 Olaf Flebbe
-Laurens Voerman
 Jason Daly
-Robert Milharcic
+Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
-Art Tevs
 Terry Welsh
 Serge Lages
 Mathieu Marache
 Chris Denham
 Alberto Farre
 Sherman Wilcox
-André Garneau
+Robert Michael
+Andr Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
 Mourad Boufarguine
 Lionel Lagarde
+Jan Ciger
 Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
-Romano José Magacho da Silva
+Romano Jos Magacho da Silva
 Michael Gronager
+Martin Naylor
 Joakim Simonsson
 David Spilling
-Daniel Sjölie
+Daniel Sjlie
 Bryan Thrall
 Torben Dannhauer
-Martin Naylor
-Jan Ciger
 Fabien Lavignotte
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
 Andreas Ekstrand
+Riccardo Corsi
 Rafa Gaitan
 Neil Hughes
 Martin Beckett
@@ -98,12 +99,12 @@ Csaba Halasz
 Cory Riddell
 Chuck Seberino
 Boris Bralo
+Aurelien Albert
 Yefei He
 Thomas Hogarth
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
-Riccardo Corsi
 Rainer Oder
 Nico Kruithof
 Martin Aumueller
@@ -124,13 +125,12 @@ Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
-Aurelien Albert
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautré
+Tanguy Fautr
 Sean Spicer
 Richard Schmidt
 Peter Hrenka
@@ -182,6 +182,7 @@ Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
 Ryan Pavlik
+Robert Milharcic
 Rene Molenaar
 Piotr Domagalski
 Phil Atkin
@@ -189,6 +190,7 @@ Nathan Monteleone
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
+Marcin Prus
 Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
@@ -226,6 +228,7 @@ Steve Lunsford
 Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
+Sergey Polischuk
 Sebastian Messerschmidt
 Raymond de Vries
 Ralf Kern
@@ -239,7 +242,7 @@ Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
+Morn Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -254,6 +257,7 @@ Marius Heise
 Marcin Hajder
 Lilith Bryant
 Lars Nilsson
+Kristofer Tingdahl
 Kevin Moiule
 Keith Steffen
 Julen Garcia
@@ -279,6 +283,7 @@ Eric Buehler
 Eduardo Poyart
 Edgar Ellis
 Dimi Christopoulos
+Diane Delalle
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -307,7 +312,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Løvset
+Tyge Lvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -326,7 +331,6 @@ Simon Buckley
 Sid Byce
 Shuxing Xiao
 Shane Arnott
-Sergey Polischuk
 Sebastien Kuntz
 Ruth Lang
 Ruben Smelik
@@ -348,7 +352,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mächler
+Philipp Mchler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -368,13 +372,14 @@ Ole-Morten Duesund
 Nicolas Brodu
 Mojtaba Fathi
 Mirko Viviani
-Mikkel GjÃ¸l
+Mikkel Gjl
 Mike Garrity
 Miha Ravsel
 Michael Polak
 Michael Morrison
 Michael Logan
 Michael Kapelko
+Michael Bach Jensen
 Max Rhiener
 Max Behensky
 Mauricio Hofmam
@@ -392,7 +397,6 @@ Marius Kintel
 Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
-Marcin Prus
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -402,7 +406,6 @@ Laurence Muller
 Laura Cerritelli
 Kyle Centers
 Kristopher Bixler
-Kristofer Tingdahl
 Konstantin Matveyev
 Kim Seokhwan
 Kim Bale
@@ -411,6 +414,7 @@ Karl Heijdenberg
 Jutta Sauer
 Julian Scheid
 Juergen Rensen
+Juan Manuel Alvarez
 Juan Hernando
 Josh Portway
 John Tan
@@ -465,7 +469,7 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-César L. B. Silveira
+Csar L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
@@ -480,7 +484,7 @@ Bruno Herbelin
 Brian Keener
 Brandon Hamm
 Bora Utka
-Björn Hein
+Bjrn Hein
 Bjorn Blissing
 Bill Prendergast
 Bernardt Duvenhage

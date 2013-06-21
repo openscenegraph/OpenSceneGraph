@@ -137,8 +137,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
 
         void setCamera(osg::Camera* camera) { if (_camera!=camera) { _camera = camera; _cameraRequiresSetUp = true; } }
-        osg::Camera* getCamera() { return _camera; }
-        const osg::Camera* getCamera() const { return _camera; }
+        osg::Camera* getCamera() { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
 
         void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = flag; }
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
@@ -288,7 +288,7 @@ protected:
         int                                 _clearStencil;
 
         bool                                _cameraRequiresSetUp;
-        osg::Camera*                        _camera;
+        osg::observer_ptr<osg::Camera>      _camera;
 
         osg::ref_ptr<osg::Texture>              _texture;
         unsigned int                            _level;

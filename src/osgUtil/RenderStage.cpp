@@ -1090,7 +1090,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         doCopyTexture = true;
     }
 
-    if (fbo_supported && _camera)
+    if (fbo_supported && _camera.valid())
     {
         // now generate mipmaps if they are required.
         const osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
@@ -1142,11 +1142,11 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if(_initialViewMatrix.valid()) renderInfo.getState()->setInitialViewMatrix(_initialViewMatrix.get());
 
     // push the stages camera so that drawing code can query it
-    if (_camera) renderInfo.pushCamera(_camera);
+    if (_camera.valid()) renderInfo.pushCamera(_camera.get());
 
     _stageDrawnThisFrame = true;
 
-    if (_camera && _camera->getInitialDrawCallback())
+    if (_camera.valid() && _camera->getInitialDrawCallback())
     {
         // if we have a camera with a intial draw callback invoke it.
         (*(_camera->getInitialDrawCallback()))(renderInfo);
@@ -1202,7 +1202,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     unsigned int originalStackSize = useState->getStateSetStackSize();
 
-    if (_camera && _camera->getPreDrawCallback())
+    if (_camera.valid() && _camera->getPreDrawCallback())
     {
         // if we have a camera with a pre draw callback invoke it.
         (*(_camera->getPreDrawCallback()))(renderInfo);
@@ -1263,7 +1263,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         copyTexture(renderInfo);
     }
 
-    if (_camera && _camera->getPostDrawCallback())
+    if (_camera.valid() && _camera->getPostDrawCallback())
     {
         // if we have a camera with a post draw callback invoke it.
         (*(_camera->getPostDrawCallback()))(renderInfo);
@@ -1301,14 +1301,14 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     // render all the post draw callbacks
     drawPostRenderStages(renderInfo,previous);
 
-    if (_camera && _camera->getFinalDrawCallback())
+    if (_camera.valid() && _camera->getFinalDrawCallback())
     {
         // if we have a camera with a final callback invoke it.
         (*(_camera->getFinalDrawCallback()))(renderInfo);
     }
 
     // pop the render stages camera.
-    if (_camera) renderInfo.popCamera();
+    if (_camera.valid()) renderInfo.popCamera();
 }
 
 void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)

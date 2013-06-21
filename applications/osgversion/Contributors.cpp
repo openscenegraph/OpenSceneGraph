@@ -265,6 +265,7 @@ struct TypoCorrection
 
 TypoCorrection typoCorrections[] =
 {
+    {"Cheaev",         "Chebaev"},
     {"Alaxandre",      "Alexandre"},
     {"Aderian",        "Adrian"},
     {"Adndre",         "Andre"},
@@ -466,6 +467,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"FrancoisTigeot","",
+     "Francois", "Tigeot"},
     {"Juan","Manuel",
      "Juan", "Manuel Alvarez"},
     {"Jaap","Gas",

@@ -1466,7 +1466,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
 
             // right Camera right buffer
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(), 0, 0, traits->width, traits->height, traits->doubleBuffer ? GL_BACK_RIGHT : GL_FRONT_RIGHT, 1.0);
-            right_camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+            right_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
             right_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 1);
 
             // for keystone:

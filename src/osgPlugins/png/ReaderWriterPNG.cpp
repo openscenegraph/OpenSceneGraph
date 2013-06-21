@@ -114,6 +114,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             int bit_depth = img.getPixelSizeInBits();
             switch(img.getPixelFormat()) {
+                case(GL_DEPTH_COMPONENT): color = PNG_COLOR_TYPE_GRAY; break;
                 case(GL_LUMINANCE): color = PNG_COLOR_TYPE_GRAY; break;
                 case(GL_ALPHA): color = PNG_COLOR_TYPE_GRAY; break; //Couldn't find a color type for pure alpha, using gray instead
                 case(GL_LUMINANCE_ALPHA): color = PNG_COLOR_TYPE_GRAY_ALPHA ; bit_depth /= 2; break;

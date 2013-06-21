@@ -665,6 +665,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             int image_components = 3;
             // Only cater for gray, alpha and RGB for now
             switch(img.getPixelFormat()) {
+              case(GL_DEPTH_COMPONENT):
               case(GL_LUMINANCE):
               case(GL_ALPHA): {
                   image_color_space = JCS_GRAYSCALE;

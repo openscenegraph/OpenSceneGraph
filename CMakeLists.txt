@@ -31,17 +31,17 @@ if(COMMAND cmake_policy)
     if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
         cmake_policy(SET CMP0008 OLD)
     endif()
-    
+
     # disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
     if((${CMAKE_MAJOR_VERSION} EQUAL 2 OR ${CMAKE_MAJOR_VERSION} GREATER 2) AND
        (${CMAKE_MINOR_VERSION} EQUAL 8 OR ${CMAKE_MINOR_VERSION} GREATER 8) AND
-        ${CMAKE_PATCH_VERSION} GREATER 10)   
+        ${CMAKE_PATCH_VERSION} GREATER 10)
         cmake_policy(SET CMP0020 OLD)
     endif()
     # nicer version check - but needs at least CMake 2.6.2? Worth upgrading the requirements?
-    #if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)        
+    #if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)
 
-    
+
 endif()
 
 PROJECT(OpenSceneGraph)
@@ -565,7 +565,7 @@ IF(OSG_USE_QT AND NOT ANDROID)
     ELSE()
 
         FIND_PACKAGE(Qt5Widgets QUIET)
-        
+
         IF ( Qt5Widgets_FOUND )
             # CMake 2.8.8 or greater required
             BUILDER_VERSION_GREATER(2 8 7)
@@ -918,7 +918,7 @@ IF(APPLE AND NOT ANDROID)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.7 -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
             ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.6" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.5")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
-                # 64-bit compiles are not supported with Carbon. 
+                # 64-bit compiles are not supported with Carbon.
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
             ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.4")
@@ -1035,7 +1035,7 @@ ENDIF(BUILD_DOCUMENTATION)
 OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://cdash.openscenegraph.org/index.php?project=OpenSceneGraph" OFF)
 IF(BUILD_DASHBOARD_REPORTS)
 # The following are required to uses Dart and the Cdash dashboard
-# viewable here : http://cdash.openscenegraph.org/index.php?project=OpenSceneGraph 
+# viewable here : http://cdash.openscenegraph.org/index.php?project=OpenSceneGraph
     INCLUDE(Dart)
 ENDIF()
 

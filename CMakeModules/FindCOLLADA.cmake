@@ -49,6 +49,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /usr/local/include
     /usr/local/include/colladadom
     /usr/local/include/collada-dom
+    /opt/local/include/collada-dom
     /usr/include/
     /usr/include/colladadom
     /usr/include/collada-dom
@@ -237,7 +238,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY
-        NAMES libboost_filesystem boost_filesystem libboost_filesystem-vc90-mt libboost_filesystem-vc100-mt
+        NAMES libboost_filesystem boost_filesystem boost_filesystem-mt libboost_filesystem-vc90-mt libboost_filesystem-vc100-mt
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -245,7 +246,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY_DEBUG
-        NAMES libboost_filesystem-d boost_filesystem-d libboost_filesystem-vc90-mt-gd libboost_filesystem-vc100-mt-gd
+        NAMES libboost_filesystem-d boost_filesystem-d boost_filesystem-mt-d libboost_filesystem-vc90-mt-gd libboost_filesystem-vc100-mt-gd
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -253,7 +254,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY
-        NAMES libboost_system boost_system libboost_system-vc90-mt libboost_system-vc100-mt
+        NAMES libboost_system boost_system boost_system-mt libboost_system-vc90-mt libboost_system-vc100-mt
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -261,7 +262,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY_DEBUG
-        NAMES libboost_system-d boost_system-d libboost_system-vc90-mt-gd libboost_system-vc100-mt-gd
+        NAMES libboost_system-d boost_system-d boost_system-mt-d libboost_system-vc90-mt-gd libboost_system-vc100-mt-gd
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw

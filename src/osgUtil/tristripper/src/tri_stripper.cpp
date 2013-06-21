@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2004 Tanguy Fautr.
+// Copyright (C) 2004 Tanguy Fautré.
 // For conditions of distribution and use,
 // see copyright notice in tri_stripper.h
 //
@@ -60,7 +60,7 @@ void tri_stripper::Strip(primitive_vector * out_pPrimitivesVector)
 
     Stripify();
     AddLeftTriangles();
-    
+
     std::swap(m_PrimitivesVector, (* out_pPrimitivesVector));
 }
 
@@ -136,14 +136,14 @@ inline strip tri_stripper::FindBestStrip()
 
         // Discard useless triangles from the candidate list
         if ((m_Triangles[Candidate].marked()) || (m_TriHeap[Candidate] == 0))
-            continue;        
+            continue;
 
         // Try to extend the triangle in the 3 possible forward directions
         for (size_t i = 0; i < 3; ++i) {
 
             const strip Strip = ExtendToStrip(Candidate, triangle_order(i));
             Policy.Challenge(Strip, m_TriHeap[Strip.Start()], m_Cache.hitcount());
-            
+
             m_Cache = CacheBackup;
         }
 
@@ -154,7 +154,7 @@ inline strip tri_stripper::FindBestStrip()
 
                 const strip Strip = BackExtendToStrip(Candidate, triangle_order(i), false);
                 Policy.Challenge(Strip, m_TriHeap[Strip.Start()], m_Cache.hitcount());
-            
+
                 m_Cache = CacheBackup;
             }
 
@@ -162,7 +162,7 @@ inline strip tri_stripper::FindBestStrip()
 
                 const strip Strip = BackExtendToStrip(Candidate, triangle_order(i), true);
                 Policy.Challenge(Strip, m_TriHeap[Strip.Start()], m_Cache.hitcount());
-            
+
                 m_Cache = CacheBackup;
             }
         }
@@ -177,7 +177,7 @@ inline strip tri_stripper::FindBestStrip()
 strip tri_stripper::ExtendToStrip(const size_t Start, triangle_order Order)
 {
     const triangle_order StartOrder = Order;
-    
+
     // Begin a new strip
     m_Triangles[Start]->SetStripID(++m_StripID);
     AddTriangle(* m_Triangles[Start], Order, false);
@@ -186,7 +186,7 @@ strip tri_stripper::ExtendToStrip(const size_t Start, triangle_order Order)
     bool ClockWise = false;
 
     // Loop while we can further extend the strip
-    for (tri_iterator Node = (m_Triangles.begin() + Start); 
+    for (tri_iterator Node = (m_Triangles.begin() + Start);
         (Node != m_Triangles.end()) && (!Cache() || ((Size + 2) < CacheSize()));
         ++Size) {
 
@@ -222,7 +222,7 @@ strip tri_stripper::BackExtendToStrip(size_t Start, triangle_order Order, bool C
     tri_iterator Node;
 
     // Loop while we can further extend the strip
-    for (Node = (m_Triangles.begin() + Start); 
+    for (Node = (m_Triangles.begin() + Start);
         !Cache() || ((Size + 2) < CacheSize());
         ++Size) {
 

@@ -923,17 +923,6 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                      verts,normals,colors,texcoords,
                                      ncount,ccount);
 
-                       if ( vcount>0 && ((vcount % primLength) == 0) )
-                       {
-                         if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                         {
-                           ncount++;
-                         }
-                         if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                         {
-                           ccount++;
-                         }
-                       }
                        vcount++;
                     }
                     indexBegin+=nbVerticesPerPoly;
@@ -1022,17 +1011,6 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                                   verts,normals,colors,texcoords,
                                                   ncount,ccount);
 
-                            if ( primCount>0 && ((primCount % localPrimLength) == 0) )
-                            {
-                                if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                                {
-                                    ncount++;
-                                }
-                                if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                                {
-                                    ccount++;
-                                }
-                            }
                             vindex++;
                         }
                         indexBegin+=nbVerticesPerPoly;
@@ -1122,17 +1100,6 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                               verts,normals,colors,texcoords,
                                               ncount,ccount);
 
-                        if ( primCount>0 && ((primCount % primLength) == 0) )
-                        {
-                            if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                            {
-                              ncount++;
-                            }
-                            if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                            {
-                              ccount++;
-                            }
-                        }
                     }
 
                     primItrBegin+=nbVerticesPerPoly;
@@ -1220,18 +1187,6 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                        norm,color,
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
-
-                    if ( primCount>0 && ((primCount % primLength) == 0) )
-                    {
-                      if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                      {
-                        ncount++;
-                      }
-                      if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                      {
-                        ccount++;
-                      }
-                    }
 
                   }
                   primItrBegin+=nbVerticesPerPoly;
@@ -1323,17 +1278,6 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
 
-                    if ( primCount>0 && ((primCount % primLength) == 0) )
-                    {
-                      if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                      {
-                        ncount++;
-                      }
-                      if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
-                      {
-                        ccount++;
-                      }
-                    }
                   }
                   primItrBegin+=nbVerticesPerPoly;
 #if ( _SECURE_SCL == 1 )

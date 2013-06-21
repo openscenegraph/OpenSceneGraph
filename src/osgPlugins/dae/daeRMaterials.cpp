@@ -1290,10 +1290,10 @@ bool daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geo
     {
         if (!strcmp(bvia[k]->getSemantic(), texCoordSetName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), COMMON_PROFILE_INPUT_TEXCOORD))
         {
-            unsigned set = bvia[k]->getInput_set();
+            unsigned int set = bvia[k]->getInput_set();
             if (set < cachedGeometry->getNumTexCoordArrays())
             {
-            clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(set));
+                clonedGeometry->setTexCoordArray(localTextureUnit, const_cast<osg::Array*>(cachedGeometry->getTexCoordArray(set)));
             }
             else
             {
@@ -1315,7 +1315,7 @@ bool daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geo
                 IdToCoordIndexMap::const_iterator it = _texCoordIdMap.find(ba[k]->getTarget());
                 if (it!=_texCoordIdMap.end()&& (cachedGeometry->getNumTexCoordArrays()>it->second))
                 {
-                  clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(it->second));
+                  clonedGeometry->setTexCoordArray(localTextureUnit, const_cast<osg::Array*>(cachedGeometry->getTexCoordArray(it->second)));
                 }
                 else
                 {
@@ -1328,7 +1328,7 @@ bool daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geo
         {
             if (cachedGeometry->getNumTexCoordArrays())
             {
-                clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(0));
+                clonedGeometry->setTexCoordArray(localTextureUnit, const_cast<osg::Array*>(cachedGeometry->getTexCoordArray(0)));
             }
         }
     }

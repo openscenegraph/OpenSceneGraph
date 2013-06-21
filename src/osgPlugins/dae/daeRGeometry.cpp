@@ -70,9 +70,9 @@ osg::Geode* daeReader::getOrCreateGeometry(domGeometry *pDomGeometry, domBind_ma
         osg::Geometry* geom = pCopiedOsgGeode->getDrawable(i)->asGeometry();
         if (geom)
         {
-            if (!geom->areFastPathsUsed() && !geom->getInternalOptimizedGeometry())
+            if (geom->containsDeprecatedData())
             {
-                //geom->computeInternalOptimizedGeometry();
+                geom->fixDeprecatedData();
             }
         }
     }
@@ -798,7 +798,7 @@ typedef std::map<VertexIndices, GLuint> VertexIndicesIndexMap;
 
 /// Creates a value array, packed in a osg::Array, corresponding to indexed values.
 template <class ArrayType, int Value>
-ArrayType createGeometryArray(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, int texcoordNum=-1) {
+ArrayType* createGeometryArray(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, int texcoordNum=-1) {
     const ArrayType * source = sourceReader.getArray<ArrayType>();
     if (!source) return 0;
     ArrayType * pArray = new ArrayType(osg::Geometry::BIND_PER_VERTEX);

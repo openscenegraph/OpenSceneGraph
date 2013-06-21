@@ -50,29 +50,29 @@ class OSG_EXPORT Geometry : public Drawable
         const Array* getVertexArray() const  { return _vertexArray.get(); }
 
 
-        void setNormalArray(Array* array);
+        void setNormalArray(Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array* getNormalArray() { return _normalArray.get(); }
         const Array* getNormalArray() const { return _normalArray.get(); }
 
-        
 
-        void setColorArray(Array* array);
+
+        void setColorArray(Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array* getColorArray() { return _colorArray.get(); }
         const Array* getColorArray() const { return _colorArray.get(); }
 
 
 
-        void setSecondaryColorArray(Array* array);
+        void setSecondaryColorArray(Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
         const Array* getSecondaryColorArray() const  { return _secondaryColorArray.get(); }
 
 
-        void setFogCoordArray(Array* array);
+        void setFogCoordArray(Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array* getFogCoordArray() { return _fogCoordArray.get(); }
         const Array* getFogCoordArray() const { return _fogCoordArray.get(); }
 
 
-        void setTexCoordArray(unsigned int unit,Array*);
+        void setTexCoordArray(unsigned int unit,Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array* getTexCoordArray(unsigned int unit);
         const Array* getTexCoordArray(unsigned int unit) const;
 
@@ -82,7 +82,7 @@ class OSG_EXPORT Geometry : public Drawable
 
 
 
-        void setVertexAttribArray(unsigned int index,Array* array);
+        void setVertexAttribArray(unsigned int index, Array* array, osg::Array::Binding binding=osg::Array::BIND_UNDEFINED);
         Array *getVertexAttribArray(unsigned int index);
         const Array *getVertexAttribArray(unsigned int index) const;
 
@@ -214,12 +214,12 @@ class OSG_EXPORT Geometry : public Drawable
         osg::ref_ptr<Array>             _fogCoordArray;
         ArrayList                       _texCoordList;
         ArrayList                       _vertexAttribList;
-        
+
         bool                            _containsDeprecatedData;
-        
+
     public:
-        
-        
+
+
         /** Return true if the deprecated use array indicies or BIND_PER_PRIMITIVE binding has been assigned to arrays.*/
         bool containsDeprecatedData() const { return  _containsDeprecatedData; }
 
@@ -293,7 +293,7 @@ class OSG_EXPORT Geometry : public Drawable
         /** no longer supported.*/
         inline void setVertexAttribIndices(unsigned int index,IndexArray* array);
         inline const IndexArray* getVertexAttribIndices(unsigned int index) const;
-#endif    
+#endif
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
@@ -392,7 +392,7 @@ inline const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) co
     else return 0;
 }
 #endif
-    
+
 }
 
 #endif

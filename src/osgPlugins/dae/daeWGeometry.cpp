@@ -550,9 +550,12 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     domPolygons *polys = NULL;
     domPolylist *polylist = NULL;
 
-    ArrayNIndices verts( geom->getVertexArray(), geom->getVertexIndices() );
-    ArrayNIndices normals( geom->getNormalArray(), geom->getNormalIndices() );
-    ArrayNIndices colors( geom->getColorArray(), geom->getColorIndices() );
+    // make sure no deprecated indices or BIND_PER_PRIMITIVE remain
+    if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
+
+    ArrayNIndices verts( geom->getVertexArray(), 0 );
+    ArrayNIndices normals( geom->getNormalArray(), 0 );
+    ArrayNIndices colors( geom->getColorArray(), 0 );
 
     // RS BUG
     // getNumTexCoordArrays may return larger number
@@ -562,7 +565,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     {
         if (geom->getTexCoordArray(i))
         {
-            texcoords.push_back( ArrayNIndices( geom->getTexCoordArray( i ), geom->getTexCoordIndices( i ) ) );
+            texcoords.push_back( ArrayNIndices( geom->getTexCoordArray( i ), 0 ) );
         }
     }
     std::vector<ArrayNIndices> vertexAttributes;
@@ -570,7 +573,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     {
         if (geom->getVertexAttribArray(i))
         {
-            vertexAttributes.push_back(ArrayNIndices( geom->getVertexAttribArray( i ), geom->getVertexAttribIndices(i)));
+            vertexAttributes.push_back(ArrayNIndices( geom->getVertexAttribArray( i ), 0));
         }
     }
 

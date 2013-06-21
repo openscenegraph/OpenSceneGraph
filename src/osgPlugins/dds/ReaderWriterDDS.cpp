@@ -1147,6 +1147,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
         }
         break;
     case GL_LUMINANCE:
+    case GL_DEPTH_COMPONENT:
         {
             ddpf.dwRBitMask         = 0x000000ff;
             PF_flags |= DDPF_LUMINANCE;

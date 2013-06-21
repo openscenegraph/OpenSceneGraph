@@ -31,6 +31,17 @@ if(COMMAND cmake_policy)
     if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
         cmake_policy(SET CMP0008 OLD)
     endif()
+    
+    # disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
+    if((${CMAKE_MAJOR_VERSION} EQUAL 2 OR ${CMAKE_MAJOR_VERSION} GREATER 2) AND
+       (${CMAKE_MINOR_VERSION} EQUAL 8 OR ${CMAKE_MINOR_VERSION} GREATER 8) AND
+        ${CMAKE_PATCH_VERSION} GREATER 10)   
+        cmake_policy(SET CMP0020 OLD)
+    endif()
+    # nicer version check - but needs at least CMake 2.6.2? Worth upgrading the requirements?
+    #if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)        
+
+    
 endif()
 
 PROJECT(OpenSceneGraph)

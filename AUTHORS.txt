@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.1.8
 
-502 Contributors:
+504 Contributors:
 
 Firstname Surname
 -----------------
@@ -35,13 +35,13 @@ Mike Wittman
 Chris Hanson
 Roland Smeenk
 Roger James
+Laurens Voerman
 Jeremy Moles
 Jason Beverage
 Jan Peciva
 J.P. Delport
 Mattias Helsing
 Magnus Kessler
-Laurens Voerman
 David Fries
 Andy Skinner
 Paul Melis
@@ -56,9 +56,9 @@ Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
+Mathieu Marache
 Terry Welsh
 Serge Lages
-Mathieu Marache
 Chris Denham
 Alberto Farre
 Sherman Wilcox
@@ -184,6 +184,7 @@ Santosh Gaikwad
 Ryan Pavlik
 Robert Milharcic
 Rene Molenaar
+Pjotr Svetachov
 Piotr Domagalski
 Phil Atkin
 Nathan Monteleone
@@ -220,6 +221,7 @@ Zach Deedler
 Yuzhong Shen
 Wee See
 Warren Macchi
+Vladimir Chebaev
 Vincent Bourdier
 Terrex 
 Tassilo Glander
@@ -232,7 +234,6 @@ Sergey Polischuk
 Sebastian Messerschmidt
 Raymond de Vries
 Ralf Kern
-Pjotr Svetachov
 Piotr Gwiazdowski
 Pierre Haritchabalet
 Perry Miller
@@ -303,7 +304,6 @@ Wang Lam
 Walter J. Altice
 Volker Walkiewicz
 Vladimir Vukicevic
-Vladimir Cheaev
 Vlad Danciu
 Vivien Delage
 Vincent Vivanloc
@@ -383,6 +383,7 @@ Michael Bach Jensen
 Max Rhiener
 Max Behensky
 Mauricio Hofmam
+Matthias Helsing
 Matthew May
 Matthew Johnson-Roberson
 Matt Green
@@ -452,6 +453,7 @@ Frank Warmerdam
 Frank Midgley
 Frank Lindeman
 Frank Lichtenheld
+Francois Tigeot
 Filip Arlet
 Ferdinand Cornelissen
 Fajran Iman

@@ -254,7 +254,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 {
     /* This code is adapted from Apple's Documentation found here:
      * http://developer.apple.com/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/index.html
-     * Listing 9-4††Using a Quartz image as a texture source.
+     * Listing 9-4Using a Quartz image as a texture source.
      * Unfortunately, this guide doesn't show what to do about
      * non-RGBA image formats so I'm making the rest up
      * (and it's probably all wrong).
@@ -1293,6 +1293,16 @@ public:
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
         return writeImage(osg_image, fout, the_options);
 #endif
+    }
+
+    virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+    {
+        return readImage(fin, options);
+    }
+
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+    {
+        return readImage(file, options);
     }
 
 };

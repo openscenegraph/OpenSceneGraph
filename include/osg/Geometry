@@ -309,10 +309,13 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
     return createTexturedQuadGeometry(corner,widthVec,heightVec, 0.0f, 0.0f, s, t);
 }
 
+} // namespace osg
 
 #if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
 
 #include <osg/Notify>
+
+namespace osg {
 
 inline void Geometry::setVertexIndices(IndexArray* array)
 {
@@ -391,8 +394,9 @@ inline const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) co
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return dynamic_cast<IndexArray*>(_vertexAttribList[index]->getUserData());
     else return 0;
 }
-#endif
 
-}
+} // namespace osg
+
+#endif
 
 #endif

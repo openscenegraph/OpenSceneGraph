@@ -436,9 +436,14 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         glGenRenderbuffersOES(1, &_msaaDepthBuffer); 
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, _msaaDepthBuffer);
         
-        glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER_OES, _win->getTraits()->samples, ( _win->getTraits()->depth == 16) ? GL_DEPTH_COMPONENT16_OES : GL_DEPTH_COMPONENT24_OES, _backingWidth , _backingHeight);
+        GLuint attachmentType = (_win->getTraits()->stencil > 0) ? GL_DEPTH24_STENCIL8_OES : ((_win->getTraits()->depth == 16) ? GL_DEPTH_COMPONENT16_OES : GL_DEPTH_COMPONENT24_OES);
+        glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER_OES, _win->getTraits()->samples, attachmentType, _backingWidth , _backingHeight);
+        
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _msaaDepthBuffer);
-    
+        if (_win->getTraits()->stencil > 0) 
+        {
+            glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_STENCIL_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _msaaDepthBuffer);
+        }
     }
 #endif
     

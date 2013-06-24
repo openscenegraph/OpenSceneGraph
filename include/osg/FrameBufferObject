@@ -108,24 +108,6 @@
 #define GL_MULTISAMPLE_COVERAGE_MODES_NV        0x8E12
 #endif
 
-#ifndef GL_DEPTH_COMPONENT
-#define GL_DEPTH_COMPONENT              0x1902
-#endif
-
-#ifndef GL_VERSION_1_4
-#define GL_DEPTH_COMPONENT16              0x81A5
-#define GL_DEPTH_COMPONENT24              0x81A6
-#define GL_DEPTH_COMPONENT32              0x81A7
-#endif
-
-#ifndef GL_DEPTH_COMPONENT32F
-#define GL_DEPTH_COMPONENT32F             0x8CAC
-#endif
-
-#ifndef GL_DEPTH_COMPONENT32F_NV
-#define GL_DEPTH_COMPONENT32F_NV          0x8DAB
-#endif
-
 #ifndef GL_EXT_packed_depth_stencil
 #define GL_EXT_packed_depth_stencil 1
 #define GL_DEPTH_STENCIL_EXT 0x84F9

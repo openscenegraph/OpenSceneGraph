@@ -408,6 +408,13 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_RGBA8UI_EXT):
             return GL_RGBA_INTEGER_EXT;
 
+        case(GL_DEPTH_COMPONENT16):
+        case(GL_DEPTH_COMPONENT24):
+        case(GL_DEPTH_COMPONENT32):
+        case(GL_DEPTH_COMPONENT32F):
+        case(GL_DEPTH_COMPONENT32F_NV):
+            return GL_DEPTH_COMPONENT;
+
         default:
             return format;
     }
@@ -490,6 +497,11 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
+        case(GL_DEPTH_COMPONENT16): return 1;
+        case(GL_DEPTH_COMPONENT24): return 1;
+        case(GL_DEPTH_COMPONENT32): return 1;
+        case(GL_DEPTH_COMPONENT32F): return 1;
+        case(GL_DEPTH_COMPONENT32F_NV): return 1;
         case(GL_RED): return 1;
         case(GL_GREEN): return 1;
         case(GL_BLUE): return 1;

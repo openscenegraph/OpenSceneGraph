@@ -97,6 +97,24 @@
     #define GL_ETC1_RGB8_OES        0x8D64
 #endif
 
+#ifndef GL_DEPTH_COMPONENT
+#define GL_DEPTH_COMPONENT              0x1902
+#endif
+
+#ifndef GL_VERSION_1_4
+#define GL_DEPTH_COMPONENT16              0x81A5
+#define GL_DEPTH_COMPONENT24              0x81A6
+#define GL_DEPTH_COMPONENT32              0x81A7
+#endif
+
+#ifndef GL_DEPTH_COMPONENT32F
+#define GL_DEPTH_COMPONENT32F             0x8CAC
+#endif
+
+#ifndef GL_DEPTH_COMPONENT32F_NV
+#define GL_DEPTH_COMPONENT32F_NV          0x8DAB
+#endif
+
 namespace osg {
 
 // forward declare

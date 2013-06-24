@@ -152,16 +152,19 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
         osg::Vec4 &vN = (*N_)[i];
 
         osg::Vec3 txN = osg::Vec3(vT.x(), vT.y(), vT.z()) ^ osg::Vec3(vB.x(), vB.y(), vB.z());
+        bool flipped = txN * osg::Vec3(vN.x(), vN.y(), vN.z()) < 0;
 
-        if (txN * osg::Vec3(vN.x(), vN.y(), vN.z()) >= 0) {
-            vN = osg::Vec4(txN, 0);
-        } else {
+        if (flipped) {
             vN = osg::Vec4(-txN, 0);
+        } else {
+            vN = osg::Vec4(txN, 0);
         }
 
         vT.normalize();
         vB.normalize();
         vN.normalize();
+
+        vT[3] = flipped ? -1.0f : 1.0f;
     }
     /* TO-DO: if indexed, compress the attributes to have only one
      * version of each (different indices for each one?) */

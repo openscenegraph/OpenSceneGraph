@@ -481,6 +481,12 @@ void DXFWriterNodeVisitor::processStateSet(osg::StateSet* ss)
     {
         if (pm->getMode(osg::PolygonMode::FRONT)==osg::PolygonMode::LINE) _writeTriangleAs3DFace = false;
     }
+    osg::Material * mat = dynamic_cast<osg::Material *>(ss->getAttribute(osg::StateAttribute::MATERIAL));
+    if (mat)
+    {
+      const osg::Vec4&  color = mat->getDiffuse(osg::Material::FRONT);
+      _layer._color = _acadColor.findColor(color.asABGR()>>8);
+    }
 }
 
 void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
@@ -489,8 +495,6 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
 
     // We only want to create a new layer for geometry with something to draw
     if (geo->getVertexArray() && geo->getVertexArray()->getNumElements() ) {
-
-        processStateSet(_currentStateSet.get());
 
         if ( _firstPass ) {
             // Must have unique layer names
@@ -510,6 +514,9 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
         } else {
             _layer = _layers[_count++];
             OSG_DEBUG << "writing Layer " << _layer._name  << std::endl;
+            
+            processStateSet(_currentStateSet.get());
+
             if ( geo->getNumPrimitiveSets() ) {
                 for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i)
                 {

@@ -295,7 +295,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
         virtual ~IncrementalCompileOperation();
 
-        void compileSets(CompileSets& toCompile, CompileInfo compileInfo);
+        void compileSets(CompileSets& toCompile, CompileInfo& compileInfo);
 
         double                              _targetFrameRate;
         double                              _minimumTimeAvailableForGLCompileAndDeletePerFrame;

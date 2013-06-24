@@ -724,7 +724,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     //glFinish();
 }
 
-void IncrementalCompileOperation::compileSets(CompileSets& toCompile, CompileInfo compileInfo)
+void IncrementalCompileOperation::compileSets(CompileSets& toCompile, CompileInfo& compileInfo)
 {
     osg::NotifySeverity level = osg::INFO;
 

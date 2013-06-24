@@ -48,8 +48,8 @@ void LinkVisitor::handle_stateset(osg::StateSet* stateset)
 {
     if (!stateset)
         return;
-    osg::StateSet::AttributeList& attr = stateset->getAttributeList();
-    for (osg::StateSet::AttributeList::iterator it = attr.begin(); it != attr.end(); ++it)
+    const osg::StateSet::AttributeList& attr = stateset->getAttributeList();
+    for (osg::StateSet::AttributeList::const_iterator it = attr.begin(); it != attr.end(); ++it)
     {
         osg::StateAttribute* sattr = it->second.first.get();
         osgAnimation::AnimationUpdateCallbackBase* cb = dynamic_cast<osgAnimation::AnimationUpdateCallbackBase*>(sattr->getUpdateCallback());

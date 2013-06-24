@@ -138,7 +138,7 @@ void StateToCompile::apply(osg::StateSet& stateset)
             _programs.insert(program);
         }
 
-        osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+        const osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
 
 #if 0
         if (tal.size()>1)
@@ -146,13 +146,13 @@ void StateToCompile::apply(osg::StateSet& stateset)
             tal.erase(tal.begin()+1,tal.end());
         }
 #endif
-        for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
+        for(osg::StateSet::TextureAttributeList::const_iterator itr = tal.begin();
             itr != tal.end();
             ++itr)
         {
-            osg::StateSet::AttributeList& al = *itr;
+            const osg::StateSet::AttributeList& al = *itr;
             osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
-            osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
+            osg::StateSet::AttributeList::const_iterator texItr = al.find(tmp);
             if (texItr != al.end())
             {
                 osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());

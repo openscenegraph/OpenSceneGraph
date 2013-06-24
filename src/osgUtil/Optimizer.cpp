@@ -516,8 +516,8 @@ void Optimizer::StateVisitor::optimize()
             sitr!=_statesets.end();
             ++sitr)
         {
-            osg::StateSet::AttributeList& attributes = sitr->first->getAttributeList();
-            for(osg::StateSet::AttributeList::iterator aitr= attributes.begin();
+            const osg::StateSet::AttributeList& attributes = sitr->first->getAttributeList();
+            for(osg::StateSet::AttributeList::const_iterator aitr= attributes.begin();
                 aitr!=attributes.end();
                 ++aitr)
             {
@@ -528,11 +528,11 @@ void Optimizer::StateVisitor::optimize()
             }
 
 
-            osg::StateSet::TextureAttributeList& texAttributes = sitr->first->getTextureAttributeList();
+            const osg::StateSet::TextureAttributeList& texAttributes = sitr->first->getTextureAttributeList();
             for(unsigned int unit=0;unit<texAttributes.size();++unit)
             {
-                osg::StateSet::AttributeList& attributes = texAttributes[unit];
-                for(osg::StateSet::AttributeList::iterator aitr= attributes.begin();
+                const osg::StateSet::AttributeList& attributes = texAttributes[unit];
+                for(osg::StateSet::AttributeList::const_iterator aitr= attributes.begin();
                     aitr!=attributes.end();
                     ++aitr)
                 {
@@ -544,8 +544,8 @@ void Optimizer::StateVisitor::optimize()
             }
 
 
-            osg::StateSet::UniformList& uniforms = sitr->first->getUniformList();
-            for(osg::StateSet::UniformList::iterator uitr= uniforms.begin();
+            const osg::StateSet::UniformList& uniforms = sitr->first->getUniformList();
+            for(osg::StateSet::UniformList::const_iterator uitr= uniforms.begin();
                 uitr!=uniforms.end();
                 ++uitr)
             {
@@ -1808,10 +1808,10 @@ void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
             osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
             if (geom && isOperationPermissibleForObject(geom))
             {
-#ifdef GEOMETRYDEPRECATED                
+#ifdef GEOMETRYDEPRECATED
                 geom1829
                 ->computeCorrectBindingsAndArraySizes();
-#endif                
+#endif
             }
         }
     }
@@ -4071,7 +4071,7 @@ void Optimizer::TextureAtlasVisitor::reset()
 
 bool Optimizer::TextureAtlasVisitor::pushStateSet(osg::StateSet* stateset)
 {
-    osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+    const osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
 
     // if no textures ignore
     if (tal.empty()) return false;
@@ -4209,7 +4209,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
         osg::StateSet* stateset = sitr->first;
         Drawables& drawables = sitr->second;
 
-        osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+        const osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
         for(unsigned int unit=0; unit<tal.size(); ++unit)
         {
             osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
@@ -4376,7 +4376,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
         ++sitr)
     {
         osg::StateSet* stateset = sitr->first;
-        osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+        const osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
         for(unsigned int unit=0; unit<tal.size(); ++unit)
         {
             osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));

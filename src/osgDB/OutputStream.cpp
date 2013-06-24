@@ -68,7 +68,7 @@ OutputStream::~OutputStream()
 int OutputStream::getFileVersion( const std::string& d ) const
 {
     if ( d.empty() ) return OPENSCENEGRAPH_SOVERSION;
-    std::map<std::string, int>::const_iterator itr = _domainVersionMap.find(d);
+    VersionMap::const_iterator itr = _domainVersionMap.find(d);
     return itr==_domainVersionMap.end() ? 0 : itr->second;
 }
 
@@ -563,14 +563,14 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         unsigned int attributes = 0;
 
         // From SOVERSION 98, start to support custom wrapper domains, enabling the attribute bit
-        if ( _domainVersionMap.size()>0 ) attributes |= 0x1; 
+        if ( _domainVersionMap.size()>0 ) attributes |= 0x1;
 
         if ( _useSchemaData )
         {
             attributes |= 0x2;  // Record if we use inbuilt schema data or not
             useCompressSource = true;
         }
-        
+
         // From SOVERSION 98, start to support binary begin/end brackets so we can easily ignore
         // errors and unsupport classes, enabling the attribute bit
         if ( _useRobustBinaryFormat )
@@ -585,7 +585,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         {
             unsigned int numDomains = _domainVersionMap.size();
             *this << numDomains;
-            for ( std::map<std::string, int>::iterator itr=_domainVersionMap.begin();
+            for ( VersionMap::iterator itr=_domainVersionMap.begin();
                   itr!=_domainVersionMap.end(); ++itr )
             {
                 *this << itr->first << itr->second;
@@ -633,7 +633,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
               << std::string(osgGetVersion()) << std::endl;
         if ( _domainVersionMap.size()>0 )
         {
-            for ( std::map<std::string, int>::iterator itr=_domainVersionMap.begin();
+            for ( VersionMap::iterator itr=_domainVersionMap.begin();
                   itr!=_domainVersionMap.end(); ++itr )
             {
                 *this << PROPERTY("#CustomDomain") << itr->first << itr->second << std::endl;
@@ -655,7 +655,7 @@ void OutputStream::compress( std::ostream* ostream )
         _fields.push_back( "SchemaData" );
 
         std::string schemaData;
-        for ( std::map<std::string, std::string>::iterator itr=_inbuiltSchemaMap.begin();
+        for ( SchemaMap::iterator itr=_inbuiltSchemaMap.begin();
               itr!=_inbuiltSchemaMap.end(); ++itr )
         {
             schemaData += itr->first + '=';

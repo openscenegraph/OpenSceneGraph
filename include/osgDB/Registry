@@ -704,7 +704,7 @@ struct PluginFunctionProxy
     static osgDB::PluginFunctionProxy proxy_serializer_library_##libname(wrapper_serializer_library_##libname);
 
 #define USE_COMPRESSOR_WRAPPER(classname) \
-    extern "C" void wrapper_serializer_##classname(void); \
+    extern "C" void wrapper_compressor_##classname(void); \
     static osgDB::PluginFunctionProxy proxy_compressor_##classname(wrapper_compressor_##classname);
 
 #define REGISTER_OSGPLUGIN(ext, classname) \

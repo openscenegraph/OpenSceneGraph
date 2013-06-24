@@ -124,15 +124,14 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
 static bool checkFastPathHint( const osg::Geometry& geom ) { return false; }
 static bool readFastPathHint( osgDB::InputStream& is, osg::Geometry& geom )
 { 
+    // Compatibility info:
+    //   Previous Geometry wrapper (before 3.1.8) require a bool fast-path serializer.
+    //   It saves "FastPathHint true" in ascii mode and a single [bool] in binary mode.
+    //   Becoming a user serializer, the serializer will first read the name "FastPathHint"
+    //   or a [bool] in the checking process, then call the reading function as here. So,
+    //   we will only need to read one more bool variable in ascii mode; otherwise do nothing
     bool value = false;
-    if ( is.isBinary() )
-    {
-        is >> value;
-    }
-    else if ( is.matchString("FastPathHint") )
-    {
-        is >> value;
-    }
+    if ( !is.isBinary() ) is >> value;
     return true;
 }
 static bool writeFastPathHint( osgDB::OutputStream& os, const osg::Geometry& geom )

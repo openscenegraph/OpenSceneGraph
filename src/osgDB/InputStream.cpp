@@ -76,7 +76,7 @@ InputStream::~InputStream()
 int InputStream::getFileVersion( const std::string& d ) const
 {
     if ( d.empty() ) return _fileVersion;
-    std::map<std::string, int>::const_iterator itr = _domainVersionMap.find(d);
+    VersionMap::const_iterator itr = _domainVersionMap.find(d);
     return itr==_domainVersionMap.end() ? 0 : itr->second;
 }
 

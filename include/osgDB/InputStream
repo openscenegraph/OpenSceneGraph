@@ -186,7 +186,8 @@ protected:
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;
 
-    std::map<std::string, int> _domainVersionMap;
+    typedef std::map<std::string, int> VersionMap;
+    VersionMap _domainVersionMap;
     int _fileVersion;
     bool _useSchemaData;
     bool _forceReadingImage;

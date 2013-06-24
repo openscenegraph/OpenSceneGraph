@@ -23,7 +23,7 @@
 using namespace osgDB;
 
 OutputStream::OutputStream( const osgDB::Options* options )
-:   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false)
+:   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false), _useRobustBinaryFormat(true)
 {
     BEGIN_BRACKET.set( "{", +INDENT_VALUE );
     END_BRACKET.set( "}", -INDENT_VALUE );
@@ -31,6 +31,8 @@ OutputStream::OutputStream( const osgDB::Options* options )
     if ( !options ) return;
     _options = options;
 
+    if ( options->getPluginStringData("RobustBinaryFormat")=="false" )
+        _useRobustBinaryFormat = false;
     if ( options->getPluginStringData("SchemaData")=="true" )
         _useSchemaData = true;
     if ( !options->getPluginStringData("SchemaFile").empty() )
@@ -45,10 +47,29 @@ OutputStream::OutputStream( const osgDB::Options* options )
         else if ( hintString=="UseExternal" ) _writeImageHint = WRITE_USE_EXTERNAL;
         else if ( hintString=="WriteOut" ) _writeImageHint = WRITE_EXTERNAL_FILE;
     }
+
+    if ( !options->getPluginStringData("CustomDomains").empty() )
+    {
+        StringList domains, keyAndValue;
+        split( options->getPluginStringData("CustomDomains"), domains, ';' );
+        for ( unsigned int i=0; i<domains.size(); ++i )
+        {
+            split( domains[i], keyAndValue, ':' );
+            if ( keyAndValue.size()>1 )
+                _domainVersionMap[keyAndValue.front()] = atoi(keyAndValue.back().c_str());
+        }
+    }
 }
 
 OutputStream::~OutputStream()
 {
+}
+
+int OutputStream::getFileVersion( const std::string& d ) const
+{
+    if ( d.empty() ) return OPENSCENEGRAPH_SOVERSION;
+    std::map<std::string, int>::const_iterator itr = _domainVersionMap.find(d);
+    return itr==_domainVersionMap.end() ? 0 : itr->second;
 }
 
 OutputStream& OutputStream::operator<<( const osg::Vec2b& v )
@@ -483,7 +504,6 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
                                 << name << std::endl;
         return;
     }
-    _fields.push_back( name );
 
     const StringList& associates = wrapper->getAssociates();
     for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
@@ -523,8 +543,6 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
 
         _fields.pop_back();
     }
-    _fields.pop_back();
-
 }
 
 void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType type )
@@ -544,12 +562,35 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         bool useCompressSource = false;
         unsigned int attributes = 0;
 
+        // From SOVERSION 98, start to support custom wrapper domains, enabling the attribute bit
+        if ( _domainVersionMap.size()>0 ) attributes |= 0x1; 
+
         if ( _useSchemaData )
         {
             attributes |= 0x2;  // Record if we use inbuilt schema data or not
             useCompressSource = true;
         }
+        
+        // From SOVERSION 98, start to support binary begin/end brackets so we can easily ignore
+        // errors and unsupport classes, enabling the attribute bit
+        if ( _useRobustBinaryFormat )
+        {
+            outIterator->setSupportBinaryBrackets( true );
+            attributes |= 0x4;
+        }
         *this << attributes;
+
+        // Record all custom versions
+        if ( _domainVersionMap.size()>0 )
+        {
+            unsigned int numDomains = _domainVersionMap.size();
+            *this << numDomains;
+            for ( std::map<std::string, int>::iterator itr=_domainVersionMap.begin();
+                  itr!=_domainVersionMap.end(); ++itr )
+            {
+                *this << itr->first << itr->second;
+            }
+        }
 
         if ( !_compressorName.empty() )
         {
@@ -590,6 +631,14 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         *this << PROPERTY("#Version") << (unsigned int)OPENSCENEGRAPH_SOVERSION << std::endl;
         *this << PROPERTY("#Generator") << std::string("OpenSceneGraph")
               << std::string(osgGetVersion()) << std::endl;
+        if ( _domainVersionMap.size()>0 )
+        {
+            for ( std::map<std::string, int>::iterator itr=_domainVersionMap.begin();
+                  itr!=_domainVersionMap.end(); ++itr )
+            {
+                *this << PROPERTY("#CustomDomain") << itr->first << itr->second << std::endl;
+            }
+        }
         *this << std::endl;
     }
     _fields.pop_back();

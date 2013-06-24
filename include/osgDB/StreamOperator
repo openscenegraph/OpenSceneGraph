@@ -16,12 +16,15 @@ class InputStream;
 class OSGDB_EXPORT OutputIterator : public osg::Referenced
 {
 public:
-    OutputIterator() : _out(0) {}
+    OutputIterator() : _out(0), _supportBinaryBrackets(false) {}
     virtual ~OutputIterator() {}
 
     void setStream( std::ostream* ostream ) { _out = ostream; }
     std::ostream* getStream() { return _out; }
     const std::ostream* getStream() const { return _out; }
+
+    void setSupportBinaryBrackets( bool b ) { _supportBinaryBrackets = b; }
+    bool getSupportBinaryBrackets() const { return _supportBinaryBrackets; }
 
     virtual bool isBinary() const = 0;
 
@@ -64,12 +67,13 @@ protected:
     }
 
     std::ostream* _out;
+    bool _supportBinaryBrackets;
 };
 
 class OSGDB_EXPORT InputIterator : public osg::Referenced
 {
 public:
-    InputIterator() : _in(0), _inputStream(0), _byteSwap(0), _failed(false) {}
+    InputIterator() : _in(0), _inputStream(0), _byteSwap(0), _supportBinaryBrackets(false), _failed(false) {}
     virtual ~InputIterator() {}
 
     void setStream( std::istream* istream ) { _in = istream; }
@@ -82,6 +86,9 @@ public:
 
     void setByteSwap(int byteSwap) { _byteSwap = byteSwap; }
     int getByteSwap() const { return _byteSwap; }
+
+    void setSupportBinaryBrackets( bool b ) { _supportBinaryBrackets = b; }
+    bool getSupportBinaryBrackets() const { return _supportBinaryBrackets; }
 
     void checkStream() const { if (_in->rdstate()&_in->failbit) _failed = true; }
     bool isFailed() const { return _failed; }
@@ -121,6 +128,7 @@ protected:
     std::istream*       _in;
     osgDB::InputStream* _inputStream;
     int                 _byteSwap;
+    bool                _supportBinaryBrackets;
     mutable bool        _failed;
 };
 

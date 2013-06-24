@@ -50,7 +50,9 @@ public:
 
     ObjectWrapper( osg::Object* proto, const std::string& name,
                    const std::string& associates );
-    
+    ObjectWrapper( osg::Object* proto, const std::string& domain, const std::string& name,
+                   const std::string& associates );
+
     void setUpdatedVersion( int ver ) { _version = ver; }
     int getUpdatedVersion() const { return _version; }
 
@@ -76,6 +78,7 @@ protected:
     virtual ~ObjectWrapper() {}
 
     osg::ref_ptr<osg::Object> _proto;
+    std::string _domain;
     std::string _name;
     StringList _associates;
     SerializerList _serializers;
@@ -165,6 +168,20 @@ protected:
     osg::ref_ptr<ObjectWrapper> _wrapper;
 };
 
+class OSGDB_EXPORT RegisterCustomWrapperProxy
+{
+public:
+    typedef void (*AddPropFunc)( const char*, ObjectWrapper* );
+
+    RegisterCustomWrapperProxy( osg::Object* proto, const std::string& domain, const std::string& name,
+                                const std::string& associates, AddPropFunc func );
+
+    virtual ~RegisterCustomWrapperProxy();
+
+protected:
+    osg::ref_ptr<ObjectWrapper> _wrapper;
+};
+
 #define REGISTER_OBJECT_WRAPPER(NAME, PROTO, CLASS, ASSOCIATES) \
     extern "C" void wrapper_serializer_##NAME(void) {} \
     extern void wrapper_propfunc_##NAME(osgDB::ObjectWrapper*); \
@@ -180,6 +197,22 @@ protected:
         PROTO, CLASSNAME, ASSOCIATES, &wrapper_propfunc_##NAME); \
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
+
+#define REGISTER_CUSTOM_OBJECT_WRAPPER(DOMAIN, NAME, PROTO, CLASS, ASSOCIATES) \
+    extern "C" void wrapper_serializer_##NAME(void) {} \
+    extern void wrapper_propfunc_##NAME(const char*, osgDB::ObjectWrapper*); \
+    static osgDB::RegisterCustomWrapperProxy wrapper_proxy_##NAME( \
+        PROTO, #DOMAIN, #CLASS, ASSOCIATES, &wrapper_propfunc_##NAME); \
+    typedef CLASS MyClass; \
+    void wrapper_propfunc_##NAME(const char* domain, osgDB::ObjectWrapper* wrapper)
+
+#define REGISTER_CUSTOM_OBJECT_WRAPPER2(DOMAIN, NAME, PROTO, CLASS, CLASSNAME, ASSOCIATES) \
+    extern "C" void wrapper_serializer_##NAME(void) {} \
+    extern void wrapper_propfunc_##NAME(const char*, osgDB::ObjectWrapper*); \
+    static osgDB::RegisterCustomWrapperProxy wrapper_proxy_##NAME( \
+        PROTO, #DOMAIN, CLASSNAME, ASSOCIATES, &wrapper_propfunc_##NAME); \
+    typedef CLASS MyClass; \
+    void wrapper_propfunc_##NAME(const char* domain, osgDB::ObjectWrapper* wrapper)
 
 class OSGDB_EXPORT RegisterCompressorProxy
 {

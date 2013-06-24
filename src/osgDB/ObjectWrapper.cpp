@@ -92,6 +92,14 @@ ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
     split( associates, _associates );
 }
 
+ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& domain, const std::string& name,
+                              const std::string& associates )
+:   osg::Referenced(),
+    _proto(proto), _domain(domain), _name(name), _version(0)
+{
+    split( associates, _associates );
+}
+
 void ObjectWrapper::addSerializer( BaseSerializer* s, BaseSerializer::Type t )
 {
     s->_firstVersion = _version;
@@ -143,12 +151,13 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
 bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
 {
     bool readOK = true;
+    int inputVersion = is.getFileVersion(_domain);
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
         BaseSerializer* serializer = itr->get();
-        if ( serializer->_firstVersion <= is.getFileVersion() &&
-             is.getFileVersion() <= serializer->_lastVersion)
+        if ( serializer->_firstVersion <= inputVersion &&
+             inputVersion <= serializer->_lastVersion )
         {
             if ( !serializer->read(is, obj) )
             {
@@ -176,12 +185,13 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
 bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
 {
     bool writeOK = true;
+    int outputVersion = os.getFileVersion(_domain);
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
         BaseSerializer* serializer = itr->get();
-        if ( serializer->_firstVersion <= OPENSCENEGRAPH_SOVERSION &&
-             OPENSCENEGRAPH_SOVERSION <= serializer->_lastVersion)
+        if ( serializer->_firstVersion <= outputVersion &&
+             outputVersion <= serializer->_lastVersion )
         {
             if ( !serializer->write(os, obj) )
             {
@@ -273,6 +283,31 @@ RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::strin
 }
 
 RegisterWrapperProxy::~RegisterWrapperProxy()
+{
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// RegisterCustomWrapperProxy
+//
+RegisterCustomWrapperProxy::RegisterCustomWrapperProxy(
+        osg::Object* proto, const std::string& domain, const std::string& name,
+        const std::string& associates, AddPropFunc func )
+{
+    _wrapper = new ObjectWrapper( proto, domain, name, associates );
+    if ( func ) (*func)( domain.c_str(), _wrapper.get() );
+
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
+    }
+}
+
+RegisterCustomWrapperProxy::~RegisterCustomWrapperProxy()
 {
     if (Registry::instance())
     {

@@ -126,6 +126,7 @@ namespace lwosg
         bool capture_cam_motion_;
 
         Options options_;
+        unsigned int version_;
     };
 
     // INLINE METHODS

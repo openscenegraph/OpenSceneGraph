@@ -97,6 +97,17 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
 
     clear();
 
+    std::string field;
+    std::getline(ifs, field);
+    if (field.substr(0,4) != "LWSC") {
+        osg::notify(osg::WARN) << filename << " is not a LWSC file, " << field << std::endl;
+        return 0;
+    }
+
+    std::getline(ifs, field);
+    version_ = atoi(field.c_str());
+        
+
     std::string identifier;
     while (ifs >> identifier) {
         if (identifier == "{") {
@@ -220,6 +231,11 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
     if (name == "LoadObjectLayer") {
         unsigned layer;
         iss >> layer;
+
+        std::string id;
+        if (version_ >= 5) {
+            iss >> id;
+        }
         std::ws(iss);
         std::string filename;
         std::getline(iss, filename);

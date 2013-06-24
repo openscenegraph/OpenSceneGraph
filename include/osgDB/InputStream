@@ -75,8 +75,10 @@ public:
     InputStream( const osgDB::Options* options );
     virtual ~InputStream();
 
+    void setFileVersion( const std::string& d, int v ) { _domainVersionMap[d] = v; }
+    int getFileVersion( const std::string& d=std::string() ) const;
+
     bool isBinary() const { return _in->isBinary(); }
-    int getFileVersion() const { return _fileVersion; }
     const osgDB::Options* getOptions() const { return _options.get(); }
 
     // Serialization related functions
@@ -184,6 +186,7 @@ protected:
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;
 
+    std::map<std::string, int> _domainVersionMap;
     int _fileVersion;
     bool _useSchemaData;
     bool _forceReadingImage;

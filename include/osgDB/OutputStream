@@ -76,6 +76,9 @@ public:
     OutputStream( const osgDB::Options* options );
     virtual ~OutputStream();
 
+    void setFileVersion( const std::string& d, int v ) { _domainVersionMap[d] = v; }
+    int getFileVersion( const std::string& d=std::string() ) const;
+
     bool isBinary() const { return _out->isBinary(); }
     const std::string& getSchemaName() const { return _schemaName; }
     const osgDB::Options* getOptions() const { return _options.get(); }
@@ -185,8 +188,9 @@ protected:
     ArrayMap _arrayMap;
     ObjectMap _objectMap;
 
+    std::map<std::string, int> _domainVersionMap;
     WriteImageHint _writeImageHint;
-    bool _useSchemaData;
+    bool _useSchemaData, _useRobustBinaryFormat;
     std::map<std::string, std::string> _inbuiltSchemaMap;
     std::vector<std::string> _fields;
     std::string _schemaName;

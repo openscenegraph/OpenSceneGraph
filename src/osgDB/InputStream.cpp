@@ -32,9 +32,22 @@ InputStream::InputStream( const osgDB::Options* options )
     if ( !options ) return;
     _options = options;
 
-    std::string schema;
     if ( options->getPluginStringData("ForceReadingImage")=="true" )
         _forceReadingImage = true;
+
+    if ( !options->getPluginStringData("CustomDomains").empty() )
+    {
+        StringList domains, keyAndValue;
+        split( options->getPluginStringData("CustomDomains"), domains, ';' );
+        for ( unsigned int i=0; i<domains.size(); ++i )
+        {
+            split( domains[i], keyAndValue, ':' );
+            if ( keyAndValue.size()>1 )
+                _domainVersionMap[keyAndValue.front()] = atoi(keyAndValue.back().c_str());
+        }
+    }
+
+    std::string schema;
     if ( !options->getPluginStringData("SchemaFile").empty() )
     {
         schema = options->getPluginStringData("SchemaFile");
@@ -58,6 +71,13 @@ InputStream::~InputStream()
 {
     if (_dataDecompress)
         delete _dataDecompress;
+}
+
+int InputStream::getFileVersion( const std::string& d ) const
+{
+    if ( d.empty() ) return _fileVersion;
+    std::map<std::string, int>::const_iterator itr = _domainVersionMap.find(d);
+    return itr==_domainVersionMap.end() ? 0 : itr->second;
 }
 
 InputStream& InputStream::operator>>( osg::Vec2b& v )
@@ -668,7 +688,6 @@ osg::Object* InputStream::readObjectFields( const std::string& className, unsign
                                << className << std::endl;
         return NULL;
     }
-    _fields.push_back( className );
 
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
     _identifierMap[id] = obj;
@@ -691,7 +710,6 @@ osg::Object* InputStream::readObjectFields( const std::string& className, unsign
             _fields.pop_back();
         }
     }
-    _fields.pop_back();
     return obj.release();
 }
 
@@ -734,7 +752,20 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         type = static_cast<ReadType>(typeValue);
 
         unsigned int attributes; *this >> attributes;
+        if ( attributes&0x4 ) inIterator->setSupportBinaryBrackets( true );
         if ( attributes&0x2 ) _useSchemaData = true;
+
+        // Record custom domains
+        if ( attributes&0x1 )
+        {
+            unsigned int numDomains; *this >> numDomains;
+            for ( unsigned int i=0; i<numDomains; ++i )
+            {
+                std::string domainName; *this >> domainName;
+                int domainVersion; *this >> domainVersion;
+                _domainVersionMap[domainName] = domainVersion;
+            }
+        }
     }
     if ( !isBinary() )
     {
@@ -746,6 +777,13 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         std::string osgName, osgVersion;
         *this >> PROPERTY("#Version") >> version;
         *this >> PROPERTY("#Generator") >> osgName >> osgVersion;
+
+        while ( matchString("#CustomDomain") )
+        {
+            std::string domainName; *this >> domainName;
+            int domainVersion; *this >> domainVersion;
+            _domainVersionMap[domainName] = domainVersion;
+        }
     }
 
     // Record file version for back-compatibility checking of wrappers

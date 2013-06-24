@@ -183,7 +183,7 @@ void SharedStateManager::setStateSet(osg::StateSet* ss, osg::Object* object)
 //----------------------------------------------------------------
 void SharedStateManager::shareTextures(osg::StateSet* ss)
 {
-    osg::StateSet::TextureAttributeList& texAttributes = ss->getTextureAttributeList();
+    const osg::StateSet::TextureAttributeList& texAttributes = ss->getTextureAttributeList();
     for(unsigned int unit=0;unit<texAttributes.size();++unit)
     {
         osg::StateAttribute *texture = ss->getTextureAttribute(unit, osg::StateAttribute::TEXTURE);

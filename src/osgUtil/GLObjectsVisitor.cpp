@@ -128,8 +128,8 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
 
                 _renderInfo.getState()->setLastAppliedProgramObject(pcp);
 
-                osg::StateSet::UniformList& ul = stateset.getUniformList();
-                for(osg::StateSet::UniformList::iterator itr = ul.begin();
+                const osg::StateSet::UniformList& ul = stateset.getUniformList();
+                for(osg::StateSet::UniformList::const_iterator itr = ul.begin();
                     itr != ul.end();
                     ++itr)
                 {

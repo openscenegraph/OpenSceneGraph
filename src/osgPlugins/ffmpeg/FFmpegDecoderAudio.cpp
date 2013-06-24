@@ -109,7 +109,7 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
         //    m_context->flags |= CODEC_FLAG_TRUNCATED;
 
         // Open codec
-        if (avcodec_open(m_context, p_codec) < 0)
+        if (avcodec_open2(m_context, p_codec, NULL) < 0)
             throw std::runtime_error("avcodec_open() failed");
     }
 

@@ -550,7 +550,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     domPolygons *polys = NULL;
     domPolylist *polylist = NULL;
 
-    // make sure no deprecated indices or BIND_PER_PRIMITIVE remain
+    // make sure no deprecated indices or binding exist
     if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
 
     ArrayNIndices verts( geom->getVertexArray(), 0 );

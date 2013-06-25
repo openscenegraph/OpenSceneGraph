@@ -12,13 +12,9 @@
  *    Copyright 2003 VR-C
  **********************************************************************/
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
+#include "Geometry.h"
 
 #include "Exception.h"
-#include "Geometry.h"
 #include "Drawable.h"
 #include "DrawArrays.h"
 #include "DrawArrayLengths.h"
@@ -144,7 +140,7 @@ void Geometry::write(DataOutputStream* out){
         if (tcal[j].valid()){
             out->writeArray(tcal[j].get());
         }
-        
+
         // Write indices if valid
         const osg::IndexArray* indices = getTexCoordIndices(j);
         out->writeBool(indices!=0);
@@ -162,11 +158,11 @@ void Geometry::write(DataOutputStream* out){
         const osg::Array* array = vaal[j].get();
         if (array)
         {
-            out->writeBinding(static_cast<osg::Geometry::AttributeBinding>(array->getBinding()));
+            out->writeBinding(static_cast<deprecated_osg::Geometry::AttributeBinding>(array->getBinding()));
             out->writeBool(array->getNormalize());
             out->writeBool(true);
             out->writeArray(array);
-        
+
             // Write indices if valid
             const osg::IndexArray* indices = getVertexAttribIndices(j);
             out->writeBool(indices!=0);
@@ -253,7 +249,7 @@ void Geometry::read(DataInputStream* in){
         {
             bool na =in->readBool();
             if(na){
-                osg::Geometry::AttributeBinding binding = in->readBinding();
+                deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
                 setNormalArray(in->readVec3Array());
                 setNormalBinding(binding);
             }
@@ -262,7 +258,7 @@ void Geometry::read(DataInputStream* in){
         {
             bool na =in->readBool();
             if(na){
-                osg::Geometry::AttributeBinding binding = in->readBinding();
+                deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
                 setNormalArray(in->readArray());
                 setNormalBinding(binding);
             }
@@ -275,7 +271,7 @@ void Geometry::read(DataInputStream* in){
         }
         // Read color array if any.
         if(in->readBool()){
-            osg::Geometry::AttributeBinding binding = in->readBinding();
+            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
             setColorArray(in->readArray());
             setColorBinding(binding);
         }
@@ -285,7 +281,7 @@ void Geometry::read(DataInputStream* in){
         }
         // Read secondary color array if any
         if(in->readBool()){
-            osg::Geometry::AttributeBinding binding = in->readBinding();
+            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
             setSecondaryColorArray(in->readArray());
             setSecondaryColorBinding(binding);
         }
@@ -295,7 +291,7 @@ void Geometry::read(DataInputStream* in){
         }
         // Read fog coord array if any
         if(in->readBool()){
-            osg::Geometry::AttributeBinding binding = in->readBinding();
+            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
             setFogCoordArray(in->readArray());
             setFogCoordBinding(binding);
         }
@@ -321,7 +317,7 @@ void Geometry::read(DataInputStream* in){
         size = in->readInt();
         for(i =0;i<size;i++)
         {
-            osg::Geometry::AttributeBinding binding = in->readBinding();
+            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
             bool normalize = in->readBool();
 
             // Read coords if valid

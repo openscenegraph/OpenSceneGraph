@@ -1,8 +1,3 @@
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include "ConvertFromInventor.h"
 
 #include "PendulumCallback.h"
@@ -774,42 +769,42 @@ ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
     // Normal and color binding map from Inventor to OSG
-    static std::map<SoNormalBinding::Binding, osg::Geometry::AttributeBinding>
+    static std::map<SoNormalBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
         normBindingMap;
-    static std::map<SoMaterialBinding::Binding, osg::Geometry::AttributeBinding>
+    static std::map<SoMaterialBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
         colBindingMap;
     static bool firstTime = true;
     if (firstTime)
     {
         normBindingMap[SoNormalBinding::OVERALL]
-                                        = osg::Geometry::BIND_OVERALL;
+                                        = deprecated_osg::Geometry::BIND_OVERALL;
         normBindingMap[SoNormalBinding::PER_PART]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         normBindingMap[SoNormalBinding::PER_PART_INDEXED]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         normBindingMap[SoNormalBinding::PER_FACE]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         normBindingMap[SoNormalBinding::PER_FACE_INDEXED]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         normBindingMap[SoNormalBinding::PER_VERTEX]
-                                        = osg::Geometry::BIND_PER_VERTEX;
+                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
         normBindingMap[SoNormalBinding::PER_VERTEX_INDEXED]
-                                        = osg::Geometry::BIND_PER_VERTEX;
+                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
 
         colBindingMap[SoMaterialBinding::OVERALL]
-                                        = osg::Geometry::BIND_OVERALL;
+                                        = deprecated_osg::Geometry::BIND_OVERALL;
         colBindingMap[SoMaterialBinding::PER_PART]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         colBindingMap[SoMaterialBinding::PER_PART_INDEXED]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         colBindingMap[SoMaterialBinding::PER_FACE]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         colBindingMap[SoMaterialBinding::PER_FACE_INDEXED]
-                                        = osg::Geometry::BIND_PER_PRIMITIVE;
+                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
         colBindingMap[SoMaterialBinding::PER_VERTEX]
-                                        = osg::Geometry::BIND_PER_VERTEX;
+                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
         colBindingMap[SoMaterialBinding::PER_VERTEX_INDEXED]
-                                        = osg::Geometry::BIND_PER_VERTEX;
+                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
 
         firstTime = false;
     }
@@ -822,8 +817,8 @@ ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
     }
     else
     {
-        thisPtr->normalBinding = osg::Geometry::BIND_PER_VERTEX;
-        thisPtr->colorBinding = osg::Geometry::BIND_PER_VERTEX;
+        thisPtr->normalBinding = deprecated_osg::Geometry::BIND_PER_VERTEX;
+        thisPtr->colorBinding = deprecated_osg::Geometry::BIND_PER_VERTEX;
     }
 
     // Check vertex ordering
@@ -874,7 +869,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
 
 
     // Create a new Geometry
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    osg::ref_ptr<deprecated_osg::Geometry> geometry = new deprecated_osg::Geometry;
 
 
     osg::ref_ptr<osg::Vec3Array> coords = new osg::Vec3Array(thisPtr->vertices.size());
@@ -883,7 +878,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     geometry->setVertexArray(coords.get());
 
     osg::ref_ptr<osg::Vec3Array> norms = NULL;
-    if (thisPtr->normalBinding == osg::Geometry::BIND_OVERALL)
+    if (thisPtr->normalBinding == deprecated_osg::Geometry::BIND_OVERALL)
     {
         norms = new osg::Vec3Array(1);
         const SbVec3f &norm = action->getNormal(0);
@@ -902,7 +897,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
 
     // Set the colors
     osg::ref_ptr<osg::Vec4Array> cols;
-    if (thisPtr->colorBinding == osg::Geometry::BIND_OVERALL)
+    if (thisPtr->colorBinding == deprecated_osg::Geometry::BIND_OVERALL)
     {
         cols = new osg::Vec4Array(1);
         SbColor ambient, diffuse, specular, emission;
@@ -2162,8 +2157,8 @@ void ConvertFromInventor::addVertex(SoCallbackAction* action,
     // Get the normal of the vertex
     SbVec3f norm = v->getNormal();
 
-    if ((normalBinding == osg::Geometry::BIND_PER_VERTEX) ||
-        (normalBinding == osg::Geometry::BIND_PER_PRIMITIVE && index == 0))
+    if ((normalBinding == deprecated_osg::Geometry::BIND_PER_VERTEX) ||
+        (normalBinding == deprecated_osg::Geometry::BIND_PER_PRIMITIVE && index == 0))
     {
         // What is this? Why to invert normals at CLOCKWISE vertex ordering?
         // PCJohn 2009-12-13
@@ -2173,18 +2168,18 @@ void ConvertFromInventor::addVertex(SoCallbackAction* action,
             normals.push_back(osg::Vec3(norm[0], norm[1], norm[2]));
     }
 
-    if (colorBinding == osg::Geometry::BIND_PER_VERTEX ||
-            colorBinding == osg::Geometry::BIND_PER_PRIMITIVE)
+    if (colorBinding == deprecated_osg::Geometry::BIND_PER_VERTEX ||
+            colorBinding == deprecated_osg::Geometry::BIND_PER_PRIMITIVE)
     {
         // Get the material/color
         SbColor ambient, diffuse, specular, emission;
         float transparency, shininess;
         action->getMaterial(ambient, diffuse, specular, emission, shininess,
                             transparency, v->getMaterialIndex());
-        if (colorBinding == osg::Geometry::BIND_PER_VERTEX)
+        if (colorBinding == deprecated_osg::Geometry::BIND_PER_VERTEX)
             colors.push_back(osg::Vec4(diffuse[0], diffuse[1], diffuse[2],
                                        1.0 - transparency));
-        else if (colorBinding == osg::Geometry::BIND_PER_PRIMITIVE && index == 0)
+        else if (colorBinding == deprecated_osg::Geometry::BIND_PER_PRIMITIVE && index == 0)
             colors.push_back(osg::Vec4(diffuse[0], diffuse[1], diffuse[2],
                                        1.0 - transparency));
     }

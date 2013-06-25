@@ -6,6 +6,9 @@
 #include <string>
 #include <map>
 #include <vector>
+
+
+
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -15,8 +18,8 @@
 #include <osg/Quat>
 #include <osg/Array>
 #include <osg/Matrix>
-#include <osg/Geometry>
 #include <osg/Image>
+#include <osg/Geometry>
 #include <osg/StateSet>
 #include <osg/Uniform>
 #include <osg/ref_ptr>
@@ -68,7 +71,7 @@ public:
     osg::Quat readQuat();
     osg::Matrixf readMatrixf();
     osg::Matrixd readMatrixd();
-    osg::Geometry::AttributeBinding readBinding();
+    deprecated_osg::Geometry::AttributeBinding readBinding();
     osg::Array* readArray();
     osg::IntArray* readIntArray();
     osg::UByteArray* readUByteArray();

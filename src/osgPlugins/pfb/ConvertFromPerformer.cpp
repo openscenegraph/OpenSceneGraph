@@ -1,10 +1,5 @@
 // -*-c++-*-
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include "ConvertFromPerformer.h"
 
 #include <osg/Group>
@@ -84,10 +79,10 @@ ConvertFromPerformer::ConvertFromPerformer()
 {
     _osgRoot = NULL;
 
-    _gsetBindMap[PFGS_OFF] = osg::Geometry::BIND_OFF;
-    _gsetBindMap[PFGS_OVERALL] = osg::Geometry::BIND_OVERALL;
-    _gsetBindMap[PFGS_PER_PRIM] = osg::Geometry::BIND_PER_PRIMITIVE;
-    _gsetBindMap[PFGS_PER_VERTEX] = osg::Geometry::BIND_PER_VERTEX;
+    _gsetBindMap[PFGS_OFF] = deprecated_osg::Geometry::BIND_OFF;
+    _gsetBindMap[PFGS_OVERALL] = deprecated_osg::Geometry::BIND_OVERALL;
+    _gsetBindMap[PFGS_PER_PRIM] = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+    _gsetBindMap[PFGS_PER_VERTEX] = deprecated_osg::Geometry::BIND_PER_VERTEX;
 
     _saveImagesAsRGB = false;
     _saveAbsoluteImagePath = false;
@@ -546,9 +541,9 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     }
 
     // we'll make it easy to convert by using the Performer style osg::GeoSet,
-    // and then convert back to a osg::Geometry afterwards.
+    // and then convert back to a deprecated_osg::Geometry afterwards.
     //osg::ref_ptr<osg::GeoSet> geom = new osg::GeoSet;
-    osg::Geometry* geom = new osg::Geometry;
+    deprecated_osg::Geometry* geom = new deprecated_osg::Geometry;
 
     int i;
 

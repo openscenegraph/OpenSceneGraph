@@ -128,7 +128,7 @@ protected:
   int uniqueIdGenerator;
 
   void processDrawable(osg::Drawable *d);
-  void processGeometry(const osg::Geometry *g, InventorState *ivState);
+  void processGeometry(const deprecated_osg::Geometry *g, InventorState *ivState);
   void processShapeDrawable(const osg::ShapeDrawable *d, InventorState *ivState);
 
   virtual InventorState* createInventorState(const osg::StateSet *ss);

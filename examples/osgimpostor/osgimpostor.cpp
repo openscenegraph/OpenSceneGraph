@@ -16,11 +16,6 @@
 *  THE SOFTWARE.
 */
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/MatrixTransform>
@@ -125,7 +120,7 @@ void CreateHouses()
                      * 2 * ZDim) - ZDim;
 
         float scale = 10.0f;
-                
+
         osg::Vec3 offset(xPos,yPos,0.0f);
 
         // coords
@@ -148,22 +143,22 @@ void CreateHouses()
 
 
         // create geometry
-        osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
-                
+        osg::ref_ptr<deprecated_osg::Geometry> geometry = new deprecated_osg::Geometry();
+
         geometry->addPrimitiveSet(primitives);
-                
+
         geometry->setVertexArray(coords.get());
         geometry->setVertexIndices(coordIndices.get());
-                
+
         geometry->setColorArray(colors.get());
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-                
+        geometry->setColorBinding(deprecated_osg::Geometry::BIND_OVERALL);
+
         geometry->setNormalArray(normals.get());
-        geometry->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        geometry->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
 
         osg::ref_ptr<osg::Geode> geode = new osg::Geode();
         geode->addDrawable(geometry.get());
-        
+
         nodes.push_back(geode.get());
     }
 }
@@ -192,14 +187,14 @@ void LayoutAsGrid()
     {
         osg::Node * node = nodeIter->get();
         osg::Vec3 center = node->getBound().center();
-        
+
         int x = (int)floor((center.x() - xGridStart) / xGridSize);
         int z = (int)floor((center.y() - yGridStart) / yGridSize);
 
         groups[z * GridX + x]->addChild(node);
     }
- 
-    // add nodes to building root    
+
+    // add nodes to building root
     for (i = 0; i < GridX * GridY; i++)
     {
         osg::StateSet * stateset = new osg::StateSet();
@@ -210,7 +205,7 @@ void LayoutAsGrid()
             0.5f + (static_cast<double> (rand()) / (2.0*static_cast<double> (RAND_MAX))),
             0.5f + (static_cast<double> (rand()) / ( 2.0*static_cast<double>(RAND_MAX))),
             1.0f);
-            
+
         material->setAmbient(osg::Material::FRONT_AND_BACK, color);
         material->setDiffuse(osg::Material::FRONT_AND_BACK, color);
         stateset->setAttributeAndModes(material, osg::StateAttribute::ON);
@@ -283,7 +278,7 @@ int main( int argc, char **argv )
         // we would know about it, other than by following the parent path
         // up from model.  This is really what should be done, but I'll pass
         // on it right now as it requires a getRoots() method to be added to
-        // osg::Node, and we're about to make a release so no new features! 
+        // osg::Node, and we're about to make a release so no new features!
         osg::ref_ptr<osg::Group> rootnode = new osg::Group;
         rootnode->addChild(model.get());
 

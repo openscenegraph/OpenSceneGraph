@@ -25,11 +25,6 @@
 //  but you are not forced to do so.
 //
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include <osg/BlendFunc>
 #include <osg/Billboard>
 #include <osg/Geode>
@@ -470,27 +465,18 @@ bool ivDeindex(variableType *dest, const variableType *src, const int srcNum,
 
 
 template<typename variableType, typename fieldType>
-bool ivProcessArray(const osg::Array *indices, const osg::Array *drawElemIndices,
+bool ivProcessArray(const osg::Array *drawElemIndices,
                          fieldType *destField, const fieldType *srcField,
                          int startIndex, int numToProcess)
 {
   bool ok = true;
 
-  if (indices || drawElemIndices) {
+  if (drawElemIndices) {
 
     // "deindex" original data
-    if (indices && !drawElemIndices)
-      ok = ivDeindex<variableType>(destField->startEditing(),
-                                 srcField->getValues(startIndex),
-                                 srcField->getNum(), indices, numToProcess); else
-    if (!indices && drawElemIndices)
-      ok = ivDeindex<variableType>(destField->startEditing(),
-                                 srcField->getValues(startIndex),
-                                 srcField->getNum(), drawElemIndices, numToProcess);
-    else {
-      OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
-      assert(0); // FIXME:
-    }
+    ok = ivDeindex<variableType>(destField->startEditing(),
+                                srcField->getValues(startIndex),
+                                srcField->getNum(), drawElemIndices, numToProcess);
 
     destField->finishEditing();
     if (!ok)
@@ -511,21 +497,16 @@ bool ivProcessArray(const osg::Array *indices, const osg::Array *drawElemIndices
 }
 
 
-static void processIndices(const osg::Array *indices, const osg::Array *drawElemIndices,
+static void processIndices(const osg::Array *drawElemIndices,
                            SoMFInt32 &ivIndices,
                            int startIndex, int stopIndex, int numItemsUntilMinusOne)
 {
-  if (indices || drawElemIndices) {
-    if (indices && !drawElemIndices)
-      osgArray2ivMField(indices, ivIndices, startIndex, stopIndex, numItemsUntilMinusOne); else
-    if (!indices && drawElemIndices)
+  if (drawElemIndices) {
+
       osgArray2ivMField(drawElemIndices, ivIndices, startIndex, stopIndex, numItemsUntilMinusOne);
-    else {
-      OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
-      assert(0); // FIXME:
-    }
 
   } else {
+
     int num = stopIndex-startIndex;
     if (numItemsUntilMinusOne != 0 && num >= 1)
       num += (num-1)/numItemsUntilMinusOne;
@@ -572,10 +553,10 @@ static void postProcessDrawArrayLengths(const osg::DrawArrayLengths *drawArrayLe
 
 
 static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mode primType,
-                             SoMFInt32 *field, osg::Geometry::AttributeBinding binding)
+                             SoMFInt32 *field, deprecated_osg::Geometry::AttributeBinding binding)
 {
-  if (binding==osg::Geometry::BIND_OFF || binding==osg::Geometry::BIND_OVERALL ||
-      binding==osg::Geometry::BIND_PER_PRIMITIVE_SET)
+  if (binding==deprecated_osg::Geometry::BIND_OFF || binding==deprecated_osg::Geometry::BIND_OVERALL ||
+      binding==deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET)
     return;
 
   // make copy of array
@@ -588,11 +569,11 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
   int newNum = origNum;
   const int l = runLengths.getLength();
   switch (binding) {
-    case osg::Geometry::BIND_PER_VERTEX:
+    case deprecated_osg::Geometry::BIND_PER_VERTEX:
       for (int i=0; i<l; i++)
         newNum += (runLengths[i]-3)*3;
       break;
-    case osg::Geometry::BIND_PER_PRIMITIVE:
+    case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:
       for (int i=0; i<l; i++)
         newNum += runLengths[i]-3;
       break;
@@ -606,7 +587,7 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
   int32_t *dst = field->startEditing();
   // int32_t *dst2 = dst;
   switch (binding) {
-    case osg::Geometry::BIND_PER_VERTEX:
+    case deprecated_osg::Geometry::BIND_PER_VERTEX:
       for (int i=0; i<l; i++) {
         int c = runLengths[i];
         *(dst++) = *(src++);
@@ -642,7 +623,7 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
       }
       break;
 
-    case osg::Geometry::BIND_PER_PRIMITIVE:
+    case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:
       for (int i=0; i<l; i++,src++) {
         int c = runLengths[i];
         *(dst++) = *(src);
@@ -662,8 +643,8 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
 
 
 static void postProcessTriangleSeparation(SoIndexedShape *shape, osg::PrimitiveSet::Mode primType,
-                                          osg::Geometry::AttributeBinding normalBinding,
-                                          osg::Geometry::AttributeBinding colorBinding)
+                                          deprecated_osg::Geometry::AttributeBinding normalBinding,
+                                          deprecated_osg::Geometry::AttributeBinding colorBinding)
 {
   // compute runLengths
   SbIntList runLengths;
@@ -680,42 +661,42 @@ static void postProcessTriangleSeparation(SoIndexedShape *shape, osg::PrimitiveS
   if (l != 0) // append final l if field is not finished by -1
     runLengths.append(l);
 
-  postProcessField(runLengths, primType, &shape->coordIndex,        osg::Geometry::BIND_PER_VERTEX);
+  postProcessField(runLengths, primType, &shape->coordIndex,        deprecated_osg::Geometry::BIND_PER_VERTEX);
   postProcessField(runLengths, primType, &shape->normalIndex,       normalBinding);
   postProcessField(runLengths, primType, &shape->materialIndex,     colorBinding);
   bool notUseTexCoords = shape->textureCoordIndex.getNum()==0 ||
                          (shape->textureCoordIndex.getNum()==1 && shape->textureCoordIndex[0] == -1);
   if (!notUseTexCoords)
-    postProcessField(runLengths, primType, &shape->textureCoordIndex, osg::Geometry::BIND_PER_VERTEX);
+    postProcessField(runLengths, primType, &shape->textureCoordIndex, deprecated_osg::Geometry::BIND_PER_VERTEX);
 
 }
 
 
-static SoMaterialBinding* createMaterialBinding(const osg::Geometry *g, bool isMaterialIndexed)
+static SoMaterialBinding* createMaterialBinding(const deprecated_osg::Geometry *g, bool isMaterialIndexed)
 {
   SoMaterialBinding *materialBinding = new SoMaterialBinding;
   switch (g->getColorBinding()) {
-  case osg::Geometry::BIND_OFF: // OFF means use material from state set (if any) for whole geometry
-  case osg::Geometry::BIND_OVERALL:
-  case osg::Geometry::BIND_PER_PRIMITIVE_SET: materialBinding->value = SoMaterialBinding::OVERALL; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE:     materialBinding->value = (isMaterialIndexed) ? SoMaterialBinding::PER_PART_INDEXED   : SoMaterialBinding::PER_PART; break;
-  case osg::Geometry::BIND_PER_VERTEX:        materialBinding->value = (isMaterialIndexed) ? SoMaterialBinding::PER_VERTEX_INDEXED : SoMaterialBinding::PER_VERTEX; break;
+  case deprecated_osg::Geometry::BIND_OFF: // OFF means use material from state set (if any) for whole geometry
+  case deprecated_osg::Geometry::BIND_OVERALL:
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET: materialBinding->value = SoMaterialBinding::OVERALL; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:     materialBinding->value = (isMaterialIndexed) ? SoMaterialBinding::PER_PART_INDEXED   : SoMaterialBinding::PER_PART; break;
+  case deprecated_osg::Geometry::BIND_PER_VERTEX:        materialBinding->value = (isMaterialIndexed) ? SoMaterialBinding::PER_VERTEX_INDEXED : SoMaterialBinding::PER_VERTEX; break;
   default: assert(0);
   }
   return materialBinding;
 }
 
 
-static SoNormalBinding* createNormalBinding(const osg::Geometry *g, bool areNormalsIndexed)
+static SoNormalBinding* createNormalBinding(const deprecated_osg::Geometry *g, bool areNormalsIndexed)
 {
   // Convert normal binding
   SoNormalBinding *normalBinding = new SoNormalBinding;
   switch (g->getNormalBinding()) {
-  case osg::Geometry::BIND_OFF: // FIXME: what to do with BIND_OFF value?
-  case osg::Geometry::BIND_OVERALL:
-  case osg::Geometry::BIND_PER_PRIMITIVE_SET: normalBinding->value = SoNormalBinding::OVERALL; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE:     normalBinding->value = (areNormalsIndexed) ? SoNormalBinding::PER_PART_INDEXED   : SoNormalBinding::PER_PART; break;
-  case osg::Geometry::BIND_PER_VERTEX:        normalBinding->value = (areNormalsIndexed) ? SoNormalBinding::PER_VERTEX_INDEXED : SoNormalBinding::PER_VERTEX; break;
+  case deprecated_osg::Geometry::BIND_OFF: // FIXME: what to do with BIND_OFF value?
+  case deprecated_osg::Geometry::BIND_OVERALL:
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET: normalBinding->value = SoNormalBinding::OVERALL; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:     normalBinding->value = (areNormalsIndexed) ? SoNormalBinding::PER_PART_INDEXED   : SoNormalBinding::PER_PART; break;
+  case deprecated_osg::Geometry::BIND_PER_VERTEX:        normalBinding->value = (areNormalsIndexed) ? SoNormalBinding::PER_VERTEX_INDEXED : SoNormalBinding::PER_VERTEX; break;
   default: assert(0);
   }
   return normalBinding;
@@ -1101,7 +1082,7 @@ void ConvertToInventor::popInventorState()
 }
 
 
-static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet *pset,
+static bool processPrimitiveSet(const deprecated_osg::Geometry *g, const osg::PrimitiveSet *pset,
                                 osg::UIntArray *drawElemIndices, bool needSeparateTriangles,
                                 int elementsCount, int primSize, const int startIndex, int stopIndex,
                                 int &normalIndex, int &colorIndex,
@@ -1136,49 +1117,49 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
   SoNode *nonIndexedMaterial = NULL;
 
   // Normal indexing
-  int normalStart = g->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX ? startIndex : normalIndex;
+  int normalStart = (g->getNormalBinding() == deprecated_osg::Geometry::BIND_PER_VERTEX) ? startIndex : normalIndex;
   int numNormalsUsed = 0;
   switch (g->getNormalBinding()) {
-  case osg::Geometry::BIND_OFF: // FIXME: what is meaning of OFF value?
-  case osg::Geometry::BIND_OVERALL:           numNormalsUsed = 0; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE_SET: numNormalsUsed = 1; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE:     numNormalsUsed = primSize!=0 ? (stopIndex-startIndex)/primSize :
+  case deprecated_osg::Geometry::BIND_OFF: // FIXME: what is meaning of OFF value?
+  case deprecated_osg::Geometry::BIND_OVERALL:           numNormalsUsed = 0; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET: numNormalsUsed = 1; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:     numNormalsUsed = primSize!=0 ? (stopIndex-startIndex)/primSize :
                                                 (drawArrayLengths ? drawArrayLengths->size() : 1); break;
-  case osg::Geometry::BIND_PER_VERTEX:        numNormalsUsed = stopIndex-startIndex; break;
+  case deprecated_osg::Geometry::BIND_PER_VERTEX:        numNormalsUsed = stopIndex-startIndex; break;
   }
   normalIndex += numNormalsUsed;
 
   // Color indexing
-  int colorStart = g->getColorBinding() == osg::Geometry::BIND_PER_VERTEX ? startIndex : colorIndex;
+  int colorStart = g->getColorBinding() == deprecated_osg::Geometry::BIND_PER_VERTEX ? startIndex : colorIndex;
   int numColorsUsed = 0;
   switch (g->getColorBinding()) {
-  case osg::Geometry::BIND_OFF:
-  case osg::Geometry::BIND_OVERALL:           numColorsUsed = 0; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE_SET: numColorsUsed = 1; break;
-  case osg::Geometry::BIND_PER_PRIMITIVE:     numColorsUsed = primSize!=0 ? (stopIndex-startIndex)/primSize :
+  case deprecated_osg::Geometry::BIND_OFF:
+  case deprecated_osg::Geometry::BIND_OVERALL:           numColorsUsed = 0; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET: numColorsUsed = 1; break;
+  case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:     numColorsUsed = primSize!=0 ? (stopIndex-startIndex)/primSize :
                                                 (drawArrayLengths ? drawArrayLengths->size() : 1); break;
-  case osg::Geometry::BIND_PER_VERTEX:        numColorsUsed = stopIndex-startIndex; break;
+  case deprecated_osg::Geometry::BIND_PER_VERTEX:        numColorsUsed = stopIndex-startIndex; break;
   }
   colorIndex += numColorsUsed;
 
   if (shape->isOfType(SoIndexedShape::getClassTypeId())) {
 
     // Convert to SoIndexedShape
-    processIndices(g->getVertexIndices(), drawElemIndices, ((SoIndexedShape*)shape)->coordIndex,
+    processIndices(drawElemIndices, ((SoIndexedShape*)shape)->coordIndex,
                    startIndex, stopIndex, primSize);
 
     if (ivNormals)
-      processIndices(g->getNormalIndices(), drawElemIndices, ((SoIndexedShape*)shape)->normalIndex,
+      processIndices(drawElemIndices, ((SoIndexedShape*)shape)->normalIndex,
                      normalStart, normalStart+(numNormalsUsed==0 ? 1 : numNormalsUsed),
-                     g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX ? primSize : 0);
+                     g->getNormalBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX ? primSize : 0);
 
     if (ivMaterial)
-      processIndices(g->getColorIndices(), drawElemIndices, ((SoIndexedShape*)shape)->materialIndex,
+      processIndices(drawElemIndices, ((SoIndexedShape*)shape)->materialIndex,
                      colorStart, colorStart+(numColorsUsed==0 ? 1 : numColorsUsed),
-                     g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX ? primSize : 0);
+                     g->getColorBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX ? primSize : 0);
 
     if (ivTexCoords && !ivTexCoords->isOfType(SoTextureCoordinateFunction::getClassTypeId()))
-      processIndices(g->getTexCoordIndices(0), drawElemIndices, ((SoIndexedShape*)shape)->textureCoordIndex,
+      processIndices(drawElemIndices, ((SoIndexedShape*)shape)->textureCoordIndex,
                      startIndex, stopIndex, primSize);
 
     // Post-processing for DrawArrayLengths
@@ -1186,10 +1167,10 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
       postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->coordIndex);
 
-      if (ivNormals && g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
+      if (ivNormals && g->getNormalBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX)
         postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->normalIndex);
 
-      if (ivMaterial && g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+      if (ivMaterial && g->getColorBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX)
         postProcessDrawArrayLengths(drawArrayLengths, &((SoIndexedShape*)shape)->materialIndex);
 
       if (ivTexCoords && !ivTexCoords->isOfType(SoTextureCoordinateFunction::getClassTypeId()))
@@ -1214,8 +1195,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedCoords = new SoCoordinate4;
       if (ok) {
         ((SoCoordinate4*)nonIndexedCoords)->point.setNum(n);
-        ok = ivProcessArray<SbVec4f,SoMFVec4f>(g->getVertexIndices(),
-                                             drawElemIndices,
+        ok = ivProcessArray<SbVec4f,SoMFVec4f>(drawElemIndices,
                                              &((SoCoordinate4*)nonIndexedCoords)->point,
                                              &((SoCoordinate4*)ivCoords)->point,
                                              startIndex, n);
@@ -1224,8 +1204,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedCoords = new SoCoordinate3;
       if (ok) {
         ((SoCoordinate3*)nonIndexedCoords)->point.setNum(n);
-        ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getVertexIndices(),
-                                             drawElemIndices,
+        ok = ivProcessArray<SbVec3f,SoMFVec3f>(drawElemIndices,
                                              &((SoCoordinate3*)nonIndexedCoords)->point,
                                              &((SoCoordinate3*)ivCoords)->point,
                                              startIndex, n);
@@ -1241,8 +1220,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
         if (ok)
         {
           ((SoTextureCoordinate2*)nonIndexedTexCoords)->point.setNum(n);
-          ok = ivProcessArray<SbVec2f,SoMFVec2f>(g->getTexCoordIndices(0),
-                                               drawElemIndices,
+          ok = ivProcessArray<SbVec2f,SoMFVec2f>(drawElemIndices,
                                                &((SoTextureCoordinate2*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate2*)ivTexCoords)->point,
                                                startIndex, n);
@@ -1255,8 +1233,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
         if (ok)
         {
           ((SoTextureCoordinate3*)nonIndexedTexCoords)->point.setNum(n);
-          ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getTexCoordIndices(0),
-                                               drawElemIndices,
+          ok = ivProcessArray<SbVec3f,SoMFVec3f>(drawElemIndices,
                                                &((SoTextureCoordinate3*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate3*)ivCoords)->point,
                                                startIndex, n);
@@ -1272,8 +1249,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedNormals = new SoNormal;
       if (ok) {
         nonIndexedNormals->vector.setNum(numNormalsUsed==0 ? 1 : numNormalsUsed);
-        ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getNormalIndices(),
-                                             g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
+        ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getNormalBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
                                              &nonIndexedNormals->vector, &ivNormals->vector,
                                              normalStart, numNormalsUsed==0 ? 1 : numNormalsUsed);
       }
@@ -1295,8 +1271,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                    &((SoMaterial*)ivMaterial)->diffuseColor :
                                    &((SoBaseColor*)ivMaterial)->rgb;
         dstColorField->setNum(numColorsUsed==0 ? 1 : numColorsUsed);
-        ok = ivProcessArray<SbColor,SoMFColor>(g->getColorIndices(),
-                                            g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
+        ok = ivProcessArray<SbColor,SoMFColor>(g->getColorBinding()==deprecated_osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
                                             dstColorField, srcColorField,
                                             colorStart, numColorsUsed==0 ? 1 : numColorsUsed);
       }
@@ -1471,7 +1446,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 }
 
 
-void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *ivState)
+void ConvertToInventor::processGeometry(const deprecated_osg::Geometry *g, InventorState *ivState)
 {
   int normalIndex = 0;
   int colorIndex = 0;
@@ -1598,7 +1573,7 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
     GLenum mode = pset->getMode();
 
     // Create appropriate SoShape
-    bool useIndices = g->getVertexIndices() != NULL || vrml1Conversion;
+    bool useIndices = vrml1Conversion;
     bool needSeparateTriangles = false;
     SoVertexShape *shape = NULL;
     switch (mode) {
@@ -1834,8 +1809,8 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
 
 void ConvertToInventor::processDrawable(osg::Drawable *d)
 {
-  osg::Geometry *g = d->asGeometry(); // FIXME: other drawables have to be handled also
-  osg::ShapeDrawable *sd;
+  deprecated_osg::Geometry *g = dynamic_cast<deprecated_osg::Geometry*>(d); // FIXME: other drawables have to be handled also
+  osg::ShapeDrawable *sd = 0;
 
   // Create SoSeparator and convert StateSet for Drawable
   InventorState *ivDrawableState = createInventorState(d->getStateSet());

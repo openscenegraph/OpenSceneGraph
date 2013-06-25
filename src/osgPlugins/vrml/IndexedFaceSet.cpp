@@ -15,7 +15,7 @@
 
 osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openvrml::node *vrml_ifs) const
 {
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
+    osg::ref_ptr<deprecated_osg::Geometry> osg_geom = new deprecated_osg::Geometry();
 
     osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
 
@@ -160,10 +160,10 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openv
 
             if (vrml_norm_per_vertex->value())
             {
-                osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+                osg_geom->setNormalBinding(deprecated_osg::Geometry::BIND_PER_VERTEX);
             } else
             {
-                osg_geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                osg_geom->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
             }
         }
     }
@@ -214,10 +214,10 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openv
 
             if (vrml_color_per_vertex->value())
             {
-                osg_geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                osg_geom->setColorBinding(deprecated_osg::Geometry::BIND_PER_VERTEX);
             } else
             {
-                osg_geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                osg_geom->setColorBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
             }
         }
     }
@@ -281,7 +281,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openv
 
         osg_geom->setNormalArray(normals);
         osg_geom->setNormalIndices(const_cast<osg::IndexArray*>(osg_geom->getVertexIndices()));
-        osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        osg_geom->setNormalBinding(deprecated_osg::Geometry::BIND_PER_VERTEX);
 
 #endif
     }

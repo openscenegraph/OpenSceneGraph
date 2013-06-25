@@ -22,11 +22,6 @@
 * exist in the triangulation.
 */
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
@@ -50,21 +45,21 @@
 class WallConstraint: public osgUtil::DelaunayConstraint { // forces lines to eb edge
     // wall constraint - can generate a wall at the coordinates of the constraint
 public:
-/** if you derive a class from DelaunayConstraint then you can create 
+/** if you derive a class from DelaunayConstraint then you can create
 *  a specific geometry creation routine.
     */
     WallConstraint() : height(0), txxrepWall(10), txyrepWall(10)  { }
-    
+
     /** or create a wall around the constraint area: */
     virtual osg::Geometry * makeWallGeometry(void) const;
-    
+
     /** for basic purposes, you can call these routines to make simple fill in geometries */
     virtual osg::DrawArrays* makeWall(void ) const { // build a wall height high around the constraint
         const osg::Vec3Array *_line= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
         return (new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,2*_line->size()));
     }
-    
-    
+
+
     virtual osg::Vec3Array *getWall(const float height) const;
     virtual osg::Vec2Array *getWallTexcoords(const float height) const;
     virtual osg::Vec3Array *getWallNormals(void) const {
@@ -72,7 +67,7 @@ public:
         const osg::Vec3Array *vertices= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
         for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++) {
             const osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
-            if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP || 
+            if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP ||
                 prset->getMode()==osg::PrimitiveSet::LINE_STRIP) { // loops and walls
                 // start with the last point on the loop
                 osg::Vec3 prevp=(*vertices)[prset->index (prset->getNumIndices()-1)];
@@ -93,12 +88,12 @@ public:
         }
         return nrms.release();
     }
-    
-    
-    
+
+
+
     // geometry creation parameters
     void setWallTexrep(const float w,const float h) { txxrepWall=w;txyrepWall=h;}
-    
+
     /** Wall Geometry will return with this texture applied: */
     void setTexture(const char *tx) { texture=tx;}
     /** fence/wall height */
@@ -111,18 +106,18 @@ protected:
 class ArealConstraint: public osgUtil::DelaunayConstraint { // forces edges of an area to fit triangles
     // areal constraint - general nonuniform field, forest, lake etc.
 public:
-/** if you derive a class from DelaunayConstraint then you can create 
+/** if you derive a class from DelaunayConstraint then you can create
 *  a specific geometry creation routine.
     */
     ArealConstraint() : txxrepArea(10), txyrepArea(10),txxrepWall(10), txyrepWall(10) { }
-    
+
     /** return a geometry that fills the constraint.
     */
-    virtual osg::Geometry * makeAreal( osg::Vec3Array *points);
-    
+    virtual deprecated_osg::Geometry * makeAreal( osg::Vec3Array *points);
+
     /** or create a wall around the constraint area: */
-    virtual osg::Geometry * makeWallGeometry( osg::Vec3Array *points) ;
-    
+    virtual deprecated_osg::Geometry * makeWallGeometry( osg::Vec3Array *points) ;
+
     /** for basic purposes, you can call these routines to make simple fill in geometries */
     virtual osg::DrawArrays* makeWall(void ) const;
     virtual osg::Vec3Array *getWall(const float height) const;
@@ -134,7 +129,7 @@ public:
     virtual osg::Vec3Array *getCanopy(const osg::Vec3Array *points,const float height) const;
     virtual osg::Vec2Array *getCanopyTexcoords(const osg::Vec3Array *points) const;
     virtual osg::Vec3Array *getCanopyNormals(const osg::Vec3Array *points) const;
-    
+
     // geometry creation parameters
     void setTexrep(const float w,const float h) { txxrepArea=w;txyrepArea=h;}
     void setWallTexrep(const float w,const float h) { txxrepWall=w;txyrepWall=h;}
@@ -152,39 +147,39 @@ protected:
     float txxrepWall, txyrepWall;
 };
 
-class LinearConstraint: public osgUtil::DelaunayConstraint { 
+class LinearConstraint: public osgUtil::DelaunayConstraint {
 /** forces edges of a "road" to fit triangles
 *  if 2 roads cross, then the overlap will be replaced by a 'cross road'
     *  and the roads built up to the cross roads with a texture along its length. */
 public:
     LinearConstraint() : osgUtil::DelaunayConstraint(), txxrepAlong(10), txyrepAcross(10), width(2) { }
-    
+
     /** geometry creation parameters */
     /* Width of linear feature (eg road, railway) */
     void setWidth(const float w) { width=w;}
-    
+
     /** Texture repeat distance across linear (often equal to width) and along its length */
     virtual void setTexrep(const float w,const float h) { txyrepAcross=h;txxrepAlong=w; }
-    
+
     /** generate constant width around line - creates the area to be cut into the terrain. */
     virtual void setVertices( osg::Vec3Array *lp, const float width);
-    
+
     /** return a geometry that fills the constraint.
     */
-    virtual osg::Geometry *makeGeometry(const osg::Vec3Array *points) ;
-    
+    virtual deprecated_osg::Geometry *makeGeometry(const osg::Vec3Array *points) ;
+
     /** return normals array - flat shaded */
     osg::Vec3Array* getNormals(const osg::Vec3Array *points);
-    
+
     /** Roads apply a texture proportional to length along the road line. */
     virtual osg::DrawArrays* makeRoad( ) const;
     virtual osg::Vec3Array *getRoadVertices() const;
     virtual osg::Vec2Array *getRoadTexcoords(const osg::Vec3Array *points) ;
-    
+
     virtual osg::Vec3Array *getRoadNormals(const osg::Vec3Array *points) const;
     /** Geometry will return with this texture applied: */
     void setTexture(const char *tx) { texture=tx;}
-    
+
 protected:
     osg::ref_ptr<osg::Vec2Array> _tcoords;
     osg::ref_ptr<osg::Vec3Array> _edgecoords;
@@ -201,19 +196,19 @@ class pyramid : public osgUtil::DelaunayConstraint {
     *  geometry of an Egyptian pyramid to fit the hole. */
 public:
     pyramid() : _side(100.) {}
-    
+
     void setpos(const osg::Vec3 p, const float size) { _pos=p;_side=size;}
-    
+
     virtual osg::Geometry * makeGeometry(void) const
         {
         // create pyramid geometry. Centre plus points around base
         const osg::Vec3Array *_line= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
-        osg::Geometry *gm=new osg::Geometry;
+        deprecated_osg::Geometry *gm=new deprecated_osg::Geometry;
         osg::Vec3Array *pts=new osg::Vec3Array;
         osg::Vec3Array *norms=new osg::Vec3Array;
         osg::Vec2Array *tcoords=new osg::Vec2Array;
         int ip;
-        
+
         pts->push_back(_pos+osg::Vec3(0,0,_side)*0.5);
         for (ip=0; ip<4; ip++) {
             pts->push_back((*_line)[ip]);
@@ -223,12 +218,12 @@ public:
             nrm.normalize(  );
             norms->push_back(nrm);
         }
-        
-        gm->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+
+        gm->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
         gm->setVertexArray(pts);
         osg::StateSet *dstate=   gm->getOrCreateStateSet(  );
         dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-        
+
         osg::Image* image = osgDB::readImageFile("Images/Brick-Std-Orange.TGA");
         if (image)
         {
@@ -288,66 +283,66 @@ osg::Vec3d getpt(const int np)
 osg::Node* createHUD(const int ndcs,std::string what)
 { // add a string reporting the type of winding rule tessellation applied
     osg::Geode* geode = new osg::Geode();
-    
+
     std::string timesFont("fonts/arial.ttf");
-    
+
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    
-    // Disable depth test, and make sure that the hud is drawn after everything 
+
+    // Disable depth test, and make sure that the hud is drawn after everything
     // else so that it always appears ontop.
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     stateset->setRenderBinDetails(11,"RenderBin");
-    
+
     osg::Vec3 position(50.0f,900.0f,0.0f);
     osg::Vec3 delta(0.0f,-35.0f,0.0f);
-    
+
     {
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
         std::ostringstream cue;
         cue<<"Delaunay triangulation with constraints level "<<ndcs <<"\n"<< what;
-        
+
         text->setFont(timesFont);
         text->setPosition(position);
         text->setText(cue.str());
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta*(ndcs+2);
 
-#if 0        
+#if 0
         text = new  osgText::Text;
         geode->addDrawable( text );
-        
+
         text->setFont(timesFont);
         text->setPosition(position);
         text->setText("(use 'W' wireframe & 'T' texture to visualise mesh)");
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta;
-#endif        
-    }    
+#endif
+    }
     {
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
-        
+
         text->setFont(timesFont);
         text->setPosition(position);
         text->setText("Press 'n' to add another constraint.");
-        
-    }    
-    
+
+    }
+
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     modelview_abs->setMatrix(osg::Matrix::identity());
     modelview_abs->addChild(geode);
-    
+
     osg::Projection* projection = new osg::Projection;
     projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
     projection->addChild(modelview_abs);
-    
+
     return projection;
-    
+
 }
 osg::Group *makedelaunay(const int ndcs)
 { // create a terrain tile. This is just an example!
@@ -356,9 +351,9 @@ osg::Group *makedelaunay(const int ndcs)
     osg::ref_ptr<osg::Geode> geode=new osg::Geode;
     osg::ref_ptr<osgUtil::DelaunayTriangulator> trig=new osgUtil::DelaunayTriangulator();
     osg::StateSet *stateset=geode->getOrCreateStateSet();
-    
+
     osg::Vec3Array *points=new osg::Vec3Array;
-    
+
     osg::Image* image = osgDB::readImageFile("Images/blueFlowers.png");
     if (image)
     {
@@ -368,10 +363,10 @@ osg::Group *makedelaunay(const int ndcs)
         texture->setWrap( osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT );
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
-    
+
     geode->setStateSet( stateset );
     unsigned int i;
-    
+
     int eod=0;
     while (eod>=0) {
         osg::Vec3d pos=getpt(eod);
@@ -405,7 +400,7 @@ osg::Group *makedelaunay(const int ndcs)
         }
         dc->setVertexArray(bounds);
         dc->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,0,nmax) );
-        
+
         trig->addInputConstraint(dc.get());
         what << nmax << " point simple constraint\n";
     }
@@ -431,10 +426,10 @@ osg::Group *makedelaunay(const int ndcs)
             }
             dc->setVertexArray(bounds);
             dc->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,12) );
-            
+
             trig->addInputConstraint(dc.get());
             what << 12 << " point closed loop";
-            
+
             if (ndcs>2) {
                 wc=new WallConstraint; // This example does not remove the interior
                 // eg to force terrain edges that are on ridges in the terrain etc.
@@ -452,7 +447,7 @@ osg::Group *makedelaunay(const int ndcs)
                 trig->addInputConstraint(wc.get());
                 what << " with interior removed\n";
                 what << 5 << " point wall derived constraint\n";
-                
+
                 if (ndcs>3) {
                     // add a removed area and replace it with a different texture
                     dc2=new ArealConstraint;
@@ -466,7 +461,7 @@ osg::Group *makedelaunay(const int ndcs)
                     dc2->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,18) );
                     trig->addInputConstraint(dc2.get());
                     what << 18 << " point area replaced\n";
-                    
+
                     if (ndcs>4) {
                         dc3=new LinearConstraint;
                         // a linear feature or 'road'
@@ -500,7 +495,7 @@ osg::Group *makedelaunay(const int ndcs)
                             forest->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,12) );
                             if (ndcs==6) trig->addInputConstraint(forest.get());
                             what << 12 << " point forest constraint\n";
-                            
+
                             if (ndcs>6) { // add roads that intersect forest
                                 osg::ref_ptr<osgUtil::DelaunayConstraint> forestplus=new osgUtil::DelaunayConstraint;
                                 forestroad=new LinearConstraint;
@@ -610,17 +605,17 @@ osg::Group *makedelaunay(const int ndcs)
         }
     } // ndcs>0
     trig->setInputPointArray(points);
-    
+
     /** NB you need to supply a vec3 array for the triangulator to calculate normals into */
     osg::Vec3Array *norms=new osg::Vec3Array;
     trig->setOutputNormalArray(norms);
-    
+
     trig->triangulate();
     osg::notify(osg::WARN) << " End of trig\n " <<std::endl;
-    
-    // Calculate the texture coordinates after triangulation as 
+
+    // Calculate the texture coordinates after triangulation as
     //the points may get disordered by the triangulate function
-    osg::ref_ptr<osg::Geometry> gm=new osg::Geometry;
+    osg::ref_ptr<deprecated_osg::Geometry> gm=new deprecated_osg::Geometry;
     gm->setVertexArray(points); // points may have been modified in order by triangulation.
     /** calculate texture coords for terrain points */
     if (image) {
@@ -634,17 +629,17 @@ osg::Group *makedelaunay(const int ndcs)
     }
     gm->addPrimitiveSet(trig->getTriangles());
     gm->setNormalArray(trig->getOutputNormalArray());
-    gm->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    gm->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
     geode->addDrawable(gm.get());
     if (ndcs>0) {
         for ( std::vector < pyramid* >::iterator itr=pyrlist.begin(); itr!=pyrlist.end(); itr++) {
             trig->removeInternalTriangles(*itr);
             geode->addDrawable((*itr)->makeGeometry()); // this fills the holes of each pyramid with geometry
         }
-        
+
         if (ndcs>2) {
             trig->removeInternalTriangles(dc.get());
-            
+
             wc->setTexture("Images/Brick-Norman-Brown.TGA"); // wall looks like brick
             geode->addDrawable(wc->makeWallGeometry()); // this creates wall at wc drawarrays
             if (ndcs>3) {
@@ -652,13 +647,13 @@ osg::Group *makedelaunay(const int ndcs)
                 osg::ref_ptr<osg::Vec3Array> arpts=dc2->getPoints(points);
                 dc2->setTexture("Images/purpleFlowers.png");
                 geode->addDrawable(dc2->makeAreal(arpts.get())); // this creates fill in geometry
-                
+
                 if (ndcs>4) { // a simple "road"
                     trig->removeInternalTriangles(dc3.get());
                     dc3->setTexture ("Images/road.png");
                     dc3->setTexrep(40,9.5); // texture is repeated at this frequency
                     geode->addDrawable(dc3->makeGeometry(points)); // this creates road geometry
-                    
+
                     if (ndcs>5) {
                         if (ndcs>6) { //  road & forest overlap - order of removal is important
                             trig->removeInternalTriangles(forestroad.get());
@@ -666,11 +661,11 @@ osg::Group *makedelaunay(const int ndcs)
                             trig->removeInternalTriangles(forestroad3.get());
                         }
                         trig->removeInternalTriangles(forest.get());
-                        forest->setTexture("Images/forestRoof.png"); 
+                        forest->setTexture("Images/forestRoof.png");
                         osg::ref_ptr<osg::Vec3Array> locpts=forest->getPoints(points);
                         geode->addDrawable(forest->makeAreal(locpts.get()));
 
-                        forest->setWallTexture("Images/forestWall.png"); 
+                        forest->setWallTexture("Images/forestWall.png");
                         geode->addDrawable(forest->makeWallGeometry(locpts.get()) );
                         for (osg::Vec3Array::iterator vit=(*locpts).begin(); vit!=(*locpts).end(); vit++) {
                             (*vit)+=osg::Vec3(0,0,30);
@@ -718,10 +713,10 @@ osg::Group *makedelaunay(const int ndcs)
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 { // extra event handler traps 'n' key to re-triangulate the basic terrain.
 public:
-    
+
     KeyboardEventHandler(osgViewer::Viewer &vr):
       viewer(vr), iview(0) {}
-      
+
       virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
       {
           switch(ea.getEventType())
@@ -743,7 +738,7 @@ public:
           }
           return false;
       }
-      
+
       osgViewer::Viewer &viewer;
       int iview;
 };
@@ -791,11 +786,11 @@ osg::Vec2Array * WallConstraint::getWallTexcoords(const float height) const
             }
             const osg::Vec3 curp=(*vertices)[prset->index (0)];
             circumference+=(curp-prevp).length();
-            
+
             int nround=(int)(circumference/txxrepWall);
             if (nround<1) nround=1; // at least one repeat.
             texrepRound=circumference/nround;
-            
+
             float ds=0;
             prevp=(*vertices)[prset->index (prset->getNumIndices()-1)];
             if (tcoords) {
@@ -814,7 +809,7 @@ osg::Vec2Array * WallConstraint::getWallTexcoords(const float height) const
                 tcoords->push_back(tci);
             }
         } // per primitiveset
-        
+
     }
     return tcoords;
 }
@@ -843,7 +838,7 @@ osg::Geometry *WallConstraint::makeWallGeometry() const
     gm->setTexCoordArray(0,getWallTexcoords(height));
     gm->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     gm->setNormalArray(getWallNormals()); // this creates normals to walls
-    
+
     return gm.release();
 }
 
@@ -918,11 +913,11 @@ osg::Vec2Array * ArealConstraint::getWallTexcoords(const float height) const
             }
             const osg::Vec3 curp=(*vertices)[prset->index (0)];
             circumference+=(curp-prevp).length();
-            
+
             int nround=(int)(circumference/txxrepWall);
             if (nround<1) nround=1; // at least one repeat.
             texrepRound=circumference/nround;
-            
+
             float ds=0;
             prevp=(*vertices)[prset->index (prset->getNumIndices()-1)];
             if (tcoords) {
@@ -993,23 +988,23 @@ osg::DrawArrays * ArealConstraint::makeWall(void) const
     return (new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,2+2*_line->size()));
 }
 
-osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt) 
+deprecated_osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
 {
-    osg::ref_ptr<osg::Geometry> gm=new osg::Geometry; // the wall
-    osg::ref_ptr<osg::Geometry> edges=new osg::Geometry; // edges of bounds
+    osg::ref_ptr<deprecated_osg::Geometry> gm=new deprecated_osg::Geometry; // the wall
+    osg::ref_ptr<deprecated_osg::Geometry> edges=new deprecated_osg::Geometry; // edges of bounds
     edges->setVertexArray(pt);
     osg::DrawElementsUInt *trgeom=getTriangles();
     edges->addPrimitiveSet(trgeom);
-    
+
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NONZERO); 
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NONZERO);
     //  find all edges.
     const osg::Vec3Array *points=dynamic_cast<osg::Vec3Array*>(getVertexArray());
-    
+
     tscx->retessellatePolygons(*(edges)); // find all edges
-    
+
     if (walltexture!="") {
         osg::Image* image = osgDB::readImageFile(walltexture.c_str());
         if (image)
@@ -1052,21 +1047,21 @@ osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
             nstart+=2+2*pr->getNumIndices();
         }
     }
-    
+
     return gm.release();
 }
 
 
-osg::Geometry * ArealConstraint::makeAreal( osg::Vec3Array *points) 
+deprecated_osg::Geometry * ArealConstraint::makeAreal( osg::Vec3Array *points)
 {
-    osg::ref_ptr<osg::Geometry> gm; // the fill in area
+    osg::ref_ptr<deprecated_osg::Geometry> gm; // the fill in area
     if (_interiorTris.size()>0) {
-        gm =new osg::Geometry; // the forest roof
+        gm =new deprecated_osg::Geometry; // the forest roof
         gm->setVertexArray(points);
         osg::DrawElementsUInt *trgeom=getTriangles();
         gm->addPrimitiveSet(trgeom);
         gm->setNormalArray(getCanopyNormals(points));
-        gm->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        gm->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
         gm->setTexCoordArray(0,getCanopyTexcoords(points));
         osg::Image* image = osgDB::readImageFile(texture);
         if (image)
@@ -1099,7 +1094,7 @@ void LinearConstraint::setVertices( osg::Vec3Array *lp, const float w)
     for(unsigned int i=0;i<lp->size();i++) {
         osg::Vec3 valong;
         osg::Vec3 pos[2];
-        
+
         if (i==0) {
             valong=(*lp)[i+1]-(*lp)[i];
         } else if (i==lp->size()-1) {
@@ -1126,7 +1121,7 @@ void LinearConstraint::setVertices( osg::Vec3Array *lp, const float w)
 osg::DrawArrays* LinearConstraint::makeRoad(void ) const
 {
     return     new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,2*_midline->size());
-    
+
 }
 
 osg::Vec3Array *LinearConstraint::getRoadNormals(const osg::Vec3Array* /*points*/) const
@@ -1204,7 +1199,7 @@ osg::Vec2Array *LinearConstraint::getRoadTexcoords(const osg::Vec3Array *points)
                     ptfound=true;
                 }
                 ibm1=ib;
-                ib++;    
+                ib++;
                 pminus=(*vit);
             }
         }
@@ -1224,7 +1219,7 @@ osg::Vec2Array *LinearConstraint::getRoadTexcoords(const osg::Vec3Array *points)
     }
     return tcoords.release();
 }
-osg::Vec3Array * LinearConstraint::getNormals(const osg::Vec3Array *points) 
+osg::Vec3Array * LinearConstraint::getNormals(const osg::Vec3Array *points)
 {
     osg::ref_ptr<osg::Vec3Array> norms=new osg::Vec3Array;
     for (osg::DrawElementsUInt::iterator uiitr=prim_tris_->begin(); uiitr!=prim_tris_->end();uiitr+=3) {
@@ -1238,9 +1233,9 @@ osg::Vec3Array * LinearConstraint::getNormals(const osg::Vec3Array *points)
     return norms.release();
 }
 
-osg::Geometry * LinearConstraint::makeGeometry(const osg::Vec3Array *points) 
+deprecated_osg::Geometry * LinearConstraint::makeGeometry(const osg::Vec3Array *points)
 {
-    osg::ref_ptr<osg::Geometry> gm=new osg::Geometry; // the fill in road/railway
+    osg::ref_ptr<deprecated_osg::Geometry> gm=new deprecated_osg::Geometry; // the fill in road/railway
     if (_midline->size()>0) {
         osg::ref_ptr<osg::Vec3Array> locpts=getPoints(points);
         if (texture!="") {
@@ -1263,19 +1258,19 @@ osg::Geometry * LinearConstraint::makeGeometry(const osg::Vec3Array *points)
         }
         gm->setVertexArray(locpts.get());
         gm->setNormalArray(getNormals(locpts.get()));
-        gm->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+        gm->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
         gm->addPrimitiveSet(getTriangles());
     }
-    
+
     return gm.release();
-    
+
 }
 
 
 
 int main( int argc, char **argv )
 {
-    
+
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
@@ -1284,24 +1279,24 @@ int main( int argc, char **argv )
 
     // create the scene from internal specified terrain/constraints.
     osg::ref_ptr<osg::Node> loadedModel = makedelaunay(0);
-    
+
     // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-    
+
     // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
-    
+
     // pass the loaded scene graph to the viewer.
     viewer.setSceneData(loadedModel.get());
-    
+
     // copied from osgtessealte.cpp
     // add event handler for keyboard 'n' to retriangulate
     viewer.addEventHandler(new KeyboardEventHandler(viewer));
-    
+
     return viewer.run();
 }

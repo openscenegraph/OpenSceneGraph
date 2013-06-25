@@ -5,10 +5,10 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Geometry : public ReadWrite, public osg::Geometry{
+class Geometry : public ReadWrite, public deprecated_osg::Geometry {
 public:
-	void write(DataOutputStream* out);
-	void read(DataInputStream* in);
+    void write(DataOutputStream* out);
+    void read(DataInputStream* in);
 };
 }
 

@@ -62,7 +62,7 @@ public:
     void writePlane(const osg::Plane& v);
     void writeVec4ub(const osg::Vec4ub& v);
     void writeQuat(const osg::Quat& q);
-    void writeBinding(osg::Geometry::AttributeBinding b);
+    void writeBinding(deprecated_osg::Geometry::AttributeBinding b);
     void writeArray(const osg::Array* a);
     void writeIntArray(const osg::IntArray* a);
     void writeUByteArray(const osg::UByteArray* a);

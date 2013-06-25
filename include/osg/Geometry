@@ -235,9 +235,6 @@ class OSG_EXPORT Geometry : public Drawable
             BIND_OFF=0,
             BIND_OVERALL=1,
             BIND_PER_PRIMITIVE_SET=2,
-#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
-            BIND_PER_PRIMITIVE=3, /// no longer supported
-#endif
             BIND_PER_VERTEX=4
         };
 
@@ -264,36 +261,6 @@ class OSG_EXPORT Geometry : public Drawable
         /** deprecated, use array->setNormalize(..). */
         void setVertexAttribNormalize(unsigned int index,GLboolean norm);
         GLboolean getVertexAttribNormalize(unsigned int index) const;
-
-#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
-        /** no longer supported.*/
-        inline void setVertexIndices(IndexArray* array);
-        inline const IndexArray* getVertexIndices() const;
-
-        /** no longer supported.*/
-        inline void setNormalIndices(IndexArray* array);
-        inline const IndexArray* getNormalIndices() const;
-
-        /** no longer supported.*/
-        inline void setColorIndices(IndexArray* array);
-        inline const IndexArray* getColorIndices() const;
-
-        /** no longer supported.*/
-        inline void setSecondaryColorIndices(IndexArray* array);
-        inline const IndexArray* getSecondaryColorIndices() const;
-
-        /** no longer supported.*/
-        inline void setFogCoordIndices(IndexArray* array);
-        inline const IndexArray* getFogCoordIndices() const;
-
-        /** no longer supported.*/
-        inline void setTexCoordIndices(unsigned int unit,IndexArray*);
-        inline const IndexArray* getTexCoordIndices(unsigned int unit) const;
-
-        /** no longer supported.*/
-        inline void setVertexAttribIndices(unsigned int index,IndexArray* array);
-        inline const IndexArray* getVertexAttribIndices(unsigned int index) const;
-#endif
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
@@ -311,92 +278,72 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
 
 } // namespace osg
 
-#if defined(OSG_USE_DEPRECATED_GEOMETRY_METHODS)
 
 #include <osg/Notify>
 
-namespace osg {
+/** Contains deprecated features of namespace osg. */
+namespace deprecated_osg {
 
-inline void Geometry::setVertexIndices(IndexArray* array)
+/** Geometry class contaning deprecated features.
+  * Please note this class is \b not "exported" (OSG_EXPORT) to avoid issues with MSVC, when compiling plugins.
+*/
+class OSG_EXPORT Geometry : public osg::Geometry
 {
-    if (_vertexArray.valid()) { _vertexArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setVertexIndicies(..) function failed as there is no vertex array to associate inidices with."<<std::endl; }
-}
+    public:
+        Geometry() : osg::Geometry() {}
+        Geometry(const Geometry& geometry,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Geometry(geometry, copyop) {}
 
-inline const IndexArray* Geometry::getVertexIndices() const
-{
-    if (_vertexArray.valid()) return dynamic_cast<IndexArray*>(_vertexArray->getUserData());
-    else return 0;
-}
+        /** Same values as Array::Binding.*/
+        enum AttributeBinding
+        {
+            BIND_OFF=0,
+            BIND_OVERALL=1,
+            BIND_PER_PRIMITIVE_SET=2,
+            BIND_PER_PRIMITIVE=3,
+            BIND_PER_VERTEX=4
+        };
 
-inline void Geometry::setNormalIndices(IndexArray* array)
-{
-    if (_normalArray.valid()) { _normalArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setNormalIndicies(..) function failed as there is no normal array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getNormalIndices() const
-{
-    if (_normalArray.valid()) return dynamic_cast<IndexArray*>(_normalArray->getUserData());
-    else return 0;
-}
+        void setNormalBinding(AttributeBinding ab);
+        AttributeBinding getNormalBinding() const;
 
-inline void Geometry::setColorIndices(IndexArray* array)
-{
-    if (_colorArray.valid()) { _colorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setColorIndicies(..) function failed as there is no color array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getColorIndices() const
-{
-    if (_colorArray.valid()) return dynamic_cast<IndexArray*>(_colorArray->getUserData());
-    else return 0;
-}
+        void setColorBinding(AttributeBinding ab);
+        AttributeBinding getColorBinding() const;
 
-inline void Geometry::setSecondaryColorIndices(IndexArray* array)
-{
-    if (_secondaryColorArray.valid()) { _secondaryColorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setSecondaryColorArray(..) function failed as there is no secondary color array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getSecondaryColorIndices() const
-{
-    if (_secondaryColorArray.valid()) return dynamic_cast<IndexArray*>(_secondaryColorArray->getUserData());
-    else return 0;
-}
+        void setSecondaryColorBinding(AttributeBinding ab);
+        AttributeBinding getSecondaryColorBinding() const;
 
-inline void Geometry::setFogCoordIndices(IndexArray* array)
-{
-    if (_fogCoordArray.valid()) { _fogCoordArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setFogCoordIndicies(..) function failed as there is no fog coord array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getFogCoordIndices() const
-{
-    if (_fogCoordArray.valid()) return dynamic_cast<IndexArray*>(_fogCoordArray->getUserData());
-    else return 0;
-}
+        void setFogCoordBinding(AttributeBinding ab);
+        AttributeBinding getFogCoordBinding() const;
 
-inline void Geometry::setTexCoordIndices(unsigned int unit,IndexArray* array)
-{
-    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) { _texCoordList[unit]->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setTexCoordIndices(..) function failed as there is no texcoord array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getTexCoordIndices(unsigned int unit) const
-{
-    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) return dynamic_cast<IndexArray*>(_texCoordList[unit]->getUserData());
-    else return 0;
-}
+        void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
+        AttributeBinding getVertexAttribBinding(unsigned int index) const;
 
-inline void Geometry::setVertexAttribIndices(unsigned int index,IndexArray* array)
-{
-    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) { _vertexAttribList[index]->setUserData(array); if (array)  _containsDeprecatedData = true; }
-    else { OSG_WARN<<"Geometry::setVertexAttribIndices(..) function failed as there is no vertex attrib array to associate inidices with."<<std::endl; }
-}
-inline const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) const
-{
-    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return dynamic_cast<IndexArray*>(_vertexAttribList[index]->getUserData());
-    else return 0;
-}
+        void setVertexAttribNormalize(unsigned int index,GLboolean norm);
+        GLboolean getVertexAttribNormalize(unsigned int index) const;
 
-} // namespace osg
+        void setVertexIndices(osg::IndexArray* array);
+        const osg::IndexArray* getVertexIndices() const;
 
-#endif
+        void setNormalIndices(osg::IndexArray* array);
+        const osg::IndexArray* getNormalIndices() const;
+
+        void setColorIndices(osg::IndexArray* array);
+        const osg::IndexArray* getColorIndices() const;
+
+        void setSecondaryColorIndices(osg::IndexArray* array);
+        const osg::IndexArray* getSecondaryColorIndices() const;
+
+        void setFogCoordIndices(osg::IndexArray* array);
+        const osg::IndexArray* getFogCoordIndices() const;
+
+        void setTexCoordIndices(unsigned int unit,osg::IndexArray* array);
+        const osg::IndexArray* getTexCoordIndices(unsigned int unit) const;
+
+        void setVertexAttribIndices(unsigned int index,osg::IndexArray* array);
+        const osg::IndexArray* getVertexAttribIndices(unsigned int index) const;
+
+};
+
+} // namespace deprecated_osg
 
 #endif

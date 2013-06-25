@@ -584,20 +584,20 @@ osg::Quat DataInputStream::readQuat(){
 
 
 
-osg::Geometry::AttributeBinding DataInputStream::readBinding(){
+deprecated_osg::Geometry::AttributeBinding DataInputStream::readBinding(){
     char c = readChar();
 
     if (_verboseOutput) std::cout<<"readBinding() ["<<(int)c<<"]"<<std::endl;
 
     switch((int)c){
-        case 0:    return osg::Geometry::BIND_OFF;
-        case 1: return osg::Geometry::BIND_OVERALL;
-        case 2: return static_cast<osg::Geometry::AttributeBinding>(3) /*osg::Geometry::BIND_PER_PRIMITIVE*/;
-        case 3: return osg::Geometry::BIND_PER_PRIMITIVE_SET;
-        case 4: return osg::Geometry::BIND_PER_VERTEX;
+        case 0:    return deprecated_osg::Geometry::BIND_OFF;
+        case 1: return deprecated_osg::Geometry::BIND_OVERALL;
+        case 2: return deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        case 3: return deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET;
+        case 4: return deprecated_osg::Geometry::BIND_PER_VERTEX;
         default:
             throwException("Unknown binding type in DataInputStream::readBinding()");
-            return osg::Geometry::BIND_OFF;
+            return deprecated_osg::Geometry::BIND_OFF;
     }
 }
 

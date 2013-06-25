@@ -16,7 +16,7 @@
 
 osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedLineSet(openvrml::node *vrml_ifs) const
 {
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
+    osg::ref_ptr<deprecated_osg::Geometry> osg_geom = new deprecated_osg::Geometry();
 
     osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::LINE_STRIP));
 
@@ -117,10 +117,10 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedLineSet(openv
 
             if (vrml_color_per_vertex->value())
             {
-                osg_geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                osg_geom->setColorBinding(deprecated_osg::Geometry::BIND_PER_VERTEX);
             } else
             {
-                osg_geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                osg_geom->setColorBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
             }
         }
     }
@@ -143,7 +143,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::node* 
         return (*it).second.get();
     }
 
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
+    osg::ref_ptr<deprecated_osg::Geometry> osg_geom = new deprecated_osg::Geometry();
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array();
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
@@ -202,7 +202,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::node* 
     osg_geom->setVertexArray(osg_vertices.get());
     osg_geom->setTexCoordArray(0, osg_texcoords.get());
     osg_geom->setNormalArray(osg_normals.get());
-    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    osg_geom->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 

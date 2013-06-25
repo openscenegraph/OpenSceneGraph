@@ -1789,3 +1789,115 @@ void Geometry::fixDeprecatedData()
 
     _containsDeprecatedData = false;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// deprecated_osg
+
+void deprecated_osg::Geometry::setNormalBinding(AttributeBinding ab) { osg::Geometry::setNormalBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getNormalBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getNormalBinding()); }
+
+void deprecated_osg::Geometry::setColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setColorBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getColorBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getColorBinding()); }
+
+void deprecated_osg::Geometry::setSecondaryColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setSecondaryColorBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getSecondaryColorBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getSecondaryColorBinding()); }
+
+void deprecated_osg::Geometry::setFogCoordBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setFogCoordBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getFogCoordBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getFogCoordBinding()); }
+
+void deprecated_osg::Geometry::setVertexAttribBinding(unsigned int index,deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setVertexAttribBinding(index, static_cast<osg::Geometry::AttributeBinding>(ab)); }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getVertexAttribBinding(unsigned int index) const { return static_cast<AttributeBinding>(osg::Geometry::getVertexAttribBinding(index)); }
+
+void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm) { osg::Geometry::setVertexAttribNormalize(index, norm); }
+GLboolean deprecated_osg::Geometry::getVertexAttribNormalize(unsigned int index) const { return osg::Geometry::getVertexAttribNormalize(index); }
+
+void deprecated_osg::Geometry::setVertexIndices(osg::IndexArray* array)
+{
+    if (_vertexArray.valid()) { _vertexArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexIndicies(..) function failed as there is no vertex array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getVertexIndices() const
+{
+    if (_vertexArray.valid()) return dynamic_cast<osg::IndexArray*>(_vertexArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setNormalIndices(osg::IndexArray* array)
+{
+    if (_normalArray.valid()) { _normalArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setNormalIndicies(..) function failed as there is no normal array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getNormalIndices() const
+{
+    if (_normalArray.valid()) return dynamic_cast<osg::IndexArray*>(_normalArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setColorIndices(osg::IndexArray* array)
+{
+    if (_colorArray.valid()) { _colorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setColorIndicies(..) function failed as there is no color array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getColorIndices() const
+{
+    if (_colorArray.valid()) return dynamic_cast<osg::IndexArray*>(_colorArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setSecondaryColorIndices(osg::IndexArray* array)
+{
+    if (_secondaryColorArray.valid()) { _secondaryColorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setSecondaryColorArray(..) function failed as there is no secondary color array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getSecondaryColorIndices() const
+{
+    if (_secondaryColorArray.valid()) return dynamic_cast<osg::IndexArray*>(_secondaryColorArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setFogCoordIndices(osg::IndexArray* array)
+{
+    if (_fogCoordArray.valid()) { _fogCoordArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setFogCoordIndicies(..) function failed as there is no fog coord array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getFogCoordIndices() const
+{
+    if (_fogCoordArray.valid()) return dynamic_cast<osg::IndexArray*>(_fogCoordArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setTexCoordIndices(unsigned int unit,osg::IndexArray* array)
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) { _texCoordList[unit]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setTexCoordIndices(..) function failed as there is no texcoord array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getTexCoordIndices(unsigned int unit) const
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) return dynamic_cast<osg::IndexArray*>(_texCoordList[unit]->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setVertexAttribIndices(unsigned int index,osg::IndexArray* array)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) { _vertexAttribList[index]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexAttribIndices(..) function failed as there is no vertex attrib array to associate inidices with."<<std::endl; }
+}
+const osg::IndexArray* deprecated_osg::Geometry::getVertexAttribIndices(unsigned int index) const
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return dynamic_cast<osg::IndexArray*>(_vertexAttribList[index]->getUserData());
+    else return 0;
+}
+
+
+
+
+
+
+

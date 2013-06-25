@@ -33,12 +33,6 @@
 // example uses a NodeVisitor to try to find worthwhile locations
 // for OcclusionQueryNodes in your the scene graph.
 
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
-
 #include <osg/NodeVisitor>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -572,7 +566,7 @@ createBox()
     state->setAttributeAndModes( pm,
         osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
 
-    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
     osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array;
     geom->setVertexArray( v.get() );
 
@@ -610,12 +604,12 @@ createBox()
 
     osg::ref_ptr<osg::Vec4Array> c = new osg::Vec4Array;
     geom->setColorArray( c.get() );
-    geom->setColorBinding( osg::Geometry::BIND_OVERALL );
+    geom->setColorBinding( deprecated_osg::Geometry::BIND_OVERALL );
     c->push_back( osg::Vec4( 0.f, 1.f, 1.f, 1.f ) );
 
     osg::ref_ptr<osg::Vec3Array> n = new osg::Vec3Array;
     geom->setNormalArray( n.get() );
-    geom->setNormalBinding( osg::Geometry::BIND_PER_PRIMITIVE );
+    geom->setNormalBinding( deprecated_osg::Geometry::BIND_PER_PRIMITIVE );
     n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
     n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
     n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
@@ -650,7 +644,7 @@ createRandomTriangles( unsigned int num )
     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
         osg::StateAttribute::PROTECTED);
 
-    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
     // Disable display lists to decrease performance.
     geom->setUseDisplayList( false );
 
@@ -674,7 +668,7 @@ createRandomTriangles( unsigned int num )
     osg::ref_ptr<osg::Vec4Array> c = new osg::Vec4Array;
     geom->setColorArray( c.get() );
     // Bind per primitive to force slow glBegin/glEnd path.
-    geom->setColorBinding( osg::Geometry::BIND_PER_PRIMITIVE );
+    geom->setColorBinding( deprecated_osg::Geometry::BIND_PER_PRIMITIVE );
     c->resize( num );
 
 #define RAND_0_TO_1 ( (rand()%10)*.1 )

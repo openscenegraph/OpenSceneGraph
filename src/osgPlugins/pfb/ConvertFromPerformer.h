@@ -53,7 +53,7 @@ class ConvertFromPerformer {
         osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
         osg::Texture2D* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 
-        typedef std::map<int,osg::Geometry::AttributeBinding> GSetBindingMap;
+        typedef std::map<int,deprecated_osg::Geometry::AttributeBinding> GSetBindingMap;
 
         GSetBindingMap      _gsetBindMap;
 

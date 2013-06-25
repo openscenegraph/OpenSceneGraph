@@ -109,8 +109,8 @@ class ConvertFromInventor
     private:
 
         // Normal and color binding
-        osg::Geometry::AttributeBinding normalBinding;
-        osg::Geometry::AttributeBinding colorBinding;
+        deprecated_osg::Geometry::AttributeBinding normalBinding;
+        deprecated_osg::Geometry::AttributeBinding colorBinding;
 
         // List of vertices, normals, colors and texture coordinates
         std::vector<osg::Vec3> vertices;

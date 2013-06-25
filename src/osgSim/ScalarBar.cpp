@@ -1,8 +1,3 @@
-#include <osg/Config>
-#ifndef OSG_USE_DEPRECATED_GEOMETRY_METHODS 
-#define OSG_USE_DEPRECATED_GEOMETRY_METHODS 1
-#endif
-
 #include <osgSim/ScalarBar>
 #include <osgText/Text>
 #include <osg/Geometry>
@@ -142,7 +137,7 @@ void ScalarBar::createDrawables()
 
     // 1. First the bar
     // =================
-    osg::ref_ptr<osg::Geometry> bar = new osg::Geometry();
+    osg::ref_ptr<deprecated_osg::Geometry> bar = new deprecated_osg::Geometry();
 
     // Create the bar - created in 'real' coordinate space the moment,
     // with xyz values reflecting those of the actual scalar values in play.
@@ -177,13 +172,13 @@ void ScalarBar::createDrawables()
         cs->push_back(_stc->getColor(_stc->getMin() + (i*incr)  + halfIncr));
     }
     bar->setColorArray(cs.get());
-    bar->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    bar->setColorBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
 
     // Normal
     osg::ref_ptr<osg::Vec3Array> ns(new osg::Vec3Array);
     ns->push_back(osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix));
     bar->setNormalArray(ns.get());
-    bar->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    bar->setNormalBinding(deprecated_osg::Geometry::BIND_OVERALL);
 
     // The Quad strip that represents the bar
     bar->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vs->size()));

@@ -470,8 +470,6 @@ OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixe
 
 OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
 
-OPTION(OSG_USE_DEPRECATED_GEOMETRY_METHODS "Set to ON to enable use of deprecated osg::Geometry functions." ON)
-
 ################################################################################
 # Set Config file
 

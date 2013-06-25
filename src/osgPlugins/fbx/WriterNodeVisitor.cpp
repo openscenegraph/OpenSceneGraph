@@ -46,9 +46,12 @@ public:
         _lastFaceIndex(0),
         _material(material),
         _curNormalIndex(0),
-        _normalBinding(geo->getNormalBinding()),
+        _normalBinding(osg::Geometry::BIND_OFF),
         _mesh(0)
     {
+        if (geo->containsDeprecatedData()) geom->fixDeprecatedData();
+
+        _normalBinding = geo->getNormalBinding();
         if (!geo->getNormalArray() || geo->getNormalArray()->getNumElements()==0)
         {
             _normalBinding = osg::Geometry::BIND_OFF;        // Turn off binding if there is no normal data
@@ -144,7 +147,6 @@ protected:
                 for (IndexPointer iptr = indices; iptr < ilast; iptr+=3)
                 {
                     writeTriangle(iptr[0], iptr[1], iptr[2]);
-                    if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
                 }
                 break;
             }
@@ -156,7 +158,6 @@ protected:
                     if (i & 1) writeTriangle(iptr[0], iptr[2], iptr[1]);
                     else       writeTriangle(iptr[0], iptr[1], iptr[2]);
                 }
-                if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
                 break;
             }
         case GL_QUADS:
@@ -166,7 +167,6 @@ protected:
                 {
                     writeTriangle(iptr[0], iptr[1], iptr[2]);
                     writeTriangle(iptr[0], iptr[2], iptr[3]);
-                    if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
                 }
                 break;
             }
@@ -178,7 +178,6 @@ protected:
                     writeTriangle(iptr[0], iptr[1], iptr[2]);
                     writeTriangle(iptr[1], iptr[3], iptr[2]);
                 }
-                if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
                 break;
             }
         case GL_POLYGON: // treat polygons as GL_TRIANGLE_FAN
@@ -191,7 +190,6 @@ protected:
                 {
                     writeTriangle(first, iptr[0], iptr[1]);
                 }
-                if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
                 break;
             }
         case GL_POINTS:
@@ -232,7 +230,6 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         for (GLsizei i = 2; i < count; i += 3, pos += 3)
         {
             writeTriangle(pos, pos + 1, pos + 2);
-            if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
         }
         break;
     case GL_TRIANGLE_STRIP:
@@ -241,14 +238,12 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             if (i & 1) writeTriangle(pos, pos + 2, pos + 1);
             else       writeTriangle(pos, pos + 1, pos + 2);
         }
-        if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
         break;
     case GL_QUADS:
         for (GLsizei i = 3; i < count; i += 4, pos += 4)
         {
             writeTriangle(pos, pos + 1, pos + 2);
             writeTriangle(pos, pos + 2, pos + 3);
-            if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
         }
         break;
     case GL_QUAD_STRIP:
@@ -257,7 +252,6 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             writeTriangle(pos, pos + 1, pos + 2);
             writeTriangle(pos + 1, pos + 3, pos + 2);
         }
-        if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
         break;
     case GL_POLYGON: // treat polygons as GL_TRIANGLE_FAN
     case GL_TRIANGLE_FAN:
@@ -266,7 +260,6 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             writeTriangle(first, pos, pos+1);
         }
-        if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE) ++_curNormalIndex;
         break;
     case GL_POINTS:
     case GL_LINES:
@@ -535,7 +528,6 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
             //switch (pGeometry->getNormalBinding())
             //{
             //case osg::Geometry::BIND_PER_PRIMITIVE_SET:
-            //case osg::Geometry::BIND_PER_PRIMITIVE:
             //case osg::Geometry::BIND_PER_VERTEX:
             //    break;
             //}
@@ -615,7 +607,6 @@ void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
                                            unsigned int&        drawable_n)
 {
     unsigned int nbVertices = 0;
-    texcoords = false;
     {
         const osg::Array * vecs = geo->getVertexArray();
         if (vecs)

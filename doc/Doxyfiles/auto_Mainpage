@@ -128,13 +128,6 @@ JAVADOC_AUTOBRIEF      = NO
 
 MULTILINE_CPP_IS_BRIEF = NO
 
-# If the DETAILS_AT_TOP tag is set to YES then Doxygen 
-# will output the detailed description near the top, like JavaDoc.
-# If set to NO, the detailed description appears after the member 
-# documentation.
-
-DETAILS_AT_TOP         = NO
-
 # If the INHERIT_DOCS tag is set to YES (the default) then an undocumented 
 # member inherits the documentation from any documented member that it 
 # re-implements.
@@ -570,12 +563,6 @@ HTML_FOOTER            =
 # stylesheet in the HTML output directory as well, or it will be erased!
 
 HTML_STYLESHEET        = 
-
-# If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
-# files or namespaces will be aligned in HTML using tables. If set to 
-# NO a bullet list will be used.
-
-HTML_ALIGN_MEMBERS     = YES
 
 # If the GENERATE_HTMLHELP tag is set to YES, additional index files 
 # will be generated that can be used as input for tools like the 

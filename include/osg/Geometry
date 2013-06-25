@@ -279,7 +279,6 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
 } // namespace osg
 
 
-#include <osg/Notify>
 
 /** Contains deprecated features of namespace osg. */
 namespace deprecated_osg {

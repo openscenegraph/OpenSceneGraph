@@ -49,8 +49,6 @@ public:
         _normalBinding(osg::Geometry::BIND_OFF),
         _mesh(0)
     {
-        if (geo->containsDeprecatedData()) geom->fixDeprecatedData();
-
         _normalBinding = geo->getNormalBinding();
         if (!geo->getNormalArray() || geo->getNormalArray()->getNumElements()==0)
         {

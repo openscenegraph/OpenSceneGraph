@@ -275,6 +275,9 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     // nothing to index
     if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
 
+    // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
+    if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
+
     // compute duplicate vertices
     typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
@@ -1139,6 +1142,10 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
             return;
         ps->accept(vr);
     }
+
+    // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
+    if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
+
     Remapper remapper(vr.remap);
     gatherer.accept(remapper);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),

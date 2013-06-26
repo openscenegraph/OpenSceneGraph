@@ -175,14 +175,12 @@ void ScalarBar::createDrawables()
         cs->push_back(c);
         cs->push_back(c);
     }
-    bar->setColorArray(cs.get());
-    bar->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    bar->setColorArray(cs.get(), osg::Array::BIND_PER_VERTEX);
 
     // Normal
     osg::ref_ptr<osg::Vec3Array> ns(new osg::Vec3Array);
     ns->push_back(osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix));
-    bar->setNormalArray(ns.get());
-    bar->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    bar->setNormalArray(ns.get(), osg::Array::BIND_OVERALL);
 
     // The Quad strip that represents the bar
     bar->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vs->size()));

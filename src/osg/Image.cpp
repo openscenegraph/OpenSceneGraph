@@ -1805,8 +1805,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
 
             osg::Vec4Array* colours = new osg::Vec4Array(1);
             (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-            geom->setColorArray(colours);
-            geom->setColorBinding(Geometry::BIND_OVERALL);
+            geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
             geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,4));
 

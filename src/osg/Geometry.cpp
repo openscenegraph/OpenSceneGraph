@@ -1073,14 +1073,13 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
 
     osg::Vec4Array* colours = new osg::Vec4Array(1);
     (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-    geom->setColorArray(colours);
-    geom->setColorBinding(Geometry::BIND_OVERALL);
+    geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
     osg::Vec3Array* normals = new osg::Vec3Array(1);
     (*normals)[0] = widthVec^heightVec;
     (*normals)[0].normalize();
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(Geometry::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
+
 
 #if defined(OSG_GLES1_AVAILABLE) || !defined(OSG_GLES2_AVAILABLE)
     DrawElementsUByte* elems = new DrawElementsUByte(PrimitiveSet::TRIANGLES);

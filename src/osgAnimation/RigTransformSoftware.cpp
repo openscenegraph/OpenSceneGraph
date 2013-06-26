@@ -78,8 +78,7 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
         {
             normalDst = new osg::Vec3Array;
             normalDst->setDataVariance(osg::Object::DYNAMIC);
-            destination.setNormalArray(normalDst);
-            destination.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            destination.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
         }
         *normalDst = *normalSrc;
     }

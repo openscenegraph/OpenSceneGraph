@@ -44,8 +44,7 @@ osg::Geometry* createCircleGeometry(float radius, unsigned int numSegments)
     }
     osg::Geometry* geometry = new osg::Geometry();
     geometry->setVertexArray(vertexArray);
-    geometry->setNormalArray(normalArray);
-    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geometry->setNormalArray(normalArray, osg::Array::BIND_PER_VERTEX);
     geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,vertexArray->size()));
     return geometry;
 }

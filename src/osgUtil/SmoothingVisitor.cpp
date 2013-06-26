@@ -142,8 +142,7 @@ static void smooth_old(osg::Geometry& geom)
     {
         nitr->normalize();
     }
-    geom.setNormalArray( normals );
-    geom.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom.setNormalArray( normals, osg::Array::BIND_PER_VERTEX);
 
     geom.dirtyDisplayList();
 }
@@ -621,8 +620,7 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
     if (!normals || (normals && normals->size() != vertices->size()))
     {
         normals = new osg::Vec3Array(vertices->size());
-        geom.setNormalArray(normals);
-        geom.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        geom.setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
     }
 
     osg::TriangleIndexFunctor<SmoothTriangleIndexFunctor> stif;

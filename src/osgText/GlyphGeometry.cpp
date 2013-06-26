@@ -1054,8 +1054,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
 #if 1
     osg::Vec4Array* new_colours = new osg::Vec4Array;
     new_colours->push_back(osg::Vec4(1.0,1.0,1.0,0.2));
-    text_geometry->setColorArray(new_colours);
-    text_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    text_geometry->setColorArray(new_colours, osg::Array::BIND_OVERALL);
 
 
     osg::StateSet* stateset = text_geometry->getOrCreateStateSet();

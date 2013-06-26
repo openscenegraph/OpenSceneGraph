@@ -814,8 +814,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     geometry->setVertexArray(VNG._vertices.get());
 
     // allocate and assign normals
-    geometry->setNormalArray(VNG._normals.get());
-    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geometry->setNormalArray(VNG._normals.get(), osg::Array::BIND_PER_VERTEX);
 
 
     // allocate and assign tex coords
@@ -864,8 +863,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
 
-    geometry->setColorArray(colors.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colors.get(), osg::Array::BIND_OVERALL);
 
     //
     // populate vertex and tex coord arrays

@@ -715,8 +715,7 @@ void OcclusionQueryNode::createSupportNodes()
 
         ref_ptr<Vec4Array> ca = new Vec4Array;
         ca->push_back( Vec4( 1.f, 1.f, 1.f, 1.f ) );
-        geom->setColorArray( ca.get() );
-        geom->setColorBinding( Geometry::BIND_OVERALL );
+        geom->setColorArray( ca.get(), Array::BIND_OVERALL );
 
         geom->addPrimitiveSet( new DrawElementsUShort( PrimitiveSet::QUADS, 24, indices ) );
 

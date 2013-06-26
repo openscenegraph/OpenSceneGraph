@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight� loader for OpenSceneGraph
+// OpenFlight loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -589,10 +589,9 @@ protected:
                         osg::Vec4 col = getPrimaryColor();
                         col[3] = 1.0f - getTransparency();
 
-                        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
                         osg::Vec4Array* colors = new osg::Vec4Array(1);
                         (*colors)[0] = col;
-                        geometry->setColorArray(colors);
+                        geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
                     }
 
                     // Normal binding
@@ -602,8 +601,7 @@ protected:
                     }
                     else
                     {
-                        geometry->setNormalBinding(osg::Geometry::BIND_OFF);
-                        geometry->setNormalArray(NULL);
+                        geometry->setNormalArray(0);
                     }
                 }
             }
@@ -1421,10 +1419,10 @@ protected:
             osg::Vec4 col = mesh->getPrimaryColor();
             col[3] = 1.0f - mesh->getTransparency();
 
-            geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
             osg::Vec4Array* colors = new osg::Vec4Array(1);
             (*colors)[0] = col;
-            geometry->setColorArray(colors);
+            geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
         }
 
         // Normal binding
@@ -1434,8 +1432,7 @@ protected:
         }
         else
         {
-            geometry->setNormalBinding(osg::Geometry::BIND_OFF);
-            geometry->setNormalArray(NULL);
+            geometry->setNormalArray(0);
         }
 
         mesh->addGeometry(*geometry);

@@ -799,8 +799,7 @@ public:
 
         osg::Vec4Array* colours = new osg::Vec4Array;
         colours->push_back(colour);
-        geometry->setColorArray(colours);
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
         osg::StateSet* stateset = geometry->getOrCreateStateSet();
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);

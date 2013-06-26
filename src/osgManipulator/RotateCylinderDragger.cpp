@@ -57,8 +57,7 @@ osg::Geometry* createDiskGeometry(float radius, float offset, float z, unsigned 
 
    osg::Geometry* geometry = new osg::Geometry;
    geometry->setVertexArray(vertexArray);
-   geometry->setNormalArray(normalArray);
-   geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+   geometry->setNormalArray(normalArray, osg::Array::BIND_PER_VERTEX);
    geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP, 0, vertexArray->size()));
    return geometry;
 }

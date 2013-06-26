@@ -42,8 +42,7 @@ osg::Node* createHandleNode(Scale2DDragger* cornerScaleDragger, float handleScal
 
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(osg::Vec3(0.0,1.0,0.0));
-    geometry->setNormalArray(normals);
-    geometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
     osg::Geode* geode = new osg::Geode;
     geode->setName("Dragger Handle");
@@ -173,8 +172,7 @@ void createTranslateDraggerGeometry(Scale2DDragger* cornerScaleDragger, Translat
 
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0,1.0,0.0));
-        geometry->setNormalArray(normals);
-        geometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
         geode->addDrawable(geometry);
 

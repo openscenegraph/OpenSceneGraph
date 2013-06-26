@@ -62,8 +62,7 @@ osg::Geometry* createBackgroundRectangle(const osg::Vec3& pos, const float width
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     osg::DrawElementsUInt *base =  new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS,0);
     base->push_back(0);
@@ -133,8 +132,7 @@ struct StatsGraph : public osg::MatrixTransform
         void setColor(const osg::Vec4& color) {
             osg::Vec4Array* colors = new osg::Vec4Array;
             colors->push_back(color);
-            setColorArray(colors);
-            setColorBinding(osg::Geometry::BIND_OVERALL);
+            setColorArray(colors, osg::Array::BIND_OVERALL);
         }
     };
 

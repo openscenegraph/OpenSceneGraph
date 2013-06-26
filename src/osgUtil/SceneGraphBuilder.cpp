@@ -248,26 +248,23 @@ void SceneGraphBuilder::End()
 
     if (_colorSet)
     {
-         _geometry->setColorArray(_colors.get());
-         _geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+         _geometry->setColorArray(_colors.get(), osg::Array::BIND_PER_VERTEX);
     }
     else
     {
          osg::Vec4Array* colors = new osg::Vec4Array;
          colors->push_back(_color);
 
-         _geometry->setColorArray(colors);
-         _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+         _geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
     }
 
     if (_normalSet)
     {
-         _geometry->setNormalArray(_normals.get());
-         _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+         _geometry->setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
     }
     else
     {
-         _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
+         _geometry->setNormalArray(NULL, osg::Array::BIND_OFF);
     }
 
     if (_maxNumTexCoordComponents==1)

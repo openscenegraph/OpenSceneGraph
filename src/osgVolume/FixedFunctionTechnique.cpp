@@ -77,13 +77,11 @@ osg::Node* createCube(const osg::Vec3& center, float size, unsigned int numSlice
 
     osg::Vec3Array* normals = new osg::Vec3Array(1);
     (*normals)[0].set(0.0f,-1.0f,0.0f);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coords->size()));
 

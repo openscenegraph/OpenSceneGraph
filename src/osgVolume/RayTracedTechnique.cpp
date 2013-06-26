@@ -480,8 +480,7 @@ void RayTracedTechnique::init()
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-        geom->setColorArray(colours);
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
         osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_QUADS);
         // bottom

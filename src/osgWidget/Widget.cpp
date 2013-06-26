@@ -53,11 +53,9 @@ _minHeight (0.0f) {
     setUseDisplayList(false);
     setDataVariance(osg::Object::DYNAMIC);
     setVertexArray(new PointArray(4));
-    setColorArray(new ColorArray(4));
-    setNormalArray(_norms.get());
+    setColorArray(new ColorArray(4), osg::Array::BIND_PER_VERTEX);
+    setNormalArray(_norms.get(), osg::Array::BIND_OVERALL);
     setTexCoordArray(0, texs);
-    setNormalBinding(osg::Geometry::BIND_OVERALL);
-    setColorBinding(osg::Geometry::BIND_PER_VERTEX);
     addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, 4));
 
     setDimensions(0.0f, 0.0f, w, h);
@@ -512,8 +510,8 @@ Color Widget::getImageColorAtXY(point_type x, point_type y) const {
 
     point_type X = ((x / getWidth()) * width) + (*texs)[LL].x();
     point_type Y = ((y / getHeight()) * height) + (*texs)[LR].y();
-    
-    if (X<0.0 || X>1.0 || Y<0.0 || Y>1.0) 
+
+    if (X<0.0 || X>1.0 || Y<0.0 || Y>1.0)
     {
         OSG_INFO<<"Widget::getImageColorAtXY("<<x<<", "<<y<<") Texture coordinate out of range, X="<<X<<", Y="<<Y<<std::endl;
         return Color();

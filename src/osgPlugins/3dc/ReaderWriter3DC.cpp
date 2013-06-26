@@ -145,10 +145,8 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                             geometry->setUseDisplayList(true);
                             geometry->setUseVertexBufferObjects(true);
                             geometry->setVertexArray(vertices);
-                            geometry->setNormalArray(normals);
-                            geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-                            geometry->setColorArray(colours);
-                            geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                            geometry->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
+                            geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
                             geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
 
                             geode->addDrawable(geometry);
@@ -177,10 +175,8 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             geometry->setUseDisplayList(true);
             geometry->setUseVertexBufferObjects(true);
             geometry->setVertexArray(vertices);
-            geometry->setNormalArray(normals);
-            geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-            geometry->setColorArray(colours);
-            geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+            geometry->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
+            geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
             geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
 
             geode->addDrawable(geometry);

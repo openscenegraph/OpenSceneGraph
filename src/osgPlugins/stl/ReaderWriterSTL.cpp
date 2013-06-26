@@ -97,7 +97,7 @@ private:
             osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
             geom->setVertexArray(_vertex.get());
-            
+
             if (_normal.valid())
             {
                 // need to convert per triangle normals to per vertex
@@ -109,11 +109,10 @@ private:
                 {
                     perVertexNormals->push_back(*itr);
                 }
-                
-                geom->setNormalArray(perVertexNormals.get());
-                geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+                geom->setNormalArray(perVertexNormals.get(), osg::Array::BIND_PER_VERTEX);
             }
-            
+
             if (_color.valid())
             {
                 // need to convert per triangle colours to per vertex
@@ -126,8 +125,7 @@ private:
                 {
                     perVertexColours->push_back(*itr);
                 }
-                geom->setColorArray(perVertexColours.get());
-                geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                geom->setColorArray(perVertexColours.get(), osg::Array::BIND_PER_VERTEX);
             }
 
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));

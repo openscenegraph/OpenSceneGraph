@@ -444,8 +444,7 @@ public:
         fc.tessellate(verts, themat, ts, dwob, tmat.get());
     }
     void buildGeometry() { // at end of all faces, add collection of vertices to geometry
-        gset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX); //BIND_PERPRIM); //
-        gset->setNormalArray(normals.get());
+        gset->setNormalArray(normals.get(), osg::Array::BIND_PER_VERTEX);
         gset->setTexCoordArray(0,txcoords.get());
         gset->setVertexArray(vertices.get()); // setCoords( vts, nusidx );
     }

@@ -330,7 +330,7 @@ void ArrayDispatchers::reset()
     if (!_initialized) init();
 
     _useVertexAttribAlias = false;
-    
+
     for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();
         itr != _activeDispatchList.end();
         ++itr)

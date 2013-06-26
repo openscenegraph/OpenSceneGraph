@@ -120,8 +120,7 @@ osg::Geometry* PanoramicSphericalDisplay::createParoramicSphericalDisplayDistort
     // pass the created vertex array to the points geometry object.
     geometry->setVertexArray(vertices);
 
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
 
     geometry->setTexCoordArray(0,texcoords0);
     if (texcoords1) geometry->setTexCoordArray(1,texcoords1);

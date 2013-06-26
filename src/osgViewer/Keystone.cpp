@@ -144,7 +144,7 @@ struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
         }
         geometry->dirtyBound();
     }
-    
+
     osg::ref_ptr<Keystone> _keystone;
 };
 
@@ -163,8 +163,7 @@ osg::Geode* Keystone::createKeystoneDistortionMesh()
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
     colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -195,7 +194,7 @@ osg::Geode* Keystone::createKeystoneDistortionMesh()
         for(unsigned i=0; i<numColumns-1; i++)
         {
             unsigned int vi = j*numColumns+i;
-            
+
             elements->push_back(vi+numColumns);
             elements->push_back(vi);
             elements->push_back(vi+1);
@@ -205,7 +204,7 @@ osg::Geode* Keystone::createKeystoneDistortionMesh()
             elements->push_back(vi+1+numColumns);
         }
     }
-    
+
     geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     geometry->getOrCreateStateSet()->setRenderBinDetails(0, "RenderBin");
 
@@ -230,8 +229,7 @@ osg::Node* Keystone::createGrid()
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
     colours->push_back(getGridColor());
-    geometry->setColorArray(colours.get());
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -244,7 +242,7 @@ osg::Node* Keystone::createGrid()
     osg::Vec2 heightVector(0.0f, 1.0f);
 
     unsigned int numIntervals = 7;
-    
+
     // border line
     {
         unsigned int vi = texcoords->size();
@@ -422,7 +420,7 @@ bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 
     if (!viewport) return false;
 
-    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN && ((ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL))) 
+    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN && ((ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL || ea.getModKeyMask()==osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL)))
     {
         if (ea.getUnmodifiedKey()=='g')
         {
@@ -544,15 +542,15 @@ bool Keystone::writeToFile()
         // we don't want to write the UDC to the keystone file so take a reference to it, and set the pointer to NULL.
         osg::ref_ptr<osg::UserDataContainer> temp_udc = getUserDataContainer();
         setUserDataContainer(0);
-        
+
         OSG_NOTICE<<"Writing keystone to: "<<filename<<std::endl;
-        
+
         // write the keystone out to disk
         osgDB::writeObjectFile(*this, filename);
-        
+
         // reassign the UDC
         setUserDataContainer(temp_udc.get());
-        
+
         return true;
     }
     else
@@ -573,7 +571,7 @@ bool Keystone::loadKeystoneFiles(osg::DisplaySettings* ds)
         {
             const std::string& filename = *itr;
             osg::ref_ptr<osgViewer::Keystone> keystone = osgDB::readFile<osgViewer::Keystone>(filename);
-            if (keystone.valid()) 
+            if (keystone.valid())
             {
                 keystone->setUserValue("filename",filename);
                 ds->getKeystones().push_back(keystone.get());
@@ -585,9 +583,9 @@ bool Keystone::loadKeystoneFiles(osg::DisplaySettings* ds)
                 keystone = new Keystone;
                 keystone->setUserValue("filename",filename);
                 ds->getKeystones().push_back(keystone.get());
-                keystonesLoaded = true;                
+                keystonesLoaded = true;
             }
-        }        
+        }
     }
     return keystonesLoaded;
 }

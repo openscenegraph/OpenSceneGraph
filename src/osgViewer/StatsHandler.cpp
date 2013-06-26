@@ -699,8 +699,7 @@ osg::Geometry* StatsHandler::createBackgroundRectangle(const osg::Vec3& pos, con
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     osg::DrawElementsUShort *base =  new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_FAN,0);
     base->push_back(0);
@@ -748,8 +747,7 @@ protected:
 
             osg::Vec4Array* colors = new osg::Vec4Array;
             colors->push_back(color);
-            setColorArray(colors);
-            setColorBinding(osg::Geometry::BIND_OVERALL);
+            setColorArray(colors, osg::Array::BIND_OVERALL);
 
             setDrawCallback(new GraphUpdateCallback(pos, width, height, viewerStats, stats, max, nameBegin, nameEnd));
         }
@@ -880,8 +878,7 @@ osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, 
 
     osg::Vec4Array* colours = new osg::Vec4Array;
     colours->push_back(colour);
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numBlocks*4));
 
@@ -1034,8 +1031,7 @@ osg::Geometry* StatsHandler::createFrameMarkers(const osg::Vec3& pos, float heig
 
     osg::Vec4Array* colours = new osg::Vec4Array;
     colours->push_back(colour);
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numBlocks*2));
 
@@ -1061,8 +1057,7 @@ osg::Geometry* StatsHandler::createTick(const osg::Vec3& pos, float height, cons
 
     osg::Vec4Array* colours = new osg::Vec4Array;
     colours->push_back(colour);
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numTicks*2));
 

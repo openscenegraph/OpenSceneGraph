@@ -156,25 +156,21 @@ void RigGeometry::copyFrom(osg::Geometry& from)
     if (from.getNormalArray())
     {
         if (!copyToSelf) target.setNormalArray(from.getNormalArray());
-        target.setNormalBinding(from.getNormalBinding());
     }
 
     if (from.getColorArray())
     {
         if (!copyToSelf) target.setColorArray(from.getColorArray());
-        target.setColorBinding(from.getColorBinding());
     }
 
     if (from.getSecondaryColorArray())
     {
         if (!copyToSelf) target.setSecondaryColorArray(from.getSecondaryColorArray());
-        target.setSecondaryColorBinding(from.getSecondaryColorBinding());
     }
 
     if (from.getFogCoordArray())
     {
         if (!copyToSelf) target.setFogCoordArray(from.getFogCoordArray());
-        target.setFogCoordBinding(from.getFogCoordBinding());
     }
 
     for(unsigned int ti=0;ti<from.getNumTexCoordArrays();++ti)

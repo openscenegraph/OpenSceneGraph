@@ -137,7 +137,7 @@ void ScalarBar::createDrawables()
 
     // 1. First the bar
     // =================
-    osg::ref_ptr<deprecated_osg::Geometry> bar = new deprecated_osg::Geometry();
+    osg::ref_ptr<osg::Geometry> bar = new osg::Geometry();
 
     // Create the bar - created in 'real' coordinate space the moment,
     // with xyz values reflecting those of the actual scalar values in play.
@@ -145,7 +145,7 @@ void ScalarBar::createDrawables()
 
     // Vertices
     osg::ref_ptr<osg::Vec3Array> vs(new osg::Vec3Array);
-    vs->reserve(2*(_numColors+1));
+    vs->reserve(4*_numColors);
 
     float incr = (_stc->getMax() - _stc->getMin()) / _numColors;
     float xincr = (_width) / _numColors;
@@ -163,22 +163,26 @@ void ScalarBar::createDrawables()
 
     // Colours
     osg::ref_ptr<osg::Vec4Array> cs(new osg::Vec4Array);
-    cs->reserve(_numColors);
+    cs->reserve(4*_numColors);
     const float halfIncr = incr*0.5;
     for(i=0; i<_numColors; ++i)
     {
         // We add half an increment to the color look-up to get the color
         // square in the middle of the 'block'.
-        cs->push_back(_stc->getColor(_stc->getMin() + (i*incr)  + halfIncr));
+        osg::Vec4 c = _stc->getColor(_stc->getMin() + (i*incr)  + halfIncr);
+        cs->push_back(c);
+        cs->push_back(c);
+        cs->push_back(c);
+        cs->push_back(c);
     }
     bar->setColorArray(cs.get());
-    bar->setColorBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
+    bar->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     // Normal
     osg::ref_ptr<osg::Vec3Array> ns(new osg::Vec3Array);
     ns->push_back(osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix));
     bar->setNormalArray(ns.get());
-    bar->setNormalBinding(deprecated_osg::Geometry::BIND_OVERALL);
+    bar->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
     // The Quad strip that represents the bar
     bar->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vs->size()));

@@ -276,8 +276,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchToLef
 
         // Arrays to hold vertices, normals, and texcoords.
         geom->setVertexArray(new osg::Vec3Array);
-        geom->setNormalArray(new osg::Vec3Array);
-        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        geom->setNormalArray(new osg::Vec3Array, osg::Array::BIND_PER_VERTEX);
         if (textureCount) {
             // All texture units share the same array
             osg::Vec2Array* texCoords = new osg::Vec2Array;

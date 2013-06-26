@@ -184,8 +184,7 @@ void Converter::build_scene_graph(Object &obj)
 
                 osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
                 geo->setVertexArray(new_points.get());
-                geo->setNormalArray(new_normals.get());
-                geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+                geo->setNormalArray(new_normals.get(), osg::Array::BIND_PER_VERTEX);
 
                 bool group_used = false;
 

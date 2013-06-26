@@ -280,8 +280,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Sphere(openvrml::nod
 
     osg_geom->setVertexArray(osg_vertices.get());
     osg_geom->setTexCoordArray(0, osg_texcoords.get());
-    osg_geom->setNormalArray(osg_normals.get());
-    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    osg_geom->setNormalArray(osg_normals.get(), osg::Array::BIND_PER_VERTEX);
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 
@@ -392,8 +391,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::node*
 
     osg_geom->setVertexArray(osg_vertices.get());
     osg_geom->setTexCoordArray(0, osg_texcoords.get());
-    osg_geom->setNormalArray(osg_normals.get());
-    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    osg_geom->setNormalArray(osg_normals.get(), osg::Array::BIND_PER_VERTEX);
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 
@@ -531,8 +529,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::n
 
     osg_geom->setVertexArray(osg_vertices.get());
     osg_geom->setTexCoordArray(0, osg_texcoords.get());
-    osg_geom->setNormalArray(osg_normals.get());
-    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    osg_geom->setNormalArray(osg_normals.get(), osg::Array::BIND_PER_VERTEX);
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 

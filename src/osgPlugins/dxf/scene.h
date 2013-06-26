@@ -65,12 +65,10 @@ osg::Geometry* createPtGeometry( osg::PrimitiveSet::Mode pointType, osg::Vec3Arr
     geom->addPrimitiveSet(new osg::DrawArrays(pointType, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
     osg::Vec3Array *norms = new osg::Vec3Array;
     norms->push_back(osg::Vec3(0,0,1));
-    geom->setNormalArray(norms);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(norms, osg::Array::BIND_OVERALL);
     return geom;
 }
 
@@ -82,12 +80,10 @@ osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Arra
     geom->addPrimitiveSet(new osg::DrawArrays(lineType, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
     osg::Vec3Array *norms = new osg::Vec3Array;
     norms->push_back(osg::Vec3(0,0,1));
-    geom->setNormalArray(norms);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(norms, osg::Array::BIND_OVERALL);
     return geom;
 }
 
@@ -99,10 +95,8 @@ osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* norm
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
     return geom;
 }
 
@@ -114,10 +108,8 @@ osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* nor
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, vertices->size()));
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
     return geom;
 }
 

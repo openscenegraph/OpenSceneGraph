@@ -18,8 +18,7 @@ Normals::Normals( Node *node, float scale, Mode mode )
 
     ref_ptr<Geometry> geom = new Geometry;
     geom->setVertexArray( coords.get() );
-    geom->setColorArray( colors.get() );
-    geom->setColorBinding( Geometry::BIND_OVERALL );
+    geom->setColorArray( colors.get(), osg::Array::BIND_OVERALL );
 
     geom->addPrimitiveSet( new DrawArrays( PrimitiveSet::LINES, 0, coords->size()));
 
@@ -60,7 +59,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
         if( geom )
         {
             if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
-            
+
             Vec3Array *coords   = dynamic_cast<Vec3Array*>(geom->getVertexArray());
             if( coords == 0L )
                 continue;

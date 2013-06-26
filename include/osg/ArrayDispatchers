@@ -58,7 +58,6 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         void activateTexCoordArray(unsigned int unit, osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), texCoordDispatcher(unit, array)); }
         void activateVertexAttribArray(unsigned int unit, osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), vertexAttribDispatcher(unit, array)); }
 
-        
         AttributeDispatch* vertexDispatcher(Array* array);
         AttributeDispatch* normalDispatcher(Array* array);
         AttributeDispatch* colorDispatcher(Array* array);
@@ -66,14 +65,6 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         AttributeDispatch* fogCoordDispatcher(Array* array);
         AttributeDispatch* texCoordDispatcher(unsigned int unit, Array* array);
         AttributeDispatch* vertexAttribDispatcher(unsigned int unit, Array* array);
-
-        void activateVertexArray(unsigned int binding, osg::Array* array) { if (binding && array) activate(binding, vertexDispatcher(array)); }
-        void activateColorArray(unsigned int binding, osg::Array* array) { if (binding && array) activate(binding, colorDispatcher(array)); }
-        void activateNormalArray(unsigned int binding, osg::Array* array) { if (binding && array) activate(binding, normalDispatcher(array)); }
-        void activateSecondaryColorArray(unsigned int binding, osg::Array* array) { if (binding && array) activate(binding, secondaryColorDispatcher(array)); }
-        void activateFogCoordArray(unsigned int binding, osg::Array* array) { if (binding && array) activate(binding, fogCoordDispatcher(array)); }
-        void activateTexCoordArray(unsigned int binding, unsigned int unit, osg::Array* array) { if (binding && array) activate(binding, texCoordDispatcher(unit, array)); }
-        void activateVertexAttribArray(unsigned int binding, unsigned int unit, osg::Array* array) { if (binding && array) activate(binding, vertexAttribDispatcher(unit, array)); }
 
         void dispatch(unsigned int binding, unsigned int index)
         {

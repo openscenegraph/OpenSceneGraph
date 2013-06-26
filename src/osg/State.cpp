@@ -67,47 +67,7 @@ State::State():
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
     _normalMatrixUniform = new Uniform(Uniform::FLOAT_MAT3,"osg_NormalMatrix");
 
-    bool compactAliasing = true;
-    if (compactAliasing)
-    {
-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
-        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute vec3 ");
-        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute vec4 ");
-
-        _texCoordAliasList.resize(5);
-        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
-        {
-            std::stringstream gl_MultiTexCoord;
-            std::stringstream osg_MultiTexCoord;
-            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
-            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
-
-            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
-        }
-
-        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
-        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute float ");
-
-    }
-    else
-    {
-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
-        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
-        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");
-        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
-        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
-
-        _texCoordAliasList.resize(8);
-        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
-        {
-            std::stringstream gl_MultiTexCoord;
-            std::stringstream osg_MultiTexCoord;
-            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
-            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
-
-            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
-        }
-    }
+    resetVertexAttributeAlias();
 
     _abortRenderingPtr = NULL;
 
@@ -848,6 +808,53 @@ Polytope State::getViewFrustum() const
 }
 
 
+void State::resetVertexAttributeAlias(bool compactAliasing)
+{
+    _texCoordAliasList.clear();
+    _attributeBindingList.clear();
+
+    if (compactAliasing)
+    {
+        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute vec3 ");
+        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute vec4 ");
+
+        _texCoordAliasList.resize(5);
+        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+        {
+            std::stringstream gl_MultiTexCoord;
+            std::stringstream osg_MultiTexCoord;
+            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+
+            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+        }
+
+        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute float ");
+
+    }
+    else
+    {
+        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
+        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");
+        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
+
+        _texCoordAliasList.resize(8);
+        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+        {
+            std::stringstream gl_MultiTexCoord;
+            std::stringstream osg_MultiTexCoord;
+            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+
+            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+        }
+    }
+}
+
 
 void State::disableAllVertexArrays()
 {
@@ -1313,20 +1320,16 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         declPos = 0;
     }
 
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Normal", "osg_Normal", "attribute vec3 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Vertex", "osg_Vertex", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Color", "osg_Color", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_SecondaryColor", "osg_SecondaryColor", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_FogCoord", "osg_FogCoord", "attribute float ");
-
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, _vertexAlias._glName,         _vertexAlias._osgName,         _vertexAlias._declaration);
+    State_Utils::replaceAndInsertDeclaration(source, declPos, _normalAlias._glName,         _normalAlias._osgName,         _normalAlias._declaration);
+    State_Utils::replaceAndInsertDeclaration(source, declPos, _colorAlias._glName,          _colorAlias._osgName,          _colorAlias._declaration);
+    State_Utils::replaceAndInsertDeclaration(source, declPos, _secondaryColorAlias._glName, _secondaryColorAlias._osgName, _secondaryColorAlias._declaration);
+    State_Utils::replaceAndInsertDeclaration(source, declPos, _fogCoordAlias._glName,       _fogCoordAlias._osgName,       _fogCoordAlias._declaration);
+    for (size_t i=0; i<_texCoordAliasList.size(); i++)
+    {
+        const VertexAttribAlias& texCoordAlias = _texCoordAliasList[i];
+        State_Utils::replaceAndInsertDeclaration(source, declPos, texCoordAlias._glName, texCoordAlias._osgName, texCoordAlias._declaration);
+    }
 
     // replace built in uniform
     State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");

@@ -70,7 +70,7 @@ class TemplateTargetAttributeDispatch : public AttributeDispatch
         TemplateTargetAttributeDispatch(I target, F functionPtr, unsigned int stride):
             _functionPtr(functionPtr), _target(target), _stride(stride), _array(0) {}
 
-        virtual void assign(const GLvoid* array, const IndexArray*)
+        virtual void assign(const GLvoid* array)
         {
             _array = reinterpret_cast<const T*>(array);
         }

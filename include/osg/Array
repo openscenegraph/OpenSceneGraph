@@ -92,11 +92,11 @@ class OSG_EXPORT Array : public BufferData
             BIND_INSTANCE_DIVISOR_6=BIND_INSTANCE_DIVISOR_0+6,
             BIND_INSTANCE_DIVISOR_7=BIND_INSTANCE_DIVISOR_0+7
         };
-        
+
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0, Binding=BIND_UNDEFINED):
             _arrayType(arrayType),
             _dataSize(dataSize),
-            _dataType(dataType),            
+            _dataType(dataType),
             _binding(BIND_UNDEFINED),
             _normalize(false),
             _preserveDataType(false) {}
@@ -127,7 +127,7 @@ class OSG_EXPORT Array : public BufferData
         Type getType() const { return _arrayType; }
         GLint getDataSize() const { return _dataSize; }
         GLenum getDataType() const { return _dataType; }
-        
+
         virtual osg::Array* asArray() { return this; }
         virtual const osg::Array* asArray() const { return this; }
 
@@ -145,21 +145,21 @@ class OSG_EXPORT Array : public BufferData
         /** Get how this array should be passed to OpenGL.*/
         int getBinding() const { return _binding; }
 
-        
+
         /** Specify whether the array data should be normalized by OpenGL.*/
         void setNormalize(bool normalize) { _normalize = normalize; }
 
         /** Get whether the array data should be normalized by OpenGL.*/
         bool getNormalize() const { return _normalize; }
-        
-        
+
+
         /** Set hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
         void setPreserveDataType(bool preserve) { _preserveDataType = preserve; }
 
         /** Get hint to ask that the array data is passed via integer or double, or normal setVertexAttribPointer function.*/
         bool getPreserveDataType() const { return _preserveDataType; }
 
-        
+
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
         virtual void trim() {}
 
@@ -183,6 +183,10 @@ class OSG_EXPORT Array : public BufferData
         bool    _normalize;
         bool    _preserveDataType;
 };
+
+/** convinience function for getting the binding of array via a ptr that may be null.*/
+inline int getBinding(const osg::Array* array) { return array ? array->getBinding() : osg::Array::BIND_OFF; }
+
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
 class TemplateArray : public Array, public MixinVector<T>

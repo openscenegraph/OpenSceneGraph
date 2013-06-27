@@ -34,15 +34,16 @@ Texture1D::Texture1D(osg::Image* image):
 
 Texture1D::Texture1D(const Texture1D& text,const CopyOp& copyop):
             Texture(text,copyop),
-            _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
+    setImage(copyop(text._image.get()));
 }
 
 Texture1D::~Texture1D()
 {
+    setImage(NULL);
 }
 
 int Texture1D::compare(const StateAttribute& sa) const
@@ -96,10 +97,15 @@ void Texture1D::setImage(Image* image)
 {
     if (_image == image) return;
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(0);
-        setDataVariance(osg::Object::STATIC);
+        _image->removeClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(0);
+            setDataVariance(osg::Object::STATIC);
+        }
     }
 
     // delete old texture objects.
@@ -108,10 +114,15 @@ void Texture1D::setImage(Image* image)
     _image = image;
     _modifiedCount.setAllElementsTo(0);
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(new Image::UpdateCallback());
-        setDataVariance(osg::Object::DYNAMIC);
+        _image->addClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(new Image::UpdateCallback());
+            setDataVariance(osg::Object::DYNAMIC);
+        }
     }
 }
 

@@ -194,9 +194,10 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         struct BufferEntry
         {
-            BufferEntry(): modifiedCount(0),dataSize(0),offset(0),dataSource(0) {}
+            BufferEntry(): numRead(0), modifiedCount(0),dataSize(0),offset(0),dataSource(0) {}
 
             BufferEntry(const BufferEntry& rhs):
+                numRead(rhs.numRead),
                 modifiedCount(rhs.modifiedCount),
                 dataSize(rhs.dataSize),
                 offset(rhs.offset),
@@ -205,6 +206,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
             BufferEntry& operator = (const BufferEntry& rhs)
             {
                 if (&rhs==this) return *this;
+                numRead = rhs.numRead;
                 modifiedCount = rhs.modifiedCount;
                 dataSize = rhs.dataSize;
                 offset = rhs.offset;
@@ -212,6 +214,9 @@ class OSG_EXPORT GLBufferObject : public Referenced
                 return *this;
             }
 
+            unsigned int getNumClients() const;
+
+            unsigned int        numRead;
             unsigned int        modifiedCount;
             unsigned int        dataSize;
             unsigned int        offset;
@@ -338,6 +343,10 @@ class OSG_EXPORT GLBufferObject : public Referenced
         * typically used when you have different extensions supported across graphics pipes
         * but need to ensure that they all use the same low common denominator extensions.*/
         static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+        bool hasAllBufferDataBeenRead() const;
+
+        void setBufferDataHasBeenRead(const osg::BufferData* bd);
 
     protected:
 
@@ -610,14 +619,16 @@ class OSG_EXPORT BufferData : public Object
         BufferData():
             Object(true),
             _modifiedCount(0),
-            _bufferIndex(0) {}
+            _bufferIndex(0),
+            _numClients(0) {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         BufferData(const BufferData& bd,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             osg::Object(bd,copyop),
             _modifiedCount(0),
             _bufferIndex(0),
-            _modifiedCallback(bd._modifiedCallback) {}
+            _modifiedCallback(bd._modifiedCallback),
+            _numClients(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferData*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -683,6 +694,12 @@ class OSG_EXPORT BufferData : public Object
           * for all graphics contexts. */
         void releaseGLObjects(State* state=0) const;
 
+        unsigned int getNumClients() const { return _numClients; }
+
+        void addClient(osg::Object *client) { ++_numClients; }
+
+        void removeClient(osg::Object *client) { --_numClients; }
+
 protected:
 
         virtual ~BufferData();
@@ -692,6 +709,8 @@ protected:
         unsigned int                    _bufferIndex;
         osg::ref_ptr<BufferObject>      _bufferObject;
         osg::ref_ptr<ModifiedCallback>  _modifiedCallback;
+
+        unsigned int _numClients;
 };
 
 

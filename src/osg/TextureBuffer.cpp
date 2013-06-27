@@ -28,14 +28,15 @@ TextureBuffer::TextureBuffer(osg::Image* image):
 
 TextureBuffer::TextureBuffer(const TextureBuffer& text,const CopyOp& copyop):
             Texture(text,copyop),
-            _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _usageHint(text._usageHint)
 {
+    setImage(copyop(text._image.get()));
 }
 
 TextureBuffer::~TextureBuffer()
 {
+    setImage(NULL);
 }
 
 int TextureBuffer::compare(const StateAttribute& sa) const
@@ -84,10 +85,19 @@ void TextureBuffer::setImage(Image* image)
 {
     if (_image == image) return;
 
+    if (_image.valid())
+    {
+        _image->removeClient(this);
+    }
+
     _image = image;
     _modifiedCount.setAllElementsTo(0);
-}
 
+    if (_image.valid())
+    {
+        _image->addClient(this);
+    }
+}
 
 void TextureBuffer::apply(State& state) const
 {

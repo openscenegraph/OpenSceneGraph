@@ -62,15 +62,16 @@ TextureRectangle::TextureRectangle(Image* image):
 
 TextureRectangle::TextureRectangle(const TextureRectangle& text,const CopyOp& copyop):
     Texture(text,copyop),
-    _image(copyop(text._image.get())),
     _textureWidth(text._textureWidth),
     _textureHeight(text._textureHeight),
     _subloadCallback(text._subloadCallback)
 {
+    setImage(copyop(text._image.get()));
 }
 
 TextureRectangle::~TextureRectangle()
 {
+    setImage(NULL);
 }
 
 int TextureRectangle::compare(const StateAttribute& sa) const
@@ -125,10 +126,15 @@ void TextureRectangle::setImage(Image* image)
 {
     if (_image == image) return;
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(0);
-        setDataVariance(osg::Object::STATIC);
+        _image->removeClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(0);
+            setDataVariance(osg::Object::STATIC);
+        }
     }
 
     // delete old texture objects.
@@ -136,10 +142,15 @@ void TextureRectangle::setImage(Image* image)
 
     _image = image;
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(new Image::UpdateCallback());
-        setDataVariance(osg::Object::DYNAMIC);
+        _image->addClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(new Image::UpdateCallback());
+            setDataVariance(osg::Object::DYNAMIC);
+        }
     }
 }
 

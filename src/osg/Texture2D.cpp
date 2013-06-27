@@ -37,16 +37,17 @@ Texture2D::Texture2D(Image* image):
 
 Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
             Texture(text,copyop),
-            _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
             _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
+    setImage(copyop(text._image.get()));
 }
 
 Texture2D::~Texture2D()
 {
+    setImage(NULL);
 }
 
 int Texture2D::compare(const StateAttribute& sa) const
@@ -109,19 +110,29 @@ void Texture2D::setImage(Image* image)
 {
     if (_image == image) return;
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(0);
-        setDataVariance(osg::Object::STATIC);
+        _image->removeClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(0);
+            setDataVariance(osg::Object::STATIC);
+        }
     }
 
     _image = image;
     _modifiedCount.setAllElementsTo(0);
 
-    if (_image.valid() && _image->requiresUpdateCall())
+    if (_image.valid())
     {
-        setUpdateCallback(new Image::UpdateCallback());
-        setDataVariance(osg::Object::DYNAMIC);
+        _image->addClient(this);
+
+        if (_image->requiresUpdateCall())
+        {
+            setUpdateCallback(new Image::UpdateCallback());
+            setDataVariance(osg::Object::DYNAMIC);
+        }
     }
 }
 

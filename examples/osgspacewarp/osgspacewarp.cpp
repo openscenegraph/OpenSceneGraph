@@ -35,13 +35,13 @@ struct DrawCallback : public osg::Drawable::DrawCallback
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         osg::State& state = *renderInfo.getState();
-    
+
         if (!_firstTime)
         {
             _previousModelViewMatrix = _currentModelViewMatrix;
             _currentModelViewMatrix = state.getModelViewMatrix();
             _inverseModelViewMatrix.invert(_currentModelViewMatrix);
-            
+
             osg::Matrix T(_previousModelViewMatrix*_inverseModelViewMatrix);
 
             osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(const_cast<osg::Drawable*>(drawable));
@@ -55,12 +55,12 @@ struct DrawCallback : public osg::Drawable::DrawCallback
         {
             _currentModelViewMatrix = state.getModelViewMatrix();
         }
-                
+
         _firstTime = false;
 
         drawable->drawImplementation(renderInfo);
     }
-    
+
     mutable bool _firstTime;
     mutable osg::Matrix _currentModelViewMatrix;
     mutable osg::Matrix _inverseModelViewMatrix;
@@ -72,13 +72,13 @@ struct DrawCallback : public osg::Drawable::DrawCallback
 
 osg::Node* createScene(unsigned int noStars)
 {
-    
+
     osg::Geometry* geometry = new osg::Geometry;
-    
+
     // set up vertices
     osg::Vec3Array* vertices = new osg::Vec3Array(noStars*2);
     geometry->setVertexArray(vertices);
-    
+
     float min = -1.0f;
     float max = 1.0f;
     unsigned int j = 0;
@@ -87,12 +87,11 @@ osg::Node* createScene(unsigned int noStars)
     {
         (*vertices)[j].set(random(min,max),random(min,max),random(min,max));
         (*vertices)[j+1] = (*vertices)[j]+osg::Vec3(0.0f,0.0f,0.001f);
-    }    
+    }
 
     // set up colours
     osg::Vec4Array* colours = new osg::Vec4Array(1);
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
     (*colours)[0].set(1.0f,1.0f,1.0f,1.0f);
 
     // set up the primitive set to draw lines
@@ -108,14 +107,14 @@ osg::Node* createScene(unsigned int noStars)
 
     geometry->setUseDisplayList(false);
     geometry->setDrawCallback(new DrawCallback);
-    
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
     geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     osg::Group* group = new osg::Group;
-    group->addChild(geode);        
-    
+    group->addChild(geode);
+
     return group;
 }
 

@@ -143,9 +143,9 @@ public:
     osg::Node* createShaderGraph(Cell* cell,osg::StateSet* stateset);
 
     osg::Node* createGeometryShaderGraph(Cell* cell, osg::StateSet* stateset);
-    
+
     osg::Node* createTextureBufferGraph(Cell* cell, osg::Geometry* templateGeometry);
-    
+
     void CollectTreePositions(Cell* cell, std::vector< osg::Vec3 >& positions);
 
     osg::Node* createHUDWithText(const std::string& text);
@@ -474,8 +474,7 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
         }
 
         geometry->setVertexArray(&v);
-        geometry->setColorArray(&color);
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setColorArray(&color, osg::Array::BIND_OVERALL);
         geometry->setTexCoordArray(0,&t);
 
         for(r=0;r<numRows-1;++r)
@@ -571,8 +570,7 @@ osg::Geometry* ForestTechniqueManager::createSprite( float w, float h, osg::Vec4
 
     geom->setTexCoordArray( 0, &t );
 
-    geom->setColorArray( &c );
-    geom->setColorBinding( osg::Geometry::BIND_OVERALL );
+    geom->setColorArray( &c, osg::Array::BIND_OVERALL );
 
     geom->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4) );
 
@@ -618,8 +616,7 @@ osg::Geometry* ForestTechniqueManager::createOrthogonalQuads( const osg::Vec3& p
 
     geom->setTexCoordArray( 0, &t );
 
-    geom->setColorArray( &c );
-    geom->setColorBinding( osg::Geometry::BIND_OVERALL );
+    geom->setColorArray( &c, osg::Array::BIND_OVERALL );
 
     geom->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,8) );
 
@@ -1025,10 +1022,10 @@ osg::Node* ForestTechniqueManager::createTextureBufferGraph(Cell* cell, osg::Geo
         primSet->setNumInstances( cell->_trees.size() );
         geode = new osg::Geode;
         geode->addDrawable(geometry);
-        
+
         osg::ref_ptr<osg::Image> treeParamsImage = new osg::Image;
         treeParamsImage->allocateImage( 3*cell->_trees.size(), 1, 1, GL_RGBA, GL_FLOAT );
-        
+
         unsigned int i=0;
         for(TreeList::iterator itr=cell->_trees.begin();
             itr!=cell->_trees.end();
@@ -1369,7 +1366,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
-    
+
     {
         std::cout<<"Creating forest using geometry instancing and texture buffer objects ...";
 
@@ -1391,7 +1388,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
                 "   vec3 position = texelFetch(dataBuffer, instanceAddress).xyz;\n"
                 "   Color         = texelFetch(dataBuffer, instanceAddress + 1);\n"
                 "   vec2 size     = texelFetch(dataBuffer, instanceAddress + 2).xy;\n"
-                "   mat4 mvpMatrix = gl_ModelViewProjectionMatrix *\n" 
+                "   mat4 mvpMatrix = gl_ModelViewProjectionMatrix *\n"
                 "        mat4( size.x, 0.0, 0.0, 0.0,\n"
                 "              0.0, size.x, 0.0, 0.0,\n"
                 "              0.0, 0.0, size.y, 0.0,\n"
@@ -1419,11 +1416,11 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
 
             osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
             stateset->addUniform(baseTextureSampler);
-            
+
             osg::Uniform* dataBufferSampler = new osg::Uniform("dataBuffer",1);
             stateset->addUniform(dataBufferSampler);
         }
-        
+
         osg::ref_ptr<osg::Geometry> templateGeometry = createOrthogonalQuadsNoColor(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f);
         templateGeometry->setUseVertexBufferObjects(true);
         templateGeometry->setUseDisplayList(false);
@@ -1434,10 +1431,10 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
         group->addChild(createHUDWithText("Using geometry instancing to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
 
         _techniqueSwitch->addChild(group);
-        
+
         std::cout<<"done."<<std::endl;
     }
-    
+
 
     _currentTechnique = 0;
     _techniqueSwitch->setSingleChildOn(_currentTechnique);
@@ -1462,13 +1459,13 @@ int main( int argc, char **argv )
 
     unsigned int numTreesToCreate = 10000;
     arguments.read("--trees",numTreesToCreate);
-    
+
     unsigned int maxNumTreesPerCell = sqrtf(static_cast<float>(numTreesToCreate));
-    
+
     arguments.read("--trees-per-cell",maxNumTreesPerCell);
 
     osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
-    
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 

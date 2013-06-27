@@ -22,7 +22,7 @@
 #include <osgDB/FileUtils>
 #include <iostream>
 
-SubtractPass::SubtractPass(osg::TextureRectangle *left_tex, 
+SubtractPass::SubtractPass(osg::TextureRectangle *left_tex,
 						   osg::TextureRectangle *right_tex,
 						   int width, int height,
 						   int start_disparity) :
@@ -33,7 +33,7 @@ SubtractPass::SubtractPass(osg::TextureRectangle *left_tex,
     _RootGroup = new osg::Group;
     _InTextureLeft = left_tex;
     _InTextureRight = right_tex;
-   
+
     createOutputTextures();
 
     _Camera = new osg::Camera;
@@ -52,7 +52,7 @@ SubtractPass::~SubtractPass()
 osg::ref_ptr<osg::Group> SubtractPass::createTexturedQuad()
 {
     osg::ref_ptr<osg::Group> top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -77,8 +77,7 @@ osg::ref_ptr<osg::Group> SubtractPass::createTexturedQuad()
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
 
     _StateSet = quad_geom->getOrCreateStateSet();
     _StateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -88,9 +87,9 @@ osg::ref_ptr<osg::Group> SubtractPass::createTexturedQuad()
     _StateSet->addUniform(new osg::Uniform("textureLeft", 0));
     _StateSet->addUniform(new osg::Uniform("textureRight", 1));
     _StateSet->addUniform(new osg::Uniform("start_disparity", _StartDisparity));
-    
+
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -112,7 +111,7 @@ void SubtractPass::setupCamera()
 
     _Camera->setRenderOrder(osg::Camera::PRE_RENDER);
     _Camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-    
+
     // attach the 4 textures
     for (int i=0; i<4; i++) {
 		_Camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0+i), _OutTexture[i].get());
@@ -123,7 +122,7 @@ void SubtractPass::createOutputTextures()
 {
     for (int i=0; i<4; i++) {
 		_OutTexture[i] = new osg::TextureRectangle;
-    
+
 		_OutTexture[i]->setTextureSize(_TextureWidth, _TextureHeight);
 		_OutTexture[i]->setInternalFormat(GL_RGBA);
 		_OutTexture[i]->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
@@ -133,7 +132,7 @@ void SubtractPass::createOutputTextures()
 
 void SubtractPass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT ); 
+    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
     fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
 
     _FragmentProgram = 0;
@@ -160,7 +159,7 @@ AggregatePass::AggregatePass(osg::TextureRectangle *diff_tex0,
     _WindowSize(window_size)
 {
     _RootGroup = new osg::Group;
-    
+
     _InTextureDifference[0] = diff_tex0;
     _InTextureDifference[1] = diff_tex1;
     _InTextureDifference[2] = diff_tex2;
@@ -170,7 +169,7 @@ AggregatePass::AggregatePass(osg::TextureRectangle *diff_tex0,
     _OutTextureAggregate = agg_tex_out;
 
     _OutTexture = _OutTextureAggregate;
-    
+
     _Camera = new osg::Camera;
     setupCamera();
     _Camera->addChild(createTexturedQuad().get());
@@ -188,7 +187,7 @@ AggregatePass::~AggregatePass()
 osg::ref_ptr<osg::Group> AggregatePass::createTexturedQuad()
 {
     osg::ref_ptr<osg::Group> top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -213,8 +212,7 @@ osg::ref_ptr<osg::Group> AggregatePass::createTexturedQuad()
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
 
     _StateSet = quad_geom->getOrCreateStateSet();
     _StateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -223,7 +221,7 @@ osg::ref_ptr<osg::Group> AggregatePass::createTexturedQuad()
     _StateSet->setTextureAttributeAndModes(2, _InTextureDifference[2].get(), osg::StateAttribute::ON);
     _StateSet->setTextureAttributeAndModes(3, _InTextureDifference[3].get(), osg::StateAttribute::ON);
     _StateSet->setTextureAttributeAndModes(4, _InTextureAggregate.get(), osg::StateAttribute::ON);
-    
+
     _StateSet->addUniform(new osg::Uniform("textureDiff0", 0));
     _StateSet->addUniform(new osg::Uniform("textureDiff1", 1));
     _StateSet->addUniform(new osg::Uniform("textureDiff2", 2));
@@ -233,7 +231,7 @@ osg::ref_ptr<osg::Group> AggregatePass::createTexturedQuad()
     _StateSet->addUniform(new osg::Uniform("window_size", _WindowSize));
 
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -261,7 +259,7 @@ void AggregatePass::setupCamera()
 
 void AggregatePass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT ); 
+    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
     fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
 
     _FragmentProgram = 0;
@@ -274,7 +272,7 @@ void AggregatePass::setShader(std::string filename)
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-SelectPass::SelectPass(osg::TextureRectangle *in_tex, 
+SelectPass::SelectPass(osg::TextureRectangle *in_tex,
 					   int width, int height,
 					   int min_disparity, int max_disparity) :
     _TextureWidth(width),
@@ -284,7 +282,7 @@ SelectPass::SelectPass(osg::TextureRectangle *in_tex,
 {
     _RootGroup = new osg::Group;
     _InTexture = in_tex;
-   
+
     createOutputTextures();
 
     _Camera = new osg::Camera;
@@ -303,7 +301,7 @@ SelectPass::~SelectPass()
 osg::ref_ptr<osg::Group> SelectPass::createTexturedQuad()
 {
     osg::ref_ptr<osg::Group> top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -328,19 +326,18 @@ osg::ref_ptr<osg::Group> SelectPass::createTexturedQuad()
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
 
     _StateSet = quad_geom->getOrCreateStateSet();
     _StateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     _StateSet->setTextureAttributeAndModes(0, _InTexture.get(), osg::StateAttribute::ON);
-    
+
     _StateSet->addUniform(new osg::Uniform("textureIn", 0));
     _StateSet->addUniform(new osg::Uniform("min_disparity", _MinDisparity));
     _StateSet->addUniform(new osg::Uniform("max_disparity", _MaxDisparity));
 
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -369,7 +366,7 @@ void SelectPass::setupCamera()
 void SelectPass::createOutputTextures()
 {
     _OutTexture = new osg::TextureRectangle;
-    
+
     _OutTexture->setTextureSize(_TextureWidth, _TextureHeight);
     _OutTexture->setInternalFormat(GL_RGBA);
     _OutTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
@@ -378,7 +375,7 @@ void SelectPass::createOutputTextures()
 
 void SelectPass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT ); 
+    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
     fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
 
     _FragmentProgram = 0;
@@ -391,9 +388,9 @@ void SelectPass::setShader(std::string filename)
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-StereoMultipass::StereoMultipass(osg::TextureRectangle *left_tex, 
+StereoMultipass::StereoMultipass(osg::TextureRectangle *left_tex,
 								 osg::TextureRectangle *right_tex,
-								 int width, int height, 
+								 int width, int height,
 								 int min_disparity, int max_disparity, int window_size) :
     _TextureWidth(width),
     _TextureHeight(height)
@@ -401,7 +398,7 @@ StereoMultipass::StereoMultipass(osg::TextureRectangle *left_tex,
     _RootGroup = new osg::Group;
 
     createOutputTextures();
-    
+
     _Camera = new osg::Camera;
     setupCamera();
     _Camera->addChild(createTexturedQuad().get());
@@ -447,7 +444,7 @@ StereoMultipass::~StereoMultipass()
 osg::ref_ptr<osg::Group> StereoMultipass::createTexturedQuad()
 {
     osg::ref_ptr<osg::Group> top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -472,14 +469,13 @@ osg::ref_ptr<osg::Group> StereoMultipass::createTexturedQuad()
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
+
     _StateSet = quad_geom->getOrCreateStateSet();
     _StateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
- 
+
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -511,12 +507,12 @@ void StereoMultipass::createOutputTextures()
 {
     for (int i=0; i<2; i++) {
 		_OutTexture[i] = new osg::TextureRectangle;
-	
+
 		_OutTexture[i]->setTextureSize(_TextureWidth, _TextureHeight);
 		_OutTexture[i]->setInternalFormat(GL_RGBA);
 		_OutTexture[i]->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
 		_OutTexture[i]->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-	
+
 		// hdr, we want to store floats
 		_OutTexture[i]->setInternalFormat(GL_RGBA16F_ARB);
 		//_OutTexture[i]->setInternalFormat(GL_FLOAT_RGBA32_NV);
@@ -528,7 +524,7 @@ void StereoMultipass::createOutputTextures()
 
 void StereoMultipass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT ); 
+    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
     fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
 
     _FragmentProgram = 0;

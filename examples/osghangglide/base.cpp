@@ -44,7 +44,7 @@ Node *makeBase( void )
     c = 0;
     (*coords)[c].set(0.0f,0.0f,0.0f);
     (*tcoords)[c].set(0.0f,0.0f);
-    
+
     for( i = 0; i <= 18; i++ )
     {
         theta = osg::DegreesToRadians((float)i * 20.0);
@@ -61,8 +61,7 @@ Node *makeBase( void )
 
     geom->setTexCoordArray( 0, tcoords );
 
-    geom->setColorArray( colors );
-    geom->setColorBinding( Geometry::BIND_OVERALL );
+    geom->setColorArray( colors, Array::BIND_OVERALL );
 
     geom->addPrimitiveSet( new DrawArrays(PrimitiveSet::TRIANGLE_FAN,0,19) );
 
@@ -81,7 +80,7 @@ Node *makeBase( void )
     // clear the depth to the far plane.
     osg::Depth* depth = new osg::Depth;
     depth->setFunction(osg::Depth::ALWAYS);
-    depth->setRange(1.0,1.0);   
+    depth->setRange(1.0,1.0);
     dstate->setAttributeAndModes(depth,StateAttribute::ON );
 
     dstate->setRenderBinDetails(-1,"RenderBin");

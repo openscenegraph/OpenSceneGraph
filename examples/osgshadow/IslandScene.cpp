@@ -212,7 +212,7 @@ static unsigned int objectTexture[] = {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Rearange pixels if Big Endian hardware or CPU word is greater than 4 bytes.
-// I am on 32 bit Intel so this code is dead on my machine. 
+// I am on 32 bit Intel so this code is dead on my machine.
 // If you happen to find a bug let us know or better fix it and let us know.
 ////////////////////////////////////////////////////////////////////////////////
 static unsigned char * orderBytes( unsigned int *raster, unsigned int size )
@@ -263,7 +263,7 @@ static unsigned char * orderBytes( unsigned int *raster, unsigned int size )
 ////////////////////////////////////////////////////////////////////////////////
 static void addTree
     ( const osg::Vec3 & p,
-      osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec2Array* texCoords, 
+      osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec2Array* texCoords,
       float r = sqrt( 3.f ), float h = 10.f, float s = 5.f )
 {
     float te = 1.0 / 64;
@@ -311,10 +311,10 @@ static void addTree
 
     }
 
-    vertices->push_back( p + osg::Vec3( -4 - r, -4 -r, h * 2 / 3 ) * s );                
+    vertices->push_back( p + osg::Vec3( -4 - r, -4 -r, h * 2 / 3 ) * s );
     vertices->push_back( p + osg::Vec3( -4 - r, 4 + r, h * 2 / 3 ) * s );
     vertices->push_back( p + osg::Vec3(  4 + r, 4 + r, h * 2 / 3 ) * s );
-    vertices->push_back( p + osg::Vec3(  4 + r, -4 -r, h * 2 / 3 ) * s );                
+    vertices->push_back( p + osg::Vec3(  4 + r, -4 -r, h * 2 / 3 ) * s );
 
     normals->push_back( osg::Vec3(0, 0, 1) );
     normals->push_back( osg::Vec3(0, 0, 1) );
@@ -329,7 +329,7 @@ static void addTree
 ////////////////////////////////////////////////////////////////////////////////
 static void addHouse
     ( const osg::Vec3 & p,
-      osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec2Array* texCoords, 
+      osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec2Array* texCoords,
       float r = 3, float h = 10.f, float s = 3.f )
 {
     float te = 0.5 / 64;
@@ -380,7 +380,7 @@ static void addHouse
 }
 ////////////////////////////////////////////////////////////////////////////////
 static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density )
-{    
+{
     osg::Geode* geode = new osg::Geode;
 
     // set up the texture of the base.
@@ -399,7 +399,7 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
 
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     stateset->setMode( GL_BLEND,osg::StateAttribute::ON );
-              
+
     stateset->setAttributeAndModes( new osg::CullFace() );
     stateset->setAttributeAndModes( new osg::Depth( osg::Depth::LESS, 0.f, 1.f, true ) );
     stateset->setAttributeAndModes( new osg::AlphaFunc( osg::AlphaFunc::GEQUAL, 0.5f ) );
@@ -413,15 +413,13 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
     geometry->setVertexArray(vertices);
 
     osg::Vec3Array* normals = new osg::Vec3Array;
-    geometry->setNormalArray(normals);
-    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geometry->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
 
     osg::Vec2Array* texCoords = new osg::Vec2Array;
-    geometry->setTexCoordArray(0, texCoords);    
+    geometry->setTexCoordArray(0, texCoords);
 
     osg::Vec4Array* colours = new osg::Vec4Array;
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
     colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
     for( unsigned int x = 0; x < grid->getNumColumns() - 1; x++ )
@@ -446,16 +444,16 @@ static osg::Geode* createObjects( osg::HeightField * grid, unsigned int density 
             {
                 osg::Vec3 p( float( rand() ) / RAND_MAX, float( rand() ) / RAND_MAX, 0 );
 
-                z = ( 1.f - p[0] ) * ( 1.f - p[1] ) * z00 + 
+                z = ( 1.f - p[0] ) * ( 1.f - p[1] ) * z00 +
                     ( 1.f - p[0] ) * ( p[1] ) * z01 +
                     ( p[0] ) * ( p[1] ) * z11 +
-                    ( p[0] ) * ( 1.f - p[1] ) * z10;                
+                    ( p[0] ) * ( 1.f - p[1] ) * z10;
 
                 osg::Vec3 pos(o + osg::Vec3(p.x() * grid->getXInterval(), p.y() * grid->getYInterval(), z));
-     
+
                 if( rand() % 3 > 0 )
                     addTree( pos, vertices, normals, texCoords );
-                else 
+                else
                     addHouse( pos, vertices, normals, texCoords );
 
             }
@@ -475,34 +473,34 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
     osg::ref_ptr<osg::Image> heightMap = new osg::Image();
-    heightMap->setImage( 64, 64, 1, 
-                         GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE, 
-                         orderBytes( heightTexture, sizeof( heightTexture ) ), 
+    heightMap->setImage( 64, 64, 1,
+                         GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                         orderBytes( heightTexture, sizeof( heightTexture ) ),
                          osg::Image::NO_DELETE );
 
     osg::ref_ptr<osg::Image> colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
     if ( !colorMap )
     {
-        
-        struct colorElevation 
+
+        struct colorElevation
         {
             colorElevation(unsigned int elev, const osg::Vec4ub& c):
                 elevation(elev), color(c) {}
-                
-            unsigned int elevation; 
+
+            unsigned int elevation;
             osg::Vec4ub color;
         };
-        
+
         colorElevation colorElevationMap[] =
             {
-                colorElevation(0, osg::Vec4ub( 0, 128, 255, 255 )), 
+                colorElevation(0, osg::Vec4ub( 0, 128, 255, 255 )),
                 colorElevation(8, osg::Vec4ub( 192, 192, 128, 255 )),
                 colorElevation(32, osg::Vec4ub( 0, 255, 0, 255 )),
                 colorElevation(128, osg::Vec4ub( 128, 128, 128, 255 )),
                 colorElevation(192, osg::Vec4ub( 96, 96, 96, 255 )),
                 colorElevation(255, osg::Vec4ub( 255, 255, 255, 255 )),
                 colorElevation(256, osg::Vec4ub( 255, 255, 255, 255 ))
-            };        
+            };
 
         colorMap = new osg::Image();
         colorMap->allocateImage( heightMap->s(), heightMap->t(),1, GL_RGBA, GL_UNSIGNED_BYTE );
@@ -520,8 +518,8 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
 
                 float f1 = 1.f - f0;
 
-                               
-                *(osg::Vec4ub*)colorMap->data(c,r) = 
+
+                *(osg::Vec4ub*)colorMap->data(c,r) =
                     colorElevationMap[i].color * f1 + colorElevationMap[i+1].color * f0;
             }
         }
@@ -566,7 +564,7 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
     stateset->setAttributeAndModes( new osg::CullFace(), osg::StateAttribute::ON );
 
     group->addChild(terrainTile.get());
-    
+
     group->addChild( createObjects( grid, 1 ) );
 
     return group.release();
@@ -574,7 +572,7 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
 ////////////////////////////////////////////////////////////////////////////////
 namespace ModelFour
 {
-    
+
 osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
 {
     return createIsland();

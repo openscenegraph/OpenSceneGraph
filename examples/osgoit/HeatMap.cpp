@@ -125,10 +125,10 @@ Heatmap::Heatmap(float width, float depth, float maxheight, unsigned int K, unsi
             xypositions->push_back(osg::Vec2(1.0f-0.5f/(O*K),((float)y+0.5f)/(O*N)));
         }
     }
+    xypositions->setBinding(osg::Array::BIND_PER_VERTEX);
+    xypositions->setNormalize(false);
 
     meshGeom->setVertexAttribArray(6, xypositions);
-    meshGeom->setVertexAttribNormalize(6, false);
-    meshGeom->setVertexAttribBinding(6, osg::Geometry::BIND_PER_VERTEX);
     meshGeom->setVertexArray(vertices);
 
     // generate several tri strips to form a mesh

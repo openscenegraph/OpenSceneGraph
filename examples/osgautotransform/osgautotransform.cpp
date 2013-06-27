@@ -37,7 +37,7 @@
 osg::Node* createLabel(const osg::Vec3& pos, float size, const std::string& label, osgText::Text::AxisAlignment axisAlignment)
 {
     osg::Geode* geode = new osg::Geode();
-    
+
     std::string timesFont("fonts/arial.ttf");
 
     {
@@ -50,17 +50,17 @@ osg::Node* createLabel(const osg::Vec3& pos, float size, const std::string& labe
         text->setAxisAlignment(axisAlignment);
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setText(label);
-        
+
     }
-    
-    return geode;    
+
+    return geode;
 }
 
 
 osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& label)
 {
     osg::Geode* geode = new osg::Geode();
-    
+
     std::string timesFont("fonts/arial.ttf");
 
     {
@@ -75,10 +75,10 @@ osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& lab
         text->setAutoRotateToScreen(true);
         text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
         text->setText(label);
-        
+
     }
-    
-    return geode;    
+
+    return geode;
 }
 
 osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::AutoTransform::AutoRotateMode autoRotateMode, osgText::Text::AxisAlignment axisAlignment, const std::string& str)
@@ -113,8 +113,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
 
         osg::Geometry* geom = new osg::Geometry;
         geom->setVertexArray(vertices);
-        geom->setColorArray(colors);
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geom->setColorArray(colors, osg::Array::BIND_OVERALL);
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP,0,vertices->size()));
 
         osg::Geode* geode = new osg::Geode;
@@ -140,8 +139,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
 
         osg::Geometry* geom = new osg::Geometry;
         geom->setVertexArray(vertices);
-        geom->setColorArray(colors);
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geom->setColorArray(colors, osg::Array::BIND_OVERALL);
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP,0,vertices->size()));
 
         osg::Geode* geode = new osg::Geode;
@@ -149,7 +147,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
 
         group->addChild(geode);
     }
-    
+
     return group;
 }
 
@@ -169,25 +167,25 @@ osg::Node* createAutoScale(const osg::Vec3& position, float characterSize, const
 
     osg::AutoTransform* at = new osg::AutoTransform;
     at->addChild(geode);
-    
+
     at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
     at->setAutoScaleToScreen(true);
     at->setMinimumScale(minScale);
     at->setMaximumScale(maxScale);
     at->setPosition(position);
-    
+
     return at;
 }
 
 osg::Node* createScene()
 {
     osg::Group* root = new osg::Group;
-    
+
 //    int numReps = 3333;
     int numReps = 10;
     root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(1000.0,0.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_CAMERA,osgText::Text::XY_PLANE, "ROTATE_TO_CAMERA"));
     root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1000.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_SCREEN,osgText::Text::XY_PLANE, "ROTATE_TO_SCREEN"));
-    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,0.0,1000.0),numReps,osg::AutoTransform::NO_ROTATION,osgText::Text::XZ_PLANE, "NO_ROTATION"));    
+    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,0.0,1000.0),numReps,osg::AutoTransform::NO_ROTATION,osgText::Text::XZ_PLANE, "NO_ROTATION"));
 
     root->addChild(createAutoScale(osg::Vec3(500.0,500.0,500.0), 25.0, "AutoScale with no min, max limits"));
     root->addChild(createAutoScale(osg::Vec3(500.0,500.0,300.0), 25.0, "AutoScale with minScale = 1, maxScale = 2.0 ", 1, 2.0));
@@ -202,7 +200,7 @@ int main(int, char**)
 
     // set the scene to render
     viewer.setSceneData(createScene());
-    
+
     // run the viewers frame loop
     return viewer.run();
 }

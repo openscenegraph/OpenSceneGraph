@@ -58,10 +58,10 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             // we'll pick out the center 1/2 of the whole image,
             int column_start = _image->s()/4;
             int column_end = 3*column_start;
-            
+
             int row_start = _image->t()/4;
             int row_end = 3*row_start;
-        
+
             // and then halve their contribution
             for(int r=row_start; r<row_end; ++r)
             {
@@ -82,10 +82,10 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             // we'll pick out the center 1/2 of the whole image,
             int column_start = _image->s()/4;
             int column_end = 3*column_start;
-            
+
             int row_start = _image->t()/4;
             int row_end = 3*row_start;
-            
+
             // and then halve their contribution
             for(int r=row_start; r<row_end; ++r)
             {
@@ -100,13 +100,13 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             }
 
             _image->dirty();
-        
+
             //print out the first three values
             float* data = (float*)_image->data(0, 0);
             fprintf(stderr,"Float pixel data: r %e g %e b %e\n", data[0], data[1], data[2]);
         }
     }
-    
+
     osg::Image* _image;
 };
 
@@ -116,7 +116,7 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
 osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool useHDR)
 {
     osg::Group *top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -141,16 +141,15 @@ osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool 
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
+
     osg::StateSet *stateset = quad_geom->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     stateset->addUniform(new osg::Uniform("width", (int)tex_width));
 
     // Attach shader, glFragData is used to create data for multiple render targets
-    
+
     if (useHDR) {
         static const char *shaderSource = {
             "uniform int width;"
@@ -162,7 +161,7 @@ osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool 
             "    gl_FragData[3] = vec4(0,0,1e-12,1);\n"
             "}\n"
         };
-        
+
         osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT , shaderSource);
         osg::ref_ptr<osg::Program> program = new osg::Program;
         program->addShader(fshader.get());
@@ -178,7 +177,7 @@ osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool 
             "    gl_FragData[3] = vec4(0,0,1,1);\n"
             "}\n"
         };
-    
+
         osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT , shaderSource);
         osg::ref_ptr<osg::Program> program = new osg::Program;
         program->addShader(fshader.get());
@@ -186,7 +185,7 @@ osg::Group* createRTTQuad(unsigned int tex_width, unsigned int tex_height, bool 
     }
 
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -203,7 +202,7 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
 
     // textures to render to and to use for texturing of the final quad
     osg::TextureRectangle* textureRect[NUM_TEXTURES] = {0,0,0,0};
-    
+
     for (int i=0;i<NUM_TEXTURES;i++) {
         textureRect[i] = new osg::TextureRectangle;
         textureRect[i]->setTextureSize(tex_width, tex_height);
@@ -219,24 +218,24 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
             // GL_FLOAT_RGBA32_NV might be supported on pre 8-series GPUs
             //textureRect[i]->setInternalFormat(GL_FLOAT_RGBA32_NV);
 
-            // GL_RGBA16F_ARB can be used with this example, 
+            // GL_RGBA16F_ARB can be used with this example,
             // but modify e-12 and e12 in the shaders accordingly
             //textureRect[i]->setInternalFormat(GL_RGBA16F_ARB);
-            
+
             textureRect[i]->setSourceFormat(GL_RGBA);
             textureRect[i]->setSourceType(GL_FLOAT);
         }
     }
 
     // first create the geometry of the quad
-    { 
+    {
         osg::Geometry* polyGeom = new osg::Geometry();
 
         polyGeom->setSupportsDisplayList(false);
 
         osg::Vec3Array* vertices = new osg::Vec3Array;
         osg::Vec2Array* texcoords = new osg::Vec2Array;
-        
+
         vertices->push_back(osg::Vec3d(0,0,0));
         texcoords->push_back(osg::Vec2(0,0));
 
@@ -254,8 +253,7 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
 
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        polyGeom->setColorArray(colors);
-        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        polyGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
         polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,vertices->size()));
 
@@ -264,7 +262,7 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
         for (int i=0;i<NUM_TEXTURES;i++){
             stateset->setTextureAttributeAndModes(i, textureRect[i], osg::StateAttribute::ON);
         }
-        
+
         polyGeom->setStateSet(stateset);
 
         // Attach a shader to the final quad to combine the input textures.
@@ -308,24 +306,24 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
             osg::ref_ptr<osg::Program> program = new osg::Program;
             program->addShader( fshader.get());
             stateset->setAttributeAndModes( program.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
-            
+
         }
 
         stateset->addUniform(new osg::Uniform("textureID0", 0));
         stateset->addUniform(new osg::Uniform("textureID1", 1));
         stateset->addUniform(new osg::Uniform("textureID2", 2));
         stateset->addUniform(new osg::Uniform("textureID3", 3));
-        
+
         //stateset->setDataVariance(osg::Object::DYNAMIC);
-        
+
         osg::Geode* geode = new osg::Geode();
         geode->addDrawable(polyGeom);
-        
+
         parent->addChild(geode);
     }
 
     // now create the camera to do the multiple render to texture
-    {    
+    {
         osg::Camera* camera = new osg::Camera;
 
         // set up the background color and clear mask.
@@ -353,14 +351,14 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
             else
                 camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0+i), textureRect[i]);
 
-                
+
         }
-     
+
         // we can also read back any of the targets as an image, modify this image and push it back
         if (useImage) {
             // which texture to get the image from
             const int tex_to_get = 0;
-            
+
             osg::Image* image = new osg::Image;
             if (useHDR) {
                 image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_FLOAT);
@@ -372,7 +370,7 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
             camera->attach(osg::Camera::BufferComponent(osg::Camera::COLOR_BUFFER0 + tex_to_get), image);
 
             camera->setPostDrawCallback(new MyCameraPostDrawCallback(image));
-            
+
             // push back the image to the texture
             textureRect[tex_to_get]->setImage(0, image);
         }
@@ -381,7 +379,7 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
         camera->addChild(cam_subgraph);
 
         parent->addChild(camera);
-    }    
+    }
 
     return parent;
 }

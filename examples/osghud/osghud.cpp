@@ -46,7 +46,7 @@ osg::Camera* createHUD()
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
 
-    // set the view matrix    
+    // set the view matrix
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     camera->setViewMatrix(osg::Matrix::identity());
 
@@ -58,7 +58,7 @@ osg::Camera* createHUD()
 
     // we don't want the camera to grab event focus from the viewers main camera(s).
     camera->setAllowEventFocus(false);
-    
+
 
 
     // add to this camera a subgraph to render
@@ -84,7 +84,7 @@ osg::Camera* createHUD()
             text->setText("Head Up Displays are simple :-)");
 
             position += delta;
-        }    
+        }
 
 
         {
@@ -96,7 +96,7 @@ osg::Camera* createHUD()
             text->setText("All you need to do is create your text in a subgraph.");
 
             position += delta;
-        }    
+        }
 
 
         {
@@ -109,7 +109,7 @@ osg::Camera* createHUD()
                           "to create an orthographic projection.\n");
 
             position += delta;
-        } 
+        }
 
         {
             osgText::Text* text = new  osgText::Text;
@@ -121,7 +121,7 @@ osg::Camera* createHUD()
                           "it remains independent from any external model view matrices.");
 
             position += delta;
-        } 
+        }
 
         {
             osgText::Text* text = new  osgText::Text;
@@ -132,7 +132,7 @@ osg::Camera* createHUD()
             text->setText("And set the Camera's clear mask to just clear the depth buffer.");
 
             position += delta;
-        }    
+        }
 
         {
             osgText::Text* text = new  osgText::Text;
@@ -144,7 +144,7 @@ osg::Camera* createHUD()
                           "to make sure it's drawn last.");
 
             position += delta;
-        }    
+        }
 
 
         {
@@ -166,13 +166,11 @@ osg::Camera* createHUD()
 
             osg::Vec3Array* normals = new osg::Vec3Array;
             normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
-            geom->setNormalArray(normals);
-            geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+            geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
             osg::Vec4Array* colors = new osg::Vec4Array;
             colors->push_back(osg::Vec4(1.0f,1.0,0.8f,0.2f));
-            geom->setColorArray(colors);
-            geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+            geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
             geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
 
@@ -196,14 +194,14 @@ struct SnapImage : public osg::Camera::DrawCallback
         _filename(filename),
         _snapImage(false)
     {
-        _image = new osg::Image;        
+        _image = new osg::Image;
     }
 
     virtual void operator () (osg::RenderInfo& renderInfo) const
     {
 
         if (!_snapImage) return;
-    
+
         osg::notify(osg::NOTICE)<<"Camera callback"<<std::endl;
 
         osg::Camera* camera = renderInfo.getCurrentCamera();
@@ -217,10 +215,10 @@ struct SnapImage : public osg::Camera::DrawCallback
                                GL_RGBA,
                                GL_UNSIGNED_BYTE);
             osgDB::writeImageFile(*_image, _filename);
-            
-            osg::notify(osg::NOTICE)<<"Taken screenshot, and written to '"<<_filename<<"'"<<std::endl;             
+
+            osg::notify(osg::NOTICE)<<"Taken screenshot, and written to '"<<_filename<<"'"<<std::endl;
         }
-       
+
         _snapImage = false;
     }
 
@@ -259,7 +257,7 @@ struct SnapeImageHandler : public osgGA::GUIEventHandler
 
         return false;
     }
-    
+
     int                     _key;
     osg::ref_ptr<SnapImage> _snapImage;
 };
@@ -273,11 +271,11 @@ int main( int argc, char **argv )
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
-    
+
     // if not loaded assume no arguments passed in, try use default model instead.
     if (!scene) scene = osgDB::readNodeFile("dumptruck.osgt");
-    
-    
+
+
     if (!scene)
     {
         osg::notify(osg::NOTICE)<<"No model loaded"<<std::endl;
@@ -291,16 +289,16 @@ int main( int argc, char **argv )
         osgViewer::Viewer viewer;
 
         // create a HUD as slave camera attached to the master view.
-        
+
         viewer.setUpViewAcrossAllScreens();
 
         osgViewer::Viewer::Windows windows;
         viewer.getWindows(windows);
-        
+
         if (windows.empty()) return 1;
-        
+
         osg::Camera* hudCamera = createHUD();
-        
+
         // set up cameras to render on the first window available.
         hudCamera->setGraphicsContext(windows[0]);
         hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
@@ -327,21 +325,21 @@ int main( int argc, char **argv )
         view->setCameraManipulator(new osgGA::TrackballManipulator);
 
         // now create the HUD camera's view
-        
+
         osgViewer::Viewer::Windows windows;
         viewer.getWindows(windows);
-        
+
         if (windows.empty()) return 1;
-        
+
         osg::Camera* hudCamera = createHUD();
-        
+
         // set up cameras to render on the first window available.
         hudCamera->setGraphicsContext(windows[0]);
         hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
-        
+
         osgViewer::View* hudView = new osgViewer::View;
         hudView->setCamera(hudCamera);
-        
+
         viewer.addView(hudView);
 
         return viewer.run();
@@ -351,18 +349,18 @@ int main( int argc, char **argv )
     {
         // construct the viewer.
         osgViewer::Viewer viewer;
-        
+
         SnapImage* postDrawCallback = new SnapImage("PostDrawCallback.png");
-        viewer.getCamera()->setPostDrawCallback(postDrawCallback);        
+        viewer.getCamera()->setPostDrawCallback(postDrawCallback);
         viewer.addEventHandler(new SnapeImageHandler('p',postDrawCallback));
-        
+
         SnapImage* finalDrawCallback = new SnapImage("FinalDrawCallback.png");
-        viewer.getCamera()->setFinalDrawCallback(finalDrawCallback);        
+        viewer.getCamera()->setFinalDrawCallback(finalDrawCallback);
         viewer.addEventHandler(new SnapeImageHandler('f',finalDrawCallback));
 
         osg::ref_ptr<osg::Group> group  = new osg::Group;
 
-        // add the HUD subgraph.    
+        // add the HUD subgraph.
         if (scene.valid()) group->addChild(scene.get());
         group->addChild(createHUD());
 
@@ -371,5 +369,5 @@ int main( int argc, char **argv )
 
         return viewer.run();
     }
-    
+
 }

@@ -242,8 +242,7 @@ osg::Node* DepthPeeling::createQuad(unsigned int layerNumber, unsigned int numTi
     geometry->setVertexArray(vertices);
     geometry->setTexCoordArray(0, texcoords);
 
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4));
 

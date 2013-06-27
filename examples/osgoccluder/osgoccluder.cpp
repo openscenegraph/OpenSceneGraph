@@ -44,18 +44,18 @@
 class OccluderEventHandler : public osgGA::GUIEventHandler
 {
     public:
-    
+
         OccluderEventHandler(osgViewer::Viewer* viewer):_viewer(viewer) {}
-    
+
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
 
         void addPoint(const osg::Vec3& pos);
-                
+
         void endOccluder();
-        
+
         osg::Group* rootNode() { return dynamic_cast<osg::Group*>(_viewer->getSceneData()); }
-        
-        
+
+
         osgViewer::Viewer*                    _viewer;
         osg::ref_ptr<osg::Group>                _occluders;
         osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
@@ -90,7 +90,7 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
             {
                 if (_occluders.valid())
                 {
-                    
+
                     if (osgDB::writeNodeFile(*_occluders,"saved_occluders.osgt"))
                         std::cout<<"saved occluders to 'saved_occluders.osgt'"<<std::endl;
                 }
@@ -111,27 +111,27 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
 void OccluderEventHandler::addPoint(const osg::Vec3& pos)
 {
     std::cout<<"add point "<<pos<<std::endl;
-    
+
     if (!_convexPlanarOccluder.valid()) _convexPlanarOccluder = new osg::ConvexPlanarOccluder;
-    
+
     osg::ConvexPlanarPolygon& occluder = _convexPlanarOccluder->getOccluder();
     occluder.add(pos);
 
-//     
+//
 //     osg::BoundingSphere bs = rootNode()->getBound();
-// 
+//
 //     osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(pos,bs.radius()*0.001f));
 //     osg::Geode* geode = new osg::Geode;
 //     geode->addDrawable(sd);
-// 
+//
 //     rootNode()->addChild(geode);
-// 
-    
+//
+
 }
-                
+
 void OccluderEventHandler::endOccluder()
 {
-    if (_convexPlanarOccluder.valid()) 
+    if (_convexPlanarOccluder.valid())
     {
         if (_convexPlanarOccluder->getOccluder().getVertexList().size()>=3)
         {
@@ -156,7 +156,7 @@ void OccluderEventHandler::endOccluder()
     {
         std::cout<<"No occluder points to create occluder with."<<std::endl;
     }
-    
+
     // reset current occluder.
     _convexPlanarOccluder = NULL;
 }
@@ -173,7 +173,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     // attach it to the occluder node.
     occluderNode->setOccluder(cpo);
     occluderNode->setName("occluder");
-    
+
     // set the occluder up for the front face of the bounding box.
     osg::ConvexPlanarPolygon& occluder = cpo->getOccluder();
     occluder.add(v1);
@@ -200,39 +200,38 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
         hole.add(v4dash);
 
         cpo->addHole(hole);
-    }    
-    
+    }
+
 
    // create a drawable for occluder.
     osg::Geometry* geom = new osg::Geometry;
-    
+
     osg::Vec3Array* coords = new osg::Vec3Array(occluder.getVertexList().begin(),occluder.getVertexList().end());
     geom->setVertexArray(coords);
-    
+
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,0.5f);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
-    
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
-    
+
     osg::StateSet* stateset = new osg::StateSet;
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    
+
     geom->setStateSet(stateset);
-    
+
     // add the occluder geode as a child of the occluder,
     // as the occluder can't self occlude its subgraph the
     // geode will never be occluded by this occluder.
-    occluderNode->addChild(geode);    
-    
+    occluderNode->addChild(geode);
+
     return occluderNode;
- 
+
  }
 
 osg::Group* createOccludersAroundModel(osg::Node* model)
@@ -247,7 +246,7 @@ osg::Group* createOccludersAroundModel(osg::Node* model)
 
     // get the bounding volume of the model.
     const osg::BoundingSphere bs = model->getBound();
-    
+
     // create a bounding box around the sphere.
     osg::BoundingBox bb;
     bb.expandBy(bs);
@@ -278,7 +277,7 @@ osg::Group* createOccludersAroundModel(osg::Node* model)
                                   0.5f)); // create a hole half the size of the occluder.
 
     return scene;
-} 
+}
 
 
 int main( int argc, char **argv )
@@ -292,7 +291,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-m","Mannually create occluders");
-   
+
     // initialize the viewer.
     osgViewer::Viewer viewer;
 
@@ -313,34 +312,34 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
-    
+
     // if not loaded assume no arguments passed in, try using default mode instead.
     if (!loadedmodel) loadedmodel = osgDB::readNodeFile("glider.osgt");
-    
+
     if (!loadedmodel)
     {
         osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
-    
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(loadedmodel);
 
     // add the occluders to the loaded model.
     osg::ref_ptr<osg::Group> rootnode;
-    
+
     if (manuallyCreateOccluders)
     {
         rootnode = new osg::Group;
         rootnode->addChild(loadedmodel);
     }
-    else    
+    else
     {
         rootnode = createOccludersAroundModel(loadedmodel);
     }
-    
-     
+
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode.get() );
 

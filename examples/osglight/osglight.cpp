@@ -50,34 +50,34 @@ class ModelTransformCallback : public osg::NodeCallback
             _period = 4.0f;
             _range = bs.radius()*0.5f;
         }
-    
+
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
             osg::PositionAttitudeTransform* pat = dynamic_cast<osg::PositionAttitudeTransform*>(node);
             const osg::FrameStamp* frameStamp = nv->getFrameStamp();
             if (pat && frameStamp)
             {
-                if (_firstTime==0.0) 
+                if (_firstTime==0.0)
                 {
                     _firstTime = frameStamp->getSimulationTime();
                 }
-                
+
                 double phase = (frameStamp->getSimulationTime()-_firstTime)/_period;
                 phase -= floor(phase);
                 phase *= (2.0 * osg::PI);
-            
+
                 osg::Quat rotation;
                 rotation.makeRotate(phase,1.0f,1.0f,1.0f);
-                
-                pat->setAttitude(rotation); 
-                
+
+                pat->setAttitude(rotation);
+
                 pat->setPosition(osg::Vec3(0.0f,0.0f,sin(phase))*_range);
             }
-        
-            // must traverse the Node's subgraph            
+
+            // must traverse the Node's subgraph
             traverse(node,nv);
         }
-        
+
         double _firstTime;
         double _period;
         double _range;
@@ -88,7 +88,7 @@ class ModelTransformCallback : public osg::NodeCallback
 osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
 {
     osg::Group* lightGroup = new osg::Group;
-    
+
     float modelSize = bb.radius();
 
     // create a spot light.
@@ -101,13 +101,13 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     myLight1->setSpotExponent(50.0f);
     myLight1->setDirection(osg::Vec3(1.0f,1.0f,-1.0f));
 
-    osg::LightSource* lightS1 = new osg::LightSource;    
+    osg::LightSource* lightS1 = new osg::LightSource;
     lightS1->setLight(myLight1);
-    lightS1->setLocalStateSetModes(osg::StateAttribute::ON); 
+    lightS1->setLocalStateSetModes(osg::StateAttribute::ON);
 
     lightS1->setStateSetModes(*rootStateSet,osg::StateAttribute::ON);
     lightGroup->addChild(lightS1);
-    
+
 
     // create a local light.
     osg::Light* myLight2 = new osg::Light;
@@ -119,15 +119,15 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     myLight2->setLinearAttenuation(2.0f/modelSize);
     myLight2->setQuadraticAttenuation(2.0f/osg::square(modelSize));
 
-    osg::LightSource* lightS2 = new osg::LightSource;    
+    osg::LightSource* lightS2 = new osg::LightSource;
     lightS2->setLight(myLight2);
-    lightS2->setLocalStateSetModes(osg::StateAttribute::ON); 
+    lightS2->setLocalStateSetModes(osg::StateAttribute::ON);
 
     lightS2->setStateSetModes(*rootStateSet,osg::StateAttribute::ON);
-    
+
     osg::MatrixTransform* mt = new osg::MatrixTransform();
     {
-        // set up the animation path 
+        // set up the animation path
         osg::AnimationPath* animationPath = new osg::AnimationPath;
         animationPath->insert(0.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
         animationPath->insert(1.0,osg::AnimationPath::ControlPoint(bb.corner(1)));
@@ -139,30 +139,30 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
         animationPath->insert(7.0,osg::AnimationPath::ControlPoint(bb.corner(7)));
         animationPath->insert(8.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
         animationPath->setLoopMode(osg::AnimationPath::SWING);
-        
+
         mt->setUpdateCallback(new osg::AnimationPathCallback(animationPath));
     }
-    
+
     // create marker for point light.
     osg::Geometry* marker = new osg::Geometry;
     osg::Vec3Array* vertices = new osg::Vec3Array;
     vertices->push_back(osg::Vec3(0.0,0.0,0.0));
     marker->setVertexArray(vertices);
     marker->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,1));
-    
+
     osg::StateSet* stateset = new osg::StateSet;
     osg::Point* point = new osg::Point;
     point->setSize(4.0f);
     stateset->setAttribute(point);
-    
+
     marker->setStateSet(stateset);
-    
+
     osg::Geode* markerGeode = new osg::Geode;
     markerGeode->addDrawable(marker);
-    
+
     mt->addChild(lightS2);
     mt->addChild(markerGeode);
-    
+
     lightGroup->addChild(mt);
 
     return lightGroup;
@@ -173,57 +173,56 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
 
    // create a drawable for occluder.
     osg::Geometry* geom = new osg::Geometry;
-    
+
     geom->setStateSet(stateset);
 
     unsigned int noXSteps = 100;
     unsigned int noYSteps = 100;
-    
+
     osg::Vec3Array* coords = new osg::Vec3Array;
     coords->reserve(noXSteps*noYSteps);
-    
-    
+
+
     osg::Vec3 dx = (v2-v1)/((float)noXSteps-1.0f);
     osg::Vec3 dy = (v3-v1)/((float)noYSteps-1.0f);
-    
+
     unsigned int row;
     osg::Vec3 vRowStart = v1;
     for(row=0;row<noYSteps;++row)
     {
         osg::Vec3 v = vRowStart;
-        for(unsigned int col=0;col<noXSteps;++col)        
+        for(unsigned int col=0;col<noXSteps;++col)
         {
             coords->push_back(v);
             v += dx;
         }
         vRowStart+=dy;
     }
-    
+
     geom->setVertexArray(coords);
-    
+
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
-    
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+
+
     for(row=0;row<noYSteps-1;++row)
     {
         osg::DrawElementsUShort* quadstrip = new osg::DrawElementsUShort(osg::PrimitiveSet::QUAD_STRIP);
         quadstrip->reserve(noXSteps*2);
-        for(unsigned int col=0;col<noXSteps;++col)        
+        for(unsigned int col=0;col<noXSteps;++col)
         {
             quadstrip->push_back((row+1)*noXSteps+col);
             quadstrip->push_back(row*noXSteps+col);
-        }   
+        }
         geom->addPrimitiveSet(quadstrip);
     }
-    
-    // create the normals.    
+
+    // create the normals.
     osgUtil::SmoothingVisitor::smooth(*geom);
-    
+
     return geom;
- 
+
 }
 
 
@@ -240,12 +239,12 @@ osg::Node* createRoom(osg::Node* loadedModel)
 
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
         pat->setPivotPoint(loaded_bs.center());
-        
+
         pat->setUpdateCallback(new ModelTransformCallback(loaded_bs));
         pat->addChild(loadedModel);
-        
+
         bs = pat->getBound();
-        
+
         root->addChild(pat);
 
     }
@@ -263,7 +262,7 @@ osg::Node* createRoom(osg::Node* loadedModel)
 
     osg::StateSet* wall = new osg::StateSet;
     wall->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
-    
+
     osg::StateSet* floor = new osg::StateSet;
     floor->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
 
@@ -271,7 +270,7 @@ osg::Node* createRoom(osg::Node* loadedModel)
     roof->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
 
     osg::Geode* geode = new osg::Geode;
-    
+
     // create front side.
     geode->addDrawable(createWall(bb.corner(0),
                                   bb.corner(4),
@@ -308,12 +307,12 @@ osg::Node* createRoom(osg::Node* loadedModel)
                                   roof));
 
     root->addChild(geode);
-    
+
     root->addChild(createLights(bb,rootStateSet));
 
     return root;
-    
-}    
+
+}
 
 int main( int argc, char **argv )
 {
@@ -325,20 +324,20 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
-    
+
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osgt");
-    
+
     // create a room made of foor walls, a floor, a roof, and swinging light fitting.
     osg::Node* rootnode = createRoom(loadedModel);
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
-    
+
 
     // create the windows and run the threads.
     viewer.realize();

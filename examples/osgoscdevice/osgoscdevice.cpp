@@ -50,13 +50,13 @@
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
-public: 
+public:
 
     PickHandler(osgGA::Device* device):
         _device(device) {}
-        
+
     ~PickHandler() {}
-    
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
     virtual void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea);
@@ -69,10 +69,10 @@ public:
         ea->setUserValue("name", name);
         ea->setUserValue("x", x);
         ea->setUserValue("y", y);
-        
+
         _device->sendEvent(*ea);
     }
-    
+
 protected:
 
     osg::ref_ptr<osgGA::Device>  _device;
@@ -88,7 +88,7 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
             if (view) pick(view,ea);
             return false;
         }
-        
+
         case(osgGA::GUIEventAdapter::KEYUP):
         {
             if (ea.getKey() == 't')
@@ -98,18 +98,18 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
                 user_event->setUserValue("vec2f", osg::Vec2f(1.0f,2.0f));
                 user_event->setUserValue("vec3f", osg::Vec3f(1.0f,2.0f, 3.0f));
                 user_event->setUserValue("vec4f", osg::Vec4f(1.0f,2.0f, 3.0f, 4.0f));
-                
+
                 user_event->setUserValue("vec2d", osg::Vec2d(1.0,2.0));
                 user_event->setUserValue("vec3d", osg::Vec3d(1.0,2.0, 3.0));
                 user_event->setUserValue("vec4d", osg::Vec4d(1.0,2.0, 3.0, 4.0));
-                
+
                 user_event->setName("osc_test_1");
-                
+
                 _device->sendEvent(*user_event);
             }
-            
+
         }
-         
+
         default:
             return false;
     }
@@ -146,7 +146,7 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
             {
                 os<<"        vertex indices ["<<i<<"] = "<<vil[i]<<std::endl;
             }
-            
+
             gdlist += os.str();
         }
     }
@@ -158,9 +158,9 @@ class UserEventHandler : public osgGA::GUIEventHandler {
 public:
 
     UserEventHandler(osgText::Text* text) : osgGA::GUIEventHandler(), _text(text) {}
-        
+
     ~UserEventHandler() {}
-    
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 private:
     osg::ref_ptr<osgText::Text> _text;
@@ -199,7 +199,7 @@ bool UserEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
 {
     if (ea.getEventType() == osgGA::GUIEventAdapter::USER) {
         OSG_ALWAYS << "handle user-event: " << ea.getName() << std::endl;
-        
+
         if (ea.getName() == "/pick-result")
         {
             std::string name("");
@@ -210,7 +210,7 @@ bool UserEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             std::ostringstream ss;
             ss << "Name: " << std::endl << name << std::endl << std::endl;
             ss << "x: " << y << " y: " << y << std::endl;
-            
+
             _text->setText(ss.str());
         }
         else if(ea.getName() == "/osgga")
@@ -235,7 +235,7 @@ bool UserEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 {
                     const osg::ValueObject* vo = dynamic_cast<const osg::ValueObject*>(udc->getUserObject(i));
                     OSG_ALWAYS << "  " << vo->getName() << ": ";
-                    
+
                     MyValueListVisitor vlv;
                     vo->get(vlv);
                     OSG_ALWAYS << vlv.value() << std::endl;
@@ -244,7 +244,7 @@ bool UserEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
         }
         return true;
     }
-    
+
     return false;
 }
 
@@ -262,13 +262,13 @@ osg::Node* createHUD()
     hudCamera->setViewMatrix(osg::Matrix::identity());
     hudCamera->setRenderOrder(osg::Camera::POST_RENDER);
     hudCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
-    
+
     std::string timesFont("fonts/times.ttf");
-    
+
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::Vec3 position(150.0f,800.0f,0.0f);
     osg::Vec3 delta(0.0f,-60.0f,0.0f);
-    
+
     {
         osg::Geode* geode = new osg::Geode();
         osg::StateSet* stateset = geode->getOrCreateStateSet();
@@ -276,18 +276,18 @@ osg::Node* createHUD()
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         geode->setName("simple");
         hudCamera->addChild(geode);
-        
+
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
-        
+
         text->setFont(timesFont);
         text->setText("Picking in Head Up Displays is simple!");
         text->setPosition(position);
-        
+
         position += delta;
-    }    
-    
-    
+    }
+
+
     for (int i=0; i<5; i++) {
         osg::Vec3 dy(0.0f,-30.0f,0.0f);
         osg::Vec3 dx(120.0f,0.0f,0.0f);
@@ -305,8 +305,7 @@ osg::Node* createHUD()
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(0.8-0.1*i,0.1*i,0.2*i, 1.0));
-        quad->setColorArray(colors);
-        quad->setColorBinding(osg::Geometry::BIND_OVERALL);
+        quad->setColorArray(colors, osg::Array::BIND_OVERALL);
         (*vertices)[0]=position;
         (*vertices)[1]=position+dx;
         (*vertices)[2]=position+dx+dy;
@@ -315,12 +314,12 @@ osg::Node* createHUD()
         quad->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
         geode->addDrawable(quad);
         hudCamera->addChild(geode);
-        
+
         position += delta;
-    }    
-    
-    
-    
+    }
+
+
+
     { // this displays what has been selected
         osg::Geode* geode = new osg::Geode();
         osg::StateSet* stateset = geode->getOrCreateStateSet();
@@ -328,10 +327,10 @@ osg::Node* createHUD()
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         geode->setName("The text label");
         hudCamera->addChild(geode);
-        
+
         position += delta;
-    }    
-    
+    }
+
     return hudCamera;
 
 }
@@ -340,13 +339,13 @@ osg::Node* createHUD()
 class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
 public:
     ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::GUIEventHandler(), _device(device) {}
-    
+
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
         _device->sendEvent(ea);
         return false;
     }
-    
+
 protected:
     osg::ref_ptr<osgGA::Device> _device;
 };
@@ -354,12 +353,12 @@ protected:
 class OscServiceDiscoveredEventHandler: public ForwardToDeviceEventHandler {
 public:
     OscServiceDiscoveredEventHandler() : ForwardToDeviceEventHandler(NULL) {}
-    
+
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *o, osg::NodeVisitor *nv)
     {
         if (_device.valid())
             return ForwardToDeviceEventHandler::handle(ea, aa, o, nv);
-        
+
         if (ea.getEventType() == osgGA::GUIEventAdapter::USER)
         {
             if (ea.getName() == "/zeroconf/service-added")
@@ -368,13 +367,13 @@ public:
                 unsigned int port;
                 ea.getUserValue("host", host);
                 ea.getUserValue("port", port);
-                
+
                 OSG_ALWAYS << "new osc-service discovered: " << host << ":" << port << std::endl;
-                
+
                 std::ostringstream ss ;
                 ss << host << ":" << port << ".sender.osc";
                 _device = osgDB::readFile<osgGA::Device>(ss.str());
-                
+
                 osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                 if (view)
                     view->addEventHandler(new PickHandler(_device.get()));
@@ -383,7 +382,7 @@ public:
         }
         return false;
     }
-    
+
 };
 
 int main( int argc, char **argv )
@@ -391,11 +390,11 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     arguments.getApplicationUsage()->addCommandLineOption("--zeroconf","uses zeroconf to advertise the osc-plugin and to discover it");
     arguments.getApplicationUsage()->addCommandLineOption("--sender","create a view which sends its events via osc");
     arguments.getApplicationUsage()->addCommandLineOption("--recevier","create a view which receive its events via osc");
-    
+
 
 
     // read the scene from the list of file specified commandline args.
@@ -406,7 +405,7 @@ int main( int argc, char **argv )
         std::cout << argv[0] << ": requires filename argument." << std::endl;
         return 1;
     }
-    
+
     bool use_zeroconf(false);
     bool use_sender(false);
     bool use_receiver(false);
@@ -415,7 +414,7 @@ int main( int argc, char **argv )
     if(arguments.find("--receiver") > 0) { use_receiver = true; }
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);
-    
+
     // receiver view
     if (use_receiver) {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -427,21 +426,21 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Receiver / view two";
-        
+
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-        
+
         osgViewer::View* view = new osgViewer::View;
         view->setName("View two");
         viewer.addView(view);
-        
+
         osg::Group* group = new osg::Group();
         group->addChild(scene.get());
         osg::Geode* geode = new osg::Geode();
         group->addChild(geode);
-        
+
         osgText::Text* text = new osgText::Text();
         geode->addDrawable( text );
-        
+
         text->setFont("Arial.ttf");
         text->setText("Waiting for data");
         text->setPosition(osg::Vec3(-50,0,30));
@@ -460,7 +459,7 @@ int main( int argc, char **argv )
         if (device.valid() && (device->getCapabilities() & osgGA::Device::RECEIVE_EVENTS))
         {
             view->addDevice(device.get());
-            
+
             // add a zeroconf device, advertising the osc-device
             if(use_zeroconf)
             {
@@ -487,14 +486,14 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Sender / view one";
-        
+
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
-        
+
         osgViewer::View* view = new osgViewer::View;
         view->setName("View one");
         viewer.addView(view);
-        
+
         osg::Group* g = new osg::Group();
         g->addChild(scene.get());
         g->addChild(createHUD());
@@ -510,14 +509,14 @@ int main( int argc, char **argv )
 
         view->addEventHandler( statesetManipulator.get() );
         view->addEventHandler( new osgViewer::StatsHandler );
-        
+
         if (use_zeroconf)
         {
             osgGA::Device* zeroconf_device = osgDB::readFile<osgGA::Device>("_osc._udp.discover.zeroconf");
             if(zeroconf_device) {
                 view->addDevice(zeroconf_device);
                 view->getEventHandlers().push_front(new OscServiceDiscoveredEventHandler());
-                
+
             }
         }
         else
@@ -527,7 +526,7 @@ int main( int argc, char **argv )
             {
                 // add as first event handler, so it gets ALL events ...
                 view->getEventHandlers().push_front(new ForwardToDeviceEventHandler(device.get()));
-                
+
                 // add the demo-pick-event-handler
                 view->addEventHandler(new PickHandler(device.get()));
             }
@@ -537,7 +536,7 @@ int main( int argc, char **argv )
         }
     }
 
-    
+
 
 
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::CompositeViewer::SingleThreaded); }

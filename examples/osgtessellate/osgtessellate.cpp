@@ -23,7 +23,7 @@
  * the Tessellator has new member fuinctions
  setTessellationType(osgUtil::Tessellator::TESS_TYPE_xxx);
     tscx->setBoundaryOnly(bool);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_xxx); 
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_xxx);
  * for winding rules: See the red book chap 13.
  */
 
@@ -40,8 +40,8 @@
 
 class tessellateDemoGeometry : public osg::Geometry, public osgUtil::Tessellator {
     // We add the Tessellator to the geometry because we want to access the
-    // tessellatable contours again;  you can apply a Tessellator to a Geometry 
-    // to produce exactly a required tessellation once only, and then 
+    // tessellatable contours again;  you can apply a Tessellator to a Geometry
+    // to produce exactly a required tessellation once only, and then
     // the contours could be discarded since the geometry does not need to be retessellated.
 public:
     tessellateDemoGeometry() {};
@@ -50,7 +50,7 @@ protected:
     virtual ~tessellateDemoGeometry() {};
 };
 
-osg::Geometry *makePolsTwo (void) 
+osg::Geometry *makePolsTwo (void)
 {
     // an example of using current geometry contours to create next tessellation
     // this polygon disappears once the contour rules make no polygons.
@@ -62,12 +62,12 @@ osg::Geometry *makePolsTwo (void)
     osg::Vec3 nrm(0,-1,0);
     static GLdouble quadstrip[8][3] =
     { { 1900.0, 1130.0, 0.0 },
-      { 2100.0, 1130.0, 0.0 }, 
+      { 2100.0, 1130.0, 0.0 },
       { 1900.0, 1350.0, 0.0 },
-      { 1950.0, 1350.0, 0.0 }, 
-      { 1900.0, 1550.0, 0.0 }, 
-      { 2000.0, 1550.0, 0.0 }, 
-      { 1900.0, 1750.0, 0.0 }, 
+      { 1950.0, 1350.0, 0.0 },
+      { 1900.0, 1550.0, 0.0 },
+      { 2000.0, 1550.0, 0.0 },
+      { 1900.0, 1750.0, 0.0 },
       { 2400.0, 1750.0, 0.0 } };
     static GLdouble innerquadstrip[8][3] =
     { { 2000.0, 1230.0, 0.0 },
@@ -75,11 +75,11 @@ osg::Geometry *makePolsTwo (void)
       { 1920.0, 1350.0, 0.0 },
       { 1940.0, 1350.0, 0.0 },
       { 1920.0, 1550.0, 0.0 },
-      { 1980.0, 1550.0, 0.0 }, 
+      { 1980.0, 1550.0, 0.0 },
       { 2000.0, 1650.0, 0.0 },
       { 2400.0, 1650.0, 0.0 } };
-    
-    // add one large quadstrip 
+
+    // add one large quadstrip
     for (i = 0; i < 8; i++)
     {
         coords->push_back(osg::Vec3(quadstrip[i][0],quadstrip[i][2],quadstrip[i][1]));
@@ -92,13 +92,12 @@ osg::Geometry *makePolsTwo (void)
         nrms->push_back(nrm);
     }
     gtess->setVertexArray(coords);
-    gtess->setNormalArray(nrms);
-    gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    gtess->setNormalArray(nrms, osg::Array::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
-    
+
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
-    
+
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
     if (image)
     {
@@ -109,7 +108,7 @@ osg::Geometry *makePolsTwo (void)
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
-    
+
     int nstart=0;
     // The derived class tessellateDemoGeometry retains the original contours for re-use.
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nstart,8));nstart+=8;
@@ -118,7 +117,7 @@ osg::Geometry *makePolsTwo (void)
     gtess->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     gtess->setBoundaryOnly(true);
     gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tessellation - ODD.
-    
+
     return gtess;
 }
 
@@ -134,13 +133,12 @@ osg::Geometry *makeSideWall (const float xpos)
     // front wall
     static GLdouble wall[4][2] =
     { { 1130.0, 0.0 },
-      { 1130.0, 300.0 } , 
+      { 1130.0, 300.0 } ,
       { 1340.0,300.0 },
       { 1340.0,0.0 } };
 
     gtess->setVertexArray(coords);
-    gtess->setNormalArray(nrms);
-    gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    gtess->setNormalArray(nrms, osg::Array::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
 
     for (i = 0; i < 4; i++) {
@@ -167,10 +165,10 @@ osg::Geometry *makeSideWall (const float xpos)
         nrms->push_back(nrm);
     }
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,5));nstart+=5;
-    
+
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
-    
+
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posx.jpg");
     if (image)
     {
@@ -181,7 +179,7 @@ osg::Geometry *makeSideWall (const float xpos)
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
-    
+
 
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // the v1.2 multi-contour Tessellator.
     // we use the geometry primitives to describe the contours which are tessellated.
@@ -189,9 +187,9 @@ osg::Geometry *makeSideWall (const float xpos)
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
     tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tessellation - ODD.
-    
+
     tscx->retessellatePolygons(*gtess);
-    
+
     return gtess;
 }
 
@@ -210,48 +208,47 @@ osg::Geometry *makeFrontWall (const float zpos) {
     // front wall
     static GLdouble wall[5][2] =
     { { 2200.0, 1130.0 },
-      { 2600.0, 1130.0 },  
-      { 2600.0, 1340.0 }, 
+      { 2600.0, 1130.0 },
+      { 2600.0, 1340.0 },
       { 2400.0, 1440.0 },
       { 2200.0, 1340.0 } };
 
     static GLdouble door[4][2] =
     { { 2360.0, 1130.0 },
-      { 2440.0, 1130.0 }, 
+      { 2440.0, 1130.0 },
       { 2440.0, 1230.0 },
       { 2360.0, 1230.0 } };
 
     static GLdouble windows[16][2] =
     { { 2240.0, 1180.0 },
-      { 2330.0, 1180.0 }, 
+      { 2330.0, 1180.0 },
       { 2330.0, 1220.0 },
-      { 2240.0, 1220.0 }, 
+      { 2240.0, 1220.0 },
       { 2460.0, 1180.0 },
-      { 2560.0, 1180.0 }, 
+      { 2560.0, 1180.0 },
       { 2560.0, 1220.0 },
       { 2460.0, 1220.0 },
       { 2240.0, 1280.0 },
-      { 2330.0, 1280.0 }, 
+      { 2330.0, 1280.0 },
       { 2330.0, 1320.0 },
-      { 2240.0, 1320.0 }, 
+      { 2240.0, 1320.0 },
       { 2460.0, 1280.0 },
-      { 2560.0, 1280.0 }, 
+      { 2560.0, 1280.0 },
       { 2560.0, 1320.0 },
       { 2460.0, 1320.0 } };
 
     gtess->setVertexArray(coords);
-    gtess->setNormalArray(nrms);
-    gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    gtess->setNormalArray(nrms, osg::Array::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
 
-    // add one large pentagon -the wall 
+    // add one large pentagon -the wall
     for (i = 0; i < 5; i++) {
         coords->push_back(osg::Vec3(wall[i][0],zpos,wall[i][1]));
         tcs->push_back(osg::Vec2(wall[i][0],wall[i][1])/100.0);
         nrms->push_back(nrm);
     }
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,5));nstart+=5;
-    // add first hole, a door 
+    // add first hole, a door
     for (i = 0; i < 4; i++) {
         coords->push_back(osg::Vec3(door[i][0],zpos,door[i][1]));
         tcs->push_back(osg::Vec2(door[i][0],door[i][1])/100.0);
@@ -267,7 +264,7 @@ osg::Geometry *makeFrontWall (const float zpos) {
 
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
-    
+
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
     if (image)
     {
@@ -278,16 +275,16 @@ osg::Geometry *makeFrontWall (const float zpos) {
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
-    
-    // We use a Tessellator to produce the tessellation required once only 
+
+    // We use a Tessellator to produce the tessellation required once only
     // and the contours are discarded.
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // the v1.2 multi-contour Tessellator.
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
     tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tessellation - ODD.
-    
+
     tscx->retessellatePolygons(*gtess);
-    
+
     return gtess;
 }
 osg::Geode *makeHouse (void) {
@@ -306,85 +303,85 @@ osg::Geometry *makePols (void) {
     osg::Vec2Array *tcs = new osg::Vec2Array;
     osg::Vec3 nrm(0,-1,0);
     // coordinates from red book code but shifted by 1000 & 2000 for alternate Tessellatory things.
-    static GLdouble rects[12][3] = 
+    static GLdouble rects[12][3] =
     { { 50.0, 50.0, 0.0 },
-      { 300.0, 50.0, 0.0 }, 
+      { 300.0, 50.0, 0.0 },
       { 300.0, 300.0, 0.0 },
       { 50.0, 300.0, 0.0 },
       { 100.0, 100.0, 0.0 },
-      { 250.0, 100.0, 0.0 }, 
+      { 250.0, 100.0, 0.0 },
       { 250.0, 250.0, 0.0 },
       { 100.0, 250.0, 0.0 },
       { 150.0, 150.0, 0.0 },
-      { 200.0, 150.0, 0.0 }, 
+      { 200.0, 150.0, 0.0 },
       { 200.0, 200.0, 0.0 },
       { 150.0, 200.0, 0.0 } };
 
     static GLdouble rectsMidanti[12][3] = // the centre 2 contours are traversed opposite order to outer contour.
     { { 1050.0, 50.0, 0.0 },
-      { 1300.0, 50.0, 0.0 }, 
+      { 1300.0, 50.0, 0.0 },
       { 1300.0, 300.0, 0.0 },
       { 1050.0, 300.0, 0.0 },
       { 1250.0, 100.0, 0.0 },
-      { 1100.0, 100.0, 0.0 }, 
+      { 1100.0, 100.0, 0.0 },
       { 1100.0, 250.0, 0.0 },
-      { 1250.0, 250.0, 0.0 }, 
+      { 1250.0, 250.0, 0.0 },
       { 1200.0, 150.0, 0.0 },
-      { 1150.0, 150.0, 0.0 }, 
+      { 1150.0, 150.0, 0.0 },
       { 1150.0, 200.0, 0.0 },
       { 1200.0, 200.0, 0.0 } };
     static GLdouble spiral[16][3] = // shift by 1000; nb the order of vertices is reversed from that of the red book
     { { 3400.0, 250.0, 0.0 },
-      { 3400.0, 50.0, 0.0 }, 
-      { 3050.0, 50.0, 0.0 },  
-      { 3050.0, 400.0, 0.0 }, 
-      { 3350.0, 400.0, 0.0 }, 
-      { 3350.0, 100.0, 0.0 }, 
-      { 3100.0, 100.0, 0.0 }, 
-      { 3100.0, 350.0, 0.0 }, 
-      { 3300.0, 350.0, 0.0 }, 
-      { 3300.0, 150.0, 0.0 }, 
-      { 3150.0, 150.0, 0.0 }, 
-      { 3150.0, 300.0, 0.0 }, 
-      { 3250.0, 300.0, 0.0 }, 
-      { 3250.0, 200.0, 0.0 }, 
-      { 3200.0, 200.0, 0.0 }, 
+      { 3400.0, 50.0, 0.0 },
+      { 3050.0, 50.0, 0.0 },
+      { 3050.0, 400.0, 0.0 },
+      { 3350.0, 400.0, 0.0 },
+      { 3350.0, 100.0, 0.0 },
+      { 3100.0, 100.0, 0.0 },
+      { 3100.0, 350.0, 0.0 },
+      { 3300.0, 350.0, 0.0 },
+      { 3300.0, 150.0, 0.0 },
+      { 3150.0, 150.0, 0.0 },
+      { 3150.0, 300.0, 0.0 },
+      { 3250.0, 300.0, 0.0 },
+      { 3250.0, 200.0, 0.0 },
+      { 3200.0, 200.0, 0.0 },
       { 3200.0, 250.0, 0.0 }
     };
     static GLdouble quad1[4][3] = // shift by 2000 for next 3 things
-    { { 2050.0, 150.0, 0.0 }, 
-      { 2350.0, 150.0, 0.0 }, 
-      { 2350.0, 200.0, 0.0 }, 
+    { { 2050.0, 150.0, 0.0 },
+      { 2350.0, 150.0, 0.0 },
+      { 2350.0, 200.0, 0.0 },
       { 2050.0, 200.0, 0.0 }
     };
     static GLdouble quad2[4][3] =
     { { 2100.0, 100.0, 0.0 },
-      { 2300.0, 100.0, 0.0 }, 
-      { 2300.0, 350.0, 0.0 }, 
+      { 2300.0, 100.0, 0.0 },
+      { 2300.0, 350.0, 0.0 },
       { 2100.0, 350.0, 0.0 }
     };
     static GLdouble tri[3][3] =
-    { { 2200.0, 50.0, 0.0 }, 
+    { { 2200.0, 50.0, 0.0 },
       { 2250.0, 300.0, 0.0 },
       { 2150.0, 300.0, 0.0 }
     };
     static GLdouble quad3[4][3] =
-    { { 100.0, 1100.0, 0.0 }, 
-      { 1300.0, 1100.0, 0.0 }, 
-      { 1300.0, 2350.0, 0.0 }, 
+    { { 100.0, 1100.0, 0.0 },
+      { 1300.0, 1100.0, 0.0 },
+      { 1300.0, 2350.0, 0.0 },
       { 100.0, 2350.0, 0.0}
     };
     static GLdouble quadstrip[8][3] =
     { { 900.0, 1130.0, 0.0 },
-      { 1100.0, 1130.0, 0.0 }, 
+      { 1100.0, 1130.0, 0.0 },
       { 900.0, 1350.0, 0.0 },
-      { 950.0, 1350.0, 0.0 }, 
+      { 950.0, 1350.0, 0.0 },
       { 900.0, 1550.0, 0.0 },
       { 1000.0, 1550.0, 0.0 },
       { 900.0, 1750.0, 0.0 },
       { 1400.0, 1750.0, 0.0 }
     };
-    
+
     for (i = 0; i < 12; i++) {
         coords->push_back(osg::Vec3(rects[i][0],rects[i][2],rects[i][1]));
         tcs->push_back(osg::Vec2(rects[i][0],rects[i][1])/200.0);
@@ -448,20 +445,19 @@ osg::Geometry *makePols (void) {
             nrms->push_back(nrm);
         }
     }
-    // add one large quadstrip 
+    // add one large quadstrip
     for (i = 0; i < 8; i++) {
         coords->push_back(osg::Vec3(quadstrip[i][0],quadstrip[i][2],quadstrip[i][1]));
         tcs->push_back(osg::Vec2(quadstrip[i][0],quadstrip[i][1])/200.0);
         nrms->push_back(nrm);
     }
     gtess->setVertexArray(coords);
-    gtess->setNormalArray(nrms);
-    gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    gtess->setNormalArray(nrms, osg::Array::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
-    
+
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
-    
+
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posz.jpg");
     if (image)
     {
@@ -472,7 +468,7 @@ osg::Geometry *makePols (void) {
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
-    
+
     int nstart=0;
     // the contours accepoted are polygons; quads & tris. Trifans can bve added later.
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,nstart,12));nstart+=12;
@@ -488,28 +484,28 @@ osg::Geometry *makePols (void) {
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,18));nstart+=18;
     // test for quad strip
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nstart,8));nstart+=8;
-    
+
     // We need to access the tessellatable contours again to demonstrate all types of tessellation.
     // I could add the Tessellator to the geometry as userdata, but here
     // I use the derived tessellateDemoGeometry to hold both the drawable geode and the original contours.
-    
+
     gtess->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     gtess->setBoundaryOnly(true);
     gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tessellation - ODD.
-    
+
     return gtess;
 }
 osg::Node* createHUD()
 { // add a string reporting the type of winding rule tessellation applied
     osg::Geode* geode = new osg::Geode();
-    
+
     std::string timesFont("fonts/arial.ttf");
 
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-    // Disable depth test, and make sure that the hud is drawn after everything 
+    // Disable depth test, and make sure that the hud is drawn after everything
     // else so that it always appears ontop.
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     stateset->setRenderBinDetails(11,"RenderBin");
@@ -526,8 +522,8 @@ osg::Node* createHUD()
         text->setText("Tessellation example - no tessellation (use 'W' wireframe to visualise)");
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta;
-        
-    }    
+
+    }
     {
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
@@ -535,8 +531,8 @@ osg::Node* createHUD()
         text->setFont(timesFont);
         text->setPosition(position);
         text->setText("Press 'n' to use an alternative tessellation.");
-        
-    }    
+
+    }
 
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
@@ -573,7 +569,7 @@ class setTessellateVisitor : public osg::NodeVisitor
     // all the polygons within the specific node are deemed to be contours, so
     // any tessellation can be requested.
 public:
-    
+
     setTessellateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
     }
     virtual void apply(osg::Geode& geode) {
@@ -631,7 +627,7 @@ public:
                 }
             }
         }
-    }    
+    }
 };
 
 class cxTessellateVisitor : public osg::NodeVisitor
@@ -641,7 +637,7 @@ class cxTessellateVisitor : public osg::NodeVisitor
     // the Tessellator holds copies of the original contours used in the tessellation
     // In this visitor, I reuse the contours to make a different type of tessellation.
 public:
-    
+
     cxTessellateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
     }
     virtual void apply(osg::Geode& geode) {
@@ -651,9 +647,9 @@ public:
             tessellateDemoGeometry *geom=dynamic_cast<tessellateDemoGeometry*>(geode.getDrawable(i));
             if (geom) {
                 if (!geom->getBoundaryOnly()) { // turn on bounds only
-                    // NB this shows only the true boundary of the curves, no internal edges                    
+                    // NB this shows only the true boundary of the curves, no internal edges
                     geom->setBoundaryOnly(true);
-                    
+
                 } else { // change to next type of tessellation...
                     geom->setBoundaryOnly(false);
                     switch (geom->getWindingType()) {
@@ -674,7 +670,7 @@ public:
                         break;
                     }
                 }
-                
+
                 switch (geom->getWindingType()) { // a text to be added to the scene.
                 case         osgUtil::Tessellator::TESS_WINDING_ODD:
                     str="TESS_WINDING_ODD";
@@ -693,7 +689,7 @@ public:
                     break;
                 }
                 if (geom->getBoundaryOnly()) str += " Boundary";
-                
+
                 geom->retessellatePolygons(*geom);
             }
             osgText::Text* txt = dynamic_cast<osgText::Text*>(geode.getDrawable(i));
@@ -706,17 +702,17 @@ public:
         }
         traverse(geode);
     }
-    
+
     std::string str; // a label for on screen display
 };
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 { // extra event handler traps 'n' key to re-tessellate any tessellated geodes.
 public:
-    
+
     KeyboardEventHandler(osg::Node *nd):
         _scene(nd) {}
-    
+
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
         {
             switch(ea.getEventType())
@@ -725,8 +721,8 @@ public:
                 {
                     if (_scene && ea.getKey()=='n')
                     {
-                        // re-tessellate the scene graph. 
-                        // the same contours are re-tessellated using a new method. Old contours 
+                        // re-tessellate the scene graph.
+                        // the same contours are re-tessellated using a new method. Old contours
                         // & tessellation type are held internally in the derived Geode class tessellateDemoGeometry.
                         cxTessellateVisitor tsv;
                         _scene->accept(tsv);
@@ -739,9 +735,9 @@ public:
             }
             return false;
         }
-        
+
         osg::Node *_scene;
-        
+
 };
 
 
@@ -757,7 +753,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
     // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         loadedModel=makeTessellateExample();
 

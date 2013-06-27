@@ -100,8 +100,7 @@ makeFrustumFromCamera( osg::Camera* camera )
 
     osg::Vec4Array* c = new osg::Vec4Array;
     c->push_back( osg::Vec4( 1., 1., 1., 1. ) );
-    geom->setColorArray( c );
-    geom->setColorBinding( osg::Geometry::BIND_OVERALL );
+    geom->setColorArray( c, osg::Array::BIND_OVERALL );
 
     GLushort idxLines[8] = {
         0, 5, 0, 6, 0, 7, 0, 8 };
@@ -170,7 +169,7 @@ main( int argc,
         view->setSceneData( scene.get() );
         view->setCameraManipulator( new osgGA::TrackballManipulator );
     }
-    
+
     // Create view 1 -- Contains the loaded moel, as well as a wireframe frustum derived from View 0's Camera.
     {
         osgViewer::View* view = new osgViewer::View;

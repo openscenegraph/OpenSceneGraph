@@ -278,7 +278,7 @@ void GLBeginEndAdapter::End()
     {
         if (_vertexAttribAssignedList[unit] && _vertexAttribsList[unit].valid())
         {
-            _state->setVertexAttribPointer(unit, _vertexAttribsList[unit].get(), false);
+            _state->setVertexAttribPointer(unit, _vertexAttribsList[unit].get());
         }
     }
 

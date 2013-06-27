@@ -757,7 +757,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             const Array* array = _vertexAttribList[index].get();
             if(array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
             {
-                state.setVertexAttribPointer( index, array, _vertexAttribList[index]->getNormalize() );
+                state.setVertexAttribPointer( index, array );
             }
         }
     }
@@ -1145,7 +1145,7 @@ void Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
 {
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
     {
-        _vertexAttribList[index]->setNormalize(norm);
+        _vertexAttribList[index]->setNormalize(norm!=GL_FALSE);
 
         dirtyDisplayList();
     }
@@ -1822,7 +1822,7 @@ void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboo
 {
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
     {
-        _vertexAttribList[index]->setNormalize(norm);
+        _vertexAttribList[index]->setNormalize(norm!=GL_FALSE);
 
         dirtyDisplayList();
     }

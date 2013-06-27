@@ -4,11 +4,11 @@
 #include <osgDB/OutputStream>
 
 BEGIN_USER_TABLE( AttributeBinding, osg::Geometry );
-    ADD_USER_VALUE( BIND_OFF );
-    ADD_USER_VALUE( BIND_OVERALL );
-    ADD_USER_VALUE( BIND_PER_PRIMITIVE_SET );    
-    lookup->add("BIND_PER_PRIMITIVE",3); //ADD_USER_VALUE( BIND_PER_PRIMITIVE );
-    ADD_USER_VALUE( BIND_PER_VERTEX );
+    lookup->add("BIND_OFF",0);                 // ADD_USER_VALUE("ADD_USER_VALUE( BIND_OFF );
+    lookup->add("BIND_OVERALL",1);             // ADD_USER_VALUE( BIND_OVERALL );
+    lookup->add("BIND_PER_PRIMITIVE_SET",2);   // ADD_USER_VALUE( BIND_PER_PRIMITIVE_SET );
+    lookup->add("BIND_PER_PRIMITIVE",3);       //ADD_USER_VALUE( BIND_PER_PRIMITIVE );
+    lookup->add("BIND_PER_VERTEX",4);          // ADD_USER_VALUE( BIND_PER_VERTEX );
 END_USER_TABLE()
 
 USER_READ_FUNC( AttributeBinding, readAttributeBinding )
@@ -37,7 +37,7 @@ static osg::Array* readArray( osgDB::InputStream& is)
     int normalizeValue = 0;
     is >> is.PROPERTY("Normalize") >> normalizeValue;
     if (array.valid()) array->setNormalize(normalizeValue!=0);
-    
+
     return array.release();
 }
 
@@ -52,7 +52,7 @@ static void writeArray( osgDB::OutputStream& os, const osg::Array* array)
     if ( indices!=0 ) os << indices;
     else os << std::endl;
 
-    os << os.PROPERTY("Binding"); writeAttributeBinding(os, (array!=0) ? static_cast<osg::Geometry::AttributeBinding>(array->getBinding()) : osg::Geometry::BIND_OFF); os << std::endl;
+    os << os.PROPERTY("Binding"); writeAttributeBinding(os, osg::getBinding(array)); os << std::endl;
     os << os.PROPERTY("Normalize") << ((array!=0 && array->getNormalize()) ? 1:0) << std::endl;
 }
 
@@ -123,7 +123,7 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
 // implement backwards compatibility with reading/writing the FastPathHint
 static bool checkFastPathHint( const osg::Geometry& geom ) { return false; }
 static bool readFastPathHint( osgDB::InputStream& is, osg::Geometry& geom )
-{ 
+{
     // Compatibility info:
     //   Previous Geometry wrapper (before 3.1.8) require a bool fast-path serializer.
     //   It saves "FastPathHint true" in ascii mode and a single [bool] in binary mode.

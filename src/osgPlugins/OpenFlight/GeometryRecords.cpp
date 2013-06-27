@@ -90,7 +90,7 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
                         reverseWindingOrder( vertices, drawarray->getMode(), first, last );
                     }
 
-                    if( geom->getNormalBinding( ) == osg::Geometry::BIND_PER_VERTEX )
+                    if( osg::getBinding(geom->getNormalArray()) == osg::Array::BIND_PER_VERTEX )
                     {
                         osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom->getNormalArray());
                         if( normals )
@@ -104,7 +104,7 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
                         }
                     }
 
-                    if( geom->getColorBinding( ) == osg::Geometry::BIND_PER_VERTEX )
+                    if( osg::getBinding(geom->getColorArray()) == osg::Array::BIND_PER_VERTEX )
                     {
                         osg::Vec4Array* colors = dynamic_cast<osg::Vec4Array*>(geom->getColorArray());
                         if( colors )

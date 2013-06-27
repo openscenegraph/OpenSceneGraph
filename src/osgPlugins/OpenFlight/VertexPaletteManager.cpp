@@ -79,8 +79,8 @@ VertexPaletteManager::add( const osg::Geometry& geom )
     if (t && !t2)
         return;
 
-    const bool cpv =( geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX );
-    const bool npv =( geom.getNormalBinding() == osg::Geometry::BIND_PER_VERTEX );
+    const bool cpv =( osg::getBinding(geom.getColorArray()) == osg::Array::BIND_PER_VERTEX );
+    const bool npv =( osg::getBinding(geom.getNormalArray()) == osg::Array::BIND_PER_VERTEX );
     add( v, v3.get(), c4.get(), n3.get(), t2.get(), cpv, npv );
 }
 void

@@ -154,21 +154,6 @@ void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
     if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
 }
 
-#define SET_BINDING(array, ab)\
-    if (!array) \
-    { \
-        if (ab==BIND_OFF) return; \
-        OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl; \
-        return; \
-    } \
-    if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
-    array->setBinding(static_cast<osg::Array::Binding>(ab));\
-    if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true;
-
-
-#define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF)
-
-
 
 
 void Geometry::setTexCoordArray(unsigned int index,Array* array, osg::Array::Binding binding)
@@ -736,7 +721,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     // dispatch any attributes that are bound overall
-    arrayDispatchers.dispatch(BIND_OVERALL,0);
+    arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
 
     state.lazyDisablingOfVertexAttributes();
 
@@ -779,7 +764,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     state.applyDisablingOfVertexAttributes();
 
-    bool bindPerPrimitiveSetActive = arrayDispatchers.active(BIND_PER_PRIMITIVE_SET);
+    bool bindPerPrimitiveSetActive = arrayDispatchers.active(osg::Array::BIND_PER_PRIMITIVE_SET);
 
     if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
 
@@ -790,7 +775,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
         // dispatch any attributes that are bound per primitive
-        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET, primitiveSetNum);
+        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(osg::Array::BIND_PER_PRIMITIVE_SET, primitiveSetNum);
 
         const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
 
@@ -1102,52 +1087,42 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
 //
 // Deprecated methods.
 //
+#define SET_BINDING(array, ab)\
+    if (!array) \
+    { \
+        if (ab==BIND_OFF) return; \
+        OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl; \
+        return; \
+    } \
+    if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
+    array->setBinding(static_cast<osg::Array::Binding>(ab));\
+    if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true; \
+    dirtyDisplayList();
+
+
+#define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF)
+
+#if defined(OSG_DEPRECATED_GEOMETRY_BINDING)
 void Geometry::setNormalBinding(AttributeBinding ab)
 {
     SET_BINDING(_normalArray.get(), ab)
-
-    dirtyDisplayList();
-}
-
-Geometry::AttributeBinding Geometry::getNormalBinding() const
-{
-    return GET_BINDING(_normalArray.get());
 }
 
 void Geometry::setColorBinding(AttributeBinding ab)
 {
     SET_BINDING(_colorArray.get(), ab)
-
-    dirtyDisplayList();
 }
 
-Geometry::AttributeBinding Geometry::getColorBinding() const
-{
-    return GET_BINDING(_colorArray.get());
-}
 
 void Geometry::setSecondaryColorBinding(AttributeBinding ab)
 {
     SET_BINDING(_secondaryColorArray.get(), ab)
-
-    dirtyDisplayList();
 }
 
-Geometry::AttributeBinding Geometry::getSecondaryColorBinding() const
-{
-    return GET_BINDING(_secondaryColorArray.get());
-}
 
 void Geometry::setFogCoordBinding(AttributeBinding ab)
 {
     SET_BINDING(_fogCoordArray.get(), ab)
-
-    dirtyDisplayList();
-}
-
-Geometry::AttributeBinding Geometry::getFogCoordBinding() const
-{
-    return GET_BINDING(_fogCoordArray.get());
 }
 
 void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
@@ -1166,12 +1141,6 @@ void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
     }
 }
 
-Geometry::AttributeBinding Geometry::getVertexAttribBinding(unsigned int index) const
-{
-    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return static_cast<AttributeBinding>(_vertexAttribList[index]->getBinding());
-    else return BIND_OFF;
-}
-
 void Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
 {
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
@@ -1182,12 +1151,38 @@ void Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
     }
 }
 
+Geometry::AttributeBinding Geometry::getNormalBinding() const
+{
+    return GET_BINDING(_normalArray.get());
+}
+
+Geometry::AttributeBinding Geometry::getColorBinding() const
+{
+    return GET_BINDING(_colorArray.get());
+}
+Geometry::AttributeBinding Geometry::getSecondaryColorBinding() const
+{
+    return GET_BINDING(_secondaryColorArray.get());
+}
+
+Geometry::AttributeBinding Geometry::getFogCoordBinding() const
+{
+    return GET_BINDING(_fogCoordArray.get());
+}
+
+Geometry::AttributeBinding Geometry::getVertexAttribBinding(unsigned int index) const
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return static_cast<AttributeBinding>(_vertexAttribList[index]->getBinding());
+    else return BIND_OFF;
+}
+
+
 GLboolean Geometry::getVertexAttribNormalize(unsigned int index) const
 {
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return _vertexAttribList[index]->getNormalize();
     else return GL_FALSE;
 }
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  Helper methods
@@ -1363,25 +1358,24 @@ void Geometry::fixDeprecatedData()
 
     bool containsBindPerPrimitive = false;
 
-    OSG_NOTICE<<"Geometry::fixDeprecatedData()"<<std::endl;
-
     // copy over attribute arrays.
     osg::IndexArray* indices = GeometryUtilFunctions::getIndexArray(_vertexArray.get());
+
     if (indices) setVertexArray(GeometryUtilFunctions::expandIndexArray(_vertexArray.get(), indices));
 
-    if (getNormalBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
+    if (osg::getBinding(_normalArray.get())==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = GeometryUtilFunctions::getIndexArray(_normalArray.get());
     if (indices) setNormalArray(GeometryUtilFunctions::expandIndexArray(getNormalArray(), indices));
 
-    if (getColorBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
+    if (osg::getBinding(getColorArray())==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = GeometryUtilFunctions::getIndexArray(_colorArray.get());
     if (indices) setColorArray(GeometryUtilFunctions::expandIndexArray(getColorArray(), indices));
 
-    if (getSecondaryColorBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
+    if (osg::getBinding(getSecondaryColorArray())==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = GeometryUtilFunctions::getIndexArray(_secondaryColorArray.get());
     if (indices) setSecondaryColorArray(GeometryUtilFunctions::expandIndexArray(getSecondaryColorArray(), indices));
 
-    if (getFogCoordBinding()==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
+    if (osg::getBinding(getFogCoordArray())==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
     indices = GeometryUtilFunctions::getIndexArray(_fogCoordArray.get());
     if (indices) setFogCoordArray(GeometryUtilFunctions::expandIndexArray(getFogCoordArray(), indices));
 
@@ -1393,7 +1387,7 @@ void Geometry::fixDeprecatedData()
 
     for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
-        if (getVertexAttribBinding(vi)==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
+        if (osg::getBinding(getVertexAttribArray(vi))==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) containsBindPerPrimitive = true;
         indices = GeometryUtilFunctions::getIndexArray(_vertexAttribList[vi].get());
         if (indices) setVertexAttribArray(vi, GeometryUtilFunctions::expandIndexArray(getVertexAttribArray(vi), indices));
     }
@@ -1793,23 +1787,48 @@ void Geometry::fixDeprecatedData()
 //
 // deprecated_osg
 
-void deprecated_osg::Geometry::setNormalBinding(AttributeBinding ab) { osg::Geometry::setNormalBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
-deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getNormalBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getNormalBinding()); }
+void deprecated_osg::Geometry::setNormalBinding(AttributeBinding ab) { SET_BINDING(_normalArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getNormalBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getNormalArray())); }
 
-void deprecated_osg::Geometry::setColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setColorBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
-deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getColorBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getColorBinding()); }
+void deprecated_osg::Geometry::setColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_colorArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getColorBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getColorArray())); }
 
-void deprecated_osg::Geometry::setSecondaryColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setSecondaryColorBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
-deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getSecondaryColorBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getSecondaryColorBinding()); }
+void deprecated_osg::Geometry::setSecondaryColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_secondaryColorArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getSecondaryColorBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getSecondaryColorArray())); }
 
-void deprecated_osg::Geometry::setFogCoordBinding(deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setFogCoordBinding(static_cast<osg::Geometry::AttributeBinding>(ab)); }
-deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getFogCoordBinding() const { return static_cast<AttributeBinding>(osg::Geometry::getFogCoordBinding()); }
+void deprecated_osg::Geometry::setFogCoordBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_fogCoordArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getFogCoordBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getFogCoordArray())); }
 
-void deprecated_osg::Geometry::setVertexAttribBinding(unsigned int index,deprecated_osg::Geometry::AttributeBinding ab) { osg::Geometry::setVertexAttribBinding(index, static_cast<osg::Geometry::AttributeBinding>(ab)); }
-deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getVertexAttribBinding(unsigned int index) const { return static_cast<AttributeBinding>(osg::Geometry::getVertexAttribBinding(index)); }
 
-void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm) { osg::Geometry::setVertexAttribNormalize(index, norm); }
-GLboolean deprecated_osg::Geometry::getVertexAttribNormalize(unsigned int index) const { return osg::Geometry::getVertexAttribNormalize(index); }
+void deprecated_osg::Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
+    {
+        if (_vertexAttribList[index]->getBinding()==static_cast<osg::Array::Binding>(ab)) return;
+
+        _vertexAttribList[index]->setBinding(static_cast<osg::Array::Binding>(ab));
+
+        dirtyDisplayList();
+    }
+    else
+    {
+        OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl;
+    }
+}
+
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getVertexAttribBinding(unsigned int index) const { return static_cast<AttributeBinding>(osg::getBinding(getVertexAttribArray(index))); }
+
+void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
+    {
+        _vertexAttribList[index]->setNormalize(norm);
+
+        dirtyDisplayList();
+    }
+}
+
+GLboolean deprecated_osg::Geometry::getVertexAttribNormalize(unsigned int index) const { return osg::getNormalize(getVertexAttribArray(index)); }
 
 void deprecated_osg::Geometry::setVertexIndices(osg::IndexArray* array)
 {

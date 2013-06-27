@@ -119,7 +119,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 _fout << "/";
                 if (_hasNormalCoords)
                 {
-                    if (_geo->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
+                    if (osg::getBinding(_geo->getNormalArray()) == osg::Array::BIND_PER_VERTEX)
                         _fout << (i+_lastNormalIndex);
                     else
                         _fout << (_normalIndex + _lastNormalIndex);
@@ -519,7 +519,7 @@ void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
     _fout << "o " << getUniqueName( geo->getName().empty() ? geo->className() : geo->getName() ) << std::endl;
 
     if (geo->containsDeprecatedData()) geo->fixDeprecatedData();
-    
+
     processStateSet(_currentStateSet.get());
 
     processArray("v", geo->getVertexArray(), m, false);
@@ -533,7 +533,7 @@ void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
         ObjPrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);
         ps->accept(pif);
 
-        if(geo->getNormalArray() && geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET)
+        if(geo->getNormalArray() && geo->getNormalArray()->getBinding() == osg::Array::BIND_PER_PRIMITIVE_SET)
             ++normalIndex;
     }
     if (geo->getVertexArray())

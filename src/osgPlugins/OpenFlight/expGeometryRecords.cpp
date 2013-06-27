@@ -56,7 +56,7 @@ FltExportVisitor::isLit( const osg::Geometry& geom ) const
     if ( ss->getMode( GL_LIGHTING ) & osg::StateAttribute::ON )
         return true;
     else
-        return false; //( geom.getNormalBinding() == osg::Geometry::BIND_PER_VERTEX );
+        return false; //( geom.getNormalBinding() == osg::Array::BIND_PER_VERTEX );
 }
 
 bool
@@ -151,7 +151,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
     int8 lightMode;
     osg::Vec4 packedColorRaw( 1., 1., 1., 1. );
     uint16 transparency( 0 );
-    if (geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
+    if (osg::getBinding(geom.getColorArray()) == osg::Array::BIND_PER_VERTEX)
     {
         if( isLit( geom ) )
             lightMode = VERTEX_COLOR_LIGHTING;
@@ -357,7 +357,7 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom 
     int8 lightMode;
     osg::Vec4 packedColorRaw( 1., 1., 1., 1. );
     uint16 transparency( 0 );
-    if (geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
+    if (osg::getBinding(geom.getColorArray()) == osg::Array::BIND_PER_VERTEX)
     {
         if (isLit( geom ))
             lightMode = VERTEX_COLOR_LIGHTING;
@@ -608,12 +608,12 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom )
     uint32 attr( HAS_POSITION );
     unsigned int vertSize( sizeof( float64 ) * 3 );
 
-    if ( ( c4 != NULL ) && ( geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX) )
+    if ( ( c4 != NULL ) && ( osg::getBinding(geom.getColorArray()) == osg::Array::BIND_PER_VERTEX) )
     {
         attr |= HAS_RGBA_COLOR;
         vertSize += sizeof( unsigned int );
     }
-    if ( ( n3 != NULL ) && ( geom.getNormalBinding() == osg::Geometry::BIND_PER_VERTEX) )
+    if ( ( n3 != NULL ) && ( osg::getBinding(geom.getNormalArray()) == osg::Array::BIND_PER_VERTEX) )
     {
         attr |= HAS_NORMAL;
         vertSize += ( sizeof( float32 ) * 3 );

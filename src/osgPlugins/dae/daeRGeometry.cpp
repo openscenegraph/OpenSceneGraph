@@ -801,7 +801,7 @@ template <class ArrayType, int Value>
 ArrayType* createGeometryArray(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, int texcoordNum=-1) {
     const ArrayType * source = sourceReader.getArray<ArrayType>();
     if (!source) return 0;
-    ArrayType * pArray = new ArrayType(osg::Geometry::BIND_PER_VERTEX);
+    ArrayType * pArray = new ArrayType(osg::Array::BIND_PER_VERTEX);
     for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(), end = vertexIndicesIndexMap.end(); it != end; ++it) {
         int index = texcoordNum>=0 ? it->first.texcoord_indices[texcoordNum] : it->first.get<Value>();
         if (index>=0 && static_cast<unsigned int>(index)<source->size()) pArray->push_back(source->at(index));

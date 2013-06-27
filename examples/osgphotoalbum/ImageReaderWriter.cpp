@@ -33,7 +33,7 @@ ImageReaderWriter::DataReference::DataReference():
     _center(0.625f,0.0f,0.0f),
     _maximumWidth(1.25f,0.0f,0.0f),
     _maximumHeight(0.0f,0.0f,1.0f),
-    _numPointsAcross(10), 
+    _numPointsAcross(10),
     _numPointsUp(10),
     _backPage(false) {}
 
@@ -44,7 +44,7 @@ ImageReaderWriter::DataReference::DataReference(const std::string& fileName, uns
     _center(width*0.5f,0.0f,height*0.5f),
     _maximumWidth(width,0.0f,0.0f),
     _maximumHeight(0.0f,0.0f,height),
-    _numPointsAcross(10), 
+    _numPointsAcross(10),
     _numPointsUp(10),
     _backPage(backPage) {}
 
@@ -55,7 +55,7 @@ ImageReaderWriter::DataReference::DataReference(const DataReference& rhs):
     _center(rhs._center),
     _maximumWidth(rhs._maximumWidth),
     _maximumHeight(rhs._maximumHeight),
-    _numPointsAcross(rhs._numPointsAcross), 
+    _numPointsAcross(rhs._numPointsAcross),
     _numPointsUp(rhs._numPointsUp),
     _backPage(rhs._backPage) {}
 
@@ -121,11 +121,11 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::local_readNode(const std::str
 
     osg::Image* image = 0;
     float s=1.0f,t=1.0f;
-    
+
     // try to load photo from any loaded PhotoArchives
     if (!_photoArchiveList.empty())
         image = readImage_Archive(dr,s,t);
-        
+
     // not loaded yet, so try to load it directly.
     if (!image)
         image = readImage_DynamicSampling(dr,s,t);
@@ -210,8 +210,7 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::local_readNode(const std::str
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-        geom->setColorArray(colours);
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 

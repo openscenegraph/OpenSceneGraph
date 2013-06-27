@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * Authors:
@@ -37,13 +37,13 @@ const int WIDTH  = 1440;
 const int HEIGHT = 900;
 
 
-osg::Geode* createAxis() 
+osg::Geode* createAxis()
 {
-    osg::Geode*     geode    = new osg::Geode();  
+    osg::Geode*     geode    = new osg::Geode();
     osg::Geometry*  geometry = new osg::Geometry();
     osg::Vec3Array* vertices = new osg::Vec3Array();
     osg::Vec4Array* colors   = new osg::Vec4Array();
-    
+
     vertices->push_back(osg::Vec3(0.0f, 0.0f, 0.0f));
     vertices->push_back(osg::Vec3(1.0f, 0.0f, 0.0f));
     vertices->push_back(osg::Vec3(0.0f, 0.0f, 0.0f));
@@ -57,10 +57,9 @@ osg::Geode* createAxis()
     colors->push_back(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
     colors->push_back(osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f));
     colors->push_back(osg::Vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    
+
     geometry->setVertexArray(vertices);
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);    
+    geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
     geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES, 0, 6));
     geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, false);
 
@@ -100,7 +99,7 @@ struct AddHelperBone : public osg::NodeVisitor
     }
 };
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
@@ -153,7 +152,7 @@ int main(int argc, char** argv)
 
     AnimtkViewerGUI* gui    = new AnimtkViewerGUI(&viewer, WIDTH, HEIGHT, 0x1234);
     osg::Camera*     camera = gui->createParentOrthoCamera();
-    
+
     node->setNodeMask(0x0001);
 
     group->addChild(node);

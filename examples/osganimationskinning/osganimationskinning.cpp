@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -34,7 +34,7 @@
 
 osg::Geode* createAxis()
 {
-    osg::Geode* geode (new osg::Geode());  
+    osg::Geode* geode (new osg::Geode());
     osg::Geometry* geometry (new osg::Geometry());
 
     osg::Vec3Array* vertices (new osg::Vec3Array());
@@ -53,9 +53,7 @@ osg::Geode* createAxis()
     colors->push_back (osg::Vec4 (0.0f, 1.0f, 0.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
-    geometry->setColorArray (colors);
-
-    geometry->setColorBinding (osg::Geometry::BIND_PER_VERTEX);    
+    geometry->setColorArray (colors, osg::Array::BIND_PER_VERTEX);
     geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
 
     geode->addDrawable( geometry );
@@ -70,12 +68,11 @@ osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
     osg::ref_ptr<osg::Vec3Array> vertices (new osg::Vec3Array());
     osg::ref_ptr<osg::Vec3Array> colors (new osg::Vec3Array());
     geometry->setVertexArray (vertices.get());
-    geometry->setColorArray (colors.get());
-    geometry->setColorBinding (osg::Geometry::BIND_PER_VERTEX);    
-  
+    geometry->setColorArray (colors.get(), osg::Array::BIND_PER_VERTEX);
+
     float step = size / static_cast<float>(nsplit);
     float s = 0.5f/4.0f;
-    for (int i = 0; i < nsplit; i++) 
+    for (int i = 0; i < nsplit; i++)
     {
         float x = -1.0f + static_cast<float>(i) * step;
         std::cout << x << std::endl;
@@ -92,7 +89,7 @@ osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
     }
 
     osg::ref_ptr<osg::UIntArray> array = new osg::UIntArray;
-    for (int i = 0; i < nsplit - 1; i++) 
+    for (int i = 0; i < nsplit - 1; i++)
     {
         int base = i * 4;
         array->push_back(base);
@@ -123,7 +120,7 @@ osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
         array->push_back(base+2);
         array->push_back(base+7);
     }
-  
+
     geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, array->size(), &array->front()));
     geometry->setUseDisplayList( false );
     riggeometry->setSourceGeometry(geometry);
@@ -144,7 +141,7 @@ void initVertexMap(osgAnimation::Bone* b0,
     (*vim)[b1->getName()].setName(b1->getName());
     (*vim)[b2->getName()].setName(b2->getName());
 
-    for (int i = 0; i < (int)array->size(); i++) 
+    for (int i = 0; i < (int)array->size(); i++)
     {
         float val = (*array)[i][0];
         std::cout << val << std::endl;
@@ -229,7 +226,7 @@ int main (int argc, char* argv[])
     }
     manager->registerAnimation(anim);
     manager->buildTargetReference();
-  
+
     // let's start !
     manager->playAnimation(anim);
 
@@ -247,7 +244,7 @@ int main (int argc, char* argv[])
     trueroot->setDataVariance(osg::Object::DYNAMIC);
     rootTransform->addChild(trueroot);
     scene->addChild(rootTransform);
-  
+
     osgAnimation::RigGeometry* geom = createTesselatedBox(4, 4.0f);
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);

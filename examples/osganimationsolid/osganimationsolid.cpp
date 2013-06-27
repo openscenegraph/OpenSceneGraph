@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -30,7 +30,7 @@ using namespace osgAnimation;
 
 osg::ref_ptr<osg::Geode> createAxis()
 {
-    osg::ref_ptr<osg::Geode> geode (new osg::Geode());  
+    osg::ref_ptr<osg::Geode> geode (new osg::Geode());
     osg::ref_ptr<osg::Geometry> geometry (new osg::Geometry());
 
     osg::ref_ptr<osg::Vec3Array> vertices (new osg::Vec3Array());
@@ -49,9 +49,7 @@ osg::ref_ptr<osg::Geode> createAxis()
     colors->push_back (osg::Vec4 (0.0f, 1.0f, 0.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
-    geometry->setColorArray (colors.get());
-
-    geometry->setColorBinding (osg::Geometry::BIND_PER_VERTEX);    
+    geometry->setColorArray (colors.get(), osg::Array::BIND_PER_VERTEX);
     geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
 
     geode->addDrawable( geometry.get() );
@@ -114,7 +112,7 @@ int main (int argc, char* argv[])
     channelAnimation1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(0, osg::Vec3(0,0,0)));
     channelAnimation1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(2, osg::Vec3(1,1,0)));
     osgAnimation::Animation* anim1 = new osgAnimation::Animation;
-    anim1->addChannel(channelAnimation1);    
+    anim1->addChannel(channelAnimation1);
     anim1->setPlayMode(osgAnimation::Animation::PPONG);
 
 
@@ -130,12 +128,12 @@ int main (int argc, char* argv[])
     osgAnimation::Animation* anim2 = new osgAnimation::Animation;
     anim2->addChannel(channelAnimation2);
     anim2->setPlayMode(osgAnimation::Animation::LOOP);
-                                                                                     
+
 
     // We register all animation inside the scheduler
     mng->registerAnimation(anim1);
     mng->registerAnimation(anim2);
-    
+
     //start the animation
     mng->playAnimation(anim1);
     mng->playAnimation(anim2);

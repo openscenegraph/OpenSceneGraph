@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2010 Jeremy Moles <cubicool@gmail.com>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  */
 
@@ -50,8 +50,7 @@ osg::Geometry* createEaseMotionGeometry(osgAnimation::Motion* motion) {
 
     geom->setUseDisplayList(false);
     geom->setVertexArray(v);
-    geom->setColorArray(cols);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(cols, osg::Array::BIND_OVERALL);
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, v->size()));
 
     return geom;
@@ -105,11 +104,11 @@ struct ColorLabel: public osgWidget::Label {
         setFont("fonts/VeraMono.ttf");
         setFontSize(14);
         setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
-		
+
         setColor(0.3f, 0.3f, 0.3f, 1.0f);
         setPadding(2.0f);
         setCanFill(true);
-		
+
         addSize(150.0f, 25.0f);
 
         setLabel(label);
@@ -118,9 +117,9 @@ struct ColorLabel: public osgWidget::Label {
 
     bool mousePush(double, double, const osgWidget::WindowManager*) {
         osgWidget::Table* p = dynamic_cast<osgWidget::Table*>(_parent);
-	
+
         if(!p) return false;
-		
+
         p->hide();
 
         const std::string& name = getName();
@@ -232,7 +231,7 @@ struct ColorLabel: public osgWidget::Label {
         else if(!name.compare("InOutExpoMotion"))
             EASE_MOTION_SAMPLER->setMotion<osgAnimation::InOutExpoMotion>()
                 ;
-		
+
         else EASE_MOTION_SAMPLER->setMotion<osgAnimation::LinearMotion>();
 
         return true;
@@ -240,13 +239,13 @@ struct ColorLabel: public osgWidget::Label {
 
     bool mouseEnter(double, double, const osgWidget::WindowManager*) {
         setColor(0.9f, 0.6f, 0.1f, 1.0f);
-		
+
         return true;
     }
 
     bool mouseLeave(double, double, const osgWidget::WindowManager*) {
         setColor(0.3f, 0.3f, 0.3f, 1.0f);
-		
+
         return true;
     }
 };
@@ -286,7 +285,7 @@ public:
         _window->addWidget(new ColorLabel("OutCircMotion"), 3, 3);
         _window->addWidget(new ColorLabel("InCircMotion"), 4, 3);
         _window->addWidget(new ColorLabel("InOutCircMotion"), 5, 3);
-		
+
         _window->addWidget(new ColorLabel("OutExpoMotion"), 0, 4);
         _window->addWidget(new ColorLabel("InExpoMotion"), 1, 4);
         _window->addWidget(new ColorLabel("InOutExpoMotion"), 2, 4);

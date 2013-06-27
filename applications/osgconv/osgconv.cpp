@@ -51,12 +51,12 @@ class MyGraphicsContext {
             if (!_gc)
             {
                 osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
-                
+
                 traits->pbuffer = false;
                 _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
             }
 
-            if (_gc.valid()) 
+            if (_gc.valid())
             {
                 _gc->realize();
                 _gc->makeCurrent();
@@ -70,9 +70,9 @@ class MyGraphicsContext {
                 }
             }
         }
-        
+
         bool valid() const { return _gc.valid() && _gc->isRealized(); }
-        
+
     private:
         osg::ref_ptr<osg::GraphicsContext> _gc;
 };
@@ -95,8 +95,7 @@ public:
             {
                 osg::ref_ptr< osg::Vec3Array > newnormals = new osg::Vec3Array;
                 newnormals->push_back( osg::Z_AXIS );
-                geometry->setNormalArray( newnormals.get() );
-                geometry->setNormalBinding( osg::Geometry::BIND_OVERALL );
+                geometry->setNormalArray( newnormals.get(), osg::Array::BIND_OVERALL );
             }
         }
     }
@@ -121,20 +120,20 @@ public:
         if (node.getStateSet()) apply(*node.getStateSet());
         traverse(node);
     }
-    
+
     virtual void apply(osg::Geode& node)
     {
         if (node.getStateSet()) apply(*node.getStateSet());
-        
+
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
             if (drawable && drawable->getStateSet()) apply(*drawable->getStateSet());
         }
-        
+
         traverse(node);
     }
-    
+
     virtual void apply(osg::StateSet& stateset)
     {
         // search for the existence of any texture object attributes
@@ -147,7 +146,7 @@ public:
             }
         }
     }
-    
+
     void compress()
     {
         MyGraphicsContext context;
@@ -164,21 +163,21 @@ public:
             ++itr)
         {
             osg::Texture* texture = const_cast<osg::Texture*>(itr->get());
-            
+
             osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
             osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
-            
+
             osg::ref_ptr<osg::Image> image = texture2D ? texture2D->getImage() : (texture3D ? texture3D->getImage() : 0);
-            if (image.valid() && 
+            if (image.valid() &&
                 (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA) &&
                 (image->s()>=32 && image->t()>=32))
             {
                 texture->setInternalFormatMode(_internalFormatMode);
-                
+
                 // need to disable the unref after apply, other the image could go out of scope.
                 bool unrefImageDataAfterApply = texture->getUnRefImageDataAfterApply();
                 texture->setUnRefImageDataAfterApply(false);
-                
+
                 // get OpenGL driver to create texture from image.
                 texture->apply(*state);
 
@@ -199,10 +198,10 @@ public:
             ++itr)
         {
             osg::Texture* texture = const_cast<osg::Texture*>(itr->get());
-            
+
             osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
             osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
-            
+
             osg::ref_ptr<osg::Image> image = texture2D ? texture2D->getImage() : (texture3D ? texture3D->getImage() : 0);
             if (image.valid())
             {
@@ -215,11 +214,11 @@ public:
             }
         }
     }
-    
+
     typedef std::set< osg::ref_ptr<osg::Texture> > TextureSet;
     TextureSet                          _textureSet;
     osg::Texture::InternalFormatMode    _internalFormatMode;
-    
+
 };
 
 
@@ -243,7 +242,7 @@ public:
     {
         std::cout<<"Running FixTransparencyVisitor..."<<std::endl;
     }
-        
+
     ~FixTransparencyVisitor()
     {
         std::cout<<"  Number of Transparent StateSet "<<_numTransparent<<std::endl;
@@ -256,20 +255,20 @@ public:
         if (node.getStateSet()) isTransparent(*node.getStateSet());
         traverse(node);
     }
-    
+
     virtual void apply(osg::Geode& node)
     {
         if (node.getStateSet()) isTransparent(*node.getStateSet());
-        
+
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
             if (drawable && drawable->getStateSet()) isTransparent(*drawable->getStateSet());
         }
-        
+
         traverse(node);
     }
-    
+
     virtual bool isTransparent(osg::StateSet& stateset)
     {
         bool hasTranslucentTexture = false;
@@ -289,15 +288,15 @@ public:
                 for (unsigned int im=0;im<texture->getNumImages();++im)
                 {
                     osg::Image* image = texture->getImage(im);
-                    if (image && image->isImageTranslucent()) hasTranslucentTexture = true;   
+                    if (image && image->isImageTranslucent()) hasTranslucentTexture = true;
                 }
             }
         }
-        
+
         if (hasTranslucentTexture || hasBlendFunc || hasTransparentRenderingHint || hasDepthSortBin)
         {
             ++_numTransparent;
-            
+
             bool makeNonTransparent = false;
 
             switch(_mode)
@@ -315,7 +314,7 @@ public:
                 makeNonTransparent = false;
                 break;
             }
-        
+
             if (makeNonTransparent)
             {
                 stateset.removeAttribute(osg::StateAttribute::BLENDFUNC);
@@ -335,7 +334,7 @@ public:
     }
 
     unsigned int _numTransparent;
-    unsigned int _numOpaque;    
+    unsigned int _numOpaque;
     unsigned int _numTransparentMadeOpaque;
     FixTransparencyMode _mode;
 };
@@ -350,7 +349,7 @@ public:
     {
         std::cout<<"Running PruneStateSet..."<<std::endl;
     }
-        
+
     ~PruneStateSetVisitor()
     {
         std::cout<<"  Number of StateState removed "<<_numStateSetRemoved<<std::endl;
@@ -365,7 +364,7 @@ public:
         }
         traverse(node);
     }
-    
+
     virtual void apply(osg::Geode& node)
     {
         if (node.getStateSet())
@@ -373,7 +372,7 @@ public:
             node.setStateSet(0);
             ++_numStateSetRemoved;
         }
-        
+
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
@@ -383,10 +382,10 @@ public:
                 ++_numStateSetRemoved;
             }
         }
-        
+
         traverse(node);
     }
-    
+
     unsigned int _numStateSetRemoved;
 };
 
@@ -408,8 +407,7 @@ public:
                 {
                     osg::Vec4Array* colours = new osg::Vec4Array(1);
                     (*colours)[0].set(1.0f,1.0f,1.0f,1.0f);
-                    geometry->setColorArray(colours);
-                    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+                    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
                 }
             }
         }
@@ -545,7 +543,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a utility for converting between various input and output databases formats.");
@@ -558,18 +556,18 @@ int main( int argc, char **argv )
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
-    { 
+    {
         usage( arguments.getApplicationName().c_str(), 0 );
         //arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     if (arguments.read("--help-env"))
-    { 
+    {
         arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE);
         return 1;
     }
-    
+
     if (arguments.read("--plugins"))
     {
         osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
@@ -580,23 +578,23 @@ int main( int argc, char **argv )
             std::cout<<"Plugin "<<*itr<<std::endl;
         }
         return 0;
-    }    
-    
+    }
+
     std::string plugin;
     if (arguments.read("--plugin", plugin))
     {
         osgDB::outputPluginDetails(std::cout, plugin);
         return 0;
-    }    
-    
+    }
+
     std::string ext;
     if (arguments.read("--format", ext))
     {
         plugin = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
         osgDB::outputPluginDetails(std::cout, plugin);
         return 0;
-    }    
-    
+    }
+
     if (arguments.read("--formats"))
     {
         osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
@@ -607,8 +605,8 @@ int main( int argc, char **argv )
             osgDB::outputPluginDetails(std::cout,*itr);
         }
         return 0;
-    }    
-    
+    }
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -637,7 +635,7 @@ int main( int argc, char **argv )
         std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
         osgDB::Registry::instance()->loadLibrary(libName);
     }
-    
+
     std::string libName;
     while (arguments.read("-l",libName))
     {
@@ -672,7 +670,7 @@ int main( int argc, char **argv )
             oc.setRotation( from, to );
             do_convert = true;
         }
-    }    
+    }
 
     while (arguments.read("-s",str))
     {
@@ -717,7 +715,7 @@ int main( int argc, char **argv )
         do_convert = true;
     }
 
-    
+
     FixTransparencyVisitor::FixTransparencyMode fixTransparencyMode = FixTransparencyVisitor::NO_TRANSPARANCY_FIXING;
     std::string fixString;
     while(arguments.read("--fix-transparency")) fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
@@ -726,7 +724,7 @@ int main( int argc, char **argv )
          if (fixString=="MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
          if (fixString=="MAKE_ALL_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_ALL_STATESET_OPAQUE;
     };
-    
+
     bool pruneStateSet = false;
     while(arguments.read("--prune-StateSet")) pruneStateSet = true;
 
@@ -739,7 +737,7 @@ int main( int argc, char **argv )
 
     bool smooth = false;
     while(arguments.read("--smooth")) { smooth = true; }
-    
+
     bool addMissingColours = false;
     while(arguments.read("--addMissingColours") || arguments.read("--addMissingColors")) { addMissingColours = true; }
 
@@ -805,13 +803,13 @@ int main( int argc, char **argv )
 
     if ( root.valid() )
     {
-    
+
         if (smooth)
         {
             osgUtil::SmoothingVisitor sv;
             root->accept(sv);
-        }    
-    
+        }
+
         if (addMissingColours)
         {
             AddMissingColoursToGeometryVisitor av;
@@ -821,10 +819,10 @@ int main( int argc, char **argv )
         // optimize the scene graph, remove rendundent nodes and state etc.
         osgUtil::Optimizer optimizer;
         optimizer.optimize(root.get());
-        
+
         if( do_convert )
             root = oc.convert( root.get() );
-            
+
         if (internalFormatMode != osg::Texture::USE_IMAGE_DATA_FORMAT)
         {
             std::string ext = osgDB::getFileExtension(fileNameOut);

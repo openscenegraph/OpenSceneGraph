@@ -58,8 +58,8 @@ Node *makeSky( void )
     Vec3Array& coords = *(new Vec3Array(19*nlev));
     Vec4Array& colors = *(new Vec4Array(19*nlev));
     Vec2Array& tcoords = *(new Vec2Array(19*nlev));
-    
-    
+
+
     int ci = 0;
 
     for( i = 0; i < nlev; i++ )
@@ -104,12 +104,11 @@ Node *makeSky( void )
 
         geom->addPrimitiveSet(drawElements);
     }
-    
+
     geom->setVertexArray( &coords );
     geom->setTexCoordArray( 0, &tcoords );
 
-    geom->setColorArray( &colors );
-    geom->setColorBinding( Geometry::BIND_PER_VERTEX );
+    geom->setColorArray( &colors, Array::BIND_PER_VERTEX );
 
 
     Texture2D *tex = new Texture2D;
@@ -121,12 +120,12 @@ Node *makeSky( void )
     dstate->setTextureAttribute(0, new TexEnv );
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );
     dstate->setMode( GL_CULL_FACE, StateAttribute::ON );
-    
+
 
     // clear the depth to the far plane.
     osg::Depth* depth = new osg::Depth;
     depth->setFunction(osg::Depth::ALWAYS);
-    depth->setRange(1.0,1.0);   
+    depth->setRange(1.0,1.0);
     dstate->setAttributeAndModes(depth,StateAttribute::ON );
 
     dstate->setRenderBinDetails(-2,"RenderBin");

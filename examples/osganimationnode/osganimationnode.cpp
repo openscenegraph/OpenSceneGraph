@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -27,7 +27,7 @@ class AnimtkUpdateCallback : public osg::NodeCallback
 public:
     META_Object(osgAnimation, AnimtkUpdateCallback);
 
-    AnimtkUpdateCallback() 
+    AnimtkUpdateCallback()
     {
         _sampler = new osgAnimation::Vec3CubicBezierSampler;
         _playing = false;
@@ -46,9 +46,9 @@ public:
 
     /** Callback method called by the NodeVisitor when visiting a node.*/
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    { 
-        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR && 
-            nv->getFrameStamp() && 
+    {
+        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
+            nv->getFrameStamp() &&
             nv->getFrameStamp()->getFrameNumber() != _lastUpdate) {
 
             _lastUpdate = nv->getFrameStamp()->getFrameNumber();
@@ -89,7 +89,7 @@ class AnimtkStateSetUpdateCallback : public osg::StateSet::Callback
 public:
     META_Object(osgAnimation, AnimtkStateSetUpdateCallback);
 
-    AnimtkStateSetUpdateCallback() 
+    AnimtkStateSetUpdateCallback()
     {
         _sampler = new osgAnimation::Vec4LinearSampler;
         _playing = false;
@@ -109,20 +109,20 @@ public:
 
     /** Callback method called by the NodeVisitor when visiting a node.*/
     virtual void operator()(osg::StateSet* state, osg::NodeVisitor* nv)
-    { 
-        if (state && 
-            nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR && 
-            nv->getFrameStamp() && 
-            nv->getFrameStamp()->getFrameNumber() != _lastUpdate) 
+    {
+        if (state &&
+            nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
+            nv->getFrameStamp() &&
+            nv->getFrameStamp()->getFrameNumber() != _lastUpdate)
         {
 
             _lastUpdate = nv->getFrameStamp()->getFrameNumber();
             _currentTime = osg::Timer::instance()->tick();
 
-            if (_playing && _sampler.get() && _sampler->getKeyframeContainer()) 
+            if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
             {
                 osg::Material* material = dynamic_cast<osg::Material*>(state->getAttribute(osg::StateAttribute::MATERIAL));
-                if (material) 
+                if (material)
                 {
                     osg::Vec4 result;
                     float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
@@ -149,7 +149,7 @@ public:
 
 osg::Geode* createAxis()
 {
-    osg::Geode* geode  = new osg::Geode;  
+    osg::Geode* geode  = new osg::Geode;
     osg::ref_ptr<osg::Geometry> geometry (new osg::Geometry());
 
     osg::ref_ptr<osg::Vec3Array> vertices (new osg::Vec3Array());
@@ -168,9 +168,7 @@ osg::Geode* createAxis()
     colors->push_back (osg::Vec4 (0.0f, 1.0f, 0.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
     colors->push_back (osg::Vec4 (0.0f, 0.0f, 1.0f, 1.0f));
-    geometry->setColorArray (colors.get());
-
-    geometry->setColorBinding (osg::Geometry::BIND_PER_VERTEX);    
+    geometry->setColorArray (colors.get(), osg::Array::BIND_PER_VERTEX);
     geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
 
     geode->addDrawable( geometry.get() );
@@ -217,7 +215,7 @@ osg::MatrixTransform* setupAnimtkNode()
     osgAnimation::Vec3CubicBezierKeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
     keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(0, osgAnimation::Vec3CubicBezier(
                                                         v[0], // pos
-                                                        v[0] + (v[0] - v[3]), // p1 
+                                                        v[0] + (v[0] - v[3]), // p1
                                                         v[1] - (v[1] - v[0]) // p2
                                                         )));
     keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(2, osgAnimation::Vec3CubicBezier(
@@ -254,7 +252,7 @@ int main (int argc, char* argv[])
 
     osgGA::TrackballManipulator* manipulator = new osgGA::TrackballManipulator();
     viewer.setCameraManipulator(manipulator);
-  
+
     osg::Group* root = new osg::Group;
     root->setInitialBound(osg::BoundingSphere(osg::Vec3(10,0,10), 30));
     root->addChild(createAxis());
@@ -266,7 +264,7 @@ int main (int argc, char* argv[])
     viewer.setSceneData( root );
     viewer.realize();
 
-    while (!viewer.done()) 
+    while (!viewer.done())
     {
         viewer.frame();
     }

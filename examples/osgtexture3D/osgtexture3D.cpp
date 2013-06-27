@@ -31,7 +31,7 @@
 #include <iostream>
 
 //
-// A simple demo demonstrating different texturing modes, 
+// A simple demo demonstrating different texturing modes,
 // including using of texture extensions.
 //
 
@@ -78,7 +78,7 @@ osg::StateSet* createState()
     image_3d->copySubImage(0,0,2,image_2.get());
     image_3d->copySubImage(0,0,3,image_3.get());
 
-    image_3d->setInternalTextureFormat(image_0->getInternalTextureFormat());        
+    image_3d->setInternalTextureFormat(image_0->getInternalTextureFormat());
 
     // set up the 3d texture itself,
     // note, well set the filtering up so that mip mapping is disabled,
@@ -114,7 +114,7 @@ class UpdateStateCallback : public osg::NodeCallback
 {
     public:
         UpdateStateCallback() {}
-        
+
         void animateState(osg::StateSet* stateset)
         {
             // here we simply get any existing texgen, and then increment its
@@ -129,7 +129,7 @@ class UpdateStateCallback : public osg::NodeCallback
         }
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-        { 
+        {
 
             osg::StateSet* stateset = node->getStateSet();
             if (stateset)
@@ -139,10 +139,10 @@ class UpdateStateCallback : public osg::NodeCallback
             }
 
             // note, callback is repsonsible for scenegraph traversal so
-            // should always include call the traverse(node,nv) to ensure 
+            // should always include call the traverse(node,nv) to ensure
             // that the rest of cullbacks and the scene graph are traversed.
             traverse(node,nv);
-        }      
+        }
 };
 
 /** create 2,2 square with center at 0,0,0 and aligned along the XZ plan */
@@ -160,8 +160,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
 
     osg::Vec3Array* norms = new osg::Vec3Array(1);
     (*norms)[0].set(0.0f,-1.0f,0.0f);
-    geom->setNormalArray(norms);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(norms, osg::Array::BIND_OVERALL);
 
     osg::Vec2Array* tcoords = new osg::Vec2Array(4);
     (*tcoords)[0].set(0.0f,textureCoordMax);
@@ -169,7 +168,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
     (*tcoords)[2].set(textureCoordMax,0.0f);
     (*tcoords)[3].set(textureCoordMax,textureCoordMax);
     geom->setTexCoordArray(0,tcoords);
-    
+
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 
     return geom;
@@ -178,7 +177,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
 osg::Node* createModel()
 {
 
-    // create the geometry of the model, just a simple 2d quad right now.    
+    // create the geometry of the model, just a simple 2d quad right now.
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(createSquare());
 
@@ -195,7 +194,7 @@ osg::Node* createModel()
     // this current limitation.
     geode->setUpdateCallback(new UpdateStateCallback());
     geode->setStateSet(createState());
-    
+
     return geode;
 
 }

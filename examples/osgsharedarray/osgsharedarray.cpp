@@ -21,16 +21,16 @@
 #include <osg/Geometry>
 #include <osgViewer/Viewer>
 
-/** This class is an example of how to create your own subclass of osg::Array. This 
-  * is useful if your application has data in its own form of storage and you don't 
+/** This class is an example of how to create your own subclass of osg::Array. This
+  * is useful if your application has data in its own form of storage and you don't
   * want to make another copy into one of the predefined osg::Array classes.
   *
-  * @note This is not really intended to be a useful subclass of osg::Array. It 
-  * doesn't do anything smart about memory management. It is simply intended as 
-  * an example you can follow to create your own subclasses of osg::Array for 
-  * your application's storage requirements. 
+  * @note This is not really intended to be a useful subclass of osg::Array. It
+  * doesn't do anything smart about memory management. It is simply intended as
+  * an example you can follow to create your own subclasses of osg::Array for
+  * your application's storage requirements.
   */
-class MyArray : public osg::Array { 
+class MyArray : public osg::Array {
 public:
     /** Default ctor. Creates an empty array. */
     MyArray() :
@@ -39,10 +39,10 @@ public:
         _ptr(NULL) {
     }
 
-    /** "Normal" ctor. 
+    /** "Normal" ctor.
       *
       * @param no The number of elements in the array.
-      * @param ptr Pointer to the data. This class just keeps that 
+      * @param ptr Pointer to the data. This class just keeps that
       * pointer. It doesn't manage the memory.
       */
     MyArray(unsigned int no, osg::Vec3* ptr) :
@@ -59,15 +59,15 @@ public:
     }
 
     /** What type of object would clone return? */
-    virtual Object* cloneType() const { 
-        return new MyArray(); 
+    virtual Object* cloneType() const {
+        return new MyArray();
     }
-    
-    /** Create a copy of the object. */ 
-    virtual osg::Object* clone(const osg::CopyOp& copyop) const { 
-        return new MyArray(*this,copyop); 
-    }        
-        
+
+    /** Create a copy of the object. */
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const {
+        return new MyArray(*this,copyop);
+    }
+
     /** Accept method for ArrayVisitors.
       *
       * @note This will end up in ArrayVisitor::apply(osg::Array&).
@@ -94,9 +94,9 @@ public:
         cvv.apply(_ptr[index]);
     }
 
-    /** Compare method. 
+    /** Compare method.
       * Return -1 if lhs element is less than rhs element, 0 if equal,
-      * 1 if lhs element is greater than rhs element. 
+      * 1 if lhs element is greater than rhs element.
       */
     virtual int compare(unsigned int lhs,unsigned int rhs) const {
         const osg::Vec3& elem_lhs = _ptr[lhs];
@@ -118,7 +118,7 @@ public:
         return _numElements;
     }
 
-    /** Returns the number of bytes of storage required to hold 
+    /** Returns the number of bytes of storage required to hold
       * all of the elements of the array.
       */
     virtual unsigned int getTotalDataSize() const {
@@ -133,7 +133,7 @@ private:
     osg::Vec3*   _ptr;
 };
 
-/** The data values for the example. Simply defines a cube with 
+/** The data values for the example. Simply defines a cube with
   * per-face colors and normals.
   */
 
@@ -231,28 +231,28 @@ const osg::Vec4 myColors[] = { osg::Vec4( 1., 0., 0., 1.),
                                osg::Vec4( 0., 1., 1., 1.)
                              };
 
-/** Create a Geode that describes a cube using our own 
-  * subclass of osg::Array for the vertices. It uses 
-  * the "regular" array classes for all of the other 
+/** Create a Geode that describes a cube using our own
+  * subclass of osg::Array for the vertices. It uses
+  * the "regular" array classes for all of the other
   * arrays.
   *
-  * Creating your own Array class isn't really very 
-  * useful for a tiny amount of data like this. You 
-  * could just go ahead and copy the data into one of 
-  * the "regular" Array classes like this does for 
-  * normals and colors. The point of creating your 
-  * own subclass of Array is for use with datasets 
-  * that are much larger than anything you could 
-  * create a simple example from. In that case, you 
-  * might not want to create a copy of the data in 
-  * one of the Array classes that comes with OSG, but 
-  * instead reuse the copy your application already 
+  * Creating your own Array class isn't really very
+  * useful for a tiny amount of data like this. You
+  * could just go ahead and copy the data into one of
+  * the "regular" Array classes like this does for
+  * normals and colors. The point of creating your
+  * own subclass of Array is for use with datasets
+  * that are much larger than anything you could
+  * create a simple example from. In that case, you
+  * might not want to create a copy of the data in
+  * one of the Array classes that comes with OSG, but
+  * instead reuse the copy your application already
   * has and wrap it up in a subclass of osg::Array
-  * that presents the right interface for use with 
+  * that presents the right interface for use with
   * OpenSceneGraph.
   *
-  * Note that I'm only using the shared array for the 
-  * vertices. You could do something similar for any 
+  * Note that I'm only using the shared array for the
+  * vertices. You could do something similar for any
   * of the Geometry node's data arrays.
   */
 osg::Geode* createGeometry()
@@ -268,21 +268,19 @@ osg::Geode* createGeometry()
 
     // add normals
     unsigned int numNormals = sizeof(myNormals)/sizeof(myNormals[0]);
-    geom->setNormalArray(new osg::Vec3Array(numNormals,const_cast<osg::Vec3*>(&myNormals[0])));
-    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom->setNormalArray(new osg::Vec3Array(numNormals,const_cast<osg::Vec3*>(&myNormals[0])), osg::Array::BIND_PER_VERTEX);
 
     // add colors
     unsigned int numColors = sizeof(myColors)/sizeof(myColors[0]);
     osg::Vec4Array* normal_array = new osg::Vec4Array(numColors,const_cast<osg::Vec4*>(&myColors[0]));
-    geom->setColorArray(normal_array);
-    geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom->setColorArray(normal_array, osg::Array::BIND_PER_VERTEX);
 
     // add PrimitiveSet
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, numVertices));
 
-    // Changing these flags will tickle different cases in 
-    // Geometry::drawImplementation. They should all work fine 
-    // with the shared array. 
+    // Changing these flags will tickle different cases in
+    // Geometry::drawImplementation. They should all work fine
+    // with the shared array.
     geom->setUseVertexBufferObjects(false);
     geom->setUseDisplayList(false);
 

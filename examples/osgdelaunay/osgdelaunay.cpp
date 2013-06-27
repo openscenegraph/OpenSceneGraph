@@ -836,8 +836,7 @@ osg::Geometry *WallConstraint::makeWallGeometry() const
     gm->setVertexArray(getWall(height));
     gm->addPrimitiveSet(makeWall());
     gm->setTexCoordArray(0,getWallTexcoords(height));
-    gm->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    gm->setNormalArray(getWallNormals()); // this creates normals to walls
+    gm->setNormalArray(getWallNormals(), osg::Array::BIND_PER_VERTEX); // this creates normals to walls
 
     return gm.release();
 }

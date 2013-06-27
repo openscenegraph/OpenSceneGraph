@@ -76,9 +76,8 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
     osg::Vec3Array* norms = new osg::Vec3Array(1);
     (*norms)[0] = width^height;
     (*norms)[0].normalize();
-    
-    geom->setNormalArray(norms);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+    geom->setNormalArray(norms, osg::Array::BIND_OVERALL);
 
     osg::Vec2Array* tcoords = new osg::Vec2Array(4);
     (*tcoords)[0].set(0.0f,0.0f);
@@ -86,15 +85,14 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
     (*tcoords)[2].set(1.0f,1.0f);
     (*tcoords)[3].set(0.0f,1.0f);
     geom->setTexCoordArray(0,tcoords);
-    
+
     osg::Vec4Array* colours = new osg::Vec4Array(1);
     (*colours)[0].set(1.0f,1.0f,1.0f,1.0f);
-    geom->setColorArray(colours);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
 
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
-    
+
     if (image)
     {
         osg::StateSet* stateset = new osg::StateSet;
@@ -106,7 +104,7 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
         geom->setStateSet(stateset);
     }
-    
+
     return geom;
 }
 
@@ -114,12 +112,12 @@ osg::Image* createBillboardImage(const osg::Vec4& centerColour, unsigned int siz
 {
     osg::Vec4 backgroundColour = centerColour;
     backgroundColour[3] = 0.0f;
-    
+
     osg::Image* image = new osg::Image;
     image->allocateImage(size,size,1,
                          GL_RGBA,GL_UNSIGNED_BYTE);
-     
-     
+
+
     float mid = (float(size)-1)*0.5f;
     float div = 2.0f/float(size);
     for(unsigned int r=0;r<size;++r)
@@ -146,29 +144,29 @@ osg::Image* createBillboardImage(const osg::Vec4& centerColour, unsigned int siz
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
 {
-    // set up the animation path 
+    // set up the animation path
     osg::AnimationPath* animationPath = new osg::AnimationPath;
     animationPath->setLoopMode(osg::AnimationPath::LOOP);
-    
+
     int numSamples = 1000;
     float yaw = 0.0f;
     float yaw_delta = -2.0f*osg::PI/((float)numSamples-1.0f);
     float roll = osg::inDegrees(30.0f);
-    
+
     double time=0.0f;
     double time_delta = looptime/(double)numSamples;
     for(int i=0;i<numSamples;++i)
     {
         osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
         osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
-        
+
         animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
 
         yaw += yaw_delta;
         time += time_delta;
 
     }
-    return animationPath;    
+    return animationPath;
 }// end createAnimationPath
 
 
@@ -205,18 +203,18 @@ public:
 
     std::string _mapSpace;
     std::string _mapSun;
-    std::string _mapVenus;    
-    std::string _mapMercury;    
+    std::string _mapVenus;
+    std::string _mapMercury;
     std::string _mapEarth;
     std::string _mapEarthNight;
     std::string _mapMoon;
     std::string _mapMars;
     std::string _mapJupiter;
-    
+
     double _rotateSpeedFactor;
     double _RorbitFactor;
     double _radiusFactor;
-    
+
     SolarSystem()
     {
         _radiusSpace    = 500.0;
@@ -227,26 +225,26 @@ public:
         _radiusMoon     = 0.1;
         _radiusMars     = 0.53;
         _radiusJupiter  = 5.0;
-        
+
         _RorbitMercury  = 11.7;
         _RorbitVenus    = 21.6;
         _RorbitEarth    = 30.0;
         _RorbitMoon     = 1.0;
         _RorbitMars     = 45.0;
         _RorbitJupiter  = 156.0;
-        
+
                                                 // orbital period in days
         _rotateSpeedSun             = 0.0;      // should be 11.97;  // 30.5 average
         _rotateSpeedMercury         = 4.15;     // 87.96
         _rotateSpeedVenus           = 1.62;     // 224.70
         _rotateSpeedEarthAndMoon    = 1.0;      // 365.25
-        _rotateSpeedEarth           = 1.0;      // 
+        _rotateSpeedEarth           = 1.0;      //
         _rotateSpeedMoon            = 0.95;     //
         _rotateSpeedMars            = 0.53;     // 686.98
         _rotateSpeedJupiter         = 0.08;     // 4332.71
 
         _tiltEarth                  = 23.45; // degrees
-        
+
         _mapSpace       = "Images/spacemap2.jpg";
         _mapSun         = "SolarSystem/sun256128.jpg";
         _mapMercury     = "SolarSystem/mercury256128.jpg";
@@ -261,15 +259,15 @@ public:
         _RorbitFactor   = 15.0;
         _radiusFactor   = 10.0;
     }
-    
+
     osg::MatrixTransform* createTranslationAndTilt( double translation, double tilt );
     osg::MatrixTransform* createRotation( double orbit, double speed );
-    
+
     osg::Geode* createSpace( const std::string& name, const std::string& textureName );
     osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName );
     osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName1, const std::string& textureName2);
     osg::Group* createSunLight();
-    
+
     void rotateSpeedCorrection()
     {
         _rotateSpeedSun             *= _rotateSpeedFactor;
@@ -280,10 +278,10 @@ public:
         _rotateSpeedMoon            *= _rotateSpeedFactor;
         _rotateSpeedMars            *= _rotateSpeedFactor;
         _rotateSpeedJupiter         *= _rotateSpeedFactor;
-        
+
         std::cout << "rotateSpeed corrected by factor " << _rotateSpeedFactor << std::endl;
     }
-    
+
     void RorbitCorrection()
     {
         _RorbitMercury  *= _RorbitFactor;
@@ -292,10 +290,10 @@ public:
         _RorbitMoon     *= _RorbitFactor;
         _RorbitMars     *= _RorbitFactor;
         _RorbitJupiter  *= _RorbitFactor;
-        
+
         std::cout << "Rorbits corrected by factor " << _RorbitFactor << std::endl;
     }
-    
+
     void radiusCorrection()
     {
         _radiusSpace    *= _radiusFactor;
@@ -306,11 +304,11 @@ public:
         _radiusMoon     *= _radiusFactor;
         _radiusMars     *= _radiusFactor;
         _radiusJupiter  *= _radiusFactor;
- 
+
         std::cout << "Radius corrected by factor " << _radiusFactor << std::endl;
     }
     void printParameters();
-        
+
 };  // end SolarSystem
 
 class FindNamedNodeVisitor : public osg::NodeVisitor
@@ -319,7 +317,7 @@ public:
     FindNamedNodeVisitor(const std::string& name):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _name(name) {}
-    
+
     virtual void apply(osg::Node& node)
     {
         if (node.getName()==_name)
@@ -328,7 +326,7 @@ public:
         }
         traverse(node);
     }
-    
+
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
 
     std::string _name;
@@ -358,8 +356,8 @@ osg::MatrixTransform* SolarSystem::createTranslationAndTilt( double /*translatio
 
     return moonPositioned;
 }// end SolarSystem::createTranslationAndTilt
-    
-    
+
+
 osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string& textureName )
 {
     osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), _radiusSpace );
@@ -387,7 +385,7 @@ osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string
 
 }// end SolarSystem::createSpace
 
-    
+
 osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName)
 {
     // create a container that makes the sphere drawable
@@ -397,11 +395,10 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
         // set the single colour so bind overall
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0] = color;
-        sPlanetSphere->setColorArray(colours);
-        sPlanetSphere->setColorBinding(osg::Geometry::BIND_OVERALL);
+        sPlanetSphere->setColorArray(colours, osg::Array::BIND_OVERALL);
 
 
-        // now set up the coords, normals and texcoords for geometry 
+        // now set up the coords, normals and texcoords for geometry
         unsigned int numX = 100;
         unsigned int numY = 50;
         unsigned int numVertices = numX*numY;
@@ -410,8 +407,7 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
         sPlanetSphere->setVertexArray(coords);
 
         osg::Vec3Array* normals = new osg::Vec3Array(numVertices);
-        sPlanetSphere->setNormalArray(normals);
-        sPlanetSphere->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        sPlanetSphere->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
 
         osg::Vec2Array* texcoords = new osg::Vec2Array(numVertices);
         sPlanetSphere->setTexCoordArray(0,texcoords);
@@ -460,7 +456,7 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
             sPlanetSphere->addPrimitiveSet(elements);
         }
     }
-    
+
 
     // set the object color
     //sPlanetSphere->setColor( color );
@@ -490,20 +486,20 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
     return( geodePlanet );
 
 }// end SolarSystem::createPlanet
-    
+
 osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName1, const std::string& textureName2)
 {
     osg::Geode* geodePlanet = createPlanet( radius, name, color , textureName1);
-    
+
     if( !textureName2.empty() )
     {
         osg::Image* image = osgDB::readImageFile( textureName2 );
         if ( image )
         {
             osg::StateSet* stateset = geodePlanet->getOrCreateStateSet();
-            
+
             osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
-            
+
             texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
             texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
             texenv->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
@@ -544,7 +540,7 @@ osg::Group* SolarSystem::createSunLight()
 
     return sunLightSource;
 }// end SolarSystem::createSunLight
-    
+
 void SolarSystem::printParameters()
 {
     std::cout << "radiusSpace(" << _radiusSpace << ")" << std::endl;
@@ -582,7 +578,7 @@ void SolarSystem::printParameters()
     std::cout << "mapMoon(" << _mapMoon << ")" << std::endl;
     std::cout << "mapMars(" << _mapMars << ")" << std::endl;
     std::cout << "mapJupiter(" << _mapJupiter << ")" << std::endl;
-    
+
     std::cout << "rotateSpeedFactor(" << _rotateSpeedFactor << ")" << std::endl;
     std::cout << "RorbitFactor(" << _RorbitFactor << ")" << std::endl;
     std::cout << "radiusFactor(" << _radiusFactor << ")" << std::endl;
@@ -616,15 +612,15 @@ int main( int argc, char **argv )
     while (arguments.read("--radiusMoon",solarSystem._radiusMoon)) { }
     while (arguments.read("--radiusMars",solarSystem._radiusMars)) { }
     while (arguments.read("--radiusJupiter",solarSystem._radiusJupiter)) { }
-    
+
     while (arguments.read("--RorbitEarth",solarSystem._RorbitEarth)) { }
     while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
-    
+
     while (arguments.read("--rotateSpeedEarthAndMoon",solarSystem._rotateSpeedEarthAndMoon)) { }
     while (arguments.read("--rotateSpeedEarth",solarSystem._rotateSpeedEarth)) { }
     while (arguments.read("--rotateSpeedMoon",solarSystem._rotateSpeedMoon)) { }
     while (arguments.read("--tiltEarth",solarSystem._tiltEarth)) { }
-    
+
     while (arguments.read("--mapSpace",solarSystem._mapSpace)) { }
     while (arguments.read("--mapEarth",solarSystem._mapEarth)) { }
     while (arguments.read("--mapEarthNight",solarSystem._mapEarthNight)) { }
@@ -633,15 +629,15 @@ int main( int argc, char **argv )
     while (arguments.read("--rotateSpeedFactor",solarSystem._rotateSpeedFactor)) { }
     while (arguments.read("--RorbitFactor",solarSystem._RorbitFactor)) { }
     while (arguments.read("--radiusFactor",solarSystem._radiusFactor)) { }
-    
+
     solarSystem.rotateSpeedCorrection();
     solarSystem.RorbitCorrection();
     solarSystem.radiusCorrection();
-    
+
     std::string writeFileName;
     while (arguments.read("-o",writeFileName)) { }
-    
-    
+
+
     osgGA::NodeTrackerManipulator::TrackerMode trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
     std::string mode;
     while (arguments.read("--tracker-mode",mode))
@@ -658,8 +654,8 @@ int main( int argc, char **argv )
             return 1;
         }
     }
-    
-    
+
+
     osgGA::NodeTrackerManipulator::RotationMode rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
     while (arguments.read("--rotation-mode",mode))
     {
@@ -673,7 +669,7 @@ int main( int argc, char **argv )
             return 1;
         }
     }
-    
+
 
     // solarSystem.printParameters();
 
@@ -689,14 +685,14 @@ int main( int argc, char **argv )
         std::cout << "\t--radiusMoon: double" << std::endl;
         std::cout << "\t--radiusMars: double" << std::endl;
         std::cout << "\t--radiusJupiter: double" << std::endl;
-        
+
         std::cout << "\t--RorbitMercury: double" << std::endl;
         std::cout << "\t--RorbitVenus: double" << std::endl;
         std::cout << "\t--RorbitEarth: double" << std::endl;
         std::cout << "\t--RorbitMoon: double" << std::endl;
         std::cout << "\t--RorbitMars: double" << std::endl;
         std::cout << "\t--RorbitJupiter: double" << std::endl;
-        
+
         std::cout << "\t--rotateSpeedMercury: double" << std::endl;
         std::cout << "\t--rotateSpeedVenus: double" << std::endl;
         std::cout << "\t--rotateSpeedEarthAndMoon: double" << std::endl;
@@ -706,7 +702,7 @@ int main( int argc, char **argv )
         std::cout << "\t--rotateSpeedJupiter: double" << std::endl;
 
         std::cout << "\t--tiltEarth: double" << std::endl;
-        
+
         std::cout << "\t--mapSpace: string" << std::endl;
         std::cout << "\t--mapSun: string" << std::endl;
         std::cout << "\t--mapMercury: string" << std::endl;
@@ -716,11 +712,11 @@ int main( int argc, char **argv )
         std::cout << "\t--mapMoon: string" << std::endl;
         std::cout << "\t--mapMars: string" << std::endl;
         std::cout << "\t--mapJupiter: string" << std::endl;
-        
+
         std::cout << "\t--rotateSpeedFactor: string" << std::endl;
         std::cout << "\t--RorbitFactor: string" << std::endl;
         std::cout << "\t--radiusFactor: string" << std::endl;
-                        
+
         return 1;
     }
 
@@ -733,10 +729,10 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
-    
+
+
     osg::Group* root = new osg::Group;
-    
+
     osg::ClearNode* clearNode = new osg::ClearNode;
     clearNode->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     root->addChild(clearNode);
@@ -756,7 +752,7 @@ int main( int argc, char **argv )
     sunBillboard->addDrawable(
         createSquare(osg::Vec3(-150.0f,0.0f,-150.0f),osg::Vec3(300.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,300.0f),createBillboardImage( osg::Vec4( 1.0, 1.0, 0, 1.0f), 64, 1.0) ),
         osg::Vec3(0.0f,0.0f,0.0f));
-        
+
     sunLight->addChild( sunBillboard );
 
 
@@ -767,7 +763,7 @@ int main( int argc, char **argv )
 
 /*
 *********************************************
-**  earthMoonGroup and Transformations 
+**  earthMoonGroup and Transformations
 *********************************************
 */
     // create earth and moon
@@ -782,7 +778,7 @@ int main( int argc, char **argv )
 
     //Group with earth and moon under it
     osg::Group* earthMoonGroup = new osg::Group;
-    
+
     //transformation to rotate the earth around itself
     osg::MatrixTransform* earthAroundItselfRotation = solarSystem.createRotation ( 0.0, solarSystem._rotateSpeedEarth );
 
@@ -797,7 +793,7 @@ int main( int argc, char **argv )
 
     earthAroundItselfRotation->addChild( earth );
     earthMoonGroup->addChild( earthAroundItselfRotation );
-    
+
     earthMoonGroupPosition->addChild( earthMoonGroup );
 
     aroundSunRotationEarthMoonGroup->addChild( earthMoonGroupPosition );
@@ -805,87 +801,87 @@ int main( int argc, char **argv )
     sunLight->addChild( aroundSunRotationEarthMoonGroup );
 /*
 *********************************************
-**  end earthMoonGroup and Transformations 
+**  end earthMoonGroup and Transformations
 *********************************************
 */
 
 /*
 *********************************************
-**  Mercury and Transformations 
+**  Mercury and Transformations
 *********************************************
 */
     osg::Node* mercury = solarSystem.createPlanet( solarSystem._radiusMercury, "Mercury", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ), solarSystem._mapMercury, "" );
-    
+
     osg::MatrixTransform* aroundSunRotationMercury = solarSystem.createRotation( solarSystem._RorbitMercury, solarSystem._rotateSpeedMercury );
     osg::MatrixTransform* mercuryPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitMercury, 0.0f );
-    
+
     mercuryPosition->addChild( mercury );
     aroundSunRotationMercury->addChild( mercuryPosition );
-    
+
     sunLight->addChild( aroundSunRotationMercury );
 /*
 *********************************************
-**  end Mercury and Transformations 
+**  end Mercury and Transformations
 *********************************************
 */
 
 /*
 *********************************************
-**  Venus and Transformations 
+**  Venus and Transformations
 *********************************************
 */
     osg::Node* venus = solarSystem.createPlanet( solarSystem._radiusVenus, "Venus", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ), solarSystem._mapVenus, "" );
-    
+
     osg::MatrixTransform* aroundSunRotationVenus = solarSystem.createRotation( solarSystem._RorbitVenus, solarSystem._rotateSpeedVenus );
     osg::MatrixTransform* venusPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitVenus, 0.0f );
-    
+
     venusPosition->addChild( venus );
     aroundSunRotationVenus->addChild( venusPosition );
-    
+
     sunLight->addChild( aroundSunRotationVenus );
 /*
 *********************************************
-**  end Venus and Transformations 
+**  end Venus and Transformations
 *********************************************
 */
 
 /*
 *********************************************
-**  Mars and Transformations 
+**  Mars and Transformations
 *********************************************
 */
     osg::Node* mars = solarSystem.createPlanet( solarSystem._radiusMars, "Mars", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ), solarSystem._mapMars, "" );
-    
+
     osg::MatrixTransform* aroundSunRotationMars = solarSystem.createRotation( solarSystem._RorbitMars, solarSystem._rotateSpeedMars );
     osg::MatrixTransform* marsPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitMars, 0.0f );
-    
+
     marsPosition->addChild( mars );
     aroundSunRotationMars->addChild( marsPosition );
-    
+
     sunLight->addChild( aroundSunRotationMars );
 /*
 *********************************************
-**  end Mars and Transformations 
+**  end Mars and Transformations
 *********************************************
 */
 
 /*
 *********************************************
-**  Jupiter and Transformations 
+**  Jupiter and Transformations
 *********************************************
 */
     osg::Node* jupiter = solarSystem.createPlanet( solarSystem._radiusJupiter, "Jupiter", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ), solarSystem._mapJupiter, "" );
-    
+
     osg::MatrixTransform* aroundSunRotationJupiter = solarSystem.createRotation( solarSystem._RorbitJupiter, solarSystem._rotateSpeedJupiter );
     osg::MatrixTransform* jupiterPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitJupiter, 0.0f );
-    
+
     jupiterPosition->addChild( jupiter );
     aroundSunRotationJupiter->addChild( jupiterPosition );
-    
+
     sunLight->addChild( aroundSunRotationJupiter );
 /*
 *********************************************
-**  end Jupiter and Transformations 
+**  end Jupiter and Transformations
 *********************************************
 */
 
@@ -894,8 +890,8 @@ int main( int argc, char **argv )
     osg::Node* space = solarSystem.createSpace( "Space", solarSystem._mapSpace );
     space->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     root->addChild( space );
-*/    
-     
+*/
+
     if (!writeFileName.empty())
     {
         osgDB::writeNodeFile(*root, writeFileName);
@@ -907,7 +903,7 @@ int main( int argc, char **argv )
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize( root );
-     
+
     // set the scene to render
     viewer.setSceneData( root );
 
@@ -929,7 +925,7 @@ int main( int argc, char **argv )
             keyswitchManipulator->addMatrixManipulator( 'm', "moon", tm );
             keyswitchManipulator->selectMatrixManipulator( num );
         }
-    }    
+    }
 
     {
         FindNamedNodeVisitor fnnv("Earth");
@@ -947,8 +943,8 @@ int main( int argc, char **argv )
             keyswitchManipulator->addMatrixManipulator( 'e', "earth", tm);
             keyswitchManipulator->selectMatrixManipulator( num );
         }
-    }    
-    
+    }
+
     {
         FindNamedNodeVisitor fnnv("Sun");
         root->accept(fnnv);
@@ -965,7 +961,7 @@ int main( int argc, char **argv )
             keyswitchManipulator->addMatrixManipulator( 's', "sun", tm);
             keyswitchManipulator->selectMatrixManipulator( num );
         }
-    }    
+    }
 
     return viewer.run();
 

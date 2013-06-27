@@ -27,10 +27,10 @@ ProcessPass::ProcessPass(osg::TextureRectangle *in_tex,
     _TextureHeight(height)
 {
     _RootGroup = new osg::Group;
-    
+
     _InTexture = in_tex;
     _OutTexture = out_tex;
-    
+
     _Camera = new osg::Camera;
     setupCamera();
     _Camera->addChild(createTexturedQuad().get());
@@ -47,7 +47,7 @@ ProcessPass::~ProcessPass()
 osg::ref_ptr<osg::Group> ProcessPass::createTexturedQuad()
 {
     osg::ref_ptr<osg::Group> top_group = new osg::Group;
-    
+
     osg::ref_ptr<osg::Geode> quad_geode = new osg::Geode;
 
     osg::ref_ptr<osg::Vec3Array> quad_coords = new osg::Vec3Array; // vertex coords
@@ -72,19 +72,18 @@ osg::ref_ptr<osg::Group> ProcessPass::createTexturedQuad()
     quad_geom->setVertexArray(quad_coords.get());
     quad_geom->setTexCoordArray(0, quad_tcoords.get());
     quad_geom->addPrimitiveSet(quad_da.get());
-    quad_geom->setColorArray(quad_colors.get());
-    quad_geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    quad_geom->setColorArray(quad_colors.get(), osg::Array::BIND_OVERALL);
 
     _StateSet = quad_geom->getOrCreateStateSet();
     _StateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     _StateSet->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    
+
     _StateSet->setTextureAttributeAndModes(0, _InTexture.get(), osg::StateAttribute::ON);
-    
+
     _StateSet->addUniform(new osg::Uniform("textureIn", 0));
-    
+
     quad_geode->addDrawable(quad_geom.get());
-    
+
     top_group->addChild(quad_geode.get());
 
     return top_group;
@@ -94,7 +93,7 @@ void ProcessPass::setupCamera()
 {
     // clearing
     _Camera->setClearMask(GL_DEPTH_BUFFER_BIT);
-    
+
     // projection and view
     _Camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1,0,1));
     _Camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -118,7 +117,7 @@ void ProcessPass::setShader(std::string filename)
         return;
     }
 
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT ); 
+    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
     fshader->loadShaderSourceFromFile(foundFile);
 
     _FragmentProgram = 0;
@@ -135,7 +134,7 @@ GameOfLifePass::GameOfLifePass(osg::Image *in_image)
 {
     _TextureWidth = in_image->s();
     _TextureHeight = in_image->t();
-    
+
     _RootGroup = new osg::Group;
 
     _BranchSwith[0] = new osg::Switch;
@@ -149,11 +148,11 @@ GameOfLifePass::GameOfLifePass(osg::Image *in_image)
 
     createOutputTextures();
     _InOutTextureLife[0]->setImage(in_image);
-    
+
     _ProcessPass[0] = new ProcessPass(_InOutTextureLife[0].get(),
                                       _InOutTextureLife[1].get(),
                                       _TextureWidth, _TextureHeight);
-    
+
     // For the other pass, the input/output textures are flipped
     _ProcessPass[1] = new ProcessPass(_InOutTextureLife[1].get(),
                                       _InOutTextureLife[0].get(),
@@ -194,7 +193,7 @@ void GameOfLifePass::createOutputTextures()
 {
     for (int i=0; i<2; i++) {
         _InOutTextureLife[i] = new osg::TextureRectangle;
-        
+
         _InOutTextureLife[i]->setTextureSize(_TextureWidth, _TextureHeight);
         _InOutTextureLife[i]->setInternalFormat(GL_RGBA);
         _InOutTextureLife[i]->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);

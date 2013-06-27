@@ -46,12 +46,12 @@
 #include <iostream>
 
 // call back which creates a deformation field to oscillate the model.
-class MyGeometryCallback : 
-    public osg::Drawable::UpdateCallback, 
+class MyGeometryCallback :
+    public osg::Drawable::UpdateCallback,
     public osg::Drawable::AttributeFunctor
 {
     public:
-    
+
         MyGeometryCallback(const osg::Vec3& o,
                            const osg::Vec3& x,const osg::Vec3& y,const osg::Vec3& z,
                            double period,double xphase,double amplitude):
@@ -65,11 +65,11 @@ class MyGeometryCallback :
             _xAxis(x),
             _yAxis(y),
             _zAxis(z) {}
-    
+
         virtual void update(osg::NodeVisitor* nv,osg::Drawable* drawable)
         {
             // OpenThreads::Thread::microSleep( 1000 );
-            
+
             const osg::FrameStamp* fs = nv->getFrameStamp();
             double simulationTime = fs->getSimulationTime();
             if (_firstCall)
@@ -77,37 +77,37 @@ class MyGeometryCallback :
                 _firstCall = false;
                 _startTime = simulationTime;
             }
-            
+
             _time = simulationTime-_startTime;
-            
+
             drawable->accept(*this);
             drawable->dirtyBound();
-            
+
             osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
             if (geometry)
             {
                 osgUtil::SmoothingVisitor::smooth(*geometry);
             }
-            
+
         }
-        
-        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin) 
+
+        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
         {
             if (type == osg::Drawable::VERTICES)
             {
                 const float TwoPI=2.0f*osg::PI;
                 const float phase = -_time/_period;
-                
+
                 osg::Vec3* end = begin+count;
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
                     osg::Vec3 dv(*itr-_origin);
                     osg::Vec3 local(dv*_xAxis,dv*_yAxis,dv*_zAxis);
-                    
+
                     local.z() = local.x()*_amplitude*
-                                sinf(TwoPI*(phase+local.x()*_xphase)); 
-                    
-                    (*itr) = _origin + 
+                                sinf(TwoPI*(phase+local.x()*_xphase));
+
+                    (*itr) = _origin +
                              _xAxis*local.x()+
                              _yAxis*local.y()+
                              _zAxis*local.z();
@@ -119,7 +119,7 @@ class MyGeometryCallback :
 
         double  _startTime;
         double  _time;
-        
+
         double  _period;
         double  _xphase;
         float   _amplitude;
@@ -128,7 +128,7 @@ class MyGeometryCallback :
         osg::Vec3   _xAxis;
         osg::Vec3   _yAxis;
         osg::Vec3   _zAxis;
-        
+
 };
 
 struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
@@ -145,10 +145,10 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             // we'll pick out the center 1/2 of the whole image,
             int column_start = _image->s()/4;
             int column_end = 3*column_start;
-            
+
             int row_start = _image->t()/4;
             int row_end = 3*row_start;
-            
+
 
             // and then invert these pixels
             for(int r=row_start; r<row_end; ++r)
@@ -173,10 +173,10 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             // we'll pick out the center 1/2 of the whole image,
             int column_start = _image->s()/4;
             int column_end = 3*column_start;
-            
+
             int row_start = _image->t()/4;
             int row_end = 3*row_start;
-            
+
             // and then invert these pixels
             for(int r=row_start; r<row_end; ++r)
             {
@@ -194,17 +194,17 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
             // using the image can be informed that they need to update.
             _image->dirty();
         }
-       
+
     }
-    
+
     osg::Image* _image;
 };
 
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph, 
-                                   unsigned tex_width, unsigned tex_height, 
-                                   osg::Camera::RenderTargetImplementation renderImplementation, 
-                                   bool useImage, bool useTextureRectangle, bool useHDR, 
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
+                                   unsigned tex_width, unsigned tex_height,
+                                   osg::Camera::RenderTargetImplementation renderImplementation,
+                                   bool useImage, bool useTextureRectangle, bool useHDR,
                                    unsigned int samples, unsigned int colorSamples)
 {
     if (!subgraph) return 0;
@@ -221,7 +221,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
         textureRect->setInternalFormat(GL_RGBA);
         textureRect->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         textureRect->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        
+
         texture = textureRect;
     }
     else
@@ -231,9 +231,9 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
         texture2D->setInternalFormat(GL_RGBA);
         texture2D->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         texture2D->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        
+
         texture = texture2D;
-    } 
+    }
 
     if (useHDR)
     {
@@ -243,7 +243,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
     }
 
     // first create the geometry of the flag of which to view.
-    { 
+    {
         // create the to visualize.
         osg::Geometry* polyGeom = new osg::Geometry();
 
@@ -266,7 +266,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
         osg::Vec3 dv = xAxis*(width/((float)(noSteps-1)));
 
         osg::Vec2Array* texcoords = new osg::Vec2Array;
-        
+
         // note, when we use TextureRectangle we have to scale the tex coords up to compensate.
         osg::Vec2 bottom_texcoord(0.0f,0.0f);
         osg::Vec2 top_texcoord(0.0f, useTextureRectangle ? tex_height : 1.0f);
@@ -293,12 +293,11 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
 
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        polyGeom->setColorArray(colors);
-        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        polyGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
         polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,vertices->size()));
 
-        // new we need to add the texture to the Drawable, we do so by creating a 
+        // new we need to add the texture to the Drawable, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = new osg::StateSet;
 
@@ -310,14 +309,14 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
 
         osg::Geode* geode = new osg::Geode();
         geode->addDrawable(polyGeom);
-        
+
         parent->addChild(geode);
 
     }
 
 
     // then create the camera node to do the render to texture
-    {    
+    {
         osg::Camera* camera = new osg::Camera;
 
         // set up the background color and clear mask.
@@ -356,7 +355,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderImplementation);
 
-        
+
         if (useImage)
         {
             osg::Image* image = new osg::Image;
@@ -366,9 +365,9 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
             // attach the image so its copied on each frame.
             camera->attach(osg::Camera::COLOR_BUFFER, image,
                            samples, colorSamples);
-            
+
             camera->setPostDrawCallback(new MyCameraPostDrawCallback(image));
-            
+
             // Rather than attach the texture directly to illustrate the texture's ability to
             // detect an image update and to subload the image onto the texture.  You needn't
             // do this when using an Image for copying to, as a separate camera->attach(..)
@@ -382,7 +381,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
         else
         {
             // attach the texture and use it as the color buffer.
-            camera->attach(osg::Camera::COLOR_BUFFER, texture, 
+            camera->attach(osg::Camera::COLOR_BUFFER, texture,
                            0, 0, false,
                            samples, colorSamples);
         }
@@ -393,7 +392,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
 
         parent->addChild(camera);
 
-    }    
+    }
 
     return parent;
 }
@@ -415,7 +414,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--image","Render to an image, then apply a post draw callback to it, and use this image to update a texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--texture-rectangle","Use osg::TextureRectangle for doing the render to texture to.");
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
@@ -439,12 +438,12 @@ int main( int argc, char **argv )
     unsigned int tex_height = 512;
     unsigned int samples = 0;
     unsigned int colorSamples = 0;
-    
+
     while (arguments.read("--width", tex_width)) {}
     while (arguments.read("--height", tex_height)) {}
 
     osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
-    
+
     while (arguments.read("--fbo")) { renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT; }
     while (arguments.read("--pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
     while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
@@ -455,25 +454,25 @@ int main( int argc, char **argv )
 
     bool useImage = false;
     while (arguments.read("--image")) { useImage = true; }
-    
+
     bool useTextureRectangle = false;
     while (arguments.read("--texture-rectangle")) { useTextureRectangle = true; }
-    
+
     bool useHDR = false;
     while (arguments.read("--hdr")) { useHDR = true; }
 
-    
+
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
-    
+
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readNodeFile("cessna.osgt");
-    
+
     if (!loadedModel)
     {
         return 1;
     }
-    
+
     // create a transform to spin the model.
     osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel);

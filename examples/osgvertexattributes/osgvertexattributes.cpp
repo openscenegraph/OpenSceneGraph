@@ -209,32 +209,32 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             osg::notify(osg::NOTICE)<<"Found geometry "<<&geom<<std::endl;
             if (geom.getVertexArray())
             {
-                setVertexAttrib(geom, _vertexAlias, geom.getVertexArray(), false, osg::Geometry::BIND_PER_VERTEX);
+                setVertexAttrib(geom, _vertexAlias, geom.getVertexArray(), false, osg::Array::BIND_PER_VERTEX);
                 geom.setVertexArray(0);
             }
 
             if (geom.getNormalArray())
             {
-                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), true, geom.getNormalBinding());
+                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), true);
                 geom.setNormalArray(0);
             }
 
             if (geom.getColorArray())
             {
-                setVertexAttrib(geom, _colorAlias, geom.getColorArray(), false, geom.getColorBinding());
+                setVertexAttrib(geom, _colorAlias, geom.getColorArray(), false);
                 geom.setColorArray(0);
             }
 
             if (geom.getSecondaryColorArray())
             {
-                setVertexAttrib(geom, _secondaryColorAlias, geom.getSecondaryColorArray(), false, geom.getSecondaryColorBinding());
+                setVertexAttrib(geom, _secondaryColorAlias, geom.getSecondaryColorArray(), false);
                 geom.setSecondaryColorArray(0);
             }
 
             if (geom.getFogCoordArray())
             {
                 // should we normalize the FogCoord array? Don't think so...
-                setVertexAttrib(geom, _fogCoordAlias, geom.getFogCoordArray(), false, geom.getFogCoordBinding());
+                setVertexAttrib(geom, _fogCoordAlias, geom.getFogCoordArray(), false);
                 geom.setFogCoordArray(0);
             }
 
@@ -248,7 +248,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             {
                 if (geom.getTexCoordArray(i))
                 {
-                    setVertexAttrib(geom, _texCoordAlias[i], geom.getTexCoordArray(i), false, osg::Geometry::BIND_PER_VERTEX);
+                    setVertexAttrib(geom, _texCoordAlias[i], geom.getTexCoordArray(i), false, osg::Array::BIND_PER_VERTEX);
                     geom.setTexCoordArray(i,0);
                 }
                 else
@@ -258,14 +258,14 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             }
         }
 
-        void setVertexAttrib(osg::Geometry& geom, const AttributeAlias& alias, osg::Array* array, bool normalize, osg::Geometry::AttributeBinding binding)
+        void setVertexAttrib(osg::Geometry& geom, const AttributeAlias& alias, osg::Array* array, bool normalize, osg::Array::Binding binding = osg::Array::BIND_UNDEFINED)
         {
             unsigned int index = alias.first;
             const std::string& name = alias.second;
             array->setName(name);
+            if (binding!=osg::Array::BIND_UNDEFINED) array->setBinding(binding);
+            array->setNormalize(normalize);
             geom.setVertexAttribArray(index, array);
-            geom.setVertexAttribNormalize(index, normalize);
-            geom.setVertexAttribBinding(index, binding);
 
             osg::notify(osg::NOTICE)<<"   vertex attrib("<<name<<", index="<<index<<", normalize="<<normalize<<" binding="<<binding<<")"<<std::endl;
         }
@@ -286,10 +286,10 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 osg::Node* createSimpleTestModel()
 {
     osg::Group* group = new osg::Group;
-    
+
     osg::Geode* geode = new osg::Geode;
     group->addChild(geode);
-    
+
     osg::Geometry* geometry = new osg::Geometry;
     geode->addDrawable(geometry);
 
@@ -301,14 +301,14 @@ osg::Node* createSimpleTestModel()
     geometry->setVertexArray(vertices);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4));
-    
-    char vertexShaderSource[] = 
+
+    char vertexShaderSource[] =
        "void main(void)\n"
        "{\n"
        "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
        "}\n";
 
-    char fragmentShaderSource[] = 
+    char fragmentShaderSource[] =
         "void main(void)\n"
         "{\n"
         "    gl_FragColor = vec4(1.0,1.0,0.0,1.0); \n"
@@ -319,17 +319,17 @@ osg::Node* createSimpleTestModel()
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
 
     geometry->getOrCreateStateSet()->setAttribute(program);
-    
+
     return group;
 }
 
 osg::Node* createSimpleTextureTestModel()
 {
     osg::Group* group = new osg::Group;
-    
+
     osg::Geode* geode = new osg::Geode;
     group->addChild(geode);
-    
+
     osg::Geometry* geometry = new osg::Geometry;
     geode->addDrawable(geometry);
 
@@ -348,8 +348,8 @@ osg::Node* createSimpleTextureTestModel()
     geometry->setTexCoordArray(0, texcoords);
 
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4));
-    
-    char vertexShaderSource[] = 
+
+    char vertexShaderSource[] =
        "varying vec2 texCoord;\n"
        "void main(void)\n"
        "{\n"
@@ -357,7 +357,7 @@ osg::Node* createSimpleTextureTestModel()
        "    texCoord = gl_MultiTexCoord0.xy;\n"
        "}\n";
 
-    char fragmentShaderSource[] = 
+    char fragmentShaderSource[] =
         "varying vec2 texCoord;\n"
         "uniform sampler2D baseTexture;\n"
         "void main(void)\n"
@@ -371,13 +371,13 @@ osg::Node* createSimpleTextureTestModel()
 
     osg::StateSet* stateset = geometry->getOrCreateStateSet();
     stateset->setAttribute(program);
-    
+
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     osg::Texture2D* texture = new osg::Texture2D(image);
     texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     stateset->setTextureAttribute(0, texture);
-    
+
     osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
     stateset->addUniform(baseTextureSampler);
 
@@ -436,9 +436,9 @@ int main(int argc, char *argv[])
             loadedModel->accept(ctvaa);
         }
     }
-    
+
     if (!loadedModel) return 1;
-    
+
     if (!outputFileName.empty())
     {
         osgDB::writeNodeFile(*loadedModel, outputFileName);

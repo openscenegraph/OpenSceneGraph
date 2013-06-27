@@ -141,8 +141,7 @@ public:
     SomePoints()
     {
         osg::Vec4Array* cAry = new osg::Vec4Array;
-        setColorArray( cAry );
-        setColorBinding( osg::Geometry::BIND_OVERALL );
+        setColorArray( cAry, osg::Array::BIND_OVERALL );
         cAry->push_back( osg::Vec4(1,1,1,1) );
 
         osg::Vec3Array* vAry = new osg::Vec3Array;

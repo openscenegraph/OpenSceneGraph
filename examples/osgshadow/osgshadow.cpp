@@ -194,12 +194,10 @@ namespace ModelOne
         geometry->setVertexArray(vertices);
 
         osg::Vec3Array* normals = new osg::Vec3Array;
-        geometry->setNormalArray(normals);
-        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        geometry->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
 
         osg::Vec4Array* colours = new osg::Vec4Array;
-        geometry->setColorArray(colours);
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
         colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
 
@@ -868,7 +866,7 @@ int main(int argc, char** argv)
         OSG_NOTICE<<"MaximumShadowMapDistance set to "<<settings->getMaximumShadowMapDistance()<<std::endl;
     }
 
-    
+
     osg::ref_ptr<osgShadow::MinimalShadowMap> msm = NULL;
     if (arguments.read("--no-shadows"))
     {

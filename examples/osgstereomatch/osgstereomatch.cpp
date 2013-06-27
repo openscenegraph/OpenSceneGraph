@@ -44,12 +44,12 @@ osg::Node* createScene(osg::Image *left, osg::Image *right, unsigned int min_dis
     osg::Group* topnode = new osg::Group;
 
     // create four quads so we can display up to four images
-    
+
     osg::ref_ptr<osg::Geode> geode = new osg::Geode();
-    
+
     // each geom will contain a quad
     osg::ref_ptr<osg::DrawArrays> da = new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4);
-    
+
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
@@ -58,21 +58,21 @@ osg::Node* createScene(osg::Image *left, osg::Image *right, unsigned int min_dis
     tcoords->push_back(osg::Vec2(width, 0));
     tcoords->push_back(osg::Vec2(width, height));
     tcoords->push_back(osg::Vec2(0, height));
-    
+
     osg::ref_ptr<osg::StateSet> geomss[4]; // stateset where we can attach textures
     osg::ref_ptr<osg::TextureRectangle> texture[4];
 
     for (int i=0;i<4;i++) {
 	osg::ref_ptr<osg::Vec3Array> vcoords = new osg::Vec3Array; // vertex coords
 	osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
-	
+
 	// tile the quads on the screen
 	// 2 3
 	// 0 1
 	int xoff, zoff;
 	xoff = (i%2);
 	zoff = i>1 ? 1 : 0;
-	
+
 	// initial viewer camera looks along y
 	vcoords->push_back(osg::Vec3d(0+(xoff * width), 0, 0+(zoff * height)));
 	vcoords->push_back(osg::Vec3d(width+(xoff * width), 0, 0+(zoff * height)));
@@ -82,8 +82,7 @@ osg::Node* createScene(osg::Image *left, osg::Image *right, unsigned int min_dis
 	geom->setVertexArray(vcoords.get());
 	geom->setTexCoordArray(0,tcoords.get());
 	geom->addPrimitiveSet(da.get());
-	geom->setColorArray(colors.get());
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+	geom->setColorArray(colors.get(), osg::Array::BIND_OVERALL);
 	geomss[i] = geom->getOrCreateStateSet();
 	geomss[i]->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
@@ -102,15 +101,15 @@ osg::Node* createScene(osg::Image *left, osg::Image *right, unsigned int min_dis
     geomss[1]->setTextureAttributeAndModes(0, texture[1].get(), osg::StateAttribute::ON);
 
     topnode->addChild(geode.get());
-    
+
     // create the processing passes
     if (single_pass) {
 	StereoPass *stereopass = new StereoPass(texture[0].get(), texture[1].get(),
 						width, height,
 						min_disp, max_disp, window_size);
-    
+
 	topnode->addChild(stereopass->getRoot().get());
-	
+
 	// attach the output of the processing to the top left geom
 	geomss[2]->setTextureAttributeAndModes(0,
 					       stereopass->getOutputTexture().get(),
@@ -178,9 +177,9 @@ int main(int argc, char *argv[])
     // load the images
     osg::ref_ptr<osg::Image> leftIm = osgDB::readImageFile(leftName);
     osg::ref_ptr<osg::Image> rightIm = osgDB::readImageFile(rightName);
-   
+
     osg::Node* scene = createScene(leftIm.get(), rightIm.get(), minDisparity, maxDisparity, windowSize, useSinglePass);
-    
+
     // construct the viewer.
     osgViewer::Viewer viewer;
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);

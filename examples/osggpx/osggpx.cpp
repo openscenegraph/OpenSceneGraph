@@ -395,8 +395,7 @@ osg::Node* createTrackModel(Track* track, const osg::Vec4& colour)
 
         osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
         colours->push_back(colour);
-        geometry->setColorArray(colours.get());
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
 
         geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, points.size()));
 

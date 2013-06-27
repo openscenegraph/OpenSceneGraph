@@ -40,10 +40,10 @@ typedef std::vector<std::string> FileList;
 osg::StateSet* createColorToGreyscaleStateSet()
 {
     osg::StateSet* stateset = new osg::StateSet;
-    
+
     osg::Program* program = new osg::Program;
     stateset->setAttribute(program);
-    
+
     const char* fragSource =
     {
         "uniform sampler2D baseTexture;\n"
@@ -55,7 +55,7 @@ osg::StateSet* createColorToGreyscaleStateSet()
         "}\n"
     };
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragSource));
-    
+
     stateset->addUniform(new osg::Uniform("baseTexture",0));
 
     osg::Matrixf colorMatrix(
@@ -63,8 +63,8 @@ osg::StateSet* createColorToGreyscaleStateSet()
         0.59f, 0.59f, 0.59f, 0.0f,
         0.11f, 0.11f, 0.11f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
-    );    
-    
+    );
+
     stateset->addUniform(new osg::Uniform("colorMatrix",colorMatrix));
 
     return stateset;
@@ -78,9 +78,9 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
     int numSegments = 20;
     float Theta = length/radius;
     float dTheta = Theta/(float)(numSegments-1);
-    
+
     float ThetaZero = height*s/(t*radius);
-    
+
     // set up the texture.
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
@@ -103,7 +103,7 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
 
     osg::Vec3Array* coords = new osg::Vec3Array();
     osg::Vec2Array* tcoords = new osg::Vec2Array();
-   
+
     int i;
     float angle = -Theta/2.0f;
     for(i=0;
@@ -112,7 +112,7 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
     {
         coords->push_back(osg::Vec3(sinf(angle)*radius,cosf(angle)*radius,height*0.5f)); // top
         coords->push_back(osg::Vec3(sinf(angle)*radius,cosf(angle)*radius,-height*0.5f)); // bottom.
-        
+
         tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f, flip ? 0.0f : 1.0f)); // top
         tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f, flip ? 1.0f : 0.0f)); // bottom.
 
@@ -123,12 +123,11 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
 
     osg::DrawArrays* elements = new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,coords->size());
 
-    
+
 
     geom->setVertexArray(coords);
     geom->setTexCoordArray(0,tcoords);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     geom->addPrimitiveSet(elements);
 
@@ -174,7 +173,7 @@ osg::Group * loadImages(std::string image1, std::string image2, osg::TexMat* tex
     }
 }
 
-// create a switch containing a set of child each containing a 
+// create a switch containing a set of child each containing a
 // stereo image pair.
 osg::Switch* createScene(FileList fileList, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float radius, float height, float length)
 {
@@ -202,7 +201,7 @@ class SlideEventHandler : public osgGA::GUIEventHandler
 public:
 
     SlideEventHandler();
-    
+
     META_Object(osgStereImageApp,SlideEventHandler);
 
 
@@ -212,17 +211,17 @@ public:
 
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
-    
+
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
-    
+
     void nextSlide();
-    
+
     void previousSlide();
-    
+
     void scaleImage(float s);
-    
+
     void offsetImage(float ds,float dt);
 
     void rotateImage(float rx,float ry);
@@ -250,7 +249,7 @@ protected:
     float                       _initSeperationY;
     float                       _currentSeperationY;
     FileList                     _fileList;
-        
+
 };
 
 SlideEventHandler::SlideEventHandler():
@@ -274,8 +273,8 @@ void SlideEventHandler::set(osg::Switch* sw, float offsetX, float offsetY, osg::
     _texmatRight = texmatRight;
 
     _timePerSlide = timePerSlide;
-    _autoSteppingActive = autoSteppingActive;    
-    
+    _autoSteppingActive = autoSteppingActive;
+
     _initSeperationX = offsetX;
     _currentSeperationX = _initSeperationX;
 
@@ -303,8 +302,8 @@ void SlideEventHandler::set(FileList fileList, osg::Switch* sw, float offsetX, f
     _length=length;
 
     _timePerSlide = timePerSlide;
-    _autoSteppingActive = autoSteppingActive;    
-    
+    _autoSteppingActive = autoSteppingActive;
+
     _initSeperationX = offsetX;
     _currentSeperationX = _initSeperationX;
 
@@ -327,22 +326,22 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 _previousTime = ea.getTime();
                 return true;
             }
-            else if ((ea.getKey()=='n') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)) 
+            else if ((ea.getKey()=='n') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right))
             {
                 nextSlide();
                 return true;
             }
-            else if ((ea.getKey()=='p') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)) 
+            else if ((ea.getKey()=='p') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left))
             {
                 previousSlide();
                 return true;
             }
-            else if ((ea.getKey()=='w') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Add)) 
+            else if ((ea.getKey()=='w') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Add))
             {
                 scaleImage(0.99f);
                 return true;
             }
-            else if ((ea.getKey()=='s') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Subtract)) 
+            else if ((ea.getKey()=='s') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Subtract))
             {
                 scaleImage(1.01f);
                 return true;
@@ -379,15 +378,15 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         {
             static float px = ea.getXnormalized();
             static float py = ea.getYnormalized();
-            
+
             float dx = ea.getXnormalized()-px;
             float dy = ea.getYnormalized()-py;
-            
+
             px = ea.getXnormalized();
             py = ea.getYnormalized();
-            
+
             rotateImage(dx,dy);
-            
+
             return true;
         }
 
@@ -415,7 +414,7 @@ void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
     if (_autoSteppingActive && nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getSimulationTime();
-        
+
         if (_firstTraversal)
         {
             _firstTraversal = false;
@@ -424,10 +423,10 @@ void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
         else if (time-_previousTime>_timePerSlide)
         {
             _previousTime = time;
-            
+
             nextSlide();
         }
-        
+
     }
 
     traverse(node,nv);
@@ -461,7 +460,7 @@ void SlideEventHandler::previousSlide()
         else --_activeSlide;
         osg::ref_ptr<osg::Group> images = loadImages(_fileList[2*_activeSlide],_fileList[2*_activeSlide+1],_texmatLeft.get(),_texmatRight.get(),_radius,_height,_length);
         if (images.valid()) _switch->replaceChild(_switch->getChild(0),images.get());
-    } else {    
+    } else {
         if (_activeSlide==0) _activeSlide = _switch->getNumChildren()-1;
         else --_activeSlide;
 
@@ -503,7 +502,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use node masks to create stereo images.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
@@ -518,7 +517,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--CullDrawThreadPerContext","Select CullDrawThreadPerContext threading model for viewer.");
     arguments.getApplicationUsage()->addCommandLineOption("--DrawThreadPerContext","Select DrawThreadPerContext threading model for viewer.");
     arguments.getApplicationUsage()->addCommandLineOption("--CullThreadPerCameraDrawThreadPerContext","Select CullThreadPerCameraDrawThreadPerContext threading model for viewer.");
-    
+
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
@@ -553,7 +552,7 @@ int main( int argc, char **argv )
                 while (std::getline(is,line,'\n')) fileList.push_back(line);
                 is.close();
             }
-    
+
     }
 
     // if user request help write it out to cout.
@@ -580,7 +579,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     // extract the filenames from the arguments list.
     for(int pos=1;pos<arguments.argc();++pos)
     {
@@ -631,8 +630,8 @@ int main( int argc, char **argv )
     {
         rootNode->setStateSet(createColorToGreyscaleStateSet());
     }
-    
-    
+
+
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
@@ -656,19 +655,19 @@ int main( int argc, char **argv )
     // set up the SlideEventHandler.
     if (onDisk) seh->set(fileList,rootNode.get(),offsetX,offsetY,texmatLeft,texmatRight,radius,height,length,timeDelayBetweenSlides,autoSteppingActive);
     else seh->set(rootNode.get(),offsetX,offsetY,texmatLeft,texmatRight,timeDelayBetweenSlides,autoSteppingActive);
-    
+
     osg::Matrix homePosition;
     homePosition.makeLookAt(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f));
-        
+
     while( !viewer.done() )
     {
         viewer.getCamera()->setViewMatrix(homePosition);
 
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
-        
+
     }
-    
+
     return 0;
 }
 

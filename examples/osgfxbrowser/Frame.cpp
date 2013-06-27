@@ -23,7 +23,7 @@
 namespace osgfxbrowser {
 
 Frame::Frame()
-:    osg::Geode(), 
+:    osg::Geode(),
     bgcolor_(0.5f, 0.5f, 0.5f, 1.0f),
     rect_(0, 0, 100, 100),
     caption_("Frame")
@@ -108,8 +108,7 @@ osg::Geometry *Frame::build_quad(const Rect &rect, const osg::Vec4 &color, bool 
         clr->push_back(osg::Vec4(black, 0));
     }
 
-    geo->setColorArray(clr.get());
-    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geo->setColorArray(clr.get(), osg::Array::BIND_PER_VERTEX);
 
     geo->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, shadow? 12: 4));
 

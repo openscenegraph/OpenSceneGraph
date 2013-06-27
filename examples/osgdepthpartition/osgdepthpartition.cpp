@@ -46,7 +46,7 @@ osg::Node* createScene()
     osg::Geode* earth_geode = new osg::Geode;
     earth_geode->setName("EarthGeode");
     earth_geode->addDrawable(earth_sd);
-    
+
     // Create the Sun, in yellow
     osg::ShapeDrawable *sun_sd = new osg::ShapeDrawable;
     osg::Sphere* sun_sphere = new osg::Sphere;
@@ -63,13 +63,12 @@ osg::Node* createScene()
     osg::PositionAttitudeTransform *pat = new osg::PositionAttitudeTransform;
     pat->setPosition(osg::Vec3d(0.0, AU, 0.0));
     pat->addChild(sun_geode);
-    
+
     osg::Geometry * unitCircle = new osg::Geometry();
     {
       osg::Vec4Array * colours = new osg::Vec4Array(1);
       (*colours)[0] = osg::Vec4d(1.0,1.0,1.0,1.0);
-      unitCircle->setColorArray(colours);
-      unitCircle->setColorBinding(osg::Geometry::BIND_OVERALL);
+      unitCircle->setColorArray(colours, osg::Array::BIND_OVERALL);
       const unsigned int n_points = 1024;
       osg::Vec3Array * coords = new osg::Vec3Array(n_points);
       const double dx = 2.0*osg::PI/n_points;
@@ -88,8 +87,7 @@ osg::Node* createScene()
     {
       osg::Vec4Array *colours = new osg::Vec4Array(1);
       (*colours)[0] = osg::Vec4d(1.0,0.0,0.0,1.0);
-      axes->setColorArray(colours);
-      axes->setColorBinding(osg::Geometry::BIND_OVERALL);
+      axes->setColorArray(colours, osg::Array::BIND_OVERALL);
       osg::Vec3Array *coords = new osg::Vec3Array(6);
       (*coords)[0].set(osg::Vec3d(0.0, 0.0, 0.0));
       (*coords)[1].set(osg::Vec3d(0.5, 0.0, 0.0));
@@ -101,25 +99,25 @@ osg::Node* createScene()
       axes->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
       axes->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
     }
-    
+
     // Earth orbit
     osg::Geode * earthOrbitGeode = new osg::Geode;
     earthOrbitGeode->addDrawable(unitCircle);
     earthOrbitGeode->addDrawable(axes);
     earthOrbitGeode->setName("EarthOrbitGeode");
-    
+
     osg::PositionAttitudeTransform * earthOrbitPAT = new osg::PositionAttitudeTransform;
     earthOrbitPAT->setScale(osg::Vec3d(AU,AU,AU));
     earthOrbitPAT->setPosition(osg::Vec3d(0.0, AU, 0.0));
     earthOrbitPAT->addChild(earthOrbitGeode);
     earthOrbitPAT->setName("EarthOrbitPAT");
-    
+
     osg::Group* scene = new osg::Group;
     scene->setName("SceneGroup");
     scene->addChild(earth_geode);
     scene->addChild(pat);
     scene->addChild(earthOrbitPAT);
-    
+
     return scene;
 }
 
@@ -144,9 +142,9 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
 
     // if one hasn't been loaded create an earth and sun test model.
-    if (!scene) 
+    if (!scene)
     {
-        scene = createScene(); 
+        scene = createScene();
         needToSetHomePosition = true;
     }
     // pass the loaded scene graph to the viewer.
@@ -158,7 +156,7 @@ int main( int argc, char **argv )
     {
         viewer.getCameraManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
     }
-    
+
     double zNear=1.0, zMid=10.0, zFar=1000.0;
     if (arguments.read("--depth-partition",zNear, zMid, zFar))
     {
@@ -175,7 +173,7 @@ int main( int argc, char **argv )
         // set up depth partitioning with default settings
         viewer.setUpDepthPartition();
     }
-    
+
 
     return viewer.run();
 }

@@ -114,7 +114,7 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     osg::Vec3 bottom_left(bb.xMin(),bb.yMax(),bb.zMin());
     osg::Vec3 bottom_right(bb.xMax(),bb.yMax(),bb.zMin());
     osg::Vec3 top_right(bb.xMax(),bb.yMax(),bb.zMax());
-    
+
     // create geometry
     osg::Geometry* geom = new osg::Geometry;
 
@@ -124,7 +124,7 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     (*vertices)[2] = bottom_right;
     (*vertices)[3] = top_right;
     geom->setVertexArray(vertices);
-    
+
     osg::Vec2Array* texcoords = new osg::Vec2Array(4);
     (*texcoords)[0].set(0.0f, 0.0f);
     (*texcoords)[1].set(1.0f, 0.0f);
@@ -134,13 +134,11 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
 
     osg::Vec3Array* normals = new osg::Vec3Array(1);
     (*normals)[0].set(0.0f,-1.0f,0.0f);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4));
 
@@ -161,14 +159,14 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     state->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
     state->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
 
-    // turn off lighting 
+    // turn off lighting
     state->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     // install 'update' callback
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     geode->setUpdateCallback(new TexturePanCallback(texmat));
-    
+
     return geode;
 }
 
@@ -262,6 +260,6 @@ int main(int argc, char** argv)
 
     // add model to viewer.
     viewer.setSceneData(rootNode);
-    
+
     return viewer.run();
 }

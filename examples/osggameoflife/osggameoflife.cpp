@@ -46,10 +46,10 @@ osg::Node* createScene(osg::Image *start_im)
 
     // create quad to display image on
     osg::ref_ptr<osg::Geode> geode = new osg::Geode();
-    
+
     // each geom will contain a quad
     osg::ref_ptr<osg::DrawArrays> da = new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4);
-    
+
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
@@ -58,7 +58,7 @@ osg::Node* createScene(osg::Image *start_im)
     tcoords->push_back(osg::Vec2(width, 0));
     tcoords->push_back(osg::Vec2(width, height));
     tcoords->push_back(osg::Vec2(0, height));
-    
+
     osg::ref_ptr<osg::Vec3Array> vcoords = new osg::Vec3Array; // vertex coords
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
@@ -67,25 +67,24 @@ osg::Node* createScene(osg::Image *start_im)
     vcoords->push_back(osg::Vec3d(width, 0, 0));
     vcoords->push_back(osg::Vec3d(width, 0, height));
     vcoords->push_back(osg::Vec3d(0, 0, height));
-    
+
     geom->setVertexArray(vcoords.get());
     geom->setTexCoordArray(0,tcoords.get());
     geom->addPrimitiveSet(da.get());
-    geom->setColorArray(colors.get());
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors.get(), osg::Array::BIND_OVERALL);
     geomss = geom->getOrCreateStateSet();
     geomss->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     geode->addDrawable(geom.get());
-  
+
     topnode->addChild(geode.get());
-    
+
     // create the ping pong processing passes
     golpass = new GameOfLifePass(start_im);
     topnode->addChild(golpass->getRoot().get());
 
     // attach the output of the processing to the geom
-    geomss->setTextureAttributeAndModes(0, 
+    geomss->setTextureAttributeAndModes(0,
                                         golpass->getOutputTexture().get(),
                                         osg::StateAttribute::ON);
     return topnode;
@@ -119,14 +118,14 @@ int main(int argc, char *argv[])
 
     // load the image
     osg::ref_ptr<osg::Image> startIm = osgDB::readImageFile(startName);
-   
+
     if (!startIm) {
         std::cout << "Could not load start image.\n";
         return(1);
     }
 
     osg::Node* scene = createScene(startIm.get());
-    
+
     // construct the viewer.
     osgViewer::Viewer viewer;
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
         // flip the textures after we've completed a frame
         golpass->flip();
         // attach the proper output to view
-        geomss->setTextureAttributeAndModes(0, 
+        geomss->setTextureAttributeAndModes(0,
                                             golpass->getOutputTexture().get(),
                                             osg::StateAttribute::ON);
     }

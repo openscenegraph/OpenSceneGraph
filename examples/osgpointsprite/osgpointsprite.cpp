@@ -55,8 +55,7 @@ osg::Geode *makeGalaxy(unsigned nvertices)
         colors->push_back(ini+(fin-ini)*(i*2/(float)nvertices));
     }
     galaxy->setVertexArray(vertices);
-    galaxy->setColorArray(colors);
-    galaxy->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    galaxy->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
     galaxy->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, nvertices));
     geode->addDrawable(galaxy);
     return geode;

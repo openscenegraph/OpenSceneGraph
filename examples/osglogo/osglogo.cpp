@@ -43,13 +43,13 @@
 class MyBillboardTransform : public osg::PositionAttitudeTransform
 {
     public:
-    
+
         MyBillboardTransform():
             _axis(0.0f,0.0f,1.0f),
             _normal(0.0f,-1.0f,0.0f)
         {
         }
-        
+
         bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
         {
             osg::Quat billboardRotation;
@@ -75,15 +75,15 @@ class MyBillboardTransform : public osg::PositionAttitudeTransform
         }
 
 
-        
+
         void setAxis(const osg::Vec3& axis) { _axis = axis; }
 
         void setNormal(const osg::Vec3& normal) { _normal = normal; }
-        
+
     protected:
-    
+
         virtual ~MyBillboardTransform() {}
-        
+
         osg::Vec3 _axis;
         osg::Vec3 _normal;
 };
@@ -99,18 +99,18 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
     osg::Vec3 left_to_right = right-left;
     osg::Vec3 mid = (right+left)*0.5f;
     osg::Vec3 mid_to_nose = (nose-mid)*chordRatio*0.5f;
-    
+
     osg::Vec3Array* vertices = new osg::Vec3Array;
     vertices->push_back(left);
     //vertices->push_back(mid+mid_to_nose);
-    
+
     unsigned int noSteps = 40;
     for(unsigned int i=1;i<noSteps;++i)
     {
         float ratio = (float)i/(float)noSteps;
         vertices->push_back(left + left_to_right*ratio + mid_to_nose* (cosf((ratio-0.5f)*osg::PI*2.0f)+1.0f));
     }
-    
+
     vertices->push_back(right);
     vertices->push_back(nose);
 
@@ -119,23 +119,21 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
 
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(normal);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
-    
-    
+    geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
+
+
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-    
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON,0,vertices->getNumElements()));
-    
+
     osgUtil::Tessellator tessellator;
     tessellator.retessellatePolygons(*geom);
 
     return geom;
-    
+
 }
 
 osg:: Node* createTextBelow(const osg::BoundingBox& bb, const std::string& label, const std::string&)
@@ -172,7 +170,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
     std::string font("fonts/arial.ttf");
 
     osgText::Text* text = new  osgText::Text;
- 
+
     text->setFont(font);
     text->setFontResolution(110,120);
     text->setAlignment(osgText::Text::RIGHT_CENTER);
@@ -191,7 +189,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
 //    text->setBackdropImplementation(osgText::Text::NO_DEPTH_BUFFER);
 //    text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
 //    text->setBackdropImplementation(osgText::Text::STENCIL_BUFFER);
-    
+
     text->setBackdropOffset(0.05f);
     text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f));
 #endif
@@ -227,7 +225,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
 
         geode->addDrawable( subscriptText );
     }
-        
+
     return geode;
 }
 
@@ -244,7 +242,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
         osg::MatrixTransform* positioner = new osg::MatrixTransform;
         positioner->setMatrix(osg::Matrix::translate(-bs.center())*osg::Matrix::scale(s,s,s)*osg::Matrix::translate(bb.center()));
         positioner->addChild(bluemarble);
-    
+
         xform->addChild(positioner);
     }
     else
@@ -264,14 +262,14 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
         }
 
         osg::Material* material = new osg::Material;
-        stateset->setAttribute(material);    
+        stateset->setAttribute(material);
 
         // the globe
         geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(bb.center(),bb.radius()*ratio)));
 
         xform->addChild(geode);
     }
-            
+
     return xform;
 }
 
@@ -287,7 +285,7 @@ osg:: Node* createBox(const osg::BoundingBox& bb,float chordRatio)
 
     geode->addDrawable(createWing(bb.corner(4),bb.corner(5),bb.corner(1),chordRatio,white));
     geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,white));
-    
+
     geode->addDrawable(createWing(bb.corner(1),bb.corner(5),bb.corner(7),chordRatio,white));
     geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,white));
 
@@ -314,7 +312,7 @@ osg:: Node* createBoxNo5(const osg::BoundingBox& bb,float chordRatio)
     geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,white));
 
     geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,white));
-    
+
     geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,white));
 
     // back faces
@@ -346,7 +344,7 @@ osg:: Node* createBoxNo5No2(const osg::BoundingBox& bb,float chordRatio)
     geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,red));
 
     geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,green));
-    
+
     geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,blue));
 
     return geode;
@@ -373,27 +371,25 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
 
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(normal);
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    geom->setColorArray(colors);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vertices->getNumElements()));
 
     osg::Geode* geode = new osg::Geode();
     geode->addDrawable(geom);
-    
-    return geode;    
+
+    return geode;
 }
 
 osg::Node* createLogo(const std::string& filename, const std::string& label, const std::string& subscript)
 {
     osg::BoundingBox bb(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(100.0f,100.0f,100.0f));
-    float chordRatio = 0.5f; 
-    float sphereRatio = 0.6f; 
+    float chordRatio = 0.5f;
+    float sphereRatio = 0.6f;
 
     // create a group to hold the whole model.
     osg::Group* logo_group = new osg::Group;
@@ -429,14 +425,14 @@ osg::Node* createLogo(const std::string& filename, const std::string& label, con
     // add the text to the group.
     //group->addChild(createTextBelow(bb));
     logo_group->addChild(createTextLeft(bb, label, subscript));
-    
-    
+
+
     // create the backdrop to render the shadow to.
     osg::Vec3 corner(-900.0f,150.0f,-100.0f);
     osg::Vec3 top(0.0f,0.0f,300.0f); top += corner;
     osg::Vec3 right(1100.0f,0.0f,0.0f); right += corner;
-    
-    
+
+
 //     osg::Group* backdrop = new osg::Group;
 //     backdrop->addChild(createBackdrop(corner,top,right));
 
@@ -462,9 +458,9 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-   
+
     osg::DisplaySettings::instance()->setMinimumNumAlphaBits(8);
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -474,23 +470,23 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     std::string label = "OpenSceneGraph";
     std::string subscript = "";
 
     bool showVersion = false;
-    while (arguments.read("--version")) { showVersion = true; } 
+    while (arguments.read("--version")) { showVersion = true; }
     if( showVersion )
     {
         label += " ";
         label += osgGetVersion();
     }
 
-    while (arguments.read("--label", label)) {} 
-    while (arguments.read("--subscript", subscript)) {} 
-    
+    while (arguments.read("--label", label)) {}
+    while (arguments.read("--subscript", subscript)) {}
+
     osg::ref_ptr<osg::Node> node;
-    
+
     if (arguments.argc()>1) node = createLogo(arguments[1], label, subscript);
     else node = createLogo("", label, subscript);
 

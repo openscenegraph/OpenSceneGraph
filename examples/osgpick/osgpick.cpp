@@ -53,13 +53,13 @@
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
-public: 
+public:
 
     PickHandler(osgText::Text* updateText):
         _updateText(updateText) {}
-        
+
     ~PickHandler() {}
-    
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
     virtual void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea);
@@ -68,7 +68,7 @@ public:
     {
         if (_updateText.get()) _updateText->setText(name);
     }
-    
+
 protected:
 
     osg::ref_ptr<osgText::Text>  _updateText;
@@ -83,11 +83,11 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
             if (view) pick(view,ea);
             return false;
-        }    
+        }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
             if (ea.getKey()=='c')
-            {        
+            {
                 osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                 osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter(ea);
                 event->setX((ea.getXmin()+ea.getXmax())*0.5);
@@ -95,7 +95,7 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
                 if (view) pick(view,*event);
             }
             return false;
-        }    
+        }
         default:
             return false;
     }
@@ -106,7 +106,7 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
     osgUtil::LineSegmentIntersector::Intersections intersections;
 
     std::string gdlist="";
-    
+
     if (view->computeIntersections(ea,intersections))
     {
         for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
@@ -131,7 +131,7 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
             {
                 os<<"        vertex indices ["<<i<<"] = "<<vil[i]<<std::endl;
             }
-            
+
             gdlist += os.str();
         }
     }
@@ -152,13 +152,13 @@ osg::Node* createHUD(osgText::Text* updateText)
     hudCamera->setViewMatrix(osg::Matrix::identity());
     hudCamera->setRenderOrder(osg::Camera::POST_RENDER);
     hudCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
-    
+
     std::string timesFont("fonts/times.ttf");
-    
+
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::Vec3 position(150.0f,800.0f,0.0f);
     osg::Vec3 delta(0.0f,-60.0f,0.0f);
-    
+
     {
         osg::Geode* geode = new osg::Geode();
         osg::StateSet* stateset = geode->getOrCreateStateSet();
@@ -166,18 +166,18 @@ osg::Node* createHUD(osgText::Text* updateText)
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         geode->setName("simple");
         hudCamera->addChild(geode);
-        
+
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
-        
+
         text->setFont(timesFont);
         text->setText("Picking in Head Up Displays is simple!");
         text->setPosition(position);
-        
+
         position += delta;
-    }    
-    
-    
+    }
+
+
     for (int i=0; i<5; i++) {
         osg::Vec3 dy(0.0f,-30.0f,0.0f);
         osg::Vec3 dx(120.0f,0.0f,0.0f);
@@ -195,8 +195,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(0.8-0.1*i,0.1*i,0.2*i, 1.0));
-        quad->setColorArray(colors);
-        quad->setColorBinding(osg::Geometry::BIND_OVERALL);
+        quad->setColorArray(colors, osg::Array::BIND_OVERALL);
         (*vertices)[0]=position;
         (*vertices)[1]=position+dx;
         (*vertices)[2]=position+dx+dy;
@@ -205,12 +204,12 @@ osg::Node* createHUD(osgText::Text* updateText)
         quad->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
         geode->addDrawable(quad);
         hudCamera->addChild(geode);
-        
+
         position += delta;
-    }    
-    
-    
-    
+    }
+
+
+
     { // this displays what has been selected
         osg::Geode* geode = new osg::Geode();
         osg::StateSet* stateset = geode->getOrCreateStateSet();
@@ -219,17 +218,17 @@ osg::Node* createHUD(osgText::Text* updateText)
         geode->setName("The text label");
         geode->addDrawable( updateText );
         hudCamera->addChild(geode);
-        
+
         updateText->setCharacterSize(20.0f);
         updateText->setFont(timesFont);
         updateText->setColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         updateText->setText("");
         updateText->setPosition(position);
         updateText->setDataVariance(osg::Object::DYNAMIC);
-        
+
         position += delta;
-    }    
-    
+    }
+
     return hudCamera;
 
 }
@@ -283,7 +282,7 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<osgText::Text> updateText = new osgText::Text;
 
-    // add the HUD subgraph.    
+    // add the HUD subgraph.
     group->addChild(createHUD(updateText.get()));
 
     if (arguments.read("--CompositeViewer"))
@@ -324,7 +323,7 @@ int main( int argc, char **argv )
             while (arguments.read("-p",pathfile))
             {
                 osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-                if (apm || !apm->valid()) 
+                if (apm || !apm->valid())
                 {
                     num = keyswitchManipulator->getNumMatrixManipulators();
                     keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -342,7 +341,7 @@ int main( int argc, char **argv )
 
         // set the scene to render
         viewer.setSceneData(group.get());
-    
+
         return viewer.run();
     }
 

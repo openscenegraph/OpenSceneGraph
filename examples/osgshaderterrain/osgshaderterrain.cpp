@@ -53,7 +53,7 @@
 osg::Node* createScene()
 {
     osg::Group* scene = new osg::Group;
-    
+
     unsigned int numColumns = 38;
     unsigned int numRows = 39;
     unsigned int r;
@@ -99,7 +99,7 @@ osg::Node* createScene()
             max_z = osg::maximum(max_z,vertex[r+c*numRows][2]);
         }
     }
-        
+
     float scale_z = size.z()/(max_z-min_z);
 
     osg::Image* terrainImage = new osg::Image;
@@ -112,7 +112,7 @@ osg::Node* createScene()
             *((float*)(terrainImage->data(c,r))) = (vertex[r+c*numRows][2]-min_z)*scale_z;
         }
     }
-    
+
     osg::Texture2D* terrainTexture = new osg::Texture2D;
     terrainTexture->setImage(terrainImage);
     terrainTexture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
@@ -125,12 +125,12 @@ osg::Node* createScene()
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
-        
+
         texture->setImage(image);
         stateset->setTextureAttributeAndModes(1,texture,osg::StateAttribute::ON);
     }
 
-    {    
+    {
         std::cout<<"Creating terrain...";
 
         osg::Geode* geode = new osg::Geode();
@@ -143,10 +143,10 @@ osg::Node* createScene()
 
 #if 1
             // use inline shaders
-            
+
             ///////////////////////////////////////////////////////////////////
             // vertex shader using just Vec4 coefficients
-            char vertexShaderSource[] = 
+            char vertexShaderSource[] =
                "uniform sampler2D terrainTexture;\n"
                "uniform vec3 terrainOrigin;\n"
                "uniform vec3 terrainScaleDown;\n"
@@ -172,7 +172,7 @@ osg::Node* createScene()
             //////////////////////////////////////////////////////////////////
             // fragment shader
             //
-            char fragmentShaderSource[] = 
+            char fragmentShaderSource[] =
                 "uniform sampler2D baseTexture; \n"
                 "varying vec2 texcoord;\n"
                 "\n"
@@ -183,7 +183,7 @@ osg::Node* createScene()
 
             program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
             program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
-            
+
 #else
 
             // get shaders from source
@@ -229,8 +229,7 @@ osg::Node* createScene()
             }
 
             geometry->setVertexArray(&v);
-            geometry->setColorArray(&color);
-            geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+            geometry->setColorArray(&color, osg::Array::BIND_OVERALL);
 
             for(r=0;r<numRows-1;++r)
             {
@@ -243,7 +242,7 @@ osg::Node* createScene()
                     drawElements[ei++] = (r)*numColumns+c;
                 }
             }
-            
+
             geometry->setInitialBound(osg::BoundingBox(origin, origin+size));
 
             geode->addDrawable(geometry);
@@ -251,9 +250,9 @@ osg::Node* createScene()
             scene->addChild(geode);
         }
     }
-        
+
     std::cout<<"done."<<std::endl;
-    
+
     return scene;
 }
 
@@ -294,7 +293,7 @@ public:
             _errorMessage = "ERROR: GLSL not supported.";
         }
     }
-        
+
     OpenThreads::Mutex  _mutex;
     bool                _supported;
     std::string         _errorMessage;
@@ -311,15 +310,15 @@ int main(int, char **)
     viewer.setSceneData( node );
 
     viewer.setUpViewAcrossAllScreens();
-    
+
     osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
-#if 0 
-    // temporily commenting out as its causing the viewer to crash... no clue yet to why   
+#if 0
+    // temporily commenting out as its causing the viewer to crash... no clue yet to why
     viewer.setRealizeOperation(testSupportOperation.get());
 #endif
     // create the windows and run the threads.
     viewer.realize();
-    
+
     if (!testSupportOperation->_supported)
     {
         osg::notify(osg::WARN)<<testSupportOperation->_errorMessage<<std::endl;

@@ -38,6 +38,15 @@ using namespace osg;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// GLBufferObject::BufferEntry
+//
+unsigned int GLBufferObject::BufferEntry::getNumClients() const
+{
+    return dataSource->getNumClients();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // GLBufferObject
 //
 GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID):
@@ -129,9 +138,9 @@ void GLBufferObject::compileBuffer()
 
                 // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
 
-
-                entry.offset = newTotalSize;
+                entry.numRead = 0;
                 entry.modifiedCount = 0xffffff;
+                entry.offset = newTotalSize;
                 entry.dataSize = bd->getTotalDataSize();
                 entry.dataSource = bd;
 
@@ -203,6 +212,7 @@ void GLBufferObject::compileBuffer()
         if (entry.dataSource && (compileAll || entry.modifiedCount != entry.dataSource->getModifiedCount()))
         {
             // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) downloading BufferEntry "<<&entry<<std::endl;
+            entry.numRead = 0;
             entry.modifiedCount = entry.dataSource->getModifiedCount();
 
             const osg::Image* image = entry.dataSource->asImage();
@@ -220,7 +230,6 @@ void GLBufferObject::compileBuffer()
             {
                 _extensions->glBufferSubData(_profile._target, (GLintptrARB)entry.offset, (GLsizeiptrARB)entry.dataSize, entry.dataSource->getDataPointer());
             }
-
         }
     }
 }
@@ -236,6 +245,23 @@ void GLBufferObject::deleteGLObject()
         _allocatedSize = 0;
         _bufferEntries.clear();
     }
+}
+
+bool GLBufferObject::hasAllBufferDataBeenRead() const
+{
+    for (BufferEntries::const_iterator it=_bufferEntries.begin(); it!=_bufferEntries.end(); ++it)
+    {
+        if (it->numRead < it->getNumClients())
+            return false;
+    }
+
+    return true;
+}
+
+void GLBufferObject::setBufferDataHasBeenRead(const osg::BufferData* bd)
+{
+    BufferEntry &entry = _bufferEntries[bd->getBufferIndex()];
+    ++entry.numRead;
 }
 
 //////////////////////////////////////////////////////////////////////////////

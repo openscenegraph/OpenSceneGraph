@@ -48,27 +48,23 @@ TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
             _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
-    _images[0] = copyop(text._images[0].get());
-    _images[1] = copyop(text._images[1].get());
-    _images[2] = copyop(text._images[2].get());
-    _images[3] = copyop(text._images[3].get());
-    _images[4] = copyop(text._images[4].get());
-    _images[5] = copyop(text._images[5].get());
-
-    _modifiedCount[0].setAllElementsTo(0);
-    _modifiedCount[1].setAllElementsTo(0);
-    _modifiedCount[2].setAllElementsTo(0);
-    _modifiedCount[3].setAllElementsTo(0);
-    _modifiedCount[4].setAllElementsTo(0);
-    _modifiedCount[5].setAllElementsTo(0);
-
+    setImage(0, copyop(text._images[0].get()));
+    setImage(1, copyop(text._images[1].get()));
+    setImage(2, copyop(text._images[2].get()));
+    setImage(3, copyop(text._images[3].get()));
+    setImage(4, copyop(text._images[4].get()));
+    setImage(5, copyop(text._images[5].get()));
 }
-
 
 TextureCubeMap::~TextureCubeMap()
 {
+    setImage(0, NULL);
+    setImage(1, NULL);
+    setImage(2, NULL);
+    setImage(3, NULL);
+    setImage(4, NULL);
+    setImage(5, NULL);
 }
-
 
 int TextureCubeMap::compare(const StateAttribute& sa) const
 {
@@ -126,7 +122,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 }
 
 
-void TextureCubeMap::setImage( unsigned int face, Image* image)
+void TextureCubeMap::setImage(unsigned int face, Image* image)
 {
     if (_images[face] == image) return;
 
@@ -136,9 +132,18 @@ void TextureCubeMap::setImage( unsigned int face, Image* image)
         if (_images[i].valid() && _images[i]->requiresUpdateCall()) ++numImageRequireUpdateBefore;
     }
 
+    if (_images[face].valid())
+    {
+        _images[face]->removeClient(this);
+    }
+
     _images[face] = image;
     _modifiedCount[face].setAllElementsTo(0);
 
+    if (_images[face].valid())
+    {
+        _images[face]->addClient(this);
+    }
 
     // find out if we need to reset the update callback to handle the animation of image
     unsigned numImageRequireUpdateAfter = 0;

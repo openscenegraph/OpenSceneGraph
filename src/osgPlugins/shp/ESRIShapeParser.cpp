@@ -564,8 +564,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
 
         // Lets mark poorly supported primitives with red, otherwise white
         osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-        geometry->setColorArray(colors.get());
-        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX );
+        geometry->setColorArray(colors.get(), osg::Array::BIND_PER_VERTEX );
 
         for( i = 0; i < p->numParts; i++ )
         {

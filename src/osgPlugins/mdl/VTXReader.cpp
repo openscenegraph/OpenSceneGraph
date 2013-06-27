@@ -289,8 +289,7 @@ ref_ptr<Geometry> VTXReader::processStripGroup(int lodNum, std::istream * str,
     // Create the geometry and add the vertex data to it
     geom = new Geometry();
     geom->setVertexArray(vertexArray.get());
-    geom->setNormalArray(normalArray.get());
-    geom->setNormalBinding(Geometry::BIND_PER_VERTEX);
+    geom->setNormalArray(normalArray.get(), Array::BIND_PER_VERTEX);
     geom->setTexCoordArray(0, texcoordArray.get());
 
     // Create and fill the index array

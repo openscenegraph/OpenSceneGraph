@@ -607,7 +607,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
             meshTransform=new osg::MatrixTransform(meshMat);
             meshAppliedMatPtr=NULL; // since meshTransform applies it
 
-            meshTransform->setName("3DSMeshMatrix"); 
+            meshTransform->setName("3DSMeshMatrix");
             if (group) group->addChild(meshTransform);
         } else {
             meshTransform=group; // don't need the meshTransform node - note group can be NULL
@@ -1027,8 +1027,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
     osg_normals->reserve(m->nvertices);
-    geom->setNormalArray(osg_normals.get());
-    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    geom->setNormalArray(osg_normals.get(), osg::Array::BIND_PER_VERTEX);
 
     osg::ref_ptr<osg::Vec2Array> osg_texCoords = NULL;
 
@@ -1085,8 +1084,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     // Set geometry color to white.
     osg::ref_ptr<osg::Vec4ubArray> osg_colors = new osg::Vec4ubArray(1);
     (*osg_colors)[0].set(255,255,255,255);
-    geom->setColorArray(osg_colors.get());
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom->setColorArray(osg_colors.get(), osg::Array::BIND_OVERALL);
 
     // Create triangle primitives.
     int numIndices = faceCount * 3;
@@ -1146,7 +1144,7 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
             }
             else
             {
-                // MIKEC: We can still continue to call osgDB::readRefImageFile in case user has a ReadFileCallback registered 
+                // MIKEC: We can still continue to call osgDB::readRefImageFile in case user has a ReadFileCallback registered
                 //        in that case we just use the image's filename as it exists in the 3DS file
                 fileName=texture->name;
             }

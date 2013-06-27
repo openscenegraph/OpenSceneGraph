@@ -233,8 +233,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                              lw_material.b,
                              1.0f);
 
-            gc._geom->setColorArray(colors);
-            gc._geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+            gc._geom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
             // set up texture if needed.
             if (gc._numPrimitivesWithTexCoords==gc._numPrimitives)

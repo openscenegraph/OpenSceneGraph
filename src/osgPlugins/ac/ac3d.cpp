@@ -772,9 +772,8 @@ class LineBin : public PrimitiveBin
     {
         _geode->addDrawable(_geometry.get());
         material.toStateSet(_geode->getOrCreateStateSet());
-        _geometry->setColorArray(material.getColorArray());
-        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-        _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
+        _geometry->setColorArray(material.getColorArray(), osg::Array::BIND_OVERALL);
+        _geometry->setNormalArray(0);
         return _geode.get();
     }
 };
@@ -1010,20 +1009,15 @@ class SurfaceBin : public PrimitiveBin {
         osg::Geometry* geometry = new osg::Geometry;
         _geode->addDrawable(geometry);
         geometry->setDataVariance(osg::Object::STATIC);
-        geometry->setColorArray(material.getColorArray());
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setColorArray(material.getColorArray(), osg::Array::BIND_OVERALL);
         osg::Vec3Array* normalArray = new osg::Vec3Array;
-        normalArray->setDataVariance(osg::Object::STATIC);
-        geometry->setNormalArray(normalArray);
-        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        geometry->setNormalArray(normalArray, osg::Array::BIND_PER_VERTEX);
         osg::Vec3Array* vertexArray = new osg::Vec3Array;
-        vertexArray->setDataVariance(osg::Object::STATIC);
         geometry->setVertexArray(vertexArray);
         osg::Vec2Array* texcoordArray = 0;
         if (textureData.valid())
         {
             texcoordArray = new osg::Vec2Array;
-            texcoordArray->setDataVariance(osg::Object::STATIC);
             geometry->setTexCoordArray(0, texcoordArray);
         }
 

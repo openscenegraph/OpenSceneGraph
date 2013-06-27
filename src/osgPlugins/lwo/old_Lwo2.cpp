@@ -675,8 +675,7 @@ Lwo2::GenerateGroup( Group& group )
               if (material) {
                 Vec4Array* colors = new Vec4Array();
                 colors->push_back(material->getDiffuse(Material::FRONT_AND_BACK));
-                geometry->setColorBinding(Geometry::BIND_OVERALL);
-                geometry->setColorArray(colors);
+                geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
               }
             }
         }

@@ -340,8 +340,7 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
     if (color_maps) {
         VertexMap_map::const_iterator i = color_maps->find(color_map_name_);
         if (i != color_maps->end() && !i->second->empty()) {
-            geo->setColorArray(i->second->asVec4Array(num_points, color * color_map_intensity_, color * color_map_intensity_));
-            geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+            geo->setColorArray(i->second->asVec4Array(num_points, color * color_map_intensity_, color * color_map_intensity_), osg::Array::BIND_PER_VERTEX);
         } else {
             OSG_WARN << "Warning: lwosg::Surface: surface '" << name_ << "' needs color map named '" << color_map_name_ << "' but I can't find it" << std::endl;
         }

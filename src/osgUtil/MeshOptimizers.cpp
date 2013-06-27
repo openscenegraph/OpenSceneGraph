@@ -62,28 +62,27 @@ struct GeometryArrayGatherer
     GeometryArrayGatherer(osg::Geometry& geometry)
         : _useDrawElements(true)
     {
-        add(geometry.getVertexArray(),osg::Geometry::BIND_PER_VERTEX);
-        add(geometry.getNormalArray(),geometry.getNormalBinding());
-        add(geometry.getColorArray(),geometry.getColorBinding());
-        add(geometry.getSecondaryColorArray(),geometry.getSecondaryColorBinding());
-        add(geometry.getFogCoordArray(),geometry.getFogCoordBinding());
+        add(geometry.getVertexArray());
+        add(geometry.getNormalArray());
+        add(geometry.getColorArray());
+        add(geometry.getSecondaryColorArray());
+        add(geometry.getFogCoordArray());
         unsigned int i;
         for(i=0;i<geometry.getNumTexCoordArrays();++i)
         {
-            add(geometry.getTexCoordArray(i),osg::Geometry::BIND_PER_VERTEX);
+            add(geometry.getTexCoordArray(i));
         }
         for(i=0;i<geometry.getNumVertexAttribArrays();++i)
         {
-            add(geometry.getVertexAttribArray(i),geometry.getVertexAttribBinding(i));
+            add(geometry.getVertexAttribArray(i));
         }
     }
 
-    void add(osg::Array* array, osg::Geometry::AttributeBinding binding)
+    void add(osg::Array* array)
     {
-        if (binding == osg::Geometry::BIND_PER_VERTEX)
+        if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
         {
-            if (array)
-                _arrayList.push_back(array);
+            _arrayList.push_back(array);
         }
     }
 
@@ -231,13 +230,13 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 {
     if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
 
-    if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (osg::getBinding(geom.getNormalArray())==osg::Array::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (osg::getBinding(geom.getColorArray())==osg::Array::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (osg::getBinding(geom.getSecondaryColorArray())==osg::Array::BIND_PER_PRIMITIVE_SET) return;
 
-    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    if (osg::getBinding(geom.getFogCoordArray())==osg::Array::BIND_PER_PRIMITIVE_SET) return;
 
     // no point optimizing if we don't have enough vertices.
     if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements()<3) return;

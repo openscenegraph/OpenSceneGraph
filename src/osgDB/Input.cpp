@@ -65,7 +65,10 @@ osg::Image*  Input::readImage()
 
 osg::Drawable* Input::readDrawable()
 {
-    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readDrawable(*this);
+    osg::Drawable* drawable = Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readDrawable(*this);
+    osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
+    if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
+    return drawable;
 }
 
 osg::StateAttribute* Input::readStateAttribute()

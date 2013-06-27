@@ -269,7 +269,7 @@ void ToVRML::apply(osg::Drawable* drawable) {
 void ToVRML::apply(osg::Geometry* geom) {
 
   if (geom->containsDeprecatedData()) geom->fixDeprecatedData();
-    
+
   // are all primitives faces or line ?
   GLenum mode;
   osg::PrimitiveSet::Type type;
@@ -1106,7 +1106,8 @@ void ToVRML::writeNormal(osg::Geometry* geom, std::vector<int>& primitiveSetFace
     return;
   }
 
-  if (geom->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX || geom->getNormalBinding() == osg::Geometry::BIND_OVERALL) {
+  osg::Array::Binding normalBinding = osg::getBinding(geom->getNormalArray());
+  if (normalBinding == osg::Array::BIND_PER_VERTEX || normalBinding == osg::Array::BIND_OVERALL) {
     _fout << indentM() << "normalPerVertex TRUE \n";
   } else {
     _fout << indentM() << "normalPerVertex FALSE \n";
@@ -1117,20 +1118,20 @@ void ToVRML::writeNormal(osg::Geometry* geom, std::vector<int>& primitiveSetFace
   indentM();
   osg::Vec3 n;
 
-  if (geom->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX) {
+  if (normalBinding == osg::Array::BIND_PER_VERTEX) {
     for (unsigned int j = 0; j < (*nArray).size(); j++) {
       n = (*nArray)[j];
       _fout << indent() << n[0] << " " << n[1] << " " << n[2] << ",\n";
     }
 
-  } else if (geom->getNormalBinding() == osg::Geometry::BIND_OVERALL) {
+  } else if (normalBinding == osg::Array::BIND_OVERALL) {
     n = (*nArray)[0];
     int size = ((osg::Vec3Array*) (geom->getVertexArray()))->size();
     for (int j = 0; j < size; j++) {
       _fout << indent() << n[0] << " " << n[1] << " " << n[2] << ",\n";
     }
 
-  } else if (geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) {
+  } else if (normalBinding == osg::Array::BIND_PER_PRIMITIVE_SET) {
     for (unsigned int j = 0; j < (*nArray).size(); j++) {
       n = (*nArray)[j];
       for (int k = 0; k < primitiveSetFaces[j]; k++) {
@@ -1254,7 +1255,8 @@ void ToVRML::writeColor(osg::Geometry* geom, std::vector<int>& primitiveSetFaces
     return;
   }
 
-  if (geom->getColorBinding() == osg::Geometry::BIND_PER_VERTEX || geom->getColorBinding() == osg::Geometry::BIND_OVERALL) {
+  osg::Array::Binding colorBinding = osg::getBinding(geom->getColorArray());
+  if (colorBinding == osg::Array::BIND_PER_VERTEX || colorBinding == osg::Array::BIND_OVERALL) {
     _fout << indentM() << "colorPerVertex TRUE \n";
   } else {
     _fout << indentM() << "colorPerVertex FALSE \n";
@@ -1265,20 +1267,20 @@ void ToVRML::writeColor(osg::Geometry* geom, std::vector<int>& primitiveSetFaces
   indentM();
   osg::Vec4 c;
 
-  if (geom->getColorBinding() == osg::Geometry::BIND_PER_VERTEX) {
+  if (colorBinding == osg::Array::BIND_PER_VERTEX) {
     for (unsigned int j = 0; j < (*cArray).size(); j++) {
       c = (*cArray)[j];
       _fout << indent() << c[0] << " " << c[1] << " " << c[2] << ",\n";
     }
 
-  } else if (geom->getColorBinding() == osg::Geometry::BIND_OVERALL) {
+  } else if (colorBinding == osg::Array::BIND_OVERALL) {
     c = (*cArray)[0];
     int size = ((osg::Vec3Array*) (geom->getVertexArray()))->size();
     for (int j = 0; j < size; j++) {
       _fout << indent() << c[0] << " " << c[1] << " " << c[2] << ",\n";
     }
 
-  } else if (geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) {
+  } else if (colorBinding == osg::Array::BIND_PER_PRIMITIVE_SET) {
     for (unsigned int j = 0; j < (*cArray).size(); j++) {
       c = (*cArray)[j];
       for (int k = 0; k < primitiveSetFaces[j]; k++) {

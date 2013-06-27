@@ -511,7 +511,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
 
   if ( norm != NULL )
   {
-    if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX )
+    if ( osg::getBinding(geom->getNormalArray()) == osg::Array::BIND_PER_VERTEX )
       p->getValue().append( normals.inds!=NULL?normals.inds->index( vindex ):vindex );
     else
       p->getValue().append( normals.inds!=NULL?normals.inds->index( ncount ):ncount );
@@ -519,7 +519,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
 
   if ( color != NULL )
   {
-    if ( geom->getColorBinding() == osg::Geometry::BIND_PER_VERTEX )
+    if ( osg::getBinding(geom->getColorArray()) == osg::Array::BIND_PER_VERTEX )
       p->getValue().append( colors.inds!=NULL?colors.inds->index( vindex ):vindex );
     else
       p->getValue().append( colors.inds!=NULL?colors.inds->index( ccount ):ccount );
@@ -1292,11 +1292,11 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 break;
         }
 
-        if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET )
+        if ( osg::getBinding(geom->getNormalArray()) == osg::Array::BIND_PER_PRIMITIVE_SET )
         {
             ncount++;
         }
-        if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET )
+        if ( osg::getBinding(geom->getColorArray()) == osg::Array::BIND_PER_PRIMITIVE_SET )
         {
             ccount++;
         }

@@ -50,7 +50,7 @@ class Normals: public osg::Geode
                 void _processPrimitive(  unsigned int nv,
                         osg::Vec3Array::iterator coords,
                         osg::Vec3Array::iterator normals,
-                        osg::Geometry::AttributeBinding binding );
+                        osg::Array::Binding binding );
         };
 
 #ifdef DEBUG

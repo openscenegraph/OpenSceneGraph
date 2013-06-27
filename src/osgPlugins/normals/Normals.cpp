@@ -68,11 +68,11 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
             if( normals == 0L )
                 continue;
 
-            Geometry::AttributeBinding binding = geom->getNormalBinding();
-            if( binding == Geometry::BIND_OFF )
+            Array::Binding binding = osg::getBinding(geom->getNormalArray());
+            if( binding == Array::BIND_OFF )
                 continue;
 
-            if( binding == Geometry::BIND_OVERALL )
+            if( binding == Array::BIND_OVERALL )
             {
                 Vec3 v(0,0,0);
                 Vec3 n = normals->front();
@@ -99,7 +99,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
 #ifdef DEBUG
                     _printPrimitiveType( (*itr).get() );
 #endif
-                    if( binding == Geometry::BIND_PER_PRIMITIVE_SET )
+                    if( binding == Array::BIND_PER_PRIMITIVE_SET )
                     {
                         Vec3 v(0,0,0);
                         Vec3 n = *(normals_index++);
@@ -135,7 +135,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                     normals_index++;
                                 }
                                 coord_index += 2;
-                                if( binding == Geometry::BIND_PER_VERTEX )
+                                if( binding == Array::BIND_PER_VERTEX )
                                     normals_index += 2;
                                 break;
                             }
@@ -185,13 +185,13 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
 void Normals::MakeNormalsVisitor::_processPrimitive(  unsigned int nv,
                         Vec3Array::iterator coords,
                         Vec3Array::iterator normals,
-                        Geometry::AttributeBinding binding )
+                        Array::Binding binding )
 {
     Vec3 v(0,0,0);
     Vec3 n(0,0,0);
     if( _mode == SurfaceNormals )
     {
-        if( binding == Geometry::BIND_PER_VERTEX )
+        if( binding == Array::BIND_PER_VERTEX )
         {
             for( unsigned int i = 0; i < nv; i++ )
                 n += *(normals++);

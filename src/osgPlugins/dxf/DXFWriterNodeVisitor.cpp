@@ -502,9 +502,10 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
             OSG_DEBUG << "adding Layer " << _layer._name  << std::endl;
 
             // if single colour include in header
-            if ( osg::Geometry::BIND_OVERALL == geo->getColorBinding() ) {
+            osg::Array::Binding colorBinding = osg::getBinding(geo->getColorArray());
+            if ( osg::Array::BIND_OVERALL == colorBinding ) {
                 _layer._color = _acadColor.findColor(getNodeRGB(geo)); // per layer color
-            } else if ( osg::Geometry::BIND_OFF== geo->getColorBinding() ) {
+            } else if ( osg::Array::BIND_OFF== colorBinding ) {
                 _layer._color = 0xff; // use white - or can we easily lookup in texture?
             } else {
                 _layer._color = 0;  // per point color
@@ -514,7 +515,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
         } else {
             _layer = _layers[_count++];
             OSG_DEBUG << "writing Layer " << _layer._name  << std::endl;
-            
+
             processStateSet(_currentStateSet.get());
 
             if ( geo->getNumPrimitiveSets() ) {

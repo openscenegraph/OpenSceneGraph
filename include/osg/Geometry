@@ -21,6 +21,9 @@
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 
+// leave defined for OpenSceneGraph-3.2 release, post 3.2 associated methods will be only be available in deprecated_osg::Geometry
+#define OSG_DEPRECATED_GEOMETRY_BINDING 1
+
 namespace osg {
 
 class OSG_EXPORT Geometry : public Drawable
@@ -229,7 +232,8 @@ class OSG_EXPORT Geometry : public Drawable
         /** fallback for deprecated functionality. Removes any array indices and BIND_PER_PRIMITIVE arrays.*/
         void fixDeprecatedData();
 
-        /** Same values as Array::Binding.*/
+#if defined(OSG_DEPRECATED_GEOMETRY_BINDING)
+        /** deprecated, Same values as Array::Binding.*/
         enum AttributeBinding
         {
             BIND_OFF=0,
@@ -238,29 +242,26 @@ class OSG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX=4
         };
 
-        /** deprecated, use array->setBinding(..). */
+        /** deprecated, use array->set*Binding(..). */
         void setNormalBinding(AttributeBinding ab);
-        AttributeBinding getNormalBinding() const;
-
-        /** deprecated, use array->setBinding(..). */
         void setColorBinding(AttributeBinding ab);
-        AttributeBinding getColorBinding() const;
-
-        /** deprecated, use array->setBinding(..). */
         void setSecondaryColorBinding(AttributeBinding ab);
-        AttributeBinding getSecondaryColorBinding() const;
-
-        /** deprecated, use array->setBinding(..). */
         void setFogCoordBinding(AttributeBinding ab);
-        AttributeBinding getFogCoordBinding() const;
-
-        /** deprecated, use array->setBinding(..). */
         void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
+
+        /** deprecated, use array->get*Binding(..). */
+        AttributeBinding getNormalBinding() const;
+        AttributeBinding getColorBinding() const;
+        AttributeBinding getSecondaryColorBinding() const;
+        AttributeBinding getFogCoordBinding() const;
         AttributeBinding getVertexAttribBinding(unsigned int index) const;
 
-        /** deprecated, use array->setNormalize(..). */
+        /** deprecated, use array->set*Normalize(..). */
         void setVertexAttribNormalize(unsigned int index,GLboolean norm);
+
+        /** deprecated, use array->get*Normalize(..). */
         GLboolean getVertexAttribNormalize(unsigned int index) const;
+#endif
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
@@ -284,7 +285,9 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
 namespace deprecated_osg {
 
 /** Geometry class contaning deprecated features.
-  * Please note this class is \b not "exported" (OSG_EXPORT) to avoid issues with MSVC, when compiling plugins.
+ * Users should only use deprecatged_osg::Geometry when absolutely neccessary for keeping things compiling,
+ * it is recommended that you should migrate your code to work just with osg::Geometry as existing
+ * deprecated_osg::Geometry will be removed in future release.
 */
 class OSG_EXPORT Geometry : public osg::Geometry
 {

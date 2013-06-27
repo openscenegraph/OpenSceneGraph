@@ -140,10 +140,10 @@ class OSG_EXPORT Array : public BufferData
 
 
         /** Specify how this array should be passed to OpenGL.*/
-        void setBinding(int binding) { _binding = binding; }
+        void setBinding(Binding binding) { _binding = binding; }
 
         /** Get how this array should be passed to OpenGL.*/
-        int getBinding() const { return _binding; }
+        Binding getBinding() const { return _binding; }
 
 
         /** Specify whether the array data should be normalized by OpenGL.*/
@@ -179,13 +179,16 @@ class OSG_EXPORT Array : public BufferData
         Type    _arrayType;
         GLint   _dataSize;
         GLenum  _dataType;
-        int     _binding;
+        Binding _binding;
         bool    _normalize;
         bool    _preserveDataType;
 };
 
 /** convinience function for getting the binding of array via a ptr that may be null.*/
-inline int getBinding(const osg::Array* array) { return array ? array->getBinding() : osg::Array::BIND_OFF; }
+inline osg::Array::Binding getBinding(const osg::Array* array) { return array ? array->getBinding() : osg::Array::BIND_OFF; }
+
+/** convinience function for getting the binding of array via a ptr that may be null.*/
+inline bool getNormalize(const osg::Array* array) { return array ? array->getNormalize() : false; }
 
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

@@ -581,7 +581,7 @@ protected:
                     if (isGouraud())
                     {
                         // Color per vertex
-                        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                        if (geometry->getColorArray()) geometry->getColorArray()->setBinding(osg::Array::BIND_PER_VERTEX);
                     }
                     else
                     {
@@ -597,7 +597,7 @@ protected:
                     // Normal binding
                     if (isLit())
                     {
-                        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX );
+                        if (geometry->getNormalArray()) geometry->getNormalArray()->setBinding(osg::Array::BIND_PER_VERTEX);
                     }
                     else
                     {
@@ -1411,7 +1411,7 @@ protected:
         if (mesh->isGouraud())
         {
             // Color per vertex
-            geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+            if (geometry->getColorArray()) geometry->getColorArray()->setBinding(osg::Array::BIND_PER_VERTEX);
         }
         else
         {
@@ -1428,7 +1428,7 @@ protected:
         // Normal binding
         if (mesh->isLit())
         {
-            geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX );
+            if (geometry->getNormalArray()) geometry->getNormalArray()->setBinding(osg::Array::BIND_PER_VERTEX);
         }
         else
         {

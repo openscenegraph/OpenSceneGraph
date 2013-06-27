@@ -1192,13 +1192,11 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
                         osg::Vec4Array* colors = new osg::Vec4Array;
                         colors->push_back(supLineColor);
-                        linesGeom->setColorArray(colors);
-                        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+                        linesGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
                         osg::Vec3Array* normals = new osg::Vec3Array;
                         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
-                        linesGeom->setNormalArray(normals);
-                        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+                        linesGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
 
                         linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,supports->size()*2));
@@ -1441,8 +1439,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         geometry->setVertexArray(vertices.get());
         if (normals.valid())
         {
-            geometry->setNormalArray(normals.get());
-            geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            geometry->setNormalArray(normals.get(), osg::Array::BIND_PER_VERTEX);
         }
 
         bool local;

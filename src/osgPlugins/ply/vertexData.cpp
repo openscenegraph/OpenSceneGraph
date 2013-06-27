@@ -452,8 +452,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // Set the normals
 	if (_normals.valid())
 	{
-            geom->setNormalArray(_normals.get());
-            geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            geom->setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
         }
 
         // Add the primitive set
@@ -469,23 +468,19 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
 
         if(_colors.valid())
         {
-            geom->setColorArray(_colors.get());
-            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+            geom->setColorArray(_colors.get(), osg::Array::BIND_PER_VERTEX );
         }
         else if(_ambient.valid())
         {
-            geom->setColorArray(_ambient.get());
-            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+            geom->setColorArray(_ambient.get(), osg::Array::BIND_PER_VERTEX );
         }
         else if(_diffuse.valid())
         {
-            geom->setColorArray(_diffuse.get());
-            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+            geom->setColorArray(_diffuse.get(), osg::Array::BIND_PER_VERTEX );
         }
 	else if(_specular.valid())
         {
-            geom->setColorArray(_specular.get());
-            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+            geom->setColorArray(_specular.get(), osg::Array::BIND_PER_VERTEX );
         }
 
         // set flage true to activate the vertex buffer object of drawable

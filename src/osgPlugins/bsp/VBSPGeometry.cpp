@@ -637,15 +637,13 @@ ref_ptr<Group> VBSPGeometry::createGeometry()
 
         // Add the vertex attributes
         geometry->setVertexArray(vertex_array.get());
-        geometry->setNormalArray(normal_array.get());
-        geometry->setNormalBinding(Geometry::BIND_PER_VERTEX);
+        geometry->setNormalArray(normal_array.get(), Array::BIND_PER_VERTEX);
         geometry->setTexCoordArray(0, texcoord_array.get());
 
         // Add an overall color
         color.set(1.0, 1.0, 1.0, 1.0);
         colorArray = new Vec4Array(1, &color);
-        geometry->setColorArray(colorArray.get());
-        geometry->setColorBinding(Geometry::BIND_OVERALL);
+        geometry->setColorArray(colorArray.get(), Array::BIND_OVERALL);
 
         // Add our primitive set to the geometry
         geometry->addPrimitiveSet(primitive_set.get());
@@ -668,12 +666,10 @@ ref_ptr<Group> VBSPGeometry::createGeometry()
 
         // Add the vertex attributes
         geometry->setVertexArray(disp_vertex_array.get());
-        geometry->setNormalArray(disp_normal_array.get());
-        geometry->setNormalBinding(Geometry::BIND_PER_VERTEX);
+        geometry->setNormalArray(disp_normal_array.get(), Array::BIND_PER_VERTEX);
+        geometry->setColorArray(disp_vertex_attr_array.get(), Array::BIND_PER_VERTEX);
         geometry->setTexCoordArray(0, disp_texcoord_array.get());
         geometry->setTexCoordArray(1, disp_texcoord_array.get());
-        geometry->setColorArray(disp_vertex_attr_array.get());
-        geometry->setColorBinding(Geometry::BIND_PER_VERTEX);
 
         // Add our primitive set to the geometry
         geometry->addPrimitiveSet(disp_primitive_set.get());

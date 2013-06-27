@@ -74,9 +74,9 @@ struct AssignDirectionColour
             colours = new osg::Vec4Array;
             geometry->setColorArray(colours.get());
         }
-        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        colours->setBinding(osg::Array::BIND_PER_VERTEX);
         colours->resize(vertices->size(), osg::Vec4(0.0,0.0,0.0,0.0));
-#if 1        
+#if 1
         // allocate normals
         osg::ref_ptr<osg::Vec3Array> normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
         if (!normals)
@@ -84,7 +84,7 @@ struct AssignDirectionColour
             normals = new osg::Vec3Array;
             geometry->setNormalArray(normals.get());
         }
-        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        normals->setBinding(osg::Array::BIND_PER_VERTEX);
         normals->resize(vertices->size(), osg::Vec3(0.0,0.0,0.0));
 #endif
 
@@ -147,11 +147,11 @@ struct AssignDirectionColour
                     if (divisors[vi_1]==0.0f) n1 = normal;
                     else n1 += normal;
 #endif
-                    
+
                     divisors[vi_0] += 1.0f;
                     divisors[vi_1] += 1.0f;
                 }
-            }            
+            }
         }
 
         for(unsigned int vi=0; vi<vertices->size(); ++vi)
@@ -160,12 +160,12 @@ struct AssignDirectionColour
             {
                 (*colours)[vi] /= divisors[vi];
                 (*normals)[vi].normalize();
-                
+
             }
         }
 
         std::string vertexShaderFile("track.vert");
-        
+
         osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
         osg::ref_ptr<osg::Program> program = new osg::Program;
 
@@ -211,7 +211,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
             TrkHeader header;
             fin.read(reinterpret_cast<char*>(&header), sizeof(TrkHeader));
 
-            if (fin.fail()) return ReadResult::ERROR_IN_READING_FILE; 
+            if (fin.fail()) return ReadResult::ERROR_IN_READING_FILE;
 
             OSG_NOTICE<<"Read header successfuly ["<<header.id_string<<"]"<<std::endl;
             bool requiresByteSwap = header.hdr_size!=1000;
@@ -234,7 +234,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
             osg::Matrixf matrix(reinterpret_cast<const float*>(header.vox_to_ras));
             OSG_NOTICE<<"vox_to_ras="<<matrix<<std::endl;
-            
+
             OSG_NOTICE<<"invert_x="<<static_cast<int>(header.invert_x)<<std::endl;
             OSG_NOTICE<<"invert_y="<<static_cast<int>(header.invert_y)<<std::endl;
             OSG_NOTICE<<"invert_z="<<static_cast<int>(header.invert_z)<<std::endl;
@@ -261,10 +261,9 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
             osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
             stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
             geometry->setStateSet(stateset.get());
-#endif       
+#endif
             osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-            geometry->setColorArray(colours.get());
-            geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+            geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
             colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
             osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
@@ -289,7 +288,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
                 float* point_data = new float[n_point_floats];
                 fin.read(reinterpret_cast<char*>(point_data), n_point_floats*4);
                 if (fin.fail()) break;
-                
+
                 if (n_p!=0)
                 {
                     float* property_data = new float[n_p];
@@ -322,7 +321,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
                 delete [] point_data;
             }
-            
+
             if (fin.fail())
             {
                 OSG_NOTICE<<"Error on reading track file."<<std::endl;
@@ -345,7 +344,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
             osgDB::ifstream fin(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!fin) return ReadResult::FILE_NOT_HANDLED;
-            
+
             return readNode(fin, options);
         }
 };

@@ -297,23 +297,23 @@ struct FindSharpEdgesFunctor
 
         _problemVertexVector.resize(_vertices->size());
 
-        addArray(geom->getVertexArray(), osg::Geometry::BIND_PER_VERTEX);
-        addArray(geom->getNormalArray(), geom->getNormalBinding());
-        addArray(geom->getColorArray(), geom->getColorBinding());
-        addArray(geom->getSecondaryColorArray(), geom->getSecondaryColorBinding());
-        addArray(geom->getFogCoordArray(), geom->getFogCoordBinding());
+        addArray(geom->getVertexArray());
+        addArray(geom->getNormalArray());
+        addArray(geom->getColorArray());
+        addArray(geom->getSecondaryColorArray());
+        addArray(geom->getFogCoordArray());
 
         for(unsigned int i=0; i<geom->getNumTexCoordArrays(); ++i)
         {
-            addArray(geom->getTexCoordArray(i), osg::Geometry::BIND_PER_VERTEX);
+            addArray(geom->getTexCoordArray(i));
         }
 
         return true;
     }
 
-    void addArray(osg::Array* array, osg::Geometry::AttributeBinding binding)
+    void addArray(osg::Array* array)
     {
-        if (array && binding==osg::Geometry::BIND_PER_VERTEX)
+        if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
         {
             _arrays.push_back(array);
         }

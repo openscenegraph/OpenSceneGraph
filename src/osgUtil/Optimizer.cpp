@@ -1678,6 +1678,11 @@ void Optimizer::CombineLODsVisitor::combineLODs()
 // code to merge geometry object which share, state, and attribute bindings.
 ////////////////////////////////////////////////////////////////////////////
 
+#define COMPARE_BINDING(lhs, rhs) \
+        if (osg::getBinding(lhs)<osg::getBinding(rhs)) return true; \
+        if (osg::getBinding(rhs)<osg::getBinding(lhs)) return false;
+
+
 struct LessGeometry
 {
     bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs) const
@@ -1685,17 +1690,11 @@ struct LessGeometry
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
         if (rhs->getStateSet()<lhs->getStateSet()) return false;
 
-        if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
-        if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
+        COMPARE_BINDING(lhs->getNormalArray(), rhs->getNormalArray())
+        COMPARE_BINDING(lhs->getColorArray(), rhs->getColorArray())
+        COMPARE_BINDING(lhs->getSecondaryColorArray(), rhs->getSecondaryColorArray())
+        COMPARE_BINDING(lhs->getFogCoordArray(), rhs->getFogCoordArray())
 
-        if (lhs->getColorBinding()<rhs->getColorBinding()) return true;
-        if (rhs->getColorBinding()<lhs->getColorBinding()) return false;
-
-        if (lhs->getSecondaryColorBinding()<rhs->getSecondaryColorBinding()) return true;
-        if (rhs->getSecondaryColorBinding()<lhs->getSecondaryColorBinding()) return false;
-
-        if (lhs->getFogCoordBinding()<rhs->getFogCoordBinding()) return true;
-        if (rhs->getFogCoordBinding()<lhs->getFogCoordBinding()) return false;
 
         if (lhs->getNumTexCoordArrays()<rhs->getNumTexCoordArrays()) return true;
         if (rhs->getNumTexCoordArrays()<lhs->getNumTexCoordArrays()) return false;
@@ -1722,7 +1721,7 @@ struct LessGeometry
         }
 
 
-        if (lhs->getNormalBinding()==osg::Geometry::BIND_OVERALL)
+        if (osg::getBinding(lhs->getNormalArray())==osg::Array::BIND_OVERALL)
         {
             // assumes that the bindings and arrays are set up correctly, this
             // should be the case after running computeCorrectBindingsAndArraySizes();
@@ -1749,7 +1748,7 @@ struct LessGeometry
             }
         }
 
-        if (lhs->getColorBinding()==osg::Geometry::BIND_OVERALL)
+        if (osg::getBinding(lhs->getColorArray())==osg::Array::BIND_OVERALL)
         {
             const osg::Array* lhs_colorArray = lhs->getColorArray();
             const osg::Array* rhs_colorArray = rhs->getColorArray();
@@ -2166,10 +2165,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         if (geom)
         {
             if (geom->getNumPrimitiveSets()>0 &&
-                geom->getNormalBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
-                geom->getColorBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
-                geom->getSecondaryColorBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
-                geom->getFogCoordBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET)
+                osg::getBinding(geom->getNormalArray())!=osg::Array::BIND_PER_PRIMITIVE_SET &&
+                osg::getBinding(geom->getColorArray())!=osg::Array::BIND_PER_PRIMITIVE_SET &&
+                osg::getBinding(geom->getSecondaryColorArray())!=osg::Array::BIND_PER_PRIMITIVE_SET &&
+                osg::getBinding(geom->getFogCoordArray())!=osg::Array::BIND_PER_PRIMITIVE_SET)
             {
 
 #if 1
@@ -2457,7 +2456,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
 
 
-    if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
+    if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalArray()->getBinding()!=osg::Array::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getNormalArray(),rhs.getNormalArray()))
         {
@@ -2470,7 +2469,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
 
 
-    if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
+    if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorArray()->getBinding()!=osg::Array::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getColorArray(),rhs.getColorArray()))
         {
@@ -2482,7 +2481,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setColorArray(rhs.getColorArray());
     }
 
-    if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
+    if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorArray()->getBinding()!=osg::Array::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray()))
         {
@@ -2494,7 +2493,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setSecondaryColorArray(rhs.getSecondaryColorArray());
     }
 
-    if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
+    if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordArray()->getBinding()!=osg::Array::BIND_OVERALL)
     {
         if (!merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray()))
         {

@@ -433,7 +433,7 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
 
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
         osg::Vec3Array* normals = NULL;
-        if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
+        if (osg::getBinding(geom.getNormalArray())==osg::Array::BIND_PER_VERTEX)
         {
             normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray());
         }
@@ -441,17 +441,17 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
         typedef std::vector<osg::Array*> ArrayList;
         ArrayList arrays;
 
-        if (geom.getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+        if (osg::getBinding(geom.getColorArray())==osg::Array::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getColorArray());
         }
 
-        if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+        if (osg::getBinding(geom.getSecondaryColorArray())==osg::Array::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getSecondaryColorArray());
         }
 
-        if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_VERTEX)
+        if (osg::getBinding(geom.getFogCoordArray())==osg::Array::BIND_PER_VERTEX)
         {
             arrays.push_back(geom.getFogCoordArray());
         }
@@ -610,7 +610,7 @@ void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
 void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int originalIndex)
 {
     if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
-    
+
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     VertexPtrToIndexMap vertexPtrToIndexMap;
 
@@ -627,14 +627,14 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
     {
         osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
         int iprim=0;
-        if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
+        if (osg::getBinding(geom.getNormalArray())==osg::Array::BIND_PER_PRIMITIVE_SET)
         {
             normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray()); // GWM Sep 2002
         }
         // GWM Dec 2003 - needed to add colours for extra facets
         osg::Vec4Array* cols4 = NULL; // GWM Dec 2003 colours are vec4
         osg::Vec3Array* cols3 = NULL; // GWM Dec 2003 colours are vec3
-        if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
+        if (osg::getBinding(geom.getColorArray())==osg::Array::BIND_PER_PRIMITIVE_SET)
         {
               Array* colours = geom.getColorArray(); // GWM Dec 2003 - need to duplicate face colours
               switch (colours->getType()) {
@@ -736,12 +736,12 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                     if (cols3) cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
                   }
                   if (prim->_mode==GL_TRIANGLES) {
-                      if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) { // need one per triangle? Not one per set.
+                      if (osg::getBinding(geom.getNormalArray())==osg::Array::BIND_PER_PRIMITIVE_SET) { // need one per triangle? Not one per set.
                           for (int ii=1; ii<ntris; ii++) {
                               if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
                           }
                       }
-                      if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) { // need one per triangle? Not one per set.
+                      if (osg::getBinding(geom.getColorArray())==osg::Array::BIND_PER_PRIMITIVE_SET) { // need one per triangle? Not one per set.
                           for (int ii=1; ii<ntris; ii++) {
                               if (cols3 && _index>=cols3->size()) {
                                   if (cols3) cols3->push_back(primCol3);

@@ -63,6 +63,11 @@ void ProxyNode::write(DataOutputStream* out)
     out->writeInt(getCenterMode());
     out->writeVec3(getCenter());
 
+    if (out->getVersion() >= VERSION_0045)
+    {
+        out->writeInt(getLoadingExternalReferenceMode());
+    }
+
     out->writeUInt(getNumFileNames());
     unsigned int numChildrenToWriteOut = 0;
     unsigned int i;
@@ -170,6 +175,11 @@ void ProxyNode::read(DataInputStream* in)
         setRadius(in->readFloat());
         setCenterMode((osg::ProxyNode::CenterMode)in->readInt());
         setCenter(in->readVec3());
+
+        if (in->getVersion() >= VERSION_0045)
+        {
+            setLoadingExternalReferenceMode( (osg::ProxyNode::LoadingExternalReferenceMode)in->readInt() );
+        }
 
         unsigned int numFileNames = in->readUInt();
         unsigned int i;

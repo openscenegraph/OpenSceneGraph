@@ -193,6 +193,8 @@ void Geometry::setVertexAttribArray(unsigned int index, Array* array, osg::Array
     if (_vertexAttribList.size()<=index)
         _vertexAttribList.resize(index+1);
 
+    if (array && binding!=osg::Array::BIND_UNDEFINED) array->setBinding(binding);
+
     _vertexAttribList[index] = array;
 
     dirtyDisplayList();

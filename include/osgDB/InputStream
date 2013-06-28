@@ -105,10 +105,15 @@ public:
     InputStream& operator>>( osg::Vec2b& v );
     InputStream& operator>>( osg::Vec3b& v );
     InputStream& operator>>( osg::Vec4b& v );
+    InputStream& operator>>( osg::Vec2ub& v );
+    InputStream& operator>>( osg::Vec3ub& v );
     InputStream& operator>>( osg::Vec4ub& v );
     InputStream& operator>>( osg::Vec2s& v );
     InputStream& operator>>( osg::Vec3s& v );
     InputStream& operator>>( osg::Vec4s& v );
+    InputStream& operator>>( osg::Vec2us& v );
+    InputStream& operator>>( osg::Vec3us& v );
+    InputStream& operator>>( osg::Vec4us& v );
     InputStream& operator>>( osg::Vec2i& v );
     InputStream& operator>>( osg::Vec3i& v );
     InputStream& operator>>( osg::Vec4i& v );

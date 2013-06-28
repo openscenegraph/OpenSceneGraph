@@ -110,10 +110,15 @@ public:
     OutputStream& operator<<( const osg::Vec2b& v );
     OutputStream& operator<<( const osg::Vec3b& v );
     OutputStream& operator<<( const osg::Vec4b& v );
+    OutputStream& operator<<( const osg::Vec2ub& v );
+    OutputStream& operator<<( const osg::Vec3ub& v );
     OutputStream& operator<<( const osg::Vec4ub& v );
     OutputStream& operator<<( const osg::Vec2s& v );
     OutputStream& operator<<( const osg::Vec3s& v );
     OutputStream& operator<<( const osg::Vec4s& v );
+    OutputStream& operator<<( const osg::Vec2us& v );
+    OutputStream& operator<<( const osg::Vec3us& v );
+    OutputStream& operator<<( const osg::Vec4us& v );
     OutputStream& operator<<( const osg::Vec2i& v );
     OutputStream& operator<<( const osg::Vec3i& v );
     OutputStream& operator<<( const osg::Vec4i& v );

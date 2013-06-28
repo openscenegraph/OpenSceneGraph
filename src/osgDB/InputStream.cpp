@@ -101,9 +101,23 @@ InputStream& InputStream::operator>>( osg::Vec4b& v )
     return *this;
 }
 
+InputStream& InputStream::operator>>( osg::Vec2ub& v )
+{
+    unsigned char x, y; *this >> x >> y;
+    v.set( x, y );
+    return *this;
+}
+
+InputStream& InputStream::operator>>( osg::Vec3ub& v )
+{
+    unsigned char x, y, z; *this >> x >> y >> z;
+    v.set( x, y, z );
+    return *this;
+}
+
 InputStream& InputStream::operator>>( osg::Vec4ub& v )
 {
-    char r, g, b, a; *this >> r >> g >> b >> a;
+    unsigned char r, g, b, a; *this >> r >> g >> b >> a;
     v.set( r, g, b, a );
     return *this;
 }
@@ -115,6 +129,15 @@ InputStream& InputStream::operator>>( osg::Vec3s& v )
 { *this >> v.x() >> v.y() >> v.z(); return *this; }
 
 InputStream& InputStream::operator>>( osg::Vec4s& v )
+{ *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec2us& v )
+{ *this >> v.x() >> v.y(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec3us& v )
+{ *this >> v.x() >> v.y() >> v.z(); return *this; }
+
+InputStream& InputStream::operator>>( osg::Vec4us& v )
 { *this >> v.x() >> v.y() >> v.z() >> v.w(); return *this; }
 
 
@@ -360,6 +383,20 @@ osg::Array* InputStream::readArray()
             array = va;
         }
         break;
+    case ID_VEC2UB_ARRAY:
+        {
+            osg::Vec2ubArray* va = new osg::Vec2ubArray;
+            readArrayImplementation( va, 2, CHAR_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC3UB_ARRAY:
+        {
+            osg::Vec3ubArray* va = new osg::Vec3ubArray;
+            readArrayImplementation( va, 3, CHAR_SIZE );
+            array = va;
+        }
+        break;
     case ID_VEC4UB_ARRAY:
         {
             osg::Vec4ubArray* va = new osg::Vec4ubArray;
@@ -384,6 +421,27 @@ osg::Array* InputStream::readArray()
     case ID_VEC4S_ARRAY:
         {
             osg::Vec4sArray* va = new osg::Vec4sArray;
+            readArrayImplementation( va, 4, SHORT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC2US_ARRAY:
+        {
+            osg::Vec2usArray* va = new osg::Vec2usArray;
+            readArrayImplementation( va, 2, SHORT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC3US_ARRAY:
+        {
+            osg::Vec3usArray* va = new osg::Vec3usArray;
+            readArrayImplementation( va, 3, SHORT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC4US_ARRAY:
+        {
+            osg::Vec4usArray* va = new osg::Vec4usArray;
             readArrayImplementation( va, 4, SHORT_SIZE );
             array = va;
         }

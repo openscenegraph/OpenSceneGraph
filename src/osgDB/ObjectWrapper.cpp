@@ -519,10 +519,15 @@ ObjectWrapperManager::ObjectWrapperManager()
     arrayTable.add( "Vec2bArray", ID_VEC2B_ARRAY );
     arrayTable.add( "Vec3bArray", ID_VEC3B_ARRAY );
     arrayTable.add( "Vec4bArray", ID_VEC4B_ARRAY );
+    arrayTable.add( "Vec2ubArray", ID_VEC2UB_ARRAY );
+    arrayTable.add( "Vec3ubArray", ID_VEC3UB_ARRAY );
     arrayTable.add( "Vec4ubArray", ID_VEC4UB_ARRAY );
     arrayTable.add( "Vec2sArray", ID_VEC2S_ARRAY );
     arrayTable.add( "Vec3sArray", ID_VEC3S_ARRAY );
     arrayTable.add( "Vec4sArray", ID_VEC4S_ARRAY );
+    arrayTable.add( "Vec2usArray", ID_VEC2US_ARRAY );
+    arrayTable.add( "Vec3usArray", ID_VEC3US_ARRAY );
+    arrayTable.add( "Vec4usArray", ID_VEC4US_ARRAY );
     arrayTable.add( "Vec2fArray", ID_VEC2_ARRAY );
     arrayTable.add( "Vec3fArray", ID_VEC3_ARRAY );
     arrayTable.add( "Vec4fArray", ID_VEC4_ARRAY );

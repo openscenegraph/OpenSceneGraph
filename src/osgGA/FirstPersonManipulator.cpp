@@ -44,7 +44,8 @@ FirstPersonManipulator::FirstPersonManipulator( int flags )
 
 /// Constructor.
 FirstPersonManipulator::FirstPersonManipulator( const FirstPersonManipulator& fpm, const CopyOp& copyOp )
-   : inherited( fpm, copyOp ),
+   : osg::Object(fpm, copyOp),
+     inherited( fpm, copyOp ),
      _eye( fpm._eye ),
      _rotation( fpm._rotation ),
      _velocity( fpm._velocity ),
@@ -294,7 +295,7 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
 
 
 // doc in parent
-bool FirstPersonManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool FirstPersonManipulator::performMovementLeftMouseButton( const double /*eventTimeDelta*/, const double dx, const double dy )
 {
    // world up vector
    CoordinateFrame coordinateFrame = getCoordinateFrame( _eye );
@@ -353,7 +354,7 @@ void FirstPersonManipulator::moveUp( const double distance )
 }
 
 
-void FirstPersonManipulator::applyAnimationStep( const double currentProgress, const double prevProgress )
+void FirstPersonManipulator::applyAnimationStep( const double currentProgress, const double /*prevProgress*/ )
 {
    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData* >( _animationData.get() );
    assert( ad );

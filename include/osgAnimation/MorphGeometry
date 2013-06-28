@@ -40,7 +40,7 @@ namespace osgAnimation
         public:
             MorphTarget(osg::Geometry* geom, float w = 1.0) : _geom(geom), _weight(w) {}
             void setWeight(float weight) { _weight = weight; }
-            const float getWeight() const { return _weight; }
+            float getWeight() const { return _weight; }
             osg::Geometry* getGeometry() { return _geom.get(); }
             const osg::Geometry* getGeometry() const { return _geom.get(); }
             void setGeometry(osg::Geometry* geom) { _geom = geom; }

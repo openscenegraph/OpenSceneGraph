@@ -111,7 +111,7 @@ struct DatabasePager::DatabasePagerCompileCompletedCallback : public osgUtil::In
         _pager(pager),
         _databaseRequest(databaseRequest) {}
 
-    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
+    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* /*compileSet*/)
     {
         _pager->compileCompleted(_databaseRequest.get());
         return true;

@@ -222,7 +222,7 @@ public:
     // GWM July 2005 add test for triangle intersected by p1-p2.
     // return true for unused edge
 
-    const bool intersected(const unsigned int ip1,const unsigned int ip2,const osg::Vec2 p1 ,const osg::Vec2 p2,const int iedge, osg::Vec3Array *points) const
+    bool intersected(const unsigned int ip1,const unsigned int ip2,const osg::Vec2 p1 ,const osg::Vec2 p2,const int iedge, osg::Vec3Array *points) const
     {
         // return true if edge iedge of triangle is intersected by ip1,ip2
         Vertex_index ie1,ie2;

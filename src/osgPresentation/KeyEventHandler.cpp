@@ -44,7 +44,7 @@ KeyEventHandler::KeyEventHandler(int key, const osgPresentation::KeyPosition& ke
 {
 }
 
-bool KeyEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
+bool KeyEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object*, osg::NodeVisitor* /*nv*/)
 {
     if (ea.getHandled()) return false;
 

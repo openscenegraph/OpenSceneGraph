@@ -42,7 +42,7 @@ StackedScaleElement::StackedScaleElement()
     _scale = osg::Vec3(1,1,1);
 }
 
-void StackedScaleElement::update(float t)
+void StackedScaleElement::update(float /*t*/)
 {
     if (_target.valid())
         _scale = _target->getValue();

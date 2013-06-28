@@ -401,7 +401,7 @@ void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
     _orphanedTextureObjects.clear();
 }
 
-void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, double& availableTime)
+void Texture::TextureObjectSet::flushDeletedTextureObjects(double /*currentTime*/, double& availableTime)
 {
     // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
 
@@ -1075,7 +1075,7 @@ Texture::Texture():
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
-            _swizzle(GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA), 
+            _swizzle(GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA),
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
             _clientStorageHint(false),
@@ -1102,7 +1102,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _min_filter(text._min_filter),
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
-            _swizzle(text._swizzle), 
+            _swizzle(text._swizzle),
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
             _clientStorageHint(text._clientStorageHint),
@@ -1459,7 +1459,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
         default: break;
     }
 #endif
-    
+
     _internalFormat = internalFormat;
 
 

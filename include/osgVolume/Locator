@@ -73,7 +73,7 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
                 LocatorCallback(const LocatorCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::Object(rhs,copyop) {}
                 META_Object(osgVolume, LocatorCallback);
 
-                virtual void locatorModified(Locator* locator) {};
+                virtual void locatorModified(Locator* /*locator*/) {};
 
             protected:
                 virtual ~LocatorCallback() {}

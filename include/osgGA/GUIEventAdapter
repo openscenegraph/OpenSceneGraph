@@ -31,7 +31,7 @@ struct PointerData : public osg::Referenced
         y(0.0f),
         yMin(-1.0f),
         yMax(1.0f) {}
-    
+
     PointerData(osg::Object* obj, float in_x, float in_xMin, float in_xMax, float in_y, float in_yMin, float in_yMax):
         object(obj),
         x(in_x),
@@ -40,8 +40,9 @@ struct PointerData : public osg::Referenced
         y(in_y),
         yMin(in_yMin),
         yMax(in_yMax) {}
-    
+
     PointerData(const PointerData& pd):
+        osg::Referenced(),
         object(pd.object),
         x(pd.x),
         xMin(pd.xMin),
@@ -49,11 +50,11 @@ struct PointerData : public osg::Referenced
         y(pd.y),
         yMin(pd.yMin),
         yMax(pd.yMax) {}
-    
+
     PointerData& operator = (const PointerData& pd)
     {
         if (&pd==this) return *this;
-    
+
         object = pd.object;
         x = pd.x;
         xMin = pd.xMin;
@@ -61,19 +62,19 @@ struct PointerData : public osg::Referenced
         y = pd.y;
         yMin = pd.yMin;
         yMax = pd.yMax;
-        
+
         return *this;
     }
-    
+
     osg::observer_ptr<osg::Object> object;
     float x, xMin, xMax;
     float y, yMin, yMax;
-    
+
     float getXnormalized() const { return (x-xMin)/(xMax-xMin)*2.0f-1.0f; }
     float getYnormalized() const { return (y-yMin)/(yMax-yMin)*2.0f-1.0f; }
 };
 
-    
+
 /** Event class for storing Keyboard, mouse and window events.
 */
 class OSGGA_EXPORT GUIEventAdapter : public osg::Object
@@ -383,7 +384,7 @@ public:
 
         class TouchData : public osg::Object {
         public:
-            
+
             struct TouchPoint {
                 unsigned int id;
                 TouchPhase phase;
@@ -407,14 +408,14 @@ public:
             typedef TouchSet::const_iterator const_iterator;
 
             TouchData() : osg::Object() {}
-            
+
             TouchData(const TouchData& td, const osg::CopyOp& copyop):
                 osg::Object(td,copyop),
                 _touches(td._touches) {}
-            
+
 
             META_Object(osgGA, TouchData);
-            
+
 
             unsigned int getNumTouchPoints() const { return static_cast<unsigned int>(_touches.size()); }
 
@@ -533,7 +534,7 @@ public:
 
         /** set mouse minimum x. */
         void setXmin(float v) { _Xmin = v; }
-        
+
         /** get mouse minimum x. */
         float getXmin() const { return _Xmin; }
 
@@ -570,7 +571,7 @@ public:
 #if 1
         inline float getXnormalized() const
         {
-            return _pointerDataList.size()>=1 ? 
+            return _pointerDataList.size()>=1 ?
                    _pointerDataList[_pointerDataList.size()-1]->getXnormalized():
                    2.0f*(getX()-getXmin())/(getXmax()-getXmin())-1.0f;
         }
@@ -685,7 +686,7 @@ public:
         TouchData* getTouchData() const { return _touchData.get(); }
         bool isMultiTouchEvent() const { return (_touchData.valid()); }
 
-        
+
         typedef std::vector< osg::ref_ptr<PointerData> > PointerDataList;
         void setPointerDataList(const PointerDataList& pdl) { _pointerDataList = pdl; }
         PointerDataList& getPointerDataList() { return _pointerDataList; }
@@ -698,7 +699,7 @@ public:
         PointerData* getPointerData(osg::Object* obj) { for(unsigned int i=0;i<_pointerDataList.size(); ++i) { if (_pointerDataList[i]->object==obj) return _pointerDataList[i].get(); } return 0; }
         const PointerData* getPointerData(osg::Object* obj) const { for(unsigned int i=0;i<_pointerDataList.size(); ++i) { if (_pointerDataList[i]->object==obj) return _pointerDataList[i].get(); } return 0; }
         void addPointerData(PointerData* pd) { _pointerDataList.push_back(pd); }
-        
+
         void copyPointerDataFrom(const osgGA::GUIEventAdapter& sourceEvent);
 
     protected:

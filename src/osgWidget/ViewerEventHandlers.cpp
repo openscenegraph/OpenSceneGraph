@@ -10,9 +10,9 @@ _wm(wm) {
 
 bool MouseHandler::handle(
     const osgGA::GUIEventAdapter& gea,
-    osgGA::GUIActionAdapter&      gaa,
-    osg::Object*                  obj,
-    osg::NodeVisitor*             nv
+    osgGA::GUIActionAdapter&      /*gaa*/,
+    osg::Object*                  /*obj*/,
+    osg::NodeVisitor*             /*nv*/
 ) {
     osgGA::GUIEventAdapter::EventType ev = gea.getEventType();
     MouseAction                       ma = _isMouseEvent(ev);
@@ -78,15 +78,15 @@ bool MouseHandler::_handleMouseRelease(float x, float y, int button) {
     else return false;
 }
 
-bool MouseHandler::_handleMouseDoubleClick(float x, float y, int button) {
+bool MouseHandler::_handleMouseDoubleClick(float /*x*/, float /*y*/, int /*button*/) {
     return false;
 }
 
-bool MouseHandler::_handleMouseDrag(float x, float y, int button) {
+bool MouseHandler::_handleMouseDrag(float x, float y, int /*button*/) {
     return _doMouseEvent(x, y, &WindowManager::pointerDrag);
 }
 
-bool MouseHandler::_handleMouseMove(float x, float y, int button) {
+bool MouseHandler::_handleMouseMove(float x, float y, int /*button*/) {
     return _doMouseEvent(x, y, &WindowManager::pointerMove);
 }
 
@@ -139,9 +139,9 @@ _wm(wm) {
 
 bool KeyboardHandler::handle(
     const osgGA::GUIEventAdapter& gea,
-    osgGA::GUIActionAdapter&      gaa,
-    osg::Object*                  obj,
-    osg::NodeVisitor*             nv
+    osgGA::GUIActionAdapter&      /*gaa*/,
+    osg::Object*                  /*obj*/,
+    osg::NodeVisitor*             /*nv*/
 ) {
     osgGA::GUIEventAdapter::EventType ev = gea.getEventType();
 
@@ -170,9 +170,9 @@ _camera (camera) {
 
 bool ResizeHandler::handle(
     const osgGA::GUIEventAdapter& gea,
-    osgGA::GUIActionAdapter&      gaa,
-    osg::Object*                  obj,
-    osg::NodeVisitor*             nv
+    osgGA::GUIActionAdapter&      /*gaa*/,
+    osg::Object*                  /*obj*/,
+    osg::NodeVisitor*             /*nv*/
 ) {
     osgGA::GUIEventAdapter::EventType ev = gea.getEventType();
 
@@ -201,8 +201,8 @@ _camera (camera) {
 bool CameraSwitchHandler::handle(
     const osgGA::GUIEventAdapter& gea,
     osgGA::GUIActionAdapter&      gaa,
-    osg::Object*                  obj,
-    osg::NodeVisitor*             nv
+    osg::Object*                  /*obj*/,
+    osg::NodeVisitor*             /*nv*/
 ) {
     if(
         gea.getEventType() != osgGA::GUIEventAdapter::KEYDOWN ||

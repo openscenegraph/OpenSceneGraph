@@ -163,7 +163,7 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
     return _lastPush->callMethodAndCallbacks(ev);
 }
 
-bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {
+bool WindowManager::_handleMouseReleased(float /*x*/, float /*y*/, bool& down) {
     down = false;
 
     // If were were in a drag state, reset our boolean flag.
@@ -300,14 +300,14 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl)
 {
     Intersections intr;
 
-    
+
     osg::Camera* camera = _view->getCamera();
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
     if (gw)
     {
         _view->computeIntersections(camera, osgUtil::Intersector::WINDOW, x, y, intr, _nodeMask);
     }
-        
+
     if (!intr.empty())
     {
         // Get the first Window at the XY coordinates; if you want a Window to be

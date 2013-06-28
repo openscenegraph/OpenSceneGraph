@@ -439,7 +439,7 @@ bool PixelBufferX11::makeCurrentImplementation()
     #endif
 }
 
-bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
+bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* /*readContext*/)
 {
     // OSG_NOTICE<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
     return makeCurrentImplementation();
@@ -464,7 +464,7 @@ bool PixelBufferX11::releaseContextImplementation()
 }
 
 
-void PixelBufferX11::bindPBufferToTextureImplementation(GLenum buffer)
+void PixelBufferX11::bindPBufferToTextureImplementation(GLenum /*buffer*/)
 {
     OSG_NOTICE<<"PixelBufferX11::bindPBufferToTextureImplementation() not implementation yet."<<std::endl;
 }

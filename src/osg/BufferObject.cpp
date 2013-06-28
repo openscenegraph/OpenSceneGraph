@@ -347,7 +347,7 @@ void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glBindBufferRange, "glBindBufferRange");
     setGLExtensionFuncPtr(_glBindBufferBase, "glBindBufferBase");
     setGLExtensionFuncPtr(_glTexBuffer, "glTexBuffer","glTexBufferARB" );
-    
+
     _isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
     _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
     _isTBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
@@ -687,7 +687,7 @@ void GLBufferObjectSet::discardAllDeletedGLBufferObjects()
     _orphanedGLBufferObjects.clear();
 }
 
-void GLBufferObjectSet::flushDeletedGLBufferObjects(double currentTime, double& availableTime)
+void GLBufferObjectSet::flushDeletedGLBufferObjects(double /*currentTime*/, double& availableTime)
 {
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);

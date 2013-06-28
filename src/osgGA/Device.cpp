@@ -28,7 +28,7 @@ Device::Device(const Device& es, const osg::CopyOp& copyop):
     setEventQueue(new EventQueue);
 }
 
-void Device::sendEvent(const GUIEventAdapter& event)
+void Device::sendEvent(const GUIEventAdapter& /*event*/)
 {
     OSG_WARN << "Device::sendEvent not implemented!" << std::endl;
 }

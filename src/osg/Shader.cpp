@@ -108,7 +108,8 @@ ShaderBinary::ShaderBinary()
 {
 }
 
-ShaderBinary::ShaderBinary(const ShaderBinary& rhs, const osg::CopyOp&):
+ShaderBinary::ShaderBinary(const ShaderBinary& rhs, const osg::CopyOp& copyop):
+    osg::Object(rhs, copyop),
     _data(rhs._data)
 {
 }

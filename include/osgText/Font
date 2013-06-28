@@ -241,7 +241,7 @@ public:
 
         Font* _facade;
 
-        virtual bool getVerticalSize(float & ascender, float & descender) const { return false; }
+        virtual bool getVerticalSize(float & /*ascender*/, float & /*descender*/) const { return false; }
     };
 
 

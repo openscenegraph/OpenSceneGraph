@@ -123,7 +123,7 @@ namespace PolytopeIntersectorUtils
         }
 
         // handle points
-        void operator()(const Vec3_type v1, bool treatVertexDataAsTemporary)
+        void operator()(const Vec3_type v1, bool /*treatVertexDataAsTemporary*/)
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimZero) == 0) return;
@@ -142,7 +142,7 @@ namespace PolytopeIntersectorUtils
         }
 
         // handle lines
-        void operator()(const Vec3_type v1, const Vec3_type v2, bool treatVertexDataAsTemporary)
+        void operator()(const Vec3_type v1, const Vec3_type v2, bool /*treatVertexDataAsTemporary*/)
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimOne) == 0) return;
@@ -207,7 +207,7 @@ namespace PolytopeIntersectorUtils
         }
 
         // handle triangles
-        void operator()(const Vec3_type v1, const Vec3_type v2, const Vec3_type v3, bool treatVertexDataAsTemporary)
+        void operator()(const Vec3_type v1, const Vec3_type v2, const Vec3_type v3, bool /*treatVertexDataAsTemporary*/)
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimTwo) == 0) return;

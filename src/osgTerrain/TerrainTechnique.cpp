@@ -83,7 +83,7 @@ void TerrainTechnique::setTerrainTile(TerrainTile* tile)
     _terrainTile = tile;
 }
 
-void TerrainTechnique::init(int dirtyMask, bool assumeMultiThreaded)
+void TerrainTechnique::init(int /*dirtyMask*/, bool /*assumeMultiThreaded*/)
 {
     OSG_NOTICE<<className()<<"::init(..) not implementated yet"<<std::endl;
 }

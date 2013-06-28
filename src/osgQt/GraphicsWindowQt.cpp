@@ -441,7 +441,7 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
 
     // make sure the event queue has the correct window rectangle size and input range
     getEventQueue()->syncWindowRectangleWithGraphcisContext();
-    
+
     return true;
 }
 
@@ -659,7 +659,7 @@ bool GraphicsWindowQt::realizeImplementation()
 
     // make sure the event queue has the correct window rectangle size and input range
     getEventQueue()->syncWindowRectangleWithGraphcisContext();
-    
+
     // make this window's context not current
     // note: this must be done as we will probably make the context current from another thread
     //       and it is not allowed to have one context current in two threads
@@ -764,7 +764,7 @@ public:
     }
 
     // Return the number of screens present in the system
-    virtual unsigned int getNumScreens( const osg::GraphicsContext::ScreenIdentifier& si )
+    virtual unsigned int getNumScreens( const osg::GraphicsContext::ScreenIdentifier& /*si*/ )
     {
         OSG_WARN << "osgQt: getNumScreens() not implemented yet." << std::endl;
         return 0;
@@ -772,20 +772,20 @@ public:
 
     // Return the resolution of specified screen
     // (0,0) is returned if screen is unknown
-    virtual void getScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution )
+    virtual void getScreenSettings( const osg::GraphicsContext::ScreenIdentifier& /*si*/, osg::GraphicsContext::ScreenSettings & /*resolution*/ )
     {
         OSG_WARN << "osgQt: getScreenSettings() not implemented yet." << std::endl;
     }
 
     // Set the resolution for given screen
-    virtual bool setScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, const osg::GraphicsContext::ScreenSettings & resolution )
+    virtual bool setScreenSettings( const osg::GraphicsContext::ScreenIdentifier& /*si*/, const osg::GraphicsContext::ScreenSettings & /*resolution*/ )
     {
         OSG_WARN << "osgQt: setScreenSettings() not implemented yet." << std::endl;
         return false;
     }
 
     // Enumerates available resolutions
-    virtual void enumerateScreenSettings( const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolution )
+    virtual void enumerateScreenSettings( const osg::GraphicsContext::ScreenIdentifier& /*screenIdentifier*/, osg::GraphicsContext::ScreenSettingsList & /*resolution*/ )
     {
         OSG_WARN << "osgQt: enumerateScreenSettings() not implemented yet." << std::endl;
     }
@@ -875,7 +875,7 @@ void HeartBeat::init( osgViewer::ViewerBase *viewer )
 }
 
 
-void HeartBeat::timerEvent( QTimerEvent *event )
+void HeartBeat::timerEvent( QTimerEvent */*event*/ )
 {
     osg::ref_ptr< osgViewer::ViewerBase > viewer;
     if( !_viewer.lock( viewer ) )

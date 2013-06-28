@@ -607,7 +607,7 @@ void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
     }
 }
 
-void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int originalIndex)
+void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int /*originalIndex*/)
 {
     if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
 

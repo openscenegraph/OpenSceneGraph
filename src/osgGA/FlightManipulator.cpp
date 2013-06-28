@@ -28,7 +28,8 @@ FlightManipulator::FlightManipulator( int flags )
 
 /// Constructor.
 FlightManipulator::FlightManipulator( const FlightManipulator& fm, const CopyOp& copyOp )
-    : inherited( fm, copyOp ),
+    : osg::Object(fm, copyOp),
+      inherited( fm, copyOp ),
       _yawMode( fm._yawMode )
 {
 }
@@ -221,7 +222,7 @@ bool FlightManipulator::performMovement()
 }
 
 
-bool FlightManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool FlightManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double /*dx*/, const double /*dy*/ )
 {
     // pan model
     _velocity += eventTimeDelta * (_acceleration + _velocity);
@@ -229,14 +230,14 @@ bool FlightManipulator::performMovementLeftMouseButton( const double eventTimeDe
 }
 
 
-bool FlightManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool FlightManipulator::performMovementMiddleMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     _velocity = 0.0f;
     return true;
 }
 
 
-bool FlightManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool FlightManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double /*dx*/, const double /*dy*/ )
 {
     _velocity -= eventTimeDelta * (_acceleration + _velocity);
     return true;

@@ -206,7 +206,7 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
                                                        osg::Timer_t tick_afterReadPixels,
                                                        osg::Timer_t tick_afterMemCpy,
                                                        osg::Timer_t tick_afterCaptureOperation,
-                                                       unsigned int dataSize)
+                                                       unsigned int /*dataSize*/)
 {
     _timeForReadPixels = osg::Timer::instance()->delta_s(tick_start, tick_afterReadPixels);
     _timeForMemCpy = osg::Timer::instance()->delta_s(tick_afterReadPixels, tick_afterMemCpy);
@@ -770,7 +770,7 @@ bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
             {
                 _stopCapture = false;
                 removeCallbackFromViewer(*viewer);
-            }            
+            }
             break;
         }
 

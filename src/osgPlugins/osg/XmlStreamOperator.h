@@ -150,7 +150,7 @@ public:
         }
     }
 
-    virtual void writeCharArray( const char* s, unsigned int size ) {}
+    virtual void writeCharArray( const char* /*s*/, unsigned int /*size*/ ) {}
 
     virtual void writeWrappedString( const std::string& str )
     {
@@ -429,9 +429,9 @@ public:
         prop.set( value );
     }
 
-    virtual void readMark( osgDB::ObjectMark& mark ) {}
+    virtual void readMark( osgDB::ObjectMark& /*mark*/ ) {}
 
-    virtual void readCharArray( char* s, unsigned int size ) {}
+    virtual void readCharArray( char* /*s*/, unsigned int /*size*/ ) {}
 
     virtual void readWrappedString( std::string& str )
     {

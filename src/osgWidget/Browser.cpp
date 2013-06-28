@@ -43,7 +43,7 @@ void BrowserManager::init(const std::string& application)
     _application = application;
 }
 
-BrowserImage* BrowserManager::createBrowserImage(const std::string& url, int width, int height)
+BrowserImage* BrowserManager::createBrowserImage(const std::string& /*url*/, int /*width*/, int /*height*/)
 {
     OSG_NOTICE<<"Cannot create browser"<<std::endl;
     return 0;

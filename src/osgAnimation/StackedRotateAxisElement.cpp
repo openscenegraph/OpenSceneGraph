@@ -27,7 +27,7 @@ StackedRotateAxisElement::StackedRotateAxisElement(const StackedRotateAxisElemen
 
 
 osg::Matrix StackedRotateAxisElement::getAsMatrix() const { return osg::Matrix::rotate(osg::Quat(_angle, _axis)); }
-void StackedRotateAxisElement::update(float t)
+void StackedRotateAxisElement::update(float /*t*/)
 {
     if (_target.valid())
         _angle = _target->getValue();

@@ -42,7 +42,7 @@ namespace osgAnimation
         META_Object(osgAnimation, AnimationUpdateCallback<T>);
 
         const std::string& getName() const { return T::getName(); }
-        bool link(Channel* channel) { return 0; }
+        bool link(Channel* /*channel*/) { return 0; }
         int link(Animation* animation)
         {
             if (T::getName().empty())

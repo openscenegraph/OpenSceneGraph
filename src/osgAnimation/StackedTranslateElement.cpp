@@ -43,7 +43,7 @@ Target* StackedTranslateElement::getOrCreateTarget()
 Target* StackedTranslateElement::getTarget() {return _target.get();}
 const Target* StackedTranslateElement::getTarget() const {return _target.get();}
 
-void StackedTranslateElement::update(float t)
+void StackedTranslateElement::update(float /*t*/)
 {
     if (_target.valid())
         _translate = _target->getValue();

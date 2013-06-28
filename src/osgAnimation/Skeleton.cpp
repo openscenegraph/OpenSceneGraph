@@ -41,7 +41,7 @@ class ValidateSkeletonVisitor : public osg::NodeVisitor
 {
 public:
     ValidateSkeletonVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Node& node) { return; }
+    void apply(osg::Node& /*node*/) { return; }
     void apply(osg::Transform& node)
     {
         // the idea is to traverse the skeleton or bone but to stop if other node is found

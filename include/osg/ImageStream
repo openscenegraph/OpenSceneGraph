@@ -92,22 +92,22 @@ class OSG_EXPORT ImageStream : public Image
 
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
-        
+
         /// set the balance of the audio: -1 = left, 0 = center,  1 = right
         virtual float getAudioBalance() { return 0.0f; }
-        virtual void setAudioBalance(float b) {}
+        virtual void setAudioBalance(float /*b*/) {}
 
         typedef std::vector< osg::ref_ptr<osg::AudioStream> > AudioStreams;
         void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }
         AudioStreams& getAudioStreams() { return _audioStreams; }
         const AudioStreams& getAudioStreams() const { return _audioStreams; }
-        
+
         /** create a suitable texture for this imagestream, return NULL, if not supported
          *  implement this method in subclasses to use special technologies like CoreVideo
          *  or similar.
          */
         virtual osg::Texture* createSuitableTexture() { return NULL; }
-        
+
     protected:
         virtual void applyLoopingMode() {}
 

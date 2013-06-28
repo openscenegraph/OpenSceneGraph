@@ -532,7 +532,7 @@ void RayTracedTechnique::init()
     }
 }
 
-void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
+void RayTracedTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
 {
 //    OSG_NOTICE<<"RayTracedTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
 }

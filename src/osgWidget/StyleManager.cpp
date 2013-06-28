@@ -164,11 +164,11 @@ bool Style::applyStyle(Widget* widget, Reader r) {
     return true;
 }
 
-bool Style::applyStyle(Label* label, Reader r) {
+bool Style::applyStyle(Label* /*label*/, Reader /*r*/) {
     return false;
 }
 
-bool Style::applyStyle(Input* input, Reader r) {
+bool Style::applyStyle(Input* /*input*/, Reader /*r*/) {
     return false;
 }
 
@@ -217,12 +217,12 @@ bool Style::applyStyle(Window* window, Reader r) {
     return true;
 }
 
-bool Style::applyStyle(Canvas* label, Reader r) {
+bool Style::applyStyle(Canvas* /*label*/, Reader /*r*/) {
     return false;
 }
 
 
-bool Style::applyStyle(Window::EmbeddedWindow*, Reader r) {
+bool Style::applyStyle(Window::EmbeddedWindow*, Reader /*r*/) {
     return false;
 }
 
@@ -232,11 +232,11 @@ bool Style::applyStyle(Box* box, Reader r) {
     return false;
 }
 
-bool Style::applyStyle(Frame::Corner*, Reader r) {
+bool Style::applyStyle(Frame::Corner*, Reader /*r*/) {
     return false;
 }
 
-bool Style::applyStyle(Frame::Border*, Reader r) {
+bool Style::applyStyle(Frame::Border*, Reader /*r*/) {
     return false;
 }
 

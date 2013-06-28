@@ -46,7 +46,7 @@ namespace osgAnimation
 
             META_Object(osgAnimation,Callback);
 
-            virtual void operator()(Action* action, osgAnimation::ActionVisitor* nv) {}
+            virtual void operator()(Action* /*action*/, osgAnimation::ActionVisitor* /*nv*/) {}
 
             Callback* getNestedCallback() { return _nestedCallback.get(); }
             void addNestedCallback(Callback* callback)
@@ -119,7 +119,7 @@ namespace osgAnimation
         // get the number of loop, the frame relative to loop.
         // return true if in range, and false if out of range.
         bool evaluateFrame(unsigned int frame, unsigned int& resultframe, unsigned int& nbloop );
-        virtual void traverse(ActionVisitor& visitor) {}
+        virtual void traverse(ActionVisitor& /*visitor*/) {}
         //virtual void evaluate(unsigned int frame);
 
     protected:

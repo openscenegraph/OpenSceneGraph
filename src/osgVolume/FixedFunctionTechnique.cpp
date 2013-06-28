@@ -247,7 +247,7 @@ void FixedFunctionTechnique::init()
     _node = texgenNode_0;
 }
 
-void FixedFunctionTechnique::update(osgUtil::UpdateVisitor* uv)
+void FixedFunctionTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
 {
 //    OSG_NOTICE<<"FixedFunctionTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
 }

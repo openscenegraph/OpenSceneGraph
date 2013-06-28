@@ -68,9 +68,9 @@ public:
         _out->write( s.c_str(), s.size() );
     }
 
-    virtual void writeStream( std::ostream& (*fn)(std::ostream&) ) {}
+    virtual void writeStream( std::ostream& (*/*fn*/)(std::ostream&) ) {}
 
-    virtual void writeBase( std::ios_base& (*fn)(std::ios_base&) ) {}
+    virtual void writeBase( std::ios_base& (*/*fn*/)(std::ios_base&) ) {}
 
     virtual void writeGLenum( const osgDB::ObjectGLenum& value )
     { GLenum e = value.get(); _out->write((char*)&e, osgDB::GLENUM_SIZE); }
@@ -208,9 +208,9 @@ public:
         }
     }
 
-    virtual void readStream( std::istream& (*fn)(std::istream&) ) {}
+    virtual void readStream( std::istream& (*/*fn*/)(std::istream&) ) {}
 
-    virtual void readBase( std::ios_base& (*fn)(std::ios_base&) ) {}
+    virtual void readBase( std::ios_base& (*/*fn*/)(std::ios_base&) ) {}
 
     virtual void readGLenum( osgDB::ObjectGLenum& value )
     {

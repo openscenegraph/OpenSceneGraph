@@ -38,7 +38,7 @@ class DraggerCallback : virtual public osg::Object
         DraggerCallback():
             osg::Object(true) {}
 
-        DraggerCallback(const DraggerCallback&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+        DraggerCallback(const DraggerCallback&, const osg::CopyOp& /*copyop*/ = osg::CopyOp::SHALLOW_COPY):
             osg::Object(true) {}
 
         META_Object(osgManipulator, DraggerCallback);

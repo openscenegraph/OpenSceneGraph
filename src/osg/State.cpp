@@ -103,6 +103,8 @@ State::State():
     _glFogCoordPointer = 0;
     _glSecondaryColorPointer = 0;
     _glVertexAttribPointer = 0;
+    _glVertexAttribIPointer = 0;
+    _glVertexAttribLPointer = 0;
     _glEnableVertexAttribArray = 0;
     _glDisableVertexAttribArray = 0;
     _glDrawArraysInstanced = 0;
@@ -902,6 +904,8 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
     setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
     setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glVertexAttribIPointer, "glVertexAttribIPointer");
+    setGLExtensionFuncPtr(_glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB");
     setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
     setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
@@ -1075,6 +1079,66 @@ void State::setVertexAttribPointer( unsigned int index,
     }
 }
 
+/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribIPointer(..);
+* note, only updates values that change.*/
+void State::setVertexAttribIPointer( unsigned int index,
+                                     GLint size, GLenum type,
+                                     GLsizei stride, const GLvoid *ptr )
+{
+    if (_glVertexAttribIPointer)
+    {
+        // OSG_NOTICE<<"State::setVertexAttribIPointer("<<index<<",...)"<<std::endl;
+
+        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+        EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+        if (!eap._enabled || eap._dirty)
+        {
+            eap._enabled = true;
+            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
+            _glEnableVertexAttribArray( index );
+        }
+        //if (eap._pointer != ptr || eap._dirty)
+        {
+            // OSG_NOTICE<<"    _glVertexAttribIPointer( "<<index<<" )"<<std::endl;
+            _glVertexAttribIPointer( index, size, type, stride, ptr );
+            eap._pointer = ptr;
+            eap._normalized = false;
+        }
+        eap._lazy_disable = false;
+        eap._dirty = false;
+    }
+}
+/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribLPointer(..);
+* note, only updates values that change.*/
+void State::setVertexAttribLPointer( unsigned int index,
+                                     GLint size, GLenum type,
+                                     GLsizei stride, const GLvoid *ptr )
+{
+    if (_glVertexAttribLPointer)
+    {
+        // OSG_NOTICE<<"State::setVertexAttribLPointer("<<index<<",...)"<<std::endl;
+
+        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+        EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+        if (!eap._enabled || eap._dirty)
+        {
+            eap._enabled = true;
+            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
+            _glEnableVertexAttribArray( index );
+        }
+        //if (eap._pointer != ptr || eap._dirty)
+        {
+            // OSG_NOTICE<<"    _glVertexAttribLPointer( "<<index<<" )"<<std::endl;
+            _glVertexAttribLPointer( index, size, type, stride, ptr );
+            eap._pointer = ptr;
+            eap._normalized = false;
+        }
+        eap._lazy_disable = false;
+        eap._dirty = false;
+    }
+}
 /** wrapper around DisableVertexAttribArrayARB(index);
 * note, only updates values that change.*/
 void State::disableVertexAttribPointer( unsigned int index )

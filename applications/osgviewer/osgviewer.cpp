@@ -149,6 +149,8 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
+    arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Play specified camera path animation file, previously saved with 'z' key.");
+    arguments.getApplicationUsage()->addCommandLineOption("--speed <factor>","Speed factor for animation playing (1 == normal speed).");
     arguments.getApplicationUsage()->addCommandLineOption("--device <device-name>","add named device to the viewer");
 
     osgViewer::Viewer viewer(arguments);

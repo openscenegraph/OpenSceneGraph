@@ -95,7 +95,7 @@ public:
     void handleOverlaps(void);
 
 protected:
-    virtual ~DelaunayConstraint() {}
+    virtual ~DelaunayConstraint();
 
     typedef std::vector< int* > trilist; // array of indices in points array defining triangles
 

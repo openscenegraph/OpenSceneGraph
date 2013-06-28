@@ -113,8 +113,11 @@ void GraphicsContext::ScreenIdentifier::setScreenIdentifier(const std::string& d
     std::string::size_type colon = displayName.find_last_of(':');
     std::string::size_type point = displayName.find_last_of('.');
 
+    // handle the case where the host name is supplied with '.' such as 127.0.0.1:0  with only DisplayNum provided
+    // here the point to picks up on the .1 from the host name, rather then demarking the DisplayNum/ScreenNum as
+    // no ScreenNum is provided, hence no . in the rhs of the :
     if (point!=std::string::npos &&
-        colon==std::string::npos &&
+        colon!=std::string::npos &&
         point < colon) point = std::string::npos;
 
     if (colon==std::string::npos)

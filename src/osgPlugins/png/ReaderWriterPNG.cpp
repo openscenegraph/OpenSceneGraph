@@ -96,6 +96,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             png_structp png = NULL;
             png_infop   info = NULL;
             int color;
+            int bitDepth;
             png_bytep *rows = NULL;
 
             //Create write structure
@@ -112,18 +113,21 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             //Set compression level
             png_set_compression_level(png, compression_level);
 
-            int bit_depth = img.getPixelSizeInBits();
             switch(img.getPixelFormat()) {
                 case(GL_DEPTH_COMPONENT): color = PNG_COLOR_TYPE_GRAY; break;
                 case(GL_LUMINANCE): color = PNG_COLOR_TYPE_GRAY; break;
                 case(GL_ALPHA): color = PNG_COLOR_TYPE_GRAY; break; //Couldn't find a color type for pure alpha, using gray instead
-                case(GL_LUMINANCE_ALPHA): color = PNG_COLOR_TYPE_GRAY_ALPHA ; bit_depth /= 2; break;
-                case(GL_RGB): color = PNG_COLOR_TYPE_RGB; bit_depth /= 3; break;
-                case(GL_RGBA): color = PNG_COLOR_TYPE_RGB_ALPHA; bit_depth /= 4; break;
-                case(GL_BGR): color = PNG_COLOR_TYPE_RGB; png_set_bgr(png); bit_depth /= 3; break;
-                case(GL_BGRA): color = PNG_COLOR_TYPE_RGB_ALPHA; png_set_bgr(png); bit_depth /= 4; break;
+                case(GL_LUMINANCE_ALPHA): color = PNG_COLOR_TYPE_GRAY_ALPHA ; break;
+                case(GL_RGB): color = PNG_COLOR_TYPE_RGB; break;
+                case(GL_RGBA): color = PNG_COLOR_TYPE_RGB_ALPHA; break;
+                case(GL_BGR): color = PNG_COLOR_TYPE_RGB; png_set_bgr(png); break;
+                case(GL_BGRA): color = PNG_COLOR_TYPE_RGB_ALPHA; png_set_bgr(png); break;
                 default: return WriteResult::ERROR_IN_WRITING_FILE; break;
             }
+
+            //wish there was a Image::computeComponentSizeInBits()
+            bitDepth = Image::computePixelSizeInBits(img.getPixelFormat(),img.getDataType())/Image::computeNumComponents(img.getPixelFormat());
+            if(bitDepth!=8 && bitDepth!=16) return WriteResult::ERROR_IN_WRITING_FILE;
 
             //Create row data
             rows = new png_bytep[img.t()];
@@ -133,10 +137,14 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             //Write header info
             png_set_IHDR(png, info, img.s(), img.t(),
-                        bit_depth, color, PNG_INTERLACE_NONE,
+                        bitDepth, color, PNG_INTERLACE_NONE,
                         PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
+
             png_write_info(png, info);
+
+            //must take place after png_write_info: png_set_swap verifies 16bit depth before setting transformation flag.
+            if(bitDepth > 8 && getCpuByteOrder()==LittleEndian) png_set_swap(png);
 
             //Write data
             png_write_image(png, rows);

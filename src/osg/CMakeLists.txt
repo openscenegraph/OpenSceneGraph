@@ -128,6 +128,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Polytope
     ${HEADER_PATH}/PositionAttitudeTransform
     ${HEADER_PATH}/PrimitiveSet
+    ${HEADER_PATH}/PrimitiveRestartIndex
     ${HEADER_PATH}/Program
     ${HEADER_PATH}/Projection
     ${HEADER_PATH}/ProxyNode
@@ -315,6 +316,7 @@ SET(TARGET_SRC
     PolygonStipple.cpp
     PositionAttitudeTransform.cpp
     PrimitiveSet.cpp
+    PrimitiveRestartIndex.cpp
     Program.cpp
     Projection.cpp
     ProxyNode.cpp

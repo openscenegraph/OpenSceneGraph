@@ -165,6 +165,7 @@ class OSG_EXPORT StateAttribute : public Object
             CLAMPCOLOR,
             HINT,
             SAMPLEMASKI,
+            PRIMITIVERESTARTINDEX,
 
             /// osgFX namespace
             VALIDATOR,

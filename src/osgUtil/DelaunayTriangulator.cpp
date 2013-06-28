@@ -1372,4 +1372,13 @@ void DelaunayConstraint::handleOverlaps(void)
     tscx->retessellatePolygons(*this); // find all edges
 }
 
+DelaunayConstraint::~DelaunayConstraint()
+{
+    trilist::const_iterator ti;
+    for (ti=_interiorTris.begin(); ti!=_interiorTris.end(); ++ti)
+    {
+        delete[] *ti;
+    }
+}
+
 } // namespace osgutil

@@ -1238,11 +1238,61 @@ class OSG_EXPORT State : public Referenced, public Observer
             }
         }
 
+        /** Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required.*/
+        inline void setVertexAttribLPointer(unsigned int unit, const Array* array)
+        {
+            if (array)
+            {
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                if (vbo)
+                {
+                    bindVertexBufferObject(vbo);
+                    setVertexAttribLPointer(unit, array->getDataSize(),array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
+                }
+                else
+                {
+                    unbindVertexBufferObject();
+                    setVertexAttribLPointer(unit, array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+                }
+            }
+        }
+
+        /** Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required.*/
+        inline void setVertexAttribIPointer(unsigned int unit, const Array* array)
+        {
+            if (array)
+            {
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
+                if (vbo)
+                {
+                    bindVertexBufferObject(vbo);
+                    setVertexAttribIPointer(unit, array->getDataSize(),array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
+                }
+                else
+                {
+                    unbindVertexBufferObject();
+                    setVertexAttribIPointer(unit, array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+                }
+            }
+        }
+
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
           * note, only updates values that change.*/
         void setVertexAttribPointer( unsigned int index,
                                      GLint size, GLenum type, GLboolean normalized,
                                      GLsizei stride, const GLvoid *ptr );
+
+        /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribIPointer(..);
+          * note, only updates values that change.*/
+        void setVertexAttribIPointer( unsigned int index,
+                                      GLint size, GLenum type,
+                                      GLsizei stride, const GLvoid *ptr );
+
+        /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribLPointer(..);
+          * note, only updates values that change.*/
+        void setVertexAttribLPointer( unsigned int index,
+                                      GLint size, GLenum type,
+                                      GLsizei stride, const GLvoid *ptr );
 
         /** wrapper around DisableVertexAttribArrayARB(index);
           * note, only updates values that change.*/
@@ -1839,6 +1889,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         typedef void (GL_APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
         typedef void (GL_APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
         typedef void (GL_APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * VertexAttribIPointerProc) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * VertexAttribLPointerProc) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
         typedef void (GL_APIENTRY * EnableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * DisableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
@@ -1857,6 +1909,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         FogCoordPointerProc         _glFogCoordPointer;
         SecondaryColorPointerProc   _glSecondaryColorPointer;
         VertexAttribPointerProc     _glVertexAttribPointer;
+        VertexAttribIPointerProc    _glVertexAttribIPointer;
+        VertexAttribLPointerProc    _glVertexAttribLPointer;
         EnableVertexAttribProc      _glEnableVertexAttribArray;
         DisableVertexAttribProc     _glDisableVertexAttribArray;
         BindBufferProc              _glBindBuffer;

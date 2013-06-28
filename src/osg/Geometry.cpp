@@ -752,14 +752,24 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         }
     }
 
-    if( handleVertexAttributes )
+    if ( handleVertexAttributes )
     {
-        for(unsigned int index = 0; index < _vertexAttribList.size(); ++index )
+        for(unsigned int index = 0; index < _vertexAttribList.size(); ++index)
         {
             const Array* array = _vertexAttribList[index].get();
-            if(array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
+            if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
             {
-                state.setVertexAttribPointer( index, array );
+                if (array->getPreserveDataType())
+                {
+                    GLenum dataType = array->getDataType();
+                    if (dataType==GL_FLOAT) state.setVertexAttribPointer( index, array );
+                    else if (dataType==GL_DOUBLE) state.setVertexAttribLPointer( index, array );
+                    else state.setVertexAttribIPointer( index, array );
+                }
+                else
+                {
+                    state.setVertexAttribPointer( index, array );
+                }
             }
         }
     }

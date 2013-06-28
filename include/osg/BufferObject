@@ -698,7 +698,7 @@ class OSG_EXPORT BufferData : public Object
 
         void addClient(osg::Object * /*client*/) { ++_numClients; }
 
-        void removeClient(osg::Object */*client*/) { --_numClients; }
+        void removeClient(osg::Object * /*client*/) { --_numClients; }
 
 protected:
 

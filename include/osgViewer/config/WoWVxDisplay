@@ -25,7 +25,7 @@ class OSGVIEWER_EXPORT WoWVxDisplay : public ViewConfig
         
         // default to 20" display, type can be 20 to 42.
         WoWVxDisplay(unsigned int type=20, unsigned int screenNum=0):
-            _screenNum(0),
+            _screenNum(screenNum),
             _wow_content(0x02),
             _wow_factor(0x40),
             _wow_offset(0x80),

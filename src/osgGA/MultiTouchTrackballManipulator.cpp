@@ -30,7 +30,7 @@ MultiTouchTrackballManipulator::MultiTouchTrackballManipulator( int flags )
 
 /// Constructor.
 MultiTouchTrackballManipulator::MultiTouchTrackballManipulator( const MultiTouchTrackballManipulator& tm, const CopyOp& copyOp )
-    : inherited( tm, copyOp )
+    : osg::Object(tm, copyOp), inherited( tm, copyOp )
 {
 }
 

@@ -45,7 +45,7 @@ void GeometryCostEstimator::setDefaults()
     _displayListCompileFactor = 10.0;
 }
 
-void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+void GeometryCostEstimator::calibrate(osg::RenderInfo& /*renderInfo*/)
 {
 }
 
@@ -91,7 +91,7 @@ CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometr
     }
 }
 
-CostPair GeometryCostEstimator::estimateDrawCost(const osg::Geometry* geometry) const
+CostPair GeometryCostEstimator::estimateDrawCost(const osg::Geometry* /*geometry*/) const
 {
     return CostPair(0.0,0.0);
 }
@@ -114,7 +114,7 @@ void TextureCostEstimator::setDefaults()
     _drawCost.set(min_time, 1.0/gpu_bandwidth, 256); // min time 1/10th of millisecond, min size 256
 }
 
-void TextureCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+void TextureCostEstimator::calibrate(osg::RenderInfo& /*renderInfo*/)
 {
 }
 
@@ -130,7 +130,7 @@ CostPair TextureCostEstimator::estimateCompileCost(const osg::Texture* texture) 
     return cost;
 }
 
-CostPair TextureCostEstimator::estimateDrawCost(const osg::Texture* texture) const
+CostPair TextureCostEstimator::estimateDrawCost(const osg::Texture* /*texture*/) const
 {
     return CostPair(0.0,0.0);
 }
@@ -147,16 +147,16 @@ void ProgramCostEstimator::setDefaults()
 {
 }
 
-void ProgramCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+void ProgramCostEstimator::calibrate(osg::RenderInfo& /*renderInfo*/)
 {
 }
 
-CostPair ProgramCostEstimator::estimateCompileCost(const osg::Program* program) const
+CostPair ProgramCostEstimator::estimateCompileCost(const osg::Program* /*program*/) const
 {
     return CostPair(0.0,0.0);
 }
 
-CostPair ProgramCostEstimator::estimateDrawCost(const osg::Program* program) const
+CostPair ProgramCostEstimator::estimateDrawCost(const osg::Program* /*program*/) const
 {
     return CostPair(0.0,0.0);
 }
@@ -185,7 +185,7 @@ void GraphicsCostEstimator::setDefaults()
 }
 
 
-void GraphicsCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+void GraphicsCostEstimator::calibrate(osg::RenderInfo& /*renderInfo*/)
 {
     OSG_INFO<<"GraphicsCostEstimator::calibrate(..)"<<std::endl;
 }

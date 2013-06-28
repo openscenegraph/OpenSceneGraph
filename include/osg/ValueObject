@@ -44,55 +44,55 @@ class ValueObject : public Object
         class GetValueVisitor
         {
         public:
-            virtual void apply(bool value) {}
-            virtual void apply(char value) {}
-            virtual void apply(unsigned char value) {}
-            virtual void apply(short value) {}
-            virtual void apply(unsigned short value) {}
-            virtual void apply(int value) {}
-            virtual void apply(unsigned int value) {}
-            virtual void apply(float value) {}
-            virtual void apply(double value) {}
-            virtual void apply(const std::string& value) {}
-            virtual void apply(const osg::Vec2f& value) {}
-            virtual void apply(const osg::Vec3f& value) {}
-            virtual void apply(const osg::Vec4f& value) {}
-            virtual void apply(const osg::Vec2d& value) {}
-            virtual void apply(const osg::Vec3d& value) {}
-            virtual void apply(const osg::Vec4d& value) {}
-            virtual void apply(const osg::Quat& value) {}
-            virtual void apply(const osg::Plane& value) {}
-            virtual void apply(const osg::Matrixf& value) {}
-            virtual void apply(const osg::Matrixd& value) {}
+            virtual void apply(bool /*value*/) {}
+            virtual void apply(char /*value*/) {}
+            virtual void apply(unsigned char /*value*/) {}
+            virtual void apply(short /*value*/) {}
+            virtual void apply(unsigned short /*value*/) {}
+            virtual void apply(int /*value*/) {}
+            virtual void apply(unsigned int /*value*/) {}
+            virtual void apply(float /*value*/) {}
+            virtual void apply(double /*value*/) {}
+            virtual void apply(const std::string& /*value*/) {}
+            virtual void apply(const osg::Vec2f& /*value*/) {}
+            virtual void apply(const osg::Vec3f& /*value*/) {}
+            virtual void apply(const osg::Vec4f& /*value*/) {}
+            virtual void apply(const osg::Vec2d& /*value*/) {}
+            virtual void apply(const osg::Vec3d& /*value*/) {}
+            virtual void apply(const osg::Vec4d& /*value*/) {}
+            virtual void apply(const osg::Quat& /*value*/) {}
+            virtual void apply(const osg::Plane& /*value*/) {}
+            virtual void apply(const osg::Matrixf& /*value*/) {}
+            virtual void apply(const osg::Matrixd& /*value*/) {}
         };
 
         class SetValueVisitor
         {
         public:
-            virtual void apply(bool& value) {}
-            virtual void apply(char& value) {}
-            virtual void apply(unsigned char& value) {}
-            virtual void apply(short& value) {}
-            virtual void apply(unsigned short& value) {}
-            virtual void apply(int& value) {}
-            virtual void apply(unsigned int& value) {}
-            virtual void apply(float& value) {}
-            virtual void apply(double& value) {}
-            virtual void apply(std::string& value) {}
-            virtual void apply(osg::Vec2f& value) {}
-            virtual void apply(osg::Vec3f& value) {}
-            virtual void apply(osg::Vec4f& value) {}
-            virtual void apply(osg::Vec2d& value) {}
-            virtual void apply(osg::Vec3d& value) {}
-            virtual void apply(osg::Vec4d& value) {}
-            virtual void apply(osg::Quat& value) {}
-            virtual void apply(osg::Plane& value) {}
-            virtual void apply(osg::Matrixf& value) {}
-            virtual void apply(osg::Matrixd& value) {}
+            virtual void apply(bool& /*value*/) {}
+            virtual void apply(char& /*value*/) {}
+            virtual void apply(unsigned char& /*value*/) {}
+            virtual void apply(short& /*value*/) {}
+            virtual void apply(unsigned short& /*value*/) {}
+            virtual void apply(int& /*value*/) {}
+            virtual void apply(unsigned int& /*value*/) {}
+            virtual void apply(float& /*value*/) {}
+            virtual void apply(double& /*value*/) {}
+            virtual void apply(std::string& /*value*/) {}
+            virtual void apply(osg::Vec2f& /*value*/) {}
+            virtual void apply(osg::Vec3f& /*value*/) {}
+            virtual void apply(osg::Vec4f& /*value*/) {}
+            virtual void apply(osg::Vec2d& /*value*/) {}
+            virtual void apply(osg::Vec3d& /*value*/) {}
+            virtual void apply(osg::Vec4d& /*value*/) {}
+            virtual void apply(osg::Quat& /*value*/) {}
+            virtual void apply(osg::Plane& /*value*/) {}
+            virtual void apply(osg::Matrixf& /*value*/) {}
+            virtual void apply(osg::Matrixd& /*value*/) {}
         };
 
-        virtual bool get(GetValueVisitor& gvv) const { return false; }
-        virtual bool set(SetValueVisitor& gvv) { return false; }
+        virtual bool get(GetValueVisitor& /*gvv*/) const { return false; }
+        virtual bool set(SetValueVisitor& /*gvv*/) { return false; }
     protected:
         virtual ~ValueObject() {}
 };

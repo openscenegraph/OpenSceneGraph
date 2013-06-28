@@ -62,7 +62,7 @@ class OSGSIM_EXPORT ShapeAttribute
         void setName(const std::string& name) { _name = name; }
 
         /// Get the attribute data type.
-        const Type getType() const { return _type; }
+        Type getType() const { return _type; }
 
         /// Get the attribute data as an int.
         int getInt() const { return _integer; }

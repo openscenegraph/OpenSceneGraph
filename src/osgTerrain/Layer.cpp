@@ -262,19 +262,19 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
     return true;
 }
 
-bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+bool ImageLayer::getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const
 {
     OSG_NOTICE<<"Not implemented yet"<<std::endl;
     return false;
 }
 
-bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+bool ImageLayer::getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec3& /*value*/) const
 {
     OSG_NOTICE<<"Not implemented yet"<<std::endl;
     return false;
 }
 
-bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+bool ImageLayer::getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec4& /*value*/) const
 {
     OSG_NOTICE<<"Not implemented yet"<<std::endl;
     return false;
@@ -345,7 +345,7 @@ bool ContourLayer::transform(float offset, float scale)
     return true;
 }
 
-bool ContourLayer::getValue(unsigned int i, unsigned int j, float& value) const
+bool ContourLayer::getValue(unsigned int i, unsigned int /*j*/, float& value) const
 {
     if (!_tf) return false;
 
@@ -355,7 +355,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, float& value) const
     return true;
 }
 
-bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+bool ContourLayer::getValue(unsigned int i, unsigned int /*j*/, osg::Vec2& value) const
 {
     if (!_tf) return false;
 
@@ -366,7 +366,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) co
     return true;
 }
 
-bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+bool ContourLayer::getValue(unsigned int i, unsigned int /*j*/, osg::Vec3& value) const
 {
     if (!_tf) return false;
 
@@ -378,7 +378,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) co
     return true;
 }
 
-bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+bool ContourLayer::getValue(unsigned int i, unsigned int /*j*/, osg::Vec4& value) const
 {
     if (!_tf) return false;
 

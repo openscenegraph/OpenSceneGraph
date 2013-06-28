@@ -27,7 +27,8 @@ FileList::FileList()
 {
 }
 
-FileList::FileList(const FileList& fileList, const osg::CopyOp):
+FileList::FileList(const FileList& fileList, const osg::CopyOp & copyop):
+    osg::Object(fileList, copyop),
     _files(fileList._files)
 {
 }
@@ -64,7 +65,8 @@ DatabaseRevision::DatabaseRevision()
 {
 }
 
-DatabaseRevision::DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp):
+DatabaseRevision::DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp & copyop):
+    osg::Object(revision, copyop),
     _databasePath(revision._databasePath),
     _filesAdded(revision._filesAdded),
     _filesRemoved(revision._filesRemoved),
@@ -109,7 +111,8 @@ DatabaseRevisions::DatabaseRevisions()
 {
 }
 
-DatabaseRevisions::DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp):
+DatabaseRevisions::DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp & copyop):
+    osg::Object(revisions, copyop),
     _databasePath(revisions._databasePath),
     _revisionList(revisions._revisionList)
 {

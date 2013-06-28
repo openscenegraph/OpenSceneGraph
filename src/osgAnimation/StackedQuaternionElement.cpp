@@ -37,7 +37,7 @@ void StackedQuaternionElement::applyToMatrix(osg::Matrix& matrix) const {matrix.
 osg::Matrix StackedQuaternionElement::getAsMatrix() const { return osg::Matrix(_quaternion); }
 bool StackedQuaternionElement::isIdentity() const { return (_quaternion[0] == 0 && _quaternion[1] == 0 && _quaternion[2] == 0 && _quaternion[3] == 1.0); }
 
-void StackedQuaternionElement::update(float t)
+void StackedQuaternionElement::update(float /*t*/)
 {
     if (_target.valid())
         _quaternion = _target->getValue();

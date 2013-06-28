@@ -29,7 +29,8 @@ TerrainManipulator::TerrainManipulator( int flags )
 
 /// Constructor.
 TerrainManipulator::TerrainManipulator( const TerrainManipulator& tm, const CopyOp& copyOp )
-    : inherited( tm, copyOp ),
+    : osg::Object(tm, copyOp),
+      inherited( tm, copyOp ),
       _previousUp( tm._previousUp )
 {
 }
@@ -299,7 +300,7 @@ bool TerrainManipulator::performMovementMiddleMouseButton( const double eventTim
 }
 
 
-bool TerrainManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool TerrainManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double /*dx*/, const double dy )
 {
     // zoom model
     zoomModel( dy * getThrowScale( eventTimeDelta ), false );

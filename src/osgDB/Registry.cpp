@@ -346,7 +346,7 @@ Registry::Registry()
     addFileExtensionAlias("tga",  "qt");
     addFileExtensionAlias("flv",  "qt");
     addFileExtensionAlias("dv",   "qt");
-    
+
     #if !defined(USE_QTKIT)
         addFileExtensionAlias("mov",  "qt");
         addFileExtensionAlias("avi",  "qt");
@@ -1062,7 +1062,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
     return std::string();
 }
 
-std::string Registry::findLibraryFileImplementation(const std::string& filename, const Options* options, CaseSensitivity caseSensitivity)
+std::string Registry::findLibraryFileImplementation(const std::string& filename, const Options* /*options*/, CaseSensitivity caseSensitivity)
 {
     if (filename.empty())
         return filename;
@@ -1186,7 +1186,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             osgDB::getServerProtocol(readFunctor._filename),
             osgDB::getFileExtension(readFunctor._filename)
         );
-                
+
         if (rw)
         {
             return readFunctor.doRead(*rw);
@@ -1205,7 +1205,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
     // sort the results so the most relevant (i.e. ERROR_IN_READING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::ReadResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1327,7 +1327,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::WriteResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1383,7 +1383,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::WriteResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1434,11 +1434,11 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write HeightField to file \""+fileName+"\".");
     }
-    
+
     // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::WriteResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1507,7 +1507,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::WriteResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1563,7 +1563,7 @@ ReaderWriter::WriteResult Registry::writeShaderImplementation(const Shader& shad
     // sort the results so the most relevant (i.e. ERROR_IN_WRITING_FILE is more relevant than FILE_NOT_FOUND) results get placed at the end of the results list.
     std::sort(results.begin(), results.end());
     ReaderWriter::WriteResult result = results.back();
-    
+
     if (result.message().empty())
     {
         switch(result.status())
@@ -1741,11 +1741,11 @@ ReaderWriter* Registry::getReaderWriterForProtocolAndExtension(const std::string
     ReaderWriter* result = getReaderWriterForExtension(extension);
     if (result && result->acceptsProtocol(protocol))
         return result;
-    
+
     result = NULL;
     ReaderWriterList results;
     getReaderWriterListForProtocol(protocol, results);
-    
+
     for(ReaderWriterList::const_iterator i = results.begin(); i != results.end(); ++i)
     {
         // if we have a readerwriter which supports wildcards, save it as a fallback
@@ -1754,6 +1754,6 @@ ReaderWriter* Registry::getReaderWriterForProtocolAndExtension(const std::string
         else if ((*i)->acceptsExtension(extension))
             return i->get();
     }
-    
+
     return result ? result : getReaderWriterForExtension("curl");
 }

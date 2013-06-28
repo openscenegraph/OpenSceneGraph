@@ -704,7 +704,7 @@ void ViewDependentShadowMap::cleanSceneGraph()
     OSG_INFO<<"ViewDependentShadowMap::cleanSceneGraph()"<<std::endl;
 }
 
-ViewDependentShadowMap::ViewDependentData* ViewDependentShadowMap::createViewDependentData(osgUtil::CullVisitor* cv)
+ViewDependentShadowMap::ViewDependentData* ViewDependentShadowMap::createViewDependentData(osgUtil::CullVisitor* /*cv*/)
 {
     return new ViewDependentData(this);
 }
@@ -804,7 +804,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     if (minZNear>maxZFar) minZNear = maxZFar*settings->getMinimumShadowMapNearFarRatio();
 
     //OSG_NOTICE<<"maxZFar "<<maxZFar<<std::endl;
-    
+
     Frustum frustum(&cv, minZNear, maxZFar);
 
     // return compute near far mode back to it's original settings
@@ -1963,7 +1963,7 @@ struct RenderLeafBounds
     double min_z, max_z;
 };
 
-bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
+bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& /*positionedLight*/, osg::Camera* camera)
 {
     const ShadowSettings* settings = getShadowedScene()->getShadowSettings();
 
@@ -2347,7 +2347,7 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
     osg::ref_ptr<osg::StateSet> stateset = vdd.getStateSet();
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_accessUnfiromsAndProgramMutex);
-    
+
     vdd.getStateSet()->clear();
 
     vdd.getStateSet()->setTextureAttributeAndModes(0, _fallbackBaseTexture.get(), osg::StateAttribute::ON);
@@ -2416,7 +2416,7 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
     return vdd.getStateSet();
 }
 
-void ViewDependentShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+void ViewDependentShadowMap::resizeGLObjectBuffers(unsigned int /*maxSize*/)
 {
     // the way that ViewDependentData is mapped shouldn't
 }

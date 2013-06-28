@@ -109,7 +109,7 @@ struct StatsGraph : public osg::MatrixTransform
     struct NeverCull : public osg::Drawable::CullCallback
     {
         NeverCull() {}
-        bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const { return false;}
+        bool cull(osg::NodeVisitor* /*nv*/, osg::Drawable* /*drawable*/, osg::RenderInfo* /*renderInfo*/) const { return false;}
     };
 
 

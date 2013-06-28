@@ -140,19 +140,19 @@ public:
     }
 
     template<typename T>
-    void combineRotationUserValue(T& value) const
+    void combineRotationUserValue(T& /*value*/) const
     {
         OSG_NOTICE<<"combineRotationUserValue TODO - do slerp"<<std::endl;
     }
 
     template<typename T>
-    void combinePlaneUserValue(T& value) const
+    void combinePlaneUserValue(T& /*value*/) const
     {
         OSG_NOTICE<<"combinePlaneUserValue TODO"<<std::endl;
     }
 
     template<typename T>
-    void combineMatrixUserValue(T& value) const
+    void combineMatrixUserValue(T& /*value*/) const
     {
         OSG_NOTICE<<"combineMatrixUserValue TODO - decomposs into translate, rotation and scale and then interpolate."<<std::endl;
     }
@@ -190,7 +190,7 @@ void PropertyAnimation::update(osg::Node& node)
     double time = getAnimationTime();
 
     if (_keyFrameMap.empty()) return;
-    
+
     KeyFrameMap::const_iterator itr = _keyFrameMap.lower_bound(time);
     if (itr==_keyFrameMap.begin())
     {
@@ -223,9 +223,9 @@ void PropertyAnimation::update(osg::Node& node)
         // clone all the properties from p1;
 
         osg::ref_ptr<osg::UserDataContainer> destination = node.getOrCreateUserDataContainer();
-        
+
         assign(destination.get(), p1);
-        
+
         for(unsigned int i2=0; i2<p2->getNumUserObjects(); ++i2)
         {
             osg::Object* obj_2 = p2->getUserObject(i2);
@@ -256,7 +256,7 @@ void PropertyAnimation::update(osg::Node& node)
                 // need to insert property;
                 assign(destination.get(), obj_2);
             }
-            
+
         }
 
     }
@@ -265,7 +265,7 @@ void PropertyAnimation::update(osg::Node& node)
         OSG_NOTICE<<"PropertyAnimation::update() : copy last UserDataContainer"<<std::endl;
         assign(node.getOrCreateUserDataContainer(), _keyFrameMap.rbegin()->second.get());
     }
-    
+
 }
 
 void PropertyAnimation::assign(osg::UserDataContainer* destination, osg::UserDataContainer* source)
@@ -282,14 +282,14 @@ void PropertyAnimation::assign(osg::UserDataContainer* destination, osg::UserDat
 void PropertyAnimation::assign(osg::UserDataContainer* udc, osg::Object* obj)
 {
     if (!obj) return;
-    
+
     unsigned int index = udc->getUserObjectIndex(obj);
     if (index != udc->getNumUserObjects())
     {
         OSG_NOTICE<<"Object already assigned to UserDataContainer"<<std::endl;
         return;
     }
-    
+
     index = udc->getUserObjectIndex(obj->getName());
     if (index != udc->getNumUserObjects())
     {
@@ -312,14 +312,14 @@ void ImageSequenceUpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* 
         double xMin = -1.0;
         double xMax = 1.0;
         double position = ((double)x-xMin)/(xMax-xMin)*_imageSequence->getLength();
-        
+
         _imageSequence->seek(position);
     }
     else
     {
         OSG_INFO<<"ImageSequenceUpdateCallback::operator() Could not find property : "<<_propertyName<<std::endl;
     }
-    
+
     // note, callback is responsible for scenegraph traversal so
     // they must call traverse(node,nv) to ensure that the
     // scene graph subtree (and associated callbacks) are traversed.
@@ -335,12 +335,12 @@ bool PropertyEventCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAc
                         ea.getEventType()==osgGA::GUIEventAdapter::PUSH ||
                         ea.getEventType()==osgGA::GUIEventAdapter::RELEASE);
     if(mouseEvent)
-    {    
+    {
         _propertyManager->setProperty("mouse.x",ea.getX());
         _propertyManager->setProperty("mouse.x_normalized",ea.getXnormalized());
         _propertyManager->setProperty("mouse.y",ea.getX());
         _propertyManager->setProperty("mouse.y_normalized",ea.getYnormalized());
     }
-    
+
     return false;
 }

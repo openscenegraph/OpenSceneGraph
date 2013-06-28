@@ -236,6 +236,7 @@ struct FindSharpEdgesFunctor
             _primitiveSetIndex(primitiveSetIndex), _p1(p1), _p2(p2), _p3(p3) {}
 
         Triangle(const Triangle& tri):
+            osg::Referenced(true),
             _primitiveSetIndex(tri._primitiveSetIndex), _p1(tri._p1), _p2(tri._p2), _p3(tri._p3) {}
 
         Triangle& operator = (const Triangle& tri)

@@ -120,14 +120,14 @@ protected:
     virtual ~DomainOperator() {}
     DomainOperator& operator=( const DomainOperator& ) { return *this; }
 
-    virtual void handlePoint( const Domain& domain, Particle* P, double dt ) { ignore("Point"); }
-    virtual void handleLineSegment( const Domain& domain, Particle* P, double dt ) { ignore("LineSegment"); }
-    virtual void handleTriangle( const Domain& domain, Particle* P, double dt ) { ignore("Triangle"); }
-    virtual void handleRectangle( const Domain& domain, Particle* P, double dt ) { ignore("Rectangle"); }
-    virtual void handlePlane( const Domain& domain, Particle* P, double dt ) { ignore("Plane"); }
-    virtual void handleSphere( const Domain& domain, Particle* P, double dt ) { ignore("Sphere"); }
-    virtual void handleBox( const Domain& domain, Particle* P, double dt ) { ignore("Box"); }
-    virtual void handleDisk( const Domain& domain, Particle* P, double dt ) { ignore("Disk"); }
+    virtual void handlePoint( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Point"); }
+    virtual void handleLineSegment( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("LineSegment"); }
+    virtual void handleTriangle( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Triangle"); }
+    virtual void handleRectangle( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Rectangle"); }
+    virtual void handlePlane( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Plane"); }
+    virtual void handleSphere( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Sphere"); }
+    virtual void handleBox( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Box"); }
+    virtual void handleDisk( const Domain& /*domain*/, Particle* /*P*/, double /*dt*/ ) { ignore("Disk"); }
 
     inline void computeNewBasis( const osg::Vec3&, const osg::Vec3&, osg::Vec3&, osg::Vec3& );
     inline void ignore( const std::string& func );

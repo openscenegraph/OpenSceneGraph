@@ -27,7 +27,7 @@ class OSGDB_EXPORT FileList : public osg::Object
     public:
 
         FileList();
-        FileList(const FileList& fileList, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+        FileList(const FileList& fileList, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgDB, FileList)
 
@@ -58,7 +58,7 @@ class OSGDB_EXPORT DatabaseRevision : public osg::Object
     public:
 
         DatabaseRevision();
-        DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+        DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgDB, DatabaseRevision)
 
@@ -99,7 +99,7 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
     public:
 
         DatabaseRevisions();
-        DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+        DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgDB, DatabaseRevisions)
 

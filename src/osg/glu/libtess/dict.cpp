@@ -91,7 +91,7 @@ DictNode *dictInsertBefore( Dict *dict, DictNode *node, DictKey key )
 }
 
 /* really __gl_dictListDelete */
-void dictDelete( Dict *dict, DictNode *node ) /*ARGSUSED*/
+void dictDelete( Dict */*dict*/, DictNode *node ) /*ARGSUSED*/
 {
   node->next->prev = node->prev;
   node->prev->next = node->next;

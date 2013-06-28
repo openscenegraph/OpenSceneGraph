@@ -43,7 +43,7 @@ bool Locator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) co
     return true;
 }
 
-bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const
+bool Locator::computeLocalBounds(Locator& /*source*/, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const
 {
     typedef std::list<osg::Vec3d> Corners;
     Corners corners;

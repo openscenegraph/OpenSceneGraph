@@ -80,7 +80,7 @@ void ShaderAttribute::removeUniform(unsigned int i)
     _uniforms.erase(_uniforms.begin()+i);
 }
 
-bool ShaderAttribute::getModeUsage(StateAttribute::ModeUsage& usage) const
+bool ShaderAttribute::getModeUsage(StateAttribute::ModeUsage& /*usage*/) const
 {
     return false;
 }

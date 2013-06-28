@@ -48,7 +48,8 @@ StandardManipulator::StandardManipulator( int flags )
 
 /// Constructor.
 StandardManipulator::StandardManipulator( const StandardManipulator& uim, const CopyOp& copyOp )
-   : inherited( uim, copyOp ),
+    : osg::Object(uim, copyOp),
+     inherited( uim, copyOp ),
      _thrown( uim._thrown ),
      _allowThrow( uim._allowThrow ),
      _mouseCenterX(0.0f), _mouseCenterY(0.0f),
@@ -189,7 +190,7 @@ void StandardManipulator::home( double /*currentTime*/ )
     StandardManipulator implementation only updates its internal data.
     If home position is expected to be supported by the descendant manipulator,
     it has to reimplement the method to update manipulator transformation.*/
-void StandardManipulator::home( const GUIEventAdapter& ea, GUIActionAdapter& us )
+void StandardManipulator::home( const GUIEventAdapter& /*ea*/, GUIActionAdapter& us )
 {
     if( getAutoComputeHomePosition() )
     {
@@ -207,7 +208,7 @@ void StandardManipulator::home( const GUIEventAdapter& ea, GUIActionAdapter& us 
 
 
 /** Start/restart the manipulator.*/
-void StandardManipulator::init( const GUIEventAdapter& ea, GUIActionAdapter& us )
+void StandardManipulator::init( const GUIEventAdapter& /*ea*/, GUIActionAdapter& us )
 {
     flushMouseEventStack();
 
@@ -300,7 +301,7 @@ bool StandardManipulator::handleResize( const GUIEventAdapter& ea, GUIActionAdap
 
 
 /// Handles GUIEventAdapter::MOVE event.
-bool StandardManipulator::handleMouseMove( const GUIEventAdapter& ea, GUIActionAdapter& us )
+bool StandardManipulator::handleMouseMove( const GUIEventAdapter& /*ea*/, GUIActionAdapter& /*us*/ )
 {
     return false;
 }
@@ -388,14 +389,14 @@ bool StandardManipulator::handleKeyDown( const GUIEventAdapter& ea, GUIActionAda
 
 
 /// Handles GUIEventAdapter::KEYUP event.
-bool StandardManipulator::handleKeyUp( const GUIEventAdapter& ea, GUIActionAdapter& us )
+bool StandardManipulator::handleKeyUp( const GUIEventAdapter& /*ea*/, GUIActionAdapter& /*us*/ )
 {
     return false;
 }
 
 
 /// Handles GUIEventAdapter::SCROLL event.
-bool StandardManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAdapter& us )
+bool StandardManipulator::handleMouseWheel( const GUIEventAdapter& /*ea*/, GUIActionAdapter& /*us*/ )
 {
     return false;
 }
@@ -454,7 +455,7 @@ bool StandardManipulator::performMovement()
 
 /** Make movement step of manipulator.
     This method implements movement for left mouse button.*/
-bool StandardManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool StandardManipulator::performMovementLeftMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     return false;
 }
@@ -463,7 +464,7 @@ bool StandardManipulator::performMovementLeftMouseButton( const double eventTime
 /** Make movement step of manipulator.
     This method implements movement for middle mouse button
     or combination of left and right mouse button pressed together.*/
-bool StandardManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool StandardManipulator::performMovementMiddleMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     return false;
 }
@@ -471,7 +472,7 @@ bool StandardManipulator::performMovementMiddleMouseButton( const double eventTi
 
 /** Make movement step of manipulator.
     This method implements movement for right mouse button.*/
-bool StandardManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool StandardManipulator::performMovementRightMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     return false;
 }
@@ -494,7 +495,7 @@ bool StandardManipulator::handleMouseDeltaMovement( const GUIEventAdapter& ea, G
 
 
 /// The method performs manipulator update based on relative mouse movement (mouse delta).
-bool StandardManipulator::performMouseDeltaMovement( const float dx, const float dy )
+bool StandardManipulator::performMouseDeltaMovement( const float /*dx*/, const float /*dy*/ )
 {
    return false;
 }
@@ -522,7 +523,7 @@ bool StandardManipulator::performAnimationMovement( const GUIEventAdapter& ea, G
 
 
 /// Updates manipulator by a single animation step
-void StandardManipulator::applyAnimationStep( const double currentProgress, const double prevProgress )
+void StandardManipulator::applyAnimationStep( const double /*currentProgress*/, const double /*prevProgress*/ )
 {
 }
 
@@ -719,7 +720,7 @@ void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp,
  *  right and up camera vectors are negated (changing roll by 180 degrees),
  *  making pitch once again between -90..+90 degrees limits.*/
 void StandardManipulator::fixVerticalAxis( const osg::Vec3d& forward, const osg::Vec3d& up, osg::Vec3d& newUp,
-                                           const osg::Vec3d& localUp, bool disallowFlipOver )
+                                           const osg::Vec3d& localUp, bool /*disallowFlipOver*/ )
 {
     // right direction
     osg::Vec3d right1 = forward ^ localUp;
@@ -826,7 +827,7 @@ bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAda
     If there is a hit, animation is started and true is returned.
     Otherwise, the method returns false.*/
 bool StandardManipulator::startAnimationByMousePointerIntersection(
-      const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us )
+      const osgGA::GUIEventAdapter& /*ea*/, osgGA::GUIActionAdapter& /*us*/ )
 {
     return false;
 }

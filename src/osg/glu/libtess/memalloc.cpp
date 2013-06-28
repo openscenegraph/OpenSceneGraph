@@ -35,7 +35,7 @@
 #include "memalloc.h"
 #include "string.h"
 
-int __gl_memInit( size_t maxFast )
+int __gl_memInit( size_t /*maxFast*/ )
 {
 #ifndef NO_MALLOPT
 /*  mallopt( M_MXFAST, maxFast );*/

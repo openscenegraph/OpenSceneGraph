@@ -36,7 +36,8 @@ Keystone::Keystone():
     top_left(-1.0,1.0),
     top_right(1.0,1.0) {}
 
-Keystone::Keystone(const Keystone& rhs, const osg::CopyOp&):
+Keystone::Keystone(const Keystone& rhs, const osg::CopyOp & copyop):
+    osg::Object(rhs, copyop),
     keystoneEditingEnabled(rhs.keystoneEditingEnabled),
     gridColour(rhs.gridColour),
     bottom_left(rhs.bottom_left),
@@ -97,7 +98,7 @@ struct KeystoneCullCallback : public osg::Drawable::CullCallback
     META_Object(osg,KeystoneCullCallback);
 
     /** do customized cull code, return true if drawable should be culled.*/
-    virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const
+    virtual bool cull(osg::NodeVisitor* /*nv*/, osg::Drawable* /*drawable*/, osg::RenderInfo* /*renderInfo*/) const
     {
         return _keystone.valid() ? !_keystone->getKeystoneEditingEnabled() : true;
     }
@@ -413,7 +414,7 @@ osg::Vec2d KeystoneHandler::incrementScale(const osgGA::GUIEventAdapter& ea) con
     return _defaultIncrement;
 }
 
-bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* obj, osg::NodeVisitor* nv)
+bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/, osg::Object* obj, osg::NodeVisitor* /*nv*/)
 {
     osg::Camera* camera = dynamic_cast<osg::Camera*>(obj);
     osg::Viewport* viewport = camera ?  camera->getViewport() : 0;

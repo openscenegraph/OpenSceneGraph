@@ -795,6 +795,7 @@ KdTreeBuilder::KdTreeBuilder():
 }
 
 KdTreeBuilder::KdTreeBuilder(const KdTreeBuilder& rhs):
+    osg::Referenced(true),
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _buildOptions(rhs._buildOptions),
     _kdTreePrototype(rhs._kdTreePrototype)

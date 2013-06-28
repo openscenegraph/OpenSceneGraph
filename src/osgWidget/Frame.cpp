@@ -42,7 +42,7 @@ _corner (corner._corner)
 {
 }
 
-void Frame::Corner::parented(Window* window) {
+void Frame::Corner::parented(Window* /*window*/) {
     Frame* parent = dynamic_cast<Frame*>(getParent());
 
     if(!parent) return;
@@ -50,7 +50,7 @@ void Frame::Corner::parented(Window* window) {
     if(parent->canResize()) setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
-bool Frame::Corner::mouseDrag(double x, double y, const WindowManager* wm)
+bool Frame::Corner::mouseDrag(double x, double y, const WindowManager* /*wm*/)
 {
     Frame* parent = dynamic_cast<Frame*>(getParent());
 
@@ -88,7 +88,7 @@ _border (border._border)
 {
 }
 
-void Frame::Border::parented(Window* window) {
+void Frame::Border::parented(Window* /*window*/) {
     Frame* parent = dynamic_cast<Frame*>(getParent());
 
     if(!parent) return;
@@ -137,7 +137,7 @@ void Frame::Border::positioned()
     }
 }
 
-bool Frame::Border::mouseDrag(double x, double y, const WindowManager* wm)
+bool Frame::Border::mouseDrag(double x, double y, const WindowManager* /*wm*/)
 {
     Frame* parent = dynamic_cast<Frame*>(getParent());
 

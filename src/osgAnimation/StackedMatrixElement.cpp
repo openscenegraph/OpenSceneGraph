@@ -33,7 +33,7 @@ Target* StackedMatrixElement::getOrCreateTarget()
     return _target.get();
 }
 
-void StackedMatrixElement::update(float t)
+void StackedMatrixElement::update(float /*t*/)
 {
     if (_target.valid())
         _matrix = _target->getValue();

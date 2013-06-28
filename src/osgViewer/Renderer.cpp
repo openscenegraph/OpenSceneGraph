@@ -65,7 +65,7 @@ EXTQuerySupport::EXTQuerySupport():
 {
 }
 
-void EXTQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
+void EXTQuerySupport::checkQuery(osg::Stats* stats, osg::State* /*state*/,
                                  osg::Timer_t startTick)
 {
     for(QueryFrameNumberList::iterator itr = _queryFrameNumberList.begin();
@@ -118,19 +118,19 @@ GLuint EXTQuerySupport::createQueryObject()
     }
 }
 
-void EXTQuerySupport::beginQuery(unsigned int frameNumber, osg::State* state)
+void EXTQuerySupport::beginQuery(unsigned int frameNumber, osg::State* /*state*/)
 {
     GLuint query = createQueryObject();
     _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
     _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));
 }
 
-void EXTQuerySupport::endQuery(osg::State* state)
+void EXTQuerySupport::endQuery(osg::State* /*state*/)
 {
     _extensions->glEndQuery(GL_TIME_ELAPSED);
 }
 
-void OpenGLQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
+void OpenGLQuerySupport::initialize(osg::State* state, osg::Timer_t /*startTick*/)
 {
     _extensions = osg::Drawable::getExtensions(state->getContextID(),true);
 }
@@ -177,7 +177,7 @@ void ARBQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
     OpenGLQuerySupport::initialize(state, startTick);
 }
 
-void ARBQuerySupport::beginQuery(unsigned int frameNumber, osg::State* state)
+void ARBQuerySupport::beginQuery(unsigned int frameNumber, osg::State* /*state*/)
 {
     QueryPair query;
     if (_availableQueryObjects.empty())
@@ -194,14 +194,14 @@ void ARBQuerySupport::beginQuery(unsigned int frameNumber, osg::State* state)
     _queryFrameList.push_back(ActiveQuery(query, frameNumber));
 }
 
-void ARBQuerySupport::endQuery(osg::State* state)
+void ARBQuerySupport::endQuery(osg::State* /*state*/)
 {
     _extensions->glQueryCounter(_queryFrameList.back().queries.second,
                                 GL_TIMESTAMP);
 }
 
 void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
-                                 osg::Timer_t startTick)
+                                 osg::Timer_t /*startTick*/)
 {
     for(QueryFrameList::iterator itr = _queryFrameList.begin();
         itr != _queryFrameList.end();
@@ -390,7 +390,7 @@ Renderer::Renderer(osg::Camera* camera):
                                ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
     _serializeDraw = ds ? ds->getSerializeDrawDispatch() : false;
-                               
+
     unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
     if (view)
     {
@@ -423,7 +423,7 @@ Renderer::Renderer(osg::Camera* camera):
         _sceneView[0]->setResetColorMaskToAllOn(false);
         _sceneView[1]->setResetColorMaskToAllOn(false);
     }
-    
+
     _sceneView[0]->setCamera(_camera.get(), false);
     _sceneView[1]->setCamera(_camera.get(), false);
 
@@ -898,7 +898,7 @@ void Renderer::operator () (osg::Object* object)
     if (camera) cull();
 }
 
-void Renderer::operator () (osg::GraphicsContext* context)
+void Renderer::operator () (osg::GraphicsContext* /*context*/)
 {
     if (_graphicsThreadDoesCull)
     {

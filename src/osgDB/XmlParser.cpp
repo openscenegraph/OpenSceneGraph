@@ -491,7 +491,7 @@ bool XmlNode::writeString(const ControlMap& controlMap, std::ostream& fout, cons
     return true;
 }
 
-bool XmlNode::writeChildren(const ControlMap& controlMap, std::ostream& fout, const std::string& indent) const
+bool XmlNode::writeChildren(const ControlMap& /*controlMap*/, std::ostream& fout, const std::string& indent) const
 {
     for(Children::const_iterator citr = children.begin();
         citr != children.end();

@@ -346,7 +346,7 @@ void SceneGraphBuilder::Cylinder(GLfloat        aBase,
     OSG_NOTICE<<"SceneGraphBuilder::Cylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
 }
 
-void SceneGraphBuilder::Disk(GLfloat        inner,
+void SceneGraphBuilder::Disk(GLfloat        /*inner*/,
                              GLfloat        outer,
                              GLint          slices,
                              GLint          /*loops*/)

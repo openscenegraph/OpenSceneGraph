@@ -43,7 +43,7 @@ bool JumpData::jump(SlideEventHandler* seh) const
 
         int slideNumToUse = slideNum;
         int layerNumToUse = layerNum;
-        
+
         if (!slideName.empty())
         {
             osg::Switch* presentation = seh->getPresentationSwitch();
@@ -63,7 +63,7 @@ bool JumpData::jump(SlideEventHandler* seh) const
         {
             slideNumToUse = seh->getActiveSlide() + slideNum;
         }
-        
+
 
         if (!layerName.empty())
         {
@@ -98,10 +98,10 @@ bool JumpData::jump(SlideEventHandler* seh) const
         {
             layerNumToUse = seh->getActiveLayer() + layerNum;
         }
-        
+
         if (slideNumToUse<0) slideNumToUse = 0;
         if (layerNumToUse<0) layerNumToUse = 0;
-        
+
         OSG_INFO<<"   jump to "<<slideNumToUse<<", "<<layerNumToUse<<std::endl;
         return seh->selectSlide(slideNumToUse,layerNumToUse);
 }
@@ -142,15 +142,15 @@ struct InteractiveImageSequenceOperator : public ObjectOperator
         // need to pause till the load has been completed.
     }
 
-    virtual void maintain(SlideEventHandler* seh)
+    virtual void maintain(SlideEventHandler* /*seh*/)
     {
     }
 
-    virtual void leave(SlideEventHandler* seh)
+    virtual void leave(SlideEventHandler* /*seh*/)
     {
     }
 
-    virtual void setPause(SlideEventHandler* seh, bool pause)
+    virtual void setPause(SlideEventHandler* /*seh*/, bool /*pause*/)
     {
     }
 
@@ -159,7 +159,7 @@ struct InteractiveImageSequenceOperator : public ObjectOperator
         set(seh);
     }
 
-    void set(SlideEventHandler* seh)
+    void set(SlideEventHandler* /*seh*/)
     {
         //OSG_NOTICE<<"InteractiveImageSequenceOperator::set(..)"<<std::endl;
     }
@@ -245,7 +245,7 @@ struct ImageStreamOperator : public ObjectOperator
 
         _timeOfLastReset = seh->getReferenceTime();
         _stopped = false;
-        
+
         if (_delayTime==0.0)
         {
             start(seh);
@@ -258,7 +258,7 @@ struct ImageStreamOperator : public ObjectOperator
 
         _started = true;
         _stopped = false;
-        
+
         if (_startTime!=0.0) _imageStream->seek(_startTime);
         else _imageStream->rewind();
 
@@ -271,13 +271,13 @@ struct ImageStreamOperator : public ObjectOperator
         OpenThreads::Thread::microSleep(static_cast<unsigned int>(microSecondsToDelay));
     }
 
-    void stop(SlideEventHandler* seh)
+    void stop(SlideEventHandler* /*seh*/)
     {
         if (!_started) return;
 
         _started = false;
         _stopped = true;
-        
+
         _imageStream->pause();
     }
 
@@ -341,7 +341,7 @@ struct CallbackOperator : public ObjectOperator
         {
             OSG_NOTICE<<"Need to pause callback : "<<nc->className()<<std::endl;
         }
-        
+
     }
 
     virtual void reset(SlideEventHandler*)
@@ -445,7 +445,7 @@ struct LayerAttributesOperator : public ObjectOperator
          _layerAttribute->callLeaveCallbacks(_node.get());
     }
 
-    virtual void setPause(SlideEventHandler*, bool pause)
+    virtual void setPause(SlideEventHandler*, bool /*pause*/)
     {
     }
 
@@ -1001,7 +1001,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
     if (ea.getHandled()) return false;
 
     _referenceTime = ea.getTime();
-    
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::FRAME):
@@ -1245,7 +1245,7 @@ unsigned int SlideEventHandler::getNumSlides()
 osg::Switch* SlideEventHandler::getSlide(int slideNum)
 {
     if (slideNum<0 || slideNum>static_cast<int>(_presentationSwitch->getNumChildren())) return 0;
-    
+
     FindNamedSwitchVisitor findSlide("Slide");
     _presentationSwitch->getChild(slideNum)->accept(findSlide);
     return findSlide._switch;
@@ -1335,7 +1335,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
         _viewer->computeActiveCoordinateSystemNodePath();
     }
-    
+
     // resetUpdateCallbacks(ALL_OBJECTS);
 
     bool _useSlideFilePaths = false;
@@ -1493,7 +1493,7 @@ bool SlideEventHandler::home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAd
         }
         _viewer->getCameraManipulator()->home(ea,aa);
     }
-    
+
     return true;
 }
 

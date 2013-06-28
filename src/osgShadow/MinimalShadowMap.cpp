@@ -336,7 +336,7 @@ void MinimalShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
 }
 
 void MinimalShadowMap::ViewData::cutScenePolytope
-    ( const osg::Matrix & transform,
+    ( const osg::Matrix & /*transform*/,
       const osg::Matrix & inverse,
       const osg::BoundingBox & bb )
 {

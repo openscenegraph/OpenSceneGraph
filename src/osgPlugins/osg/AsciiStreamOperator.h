@@ -95,7 +95,7 @@ public:
         indentIfRequired(); *_out << mark._name;
     }
 
-    virtual void writeCharArray( const char* s, unsigned int size ) {}
+    virtual void writeCharArray( const char* /*s*/, unsigned int /*size*/ ) {}
 
     virtual void writeWrappedString( const std::string& str )
     {
@@ -240,13 +240,13 @@ public:
         prop.set( value );
     }
 
-    virtual void readMark( osgDB::ObjectMark& mark )
+    virtual void readMark( osgDB::ObjectMark& /*mark*/ )
     {
         std::string markString;
         readString( markString );
     }
 
-    virtual void readCharArray( char* s, unsigned int size ) {}
+    virtual void readCharArray( char* /*s*/, unsigned int /*size*/ ) {}
 
     virtual void readWrappedString( std::string& str )
     {

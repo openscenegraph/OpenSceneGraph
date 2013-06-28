@@ -30,7 +30,8 @@ NodeTrackerManipulator::NodeTrackerManipulator( int flags )
 
 
 NodeTrackerManipulator::NodeTrackerManipulator( const NodeTrackerManipulator& m, const CopyOp& copyOp )
-    : inherited( m, copyOp ),
+    : osg::Object(m, copyOp),
+      inherited( m, copyOp ),
       _trackNodePath( m._trackNodePath ),
       _trackerMode( m._trackerMode )
 {
@@ -281,7 +282,7 @@ bool NodeTrackerManipulator::performMovementLeftMouseButton( const double eventT
 
 
 // doc in parent
-bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
+bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;

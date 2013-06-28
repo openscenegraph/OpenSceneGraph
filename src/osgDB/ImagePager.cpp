@@ -81,7 +81,7 @@ void ImagePager::ReadQueue::clear()
 void ImagePager::ReadQueue::add(ImagePager::ImageRequest* imageRequest)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
-    
+
     _requestList.push_back(imageRequest);
     imageRequest->_requestQueue = this;
 
@@ -221,7 +221,7 @@ void ImagePager::ImageThread::run()
             if (image.valid())
             {
                 // OSG_NOTICE<<"   successful readImageFile("<<imageRequest->_fileName<<") index to assign = "<<imageRequest->_attachmentIndex<<std::endl;
-                
+
                 osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(imageRequest->_attachmentPoint.get());
                 if (is)
                 {
@@ -329,7 +329,7 @@ osg::Image* ImagePager::readImageFile(const std::string& fileName, const osg::Re
     return osgDB::readImageFile(fileName, readOptions);
 }
 
-void ImagePager::requestImageFile(const std::string& fileName, osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options)
+void ImagePager::requestImageFile(const std::string& fileName, osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* /*framestamp*/, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options)
 {
 
     osgDB::Options* readOptions = dynamic_cast<osgDB::Options*>(const_cast<osg::Referenced*>(options));

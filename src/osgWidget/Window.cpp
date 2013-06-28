@@ -883,7 +883,7 @@ void Window::managed(WindowManager* wm) {
     update();
 }
 
-void Window::unmanaged(WindowManager* wm) {
+void Window::unmanaged(WindowManager* /*wm*/) {
     for(Iterator i = begin(); i != end(); i++) _setManaged(i->get(), true);
 
     _wm = 0;
@@ -911,7 +911,7 @@ bool Window::removeWidget(Widget* widget) {
     return false;
 }
 
-bool Window::replaceWidget(Widget* oldWidget, Widget* newWidget) {
+bool Window::replaceWidget(Widget* /*oldWidget*/, Widget* /*newWidget*/) {
     return false;
 }
 

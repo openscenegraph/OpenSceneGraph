@@ -101,7 +101,7 @@ void Bevel::roundedBevel2(float width, unsigned int numSteps)
 
 }
 
-void Bevel::print(std::ostream& fout)
+void Bevel::print(std::ostream& /*fout*/)
 {
     OSG_NOTICE<<"print bevel"<<std::endl;
     for(Vertices::iterator itr = _vertices.begin();

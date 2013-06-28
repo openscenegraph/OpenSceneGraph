@@ -28,6 +28,7 @@ ImageDetails::ImageDetails():
 }
 
 ImageDetails::ImageDetails(const ImageDetails& rhs,const osg::CopyOp& copyop):
+    osg::Object(rhs, copyop),
     _texelOffset(rhs._texelOffset),
     _texelScale(rhs._texelScale),
     _matrix(rhs._matrix)
@@ -511,7 +512,7 @@ struct ApplyTransferFunctionOperator
         luminance(a);
     }
 
-    inline void luminance_alpha(float l,float a) const
+    inline void luminance_alpha(float l,float /*a*/) const
     {
         luminance(l);
     }
@@ -521,7 +522,7 @@ struct ApplyTransferFunctionOperator
         luminance((r+g+b)*0.3333333);
     }
 
-    inline void rgba(float r,float g,float b,float a) const
+    inline void rgba(float /*r*/,float /*g*/,float /*b*/,float a) const
     {
         luminance(a);
     }

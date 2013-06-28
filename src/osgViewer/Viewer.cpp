@@ -295,18 +295,18 @@ bool Viewer::readConfiguration(const std::string& filename)
         //OSG_NOTICE<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
         return false;
     }
-    
+
     ViewConfig* config = dynamic_cast<ViewConfig*>(object.get());
     if (config)
     {
         OSG_NOTICE<<"Using osgViewer::Config : "<<config->className()<<std::endl;
         config->configure(*this);
-        
+
         osgDB::writeObjectFile(*config,"test.osgt");
-        
+
         return true;
     }
-    
+
 
     CompositeViewer* compositeViewer = dynamic_cast<CompositeViewer*>(object.get());
     if (compositeViewer)
@@ -363,7 +363,7 @@ bool Viewer::checkNeedToDoFrame()
 
     // check if events are available and need processing
     if (checkEvents()) return true;
-    
+
     // now check if any of the event handles have prompted a redraw.
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
@@ -395,7 +395,7 @@ bool Viewer::checkEvents()
     {
         if ((*witr)->checkEvents()) return true;
     }
-    
+
     return false;
 }
 
@@ -678,7 +678,7 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
         double master_max_x = 1.0;
         double master_min_y = -1.0;
         double master_max_y = 1.0;
-        
+
         osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
         if (getCamera()->getViewport())
         {
@@ -758,8 +758,8 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
         }
     }
 }
-    
-    
+
+
 void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
 {
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(event.getGraphicsContext());
@@ -770,7 +770,7 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
 
     bool invert_y = event.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
     if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
-    
+
     event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                     y, 0, gw->getTraits()->height));
 
@@ -822,7 +822,7 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
     osg::Viewport* viewport = camera ? camera->getViewport() : 0;
 
     if (!viewport) return;
-    
+
     dest_event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
                                                              (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));
 
@@ -838,7 +838,7 @@ void Viewer::eventTraversal()
     if (_done) return;
 
     double cutOffTime = _frameStamp->getReferenceTime();
-    
+
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // OSG_NOTICE<<"Viewer::frameEventTraversal()."<<std::endl;
@@ -926,17 +926,17 @@ void Viewer::eventTraversal()
 #endif
 
                         eventState->copyPointerDataFrom(*event);
-                        
+
                         break;
                     }
                     default:
                         event->copyPointerDataFrom(*eventState);
                         break;
                 }
-                
+
                 events.push_back(event);
             }
-            
+
             for(itr = gw_events.begin();
                 itr != gw_events.end();
                 ++itr)
@@ -1174,13 +1174,13 @@ void Viewer::updateTraversal()
     }
 }
 
-void Viewer::getScenes(Scenes& scenes, bool onlyValid)
+void Viewer::getScenes(Scenes& scenes, bool /*onlyValid*/)
 {
     scenes.clear();
     scenes.push_back(_scene.get());
 }
 
-void Viewer::getViews(Views& views, bool onlyValid)
+void Viewer::getViews(Views& views, bool /*onlyValid*/)
 {
     views.clear();
     views.push_back(this);

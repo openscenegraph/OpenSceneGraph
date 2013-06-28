@@ -142,6 +142,7 @@ bool LuaEngine::eval(const std::string& code) {
     return true;
 
 #else
+    OSG_UNUSED(code);
     return noLuaFail("Can't evaluate code in LuaEngine");
 #endif
 }
@@ -163,6 +164,7 @@ bool LuaEngine::runFile(const std::string& filePath) {
     return true;
 
 #else
+    OSG_UNUSED(filePath);
     return noLuaFail("Can't run file in LuaEngine");
 #endif
 }

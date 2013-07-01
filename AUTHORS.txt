@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.1.8
+OpenSceneGraph Library 3.1.9
 
-504 Contributors:
+510 Contributors:
 
 Firstname Surname
 -----------------
@@ -10,14 +10,14 @@ Stephan Huber
 Paul Martz
 Mathias Fröhlich
 Marco Jez
-Jean-Sébastien Guay
 Farshid Lashkari
-Mike Weiblen
+Jean-Sébastien Guay
 Wang Rui
+Mike Weiblen
 Ulrich Hertlein
 Eric Wing
-Cedric Pinson
 Sukender 
+Cedric Pinson
 Brede Johansen
 Bob Kuehne
 Michael Platings
@@ -32,10 +32,10 @@ Martin Lavery
 Tree 
 Luigi Calori
 Mike Wittman
+Laurens Voerman
 Chris Hanson
 Roland Smeenk
 Roger James
-Laurens Voerman
 Jeremy Moles
 Jason Beverage
 Jan Peciva
@@ -45,11 +45,11 @@ Magnus Kessler
 David Fries
 Andy Skinner
 Paul Melis
+Alberto Luaces
+Luc Frauciel
 Tom Jolley
 Pavel Moloshtan
-Luc Frauciel
 Brad Christiansen
-Alberto Luaces
 Olaf Flebbe
 Jason Daly
 Art Tevs
@@ -63,12 +63,12 @@ Chris Denham
 Alberto Farre
 Sherman Wilcox
 Robert Michael
+Mourad Boufarguine
+Lionel Lagarde
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
-Mourad Boufarguine
-Lionel Lagarde
 Jan Ciger
 Glenn Waldron
 Gideon May
@@ -81,6 +81,7 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
+Aurelien Albert
 Torben Dannhauer
 Fabien Lavignotte
 Mike Connell
@@ -99,7 +100,6 @@ Csaba Halasz
 Cory Riddell
 Chuck Seberino
 Boris Bralo
-Aurelien Albert
 Yefei He
 Thomas Hogarth
 Sondra Iverson
@@ -141,6 +141,7 @@ Mihai Radu
 Michael Hartman
 Martins Innus
 Maciej Krol
+Lilin Xiong
 Leandro Motta Barros
 Jordi Torres
 Johan Nouvel
@@ -155,9 +156,9 @@ Sebastien Grignard
 Ryan Kawicki
 Rudolf Wiedemann
 Romano Magacho
+Pjotr Svetachov
 Mikhail Izmestev
 Maria Ten
-Lilin Xiong
 Liang Aibin
 Katharina Plugge
 John Vidar Larring
@@ -180,11 +181,11 @@ Tugkan Calapoglu
 Tim Daoust
 Sohey Yamamoto
 Sergey Leontyev
+Sebastian Messerschmidt
 Santosh Gaikwad
 Ryan Pavlik
 Robert Milharcic
 Rene Molenaar
-Pjotr Svetachov
 Piotr Domagalski
 Phil Atkin
 Nathan Monteleone
@@ -196,6 +197,7 @@ Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
+John Kaniarz
 Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
@@ -209,6 +211,7 @@ Doug McCorkle
 Donald Cipperly
 Don Leich
 Dietmar Funck
+Christian Buchner
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -231,7 +234,6 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sergey Polischuk
-Sebastian Messerschmidt
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -263,7 +265,6 @@ Kevin Moiule
 Keith Steffen
 Julen Garcia
 Joseph Winston
-John Kaniarz
 John Aughey
 Joachim Pouderoux
 Jean-Christophe Lombardo
@@ -277,6 +278,7 @@ Guy Volckaert
 Gustavo Wagner
 Guillaume Taze
 Guillaume Chouvenc
+Gill Peacegood
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
@@ -291,7 +293,6 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
-Christian Buchner
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -370,6 +371,7 @@ Oren Fromberg
 Oliver Neumann
 Ole-Morten Duesund
 Nicolas Brodu
+Nick Black
 Mojtaba Fathi
 Mirko Viviani
 Mikkel GjÃ¸l
@@ -398,6 +400,7 @@ Marius Kintel
 Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
+Marcel Pursche
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -405,6 +408,7 @@ Lewis Harmon
 Leigh Stivers
 Laurence Muller
 Laura Cerritelli
+Lars Nillson
 Kyle Centers
 Kristopher Bixler
 Konstantin Matveyev
@@ -443,12 +447,12 @@ Hartmut Seichter
 Gunter Huber
 Gregory Jaegy
 Graeme Harkness
-Gill Peacegood
 Gian Lorenzetto
 George Papagiannakis
 Galen Faidley
 Frida Schlaug
 Frederic Smith
+Frederic Morin
 Frank Warmerdam
 Frank Midgley
 Frank Lindeman
@@ -477,6 +481,8 @@ Clay Fowler
 Chuck Sembroski
 Christopher Blaesius
 Christophe Herreman
+Christian Ruzicka
+Christian Noon
 Christian Kaser
 Christian Ehrlicher
 Chris McGlone

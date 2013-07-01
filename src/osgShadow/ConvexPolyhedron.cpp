@@ -1162,9 +1162,7 @@ bool ConvexPolyhedron::checkCoherency
         dumpGeometry( );
 #endif
 
-#else
-    OSG_UNUSED(checkForNonConvexPolys);
-    OSG_UNUSED(errorPrefix);
+
 #endif // CONVEX_POLYHEDRON_CHECK_COHERENCY
     return result && convex;
 }

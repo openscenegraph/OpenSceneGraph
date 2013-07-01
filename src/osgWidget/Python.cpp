@@ -156,7 +156,6 @@ bool PythonEngine::eval(const std::string& code) {
     return true;
 
 #else
-    OSG_UNUSED(code);
     return noPythonFail("Can't evaluate code in PythonEngine");
 #endif
 }
@@ -208,7 +207,6 @@ bool PythonEngine::runFile(const std::string& filePath) {
     return true;
 
 #else
-    OSG_UNUSED(filePath);
     return noPythonFail("Can't evaluate code in PythonEngine");
 #endif
 }

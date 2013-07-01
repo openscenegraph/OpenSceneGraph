@@ -65,8 +65,6 @@ std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
 #else
     //TODO: Implement for other platforms
     OSG_WARN << "ConvertUTF16toUTF8 not implemented." << std::endl;
-    OSG_UNUSED(source);
-    OSG_UNUSED(sourceLength);
     return std::string();
 #endif
 }
@@ -99,8 +97,6 @@ std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
 #else
     //TODO: Implement for other platforms
     OSG_WARN << "ConvertUTF8toUTF16 not implemented." << std::endl;
-    OSG_UNUSED(source);
-    OSG_UNUSED(sourceLength);
     return std::wstring();
 #endif
 }
@@ -130,7 +126,6 @@ std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned 
 
     return convertUTF16toUTF8(sUTF16);
 #else
-    OSG_UNUSED(sourceLength);
     return source;
 #endif
 }
@@ -163,7 +158,6 @@ std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned 
 
     return sDest;
 #else
-    OSG_UNUSED(sourceLength);
     return source;
 #endif
 }

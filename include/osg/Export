@@ -60,12 +60,6 @@
     #endif
 #endif
 
-#ifndef OSG_UNUSED
-    #define OSG_UNUSED(var) (void) var
-#endif
-
-
-
 /**
 
 \namespace osg

@@ -253,7 +253,8 @@ const char* invalidNames[] =
     "SlideEventHandler",
     "GraphicsContext*",
     "Apple",
-    "GeometryNew"
+    "GeometryNew",
+    "FrameBufferObject"
 };
 
 

@@ -154,9 +154,6 @@ bool DebugShadowMap::ViewData::DebugBoundingBox
                   << std::endl;
 
     bb_prev = bb;
-#else
-    OSG_UNUSED(bb);
-    OSG_UNUSED(name);
 #endif
     return result;
 }
@@ -195,9 +192,6 @@ bool DebugShadowMap::ViewData::DebugPolytope
     }
 
     p_prev = p;
-#else
-    OSG_UNUSED(p);
-    OSG_UNUSED(name);
 #endif
     return result;
 }
@@ -221,9 +215,6 @@ bool DebugShadowMap::ViewData::DebugMatrix
             <<"[ " << m(3,0) << " " << m(3,1) << " " << m(3,2) << " " << m(3,3) << " ]  " << std::endl;
 
     m_prev = m;
-#else
-    OSG_UNUSED(m);
-    OSG_UNUSED(name);
 #endif
     return result;
 }

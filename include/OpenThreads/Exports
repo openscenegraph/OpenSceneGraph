@@ -39,10 +39,6 @@
     #endif
 #endif
 
-#ifndef OT_UNUSED
-    #define OT_UNUSED(var) (void) var
-#endif
-
 #endif
 
 

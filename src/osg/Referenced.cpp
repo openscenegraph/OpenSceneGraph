@@ -110,8 +110,6 @@ void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCo
 {
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     s_useThreadSafeReferenceCounting = enableThreadSafeReferenceCounting;
-#else
-    OSG_UNUSED(enableThreadSafeReferenceCounting);
 #endif
 }
 
@@ -184,12 +182,8 @@ Referenced::Referenced(bool threadSafeRefUnref):
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 #ifndef ENFORCE_THREADSAFE
     if (threadSafeRefUnref)
-#else
-    OSG_UNUSED(threadSafeRefUnref);
 #endif
         _refMutex = new OpenThreads::Mutex;
-#else
-    OSG_UNUSED(threadSafeRefUnref);
 #endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
@@ -353,8 +347,6 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
             delete tmpMutexPtr;
         }
     }
-#else
-    OSG_UNUSED(threadSafe);
 #endif
 }
 

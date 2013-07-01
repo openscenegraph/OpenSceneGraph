@@ -94,8 +94,6 @@ void Input::_calculateSize(const XYCoord& size) {
    if(width > getWidth()) setWidth(osg::round(width));
 
    if(height > getHeight()) setHeight(osg::round(height));
-#else
-    OSG_UNUSED(size);
 #endif
 }
 
@@ -283,11 +281,11 @@ void Input::positioned()
     }
 }
 
-bool Input::keyUp(int /*key*/, int /*mask*/, const WindowManager*) {
+bool Input::keyUp(int key, int mask, const WindowManager*) {
    return false;
 }
 
-bool Input::mouseDrag (double x, double /*y*/, const WindowManager*)
+bool Input::mouseDrag (double x, double y, const WindowManager*)
 {
     _mouseClickX += x;
     x = _mouseClickX;
@@ -308,7 +306,7 @@ bool Input::mouseDrag (double x, double /*y*/, const WindowManager*)
     return true;
 }
 
-bool Input::mousePush (double x, double /*y*/, const WindowManager* /*wm*/)
+bool Input::mousePush (double x, double y, const WindowManager* wm)
 {
     double offset = getOrigin().x();
     Window* window = getParent();

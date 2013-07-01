@@ -110,8 +110,6 @@ void DrawArrayLengths::draw(State& state, bool) const
         }
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
         if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
-    #else
-    OSG_UNUSED(state);
     #endif
 
     GLint first = _first;

@@ -799,8 +799,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
 
 
-ELSE()
-    IF(MSVC)
+ELSEIF(MSVC)
         # FIXME: What are good aggressive warning flags for Visual Studio?
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
@@ -809,11 +808,12 @@ ELSE()
             SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} /wd4250)
         ENDIF()
 
-    ELSE()
+ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
+
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need
         # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
         # remain unset.
-    ENDIF()
 ENDIF()
 
 # This part is for the CMake menu option to toggle the warnings on/off.

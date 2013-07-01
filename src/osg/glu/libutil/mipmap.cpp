@@ -7427,7 +7427,7 @@ int gluScaleImage3D(GLenum format,
 
 
 static void closestFit3D(GLTexImage3DProc gluTexImage3D,
-                         GLenum /*target*/, GLint width, GLint height, GLint depth,
+                         GLint width, GLint height, GLint depth,
                          GLint internalFormat, GLenum format, GLenum type,
                          GLint *newWidth, GLint *newHeight, GLint *newDepth)
 {
@@ -7454,7 +7454,6 @@ static void closestFit3D(GLTexImage3DProc gluTexImage3D,
       assert(depthAtLevelOne > 0);
 
       /* does width x height x depth at level 1 & all their mipmaps fit? */
-      assert(target == GL_TEXTURE_3D || target == GL_PROXY_TEXTURE_3D);
       gluTexImage3D(proxyTarget, 1, /* must be non-zero */
                     internalFormat,
                     widthAtLevelOne,heightAtLevelOne,depthAtLevelOne,
@@ -8543,7 +8542,7 @@ GLint GLAPIENTRY gluBuild3DMipmaps(GLTexImage3DProc gluTexImage3D,
       return GLU_INVALID_ENUM;
    }
 
-   closestFit3D(gluTexImage3D, target,width,height,depth,internalFormat,format,type,
+   closestFit3D(gluTexImage3D, width,height,depth,internalFormat,format,type,
                 &widthPowerOf2,&heightPowerOf2,&depthPowerOf2);
 
    levels = computeLog(widthPowerOf2);

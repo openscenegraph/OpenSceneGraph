@@ -35,7 +35,7 @@ ENDIF()
 IF(APPLE)
     SET(FBX_LIBNAME "libfbxsdk")
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(FBX_LIBNAME "libfbxsdk")
+    SET(FBX_LIBNAME "fbxsdk")
 ELSE()
     SET(FBX_LIBNAME "libfbxsdk-md")
 ENDIF()
@@ -57,7 +57,7 @@ FIND_LIBRARY( FBX_LIBRARY ${FBX_LIBNAME}
     PATHS ${FBX_SEARCH_PATHS}
     PATH_SUFFIXES "lib/${FBX_LIBDIR}/release" "lib/${FBX_LIBDIR}")
 
-#Once one of the calls succeeds the result variable will be set and stored in the cache so that no call will search again.    
+#Once one of the calls succeeds the result variable will be set and stored in the cache so that no call will search again.
 
 #no debug d suffix, search in debug folder only
 FIND_LIBRARY( FBX_LIBRARY_DEBUG ${FBX_LIBNAME}
@@ -66,7 +66,7 @@ FIND_LIBRARY( FBX_LIBRARY_DEBUG ${FBX_LIBNAME}
 FIND_LIBRARY( FBX_LIBRARY_DEBUG ${FBX_LIBNAME_DEBUG}
     PATHS ${FBX_SEARCH_PATHS}
     PATH_SUFFIXES "lib/${FBX_LIBDIR}")
-    
+
 IF(FBX_LIBRARY AND FBX_LIBRARY_DEBUG AND FBX_INCLUDE_DIR)
     SET(FBX_FOUND "YES")
 ELSE()
@@ -108,5 +108,5 @@ IF(NOT FBX_FOUND)
     ELSE()
         SET(FBX_FOUND "NO")
     ENDIF()
-    
+
 ENDIF()

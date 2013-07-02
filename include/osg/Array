@@ -121,11 +121,11 @@ class OSG_EXPORT Array : public BufferData
             BIND_PER_VERTEX=4
         };
 
-        Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0, Binding=BIND_UNDEFINED):
+        Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0, Binding binding=BIND_UNDEFINED):
             _arrayType(arrayType),
             _dataSize(dataSize),
             _dataType(dataType),
-            _binding(BIND_UNDEFINED),
+            _binding(binding),
             _normalize(false),
             _preserveDataType(false) {}
 

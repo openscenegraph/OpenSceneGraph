@@ -207,7 +207,9 @@ void SceneView::setDefaults(unsigned int options)
     _camera->getViewMatrix().makeIdentity();
 
     if (!_globalStateSet) _globalStateSet = new osg::StateSet;
-    else _globalStateSet->clear();
+
+    // clear the global StateSet (main Camera's StateSet) if required
+    if ((options & CLEAR_GLOBAL_STATESET)) _globalStateSet->clear();
 
     if ((options & HEADLIGHT) || (options & SKY_LIGHT))
     {
@@ -270,16 +272,20 @@ void SceneView::setDefaults(unsigned int options)
     _cullVisitor->setStateGraph(_stateGraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
 
-    _globalStateSet->setGlobalDefaults();
+    // apply defaults on the global StateSet (main Camera's StateSet) if required
+    if ((options&APPLY_GLOBAL_DEFAULTS))
+    {
+        _globalStateSet->setGlobalDefaults();
 
-    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-        // set up an texture environment by default to speed up blending operations.
-         osg::TexEnv* texenv = new osg::TexEnv;
-         texenv->setMode(osg::TexEnv::MODULATE);
-         _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
-    #endif
+        #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+            // set up an texture environment by default to speed up blending operations.
+            osg::TexEnv* texenv = new osg::TexEnv;
+            texenv->setMode(osg::TexEnv::MODULATE);
+            _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
+        #endif
 
-    _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
+        _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
+    }
 }
 
 void SceneView::setCamera(osg::Camera* camera, bool assumeOwnershipOfCamera)
@@ -458,7 +464,7 @@ osg::Matrixd SceneView::computeRightEyeProjectionImplementation(const osg::Matri
 osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& view) const
 {
     if (!_displaySettings) return view;
-    
+
     double sd = _displaySettings->getScreenDistance();
     double fusionDistance = sd;
     switch(_fusionDistanceMode)
@@ -543,7 +549,7 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
         (*_viewportRight) = *viewport;
         return;
     }
-        
+
     switch(_displaySettings->getStereoMode())
     {
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
@@ -1371,7 +1377,7 @@ void SceneView::draw()
             }
             _renderStage->setColorMask(cmask);
         }
-        
+
         // bog standard draw.
         _renderStage->drawPreRenderStages(_renderInfo,previous);
         _renderStage->draw(_renderInfo,previous);

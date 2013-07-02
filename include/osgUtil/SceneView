@@ -50,8 +50,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
             HEADLIGHT = 0x1,
             SKY_LIGHT = 0x2,
             COMPILE_GLOBJECTS_AT_INIT = 0x4,
+            APPLY_GLOBAL_DEFAULTS = 0x8,
+            CLEAR_GLOBAL_STATESET = 0x16,
             STANDARD_SETTINGS = HEADLIGHT |
-                                COMPILE_GLOBJECTS_AT_INIT
+                                COMPILE_GLOBJECTS_AT_INIT |
+                                APPLY_GLOBAL_DEFAULTS |
+                                APPLY_GLOBAL_DEFAULTS |
+                                CLEAR_GLOBAL_STATESET
+
         };
 
         /* Set defaults. */

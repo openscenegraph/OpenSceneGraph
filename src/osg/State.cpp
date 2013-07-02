@@ -464,7 +464,7 @@ void State::apply(const StateSet* dstate)
     {
         // push the stateset on the stack so it can be querried from within StateAttribute
         _stateStateStack.push_back(dstate);
-        
+
         _currentShaderCompositionUniformList.clear();
 
         // apply all texture state and modes
@@ -490,29 +490,24 @@ void State::apply(const StateSet* dstate)
         if (_shaderCompositionEnabled)
         {
             applyShaderComposition();
+        }
 
-            if (dstate->getUniformList().empty())
-            {
-                if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
-                else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
-            }
-            else
-            {
-                if (_currentShaderCompositionUniformList.empty()) applyUniformList(_uniformMap, dstate->getUniformList());
-                else
-                {
-                    // need top merge uniforms lists, but cheat for now by just applying both.
-                    _currentShaderCompositionUniformList.insert(dstate->getUniformList().begin(), dstate->getUniformList().end());
-                    applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
-                }
-            }
-
+        if (dstate->getUniformList().empty())
+        {
+            if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
+            else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
         }
         else
         {
-            applyUniformList(_uniformMap,dstate->getUniformList());
+            if (_currentShaderCompositionUniformList.empty()) applyUniformList(_uniformMap, dstate->getUniformList());
+            else
+            {
+                // need top merge uniforms lists, but cheat for now by just applying both.
+                _currentShaderCompositionUniformList.insert(dstate->getUniformList().begin(), dstate->getUniformList().end());
+                applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
+            }
         }
-        
+
         // pop the stateset from the stack
         _stateStateStack.pop_back();
     }
@@ -527,10 +522,9 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
-
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
 
-    if (_shaderCompositionEnabled) _currentShaderCompositionUniformList.clear();
+    _currentShaderCompositionUniformList.clear();
 
     // apply all texture state and modes
     unsigned int unit;
@@ -552,12 +546,10 @@ void State::apply()
     if (_shaderCompositionEnabled)
     {
         applyShaderComposition();
-        applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
     }
-    else
-    {
-        applyUniformMap(_uniformMap);
-    }
+
+    if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
+    else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }

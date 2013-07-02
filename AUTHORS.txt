@@ -29,10 +29,10 @@ Trajce Nikolov
 Colin McDonald
 Tim Moore
 Martin Lavery
+Laurens Voerman
 Tree 
 Luigi Calori
 Mike Wittman
-Laurens Voerman
 Chris Hanson
 Roland Smeenk
 Roger James
@@ -73,6 +73,7 @@ Jan Ciger
 Glenn Waldron
 Gideon May
 Don Tidrow
+Aurelien Albert
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
@@ -81,7 +82,6 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Aurelien Albert
 Torben Dannhauer
 Fabien Lavignotte
 Mike Connell
@@ -119,6 +119,7 @@ Thibault Genessay
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
+Pjotr Svetachov
 Neil Groves
 Markus Trenkwalder
 Loic Dachary
@@ -156,7 +157,6 @@ Sebastien Grignard
 Ryan Kawicki
 Rudolf Wiedemann
 Romano Magacho
-Pjotr Svetachov
 Mikhail Izmestev
 Maria Ten
 Liang Aibin

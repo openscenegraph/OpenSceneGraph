@@ -322,11 +322,11 @@ void Geometry::read(DataInputStream* in){
 
             // Read coords if valid
             bool coords_valid = in->readBool();
-            if(coords_valid)
+            if(coords_valid) {
                 setVertexAttribArray(i, in->readArray());
-
-            setVertexAttribNormalize(i,normalize);
-            setVertexAttribBinding(i,binding);
+                setVertexAttribNormalize(i,normalize);
+                setVertexAttribBinding(i,binding);
+            }
 
             // Read Indices if valid
             bool indices_valid = in->readBool();

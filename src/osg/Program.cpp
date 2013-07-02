@@ -205,10 +205,10 @@ int Program::compare(const osg::StateAttribute& sa) const
 
     if( _numGroupsX < rhs._numGroupsX ) return -1;
     if( rhs._numGroupsX < _numGroupsX ) return 1;
-    
+
     if( _numGroupsY < rhs._numGroupsY ) return -1;
     if( rhs._numGroupsY < _numGroupsY ) return 1;
-    
+
     if( _numGroupsZ < rhs._numGroupsZ ) return -1;
     if( rhs._numGroupsZ < _numGroupsZ ) return 1;
 
@@ -513,20 +513,29 @@ const Program::UniformBlockMap& Program::getUniformBlocks(unsigned contextID) co
 // PCP is an OSG abstraction of the per-context glProgram
 ///////////////////////////////////////////////////////////////////////////
 
-Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID ) :
+Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID, GLuint programHandle ) :
         osg::Referenced(),
         _loadedBinary(false),
-        _contextID( contextID )
+        _glProgramHandle(programHandle),
+        _contextID( contextID ),
+        _ownsProgramHandle(false)
 {
     _program = program;
     _extensions = GL2Extensions::Get( _contextID, true );
-    _glProgramHandle = _extensions->glCreateProgram();
+    if (_glProgramHandle == 0)
+    {
+        _glProgramHandle = _extensions->glCreateProgram();
+        _ownsProgramHandle = true;
+    }
     requestLink();
 }
 
 Program::PerContextProgram::~PerContextProgram()
 {
-    Program::deleteGlProgram( _contextID, _glProgramHandle );
+    if (_ownsProgramHandle)
+    {
+        Program::deleteGlProgram( _contextID, _glProgramHandle );
+    }
 }
 
 
@@ -567,7 +576,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
             _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
         }
-        
+
         // Detach removed shaders
         for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
         {
@@ -759,7 +768,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 
     // print atomic counter
 
-    if (_extensions->isShaderAtomicCounterSupported() && !atomicCounterMap.empty()) 
+    if (_extensions->isShaderAtomicCounterSupported() && !atomicCounterMap.empty())
     {
         std::vector<GLint> bufferIndex( atomicCounterMap.size(), 0 );
         std::vector<GLuint> uniformIndex;

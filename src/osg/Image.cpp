@@ -305,6 +305,7 @@ void Image::setData(unsigned char* data, AllocationMode mode)
     deallocateData();
     _data = data;
     _allocationMode = mode;
+    dirty();
 }
 
 
@@ -750,7 +751,7 @@ unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLe
         width = (width + 3) & ~3;
         height = (height + 3) & ~3;
     }
-    
+
     // 3dc ATI formats
     // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
     // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
@@ -762,7 +763,7 @@ unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLe
         width = (width + 3) & ~3;
         height = (height + 3) & ~3;
     }
-    
+
     // compute size of one row
     unsigned int size = osg::Image::computeRowWidthInBytes( width, pixelFormat, type, packing );
 
@@ -903,7 +904,7 @@ void Image::allocateImage(int s,int t,int r,
                         int packing)
 {
     _mipmapData.clear();
-    
+
     bool callback_needed(false);
 
     unsigned int previousTotalSize = 0;
@@ -938,7 +939,7 @@ void Image::allocateImage(int s,int t,int r,
     else
     {
         callback_needed = (_s != 0) || (_t != 0) || (_r != 0);
-        
+
         // failed to allocate memory, for now, will simply set values to 0.
         _s = 0;
         _t = 0;
@@ -952,10 +953,10 @@ void Image::allocateImage(int s,int t,int r,
         // policy so that allocateImage honours previous settings of _internalTextureFormat.
         //_internalTextureFormat = 0;
     }
-    
+
     if (callback_needed)
         handleDimensionsChangedCallbacks();
-    
+
     dirty();
 }
 
@@ -968,9 +969,9 @@ void Image::setImage(int s,int t,int r,
                      int rowLength)
 {
     _mipmapData.clear();
-    
+
     bool callback_needed = (_s != s) || (_t != t) || (_r != r);
-    
+
     _s = s;
     _t = t;
     _r = r;
@@ -985,7 +986,7 @@ void Image::setImage(int s,int t,int r,
     _rowLength = rowLength;
 
     dirty();
-    
+
     if (callback_needed)
         handleDimensionsChangedCallbacks();
 

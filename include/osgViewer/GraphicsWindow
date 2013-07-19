@@ -54,7 +54,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
         /** Check events, return true if events have been received.*/
-        virtual bool checkEvents() { return false; }
+        virtual bool checkEvents() { return !(_eventQueue->empty()); }
 
         /** Set the window's position and size.*/
         void setWindowRectangle(int x, int y, int width, int height)

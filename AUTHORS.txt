@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.1.9
+OpenSceneGraph Library 3.1.10
 
 510 Contributors:
 
@@ -11,8 +11,8 @@ Paul Martz
 Mathias Fröhlich
 Marco Jez
 Farshid Lashkari
-Jean-Sébastien Guay
 Wang Rui
+Jean-Sébastien Guay
 Mike Weiblen
 Ulrich Hertlein
 Eric Wing
@@ -51,20 +51,20 @@ Tom Jolley
 Pavel Moloshtan
 Brad Christiansen
 Olaf Flebbe
+Mathieu Marache
 Jason Daly
 Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
-Mathieu Marache
 Terry Welsh
 Serge Lages
+Lionel Lagarde
 Chris Denham
 Alberto Farre
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-Lionel Lagarde
 André Garneau
 Adrian Egli
 Ruben Lopez
@@ -74,6 +74,7 @@ Glenn Waldron
 Gideon May
 Don Tidrow
 Aurelien Albert
+Torben Dannhauer
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
@@ -82,7 +83,6 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Torben Dannhauer
 Fabien Lavignotte
 Mike Connell
 Melchior Franz
@@ -266,6 +266,7 @@ Keith Steffen
 Julen Garcia
 Joseph Winston
 John Aughey
+Johannes Scholz
 Joachim Pouderoux
 Jean-Christophe Lombardo
 Javier Taibo
@@ -428,7 +429,6 @@ John Donovan
 John Davis
 John Cummings
 John Argentieri
-Johannes Scholz
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker

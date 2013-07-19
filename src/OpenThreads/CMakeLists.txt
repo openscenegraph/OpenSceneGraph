@@ -2,10 +2,10 @@
 # what to do with it.
 ADD_DEFINITIONS(-DOPENTHREADS_EXPORTS)
 
-SET(OPENTHREADS_MAJOR_VERSION 2)
-SET(OPENTHREADS_MINOR_VERSION 6)
+SET(OPENTHREADS_MAJOR_VERSION 3)
+SET(OPENTHREADS_MINOR_VERSION 3)
 SET(OPENTHREADS_PATCH_VERSION 0)
-SET(OPENTHREADS_SOVERSION 12)
+SET(OPENTHREADS_SOVERSION 14)
 
 SET(OPENTHREADS_VERSION ${OPENTHREADS_MAJOR_VERSION}.${OPENTHREADS_MINOR_VERSION}.${OPENTHREADS_PATCH_VERSION})
 
@@ -55,10 +55,10 @@ SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/Block
     ${HEADER_PATH}/Condition
     ${HEADER_PATH}/Exports
-    ${HEADER_PATH}/Mutex  
-    ${HEADER_PATH}/ReadWriteMutex  
-    ${HEADER_PATH}/ReentrantMutex  
-    ${HEADER_PATH}/ScopedLock  
+    ${HEADER_PATH}/Mutex
+    ${HEADER_PATH}/ReadWriteMutex
+    ${HEADER_PATH}/ReentrantMutex
+    ${HEADER_PATH}/ScopedLock
     ${HEADER_PATH}/Thread
     ${HEADER_PATH}/Version
     ${OPENTHREADS_CONFIG_HEADER}
@@ -96,7 +96,7 @@ ELSEIF(WIN32)
         SUBDIRS(pthreads)
     ELSE()
         # Everybody else including Msys should probably go here
-        SUBDIRS(win32) 
+        SUBDIRS(win32)
         # examples)
     ENDIF()
 ELSE()

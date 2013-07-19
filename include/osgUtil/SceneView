@@ -55,7 +55,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
             STANDARD_SETTINGS = HEADLIGHT |
                                 COMPILE_GLOBJECTS_AT_INIT |
                                 APPLY_GLOBAL_DEFAULTS |
-                                APPLY_GLOBAL_DEFAULTS |
                                 CLEAR_GLOBAL_STATESET
 
         };

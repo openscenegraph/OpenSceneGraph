@@ -587,6 +587,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         }
     }
     
+    [super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -607,9 +608,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         } else {
             osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         }
-
-
     }
+    
+    [super touchesMoved:touches withEvent:event];    
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -630,8 +631,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         } else {
             osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
         }
-
     }
+    
+    [super touchesEnded:touches withEvent:event];    
 }
 
 -(void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event 

@@ -51,7 +51,7 @@
 
 #else
 
-    #if defined(__GLIBC__) || defined(__ANDROID__)
+    #if defined(__GLIBC__) || defined(__ANDROID__) || defined(__CYGWIN__)
         #include <endian.h>
         #if (__BYTE_ORDER == __LITTLE_ENDIAN)
             #define __LITTLE_ENDIAN__

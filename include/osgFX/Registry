@@ -31,10 +31,17 @@ namespace osgFX
     public:
 
         struct Proxy {
-            Proxy(const Effect* effect)
+            Proxy(const Effect* effect): _effect(effect)
             {
                 Registry::instance()->registerEffect(effect);
             }
+
+            ~Proxy()
+            {
+                Registry::instance()->removeEffect(_effect.get());
+            }
+        private:
+            osg::ref_ptr<const Effect> _effect;
         };
 
         typedef std::map<std::string, osg::ref_ptr<const Effect> > EffectMap;
@@ -42,6 +49,8 @@ namespace osgFX
         static Registry* instance();
 
         inline void registerEffect(const Effect* effect);
+
+        inline void removeEffect(const Effect* effect);
 
         inline const EffectMap& getEffectMap() const;
 
@@ -67,6 +76,15 @@ namespace osgFX
     inline void Registry::registerEffect(const Effect* effect)
     {
         _effects[effect->effectName()] = effect;
+    }
+
+    inline void Registry::removeEffect(const Effect* effect)
+    {
+        EffectMap::iterator itr = _effects.find(effect->effectName());
+        if (itr != _effects.end())
+        {
+            _effects.erase(itr);
+        }
     }
 
 }

@@ -79,16 +79,6 @@ public:
         traits->samples = ds->getNumMultiSamples();
 
         return new osgQt::GraphicsWindowQt(traits.get());
-#if 0
-        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext( ) );
-
-        camera->setClearColor( osg::Vec4(0.2, 0.2, 0.6, 1.0) );
-        camera->setViewport( new osg::Viewport(0, 0, traits->width, traits->height) );
-        camera->setProjectionMatrixAsPerspective(
-            30.0f, static_cast<double>(traits->width)/static_cast<double>(traits->height), 1.0f, 10000.0f );
-        return camera.release();
-#endif
     }
 
     virtual void paintEvent( QPaintEvent* event )

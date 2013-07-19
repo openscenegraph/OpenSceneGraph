@@ -161,11 +161,13 @@ void Geometry::setTexCoordArray(unsigned int index,Array* array, osg::Array::Bin
     if (_texCoordList.size()<=index)
         _texCoordList.resize(index+1);
 
-    if (array && binding!=osg::Array::BIND_UNDEFINED) array->setBinding(binding);
+    if (array)
+    {
+        if (binding!=osg::Array::BIND_UNDEFINED) array->setBinding(binding);
+        else array->setBinding(osg::Array::BIND_PER_VERTEX);
+    }
 
     _texCoordList[index] = array;
-
-    // do we set to array BIND_PER_VERTEX?
 
     dirtyDisplayList();
 

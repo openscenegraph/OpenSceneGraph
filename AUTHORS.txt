@@ -84,10 +84,10 @@ David Spilling
 Daniel Sjölie
 Bryan Thrall
 Fabien Lavignotte
+Andreas Ekstrand
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
-Andreas Ekstrand
 Riccardo Corsi
 Rafa Gaitan
 Neil Hughes
@@ -294,6 +294,7 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
+Christian Ruzicka
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -481,7 +482,6 @@ Clay Fowler
 Chuck Sembroski
 Christopher Blaesius
 Christophe Herreman
-Christian Ruzicka
 Christian Noon
 Christian Kaser
 Christian Ehrlicher

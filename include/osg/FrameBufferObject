@@ -400,7 +400,7 @@ namespace osg
         FrameBufferObject();
         FrameBufferObject(const FrameBufferObject& copy, const CopyOp& copyop = CopyOp::SHALLOW_COPY);
 
-        META_StateAttribute(osg, FrameBufferObject, (StateAttribute::Type)0x101010/*FrameBufferObject*/);
+        META_StateAttribute(osg, FrameBufferObject, FRAME_BUFFER_OBJECT);
 
         inline const AttachmentMap& getAttachmentMap() const;
 

@@ -582,7 +582,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     {
         sName = name + "-positions";
         unsigned int elementSize = verts.getDAESize();
-        unsigned int numElements = verts.valArray->getNumElements();
+        unsigned int numElements = verts.valArray ? verts.valArray->getNumElements() : 0;
         pos = createSource( mesh, sName, elementSize );
         pos->getFloat_array()->setCount( numElements * elementSize );
         pos->getTechnique_common()->getAccessor()->setCount( numElements );
@@ -608,7 +608,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     {
         sName = name + "-normals";
         unsigned int elementSize = normals.getDAESize();
-        unsigned int numElements = normals.valArray->getNumElements();
+        unsigned int numElements = normals.valArray ? normals.valArray->getNumElements() : 0;
         norm = createSource( mesh, sName, elementSize );
         norm->getFloat_array()->setCount( numElements * elementSize );
         norm->getTechnique_common()->getAccessor()->setCount( numElements );
@@ -631,7 +631,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     {
         sName = name + "-colors";
         unsigned int elementSize = colors.getDAESize();
-        unsigned int numElements = colors.valArray->getNumElements();
+        unsigned int numElements = colors.valArray ? colors.valArray->getNumElements() : 0;
         color = createSource( mesh, sName, elementSize, true );
         color->getFloat_array()->setCount( numElements * elementSize );
         color->getTechnique_common()->getAccessor()->setCount( numElements );
@@ -660,7 +660,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         sName = name + "-texcoord_" + intstr.str();
 
         unsigned int elementSize = texcoords[ti].getDAESize();
-        unsigned int numElements = texcoords[ti].valArray->getNumElements();
+        unsigned int numElements = texcoords[ti].valArray ? texcoords[ti].valArray->getNumElements() : 0;
         domSource *t = createSource( mesh, sName, elementSize, false, true );
         t->getFloat_array()->setCount( numElements * elementSize );
         t->getTechnique_common()->getAccessor()->setCount( numElements );
@@ -684,7 +684,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         sName = name + "-vertexAttribute_" + intstr.str();
 
         unsigned int elementSize = vertexAttributes[ti].getDAESize();
-        unsigned int numElements = vertexAttributes[ti].valArray->getNumElements();
+        unsigned int numElements = vertexAttributes[ti].valArray ? vertexAttributes[ti].valArray->getNumElements() : 0;
         domSource *t = createSource( mesh, sName, elementSize, false, true );        // Sukender: should we *REALLY* call createSource(... false, true)? (I mean with such flags)
         t->getFloat_array()->setCount( numElements * elementSize );
         t->getTechnique_common()->getAccessor()->setCount( numElements );

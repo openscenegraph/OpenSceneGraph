@@ -192,8 +192,10 @@ class OSG_EXPORT StateAttribute : public Object
             TRANSFORMFEEDBACKBUFFERBINDING,
 
             ATOMICCOUNTERBUFFERBINDING,
-            
-            PATCH_PARAMETER
+
+            PATCH_PARAMETER,
+
+            FRAME_BUFFER_OBJECT
         };
 
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

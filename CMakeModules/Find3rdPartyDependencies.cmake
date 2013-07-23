@@ -54,7 +54,7 @@ ENDMACRO(FIND_DEPENDENCY DEPNAME INCLUDEFILE LIBRARY_NAMES_BASE SEARCHPATHLIST D
 
 
 ################################################################################################
-# this Macro is tailored to Mike dependencies
+# this Macro is tailored to Mike and Torbens dependencies
 ################################################################################################
 
 MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
@@ -86,14 +86,14 @@ MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
                 MARK_AS_ADVANCED(PNG_PNG_INCLUDE_DIR)
             ENDIF(PNG_FOUND)
         ENDIF(ZLIB_FOUND)
-        FIND_DEPENDENCY(LIBXML2 libxml "libxml2" ${OSG_3RDPARTY_BIN} "D" "")   
+        FIND_DEPENDENCY(LIBXML2 libxml2 "libxml2" ${OSG_3RDPARTY_BIN} "D" "")   
         IF(LIBXML2_FOUND)
             # The CMAKE find libxml module uses LIBXML2_LIBRARIES -> fill it.... kind of a hack 
             SET(LIBXML2_LIBRARIES ${LIBXML2_LIBRARY} CACHE FILEPATH "" FORCE)
             SET(LIBXML2_XMLLINT_EXECUTABLE ${OSG_3RDPARTY_BIN}/bin/xmllint.exe CACHE FILEPATH "Path to xmllint executable" FORCE)
         ENDIF(LIBXML2_FOUND)
         #FIND_DEPENDENCY(DEPNAME INCLUDEFILE LIBRARY_NAMES_BASE SEARCHPATHLIST DEBUGSUFFIX EXSUFFIX)
-        FIND_Package(NVTT)  
+        FIND_Package(NVTT)
 #luigi#INCLUDE(FindOSGDepends.cmake)
 ENDMACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
 

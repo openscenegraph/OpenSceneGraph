@@ -475,7 +475,11 @@ bool Node::containsOccluderNodes() const
 
 void Node::setDescriptions(const DescriptionList& descriptions)
 {
-    getOrCreateUserDataContainer()->setDescriptions(descriptions);
+    // only assign a description list (and associated UseDataContainer) if we need to.
+    if (!descriptions.empty() || getUserDataContainer())
+    {
+        getOrCreateUserDataContainer()->setDescriptions(descriptions);
+    }
 }
 
 Node::DescriptionList& Node::getDescriptions()

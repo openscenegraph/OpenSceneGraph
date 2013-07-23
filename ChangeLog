@@ -1,3 +1,33 @@
+2013-07-23 18:11  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp: From Rocco Martino,
+	  build fix for compiling against ffmpeg/trunk
+
+2013-07-23 15:36  robert
+
+	* CMakeLists.txt: Disabled the check for Asio for Windows
+
+2013-07-23 15:28  robert
+
+	* src/osgPlugins/osc/CMakeLists.txt: Added NOT ANDROID to force use
+	  of posix API when building for Android under Windows
+
+2013-07-23 10:24  robert
+
+	* src/osg/Node.cpp: Added lazy setting of the UserDataContainer to
+	  avoid unncessarily create a UserDataContain when an empty
+	  description list is passed to Node::setDescriptions(..)
+
+2013-07-23 09:54  robert
+
+	* src/osgPlugins/shp/XBaseParser.cpp: Fixed crash when open(..)
+	  returns an error.
+
+2013-07-23 05:45  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  rc3
+
 2013-07-23 05:41  robert
 
 	* CMakeLists.txt: Fixed svn source to that it's relase candidates

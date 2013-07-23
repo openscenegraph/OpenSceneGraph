@@ -70,11 +70,11 @@ Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
+Torben Dannhauer
 Glenn Waldron
 Gideon May
 Don Tidrow
 Aurelien Albert
-Torben Dannhauer
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager

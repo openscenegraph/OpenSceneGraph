@@ -18,7 +18,7 @@ The !OpenSceneGraph 3.2 release is the culmination of 14 years of work by the op
   * Improvements to osgManipulator NodeKit that introduce new manipulators and improve flexibility and customizability
   * Updates to osgQt to support Qt5 and provide better support for Qt4
   * New osgGA::Device base class for recieving from and sending events to both real and virtual devices in a generic, extensible way
-  * New ZeroCong, RestHTTP and OSC plugins to enable remote control of applications such as controlling desktop systems from tablets and phones
+  * New ZeroConf, RestHTTP and OSC plugins to enable remote control of applications such as controlling desktop systems from tablets and phones
   * Improvements to osgVolume NodeKit and DICOM plugin for better medical visualization
   * New TrackVis .trk track files plugin for the visualization of brain scans.
   * Improvements to osgPresentation NodeKit and Present3D application to make it possible to create non-linear interactive, remote controlled shows

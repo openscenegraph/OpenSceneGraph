@@ -1,18 +1,14 @@
 Welcome to the OpenSceneGraph (OSG).
 
-For up-to-date information on the project, in-depth details on how to 
-compile and run libraries and examples, see the documentation on the 
+For up-to-date information on the project, in-depth details on how to
+compile and run libraries and examples, see the documentation on the
 OpenSceneGraph website:
 
-    http://www.openscenegraph.org
-  
-For support subscribe to our public mailing list:
+    http://www.openscenegraph.org/index.php/documentation
 
-    http://www.openscenegraph.org/projects/osg/wiki/MailingLists
+For support subscribe to our public mailing list or forum, details at:
 
-or forum:
-
-    http://forum.openscenegraph.org/
+    http://www.openscenegraph.org/index.php/support
 
 For the impatient, we've included quick build instructions below, these
 are are broken down is three parts:
@@ -27,41 +23,41 @@ more indepth instructions.
 
 Robert Osfield.
 Project Lead.
-26th April 2013.
+24th July 2013.
 
 --
 
 Section 1. How to build the OpenSceneGraph
 ==========================================
 
-The OpenSceneGraph uses the CMake build system to generate a 
-platform-specific build environment.  CMake reads the CMakeLists.txt 
-files that you'll find throughout the OpenSceneGraph directories, 
-checks for installed dependenciesand then generates the appropriate 
+The OpenSceneGraph uses the CMake build system to generate a
+platform-specific build environment.  CMake reads the CMakeLists.txt
+files that you'll find throughout the OpenSceneGraph directories,
+checks for installed dependenciesand then generates the appropriate
 build system.
 
-If you don't already have CMake installed on your system you can grab 
-it from http://www.cmake.org, use version 2.4.6 or later.  Details on the 
+If you don't already have CMake installed on your system you can grab
+it from http://www.cmake.org, use version 2.4.6 or later.  Details on the
 OpenSceneGraph's CMake build can be found at:
 
     http://www.openscenegraph.org/projects/osg/wiki/Build/CMake
 
-Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX) 
-use the cmake or ccmake command-line utils, or use the included tiny 
-configure script that'll run cmake for you.  The configure script 
-simply runs 'cmake . -DCMAKE_BUILD_TYPE=Release' to ensure that you 
+Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX)
+use the cmake or ccmake command-line utils, or use the included tiny
+configure script that'll run cmake for you.  The configure script
+simply runs 'cmake . -DCMAKE_BUILD_TYPE=Release' to ensure that you
 get the best performance from your final libraries/applications.
- 
+
     cd OpenSceneGraph
     ./configure
     make
     sudo make install
-  
-Alternatively, you can create an out-of-source build directory and run 
-cmake or ccmake from there. The advantage to this approach is that the 
-temporary files created by CMake won't clutter the OpenSceneGraph 
-source directory, and also makes it possible to have multiple 
-independent build targets by creating multiple build directories. In a 
+
+Alternatively, you can create an out-of-source build directory and run
+cmake or ccmake from there. The advantage to this approach is that the
+temporary files created by CMake won't clutter the OpenSceneGraph
+source directory, and also makes it possible to have multiple
+independent build targets by creating multiple build directories. In a
 directory alongside the OpenSceneGraph use:
 
     mkdir build
@@ -70,22 +66,22 @@ directory alongside the OpenSceneGraph use:
     make
     sudo make install
 
-Under Windows use the GUI tool CMakeSetup to build your VisualStudio 
-files. The following page on our wiki dedicated to the CMake build 
+Under Windows use the GUI tool CMakeSetup to build your VisualStudio
+files. The following page on our wiki dedicated to the CMake build
 system should help guide you through the process:
 
-    http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/VisualStudio
+    http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows
 
-Under OSX you can either use the CMake build system above, or use the 
-Xcode projects that you will find in the OpenSceneGraph/Xcode 
+Under OSX you can either use the CMake build system above, or use the
+Xcode projects that you will find in the OpenSceneGraph/Xcode
 directory. See release notes on OSX CMake build below.
 
-For further details on compilation, installation and platform-specific 
+For further details on compilation, installation and platform-specific
 information read "Getting Started" guide:
 
-    http://www.openscenegraph.org/projects/osg/wiki/Support/GettingStarted
-   
-   
+    http://www.openscenegraph.org/index.php/documentation/10-getting-started
+
+
 Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
 =========================================================================
 
@@ -169,11 +165,11 @@ Section 3. Release notes on iOS build, by Thomas Hoghart
 * Check that CMAKE_OSX_ARCHITECTURE is i386 for the simulator or armv6;armv7 for the device
 * Disable DYNAMIC_OPENSCENEGRAPH, DYNAMIC_OPENTHREADS
   This will give us the static build we need for iPhone.
-* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE, 
+* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE,
   OSG_GL_DISPLAYLISTS_AVAILABLE, OSG_GL_VERTEX_FUNCS_AVAILABLE
 * Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE
 * Ensure OSG_WINDOWING_SYSTEM is set to IOS
-* Change FREETYPE include and library paths to an iPhone version 
+* Change FREETYPE include and library paths to an iPhone version
   (OpenFrameworks has one bundled with its distribution)
 * Ensure that CMake_OSX_SYSROOT points to your iOS SDK.
 * Generate the Xcode project
@@ -206,9 +202,9 @@ $ cmake -G Xcode \
 
 
 Known issues:
-* When Linking final app against ive plugin, you need to add -lz to 
+* When Linking final app against ive plugin, you need to add -lz to
   the 'Other linker flags' list.
 * Apps and exes don't get created
-* You can only select Simulator, or Device projects. In the XCode 
-  project you will see both types but the sdk they link will 
+* You can only select Simulator, or Device projects. In the XCode
+  project you will see both types but the sdk they link will
   be the same.

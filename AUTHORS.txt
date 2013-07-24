@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.2.0
 
-510 Contributors:
+511 Contributors:
 
 Firstname Surname
 -----------------
@@ -70,11 +70,11 @@ Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
+Torben Dannhauer
 Glenn Waldron
 Gideon May
 Don Tidrow
 Aurelien Albert
-Torben Dannhauer
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
@@ -84,10 +84,10 @@ David Spilling
 Daniel Sjölie
 Bryan Thrall
 Fabien Lavignotte
+Andreas Ekstrand
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
-Andreas Ekstrand
 Riccardo Corsi
 Rafa Gaitan
 Neil Hughes
@@ -294,6 +294,7 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
+Christian Ruzicka
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -340,6 +341,7 @@ Ross Anderson
 Ronny Krueger
 Ronald van Maarseveen
 Romain Charbit
+Rocco Martino
 Robert Swain
 Rob Smith
 Rob Radtke
@@ -481,7 +483,6 @@ Clay Fowler
 Chuck Sembroski
 Christopher Blaesius
 Christophe Herreman
-Christian Ruzicka
 Christian Noon
 Christian Kaser
 Christian Ehrlicher

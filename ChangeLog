@@ -1,3 +1,25 @@
+2013-07-24 17:27  robert
+
+	* src/osg/DisplaySettings.cpp: Changed default of serialize draw to
+	  OFF
+
+2013-07-24 14:23  robert
+
+	* README.txt: Updated README for 3.2 release
+
+2013-07-24 14:11  robert
+
+	* CMakeLists.txt: Removed release candidate number in prep for
+	  3.2.0 release
+
+2013-07-24 14:05  robert
+
+	* NEWS.txt: Fixed typo
+
+2013-07-24 13:29  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2013-07-24 13:01  robert
 
 	* include/osg/GL2Extensions, src/osg/FrameBufferObject.cpp: Added

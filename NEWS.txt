@@ -1,6 +1,57 @@
 OSG News
 ========
 
+= !OpenSceneGraph 3.2 release improves support iOS and Android, supports a range of new OpenGL features much more.
+
+PERTHSHIRE, Scotland - 24th July 2013 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.2 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+
+=== Open-source development delivers industry-leading features and performance ===
+The !OpenSceneGraph 3.2 release is the culmination of 14 years of work by the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs in both the desktop and mobile space.
+
+=== Updates include: ===
+
+  * Improvements to OpenGL ES 1.1 and 2.0 support, including platform specific extensions
+  * Revamped QTKit, imageio and quicktime plugins for improved support of iOS and OSX
+  * New avfoundation plugin for reading video on iOS and OSX
+  * New ktx plugin for reading Khronos Texture Files
+  * New OpenGL extensions support including compute shaders, tessellation shaders, integer array formats and associated Vec* classes, primitive restart
+  * Improvements to osgManipulator NodeKit that introduce new manipulators and improve flexibility and customizability
+  * Updates to osgQt to support Qt5 and provide better support for Qt4
+  * New osgGA::Device base class for recieving from and sending events to both real and virtual devices in a generic, extensible way
+  * New ZeroCong, RestHTTP and OSC plugins to enable remote control of applications such as controlling desktop systems from tablets and phones
+  * Improvements to osgVolume NodeKit and DICOM plugin for better medical visualization
+  * New TrackVis .trk track files plugin for the visualization of brain scans.
+  * Improvements to osgPresentation NodeKit and Present3D application to make it possible to create non-linear interactive, remote controlled shows
+  * New osgViewer::ViewConfig class with range of implementations to make it easier to configure viewers for advanced rendering support
+  * Support for GPU based Keystone correction with onscreen editing making it possible to use low cost projectors in off axis setups
+  * Clean up of osg::Geometry class removing all deprecated slow path API's resulting in a smaller and faster Geometry class
+  * Addition of deprecated_osg namespace and deprecated_osg::Geometry class that provides deprecated BIND_PER_PRIMITIVE and array indices APIs to add with porting
+  * New ViewDependentShadowMap shadow rendering class that combines enables robust combining of parallel split and perspective shadow map techniques
+  * Updates of plugins to work with the latest FBX, ffmpeg, NVTT, OpenVRML, LibVNCServer releases
+
+
+=== Downloads and Licensing ===
+!OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/index.php/download-section/stable-releases Downloads] section of the openscenegraph.org website.
+
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
+
+=== Professional support and services ===
+!OpenSceneGraph project is backed up with professional services by [http://www.openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.alphapixel.com AlphaPixel] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
+
+ * Confidential Professional Support
+ * Bespoke development
+ * Consultancy
+ * Training
+
+=== Community support and contributions ===
+The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
+
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/index.php/about/http:/www.openscenegraph.org/index.php/about/142-contributors-to-openscenegraph-3-2-0 511 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
+
+
+
+
+
 = !OpenSceneGraph 3.0 release adds support OpenGL ES 1.1, OpenGL ES 2.0, OpenGL 3.x to 4.0, support for Andoid and IOS platforms and much more.
 
 PERTHSHIRE, Scotland - 28th June 2011 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.0 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.0 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
@@ -61,7 +112,7 @@ The !OpenSceneGraph project owes a great deal to the community for its developme
 PERTHSHIRE, Scotland - 12th February 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
-The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
+The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
 
 === Updates include: ===
 
@@ -78,7 +129,7 @@ The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the le
   * New osgShadow support for Light Space Perspective Shadow Maps (LispSM).
   * Three new scene graph widgets for placing traditional 2D capability into fully interactive 3D scenes:
     * PDF widget (based on libPoppler)
-    * VNC client widget (based on libVNCServer) 
+    * VNC client widget (based on libVNCServer)
     * Internet browser client widget (based on Gecko/UBrowser)
   * New plugins for loading Half-Life 2 maps and models.
   * New plugin for loading EXR, high dynamic range imagery
@@ -90,12 +141,12 @@ The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the le
   * Improvements to COLLADA support.
   * Build reporting using CDash
   * New packaging support using CPack
-  * A wide range of build and bug fixes 
+  * A wide range of build and bug fixes
 
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
 
-!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software. 
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
 
 === !OpenSceneGraph Books now available ===
 
@@ -106,13 +157,13 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 
  * Confidential Professional Support
  * Bespoke development
- * Consultancy 
- * Training    
+ * Consultancy
+ * Training
 
 === Community support and contributions ===
-The diverse and growing community of over 2000 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse and growing community of over 2000 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointEight 365 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointEight 365 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
 
 ----
 
@@ -132,7 +183,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 PERTHSHIRE, Scotland - 5th August 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
-The !OpenSceneGraph 2.6 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
+The !OpenSceneGraph 2.6 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
 
 === Updates include: ===
 
@@ -159,13 +210,13 @@ The !OpenSceneGraph 2.6 release is the culmination of 9 years of work by the lea
     * Support for Philips WOWvx 3D auto-stereoscopic displays
     * New include/osg/Config and include/OpenThreads/Config configuration files, that are automatically generated by CMake, which make more straight forward to build end users applications against OpenSceneGraph versions built with non default build options.
     * Support for CMake 2.6
-    * A wide range of build and bug fixes 
+    * A wide range of build and bug fixes
 
- 
+
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
 
-!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software. 
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
 
 === !OpenSceneGraph Books now available ===
 
@@ -176,13 +227,13 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 
  * Confidential Professional Support
  * Bespoke development
- * Consultancy 
- * Training    
+ * Consultancy
+ * Training
 
 === Community support and contributions ===
-The diverse and growing community of over 1900 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse and growing community of over 1900 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointSix 324 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointSix 324 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
 
 ----
 
@@ -201,7 +252,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 PERTHSHIRE, Scotland - 25th April 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.4 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
-The !OpenSceneGraph 2.4 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
+The !OpenSceneGraph 2.4 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
 
 === Updates include: ===
 
@@ -218,11 +269,11 @@ The !OpenSceneGraph 2.4 release is the culmination of 9 years of work by the lea
  * Parallel build support under Visual Studio
  * Support for reading Producer .cfg viewer configuration files
  * A wide range of build and bug fixes
-  
+
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
 
-!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software. 
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
 
 === !OpenSceneGraph Books now available ===
 
@@ -233,13 +284,13 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 
  * Confidential Professional Support
  * Bespoke development
- * Consultancy 
- * Training    
+ * Consultancy
+ * Training
 
 === Community support and contributions ===
-The diverse and growing community of over 1800 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse and growing community of over 1800 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointFour 306 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointFour 306 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
 
 ----
 
@@ -257,7 +308,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 PERTHSHIRE, Scotland - 4th October 2007  - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and !FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
-The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
+The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
 
 === Updates include: ===
 
@@ -273,11 +324,11 @@ The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lea
  * Unification of threading models and viewer event handlers so that all now work for both Viewer and !CompositeViewer classes.
  * GDAL plugin for support for a wide range of geospatial imagery and digital elevation maps formats.
  * A wide range of build and bug fixes.
-  
+
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website. [Downloads Downloads]
 
-!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software. 
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
 
 === !OpenSceneGraph Books now available ===
 
@@ -288,13 +339,13 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 
  * Confidential Professional Support
  * Bespoke development
- * Consultancy 
- * Training    
+ * Consultancy
+ * Training
 
 === Community support and contributions ===
-The diverse and growing community of over 1700 developers is centered around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse and growing community of over 1700 developers is centered around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointTwo 282 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointTwo 282 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
 
 ----
 
@@ -314,7 +365,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 PERTHSHIRE, Scotland - 15th June 2007  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 2.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 2.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real-time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 2.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
 
 !!!Open-source development delivers industry-leading features and performance
-The [=OpenSceneGraph=] 2.0 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
+The [=OpenSceneGraph=] 2.0 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
 
 The theme for the 2.0 release has been making the [=OpenSceneGraph=] easier to use, yet more flexible and powerful.
 
@@ -332,17 +383,17 @@ Features include:
 ** Improvements to the [=OpenFlight=], COLLADA, [=AC3D=], DDS plugins and many more
 ** New TXF texture font reader.
 ** New [=VRML2=] reader (using the [=OpenVRML=] library).
-* Easier 3rd party windowing integration 
+* Easier 3rd party windowing integration
 ** With examples showing integration with GLUT, SDL, Qt, [=WxWidgets=] and MFC
 * External dependencies removed simplifying build and distribution
 ** [=OpenThreads=] is moved into the core of [=OpenSceneGraph=] and is no longer an external dependency
 ** Thanks to the integration of windowing support in osgViewer, [=Producer=] is no longer a dependency.
 
-  
+
 !!!Downloads and Licensing
 [=OpenSceneGraph=] is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [[http://www.openscenegraph.com/osgwiki/pmwiki.php/Downloads/Downloads Downloads]] section of the openscenegraph.org website.
 
-[=OpenSceneGraph=] is released under the [[http://www.openscenegraph.com/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the [=OpenSceneGraph=] libraries without restricting the licensing of the user's software. 
+[=OpenSceneGraph=] is released under the [[http://www.openscenegraph.com/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the [=OpenSceneGraph=] libraries without restricting the licensing of the user's software.
 
 !!![=OpenSceneGraph=] Books now available!
 
@@ -353,13 +404,13 @@ See %newwin%[[http:://www.osgbooks.com OsgBooks]]
 
 * Confidential Professional Support
 * Bespoke development
-* Consultancy 
-* Training    
+* Consultancy
+* Training
 
 !!!Community support and contributions
-The diverse and growing community of over 1700 developers is centered around the public osg-users mailing list, where members discuss how best to use [=OpenSceneGraph=], provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse and growing community of over 1700 developers is centered around the public osg-users mailing list, where members discuss how best to use [=OpenSceneGraph=], provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The [=OpenSceneGraph=] project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.com/osgwiki/pmwiki.php/Documentation/Contributors 264 individuals]] from around the world that have directly contributed to the development and refinement of the [=OpenSceneGraph=] code base. 
+The [=OpenSceneGraph=] project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.com/osgwiki/pmwiki.php/Documentation/Contributors 264 individuals]] from around the world that have directly contributed to the development and refinement of the [=OpenSceneGraph=] code base.
 
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
@@ -393,8 +444,8 @@ Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 
 !!!OpenSceneGraph 1.1 release introduces peformance and scalability improvements, full OpenGL Shading Language support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
 
-AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1, 
-the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
+AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1,
+the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
 
 The OpenSceneGraph-1.1 release introduces:
 
@@ -421,7 +472,7 @@ Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 
 !!!High performance open-source graphics toolkit [=OpenSceneGraph=] hits 1.0!
 
-AYRSHIRE, Scotland - December 9th, 2005 - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.0, the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
+AYRSHIRE, Scotland - December 9th, 2005 - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.0, the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
 
 ->''"3Dlabs congratulates the [=OpenSceneGraph=] development community on the release of [=OpenSceneGraph=] 1.0. [=OpenSceneGraph=] is a shining example of how open-source projects can deliver commercial-quality products with outstanding performance and a ton of cutting-edge features. 3Dlabs committed engineering resources to [=OpenSceneGraph=] to help implement full support of programmable shader technology through [=OpenGL=] Shading Language. It is gratifying to see the excitement that developers have for this important cross-platform, real-time visualization library."'''\\
 Randi Rost, director of developer relations at 3Dlabs, http://developer.3Dlabs.com/
@@ -449,30 +500,30 @@ Randi Rost, director of developer relations at 3Dlabs, http://developer.3Dlabs.c
 
 ->''"3D Nature uses [=OpenSceneGraph=] to build our [=NatureView=] real-time terrain visualization tool. [=OpenSceneGraph=] offered us a high-performance scene graph that had great terrain capability, advanced culling and level-of-detail features, multi-threaded paging and loading and solid, clean, accessible code. We have used and contributed to OSG for two years now, and could not have delivered the kind of high-detail interactive landscape visualization our users require without [=OpenSceneGraph=]."''\\
 Chris "Xenon" Hanson, Vice President of R&D, 3D Nature LLC, http://www.3DNature.com
-  
+
 !!!Downloads and Licensing
 [=OpenSceneGraph=] is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Downloads/Downloads Downloads]] section of the openscenegraph.org website.
 
-[=OpenSceneGraph=] is released under the [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open source applications.  Furthermore, it allows both static and dynamic linking of the [=OpenSceneGraph=] libraries without restricting the licensing of the user's software. 
+[=OpenSceneGraph=] is released under the [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open source applications.  Furthermore, it allows both static and dynamic linking of the [=OpenSceneGraph=] libraries without restricting the licensing of the user's software.
 
 ->''"Our real-time 3D presentation tool, [=Present3D=], builds upon [=OpenSceneGraph=]'s excellent support for stereo visualization, video, imagery, text, 3d models and database paging, making it possible for us to develop a uniquely compelling immersive presentation software. The portability and royalty-free open-source licensing has allowed us to deliver it across a far wider range of platforms and at lower cost than would have been possible with any of the competing proprietary scene graphs." ''\\
 Phil Lavery, Greythorn Associates. http://www.greythornassociates.com
 
 
 !!!Professional support and services
-[=OpenSceneGraph=] project is backed up with professional services provided by the partnership of [=OpenSceneGraph=] Professional Services, based in Ayrshire, Scotland, and Andes Engineering in California, USA. 
+[=OpenSceneGraph=] project is backed up with professional services provided by the partnership of [=OpenSceneGraph=] Professional Services, based in Ayrshire, Scotland, and Andes Engineering in California, USA.
 Services available include:
 
 * Confidential Professional Support
 * Bespoke development
-* Consultancy 
-* Training  
+* Consultancy
+* Training
 
 !!!Community support and contributions
-The diverse community of nearly 1200 developers is centered around the public osg-users mailing list, where members discuss how best to use [=OpenSceneGraph=], provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
+The diverse community of nearly 1200 developers is centered around the public osg-users mailing list, where members discuss how best to use [=OpenSceneGraph=], provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
 ->''"Since I joined this list 6 months ago I have rarely seen a question go unanswered!  The community averages 30 responses a day with about a fifth of them coming from the project lead himself."''\\
-Jacob Foshee, Software Engineer in the Oil and Gas industry. 
+Jacob Foshee, Software Engineer in the Oil and Gas industry.
 
 The [=OpenSceneGraph=] project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.org/osgwiki/pmwiki.php/Documentation/Contributors 171 individuals]] from around the world that have directly contributed to the development and refinement of the [=OpenSceneGraph=] code base.  A special thanks goes to Don Burns, Marco Jez and Mike Weiblen for the massive contributions that they have made in terms of coding, support and expertise over a wide range of topics through the years.
 
@@ -496,60 +547,60 @@ BETA releases
 
 25th May 2005 - OpenSceneGraph-0.9.9
 
->>> OpenGL Shading Language integrated into core, Introspection, movies, particle effects and much more...  
+>>> OpenGL Shading Language integrated into core, Introspection, movies, particle effects and much more...
 
 Introduction to the OpenSceneGraph:
 
-The OpenSceneGraph is an Open Source, high performance real-time graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix, including 64 bit support on Windows, Linux, OSX, Irix and Solaris.  OpenGL version from 1.1 through to 2.0 are all seemlessly supported, including many of the latest extensions.  The OpenSceneGraph is now firmly established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
-    
+The OpenSceneGraph is an Open Source, high performance real-time graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix, including 64 bit support on Windows, Linux, OSX, Irix and Solaris.  OpenGL version from 1.1 through to 2.0 are all seemlessly supported, including many of the latest extensions.  The OpenSceneGraph is now firmly established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers.
+
 The OpenSceneGraph 0.9.9 release:
-    
+
 The latest release of the OpenSceneGraph, 0.9.9, is the culmination of 7 years development and is the final milestone before reaching 1.0. All core features for 1.0 are now in place and ready for deployment.  Since the development driven is by technical convergence rather than usual marketing forces, even the beta releases of the OpenSceneGraph are already mature enough for major industry players to have adopted it for their own application development, with many companies already releasing products based on top of the OpenSceneGraph.
-    
+
 The 0.9.9 release includes many minor API refinements, bug fixes and optimizations, but also major new features including tight integration of OpenGL Shading Language support directly into the core osg library, new reflection/introspection support, new particle effects, movie support and DXF import.  Details follow:
-        
+
 OpenGL Shader Language support:
-    
-OpenGL Shading Language (GLSL) support has been moved from the osgGL2 node kit directly into the core osg library.  This move also involved refactoring the handling of state so that it now specifically supports GLSL Program, Shaders and Uniforms in a convenient and flexible way. State sorting and lazy state updating are now applied to both Program and Uniforms to maximize performance throughput.  The work was spearheaded by 3Dlabs engineer Mike Weiblen, collaborating with Robert Osfield with contributions from the community. 
-        
+
+OpenGL Shading Language (GLSL) support has been moved from the osgGL2 node kit directly into the core osg library.  This move also involved refactoring the handling of state so that it now specifically supports GLSL Program, Shaders and Uniforms in a convenient and flexible way. State sorting and lazy state updating are now applied to both Program and Uniforms to maximize performance throughput.  The work was spearheaded by 3Dlabs engineer Mike Weiblen, collaborating with Robert Osfield with contributions from the community.
+
 Introspection support:
-    
+
 The new osgIntrospection and associated library wrappers provides support for full API reflection/introspection.  That facilitates integration of the OpenSceneGraph with other programming languages, development of generic editors of scene graph attributes, general purpose serialization of scene graph objects such as for reading and writing to disk, or across local networks to support systems such as graphics clusters.  The osgIntrospection is designed
 to be non-intrusive, allowing 3rd Party libraries to be wrapped without these libraries needing to have explicit introspection support added into them.  The-non intrusive approach also keeps introspection support a separate module which only needs to be loaded if you require it, this leaves the core libraries light-weight and focused on the their particular tasks.  osgIntrospection is the inspired work of Marco Jez.  Thanks also go to ANU Viz Lab for graciously funding Robert Osfield's contribution to this sub-project.
 
 Better support for Apple native Windowing:
 
 Thanks to new support for AGL and CGL in OpenProducer, all OpenSceneGraph/osgProducer-based examples and application will run straight out of the box under OSX native AGL or CGL Windowing. This allows better integration of OpenSceneGraph applications with OSX, access to faster and up to date OpenGL drivers.
-    
+
 Support for latest OpenGL extensions:
-    
-Support for the Non power of two texture feature of OpenGL 2.0 has been added 
+
+Support for the Non power of two texture feature of OpenGL 2.0 has been added
 to all the core texture classes.  Also to facilate high resolution video streaming, OpenGL  Pixel Buffer Objects are now supported.  Support for blend equation and logic op have also been added.
-    
+
 Terrain generation and rendering enhancements:
-    
+
 The osgTerrain library, for generating whole earth, geospecific paged databases, has been enhanced with support for alpha source textures and multiple texture layers.  The new multiple texture layers support can be controlled at runtime via the new osgFX::osgFX MultiTextureControl node, which provides a convenient means for blending between the different layers at run-time.  Multiple textures layers can be very useful for mixing topographical maps with satellite/aerial photography.
-       
+
 Particle Effects:
-    
+
 To make it easier to add particle effects to your application a new osgParticle::ParticleEffects node has been written, with five concrete implementations of SmokeEffect, FireEffect, ExplosionEffect and ExplosionDebrisEffect which you can create, adjust and add to your scene graphs.
-    
+
 DXF and Movie plugins:
-    
+
 A new DXF plugin has been added for reading .dxf files.  Movie support has also been enhanced with integration of the OpenSceneGraph with Xine-lib via the xine plugin, this allows you to add movie content into your applications, including DVD's and streamed across the LAN, thanks to Xine-libs inbuilt streaming support.
-    
+
 Application and examples:
-    
+
 To facilitate faster builds and a logical division between applications that come with the OpenSceneGraph, the original example directory has now been split into two, with the new applications/ directory now comprising osgviewer, osgconv, osgarchive, osgversion and osgdem.  The Makefiles now build by default only the applications directory, thus avoiding the cost of recompiling the 74 example programs.  Examples can still be compiled by run make COMPILE_EXAMPLES=yes, or setting COMPILE_EXAMPLE=yes as an env var or in a custom dependencies file.
-    
+
 There are eight new examples, osgblendequation and osglogicop demonstrate the new osg::BlendEquation and osg::LogicOp state attributes,  osgGLUTkeyboardmouse and osgGLUTsimple are GLUT based examples, osgslice does some image reading of rendered slices, osgparticleeffects demonstrates the new osgParticle::ParticleEffects.
-    
+
 osgpbuffer also example now uses Producer's pbuffer support making it portable across platforms and much cleaner.
-    
+
 API refinements, bug fixes and performance improvements:
-    
+
 There have been many bug fixes, a number of performance improvements and API cleanups that have occured throughout the 0.9.8 - 0.9.9, too many separate items to enumerate here.  Together with the above new features they all go to making the OpenSceneGraph-0.9.9 the most robust, high performance and feature rich version so far, and sets the stage for the upcoming 1.0.
-    
+
 We would like to thank the following engineers for their contributions in the 0.9.8 - 0.9.9.9 time frame (in alphabetic order):
 Alberto Farre, Bob Kuehne, Brede Johansen, Carlo Camporesi, Chris Hanson, Don Burns, Donn Mielcarek,  Don Tidrow, Farshid Lashkari, Frederic Marmond, Garrett Potts, Igor Kravtchenko, James French, Jan Ciger, John Grant, Joakim Simonsson, Joran Jessurun, Jason Daly, Kevin Moiule, Leandro Motta Barros, Marco Jez, Mason Menninger, Mike Weiblen, Nathan Monteleone, Norman Vine, Olaf Flebbe, Paul Melis, Per Fahlberg, Rainer Oder, Randall Hopper, Reinhard Sainitzer, Robert Osfield, Ruben, Sebastien Grignard, Stephan Huber, Terry Welsh, Thom DeCarlo, Tony Horrobin, Tree, Tugkan Calapoglu, Vivek Rajan, Waltice and Yuzhong Shen
 
@@ -581,170 +632,170 @@ Andes Engineering - http://www.andesengineering.com
 
     >>> Support for database archives, improved pager, 3d compressed textures
 
-    Release 0.9.8 reflects a continuation of the prior committment to release 
-    often, arriving only two short months after 0.9.7.  This contrasts sharply 
-    to the long period between 0.9.6-2 and 0.9.7.  The following set of 
+    Release 0.9.8 reflects a continuation of the prior committment to release
+    often, arriving only two short months after 0.9.7.  This contrasts sharply
+    to the long period between 0.9.6-2 and 0.9.7.  The following set of
     improvements and features are part of the 0.9.8 release.
 
-    The osgDB Pager has been Improved to provide better multi-processor 
+    The osgDB Pager has been Improved to provide better multi-processor
     stability and constant frame rate peformance.
 
-    Reference documentation has been taken out of the main distribution and 
-    placed on the public website.  The documentation is also now completely 
+    Reference documentation has been taken out of the main distribution and
+    placed on the public website.  The documentation is also now completely
     built with Doxygen.
-    
+
     New Plugins added or modified this release:
 
-        o STL    - This plugin provides OSG with the capability to import 
-                   Stereolithography files, commonly used in the CAD 
+        o STL    - This plugin provides OSG with the capability to import
+                   Stereolithography files, commonly used in the CAD
                    markets.
-    
+
         o NET    - This plugin provides OSG with the ability to read data files
                    from a web site through an http interface.
-    
+
         o OSGA   - This plugin provides database archival support, including
                    large file (greater than 2 GB) support.
-        
-        o OBJ    - The existing obj plugin has been re-written for clean up. 
-    
 
-    New support for 3d texture compression using the 
-    GL_NV_texture_compression_vtc extension has been added, providing an 
+        o OBJ    - The existing obj plugin has been re-written for clean up.
+
+
+    New support for 3d texture compression using the
+    GL_NV_texture_compression_vtc extension has been added, providing an
     improvement on the S3TC compression techniques.
-    
+
     The OSG Spelling Bee is making its mark in this release, with submissions
     by the community to correct spelling and typo errors throughout the osg,
     osgDB and osgUtil libraries.
-    
+
     osgDB::ReaderWriter and osgDB::Registry have been refactored to allow
-    multi-threading of database reading and writing.        
-    
-    The NodeTrackManipulator has been improved.    
-    
+    multi-threading of database reading and writing.
+
+    The NodeTrackManipulator has been improved.
+
     Several general bug fixes have been fixed.
-    
+
     Producer and osgProducer now provide new Mac OSX CGL support, providing an
     environment that is independent of X11.
 
     A few new examples have been added as well:
 
-        o osgplanets    - A simple example that demonstrates an attempt at 
+        o osgplanets    - A simple example that demonstrates an attempt at
                           accurate depiction of planetary motion.
-        o osgspotlight  - An example demonstrating a spot light using 
+        o osgspotlight  - An example demonstrating a spot light using
                           a projected texture.
-        o osglauncher   - An example which reads a config file and displays other examples 
+        o osglauncher   - An example which reads a config file and displays other examples
                           and shows and launches them by clicking on the icons.
         o osgmotionblur - An example of motion blur using accumulation buffers
 
 18th August 2004 - OpenSceneGraph-0.9.7-2
 
-    Build fixes for VisualStudio6.0.  
-    Fixes for osgFX registry support. 
+    Build fixes for VisualStudio6.0.
+    Fixes for osgFX registry support.
     Fixes to osg::Image::flipVertical() adding support for mipmaps and
-    compressed textures.  
+    compressed textures.
     DDS plugin now can vertically flip images by using "dds_flip" Options string.
-    Added support in osgTerrain for reading imagery with color tables. 
-    
+    Added support in osgTerrain for reading imagery with color tables.
+
 
 9th August 2004 - OpenSceneGraph-0.9.7
 
     >>> support for and generation of large scale geospatial databases,
     >>> support for movies and examples of shadows and volume rendering.
-    
-    The 0.9.7 encompasses many improvements, bug fixes, new examples and 
-    significant new functionality, the most notable of which is a new 
+
+    The 0.9.7 encompasses many improvements, bug fixes, new examples and
+    significant new functionality, the most notable of which is a new
     osgTerrain library for generation of large scale geospatial databases.
-    
-    The new osgTerrain library and associated osgdem utility program 
+
+    The new osgTerrain library and associated osgdem utility program
     allows users to use moziacs of geospatial imagery and digital elevation
-    maps to generate a complete paged database which can be used with 
+    maps to generate a complete paged database which can be used with
     standard OSG viewers, and users programs. By utilising GDAL to load the
-    imagery and DEM's a wide range of geospatial formats are supported.   
-     
-    The TerraPage plugin has also been rewritten ontop of the OSG's 
-    osg::PagedLOD and osgDB::DatabasePager which provides support for the 
+    imagery and DEM's a wide range of geospatial formats are supported.
+
+    The TerraPage plugin has also been rewritten ontop of the OSG's
+    osg::PagedLOD and osgDB::DatabasePager which provides support for the
     tile fallback mechanism to ensure that no holes or cracks appear in the
-    databases being roamed, and to achieve constant frame rate via load 
+    databases being roamed, and to achieve constant frame rate via load
     balancing mechanisms with osgDB::DatabasePager.
-    
-    The osgDB::DatabasePager has been further improved to provide more 
+
+    The osgDB::DatabasePager has been further improved to provide more
     configurable load balancing which allows application developers to achieve
     constant frame rates when using paged databases.
-    
+
     Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel class
     have been introduced to better support browsing of large scale databases,
-    and to provide a mechanism for tracking the local up orientation when 
+    and to provide a mechanism for tracking the local up orientation when
     roaming whole earth databases.
-    
+
     osgUtil has been enhanced with:
      - an improved triangle tipper class (osgUtil::TriStipVisitor),
      - a new simplifier (osgUtil::Simplifer) for reducing triangle density of
-       osg::Geometry leaves (utilised by osgTerrain to provide simplification 
-       of terrain tiles), 
+       osg::Geometry leaves (utilised by osgTerrain to provide simplification
+       of terrain tiles),
      - improved and more configurable optimizer (osgUtil::Optimizer),
-     - a new utility class for compiling and releasing OpenGL objects 
-      (osgUtil::GLObjectVisitor) replaces the previous and more limited 
+     - a new utility class for compiling and releasing OpenGL objects
+      (osgUtil::GLObjectVisitor) replaces the previous and more limited
        DisplayListVisitor.
-    
+
     All the osgGA::MatrxManipulator's (used for camera manipulator etc) have
     been revamped with usage of doubles internally, and with tracking of the
-    current CoordinateSystem if one is active, to be better support whole 
-    earth databases.  All the MatrixManipulators have been extend to allow 
+    current CoordinateSystem if one is active, to be better support whole
+    earth databases.  All the MatrixManipulators have been extend to allow
     the setting of a user defined home position.  Two new manipulators have
-    been introduced osgGA::TerrainManipulator, for roaming whole earth/terrain 
+    been introduced osgGA::TerrainManipulator, for roaming whole earth/terrain
     databases, and osgGA::TrackerManipulator which allows the camera to be
     attached to a node in the scene graph.
 
-    Movie support under Linux and OSX via libMpeg3 and Quicktime respectively, 
-    which extend the new osg::ImageStream base class which allows application 
-    developers access to playing, pausing and rewinding movies. 
+    Movie support under Linux and OSX via libMpeg3 and Quicktime respectively,
+    which extend the new osg::ImageStream base class which allows application
+    developers access to playing, pausing and rewinding movies.
 
-    The conversion utility osgconv has been extended to allow compression of 
-    textures and mipmap generation during conversion when writing to the native 
-    .ive binary format.  Texture compression and pre computer mipmaps enable 
+    The conversion utility osgconv has been extended to allow compression of
+    textures and mipmap generation during conversion when writing to the native
+    .ive binary format.  Texture compression and pre computer mipmaps enable
     faster loading of databases and lower utilisation of memory resources.
 
     Write support added to JPG plugin.
-    
+
     Write + 3D texture support added to DDS plugin.
-    
+
     Pseudo loaders .trans, .rot and .scale have been added.
-    
+
     Updated LWO, AC3D, BMP, IVE and FLT loaders.
-    
-    osg::TexGenNode has been added to provide a mechanism for positioning 
+
+    osg::TexGenNode has been added to provide a mechanism for positioning
     OpenGL's texture coordinate generation planes.
 
     Fourteen new examples have been added:
-    
-        osgdem            a utility for creating large scale geospatial paged 
+
+        osgdem            a utility for creating large scale geospatial paged
                           database
 
-        osgphotoalbum     an example of how to use PagedLOD to dynamic generate 
+        osgphotoalbum     an example of how to use PagedLOD to dynamic generate
                           geometry for paged in imagery
 
-        osgbluemarble     an example of how to build PagedLOD database for 
+        osgbluemarble     an example of how to build PagedLOD database for
                           paging imagery
 
-        osgtessellate     an example of how to use osgUtil::Tesselate to 
+        osgtessellate     an example of how to use osgUtil::Tesselate to
                           tessellate polygonal boundaries
 
         osgsimulation     an example of how to use various features in osgSim.
 
-        osgdepthshadow    an example of how to implement shadows use depth 
+        osgdepthshadow    an example of how to implement shadows use depth
                           shadow textures.
 
         osgsimplifier     an example of how to use the new osgUtil::Simplifier.
 
-        osgspacewarp      an example of how to create a special effect that 
+        osgspacewarp      an example of how to create a special effect that
                           depends upon tracking the modelview matrix.
 
-        osgdistortion     an example of how to use prerendering of a texture to 
+        osgdistortion     an example of how to use prerendering of a texture to
                           create a distortion effect.
 
         osgsimple         a bare bones example of how to create a simple viewer
-                          using a Windowing toolkit, in this example using 
-                          Producer, but is written so the example could easily 
+                          using a Windowing toolkit, in this example using
+                          Producer, but is written so the example could easily
                           be modified to work with other Windowing toolkit.
 
         osgkeyboardmouse  adding to keyboard and mouse functionality on the
@@ -752,75 +803,75 @@ Andes Engineering - http://www.andesengineering.com
 
         osgsimplepager    adding database paging support to the osgsimple
                           example.
-    
+
         osgmovie          an example which creates a quad to render a loaded
-                          movie file with - requires the LibMpeg3 (Linux) or 
+                          movie file with - requires the LibMpeg3 (Linux) or
                           Quicktime (OSX) plugin to work.
-        
+
         osgvolume         an example that reads a stack of 2d images to create
-                          a 3D texture, and creates a scene graph using 
-                          standard OSG components (osg::ClipNode, 
-                          osg::TexGenNode, osg::Billboard and 
+                          a 3D texture, and creates a scene graph using
+                          standard OSG components (osg::ClipNode,
+                          osg::TexGenNode, osg::Billboard and
                           osg::TexEnvCombine) to create a per per lit volume.
 
-    
-    Wrapping up the complete 0.9.7 release is a wide range of smaller features 
-    enhancement and many bug fixes. 
+
+    Wrapping up the complete 0.9.7 release is a wide range of smaller features
+    enhancement and many bug fixes.
 
 
 2nd October 2003 - OpenSceneGraph-0.9.6-2
 
-    >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals, 
+    >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals,
     >>> improved build support, thread safety and robustness.
-    
-    The new osgFX nodekit, written by Marco Jez, adds a set of decorator 
-    nodes that add can be conveniently added above subgraphs in your scene 
-    to add special a range of special rendering effects.  Effects include 
-    AnisotopicLight, BumpMapping, Scribe, Specular Highlights and Cartoon 
+
+    The new osgFX nodekit, written by Marco Jez, adds a set of decorator
+    nodes that add can be conveniently added above subgraphs in your scene
+    to add special a range of special rendering effects.  Effects include
+    AnisotopicLight, BumpMapping, Scribe, Specular Highlights and Cartoon
     rendering.
-    
+
     Support for double Matrices has been added with the new Matrixd class,
     and complimented by the a Matrixf class.  The original Matrix class is
-    now a typedef which can be set to either Matrixf or Matrixd (which is 
+    now a typedef which can be set to either Matrixf or Matrixd (which is
     now the default),  When the Matrix typedef is set to Matrixd and the OSG and
-    dependent apps are recompiled all internal operations such a cull traversals 
+    dependent apps are recompiled all internal operations such a cull traversals
     will now be double with double matrices which much improved numerical
     precision, making it ideal for datasets where a large values are contained
-    with transforms in the scene graph (such as with whole earth databases), 
-    and when a transforms are nested which creates requires concatenation of 
-    a number of matrices to get the final model view matrices.  
-    
-    The osgGA::MatrixManipulators (which are used to control the camera 
+    with transforms in the scene graph (such as with whole earth databases),
+    and when a transforms are nested which creates requires concatenation of
+    a number of matrices to get the final model view matrices.
+
+    The osgGA::MatrixManipulators (which are used to control the camera
     position) and osgProducer/OpenProducer have been moved across to using
     exclusively double Matrices.  This has been done to improve numerical
     precision when computing camera positions, whilst having little impact
     on performance since camera operations are only done a small number of
     times per frame.
-    
+
     osg::Quat now supports doubles by default, but also allows users to select
     float version osg::Quat simply by changing the osg::Quat::value_type typedef.
-    
-    Work has been on OpenThreads and OpenProducer, in particular to improve 
-    thread safety and robustness on the Win32 platform.  Reported crashes 
-    on exit from osgProducer::Viewer based apps, and freezes during runtime 
+
+    Work has been on OpenThreads and OpenProducer, in particular to improve
+    thread safety and robustness on the Win32 platform.  Reported crashes
+    on exit from osgProducer::Viewer based apps, and freezes during runtime
     have been fixed.
-    
+
     Threading problems which caused crashes in recent updates of the Terrapage
     loader have also been fixed, and additional internal changes have been made
-    to improve the Terrapage loader's ability to hit constant frame rates.   
-    Support has also been added for loading light points directly from the 
+    to improve the Terrapage loader's ability to hit constant frame rates.
+    Support has also been added for loading light points directly from the
     Terrapage database.
 
     A new .iv/.wrl loader plugin, written by Vivek Rajan, at Magic Earth,
-    has been added to the distribution which uses with OpenInventor or Coin 
-    to load model, converting them into OSG equivalents.  Coin has support 
-    for VRML97 models, so can be used to import such models into the OSG.  
-    Since the new plugin is dependent on OpenInventor or Coin the compilation 
-    is optional, but off by default. To compile this plugin under Unix, set 
-    the environmental variable USE_INVENTOR or USE_COIN and recompile.  
-    Windows .dsp project file does to current exist, but should be 
+    has been added to the distribution which uses with OpenInventor or Coin
+    to load model, converting them into OSG equivalents.  Coin has support
+    for VRML97 models, so can be used to import such models into the OSG.
+    Since the new plugin is dependent on OpenInventor or Coin the compilation
+    is optional, but off by default. To compile this plugin under Unix, set
+    the environmental variable USE_INVENTOR or USE_COIN and recompile.
+    Windows .dsp project file does to current exist, but should be
     possible to add this.
-    
+
     The .ive plugin has been improved with the addition of support for
     osgSim light points, and various internal refinements to make it function
     better on the various platforms supported by the OSG.  Note, these changes
@@ -830,29 +881,29 @@ Andes Engineering - http://www.andesengineering.com
 
     A JPEG2000 image plugin has added, written by Michael Gronager.  The new jp2
     plugin uses the japser open source project to read and write JPEG2000 files.
-    
+
     A scalar bar, and sphere segment helper classes have been added to osgSim,
     the new osgscalarbar and osgspheresegment examples demonstrate how to use
     these new features.
-    
+
     To help handle running applications of graphics cards/drivers that exhibit
     bugs with certain OpenGL extensions, support has been added to the GLextensions
-    code to allow extensions to be disabled via the new 
-    osg::setGLExtensionDisableString(std::string) function or by setting an 
-    OSG_GL_EXTENSION_DISABLE environmental variables.  Follows is an example of 
+    code to allow extensions to be disabled via the new
+    osg::setGLExtensionDisableString(std::string) function or by setting an
+    OSG_GL_EXTENSION_DISABLE environmental variables.  Follows is an example of
     the disable string:
-    
+
         set OSG_GL_EXTENSION_DISABLE =
              "ATI:GL_SGIS_generate_mipmap;Sun:GL_EXT_texture_filter_anisotropic:"
 
     New examples include:
-    
-        osgforest - an example which demonstrates simple techniques for creating forests    
-        osgfxbrowser - an example which demonstrates the various osgFX Effects available    
+
+        osgforest - an example which demonstrates simple techniques for creating forests
+        osgfxbrowser - an example which demonstrates the various osgFX Effects available
         osgscalabar - an example of how to set up the osgSim::ScalarBar.
         osgspheresegment - an example of how to set up the osgSim::SphereSegement
         osgpagelod - a very simply test program for setting up osg::PagedLOD/osgDB::DatabasePager
-    
+
 23rd July 2003 - OpenSceneGraph-0.9.5
 
     >>> Support added for OpenGL2.0 shaders, native multi-threaded Database paging,
@@ -860,36 +911,36 @@ Andes Engineering - http://www.andesengineering.com
     >>> loader and ARB_fragment_program and ARB_vertex_buffer_object extensions,
     >>> improvements to the Terrex .txp and OpenFlight .flt loaders.
 
-    The key new features of the 0.9.5 release are the new OpenGL2.0 nodekit, constant frame rate 
-    database paging support,  classes,  and the new native .ive binary plugin which supports 
-    both reading and writing of all core osg nodes, including inlining of compressed 
-    and non-compressed imagery. 
-    
+    The key new features of the 0.9.5 release are the new OpenGL2.0 nodekit, constant frame rate
+    database paging support,  classes,  and the new native .ive binary plugin which supports
+    both reading and writing of all core osg nodes, including inlining of compressed
+    and non-compressed imagery.
+
     The native database paging support, provided by the new osg::PageLOD and osgDB::DatabasePager,
-    achieves constant frame rate through threading of the database reading, and time based 
-    incremental compile and delete of display lists, vertex_buffer_objects and texture objects. 
-    A new TextureObjectManager class also caches a list of expired texture objects for reuse, 
-    and allows new newly loading imagery to reuse expired texture objects, with the imagery 
-    automatically subloaded to the reused texture objects.  This reuse happens transparently 
+    achieves constant frame rate through threading of the database reading, and time based
+    incremental compile and delete of display lists, vertex_buffer_objects and texture objects.
+    A new TextureObjectManager class also caches a list of expired texture objects for reuse,
+    and allows new newly loading imagery to reuse expired texture objects, with the imagery
+    automatically subloaded to the reused texture objects.  This reuse happens transparently
     and benefits other OSG usages such as the OSG's Terrapage loader.
-    
+
     To provide support multi-thread operation of the OSG, such as multi-thread database paging
     and multi-threaded, multi-window graphics enabled by OpenProducer, the OpenSceneGraph and
     OpenProducer have now adopted the OpenThreads threading library, osgDB and osgProducer now
-    depend upon it.  OpenThreads is open source, light weight, cross platform C++ threading 
+    depend upon it.  OpenThreads is open source, light weight, cross platform C++ threading
     which encapsulates the low level, platform specific threading API calls.  Currently pthreads
-    under Unix and Win32 threads under Windows are supported, with Sgi sproc threads to be 
-    released very soon.  The OpenThreads project website can be found at http://openthreads.sf.net.    
+    under Unix and Win32 threads under Windows are supported, with Sgi sproc threads to be
+    released very soon.  The OpenThreads project website can be found at http://openthreads.sf.net.
 
-    The new .ive binary plugin was developed by Uni-C's VR-Center, and kindly submitted as 
-    open source, adds support for binary reading and writing OSG nodes drawable and state 
-    (including compressed/mipmapped) textures.  The .ive format produces a much faster 
-    load times and smaller file size then native ASCII .osg format. Load times for .ive 
-    files are also 10-20x faster then equivalent OpenFlight .flt and load in an already 
-    optimized scene graph form making it much more suitable for paging.  Files can be 
+    The new .ive binary plugin was developed by Uni-C's VR-Center, and kindly submitted as
+    open source, adds support for binary reading and writing OSG nodes drawable and state
+    (including compressed/mipmapped) textures.  The .ive format produces a much faster
+    load times and smaller file size then native ASCII .osg format. Load times for .ive
+    files are also 10-20x faster then equivalent OpenFlight .flt and load in an already
+    optimized scene graph form making it much more suitable for paging.  Files can be
     converted easily using the osgconv utility : osgconv myfile.flt myfile.ive
-    
-    The new osgGL2 nodekit library adds support for the OpenGL2.0 vertex ProgramObect and fragment 
+
+    The new osgGL2 nodekit library adds support for the OpenGL2.0 vertex ProgramObect and fragment
     ShaderObject's recently ratified by the OpenGL ARB, . The osgGL2 uses the extension have local
     prototypes which allow them to be compiled even in the absence of OpenGL headers that don't
     support the GL2 extension, allowing to port to all platform, and at runtime the extensions are
@@ -897,21 +948,21 @@ Andes Engineering - http://www.andesengineering.com
     this extension at runtime, but other graphics cards and manufactures will be releasing GL2
     extension very soon and will be automatically supported by osgGL2. The osgGL2 was developed
     by Mike Weiblen at 3DLabs whom have kindly submitted osgGL2 as open source and for inclusion
-    with the OSG distribution.  
+    with the OSG distribution.
 
     The ARB_fragment_program, ARB_vertex_buffer_object and ARB_vertex_program attributes are
     also now supported in core osg library.  The new osg::FragmentProgram state attribute
     encapsulates the ARB_fragment_program which is supported by the recent graphics cards
-    from NVidia, ATI and 3DLabs.  Support for ARB_vertex_buffer_object and ARB_vertex_program 
+    from NVidia, ATI and 3DLabs.  Support for ARB_vertex_buffer_object and ARB_vertex_program
     attributes have been added to the osg::Geometry class.  The ARB_vertex_buffer_object extension
     can boost performance by as much as 50% when working on geometry bound data sets.
 
     Two new image loaders, dds and pnm, and a 3dc point cloud have been added. The .dds plugin
-    adds support for compressed & mipped mapped imagery, making it ideal for applications where 
+    adds support for compressed & mipped mapped imagery, making it ideal for applications where
     large texture sizes or database paging is required. The pnm image loader reads the
     pnm, pgm and pbm image formats. See http://netghost.narod.ru/gff/vendspec/pbm/ for details.
 
-    The Terrapage .txp plugin  been updated to include support for multi-texturing, layers and billboards 
+    The Terrapage .txp plugin  been updated to include support for multi-texturing, layers and billboards
     and includes improvements to multi-threaded pager, which has also been ported over to use OpenThreads.
     The OpenFlight .flt plugin has also been improved and now support detail textures via multi-texturing.
 
@@ -921,37 +972,37 @@ Andes Engineering - http://www.andesengineering.com
     Supported has been added for auto scaling and rotating text into osgText.
 
     Five new examples have been included in the distribution:
-    
-    	osgtexturerectangle illustrates how to use the osg::TextureRectangle which encapsulates 
+
+    	osgtexturerectangle illustrates how to use the osg::TextureRectangle which encapsulates
 	the NV_texture_rectangle extension.
-	
+
      	osgprerendercubemap illustrates how to use pre rendering imagery to osg::TextureCubeMap
 	for tasks such as building a environmental texture maps.
-	
-	slideshow3D is a presentation tool which use a scene graph to store a render set of slides, each 
+
+	slideshow3D is a presentation tool which use a scene graph to store a render set of slides, each
 	slide containing layers which can contain bullet points, paragraph, imagery and 3d animated
 	models - and is effectively a 3D power point. The presentations can be built separately and stored in a .osg file or created by
-	slideshow3D via an xml file, two examples - introduction.xml and models.xml, which are included 
+	slideshow3D via an xml file, two examples - introduction.xml and models.xml, which are included
 	in the OpenSceneGraph-Data-0.9.5 data distribution.  slideshow3D depends upon libxml2 for parsing
 	the xml files.
-	
+
 	osgpoints uses the osg::Point state attribute to attenuate and control point size and any points
 	loaded by the application.  This is a useful way of visualizing point data clouds.
-	
+
 	osgdemeter is example of how to integrate the Demeter, OSG using osgProducer::Viewer as a viewer
-	class.  This example depends upon the demeter terrain engine, which can be download from 
+	class.  This example depends upon the demeter terrain engine, which can be download from
 	http://www.terrainengine.com.
 
     Camera style convenience set and get methods to osgUtil::SceneView, consolidating
     previous functionality that was provided by both osg::SceneView and osg::Camara into one place.
-    This move has made osg::Camera redundant so has it been removed to avoid confusion, 
+    This move has made osg::Camera redundant so has it been removed to avoid confusion,
     usage inconsistencies and bloat of core libraries.
-    
-    The long time deprecated osg::GeoSet has been removed, to aid migration of old .osg datasets 
-    osgconv has a copy of GeoSet and the .osg support for it so is able to convert any remaining 
+
+    The long time deprecated osg::GeoSet has been removed, to aid migration of old .osg datasets
+    osgconv has a copy of GeoSet and the .osg support for it so is able to convert any remaining
     .osg database which contained GeoSet's.
 
-    
+
 
 28th April 2003  - OpenSceneGraph-0.9.4-2
 
@@ -962,50 +1013,50 @@ Andes Engineering - http://www.andesengineering.com
     >>> new MD2 plug-in adds support for animate Quake character and
     >>> support added for NV_texture_rectangle.
 
-    The most significant new feature is the osgProducer library that adds 
-    tight integration with OpenProducer, providing the OpenSceneGraph with a 
-    scalable, configurable and portable framework for developing real-time 
-    and interactive graphics applications.  The scalability afforded by 
-    OpenProducer allows applications to be developed which run seamlessly 
-    on single pipe machines up to multi-pipe machines such as Sgi Onyx 
+    The most significant new feature is the osgProducer library that adds
+    tight integration with OpenProducer, providing the OpenSceneGraph with a
+    scalable, configurable and portable framework for developing real-time
+    and interactive graphics applications.  The scalability afforded by
+    OpenProducer allows applications to be developed which run seamlessly
+    on single pipe machines up to multi-pipe machines such as Sgi Onyx
     IR system, and Sun Zulu systems.
-    The osgProducer/OpenProducer framework automatically handles the 
+    The osgProducer/OpenProducer framework automatically handles the
     multi-threading of cull-draw pairs and GUI events.
 
     All the example programs have been ported over from being based on
-    GLUT to using osgProducer (osgGLUT can now be found in the bazaar 
-    section on the website). The move to osgProducer allows all the examples 
-    to scale from running on laptops up to multiple CPU and graphics pipe systems. 
+    GLUT to using osgProducer (osgGLUT can now be found in the bazaar
+    section on the website). The move to osgProducer allows all the examples
+    to scale from running on laptops up to multiple CPU and graphics pipe systems.
     The configuration of threading and multiple camera views can all be done
-    via ASCII configuration files, no need to recompile.  A number of 
+    via ASCII configuration files, no need to recompile.  A number of
     new examples have also been added or revamped, bringing the total to 42.
 
     Also in the theme of increasing scalability there is support for 64bit Linux for both
-    IA64 (Intel Itanium) and x86-64 (AMD Opteron) which compliments the existing 
-    support for Solaris and IRIX 64 bit compilation.  64 bit supports allows 
+    IA64 (Intel Itanium) and x86-64 (AMD Opteron) which compliments the existing
+    support for Solaris and IRIX 64 bit compilation.  64 bit supports allows
     the use of very large data sets, and potential performance improvements.
 
     To help support development teams working with multiple build configuration,
-    the makefile system has been extended to allow multiple build targets to be 
-    built from one source code base.  All makefiles are also now named GNUmakefile 
+    the makefile system has been extended to allow multiple build targets to be
+    built from one source code base.  All makefiles are also now named GNUmakefile
     which ensures that they are only run by gmake to avoid an confusion on system
     where gmake isn't the default make tool.
 
-    A completely new osgText implemention has been developed which is simpler 
-    to use, faster, and thread safe.  Support for high quality true type fonts 
-    has now been moved to a freetype plug-in which is dynamically loaded on demand, 
+    A completely new osgText implemention has been developed which is simpler
+    to use, faster, and thread safe.  Support for high quality true type fonts
+    has now been moved to a freetype plug-in which is dynamically loaded on demand,
     with the core osgText library providing a default font when the plug-in is
     unavailable.  Moving the freetype dependency out of the osgText library makes
-    it just dependant on OpenGL and Standard C++ like the rest of the core libraries, 
+    it just dependant on OpenGL and Standard C++ like the rest of the core libraries,
     allowing osgText to compile by default on all platforms.
 
     Improved thread safety has also been achieved in the core osg and osgUtil libraries
     making work on multiple CPU/multi-pipe systems robust and with improved performance.
 
     Two new plug-ins have been added, for loading DDS and MD2 data formats. The DDS plug-in
-    is for loading compressed and non-compressed images.  The MD2 plug-in loads Quake 
+    is for loading compressed and non-compressed images.  The MD2 plug-in loads Quake
     animated characters.
-    
+
     osg::TextureRectangle class has been added, which encapsulates the
     NV_texture_rectangle and EXT_texture_rectangle extensions.  This is particularly
     useful for render to texture algorithms, and dynamic paging of images such as for
@@ -1016,14 +1067,14 @@ Andes Engineering - http://www.andesengineering.com
     automatically updated - no need for callbacks.  Also added to the osg::Texture
     classes is the option of automatic unref'ing of texture image data once the data has
     been download to all active OpenGL graphics contexts.
-    
+
     A new osgUtil::DelaunayTriangulator utility class has been added.  This is ideal for
     creating optimal triangular meshes from unconnected data points.
 
     Two new classes, osg::ArgumentParser and osg::ApplicationUsage, have been introduced
     to convineiently and robustly parse command line arguments and
-    report command line usage, environmental variables and keyboard and mouse bindings 
-    used by applications.  Running any of the examples with -h or --help will report 
+    report command line usage, environmental variables and keyboard and mouse bindings
+    used by applications.  Running any of the examples with -h or --help will report
     full details example usage.  Keyboard and Mouse bindings usage is now also available as
     a HUD on all examples, simply press 'h' while the app is running to
     bring up help.
@@ -1031,24 +1082,24 @@ Andes Engineering - http://www.andesengineering.com
     A database cache in the osgDB library has been added, along with a clean up
     of memory management in the OpenFlight loader, make development of
     dynamic paging of databases easier and more robust.
-    
-    Support for early abort of rendering has been added, which is useful for 
+
+    Support for early abort of rendering has been added, which is useful for
     interactive applications which occasionally have rendering that takes that long
     enough (i.e.several seconds) that end users may wish to abort during the drawing.
 
     There have also been many general API improvements and bug fixes, too many to enumerate,
-    but all go to solidify the quality of the scene graph and its accompanying libraries.  
-    
+    but all go to solidify the quality of the scene graph and its accompanying libraries.
+
     The combination of new features, robustness and scalability mark this release as a
-    significant step towards 1.0.  
-    
+    significant step towards 1.0.
+
 
 
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz
 
     >>> adds support navigational light points, multi-threaded dynamic
-    >>> paging of Terrapage databases, ARB_vertex_program extension, 
-    >>> DirectD .x model loader, and integration with OpenProducer for 
+    >>> paging of Terrapage databases, ARB_vertex_program extension,
+    >>> DirectD .x model loader, and integration with OpenProducer for
     >>> multi-threaded, multi-window/pipe rendering.
 
     Added osgProducer library which integrates the OpenSceneGraph seemlessly
@@ -1066,40 +1117,40 @@ Andes Engineering - http://www.andesengineering.com
 
     Addition of osgSim which is NodeKit designed for visual simulation
     market, currently features high fidelity light points support.  Light
-    point sectors, blink sequences and groups, and light point fading are 
+    point sectors, blink sequences and groups, and light point fading are
     all supported.
 
     From Brede Johansen, support added for the ARB VertexProgram extension
-    with osgvertexprogram demo showing reflection and refraction in action, and 
+    with osgvertexprogram demo showing reflection and refraction in action, and
     osgpbuffer demo for Win32.
-    
+
     From Ulrich Hertlein, new DirectX .x model loader.
 
     From Tree, Support for encoded text types in osgText.
-    
+
     New osgshadowtexture demo which illustrates how to create
     dynamic shadow textures in your scene.
 
     New osglogo demo - features anti-aliased TrueType text and animation.
-    
+
     The app phase of operations on the scene graph has been renamed
     the update phase to make its function clearer. The main phases are now
     named now does update, cull, draw.  The AppVisitor, set/getAppCallback etc
     have be renamed UpdateVisitor, set/getUpdateCallback etc.
 
     Removed the osg/ManagerManger and associated #define osgNew's, this has
-    been done to simplify users code and to solve the lack of thread safety 
+    been done to simplify users code and to solve the lack of thread safety
     that was causing problems with the MemoryManager.
-    
+
     Support added for reading and writing of callbacks in the .osg format.
-    
+
     Support added for reading and writing of osg::Shapes in the .osg format.
 
     Support added for reading OpenFlight comment records into osg::Node description
     fields.
-    
+
     Improvements to the GEO loaders.
-    
+
     Numerous bug fixes and API refinements.
 
 
@@ -1110,7 +1161,7 @@ Andes Engineering - http://www.andesengineering.com
     From Geoff Michel, AC3D .wc and Carbon Graphics GEO .geo loaders.
 
     Support for multi-texturing added to OpenFlight loader.
-    
+
     LOD has been revamped to allow independent min and max ranges for
     each LOD child, bringing it inline with the OpenFlight style LOD
     representation.
@@ -1121,10 +1172,10 @@ Andes Engineering - http://www.andesengineering.com
 
     New osg::Shape geometry primitives added which allow the specification
     of geometry in a form that can accelerate collision detection, and as
-    a way of specifying the geometry to tessellate.  Shapes include 
+    a way of specifying the geometry to tessellate.  Shapes include
     Sphere, Oriented Box, Cone, Cylinder, Grid, TriangleMesh, ConvexHull
-    and CompositeShape which allows the storage of a hierarchy of shapes. 
-    
+    and CompositeShape which allows the storage of a hierarchy of shapes.
+
     Geometry has been extended to all per primitive bindings and
     per primitive set bindings of attributes, and indexing of attributes
     with the same or different index lists for each attribute list.
@@ -1137,18 +1188,18 @@ Andes Engineering - http://www.andesengineering.com
     Draw and Sort callbacks added to osg::RenderStage.
 
     Added PolygonStipple class.
-    
+
     Further refinement of class names and method calls:
-    Renamed classes : 
-    
+    Renamed classes :
+
         Primitive    -> PrimitiveSet
-        
+
     Renamed methods :
-    
+
         Geometry::addPrimitive(..) -> addPrimitiveSet(..)
         Drawable::drawImmediateMode(..) -> drawImplementation(..) const
         Drawable::DrawCallback::drawImmediateMode(..) -> drawImplementation(..) const
-    
+
 
 30th August 2002 - OpenSceneGraph-0.9.1.tar.gz
 
@@ -1161,16 +1212,16 @@ Andes Engineering - http://www.andesengineering.com
     Addition of osg::Texture1D, Texture2D & Texture3D classes, Texture2D replaces
     the original osg::Texture, which has now become a pure virtual base class. All
     Texture classes, including TextureCubeMap are derived from this base class..
-    
+
     New osgtexture1D and osgtexture3D demos demonstrate the new texture classes in
     action.
-    
-    The build system has been updated to support HP-UX.  This adds one of the last 
+
+    The build system has been updated to support HP-UX.  This adds one of the last
     remaining mainstream platforms supported.
 
-    A new Inventor/VRML1.0 loader was added.  The inventor format has been requested 
+    A new Inventor/VRML1.0 loader was added.  The inventor format has been requested
     on numerous occasions, so this is a welcome addition.
-    
+
     Support added to lwo plugin for loading the new lwo2 format.
 
     osg::TexEnvCombine implemented texture_env_combine and texture_env_crossbar
@@ -1188,22 +1239,22 @@ Andes Engineering - http://www.andesengineering.com
 
     New PROTECTED mode for protecting local state mode and attributes from be
     overridden from state above it in the scene graph.
-    
+
     Support for fog coord and secondary colors extensions added to osg::Geometry.
 
     osg::Billboard has been improved to allow rotations around all axes, as well
     as point rotations.  Check osgbillboard for a new improved demo.
 
-    The osglight example has been improved by utilizing AnimationPath and 
+    The osglight example has been improved by utilizing AnimationPath and
     PositionAttitudeTransform to keep light sources in motion.
 
     osg::AnimationPath improved, now allowing swing and looping behavior and
     with two new app callbacks which can update PositionAttitudeTransform
     and MatrixTransform respectively.
-    
+
     Support for writing osg::Image's to .rgb format added.
 
-    To keep the overall API clean, and the following items have been 
+    To keep the overall API clean, and the following items have been
     renamed and deprecated parts of the API have been removed:
 
     Renamed classes:
@@ -1238,45 +1289,45 @@ Andes Engineering - http://www.andesengineering.com
 
     This release marks the beginning of the beta phase of the OpenSceneGraph
     development, which means that all the major core features are now
-    in the scene graph, and 1.0 is not far away.  Its performance, features 
-    and portability already compares very favorably to other scene graphs, 
-    both comerical and open source.  
+    in the scene graph, and 1.0 is not far away.  Its performance, features
+    and portability already compares very favorably to other scene graphs,
+    both comerical and open source.
 
     Multi-texturing support added to osg::StateSet, osg::Geometry, osg::State
     and txp loader, so multi-texturing can now be done with very little coding
-    from the user - all you need to do is specify the texture unit to use 
-    when setting texturing state and texture coordinates and the rest is 
+    from the user - all you need to do is specify the texture unit to use
+    when setting texturing state and texture coordinates and the rest is
     handled automatically by the scene graph!
-    
-    The new osg::Geometry classes which supersedes the old Performer style 
+
+    The new osg::Geometry classes which supersedes the old Performer style
     osg::GeoSet, support multi-texturing, and uses sharable osg::Arrays which
     utilize std::vector<> for data storage and manipulation.
 
     Shadow volume occlusion culling adding to the core OSG, developed as a
     collobaration between Mike Connell and Robert Osfield. Our implementation
     uses convex planer occluders, with support for holes to allow larger
-    and more effective occluders to be used. The approach is software 
-    based so it 100% portable, and by culling during the cull traversal 
-    both CPU and GPU loads are significantly reduced, making it an extremely 
-    powerful feature for large scale urban and indoor visulisation. 
+    and more effective occluders to be used. The approach is software
+    based so it 100% portable, and by culling during the cull traversal
+    both CPU and GPU loads are significantly reduced, making it an extremely
+    powerful feature for large scale urban and indoor visulisation.
 
     osgParticle developed by Marco Jez adds support for a range of particle
     effects such smoke, fires, engine plumes, fountains, fire works, and
-    is fully customizable to produce your own favorite effects. osgParticle 
-    is a NodeKit (see below) which can be directly linked to in your 
-    application to allow you to create particle effects by hand, or have 
-    the library dynamically loaded in when you load a database which contains 
+    is fully customizable to produce your own favorite effects. osgParticle
+    is a NodeKit (see below) which can be directly linked to in your
+    application to allow you to create particle effects by hand, or have
+    the library dynamically loaded in when you load a database which contains
     particle effects.
-    
-    osgGA (Gui Abstraction) library written by Neil Salter adds classes for 
+
+    osgGA (Gui Abstraction) library written by Neil Salter adds classes for
     adapting different GUI toolkits to work with a standard set of manipulators for
     modifying the scene, such as camera and state manipulators.
-    
+
     Support has been added to the plugin architecture to facilitate the
     development of NodeKits - add on libraries which can used directly
-    in your code, or loaded indirectly when loading from file.  The 
+    in your code, or loaded indirectly when loading from file.  The
     later allows you to load a .osg file with text or particle effects
-    in them,the plugin architecture automatically loads the required 
+    in them,the plugin architecture automatically loads the required
     library which supports these features.
 
     A range of new demos have been as code examples, and to demonstrate
@@ -1286,7 +1337,7 @@ Andes Engineering - http://www.andesengineering.com
                        which allows the users to interactively create
                        their own convex planer occluders.
         osghud       - how to mix head up display with 3d views.
-        osgparticle  - shows the new osgParticle node kit in action.                
+        osgparticle  - shows the new osgParticle node kit in action.
         osgprerender - pre renders and scene then textures the result onto
                        an animated flag.
         osgcallback  - examples of the full range of callbacks that you
@@ -1300,9 +1351,9 @@ Andes Engineering - http://www.andesengineering.com
         osgmultitexture - a simple example which adds a spherical reflection
                         map to a whole scene using the second texture unit
                         if one exists.
-        
-    osg::Drawable::PrimtiveFunctor has also been added to allow querrying 
-    of primitive data with Drawables subclasses without requiring knowledge 
+
+    osg::Drawable::PrimtiveFunctor has also been added to allow querrying
+    of primitive data with Drawables subclasses without requiring knowledge
     of the types of Drawable subclasses that exists.  This decoupling makes
     it a very powerful and flexible utility.
 
@@ -1310,48 +1361,48 @@ Andes Engineering - http://www.andesengineering.com
 26th April 2002 - OpenSceneGraph-0.8.45.tar.gz
 
     >>> Support added for Solaris, texture cube mapping & muliple projections.
-   
+
     The OpenSceneGraph now has a new Makefile system which supports all Unix
-    compilation including the new addition to the family - Solaris!  
+    compilation including the new addition to the family - Solaris!
 
     OpenSceneGraph welcomes Solaris to the list of supported platforms.  This
     release puts all of the OpenSceneGraph functionality at the fingertips of
     Sun Microsystem's customers and developers.  Solaris users can now have
-    the benefit of a high performance scene graph for visual simulation, 
-    virtual reality, scientific visualization, CAD, and architectural 
+    the benefit of a high performance scene graph for visual simulation,
+    virtual reality, scientific visualization, CAD, and architectural
     walk-throughs.  Many thanks to Sun for providing resources for the port.
-    
-    Additional html documentation has been added to the distribution to 
+
+    Additional html documentation has been added to the distribution to
     make it easier to get an understanding of scene graph technology and
-    the project itself and how to make use of it.  
+    the project itself and how to make use of it.
 
     Support has also been added for OpenGL's texture cube mapping which
     is ideal for accurate environmental reflections and much more.
-    
+
     The scene graph has been extended to allow multiple projection (via
-    the new osg::Projection node) and viewports within one scene graphs, 
-    this makes it much easier to set up head up displays, and we have 
+    the new osg::Projection node) and viewports within one scene graphs,
+    this makes it much easier to set up head up displays, and we have
     an example to demonstrate how easy it is - osghud.
-    
-    The osgUtil::CullVisitor and osgUtil::SceneView has been revamped 
+
+    The osgUtil::CullVisitor and osgUtil::SceneView has been revamped
     removing the dependency on osg::Camera, which is now simply an
     option for SceneView rather than a requirement.  This allows users
     to set the camera entirely with the scene graph or create their own
     camera classes and use them with SceneView.  The existing osg::Camera
     has also been simplified as support for setting projection and
     modelview matrices have been moved out to the cull traversal.
-    
-    Several sets of node callbacks have been added, including a Cull 
+
+    Several sets of node callbacks have been added, including a Cull
     NodeCallback on each Node, ComputeTransformCallback on Transform
     Nodes, EvaluateLODCallback on LOD nodes, ComputeBillboardCallback
-    on Billboard nodes.  These make it my easier to customize the 
+    on Billboard nodes.  These make it my easier to customize the
     scene graphs behavior at runtime.
-    
+
     osg::Image::readPixels() and support for writing .bmp files has been
     added which has made it easy to add screen capture the any OpenSceneGraph
     application.  This feature is demonstrated in the scene graph viewer
     which comes with the distribution - just press 'O' to output a screenshot.
-    
+
     Finally, include/osg/MemoryManager has been added which overrides new
     and delete for debug builds. The override new and delete track allocations
     and deallocations, ensure they are matched, checked for memory under and
@@ -1359,75 +1410,75 @@ Andes Engineering - http://www.andesengineering.com
     your applications.  This help track down a number of memory leaks and
     unmatched new and deletes within the OpenSceneGraph and should make
     it easier to do with users applications as well.
-    
-    All in all, the OpenSceneGraph is now more portable, easier to 
-    customize, cleaner and more robust.  Beta release and 1.0 is now not 
+
+    All in all, the OpenSceneGraph is now more portable, easier to
+    customize, cleaner and more robust.  Beta release and 1.0 is now not
     far away!
-    
+
 
 24th February 2002 - osg-0.8.44.tar.gzosg-
 
     >>> Support added for Mac OSX, Cygwin and MinGW, and new TerraPage loader.
-    
+
     The major item for this release is the completion of the Mac OSX port,
     thanks to Phil Atkin and others for making this happen.
-    
+
     Also added to support for Cygwin and MinGW builds which gives Windows
     users a free and robust alternative to the Visual C++, which we
     have Norman Vine to thank.
-    
+
     Funtionality wise there has been a great deal of work behind the scenes
-    putting in place a flexible and extensible framework for handling 
+    putting in place a flexible and extensible framework for handling
     transform nodes, users can now extend the osg::Transform node through
     subclassing or via callbacks.  This work will underpin future work
     on moving camera setup into the scene graph, and environmental effects
     such as cloud layers, ground planes, stars and earth sky implementations
     which are planned for the next release.
-    
-    Callbacks and virtual methods have also been added to the osg::LOD & 
-    osg::Billboard to allow users to customize their behavior.  Draw 
+
+    Callbacks and virtual methods have also been added to the osg::LOD &
+    osg::Billboard to allow users to customize their behavior.  Draw
     callbacks have also been added to allow customization of osg::Drawables
     at runtime.
-    
+
     The Open Flight .flt loader has undergone a number of improvements
     including support for instancing and billboards.
-    
+
     New TerraPage (.txp) loader and OpenDX writer (.dx) plugins have been added.
-    
+
     Support for the clone operation on osg::Object's has been expanded
     to allow cloneType() - a simple clone an blank object of the same type,
     and clone(CopyOp&) where CopyOp is a functor which allows users to
     specify the deep copy vs shallow copying of object data.
-    
+
 
 2nd January 2002 - osg-0.8.43.tar.gz
 
     >>> Support for TrueType text, Stereo out of the box, and much more.
-    
+
     Since the last release the OSG has moved to CVS based developments so
     many users will have seen gradual increments in functionality and changes
     to the API. Whereas a the leap from 0.8.42 to 0.8.43 is actually quite
     significant is likely to require code changes as several significant parts
     of the API have evolved to a more mature state.
-    
+
     The most significant new functionality is the addition of the osgText
     library which provides support for true type font rendering, as textured,
     polygonal, pixmap, bitmap and 3D fonts.
-    
+
     We now have new osg::Matrix implementation which cleans up its interface.
     Also all angular parameters are now based on radians rather than degrees
     as before (and as in Performer), this has been done to be more consistent
     with the basic trignometric functions and standard maths conventions.
-    
+
     Scene graph optimization has been added which can boost performance
-    on some database by as much as an order of magnititude, this is 
+    on some database by as much as an order of magnititude, this is
     particularily noticable in .flt based databases.  Display list performance
     has also been boosted on NVidia based machines thanks to changing the
     compilation and execution of display list into two seperate operations.
-    
-    App callbacks are now supported on all Nodes, and there now a proper 
+
+    App callbacks are now supported on all Nodes, and there now a proper
     app traversal which can be used to animate the scene.
-    
+
     Stereo support has been added into the osgUtil::SceneView which allows
     quad buffered/anaglyphic stereo to enabled easily for almost all OSG
     applications without code modifications - simple set environmental
@@ -1437,9 +1488,9 @@ Andes Engineering - http://www.andesengineering.com
     src/Demos/osgcluster has been added to demonstrate how easy it is
     to set up a graphics cluster across a standard networked PC's.
 
-    There have been many minor code changes to fix bugs and address 
+    There have been many minor code changes to fix bugs and address
     performance bottlenecks or to improve extensibility was, representing
-    a significant step towards API maturity and a beta release which is 
+    a significant step towards API maturity and a beta release which is
     now not far away.
 
 
@@ -1450,58 +1501,58 @@ Andes Engineering - http://www.andesengineering.com
     This release sees a relatively minor number of enhancements over
     0.8.41, the most significant being the new osgWX library and wxsgv
     demo written by Ben Discoe.
-    
+
     Also from Brede Johansen in this release is the improvements in support for older
     .flt (Open Flight) files such versions 12 & 13.  Previously only version
-    15.6 files had been tested and developed to. 
-    
+    15.6 files had been tested and developed to.
+
     Last but by no means least, several bug fixes related to view frustum
     culling have been made.
 
 
 25th July 2001 - osg-0.8.41.tar.gz
 
-    >>> Support added for multi-pass and multi-stage rendering including Impostors. 
+    >>> Support added for multi-pass and multi-stage rendering including Impostors.
 
     The key feature developed is a highly flexible framework for multi-pass and
     multi-stage rendering techniques.  Unlike most scene graphs and games
-    engines the OSG has as dynamic framework which automatically configures 
+    engines the OSG has as dynamic framework which automatically configures
     itself at runtime.
 
     Building ontop of the new framework's multi-stage rendering capabilities,
     support for Impostors (hirachical image caching) has been integrated into
     the core scene graph  library making extremely easy to take advantage of
     this advanced rendering techinque - normally only seen in research papers.
-    Check out osgimpostor demo to see how easy it is to add osg::Impostor 
-    nodes to your own models. Impostors are particularily effective are 
+    Check out osgimpostor demo to see how easy it is to add osg::Impostor
+    nodes to your own models. Impostors are particularily effective are
     reducing scene complexity whilest minimizing the visual impact, making it
     ideal for scenes with large numbers of complex objects such as a city
     scene, or a dense forest.
-    
+
     Taking advantage of the new framework's multi-pass rendering capabilities
     is osgreflect demo which illustrates how to achieve planar relfections
     using the stencil buffer and multi-pass rendering.
-    
+
     The cool thing about both the osgreflect and osgimpostor demos is that
     there is no hardwiring to achieve the results, the scene graph stores
     all the information neccessary to specify the number and type of rendering
     passes, and the framework handles the rest behind the scenes.  This also
     makes it very easy to add these advanced rendering techinques to your
-    own applications as everything is cleanly encapsulated with 
+    own applications as everything is cleanly encapsulated with
     osgUtil::SceneView.
 
-    New loaders have been added to support .lwo (Light Wave), .obj 
-    (Alias Wavefront) and .dw (Design Workshop) 3D file formats making it 
+    New loaders have been added to support .lwo (Light Wave), .obj
+    (Alias Wavefront) and .dw (Design Workshop) 3D file formats making it
     even easier to compose your own worlds from models sourced from the
     web or your own.
-    
+
     osg::Camera has been totally revamped and now supports asymetric
     and othographics projections in addition to the symetrical perspective
     projections.
 
     And finally, support for texture subloading has been added to osg::Texture
     and osg::Image.  This allows textures to be updated dynamically, and
-    has already been used for mpeg video playback!   
+    has already been used for mpeg video playback!
 
 
 19th May 2001 - osg-0.8.40.tar.gz
@@ -1510,11 +1561,11 @@ Andes Engineering - http://www.andesengineering.com
 
     This is the first full release since project lead, Robert Osfield, made
     a move to pursue the OSG's development full-time.  This commitment has
-    been made to bring the API rapidly towards maturity, and to provide 
+    been made to bring the API rapidly towards maturity, and to provide
     high quality support and consultancy services.  Please contact
     robert@openscenegraph.com if you have any queries.
 
-    This release marks a significant step forward in the maturity of the 
+    This release marks a significant step forward in the maturity of the
     API, with several major changes to the library in the areas of state
     handling, database support, and portability.
 
@@ -1522,7 +1573,7 @@ Andes Engineering - http://www.andesengineering.com
     new classes have been introduced to replace the previous hardwired
     state handling classes.  The new classes also allow improved state
     sorting and lazy state updating which boosts both cull traversal
-    and particularly draw traversal performance. 
+    and particularly draw traversal performance.
 
     To improve the modularity, interopability and conceptual clarity the
     support classes for database loading have been moved from the core
@@ -1530,8 +1581,8 @@ Andes Engineering - http://www.andesengineering.com
     ASCII native database format and the .rgb reader has moved into its own
     osgPlugins library to further the cleanliness of the core library.
 
-    Support has be added for multiple OpenGL context's and hence multi-pipe 
-    systems such as sgi's Onyx2, allowing each context to have its own 
+    Support has be added for multiple OpenGL context's and hence multi-pipe
+    systems such as sgi's Onyx2, allowing each context to have its own
     display list and texture objects.
 
     The culler and rendering support in osgUtil has also been improved, and
@@ -1539,14 +1590,14 @@ Andes Engineering - http://www.andesengineering.com
 
     Also just in, thanks to Randall Hopper for adding support for FreeBSD :-)
 
-    
+
 23rd March 2001 - osg-0.8.39.tar.gz
 
     >>> Port of OSG to MacOS underway
 
     The first steps towards support of MacOS have been taken by Bryan Woods,
     adding Metrowerks project files and adding support for MacOS into the
-    core scene graph.  Work still in progress so assistance welcome to 
+    core scene graph.  Work still in progress so assistance welcome to
     complete the task.
 
     Other major developments have been the addition of two new base classes
@@ -1578,7 +1629,7 @@ Andes Engineering - http://www.andesengineering.com
 
     >>> Anisotropic texturing now supported <i>and</i> loading of gzip compressed files
 
-    Anisotropic texturing provides for the next step in quality texturing 
+    Anisotropic texturing provides for the next step in quality texturing
     filtering above tri-linear and is especially effective when viewing
     texture surfaces at shallow angles.
 
@@ -1591,7 +1642,7 @@ Andes Engineering - http://www.andesengineering.com
 22nd December 2000 - osg_src-0.8-33.tar.gz
 
     >>> Support added for OpenGL vertex arrays, and several key image loaders.
-    
+
     Support for OpenGL vertex arrays has been added to improve performance,
     particularly accelerating PC based graphics.
 
@@ -1613,7 +1664,7 @@ Andes Engineering - http://www.andesengineering.com
 
     Rendering of polygons which overlay underlying geometry, such
     as white lines on a runway, can now be achieved utilizing the
-    new osg::PolygonOffset which encapsulates glPolygonOffset to 
+    new osg::PolygonOffset which encapsulates glPolygonOffset to
     avoid z fighting which otherwise hampers such detailing.
 
 10th November 2000 - osg_src-0.8-28.tar.gz
@@ -1628,9 +1679,9 @@ Andes Engineering - http://www.andesengineering.com
     >>> Driving and Flight modes have been added to viewers.
 
     osgUtil::DriveManipulator and osgUtil::FlightManipulator have been
-    added to allow the scene graph viewer (sgv) and other viewers to 
+    added to allow the scene graph viewer (sgv) and other viewers to
     support a drive and flying modes.  These modes can be accessed
-    in sgv by pressing '2' and '3' respectively ('1' returns to 
+    in sgv by pressing '2' and '3' respectively ('1' returns to
     trackball manipulator).  Left mouse button accelerates forward,
     middle stops motion and right deccelerates.
 

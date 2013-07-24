@@ -530,6 +530,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void setShaderAtomicCounterSupported(bool flag) { _isShaderAtomicCountersSupported = flag; }
         bool isShaderAtomicCounterSupported() const {return _isShaderAtomicCountersSupported; }
 
+        bool isDrawBuffersSupported() const { return _glDrawBuffers!=0; }
+
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.

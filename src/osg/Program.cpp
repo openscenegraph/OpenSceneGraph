@@ -515,8 +515,8 @@ const Program::UniformBlockMap& Program::getUniformBlocks(unsigned contextID) co
 
 Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID, GLuint programHandle ) :
         osg::Referenced(),
-        _loadedBinary(false),
         _glProgramHandle(programHandle),
+        _loadedBinary(false),
         _contextID( contextID ),
         _ownsProgramHandle(false)
 {

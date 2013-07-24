@@ -96,7 +96,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _glContextFlags = vs._glContextFlags;
     _glContextProfileMask = vs._glContextProfileMask;
     _swapMethod = vs._swapMethod;
-    
+
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
     _keystones = vs._keystones;
@@ -137,7 +137,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
         _swapMethod = vs._swapMethod;
 
     _keystoneHint = _keystoneHint | vs._keystoneHint;
-    
+
     // insert any unique filenames into the local list
     for(FileNames::const_iterator itr = vs._keystoneFileNames.begin();
         itr != vs._keystoneFileNames.end();
@@ -146,7 +146,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
         const std::string& filename = *itr;
         FileNames::iterator found_itr = std::find(_keystoneFileNames.begin(), _keystoneFileNames.end(), filename);
         if (found_itr == _keystoneFileNames.end()) _keystoneFileNames.push_back(filename);
-    }    
+    }
 
     // insert unique Keystone object into local list
     for(Objects::const_iterator itr = vs._keystones.begin();
@@ -156,7 +156,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
         const osg::Object* object = itr->get();
         Objects::iterator found_itr = std::find(_keystones.begin(), _keystones.end(), object);
         if (found_itr == _keystones.end()) _keystones.push_back(const_cast<osg::Object*>(object));
-    }    
+    }
 }
 
 void DisplaySettings::setDefaults()
@@ -197,7 +197,7 @@ void DisplaySettings::setDefaults()
     #endif
 
     _compileContextsHint = false;
-    _serializeDrawDispatch = true;
+    _serializeDrawDispatch = false;
     _useSceneViewForStereoHint = true;
 
     _numDatabaseThreadsHint = 2;
@@ -633,7 +633,7 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    
+
     if ((ptr = getenv("OSG_KEYSTONE_FILES")) != 0)
     {
     #if defined(WIN32) && !defined(__CYGWIN__)
@@ -641,7 +641,7 @@ void DisplaySettings::readEnvironmentalVariables()
     #else
         char delimitor = ':';
     #endif
-    
+
         std::string paths(ptr);
         if (!paths.empty())
         {
@@ -743,10 +743,10 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     if (arguments.read("--keystone",str))
     {
         _keystoneHint = true;
-        
+
         if (!_keystoneFileNames.empty()) _keystoneFileNames.clear();
         _keystoneFileNames.push_back(str);
-        
+
         while(arguments.read("--keystone",str))
         {
             _keystoneFileNames.push_back(str);

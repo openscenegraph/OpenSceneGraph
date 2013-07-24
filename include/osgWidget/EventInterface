@@ -314,6 +314,11 @@ class OSGWIDGET_EXPORT EventInterface
             return _eventMask;
         }
 
+        typedef std::list<osg::ref_ptr<Callback> > CallbackList;
+
+        inline CallbackList& getCallbacks() { return _callbacks; }
+        inline const CallbackList& getCallbacks() const { return _callbacks; }
+
         void addCallback(Callback* cb) {
             _callbacks.push_back(cb);
         }
@@ -400,7 +405,6 @@ class OSGWIDGET_EXPORT EventInterface
         bool canKeyUp   () const { return (_eventMask & EVENT_KEY_UP) != 0; }
 
     private:
-        typedef std::list<osg::ref_ptr<Callback> > CallbackList;
 
         unsigned int _eventMask;
         CallbackList _callbacks;

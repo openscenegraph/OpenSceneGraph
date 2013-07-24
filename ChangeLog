@@ -1,3 +1,28 @@
+2013-07-24 13:01  robert
+
+	* include/osg/GL2Extensions, src/osg/FrameBufferObject.cpp: Added
+	  GL2Extensions::isDrawBuffersSupported() and usage with
+	  FrameBufferObject.cpp to prevent invalid MRT usage causing crash
+	  under GLES2
+
+2013-07-24 12:50  robert
+
+	* NEWS.txt: Updated NEWS for 3.2 release
+
+2013-07-24 12:49  robert
+
+	* src/osg/Program.cpp: Fixed warning
+
+2013-07-24 12:17  robert
+
+	* include/osgWidget/EventInterface: Added getCallbacks() methods
+
+2013-07-23 18:34  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog, include/osg/Version:
+	  Updated ChangeLog, AUTHORS file, Release Candidate Number and SO
+	  version number for 3.2-rc4
+
 2013-07-23 18:11  robert
 
 	* src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp: From Rocco Martino,

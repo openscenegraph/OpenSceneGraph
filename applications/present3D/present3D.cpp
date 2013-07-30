@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -135,14 +135,14 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
 class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
 public:
     ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::GUIEventHandler(), _device(device) {}
-    
+
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
         OSG_INFO<<"ForwardToDeviceEventHandler::setEvent("<<ea.getKey()<<")"<<std::endl;
         _device->sendEvent(ea);
         return false;
     }
-    
+
 private:
     osg::ref_ptr<osgGA::Device> _device;
 };
@@ -161,7 +161,7 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
             if (!transform) return false;
 
             osg::NotifySeverity level = osg::INFO;
-            
+
             switch(ea.getEventType())
             {
                 case(osgGA::GUIEventAdapter::PUSH):
@@ -284,7 +284,7 @@ enum P3DApplicationType
 void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_options, const std::string& cursorFileName)
 {
     if (!loadedModel) return;
-    
+
 #if !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
 
     // add back in enabling of the GL_ALPHA_TEST to get around the core OSG no longer setting it by default for opaque bins.
@@ -312,7 +312,7 @@ void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name)
     {
         OSG_INFO << "Adding Device : " << device_name << std::endl;
         viewer.addDevice(dev.get());
-        
+
         if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
             viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));
     }
@@ -327,7 +327,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the application for presenting 3D interactive slide shows.");
@@ -386,10 +386,10 @@ int main( int argc, char **argv )
 
 #ifdef USE_SDL
     SDLIntegration sdlIntegration;
-    
+
     osg::notify(osg::INFO)<<"USE_SDL"<<std::endl;
-#endif    
-    
+#endif
+
     bool doSetViewer = true;
     std::string configurationFile;
 
@@ -402,7 +402,7 @@ int main( int argc, char **argv )
     while (arguments.read("-c",configurationFile)) {}
 
     osg::Vec4 clearColor(0.0f,0.0f,0.0f,0.0f);
-    
+
     while (arguments.read("--clear-color",clearColor[0],clearColor[1],clearColor[2],clearColor[3])) {}
 
     std::string filename;
@@ -441,7 +441,7 @@ int main( int argc, char **argv )
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
-    
+
     // set clear colour to black by default.
     viewer.getCamera()->setClearColor(clearColor);
 
@@ -467,12 +467,12 @@ int main( int argc, char **argv )
     while (arguments.read("--device", device))
     {
         addDeviceTo(viewer, device);
-        
+
     }
 
     if (arguments.read("--http-control"))
     {
-    
+
         std::string server_address = "localhost";
         std::string server_port = "8080";
         std::string document_root = "htdocs";
@@ -489,11 +489,11 @@ int main( int argc, char **argv )
             viewer.addDevice(rest_http_device.get());
         }
     }
-    
+
     // set up stereo masks
     viewer.getCamera()->setCullMask(0xffffffff);
     viewer.getCamera()->setCullMaskLeft(0x00000001);
-    viewer.getCamera()->setCullMaskRight(0x00000002);   
+    viewer.getCamera()->setCullMaskRight(0x00000002);
 
     // set up the camera manipulators.
     {
@@ -509,7 +509,7 @@ int main( int argc, char **argv )
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -547,12 +547,12 @@ int main( int argc, char **argv )
     bool hideCursor = (showCursor=="No" || showCursor=="NO" || showCursor=="no");
 
     while (arguments.read("--set-viewer")) { doSetViewer = true; }
-    
+
     while (arguments.read("--no-set-viewer")) { doSetViewer = false; }
 
     // if we want to hide the cursor override the custom cursor.
     if (hideCursor) cursorFileName.clear();
-    
+
 
     // cluster related entries.
     int socketNumber=8100;
@@ -599,7 +599,7 @@ int main( int argc, char **argv )
         viewer.getUpdateVisitor()->setTraversalMode(updateTraversalMode);
     }
 
-    
+
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     osg::ref_ptr<osgPresentation::SlideEventHandler> seh = new osgPresentation::SlideEventHandler(&viewer);
     viewer.addEventHandler(seh.get());
@@ -620,7 +620,7 @@ int main( int argc, char **argv )
     // set up optimizer options
     unsigned int optimizer_options = osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS;
     bool relase_and_compile = false;
-    while (arguments.read("--release-and-compile")) 
+    while (arguments.read("--release-and-compile"))
     {
         relase_and_compile = true;
     }
@@ -631,7 +631,7 @@ int main( int argc, char **argv )
         viewer.getDatabasePager()->setUnrefImageDataAfterApplyPolicy(true,false);
         optimizer_options &= ~osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS;
     }
-// 
+//
 //     osgDB::Registry::instance()->getOrCreateDatabasePager()->setUnrefImageDataAfterApplyPolicy(true,false);
 //     optimizer_options &= ~osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS;
 //     osg::Texture::getTextureObjectManager()->setExpiryDelay(0.0f);
@@ -657,7 +657,7 @@ int main( int argc, char **argv )
     float width = osg::DisplaySettings::instance()->getScreenWidth();
     float height = osg::DisplaySettings::instance()->getScreenHeight();
     float distance = osg::DisplaySettings::instance()->getScreenDistance();
-    while (arguments.read("-s", width, height, distance)) 
+    while (arguments.read("-s", width, height, distance))
     {
         osg::DisplaySettings::instance()->setScreenDistance(distance);
         osg::DisplaySettings::instance()->setScreenHeight(height);
@@ -687,11 +687,11 @@ int main( int argc, char **argv )
         else if (strcmp(str,"master")==0) P3DApplicationType = MASTER;
         else if (strcmp(str,"slave")==0) P3DApplicationType = SLAVE;
     }
-        
+
     while (arguments.read("--viewer")) { P3DApplicationType = VIEWER; }
     while (arguments.read("--master")) { P3DApplicationType = MASTER; }
     while (arguments.read("--slave")) { P3DApplicationType = SLAVE; }
-    
+
     while (arguments.read("--version"))
     {
         std::string appTypeName = "invalid";
@@ -780,7 +780,7 @@ int main( int argc, char **argv )
 
 
     // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         osg::notify(osg::INFO) << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
@@ -796,12 +796,12 @@ int main( int argc, char **argv )
         for(unsigned int i=0; i<loadedModel->getNumDescriptions(); ++i)
         {
             const std::string& desc = loadedModel->getDescription(i);
-            if (desc=="loop") 
+            if (desc=="loop")
             {
                 osg::notify(osg::NOTICE)<<"Enabling looping"<<std::endl;
                 seh->setLoopPresentation(true);
             }
-            else if (desc=="auto") 
+            else if (desc=="auto")
             {
                 osg::notify(osg::NOTICE)<<"Enabling auto run"<<std::endl;
                 seh->setAutoSteppingActive(true);
@@ -830,7 +830,7 @@ int main( int argc, char **argv )
     }
 
 
-    
+
 
     // pass the model to the slide event handler so it knows which to manipulate.
     seh->set(loadedModel.get());
@@ -843,7 +843,7 @@ int main( int argc, char **argv )
         osgDB::writeNodeFile(*loadedModel,outputFileName);
         return 0;
     }
-    
+
 
     if (!cursorFileName.empty() || hideCursor)
     {
@@ -865,7 +865,7 @@ int main( int argc, char **argv )
 
     osg::Timer_t startOfFrameTick = osg::Timer::instance()->tick();
     double targetFrameTime = 1.0/targetFrameRate;
-    
+
     if (exportName.empty())
     {
         // objects for managing the broadcasting and recieving of camera packets.
@@ -894,7 +894,7 @@ int main( int argc, char **argv )
 
             startOfFrameTick =  osg::Timer::instance()->tick();
 
-#if 0            
+#if 0
             if (kmcb)
             {
                 double time = kmcb->getTime();
@@ -910,9 +910,9 @@ int main( int argc, char **argv )
             {
                 // take camera zero as the guide.
                 osg::Matrix modelview(viewer.getCamera()->getViewMatrix());
-                
+
                 cp.setPacket(modelview,viewer.getFrameStamp());
-                
+
                 // cp.readEventQueue(viewer);
 
                 scratchPad.reset();
@@ -922,7 +922,7 @@ int main( int argc, char **argv )
                 scratchPad.read(cp);
 
                 bc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
-                
+
                 std::cout << "bc.sync()"<<scratchPad.numBytes()<<std::endl;
 
                 bc.sync();
@@ -932,13 +932,13 @@ int main( int argc, char **argv )
                 rc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
 
                 rc.sync();
-                
+
                 scratchPad.reset();
                 scratchPad.read(cp);
-    
+
                 // cp.writeEventQueue(viewer);
 
-                if (cp.getMasterKilled()) 
+                if (cp.getMasterKilled())
                 {
                     std::cout << "Received master killed."<<std::endl;
                     // break out of while (!done) loop since we've now want to shut down.
@@ -972,7 +972,7 @@ int main( int argc, char **argv )
                 seh->selectSlide(previous_ActiveSlide, previous_ActiveLayer);
 
                 continue;
-                
+
             }
 
             // update the scene by traversing it with the the update visitor which will
@@ -996,7 +996,7 @@ int main( int argc, char **argv )
     {
         ExportHTML::write(seh.get(), viewer, exportName);
     }
-    
+
     return 0;
 }
 

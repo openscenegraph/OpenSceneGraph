@@ -491,9 +491,19 @@ int main( int argc, char **argv )
     }
 
     // set up stereo masks
-    viewer.getCamera()->setCullMask(0xffffffff);
+
     viewer.getCamera()->setCullMaskLeft(0x00000001);
     viewer.getCamera()->setCullMaskRight(0x00000002);
+
+    bool assignLeftCullMaskForMono = true;
+    if (assignLeftCullMaskForMono)
+    {
+        viewer.getCamera()->setCullMask(viewer.getCamera()->getCullMaskLeft());
+    }
+    else
+    {
+        viewer.getCamera()->setCullMask(0xffffffff);
+    }
 
     // set up the camera manipulators.
     {

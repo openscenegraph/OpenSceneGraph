@@ -1439,7 +1439,6 @@ void Geometry::fixDeprecatedData()
                 {
                     unsigned int localNumVertices = *primItr;
                     numVertices += localNumVertices;
-                    primItr += localNumVertices;
                 }
                 break;
             }

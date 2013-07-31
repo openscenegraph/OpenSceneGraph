@@ -84,11 +84,18 @@ class Intersector : public osg::Referenced
 
         inline bool reachedLimit() { return _intersectionLimit == LIMIT_ONE && containsIntersections(); }
 
-   protected:
+        /** Set Epsilon value, where supported is used in numerical comparisons to workaround number precisions issues.*/
+        inline void setEpsilon(double epsilon) { _epsilon = epsilon; }
 
-        CoordinateFrame _coordinateFrame;
+        /** Get Epsilon value.*/
+        inline double getEpsilon() const { return _epsilon; }
+
+protected:
+
+        CoordinateFrame   _coordinateFrame;
         IntersectionLimit _intersectionLimit;
-        unsigned int    _disabledCount;
+        unsigned int      _disabledCount;
+        double            _epsilon;
 
 };
 

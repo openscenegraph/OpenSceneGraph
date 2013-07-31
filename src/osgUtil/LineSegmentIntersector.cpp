@@ -244,6 +244,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
         osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start, _end);
         lsi->_parent = this;
         lsi->_intersectionLimit = this->_intersectionLimit;
+        lsi->_epsilon = this->_epsilon;
         return lsi.release();
     }
 
@@ -278,6 +279,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * inverse, _end * inverse);
     lsi->_parent = this;
     lsi->_intersectionLimit = this->_intersectionLimit;
+    lsi->_epsilon = this->_epsilon;
     return lsi.release();
 }
 
@@ -484,15 +486,13 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     osg::Vec3d bb_min(bbInput._min);
     osg::Vec3d bb_max(bbInput._max);
 
-#if 1
-    double epsilon = 1e-4;
-    bb_min.x() -= epsilon;
-    bb_min.y() -= epsilon;
-    bb_min.z() -= epsilon;
-    bb_max.x() += epsilon;
-    bb_max.y() += epsilon;
-    bb_max.z() += epsilon;
-#endif
+    // expand the extents of the bounding box by the epsilon to prevent numerical errors resulting in misses.
+    bb_min.x() -= _epsilon;
+    bb_min.y() -= _epsilon;
+    bb_min.z() -= _epsilon;
+    bb_max.x() += _epsilon;
+    bb_max.y() += _epsilon;
+    bb_max.z() += _epsilon;
 
     // compate s and e against the xMin to xMax range of bb.
     if (s.x()<=e.x())
@@ -619,7 +619,7 @@ osg::Texture* LineSegmentIntersector::Intersection::getTextureLookUp(osg::Vec3& 
 {
     osg::Geometry* geometry = drawable.valid() ? drawable->asGeometry() : 0;
     osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
-    
+
     if (vertices)
     {
         if (indexList.size()==3 && ratioList.size()==3)
@@ -718,7 +718,7 @@ osg::Texture* LineSegmentIntersector::Intersection::getTextureLookUp(osg::Vec3& 
         }
 
         return const_cast<osg::Texture*>(activeTexture);
-        
+
     }
     return 0;
 }

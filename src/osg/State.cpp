@@ -911,7 +911,10 @@ void State::initializeExtensionProcs()
     if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") || OSG_GLES2_FEATURES)
     {
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
+        if(OSG_GLES2_FEATURES)       
+            _glMaxTextureCoords = _glMaxTextureUnits;
+        else
+            glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
     }
     else if ( osg::getGLVersionNumber() >= 1.3 ||
                                  osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||

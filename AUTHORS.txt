@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.2.0
+OpenSceneGraph Library 3.3.0
 
-511 Contributors:
+512 Contributors:
 
 Firstname Surname
 -----------------
@@ -44,10 +44,10 @@ Mattias Helsing
 Magnus Kessler
 David Fries
 Andy Skinner
+Tom Jolley
 Paul Melis
 Alberto Luaces
 Luc Frauciel
-Tom Jolley
 Pavel Moloshtan
 Brad Christiansen
 Olaf Flebbe
@@ -70,11 +70,11 @@ Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
+Aurelien Albert
 Torben Dannhauer
 Glenn Waldron
 Gideon May
 Don Tidrow
-Aurelien Albert
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
@@ -154,6 +154,7 @@ Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
+Sebastian Messerschmidt
 Ryan Kawicki
 Rudolf Wiedemann
 Romano Magacho
@@ -181,7 +182,6 @@ Tugkan Calapoglu
 Tim Daoust
 Sohey Yamamoto
 Sergey Leontyev
-Sebastian Messerschmidt
 Santosh Gaikwad
 Ryan Pavlik
 Robert Milharcic
@@ -334,6 +334,7 @@ Simon Buckley
 Sid Byce
 Shuxing Xiao
 Shane Arnott
+Sergey Kurdakov
 Sebastien Kuntz
 Ruth Lang
 Ruben Smelik

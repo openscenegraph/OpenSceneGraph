@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlight loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -1030,9 +1030,9 @@ protected:
             if ((w==0.0) || (light->getSpotCutoff()<180.0))
             {
                 // assume yaw is zero along y axis, increase positive clockwise
-                // assume patch is zero along xy plane, increase positive upwards
-                float cos_yaw = cosf(osg::inDegrees(yaw));
-                float sin_yaw = sinf(osg::inDegrees(yaw));
+                // assume pitch is zero along xy plane, increase positive upwards
+                float cos_yaw = cosf(osg::inDegrees(-yaw));
+                float sin_yaw = sinf(osg::inDegrees(-yaw));
                 float cos_pitch = cosf(osg::inDegrees(pitch));
                 float sin_pitch = sinf(osg::inDegrees(pitch));
                 light->setDirection(osg::Vec3(sin_yaw*cos_pitch, cos_yaw*cos_pitch, sin_pitch));

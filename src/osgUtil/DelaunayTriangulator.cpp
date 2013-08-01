@@ -1269,6 +1269,11 @@ float DelaunayConstraint::windingNumber(const osg::Vec3 &testpoint) const
 }
 osg::DrawElementsUInt *DelaunayConstraint::makeDrawable()
 {
+    if (_interiorTris.empty())
+    {
+        return 0;
+    }
+
     // initialize index storage vector for internal triangles.
     std::vector<GLuint> pt_indices;
     pt_indices.reserve(_interiorTris.size() * 3);

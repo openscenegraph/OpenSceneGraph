@@ -17,6 +17,11 @@
 #include <osg/State>
 #include <osg/View>
 
+namespace osgUtil {
+// forward declare RenderBin so we can refer to it in RenderInfo
+class RenderBin;
+}
+
 namespace osg {
 
 class RenderInfo
@@ -29,7 +34,8 @@ public:
     RenderInfo(const RenderInfo& rhs):
         _state(rhs._state),
         _view(rhs._view),
-        _cameras(rhs._cameras),
+        _cameraStack(rhs._cameraStack),
+        _renderBinStack(rhs._renderBinStack),
         _userData(rhs._userData) {}
 
     RenderInfo(State* state, View* view):
@@ -40,7 +46,8 @@ public:
     {
         _state = rhs._state;
         _view = rhs._view;
-        _cameras = rhs._cameras;
+        _cameraStack = rhs._cameraStack;
+        _renderBinStack = rhs._renderBinStack;
         _userData = rhs._userData;
         return *this;
     }
@@ -55,10 +62,19 @@ public:
     View* getView() { return _view; }
     const View* getView() const { return _view; }
 
-    void pushCamera(Camera* camera) { _cameras.push_back(camera); }
-    void popCamera() { if (!_cameras.empty()) _cameras.pop_back(); }
+    void pushCamera(Camera* camera) { _cameraStack.push_back(camera); }
+    void popCamera() { if (!_cameraStack.empty()) _cameraStack.pop_back(); }
 
-    Camera* getCurrentCamera() { return _cameras.empty() ? 0 : _cameras.back(); }
+    typedef std::vector<Camera*> CameraStack;
+    CameraStack& getCameraStack() { return _cameraStack; }
+
+    Camera* getCurrentCamera() { return _cameraStack.empty() ? 0 : _cameraStack.back(); }
+
+    void pushRenderBin(osgUtil::RenderBin* bin) { _renderBinStack.push_back(bin); }
+    void popRenderBin() { _renderBinStack.pop_back(); }
+
+    typedef std::vector<osgUtil::RenderBin*> RenderBinStack;
+    RenderBinStack& getRenderBinStack() { return _renderBinStack; }
 
     void setUserData(Referenced* userData) { _userData = userData; }
     Referenced* getUserData() { return _userData.get(); }
@@ -66,11 +82,11 @@ public:
 
 protected:
 
-    typedef std::vector<Camera*> Cameras;
 
     ref_ptr<State>          _state;
     View*                   _view;
-    Cameras                 _cameras;
+    CameraStack             _cameraStack;
+    RenderBinStack          _renderBinStack;
     ref_ptr<Referenced>     _userData;
 };
 

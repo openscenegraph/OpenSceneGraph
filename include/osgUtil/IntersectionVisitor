@@ -53,7 +53,8 @@ class Intersector : public osg::Referenced
         Intersector(CoordinateFrame cf=MODEL):
             _coordinateFrame(cf),
             _intersectionLimit(NO_LIMIT),
-            _disabledCount(0) {}
+            _disabledCount(0),
+            _epsilon(1e-4) {}
 
 
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }

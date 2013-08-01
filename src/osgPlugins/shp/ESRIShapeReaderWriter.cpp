@@ -67,7 +67,7 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
                     osg::Geode * geode = sp.getGeode();
                     unsigned int i = 0;
 
-                    ESRIShape::XBaseParser::ShapeAttributeListList::iterator it, end = xbp.getAttributeList().end();
+                    ESRIShape::XBaseParser::ShapeAttributeListList::const_iterator it, end = xbp.getAttributeList().end();
                     for (it = xbp.getAttributeList().begin(); it != end; ++it, ++i)
                     {
                         geode->getDrawable(i)->setUserData(it->get());

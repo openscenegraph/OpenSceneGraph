@@ -62,9 +62,10 @@ class XBaseParser
 
         typedef std::vector< osg::ref_ptr<osgSim::ShapeAttributeList> > ShapeAttributeListList;
 
-        XBaseParser(const std::string fileName);
+        XBaseParser(const std::string& fileName);
         ~XBaseParser() {}
-        ShapeAttributeListList & getAttributeList() { return _shapeAttributeListList; }
+
+        const ShapeAttributeListList & getAttributeList() const { return _shapeAttributeListList; }
 
     private:
 

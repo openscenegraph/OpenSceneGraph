@@ -80,12 +80,12 @@ bool XBaseFieldDescriptor::read(int fd)
 }
 
 
-XBaseParser::XBaseParser(const std::string fileName):
+XBaseParser::XBaseParser(const std::string& fileName):
     _valid(false)
 {
-    int fd = 0;
-    if (fileName.empty() == false)
+    if (!fileName.empty())
     {
+        int fd = 0;
 #ifdef WIN32
         if( (fd = open( fileName.c_str(), O_RDONLY | O_BINARY )) < 0 )
 #else
@@ -93,11 +93,13 @@ XBaseParser::XBaseParser(const std::string fileName):
 #endif
         {
             perror( fileName.c_str() );
-            return;
+        }
+        else
+        {
+            _valid = parse(fd);
+            close(fd);
         }
     }
-
-    _valid = parse(fd);
 }
 
 bool XBaseParser::parse(int fd)
@@ -207,8 +209,6 @@ bool XBaseParser::parse(int fd)
     }
 
     delete [] record;
-
-    close (fd);
 
     return true;
 }

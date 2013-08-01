@@ -1427,7 +1427,7 @@ void Geometry::fixDeprecatedData()
             case(PrimitiveSet::DrawArraysPrimitiveType):
             {
                 const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
-                numVertices = drawArray->getCount();
+                numVertices += drawArray->getCount();
                 break;
             }
             case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
@@ -1540,6 +1540,8 @@ void Geometry::fixDeprecatedData()
     // start the primitiveNum at -1 as we increment it the first time through when
     // we start processing the primitive sets.
     int primitiveNum = -1;
+    int target_vindex = 0;
+    int source_pindex = -1;
     for(PrimitiveSetList::iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)
@@ -1558,8 +1560,6 @@ void Geometry::fixDeprecatedData()
         }
 
         // copy the vertex data across to the new arays
-        int source_pindex = -1;
-        int target_vindex = 0;
         switch(primitiveset->getType())
         {
             case(PrimitiveSet::DrawArraysPrimitiveType):

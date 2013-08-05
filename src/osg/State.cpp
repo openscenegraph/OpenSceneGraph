@@ -1325,6 +1325,9 @@ namespace State_Utils
 {
     bool replace(std::string& str, const std::string& original_phrase, const std::string& new_phrase)
     {
+        // Prevent infinite loop : if original_phrase is empty, do nothing and return false
+        if (original_phrase.empty()) return false;
+
         bool replacedStr = false;
         std::string::size_type pos = 0;
         while((pos=str.find(original_phrase, pos))!=std::string::npos)

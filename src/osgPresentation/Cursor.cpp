@@ -74,24 +74,45 @@ void Cursor::initializeCursor()
     _transform->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
     _transform->setAutoScaleToScreen(true);
 
-    osg::Geode* geode = new osg::Geode;
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-    osg::Geometry* geom = osg::createTexturedQuadGeometry(osg::Vec3(-_size*0.5f,-_size*0.5f,0.0f),osg::Vec3(_size,0.0f,0.0f),osg::Vec3(0.0f,_size,0.0f));
-    geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-    osg::Image* image = osgDB::readImageFile(osgDB::findDataFile(_filename));
-    if (image)
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(osgDB::findDataFile(_filename));
+    osg::ref_ptr<osg::Texture2D> texture = (image.valid()) ? new osg::Texture2D(image) : 0;
+
+    // full cursor
     {
+        osg::ref_ptr<osg::Geometry> geom = osg::createTexturedQuadGeometry(osg::Vec3(-_size*0.5f,-_size*0.5f,0.0f),osg::Vec3(_size,0.0f,0.0f),osg::Vec3(0.0f,_size,0.0f));
+        geode->addDrawable(geom.get());
+
         osg::StateSet* stateset = geom->getOrCreateStateSet();
-        stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image),osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
-        // stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-        stateset->setRenderBinDetails(1000, "DepthSortedBin");
+        stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        stateset->setRenderBinDetails(1001, "DepthSortedBin");
+
+        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
     }
 
-    geode->addDrawable(geom);
+    {
+        osg::ref_ptr<osg::Geometry> geom = osg::createTexturedQuadGeometry(osg::Vec3(-_size*0.5f,-_size*0.5f,0.0f),osg::Vec3(_size,0.0f,0.0f),osg::Vec3(0.0f,_size,0.0f));
+        geode->addDrawable(geom.get());
 
-    _transform->addChild(geode);
+        osg::Vec4Array* colors = new osg::Vec4Array;
+        colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,0.25f));
+        geom->setColorArray(colors, osg::Array::BIND_OVERALL);
+
+        osg::StateSet* stateset = geom->getOrCreateStateSet();
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
+        stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+        stateset->setRenderBinDetails(1000, "DepthSortedBin");
+
+        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
+    }
+
+
+
+    _transform->addChild(geode.get());
 
     addChild(_transform.get());
 }

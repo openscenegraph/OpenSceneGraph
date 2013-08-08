@@ -11,6 +11,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/AnimationMaterial
     ${HEADER_PATH}/CompileSlideCallback
+    ${HEADER_PATH}/Cursor
     ${HEADER_PATH}/PickEventHandler
     ${HEADER_PATH}/PropertyManager
     ${HEADER_PATH}/KeyEventHandler
@@ -23,6 +24,7 @@ SET(TARGET_H
 SET(TARGET_SRC
     AnimationMaterial.cpp
     CompileSlideCallback.cpp
+    Cursor.cpp
     PickEventHandler.cpp
     PropertyManager.cpp
     KeyEventHandler.cpp

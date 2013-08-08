@@ -40,6 +40,7 @@
 
 #include <osgPresentation/SlideEventHandler>
 #include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/Cursor>
 
 #include "ReadShowFile.h"
 #include "PointsEventHandler.h"
@@ -180,12 +181,42 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
                     osg::notify(level)<<"ea.getYmax()="<<ea.getYmax()<<std::endl;
 
                     _mousePostition.set(ea.getXnormalized(), ea.getYnormalized());
+#if 1
+                    if (ea.getNumPointerData()>=1)
+                    {
+                        const osgGA::PointerData* pd = ea.getPointerData(ea.getNumPointerData()-1);
+                        osg::Camera* camera = dynamic_cast<osg::Camera*>(pd->object.get());
+
+                        OSG_NOTICE<<"Camera "<<camera<<", xNormalized() = "<<pd->getXnormalized()<<", yNormalized() = "<<pd->getYnormalized()<<std::endl;
+                        _mousePostition.set(pd->getXnormalized(), pd->getYnormalized());
+                        _camera = camera;
+                    }
+#endif
                     break;
 
                 case(osgGA::GUIEventAdapter::FRAME):
                 {
-                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                    if (_camera.valid())
+                    {
+                        osg::Matrix VP =  _camera->getViewMatrix() * _camera->getProjectionMatrix();
 
+                        osg::Matrix inverse_VP;
+                        inverse_VP.invert(VP);
+
+                        osg::Vec3d start_eye(_mousePostition.x(), _mousePostition.y(), 0.0);
+                        osg::Vec3d end_eye(_mousePostition.x(), _mousePostition.y(), 1.0);
+
+                        osg::Vec3d start_world = start_eye * inverse_VP;
+                        osg::Vec3d end_world = start_eye * inverse_VP;
+
+                        OSG_NOTICE<<"start_world="<<start_world<<std::endl;
+                        OSG_NOTICE<<"end_world="<<end_world<<std::endl;
+
+                        if (end_world.valid()) transform->setPosition(end_world);
+                    }
+
+#if 0
+                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
 
                     osg::Camera* camera = view->getCamera();
                     osg::Matrix VP =  camera->getViewMatrix() * camera->getProjectionMatrix();
@@ -207,7 +238,7 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
                     {
                         OSG_NOTICE<<"Ignoring invalid end_world position"<<std::endl;
                     }
-
+#endif
                     break;
                 }
                 case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -237,6 +268,7 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
         }
 
         osg::Vec2d _mousePostition;
+        osg::observer_ptr<osg::Camera> _camera;
 };
 
 osg::Node* createCursorSubgraph(const std::string& filename, float size)
@@ -300,7 +332,12 @@ void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_opti
     {
         osg::ref_ptr<osg::Group> group = new osg::Group;
         group->addChild(loadedModel.get());
-        group->addChild(createCursorSubgraph(cursorFileName, 0.05f));
+#if 1
+        OSG_NOTICE<<"Creating Cursor"<<std::endl;
+        group->addChild(new osgPresentation::Cursor(cursorFileName, 20.0f));
+#else
+        group->addChild(createCursorSubgraph(cursorFileName, 20.0f));
+#endif
         loadedModel = group;
     }
 }

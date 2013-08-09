@@ -258,6 +258,23 @@ ADD_SUBDIRECTORY(pvr)
 ADD_SUBDIRECTORY(osc)
 ADD_SUBDIRECTORY(trk)
 
+
+####################################################
+#
+# ScriptEngines
+#
+IF (LUA_LIBRARIES AND LUA_INCLUDE_DIR)
+    ADD_SUBDIRECTORY(lua)
+ENDIF()
+
+IF (V8_FOUND)
+    ADD_SUBDIRECTORY(V8)
+ENDIF()
+
+IF (PYTHONLIBS_FOUND)
+    ADD_SUBDIRECTORY(python)
+ENDIF()
+
 ####################################################
 #
 # Device integration plugins

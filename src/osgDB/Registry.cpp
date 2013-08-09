@@ -303,6 +303,7 @@ Registry::Registry()
     addFileExtensionAlias("frag", "glsl");
     addFileExtensionAlias("geom", "glsl");
 
+    addFileExtensionAlias("js", "V8");
 
 #if defined(DARWIN_IMAGEIO)
     addFileExtensionAlias("jpg",  "imageio");

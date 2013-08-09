@@ -11,7 +11,6 @@
 */
 
 #include <osg/Geometry>
-#include <osg/CameraNode>
 #include <osg/Texture2D>
 #include <osg/AutoTransform>
 #include <osg/Notify>
@@ -39,7 +38,6 @@
 #include <osgGA/StateSetManipulator>
 
 #include <osgPresentation/SlideEventHandler>
-#include <osgPresentation/SlideShowConstructor>
 #include <osgPresentation/Cursor>
 
 #include "ReadShowFile.h"

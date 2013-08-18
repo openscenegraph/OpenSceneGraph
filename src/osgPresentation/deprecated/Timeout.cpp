@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgPresentation/Timeout>
+#include <osgPresentation/deprecated/Timeout>
 #include <osgUtil/CullVisitor>
 #include <osgGA/EventVisitor>
 
@@ -28,7 +28,7 @@ public:
         LEAVE,
         RESET
     };
-    
+
     OperationVisitor(Operation op) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _operation(op), _sleepTime(0.0) {}
 
     void apply(osg::Node& node)
@@ -83,7 +83,7 @@ public:
     double sleepTime() const { return _sleepTime; }
 
     Operation   _operation;
-    double      _sleepTime;    
+    double      _sleepTime;
 };
 
 
@@ -104,7 +104,7 @@ bool HUDSettings::getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) 
     matrix.makeLookAt(osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,_slideDistance,0.0),osg::Vec3d(0.0,0.0,1.0));
 
     if (nv)
-    {    
+    {
         if (nv->getTraversalMask()==_leftMask)
         {
             matrix.postMultTranslate(osg::Vec3(_eyeOffset,0.0,0.0));
@@ -114,7 +114,7 @@ bool HUDSettings::getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) 
             matrix.postMultTranslate(osg::Vec3(-_eyeOffset,0.0,0.0));
         }
     }
-    
+
     return true;
 }
 
@@ -288,13 +288,13 @@ void Timeout::traverse(osg::NodeVisitor& nv)
                 }
             }
         }
-        
+
 
         if (needToRecordEventTime)
         {
             _timeOfLastEvent = nv.getFrameStamp()->getReferenceTime();
         }
-        
+
         double timeSinceLastEvent = nv.getFrameStamp() ? nv.getFrameStamp()->getReferenceTime()-_timeOfLastEvent : 0.0;
 
         if (timeSinceLastEvent>_idleDurationBeforeTimeoutDisplay)
@@ -369,9 +369,9 @@ void Timeout::traverse(osg::NodeVisitor& nv)
                 OSG_NOTICE<<"Doing timeout broadcast key event"<<_actionBroadcastKeyPos._key<<std::endl;
                 broadcastEvent(viewer, _actionBroadcastKeyPos);
             }
-            
+
         }
-        
+
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
@@ -381,7 +381,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     {
         if (strcmp(nv.className(),"FindOperatorsVisitor")==0)
         {
-            OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;            
+            OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;
         }
         else
         {
@@ -390,5 +390,5 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     }
 
 
-    
+
 }

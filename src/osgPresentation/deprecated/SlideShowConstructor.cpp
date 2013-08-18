@@ -10,7 +10,11 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/deprecated/SlideShowConstructor>
+#include <osgPresentation/deprecated/AnimationMaterial>
+#include <osgPresentation/deprecated/PickEventHandler>
+#include <osgPresentation/deprecated/KeyEventHandler>
+
 
 #include <osg/Geometry>
 #include <osg/PolygonOffset>
@@ -50,10 +54,6 @@
 
 #include <sstream>
 #include <algorithm>
-
-#include <osgPresentation/AnimationMaterial>
-#include <osgPresentation/PickEventHandler>
-#include <osgPresentation/KeyEventHandler>
 
 #include <osgManipulator/TabBoxDragger>
 #include <osgManipulator/TabBoxTrackballDragger>

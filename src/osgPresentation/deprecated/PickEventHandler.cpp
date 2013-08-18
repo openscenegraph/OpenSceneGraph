@@ -10,8 +10,8 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/PickEventHandler>
-#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/deprecated/PickEventHandler>
+#include <osgPresentation/deprecated/SlideEventHandler>
 
 #include <osgViewer/Viewer>
 #include <osg/Notify>
@@ -77,17 +77,17 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         osg::ref_ptr<osgGA::GUIEventAdapter> cloned_ea = osg::clone(&ea);
                         const osg::BoundingBox bb(hitr->drawable->getBound());
                         const osg::Vec3& p(hitr->localIntersectionPoint);
-                        
+
                         float transformed_x = (p.x() - bb.xMin()) / (bb.xMax() - bb.xMin());
                         float transformed_y = (p.z() - bb.zMin()) / (bb.zMax() - bb.zMin());
-                        
+
                         cloned_ea->setX(ea.getXmin() + transformed_x * (ea.getXmax() - ea.getXmin()));
                         cloned_ea->setY(ea.getYmin() + transformed_y * (ea.getYmax() - ea.getYmin()));
                         cloned_ea->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-                        
+
                         // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
-                        
-                        
+
+
                         // dispatch cloned event to devices
                         osgViewer::View::Devices& devices = viewer->getDevices();
                         for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
@@ -98,7 +98,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                             }
                         }
                     }
-                    else 
+                    else
                     {
                         if (ea.getEventType()==osgGA::GUIEventAdapter::PUSH)
                         {

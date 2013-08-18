@@ -14,8 +14,8 @@
 
 /*
  *  ReadMe
- * 
- *  the osc-plugin can return an osgGA::Device which handles various osc-messages 
+ *
+ *  the osc-plugin can return an osgGA::Device which handles various osc-messages
  *  and puts them into the event-queue of the app
  *  you can set arbitrary values via /osg/set_user_value, these values
  *  are set on the attached UserDataConntainer (see below)
@@ -26,21 +26,21 @@
  *  osgGA::Device* device = dynamic_cast<osgGA::Device*>(osgDB::readObjectFile(filename));
  *
  *  and add that device to your viewer
- *  The plugin supports the following option: documentRegisteredHandlers, which will 
+ *  The plugin supports the following option: documentRegisteredHandlers, which will
  *  dump all registered handlers to the console. The device registers some convenient
  *  handlers to remote control a p3d-presentation.
- * 
- *  you can feed a osgPresentation::PropertyManager into the plugin and set values on it via 
+ *
+ *  you can feed a osgPresentation::PropertyManager into the plugin and set values on it via
  *  "/p3d/set_value key value" or "/p3d/set_value/key value"
  *  Additionally the plugin listens for
- *  "/osg/set_user_value key value" or "/osg/set_user_value/key value" and set the transmitted value on the 
+ *  "/osg/set_user_value key value" or "/osg/set_user_value/key value" and set the transmitted value on the
  *  UserDataContainer of the device.
  *
  *
- *  The plugin supports forwarding most of the events per osc to another host. 
- *  It uses a special event-handler, which forwards the events. To get this 
+ *  The plugin supports forwarding most of the events per osc to another host.
+ *  It uses a special event-handler, which forwards the events. To get this
  *  event-handler, do something like this:
- * 
+ *
  *  std::string filename = "<target-address>:<target-port>.sender.osc";
  *  osgGA::GUIEventHandler* event_handler = dynamic_cast<osgGA::GUIEventHandler*>(osgDB::readObjectFile(filename));
  *
@@ -59,7 +59,7 @@
 #include <osgDB/FileUtils>
 #include "OscSendingDevice.hpp"
 #include "OscReceivingDevice.hpp"
-#include <osgPresentation/PropertyManager>
+#include <osgPresentation/deprecated/PropertyManager>
 
 
 
@@ -74,8 +74,8 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
             supportsOption("documentRegisteredHandlers", "dump a documentation of all registered REST-handler to the console");
             supportsOption("numMessagesPerEvent", "set the number of osc-messages to send for one event (sender-only)");
             supportsOption("delayBetweenSendsInMillisecs", "when sending multiple msgs per event you can specify an optional delay between the sends (sender-only)");
-            
-            
+
+
         }
 
         virtual const char* className() const { return "OSC Virtual Device Integration plugin"; }
@@ -85,26 +85,26 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
             if (osgDB::getFileExtension(file) == "osc")
             {
                 std::string file_name = osgDB::getNameLessExtension(file);
-                
+
                 if (osgDB::getFileExtension(file_name) == "sender")
                 {
                     file_name = osgDB::getNameLessExtension(file_name);
-                    
+
                     std::string server_address = file_name.substr(0,file_name.find(':'));
                     std::string server_port = file_name.substr(file_name.find(':') + 1);
-                    
+
                     unsigned int num_messages_per_event = 1;
                     if (options && !options->getPluginStringData("numMessagesPerEvent").empty()) {
                         std::string num_messages_per_event_str = options->getPluginStringData("numMessagesPerEvent");
                         num_messages_per_event = osg::maximum(1, atoi(num_messages_per_event_str.c_str()));
                     }
-                    
+
                     unsigned int delay_between_sends_in_millisecs = 0;
                     if (options && !options->getPluginStringData("delayBetweenSendsInMillisecs").empty()) {
                         std::string delay_between_sends_in_millisecs_str = options->getPluginStringData("delayBetweenSendsInMillisecs");
                         delay_between_sends_in_millisecs = atoi(delay_between_sends_in_millisecs_str.c_str());
                     }
-                    
+
                     return new OscSendingDevice(server_address, atoi(server_port.c_str()), num_messages_per_event, delay_between_sends_in_millisecs);
                 }
                 else
@@ -123,37 +123,37 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                         port = 8000;
                     }
                     try {
-                    
+
                         osg::ref_ptr<OscReceivingDevice> device = new OscReceivingDevice(server_address, port);
-                            
-                        
+
+
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slide/first", osgGA::GUIEventAdapter::KEY_Home));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slide/last", osgGA::GUIEventAdapter::KEY_End));
-                        
+
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slide/next", osgGA::GUIEventAdapter::KEY_Right));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slide/previous", osgGA::GUIEventAdapter::KEY_Left));
 
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/layer/next", osgGA::GUIEventAdapter::KEY_Down));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/layer/previous", osgGA::GUIEventAdapter::KEY_Up));
-                        
+
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slideorlayer/next", osgGA::GUIEventAdapter::KEY_Page_Down));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/slideorlayer/previous", osgGA::GUIEventAdapter::KEY_Page_Up));
-                        
+
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/unpause", 'o'));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/p3d/pause", 'p'));
-                        
+
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/osgviewer/home", ' '));
                         device->addRequestHandler(new SendKeystrokeRequestHandler("/osgviewer/stats", 's'));
-                        
-                        
-                        
-                        
+
+
+
+
                         if ((options && (options->getPluginStringData("documentRegisteredHandlers") == "true")))
                         {
                             std::cout << *device << std::endl;
                         }
-                        
-                        
+
+
                         return device.release();
                     }
                     catch(const osc::Exception& e)
@@ -173,9 +173,9 @@ class ReaderWriterOsc : public osgDB::ReaderWriter
                     }
 
                 }
-                
+
             }
-            
+
             return ReadResult::FILE_NOT_HANDLED;
         }
 

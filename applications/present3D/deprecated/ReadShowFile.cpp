@@ -1,19 +1,19 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
 #include "ReadShowFile.h"
 #include "ShowEventHandler.h"
 
-#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/deprecated/SlideEventHandler>
 
 #include <osg/ImageStream>
 #include <osg/Shape>
@@ -35,7 +35,7 @@ class AddVolumeEditingCallbackVisitor : public osg::NodeVisitor
 public:
     AddVolumeEditingCallbackVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-        
+
     void apply(osg::Group& group)
     {
         osgVolume::VolumeTile* volumeTile = dynamic_cast<osgVolume::VolumeTile*>(&group);
@@ -51,7 +51,7 @@ public:
             traverse(group);
         }
     }
-    
+
 };
 
 bool p3d::getFileNames(osg::ArgumentParser& arguments, FileNameList& xmlFiles, FileNameList& normalFiles)
@@ -62,7 +62,7 @@ bool p3d::getFileNames(osg::ArgumentParser& arguments, FileNameList& xmlFiles, F
         if (!arguments.isOption(pos))
         {
             std::string ext = osgDB::getFileExtension(arguments[pos]);
-            if (osgDB::equalCaseInsensitive(ext,"xml") || osgDB::equalCaseInsensitive(ext,"p3d")) 
+            if (osgDB::equalCaseInsensitive(ext,"xml") || osgDB::equalCaseInsensitive(ext,"p3d"))
             {
                 xmlFiles.push_back(arguments[pos]);
             }
@@ -73,7 +73,7 @@ bool p3d::getFileNames(osg::ArgumentParser& arguments, FileNameList& xmlFiles, F
         }
     }
     return (!xmlFiles.empty() || !normalFiles.empty());
-}   
+}
 
 bool p3d::readEnvVars(osg::ArgumentParser& arguments)
 {
@@ -94,23 +94,23 @@ bool p3d::readEnvVars(osg::ArgumentParser& arguments)
                     {
                         osgDB::getDataFilePathList().push_front(path);
                     }
-                    
+
                     if (p3d::readEnvVars(file)) readVars = true;
                 }
             }
         }
     }
-    
+
     return readVars;
 }
 
 bool p3d::readEnvVars(const std::string& fileName)
 {
     std::string ext = osgDB::getFileExtension(fileName);
-    if (!osgDB::equalCaseInsensitive(ext,"xml") && 
+    if (!osgDB::equalCaseInsensitive(ext,"xml") &&
         !osgDB::equalCaseInsensitive(ext,"p3d")) return false;
-        
-        
+
+
     osg::ref_ptr<osgDB::XmlNode> doc = new osgDB::XmlNode;
     osgDB::XmlNode* root = 0;
 
@@ -146,7 +146,7 @@ bool p3d::readEnvVars(const std::string& fileName)
     }
 
     bool readVars = false;
-    
+
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
         ++itr)
@@ -182,7 +182,7 @@ osgDB::Options* createOptions(const osgDB::ReaderWriter::Options* options)
 osg::ref_ptr<osg::Node> p3d::readHoldingSlide(const std::string& filename)
 {
     std::string ext = osgDB::getFileExtension(filename);
-    if (!osgDB::equalCaseInsensitive(ext,"xml") && 
+    if (!osgDB::equalCaseInsensitive(ext,"xml") &&
         !osgDB::equalCaseInsensitive(ext,"p3d")) return 0;
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> options = createOptions(0);
@@ -260,12 +260,12 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
             }
         }
     }
-    
+
     if (nodeList.empty())
     {
         return NULL;
     }
-    
+
     osg::ref_ptr<osg::Node> root;
 
     if (nodeList.size()==1)
@@ -274,7 +274,7 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
     }
     else  // size >1
     {
-        
+
         osg::Switch* sw = new osg::Switch;
         for(NodeList::iterator itr=nodeList.begin();
             itr!=nodeList.end();
@@ -283,7 +283,7 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
             sw->addChild((*itr).get());
         }
         sw->setSingleChildOn(0);
-        
+
         sw->setEventCallback(new p3d::ShowEventHandler());
 
         root = sw;
@@ -292,7 +292,7 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
     if (root.valid())
     {
         osg::notify(osg::INFO)<<"Got node now adding callback"<<std::endl;
-    
+
         AddVolumeEditingCallbackVisitor avecv;
         root->accept(avecv);
     }

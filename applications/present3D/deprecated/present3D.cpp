@@ -37,7 +37,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/StateSetManipulator>
 
-#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/deprecated/SlideEventHandler>
 #include <osgPresentation/Cursor>
 
 #include "ReadShowFile.h"

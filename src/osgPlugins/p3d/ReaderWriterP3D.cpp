@@ -21,7 +21,7 @@
 
 #include <osgWidget/PdfReader>
 
-#include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/deprecated/SlideShowConstructor>
 
 #include <stdio.h>
 #include <string.h>
@@ -401,7 +401,7 @@ bool ReaderWriterP3DXML::getKeyProperty(osgDB::XmlNode*cur, const char* token, i
         OSG_NOTICE<<"   empty()"<<std::endl;
         return false;
     }
-    
+
     if (itr->second.find("0x",0,2)!=std::string::npos)
     {
         std::istringstream iss(itr->second);
@@ -1031,7 +1031,7 @@ bool ReaderWriterP3DXML::parseProperties(osgDB::XmlNode* root, osg::UserDataCont
                 float value;
                 std::stringstream str(cur->contents);
                 str>>value;
-                
+
                 udc.setUserValue(name, value);
                 readProperties = true;
 
@@ -1256,8 +1256,8 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         else if (operation=="REPLACE_ALPHA_WITH_LUMINANCE") volumeData.colorSpaceOperation = osg::REPLACE_ALPHA_WITH_LUMINANCE;
         else if (operation=="REPLACE_RGB_WITH_LUMINANCE") volumeData.colorSpaceOperation = osg::REPLACE_RGB_WITH_LUMINANCE;
     }
-    
-    
+
+
 
     // check for any transfer function required
     std::string transferFunctionFile;
@@ -1561,10 +1561,10 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
                 timeout->setKeyRunTimoutAction(keyPosition._key);
             }
         }
-        
+
     }
 
-    
+
     constructor.popCurrentLayer(); // return the
 }
 
@@ -1796,7 +1796,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         else if (cur->name == "forward_mouse_event_to_device")
         {
             osgPresentation::JumpData jumpData;
-            
+
             OSG_ALWAYS<<"forward_mouse_event_to_device ["<<cur->contents<<"]"<<std::endl;
             constructor.layerClickToDoOperation(cur->contents,osgPresentation::FORWARD_EVENT, jumpData);
         }
@@ -1889,7 +1889,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
                 OSG_NOTICE<<"key_to_jump failed."<<std::endl;
             }
         }
-        else 
+        else
         {
             osgPresentation::KeyPosition keyPosition;
             if (getKeyPosition(cur, keyPosition))
@@ -2140,7 +2140,7 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
                 {
                     parseLayer(constructor, _templateMap[inherit].get());
                 }
-                
+
                 parseLayer (constructor, cur);
             }
             else if (cur->name == "clean_layer")
@@ -2215,7 +2215,7 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             OSG_NOTICE<<"getCurrentSlide() returns NULL, unable to set name "<<std::endl;
         }
     }
-    
+
     constructor.setBackgroundColor(previous_bgcolor,false);
     constructor.setTextColor(previous_textcolor);
 
@@ -2353,12 +2353,12 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
             OSG_INFO<<"Trying server file "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
-            
+
             // get a specific readerwriter capable of handling the protocol and extension, will return a registered fallback readerwriter for extension '*'
             osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForProtocolAndExtension(
                 osgDB::getServerProtocol(filename),
                 osgDB::getFileExtension(filename));
-                        
+
             if (!rw) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 
             switch(type)
@@ -2587,7 +2587,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setReadFileCallback(new MyReadFileCallback);
     local_opt->setFindFileCallback(new MyFindFileCallback);
-        
+
     return readNode(input, local_opt.get());
 }
 

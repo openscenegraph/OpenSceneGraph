@@ -10,7 +10,7 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/CompileSlideCallback>
+#include <osgPresentation/deprecated/CompileSlideCallback>
 
 #include <osgUtil/GLObjectsVisitor>
 

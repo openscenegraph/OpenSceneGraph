@@ -31,10 +31,10 @@
 #include <osgVolume/VolumeTile>
 #include <osgVolume/Property>
 
-#include <osgPresentation/AnimationMaterial>
-#include <osgPresentation/SlideEventHandler>
-#include <osgPresentation/PropertyManager>
-#include <osgPresentation/Timeout>
+#include <osgPresentation/deprecated/AnimationMaterial>
+#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/deprecated/PropertyManager>
+#include <osgPresentation/deprecated/Timeout>
 
 namespace osgPresentation
 {
@@ -67,7 +67,7 @@ public:
     enum CoordinateFrame { SLIDE, MODEL };
 
 
-    
+
     LayerAttributes* getOrCreateLayerAttributes(osg::Node* node);
 
     void setDuration(osg::Node* node,double duration)
@@ -253,7 +253,7 @@ public:
         osg::Vec4                       backgroundColor;
         double                          fps;
         double                          duration;
-        
+
         bool                            imageSequence;
         osg::ImageSequence::Mode        imageSequencePagingMode;
 
@@ -271,7 +271,7 @@ public:
             OFF,
             ON
         };
-        
+
         BlendingHint    blendingHint;
 
         double          delayTime;
@@ -420,7 +420,7 @@ public:
         CURRENT_SLIDE,
         CURRENT_LAYER
     };
-    
+
     void addEventHandler(PresentationContext presentationContext, osg::ref_ptr<osgGA::GUIEventHandler> handler);
 
     void keyToDoOperation(PresentationContext presentationContext, int key, Operation operation, const JumpData& jumpData=JumpData());
@@ -456,7 +456,7 @@ public:
     void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData);
 
     void setUpVolumeScalarProperty(osgVolume::VolumeTile* tile, osgVolume::ScalarProperty* property, const std::string& source);
-    
+
     void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData);
 
     osg::Group* takePresentation() { return _root.release(); }
@@ -469,7 +469,7 @@ public:
 
     void pushCurrentLayer();
     void popCurrentLayer();
-    
+
     osg::Group* getCurrentLayer() { return _currentLayer.get(); }
 
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
@@ -555,7 +555,7 @@ protected:
 
     osg::ref_ptr<osgPresentation::PropertyManager> _propertyManager;
     osg::ref_ptr<osgPresentation::PropertyEventCallback> _propertyEventCallback;
-    
+
     osg::ref_ptr<osg::Group>        _root;
     osg::ref_ptr<osg::Switch>       _presentationSwitch;
 

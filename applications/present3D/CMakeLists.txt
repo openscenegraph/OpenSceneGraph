@@ -1,20 +1,20 @@
 SET(TARGET_SRC
-    Cluster.cpp
-    ExportHTML.cpp
-    PointsEventHandler.cpp
-    present3D.cpp
-    ReadShowFile.cpp
-    ShowEventHandler.cpp
-    SpellChecker.cpp
+    deprecated/Cluster.cpp
+    deprecated/ExportHTML.cpp
+    deprecated/PointsEventHandler.cpp
+    deprecated/present3D.cpp
+    deprecated/ReadShowFile.cpp
+    deprecated/ShowEventHandler.cpp
+    deprecated/SpellChecker.cpp
 )
 
 SET(TARGET_H
-    Cluster.h
-    ExportHTML.h
-    PointsEventHandler.h
-    ReadShowFile.h
-    ShowEventHandler.h
-    SpellChecker.h
+    deprecated/Cluster.h
+    deprecated/ExportHTML.h
+    deprecated/PointsEventHandler.h
+    deprecated/ReadShowFile.h
+    deprecated/ShowEventHandler.h
+    deprecated/SpellChecker.h
 )
 
 IF (SDL_FOUND)
@@ -54,7 +54,7 @@ IF (NOT DYNAMIC_OPENSCENEGRAPH)
             osgdb_openflight
             osgdb_obj
     )
-    
+
     SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES}
         osgdb_deprecated_osg osgdb_deprecated_osgparticle osgdb_deprecated_osganimation
         osgdb_deprecated_osgfx osgdb_deprecated_osgsim osgdb_deprecated_osgtext

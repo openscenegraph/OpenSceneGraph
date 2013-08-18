@@ -21,15 +21,15 @@
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
 
-#include <osgPresentation/CompileSlideCallback>
-#include <osgPresentation/PropertyManager>
+#include <osgPresentation/deprecated/CompileSlideCallback>
+#include <osgPresentation/deprecated/PropertyManager>
 
 namespace osgPresentation
 {
 
 // forward declare
 class SlideEventHandler;
-    
+
 /// Operations related to click to run/load/key events.
 enum Operation
 {
@@ -46,7 +46,7 @@ struct JumpData
         relativeJump(true),
         slideNum(0),
         layerNum(0) {}
-        
+
     JumpData(bool in_relativeJump, int in_slideNum, int in_layerNum):
         relativeJump(in_relativeJump),
         slideNum(in_slideNum),
@@ -230,7 +230,7 @@ protected:
     void processOutgoing(SlideEventHandler* seh);
     void processIncomming(SlideEventHandler* seh);
     void processMaintained(SlideEventHandler* seh);
-    
+
     bool            _pause;
 
     OperatorList    _previous;

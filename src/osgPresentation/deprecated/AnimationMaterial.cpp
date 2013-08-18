@@ -10,7 +10,7 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/AnimationMaterial>
+#include <osgPresentation/deprecated/AnimationMaterial>
 
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>

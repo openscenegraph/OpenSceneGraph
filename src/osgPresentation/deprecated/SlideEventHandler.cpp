@@ -10,8 +10,9 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/SlideEventHandler>
-#include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/deprecated/SlideShowConstructor>
+#include <osgPresentation/deprecated/AnimationMaterial>
 
 #include <osg/AnimationPath>
 #include <osg/Transform>
@@ -27,7 +28,6 @@
 
 #include <osgGA/AnimationPathManipulator>
 
-#include <osgPresentation/AnimationMaterial>
 
 #include <iostream>
 

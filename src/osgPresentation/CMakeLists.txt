@@ -9,28 +9,28 @@ SET(LIB_NAME osgPresentation)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/Export
-    ${HEADER_PATH}/AnimationMaterial
-    ${HEADER_PATH}/CompileSlideCallback
     ${HEADER_PATH}/Cursor
-    ${HEADER_PATH}/PickEventHandler
-    ${HEADER_PATH}/PropertyManager
-    ${HEADER_PATH}/KeyEventHandler
-    ${HEADER_PATH}/SlideEventHandler
-    ${HEADER_PATH}/SlideShowConstructor
-    ${HEADER_PATH}/Timeout
+    ${HEADER_PATH}/deprecated/AnimationMaterial
+    ${HEADER_PATH}/deprecated/CompileSlideCallback
+    ${HEADER_PATH}/deprecated/PickEventHandler
+    ${HEADER_PATH}/deprecated/PropertyManager
+    ${HEADER_PATH}/deprecated/KeyEventHandler
+    ${HEADER_PATH}/deprecated/SlideEventHandler
+    ${HEADER_PATH}/deprecated/SlideShowConstructor
+    ${HEADER_PATH}/deprecated/Timeout
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
-    AnimationMaterial.cpp
-    CompileSlideCallback.cpp
     Cursor.cpp
-    PickEventHandler.cpp
-    PropertyManager.cpp
-    KeyEventHandler.cpp
-    SlideEventHandler.cpp
-    SlideShowConstructor.cpp
-    Timeout.cpp
+    deprecated/AnimationMaterial.cpp
+    deprecated/CompileSlideCallback.cpp
+    deprecated/PickEventHandler.cpp
+    deprecated/PropertyManager.cpp
+    deprecated/KeyEventHandler.cpp
+    deprecated/SlideEventHandler.cpp
+    deprecated/SlideShowConstructor.cpp
+    deprecated/Timeout.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

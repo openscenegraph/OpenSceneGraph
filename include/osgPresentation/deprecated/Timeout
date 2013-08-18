@@ -16,7 +16,7 @@
 
 #include <osg/Transform>
 
-#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/deprecated/SlideEventHandler>
 
 namespace osgPresentation {
 
@@ -38,7 +38,7 @@ protected:
 
         virtual ~HUDSettings();
 };
-    
+
 class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 {
     public:
@@ -50,14 +50,14 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
 
         META_Node(osgPresentation, Timeout);
 
-        
+
         void setIdleDurationBeforeTimeoutDisplay(double t) { _idleDurationBeforeTimeoutDisplay = t; }
         double getIdleDurationBeforeTimeoutDisplay() const { return _idleDurationBeforeTimeoutDisplay; }
 
         void setIdleDurationBeforeTimeoutAction(double t) { _idleDurationBeforeTimeoutAction = t; }
         double getIdleDurationBeforeTimeoutAction() const { return _idleDurationBeforeTimeoutAction; }
 
-        
+
         void setKeyStartsTimoutDisplay(int key) { _keyStartsTimoutDisplay = key; }
         int getKeyStartsTimoutDisplay() const { return _keyStartsTimoutDisplay; }
 
@@ -67,7 +67,7 @@ class OSGPRESENTATION_EXPORT Timeout : public osg::Transform
         void setKeyRunTimoutAction(int key) { _keyRunTimeoutAction = key; }
         int getKeyRunTimoutAction() const { return _keyRunTimeoutAction; }
 
-        
+
         void setDisplayBroadcastKeyPosition(const osgPresentation::KeyPosition& keyPos) { _displayBroadcastKeyPos = keyPos; }
         const osgPresentation::KeyPosition&  getDisplayBroadcastKeyPosition() const { return _displayBroadcastKeyPos; }
 

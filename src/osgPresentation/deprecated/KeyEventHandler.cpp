@@ -10,8 +10,8 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/KeyEventHandler>
-#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/deprecated/KeyEventHandler>
+#include <osgPresentation/deprecated/SlideEventHandler>
 
 #include <osgViewer/Viewer>
 #include <osg/Notify>

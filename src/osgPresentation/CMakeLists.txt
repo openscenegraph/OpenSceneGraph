@@ -10,6 +10,13 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Cursor
+    ${HEADER_PATH}/Presentation
+    ${HEADER_PATH}/Section
+    ${HEADER_PATH}/Slide
+    ${HEADER_PATH}/Layer
+    ${HEADER_PATH}/Element
+    ${HEADER_PATH}/Group
+
     ${HEADER_PATH}/deprecated/AnimationMaterial
     ${HEADER_PATH}/deprecated/CompileSlideCallback
     ${HEADER_PATH}/deprecated/PickEventHandler
@@ -23,6 +30,7 @@ SET(TARGET_H
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
     Cursor.cpp
+    
     deprecated/AnimationMaterial.cpp
     deprecated/CompileSlideCallback.cpp
     deprecated/PickEventHandler.cpp

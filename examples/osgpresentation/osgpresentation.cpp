@@ -9,7 +9,13 @@
 #include <osg/ScriptEngine>
 #include <osg/UserDataContainer>
 
+#include <osgPresentation/Presentation>
+#include <osgPresentation/Slide>
+#include <osgPresentation/Layer>
+#include <osgPresentation/Element>
+
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
 
 #include <osgGA/TrackballManipulator>
@@ -93,6 +99,22 @@ int main(int argc, char** argv)
 #endif
 
 
-    viewer.setSceneData( model.get() );
+    osg::ref_ptr<osgPresentation::Presentation> presentation = new osgPresentation::Presentation;
+    osg::ref_ptr<osgPresentation::Slide> slide = new osgPresentation::Slide;
+    osg::ref_ptr<osgPresentation::Layer> layer = new osgPresentation::Layer;
+    osg::ref_ptr<osgPresentation::Group> group = new osgPresentation::Group;
+    osg::ref_ptr<osgPresentation::Element> element = new osgPresentation::Element;
+    presentation->addChild(slide.get());
+    slide->addChild(layer.get());
+    //layer->addChild(element.get());
+    layer->addChild(group.get());
+    group->addChild(element.get());
+    element->addChild(model.get());
+
+    viewer.setSceneData( presentation.get() );
+
+
+    osgDB::writeNodeFile(*presentation, "pres.osgt");
+
     return viewer.run();
 }

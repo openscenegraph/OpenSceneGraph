@@ -1991,6 +1991,10 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
     {
         addModel(subgraph.get(), positionData, modelData);
     }
+    else
+    {
+        OSG_NOTICE<<"Could not loaded model file : "<<filename<<std::endl;
+    }
 
     OSG_INFO<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
 

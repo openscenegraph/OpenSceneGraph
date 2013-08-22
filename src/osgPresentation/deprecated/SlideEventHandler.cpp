@@ -339,7 +339,7 @@ struct CallbackOperator : public ObjectOperator
         }
         else if (nc)
         {
-            OSG_NOTICE<<"Need to pause callback : "<<nc->className()<<std::endl;
+            OSG_INFO<<"Need to pause callback : "<<nc->className()<<std::endl;
         }
 
     }
@@ -371,7 +371,7 @@ struct CallbackOperator : public ObjectOperator
         }
         else
         {
-            OSG_NOTICE<<"Need to reset callback : "<<nc->className()<<std::endl;
+            OSG_INFO<<"Need to reset callback : "<<nc->className()<<std::endl;
         }
     }
 

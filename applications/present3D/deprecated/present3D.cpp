@@ -128,7 +128,7 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
 
     viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 0.1, 1000.0);
 
-    OSG_NOTICE<<"setProjectionMatrixAsPerspective( "<<vfov<<", "<<width/height<<", "<<0.1<<", "<<1000.0<<");"<<std::endl;
+    OSG_INFO<<"setProjectionMatrixAsPerspective( "<<vfov<<", "<<width/height<<", "<<0.1<<", "<<1000.0<<");"<<std::endl;
 }
 
 class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {

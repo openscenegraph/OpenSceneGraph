@@ -2894,7 +2894,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             if (getProperty(cur, "name", name))
             {
                 _templateMap[name] = cur;
-                std::cout<<"Defining template slide "<<name<<std::endl;
+                OSG_INFO<<"Defining template slide "<<name<<std::endl;
             }
         }
         else if (!readOnlyHoldingPage && cur->name == "template_layer")
@@ -2903,7 +2903,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             if (getProperty(cur, "name", name))
             {
                 _templateMap[name] = cur;
-                std::cout<<"Defining template layer "<<name<<std::endl;
+                OSG_INFO<<"Defining template layer "<<name<<std::endl;
             }
         }
         else if (!readOnlyHoldingPage && cur->name == "property_animation")

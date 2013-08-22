@@ -247,7 +247,5 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::read_rotation_path(std::istre
         }
 
     }
-    OSG_NOTICE<<"finished"<<std::endl;
-
     return animation.get();
 }

@@ -482,12 +482,12 @@ public:
         {
             if ((_objectsHandled[la]++)==0)
             {
-                OSG_NOTICE<<"LayerAttributeOperator for "<<la<<" required, assigning one."<<std::endl;
+                OSG_INFO<<"LayerAttributeOperator for "<<la<<" required, assigning one."<<std::endl;
                 _operatorList.insert(new LayerAttributesOperator(&node, la));
             }
             else
             {
-                OSG_NOTICE<<"LayerAttributeOperator for "<<la<<" not required, as one already assigned."<<std::endl;
+                OSG_INFO<<"LayerAttributeOperator for "<<la<<" not required, as one already assigned."<<std::endl;
             }
         }
 

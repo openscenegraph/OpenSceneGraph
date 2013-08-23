@@ -827,6 +827,16 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read alignment \""<<value.alignment<<"\""<<std::endl;
     }
 
+    std::string colorString;
+    if (getProperty(cur, "color", colorString) || getProperty(cur, "colour", colorString) )
+    {
+        propertiesRead = true;
+
+        value.color = mapStringToColor(colorString);
+
+        OSG_NOTIFY(_notifyLevel)<<"read color \""<<value.color<<"\""<<std::endl;
+    }
+
     return propertiesRead;
 }
 

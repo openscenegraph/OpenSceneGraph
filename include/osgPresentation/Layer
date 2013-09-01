@@ -18,7 +18,7 @@
 
 namespace osgPresentation {
 
-/** osgPresentation::Group
+/** osgPresentation::Layer
 */
 class OSGPRESENTATION_EXPORT Layer : public osgPresentation::Group
 {

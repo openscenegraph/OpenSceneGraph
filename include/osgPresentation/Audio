@@ -11,29 +11,29 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPRESENTATION_PRESENTATION
-#define OSGPRESENTATION_PRESENTATION 1
+#ifndef OSGPRESENTATION_AUDIO
+#define OSGPRESENTATION_AUDIO 1
 
-#include <osgPresentation/Group>
+#include <osgPresentation/Element>
 
 namespace osgPresentation {
 
-/** osgPresentation::Presentation
+/** osgPresentation::Audio
 */
-class OSGPRESENTATION_EXPORT Presentation : public osgPresentation::Group
+class OSGPRESENTATION_EXPORT Audio : public osgPresentation::Element
 {
     public :
 
-        Presentation() {}
+        Audio() {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        Presentation(const Presentation& presentation,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Group(presentation,copyop) {}
+        Audio(const Audio& audio,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Element(audio,copyop) {}
 
-        META_Node(osgPresentation, Presentation);
+        META_Node(osgPresentation, Audio);
 
 protected :
 
-        virtual ~Presentation() {}
+        virtual ~Audio() {}
 };
 
 }

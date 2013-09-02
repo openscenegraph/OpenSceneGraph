@@ -44,13 +44,17 @@ static bool checkChildren( const osg::ProxyNode& node )
 
 static bool readChildren( osgDB::InputStream& is, osg::ProxyNode& node )
 {
-    unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
-    for ( unsigned int i=0; i<size; ++i )
+    unsigned int size = 0; is >> size;
+    if (size > 0)
     {
-        osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
-        if ( child ) node.addChild( child );
+        is >> is.BEGIN_BRACKET;
+        for ( unsigned int i=0; i<size; ++i )
+        {
+            osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
+            if ( child ) node.addChild( child );
+        }
+        is >> is.END_BRACKET;
     }
-    is >> is.END_BRACKET;
     return true;
 }
 

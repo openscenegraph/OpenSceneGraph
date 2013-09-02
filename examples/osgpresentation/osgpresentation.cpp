@@ -13,6 +13,12 @@
 #include <osgPresentation/Slide>
 #include <osgPresentation/Layer>
 #include <osgPresentation/Element>
+#include <osgPresentation/Model>
+#include <osgPresentation/Volume>
+#include <osgPresentation/Image>
+#include <osgPresentation/Movie>
+#include <osgPresentation/Text>
+#include <osgPresentation/Audio>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -110,6 +116,12 @@ int main(int argc, char** argv)
     layer->addChild(group.get());
     group->addChild(element.get());
     element->addChild(model.get());
+    group->addChild(new osgPresentation::Model);
+    group->addChild(new osgPresentation::Text);
+    group->addChild(new osgPresentation::Audio);
+    group->addChild(new osgPresentation::Movie);
+    group->addChild(new osgPresentation::Volume);
+
 
     viewer.setSceneData( presentation.get() );
 

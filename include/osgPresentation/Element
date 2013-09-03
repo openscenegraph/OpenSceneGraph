@@ -15,6 +15,8 @@
 #define OSGPRESENTATION_ELEMENT 1
 
 #include <osgPresentation/Group>
+#include <osgUtil/UpdateVisitor>
+#include <osgGA/EventVisitor>
 
 namespace osgPresentation {
 
@@ -30,6 +32,31 @@ class OSGPRESENTATION_EXPORT Element : public osgPresentation::Group
         Element(const Element& element,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Group(element,copyop) {}
 
         META_Node(osgPresentation, Element);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+        /** Load the subgraph implementation of the element.*/
+        virtual bool load() { return false; }
+
+        /** Remove the the subgraph implementation, freeing up space.*/
+        virtual bool unload() { removeChildren(0, getNumChildren()); return true; }
+
+        /** Return true if the subgraph implementation has been loaded.*/
+        virtual bool loaded() const { return getNumChildren()!=0; }
+
+
+        /** Do updates as part of the update traversal.*/
+        virtual void updateTraversal(osgUtil::UpdateVisitor& uv);
+
+        /** Do updates as part of the event traversal.*/
+        virtual void eventTraversal(osgGA::EventVisitor& ev);
+
+        /** Enter the element for the first time, starting any animations, movies, audio etc..*/
+        virtual void enter() {}
+
+        /** Leave the element, stopping any animations, movies, audio etc..*/
+        virtual void leave() {}
+
 
 protected :
 

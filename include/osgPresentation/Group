@@ -19,6 +19,10 @@
 
 namespace osgPresentation {
 
+
+typedef std::pair< osg::ref_ptr<osg::Object>, std::string> ObjectDescription;
+typedef std::list< ObjectDescription > PropertyList;
+
 /** osgPresentation::Group
 */
 class OSGPRESENTATION_EXPORT Group : public osg::MatrixTransform
@@ -48,6 +52,10 @@ class OSGPRESENTATION_EXPORT Group : public osg::MatrixTransform
         {
             return setUserValue(name, value);
         }
+
+        /** Get all types of Properties supported by Presentation Object type, return true if the Properties are supported, false otherwise.*/
+        virtual bool getSupportedProperties(PropertyList&) { return false; }
+
 
     protected :
 

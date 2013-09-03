@@ -38,6 +38,9 @@ SET(TARGET_H
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
     Cursor.cpp
+    Group.cpp
+    Element.cpp
+    Text.cpp
 
     deprecated/AnimationMaterial.cpp
     deprecated/CompileSlideCallback.cpp

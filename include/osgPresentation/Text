@@ -31,6 +31,12 @@ class OSGPRESENTATION_EXPORT Text : public osgPresentation::Element
 
         META_Node(osgPresentation, Text);
 
+        /** load the text subgraph.*/
+        virtual bool load();
+
+        /** Get all types of Properties supported by Presentation Object type, return true if the Properties are supported, false otherwise.*/
+        virtual bool getSupportedProperties(PropertyList&);
+
 protected :
 
         virtual ~Text() {}

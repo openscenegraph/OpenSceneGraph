@@ -20,6 +20,7 @@ using namespace osgPresentation;
 
 bool Text::load()
 {
+    OSG_NOTICE<<"Not implemented yet"<<std::endl;
     return false;
 }
 

@@ -27,6 +27,37 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
+#include <osg/NodeVisitor>
+
+class PrintSupportedProperties : public osg::NodeVisitor
+{
+public:
+    PrintSupportedProperties() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    void apply(osg::Node& node)
+    {
+        osgPresentation::Group* pres_group = dynamic_cast<osgPresentation::Group*>(&node);
+        if (pres_group)
+        {
+            OSG_NOTICE<<"osgPresentation object : "<<pres_group->className()<<std::endl;
+            osgPresentation::PropertyList properties;
+            if (pres_group->getSupportedProperties(properties))
+            {
+                for(osgPresentation::PropertyList::iterator itr = properties.begin();
+                    itr != properties.end();
+                    ++itr)
+                {
+                    osgPresentation::ObjectDescription& od = *itr;
+                    OSG_NOTICE<<"    "<<od.first->className()<<" : "<<od.first->getName()<<", description = "<<od.second<<std::endl;
+
+                }
+            }
+
+        }
+        traverse(node);
+    }
+};
+
 
 int main(int argc, char** argv)
 {
@@ -122,6 +153,9 @@ int main(int argc, char** argv)
     group->addChild(new osgPresentation::Movie);
     group->addChild(new osgPresentation::Volume);
 
+
+    PrintSupportedProperties psp;
+    presentation->accept(psp);
 
     viewer.setSceneData( presentation.get() );
 

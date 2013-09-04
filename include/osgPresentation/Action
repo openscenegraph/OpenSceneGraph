@@ -83,6 +83,16 @@ struct OSGPRESENTATION_EXPORT PlayAction : public Action
     void apply(osgPresentation::Element& element);
 };
 
+struct PrintSupportedProperties : public osgPresentation::Action
+{
+    PrintSupportedProperties(std::ostream& output) : osgPresentation::Action(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _output(output) {}
+
+    void apply(osgPresentation::Group& group);
+
+    std::ostream& _output;
+};
+
+
 }
 
 #endif

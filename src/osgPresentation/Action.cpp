@@ -34,6 +34,7 @@ using namespace osgPresentation;
 void Action::apply(osgPresentation::Group& group)
 {
     OSG_NOTICE<<"LoadAction::apply()"<<std::endl;
+
     osg::NodeVisitor::apply(group);
 }
 
@@ -117,4 +118,22 @@ void PauseAction::apply(osgPresentation::Element& element)
 void PlayAction::apply(osgPresentation::Element& element)
 {
     element.play();
+}
+
+void PrintSupportedProperties::apply(osgPresentation::Group& group)
+{
+    _output<<"osgPresentation object : "<<group.className()<<std::endl;
+    osgPresentation::PropertyList properties;
+    if (group.getSupportedProperties(properties))
+    {
+        for(osgPresentation::PropertyList::iterator itr = properties.begin();
+            itr != properties.end();
+            ++itr)
+        {
+            osgPresentation::ObjectDescription& od = *itr;
+            _output<<"    "<<od.first->className()<<" : "<<od.first->getName()<<", description = "<<od.second<<std::endl;
+
+        }
+    }
+    traverse(group);
 }

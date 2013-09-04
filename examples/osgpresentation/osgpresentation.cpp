@@ -27,33 +27,6 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
-#include <osg/NodeVisitor>
-
-class PrintSupportedProperties : public osgPresentation::Action
-{
-public:
-    PrintSupportedProperties() :
-        osgPresentation::Action(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-
-    void apply(osgPresentation::Group& group)
-    {
-        OSG_NOTICE<<"osgPresentation object : "<<group.className()<<std::endl;
-        osgPresentation::PropertyList properties;
-        if (group.getSupportedProperties(properties))
-        {
-            for(osgPresentation::PropertyList::iterator itr = properties.begin();
-                itr != properties.end();
-                ++itr)
-            {
-                osgPresentation::ObjectDescription& od = *itr;
-                OSG_NOTICE<<"    "<<od.first->className()<<" : "<<od.first->getName()<<", description = "<<od.second<<std::endl;
-
-            }
-        }
-        traverse(group);
-    }
-};
-
 
 int main(int argc, char** argv)
 {
@@ -157,7 +130,7 @@ int main(int argc, char** argv)
     text->setProperty("width",std::string("103.2"));
 
 
-    PrintSupportedProperties psp;
+    osgPresentation::PrintSupportedProperties psp(std::cout);
     presentation->accept(psp);
 
     osgPresentation::LoadAction load;

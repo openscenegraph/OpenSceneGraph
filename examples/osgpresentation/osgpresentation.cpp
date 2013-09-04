@@ -34,6 +34,7 @@ int main(int argc, char** argv)
 
     osgViewer::Viewer viewer(arguments);
 
+#if 0
     typedef std::list< osg::ref_ptr<osg::Script> > Scripts;
     Scripts scripts;
 
@@ -43,10 +44,6 @@ int main(int argc, char** argv)
         osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(filename);
         if (script.valid()) scripts.push_back(script.get());
     }
-
-    // create the model
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
-    if (!model) return 1;
 
     // assgin script engine to scene graphs
     model->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua"));
@@ -61,7 +58,6 @@ int main(int argc, char** argv)
        model->addUpdateCallback(new osg::ScriptCallback(itr->get()));
     }
 
-#if 0
     std::string str;
     osg::ref_ptr<osg::ScriptEngine> luaScriptEngine = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
     if (luaScriptEngine.valid())
@@ -110,14 +106,14 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgPresentation::Layer> layer = new osgPresentation::Layer;
     osg::ref_ptr<osgPresentation::Group> group = new osgPresentation::Group;
     osg::ref_ptr<osgPresentation::Element> element = new osgPresentation::Element;
-    osg::ref_ptr<osgPresentation::Element> text = new osgPresentation::Text;
+    osg::ref_ptr<osgPresentation::Text> text = new osgPresentation::Text;
+    osg::ref_ptr<osgPresentation::Model> model = new osgPresentation::Model;
     presentation->addChild(slide.get());
     slide->addChild(layer.get());
     //layer->addChild(element.get());
     layer->addChild(group.get());
     group->addChild(element.get());
-    element->addChild(model.get());
-    group->addChild(new osgPresentation::Model);
+    group->addChild(model.get());
     group->addChild(text.get());
     group->addChild(new osgPresentation::Audio);
     group->addChild(new osgPresentation::Movie);
@@ -129,9 +125,15 @@ int main(int argc, char** argv)
     text->setProperty("character_size",2.2);
     text->setProperty("width",std::string("103.2"));
 
+    model->setProperty("filename", std::string("dumptruck.osgt"));
+    model->setProperty("scale",2.0);
+
 
     osgPresentation::PrintSupportedProperties psp(std::cout);
     presentation->accept(psp);
+
+    osgPresentation::PrintProperties pp(std::cout);
+    presentation->accept(pp);
 
     osgPresentation::LoadAction load;
     presentation->accept( load );

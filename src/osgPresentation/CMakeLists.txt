@@ -43,6 +43,7 @@ SET(TARGET_SRC
     Group.cpp
     Element.cpp
     Text.cpp
+    Model.cpp
 
     deprecated/AnimationMaterial.cpp
     deprecated/CompileSlideCallback.cpp

@@ -11,8 +11,31 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <osg/UserDataContainer>
 #include <osgPresentation/Group>
 
 using namespace osgPresentation;
 
-/** Nothing to implement yet...*/
+class PropertyVisitor : public osg::NodeVisitor
+{
+    public:
+      PropertyVisitor(const std::string& name) : _name(name), _object(0) {}
+
+      void apply(osg::Node& node)
+      {
+        osg::UserDataContainer* udc = node.getUserDataContainer();
+        _object = udc ? udc->getUserObject(_name) : 0;
+        if (!_object) traverse(node);
+      };
+
+      std::string       _name;
+      osg::Object*      _object;
+};
+
+osg::Object* Group::getPropertyObject(const std::string& name, bool checkParents)
+{
+    PropertyVisitor pv(name);
+    if (checkParents) pv.setTraversalMode(osg::NodeVisitor::TRAVERSE_PARENTS);
+    accept(pv);
+    return pv._object;
+}

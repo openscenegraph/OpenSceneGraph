@@ -29,7 +29,7 @@ class OSGPRESENTATION_EXPORT Movie : public osgPresentation::Element
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Movie(const Movie& movie,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Element(movie,copyop) {}
 
-        META_Node(osgPresentation, Movie);
+        META_Presentation(Movie);
 
 protected :
 

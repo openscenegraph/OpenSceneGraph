@@ -29,32 +29,28 @@
 
 #include <osg/NodeVisitor>
 
-class PrintSupportedProperties : public osg::NodeVisitor
+class PrintSupportedProperties : public osgPresentation::Action
 {
 public:
-    PrintSupportedProperties() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    PrintSupportedProperties() :
+        osgPresentation::Action(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
-    void apply(osg::Node& node)
+    void apply(osgPresentation::Group& group)
     {
-        osgPresentation::Group* pres_group = dynamic_cast<osgPresentation::Group*>(&node);
-        if (pres_group)
+        OSG_NOTICE<<"osgPresentation object : "<<group.className()<<std::endl;
+        osgPresentation::PropertyList properties;
+        if (group.getSupportedProperties(properties))
         {
-            OSG_NOTICE<<"osgPresentation object : "<<pres_group->className()<<std::endl;
-            osgPresentation::PropertyList properties;
-            if (pres_group->getSupportedProperties(properties))
+            for(osgPresentation::PropertyList::iterator itr = properties.begin();
+                itr != properties.end();
+                ++itr)
             {
-                for(osgPresentation::PropertyList::iterator itr = properties.begin();
-                    itr != properties.end();
-                    ++itr)
-                {
-                    osgPresentation::ObjectDescription& od = *itr;
-                    OSG_NOTICE<<"    "<<od.first->className()<<" : "<<od.first->getName()<<", description = "<<od.second<<std::endl;
+                osgPresentation::ObjectDescription& od = *itr;
+                OSG_NOTICE<<"    "<<od.first->className()<<" : "<<od.first->getName()<<", description = "<<od.second<<std::endl;
 
-                }
             }
-
         }
-        traverse(node);
+        traverse(group);
     }
 };
 
@@ -141,6 +137,7 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgPresentation::Layer> layer = new osgPresentation::Layer;
     osg::ref_ptr<osgPresentation::Group> group = new osgPresentation::Group;
     osg::ref_ptr<osgPresentation::Element> element = new osgPresentation::Element;
+    osg::ref_ptr<osgPresentation::Element> text = new osgPresentation::Text;
     presentation->addChild(slide.get());
     slide->addChild(layer.get());
     //layer->addChild(element.get());
@@ -148,14 +145,23 @@ int main(int argc, char** argv)
     group->addChild(element.get());
     element->addChild(model.get());
     group->addChild(new osgPresentation::Model);
-    group->addChild(new osgPresentation::Text);
+    group->addChild(text.get());
     group->addChild(new osgPresentation::Audio);
     group->addChild(new osgPresentation::Movie);
     group->addChild(new osgPresentation::Volume);
 
 
+    text->setProperty("string",std::string("This is a first test"));
+    text->setProperty("font",std::string("times.ttf"));
+    text->setProperty("character_size",2.2);
+    text->setProperty("width",std::string("103.2"));
+
+
     PrintSupportedProperties psp;
     presentation->accept(psp);
+
+    osgPresentation::LoadAction load;
+    presentation->accept( load );
 
     viewer.setSceneData( presentation.get() );
 

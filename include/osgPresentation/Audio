@@ -29,7 +29,7 @@ class OSGPRESENTATION_EXPORT Audio : public osgPresentation::Element
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Audio(const Audio& audio,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Element(audio,copyop) {}
 
-        META_Node(osgPresentation, Audio);
+        META_Presentation(Audio);
 
 protected :
 

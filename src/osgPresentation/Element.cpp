@@ -16,37 +16,3 @@
 using namespace osgPresentation;
 
 
-void Element::traverse(osg::NodeVisitor& nv)
-{
-    if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
-    {
-        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
-        if (uv)
-        {
-            updateTraversal(*uv);
-            return;
-        }
-    }
-    else if (nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
-    {
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
-        if (ev)
-        {
-            eventTraversal(*ev);
-            return;
-        }
-    }
-    osgPresentation::Group::traverse(nv);
-}
-
-void Element::updateTraversal(osgUtil::UpdateVisitor& uv)
-{
-    OSG_NOTICE<<"Element::updateTraversal()"<<std::endl;
-    osgPresentation::Group::traverse(uv);
-}
-
-void Element::eventTraversal(osgGA::EventVisitor& ev)
-{
-    OSG_NOTICE<<"Element::eventTraversal()"<<std::endl;
-    osgPresentation::Group::traverse(ev);
-}

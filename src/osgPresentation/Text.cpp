@@ -20,7 +20,25 @@ using namespace osgPresentation;
 
 bool Text::load()
 {
-    OSG_NOTICE<<"Not implemented yet"<<std::endl;
+    OSG_NOTICE<<"Text::load() Not implemented yet"<<std::endl;
+
+    std::string value;
+    getPropertyValue("string", value);
+
+    std::string font("arial.ttf");
+    getPropertyValue("font", font);
+
+    double width = 1.0;
+    getPropertyValue("width", width);
+
+    double character_size = 0.06;
+    getPropertyValue("character_size", character_size);
+
+    OSG_NOTICE<<"Text : string = "<<value<<std::endl;
+    OSG_NOTICE<<"       font = "<<font<<std::endl;
+    OSG_NOTICE<<"       width = "<<width<<std::endl;
+    OSG_NOTICE<<"       character_size = "<<character_size<<std::endl;
+
     return false;
 }
 

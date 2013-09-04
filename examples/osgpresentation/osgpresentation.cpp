@@ -126,7 +126,7 @@ int main(int argc, char** argv)
     text->setProperty("width",std::string("103.2"));
 
     model->setProperty("filename", std::string("dumptruck.osgt"));
-    model->setProperty("scale",2.0);
+    presentation->setProperty("scale",2.0);
 
 
     osgPresentation::PrintSupportedProperties psp(std::cout);

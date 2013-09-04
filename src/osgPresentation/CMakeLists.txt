@@ -8,6 +8,7 @@ ENDIF()
 SET(LIB_NAME osgPresentation)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
+    ${HEADER_PATH}/Action
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Cursor
     ${HEADER_PATH}/Group
@@ -37,6 +38,7 @@ SET(TARGET_H
 
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
+    Action.cpp
     Cursor.cpp
     Group.cpp
     Element.cpp

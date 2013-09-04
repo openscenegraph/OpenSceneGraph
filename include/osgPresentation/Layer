@@ -29,7 +29,7 @@ class OSGPRESENTATION_EXPORT Layer : public osgPresentation::Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Layer(const Layer& layer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Group(layer,copyop) {}
 
-        META_Node(osgPresentation, Layer);
+        META_Presentation(Layer);
 
 protected :
 

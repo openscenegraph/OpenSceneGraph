@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2013 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -31,9 +31,7 @@ class OSGPRESENTATION_EXPORT Element : public osgPresentation::Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Element(const Element& element,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osgPresentation::Group(element,copyop) {}
 
-        META_Node(osgPresentation, Element);
-
-        virtual void traverse(osg::NodeVisitor& nv);
+        META_Presentation(Element);
 
         /** Load the subgraph implementation of the element.*/
         virtual bool load() { return false; }
@@ -45,18 +43,21 @@ class OSGPRESENTATION_EXPORT Element : public osgPresentation::Group
         virtual bool loaded() const { return getNumChildren()!=0; }
 
 
-        /** Do updates as part of the update traversal.*/
-        virtual void updateTraversal(osgUtil::UpdateVisitor& uv);
-
-        /** Do updates as part of the event traversal.*/
-        virtual void eventTraversal(osgGA::EventVisitor& ev);
-
         /** Enter the element for the first time, starting any animations, movies, audio etc..*/
         virtual void enter() {}
 
         /** Leave the element, stopping any animations, movies, audio etc..*/
         virtual void leave() {}
 
+
+        /** Pause any animatios, videos, audio etc.*/
+        virtual void pause() {}
+
+        /** Play any animatios, videos, audio etc.*/
+        virtual void play() {}
+
+        /** Reset any animations, vidoes, audio etc. back to the begininng.*/
+        virtual void reset() {}
 
 protected :
 

@@ -279,7 +279,7 @@ bool FFmpegDecoder::readNextPacketNormal()
         int error = av_read_frame(m_format_context.get(), &packet);
         if (error < 0)
         {
-            if (error == AVERROR_EOF || url_feof(m_format_context.get()->pb))
+            if (error == AVERROR_EOF || m_format_context.get()->pb->eof_reached)
                 end_of_stream = true;
             else {
                 OSG_FATAL << "av_read_frame() returned " << AvStrError(error) << std::endl;

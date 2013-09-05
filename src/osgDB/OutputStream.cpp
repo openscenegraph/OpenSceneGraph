@@ -19,6 +19,7 @@
 #include <osgDB/ObjectWrapper>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 using namespace osgDB;
 

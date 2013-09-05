@@ -495,7 +495,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         bool getAutomaticFlush() const { return _automaticFlush; }
 
         void setResetColorMaskToAllOn(bool enable) { _resetColorMaskToAllEnabled = enable; }
-        bool setResetColorMaskToAllOn() const { return _resetColorMaskToAllEnabled; }
+        bool getResetColorMaskToAllOn() const { return _resetColorMaskToAllEnabled; }
 
     protected:
 

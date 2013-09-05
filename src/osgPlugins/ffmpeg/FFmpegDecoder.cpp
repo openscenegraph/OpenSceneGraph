@@ -136,7 +136,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
             throw std::runtime_error("av_find_stream_info() failed");
 
         m_duration = double(m_format_context->duration) / AV_TIME_BASE;
-        if (m_format_context->start_time != AV_NOPTS_VALUE)
+        if (m_format_context->start_time != static_cast<int64_t>(AV_NOPTS_VALUE))
             m_start = double(m_format_context->start_time) / AV_TIME_BASE;
         else
             m_start = 0;
@@ -265,8 +265,6 @@ inline void FFmpegDecoder::flushVideoQueue()
     m_video_queue.flush(pc);
 }
 
-
-
 bool FFmpegDecoder::readNextPacketNormal()
 {
     AVPacket packet;
@@ -279,7 +277,8 @@ bool FFmpegDecoder::readNextPacketNormal()
         int error = av_read_frame(m_format_context.get(), &packet);
         if (error < 0)
         {
-            if (error == AVERROR_EOF || m_format_context.get()->pb->eof_reached)
+            if (error == static_cast<int>(AVERROR_EOF) ||
+                m_format_context.get()->pb->eof_reached)
                 end_of_stream = true;
             else {
                 OSG_FATAL << "av_read_frame() returned " << AvStrError(error) << std::endl;

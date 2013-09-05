@@ -27,9 +27,9 @@ namespace osgFFmpeg {
 
 
 FFmpegParameters::FFmpegParameters() :
+    m_format(0),
     m_context(0),
-    m_options(0),
-    m_format(0)
+    m_options(0)
 {
     // Initialize the dictionary
     av_dict_set(&m_options, "foo", "bar", 0);

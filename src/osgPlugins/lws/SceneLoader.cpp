@@ -19,6 +19,7 @@
 #include <osgDB/WriteFile>
 
 #include <sstream>
+#include <stdlib.h>
 
 using namespace lwosg;
 

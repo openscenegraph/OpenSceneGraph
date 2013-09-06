@@ -31,7 +31,7 @@ class OSGPRESENTATION_EXPORT Model : public osgPresentation::Element
 
         META_Presentation(Model);
 
-        /** load the text subgraph.*/
+        /** load the model subgraph.*/
         virtual bool load();
 
         /** Get all types of Properties supported by Presentation Object type, return true if the Properties are supported, false otherwise.*/

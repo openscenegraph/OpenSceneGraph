@@ -31,6 +31,12 @@ class OSGPRESENTATION_EXPORT Audio : public osgPresentation::Element
 
         META_Presentation(Audio);
 
+        /** load the audio subgraph.*/
+        virtual bool load();
+
+        /** Get all types of Properties supported by Presentation Object type, return true if the Properties are supported, false otherwise.*/
+        virtual bool getSupportedProperties(PropertyList&);
+
 protected :
 
         virtual ~Audio() {}

@@ -108,17 +108,21 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgPresentation::Element> element = new osgPresentation::Element;
     osg::ref_ptr<osgPresentation::Text> text = new osgPresentation::Text;
     osg::ref_ptr<osgPresentation::Model> model = new osgPresentation::Model;
+    osg::ref_ptr<osgPresentation::Audio> audio = new osgPresentation::Audio;
+    osg::ref_ptr<osgPresentation::Image> image = new osgPresentation::Image;
+    osg::ref_ptr<osgPresentation::Movie> movie = new osgPresentation::Movie;
+    osg::ref_ptr<osgPresentation::Volume> volume = new osgPresentation::Volume;
     presentation->addChild(slide.get());
     slide->addChild(layer.get());
     //layer->addChild(element.get());
-    layer->addChild(group.get());
-    group->addChild(element.get());
-    group->addChild(model.get());
-    group->addChild(text.get());
-    group->addChild(new osgPresentation::Audio);
-    group->addChild(new osgPresentation::Movie);
-    group->addChild(new osgPresentation::Volume);
-
+    //layer->addChild(group.get());
+    layer->addChild(element.get());
+    // layer->addChild(model.get());
+    layer->addChild(text.get());
+    layer->addChild(audio.get());
+    layer->addChild(image.get());
+    layer->addChild(movie.get());
+    layer->addChild(volume.get());
 
     text->setProperty("string",std::string("This is a first test"));
     text->setProperty("font",std::string("times.ttf"));
@@ -126,7 +130,18 @@ int main(int argc, char** argv)
     text->setProperty("width",std::string("103.2"));
 
     model->setProperty("filename", std::string("dumptruck.osgt"));
-    presentation->setProperty("scale",2.0);
+
+    image->setProperty("filename", std::string("Images/lz.rgb"));
+    image->setProperty("scale",0.75);
+
+    movie->setProperty("filename", std::string("/home/robert/Data/Movie/big_buck_bunny_1080p_stereo.ogg"));
+    movie->setProperty("scale",0.75);
+
+    volume->setProperty("filename", std::string("/home/robert/Data/MaleVisibleHumanHead"));
+    volume->setProperty("scale",0.75);
+    volume->setProperty("technique",std::string("iso-surface"));
+
+    presentation->setProperty("scale",1.0);
 
 
     osgPresentation::PrintSupportedProperties psp(std::cout);

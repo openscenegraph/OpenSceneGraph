@@ -97,8 +97,8 @@ void cOSG::InitCameraConfig(void)
     // Create the Graphics Context
     osg::GraphicsContext* gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
-    // Init a new Camera (Master for this View)
-    osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+    // Init Master Camera for this View
+    osg::ref_ptr<osg::Camera> camera = mViewer->getCamera();
 
     // Assign Graphics Context to the Camera
     camera->setGraphicsContext(gc);

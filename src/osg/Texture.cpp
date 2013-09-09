@@ -2351,7 +2351,7 @@ bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
 
         const FBOExtensions* fbo_ext = FBOExtensions::instance(contextID,true);
 
-        if (fbo_ext->glGenerateMipmap)
+        if (fbo_ext->isSupported() && fbo_ext->glGenerateMipmap)
         {
             return true;
         }
@@ -2368,7 +2368,8 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
         return GENERATE_MIPMAP;
 #else
 
-        bool useGenerateMipMap = FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmap!=0;
+        FBOExtensions* fbo_ext = FBOExtensions::instance(state.getContextID(),true);
+        bool useGenerateMipMap = fbo_ext->isSupported() && fbo_ext->glGenerateMipmap;
 
         if (useGenerateMipMap)
         {
@@ -2440,7 +2441,7 @@ void Texture::generateMipmap(State& state) const
     osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(), true);
 
     // check if the function is supported
-    if (fbo_ext->glGenerateMipmap)
+    if (fbo_ext->isSupported() && fbo_ext->glGenerateMipmap)
     {
         textureObject->bind();
         fbo_ext->glGenerateMipmap(textureObject->target());

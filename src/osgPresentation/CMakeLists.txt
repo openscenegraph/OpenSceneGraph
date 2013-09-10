@@ -43,6 +43,12 @@ SET(TARGET_SRC
     Cursor.cpp
     Group.cpp
 
+    Show.cpp
+    Presentation.cpp
+    Section.cpp
+    Slide.cpp
+    Layer.cpp
+
     Element.cpp
     Audio.cpp
     Image.cpp

@@ -1059,7 +1059,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
     //unsigned int internalFormat = img->getInternalTextureFormat();
     //unsigned int components     = osg::Image::computeNumComponents(pixelFormat);
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
-    unsigned int imageSize      = img->getImageSizeInBytes();
+    unsigned int imageSize      = img->getTotalSizeInBytes();
 
     // Check that theorical image size (computation taking into account DXTC blocks) is not bigger than actual image size.
     // This may happen, for instance, if some operation tuncated the data buffer non block-aligned. Example:

@@ -148,20 +148,20 @@ std::string MDLReader::getToken(std::string str, const char * delim,
 
 ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
 {
-    std::string             texFile;
-    std::string             texPath;
-    osg::ref_ptr<Image>     texImage;
-    osg::ref_ptr<Texture>   texture;
-
     // Find the texture's image file
-    texFile = std::string(textureName) + ".vtf";
-    texPath = findDataFile(texFile, CASE_INSENSITIVE);
+    std::string texExtension = osgDB::getFileExtensionIncludingDot(textureName);
+    std::string texBaseName = osgDB::getNameLessExtension(textureName);
+
+    if (texExtension.empty()) texExtension = ".vtf";
+
+    std::string texFile = texBaseName + texExtension;
+    std::string texPath = findDataFile(texFile, CASE_INSENSITIVE);
 
     // If we don't find it right away, check in a "materials" subdirectory
     if (texPath.empty())
     {
         // Check for a leading slash and concatenate appropriately
-        texPath = findFileInPath("materials", textureName, ".vtf");
+        texPath = findFileInPath("materials", texBaseName, texExtension);
 
         // Check up one directory if we don't find it here (the map file is
         // usually located in the "maps" directory, adjacent to the materials
@@ -169,18 +169,20 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         if (texPath.empty())
         {
             // Check for a leading slash and concatenate appropriately
-            texPath = findFileInPath("../materials", textureName, ".vtf");
+            texPath = findFileInPath("../materials", texBaseName, texExtension);
         }
     }
 
     // If we found the file, read it, otherwise bail
     if (!texPath.empty())
     {
-        texImage = readRefImageFile(texPath);
+        osg::ref_ptr<Image> texImage = readRefImageFile(texPath);
 
         // If we got the image, create the texture attribute
         if (texImage.valid())
         {
+            osg::ref_ptr<Texture> texture;
+
             // Create the texture
             if (texImage->t() == 1)
             {
@@ -202,6 +204,8 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
             texture->setFilter(Texture::MAG_FILTER, Texture::LINEAR);
             texture->setFilter(Texture::MIN_FILTER,
                                Texture::LINEAR_MIPMAP_LINEAR);
+
+            return texture;
         }
         else
         {
@@ -209,7 +213,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
             OSG_WARN << "Couldn't find texture " << textureName << std::endl;
 
             // No texture
-            texture = NULL;
+            return NULL;
         }
     }
     else
@@ -218,10 +222,9 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         OSG_WARN << "Couldn't find texture " << textureName << std::endl;
 
         // No texture
-        texture = NULL;
+        return NULL;
     }
 
-    return texture;
 }
 
 

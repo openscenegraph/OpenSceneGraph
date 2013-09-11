@@ -82,6 +82,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec3b& v )
 OutputStream& OutputStream::operator<<( const osg::Vec4b& v )
 { *this << v.x() << v.y() << v.z() << v.w(); return *this; }
 
+
 OutputStream& OutputStream::operator<<( const osg::Vec2ub& v )
 { *this << v.x() << v.y(); return *this; }
 
@@ -90,6 +91,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec3ub& v )
 
 OutputStream& OutputStream::operator<<( const osg::Vec4ub& v )
 { *this << v.r() << v.g() << v.b() << v.a(); return *this; }
+
 
 OutputStream& OutputStream::operator<<( const osg::Vec2s& v )
 { *this << v.x() << v.y(); return *this; }
@@ -100,6 +102,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec3s& v )
 OutputStream& OutputStream::operator<<( const osg::Vec4s& v )
 { *this << v.x() << v.y() << v.z() << v.w(); return *this; }
 
+
 OutputStream& OutputStream::operator<<( const osg::Vec2us& v )
 { *this << v.x() << v.y(); return *this; }
 
@@ -108,6 +111,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec3us& v )
 
 OutputStream& OutputStream::operator<<( const osg::Vec4us& v )
 { *this << v.x() << v.y() << v.z() << v.w(); return *this; }
+
 
 OutputStream& OutputStream::operator<<( const osg::Vec2f& v )
 { *this << v.x() << v.y(); return *this; }
@@ -118,6 +122,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec3f& v )
 OutputStream& OutputStream::operator<<( const osg::Vec4f& v )
 { *this << v.x() << v.y() << v.z() << v.w(); return *this; }
 
+
 OutputStream& OutputStream::operator<<( const osg::Vec2d& v )
 { *this << v.x() << v.y(); return *this; }
 
@@ -126,6 +131,27 @@ OutputStream& OutputStream::operator<<( const osg::Vec3d& v )
 
 OutputStream& OutputStream::operator<<( const osg::Vec4d& v )
 { *this << v.x() << v.y() << v.z() << v.w(); return *this; }
+
+
+OutputStream& OutputStream::operator<<( const osg::Vec2i& v )
+{ *this << v.x() << v.y(); return *this; }
+
+OutputStream& OutputStream::operator<<( const osg::Vec3i& v )
+{ *this << v.x() << v.y() << v.z(); return *this; }
+
+OutputStream& OutputStream::operator<<( const osg::Vec4i& v )
+{ *this << v.x() << v.y() << v.z() << v.w(); return *this; }
+
+
+OutputStream& OutputStream::operator<<( const osg::Vec2ui& v )
+{ *this << v.x() << v.y(); return *this; }
+
+OutputStream& OutputStream::operator<<( const osg::Vec3ui& v )
+{ *this << v.x() << v.y() << v.z(); return *this; }
+
+OutputStream& OutputStream::operator<<( const osg::Vec4ui& v )
+{ *this << v.x() << v.y() << v.z() << v.w(); return *this; }
+
 
 OutputStream& OutputStream::operator<<( const osg::Quat& q )
 { *this << q.x() << q.y() << q.z() << q.w(); return *this; }
@@ -231,6 +257,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_DOUBLE_ARRAY);
         writeArrayImplementation( static_cast<const osg::DoubleArray*>(a), a->getNumElements(), 4 );
         break;
+
     case osg::Array::Vec2bArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2B_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2bArray*>(a), a->getNumElements() );
@@ -243,6 +270,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_VEC4B_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4bArray*>(a), a->getNumElements() );
         break;
+
     case osg::Array::Vec2ubArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2UB_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2ubArray*>(a), a->getNumElements() );
@@ -255,6 +283,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_VEC4UB_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4ubArray*>(a), a->getNumElements() );
         break;
+
     case osg::Array::Vec2sArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2S_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2sArray*>(a), a->getNumElements() );
@@ -267,6 +296,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_VEC4S_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4sArray*>(a), a->getNumElements() );
         break;
+
     case osg::Array::Vec2usArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2US_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2usArray*>(a), a->getNumElements() );
@@ -279,6 +309,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_VEC4US_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4usArray*>(a), a->getNumElements() );
         break;
+
     case osg::Array::Vec2ArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2Array*>(a), a->getNumElements() );
@@ -291,6 +322,7 @@ void OutputStream::writeArray( const osg::Array* a )
         *this << MAPPEE(ArrayType, ID_VEC4_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4Array*>(a), a->getNumElements() );
         break;
+
     case osg::Array::Vec2dArrayType:
         *this << MAPPEE(ArrayType, ID_VEC2D_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2dArray*>(a), a->getNumElements() );
@@ -302,6 +334,32 @@ void OutputStream::writeArray( const osg::Array* a )
     case osg::Array::Vec4dArrayType:
         *this << MAPPEE(ArrayType, ID_VEC4D_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec4dArray*>(a), a->getNumElements() );
+        break;
+
+    case osg::Array::Vec2iArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC2I_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec2iArray*>(a), a->getNumElements() );
+        break;
+    case osg::Array::Vec3iArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC3I_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec3iArray*>(a), a->getNumElements() );
+        break;
+    case osg::Array::Vec4iArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC4I_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec4iArray*>(a), a->getNumElements() );
+        break;
+
+    case osg::Array::Vec2uiArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC2UI_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec2uiArray*>(a), a->getNumElements() );
+        break;
+    case osg::Array::Vec3uiArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC3UI_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec3uiArray*>(a), a->getNumElements() );
+        break;
+    case osg::Array::Vec4uiArrayType:
+        *this << MAPPEE(ArrayType, ID_VEC4UI_ARRAY);
+        writeArrayImplementation( static_cast<const osg::Vec4uiArray*>(a), a->getNumElements() );
         break;
     default:
         throwException( "OutputStream::writeArray(): Unsupported array type." );

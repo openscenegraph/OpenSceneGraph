@@ -82,6 +82,12 @@ public:
         return itr->second;
     }
 
+    StringToValue& getStringToValue() { return _stringToValue; }
+    const StringToValue& getStringToValue() const { return _stringToValue; }
+
+    ValueToString& getValueToString() { return _valueToString; }
+    const ValueToString& getValueToString() const { return _valueToString; }
+
 protected:
     StringToValue _stringToValue;
     ValueToString _valueToString;
@@ -127,7 +133,7 @@ public:
         RW_MATRIXF, RW_MATRIXD, RW_MATRIX, RW_GLENUM, RW_STRING, RW_ENUM,
         RW_VEC2B, RW_VEC2UB, RW_VEC2S, RW_VEC2US, RW_VEC2I, RW_VEC2UI,
         RW_VEC3B, RW_VEC3UB, RW_VEC3S, RW_VEC3US, RW_VEC3I, RW_VEC3UI,
-        RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RE_VEC4UI
+        RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI
     };
 
     BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}

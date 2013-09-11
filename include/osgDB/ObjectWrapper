@@ -93,14 +93,14 @@ struct UpdateWrapperVersionProxy
     UpdateWrapperVersionProxy( ObjectWrapper* w, int v ): _wrapper(w)
     {
         _lastVersion = w->getUpdatedVersion();
-        w->setUpdatedVersion(v);        
+        w->setUpdatedVersion(v);
     }
-    
+
     ~UpdateWrapperVersionProxy()
     {
         _wrapper->setUpdatedVersion(_lastVersion);
     }
-    
+
     ObjectWrapper* _wrapper;
     int _lastVersion;
 };
@@ -132,6 +132,9 @@ public:
     typedef std::map<std::string, IntLookup> IntLookupMap;
     IntLookup::Value getValue( const std::string& group, const std::string& str ) { return findLookup(group).getValue(str.c_str()); }
     const std::string& getString( const std::string& group, IntLookup::Value value ) { return findLookup(group).getString(value); }
+
+    IntLookupMap& getLookupMap() { return _globalMap; }
+    const IntLookupMap& getLookupMap() const { return _globalMap; }
 
 protected:
 

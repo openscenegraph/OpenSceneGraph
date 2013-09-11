@@ -488,6 +488,51 @@ osg::Array* InputStream::readArray()
             array = va;
         }
         break;
+
+    case ID_VEC2I_ARRAY:
+        {
+            osg::Vec2iArray* va = new osg::Vec2iArray;
+            readArrayImplementation( va, 2, INT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC3I_ARRAY:
+        {
+            osg::Vec3iArray* va = new osg::Vec3iArray;
+            readArrayImplementation( va, 3, INT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC4I_ARRAY:
+        {
+            osg::Vec4iArray* va = new osg::Vec4iArray;
+            readArrayImplementation( va, 4, INT_SIZE );
+            array = va;
+        }
+        break;
+
+    case ID_VEC2UI_ARRAY:
+        {
+            osg::Vec2uiArray* va = new osg::Vec2uiArray;
+            readArrayImplementation( va, 2, INT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC3UI_ARRAY:
+        {
+            osg::Vec3uiArray* va = new osg::Vec3uiArray;
+            readArrayImplementation( va, 3, INT_SIZE );
+            array = va;
+        }
+        break;
+    case ID_VEC4UI_ARRAY:
+        {
+            osg::Vec4uiArray* va = new osg::Vec4uiArray;
+            readArrayImplementation( va, 4, INT_SIZE );
+            array = va;
+        }
+        break;
+
     default:
         throwException( "InputStream::readArray(): Unsupported array type." );
     }

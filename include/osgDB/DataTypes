@@ -64,6 +64,13 @@ const int ID_VEC2US_ARRAY = 23;
 const int ID_VEC3US_ARRAY = 24;
 const int ID_VEC4US_ARRAY = 25;
 
+const int ID_VEC2I_ARRAY = 26;
+const int ID_VEC3I_ARRAY = 27;
+const int ID_VEC4I_ARRAY = 28;
+const int ID_VEC2UI_ARRAY = 29;
+const int ID_VEC3UI_ARRAY = 30;
+const int ID_VEC4UI_ARRAY = 31;
+
 const int ID_DRAWARRAYS = 50;
 const int ID_DRAWARRAY_LENGTH = 51;
 const int ID_DRAWELEMENTS_UBYTE = 52;

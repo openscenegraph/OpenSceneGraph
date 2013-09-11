@@ -535,6 +535,13 @@ ObjectWrapperManager::ObjectWrapperManager()
     arrayTable.add( "Vec3dArray", ID_VEC3D_ARRAY );
     arrayTable.add( "Vec4dArray", ID_VEC4D_ARRAY );
 
+    arrayTable.add( "Vec2iArray", ID_VEC2I_ARRAY );
+    arrayTable.add( "Vec3iArray", ID_VEC3I_ARRAY );
+    arrayTable.add( "Vec4iArray", ID_VEC4I_ARRAY );
+    arrayTable.add( "Vec2uiArray", ID_VEC2UI_ARRAY );
+    arrayTable.add( "Vec3uiArray", ID_VEC3UI_ARRAY );
+    arrayTable.add( "Vec4uiArray", ID_VEC4UI_ARRAY );
+
     IntLookup& primitiveTable = _globalMap["PrimitiveType"];
 
     primitiveTable.add( "DrawArrays", ID_DRAWARRAYS );

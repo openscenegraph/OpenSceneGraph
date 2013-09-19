@@ -1,0 +1,189 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+
+#ifndef OSGDB_PROPERTYINTERFACE
+#define OSGDB_PROPERTYINTERFACE 1
+
+#include <osgDB/ObjectWrapper>
+#include <osgDB/Registry>
+#include <osgPresentation/Group>
+#include <osg/ValueObject>
+
+namespace osgDB
+{
+
+template<typename T>
+static osgDB::BaseSerializer::Type getTypeEnum()
+{
+    return osgDB::BaseSerializer::RW_UNDEFINED;
+}
+
+template<typename T>
+static osgDB::BaseSerializer::Type getTypeEnumFrom(T)
+{
+    return getTypeEnum<T>();
+}
+
+template<typename T>
+static const char* getTypeString()
+{
+    return "UNDEFINED";
+}
+
+template<typename T>
+static const char* getTypeStringFrom(T)
+{
+    return getTypeString<T>();
+}
+
+extern OSGDB_EXPORT osgDB::BaseSerializer::Type getTypeEnumFromPtr(const osg::Object*);
+extern OSGDB_EXPORT const char* getTypeStringFromPtr(const osg::Object*);
+
+extern OSGDB_EXPORT osgDB::BaseSerializer::Type getTypeEnumFromPtr(const osg::Image*);
+extern OSGDB_EXPORT const char* getTypeStringFromPtr(const osg::Image*);
+
+
+#define DECLARE_TYPE(A,B) \
+    template<> osgDB::BaseSerializer::Type getTypeEnum<A>() { return osgDB::BaseSerializer::RW_##B; } \
+    template<> const char* getTypeString<A>() { return #B; }
+
+DECLARE_TYPE(osg::Image*, IMAGE)
+DECLARE_TYPE(osg::Object*, OBJECT)
+
+DECLARE_TYPE(bool, BOOL)
+DECLARE_TYPE(char, CHAR)
+DECLARE_TYPE(unsigned char, UCHAR)
+DECLARE_TYPE(short, SHORT)
+DECLARE_TYPE(unsigned short, USHORT)
+DECLARE_TYPE(int, INT)
+DECLARE_TYPE(unsigned int, UINT)
+DECLARE_TYPE(float, FLOAT)
+DECLARE_TYPE(double, DOUBLE)
+
+DECLARE_TYPE(osg::Vec2f, VEC2F)
+DECLARE_TYPE(osg::Vec2d, VEC2D)
+DECLARE_TYPE(osg::Vec3f, VEC3F)
+DECLARE_TYPE(osg::Vec3d, VEC3D)
+DECLARE_TYPE(osg::Vec4f, VEC4F)
+DECLARE_TYPE(osg::Vec4d, VEC4D)
+DECLARE_TYPE(osg::Quat, QUAT)
+DECLARE_TYPE(osg::Plane, PLANE)
+
+DECLARE_TYPE(osg::Matrixf, MATRIXF)
+DECLARE_TYPE(osg::Matrixd, MATRIXD)
+DECLARE_TYPE(std::string, STRING)
+
+DECLARE_TYPE(osg::Vec2b, VEC2B)
+DECLARE_TYPE(osg::Vec2ub, VEC2UB)
+DECLARE_TYPE(osg::Vec2s, VEC2S)
+DECLARE_TYPE(osg::Vec2us, VEC2US)
+DECLARE_TYPE(osg::Vec2i, VEC2I)
+DECLARE_TYPE(osg::Vec2ui, VEC2UI)
+
+DECLARE_TYPE(osg::Vec3b, VEC3B)
+DECLARE_TYPE(osg::Vec3ub, VEC3UB)
+DECLARE_TYPE(osg::Vec3s, VEC3S)
+DECLARE_TYPE(osg::Vec3us, VEC3US)
+DECLARE_TYPE(osg::Vec3i, VEC3I)
+DECLARE_TYPE(osg::Vec3ui, VEC3UI)
+
+DECLARE_TYPE(osg::Vec4b, VEC4B)
+DECLARE_TYPE(osg::Vec4ub, VEC4UB)
+DECLARE_TYPE(osg::Vec4s, VEC4S)
+DECLARE_TYPE(osg::Vec4us, VEC4US)
+DECLARE_TYPE(osg::Vec4i, VEC4I)
+DECLARE_TYPE(osg::Vec4ui, VEC4UI)
+
+// forward decalare
+class PropertyOutputIterator;
+class PropertyInputIterator;
+
+class OSGDB_EXPORT PropertyInterface
+{
+public:
+    PropertyInterface();
+
+    typedef std::pair<std::string, osgDB::BaseSerializer::Type> PropertyNameTypePair;
+    typedef std::list<PropertyNameTypePair> PropertyList;
+
+    bool getSupportedProperties(const osg::Object* object, PropertyList& properties, bool searchAssociates=true);
+
+    bool getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type);
+
+    bool areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgDB::BaseSerializer::Type rhs) const;
+
+    template<typename T>
+    bool getProperty(const osg::Object* object, const std::string& propertyName, T& value);
+
+    template<typename T>
+    bool setProperty(osg::Object* object, const std::string& propertyName, const T& value);
+
+protected:
+
+    bool copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
+
+    bool copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
+
+    osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const
+    {
+        std::string compoundClassName = std::string(object->libraryName()) + std::string("::") + std::string(object->className());
+        return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+    }
+
+    osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
+    {
+        osgDB::ObjectWrapper* ow = getObjectWrapper(object);
+        return ow ? ow->getSerializer(propertyName, type) : 0;
+    }
+
+    osgDB::OutputStream _outputStream;
+    PropertyOutputIterator* _poi;
+
+    osgDB::InputStream _inputStream;
+    PropertyInputIterator* _pii;
+};
+
+
+template<typename T>
+bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, T& value)
+{
+    if (copyPropertyDataFromObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>()))
+    {
+        return true;
+    }
+    else
+    {
+        // fallback to check user data for property
+        return object->getUserValue(propertyName, value);
+    }
+}
+
+template<typename T>
+bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const T& value)
+{
+    if (copyPropertyDataToObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>()))
+    {
+        return true;
+    }
+    else
+    {
+        // fallback to using user data to store property data
+        object->setUserValue(propertyName, value);
+        return false;
+    }
+}
+
+}
+
+#endif

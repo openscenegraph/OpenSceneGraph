@@ -615,7 +615,7 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
             if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
             {
                 StringList properties;
-                std::vector<int> types;
+                ObjectWrapper::TypeList types;
                 assocWrapper->writeSchema( properties, types );
 
                 unsigned int size = osg::minimum( properties.size(), types.size() );
@@ -798,7 +798,7 @@ void OutputStream::writeSchema( std::ostream& fout )
         fout << itr->first << " =";
 
         StringList properties;
-        std::vector<int> types;
+        ObjectWrapper::TypeList types;
         wrapper->writeSchema( properties, types );
 
         std::string propertiesString;

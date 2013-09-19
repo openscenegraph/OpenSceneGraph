@@ -45,6 +45,7 @@ struct FinishedObjectReadCallback : public osg::Referenced
 class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 {
 public:
+    typedef std::vector< BaseSerializer::Type > TypeList;
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;
     typedef std::vector< osg::ref_ptr<FinishedObjectReadCallback> > FinishedObjectReadCallbackList;
 
@@ -57,19 +58,28 @@ public:
     int getUpdatedVersion() const { return _version; }
 
     const osg::Object* getProto() const { return _proto.get(); }
+    const std::string& getDomain() const { return _domain; }
     const std::string& getName() const { return _name; }
     const StringList& getAssociates() const { return _associates; }
+
+    SerializerList& getSerializerList() { return _serializers; }
+    const SerializerList& getSerializerList() const { return _serializers; }
+
+    TypeList& getTypeList() { return _typeList; }
+    const TypeList& getTypeList() const { return _typeList; }
 
     void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED );
     void markSerializerAsRemoved( const std::string& name );
     BaseSerializer* getSerializer( const std::string& name );
+    BaseSerializer* getSerializer( const std::string& name, BaseSerializer::Type& type);
+
     void addFinishedObjectReadCallback ( FinishedObjectReadCallback* forc) { _finishedObjectReadCallbacks.push_back(forc); }
 
     bool read( InputStream&, osg::Object& );
     bool write( OutputStream&, const osg::Object& );
 
-    bool readSchema( const StringList& properties, const std::vector<int>& types );
-    void writeSchema( StringList& properties, std::vector<int>& types );
+    bool readSchema( const StringList& properties, const TypeList& types );
+    void writeSchema( StringList& properties, TypeList& types );
     void resetSchema()
     { if ( _backupSerializers.size()>0 ) _serializers = _backupSerializers; }
 
@@ -83,7 +93,7 @@ protected:
     StringList _associates;
     SerializerList _serializers;
     SerializerList _backupSerializers;
-    std::vector<int> _typeList;
+    TypeList _typeList;
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
     int _version;  // Last updated version of the wrapper
 };

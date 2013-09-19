@@ -104,7 +104,7 @@ void ObjectWrapper::addSerializer( BaseSerializer* s, BaseSerializer::Type t )
 {
     s->_firstVersion = _version;
     _serializers.push_back(s);
-    _typeList.push_back(static_cast<int>(t));
+    _typeList.push_back(t);
 }
 
 void ObjectWrapper::markSerializerAsRemoved( const std::string& name )
@@ -145,6 +145,48 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
                 return aitr->get();
         }
     }
+    return NULL;
+}
+
+BaseSerializer* ObjectWrapper::getSerializer( const std::string& name, BaseSerializer::Type& type)
+{
+
+    unsigned int i = 0;
+    for (SerializerList::iterator itr=_serializers.begin();
+         itr!=_serializers.end();
+         ++itr, ++i )
+    {
+        if ( (*itr)->getName()==name )
+        {
+            type = _typeList[i];
+            return itr->get();
+        }
+    }
+
+    for ( StringList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+    {
+        const std::string& assocName = *itr;
+        ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
+        if ( !assocWrapper )
+        {
+            osg::notify(osg::WARN) << "ObjectWrapper::getSerializer(): Unsupported associated class "
+                                   << assocName << std::endl;
+            continue;
+        }
+
+        i = 0;
+        for ( SerializerList::iterator aitr=assocWrapper->_serializers.begin();
+              aitr!=assocWrapper->_serializers.end();
+              ++aitr, ++i )
+        {
+            if ( (*aitr)->getName()==name )
+            {
+                type = assocWrapper->_typeList[i];
+                return aitr->get();
+            }
+        }
+    }
+    type = BaseSerializer::RW_UNDEFINED;
     return NULL;
 }
 
@@ -208,7 +250,7 @@ bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
     return writeOK;
 }
 
-bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<int>& )
+bool ObjectWrapper::readSchema( const StringList& properties, const TypeList& )
 {
     // FIXME: At present, I didn't do anything to determine serializers from their types...
     if ( !_backupSerializers.size() )
@@ -251,7 +293,7 @@ bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<
     return size==_serializers.size();
 }
 
-void ObjectWrapper::writeSchema( StringList& properties, std::vector<int>& types )
+void ObjectWrapper::writeSchema( StringList& properties, TypeList& types )
 {
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
@@ -259,7 +301,7 @@ void ObjectWrapper::writeSchema( StringList& properties, std::vector<int>& types
         properties.push_back( (*itr)->getName() );
     }
 
-    for ( std::vector<int>::iterator itr=_typeList.begin();
+    for ( TypeList::iterator itr=_typeList.begin();
           itr!=_typeList.end(); ++itr )
     {
         types.push_back( (*itr) );

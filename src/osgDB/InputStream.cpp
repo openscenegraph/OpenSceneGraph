@@ -945,7 +945,7 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
     }
 
     StringList schema, methods, keyAndValue;
-    std::vector<int> types;
+    ObjectWrapper::TypeList types;
     split( properties, schema );
     for ( StringList::iterator itr=schema.begin(); itr!=schema.end(); ++itr )
     {
@@ -953,12 +953,12 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
         if ( keyAndValue.size()>1 )
         {
             methods.push_back( keyAndValue.front() );
-            types.push_back( atoi(keyAndValue.back().c_str()) );
+            types.push_back( static_cast<BaseSerializer::Type>(atoi(keyAndValue.back().c_str())) );
         }
         else
         {
             methods.push_back( *itr );
-            types.push_back( 0 );
+            types.push_back( BaseSerializer::RW_UNDEFINED );
         }
         keyAndValue.clear();
     }

@@ -32,7 +32,7 @@ ELSE ()
     ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
 ENDIF()
 
-IF(APPLE AND NOT ANDROID) 
+IF(APPLE AND NOT ANDROID)
    IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
      # compile FileUtils.cpp as objective-c++
      SET_SOURCE_FILES_PROPERTIES(FileUtils.cpp
@@ -71,6 +71,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/Options
+    ${HEADER_PATH}/PropertyInterface
     ${HEADER_PATH}/ParameterOutput
     ${HEADER_PATH}/PluginQuery
     ${HEADER_PATH}/ReaderWriter
@@ -110,6 +111,7 @@ SET(TARGET_SRC
     Output.cpp
     Options.cpp
     PluginQuery.cpp
+    PropertyInterface.cpp
     ReaderWriter.cpp
     ReadFile.cpp
     Registry.cpp
@@ -121,12 +123,12 @@ SET(TARGET_SRC
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-IF(APPLE AND NOT ANDROID) 
+IF(APPLE AND NOT ANDROID)
     IF(NOT OSG_BUILD_PLATFORM_IPHONE AND NOT OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
         # Needs CoreFoundation calls and a Carbon function
         SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
     ENDIF()
- 
+
     IF(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX STREQUAL "quicktime")
         ADD_DEFINITIONS(-DDARWIN_QUICKTIME)
     ELSE()
@@ -163,7 +165,7 @@ ENDIF()
 
 ADD_DEFINITIONS(-DOSG_PLUGIN_EXTENSION=${CMAKE_SHARED_MODULE_SUFFIX})
 
-SET(TARGET_LIBRARIES     
+SET(TARGET_LIBRARIES
     osg
     osgUtil
     OpenThreads

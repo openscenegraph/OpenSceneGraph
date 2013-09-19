@@ -73,7 +73,7 @@ class OSGPRESENTATION_EXPORT Group : public osg::MatrixTransform
         template<typename T>
         void setProperty(const std::string& name, const T& value)
         {
-            return setUserValue(name, value);
+            setUserValue(name, value);
         }
 
         /** Check for named Property, if it doesn't exist on this object check parents recursively for instances.*/

@@ -161,66 +161,9 @@ int main(int argc, char** argv)
 
     osgDB::writeNodeFile(*presentation, "pres.osgt");
 
+    osgDB::PropertyInterface pi;
 
-    typedef std::map<int, std::string> TypeNameMap;
-    TypeNameMap typeNameMap;
-
-#define TYPENAME(A) typeNameMap[osgDB::BaseSerializer::A] = #A;
-
-
-    TYPENAME(RW_UNDEFINED)
-    TYPENAME(RW_USER)
-    TYPENAME(RW_OBJECT)
-    TYPENAME(RW_IMAGE)
-    TYPENAME(RW_LIST)
-
-    TYPENAME(RW_BOOL)
-    TYPENAME(RW_CHAR)
-    TYPENAME(RW_UCHAR)
-    TYPENAME(RW_SHORT)
-    TYPENAME(RW_USHORT)
-    TYPENAME(RW_INT)
-    TYPENAME(RW_UINT)
-    TYPENAME(RW_FLOAT)
-    TYPENAME(RW_DOUBLE)
-
-    TYPENAME(RW_VEC2F)
-    TYPENAME(RW_VEC2D)
-    TYPENAME(RW_VEC3F)
-    TYPENAME(RW_VEC3D)
-    TYPENAME(RW_VEC4F)
-    TYPENAME(RW_VEC4D)
-    TYPENAME(RW_QUAT)
-    TYPENAME(RW_PLANE)
-
-    TYPENAME(RW_MATRIXF)
-    TYPENAME(RW_MATRIXD)
-    TYPENAME(RW_MATRIX)
-    TYPENAME(RW_GLENUM)
-    TYPENAME(RW_STRING)
-    TYPENAME(RW_ENUM)
-
-    TYPENAME(RW_VEC2B)
-    TYPENAME(RW_VEC2UB)
-    TYPENAME(RW_VEC2S)
-    TYPENAME(RW_VEC2US)
-    TYPENAME(RW_VEC2I)
-    TYPENAME(RW_VEC2UI)
-
-    TYPENAME(RW_VEC3B)
-    TYPENAME(RW_VEC3UB)
-    TYPENAME(RW_VEC3S)
-    TYPENAME(RW_VEC3US)
-    TYPENAME(RW_VEC3I)
-    TYPENAME(RW_VEC3UI)
-
-    TYPENAME(RW_VEC4B)
-    TYPENAME(RW_VEC4UB)
-    TYPENAME(RW_VEC4S)
-    TYPENAME(RW_VEC4US)
-    TYPENAME(RW_VEC4I)
-    TYPENAME(RW_VEC4UI)
-#if 0
+#if 1
     osgDB::ObjectWrapperManager* owm = osgDB::Registry::instance()->getObjectWrapperManager();
     if (owm)
     {
@@ -243,19 +186,19 @@ int main(int argc, char** argv)
 
 
             osgDB::StringList properties;
-            std::vector<int> types;
+            osgDB::ObjectWrapper::TypeList types;
             ow->writeSchema(properties, types);
             OSG_NOTICE<<"  properties.size() = "<<properties.size()<<", types.size() = "<<types.size()<<std::endl;
             unsigned int numProperties = std::min(properties.size(), types.size());
             for(unsigned int i=0; i<numProperties; ++i)
             {
-                OSG_NOTICE<<"     property = "<<properties[i]<<", type = "<<types[i]<<", typeName = "<<typeNameMap[types[i]]<<std::endl;
+                OSG_NOTICE<<"     property = "<<properties[i]<<", type = "<<types[i]<<", typeName = "<<pi.getTypeName(types[i])<<std::endl;
             }
 
 
 
         }
-#if 0
+#if 1
         osgDB::ObjectWrapperManager::IntLookupMap& intLookupMap = owm->getLookupMap();
         for(osgDB::ObjectWrapperManager::IntLookupMap::iterator itr = intLookupMap.begin();
             itr != intLookupMap.end();
@@ -275,7 +218,6 @@ int main(int argc, char** argv)
 #endif
     presentation->setName("[this is a test]");
 
-    osgDB::PropertyInterface pi;
     if (pi.setProperty(presentation.get(), "Name", std::string("[this is new improved test]")))
     {
         OSG_NOTICE<<"setProperty(presentation.get(), Name) succeeded."<<std::endl;
@@ -359,11 +301,11 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     osg::ref_ptr<osg::Node> node = new osg::Node;
-    osgDB::PropertyInterface::PropertyList properties;
+    osgDB::PropertyInterface::PropertyMap properties;
     if (pi.getSupportedProperties(presentation.get(), properties, true))
     {
         OSG_NOTICE<<"Have supported properites found."<<std::endl;
-        for(osgDB::PropertyInterface::PropertyList::iterator itr = properties.begin();
+        for(osgDB::PropertyInterface::PropertyMap::iterator itr = properties.begin();
             itr != properties.end();
             ++itr)
         {
@@ -438,7 +380,7 @@ int main(int argc, char** argv)
         osgDB::BaseSerializer::Type type; \
         if (pi.getPropertyType(O, #PN, type)) \
         { \
-            OSG_NOTICE<<#PN<<" : type "<<type<<", "<<typeNameMap[type]<<std::endl; \
+            OSG_NOTICE<<#PN<<" : type "<<type<<", "<<pi.getTypeName(type)<<std::endl; \
         } \
         else \
         { \

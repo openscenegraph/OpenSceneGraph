@@ -49,8 +49,6 @@ VolumeTile::VolumeTile():
     _hasBeenTraversal(false)
 {
     setThreadSafeRefUnref(true);
-
-    setNumChildrenRequiringUpdateTraversal(1);
 }
 
 VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
@@ -60,8 +58,6 @@ VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
     _hasBeenTraversal(false),
     _layer(volumeTile._layer)
 {
-    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-
     if (volumeTile.getVolumeTechnique())
     {
         setVolumeTechnique(osg::clone(volumeTile.getVolumeTechnique()));

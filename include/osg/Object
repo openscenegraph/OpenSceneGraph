@@ -44,7 +44,7 @@ class UserDataContainer;
 
 /** Helper macro that creates a static proxy object to call singleton function on it's construction, ensuring that the singleton gets initialized at startup.*/
 #define OSG_INIT_SINGLETON_PROXY(ProxyName, Func) static struct ProxyName{ ProxyName() { Func; } } s_##ProxyName;
-        
+
 /** Base class/standard interface for objects which require IO support,
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.
@@ -76,6 +76,7 @@ class OSG_EXPORT Object : public Referenced
 
         virtual bool isSameKindAs(const Object*) const { return true; }
 
+
         /** return the name of the object's library. Must be defined
             by derived classes. The OpenSceneGraph convention is that the
             namespace of a library is the same as the library name.*/
@@ -84,6 +85,9 @@ class OSG_EXPORT Object : public Referenced
         /** return the name of the object's class type. Must be defined
             by derived classes.*/
         virtual const char* className() const = 0;
+
+        /** return the compound class name that combines the libary name and class name.*/
+        std::string getCompoundClassName() const { return std::string(libraryName()) + std::string("::") + std::string(className()); }
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/

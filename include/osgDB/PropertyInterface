@@ -109,25 +109,60 @@ DECLARE_TYPE(osg::Vec4ui, VEC4UI)
 class PropertyOutputIterator;
 class PropertyInputIterator;
 
+
+/** PropertyInterface provides a general means of checking for supported properties of classes, and getting/setting thoses properties.
+    Uses the osgDB serializers to do the actual object querry/get/set.
+*/
 class OSGDB_EXPORT PropertyInterface
 {
 public:
     PropertyInterface();
 
-    typedef std::pair<std::string, osgDB::BaseSerializer::Type> PropertyNameTypePair;
-    typedef std::list<PropertyNameTypePair> PropertyList;
 
-    bool getSupportedProperties(const osg::Object* object, PropertyList& properties, bool searchAssociates=true);
+    /// get the Type of the specified property, return true if property is supported, otherwise false.
+    bool getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const;
 
-    bool getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type);
-
+    /// return type of two types are compatible
     bool areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgDB::BaseSerializer::Type rhs) const;
 
+
+    /// template method for getting property data, return true if property available and the type is compatible, otherwise returns false.
     template<typename T>
     bool getProperty(const osg::Object* object, const std::string& propertyName, T& value);
 
+    /// template method for setting property data, return true if property available and the type is compatible, otherwise returns false.
     template<typename T>
     bool setProperty(osg::Object* object, const std::string& propertyName, const T& value);
+
+
+    /// get the human readable name of type.
+    std::string getTypeName(osgDB::BaseSerializer::Type type) const;
+
+    /// get the enum value of type given the human readable name.
+    osgDB::BaseSerializer::Type getType(const std::string& typeName) const;
+
+
+    /// Properties supported for a single class
+    typedef std::map<std::string, osgDB::BaseSerializer::Type> PropertyMap;
+
+    /// Get the list of of properties supported by object
+    bool getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates=true) const;
+
+
+    /// Properties supported for a range of classes, used for white and black lists
+    typedef std::map<std::string, PropertyMap> ObjectPropertyMap;
+
+    /// Get the list of properties that are explictly defined as supported
+    ObjectPropertyMap& getWhiteList() { return _whiteList; }
+
+    /// Get the const list of properties that are explictly defined as supported
+    const ObjectPropertyMap& getWhiteList() const { return _whiteList; }
+
+    /// Get the list of properties that are explictly defined as not supported
+    ObjectPropertyMap& getBlackList() { return _blackList; }
+
+    /// Get the const list of properties that are explictly defined as not supported
+    const ObjectPropertyMap& getBlackList() const { return _blackList; }
 
 protected:
 
@@ -135,47 +170,38 @@ protected:
 
     bool copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
 
-    osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const
-    {
-        std::string compoundClassName = std::string(object->libraryName()) + std::string("::") + std::string(object->className());
-        return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
-    }
+    osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const;
 
-    osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
-    {
-        osgDB::ObjectWrapper* ow = getObjectWrapper(object);
-        return ow ? ow->getSerializer(propertyName, type) : 0;
-    }
+    osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const;
 
     osgDB::OutputStream _outputStream;
     PropertyOutputIterator* _poi;
 
     osgDB::InputStream _inputStream;
     PropertyInputIterator* _pii;
+
+    typedef std::map<std::string, osgDB::BaseSerializer::Type> TypeNameToTypeMap;
+    typedef std::map<osgDB::BaseSerializer::Type, std::string> TypeToTypeNameMap;
+
+    TypeNameToTypeMap _typeNameToTypeMap;
+    TypeToTypeNameMap _typeToTypeNameMap;
+
+    ObjectPropertyMap _whiteList;
+    ObjectPropertyMap _blackList;
 };
 
 
 template<typename T>
 bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, T& value)
 {
-    if (copyPropertyDataFromObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>()))
-    {
-        return true;
-    }
-    else
-    {
-        // fallback to check user data for property
-        return object->getUserValue(propertyName, value);
-    }
+    if (copyPropertyDataFromObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>())) return true;
+    else return object->getUserValue(propertyName, value); // fallback to check user data for property
 }
 
 template<typename T>
 bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const T& value)
 {
-    if (copyPropertyDataToObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>()))
-    {
-        return true;
-    }
+    if (copyPropertyDataToObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>())) return true;
     else
     {
         // fallback to using user data to store property data

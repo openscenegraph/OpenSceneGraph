@@ -173,6 +173,65 @@ PropertyInterface::PropertyInterface():
 
     _pii = new PropertyInputIterator;
     _inputStream.setInputIterator(_pii);
+
+
+    // initialize the type maps
+    #define TYPENAME(A) \
+        _typeToTypeNameMap[osgDB::BaseSerializer::RW_##A] = #A; \
+        _typeNameToTypeMap[#A] = osgDB::BaseSerializer::RW_##A;
+
+    TYPENAME(UNDEFINED)
+    TYPENAME(USER)
+    TYPENAME(OBJECT)
+    TYPENAME(IMAGE)
+    TYPENAME(LIST)
+
+    TYPENAME(BOOL)
+    TYPENAME(CHAR)
+    TYPENAME(UCHAR)
+    TYPENAME(SHORT)
+    TYPENAME(USHORT)
+    TYPENAME(INT)
+    TYPENAME(UINT)
+    TYPENAME(FLOAT)
+    TYPENAME(DOUBLE)
+
+    TYPENAME(VEC2F)
+    TYPENAME(VEC2D)
+    TYPENAME(VEC3F)
+    TYPENAME(VEC3D)
+    TYPENAME(VEC4F)
+    TYPENAME(VEC4D)
+    TYPENAME(QUAT)
+    TYPENAME(PLANE)
+
+    TYPENAME(MATRIXF)
+    TYPENAME(MATRIXD)
+    TYPENAME(MATRIX)
+    TYPENAME(GLENUM)
+    TYPENAME(STRING)
+    TYPENAME(ENUM)
+
+    TYPENAME(VEC2B)
+    TYPENAME(VEC2UB)
+    TYPENAME(VEC2S)
+    TYPENAME(VEC2US)
+    TYPENAME(VEC2I)
+    TYPENAME(VEC2UI)
+
+    TYPENAME(VEC3B)
+    TYPENAME(VEC3UB)
+    TYPENAME(VEC3S)
+    TYPENAME(VEC3US)
+    TYPENAME(VEC3I)
+    TYPENAME(VEC3UI)
+
+    TYPENAME(VEC4B)
+    TYPENAME(VEC4UB)
+    TYPENAME(VEC4S)
+    TYPENAME(VEC4US)
+    TYPENAME(VEC4I)
+    TYPENAME(VEC4UI)
 }
 
 
@@ -197,49 +256,31 @@ bool PropertyInterface::areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgD
     return lhs==rhs;
 }
 
-bool PropertyInterface::getSupportedProperties(const osg::Object* object, PropertyList& properties, bool searchAssociates)
+std::string PropertyInterface::getTypeName(osgDB::BaseSerializer::Type type) const
+{
+    TypeToTypeNameMap::const_iterator itr = _typeToTypeNameMap.find(type);
+    if (itr != _typeToTypeNameMap.end()) return itr->second;
+    else return std::string();
+}
+
+osgDB::BaseSerializer::Type PropertyInterface::getType(const std::string& typeName) const
+{
+    TypeNameToTypeMap::const_iterator itr = _typeNameToTypeMap.find(typeName);
+    if (itr != _typeNameToTypeMap.end()) return itr->second;
+    else return osgDB::BaseSerializer::RW_UNDEFINED;
+}
+
+
+osgDB::ObjectWrapper* PropertyInterface::getObjectWrapper(const osg::Object* object) const
+{
+    std::string compoundClassName = std::string(object->libraryName()) + std::string("::") + std::string(object->className());
+    return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+}
+
+osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
 {
     osgDB::ObjectWrapper* ow = getObjectWrapper(object);
-    if (!ow)
-    {
-        return false;
-    }
-
-    if (searchAssociates)
-    {
-        const osgDB::StringList& associates = ow->getAssociates();
-        for(osgDB::StringList::const_iterator aitr = associates.begin();
-            aitr != associates.end();
-            ++aitr)
-        {
-            osgDB::ObjectWrapper* associate_wrapper = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
-            if (associate_wrapper)
-            {
-                const osgDB::ObjectWrapper::SerializerList& associate_serializers = associate_wrapper->getSerializerList();
-                unsigned int i=0;
-                for(osgDB::ObjectWrapper::SerializerList::const_iterator sitr = associate_serializers.begin();
-                    sitr != associate_serializers.end();
-                    ++sitr, ++i)
-                {
-                    properties.push_back(PropertyNameTypePair((*sitr)->getName(), associate_wrapper->getTypeList()[i]));
-                }
-            }
-        }
-    }
-    else
-    {
-        const osgDB::ObjectWrapper::SerializerList& serializers = ow->getSerializerList();
-        unsigned int i=0;
-        for(osgDB::ObjectWrapper::SerializerList::const_iterator itr = serializers.begin();
-            itr != serializers.end();
-            ++itr)
-        {
-            properties.push_back(PropertyNameTypePair((*itr)->getName(), ow->getTypeList()[i]));
-        }
-    }
-
-
-    return true;
+    return ow ? ow->getSerializer(propertyName, type) : 0;
 }
 
 bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
@@ -324,7 +365,7 @@ public:
     virtual void apply(const osg::Matrixd& /*value*/) { type = osgDB::BaseSerializer::RW_MATRIXD; }
 };
 
-bool PropertyInterface::getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type)
+bool PropertyInterface::getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
 {
     if (getSerializer(object, propertyName, type)!=0) return true;
 
@@ -343,6 +384,53 @@ bool PropertyInterface::getPropertyType(const osg::Object* object, const std::st
     }
     return false;
 }
+
+
+bool PropertyInterface::getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates) const
+{
+    osgDB::ObjectWrapper* ow = getObjectWrapper(object);
+    if (!ow)
+    {
+        return false;
+    }
+
+    if (searchAssociates)
+    {
+        const osgDB::StringList& associates = ow->getAssociates();
+        for(osgDB::StringList::const_iterator aitr = associates.begin();
+            aitr != associates.end();
+            ++aitr)
+        {
+            osgDB::ObjectWrapper* associate_wrapper = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+            if (associate_wrapper)
+            {
+                const osgDB::ObjectWrapper::SerializerList& associate_serializers = associate_wrapper->getSerializerList();
+                unsigned int i=0;
+                for(osgDB::ObjectWrapper::SerializerList::const_iterator sitr = associate_serializers.begin();
+                    sitr != associate_serializers.end();
+                    ++sitr, ++i)
+                {
+                    properties[(*sitr)->getName()] = associate_wrapper->getTypeList()[i];
+                }
+            }
+        }
+    }
+    else
+    {
+        const osgDB::ObjectWrapper::SerializerList& serializers = ow->getSerializerList();
+        unsigned int i=0;
+        for(osgDB::ObjectWrapper::SerializerList::const_iterator itr = serializers.begin();
+            itr != serializers.end();
+            ++itr)
+        {
+            properties[(*itr)->getName()] = ow->getTypeList()[i];
+        }
+    }
+
+
+    return true;
+}
+
 
 } // end of osgDB namespace
 

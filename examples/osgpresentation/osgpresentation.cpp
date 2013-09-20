@@ -163,7 +163,14 @@ int main(int argc, char** argv)
 
     osgDB::PropertyInterface pi;
 
-#if 1
+    pi.getWhiteList()["osgPresentation::Presentation"]["filename"]=osgDB::BaseSerializer::RW_STRING;
+    pi.getBlackList()["osgPresentation::Presentation"]["Children"];
+    pi.getBlackList()["osgPresentation::Presentation"]["UserDataContainer"];
+    pi.getBlackList()["osgPresentation::Presentation"]["UserData"];
+    pi.getBlackList()["osgPresentation::Presentation"]["CullCallback"];
+    pi.getBlackList()["osgPresentation::Presentation"]["ComputeBoundingSphereCallback"];
+
+#if 0
     osgDB::ObjectWrapperManager* owm = osgDB::Registry::instance()->getObjectWrapperManager();
     if (owm)
     {
@@ -309,7 +316,7 @@ int main(int argc, char** argv)
             itr != properties.end();
             ++itr)
         {
-            OSG_NOTICE<<"Property "<<itr->first<<", "<<itr->second<<std::endl;
+            OSG_NOTICE<<"   Property "<<itr->first<<", "<<pi.getTypeName(itr->second)<<std::endl;
         }
     }
     else

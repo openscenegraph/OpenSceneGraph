@@ -273,8 +273,7 @@ osgDB::BaseSerializer::Type PropertyInterface::getType(const std::string& typeNa
 
 osgDB::ObjectWrapper* PropertyInterface::getObjectWrapper(const osg::Object* object) const
 {
-    std::string compoundClassName = std::string(object->libraryName()) + std::string("::") + std::string(object->className());
-    return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+    return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(object->getCompoundClassName());
 }
 
 osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
@@ -394,6 +393,15 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
         return false;
     }
 
+    std::string compoundClassName = object->getCompoundClassName();
+    ObjectPropertyMap::const_iterator wl_itr = _whiteList.find(compoundClassName);
+    if (wl_itr != _whiteList.end())
+    {
+        properties = wl_itr->second;
+    }
+
+    ObjectPropertyMap::const_iterator bl_itr = _blackList.find(compoundClassName);
+
     if (searchAssociates)
     {
         const osgDB::StringList& associates = ow->getAssociates();
@@ -410,7 +418,9 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
                     sitr != associate_serializers.end();
                     ++sitr, ++i)
                 {
-                    properties[(*sitr)->getName()] = associate_wrapper->getTypeList()[i];
+                    const std::string& propertyName = (*sitr)->getName();
+                    bool notBlackListed = (bl_itr == _blackList.end()) || (bl_itr->second.count(propertyName)==0);
+                    if (notBlackListed) properties[propertyName] = associate_wrapper->getTypeList()[i];
                 }
             }
         }
@@ -423,7 +433,9 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
             itr != serializers.end();
             ++itr)
         {
-            properties[(*itr)->getName()] = ow->getTypeList()[i];
+            const std::string& propertyName = (*itr)->getName();
+            bool notBlackListed = (bl_itr == _blackList.end()) || (bl_itr->second.count(propertyName)==0);
+            if (notBlackListed) properties[propertyName] = ow->getTypeList()[i];
         }
     }
 

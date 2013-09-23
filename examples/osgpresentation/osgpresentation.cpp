@@ -402,6 +402,24 @@ int main(int argc, char** argv)
     PRINT_TYPE(presentation.get(), mystring)
     PRINT_TYPE(presentation.get(), mymatrix)
 
+    
+    osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter;
+    if (pi.getSupportedProperties(event.get(), properties, true))
+    {
+        OSG_NOTICE<<"Have supported properites found."<<std::endl;
+        for(osgDB::PropertyInterface::PropertyMap::iterator itr = properties.begin();
+            itr != properties.end();
+            ++itr)
+        {
+            OSG_NOTICE<<"   Property "<<itr->first<<", "<<pi.getTypeName(itr->second)<<std::endl;
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"No supported properites found."<<std::endl;
+    }
+    
+
 
 //    return viewer.run();
 

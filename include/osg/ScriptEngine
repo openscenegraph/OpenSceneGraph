@@ -56,7 +56,7 @@ class Script : public osg::Object
 class OSG_EXPORT ScriptCallback : public osg::NodeCallback
 {
     public:
-        ScriptCallback(Script* script=0) : _script(script) {}
+        ScriptCallback(Script* script=0, const std::string& entryPoint="") : _script(script), _entryPoint(entryPoint) {}
         ScriptCallback(const ScriptCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::NodeCallback(rhs,copyop), _script(rhs._script) {}
 
         META_Object(osg, ScriptCallback)
@@ -80,7 +80,8 @@ class OSG_EXPORT ScriptCallback : public osg::NodeCallback
 
         virtual ~ScriptCallback() {}
 
-        osg::ref_ptr<Script> _script;
+        osg::ref_ptr<Script>    _script;
+        std::string             _entryPoint;
 };
 
 /** ScriptEngine base class for integrating different scripting languages.
@@ -92,8 +93,18 @@ class ScriptEngine : public osg::Object
         /** get the scripting language supported by the ScriptEngine.*/
         inline const std::string& getLanguage() const { return _language; }
 
+        typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
+
         /** run a Script.*/
-        virtual void run(osg::Script* script) = 0;
+        bool run(osg::Script* script)
+        {
+            // assumpt empty input and output paramters lists
+            Parameters inputParameters, outputParameters;
+            return run(script, "", inputParameters, outputParameters);
+        }
+
+        /** run a Script.*/
+        virtual bool run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters) = 0;
 
     protected:
 

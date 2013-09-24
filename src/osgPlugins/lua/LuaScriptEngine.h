@@ -15,6 +15,7 @@
 #define LUASCRIPTENGINE_H
 
 #include <osg/ScriptEngine>
+#include <osgDB/PropertyInterface>
 
 extern "C" {
 #include <lua.h>
@@ -36,7 +37,7 @@ class LuaScriptEngine : public osg::ScriptEngine
         virtual const std::string& getLanguage() const { return _language; }
 
         /** run a Script.*/
-        virtual void run(osg::Script* script);
+        virtual bool run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters);
 
         /** get the lua_State object.*/
         lua_State* getLuaState() { return _lua; }
@@ -47,7 +48,17 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         virtual ~LuaScriptEngine();
 
+        bool loadScript(osg::Script* script);
+
+        bool pushParameter(osg::Object* object);
+        bool popParameter(osg::Object* object);
+
         lua_State* _lua;
+
+        typedef std::set< osg::ref_ptr<osg::Script> > ScriptSet;
+        ScriptSet _loadedScripts;
+
+        osgDB::PropertyInterface _pi;
 };
 
 

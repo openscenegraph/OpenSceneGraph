@@ -32,7 +32,7 @@ class PythonScriptEngine : public osg::ScriptEngine
         virtual const std::string& getLanguage() const { return _language; }
 
         /** run a Script.*/
-        virtual void run(osg::Script* script);
+        virtual bool run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters);
 
         /** get the Python main object.*/
         PyObject* getPythonMain() { return _py_main; }

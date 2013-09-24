@@ -146,12 +146,13 @@ int main(int argc, char** argv)
 
     presentation->setProperty("scale",1.0);
 
-
+#if 0
     osgPresentation::PrintSupportedProperties psp(std::cout);
     presentation->accept(psp);
 
     osgPresentation::PrintProperties pp(std::cout);
     presentation->accept(pp);
+#endif
 
     osgPresentation::LoadAction load;
     presentation->accept( load );
@@ -223,7 +224,12 @@ int main(int argc, char** argv)
 #endif
     }
 #endif
+
+
+
     presentation->setName("[this is a test]");
+
+#if 0
 
     if (pi.setProperty(presentation.get(), "Name", std::string("[this is new improved test]")))
     {
@@ -402,7 +408,6 @@ int main(int argc, char** argv)
     PRINT_TYPE(presentation.get(), mystring)
     PRINT_TYPE(presentation.get(), mymatrix)
 
-    
     osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter;
     if (pi.getSupportedProperties(event.get(), properties, true))
     {
@@ -418,10 +423,52 @@ int main(int argc, char** argv)
     {
         OSG_NOTICE<<"No supported properites found."<<std::endl;
     }
-    
+#endif
+
+    osg::ref_ptr<osg::ScriptEngine> luaScriptEngine = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
+    if (luaScriptEngine.valid())
+    {
+        presentation->getOrCreateUserDataContainer()->addUserObject(luaScriptEngine.get());
+        std::string str;
+        while (arguments.read("--lua", str))
+        {
+            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            if (script.valid())
+            {
+                presentation->addUpdateCallback(new osg::ScriptCallback(script.get(),"doStuff"));
+            }
+        }
 
 
-//    return viewer.run();
+        if (arguments.read("--test", str))
+        {
+            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            if (script.valid())
+            {
+                osg::ScriptEngine::Parameters inputParameters;
+                osg::ScriptEngine::Parameters outputParameters;
+
+                inputParameters.push_back(new osg::StringValueObject("string","my very first string input"));
+                inputParameters.push_back(new osg::DoubleValueObject("double",1.234));
+                inputParameters.push_back(new osg::MatrixfValueObject("matrix",osg::Matrixf()));
+
+                osg::ref_ptr<osg::MatrixdValueObject> svo = new osg::MatrixdValueObject("return", osg::Matrixd());
+                outputParameters.push_back(svo.get());
+
+                if (luaScriptEngine->run(script.get(), "test", inputParameters, outputParameters))
+                {
+                    OSG_NOTICE<<"Successfully ran script : return value = "<<svo->getValue()<<std::endl;
+                }
+                else
+                {
+                    OSG_NOTICE<<"script run failed"<<std::endl;
+                }
+            }
+        }
+    }
+
+
+    return viewer.run();
 
 
 }

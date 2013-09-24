@@ -41,9 +41,9 @@ void V8ScriptEngine::initialize()
 
 }
 
-void V8ScriptEngine::run(osg::Script* script)
+bool V8ScriptEngine::run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters)
 {
-    if (!script || !_isolate) return;
+    if (!script || !_isolate) return false;
 
     v8::Locker locker(_isolate);
     v8::Isolate::Scope isolate_scope(_isolate);
@@ -75,8 +75,9 @@ void V8ScriptEngine::run(osg::Script* script)
         v8::String::AsciiValue ascii(result);
         printf("%s\n", *ascii);
     }
-        
+
     _globalTemplate.Dispose();
     _globalContext.Dispose();
 
+    return true;
 }

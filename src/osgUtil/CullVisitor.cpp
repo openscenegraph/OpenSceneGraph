@@ -58,7 +58,6 @@ CullVisitor::CullVisitor():
 }
 
 CullVisitor::CullVisitor(const CullVisitor& rhs):
-    Referenced(true),
     NodeVisitor(rhs),
     CullStack(rhs),
     _currentStateGraph(NULL),

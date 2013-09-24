@@ -40,7 +40,23 @@ void ScriptCallback::operator()(Node* node, NodeVisitor* nv)
     ScriptEngine* engine = getScriptEngine(nv->getNodePath());
     if (engine && _script.valid())
     {
-        engine->run(_script.get());
+        // To handle the case where a NodeVisitor is created on the stack and can't be automatically ref counted
+        // we take a reference to prevent the inputParameters reference to the NodeVisitor making it's ref count going to zero and causing a delete.
+        ref_ptr<NodeVisitor> ref_nv(nv);
+
+        {
+            ScriptEngine::Parameters inputParameters;
+            inputParameters.push_back(node);
+            inputParameters.push_back(nv);
+
+            // empty outputParameters
+            ScriptEngine::Parameters outputParameters;
+
+            engine->run(_script.get(), _entryPoint, inputParameters, outputParameters);
+        }
+
+        // now release the ref_ptr used to protected the NodeVisitor from deletion.
+        ref_nv.release();
     }
 
     // note, callback is responsible for scenegraph traversal so

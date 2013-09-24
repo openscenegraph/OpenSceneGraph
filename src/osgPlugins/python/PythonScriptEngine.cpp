@@ -41,9 +41,9 @@ void PythonScriptEngine::initialize()
     _py_main = PyModule_GetDict(PyImport_AddModule("__main__"));
 }
 
-void PythonScriptEngine::run(osg::Script* script)
+bool PythonScriptEngine::run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters)
 {
-    if (!script || !_py_main) return;
+    if (!script || !_py_main) return false;
 
     PyObject* r = PyRun_String(script->getScript().c_str(), Py_file_input, _py_main, _py_main);
 
@@ -55,4 +55,6 @@ void PythonScriptEngine::run(osg::Script* script)
             PyErr_Clear();
         }
     }
+
+    return true;
 }

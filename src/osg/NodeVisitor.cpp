@@ -39,7 +39,7 @@
 using namespace osg;
 
 NodeVisitor::NodeVisitor(TraversalMode tm):
-        Referenced(true)
+    Object(true)
 {
     _visitorType = NODE_VISITOR;
     _traversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
@@ -50,7 +50,7 @@ NodeVisitor::NodeVisitor(TraversalMode tm):
 }
 
 NodeVisitor::NodeVisitor(VisitorType type,TraversalMode tm):
-    Referenced(true)
+    Object(true)
 {
     _visitorType = type;
     _traversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
@@ -60,6 +60,15 @@ NodeVisitor::NodeVisitor(VisitorType type,TraversalMode tm):
     _nodeMaskOverride = 0x0;
 }
 
+NodeVisitor::NodeVisitor(const NodeVisitor& nv, const osg::CopyOp& copyop):
+    Object(nv, copyop),
+    _visitorType(nv._visitorType),
+    _traversalNumber(nv._traversalNumber),
+    _traversalMode(nv._traversalMode),
+    _traversalMask(nv._traversalMask),
+    _nodeMaskOverride(nv._nodeMaskOverride)
+{
+}
 
 NodeVisitor::~NodeVisitor()
 {

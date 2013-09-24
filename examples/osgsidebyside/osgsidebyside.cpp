@@ -49,6 +49,10 @@ public:
     {
     }
 
+    SwitchDOFVisitor(const SwitchDOFVisitor& sdfv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+
+    META_Object(osg, SwitchDOFVisitor)
+    
     virtual void apply(Group& node)
     {
         osgSim::MultiSwitch* pMSwitch = dynamic_cast<osgSim::MultiSwitch*>(&node);

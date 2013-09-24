@@ -62,7 +62,7 @@ const unsigned int UNINITIALIZED_FRAME_NUMBER=0xffffffff;
     myVisitor.apply(*root).  The later method will bypass the double
     dispatch and the appropriate NodeVisitor::apply(..) method will
     not be called. */
-class OSG_EXPORT NodeVisitor : public virtual Referenced
+class OSG_EXPORT NodeVisitor : public virtual Object
 {
     public:
 
@@ -87,13 +87,11 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
 
         NodeVisitor(VisitorType type,TraversalMode tm=TRAVERSE_NONE);
 
-        virtual ~NodeVisitor();
+        NodeVisitor(const NodeVisitor& nv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        /** return the library name/namespapce of the visitor's. Should be defined by derived classes.*/
-        virtual const char* libraryName() const { return "osg"; }
-
-        /** return the name of the visitor's class type. Should be defined by derived classes.*/
-        virtual const char* className() const { return "NodeVisitor"; }
+	virtual ~NodeVisitor();
+        
+        META_Object(osg, NodeVisitor)
 
         /** Method to call to reset visitor. Useful if your visitor accumulates
             state during a traversal, and you plan to reuse the visitor.

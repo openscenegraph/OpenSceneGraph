@@ -32,7 +32,7 @@ class V8ScriptEngine : public osg::ScriptEngine
         virtual const std::string& getLanguage() const { return _language; }
 
         /** run a Script.*/
-        virtual void run(osg::Script* script);
+        virtual bool run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters);
 
         v8::Isolate* getIsolate() { return _isolate; }
 

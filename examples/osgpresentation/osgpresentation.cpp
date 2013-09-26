@@ -425,6 +425,9 @@ int main(int argc, char** argv)
     }
 #endif
 
+    osg::Vec3f pos(1.5,3.0,4.5);
+    presentation->setProperty("position",pos);
+
     osg::ref_ptr<osg::ScriptEngine> luaScriptEngine = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
     if (luaScriptEngine.valid())
     {
@@ -435,7 +438,7 @@ int main(int argc, char** argv)
             osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
             if (script.valid())
             {
-                presentation->addUpdateCallback(new osg::ScriptCallback(script.get(),"doStuff"));
+                presentation->addUpdateCallback(new osg::ScriptCallback(script.get(),"update"));
             }
         }
 

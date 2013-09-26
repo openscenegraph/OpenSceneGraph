@@ -42,6 +42,9 @@ class LuaScriptEngine : public osg::ScriptEngine
         /** get the lua_State object.*/
         lua_State* getLuaState() { return _lua; }
 
+        int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
+        int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
+
     protected:
 
         void initialize();
@@ -58,7 +61,7 @@ class LuaScriptEngine : public osg::ScriptEngine
         typedef std::set< osg::ref_ptr<osg::Script> > ScriptSet;
         ScriptSet _loadedScripts;
 
-        osgDB::PropertyInterface _pi;
+        mutable osgDB::PropertyInterface _pi;
 };
 
 

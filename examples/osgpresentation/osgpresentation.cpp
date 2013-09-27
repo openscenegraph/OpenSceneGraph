@@ -428,6 +428,9 @@ int main(int argc, char** argv)
     osg::Vec3f pos(1.5,3.0,4.5);
     presentation->setProperty("position",pos);
 
+    osg::Vec2f texcoord(0.5f,0.20f);
+    presentation->setProperty("texcoord",texcoord);
+
     osg::ref_ptr<osg::ScriptEngine> luaScriptEngine = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
     if (luaScriptEngine.valid())
     {

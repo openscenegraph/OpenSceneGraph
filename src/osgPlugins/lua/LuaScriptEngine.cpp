@@ -605,63 +605,40 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         }
         case(osgDB::BaseSerializer::RW_VEC2F):
         {
-            if (lua_istable(_lua, -1))
+            osg::Vec2f value;
+            if (getValue(value))
             {
-                lua_getfield(_lua, -1, "x");
-                lua_getfield(_lua, -2, "y");
-
-                if (lua_isnumber(_lua, -2) &&
-                    lua_isnumber(_lua, -1))
-                {
-                    _pi.setProperty(object, propertyName, osg::Vec2f(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1)));
-                }
-
-                lua_pop(_lua, 2);
-
+                _pi.setProperty(object, propertyName, value);
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_VEC3F):
         {
-            if (lua_istable(_lua, -1))
+            osg::Vec3f value;
+            if (getValue(value))
             {
-                lua_getfield(_lua, -1, "x");
-                lua_getfield(_lua, -2, "y");
-                lua_getfield(_lua, -3, "z");
-
-                if (lua_isnumber(_lua, -3) &&
-                    lua_isnumber(_lua, -2) &&
-                    lua_isnumber(_lua, -1))
-                {
-                    _pi.setProperty(object, propertyName, osg::Vec3f(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1)));
-                }
-
-                lua_pop(_lua, 3);
-
+                _pi.setProperty(object, propertyName, value);
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_VEC4F):
         {
-            if (lua_istable(_lua, -1))
+            osg::Vec4f value;
+            if (getValue(value))
             {
-                lua_getfield(_lua, -1, "x");
-                lua_getfield(_lua, -2, "y");
-                lua_getfield(_lua, -3, "z");
-                lua_getfield(_lua, -4, "w");
-
-                if (lua_isnumber(_lua, -4) &&
-                    lua_isnumber(_lua, -3) &&
-                    lua_isnumber(_lua, -2) &&
-                    lua_isnumber(_lua, -1))
-                {
-                    _pi.setProperty(object, propertyName, osg::Vec4f(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1)));
-                }
-
-                lua_pop(_lua, 4);
-
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_MATRIXF):
+        {
+            osg::Matrixd value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
                 return 0;
             }
             break;
@@ -669,6 +646,12 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         case(osgDB::BaseSerializer::RW_MATRIX):
         case(osgDB::BaseSerializer::RW_MATRIXD):
         {
+            osg::Matrixd value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
             break;
         }
         default:
@@ -678,6 +661,182 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
     return 0;
 }
 
+
+
+bool LuaScriptEngine::getfields(const char* f1, const char* f2, int type) const
+{
+    lua_getfield(_lua, -1, f1);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 1); return false; }
+
+    lua_getfield(_lua, -2, f2);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 2); return false; }
+
+    return true;
+}
+
+bool LuaScriptEngine::getfields(const char* f1, const char* f2, const char* f3, int type) const
+{
+    lua_getfield(_lua, -1, f1);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 1); return false; }
+
+    lua_getfield(_lua, -2, f2);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 2); return false; }
+
+    lua_getfield(_lua, -3, f3);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 3); return false; }
+
+    return true;
+}
+
+bool LuaScriptEngine::getfields(const char* f1, const char* f2, const char* f3, const char* f4, int type) const
+{
+    lua_getfield(_lua, -1, f1);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 1); return false; }
+
+    lua_getfield(_lua, -2, f2);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 2); return false; }
+
+    lua_getfield(_lua, -3, f3);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 3); return false; }
+
+    lua_getfield(_lua, -4, f4);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 4); return false; }
+
+    return true;
+}
+
+bool LuaScriptEngine::getelements(int numElements, int type) const
+{
+    int abs_pos = lua_gettop(_lua);
+    for(int i=0; i<numElements; ++i)
+    {
+        lua_pushinteger(_lua, i);
+        lua_gettable(_lua, abs_pos);
+        if (lua_type(_lua, -1)!=type) { lua_pop(_lua, i+1); return false; }
+    }
+    return true;
+}
+
+
+bool LuaScriptEngine::isType(int pos, osgDB::BaseSerializer::Type type) const
+{
+    return false;
+}
+
+osgDB::BaseSerializer::Type LuaScriptEngine::getType(int pos) const
+{
+    return osgDB::BaseSerializer::RW_UNDEFINED;
+}
+
+bool LuaScriptEngine::getValue(osg::Vec2f& value) const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getfields("x", "y", LUA_TNUMBER) ||
+            getfields("s", "t", LUA_TNUMBER) ||
+            getelements(2, LUA_TNUMBER))
+        {
+            value.set(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 2);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getValue(osg::Vec3f& value) const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getfields("x", "y", "z", LUA_TNUMBER) ||
+            getfields("r", "g", "b", LUA_TNUMBER) ||
+            getfields("red", "green", "blue", LUA_TNUMBER) ||
+            getfields("s", "t", "r", LUA_TNUMBER) ||
+            getelements(3, LUA_TNUMBER))
+        {
+            value.set(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 3);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getValue(osg::Vec4f& value) const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getfields("x", "y", "z", LUA_TNUMBER) ||
+            getfields("r", "g", "b", "a", LUA_TNUMBER) ||
+            getfields("red", "green", "blue", "alpha", LUA_TNUMBER) ||
+            getfields("s", "t", "r", "q", LUA_TNUMBER) ||
+            getelements(4, LUA_TNUMBER))
+        {
+            value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 4);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getValue(osg::Matrixf& value) const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getelements(16,LUA_TNUMBER))
+        {
+            for(int r=0; r<4; ++r)
+            {
+                for(int c=0; c<4; ++c)
+                {
+                    value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getValue(osg::Matrixd& value) const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getelements(16,LUA_TNUMBER))
+        {
+            for(int r=0; r<4; ++r)
+            {
+                for(int c=0; c<4; ++c)
+                {
+                    value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+void LuaScriptEngine::pushValue(const osg::Vec2f& value) const
+{
+}
+
+void LuaScriptEngine::pushValue(const osg::Vec3f& value) const
+{
+}
+
+void LuaScriptEngine::pushValue(const osg::Vec4f& value) const
+{
+}
+
+void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
+{
+}
+
+void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
+{
+}
 
 bool LuaScriptEngine::pushParameter(osg::Object* object)
 {

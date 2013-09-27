@@ -53,6 +53,26 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         bool loadScript(osg::Script* script);
 
+        bool isType(int pos, osgDB::BaseSerializer::Type type) const;
+        osgDB::BaseSerializer::Type getType(int pos) const;
+
+        bool getfields(const char* f1, const char* f2, int type) const;
+        bool getfields(const char* f1, const char* f2, const char* f3, int type) const;
+        bool getfields(const char* f1, const char* f2, const char* f3, const char* f4, int type) const;
+        bool getelements(int numElements, int type) const;
+
+        bool getValue(osg::Vec2f& value) const;
+        bool getValue(osg::Vec3f& value) const;
+        bool getValue(osg::Vec4f& value) const;
+        bool getValue(osg::Matrixf& value) const;
+        bool getValue(osg::Matrixd& value) const;
+
+        void pushValue(const osg::Vec2f& value) const;
+        void pushValue(const osg::Vec3f& value) const;
+        void pushValue(const osg::Vec4f& value) const;
+        void pushValue(const osg::Matrixf& value) const;
+        void pushValue(const osg::Matrixd& value) const;
+
         bool pushParameter(osg::Object* object);
         bool popParameter(osg::Object* object);
 

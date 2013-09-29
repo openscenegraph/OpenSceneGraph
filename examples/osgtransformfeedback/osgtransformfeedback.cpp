@@ -250,12 +250,6 @@ void SomePointsGenerator::drawImplementation( osg::RenderInfo& renderInfo ) cons
 		_renderData-> ext = osg::GLBufferObject::getExtensions( contextID, true );
 		_renderData->ext2=new osg::GL2Extensions(contextID);   
 
-		//Relink GL Program to take into account feedback binding
-		const char* varyings[1] = { "v_color_out" };	
-		osg::Program::PerContextProgram* pcp = _program->getPCP(contextID);
-		GLuint prID=pcp->getHandle();
-		_renderData->ext2->glTransformFeedbackVaryings(prID, 1, varyings, GL_INTERLEAVED_ATTRIBS);
-		_program->dirtyProgram();
 
 	}
 

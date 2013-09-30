@@ -20,7 +20,7 @@
 #endif
 
 #include "OSXAVFoundationCoreVideoTexture.h"
-#include "OSXAVFoundationVideo.H"
+#include "OSXAVFoundationVideo.h"
 #include <CoreVideo/CoreVideo.h>
 
 

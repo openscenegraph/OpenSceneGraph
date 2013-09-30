@@ -484,7 +484,7 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     osg::Vec3d bb_min(bbInput._min);
     osg::Vec3d bb_max(bbInput._max);
 
-    double epsilon = 1e-13;
+    double epsilon = 1e-6;
 
     // compate s and e against the xMin to xMax range of bb.
     if (s.x()<=e.x())

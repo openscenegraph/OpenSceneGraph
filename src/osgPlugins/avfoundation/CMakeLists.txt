@@ -4,7 +4,7 @@ SET(TARGET_SRC
     OSXAVFoundationVideo.mm
     OSXAVFoundationVideo.h
     ../QTKit/VideoFrameDispatcher.h
-    ../QTKIt/VideoFrameDispatcher.cpp
+    ../QTKit/VideoFrameDispatcher.cpp
     OSXAVFoundationCoreVideoTexture.h
     OSXAVFoundationCoreVideoTexture.cpp
     ReaderWriterAVFoundation.cpp

@@ -756,6 +756,38 @@ ConvertFromInventor::postLOD(void* data, SoCallbackAction* action,
 
     return SoCallbackAction::CONTINUE;
 }
+
+// g++ (at least) guarantees thread-safe method-local static initialization, so moving construction of these maps to exploit
+class NormBindingMap : public std::map<SoNormalBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
+{
+  public:
+    NormBindingMap()
+    {
+        (*this)[SoNormalBinding::OVERALL]            = deprecated_osg::Geometry::BIND_OVERALL;
+        (*this)[SoNormalBinding::PER_PART]           = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoNormalBinding::PER_PART_INDEXED]   = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoNormalBinding::PER_FACE]           = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoNormalBinding::PER_FACE_INDEXED]   = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoNormalBinding::PER_VERTEX]         = deprecated_osg::Geometry::BIND_PER_VERTEX;
+        (*this)[SoNormalBinding::PER_VERTEX_INDEXED] = deprecated_osg::Geometry::BIND_PER_VERTEX;
+    }
+};
+
+class ColBindingMap : public std::map<SoMaterialBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
+{
+  public:
+    ColBindingMap()
+    {
+        (*this)[SoMaterialBinding::OVERALL]            = deprecated_osg::Geometry::BIND_OVERALL;
+        (*this)[SoMaterialBinding::PER_PART]           = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoMaterialBinding::PER_PART_INDEXED]   = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoMaterialBinding::PER_FACE]           = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoMaterialBinding::PER_FACE_INDEXED]   = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
+        (*this)[SoMaterialBinding::PER_VERTEX]         = deprecated_osg::Geometry::BIND_PER_VERTEX;
+        (*this)[SoMaterialBinding::PER_VERTEX_INDEXED] = deprecated_osg::Geometry::BIND_PER_VERTEX;
+    }
+};
+
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response
 ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
@@ -769,45 +801,8 @@ ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
     // Normal and color binding map from Inventor to OSG
-    static std::map<SoNormalBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
-        normBindingMap;
-    static std::map<SoMaterialBinding::Binding, deprecated_osg::Geometry::AttributeBinding>
-        colBindingMap;
-    static bool firstTime = true;
-    if (firstTime)
-    {
-        normBindingMap[SoNormalBinding::OVERALL]
-                                        = deprecated_osg::Geometry::BIND_OVERALL;
-        normBindingMap[SoNormalBinding::PER_PART]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        normBindingMap[SoNormalBinding::PER_PART_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        normBindingMap[SoNormalBinding::PER_FACE]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        normBindingMap[SoNormalBinding::PER_FACE_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        normBindingMap[SoNormalBinding::PER_VERTEX]
-                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
-        normBindingMap[SoNormalBinding::PER_VERTEX_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
-
-        colBindingMap[SoMaterialBinding::OVERALL]
-                                        = deprecated_osg::Geometry::BIND_OVERALL;
-        colBindingMap[SoMaterialBinding::PER_PART]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        colBindingMap[SoMaterialBinding::PER_PART_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        colBindingMap[SoMaterialBinding::PER_FACE]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        colBindingMap[SoMaterialBinding::PER_FACE_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-        colBindingMap[SoMaterialBinding::PER_VERTEX]
-                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
-        colBindingMap[SoMaterialBinding::PER_VERTEX_INDEXED]
-                                        = deprecated_osg::Geometry::BIND_PER_VERTEX;
-
-        firstTime = false;
-    }
+    static NormBindingMap normBindingMap;
+    static ColBindingMap  colBindingMap;
 
     // Get normal and color binding
     if (node->isOfType(SoVertexShape::getClassTypeId()))
@@ -1877,6 +1872,17 @@ update: The mentioned bug is probably just for very old NVidia drivers (commit t
 
     return stateSet;
 }
+
+class TexWrapMap : public std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode>
+{
+  public:
+    TexWrapMap()
+    {
+        (*this)[SoTexture2::CLAMP] = osg::Texture2D::CLAMP;
+        (*this)[SoTexture2::REPEAT] = osg::Texture2D::REPEAT;
+    }
+};
+
 ////////////////////////////////////////////////////////////////////
 osg::Texture2D*
 ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
@@ -1946,14 +1952,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     // Set name
     osgTex->setName(soNode->getName().getString());
 
-    static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap;
-    static bool firstTime = true;
-    if (firstTime)
-    {
-        texWrapMap[SoTexture2::CLAMP] = osg::Texture2D::CLAMP;
-        texWrapMap[SoTexture2::REPEAT] = osg::Texture2D::REPEAT;
-        firstTime = false;
-    }
+    static TexWrapMap texWrapMap;
 
     // Set texture wrap mode
 #ifdef __COIN__

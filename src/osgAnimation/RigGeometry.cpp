@@ -109,7 +109,7 @@ void RigGeometry::buildVertexInfluenceSet()
 
     _vertexInfluenceSet.buildVertex2BoneList();
     _vertexInfluenceSet.buildUniqVertexSetToBoneSetList();
-    OSG_NOTICE << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
+    OSG_DEBUG << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
 }
 
 void RigGeometry::computeMatrixFromRootSkeleton()

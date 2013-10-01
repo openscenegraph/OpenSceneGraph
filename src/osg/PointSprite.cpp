@@ -45,7 +45,7 @@ bool PointSprite::checkValidityOfAssociatedModes(osg::State& state) const
 
     bool modeValid = isPointSpriteSupported(state.getContextID());
 
-#if defined( OSG_GLES1_AVAILABLE ) || defined( OSG_GLES2_AVAILABLE )
+#if defined( OSG_GLES1_AVAILABLE ) //point sprites don't exist on es 2.0
     state.setModeValidity(GL_POINT_SPRITE_OES, modeValid);
 #else
     state.setModeValidity(GL_POINT_SPRITE_ARB, modeValid);
@@ -61,7 +61,7 @@ void PointSprite::apply(osg::State& state) const
     const Point::Extensions* extensions = Point::getExtensions(state.getContextID(),true);
     extensions->glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN,_coordOriginMode);
 
-#elif defined( OSG_GLES1_AVAILABLE ) || defined( OSG_GLES2_AVAILABLE )
+#elif defined( OSG_GLES1_AVAILABLE ) //point sprites don't exist on es 2.0
     
     if(!isPointSpriteSupported(state.getContextID())) return;
     

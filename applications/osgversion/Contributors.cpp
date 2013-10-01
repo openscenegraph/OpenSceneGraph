@@ -254,7 +254,9 @@ const char* invalidNames[] =
     "GraphicsContext*",
     "Apple",
     "GeometryNew",
-    "FrameBufferObject"
+    "FrameBufferObject",
+    "Lua",
+    "VolumeTile"
 };
 
 

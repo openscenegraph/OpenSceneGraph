@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.0
 
-512 Contributors:
+519 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,8 +13,8 @@ Marco Jez
 Farshid Lashkari
 Wang Rui
 Jean-Sébastien Guay
-Mike Weiblen
 Ulrich Hertlein
+Mike Weiblen
 Eric Wing
 Sukender 
 Cedric Pinson
@@ -25,8 +25,8 @@ Geoff Michel
 Wojciech Lewandowski
 Eric Sokolowsky
 David Callu
-Trajce Nikolov
 Colin McDonald
+Trajce Nikolov
 Tim Moore
 Martin Lavery
 Laurens Voerman
@@ -40,13 +40,13 @@ Jeremy Moles
 Jason Beverage
 Jan Peciva
 J.P. Delport
+Alberto Luaces
 Mattias Helsing
 Magnus Kessler
 David Fries
 Andy Skinner
 Tom Jolley
 Paul Melis
-Alberto Luaces
 Luc Frauciel
 Pavel Moloshtan
 Brad Christiansen
@@ -61,6 +61,7 @@ Terry Welsh
 Serge Lages
 Lionel Lagarde
 Chris Denham
+Aurelien Albert
 Alberto Farre
 Sherman Wilcox
 Robert Michael
@@ -70,7 +71,6 @@ Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
-Aurelien Albert
 Torben Dannhauer
 Glenn Waldron
 Gideon May
@@ -88,6 +88,7 @@ Andreas Ekstrand
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
+Thomas Hogarth
 Riccardo Corsi
 Rafa Gaitan
 Neil Hughes
@@ -101,7 +102,6 @@ Cory Riddell
 Chuck Seberino
 Boris Bralo
 Yefei He
-Thomas Hogarth
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
@@ -279,6 +279,7 @@ Guy Volckaert
 Gustavo Wagner
 Guillaume Taze
 Guillaume Chouvenc
+Giuseppe Donvito
 Gill Peacegood
 Gerrick Bivins
 George Tarantilis
@@ -435,6 +436,7 @@ John Argentieri
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker
+Jeffrey Kinross
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
@@ -480,9 +482,11 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Colin Cochran
 Clay Fowler
 Chuck Sembroski
 Christopher Blaesius
+Christopher Baker
 Christophe Herreman
 Christian Noon
 Christian Kaser
@@ -495,6 +499,7 @@ Brian Keener
 Brandon Hamm
 Bora Utka
 Björn Hein
+BjÃ¶rn Blissing
 Bjorn Blissing
 Bill Prendergast
 Bernardt Duvenhage
@@ -504,6 +509,7 @@ Ben van Basten
 Bart Gallet
 Axel Volley
 Anthousis Andreadis
+Anish Thomas
 Andy Preece
 Andrew Reyonolds
 Andreas Roth
@@ -515,4 +521,5 @@ Alberto Jaspe
 Alan Purvis
 Alan Ott
 Alan Harris
+Adrien Grandemange
 Adam Richard

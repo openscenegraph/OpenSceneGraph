@@ -1555,7 +1555,7 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
 
-
+    public:
         struct ModeStack
         {
             typedef std::vector<StateAttribute::GLModeValue> ValueVec;
@@ -1612,6 +1612,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         };
 
 
+    protected:
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
           * appropriate mode stack. This is a wrapper around \c glEnable() and
           * \c glDisable(), that just actually calls these functions if the
@@ -1765,7 +1766,7 @@ class OSG_EXPORT State : public Referenced, public Observer
                 return false;
         }
 
-
+    public:
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
 
@@ -1778,6 +1779,13 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         typedef std::set<const Program::PerContextProgram* >            AppliedProgramObjectSet;
 
+        inline const ModeMap&                                            getModeMap() const {return _modeMap;};
+        inline const AttributeMap&                                       getAttributeMap() const {return _attributeMap;};
+        inline const UniformMap&                                         getUniformMap() const {return _uniformMap;};
+        inline const TextureModeMapList&                                 getTextureModeMapList() const {return _textureModeMapList;};
+        inline const TextureAttributeMapList&                            getTextureAttributeMapList() const {return _textureAttributeMapList;};
+
+    protected:
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
         UniformMap                                                      _uniformMap;

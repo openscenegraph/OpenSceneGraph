@@ -78,7 +78,7 @@ void Cursor::initializeCursor()
 
 
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(osgDB::findDataFile(_filename));
-    osg::ref_ptr<osg::Texture2D> texture = (image.valid()) ? new osg::Texture2D(image) : 0;
+    osg::ref_ptr<osg::Texture2D> texture = (image.valid()) ? new osg::Texture2D(image.get()) : 0;
 
     // full cursor
     {
@@ -90,7 +90,7 @@ void Cursor::initializeCursor()
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
         stateset->setRenderBinDetails(1001, "DepthSortedBin");
 
-        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
+        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
     }
 
     {
@@ -107,7 +107,7 @@ void Cursor::initializeCursor()
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         stateset->setRenderBinDetails(1000, "DepthSortedBin");
 
-        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
+        if (texture.valid()) stateset->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
     }
 
 

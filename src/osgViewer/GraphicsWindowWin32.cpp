@@ -29,6 +29,8 @@
 #include <sstream>
 #include <windowsx.h>
 
+#define MOUSEEVENTF_FROMTOUCH           0xFF515700
+
 #if(WINVER < 0x0601)
 // Provide Declarations for Multitouch
 
@@ -2457,6 +2459,8 @@ void GraphicsWindowWin32::transformMouseXY( float& x, float& y )
 
 LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
+    if ((GetMessageExtraInfo() & MOUSEEVENTF_FROMTOUCH) == MOUSEEVENTF_FROMTOUCH) return TRUE;
+
     //!@todo adapt windows event time to osgGA event queue time for better resolution
     double eventTime  = getEventQueue()->getTime();
     double resizeTime = eventTime;

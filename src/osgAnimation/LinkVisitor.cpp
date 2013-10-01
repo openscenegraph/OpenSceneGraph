@@ -41,7 +41,7 @@ void LinkVisitor::link(AnimationUpdateCallbackBase* cb)
         result += cb->link(_animations[i].get());
         _nbLinkedTarget += result;
     }
-    OSG_NOTICE << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
+    OSG_DEBUG << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
 }
 
 void LinkVisitor::handle_stateset(osg::StateSet* stateset)

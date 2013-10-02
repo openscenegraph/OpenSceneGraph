@@ -108,6 +108,8 @@ private:
                     ++itr)
                 {
                     perVertexNormals->push_back(*itr);
+                    perVertexNormals->push_back(*itr);
+                    perVertexNormals->push_back(*itr);
                 }
 
                 geom->setNormalArray(perVertexNormals.get(), osg::Array::BIND_PER_VERTEX);

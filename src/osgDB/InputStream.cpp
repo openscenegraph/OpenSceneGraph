@@ -792,7 +792,7 @@ osg::Object* InputStream::readObjectFields( const std::string& className, unsign
         return NULL;
     }
 
-    osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
+    osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->createInstance();
     _identifierMap[id] = obj;
     if ( obj.valid() )
     {

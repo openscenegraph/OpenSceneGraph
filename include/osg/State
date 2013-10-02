@@ -1508,54 +1508,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** called by the GraphicsContext just before GraphicsContext::swapBuffersImplementation().*/
         virtual void frameCompleted();
 
-    protected:
 
-        virtual ~State();
-
-        GraphicsContext*            _graphicsContext;
-        unsigned int                _contextID;
-
-        bool                            _shaderCompositionEnabled;
-        bool                            _shaderCompositionDirty;
-        osg::ref_ptr<ShaderComposer>    _shaderComposer;
-        osg::Program*                   _currentShaderCompositionProgram;
-        StateSet::UniformList           _currentShaderCompositionUniformList;
-
-        ref_ptr<FrameStamp>         _frameStamp;
-
-        ref_ptr<const RefMatrix>    _identity;
-        ref_ptr<const RefMatrix>    _initialViewMatrix;
-        ref_ptr<const RefMatrix>    _projection;
-        ref_ptr<const RefMatrix>    _modelView;
-        ref_ptr<RefMatrix>          _modelViewCache;
-
-        bool                        _useModelViewAndProjectionUniforms;
-        ref_ptr<Uniform>            _modelViewMatrixUniform;
-        ref_ptr<Uniform>            _projectionMatrixUniform;
-        ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
-        ref_ptr<Uniform>            _normalMatrixUniform;
-
-        Matrix                      _initialInverseViewMatrix;
-
-        ref_ptr<DisplaySettings>    _displaySettings;
-
-        bool*                       _abortRenderingPtr;
-        CheckForGLErrors            _checkGLErrors;
-
-
-        bool                        _useVertexAttributeAliasing;
-        VertexAttribAlias           _vertexAlias;
-        VertexAttribAlias           _normalAlias;
-        VertexAttribAlias           _colorAlias;
-        VertexAttribAlias           _secondaryColorAlias;
-        VertexAttribAlias           _fogCoordAlias;
-        VertexAttribAliasList       _texCoordAliasList;
-
-        Program::AttribBindingList  _attributeBindingList;
-
-        void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
-
-    public:
         struct ModeStack
         {
             typedef std::vector<StateAttribute::GLModeValue> ValueVec;
@@ -1611,8 +1564,70 @@ class OSG_EXPORT State : public Referenced, public Observer
             UniformVec              uniformVec;
         };
 
+        typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
+        typedef std::vector<ModeMap>                                    TextureModeMapList;
+
+        typedef std::map<StateAttribute::TypeMemberPair,AttributeStack> AttributeMap;
+        typedef std::vector<AttributeMap>                               TextureAttributeMapList;
+
+        typedef std::map<std::string,UniformStack>                      UniformMap;
+
+        typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
+
+        typedef std::set<const Program::PerContextProgram* >            AppliedProgramObjectSet;
+
+        inline const ModeMap&                                            getModeMap() const {return _modeMap;};
+        inline const AttributeMap&                                       getAttributeMap() const {return _attributeMap;};
+        inline const UniformMap&                                         getUniformMap() const {return _uniformMap;};
+        inline const TextureModeMapList&                                 getTextureModeMapList() const {return _textureModeMapList;};
+        inline const TextureAttributeMapList&                            getTextureAttributeMapList() const {return _textureAttributeMapList;};
 
     protected:
+
+        virtual ~State();
+
+        GraphicsContext*            _graphicsContext;
+        unsigned int                _contextID;
+
+        bool                            _shaderCompositionEnabled;
+        bool                            _shaderCompositionDirty;
+        osg::ref_ptr<ShaderComposer>    _shaderComposer;
+        osg::Program*                   _currentShaderCompositionProgram;
+        StateSet::UniformList           _currentShaderCompositionUniformList;
+
+        ref_ptr<FrameStamp>         _frameStamp;
+
+        ref_ptr<const RefMatrix>    _identity;
+        ref_ptr<const RefMatrix>    _initialViewMatrix;
+        ref_ptr<const RefMatrix>    _projection;
+        ref_ptr<const RefMatrix>    _modelView;
+        ref_ptr<RefMatrix>          _modelViewCache;
+
+        bool                        _useModelViewAndProjectionUniforms;
+        ref_ptr<Uniform>            _modelViewMatrixUniform;
+        ref_ptr<Uniform>            _projectionMatrixUniform;
+        ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
+        ref_ptr<Uniform>            _normalMatrixUniform;
+
+        Matrix                      _initialInverseViewMatrix;
+
+        ref_ptr<DisplaySettings>    _displaySettings;
+
+        bool*                       _abortRenderingPtr;
+        CheckForGLErrors            _checkGLErrors;
+
+
+        bool                        _useVertexAttributeAliasing;
+        VertexAttribAlias           _vertexAlias;
+        VertexAttribAlias           _normalAlias;
+        VertexAttribAlias           _colorAlias;
+        VertexAttribAlias           _secondaryColorAlias;
+        VertexAttribAlias           _fogCoordAlias;
+        VertexAttribAliasList       _texCoordAliasList;
+
+        Program::AttribBindingList  _attributeBindingList;
+
+        void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
           * appropriate mode stack. This is a wrapper around \c glEnable() and
           * \c glDisable(), that just actually calls these functions if the
@@ -1766,26 +1781,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                 return false;
         }
 
-    public:
-        typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
-        typedef std::vector<ModeMap>                                    TextureModeMapList;
-
-        typedef std::map<StateAttribute::TypeMemberPair,AttributeStack> AttributeMap;
-        typedef std::vector<AttributeMap>                               TextureAttributeMapList;
-
-        typedef std::map<std::string,UniformStack>                      UniformMap;
-
-        typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
-
-        typedef std::set<const Program::PerContextProgram* >            AppliedProgramObjectSet;
-
-        inline const ModeMap&                                            getModeMap() const {return _modeMap;};
-        inline const AttributeMap&                                       getAttributeMap() const {return _attributeMap;};
-        inline const UniformMap&                                         getUniformMap() const {return _uniformMap;};
-        inline const TextureModeMapList&                                 getTextureModeMapList() const {return _textureModeMapList;};
-        inline const TextureAttributeMapList&                            getTextureAttributeMapList() const {return _textureAttributeMapList;};
-
-    protected:
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
         UniformMap                                                      _uniformMap;

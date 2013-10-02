@@ -84,18 +84,18 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
 //
 // ObjectWrapper
 //
-ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
+ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _proto(proto), _name(name), _version(0)
+    _createInstanceFunc(createInstanceFunc), _name(name), _version(0)
 {
     split( associates, _associates );
 }
 
-ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& domain, const std::string& name,
+ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& domain, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _proto(proto), _domain(domain), _name(name), _version(0)
+    _createInstanceFunc(createInstanceFunc), _domain(domain), _name(name), _version(0)
 {
     split( associates, _associates );
 }
@@ -312,10 +312,10 @@ void ObjectWrapper::writeSchema( StringList& properties, TypeList& types )
 //
 // RegisterWrapperProxy
 //
-RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::string& name,
+RegisterWrapperProxy::RegisterWrapperProxy( ObjectWrapper::CreateInstanceFunc *createInstanceFunc, const std::string& name,
                         const std::string& associates, AddPropFunc func )
 {
-    _wrapper = new ObjectWrapper( proto, name, associates );
+    _wrapper = new ObjectWrapper( createInstanceFunc, name, associates );
     if ( func ) (*func)( _wrapper.get() );
 
     if (Registry::instance())
@@ -337,10 +337,10 @@ RegisterWrapperProxy::~RegisterWrapperProxy()
 // RegisterCustomWrapperProxy
 //
 RegisterCustomWrapperProxy::RegisterCustomWrapperProxy(
-        osg::Object* proto, const std::string& domain, const std::string& name,
+        ObjectWrapper::CreateInstanceFunc *createInstanceFunc, const std::string& domain, const std::string& name,
         const std::string& associates, AddPropFunc func )
 {
-    _wrapper = new ObjectWrapper( proto, domain, name, associates );
+    _wrapper = new ObjectWrapper( createInstanceFunc, domain, name, associates );
     if ( func ) (*func)( domain.c_str(), _wrapper.get() );
 
     if (Registry::instance())

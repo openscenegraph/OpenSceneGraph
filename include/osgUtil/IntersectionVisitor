@@ -50,9 +50,9 @@ class Intersector : public osg::Referenced
             LIMIT_NEAREST
         };
 
-        Intersector(CoordinateFrame cf=MODEL):
+        Intersector(CoordinateFrame cf=MODEL, IntersectionLimit il=NO_LIMIT):
             _coordinateFrame(cf),
-            _intersectionLimit(NO_LIMIT),
+            _intersectionLimit(il),
             _disabledCount(0) {}
 
 

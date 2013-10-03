@@ -11,45 +11,57 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_LINESEGMENTINTERSECTOR
-#define OSGUTIL_LINESEGMENTINTERSECTOR 1
+#ifndef OSGUTIL_RAYINTERSECTOR
+#define OSGUTIL_RAYINTERSECTOR 1
 
 #include <osgUtil/IntersectionVisitor>
 
 namespace osgUtil
 {
 
-/** Concrete class for implementing line intersections with the scene graph.
-  * To be used in conjunction with IntersectionVisitor. */
-class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
+/** RayIntersector implements possibly-infinite line intersections with the scene graph.
+  *
+  * Compared with LineSegmentIntersector, RayIntersector supports infinite intersection
+  * lines, start and end point can be given in homogeneous coordinates and projection
+  * matrix is allowed to have z-far plane at infinity (often used in shadow volume
+  * technique).
+  *
+  * Currently, picking of objects at infinity is not supported. Please, contribute.
+  *
+  * The class is be used in conjunction with IntersectionVisitor. */
+class OSGUTIL_EXPORT RayIntersector : public Intersector
 {
     public:
 
-        /** Construct a LineSegmentIntersector that runs between the specified start and end points in MODEL coordinates. */
-        LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end);
+        /** Construct a RayIntersector. You will need to provide start and end point,
+         *  or start point and direction. See setStart() and setDirecton(). */
+        RayIntersector(CoordinateFrame cf = MODEL, RayIntersector* parent = NULL,
+                       osgUtil::Intersector::IntersectionLimit intersectionLimit = osgUtil::Intersector::NO_LIMIT);
 
-        /** Construct a LineSegmentIntersector that runs between the specified start and end points in the specified coordinate frame. */
-        LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent = NULL,
-                               osgUtil::Intersector::IntersectionLimit intersectionLimit = osgUtil::Intersector::NO_LIMIT);
+        /** Construct a RayIntersector that runs from start point in specified direction to the infinity.
+         *  Start and direction are provided in MODEL coordinates. */
+        RayIntersector(const osg::Vec3d& start, const osg::Vec3d& direction);
 
-        /** Convenience constructor for supporting picking in WINDOW, or PROJECTION coordinates
-          * In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1).
-          * In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1).
-          * In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1).*/
-        LineSegmentIntersector(CoordinateFrame cf, double x, double y);
+        /** Construct a RayIntersector the runs from start point in specified direction to the infinity in the specified coordinate frame. */
+        RayIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& direction, RayIntersector* parent = NULL,
+                       osgUtil::Intersector::IntersectionLimit intersectionLimit = osgUtil::Intersector::NO_LIMIT);
+
+        /** Convenience constructor for supporting picking in WINDOW and PROJECTION coordinates.
+          * In WINDOW coordinates, it creates a start value of (x,y,0) and end value of (x,y,1).
+          * In PROJECTION coordinates (clip space cube), it creates a start value of (x,y,-1) and end value of (x,y,1).
+          * In VIEW and MODEL coordinates, it creates a start value of (x,y,0) and end value of (x,y,1).*/
+        RayIntersector(CoordinateFrame cf, double x, double y);
 
         struct OSGUTIL_EXPORT Intersection
         {
-            Intersection():
-                ratio(-1.0),
-                primitiveIndex(0) {}
+            Intersection() : distance(-1.0), primitiveIndex(0) {}
 
-            bool operator < (const Intersection& rhs) const { return ratio < rhs.ratio; }
+            bool operator < (const Intersection& rhs) const { return distance < rhs.distance; }
 
             typedef std::vector<unsigned int>   IndexList;
             typedef std::vector<double>         RatioList;
 
-            double                          ratio;
+            double                          distance;
             osg::NodePath                   nodePath;
             osg::ref_ptr<osg::Drawable>     drawable;
             osg::ref_ptr<osg::RefMatrix>    matrix;
@@ -74,16 +86,14 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
         typedef std::multiset<Intersection> Intersections;
 
         inline void insertIntersection(const Intersection& intersection) { getIntersections().insert(intersection); }
-
         inline Intersections& getIntersections() { return _parent ? _parent->_intersections : _intersections; }
-
         inline Intersection getFirstIntersection() { Intersections& intersections = getIntersections(); return intersections.empty() ? Intersection() : *(intersections.begin()); }
 
-        inline void setStart(const osg::Vec3d& start) { _start = start; }
+        virtual void setStart(const osg::Vec3d& start) { _start = start; }
         inline const osg::Vec3d& getStart() const { return _start; }
 
-        inline void setEnd(const osg::Vec3d& end) { _end = end; }
-        inline const osg::Vec3d& getEnd() const { return _end; }
+        virtual void setDirection(const osg::Vec3d& dir) { _direction = dir; }
+        inline const osg::Vec3d& getDirection() const { return _direction; }
 
     public:
 
@@ -95,27 +105,19 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
 
         virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable);
 
-        virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable,
-                               const osg::Vec3d& s, const osg::Vec3d& e);
-
         virtual void reset();
 
         virtual bool containsIntersections() { return !getIntersections().empty(); }
 
-        /** Compute the matrix that transforms the local coordinate system of parent Intersector (usually
-            the current intersector) into the child coordinate system of the child Intersector.
-            cf parameter indicates the coordinate frame of parent Intersector. */
-        static osg::Matrix getTransformation(osgUtil::IntersectionVisitor& iv, CoordinateFrame cf);
+    protected:
 
-protected:
+        virtual bool intersects(const osg::BoundingSphere& bs);
+        bool intersectAndClip(osg::Vec3d& s, const osg::Vec3d& d, osg::Vec3d& e, const osg::BoundingBox& bb);
 
-        bool intersects(const osg::BoundingSphere& bs);
-        bool intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const osg::BoundingBox& bb);
+        RayIntersector* _parent;
 
-        LineSegmentIntersector* _parent;
-
-        osg::Vec3d  _start;
-        osg::Vec3d  _end;
+        osg::Vec3d _start;
+        osg::Vec3d _direction;
 
         Intersections _intersections;
 
@@ -124,4 +126,3 @@ protected:
 }
 
 #endif
-

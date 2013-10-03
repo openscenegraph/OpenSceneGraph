@@ -32,6 +32,7 @@ SET(TARGET_H
     ${HEADER_PATH}/PolytopeIntersector
     ${HEADER_PATH}/PositionalStateContainer
     ${HEADER_PATH}/PrintVisitor
+    ${HEADER_PATH}/RayIntersector
     ${HEADER_PATH}/ReflectionMapGenerator
     ${HEADER_PATH}/RenderBin
     ${HEADER_PATH}/RenderLeaf
@@ -74,6 +75,7 @@ SET(TARGET_SRC
     PolytopeIntersector.cpp
     PositionalStateContainer.cpp
     PrintVisitor.cpp
+    RayIntersector.cpp
     RenderBin.cpp
     RenderLeaf.cpp
     RenderStage.cpp

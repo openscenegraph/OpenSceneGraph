@@ -77,7 +77,7 @@ namespace LineSegmentIntersectorUtils
             _limitOneIntersection = false;
         }
 
-        void set(const osg::Vec3d& start, osg::Vec3d& end, float ratio=FLT_MAX)
+        void set(const osg::Vec3d& start, const osg::Vec3d& end, float ratio=FLT_MAX)
         {
             _hit=false;
             _index = 0;
@@ -216,8 +216,9 @@ LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const os
 {
 }
 
-LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end):
-    Intersector(cf),
+LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end,
+                                               LineSegmentIntersector* parent, osgUtil::Intersector::IntersectionLimit intersectionLimit):
+    Intersector(cf, intersectionLimit),
     _parent(0),
     _start(start),
     _end(end)
@@ -249,8 +250,18 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     // compute the matrix that takes this Intersector from its CoordinateFrame into the local MODEL coordinate frame
     // that geometry in the scene graph will always be in.
+    osg::Matrix matrix(getTransformation(iv, _coordinateFrame));
+
+    osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * matrix, _end * matrix);
+    lsi->_parent = this;
+    lsi->_intersectionLimit = this->_intersectionLimit;
+    return lsi.release();
+}
+
+osg::Matrix LineSegmentIntersector::getTransformation(IntersectionVisitor& iv, CoordinateFrame cf)
+{
     osg::Matrix matrix;
-    switch (_coordinateFrame)
+    switch (cf)
     {
         case(WINDOW):
             if (iv.getWindowMatrix()) matrix.preMult( *iv.getWindowMatrix() );
@@ -274,11 +285,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     osg::Matrix inverse;
     inverse.invert(matrix);
-
-    osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * inverse, _end * inverse);
-    lsi->_parent = this;
-    lsi->_intersectionLimit = this->_intersectionLimit;
-    return lsi.release();
+    return inverse;
 }
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
@@ -301,6 +308,12 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
     if (iv.getDoDummyTraversal()) return;
 
+    intersect(iv, drawable, s, e);
+}
+
+void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable,
+                                       const osg::Vec3d& s, const osg::Vec3d& e)
+{
     osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
     if (kdTree)
     {

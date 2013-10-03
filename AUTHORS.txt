@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.0
 
-519 Contributors:
+517 Contributors:
 
 Firstname Surname
 -----------------
@@ -59,6 +59,7 @@ Per Fahlberg
 Norman Vine
 Terry Welsh
 Serge Lages
+Romano José Magacho da Silva
 Lionel Lagarde
 Chris Denham
 Aurelien Albert
@@ -76,7 +77,6 @@ Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
-Romano José Magacho da Silva
 Michael Gronager
 Martin Naylor
 Joakim Simonsson
@@ -157,7 +157,6 @@ Sebastien Grignard
 Sebastian Messerschmidt
 Ryan Kawicki
 Rudolf Wiedemann
-Romano Magacho
 Mikhail Izmestev
 Maria Ten
 Liang Aibin
@@ -194,6 +193,7 @@ Mattias Linde
 Mark Sciabica
 Marcin Prus
 Lee Butler
+Lars Nilsson
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
@@ -259,7 +259,6 @@ Martijn Kragtwijk
 Marius Heise
 Marcin Hajder
 Lilith Bryant
-Lars Nilsson
 Kristofer Tingdahl
 Kevin Moiule
 Keith Steffen
@@ -297,6 +296,8 @@ Claus Scheiblauer
 Christophe Loustaunau
 Christian Ruzicka
 Brad Anderegg
+Björn Hein
+Björn Blissing
 Aric Aumann
 Andrew Sampson
 Andrew Lorino
@@ -413,7 +414,6 @@ Lewis Harmon
 Leigh Stivers
 Laurence Muller
 Laura Cerritelli
-Lars Nillson
 Kyle Centers
 Kristopher Bixler
 Konstantin Matveyev
@@ -475,6 +475,7 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
+Dmitry Marakasov
 Dean Iverson
 David Jung
 Danny Valente
@@ -498,9 +499,6 @@ Bruno Herbelin
 Brian Keener
 Brandon Hamm
 Bora Utka
-Björn Hein
-BjÃ¶rn Blissing
-Bjorn Blissing
 Bill Prendergast
 Bernardt Duvenhage
 Benoit Laniel

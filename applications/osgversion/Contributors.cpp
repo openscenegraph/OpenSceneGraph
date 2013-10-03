@@ -456,7 +456,10 @@ TypoCorrection typoCorrections[] =
     {"Eskland","Ekstrand"},
     {"Baeuerele","Baeuerle"},
     {"Bauerle","Baeuerle"},
-    {"Baeurele","Baeuerle"}
+    {"Baeurele","Baeuerle"},
+    {"Nillson","Nilsson"},
+    {"Bjorn","Björn"},
+    {"BjÃ¶rn","Björn"}
 };
 
 
@@ -595,6 +598,8 @@ NameCorrection nameCorrections[] =
     {"Romano",         "José",
      "Romano",         "José Magacho da Silva"},
     {"Rommano",        "Silva",
+     "Romano",         "José Magacho da Silva"},
+    {"Romano",         "Magacho",
      "Romano",         "José Magacho da Silva"},
     {"Leandro",        "Motta",
      "Leandro",        "Motta Barros"},

@@ -282,6 +282,12 @@ osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* objec
     return ow ? ow->getSerializer(propertyName, type) : 0;
 }
 
+osg::Object* PropertyInterface::createObject(const std::string& compoundClassName) const
+{
+    osgDB::ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+    return (ow!=0) ? ow->createInstance() : 0;
+}
+
 bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     _poi->flush();

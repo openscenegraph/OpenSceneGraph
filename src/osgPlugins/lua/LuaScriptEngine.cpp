@@ -17,6 +17,8 @@
 
 using namespace lua;
 
+#define USE_USERDATA_FOR_POINTER 1
+
 static int getProperty(lua_State * _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -32,10 +34,12 @@ static int getProperty(lua_State * _lua)
             osg::Object* object = 0;
             lua_pushstring(_lua, "object_ptr");
             lua_rawget(_lua, 1);
-            if (lua_type(_lua, -1)==LUA_TLIGHTUSERDATA)
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
             {
-                object = const_cast<osg::Object*>(reinterpret_cast<const osg::Object*>(lua_topointer(_lua,-1)));
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
             }
+
             lua_pop(_lua,1);
 
             return lse->pushPropertyToStack(object, propertyName);
@@ -62,10 +66,12 @@ static int setProperty(lua_State* _lua)
             osg::Object* object = 0;
             lua_pushstring(_lua, "object_ptr");
             lua_rawget(_lua, 1);
-            if (lua_type(_lua, -1)==LUA_TLIGHTUSERDATA)
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
             {
-                object = const_cast<osg::Object*>(reinterpret_cast<const osg::Object*>(lua_topointer(_lua,-1)));
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
             }
+
             lua_pop(_lua,1);
 
             return lse->setPropertyFromStack(object, propertyName);
@@ -78,25 +84,13 @@ static int setProperty(lua_State* _lua)
 
 static int garabageCollectObject(lua_State* _lua)
 {
-    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
-
     int n = lua_gettop(_lua);    /* number of arguments */
-
-    OSG_NOTICE<<"garabageCollectObject() n = "<<n<<std::endl;
-
     if (n==1)
     {
-        if (lua_type(_lua, 1)==LUA_TTABLE)
+        if (lua_type(_lua, 1)==LUA_TUSERDATA)
         {
-            osg::Object* object = 0;
-            lua_pushstring(_lua, "object_ptr");
-            lua_rawget(_lua, 1);
-            if (lua_type(_lua, -1)==LUA_TLIGHTUSERDATA)
-            {
-                object = const_cast<osg::Object*>(reinterpret_cast<const osg::Object*>(lua_topointer(_lua,-1)));
-                OSG_NOTICE<<"Need to garbage collect object "<<object<<" "<<object->getCompoundClassName()<<std::endl;
-            }
-            lua_pop(_lua,1);
+            osg::Object* object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua, 1)));
+            object->unref();
         }
     }
 
@@ -165,6 +159,7 @@ void LuaScriptEngine::initialize()
     lua_pushcclosure(_lua, setProperty, 1);
     lua_settable(_lua, -3);
 
+    luaL_newmetatable(_lua, "LuaScriptEngine.UnrefObject");
     lua_pushstring(_lua, "__gc");
     lua_pushlightuserdata(_lua, this);
     lua_pushcclosure(_lua, garabageCollectObject, 1);
@@ -1042,7 +1037,24 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
         OSG_NOTICE<<"Creating lua object representation for "<<object<<" "<<object->getCompoundClassName()<<std::endl;
 
         lua_newtable(_lua);
-        lua_pushstring(_lua, "object_ptr"); lua_pushlightuserdata(_lua, object); lua_settable(_lua, -3);
+
+        // set up objbect_ptr to handle ref/unref of the object
+        {
+            lua_pushstring(_lua, "object_ptr");
+
+            // create user data for pointer
+            void* userdata = lua_newuserdata( _lua, sizeof(osg::Object*));
+            (*reinterpret_cast<osg::Object**>(userdata)) = object;
+
+            luaL_getmetatable( _lua, "LuaScriptEngine.UnrefObject");
+            lua_setmetatable( _lua, -2 );
+
+            lua_settable(_lua, -3);
+
+            // increment the reference count as the lua now will unreference it once it's finished with the userdata for the pointer
+            object->ref();
+        }
+
         lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, object->libraryName()); lua_settable(_lua, -3);
         lua_pushstring(_lua, "className"); lua_pushstring(_lua, object->className()); lua_settable(_lua, -3);
         luaL_getmetatable(_lua, "LuaScriptEngine.Object");

@@ -17,8 +17,6 @@
 
 using namespace lua;
 
-#define USE_USERDATA_FOR_POINTER 1
-
 static int getProperty(lua_State * _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -275,7 +273,9 @@ public:
     virtual void apply(const osg::Matrixd& value)       { _lsg->pushValue(value); }
 };
 
-#define lua_rawlen lua_strlen
+#if LUA_VERSION_NUM<=501
+    #define lua_rawlen lua_strlen
+#endif
 
 class GetStackValueVisitor : public osg::ValueObject::SetValueVisitor
 {

@@ -86,6 +86,10 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool pushParameter(osg::Object* object);
         bool popParameter(osg::Object* object);
 
+
+        void createAndPushObject(const std::string& compoundName) const;
+        void pushObject(osg::Object* object) const;
+
     protected:
 
         void initialize();

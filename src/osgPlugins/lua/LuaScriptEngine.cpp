@@ -76,6 +76,50 @@ static int setProperty(lua_State* _lua)
     return 0;
 }
 
+static int garabageCollectObject(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+
+    OSG_NOTICE<<"garabageCollectObject() n = "<<n<<std::endl;
+
+    if (n==1)
+    {
+        if (lua_type(_lua, 1)==LUA_TTABLE)
+        {
+            osg::Object* object = 0;
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, 1);
+            if (lua_type(_lua, -1)==LUA_TLIGHTUSERDATA)
+            {
+                object = const_cast<osg::Object*>(reinterpret_cast<const osg::Object*>(lua_topointer(_lua,-1)));
+                OSG_NOTICE<<"Need to garbage collect object "<<object<<" "<<object->getCompoundClassName()<<std::endl;
+            }
+            lua_pop(_lua,1);
+        }
+    }
+
+    return 0;
+}
+
+static int newObject(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==1)
+    {
+        if (lua_type(_lua, 1)==LUA_TSTRING)
+        {
+            std::string compoundName = lua_tostring(_lua, 1);
+
+            lse->createAndPushObject(compoundName);
+            return 1;
+        }
+    }
+    return 0;
+}
 
 LuaScriptEngine::LuaScriptEngine():
     osg::ScriptEngine("lua"),
@@ -93,14 +137,21 @@ LuaScriptEngine::LuaScriptEngine(const LuaScriptEngine& rhs, const osg::CopyOp&)
 
 LuaScriptEngine::~LuaScriptEngine()
 {
+    OSG_NOTICE<<"Closing lua"<<std::endl;
+
     lua_close(_lua);
 }
 
 void LuaScriptEngine::initialize()
 {
-    _lua = lua_open();
+    _lua = luaL_newstate();
 
     luaL_openlibs(_lua);
+
+
+    lua_pushlightuserdata(_lua, this);
+    lua_pushcclosure(_lua, newObject, 1);
+    lua_setglobal(_lua, "new");
 
     luaL_newmetatable(_lua, "LuaScriptEngine.Object");
 
@@ -112,6 +163,11 @@ void LuaScriptEngine::initialize()
     lua_pushstring(_lua, "__newindex");
     lua_pushlightuserdata(_lua, this);
     lua_pushcclosure(_lua, setProperty, 1);
+    lua_settable(_lua, -3);
+
+    lua_pushstring(_lua, "__gc");
+    lua_pushlightuserdata(_lua, this);
+    lua_pushcclosure(_lua, garabageCollectObject, 1);
     lua_settable(_lua, -3);
 }
 
@@ -162,7 +218,10 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, Pa
     {
 
 
-        lua_getfield(_lua, LUA_GLOBALSINDEX, entryPoint.c_str()); /* function to be called */
+        //lua_pushglobaltable(pLuaState);
+        //lua_getfield(_lua, LUA_GLOBALSINDEX, entryPoint.c_str()); /* function to be called */
+        //lua_getfield(_lua, -1, entryPoint.c_str()); /* function to be called */
+        lua_getglobal(_lua, entryPoint.c_str()); /* function to be called */
 
         for(osg::ScriptEngine::Parameters::const_iterator itr = inputParameters.begin();
             itr != inputParameters.end();
@@ -221,6 +280,8 @@ public:
     virtual void apply(const osg::Matrixd& value)       { _lsg->pushValue(value); }
 };
 
+#define lua_rawlen lua_strlen
+
 class GetStackValueVisitor : public osg::ValueObject::SetValueVisitor
 {
 public:
@@ -242,7 +303,7 @@ public:
     virtual void apply(unsigned int& value)     { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
     virtual void apply(float& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
     virtual void apply(double& value)           { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(std::string& value)      { if (lua_isstring(_lua, _index)) { value = std::string(lua_tostring(_lua, _index), lua_strlen(_lua, _index)); _numberToPop = 1; } }
+    virtual void apply(std::string& value)      { if (lua_isstring(_lua, _index)) { value = std::string(lua_tostring(_lua, _index), lua_rawlen(_lua, _index)); _numberToPop = 1; } }
     virtual void apply(osg::Vec2f& value)       { _lsg->getValue(value); _numberToPop = 2;}
     virtual void apply(osg::Vec3f& value)       { _lsg->getValue(value); _numberToPop = 2; }
     virtual void apply(osg::Vec4f& value)       { _lsg->getValue(value); _numberToPop = 4; }
@@ -941,16 +1002,7 @@ bool LuaScriptEngine::pushParameter(osg::Object* object)
     }
     else
     {
-        osgDB::PropertyInterface::PropertyMap properties;
-        lua_newtable(_lua);
-        lua_pushstring(_lua, "object_ptr"); lua_pushlightuserdata(_lua, object); lua_settable(_lua, -3);
-#if 1
-        lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, object->libraryName()); lua_settable(_lua, -3);
-        lua_pushstring(_lua, "className"); lua_pushstring(_lua, object->className()); lua_settable(_lua, -3);
-#endif
-        luaL_getmetatable(_lua, "LuaScriptEngine.Object");
-        lua_setmetatable(_lua, -2);
-
+        pushObject( object);
     }
 
     return false;
@@ -970,6 +1022,35 @@ bool LuaScriptEngine::popParameter(osg::Object* object)
         lua_pop(_lua, 1);
     }
 
-
     return false;
 }
+
+void LuaScriptEngine::createAndPushObject(const std::string& compoundName) const
+{
+    osg::ref_ptr<osg::Object> object = _pi.createObject(compoundName);
+    if (!object) OSG_NOTICE<<"Failed to create object "<<compoundName<<std::endl;
+
+    pushObject(object.get());
+
+    object.release();
+}
+
+void LuaScriptEngine::pushObject(osg::Object* object) const
+{
+    if (object)
+    {
+        OSG_NOTICE<<"Creating lua object representation for "<<object<<" "<<object->getCompoundClassName()<<std::endl;
+
+        lua_newtable(_lua);
+        lua_pushstring(_lua, "object_ptr"); lua_pushlightuserdata(_lua, object); lua_settable(_lua, -3);
+        lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, object->libraryName()); lua_settable(_lua, -3);
+        lua_pushstring(_lua, "className"); lua_pushstring(_lua, object->className()); lua_settable(_lua, -3);
+        luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+        lua_setmetatable(_lua, -2);
+    }
+    else
+    {
+        lua_pushnil(_lua);
+    }
+}
+

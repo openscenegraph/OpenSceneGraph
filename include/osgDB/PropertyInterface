@@ -126,6 +126,10 @@ public:
     bool areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgDB::BaseSerializer::Type rhs) const;
 
 
+    /** create an object of specified type for provided compound class name  in the form libraryName::className. */
+    osg::Object* createObject(const std::string& compounClassdName) const;
+
+
     /// template method for getting property data, return true if property available and the type is compatible, otherwise returns false.
     template<typename T>
     bool getProperty(const osg::Object* object, const std::string& propertyName, T& value);

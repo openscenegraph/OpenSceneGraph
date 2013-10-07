@@ -1,6 +1,5 @@
-INCLUDE_DIRECTORIES( ${AV_FOUNDATION_INCLUDE_DIR} )
 
-SET(TARGET_SRC 
+SET(TARGET_SRC
     OSXAVFoundationVideo.mm
     OSXAVFoundationVideo.h
     ../QTKit/VideoFrameDispatcher.h

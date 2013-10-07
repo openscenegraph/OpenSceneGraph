@@ -17,7 +17,7 @@
     
     UIWindow* _window; //main application window
     
-    UIAccelerationValue        accel[3];
+    CADisplayLink* _displayLink;
     
     osg::ref_ptr<osgViewer::Viewer> _viewer;
     osg::ref_ptr<osg::MatrixTransform> _root;

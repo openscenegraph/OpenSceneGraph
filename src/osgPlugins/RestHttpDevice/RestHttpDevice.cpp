@@ -267,6 +267,11 @@ RestHttpDevice::RestHttpDevice(const std::string& listening_address, const std::
     , _firstEventLocalTimeStamp()
     , _firstEventRemoteTimeStamp(-1)
     , _lastEventRemoteTimeStamp(0)
+    , _currentMouseX(0.0f)
+    , _currentMouseY(0.0f)
+    , _targetMouseX(0.0f)
+    , _targetMouseY(0.0f)
+    , _targetMouseChanged(false)
 {
     setCapabilities(RECEIVE_EVENTS);
     

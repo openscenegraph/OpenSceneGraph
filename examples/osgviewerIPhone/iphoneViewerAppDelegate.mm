@@ -1,39 +1,243 @@
-//Created by Thomas Hogarth 2009
+// Created by Thomas Hogarth 2009
+// cleaned up by Stephan Huber 2013
+//
 
-//
-//This exampe shows how to render osg into an existing windw. Apple recommends apps only have one window on IPhone so this
-// will be your best bet.
-//
+// this example will create a fullscreen window showing a grey box. You can interact with it via
+// multi-touch gestures.
 
 #import "iphoneViewerAppDelegate.h"
-#include <osgGA/TrackballManipulator>
+#include <osgGA/MultiTouchTrackballManipulator>
 #include <osg/ShapeDrawable>
-//inckude the iphone specific windowing stuff
+
+//include the iphone specific windowing stuff
 #include <osgViewer/api/IOS/GraphicsWindowIOS> 
 
-
-#define kAccelerometerFrequency        30.0 // Hz
-#define kFilteringFactor            0.1
 
 @implementation iphoneViewerAppDelegate
 
 @synthesize _window;
 
 
+osg::Camera* createHUD(unsigned int w, unsigned int h)
+{
+    // create a camera to set up the projection and model view matrices, and the subgraph to draw in the HUD
+    osg::Camera* camera = new osg::Camera;
+    
+    // set the projection matrix
+    camera->setProjectionMatrix(osg::Matrix::ortho2D(0,w,0,h));
+    
+    // set the view matrix
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera->setViewMatrix(osg::Matrix::identity());
+    
+    // only clear the depth buffer
+    camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+    
+    // draw subgraph after main camera view.
+    camera->setRenderOrder(osg::Camera::POST_RENDER);
+    
+    // we don't want the camera to grab event focus from the viewers main camera(s).
+    camera->setAllowEventFocus(false);
+    
+    
+    
+    // add to this camera a subgraph to render
+    {
+        
+        osg::Geode* geode = new osg::Geode();
+        
+        std::string timesFont("fonts/arial.ttf");
+        
+        // turn lighting off for the text and disable depth test to ensure it's always ontop.
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+        
+        osg::Vec3 position(50.0f,h-50,0.0f);
+        
+        {
+            osgText::Text* text = new  osgText::Text;
+            geode->addDrawable( text );
+            
+            text->setFont(timesFont);
+            text->setPosition(position);
+            text->setText("A simple multi-touch-example\n1 touch = rotate, \n2 touches = drag + scale, \n3 touches = home");
+        }
+        
+        camera->addChild(geode);
+    }
+    
+    return camera;
+}
+
+
+class TestMultiTouchEventHandler : public osgGA::GUIEventHandler {
+public:
+    TestMultiTouchEventHandler(osg::Group* parent_group)
+    :   osgGA::GUIEventHandler(),
+    _cleanupOnNextFrame(false)
+    {
+        createTouchRepresentations(parent_group, 10);
+    }
+    
+private:
+    void createTouchRepresentations(osg::Group* parent_group, unsigned int num_objects)
+    {
+        // create some geometry which is shown for every touch-point
+        for(unsigned int i = 0; i != num_objects; ++i)
+        {
+            std::ostringstream ss;
+            
+            osg::Geode* geode = new osg::Geode();
+            
+            osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 100));
+            drawable->setColor(osg::Vec4(0.5, 0.5, 0.5,1));
+            geode->addDrawable(drawable);
+            
+            ss << "Touch " << i;
+            
+            osgText::Text* text = new  osgText::Text;
+            geode->addDrawable( text );
+            drawable->setDataVariance(osg::Object::DYNAMIC);
+            _drawables.push_back(drawable);
+            
+            
+            text->setFont("fonts/arial.ttf");
+            text->setPosition(osg::Vec3(110,0,0));
+            text->setText(ss.str());
+            _texts.push_back(text);
+            text->setDataVariance(osg::Object::DYNAMIC);
+            
+            
+            
+            osg::MatrixTransform* mat = new osg::MatrixTransform();
+            mat->addChild(geode);
+            mat->setNodeMask(0x0);
+            
+            _mats.push_back(mat);
+            
+            parent_group->addChild(mat);
+        }
+        
+        parent_group->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    }
+    
+    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    {
+        switch(ea.getEventType())
+        {
+            case osgGA::GUIEventAdapter::FRAME:
+                if (_cleanupOnNextFrame) {
+                    cleanup(0);
+                    _cleanupOnNextFrame = false;
+                }
+                break;
+                
+            case osgGA::GUIEventAdapter::PUSH:
+            case osgGA::GUIEventAdapter::DRAG:
+            case osgGA::GUIEventAdapter::RELEASE:
+            {
+                // is this a multi-touch event?
+                if (!ea.isMultiTouchEvent())
+                    return false;
+                
+                unsigned int j(0);
+                
+                // iterate over all touch-points and update the geometry
+                unsigned num_touch_ended(0);
+                
+                for(osgGA::GUIEventAdapter::TouchData::iterator i = ea.getTouchData()->begin(); i != ea.getTouchData()->end(); ++i, ++j)
+                {
+                    const osgGA::GUIEventAdapter::TouchData::TouchPoint& tp = (*i);
+                    _mats[j]->setMatrix(osg::Matrix::translate(tp.x, ea.getWindowHeight() - tp.y, 0));
+                    _mats[j]->setNodeMask(0xffff);
+                    
+                    std::ostringstream ss;
+                    ss << "Touch " << tp.id;
+                    _texts[j]->setText(ss.str());
+                    
+                    switch (tp.phase)
+                    {
+                        case osgGA::GUIEventAdapter::TOUCH_BEGAN:
+                            _drawables[j]->setColor(osg::Vec4(0,1,0,1));
+                            std::cout << "touch began: " << ss.str() << std::endl;
+                            break;
+                            
+                        case osgGA::GUIEventAdapter::TOUCH_MOVED:
+                            //std::cout << "touch moved: " << ss.str() << std::endl;
+                            _drawables[j]->setColor(osg::Vec4(1,1,1,1));
+                            break;
+                            
+                        case osgGA::GUIEventAdapter::TOUCH_ENDED:
+                            _drawables[j]->setColor(osg::Vec4(1,0,0,1));
+                            std::cout << "touch ended: " << ss.str() << std::endl;
+                            ++num_touch_ended;
+                            break;
+                            
+                        case osgGA::GUIEventAdapter::TOUCH_STATIONERY:
+                            _drawables[j]->setColor(osg::Vec4(0.8,0.8,0.8,1));
+                            break;
+                            
+                        default:
+                            break;
+                            
+                    }
+                }
+                
+                // hide unused geometry
+                cleanup(j);
+                
+                //check if all touches ended
+                if ((ea.getTouchData()->getNumTouchPoints() > 0) && (ea.getTouchData()->getNumTouchPoints() == num_touch_ended))
+                {
+                    _cleanupOnNextFrame = true;
+                }
+                
+                // reposition mouse-pointer
+                aa.requestWarpPointer((ea.getWindowX() + ea.getWindowWidth()) / 2.0, (ea.getWindowY() + ea.getWindowHeight()) / 2.0);
+            }
+                break;
+                
+            default:
+                break;
+        }
+        
+        return false;
+    }
+    
+    void cleanup(unsigned int j)
+    {
+        for(unsigned k = j; k < _mats.size(); ++k) {
+            _mats[k]->setNodeMask(0x0);
+        }
+    }
+    
+    std::vector<osg::ShapeDrawable*> _drawables;
+    std::vector<osg::MatrixTransform*> _mats;
+    std::vector<osgText::Text*> _texts;
+    bool _cleanupOnNextFrame;
+    
+};
+
+
 //
-//Called once app has finished launching, create the viewer then realize. Can't call viewer->run as will 
+//Called once app has finished launching, create the viewer then realize. Can't call viewer->run as will
 //block the final inialization of the windowing system
 //
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
-    
-    std::string test_string;
-    test_string = "huhu";
     
     //get the screen size
     CGRect lFrame = [[UIScreen mainScreen] bounds];
     unsigned int w = lFrame.size.width;
     unsigned int h = lFrame.size.height;
     
+    //create the viewer
+    _viewer = new osgViewer::Viewer();
+    
+    
+    /*
+     
+    // If you want full control over the graphics context / window creation, please uncomment this section
+     
     // create the main window at screen size
     self._window = [[UIWindow alloc] initWithFrame: lFrame]; 
     
@@ -41,7 +245,7 @@
     [_window makeKeyAndVisible];
 
     
-//create our graphics context directly so we can pass our own window 
+    //create our graphics context directly so we can pass our own window
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     
     // Init the Windata Variable that holds the handle for the Window to display OSG in.
@@ -53,97 +257,65 @@
     traits->width = w;
     traits->height = h;
     traits->depth = 16; //keep memory down, default is currently 24
-    //traits->alpha = 8;
-    //traits->stencil = 8;
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
     traits->setInheritedWindowPixelFormat = true;
-    //traits->windowName = "osgViewer";
-
+    traits->samples = 4;
+    traits->sampleBuffers = 1;
+    
     traits->inheritedWindowData = windata;
 
     // Create the Graphics Context
     osg::ref_ptr<osg::GraphicsContext> graphicsContext = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-    //create the viewer    
-    _viewer = new osgViewer::Viewer();
-    //if the context was created then attach to our viewer
+    
+    // if the context was created then attach to our viewer
     if(graphicsContext)
     {
         _viewer->getCamera()->setGraphicsContext(graphicsContext);
         _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
     }
+     */
         
-    //create scene and attch to viewer
     
     //create root
     _root = new osg::MatrixTransform();    
     
     //load and attach scene model
     osg::ref_ptr<osg::Node> model = (osgDB::readNodeFile("hog.osg"));
-    _root->addChild(model);
+    if (model) {
+        _root->addChild(model);
+    }
+    else {
+        osg::Geode* geode = new osg::Geode();
+        osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(1,1,1), 1));
+        geode->addDrawable(drawable);
+        _root->addChild(geode);
+    }
     
-    osg::Geode* geode = new osg::Geode();
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(1,1,1), 1));
-    geode->addDrawable(drawable);
-    _root->addChild(geode);
-
+    osg::Camera* hud_camera = createHUD(w,h);
+    _root->addChild(hud_camera);
     
-    //create and attach ortho camera for hud text
-    osg::ref_ptr<osg::CameraNode> _hudCamera = new osg::CameraNode;
-    
-    // set the projection matrix
-    _hudCamera->setProjectionMatrix(osg::Matrix::ortho2D(0,w,0,h));
-    
-    // set the view matrix    
-    _hudCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    _hudCamera->setViewMatrix(osg::Matrix::identity());
-    
-    // only clear the depth buffer
-    _hudCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
-    
-    // draw subgraph after main camera view.
-    _hudCamera->setRenderOrder(osg::CameraNode::POST_RENDER);
-    _root->addChild(_hudCamera.get());
-    
-    //attcg text to hud
-    /*osg::ref_ptr<osgText::Text> text = new osgText::Text; 
-    osg::ref_ptr<osg::Geode> textGeode = new osg::Geode();
-    osg::StateSet* stateset = textGeode->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-    textGeode->addDrawable( text );
-    _hudCamera->addChild(textGeode.get());
-    std::string timesFont("arial.ttf");
-    osg::Vec3 position = osg::Vec3(w/2.0f, h/2.0f, 0.0f);
-    osg::Vec3 delta(0.0f,-120.0f,0.0f);
-
-        
-    text->setFont(timesFont);
-    text->setCharacterSize(20.0,1.0);
-    text->setColor(osg::Vec4(0.8,0.8,0.8,1.0)); 
-    text->setPosition(position);
-    text->setMaximumHeight(480);
-    text->setMaximumWidth(320);
-    text->setAlignment(osgText::Text::CENTER_CENTER );  
-    text->setText("It's a Hogs life...");*/
-        
         
     _viewer->setSceneData(_root.get());
-    _viewer->setCameraManipulator(new osgGA::TrackballManipulator);
-    _viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);//SingleThreaded DrawThreadPerContext
+    _viewer->setCameraManipulator(new osgGA::MultiTouchTrackballManipulator());
     
-    //
-    //_viewer->realize();
+    _viewer->addEventHandler(new TestMultiTouchEventHandler(hud_camera));
+
     
-    osg::setNotifyLevel(osg::DEBUG_FP);
+    // sun single-threaded
+    _viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
     
-    [NSTimer scheduledTimerWithTimeInterval:1.0/30.0 target:self selector:@selector(updateScene) userInfo:nil repeats:YES]; 
+    _viewer->realize();
     
-    //Configure and start accelerometer
-    [[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / kAccelerometerFrequency)];
-    [[UIAccelerometer sharedAccelerometer] setDelegate:self];
+    // render a frame so the window-manager shows some content and not only an empty + black window
+    _viewer->frame();
+    
+    
+    // create a display link, which will update our scene on every screen-refresh
+    _displayLink = [application.keyWindow.screen displayLinkWithTarget:self selector:@selector(updateScene)];
+    [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    
 }
 
 
@@ -165,21 +337,15 @@
 }
 
 
--(void)applicationWillTerminate:(UIApplication *)application{
+-(void)applicationWillTerminate:(UIApplication *)application {
+    if (_displayLink)
+        [_displayLink invalidate];
+    _displayLink = NULL;
     _root = NULL;
     _viewer = NULL;
 } 
 
-//
-//Accelorometer
-//
-- (void)accelerometer:(UIAccelerometer*)accelerometer didAccelerate:(UIAcceleration*)acceleration
-{
-    //Use a basic low-pass filter to only keep the gravity in the accelerometer values
-    accel[0] = acceleration.x * kFilteringFactor + accel[0] * (1.0 - kFilteringFactor);
-    accel[1] = acceleration.y * kFilteringFactor + accel[1] * (1.0 - kFilteringFactor);
-    accel[2] = acceleration.z * kFilteringFactor + accel[2] * (1.0 - kFilteringFactor);
-}
+
 
 
 - (void)dealloc {

@@ -247,13 +247,16 @@ IF(APPLE)
 
         #you need to manually set the default sdk version here
         SET (IPHONE_SDKVER "6.0" CACHE STRING "IOS SDK-Version")
+        SET (IPHONE_VERSION_MIN "4.2" CACHE STRING "IOS minimum os version, use 7.0 or greater to get 64bit support")
 
         #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
         # Force gcc <= 4.2 on iPhone
-        include(CMakeForceCompiler)
-        CMAKE_FORCE_C_COMPILER(llvm-gcc-4.2 GNU)
-        CMAKE_FORCE_CXX_COMPILER(llvm-gcc-4.2 GNU)
-        SET(GCC_THUMB_SUPPORT NO)
+        IF(IPHONE_VERSION_MIN LESS "6.0")
+            include(CMakeForceCompiler)
+            CMAKE_FORCE_C_COMPILER(llvm-gcc-4.2 GNU)
+            CMAKE_FORCE_CXX_COMPILER(llvm-gcc-4.2 GNU)
+            SET(GCC_THUMB_SUPPORT NO)
+        ENDIF()
 
         #set either the device sdk or the simulator sdk. Can't find away to separate these in the same project
         IF(OSG_BUILD_PLATFORM_IPHONE)
@@ -819,6 +822,14 @@ ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need
         # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
         # remain unset.
+
+        IF (APPLE)
+            # set standard lib, clang defaults to c++0x
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++ -Wno-overloaded-virtual -Wno-conversion")
+            set(WARNING_CFLAGS "")
+        ENDIF()
 ENDIF()
 
 # This part is for the CMake menu option to toggle the warnings on/off.
@@ -878,8 +889,14 @@ IF(APPLE AND NOT ANDROID)
 
         #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
         IF(OSG_BUILD_PLATFORM_IPHONE)
-            SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=4.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            IF(${IPHONE_VERSION_MIN} LESS "7.0")
+                SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=${IPHONE_VERSION_MIN} -mno-thumb -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ELSE()
+                SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=${IPHONE_VERSION_MIN} -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ENDIF()
+
         ELSE()
             #simulator uses i386 architectures
             SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "Build architectures for iOS Simulator" FORCE)
@@ -911,7 +928,7 @@ IF(APPLE AND NOT ANDROID)
         # FORCE is used because the options are not reflected in the UI otherwise.
         # Seems like a good place to add version specific compiler flags too.
         IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8")
+            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 # 64 Bit Works, i386,ppc is not supported any more
                 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)

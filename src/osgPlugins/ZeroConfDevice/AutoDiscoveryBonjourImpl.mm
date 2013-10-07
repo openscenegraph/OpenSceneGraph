@@ -68,10 +68,8 @@
 
 @property (readonly, retain) NSMutableArray *services;
 @property (readwrite, retain) NSString *type;
-@property (readwrite, assign) BOOL isConnected;
 
 @property (readwrite, retain) NSNetServiceBrowser *browser;
-@property (readwrite, retain) NSNetService *connectedService;
 
 @end
 
@@ -80,15 +78,12 @@
 @synthesize browser;
 @synthesize type;
 @synthesize services;
-@synthesize isConnected;
-@synthesize connectedService;
 
 -(id)initWithType: (NSString*) in_type  withImpl:(AutoDiscoveryClientImpl*) in_impl {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     services = [NSMutableArray new];
     self.browser = [[NSNetServiceBrowser new] init];
     self.browser.delegate = self;
-    self.isConnected = NO;
     self.type = in_type;
     impl = in_impl;
     [self.browser searchForServicesOfType:in_type inDomain:@""];
@@ -97,9 +92,15 @@
 }
 
 -(void)dealloc {
-    self.connectedService = nil;
+    
+    [self.browser stop];
+    self.browser.delegate = nil;
+    
     self.browser = nil;
+    [services makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+    [services makeObjectsPerformSelector:@selector(stop)];
     [services release];
+    
     [super dealloc];
 }
 
@@ -118,16 +119,11 @@
 {
     int ndx = [services indexOfObject: aService];
     impl->servicesRemoved([services objectAtIndex: ndx]);
-    
+    aService.delegate = nil;
     [services removeObject:aService];
-    if ( aService == self.connectedService ) self.isConnected = NO;
-    
-    
 }
 
 -(void)netServiceDidResolveAddress:(NSNetService *)service {
-    self.isConnected = YES;
-    self.connectedService = service;
     
     //NSLog(@"hostname: %@", [service hostName]);
     

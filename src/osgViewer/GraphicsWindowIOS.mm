@@ -163,7 +163,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 }
 
 
-- (unsigned int)computeTouchId: (UITouch*) touch 
+- (unsigned int)computeTouchId: (UITouch*) touch mayCleanup: (bool)may_cleanup
 {
     unsigned int result(0);
     
@@ -202,10 +202,10 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
             {
                 TouchPointsIdMapping::iterator itr = _touchPointsIdMapping->find(touch);
                 // std::cout<< "remove: " << touch << " num: " << _touchPointsIdMapping->size() << " found: " << (itr != _touchPointsIdMapping->end()) << std::endl;
-                
                 if (itr != _touchPointsIdMapping->end()) {
                     result = itr->second;
-                    _touchPointsIdMapping->erase(itr);
+                    if(may_cleanup)
+                        _touchPointsIdMapping->erase(itr);
                 }
                 if(_touchPointsIdMapping->size() == 0) {
                     _lastTouchPointId = 0;
@@ -576,9 +576,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
     {
         
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
-        CGPoint pos = [touch locationInView:touch.view];
+        CGPoint pos = [touch locationInView:self];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
-        unsigned int touch_id = [self computeTouchId: touch];
+        unsigned int touch_id = [self computeTouchId: touch mayCleanup: FALSE];
         
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
@@ -599,9 +599,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
     for(int i=0; i<[allTouches count]; i++)
     {
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
-        CGPoint pos = [touch locationInView:touch.view];
+        CGPoint pos = [touch locationInView:self];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
-        unsigned int touch_id = [self computeTouchId: touch];
+        unsigned int touch_id = [self computeTouchId: touch mayCleanup: FALSE];
 
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
@@ -623,9 +623,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
     for(int i=0; i<[allTouches count]; i++)
     {
         UITouch *touch = [[allTouches allObjects] objectAtIndex:i];
-        CGPoint pos = [touch locationInView:touch.view];
+        CGPoint pos = [touch locationInView:self];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
-        unsigned int touch_id = [self computeTouchId: touch];
+        unsigned int touch_id = [self computeTouchId: touch mayCleanup: TRUE];
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
         } else {

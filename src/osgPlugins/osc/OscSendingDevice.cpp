@@ -51,9 +51,14 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
 {
     static osc::int64 msg_id(0);
     bool msg_sent(false);
-    for(unsigned int i = 0; i < _numMessagesPerEvent; ++i) {
+    unsigned int num_messages = _numMessagesPerEvent;
+    
+    if((ea.getEventType() == osgGA::GUIEventAdapter::DRAG) || (ea.getEventType() == osgGA::GUIEventAdapter::MOVE))
+        num_messages = 1;
+    
+    for(unsigned int i = 0; i < num_messages; ++i) {
         msg_sent = sendEventImpl(ea, msg_id);
-        if ((_delayBetweenSendsInMilliSecs > 0) && (i < _numMessagesPerEvent-1))
+        if ((_delayBetweenSendsInMilliSecs > 0) && (i < num_messages-1))
             OpenThreads::Thread::microSleep(1000 * _delayBetweenSendsInMilliSecs);
     }
     if (msg_sent)

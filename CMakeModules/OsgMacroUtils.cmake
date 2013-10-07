@@ -5,7 +5,7 @@
 #  NAME of the variables, so the macro gets as arguments the target name and the following list of parameters
 #  is intended as a list of variable names each one containing  the path of the libraries to link to
 #  The existance of a variable name with _DEBUG appended is tested and, in case it' s value is used
-#  for linking to when in debug mode 
+#  for linking to when in debug mode
 #  the content of this library for linking when in debugging
 #######################################################################################################
 
@@ -87,12 +87,12 @@ MACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
         SET(ALL_GL_LIBRARIES ${ALL_GL_LIBRARIES} ${OPENGL_egl_LIBRARY})
     ENDIF()
 
-    LINK_EXTERNAL(${CORELIB_NAME} ${ALL_GL_LIBRARIES}) 
+    LINK_EXTERNAL(${CORELIB_NAME} ${ALL_GL_LIBRARIES})
     LINK_WITH_VARIABLES(${CORELIB_NAME} OPENTHREADS_LIBRARY)
     IF(OPENSCENEGRAPH_SONAMES)
       SET_TARGET_PROPERTIES(${CORELIB_NAME} PROPERTIES VERSION ${OPENSCENEGRAPH_VERSION} SOVERSION ${OPENSCENEGRAPH_SOVERSION})
     ENDIF(OPENSCENEGRAPH_SONAMES)
-    
+
 ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 
 
@@ -112,11 +112,11 @@ MACRO(SETUP_LINK_LIBRARIES)
     ######################################################################
     #
     # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plugins
-    # kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
-    # they are combined in a single list checked for unicity 
+    # kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES
+    # they are combined in a single list checked for unicity
     # the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
     #
-    # a second variable TARGET_EXTERNAL_LIBRARIES hold the list of  libraries not differentiated between debug and optimized 
+    # a second variable TARGET_EXTERNAL_LIBRARIES hold the list of  libraries not differentiated between debug and optimized
     ##################################################################################
     SET(TARGET_LIBRARIES ${TARGET_COMMON_LIBRARIES})
 
@@ -151,7 +151,7 @@ MACRO(SETUP_LINK_LIBRARIES)
         ENDIF(TARGET_LIBRARIES_VARS)
     IF(MSVC  AND OSG_MSVC_VERSIONED_DLL)
         #when using full path name to specify linkage, it seems that already linked libs must be specified
-            LINK_EXTERNAL(${TARGET_TARGETNAME} ${ALL_GL_LIBRARIES}) 
+            LINK_EXTERNAL(${TARGET_TARGETNAME} ${ALL_GL_LIBRARIES})
     ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
 
 ENDMACRO(SETUP_LINK_LIBRARIES)
@@ -213,7 +213,7 @@ ENDMACRO(SET_OUTPUT_DIR_PROPERTY_260 TARGET_TARGETNAME RELATIVE_OUTDIR)
 
 MACRO(SETUP_LIBRARY LIB_NAME)
     IF(ANDROID)
-        SETUP_ANDROID_LIBRARY(${LIB_NAME}) 
+        SETUP_ANDROID_LIBRARY(${LIB_NAME})
     ELSE()
         SET(TARGET_NAME ${LIB_NAME} )
         SET(TARGET_TARGETNAME ${LIB_NAME} )
@@ -224,10 +224,13 @@ MACRO(SETUP_LIBRARY LIB_NAME)
             ${TARGET_SRC}
         )
         SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES FOLDER "OSG Core")
+        IF(APPLE)
+            SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES XCODE_ATTRIBUTE_WARNING_CFLAGS "")
+        ENDIF()
         IF(TARGET_LABEL)
             SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
         ENDIF(TARGET_LABEL)
-    
+
         IF(TARGET_LIBRARIES)
             LINK_INTERNAL(${LIB_NAME} ${TARGET_LIBRARIES})
         ENDIF()
@@ -238,14 +241,14 @@ MACRO(SETUP_LIBRARY LIB_NAME)
             LINK_WITH_VARIABLES(${LIB_NAME} ${TARGET_LIBRARIES_VARS})
         ENDIF(TARGET_LIBRARIES_VARS)
         LINK_CORELIB_DEFAULT(${LIB_NAME})
-    
+
     ENDIF()
     INCLUDE(ModuleInstall OPTIONAL)
 ENDMACRO(SETUP_LIBRARY LIB_NAME)
 
 MACRO(SETUP_PLUGIN PLUGIN_NAME)
     IF(ANDROID)
-        SETUP_ANDROID_LIBRARY(${TARGET_DEFAULT_PREFIX}${PLUGIN_NAME}) 
+        SETUP_ANDROID_LIBRARY(${TARGET_DEFAULT_PREFIX}${PLUGIN_NAME})
     ELSE()
 
     SET(TARGET_NAME ${PLUGIN_NAME} )
@@ -268,17 +271,17 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
       SET(PACKAGE_COMPONENT libopenscenegraph)
     ENDIF(${ARGC} GREATER 1)
 
-    # Add the VisualStudio versioning info    
+    # Add the VisualStudio versioning info
     SET(TARGET_SRC ${TARGET_SRC} ${OPENSCENEGRAPH_VERSIONINFO_RC})
-    
-    # here we use the command to generate the library    
+
+    # here we use the command to generate the library
 
     IF   (DYNAMIC_OPENSCENEGRAPH)
         ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC} ${TARGET_H})
     ELSE (DYNAMIC_OPENSCENEGRAPH)
         ADD_LIBRARY(${TARGET_TARGETNAME} STATIC ${TARGET_SRC} ${TARGET_H})
     ENDIF(DYNAMIC_OPENSCENEGRAPH)
-    
+
     #not sure if needed, but for plugins only Msvc need the d suffix
     IF(NOT MSVC)
         IF(NOT UNIX)
@@ -289,17 +292,17 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
             SET_OUTPUT_DIR_PROPERTY_260(${TARGET_TARGETNAME} "${OSG_PLUGINS}")        # Sets the ouput to be /osgPlugin-X.X.X ; also ensures the /Debug /Release are removed
         ELSE(NOT CMAKE24)
 
-            IF(OSG_MSVC_VERSIONED_DLL) 
+            IF(OSG_MSVC_VERSIONED_DLL)
 
                 #this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
                 #the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
                 #because we want dll placed in OUTPUT_BINDIR ie the bin folder sibling of lib, we can use ../../bin to go there,
                 #it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
                 #changing bin to something else breaks this hack
-                #the dll are placed in bin/${OSG_PLUGINS} 
+                #the dll are placed in bin/${OSG_PLUGINS}
 
                 IF(NOT MSVC_IDE)
-                    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../bin/${OSG_PLUGINS}/")                     
+                    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../bin/${OSG_PLUGINS}/")
                 ELSE(NOT MSVC_IDE)
                     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../../bin/${OSG_PLUGINS}/" IMPORT_PREFIX "../")
                 ENDIF(NOT MSVC_IDE)
@@ -317,12 +320,14 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
 
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Plugins")
-
+    IF(APPLE)
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_WARNING_CFLAGS "")
+    ENDIF()
     SETUP_LINK_LIBRARIES()
 
 #the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
     IF(WIN32)
-        INSTALL(TARGETS ${TARGET_TARGETNAME} 
+        INSTALL(TARGETS ${TARGET_TARGETNAME}
             RUNTIME DESTINATION bin COMPONENT ${PACKAGE_COMPONENT}
             ARCHIVE DESTINATION lib/${OSG_PLUGINS} COMPONENT libopenscenegraph-dev
             LIBRARY DESTINATION bin/${OSG_PLUGINS} COMPONENT ${PACKAGE_COMPONENT})
@@ -350,11 +355,11 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
     ENDIF(NOT TARGET_LABEL)
 
     IF(${IS_COMMANDLINE_APP})
-    
+
         ADD_EXECUTABLE(${TARGET_TARGETNAME} ${TARGET_SRC} ${TARGET_H})
-        
+
     ELSE(${IS_COMMANDLINE_APP})
-    
+
         IF(APPLE)
             # SET(MACOSX_BUNDLE_LONG_VERSION_STRING "${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION}")
             # Short Version is the "marketing version". It is the version
@@ -363,6 +368,8 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
             # Bundle version is the version the OS looks at.
             SET(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION}")
             SET(MACOSX_BUNDLE_GUI_IDENTIFIER "org.openscenegraph.${TARGET_TARGETNAME}" )
+            # replace underscore by hyphen
+            STRING(REGEX REPLACE "_" "-" MACOSX_BUNDLE_GUI_IDENTIFIER ${MACOSX_BUNDLE_GUI_IDENTIFIER})
             SET(MACOSX_BUNDLE_BUNDLE_NAME "${TARGET_NAME}" )
             # SET(MACOSX_BUNDLE_ICON_FILE "myicon.icns")
             # SET(MACOSX_BUNDLE_COPYRIGHT "")
@@ -382,7 +389,7 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
         ENDIF(APPLE)
 
         ADD_EXECUTABLE(${TARGET_TARGETNAME} ${PLATFORM_SPECIFIC_CONTROL} ${TARGET_SRC} ${TARGET_H})
-        
+
     ENDIF(${IS_COMMANDLINE_APP})
 
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
@@ -396,7 +403,11 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
         SET_OUTPUT_DIR_PROPERTY_260(${TARGET_TARGETNAME} "")        # Ensure the /Debug /Release are removed
     ENDIF(MSVC_IDE AND OSG_MSVC_VERSIONED_DLL)
 
-    SETUP_LINK_LIBRARIES()    
+    IF(APPLE)
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_WARNING_CFLAGS "")
+    ENDIF()
+
+    SETUP_LINK_LIBRARIES()
 
 ENDMACRO(SETUP_EXE)
 
@@ -410,11 +421,11 @@ MACRO(SETUP_APPLICATION APPLICATION_NAME)
         ELSE(${ARGC} GREATER 1)
             SET(IS_COMMANDLINE_APP 0)
         ENDIF(${ARGC} GREATER 1)
-            
+
         SETUP_EXE(${IS_COMMANDLINE_APP})
-        
+
         SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Applications")
-        
+
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin BUNDLE DESTINATION bin)
         ELSE(APPLE)
@@ -439,13 +450,13 @@ MACRO(SETUP_EXAMPLE EXAMPLE_NAME)
         ELSE(${ARGC} GREATER 1)
             SET(IS_COMMANDLINE_APP 0)
         ENDIF(${ARGC} GREATER 1)
-            
+
         SETUP_EXE(${IS_COMMANDLINE_APP})
-        
+
         SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Examples")
-        
+
         IF(APPLE)
-            INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin BUNDLE DESTINATION share/OpenSceneGraph/bin )            
+            INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin BUNDLE DESTINATION share/OpenSceneGraph/bin )
         ELSE(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin COMPONENT openscenegraph-examples )
         ENDIF(APPLE)
@@ -483,7 +494,7 @@ MACRO(HANDLE_MSVC_DLL)
         ENDIF(${ARGC} GREATER 1)
 
         SET_OUTPUT_DIR_PROPERTY_260(${LIB_NAME} "")        # Ensure the /Debug /Release are removed
-        IF(NOT MSVC_IDE) 
+        IF(NOT MSVC_IDE)
             IF (NOT CMAKE24)
                 BUILDER_VERSION_GREATER(2 8 0)
                 IF(NOT VALID_BUILDER_VERSION)
@@ -516,7 +527,7 @@ MACRO(HANDLE_MSVC_DLL)
             ELSE (NOT CMAKE24)
                 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/${LIB_PREFIX}${LIB_SOVERSION}-" IMPORT_PREFIX "../")
             ENDIF (NOT CMAKE24)
-        ENDIF(NOT MSVC_IDE) 
+        ENDIF(NOT MSVC_IDE)
 
 #     SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/osg${OPENSCENEGRAPH_SOVERSION}-")
 #     SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES IMPORT_PREFIX "../")

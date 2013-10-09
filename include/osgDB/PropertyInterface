@@ -174,6 +174,10 @@ protected:
 
     bool copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
 
+    bool copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
+
+    bool copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
+
     osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const;
 
     osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const;
@@ -212,6 +216,20 @@ bool PropertyInterface::setProperty(osg::Object* object, const std::string& prop
         object->setUserValue(propertyName, value);
         return false;
     }
+}
+
+typedef osg::Object* ObjectPtr;
+
+template<>
+inline bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, ObjectPtr& value)
+{
+    return copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>());
+}
+
+template<>
+inline bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const ObjectPtr& value)
+{
+    return copyPropertyObjectToObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>());
 }
 
 }

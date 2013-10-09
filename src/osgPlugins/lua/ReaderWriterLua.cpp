@@ -63,6 +63,89 @@ class ReaderWriterLua : public osgDB::ReaderWriter
             return readObject(istream, options);
         }
 
+
+        virtual ReadResult readObjectFromScript(std::istream& fin, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            ReadResult result = readObject(fin, options);
+
+            if (!result.validObject()) return result;
+            osg::ref_ptr<osg::Script> script = dynamic_cast<osg::Script*>(result.getObject());
+            if (!script) return ReadResult::ERROR_IN_READING_FILE;
+
+            std::string entryPoint = "";
+            osg::ScriptEngine::Parameters inputParameters;
+            osg::ScriptEngine::Parameters outputParameters;
+
+            osg::ref_ptr<lua::LuaScriptEngine> se = new lua::LuaScriptEngine();
+            if (!se->run(script.get(), entryPoint, inputParameters, outputParameters)) return 0;
+
+            if (outputParameters.empty()) return 0;
+
+            typedef std::vector< osg::ref_ptr<osg::Object> > Objects;
+            Objects objects;
+
+            for(osg::ScriptEngine::Parameters::iterator itr = outputParameters.begin();
+                itr != outputParameters.end();
+                ++itr)
+            {
+                osg::Object* object = dynamic_cast<osg::Object*>(itr->get());
+                if (object) objects.push_back(object);
+            }
+
+            if (objects.empty()) return 0;
+
+            if (objects.size()==1) return objects[0].get();
+
+            osg::ref_ptr<osg::Group> group = new osg::Group;
+            for(Objects::iterator itr = objects.begin();
+                itr != objects.end();
+                ++itr)
+            {
+                osg::Node* node = dynamic_cast<osg::Node*>(itr->get());
+                if (node) group->addChild(node);
+            }
+
+            if (group->getNumChildren()>0) return group.get();
+            else return 0;
+        }
+
+        virtual ReadResult readImage(std::istream& fin, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readObjectFromScript(fin, options);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+
+            return readImage(istream, options);
+        }
+
+        virtual ReadResult readNode(std::istream& fin, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readObjectFromScript(fin, options);
+        }
+
+       virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+       {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+
+            return readNode(istream, options);
+       }
 };
 
 // now register with Registry to instantiate the above

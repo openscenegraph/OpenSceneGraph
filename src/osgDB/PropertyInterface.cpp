@@ -294,7 +294,15 @@ bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, co
 
     osgDB::BaseSerializer::Type sourceType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
-    if (serializer && areTypesCompatible(sourceType, valueType) && serializer->write(_outputStream, *object))
+    if (!serializer) return false;
+
+    if (!areTypesCompatible(sourceType, valueType))
+    {
+        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() Types are not compatible, valueType = "<<valueType<<", sourceType="<<sourceType<<std::endl;
+        return false;
+    }
+
+    if (serializer->write(_outputStream, *object))
     {
         unsigned int sourceSize = _poi->_str.size();
 
@@ -311,10 +319,15 @@ bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, co
         }
         else
         {
+            OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() Sizes not compatible, sourceSize = "<<sourceSize<<" valueSize = "<<valueSize<<std::endl;
             return false;
         }
     }
-    else return false;
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() serializer write failed."<<std::endl;
+        return false;
+    }
 }
 
 bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
@@ -332,11 +345,35 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
 
     osgDB::BaseSerializer::Type destinationType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, destinationType);
-    if (serializer && areTypesCompatible(valueType, destinationType))
+    if (serializer)
     {
-        return serializer->read(_inputStream, *object);
+        if (areTypesCompatible(valueType, destinationType))
+        {
+            return serializer->read(_inputStream, *object);
+        }
+        else
+        {
+            OSG_NOTICE<<"PropertyInterface::copyPropertyDataToObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<destinationType<<std::endl;
+            return false;
+        }
     }
-    else return false;
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
+        return false;
+    }
+}
+
+bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+{
+    OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Not Supported yet."<<std::endl;
+    return false;
+}
+
+bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+{
+    OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() Not Supported yet."<<std::endl;
+    return false;
 }
 
 

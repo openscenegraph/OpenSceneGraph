@@ -14,6 +14,7 @@
 #include "LuaScriptEngine.h"
 
 #include <osg/io_utils>
+#include <osgDB/ReadFile>
 
 using namespace lua;
 
@@ -115,14 +116,16 @@ static int newObject(lua_State * _lua)
 
 LuaScriptEngine::LuaScriptEngine():
     osg::ScriptEngine("lua"),
-    _lua(0)
+    _lua(0),
+    _scriptCount(0)
 {
     initialize();
 }
 
 LuaScriptEngine::LuaScriptEngine(const LuaScriptEngine& rhs, const osg::CopyOp&):
     osg::ScriptEngine("lua"),
-    _lua(0)
+    _lua(0),
+    _scriptCount(0)
 {
     initialize();
 }
@@ -134,34 +137,61 @@ LuaScriptEngine::~LuaScriptEngine()
     lua_close(_lua);
 }
 
+std::string LuaScriptEngine::createUniquieScriptName()
+{
+    std::stringstream sstr;
+    sstr<<"script_"<<_scriptCount;
+    ++_scriptCount;
+
+    OSG_NOTICE<<"uniqueScrtiptName "<<sstr.str()<<std::endl;
+
+    return sstr.str();
+}
+
 void LuaScriptEngine::initialize()
 {
     _lua = luaL_newstate();
 
     luaL_openlibs(_lua);
 
+    OSG_NOTICE<<"Stack after openlibs "<<lua_gettop(_lua)<<std::endl;
 
-    lua_pushlightuserdata(_lua, this);
-    lua_pushcclosure(_lua, newObject, 1);
-    lua_setglobal(_lua, "new");
+    // provide global new method for creating osg::Object's.
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, newObject, 1);
+        lua_setglobal(_lua, "new");
+    }
 
-    luaL_newmetatable(_lua, "LuaScriptEngine.Object");
+    // Set up the __newindex and __index methods for looking up implementations of Object properties
+    {
+        luaL_newmetatable(_lua, "LuaScriptEngine.Object");
 
-    lua_pushstring(_lua, "__index");
-    lua_pushlightuserdata(_lua, this);
-    lua_pushcclosure(_lua, getProperty, 1);
-    lua_settable(_lua, -3);
+        lua_pushstring(_lua, "__index");
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, getProperty, 1);
+        lua_settable(_lua, -3);
 
-    lua_pushstring(_lua, "__newindex");
-    lua_pushlightuserdata(_lua, this);
-    lua_pushcclosure(_lua, setProperty, 1);
-    lua_settable(_lua, -3);
+        lua_pushstring(_lua, "__newindex");
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, setProperty, 1);
+        lua_settable(_lua, -3);
 
-    luaL_newmetatable(_lua, "LuaScriptEngine.UnrefObject");
-    lua_pushstring(_lua, "__gc");
-    lua_pushlightuserdata(_lua, this);
-    lua_pushcclosure(_lua, garabageCollectObject, 1);
-    lua_settable(_lua, -3);
+        lua_pop(_lua,1);
+    }
+
+    // Set up the __gc methods for looking up implementations of Object pointer to do the unref when the associated Lua object is destroyed.
+    {
+        luaL_newmetatable(_lua, "LuaScriptEngine.UnrefObject");
+        lua_pushstring(_lua, "__gc");
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, garabageCollectObject, 1);
+        lua_settable(_lua, -3);
+
+        lua_pop(_lua,1);
+    }
+
+    OSG_NOTICE<<"Stack after initialize "<<lua_gettop(_lua)<<std::endl;
 }
 
 bool LuaScriptEngine::loadScript(osg::Script* script)
@@ -171,7 +201,13 @@ bool LuaScriptEngine::loadScript(osg::Script* script)
     int loadResult = luaL_loadstring(_lua, script->getScript().c_str());
     if (loadResult==0)
     {
-        _loadedScripts.insert(script);
+        std::string scriptID = createUniquieScriptName();
+
+        lua_pushvalue(_lua, -1);
+        lua_setglobal(_lua, scriptID.c_str());
+
+        _loadedScripts[script] = scriptID;
+
         return true;
     }
     else
@@ -186,59 +222,79 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, Pa
 {
     if (!script || !_lua) return false;
 
+
     if (_loadedScripts.count(script)==0)
     {
+        OSG_NOTICE<<"Stack before load "<<lua_gettop(_lua)<<std::endl;
+
         if (!loadScript(script)) return false;
 
-        if (lua_pcall(_lua, 0, 0, 0)!=0)
+        OSG_NOTICE<<"Stack after load "<<lua_gettop(_lua)<<std::endl;
+
+        OSG_NOTICE<<"  Type "<<lua_type(_lua,-1)<<std::endl;
+        OSG_NOTICE<<"  Typename "<<lua_typename(_lua,-1)<<std::endl;
+        OSG_NOTICE<<"  lua_isfunction "<<lua_isfunction(_lua,-1)<<std::endl;
+
+        if (!entryPoint.empty())
         {
-            OSG_NOTICE<< "error initialize script "<< lua_tostring(_lua, -1)<<std::endl;
-            return false;
+            if (lua_pcall(_lua, 0, 0, 0)!=0)
+            {
+                OSG_NOTICE<< "error initialize script "<< lua_tostring(_lua, -1)<<std::endl;
+                return false;
+            }
         }
+
+        OSG_NOTICE<<"Stack after init call "<<lua_gettop(_lua)<<std::endl;
     }
 
     if (entryPoint.empty())
     {
-        int callResult = lua_pcall(_lua, 0, LUA_MULTRET, 0);
-        if (callResult)
-        {
-            OSG_NOTICE << "LuaScriptEngine::call(Script*) error: " << lua_tostring(_lua, -1) << std::endl;
-            return false;
-        }
-        return true;
+        ScriptMap::iterator itr = _loadedScripts.find(script);
+        if (itr == _loadedScripts.end()) return false;
+
+        std::string scriptID = itr->second;
+
+        OSG_NOTICE<<"Stack before pcall "<<lua_gettop(_lua)<<std::endl;
+        OSG_NOTICE<<"  scriptID "<<std::endl;
+
+        lua_getglobal(_lua, scriptID.c_str());
     }
     else
     {
-
-
-        //lua_pushglobaltable(pLuaState);
-        //lua_getfield(_lua, LUA_GLOBALSINDEX, entryPoint.c_str()); /* function to be called */
-        //lua_getfield(_lua, -1, entryPoint.c_str()); /* function to be called */
         lua_getglobal(_lua, entryPoint.c_str()); /* function to be called */
-
-        for(osg::ScriptEngine::Parameters::const_iterator itr = inputParameters.begin();
-            itr != inputParameters.end();
-            ++itr)
-        {
-            pushParameter(itr->get());
-        }
-
-        if (lua_pcall(_lua, inputParameters.size(), outputParameters.size(),0)!=0)
-        {
-            OSG_NOTICE<<"Lua error : "<<lua_tostring(_lua, -1)<<std::endl;
-            return false;
-        }
-
-        for(osg::ScriptEngine::Parameters::const_iterator itr = outputParameters.begin();
-            itr != outputParameters.end();
-            ++itr)
-        {
-            popParameter(itr->get());
-        }
-
-        return true;
     }
-    return false;
+
+    OSG_NOTICE<<"After lua_getglobal  Type "<<lua_type(_lua,-1)<<std::endl;
+    OSG_NOTICE<<"After lua_getglobal  Typename "<<lua_typename(_lua,-1)<<std::endl;
+
+    OSG_NOTICE<<"After lua_getglobal  lua_isfunction "<<lua_isfunction(_lua,-1)<<std::endl;
+
+    for(osg::ScriptEngine::Parameters::const_iterator itr = inputParameters.begin();
+        itr != inputParameters.end();
+        ++itr)
+    {
+        pushParameter(itr->get());
+    }
+
+    int topBeforeCall = lua_gettop(_lua);
+
+    if (lua_pcall(_lua, inputParameters.size(), LUA_MULTRET,0)!=0)
+    {
+        OSG_NOTICE<<"Lua error : "<<lua_tostring(_lua, -1)<<std::endl;
+        return false;
+    }
+
+    int numReturns = (lua_gettop(_lua)+1)-topBeforeCall;
+
+    outputParameters.clear();
+
+    for(int i=0; i<numReturns; ++i)
+    {
+        osg::ref_ptr<osg::Object> obj = popParameterObject();
+        if (obj.valid()) outputParameters.push_back(obj);
+    }
+
+    return true;
 }
 
 
@@ -459,6 +515,19 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
+        case(osgDB::BaseSerializer::RW_IMAGE):
+        case(osgDB::BaseSerializer::RW_OBJECT):
+        {
+            osg::Object* value = 0;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                OSG_NOTICE<<"Sucessful getProperty("<<object<<", "<<propertyName<<" "<<value<<std::endl;
+                pushObject(value);
+                return 1;
+            }
+            OSG_NOTICE<<"Error getProperty("<<object<<", "<<propertyName<<" "<<value<<" Failed"<<std::endl;
+            break;
+        }
         default:
             break;
     }
@@ -638,6 +707,42 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
+        case(osgDB::BaseSerializer::RW_IMAGE):
+        case(osgDB::BaseSerializer::RW_OBJECT):
+        {
+            if (lua_istable(_lua, -1))
+            {
+                osg::Object* value = 0;
+                lua_pushstring(_lua, "object_ptr");
+                lua_rawget(_lua, -2);
+                if (lua_type(_lua, -1)==LUA_TUSERDATA) value = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+                lua_pop(_lua, 1);
+
+                if (value)
+                {
+                    OSG_NOTICE<<"Assigning property object "<<value->className()<<" to to object "<<object->className()<<"::"<<propertyName<<std::endl;
+                    _pi.setProperty(object, propertyName, value);
+                    return 0;
+                }
+                else
+                {
+                    OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, -1))<<"' cannot be assigned to "<<object->className()<<"::"<<propertyName<<std::endl;
+                }
+            }
+            else if (lua_isnil(_lua, -1))
+            {
+                OSG_NOTICE<<"Assigning property object (nil) to to object "<<object->className()<<"::"<<propertyName<<std::endl;
+                osg::Object* value = 0;
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            else
+            {
+                OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, -1))<<"' cannot be assigned to "<<object->className()<<"::"<<propertyName<<std::endl;
+                return 0;
+            }
+            break;
+        }
         default:
             break;
     }
@@ -711,6 +816,17 @@ osgDB::BaseSerializer::Type LuaScriptEngine::getType() const
         case(LUA_TSTRING): return osgDB::BaseSerializer::RW_STRING;
         case(LUA_TTABLE):
         {
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, -2);
+            bool isObject = (lua_type(_lua, -1)==LUA_TUSERDATA);
+            lua_pop(_lua, 1);
+
+            if (isObject)
+            {
+                return osgDB::BaseSerializer::RW_OBJECT;
+            }
+
+
             int n = lua_gettop(_lua);    /* number of arguments */
             lua_pushnil(_lua);
 
@@ -1020,6 +1136,145 @@ bool LuaScriptEngine::popParameter(osg::Object* object)
     return false;
 }
 
+osg::Object* LuaScriptEngine::popParameterObject()
+{
+    osg::ref_ptr<osg::Object> object = 0;
+
+    osgDB::BaseSerializer::Type type = getType();
+    switch(type)
+    {
+        case(osgDB::BaseSerializer::RW_BOOL):
+        {
+            if (lua_isboolean(_lua, -1)) object = new osg::BoolValueObject("", lua_toboolean(_lua, -1)!=0);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_STRING):
+        {
+            if (lua_isstring(_lua, -1)) object = new osg::StringValueObject("", lua_tostring(_lua, -1));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ENUM):
+        case(osgDB::BaseSerializer::RW_INT):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::IntValueObject("", static_cast<int>(lua_tonumber(_lua, -1)));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_UINT):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::UIntValueObject("", static_cast<unsigned int>(lua_tonumber(_lua, -1)));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_FLOAT):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::FloatValueObject("", static_cast<float>(lua_tonumber(_lua, -1)));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_DOUBLE):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::DoubleValueObject("", static_cast<double>(lua_tonumber(_lua, -1)));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC2F):
+        {
+            osg::Vec2f value;
+            if (getValue(value)) object = new osg::Vec2fValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC3F):
+        {
+            osg::Vec3f value;
+            if (getValue(value)) object = new osg::Vec3fValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC4F):
+        {
+            osg::Vec4f value;
+            if (getValue(value)) object = new osg::Vec4fValueObject("", value);
+            break;
+        }
+#ifdef OSG_USE_FLOAT_MATRIX
+        case(osgDB::BaseSerializer::RW_MATRIX):
+#endif
+        case(osgDB::BaseSerializer::RW_MATRIXF):
+        {
+            osg::Matrixf value;
+            if (getValue(value)) object = new osg::MatrixfValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC2D):
+        {
+            osg::Vec2d value;
+            if (getValue(value)) object = new osg::Vec2dValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC3D):
+        {
+            osg::Vec3d value;
+            if (getValue(value)) object = new osg::Vec3dValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_VEC4D):
+        {
+            osg::Vec4d value;
+            if (getValue(value)) object = new osg::Vec4dValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_QUAT):
+        {
+            osg::Quat value;
+            if (getValue(value)) object = new osg::QuatValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_PLANE):
+        {
+            osg::Plane value;
+            if (getValue(value)) object = new osg::PlaneValueObject("", value);
+            break;
+        }
+#ifndef OSG_USE_FLOAT_MATRIX
+        case(osgDB::BaseSerializer::RW_MATRIX):
+#endif
+        case(osgDB::BaseSerializer::RW_MATRIXD):
+        {
+            osg::Matrixd value;
+            if (getValue(value)) object = new osg::MatrixdValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_IMAGE):
+        case(osgDB::BaseSerializer::RW_OBJECT):
+        {
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, -2);
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
+            {
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+            }
+            lua_pop(_lua, 1);
+        }
+        default:
+            break;
+    }
+
+    lua_pop(_lua, 1);
+
+    return object.release();
+
+#if 0
+    osg::ValueObject* vo = dynamic_cast<osg::ValueObject*>(object);
+    if (vo)
+    {
+        GetStackValueVisitor pvv(this, -1);
+        vo->set(pvv);
+        lua_pop(_lua, pvv._numberToPop);
+    }
+    else
+    {
+        lua_pop(_lua, 1);
+    }
+#endif
+    return object.release();
+}
+
 void LuaScriptEngine::createAndPushObject(const std::string& compoundName) const
 {
     osg::ref_ptr<osg::Object> object = _pi.createObject(compoundName);
@@ -1034,8 +1289,6 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
 {
     if (object)
     {
-        OSG_NOTICE<<"Creating lua object representation for "<<object<<" "<<object->getCompoundClassName()<<std::endl;
-
         lua_newtable(_lua);
 
         // set up objbect_ptr to handle ref/unref of the object

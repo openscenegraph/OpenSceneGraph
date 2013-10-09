@@ -85,6 +85,7 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         bool pushParameter(osg::Object* object);
         bool popParameter(osg::Object* object);
+        osg::Object* popParameterObject();
 
 
         void createAndPushObject(const std::string& compoundName) const;
@@ -96,11 +97,13 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         virtual ~LuaScriptEngine();
 
-
         lua_State* _lua;
 
-        typedef std::set< osg::ref_ptr<osg::Script> > ScriptSet;
-        ScriptSet _loadedScripts;
+        unsigned int _scriptCount;
+        std::string createUniquieScriptName();
+
+        typedef std::map< osg::ref_ptr<osg::Script>, std::string> ScriptMap;
+        ScriptMap _loadedScripts;
 
         mutable osgDB::PropertyInterface _pi;
 };

@@ -138,6 +138,9 @@ public:
 
     BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
 
+    virtual bool set(osg::Object& /*object*/, void* /*value*/) { return false; }
+    virtual bool get(const osg::Object& /*object*/, void* /*value*/) { return false; }
+
     virtual bool read( InputStream&, osg::Object& ) = 0;
     virtual bool write( OutputStream&, const osg::Object& ) = 0;
     virtual const std::string& getName() const = 0;
@@ -506,6 +509,9 @@ public:
 
     ObjectSerializer( const char* name, P* def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
+
+    virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
+    virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {

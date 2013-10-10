@@ -367,13 +367,51 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
 bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Not Supported yet."<<std::endl;
-    return false;
+    osgDB::BaseSerializer::Type sourceType;
+    osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
+    if (serializer)
+    {
+        if (areTypesCompatible(valueType, sourceType))
+        {
+            OSG_NOTICE<<"Calling get"<<std::endl;
+            return serializer->get(*object, valuePtr);
+        }
+        else
+        {
+            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<sourceType<<std::endl;
+            return false;
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
+        return false;
+    }
 }
 
 bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() Not Supported yet."<<std::endl;
-    return false;
+    osgDB::BaseSerializer::Type destinationType;
+    osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, destinationType);
+    if (serializer)
+    {
+        if (areTypesCompatible(valueType, destinationType))
+        {
+            OSG_NOTICE<<"Calling set"<<std::endl;
+            return serializer->set(*object, const_cast<void*>(valuePtr));
+        }
+        else
+        {
+            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<destinationType<<std::endl;
+            return false;
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() no serializer available."<<std::endl;
+        return false;
+    }
 }
 
 

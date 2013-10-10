@@ -43,8 +43,8 @@ public:
 
 private:
 
-    virtual AudioSink * cloneType() const { return 0; }
-    virtual AudioSink * clone(const osg::CopyOp &) const { return 0; }
+    virtual Object* cloneType() const { return 0; }
+    virtual Object* clone(const osg::CopyOp &) const { return 0; }
 
     double  _delay;
 };

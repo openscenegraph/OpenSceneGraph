@@ -366,7 +366,6 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
 
 bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
-    OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Not Supported yet."<<std::endl;
     osgDB::BaseSerializer::Type sourceType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
     if (serializer)
@@ -391,7 +390,6 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
 
 bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
-    OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() Not Supported yet."<<std::endl;
     osgDB::BaseSerializer::Type destinationType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, destinationType);
     if (serializer)

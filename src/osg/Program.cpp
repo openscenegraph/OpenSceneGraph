@@ -674,7 +674,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         _extensions->glGetProgramiv(_glProgramHandle, GL_ACTIVE_UNIFORM_BLOCKS,
                                     reinterpret_cast<GLint*>(&activeUniformBlocks));
         _extensions->glGetProgramiv(_glProgramHandle,
-                                    GL_ACTIVE_UNIFORM_MAX_LENGTH,
+                                    GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH,
                                     &maxBlockNameLen);
         if (maxBlockNameLen > 0)
         {

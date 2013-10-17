@@ -17,7 +17,7 @@
 */
 
 //
-//  main.m
+//  main.mm
 //  osgsimpleviewerCocoa
 //
 //  Created by Eric Wing on 11/13/06.

@@ -201,7 +201,11 @@ class OSG_EXPORT Node : public Object
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeUpdateCallback(NodeCallback* nc) {
             if (nc != NULL && _updateCallback.valid()) {
-                if (_updateCallback == nc) setUpdateCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                if (_updateCallback == nc)
+                {
+                    setUpdateCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    nc->setNestedCallback(0);
+                }
                 else _updateCallback->removeNestedCallback(nc);
             }
         }
@@ -231,7 +235,11 @@ class OSG_EXPORT Node : public Object
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeEventCallback(NodeCallback* nc) {
             if (nc != NULL && _eventCallback.valid()) {
-                if (_eventCallback == nc) setEventCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                if (_eventCallback == nc)
+                {
+                    setEventCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    nc->setNestedCallback(0);
+                }
                 else _eventCallback->removeNestedCallback(nc);
             }
         }
@@ -261,7 +269,11 @@ class OSG_EXPORT Node : public Object
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeCullCallback(NodeCallback* nc) {
             if (nc != NULL && _cullCallback.valid()) {
-                if (_cullCallback == nc) setCullCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                if (_cullCallback == nc)
+                {
+                    setCullCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    nc->setNestedCallback(0);
+                }
                 else _cullCallback->removeNestedCallback(nc);
             }
         }

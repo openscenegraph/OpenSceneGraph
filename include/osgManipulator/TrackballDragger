@@ -17,6 +17,9 @@
 
 #include <osgManipulator/RotateCylinderDragger>
 #include <osgManipulator/RotateSphereDragger>
+#include <osg/ShapeDrawable>
+#include <osg/Geometry>
+#include <osg/LineWidth>
 
 namespace osgManipulator {
 
@@ -34,6 +37,18 @@ class OSGMANIPULATOR_EXPORT TrackballDragger : public CompositeDragger
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 
+        /** Sets the width of the axis lines in pixels. */
+        void setAxisLineWidth(float linePixelWidth);
+
+        /** Retrieves the width of the axis lines in pixels. */
+        float getAxisLineWidth() const { return _axisLineWidth; }
+
+        /** Sets the height of the cylinders representing the axis lines for picking. */
+        void setPickCylinderHeight(float pickCylinderHeight);
+
+        /** Retrieves the height of the cylinders representing the axis lines for picking. */
+        float getPickCylinderHeight() const { return _pickCylinderHeight; }
+
     protected:
 
         virtual ~TrackballDragger();
@@ -42,6 +57,13 @@ class OSGMANIPULATOR_EXPORT TrackballDragger : public CompositeDragger
         osg::ref_ptr<RotateCylinderDragger> _yDragger;
         osg::ref_ptr<RotateCylinderDragger> _zDragger;
         osg::ref_ptr<RotateSphereDragger>   _xyzDragger;
+
+        float _axisLineWidth;
+        float _pickCylinderHeight;
+
+        osg::ref_ptr<osg::Geode> _geode;
+        osg::ref_ptr<osg::Cylinder> _cylinder;
+        osg::ref_ptr<osg::LineWidth> _lineWidth;
 };
 
 

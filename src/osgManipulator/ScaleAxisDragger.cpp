@@ -35,6 +35,9 @@ ScaleAxisDragger::ScaleAxisDragger()
     addChild(_zDragger.get());
     addDragger(_zDragger.get());
 
+    _axisLineWidth = 2.0f;
+    _boxSize = 0.05f;
+
     setParentDragger(getParentDragger());
 }
 
@@ -45,7 +48,7 @@ ScaleAxisDragger::~ScaleAxisDragger()
 void ScaleAxisDragger::setupDefaultGeometry()
 {
     // Create a line.
-    osg::Geode* lineGeode = new osg::Geode;
+    _lineGeode = new osg::Geode;
     {
         osg::Geometry* geometry = new osg::Geometry();
 
@@ -56,26 +59,32 @@ void ScaleAxisDragger::setupDefaultGeometry()
         geometry->setVertexArray(vertices);
         geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,2));
 
-        lineGeode->addDrawable(geometry);
+        _lineGeode->addDrawable(geometry);
     }
 
     // Turn of lighting for line and set line width.
     {
-        osg::LineWidth* linewidth = new osg::LineWidth();
-        linewidth->setWidth(2.0f);
-        lineGeode->getOrCreateStateSet()->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
-        lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+        _lineWidth = new osg::LineWidth();
+        _lineWidth->setWidth(_axisLineWidth);
+        _lineGeode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth, osg::StateAttribute::ON);
+        _lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     }
 
     // Add line to all the individual 1D draggers.
-    _xDragger->addChild(lineGeode);
-    _yDragger->addChild(lineGeode);
-    _zDragger->addChild(lineGeode);
+    _xDragger->addChild(_lineGeode);
+    _yDragger->addChild(_lineGeode);
+    _zDragger->addChild(_lineGeode);
 
     osg::Geode* geode = new osg::Geode;
 
     // Create a box.
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(1.0f,0.0f,0.0f), 0.05)));
+    _box = new osg::Box(osg::Vec3(1.0f,0.0f,0.0f), _boxSize);
+    geode->addDrawable(new osg::ShapeDrawable(_box));
+
+    // This ensures correct lighting for scaled draggers.
+#if !defined(OSG_GLES2_AVAILABLE)
+    geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+#endif
 
     // Add geode to all 1D draggers.
     _xDragger->addChild(geode);
@@ -98,4 +107,18 @@ void ScaleAxisDragger::setupDefaultGeometry()
     _xDragger->setColor(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
     _yDragger->setColor(osg::Vec4(0.0f,1.0f,0.0f,1.0f));
     _zDragger->setColor(osg::Vec4(0.0f,0.0f,1.0f,1.0f));
+}
+
+void ScaleAxisDragger::setAxisLineWidth(float linePixelWidth)
+{
+    _axisLineWidth = linePixelWidth;
+    if (_lineWidth.valid())
+        _lineWidth->setWidth(linePixelWidth);
+}
+
+void ScaleAxisDragger::setBoxSize(float size)
+{
+    _boxSize = size;
+    if (_box.valid())
+        _box->setHalfLengths(osg::Vec3(size * 0.5f, size * 0.5f, size * 0.5f));
 }

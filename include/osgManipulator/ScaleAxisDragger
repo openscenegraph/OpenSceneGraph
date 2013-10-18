@@ -16,6 +16,9 @@
 #define OSGMANIPULATOR_SCALEAXISDRAGGER 1
 
 #include <osgManipulator/Scale1DDragger>
+#include <osg/ShapeDrawable>
+#include <osg/Geometry>
+#include <osg/LineWidth>
 
 namespace osgManipulator {
 
@@ -33,6 +36,18 @@ class OSGMANIPULATOR_EXPORT ScaleAxisDragger : public CompositeDragger
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 
+        /** Sets the width of the axis lines in pixels. */
+        void setAxisLineWidth(float linePixelWidth);
+
+        /** Retrieves the width of the axis lines in pixels. */
+        float getAxisLineWidth() const { return _axisLineWidth; }
+
+        /** Sets the size of the boxes. */
+        void setBoxSize(float size);
+
+        /** Retrieves the size of the boxes. */
+        float getBoxSize() const { return _boxSize; }
+
     protected:
 
         virtual ~ScaleAxisDragger();
@@ -40,6 +55,13 @@ class OSGMANIPULATOR_EXPORT ScaleAxisDragger : public CompositeDragger
         osg::ref_ptr< Scale1DDragger >        _xDragger;
         osg::ref_ptr< Scale1DDragger >        _yDragger;
         osg::ref_ptr< Scale1DDragger >        _zDragger;
+
+        float _boxSize;
+        float _axisLineWidth;
+
+        osg::ref_ptr<osg::Geode> _lineGeode;
+        osg::ref_ptr<osg::LineWidth> _lineWidth;
+        osg::ref_ptr<osg::Box> _box;
 };
 
 

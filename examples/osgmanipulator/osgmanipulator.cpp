@@ -106,6 +106,8 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     {
         osgManipulator::TrackballDragger* d = new osgManipulator::TrackballDragger();
         d->setupDefaultGeometry();
+        d->setAxisLineWidth(5.0f);
+        d->setPickCylinderHeight(0.1f);
         dragger = d;
     }
     else if ("Translate1DDragger" == name)
@@ -124,6 +126,9 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     {
         osgManipulator::TranslateAxisDragger* d = new osgManipulator::TranslateAxisDragger();
         d->setupDefaultGeometry();
+        d->setAxisLineWidth(5.0f);
+        d->setPickCylinderRadius(0.05f);
+        d->setConeHeight(0.2f);
         dragger = d;
     }
     else if ("TranslatePlaneDragger" == name)

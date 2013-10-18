@@ -28,26 +28,26 @@ using namespace osgManipulator;
 namespace
 {
 
-osg::Geometry* createCircleGeometry(float radius, unsigned int numSegments)
-{
-    const float angleDelta = 2.0f*osg::PI/(float)numSegments;
-    const float r = radius;
-    float angle = 0.0f;
-    osg::Vec3Array* vertexArray = new osg::Vec3Array(numSegments);
-    osg::Vec3Array* normalArray = new osg::Vec3Array(numSegments);
-    for(unsigned int i = 0; i < numSegments; ++i,angle+=angleDelta)
+    osg::Geometry* createCircleGeometry(float radius, unsigned int numSegments)
     {
-        float c = cosf(angle);
-        float s = sinf(angle);
-        (*vertexArray)[i].set(c*r,s*r,0.0f);
-        (*normalArray)[i].set(c,s,0.0f);
+        const float angleDelta = 2.0f*osg::PI/(float)numSegments;
+        const float r = radius;
+        float angle = 0.0f;
+        osg::Vec3Array* vertexArray = new osg::Vec3Array(numSegments);
+        osg::Vec3Array* normalArray = new osg::Vec3Array(numSegments);
+        for(unsigned int i = 0; i < numSegments; ++i,angle+=angleDelta)
+        {
+            float c = cosf(angle);
+            float s = sinf(angle);
+            (*vertexArray)[i].set(c*r,s*r,0.0f);
+            (*normalArray)[i].set(c,s,0.0f);
+        }
+        osg::Geometry* geometry = new osg::Geometry();
+        geometry->setVertexArray(vertexArray);
+        geometry->setNormalArray(normalArray, osg::Array::BIND_PER_VERTEX);
+        geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,vertexArray->size()));
+        return geometry;
     }
-    osg::Geometry* geometry = new osg::Geometry();
-    geometry->setVertexArray(vertexArray);
-    geometry->setNormalArray(normalArray, osg::Array::BIND_PER_VERTEX);
-    geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,vertexArray->size()));
-    return geometry;
-}
 
 }
 
@@ -102,6 +102,9 @@ TrackballDragger::TrackballDragger(bool useAutoTransform)
         addDragger(_xyzDragger.get());
     }
 
+    _axisLineWidth = 2.0f;
+    _pickCylinderHeight = 0.15f;
+
     setParentDragger(getParentDragger());
 }
 
@@ -111,38 +114,39 @@ TrackballDragger::~TrackballDragger()
 
 void TrackballDragger::setupDefaultGeometry()
 {
-    osg::Geode* geode = new osg::Geode;
+    _geode = new osg::Geode;
     {
         osg::TessellationHints* hints = new osg::TessellationHints;
         hints->setCreateTop(false);
         hints->setCreateBottom(false);
         hints->setCreateBackFace(false);
 
-        osg::Cylinder* cylinder = new osg::Cylinder;
-        cylinder->setHeight(0.15f);
-        osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints);
-        geode->addDrawable(cylinderDrawable);
+        _cylinder = new osg::Cylinder;
+        _cylinder->setHeight(_pickCylinderHeight);
+        osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(_cylinder, hints);
+        _geode->addDrawable(cylinderDrawable);
         setDrawableToAlwaysCull(*cylinderDrawable);
-        geode->addDrawable(createCircleGeometry(1.0f, 100));
+        _geode->addDrawable(createCircleGeometry(1.0f, 100));
     }
 
     // Draw in line mode.
     {
         osg::PolygonMode* polymode = new osg::PolygonMode;
         polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-        geode->getOrCreateStateSet()->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-        geode->getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0f),osg::StateAttribute::ON);
+        _geode->getOrCreateStateSet()->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+        _lineWidth = new osg::LineWidth(_axisLineWidth);
+        _geode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth, osg::StateAttribute::ON);
 
-        #if !defined(OSG_GLES2_AVAILABLE)
-            geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
-        #endif
+#if !defined(OSG_GLES2_AVAILABLE)
+        _geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+#endif
 
     }
 
     // Add line to all the individual 1D draggers.
-    _xDragger->addChild(geode);
-    _yDragger->addChild(geode);
-    _zDragger->addChild(geode);
+    _xDragger->addChild(_geode);
+    _yDragger->addChild(_geode);
+    _zDragger->addChild(_geode);
 
 
     // Rotate X-axis dragger appropriately.
@@ -171,4 +175,17 @@ void TrackballDragger::setupDefaultGeometry()
 
         _xyzDragger->addChild(sphereGeode);
     }
+}
+
+void TrackballDragger::setAxisLineWidth(float linePixelWidth)
+{
+    _axisLineWidth = linePixelWidth;
+    if (_lineWidth.valid())
+        _lineWidth->setWidth(linePixelWidth);
+}
+void TrackballDragger::setPickCylinderHeight(float pickCylinderHeight)
+{
+    _pickCylinderHeight = pickCylinderHeight;
+    if (_cylinder.valid())
+        _cylinder->setHeight(pickCylinderHeight);
 }

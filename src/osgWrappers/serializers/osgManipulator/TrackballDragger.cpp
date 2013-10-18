@@ -9,4 +9,6 @@ REGISTER_OBJECT_WRAPPER( osgManipulator_TrackballDragger,
                          "osg::Object osg::Node osg::Transform osg::MatrixTransform osgManipulator::Dragger "
                          "osgManipulator::TrackballDragger" )  // No need to contain CompositeDragger here
 {
+    ADD_FLOAT_SERIALIZER(AxisLineWidth, 2.0f);
+    ADD_FLOAT_SERIALIZER(PickCylinderHeight, 0.15f);
 }

@@ -20,10 +20,10 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(FbxNode* pNode, int& 
     }
 
     osg::Light* osgLight = new osg::Light;
-    osg::LightSource* osgLightSource = new osg::LightSource;
-
-    osgLightSource->setLight(osgLight);
     osgLight->setLightNum(nLightCount++);
+
+    osg::LightSource* osgLightSource = new osg::LightSource;
+    osgLightSource->setLight(osgLight);
 
     FbxLight::EType fbxLightType = fbxLight->LightType.IsValid() ?
         fbxLight->LightType.Get() : FbxLight::ePoint;

@@ -546,6 +546,10 @@ void GraphicsContext::close(bool callCloseImplementation)
         }
     }
 
+    if (_state.valid())
+    {
+        _state->releaseGLObjects();
+    }
 
     if (callCloseImplementation && _state.valid() && isRealized())
     {
@@ -568,8 +572,6 @@ void GraphicsContext::close(bool callCloseImplementation)
 
                 osg::flushAllDeletedGLObjects(_state->getContextID());
             }
-
-            _state->reset();
 
             releaseContext();
         }

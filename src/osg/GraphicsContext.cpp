@@ -547,6 +547,9 @@ void GraphicsContext::close(bool callCloseImplementation)
     }
 
 
+    bool contextIDValid = _state.valid();
+    unsigned int contextID = _state.valid() ? _state->getContextID() : ~0U;
+
     if (callCloseImplementation && _state.valid() && isRealized())
     {
         OSG_INFO<<"Closing still viable window "<<sharedContextExists<<" _state->getContextID()="<<_state->getContextID()<<std::endl;
@@ -557,7 +560,14 @@ void GraphicsContext::close(bool callCloseImplementation)
             {
                 OSG_INFO<<"Doing delete of GL objects"<<std::endl;
 
-                osg::deleteAllGLObjects(_state->getContextID());
+                _state->reset();
+
+                // Kill the State now so all the (directly or indirectly) referenced GLObjects can make it into delete cache in time.
+                // That way osg::deleteAllGLObjects won't miss them and left them to be deleted afterwards in a new GraphicsContext 
+                // that happens to have the same contextID (see SceneView::draw() and _requiresFlush flag).
+                _state = 0; 
+
+                osg::deleteAllGLObjects(contextID);
 
                 OSG_INFO<<"Done delete of GL objects"<<std::endl;
             }
@@ -567,9 +577,9 @@ void GraphicsContext::close(bool callCloseImplementation)
                 // which have already been deleted
 
                 osg::flushAllDeletedGLObjects(_state->getContextID());
-            }
 
-            _state->reset();
+                _state->reset();
+            }
 
             releaseContext();
         }
@@ -585,18 +595,18 @@ void GraphicsContext::close(bool callCloseImplementation)
     // now discard any deleted deleted OpenGL objects that the are still hanging around - such as due to
     // the the flushDelete*() methods not being invoked, such as when using GraphicContextEmbedded where makeCurrent
     // does not work.
-    if ( !sharedContextExists && _state.valid())
+    if ( !sharedContextExists && contextIDValid)
     {
         OSG_INFO<<"Doing discard of deleted OpenGL objects."<<std::endl;
 
-        osg::discardAllGLObjects(_state->getContextID());
+        osg::discardAllGLObjects(contextID);
     }
 
-    if (_state.valid())
+    if (contextIDValid)
     {
-        decrementContextIDUsageCount(_state->getContextID());
+        decrementContextIDUsageCount(contextID);
 
-        _state = 0;
+        if (_state.valid()) _state = 0;
     }
 }
 

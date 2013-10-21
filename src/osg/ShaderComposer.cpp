@@ -37,6 +37,12 @@ ShaderComposer::~ShaderComposer()
     OSG_INFO<<"ShaderComposer::~ShaderComposer() "<<this<<std::endl;
 }
 
+void ShaderComposer::releaseGLObjects(osg::State* state)
+{
+    _programMap.clear();
+    _shaderMainMap.clear();
+}
+
 osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderComponents)
 {
     ProgramMap::iterator itr = _programMap.find(shaderComponents);

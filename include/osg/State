@@ -218,6 +218,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Copy the modes and attributes which capture the current state.*/
         void captureCurrentState(StateSet& stateset) const;
 
+        /** Release all OpenGL objects associated cached by this osg::State object.*/
+        void releaseGLObjects();
+
         /** reset the state object to an empty stack.*/
         void reset();
 

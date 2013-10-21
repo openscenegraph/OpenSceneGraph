@@ -155,6 +155,57 @@ void State::objectDeleted(void* object)
     }
 }
 
+
+void State::releaseGLObjects()
+{
+    // release any GL objects held by the shader composer
+    _shaderComposer->releaseGLObjects(this);
+
+    // release any StateSet's on the stack
+    for(StateSetStack::iterator itr = _stateStateStack.begin();
+        itr != _stateStateStack.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(this);
+    }
+
+    _modeMap.clear();
+    _textureModeMapList.clear();
+
+    // release any cached attributes
+    for(AttributeMap::iterator aitr = _attributeMap.begin();
+        aitr != _attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        if (as.global_default_attribute.valid())
+        {
+            as.global_default_attribute->releaseGLObjects(this);
+        }
+    }
+    _attributeMap.clear();
+
+    // release any cached texture attributes
+    for(TextureAttributeMapList::iterator itr = _textureAttributeMapList.begin();
+        itr != _textureAttributeMapList.end();
+        ++itr)
+    {
+        AttributeMap& attributeMap = *itr;
+        for(AttributeMap::iterator aitr = attributeMap.begin();
+            aitr != attributeMap.end();
+            ++aitr)
+        {
+            AttributeStack& as = aitr->second;
+            if (as.global_default_attribute.valid())
+            {
+                as.global_default_attribute->releaseGLObjects(this);
+            }
+        }
+    }
+
+    _textureAttributeMapList.clear();
+}
+
 void State::reset()
 {
 
@@ -911,7 +962,7 @@ void State::initializeExtensionProcs()
     if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") || OSG_GLES2_FEATURES)
     {
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        if(OSG_GLES2_FEATURES)       
+        if(OSG_GLES2_FEATURES)
             _glMaxTextureCoords = _glMaxTextureUnits;
         else
             glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);

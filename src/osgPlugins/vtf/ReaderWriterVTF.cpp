@@ -171,7 +171,7 @@ bool ConvertImageFormat(unsigned int vtfFormat, int& internalFormat,
     supported = true;
 
     // Decode the format
-    switch (vtfFormat)
+    switch (static_cast<int>(vtfFormat))
     {
         case VTF_FORMAT_DEFAULT:
             supported = false;

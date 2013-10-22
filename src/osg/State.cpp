@@ -484,12 +484,18 @@ void State::apply(const StateSet* dstate)
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
 
+        const Program::PerContextProgram* previousLastAppliedProgramObject = _lastAppliedProgramObject;
+
         applyModeList(_modeMap,dstate->getModeList());
         applyAttributeList(_attributeMap,dstate->getAttributeList());
 
         if (_shaderCompositionEnabled)
         {
-            applyShaderComposition();
+            if (previousLastAppliedProgramObject == _lastAppliedProgramObject || _lastAppliedProgramObject==0)
+            {
+                // No program has been applied by the StateSet stack so assume shader composition is required
+                applyShaderComposition();
+            }
         }
 
         if (dstate->getUniformList().empty())
@@ -911,7 +917,7 @@ void State::initializeExtensionProcs()
     if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") || OSG_GLES2_FEATURES)
     {
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        if(OSG_GLES2_FEATURES)       
+        if(OSG_GLES2_FEATURES)
             _glMaxTextureCoords = _glMaxTextureUnits;
         else
             glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);

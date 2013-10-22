@@ -283,21 +283,29 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         /** Get the hint of the profile mask to use in when creating graphic contexts.*/
         unsigned int getGLContextProfileMask() const { return _glContextProfileMask; }
-        
-        
+
+
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }
-        
+
         typedef std::vector<std::string> FileNames;
         void setKeystoneFileNames(const FileNames& filenames) { _keystoneFileNames = filenames; }
         FileNames& getKeystoneFileNames() { return _keystoneFileNames; }
         const FileNames& getKeystoneFileNames() const { return _keystoneFileNames; }
-        
+
         typedef std::vector< osg::ref_ptr<osg::Object> > Objects;
         void setKeystones(const Objects& objects) { _keystones = objects; }
         Objects& getKeystones() { return _keystones; }
         const Objects& getKeystones() const { return _keystones; }
 
+        enum OSXMenubarBehavior {
+            MENUBAR_AUTO_HIDE,
+            MENUBAR_FORCE_HIDE,
+            MENUBAR_FORCE_SHOW
+        };
+
+        OSXMenubarBehavior getOSXMenubarBehavior() const { return _OSXMenubarBehavior; }
+        void setOSXMenubarBehavior(OSXMenubarBehavior hint) { _OSXMenubarBehavior = hint; }
 
         /** helper function for computing the left eye projection matrix.*/
         virtual osg::Matrixd computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const;
@@ -365,11 +373,13 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         SwapMethod                      _swapMethod;
 
-    
+
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;
-        Objects                         _keystones; 
-        
+        Objects                         _keystones;
+
+        OSXMenubarBehavior              _OSXMenubarBehavior;
+
 };
 
 }

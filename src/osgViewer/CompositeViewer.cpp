@@ -585,8 +585,15 @@ void CompositeViewer::realize()
         return;
     }
 
-    unsigned int maxTexturePoolSize = osg::DisplaySettings::instance()->getMaxTexturePoolSize();
-    unsigned int maxBufferObjectPoolSize = osg::DisplaySettings::instance()->getMaxBufferObjectPoolSize();
+    // get the display settings that will be active for this viewer
+    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+
+    // pass on the display settings to the WindowSystemInterface.
+    if (wsi && wsi->getDisplaySettings()==0) wsi->setDisplaySettings(ds);
+
+    unsigned int maxTexturePoolSize = ds->getMaxTexturePoolSize();
+    unsigned int maxBufferObjectPoolSize = ds->getMaxBufferObjectPoolSize();
 
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();

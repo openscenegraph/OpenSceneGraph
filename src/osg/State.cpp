@@ -535,12 +535,18 @@ void State::apply(const StateSet* dstate)
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
 
+        const Program::PerContextProgram* previousLastAppliedProgramObject = _lastAppliedProgramObject;
+
         applyModeList(_modeMap,dstate->getModeList());
         applyAttributeList(_attributeMap,dstate->getAttributeList());
 
         if (_shaderCompositionEnabled)
         {
-            applyShaderComposition();
+            if (previousLastAppliedProgramObject == _lastAppliedProgramObject || _lastAppliedProgramObject==0)
+            {
+                // No program has been applied by the StateSet stack so assume shader composition is required
+                applyShaderComposition();
+            }
         }
 
         if (dstate->getUniformList().empty())

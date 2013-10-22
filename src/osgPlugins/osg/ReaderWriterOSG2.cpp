@@ -242,7 +242,8 @@ public:
         if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
 
         InputStream is( options );
-        if ( is.start(ii.get())!=InputStream::READ_SCENE )
+        osgDB::InputStream::ReadType readType = is.start(ii.get());
+        if ( readType!=InputStream::READ_SCENE && readType!=InputStream::READ_OBJECT )
         {
             CATCH_EXCEPTION(is);
             return ReadResult::FILE_NOT_HANDLED;
@@ -250,6 +251,7 @@ public:
 
         is.decompress(); CATCH_EXCEPTION(is);
         osg::Node* node = dynamic_cast<osg::Node*>(is.readObject()); CATCH_EXCEPTION(is);
+        if ( !node ) return ReadResult::FILE_NOT_HANDLED;
         return node;
     }
 

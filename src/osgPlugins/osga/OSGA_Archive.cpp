@@ -600,44 +600,94 @@ bool OSGA_Archive::addFileReference(pos_type position, size_type size, const std
 }
 
 
+// streambuffer class to give access to a portion of the archive stream, for numChars onwards
+// from the current position in the archive.
 
 class proxy_streambuf : public std::streambuf
 {
-   public:
+public:
 
-      proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
-        _streambuf(streambuf),
-        _numChars(numChars) {
-            setg(&oneChar, (&oneChar)+1, (&oneChar)+1);
+    proxy_streambuf(std::streambuf* streambuf, std::streamoff numChars):
+        _streambuf(streambuf),_curPos(0),_numChars(numChars)
+    {
+        _startPos = ARCHIVE_POS(_streambuf->pubseekoff(0, std::ios_base::cur, std::ios_base::in));
+        setg(&_oneChar, (&_oneChar)+1, (&_oneChar)+1);
     }
 
-      /// Destructor deallocates no buffer space.
-      virtual ~proxy_streambuf()  {}
+    // Destructor deallocates no buffer space.
+    virtual ~proxy_streambuf()  {}
 
-      std::streambuf* _streambuf;
+    std::streambuf* _streambuf; // Underlying archive stream
 
-    protected:
+protected:
 
-      unsigned int _numChars;
-      char_type oneChar;
+    char_type _oneChar;         // Single character buffer
+    std::streamoff _curPos, _numChars;
+    OSGA_Archive::pos_type _startPos;
+      
+    // Set internal position pointer to relative position.  Virtual function called by the public
+    // member function pubseekoff to alter the stream position.
 
-      virtual int_type underflow()
-      {
-     if ( gptr() == &oneChar ) return traits_type::to_int_type(oneChar);
+    virtual std::streampos seekoff (std::streamoff off, std::ios_base::seekdir way,
+                   std::ios_base::openmode which = std::ios_base::in)
+    {
+        std::streamoff newpos;
+        if ( way == std::ios_base::beg )
+        {
+            newpos = off;
+        }
+        else if ( way == std::ios_base::cur )
+        {
+            newpos = _curPos + off;
+        }
+        else if ( way == std::ios_base::end )
+        {
+            newpos = _numChars + off;
+        }
+        else
+        {
+            return -1;
+        }
 
-         if ( _numChars==0 ) return traits_type::eof();
-         --_numChars;
+        if ( newpos<0 || newpos>_numChars ) return -1;
+        if ( (std::streamoff)_streambuf->pubseekpos( STREAM_POS(_startPos+newpos), which) < 0 ) return -1;
+        _curPos = newpos;
+        return _curPos;
+    }
 
-           int_type next_value = _streambuf->sbumpc();
+    // Set internal position pointer to absolute position.  Virtual function called by the public
+    // member function pubseekpos to alter the stream positions
 
-         if ( !traits_type::eq_int_type(next_value,traits_type::eof()) )
-     {
-       setg(&oneChar, &oneChar, (&oneChar)+1);
-            oneChar = traits_type::to_char_type(next_value);
-     }
+    virtual std::streampos seekpos (std::streampos sp, std::ios_base::openmode which = std::ios_base::in)
+    {
+        return seekoff(sp, std::ios_base::beg, which);
+    }
 
-         return next_value;
-      }
+    // Virtual function called by other member functions to get the current character.  It is called
+    // by streambuf public member functions such as sgetc to request a new character when there are
+    // no read positions available at the get pointer (gptr).
+
+    virtual int_type underflow()
+    {
+        // Return current character.
+
+        if ( gptr() == &_oneChar ) return traits_type::to_int_type(_oneChar);
+
+        // Get another character from the archive stream, if available.
+
+        if ( _curPos==_numChars ) return traits_type::eof();
+         _curPos += 1;
+
+        int_type next_value = _streambuf->sbumpc();
+
+        if ( !traits_type::eq_int_type(next_value,traits_type::eof()) )
+        {
+            setg(&_oneChar, &_oneChar, (&_oneChar)+1);
+            _oneChar = traits_type::to_char_type(next_value);
+        }
+
+        return next_value;
+    }
 };
 
 struct OSGA_Archive::ReadObjectFunctor : public OSGA_Archive::ReadFunctor

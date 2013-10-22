@@ -176,6 +176,10 @@ class OSG_EXPORT GraphicsContext : public Object
 
             virtual void enumerateScreenSettings(const ScreenIdentifier& screenIdentifier, ScreenSettingsList & resolutionList) = 0;
 
+            virtual void setDisplaySettings(DisplaySettings*) {}
+
+            virtual osg::DisplaySettings* getDisplaySettings() const { return 0; }
+
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
 
             virtual ~WindowingSystemInterface() {}
@@ -206,6 +210,7 @@ class OSG_EXPORT GraphicsContext : public Object
                 settings.refreshRate = refreshRate;
                 return setScreenSettings(screenIdentifier, settings);
             }
+
         };
 
 

@@ -520,13 +520,15 @@ void Viewer::realize()
         return;
     }
 
-    unsigned int maxTexturePoolSize = osg::DisplaySettings::instance()->getMaxTexturePoolSize();
-    if (_camera->getDisplaySettings()) maxTexturePoolSize = std::max(maxTexturePoolSize, _camera->getDisplaySettings()->getMaxTexturePoolSize());
-    if (_displaySettings.valid()) maxTexturePoolSize = std::max(maxTexturePoolSize, _displaySettings->getMaxTexturePoolSize());
+    // get the display settings that will be active for this viewer
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
 
-    unsigned int maxBufferObjectPoolSize = osg::DisplaySettings::instance()->getMaxBufferObjectPoolSize();
-    if (_displaySettings.valid()) maxBufferObjectPoolSize = std::max(maxBufferObjectPoolSize, _displaySettings->getMaxBufferObjectPoolSize());
-    if (_camera->getDisplaySettings()) maxBufferObjectPoolSize = std::max(maxBufferObjectPoolSize, _camera->getDisplaySettings()->getMaxBufferObjectPoolSize());
+    // pass on the display settings to the WindowSystemInterface.
+    if (wsi && wsi->getDisplaySettings()==0) wsi->setDisplaySettings(ds);
+
+    unsigned int maxTexturePoolSize = ds->getMaxTexturePoolSize();
+    unsigned int maxBufferObjectPoolSize = ds->getMaxBufferObjectPoolSize();
 
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();

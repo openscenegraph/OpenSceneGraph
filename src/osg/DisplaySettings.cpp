@@ -100,6 +100,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
     _keystones = vs._keystones;
+
+    _OSXMenubarBehavior = vs._OSXMenubarBehavior;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -157,6 +159,9 @@ void DisplaySettings::merge(const DisplaySettings& vs)
         Objects::iterator found_itr = std::find(_keystones.begin(), _keystones.end(), object);
         if (found_itr == _keystones.end()) _keystones.push_back(const_cast<osg::Object*>(object));
     }
+
+    if (vs._OSXMenubarBehavior > _OSXMenubarBehavior)
+        _OSXMenubarBehavior = vs._OSXMenubarBehavior;
 }
 
 void DisplaySettings::setDefaults()
@@ -215,6 +220,8 @@ void DisplaySettings::setDefaults()
     _swapMethod = SWAP_DEFAULT;
 
     _keystoneHint = false;
+
+    _OSXMenubarBehavior = MENUBAR_AUTO_HIDE;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -327,6 +334,9 @@ static ApplicationUsageProxy DisplaySetting_e29(ApplicationUsage::ENVIRONMENTAL_
         "OSG_KEYSTONE_FILES <filename>[:filename]..",
         "Specify filenames of keystone parameter files. Under Windows use ; to deliminate files, otherwise use :");
 
+static ApplicationUsageProxy DisplaySetting_e30(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_MENUBAR_BEHAVIOR <behavior>",
+        "OSX Only : Specify the behavior of the menubar (AUTO_HIDE, FORCE_HIDE, FORCE_SHOW)");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -658,6 +668,24 @@ void DisplaySettings::readEnvironmentalVariables()
                 _keystoneFileNames.push_back(lastPath);
         }
     }
+
+    if( (ptr = getenv("OSG_MENUBAR_BEHAVIOR")) != 0)
+    {
+        if (strcmp(ptr,"AUTO_HIDE")==0)
+        {
+            _OSXMenubarBehavior = MENUBAR_AUTO_HIDE;
+        }
+        else
+        if (strcmp(ptr,"FORCE_HIDE")==0)
+        {
+            _OSXMenubarBehavior = MENUBAR_FORCE_HIDE;
+        }
+        else
+        if (strcmp(ptr,"FORCE_SHOW")==0)
+        {
+            _OSXMenubarBehavior = MENUBAR_FORCE_SHOW;
+        }
+    }
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -686,6 +714,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--keystone <filename>","Specify a keystone file to be used by the viewer for keystone correction.");
         arguments.getApplicationUsage()->addCommandLineOption("--keystone-on","Set the keystone hint to true to tell the viewer to do keystone correction.");
         arguments.getApplicationUsage()->addCommandLineOption("--keystone-off","Set the keystone hint to false.");
+        arguments.getApplicationUsage()->addCommandLineOption("--menubar-behavior <behavior>","Set the menubar behavior (AUTO_HIDE | FORCE_HIDE | FORCE_SHOW)");
     }
 
     std::string str;
@@ -824,6 +853,12 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         else if (str=="UNDEFINED") _swapMethod = SWAP_UNDEFINED;
     }
 
+    while(arguments.read("--menubar-behavior",str))
+    {
+        if (str=="AUTO_HIDE") _OSXMenubarBehavior = MENUBAR_AUTO_HIDE;
+        else if (str=="FORCE_HIDE") _OSXMenubarBehavior = MENUBAR_FORCE_HIDE;
+        else if (str=="FORCE_SHOW") _OSXMenubarBehavior = MENUBAR_FORCE_SHOW;
+    }
 
 }
 

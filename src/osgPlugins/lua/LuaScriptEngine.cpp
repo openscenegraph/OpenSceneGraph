@@ -81,6 +81,213 @@ static int setProperty(lua_State* _lua)
     return 0;
 }
 
+static int getChild(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==2)
+    {
+        if (lua_type(_lua, 1)==LUA_TTABLE &&
+            lua_type(_lua, 2)==LUA_TNUMBER)
+        {
+            std::string propertyName = lua_tostring(_lua, 2);
+
+            osg::Object* object = 0;
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, 1);
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
+            {
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+            }
+
+            lua_pop(_lua,1);
+
+            int index = static_cast<int>(lua_tonumber(_lua, 2));
+
+            osg::Group* group = dynamic_cast<osg::Group*>(object);
+            if (group)
+            {
+                if (index>=0 && index<static_cast<int>(group->getNumChildren()))
+                {
+                    lse->pushObject(group->getChild(index));
+                    return 1;
+                }
+                else
+                {
+                    OSG_NOTICE<<"Warning: child index out of range "<<index<<std::endl;
+                    return 0;
+                }
+            }
+            else
+            {
+                OSG_NOTICE<<"Warning: cannot get child from non osg::Group object. "<<object<<std::endl;
+            }
+
+            return 0;
+        }
+    }
+
+    OSG_NOTICE<<"Warning: Lua Group::getChild() not matched"<<std::endl;
+    return 0;
+}
+
+
+static int setChild(lua_State* _lua)
+{
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==3)
+    {
+        if (lua_type(_lua, 1)==LUA_TTABLE &&
+            lua_type(_lua, 2)==LUA_TNUMBER &&
+            lua_type(_lua, 3)==LUA_TTABLE)
+        {
+            std::string propertyName = lua_tostring(_lua, 2);
+
+            osg::Object* object = 0;
+
+            // get the group node.
+            {
+                lua_pushstring(_lua, "object_ptr");
+                lua_rawget(_lua, 1);
+
+                if (lua_type(_lua, -1)==LUA_TUSERDATA)
+                {
+                    object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+                }
+
+                lua_pop(_lua,1);
+            }
+
+            osg::Group* group = dynamic_cast<osg::Group*>(object);
+            if (!group)
+            {
+                OSG_NOTICE<<"Warning: cannot set child to non osg::Group object. "<<object<<std::endl;
+                return 0;
+            }
+
+            int index = static_cast<int>(lua_tonumber(_lua, 2));
+
+            // get the child node
+            {
+                lua_pushstring(_lua, "object_ptr");
+                lua_rawget(_lua, 3);
+
+                if (lua_type(_lua, -1)==LUA_TUSERDATA)
+                {
+                    object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+                }
+
+                lua_pop(_lua,1);
+            }
+
+            osg::Node* child = dynamic_cast<osg::Node*>(object);
+            if (!child)
+            {
+                OSG_NOTICE<<"Warning: cannot set non osg::Node child to osg::Group. Child passed is of type: "<<object->className()<<std::endl;
+                return 0;
+            }
+
+            if (index>=0 && index<static_cast<int>(group->getNumChildren()))
+            {
+                group->setChild(index, child);
+                return 1;
+            }
+            else
+            {
+                OSG_NOTICE<<"Warning: child index out of range "<<index<<std::endl;
+                return 0;
+            }
+        }
+    }
+
+    OSG_NOTICE<<"Warning: Lua Group::setChild() parameters not matched"<<std::endl;
+    return 0;
+}
+
+static int addChild(lua_State* _lua)
+{
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==2)
+    {
+        if (lua_type(_lua, 1)==LUA_TTABLE &&
+            lua_type(_lua, 2)==LUA_TTABLE)
+        {
+            osg::Object* object = 0;
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, 1);
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
+            {
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+            }
+
+            lua_pop(_lua,1);
+
+            osg::Object* child_obj = 0;
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, 2);
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
+            {
+                child_obj = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+            }
+
+            lua_pop(_lua,1);
+
+
+            osg::Group* group = dynamic_cast<osg::Group*>(object);
+            osg::Node* child = dynamic_cast<osg::Node*>(child_obj);
+            if (group && child)
+            {
+                OSG_NOTICE<<"Group "<<group<<" :: addChild("<<child<<")"<<std::endl;
+                group->addChild(child);
+                return 0;
+            }
+        }
+    }
+
+    OSG_NOTICE<<"Warning: Lua Group::addChild() parameters not matched"<<std::endl;
+    return 0;
+}
+
+static int getNumChildren(lua_State * _lua)
+{
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==1)
+    {
+        if (lua_type(_lua, 1)==LUA_TTABLE)
+        {
+            osg::Object* object = 0;
+            lua_pushstring(_lua, "object_ptr");
+            lua_rawget(_lua, 1);
+
+            if (lua_type(_lua, -1)==LUA_TUSERDATA)
+            {
+                object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+            }
+
+            lua_pop(_lua,1);
+
+            osg::Group* group = dynamic_cast<osg::Group*>(object);
+            if (group)
+            {
+                lua_pushinteger(_lua, group->getNumChildren());
+                return 1;
+            }
+            else
+            {
+                OSG_NOTICE<<"Warning: cannot get child from non osg::Group object. "<<object<<std::endl;
+                return 0;
+            }
+        }
+    }
+
+    OSG_NOTICE<<"Warning: Lua Group::getNumChildren() not matched"<<std::endl;
+    return 0;
+}
+
 static int garabageCollectObject(lua_State* _lua)
 {
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -132,8 +339,6 @@ LuaScriptEngine::LuaScriptEngine(const LuaScriptEngine& rhs, const osg::CopyOp&)
 
 LuaScriptEngine::~LuaScriptEngine()
 {
-    OSG_NOTICE<<"Closing lua"<<std::endl;
-
     lua_close(_lua);
 }
 
@@ -143,8 +348,6 @@ std::string LuaScriptEngine::createUniquieScriptName()
     sstr<<"script_"<<_scriptCount;
     ++_scriptCount;
 
-    OSG_NOTICE<<"uniqueScrtiptName "<<sstr.str()<<std::endl;
-
     return sstr.str();
 }
 
@@ -153,8 +356,6 @@ void LuaScriptEngine::initialize()
     _lua = luaL_newstate();
 
     luaL_openlibs(_lua);
-
-    OSG_NOTICE<<"Stack after openlibs "<<lua_gettop(_lua)<<std::endl;
 
     // provide global new method for creating osg::Object's.
     {
@@ -190,8 +391,6 @@ void LuaScriptEngine::initialize()
 
         lua_pop(_lua,1);
     }
-
-    OSG_NOTICE<<"Stack after initialize "<<lua_gettop(_lua)<<std::endl;
 }
 
 bool LuaScriptEngine::loadScript(osg::Script* script)
@@ -225,15 +424,7 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, Pa
 
     if (_loadedScripts.count(script)==0)
     {
-        OSG_NOTICE<<"Stack before load "<<lua_gettop(_lua)<<std::endl;
-
         if (!loadScript(script)) return false;
-
-        OSG_NOTICE<<"Stack after load "<<lua_gettop(_lua)<<std::endl;
-
-        OSG_NOTICE<<"  Type "<<lua_type(_lua,-1)<<std::endl;
-        OSG_NOTICE<<"  Typename "<<lua_typename(_lua,-1)<<std::endl;
-        OSG_NOTICE<<"  lua_isfunction "<<lua_isfunction(_lua,-1)<<std::endl;
 
         if (!entryPoint.empty())
         {
@@ -243,8 +434,6 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, Pa
                 return false;
             }
         }
-
-        OSG_NOTICE<<"Stack after init call "<<lua_gettop(_lua)<<std::endl;
     }
 
     if (entryPoint.empty())
@@ -254,20 +443,12 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, Pa
 
         std::string scriptID = itr->second;
 
-        OSG_NOTICE<<"Stack before pcall "<<lua_gettop(_lua)<<std::endl;
-        OSG_NOTICE<<"  scriptID "<<std::endl;
-
         lua_getglobal(_lua, scriptID.c_str());
     }
     else
     {
         lua_getglobal(_lua, entryPoint.c_str()); /* function to be called */
     }
-
-    OSG_NOTICE<<"After lua_getglobal  Type "<<lua_type(_lua,-1)<<std::endl;
-    OSG_NOTICE<<"After lua_getglobal  Typename "<<lua_typename(_lua,-1)<<std::endl;
-
-    OSG_NOTICE<<"After lua_getglobal  lua_isfunction "<<lua_isfunction(_lua,-1)<<std::endl;
 
     for(osg::ScriptEngine::Parameters::const_iterator itr = inputParameters.begin();
         itr != inputParameters.end();
@@ -720,7 +901,6 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
 
                 if (value)
                 {
-                    OSG_NOTICE<<"Assigning property object "<<value->className()<<" to to object "<<object->className()<<"::"<<propertyName<<std::endl;
                     _pi.setProperty(object, propertyName, value);
                     return 0;
                 }
@@ -1310,8 +1490,38 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
 
         lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, object->libraryName()); lua_settable(_lua, -3);
         lua_pushstring(_lua, "className"); lua_pushstring(_lua, object->className()); lua_settable(_lua, -3);
-        luaL_getmetatable(_lua, "LuaScriptEngine.Object");
-        lua_setmetatable(_lua, -2);
+
+        osg::Group* group = dynamic_cast<osg::Group*>(object);
+        if (group)
+        {
+            lua_pushstring(_lua, "getChild");
+            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
+            lua_pushcclosure(_lua, getChild, 1);
+            lua_settable(_lua, -3);
+
+            lua_pushstring(_lua, "setChild");
+            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
+            lua_pushcclosure(_lua, setChild, 1);
+            lua_settable(_lua, -3);
+
+            lua_pushstring(_lua, "addChild");
+            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
+            lua_pushcclosure(_lua, addChild, 1);
+            lua_settable(_lua, -3);
+
+            lua_pushstring(_lua, "getNumChildren");
+            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
+            lua_pushcclosure(_lua, getNumChildren, 1);
+            lua_settable(_lua, -3);
+
+            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+            lua_setmetatable(_lua, -2);
+        }
+        else
+        {
+            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+            lua_setmetatable(_lua, -2);
+        }
     }
     else
     {

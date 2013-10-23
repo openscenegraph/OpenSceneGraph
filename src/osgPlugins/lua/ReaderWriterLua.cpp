@@ -94,7 +94,13 @@ class ReaderWriterLua : public osgDB::ReaderWriter
 
             if (objects.empty()) return 0;
 
-            if (objects.size()==1) return objects[0].get();
+            if (objects.size()==1)
+            {
+                osg::Group* group = dynamic_cast<osg::Group*>(objects[0].get());
+                OSG_NOTICE<<"readObject form script, have one object "<<objects[0]->className()<<" "<<objects[0].get()<<std::endl;
+                if (group) OSG_NOTICE<<"  group numChildren()="<<group->getNumChildren()<<std::endl;
+                return objects[0].get();
+            }
 
             osg::ref_ptr<osg::Group> group = new osg::Group;
             for(Objects::iterator itr = objects.begin();

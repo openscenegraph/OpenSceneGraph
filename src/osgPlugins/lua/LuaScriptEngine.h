@@ -91,6 +91,25 @@ class LuaScriptEngine : public osg::ScriptEngine
         void createAndPushObject(const std::string& compoundName) const;
         void pushObject(osg::Object* object) const;
 
+        template<class T>
+        T* getObjectFromTable(int pos) const
+        {
+            if (lua_type(_lua, pos)==LUA_TTABLE)
+            {
+                lua_pushstring(_lua, "object_ptr");
+                lua_rawget(_lua, pos);
+
+                osg::Object* object = (lua_type(_lua, -1)==LUA_TUSERDATA)?
+                    *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1))) :
+                    0;
+
+                lua_pop(_lua,1);
+
+                return dynamic_cast<T*>(object);
+            }
+            else return 0;
+        }
+
     protected:
 
         void initialize();

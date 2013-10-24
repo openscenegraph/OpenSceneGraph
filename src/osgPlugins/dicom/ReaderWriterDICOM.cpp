@@ -1053,7 +1053,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 pixelSize_x(rhs.pixelSize_x),
                 pixelSize_y(rhs.pixelSize_y),
                 sliceThickness(rhs.sliceThickness),
-                distance(distance),
+                distance(rhs.distance),
                 position(rhs.position),
                 dirX(rhs.dirX),
                 dirY(rhs.dirY),

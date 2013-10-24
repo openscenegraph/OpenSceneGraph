@@ -123,7 +123,7 @@ void TrackballDragger::setupDefaultGeometry()
 
         _cylinder = new osg::Cylinder;
         _cylinder->setHeight(_pickCylinderHeight);
-        osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(_cylinder, hints);
+        osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(_cylinder.get(), hints);
         _geode->addDrawable(cylinderDrawable);
         setDrawableToAlwaysCull(*cylinderDrawable);
         _geode->addDrawable(createCircleGeometry(1.0f, 100));
@@ -135,7 +135,7 @@ void TrackballDragger::setupDefaultGeometry()
         polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
         _geode->getOrCreateStateSet()->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
         _lineWidth = new osg::LineWidth(_axisLineWidth);
-        _geode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth, osg::StateAttribute::ON);
+        _geode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth.get(), osg::StateAttribute::ON);
 
 #if !defined(OSG_GLES2_AVAILABLE)
         _geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
@@ -144,9 +144,9 @@ void TrackballDragger::setupDefaultGeometry()
     }
 
     // Add line to all the individual 1D draggers.
-    _xDragger->addChild(_geode);
-    _yDragger->addChild(_geode);
-    _zDragger->addChild(_geode);
+    _xDragger->addChild(_geode.get());
+    _yDragger->addChild(_geode.get());
+    _zDragger->addChild(_geode.get());
 
 
     // Rotate X-axis dragger appropriately.

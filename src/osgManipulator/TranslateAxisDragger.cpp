@@ -67,21 +67,21 @@ void TranslateAxisDragger::setupDefaultGeometry()
     {
         _lineWidth = new osg::LineWidth();
         _lineWidth->setWidth(_axisLineWidth);
-        _lineGeode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth, osg::StateAttribute::ON);
+        _lineGeode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth.get(), osg::StateAttribute::ON);
         _lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     }
 
     // Add line to all the individual 1D draggers.
-    _xDragger->addChild(_lineGeode);
-    _yDragger->addChild(_lineGeode);
-    _zDragger->addChild(_lineGeode);
+    _xDragger->addChild(_lineGeode.get());
+    _yDragger->addChild(_lineGeode.get());
+    _zDragger->addChild(_lineGeode.get());
 
     osg::Geode* geode = new osg::Geode;
 
     // Create a cone.
     {
         _cone = new osg::Cone (osg::Vec3(0.0f, 0.0f, 1.0f), _coneHeight * 0.25f, _coneHeight);
-        osg::ShapeDrawable* coneDrawable = new osg::ShapeDrawable(_cone);
+        osg::ShapeDrawable* coneDrawable = new osg::ShapeDrawable(_cone.get());
         // coneDrawable->setColor(osg::Vec4(0.0f,0.0f,1.0f,1.0f));
         geode->addDrawable(coneDrawable);
 
@@ -94,7 +94,7 @@ void TranslateAxisDragger::setupDefaultGeometry()
     // Create an invisible cylinder for picking the line.
     {
         _cylinder = new osg::Cylinder (osg::Vec3(0.0f,0.0f,0.5f), _pickCylinderRadius, 1.0f);
-        osg::Drawable* geometry = new osg::ShapeDrawable(_cylinder);
+        osg::Drawable* geometry = new osg::ShapeDrawable(_cylinder.get());
         setDrawableToAlwaysCull(*geometry);
         geode->addDrawable(geometry);
     }

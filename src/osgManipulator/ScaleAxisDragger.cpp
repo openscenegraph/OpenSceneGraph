@@ -66,20 +66,20 @@ void ScaleAxisDragger::setupDefaultGeometry()
     {
         _lineWidth = new osg::LineWidth();
         _lineWidth->setWidth(_axisLineWidth);
-        _lineGeode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth, osg::StateAttribute::ON);
+        _lineGeode->getOrCreateStateSet()->setAttributeAndModes(_lineWidth.get(), osg::StateAttribute::ON);
         _lineGeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     }
 
     // Add line to all the individual 1D draggers.
-    _xDragger->addChild(_lineGeode);
-    _yDragger->addChild(_lineGeode);
-    _zDragger->addChild(_lineGeode);
+    _xDragger->addChild(_lineGeode.get());
+    _yDragger->addChild(_lineGeode.get());
+    _zDragger->addChild(_lineGeode.get());
 
     osg::Geode* geode = new osg::Geode;
 
     // Create a box.
     _box = new osg::Box(osg::Vec3(1.0f,0.0f,0.0f), _boxSize);
-    geode->addDrawable(new osg::ShapeDrawable(_box));
+    geode->addDrawable(new osg::ShapeDrawable(_box.get()));
 
     // This ensures correct lighting for scaled draggers.
 #if !defined(OSG_GLES2_AVAILABLE)

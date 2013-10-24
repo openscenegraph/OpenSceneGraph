@@ -99,12 +99,14 @@ Node *makeTerrain( void )
 
     for( i = 0; i < m * n; i++ )
     {
-        v[i][0] = vertex[i][0] - dbcenter[0];
-        v[i][1] = vertex[i][1] - dbcenter[1];
-        v[i][2] = vertex[i][2];
+        float* vc = vertex[i];
+        v[i][0] = vc[0] - dbcenter[0];
+        v[i][1] = vc[1] - dbcenter[1];
+        v[i][2] = vc[2];
 
-        t[i][0] = texcoord[i][0] + 0.025;
-        t[i][1] = texcoord[i][1];
+        float* tc = texcoord[i];
+        t[i][0] = tc[0];
+        t[i][1] = tc[1];
     }
 
     Geometry *geom = new Geometry;

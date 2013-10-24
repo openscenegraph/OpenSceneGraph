@@ -560,9 +560,10 @@ int main( int argc, char **argv )
     viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
+    unsigned int helpType = 0;
+    if ((helpType = arguments.readHelpType()))
     {
-        arguments.getApplicationUsage()->write(osg::notify(osg::NOTICE));
+        arguments.getApplicationUsage()->write(std::cout, helpType);
         return 1;
     }
 

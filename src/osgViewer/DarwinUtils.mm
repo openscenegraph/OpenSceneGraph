@@ -14,32 +14,89 @@
 
 @interface MenubarToggler : NSObject {
 
+    osg::ref_ptr<osg::DisplaySettings> _displaySettings;
+    osg::DisplaySettings::OSXMenubarBehavior _menubarBehavior;
 }
 
--(void) show: (id) data;
--(void) hide: (id) data;
+-(void) show;
+-(void) hide;
+-(void) setDisplaySettings: (osg::DisplaySettings*) display_settings;
 
 @end
 
 @implementation MenubarToggler
 
-
-
--(void) hide:(id) data 
+-(id) init
 {
-    OSErr error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-    if (error) {
-        OSG_DEBUG << "MenubarToggler::hide failed with " << error << std::endl;
-    }
+    self = [super init];
+    _menubarBehavior = osg::DisplaySettings::MENUBAR_AUTO_HIDE;
+    _displaySettings = NULL;
+    return self;
+}
+
+-(void) setDisplaySettings: (osg::DisplaySettings*) display_settings
+{
+    _displaySettings = display_settings;
+}
+
+-(void) hide
+{
+    if(_displaySettings.valid()) _menubarBehavior = _displaySettings->getOSXMenubarBehavior();
+    
+    if (_menubarBehavior == osg::DisplaySettings::MENUBAR_FORCE_SHOW)
+        return;
+    
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+        NSApplicationPresentationOptions options;
+        switch(_menubarBehavior) {
+            case osg::DisplaySettings::MENUBAR_AUTO_HIDE:
+                options = NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationAutoHideDock;
+                break;
+            
+            case osg::DisplaySettings::MENUBAR_FORCE_HIDE:
+                options = NSApplicationPresentationHideMenuBar | NSApplicationPresentationHideDock;
+                break;
+            
+            default:
+                options = NSApplicationPresentationDefault;
+                
+        }
+    
+        [[NSApplication sharedApplication] setPresentationOptions: options];
+    #else
+        SystemUIMode mode = kUIModeAllHidden;
+        SystemUIOptions options = 0;
+        switch(_menubarBehavior) {
+            case osg::DisplaySettings::MENUBAR_AUTO_HIDE:
+                options = kUIOptionAutoShowMenuBar;
+                break;
+            
+            case osg::DisplaySettings::MENUBAR_FORCE_HIDE:
+                break;
+            
+            default:
+                mode = kUIModeNormal;
+                
+        }
+    
+        OSErr error = SetSystemUIMode(mode, options);
+        if (error) {
+            OSG_DEBUG << "MenubarToggler::hide failed with " << error << std::endl;
+        }
+    #endif
 }
 
 
--(void) show:(id) data 
+-(void) show
 {
-    OSErr error = SetSystemUIMode(kUIModeNormal, 0);
-    if (error) {
-        OSG_DEBUG << "MenubarToggler::show failed with " << error << std::endl;
-    }
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+        [[NSApplication sharedApplication] setPresentationOptions: NSApplicationPresentationDefault];
+    #else
+        OSErr error = SetSystemUIMode(kUIModeNormal, 0);
+        if (error) {
+            OSG_DEBUG << "MenubarToggler::show failed with " << error << std::endl;
+        }
+    #endif
 }
 
 
@@ -111,7 +168,7 @@ static inline CGRect toCGRect(NSRect nsRect)
 MenubarController::MenubarController()
 :    osg::Referenced(), 
     _list(), 
-    _menubarShown(false),
+    _menubarShown(true),
     _mutex() 
 {
     // the following code will query the system for the available rect on the main-display (typically the displaying showing the menubar + the dock
@@ -126,12 +183,21 @@ MenubarController::MenubarController()
     // NSRect 0/0 is bottom/left, _mainScreenBounds 0/0 is top/left
     _availRect.origin.y = _mainScreenBounds.size.height - _availRect.size.height - _availRect.origin.y;
     
-        
-    // hide the menubar initially
-    SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    _toggler = [[MenubarToggler alloc] init];
+    update();
+}
+
+MenubarController::~MenubarController()
+{
+    [_toggler release];
 }
 
 
+void MenubarController::setDisplaySettings(osg::DisplaySettings* display_settings)
+{
+    [_toggler setDisplaySettings:display_settings];
+    update();
+}
 
 
 MenubarController* MenubarController::instance() 
@@ -207,16 +273,12 @@ void MenubarController::update()
         {
             
             //error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-            MenubarToggler* toggler = [[MenubarToggler alloc] init];
-            [toggler performSelectorOnMainThread: @selector(hide:) withObject:NULL waitUntilDone: YES];
-            [toggler autorelease];
+            [_toggler performSelectorOnMainThread: @selector(hide) withObject:NULL waitUntilDone: YES];
         }
         if (!windowsCoveringMenubarArea && !_menubarShown) 
         {
             //error = SetSystemUIMode(kUIModeNormal, 0);
-            MenubarToggler* toggler = [[MenubarToggler alloc] init];
-            [toggler performSelectorOnMainThread: @selector(show:) withObject:NULL waitUntilDone: YES];
-            [toggler autorelease];
+            [_toggler performSelectorOnMainThread: @selector(show) withObject:NULL waitUntilDone: YES];
         }
         [pool release];
     
@@ -224,7 +286,7 @@ void MenubarController::update()
     
         OSErr error;
         
-          // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
+        // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
         if (windowsCoveringMenubarArea && _menubarShown) 
         {
             error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);

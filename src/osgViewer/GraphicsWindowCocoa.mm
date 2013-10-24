@@ -1729,6 +1729,7 @@ struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface
 
         return createGraphicsContextImplementation<PixelBufferCocoa, GraphicsWindowCocoa>(traits);
     }
+    
 
     virtual ~CocoaWindowingSystemInterface()
     {

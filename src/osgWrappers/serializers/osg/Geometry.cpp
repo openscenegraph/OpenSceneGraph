@@ -3,13 +3,15 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-BEGIN_USER_TABLE( AttributeBinding, osg::Geometry );
+static void add_user_value_func_AttributeBinding(osgDB::IntLookup* lookup)
+{
     lookup->add("BIND_OFF",0);                 // ADD_USER_VALUE("ADD_USER_VALUE( BIND_OFF );
     lookup->add("BIND_OVERALL",1);             // ADD_USER_VALUE( BIND_OVERALL );
     lookup->add("BIND_PER_PRIMITIVE_SET",2);   // ADD_USER_VALUE( BIND_PER_PRIMITIVE_SET );
     lookup->add("BIND_PER_PRIMITIVE",3);       //ADD_USER_VALUE( BIND_PER_PRIMITIVE );
     lookup->add("BIND_PER_VERTEX",4);          // ADD_USER_VALUE( BIND_PER_VERTEX );
-END_USER_TABLE()
+ }
+static osgDB::UserLookupTableProxy s_user_lookup_table_AttributeBinding(&add_user_value_func_AttributeBinding);
 
 USER_READ_FUNC( AttributeBinding, readAttributeBinding )
 USER_WRITE_FUNC( AttributeBinding, writeAttributeBinding )

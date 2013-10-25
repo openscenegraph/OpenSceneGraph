@@ -11,6 +11,8 @@ SET(TARGET_H
     ${HEADER_PATH}/AnimationPathManipulator
     ${HEADER_PATH}/DriveManipulator
     ${HEADER_PATH}/Device
+    ${HEADER_PATH}/Event
+    ${HEADER_PATH}/EventHandler
     ${HEADER_PATH}/EventQueue
     ${HEADER_PATH}/EventVisitor
     ${HEADER_PATH}/Export
@@ -38,6 +40,8 @@ SET(TARGET_SRC
     AnimationPathManipulator.cpp
     DriveManipulator.cpp
     Device.cpp
+    Event.cpp
+    EventHandler.cpp
     EventQueue.cpp
     EventVisitor.cpp
     FirstPersonManipulator.cpp

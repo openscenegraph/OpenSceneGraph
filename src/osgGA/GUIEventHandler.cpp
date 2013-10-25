@@ -16,33 +16,21 @@
 
 using namespace osgGA;
 
-
-void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
+// adapt EventHandler usage to old style GUIEventHandler usage
+bool GUIEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
 {
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-    if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
+    osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
+    if (ea && ev && ev->getActionAdapter())
     {
-        for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
-            itr != ev->getEvents().end();
-            ++itr)
-        {
-            handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
-        }
+#if 1
+        bool handled = handle(*ea, *(ev->getActionAdapter()), object, nv);
+        if (handled) ea->setHandled(true);
+        return handled;
+#else
+        return handleWithCheckAgainstIgnoreHandledEventsMask(*ea, *(ev->getActionAdapter()), object, nv);
+#endif
     }
-    if (node->getNumChildrenRequiringEventTraversal()>0 || _nestedCallback.valid()) traverse(node,nv);
-}
-
-void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)
-{
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-    if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
-    {
-        for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
-            itr != ev->getEvents().end();
-            ++itr)
-        {
-            handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), drawable, nv);
-        }
-    }
+    return false;
 }
 

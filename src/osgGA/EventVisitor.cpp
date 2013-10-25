@@ -28,14 +28,14 @@ EventVisitor::~EventVisitor()
 {
 }
 
-void EventVisitor::addEvent(GUIEventAdapter* event)
+void EventVisitor::addEvent(Event* event)
 {
     _events.push_back(event);
 }
 
-void EventVisitor::removeEvent(GUIEventAdapter* event)
+void EventVisitor::removeEvent(Event* event)
 {
-    EventList::iterator itr = std::find(_events.begin(),_events.end(),event);
+    EventQueue::Events::iterator itr = std::find(_events.begin(), _events.end(), event);
     if (itr!=_events.end()) _events.erase(itr);
 }
 

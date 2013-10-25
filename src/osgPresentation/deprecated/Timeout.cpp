@@ -257,7 +257,8 @@ void Timeout::traverse(osg::NodeVisitor& nv)
                 itr != events.end();
                 ++itr)
             {
-                osgGA::GUIEventAdapter* event = itr->get();
+                osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                if (!event) continue;
 
                 bool keyEvent = event->getEventType()==osgGA::GUIEventAdapter::KEYDOWN ||  event->getEventType()==osgGA::GUIEventAdapter::KEYUP;
 

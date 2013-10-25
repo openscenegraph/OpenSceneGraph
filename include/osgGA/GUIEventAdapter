@@ -11,13 +11,14 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_EVENT
-#define OSGGA_EVENT 1
+#ifndef OSGGA_GUIEVENTADAPTER
+#define OSGGA_GUIEVENTADAPTER 1
 
 #include <osg/Object>
 #include <osg/Matrix>
 #include <osg/GraphicsContext>
-#include <osgGA/Export>
+
+#include <osgGA/Event>
 
 namespace osgGA{
 
@@ -77,7 +78,7 @@ struct PointerData : public osg::Referenced
 
 /** Event class for storing Keyboard, mouse and window events.
 */
-class OSGGA_EXPORT GUIEventAdapter : public osg::Object
+class OSGGA_EXPORT GUIEventAdapter : public Event
 {
 public:
 
@@ -448,6 +449,9 @@ public:
 
         META_Object(osgGA, GUIEventAdapter);
 
+        virtual GUIEventAdapter* asGUIEventAdapter() { return this; }
+        virtual const GUIEventAdapter* asGUIEventAdapter() const { return this; }
+
 
         /** Get the accumulated event state singleton.
           * Typically all EventQueue will share this single GUIEventAdapter object for tracking
@@ -466,12 +470,6 @@ public:
 
         /** get the event type. */
         virtual EventType getEventType() const { return _eventType; }
-
-        /** set time in seconds of event. */
-        void setTime(double time) { _time = time; }
-
-        /** get time in seconds of event. */
-        double getTime() const { return _time; }
 
         /** deprecated function for getting time of event. */
         double time() const { return _time; }
@@ -709,7 +707,6 @@ public:
 
         mutable bool _handled;
         EventType _eventType;
-        double _time;
 
         osg::observer_ptr<osg::GraphicsContext> _context;
         int _windowX;

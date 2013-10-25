@@ -372,7 +372,6 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
     {
         if (areTypesCompatible(valueType, sourceType))
         {
-            OSG_NOTICE<<"Calling get"<<std::endl;
             return serializer->get(*object, valuePtr);
         }
         else
@@ -396,7 +395,6 @@ bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const st
     {
         if (areTypesCompatible(valueType, destinationType))
         {
-            OSG_NOTICE<<"Calling set"<<std::endl;
             return serializer->set(*object, const_cast<void*>(valuePtr));
         }
         else

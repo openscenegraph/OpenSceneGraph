@@ -20,7 +20,7 @@
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 
-#include <osgGA/Export>
+#include <osgGA/EventHandler>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIActionAdapter>
 
@@ -47,27 +47,30 @@ This request is made via the GUIActionAdapter class.
 
 */
 
-class OSGGA_EXPORT GUIEventHandler : public osg::NodeCallback, public osg::Drawable::EventCallback
+class OSGGA_EXPORT GUIEventHandler : public EventHandler
 {
 public:
 
+#if 1
+        GUIEventHandler() {}
+        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            EventHandler(eh, copyop) {}
+#else
         GUIEventHandler() : _ignoreHandledEventsMask(GUIEventAdapter::NONE) {}
-        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop):
-            osg::NodeCallback(eh, copyop),
-            osg::Drawable::EventCallback(eh, copyop),
+        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            EventHandler(eh, copyop)
             _ignoreHandledEventsMask(eh._ignoreHandledEventsMask) {}
+#endif
 
         META_Object(osgGA,GUIEventHandler);
 
-        /** Event traversal node callback method.*/
-        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
-
-        /** Event traversal drawable callback method.*/
-        virtual void event(osg::NodeVisitor* nv, osg::Drawable* drawable);
+        /** Handle event. Override the handle(..) method in your event handlers to respond to events. */
+        virtual bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv);
 
         /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor*) { return handle(ea,aa); }
 
+#if 0
         /** Convenience method that only passes on to the handle(,,,) method events that either haven't been
           * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
           * Note, this method is an inline method, and not appropriate for users to override, override the handle(,,,)
@@ -86,10 +89,11 @@ public:
                 return false;
             }
         }
-
+#endif
         /** Deprecated, Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter&,GUIActionAdapter&) { return false; }
 
+#if 0
         /** Convenience method that only passes on to the handle(,) method events that either haven't been
           * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
           * Note, this method is an inline method, and not appropriate for users to override, override the handle(,)
@@ -109,9 +113,6 @@ public:
             }
         }
 
-        /** Get the keyboard and mouse usage of this manipulator.*/
-        virtual void getUsage(osg::ApplicationUsage&) const {}
-
         /** Set a mask of osgGA::GUIEeventAdapter::Event to be ignored if marked as handled */
         void setIgnoreHandledEventsMask(unsigned int mask) { _ignoreHandledEventsMask = mask; }
 
@@ -120,18 +121,8 @@ public:
 
 protected:
         unsigned int _ignoreHandledEventsMask;
-
-};
-
-#ifdef USE_DEPRECATED_API
-    // keep for backwards compatibility
-    class GUIEventHandlerVisitor
-    {
-        public:
-
-            void visit(GUIEventHandler&) {}
-    };
 #endif
+};
 
 }
 

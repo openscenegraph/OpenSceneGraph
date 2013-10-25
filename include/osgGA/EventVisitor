@@ -51,15 +51,11 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
 
         const osgGA::GUIActionAdapter* getActionAdapter() const { return _actionAdapter; }
 
-
-        typedef std::list< osg::ref_ptr<GUIEventAdapter> > EventList;
-
-        void addEvent(GUIEventAdapter* event);
-        void removeEvent(GUIEventAdapter* event);
+        void addEvent(Event* event);
+        void removeEvent(Event* event);
 
         void setEventHandled(bool handled) { _handled = handled; }
         bool getEventHandled() const { return _handled; }
-
 
         void setEvents(const EventQueue::Events& events) { _events = events; }
         EventQueue::Events& getEvents() { return _events; }
@@ -137,7 +133,6 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
 
         bool                            _handled;
         EventQueue::Events              _events;
-
 };
 
 }

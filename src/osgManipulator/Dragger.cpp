@@ -305,8 +305,8 @@ void Dragger::traverse(osg::NodeVisitor& nv)
                 itr != ev->getEvents().end();
                 ++itr)
             {
-                osgGA::GUIEventAdapter* ea = itr->get();
-                if (handle(*ea, *(ev->getActionAdapter()))) ea->setHandled(true);
+                osgGA::GUIEventAdapter* ea = (*itr)->asGUIEventAdapter();
+                if (ea && handle(*ea, *(ev->getActionAdapter()))) ea->setHandled(true);
             }
         }
         return;

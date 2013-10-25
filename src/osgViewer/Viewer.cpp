@@ -889,7 +889,8 @@ void Viewer::eventTraversal()
                 itr != gw_events.end();
                 ++itr)
             {
-                osgGA::GUIEventAdapter* event = itr->get();
+                osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                if (!event) continue;
 
                 event->setGraphicsContext(gw);
 
@@ -943,7 +944,8 @@ void Viewer::eventTraversal()
                 itr != gw_events.end();
                 ++itr)
             {
-                osgGA::GUIEventAdapter* event = itr->get();
+                osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                if (!event) continue;
                 switch(event->getEventType())
                 {
                     case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
@@ -981,7 +983,8 @@ void Viewer::eventTraversal()
             itr != events.end();
             ++itr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
+            osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+            if (!event) continue;
             switch(event->getEventType())
             {
                 case(osgGA::GUIEventAdapter::KEYUP):
@@ -1009,7 +1012,8 @@ void Viewer::eventTraversal()
             itr != events.end();
             ++itr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
+            osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+            if (!event) continue;
 
             _eventVisitor->reset();
             _eventVisitor->addEvent( event );
@@ -1055,13 +1059,12 @@ void Viewer::eventTraversal()
         itr != events.end();
         ++itr)
     {
-        osgGA::GUIEventAdapter* event = itr->get();
-
+        osgGA::Event* event = itr->get();
         for(EventHandlers::iterator hitr = _eventHandlers.begin();
             hitr != _eventHandlers.end();
             ++hitr)
         {
-            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, _eventVisitor.get());
+            (*hitr)->handle( event, 0, _eventVisitor.get());
         }
 
     }
@@ -1070,10 +1073,10 @@ void Viewer::eventTraversal()
         itr != events.end();
         ++itr)
     {
-        osgGA::GUIEventAdapter* event = itr->get();
-        if (_cameraManipulator.valid())
+        osgGA::Event* event = itr->get();
+        if (event && _cameraManipulator.valid())
         {
-            _cameraManipulator->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this);
+            _cameraManipulator->handle( event, 0, _eventVisitor.get());
         }
     }
 

@@ -20,6 +20,7 @@
 #include <osg/io_utils>
 #include <osg/DisplaySettings>
 #include <osg/ValueObject>
+#include <osg/PolygonMode>
 
 #include <osgDB/WriteFile>
 #include <osgDB/ReadFile>
@@ -208,6 +209,7 @@ osg::Geode* Keystone::createKeystoneDistortionMesh()
 
     geometry->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     geometry->getOrCreateStateSet()->setRenderBinDetails(0, "RenderBin");
+    geometry->getOrCreateStateSet()->setAttribute(new osg::PolygonMode(), osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
 
     kuc->update(geometry.get());
 

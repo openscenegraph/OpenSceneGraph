@@ -33,14 +33,14 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         EventQueue(GUIEventAdapter::MouseYOrientation mouseYOrientation=GUIEventAdapter::Y_INCREASING_DOWNWARDS);
 
-        typedef std::list< osg::ref_ptr<GUIEventAdapter> > Events;
+        typedef std::list< osg::ref_ptr<Event> > Events;
 
         bool empty() const
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
             return _eventQueue.empty();
         }
-        
+
         /** Set events.*/
         void setEvents(Events& events);
 
@@ -57,7 +57,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         void appendEvents(Events& events);
 
         /** Add an event to the end of the event queue.*/
-        void addEvent(GUIEventAdapter* event);
+        void addEvent(Event* event);
 
 
         /** Specify if mouse coordinates should be transformed into a pre defined input range, or whether they
@@ -70,7 +70,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         /** Set the graphics context associated with this event queue.*/
         void setGraphicsContext(osg::GraphicsContext* context) { getCurrentEventState()->setGraphicsContext(context); }
-        
+
         osg::GraphicsContext* getGraphicsContext() { return getCurrentEventState()->getGraphicsContext(); }
 
         const osg::GraphicsContext* getGraphicsContext() const { return getCurrentEventState()->getGraphicsContext(); }

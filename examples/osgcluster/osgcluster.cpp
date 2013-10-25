@@ -48,13 +48,13 @@ const unsigned int MAX_NUM_EVENTS = 10;
 const unsigned int SWAP_BYTES_COMPARE = 0x12345678;
 class CameraPacket {
     public:
-    
-    
-        CameraPacket():_masterKilled(false) 
+
+
+        CameraPacket():_masterKilled(false)
         {
             _byte_order = SWAP_BYTES_COMPARE;
         }
-        
+
         void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
         {
             _matrix = matrix;
@@ -63,20 +63,20 @@ class CameraPacket {
                 _frameStamp    = *frameStamp;
             }
         }
-        
+
         void getModelView(osg::Matrix& matrix,float angle_offset=0.0f)
         {
-        
+
             matrix = _matrix * osg::Matrix::rotate(osg::DegreesToRadians(angle_offset),0.0f,1.0f,0.0f);
         }
-        
+
         void readEventQueue(osgViewer::Viewer& viewer);
-        
+
         void writeEventQueue(osgViewer::Viewer& viewer);
 
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
-        
+
         unsigned int    _byte_order;
         bool            _masterKilled;
         osg::Matrix     _matrix;
@@ -84,11 +84,11 @@ class CameraPacket {
         // note don't use a ref_ptr as used elsewhere for FrameStamp
         // since we don't want to copy the pointer - but the memory.
         // FrameStamp doesn't have a private destructor to allow
-        // us to do this, even though its a reference counted object.    
+        // us to do this, even though its a reference counted object.
         osg::FrameStamp  _frameStamp;
-        
+
         osgGA::EventQueue::Events _events;
-        
+
 };
 
 class DataConverter
@@ -112,7 +112,7 @@ class DataConverter
         bool _swapBytes;
 
         char* _currentPtr;
-        
+
         void reset()
         {
             _currentPtr = _startPtr;
@@ -122,22 +122,22 @@ class DataConverter
         {
             if (_currentPtr+1>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read1(char* ptr)
         {
             if (_currentPtr+1>=_endPtr) return;
 
-            *(ptr) = *(_currentPtr++); 
+            *(ptr) = *(_currentPtr++);
         }
 
         inline void write2(char* ptr)
         {
             if (_currentPtr+2>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read2(char* ptr)
@@ -146,13 +146,13 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -160,10 +160,10 @@ class DataConverter
         {
             if (_currentPtr+4>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read4(char* ptr)
@@ -172,17 +172,17 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+3) = *(_currentPtr++); 
-                *(ptr+2) = *(_currentPtr++); 
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+3) = *(_currentPtr++);
+                *(ptr+2) = *(_currentPtr++);
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -190,15 +190,15 @@ class DataConverter
         {
             if (_currentPtr+8>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read8(char* ptr)
@@ -208,27 +208,27 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+7) = *(_currentPtr++); 
-                *(ptr+6) = *(_currentPtr++); 
-                *(ptr+5) = *(_currentPtr++); 
-                *(ptr+4) = *(_currentPtr++); 
+                *(ptr+7) = *(_currentPtr++);
+                *(ptr+6) = *(_currentPtr++);
+                *(ptr+5) = *(_currentPtr++);
+                *(ptr+4) = *(_currentPtr++);
 
-                *(ptr+3) = *(_currentPtr++); 
-                *(ptr+2) = *(_currentPtr++); 
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+3) = *(_currentPtr++);
+                *(ptr+2) = *(_currentPtr++);
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -361,22 +361,23 @@ class DataConverter
             event.setModKeyMask(readUInt());
             event.setTime(readDouble());
         }
-        
+
         void write(CameraPacket& cameraPacket)
         {
             writeUInt(cameraPacket._byte_order);
-            
+
             writeUInt(cameraPacket._masterKilled);
-            
+
             write(cameraPacket._matrix);
             write(cameraPacket._frameStamp);
-        
+
             writeUInt(cameraPacket._events.size());
             for(osgGA::EventQueue::Events::iterator itr = cameraPacket._events.begin();
                 itr != cameraPacket._events.end();
                 ++itr)
             {
-                write(*(*itr));
+                osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                if (event) write(*event);
             }
         }
 
@@ -387,12 +388,12 @@ class DataConverter
             {
                 _swapBytes = !_swapBytes;
             }
-            
+
             cameraPacket._masterKilled = readUInt()!=0;
-            
+
             read(cameraPacket._matrix);
             read(cameraPacket._frameStamp);
-        
+
             cameraPacket._events.clear();
             unsigned int numEvents = readUInt();
             for(unsigned int i=0;i<numEvents;++i)
@@ -409,7 +410,7 @@ void CameraPacket::readEventQueue(osgViewer::Viewer& viewer)
     _events.clear();
 
     osgViewer::ViewerBase::Contexts contexts;
-    viewer.getContexts(contexts);   
+    viewer.getContexts(contexts);
 
     for(osgViewer::ViewerBase::Contexts::iterator citr =contexts.begin();  citr != contexts.end(); ++citr)
     {
@@ -423,7 +424,7 @@ void CameraPacket::readEventQueue(osgViewer::Viewer& viewer)
         }
         _events.insert(_events.end(), gw_events.begin(), gw_events.end());
     }
-    
+
     viewer.getEventQueue()->copyEvents(_events);
 
     osg::notify(osg::INFO)<<"written events = "<<_events.size()<<std::endl;
@@ -449,7 +450,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to approach implementation of clustering.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
@@ -459,7 +460,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-n <int>","Socket number to transmit packets");
     arguments.getApplicationUsage()->addCommandLineOption("-f <float>","Field of view of camera");
     arguments.getApplicationUsage()->addCommandLineOption("-o <float>","Offset angle of camera");
-    
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -468,12 +469,12 @@ int main( int argc, char **argv )
     ViewerMode viewerMode = STAND_ALONE;
     while (arguments.read("-m")) viewerMode = MASTER;
     while (arguments.read("-s")) viewerMode = SLAVE;
-    
+
     int socketNumber=8100;
     while (arguments.read("-n",socketNumber)) ;
 
     float camera_fov=-1.0f;
-    while (arguments.read("-f",camera_fov)) 
+    while (arguments.read("-f",camera_fov))
     {
     }
 
@@ -497,7 +498,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -514,13 +515,13 @@ int main( int argc, char **argv )
     {
         double fovy, aspectRatio, zNear, zFar;
         viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
-        
+
         double original_fov = atan(tan(osg::DegreesToRadians(fovy)*0.5)*aspectRatio)*2.0;
         std::cout << "setting lens perspective : original "<<original_fov<<"  "<<fovy<<std::endl;
-        
+
         fovy = atan(tan(osg::DegreesToRadians(camera_fov)*0.5)/aspectRatio)*2.0;
         viewer.getCamera()->setProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
-    
+
         viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
         original_fov = atan(tan(osg::DegreesToRadians(fovy)*0.5)*aspectRatio)*2.0;
         std::cout << "setting lens perspective : new "<<original_fov<<"  "<<fovy<<std::endl;
@@ -549,13 +550,13 @@ int main( int argc, char **argv )
     rc.setPort(static_cast<short int>(socketNumber));
 
     bool masterKilled = false;
-    
+
     DataConverter scratchPad(1024);
 
     while( !viewer.done() && !masterKilled )
     {
         osg::Timer_t startTick = osg::Timer::instance()->tick();
-                 
+
         viewer.advance();
 
         // special handling for working as a cluster.
@@ -563,12 +564,12 @@ int main( int argc, char **argv )
         {
         case(MASTER):
             {
-                
+
                 // take camera zero as the guide.
                 osg::Matrix modelview(viewer.getCamera()->getViewMatrix());
-                
+
                 cp->setPacket(modelview,viewer.getFrameStamp());
-                
+
                 cp->readEventQueue(viewer);
 
                 scratchPad.reset();
@@ -578,11 +579,11 @@ int main( int argc, char **argv )
                 scratchPad.read(*cp);
 
                 bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
-                
+
                 std::cout << "bc.sync()"<<scratchPad._numBytes<<std::endl;
 
                 bc.sync();
-                
+
             }
             break;
         case(SLAVE):
@@ -591,13 +592,13 @@ int main( int argc, char **argv )
                 rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
                 rc.sync();
-                
+
                 scratchPad.reset();
                 scratchPad.read(*cp);
-    
+
                 cp->writeEventQueue(viewer);
 
-                if (cp->getMasterKilled()) 
+                if (cp->getMasterKilled())
                 {
                     std::cout << "Received master killed."<<std::endl;
                     // break out of while (!done) loop since we've now want to shut down.
@@ -609,9 +610,9 @@ int main( int argc, char **argv )
             // no need to anything here, just a normal interactive viewer.
             break;
         }
-         
+
         osg::Timer_t endTick = osg::Timer::instance()->tick();
-        
+
         osg::notify(osg::INFO)<<"Time to do cluster sync "<<osg::Timer::instance()->delta_m(startTick,endTick)<<std::endl;
 
         // update the scene by traversing it with the the update visitor which will
@@ -623,14 +624,14 @@ int main( int argc, char **argv )
         {
             osg::Matrix modelview;
             cp->getModelView(modelview,camera_offset);
-        
+
             viewer.getCamera()->setViewMatrix(modelview);
         }
 
         // fire off the cull and draw traversals of the scene.
         if(!masterKilled)
             viewer.renderingTraversals();
-        
+
     }
 
     // if we are master clean up by telling all slaves that we're going down.
@@ -638,7 +639,7 @@ int main( int argc, char **argv )
     {
         // need to broadcast my death.
         cp->setPacket(osg::Matrix::identity(),viewer.getFrameStamp());
-        cp->setMasterKilled(true); 
+        cp->setMasterKilled(true);
 
         scratchPad.reset();
         scratchPad.write(*cp);

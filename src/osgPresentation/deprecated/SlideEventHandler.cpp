@@ -967,25 +967,6 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
     return _timePerSlide;
 }
 
-void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
-{
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-    if (ev)
-    {
-        if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
-
-        if (ev->getActionAdapter() && !ev->getEvents().empty())
-        {
-            for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
-                itr != ev->getEvents().end();
-                ++itr)
-            {
-                handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
-            }
-        }
-    }
-}
-
 bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
 

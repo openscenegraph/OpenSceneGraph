@@ -916,7 +916,7 @@ void CompositeViewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event,
 
 struct SortEvents
 {
-    bool operator() (const osg::ref_ptr<osgGA::GUIEventAdapter>& lhs,const osg::ref_ptr<osgGA::GUIEventAdapter>& rhs) const
+    bool operator() (const osg::ref_ptr<osgGA::Event>& lhs,const osg::ref_ptr<osgGA::Event>& rhs) const
     {
         return lhs->getTime() < rhs->getTime();
     }
@@ -961,7 +961,8 @@ void CompositeViewer::eventTraversal()
                 itr != gw_events.end();
                 ++itr)
             {
-                (*itr)->setGraphicsContext(gw);
+                osgGA::GUIEventAdapter* ea = (*itr)->asGUIEventAdapter();
+                if (ea) ea->setGraphicsContext(gw);
             }
 
             all_events.insert(all_events.end(), gw_events.begin(), gw_events.end());
@@ -976,7 +977,8 @@ void CompositeViewer::eventTraversal()
         itr != all_events.end();
         ++itr)
     {
-        osgGA::GUIEventAdapter* event = itr->get();
+        osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+        if (!event) continue;
 
         switch(event->getEventType())
         {
@@ -1059,7 +1061,9 @@ void CompositeViewer::eventTraversal()
         itr != all_events.end();
         ++itr)
     {
-        osgGA::GUIEventAdapter* event = itr->get();
+        osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+        if (!event) continue;
+
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
@@ -1118,7 +1122,8 @@ void CompositeViewer::eventTraversal()
                 itr != veitr->second.end();
                 ++itr)
             {
-                osgGA::GUIEventAdapter* event = itr->get();
+                osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                if (!event) continue;
                 switch(event->getEventType())
                 {
                     case(osgGA::GUIEventAdapter::KEYUP):
@@ -1148,16 +1153,15 @@ void CompositeViewer::eventTraversal()
             ++veitr)
         {
             View* view = veitr->first;
+            _eventVisitor->setActionAdapter(view);
 
             if (view && view->getSceneData())
             {
-                _eventVisitor->setActionAdapter(view);
-
                 for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
                     itr != veitr->second.end();
                     ++itr)
                 {
-                    osgGA::GUIEventAdapter* event = itr->get();
+                    osgGA::Event* event = itr->get();
 
                     _eventVisitor->reset();
                     _eventVisitor->addEvent( event );
@@ -1205,18 +1209,18 @@ void CompositeViewer::eventTraversal()
         ++veitr)
     {
         View* view = veitr->first;
+        _eventVisitor->setActionAdapter(view);
 
         for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
             itr != veitr->second.end();
             ++itr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
-
+            osgGA::Event* event = itr->get();
             for(View::EventHandlers::iterator hitr = view->getEventHandlers().begin();
                 hitr != view->getEventHandlers().end();
                 ++hitr)
             {
-                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, _eventVisitor.get());
+                (*hitr)->handle( event, view, _eventVisitor.get());
             }
         }
     }
@@ -1226,16 +1230,16 @@ void CompositeViewer::eventTraversal()
         ++veitr)
     {
         View* view = veitr->first;
+        _eventVisitor->setActionAdapter(view);
 
         for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
             itr != veitr->second.end();
             ++itr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
-
+            osgGA::Event* event = itr->get();
             if (view->getCameraManipulator())
             {
-                view->getCameraManipulator()->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view);
+                view->getCameraManipulator()->handle( event, view, _eventVisitor.get());
             }
         }
     }

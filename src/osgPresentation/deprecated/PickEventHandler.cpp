@@ -131,12 +131,6 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
     return false;
 }
 
-
-void PickEventHandler::accept(osgGA::GUIEventHandlerVisitor& v)
-{
-    v.visit(*this);
-}
-
 void PickEventHandler::getUsage(osg::ApplicationUsage& /*usage*/) const
 {
 }

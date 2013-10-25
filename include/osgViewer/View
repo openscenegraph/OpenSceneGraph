@@ -43,10 +43,10 @@ class OSGVIEWER_EXPORT ViewConfig : public osg::Object
         ViewConfig(const ViewConfig& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(rhs,copyop) {}
 
         META_Object(osgViewer,ViewConfig);
-        
+
         /** configure method that is overridden by Config subclasses.*/
         virtual void configure(osgViewer::View& /*view*/) const {}
-        
+
         /** convinience method for getting the relavent display settings to use.*/
         virtual osg::DisplaySettings* getActiveDisplaySetting(osgViewer::View& view) const;
 };
@@ -129,7 +129,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's image pager.*/
         const osgDB::ImagePager* getImagePager() const;
 
-       
+
         /** Add a Device.
          * The Device is polled on each new frame via it's Device::checkEvents() method and any events generated then collected via Device::getEventQueue()*/
         void addDevice(osgGA::Device* eventSource);
@@ -167,13 +167,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         void home();
 
 
-        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
+        typedef std::list< osg::ref_ptr<osgGA::EventHandler> > EventHandlers;
 
         /** Add an EventHandler that adds handling of events to the View.*/
-        void addEventHandler(osgGA::GUIEventHandler* eventHandler);
+        void addEventHandler(osgGA::EventHandler* eventHandler);
 
         /** Remove an EventHandler from View.*/
-        void removeEventHandler(osgGA::GUIEventHandler* eventHandler);
+        void removeEventHandler(osgGA::EventHandler* eventHandler);
 
         /** Get the View's list of EventHandlers.*/
         EventHandlers& getEventHandlers() { return _eventHandlers; }
@@ -216,14 +216,14 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.*/
         float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
-        
+
         /** Apply a viewer configuration to set up Cameras and Windowing. */
         void apply(ViewConfig* config);
-        
+
         ViewConfig* getLastAppliedViewConfig() { return _lastAppliedViewConfig.get(); }
         const ViewConfig* getLastAppliedViewConfig() const { return _lastAppliedViewConfig.get(); }
-        
-        
+
+
         /** deprecated, use view.apply(new osgViewer::AcrossAllWindows()). */
         void setUpViewAcrossAllScreens();
 
@@ -242,7 +242,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** deprecated. use view.apply(new osgViewer::WoWVxDisplay(type (20 to 42), screenNum). */
         void setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
 
-        
+
 
         /** Convenience method for setting up depth partitioning on the specified camera.*/
         bool setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* dps=0);
@@ -254,7 +254,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;
 
-        
+
         /** deprecated. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
 
@@ -264,14 +264,14 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** deprecated. */
         bool computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
-        
+
         /** Compute intersections of a ray, starting the current mouse position, through the specified camera. */
         bool computeIntersections(const osgGA::GUIEventAdapter& ea, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         /** Compute intersections of a ray, starting the current mouse position, through the specified master camera's window/eye coordinates and a specified nodePath's subgraph. */
         bool computeIntersections(const osgGA::GUIEventAdapter& ea, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
-        
+
         /** Compute intersections of a ray through the specified camera. */
         bool computeIntersections(const osg::Camera* camera, osgUtil::Intersector::CoordinateFrame cf, float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
@@ -284,7 +284,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
 
     public:
-        
+
         osg::Texture* createDistortionTexture(int width, int height);
         osg::Camera* assignRenderToTextureCamera(osg::GraphicsContext* gc, int width, int height, osg::Texture* texture);
         osg::Camera* assignKeystoneDistortionCamera(osg::DisplaySettings* ds, osg::GraphicsContext* gc, int x, int y, int width, int height, GLenum buffer, osg::Texture* texture, Keystone* keystone);
@@ -300,7 +300,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
             osg::ref_ptr<osg::DisplaySettings> _ds;
             double _eyeScale;
         };
-        
+
 
     public:
 
@@ -334,7 +334,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         float                                   _fusionDistanceValue;
 
         osg::ref_ptr<ViewConfig>                _lastAppliedViewConfig;
-        
+
 };
 
 }

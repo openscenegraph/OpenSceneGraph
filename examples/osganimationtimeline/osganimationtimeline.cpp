@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -84,7 +84,7 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
         _scratchNose->setLoop(1); // one time
 
         // add the main loop at priority 0 at time 0.
-        
+
         osgAnimation::Timeline* tml = _manager->getTimeline();
         tml->play();
         tml->addActionAt(0.0, _mainLoop.get(), 0);
@@ -139,21 +139,12 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
                 }
                 _releaseKey = false;
             }
+            traverse(node, nv);
         }
         else
         {
-            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-            if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
-            {
-                for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
-                    itr != ev->getEvents().end();
-                    ++itr)
-                {
-                    handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
-                }
-            }
-        }            
-        traverse(node, nv);
+            osgGA::GUIEventHandler::operator()(node, nv);
+        }
     }
 
 };
@@ -168,7 +159,7 @@ int main (int argc, char* argv[])
     osgViewer::Viewer viewer(psr);
 
     std::string file = "nathan.osg";
-    if(argc >= 2) 
+    if(argc >= 2)
         file = psr[1];
 
     // replace the manager
@@ -178,7 +169,7 @@ int main (int argc, char* argv[])
         return 1;
     }
     osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
-    if(!animationManager) 
+    if(!animationManager)
     {
         osg::notify(osg::FATAL) << "Did not find AnimationManagerBase updateCallback needed to animate elements" << std::endl;
         return 1;
@@ -186,22 +177,22 @@ int main (int argc, char* argv[])
 
     osg::ref_ptr<osgAnimation::TimelineAnimationManager> tl = new osgAnimation::TimelineAnimationManager(*animationManager);
     root->setUpdateCallback(tl.get());
-    
+
     ExampleTimelineUsage* callback = new ExampleTimelineUsage(tl.get());
     root->setEventCallback(callback);
     root->getUpdateCallback()->addNestedCallback(callback);
-        
+
 
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 

@@ -65,12 +65,6 @@ bool KeyEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAd
     return false;
 }
 
-
-void KeyEventHandler::accept(osgGA::GUIEventHandlerVisitor& v)
-{
-    v.visit(*this);
-}
-
 void KeyEventHandler::getUsage(osg::ApplicationUsage& /*usage*/) const
 {
 }

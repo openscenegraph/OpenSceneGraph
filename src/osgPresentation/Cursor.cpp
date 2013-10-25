@@ -187,7 +187,9 @@ void Cursor::traverse(osg::NodeVisitor& nv)
             itr != events.end();
             ++itr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
+            osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+            if (!event) continue;
+
             switch(event->getEventType())
             {
                 case(osgGA::GUIEventAdapter::PUSH):

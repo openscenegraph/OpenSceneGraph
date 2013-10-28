@@ -140,6 +140,17 @@ void Texture::TextureProfile::computeSize()
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): numBitsPerTexel = 4; break;
 
         case(GL_ETC1_RGB8_OES):                       numBitsPerTexel = 4; break;
+
+        case(GL_COMPRESSED_RGB8_ETC2):                      numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_SRGB8_ETC2):                     numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):  numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2): numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC):                 numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):          numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_R11_EAC):                        numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_SIGNED_R11_EAC):                 numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RG11_EAC):                       numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_SIGNED_RG11_EAC):                numBitsPerTexel = 8; break;
     }
 
     _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));
@@ -1412,6 +1423,24 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
             }
             break;
 
+        case(USE_ETC2_COMPRESSION):
+            if (extensions->isTextureCompressionETC2Supported())
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(1):
+                    case(GL_RED):   internalFormat = GL_COMPRESSED_R11_EAC; break;
+                    case(2):
+                    case(GL_RG):   internalFormat = GL_COMPRESSED_RG11_EAC; break;
+                    case(3):
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB8_ETC2; break;
+                    case(4):
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA8_ETC2_EAC; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            break;
+
         case(USE_RGTC1_COMPRESSION):
             if (extensions->isTextureCompressionRGTCSupported())
             {
@@ -1581,6 +1610,16 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
         case(GL_ETC1_RGB8_OES):
+        case(GL_COMPRESSED_RGB8_ETC2):
+        case(GL_COMPRESSED_SRGB8_ETC2):
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case(GL_COMPRESSED_R11_EAC):
+        case(GL_COMPRESSED_SIGNED_R11_EAC):
+        case(GL_COMPRESSED_RG11_EAC):
+        case(GL_COMPRESSED_SIGNED_RG11_EAC):
         case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
@@ -1597,8 +1636,16 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
         blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
         blockSize = 16;
-    else if (internalFormat == GL_ETC1_RGB8_OES)
+    else if (internalFormat == GL_COMPRESSED_RGB8_ETC2 || internalFormat == GL_COMPRESSED_SRGB8_ETC2)
         blockSize = 8;
+    else if (internalFormat == GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 || internalFormat == GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2)
+        blockSize = 8;
+    else if (internalFormat == GL_COMPRESSED_RGBA8_ETC2_EAC || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC)
+        blockSize = 16;
+    else if (internalFormat == GL_COMPRESSED_R11_EAC || internalFormat == GL_COMPRESSED_SIGNED_R11_EAC)
+        blockSize = 8;
+    else if (internalFormat == GL_COMPRESSED_RG11_EAC || internalFormat == GL_COMPRESSED_SIGNED_RG11_EAC)
+        blockSize = 16;
     else if (internalFormat == GL_COMPRESSED_RED_RGTC1_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_RGTC1_EXT)
         blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RED_GREEN_RGTC2_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT)
@@ -1878,21 +1925,31 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
             case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
             case GL_ETC1_RGB8_OES:
+            case(GL_COMPRESSED_RGB8_ETC2):
+            case(GL_COMPRESSED_SRGB8_ETC2):
             case GL_COMPRESSED_RGB: _internalFormat = GL_RGB; break;
             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
             case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
             case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+            case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+            case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+            case(GL_COMPRESSED_RGBA8_ETC2_EAC):
+            case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
             case GL_COMPRESSED_RGBA: _internalFormat = GL_RGBA; break;
             case GL_COMPRESSED_ALPHA: _internalFormat = GL_ALPHA; break;
             case GL_COMPRESSED_LUMINANCE: _internalFormat = GL_LUMINANCE; break;
             case GL_COMPRESSED_LUMINANCE_ALPHA: _internalFormat = GL_LUMINANCE_ALPHA; break;
             case GL_COMPRESSED_INTENSITY: _internalFormat = GL_INTENSITY; break;
+            case(GL_COMPRESSED_R11_EAC):
+            case(GL_COMPRESSED_SIGNED_R11_EAC):
             case GL_COMPRESSED_SIGNED_RED_RGTC1_EXT:
             case GL_COMPRESSED_RED_RGTC1_EXT: _internalFormat = GL_RED; break;
+            case(GL_COMPRESSED_RG11_EAC):
+            case(GL_COMPRESSED_SIGNED_RG11_EAC):
             case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:
-            case GL_COMPRESSED_RED_GREEN_RGTC2_EXT: _internalFormat = GL_LUMINANCE_ALPHA; break;
+            case GL_COMPRESSED_RED_GREEN_RGTC2_EXT: _internalFormat = GL_RG; break;
         }
     }
 
@@ -2545,6 +2602,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     _isTextureCompressionETCSupported = isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
 
+    _isTextureCompressionETC2Supported = isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
 
     _isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
 

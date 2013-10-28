@@ -553,6 +553,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             USE_PVRTC_2BPP_COMPRESSION,
             USE_PVRTC_4BPP_COMPRESSION,
             USE_ETC_COMPRESSION,
+            USE_ETC2_COMPRESSION,
             USE_RGTC1_COMPRESSION,
             USE_RGTC2_COMPRESSION,
             USE_S3TC_DXT1c_COMPRESSION,
@@ -793,6 +794,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setTextureCompressionETCSupported(bool flag) { _isTextureCompressionETCSupported=flag; }
                 bool isTextureCompressionETCSupported() const { return _isTextureCompressionETCSupported; }
+                
+                void setTextureCompressionETC2Supported(bool flag) { _isTextureCompressionETC2Supported=flag; }
+                bool isTextureCompressionETC2Supported() const { return _isTextureCompressionETC2Supported; }
 
                 void setTextureCompressionRGTCSupported(bool flag) { _isTextureCompressionRGTCSupported=flag; }
                 bool isTextureCompressionRGTCSupported() const { return _isTextureCompressionRGTCSupported; }
@@ -916,6 +920,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureCompressionPVRTC2BPPSupported;
                 bool    _isTextureCompressionPVRTC4BPPSupported;
                 bool    _isTextureCompressionETCSupported;
+                bool    _isTextureCompressionETC2Supported;
                 bool    _isTextureCompressionRGTCSupported;
                 bool    _isTextureCompressionPVRTCSupported;
                 bool    _isTextureMirroredRepeatSupported;

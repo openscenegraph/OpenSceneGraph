@@ -495,6 +495,16 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 4;
         case(GL_ETC1_RGB8_OES): return 3;
+        case(GL_COMPRESSED_RGB8_ETC2): return 3;
+        case(GL_COMPRESSED_SRGB8_ETC2): return 3;
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2): return 4;
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2): return 4;
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC): return 4;
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC): return 4;
+        case(GL_COMPRESSED_R11_EAC): return 1;
+        case(GL_COMPRESSED_SIGNED_R11_EAC): return 1;
+        case(GL_COMPRESSED_RG11_EAC): return 2;
+        case(GL_COMPRESSED_SIGNED_RG11_EAC): return 2;
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
@@ -613,6 +623,16 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 2;
         case(GL_ETC1_RGB8_OES): return 4;
+        case(GL_COMPRESSED_RGB8_ETC2): return 4;
+        case(GL_COMPRESSED_SRGB8_ETC2): return 4;
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2): return 4;
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2): return 4;
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC): return 8;
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC): return 8;
+        case(GL_COMPRESSED_R11_EAC): return 4;
+        case(GL_COMPRESSED_SIGNED_R11_EAC): return 4;
+        case(GL_COMPRESSED_RG11_EAC): return 8;
+        case(GL_COMPRESSED_SIGNED_RG11_EAC): return 8;
         default: break;
     }
 
@@ -720,6 +740,20 @@ unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
             return osg::maximum(16u,packing); // block size of 16
+
+        case(GL_COMPRESSED_RGB8_ETC2):
+        case(GL_COMPRESSED_SRGB8_ETC2):
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_R11_EAC):
+        case(GL_COMPRESSED_SIGNED_R11_EAC):
+            return osg::maximum(8u,packing); // block size of 8            
+
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case(GL_COMPRESSED_RG11_EAC):
+        case(GL_COMPRESSED_SIGNED_RG11_EAC):
+            return osg::maximum(16u,packing); // block size of 16
         default:
             break;
     }
@@ -825,6 +859,16 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
         case(GL_ETC1_RGB8_OES):
+        case(GL_COMPRESSED_RGB8_ETC2):
+        case(GL_COMPRESSED_SRGB8_ETC2):
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case(GL_COMPRESSED_R11_EAC):
+        case(GL_COMPRESSED_SIGNED_R11_EAC):
+        case(GL_COMPRESSED_RG11_EAC):
+        case(GL_COMPRESSED_SIGNED_RG11_EAC):
             return true;
         default:
             return false;
@@ -1587,6 +1631,16 @@ bool Image::supportsTextureSubloading() const
     switch(_internalTextureFormat)
     {
         case GL_ETC1_RGB8_OES:
+        case(GL_COMPRESSED_RGB8_ETC2):
+        case(GL_COMPRESSED_SRGB8_ETC2):
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case(GL_COMPRESSED_R11_EAC):
+        case(GL_COMPRESSED_SIGNED_R11_EAC):
+        case(GL_COMPRESSED_RG11_EAC):
+        case(GL_COMPRESSED_SIGNED_RG11_EAC):
             return false;
         default:
             return true;

@@ -123,7 +123,7 @@ ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter
         std::string optionsstring=options->getOptionString();
 
         size_t accstart=optionsstring.find("Accuracy(");
-        if (accstart>=0) {
+        if (accstart != std::string::npos) {
             const char* start=optionsstring.c_str() + accstart + strlen("Accuracy(");
             if (sscanf(start,"%lf",&maxError)==1) useAccuracy=true;
         }

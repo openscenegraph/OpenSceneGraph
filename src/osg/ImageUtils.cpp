@@ -22,7 +22,7 @@
 namespace osg
 {
 
-struct FindRangeOperator
+struct FindRangeOperator : public CastAndScaleToFloatOperation
 {
     FindRangeOperator():
         _rmin(FLT_MAX),
@@ -168,7 +168,7 @@ void _copyRowAndScale(const unsigned char* src, GLenum srcDataType, unsigned cha
     }
 }
 
-struct RecordRowOperator
+struct RecordRowOperator : public CastAndScaleToFloatOperation
 {
     RecordRowOperator(unsigned int num):_colours(num),_pos(0) {}
 

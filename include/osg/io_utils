@@ -25,6 +25,9 @@
 #include <osg/Vec2s>
 #include <osg/Vec3s>
 #include <osg/Vec4s>
+#include <osg/Vec2i>
+#include <osg/Vec3i>
+#include <osg/Vec4i>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 #include <osg/Plane>
@@ -231,6 +234,59 @@ inline std::ostream& operator << (std::ostream& output, const Vec4s& vec)
 }
 
 inline std::istream& operator >> (std::istream& input, Vec4s& vec)
+{
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
+    return input;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////
+// Vec2i steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec2i& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1];
+    return output; // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec2i& vec)
+{
+    input >> vec._v[0] >> std::ws >> vec._v[1];
+    return input;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Vec3i steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec3i& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1] << " "
+           << vec._v[2];
+    return output; // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec3i& vec)
+{
+    input >> vec._v[0] >> std::ws >> vec._v[1] >> std::ws >> vec._v[2];
+    return input;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Vec4i steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4i& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1] << " "
+           << vec._v[2] << " "
+           << vec._v[3];
+    return output; // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec4i& vec)
 {
     input >> vec._v[0] >> std::ws
           >> vec._v[1] >> std::ws

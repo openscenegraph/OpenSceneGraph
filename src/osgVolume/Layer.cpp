@@ -491,7 +491,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
 //
 // applyTransferFunction
 //
-struct ApplyTransferFunctionOperator
+struct ApplyTransferFunctionOperator : public osg::CastAndScaleToFloatOperation
 {
     ApplyTransferFunctionOperator(osg::TransferFunction1D* tf, unsigned char* data):
         _tf(tf),

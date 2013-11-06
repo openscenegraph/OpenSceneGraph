@@ -132,7 +132,7 @@ struct ScaleOperator
     inline void rgba(float& r,float& g,float& b,float& a) const { r*= _scale; g*=_scale; b*=_scale; a*=_scale; }
 };
 
-struct RecordRowOperator
+struct RecordRowOperator : public osg::CastAndScaleToFloatOperation
 {
     RecordRowOperator(unsigned int num):_colours(num),_pos(0) {}
 

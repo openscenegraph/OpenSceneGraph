@@ -834,10 +834,10 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
             unsigned vertIdx = triToAdd->verts[i];
             Vertex* vert = &vertices[vertIdx];
             vertDrawList.push_back(vertIdx);
-            remove(vertTriListStore.begin() + vert->triList,
-                   vertTriListStore.begin() + vert->triList
-                   + vert->numActiveTris,
-                   triToAddIdx);
+            vertTriListStore.erase(
+                remove(vertTriListStore.begin() + vert->triList,
+                    vertTriListStore.begin() + vert->triList
+                    + vert->numActiveTris, triToAddIdx), vertTriListStore.end());
             vert->numActiveTris--;
         }
         // Assume that the three oldest cache entries will get kicked

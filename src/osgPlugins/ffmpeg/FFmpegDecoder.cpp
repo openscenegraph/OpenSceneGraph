@@ -71,8 +71,6 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
 #else
             avdevice_register_all();
 
-            OSG_NOTICE<<"Attempting to stream "<<filename<<std::endl;
-
             if (parameters)
             {
                 av_dict_set(parameters->getOptions(), "video_size", "640x480", 0);
@@ -84,11 +82,11 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
 
             if (iformat)
             {
-                OSG_NOTICE<<"Found input format: "<<format<<std::endl;
+                OSG_INFO<<"Found input format: "<<format<<std::endl;
             }
             else
             {
-                OSG_NOTICE<<"Failed to find input format: "<<format<<std::endl;
+                OSG_INFO<<"Failed to find input format: "<<format<<std::endl;
             }
 
 #endif

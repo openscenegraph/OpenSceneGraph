@@ -130,13 +130,14 @@ public:
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
         if (ext=="ffmpeg") return readImage(osgDB::getNameLessExtension(filename),options);
 
-        if (filename.compare(0, 5, "/dev/")==0)
-        {
-            return readImageStream(filename, NULL);
-        }
-
         osg::ref_ptr<osgFFmpeg::FFmpegParameters> parameters(new osgFFmpeg::FFmpegParameters);
         parseOptions(parameters.get(), options);
+
+        if (filename.compare(0, 5, "/dev/")==0)
+        {
+            return readImageStream(filename, parameters.get());
+        }
+
         if (parameters->isFormatAvailable())
         {
             return readImageStream(filename, parameters.get());

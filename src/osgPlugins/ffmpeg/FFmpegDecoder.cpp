@@ -62,6 +62,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
     {
         // Open video file
         AVFormatContext * p_format_context = 0;
+        AVInputFormat *iformat = 0;
 
         if (filename.compare(0, 5, "/dev/")==0)
         {
@@ -72,13 +73,11 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
 
             OSG_NOTICE<<"Attempting to stream "<<filename<<std::endl;
 
-            AVInputFormat *iformat;
-#if 1
-        	av_dict_set(parameters->getOptions(), "video_size", "320x240", 0);
-#else
-        	av_dict_set(parameters->getOptions(), "video_size", "640x480", 0);
-#endif
-        	av_dict_set(parameters->getOptions(), "framerate", "1:30", 0);
+            if (parameters)
+            {
+                av_dict_set(parameters->getOptions(), "video_size", "640x480", 0);
+                av_dict_set(parameters->getOptions(), "framerate", "1:30", 0);
+            }
 
             std::string format = "video4linux2";
             iformat = av_find_input_format(format.c_str());
@@ -92,39 +91,38 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
                 OSG_NOTICE<<"Failed to find input format: "<<format<<std::endl;
             }
 
-            int error = avformat_open_input(&p_format_context, filename.c_str(), iformat, parameters->getOptions());
-            if (error != 0)
-            {
-                std::string error_str;
-                switch (error)
-                {
-                    //case AVERROR_UNKNOWN: error_str = "AVERROR_UNKNOWN"; break;   // same value as AVERROR_INVALIDDATA
-                    case AVERROR_IO: error_str = "AVERROR_IO"; break;
-                    case AVERROR_NUMEXPECTED: error_str = "AVERROR_NUMEXPECTED"; break;
-                    case AVERROR_INVALIDDATA: error_str = "AVERROR_INVALIDDATA"; break;
-                    case AVERROR_NOMEM: error_str = "AVERROR_NOMEM"; break;
-                    case AVERROR_NOFMT: error_str = "AVERROR_NOFMT"; break;
-                    case AVERROR_NOTSUPP: error_str = "AVERROR_NOTSUPP"; break;
-                    case AVERROR_NOENT: error_str = "AVERROR_NOENT"; break;
-                    case AVERROR_PATCHWELCOME: error_str = "AVERROR_PATCHWELCOME"; break;
-                    default: error_str = "Unknown error"; break;
-                }
-
-                throw std::runtime_error("av_open_input_file() failed : " + error_str);
-            }
 #endif
         }
         else
         {
-            AVInputFormat* iformat = (parameters ? parameters->getFormat() : 0);
-            AVIOContext* context = parameters->getContext();
+            iformat = parameters ? parameters->getFormat() : 0;
+            AVIOContext* context = parameters ? parameters->getContext() : 0;
             if (context != NULL)
             {
                 p_format_context = avformat_alloc_context();
                 p_format_context->pb = context;
             }
-            if (avformat_open_input(&p_format_context, filename.c_str(), iformat, parameters->getOptions()) != 0)
-                throw std::runtime_error("av_open_input_file() failed");
+        }
+
+        int error = avformat_open_input(&p_format_context, filename.c_str(), iformat, parameters->getOptions());
+        if (error != 0)
+        {
+            std::string error_str;
+            switch (error)
+            {
+                //case AVERROR_UNKNOWN: error_str = "AVERROR_UNKNOWN"; break;   // same value as AVERROR_INVALIDDATA
+                case AVERROR_IO: error_str = "AVERROR_IO"; break;
+                case AVERROR_NUMEXPECTED: error_str = "AVERROR_NUMEXPECTED"; break;
+                case AVERROR_INVALIDDATA: error_str = "AVERROR_INVALIDDATA"; break;
+                case AVERROR_NOMEM: error_str = "AVERROR_NOMEM"; break;
+                case AVERROR_NOFMT: error_str = "AVERROR_NOFMT"; break;
+                case AVERROR_NOTSUPP: error_str = "AVERROR_NOTSUPP"; break;
+                case AVERROR_NOENT: error_str = "AVERROR_NOENT"; break;
+                case AVERROR_PATCHWELCOME: error_str = "AVERROR_PATCHWELCOME"; break;
+                default: error_str = "Unknown error"; break;
+            }
+
+            throw std::runtime_error("av_open_input_file() failed : " + error_str);
         }
 
         m_format_context.reset(p_format_context);

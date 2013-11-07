@@ -19,6 +19,8 @@
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
 
+#include <osgUtil/RayIntersector>
+
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -714,7 +716,7 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
             {
                 // Are their any RTT Camera's that this Camera depends upon for textures?
 
-                osg::ref_ptr<osgUtil::LineSegmentIntersector> ray = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x,y);
+                osg::ref_ptr<osgUtil::RayIntersector> ray = new osgUtil::RayIntersector(osgUtil::Intersector::WINDOW, x,y);
                 osgUtil::IntersectionVisitor iv(ray.get());
                 camera->accept(iv);
                 if (ray->containsIntersections())

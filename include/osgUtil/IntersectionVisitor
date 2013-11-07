@@ -53,7 +53,8 @@ class Intersector : public osg::Referenced
         Intersector(CoordinateFrame cf=MODEL, IntersectionLimit il=NO_LIMIT):
             _coordinateFrame(cf),
             _intersectionLimit(il),
-            _disabledCount(0) {}
+            _disabledCount(0),
+            _precisionHint(USE_DOUBLE_CALCULATIONS) {}
 
 
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
@@ -84,11 +85,25 @@ class Intersector : public osg::Referenced
 
         inline bool reachedLimit() { return _intersectionLimit == LIMIT_ONE && containsIntersections(); }
 
+        /** Hint to precision used in the internal intersections calculations.*/
+        enum PrecisionHint
+        {
+            USE_DOUBLE_CALCULATIONS,
+            USE_FLOAT_CALCULATIONS
+        };
+
+        /** Set the hint to what precision to use in the intersections calculations.*/
+        void setPrecisionHint(PrecisionHint hint) { _precisionHint = hint; }
+
+        /** Get the hint to what precision should be used in the intersections calculations.*/
+        PrecisionHint getPrecisionHint() const { return _precisionHint; }
+
 protected:
 
         CoordinateFrame   _coordinateFrame;
         IntersectionLimit _intersectionLimit;
         unsigned int      _disabledCount;
+        PrecisionHint     _precisionHint;
 };
 
 

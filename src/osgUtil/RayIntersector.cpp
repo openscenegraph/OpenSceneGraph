@@ -34,6 +34,7 @@ RayIntersector::RayIntersector(CoordinateFrame cf, RayIntersector* parent,
     Intersector(cf, intersectionLimit),
     _parent(parent)
 {
+    if (parent) setPrecisionHint(parent->getPrecisionHint());
 }
 
 RayIntersector::RayIntersector(const Vec3d& start, const Vec3d& direction) :
@@ -50,6 +51,7 @@ RayIntersector::RayIntersector(CoordinateFrame cf, const Vec3d& start, const Vec
     _start(start),
     _direction(direction)
 {
+    if (parent) setPrecisionHint(parent->getPrecisionHint());
 }
 
 RayIntersector::RayIntersector(CoordinateFrame cf, double x, double y) :
@@ -112,6 +114,7 @@ void RayIntersector::intersect(IntersectionVisitor& iv, Drawable* drawable)
 
     // get intersections using LineSegmentIntersector
     LineSegmentIntersector lsi(MODEL, s, e, NULL, _intersectionLimit);
+    lsi.setPrecisionHint(getPrecisionHint());
     lsi.intersect(iv, drawable, s, e);
 
     // copy intersections from LineSegmentIntersector

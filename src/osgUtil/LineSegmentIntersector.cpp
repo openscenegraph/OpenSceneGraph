@@ -26,7 +26,6 @@ using namespace osgUtil;
 
 namespace LineSegmentIntersectorUtils
 {
-
     struct TriangleIntersection
     {
         TriangleIntersection(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
@@ -55,21 +54,23 @@ namespace LineSegmentIntersectorUtils
 
     typedef std::multimap<float,TriangleIntersection> TriangleIntersections;
 
+
+    template<typename Vec3, typename value_type>
     struct TriangleIntersector
     {
-        osg::Vec3   _s;
-        osg::Vec3   _d;
-        float       _length;
+        Vec3   _s;
+        Vec3   _d;
+        value_type       _length;
 
         int         _index;
-        float       _ratio;
+        value_type  _ratio;
         bool        _hit;
         bool        _limitOneIntersection;
-
-        TriangleIntersections _intersections;
+        TriangleIntersections* _intersections;
 
         TriangleIntersector()
         {
+            _intersections = 0;
             _length = 0.0f;
             _index = 0;
             _ratio = 0.0f;
@@ -77,7 +78,12 @@ namespace LineSegmentIntersectorUtils
             _limitOneIntersection = false;
         }
 
-        void set(const osg::Vec3d& start, const osg::Vec3d& end, float ratio=FLT_MAX)
+        void set(TriangleIntersections* intersections)
+        {
+            _intersections = intersections;
+        }
+
+        void set(const osg::Vec3d& start, const osg::Vec3d& end, value_type ratio=FLT_MAX)
         {
             _hit=false;
             _index = 0;
@@ -97,10 +103,10 @@ namespace LineSegmentIntersectorUtils
 
             if (v1==v2 || v2==v3 || v1==v3) return;
 
-            osg::Vec3 v12 = v2-v1;
-            osg::Vec3 n12 = v12^_d;
-            float ds12 = (_s-v1)*n12;
-            float d312 = (v3-v1)*n12;
+            Vec3 v12 = v2-v1;
+            Vec3 n12 = v12^_d;
+            value_type ds12 = (_s-v1)*n12;
+            value_type d312 = (v3-v1)*n12;
             if (d312>=0.0f)
             {
                 if (ds12<0.0f) return;
@@ -112,10 +118,10 @@ namespace LineSegmentIntersectorUtils
                 if (ds12<d312) return;
             }
 
-            osg::Vec3 v23 = v3-v2;
-            osg::Vec3 n23 = v23^_d;
-            float ds23 = (_s-v2)*n23;
-            float d123 = (v1-v2)*n23;
+            Vec3 v23 = v3-v2;
+            Vec3 n23 = v23^_d;
+            value_type ds23 = (_s-v2)*n23;
+            value_type d123 = (v1-v2)*n23;
             if (d123>=0.0f)
             {
                 if (ds23<0.0f) return;
@@ -127,10 +133,10 @@ namespace LineSegmentIntersectorUtils
                 if (ds23<d123) return;
             }
 
-            osg::Vec3 v31 = v1-v3;
-            osg::Vec3 n31 = v31^_d;
-            float ds31 = (_s-v3)*n31;
-            float d231 = (v2-v3)*n31;
+            Vec3 v31 = v1-v3;
+            Vec3 n31 = v31^_d;
+            value_type ds31 = (_s-v3)*n31;
+            value_type d231 = (v2-v3)*n31;
             if (d231>=0.0f)
             {
                 if (ds31<0.0f) return;
@@ -143,32 +149,32 @@ namespace LineSegmentIntersectorUtils
             }
 
 
-            float r3;
+            value_type r3;
             if (ds12==0.0f) r3=0.0f;
             else if (d312!=0.0f) r3 = ds12/d312;
             else return; // the triangle and the line must be parallel intersection.
 
-            float r1;
+            value_type r1;
             if (ds23==0.0f) r1=0.0f;
             else if (d123!=0.0f) r1 = ds23/d123;
             else return; // the triangle and the line must be parallel intersection.
 
-            float r2;
+            value_type r2;
             if (ds31==0.0f) r2=0.0f;
             else if (d231!=0.0f) r2 = ds31/d231;
             else return; // the triangle and the line must be parallel intersection.
 
-            float total_r = (r1+r2+r3);
+            value_type total_r = (r1+r2+r3);
             if (total_r!=1.0f)
             {
                 if (total_r==0.0f) return; // the triangle and the line must be parallel intersection.
-                float inv_total_r = 1.0f/total_r;
+                value_type inv_total_r = 1.0f/total_r;
                 r1 *= inv_total_r;
                 r2 *= inv_total_r;
                 r3 *= inv_total_r;
             }
 
-            osg::Vec3 in = v1*r1+v2*r2+v3*r3;
+            Vec3 in = v1*r1+v2*r2+v3*r3;
             if (!in.valid())
             {
                 OSG_WARN<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
@@ -177,24 +183,24 @@ namespace LineSegmentIntersectorUtils
                 return;
             }
 
-            float d = (in-_s)*_d;
+            value_type d = (in-_s)*_d;
 
             if (d<0.0f) return;
             if (d>_length) return;
 
-            osg::Vec3 normal = v12^v23;
+            Vec3 normal = v12^v23;
             normal.normalize();
 
-            float r = d/_length;
+            value_type r = d/_length;
 
 
             if (treatVertexDataAsTemporary)
             {
-                _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,0,r2,0,r3,0)));
+                _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,0,r2,0,r3,0)));
             }
             else
             {
-                _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
+                _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
             }
             _hit = true;
 
@@ -245,6 +251,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
         osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start, _end);
         lsi->_parent = this;
         lsi->_intersectionLimit = this->_intersectionLimit;
+        lsi->setPrecisionHint(getPrecisionHint());
         return lsi.release();
     }
 
@@ -255,6 +262,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * matrix, _end * matrix);
     lsi->_parent = this;
     lsi->_intersectionLimit = this->_intersectionLimit;
+    lsi->setPrecisionHint(getPrecisionHint());
     return lsi.release();
 }
 
@@ -375,17 +383,37 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
         return;
     }
 
-    osg::TriangleFunctor<LineSegmentIntersectorUtils::TriangleIntersector> ti;
-    ti.set(s,e);
-    ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
-    drawable->accept(ti);
+    LineSegmentIntersectorUtils::TriangleIntersections intersections;
 
-    if (ti._hit)
+    if (getPrecisionHint()==USE_DOUBLE_CALCULATIONS)
+    {
+        OSG_NOTICE<<"Using double intersections"<<std::endl;
+        typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3d, osg::Vec3d::value_type> TriangleIntersector;
+        osg::TriangleFunctor< TriangleIntersector > ti;
+
+        ti.set(&intersections);
+        ti.set(s,e);
+        ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
+        drawable->accept(ti);
+    }
+    else
+    {
+        OSG_NOTICE<<"Using float intersections"<<std::endl;
+        typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3f, osg::Vec3f::value_type> TriangleIntersector;
+        osg::TriangleFunctor< TriangleIntersector > ti;
+
+        ti.set(&intersections);
+        ti.set(s,e);
+        ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
+        drawable->accept(ti);
+    }
+
+    if (!intersections.empty())
     {
         osg::Geometry* geometry = drawable->asGeometry();
 
-        for(LineSegmentIntersectorUtils::TriangleIntersections::iterator thitr = ti._intersections.begin();
-            thitr != ti._intersections.end();
+        for(LineSegmentIntersectorUtils::TriangleIntersections::iterator thitr = intersections.begin();
+            thitr != intersections.end();
             ++thitr)
         {
 

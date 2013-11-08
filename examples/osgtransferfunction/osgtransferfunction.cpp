@@ -20,12 +20,15 @@
 #include <osg/Geometry>
 #include <osg/ImageUtils>
 #include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
+#include <osg/ComputeBoundsVisitor>
 #include <osg/io_utils>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
 
+#include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
 
 #include <osgViewer/Viewer>
@@ -245,7 +248,7 @@ osg::Node* Histogram::createGraphicalRepresentation()
     return transform.release();
 }
 
-osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf, unsigned int channel)
+osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf)
 {
     typedef osg::TransferFunction1D::ColorMap ColorMap;
     ColorMap& colorMap = tf->getColorMap();
@@ -264,7 +267,7 @@ osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf, unsigned i
         itr != colorMap.end();
         ++itr)
     {
-        float y = itr->second[channel];
+        float y = itr->second[3];
         if (y>yMax) yMax = y;
     }
 
@@ -284,11 +287,9 @@ osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf, unsigned i
         geometry->setVertexArray(vertices.get());
 
         osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-        geometry->setColorArray(colours.get(), osg::Array::BIND_PER_PRIMITIVE_SET);
-        colours->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
-        colours->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
-        colours->push_back(osg::Vec4(1.0,1.0,1.0,0.1));
+        geometry->setColorArray(colours.get(), osg::Array::BIND_PER_VERTEX);
 
+        osg::Vec4 background_color(1.0f, 1.0f, 1.0f, 0.1f);
 
         unsigned numColumnsRequired = colorMap.size();
         vertices->reserve(numColumnsRequired*3);
@@ -297,11 +298,22 @@ osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf, unsigned i
             ++itr)
         {
             float x = itr->first;
-            float y = itr->second[channel];
+            osg::Vec4 color = itr->second;
+
+            float y = itr->second[3];
+            color[3] = 1.0f;
 
             vertices->push_back(osg::Vec3(x*xScale, 0.0f, depth));
+            colours->push_back(color);
+
             vertices->push_back(osg::Vec3(x*xScale, y*yScale, depth));
+            colours->push_back(color);
+
+            vertices->push_back(osg::Vec3(x*xScale, y*yScale, depth));
+            colours->push_back(background_color);
+
             vertices->push_back(osg::Vec3(x*xScale, yMax*yScale, depth));
+            colours->push_back(background_color);
         }
 
         osg::ref_ptr<osg::DrawElementsUShort> background_primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
@@ -309,10 +321,10 @@ osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf, unsigned i
         osg::ref_ptr<osg::DrawElementsUShort> outline_primitives = new osg::DrawElementsUShort(GL_LINE_STRIP);
         for(unsigned int i=0; i<numColumnsRequired; ++i)
         {
-            int iv = i*3;
+            int iv = i*4;
 
+            background_primitives->push_back(iv+3);
             background_primitives->push_back(iv+2);
-            background_primitives->push_back(iv+1);
 
             historgram_primitives->push_back(iv+1);
             historgram_primitives->push_back(iv+0);
@@ -370,6 +382,78 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, f
     return tf;
 }
 
+class FindTransferFunctionPropertyVisitor : public osgVolume::PropertyVisitor
+{
+public:
+
+    osg::ref_ptr<osgVolume::TransferFunctionProperty> _tfp;
+
+#if 0
+    virtual void apply(osgVolume::SwitchProperty& sp)
+    {
+        OSG_NOTICE<<"Found SwitchProperty"<<std::endl;
+        apply(static_cast<osgVolume::CompositeProperty&>(sp));
+    }
+
+    virtual void apply(osgVolume::CompositeProperty& cp)
+    {
+        OSG_NOTICE<<"Found CompositeProperty"<<std::endl;
+        for(unsigned int i=0; i<cp.getNumProperties(); ++i)
+        {
+            cp.getProperty(i)->accept(*this);
+        }
+    }
+#endif
+    virtual void apply(osgVolume::TransferFunctionProperty& tfp)
+    {
+        OSG_NOTICE<<"Found TransferFunctionProperty "<<&tfp<<std::endl;
+        _tfp = &tfp;
+    }
+};
+
+
+class InsertTransferFunctionPropertyVisitor : public osgVolume::PropertyVisitor
+{
+public:
+
+    InsertTransferFunctionPropertyVisitor(osg::TransferFunction1D* tf)
+    {
+        _tfp = new osgVolume::TransferFunctionProperty(tf);
+    }
+
+    osg::ref_ptr<osgVolume::TransferFunctionProperty> _tfp;
+
+    virtual void apply(osgVolume::SwitchProperty& sp)
+    {
+        OSG_NOTICE<<"Found SwitchProperty"<<std::endl;
+        for(unsigned int i=0; i<sp.getNumProperties(); ++i)
+        {
+            sp.getProperty(i)->accept(*this);
+        }
+    }
+
+    virtual void apply(osgVolume::CompositeProperty& cp)
+    {
+        OSG_NOTICE<<"Found CompositeProperty, inserting transfer function"<<std::endl;
+        if (_tfp.valid()) cp.addProperty(_tfp.get());
+    }
+};
+
+class FindVolumeTiles : public osg::NodeVisitor
+{
+public:
+    FindVolumeTiles(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    typedef std::vector< osg::ref_ptr<osgVolume::VolumeTile> > Tiles;
+    Tiles _tiles;
+
+    void apply(osg::Group& group)
+    {
+        osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(&group);
+        if (tile) _tiles.push_back(tile);
+        else traverse(group);
+    }
+};
 
 int main(int argc, char ** argv)
 {
@@ -384,42 +468,133 @@ int main(int argc, char ** argv)
         tf = readTransferFunctionFile(filename);
     }
 
-    osg::ref_ptr<osgVolume::Layer> layer;
+    bool createHistorgram = arguments.read("--histogram");
 
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
 
-    osgVolume::VolumeTile* volumeTile = dynamic_cast<osgVolume::VolumeTile*>(model.get());
-    if (!volumeTile)
+    typedef std::vector< osg::ref_ptr<osg::Node> > Nodes;
+    Nodes nodes;
+
+    if (!model && !tf)
     {
-        OSG_NOTICE<<"Please specify volume dataset on command line."<<std::endl;
+        OSG_NOTICE<<"Please specify dataset on command line."<<std::endl;
         return 1;
     }
 
-    layer = volumeTile->getLayer();
+    osgVolume::ImageLayer* imageLayer = 0;
 
-    if (!layer)
+
+    if (model.valid())
     {
-        OSG_NOTICE<<"No layer loaded."<<std::endl;
+        osg::ref_ptr<osgVolume::VolumeTile> volumeTile = dynamic_cast<osgVolume::VolumeTile*>(model.get());
+        if (volumeTile.valid())
+        {
+            OSG_NOTICE<<"Inserting Volume above VolumeTile."<<std::endl;
+            osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
+            volume->addChild(model.get());
+            model = volume.get();
+        }
+
+        nodes.push_back(model.get());
+
+        FindVolumeTiles fvt;
+        model->accept(fvt);
+
+        if (!fvt._tiles.empty()) imageLayer = dynamic_cast<osgVolume::ImageLayer*>(fvt._tiles[0]->getLayer());
+    }
+
+
+    if (createHistorgram && imageLayer)
+    {
+        Histogram histogram;
+        histogram.analyse(imageLayer->getImage());
+        nodes.push_back(histogram.createGraphicalRepresentation());
+    }
+
+    if (imageLayer)
+    {
+        osgVolume::Property* property = imageLayer->getProperty();
+        if (property)
+        {
+            FindTransferFunctionPropertyVisitor ftfpv;
+            property->accept(ftfpv);
+
+            if (ftfpv._tfp.valid())
+            {
+                if (tf.valid())
+                {
+                    OSG_NOTICE<<"Need to replace volumes transfer function"<<std::endl;
+                    ftfpv._tfp->setTransferFunction(tf.get());
+                }
+                else
+                {
+                    OSG_NOTICE<<"Using volumes transfer function"<<std::endl;
+                    tf = dynamic_cast<osg::TransferFunction1D*>(ftfpv._tfp->getTransferFunction());
+                }
+            }
+            else if (tf.valid())
+            {
+                // No exisitng trasfer function but need to assign one
+                OSG_NOTICE<<"Need to assign transfer function to CompositeProperty"<<std::endl;
+                InsertTransferFunctionPropertyVisitor itfpv(tf.get());
+                property->accept(itfpv);
+            }
+        }
+        else if (tf.valid())
+        {
+            OSG_NOTICE<<"Assign transfer function directly"<<std::endl;
+            imageLayer->setProperty(new osgVolume::TransferFunctionProperty(tf.get()));
+        }
+    }
+
+    if (tf.valid())
+    {
+        nodes.push_back(createGraphicalRepresentation(tf.get()));
+    }
+
+    if (nodes.empty())
+    {
+        OSG_NOTICE<<"Please specify dataset on command line."<<std::endl;
         return 1;
     }
 
-    osg::ref_ptr<osgVolume::ImageLayer> imageLayer = dynamic_cast<osgVolume::ImageLayer*>(layer.get());
-
-    osg::ref_ptr<osg::Image> image = imageLayer.valid() ? imageLayer->getImage() : 0;
-
-    if (!image)
+    if (nodes.size()==1) viewer.setSceneData(nodes[0].get());
+    else
     {
-        OSG_NOTICE<<"No image found."<<std::endl;
+        osg::Vec3d position(0.0,0.0,0.0);
+
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+
+        for(Nodes::iterator itr = nodes.begin();
+            itr != nodes.end();
+            ++itr)
+        {
+            osg::ref_ptr<osg::Node> child = *itr;
+            if (!child) continue;
+#if 0
+            osg::ComputeBoundsVisitor cbv;
+            child->accept(cbv);
+
+            osg::BoundingBox bb = cbv.getBoundingBox();
+            double scale = 1.0/(bb.xMax()-bb.xMin());
+#endif
+            osg::BoundingSphere bb = child->getBound();
+            double scale = 0.7/bb.radius();
+
+            osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+            pat->addChild(child.get());
+            pat->setPosition(position);
+            pat->setPivotPoint(bb.center());
+            pat->setScale(osg::Vec3d(scale, scale, scale));
+            position.x() += 1.1;
+
+            group->addChild(pat.get());
+        }
+
+        viewer.setSceneData(group.get());
     }
 
-    Histogram histogram;
-    histogram.analyse(image.get());
 
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(histogram.createGraphicalRepresentation());
-    //if (tf.valid()) group->addChild(createGraphicalRepresentation(tf.get(),1));
-
-    viewer.setSceneData(group.get());
 
     osgDB::writeNodeFile(*viewer.getSceneData(),"graph.osgt");
 

@@ -27,8 +27,7 @@ public:
     {
         OSG_INFO << "RestHttpDevice :: handling request " << full_request_path << " as user-event" << std::endl;
         
-        osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter();
-        event->setEventType(osgGA::GUIEventAdapter::USER);
+        osg::ref_ptr<osgGA::Event> event = new osgGA::Event();
         event->setName(full_request_path);
         event->setTime(getDevice()->getEventQueue()->getTime());
         

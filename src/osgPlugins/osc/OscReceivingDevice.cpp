@@ -96,7 +96,7 @@ public:
 
     virtual void describeTo(std::ostream& out) const
     {
-        out << getRequestPath() << ": add all transmitted arguments as ValueObjects to an USER-event";
+        out << getRequestPath() << ": add all transmitted arguments as ValueObjects to an event";
         if (_treatFirstArgumentAsValueName)
             out << ", the first argument is used as the name of the value, if it's a string";
     }
@@ -142,7 +142,7 @@ bool StandardRequestHandler::operator()(const std::string& request_path, const s
         std::string path = osgDB::getFilePath(full_request_path);
         std::string last_elem = osgDB::getSimpleFileName(full_request_path);
 
-        osg::ref_ptr<osgGA::GUIEventAdapter> ea = getDevice()->getOrCreateUserDataEvent();
+        osg::ref_ptr<osgGA::Event> ea = getDevice()->getOrCreateUserDataEvent();
         osg::UserDataContainer* udc = ea->getOrCreateUserDataContainer();
 
 

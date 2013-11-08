@@ -87,12 +87,11 @@ public:
         return out;
     }
     
-    osgGA::GUIEventAdapter* getOrCreateUserDataEvent()
+    osgGA::Event* getOrCreateUserDataEvent()
     {
         if (!_userDataEvent.valid())
         {
-            _userDataEvent = new osgGA::GUIEventAdapter();
-            _userDataEvent->setEventType(osgGA::GUIEventAdapter::USER);
+            _userDataEvent = new osgGA::Event();
         }
         return _userDataEvent.get();
     }
@@ -104,7 +103,7 @@ private:
     unsigned int _listeningPort;
     UdpListeningReceiveSocket* _socket;
     RequestHandlerMap _map;
-    osg::ref_ptr<osgGA::GUIEventAdapter> _userDataEvent;
+    osg::ref_ptr<osgGA::Event> _userDataEvent;
     MsgIdType _lastMsgId;
     osg::Timer_t _lastMsgTimeStamp;
 

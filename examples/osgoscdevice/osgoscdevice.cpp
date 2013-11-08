@@ -154,14 +154,14 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
 }
 
 
-class UserEventHandler : public osgGA::GUIEventHandler {
+class UserEventHandler : public osgGA::EventHandler {
 public:
 
-    UserEventHandler(osgText::Text* text) : osgGA::GUIEventHandler(), _text(text) {}
+    UserEventHandler(osgText::Text* text) : osgGA::EventHandler(), _text(text) {}
 
     ~UserEventHandler() {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
+    virtual bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv);
 private:
     osg::ref_ptr<osgText::Text> _text;
 };
@@ -195,56 +195,60 @@ private:
     std::ostringstream _ss;
 };
 
-bool UserEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
 {
-    if (ea.getEventType() == osgGA::GUIEventAdapter::USER) {
-        OSG_ALWAYS << "handle user-event: " << ea.getName() << std::endl;
+    
+    OSG_ALWAYS << "handle user-event: " << event->getName() << std::endl;
 
-        if (ea.getName() == "/pick-result")
+    if (event->getName() == "/pick-result")
+    {
+        std::string name("");
+        float x(0), y(0);
+        event->getUserValue("name", name);
+        event->getUserValue("x", x);
+        event->getUserValue("y", y);
+        std::ostringstream ss;
+        ss << "Name: " << std::endl << name << std::endl << std::endl;
+        ss << "x: " << y << " y: " << y << std::endl;
+
+        _text->setText(ss.str());
+        
+        return true;
+    }
+    else if(event->getName() == "/osgga")
+    {
+        osg::Vec4 rect;
+        event->getUserValue("resize", rect);
+        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+        osg::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : NULL;
+        if (view && (rect[2] > 0) && (rect[3] > 0))
         {
-            std::string name("");
-            float x(0), y(0);
-            ea.getUserValue("name", name);
-            ea.getUserValue("x", x);
-            ea.getUserValue("y", y);
-            std::ostringstream ss;
-            ss << "Name: " << std::endl << name << std::endl << std::endl;
-            ss << "x: " << y << " y: " << y << std::endl;
-
-            _text->setText(ss.str());
+            OSG_ALWAYS << "resizing view to " << rect << std::endl;
+            osgViewer::GraphicsWindow* win = view->getCamera()->getGraphicsContext() ? dynamic_cast<osgViewer::GraphicsWindow*>(view->getCamera()->getGraphicsContext()) : NULL;
+            if (win)
+                win->setWindowRectangle(rect[2] + 10 + rect[0], rect[1], rect[2], rect[3]);
         }
-        else if(ea.getName() == "/osgga")
+        
+        return true;
+    }
+    else {
+        const osg::UserDataContainer* udc = event->getUserDataContainer();
+        if (udc)
         {
-            osg::Vec4 rect;
-            ea.getUserValue("resize", rect);
-            osg::View* view = dynamic_cast<osgViewer::View*>(&aa);
-            if (view && (rect[2] > 0) && (rect[3] > 0))
+            OSG_ALWAYS << "contents of " << udc->getName() << ": " << std::endl;
+            for(unsigned int i = 0; i < udc->getNumUserObjects(); ++i)
             {
-                OSG_ALWAYS << "resizing view to " << rect << std::endl;
-                osgViewer::GraphicsWindow* win = view->getCamera()->getGraphicsContext() ? dynamic_cast<osgViewer::GraphicsWindow*>(view->getCamera()->getGraphicsContext()) : NULL;
-                if (win)
-                    win->setWindowRectangle(rect[2] + 10 + rect[0], rect[1], rect[2], rect[3]);
-            }
-        }
-        else {
-            const osg::UserDataContainer* udc = ea.getUserDataContainer();
-            if (udc)
-            {
-                OSG_ALWAYS << "contents of " << udc->getName() << ": " << std::endl;
-                for(unsigned int i = 0; i < udc->getNumUserObjects(); ++i)
-                {
-                    const osg::ValueObject* vo = dynamic_cast<const osg::ValueObject*>(udc->getUserObject(i));
-                    OSG_ALWAYS << "  " << vo->getName() << ": ";
+                const osg::ValueObject* vo = dynamic_cast<const osg::ValueObject*>(udc->getUserObject(i));
+                OSG_ALWAYS << "  " << vo->getName() << ": ";
 
-                    MyValueListVisitor vlv;
-                    vo->get(vlv);
-                    OSG_ALWAYS << vlv.value() << std::endl;
-                }
+                MyValueListVisitor vlv;
+                vo->get(vlv);
+                OSG_ALWAYS << vlv.value() << std::endl;
             }
         }
         return true;
     }
-
+    
     return false;
 }
 
@@ -336,13 +340,13 @@ osg::Node* createHUD()
 }
 
 
-class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
+class ForwardToDeviceEventHandler : public osgGA::EventHandler {
 public:
-    ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::GUIEventHandler(), _device(device) {}
+    ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::EventHandler(), _device(device) {}
 
-    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    virtual bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
     {
-        _device->sendEvent(ea);
+        _device->sendEvent(*event);
         return false;
     }
 
@@ -354,31 +358,29 @@ class OscServiceDiscoveredEventHandler: public ForwardToDeviceEventHandler {
 public:
     OscServiceDiscoveredEventHandler() : ForwardToDeviceEventHandler(NULL) {}
 
-    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *o, osg::NodeVisitor *nv)
+    virtual bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
     {
         if (_device.valid())
-            return ForwardToDeviceEventHandler::handle(ea, aa, o, nv);
+            return ForwardToDeviceEventHandler::handle(event, object, nv);
 
-        if (ea.getEventType() == osgGA::GUIEventAdapter::USER)
+        if (event->getName() == "/zeroconf/service-added")
         {
-            if (ea.getName() == "/zeroconf/service-added")
-            {
-                std::string host;
-                unsigned int port;
-                ea.getUserValue("host", host);
-                ea.getUserValue("port", port);
+            std::string host;
+            unsigned int port;
+            event->getUserValue("host", host);
+            event->getUserValue("port", port);
 
-                OSG_ALWAYS << "new osc-service discovered: " << host << ":" << port << std::endl;
+            OSG_ALWAYS << "new osc-service discovered: " << host << ":" << port << std::endl;
 
-                std::ostringstream ss ;
-                ss << host << ":" << port << ".sender.osc";
-                _device = osgDB::readFile<osgGA::Device>(ss.str());
-
-                osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
-                if (view)
-                    view->addEventHandler(new PickHandler(_device.get()));
-                return true;
-            }
+            std::ostringstream ss ;
+            ss << host << ":" << port << ".sender.osc";
+            _device = osgDB::readFile<osgGA::Device>(ss.str());
+            
+            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+            osgViewer::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : NULL;
+            if (view)
+                view->addEventHandler(new PickHandler(_device.get()));
+            return true;
         }
         return false;
     }

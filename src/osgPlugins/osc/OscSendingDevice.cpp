@@ -47,17 +47,19 @@ OscSendingDevice::~OscSendingDevice()
     delete[] (_buffer);
 }
 
-void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
+void OscSendingDevice::sendEvent(const osgGA::Event &ea)
 {
     static osc::int64 msg_id(0);
     bool msg_sent(false);
     unsigned int num_messages = _numMessagesPerEvent;
     
-    if((ea.getEventType() == osgGA::GUIEventAdapter::DRAG) || (ea.getEventType() == osgGA::GUIEventAdapter::MOVE))
+    const osgGA::GUIEventAdapter* ui_event(ea.asGUIEventAdapter());
+    
+    if(ui_event && ((ui_event->getEventType() == osgGA::GUIEventAdapter::DRAG) || (ui_event->getEventType() == osgGA::GUIEventAdapter::MOVE)))
         num_messages = 1;
     
     for(unsigned int i = 0; i < num_messages; ++i) {
-        msg_sent = sendEventImpl(ea, msg_id);
+        msg_sent = ui_event ? sendUIEventImpl(*ui_event, msg_id) : sendEventImpl(ea, msg_id);
         if ((_delayBetweenSendsInMilliSecs > 0) && (i < num_messages-1))
             OpenThreads::Thread::microSleep(1000 * _delayBetweenSendsInMilliSecs);
     }
@@ -66,7 +68,34 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
 }
 
 
-bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType msg_id)
+bool OscSendingDevice::sendEventImpl(const osgGA::Event &ea, MsgIdType msg_id)
+{
+    bool do_send(false);
+    if (ea.getUserDataContainer())
+    {
+        std::string key = ea.getUserDataContainer()->getName();
+        if (key.empty()) key = ea.getName();
+        if (key.empty()) key = "user_data";
+        
+        sendUserDataContainer(transliterateKey(key), ea.getUserDataContainer(), true, msg_id);
+        
+        do_send = true;
+    }
+    
+    if (do_send)
+    {
+        OSG_INFO << "OscDevice :: sending event per OSC " << std::endl;
+        
+        _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
+        _oscStream.Clear();
+    }
+    
+    return do_send;
+}
+
+    
+
+bool OscSendingDevice::sendUIEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType msg_id)
 {
     bool do_send(false);
     switch(ea.getEventType())
@@ -189,7 +218,7 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
     
     if (do_send)
     {
-        OSG_INFO << "OscDevice :: sending event per OSC " << std::endl;
+        OSG_INFO << "OscDevice :: sending ui-event per OSC " << std::endl;
         
         _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
         _oscStream.Clear();

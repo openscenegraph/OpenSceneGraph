@@ -387,7 +387,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
     if (getPrecisionHint()==USE_DOUBLE_CALCULATIONS)
     {
-        OSG_NOTICE<<"Using double intersections"<<std::endl;
+        OSG_INFO<<"Using double intersections"<<std::endl;
         typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3d, osg::Vec3d::value_type> TriangleIntersector;
         osg::TriangleFunctor< TriangleIntersector > ti;
 
@@ -398,7 +398,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     }
     else
     {
-        OSG_NOTICE<<"Using float intersections"<<std::endl;
+        OSG_INFO<<"Using float intersections"<<std::endl;
         typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3f, osg::Vec3f::value_type> TriangleIntersector;
         osg::TriangleFunctor< TriangleIntersector > ti;
 

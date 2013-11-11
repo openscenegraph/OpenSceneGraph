@@ -1180,11 +1180,6 @@ void SlideShowConstructor::setUpMovieVolume(osg::Node* subgraph, osg::ImageStrea
 
 void SlideShowConstructor::addImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData)
 {
-
-    osg::ref_ptr<osgVolume::Volume> volume;
-    osg::ref_ptr<osgVolume::VolumeTile> tile;
-    osg::ref_ptr<osgVolume::ImageLayer> layer;
-
     osg::ref_ptr<osg::Image> image = readImage(filename, imageData);
     if (!image) return;
 

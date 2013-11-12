@@ -168,7 +168,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             tile->setVolumeTechnique(new osgVolume::RayTracedTechnique());
 
             osg::ref_ptr<osgVolume::ImageLayer> layer= new osgVolume::ImageLayer(result.getImage());
-            //layer->rescaleToZeroToOneRange();
+            layer->rescaleToZeroToOneRange();
 
             osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
             sp->setActiveProperty(0);

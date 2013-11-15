@@ -115,6 +115,8 @@ class OSGGA_EXPORT KeySwitchMatrixManipulator : public CameraManipulator
 
         virtual void computeHomePosition();
 
+        virtual void finishAnimation();
+
         virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa);
 
         virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { if (_current.valid()) _current->init(ee,aa); }

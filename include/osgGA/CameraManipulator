@@ -143,6 +143,9 @@ class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
         /** Compute the home position.*/
         virtual void computeHomePosition(const osg::Camera *camera = NULL, bool useBoundingBox = false);
 
+        /** finish any active manipulator animations.*/
+        virtual void finishAnimation() {}
+
         /**
         Move the camera to the default position.
         May be ignored by manipulators if home functionality is not appropriate.

@@ -154,6 +154,8 @@ bool StandardManipulator::isAnimating() const
 /// Finishes the animation by performing a step that moves it to its final position.
 void StandardManipulator::finishAnimation()
 {
+    _thrown = false;
+
     if( !isAnimating() )
         return;
 

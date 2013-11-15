@@ -459,12 +459,6 @@ public:
         static osg::ref_ptr<GUIEventAdapter>& getAccumulatedEventState();
 
 
-        /** Set whether this event has been handled by an event handler or not.*/
-        void setHandled(bool handled) const { _handled = handled; }
-
-        /** Get whether this event has been handled by an event handler or not.*/
-        bool getHandled() const { return _handled; }
-
         /** set the event type. */
         void setEventType(EventType Type) { _eventType = Type; }
 
@@ -705,7 +699,6 @@ public:
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter();
 
-        mutable bool _handled;
         EventType _eventType;
 
         osg::observer_ptr<osg::GraphicsContext> _context;

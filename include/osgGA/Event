@@ -35,6 +35,14 @@ public:
     virtual GUIEventAdapter* asGUIEventAdapter() { return 0; }
     virtual const GUIEventAdapter* asGUIEventAdapter() const { return 0; }
 
+
+    /** Set whether this event has been handled by an event handler or not.*/
+    void setHandled(bool handled) const { _handled = handled; }
+
+    /** Get whether this event has been handled by an event handler or not.*/
+    bool getHandled() const { return _handled; }
+
+
     /** set time in seconds of event. */
     void setTime(double time) { _time = time; }
 
@@ -44,7 +52,8 @@ public:
 protected:
     virtual ~Event() {}
 
-    double _time;
+    mutable bool        _handled;
+    double              _time;
 };
 
 }

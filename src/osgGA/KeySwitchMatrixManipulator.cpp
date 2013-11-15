@@ -98,6 +98,18 @@ void KeySwitchMatrixManipulator::computeHomePosition()
     }
 }
 
+void KeySwitchMatrixManipulator::finishAnimation()
+{
+    OSG_NOTICE<<"KeySwitchMatrixManipulator::finishAnimation()"<<std::endl;
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->finishAnimation();
+    }
+}
+
+
 void KeySwitchMatrixManipulator::home(const GUIEventAdapter& ee,GUIActionAdapter& aa)
 {
     // call home for all child manipulators
@@ -178,7 +190,7 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
         {
             CameraManipulator* selectedManipulator = it->second.second.get();
             if (selectedManipulator!=_current)
-            {            
+            {
                 OSG_INFO<<"Switching to manipulator: "<<it->second.first<<std::endl;
                 if ( !selectedManipulator->getNode() )
                 {
@@ -186,7 +198,7 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
                 }
                 selectedManipulator->setByMatrix(_current->getMatrix());
                 selectedManipulator->init(ea,aa);
-                
+
                 _current = selectedManipulator;
             }
             handled = true;

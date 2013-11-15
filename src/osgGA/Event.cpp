@@ -16,10 +16,12 @@
 using namespace osgGA;
 
 Event::Event():
+    _handled(false),
     _time(0.0)
 {}
 
 Event::Event(const Event& rhs, const osg::CopyOp& copyop):
     osg::Object(rhs, copyop),
+    _handled(rhs._handled),
     _time(rhs._time)
 {}

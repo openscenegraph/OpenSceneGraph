@@ -23,7 +23,6 @@ osg::ref_ptr<GUIEventAdapter>& GUIEventAdapter::getAccumulatedEventState()
 }
 
 GUIEventAdapter::GUIEventAdapter():
-    _handled(false),
     _eventType(NONE),
     _windowX(0),
     _windowY(0),
@@ -48,7 +47,6 @@ GUIEventAdapter::GUIEventAdapter():
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& copyop):
     osgGA::Event(rhs,copyop),
-    _handled(rhs._handled),
     _eventType(rhs._eventType),
     _context(rhs._context),
     _windowX(rhs._windowX),

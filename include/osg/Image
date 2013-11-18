@@ -69,6 +69,7 @@
     #define GL_COLOR_INDEX          0x1900
     #define GL_INTENSITY12          0x804C
     #define GL_INTENSITY16          0x804D
+    #define GL_INTENSITY            0x8049
     #define GL_INTENSITY4           0x804A
     #define GL_INTENSITY8           0x804B
     #define GL_LUMINANCE12          0x8041

@@ -30,9 +30,14 @@
 
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
+#include <osgVolume/RayTracedTechnique>
+#include <osgVolume/FixedFunctionTechnique>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
+
+#include "TransferFunctionWidget.h"
 
 class Histogram
 {
@@ -248,104 +253,6 @@ osg::Node* Histogram::createGraphicalRepresentation()
     return transform.release();
 }
 
-osg::Node* createGraphicalRepresentation(osg::TransferFunction1D* tf)
-{
-    typedef osg::TransferFunction1D::ColorMap ColorMap;
-    ColorMap& colorMap = tf->getColorMap();
-    if (colorMap.empty()) return 0;
-
-    osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
-
-    float xMin = colorMap.begin()->first;
-    float xMax = colorMap.rbegin()->first;
-
-    float depth = 0.0f;
-    float yMax = 0.0f;
-
-    // find yMax
-    for(ColorMap::iterator itr = colorMap.begin();
-        itr != colorMap.end();
-        ++itr)
-    {
-        float y = itr->second[3];
-        if (y>yMax) yMax = y;
-    }
-
-    float xScale = 1.0f/(xMax-xMin);
-    float yScale = 1.0f/yMax;
-
-    {
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        transform->addChild(geode.get());
-
-        osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-        geode->addDrawable(geometry.get());
-        geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        geode->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-
-        osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-        geometry->setVertexArray(vertices.get());
-
-        osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-        geometry->setColorArray(colours.get(), osg::Array::BIND_PER_VERTEX);
-
-        osg::Vec4 background_color(1.0f, 1.0f, 1.0f, 0.1f);
-
-        unsigned numColumnsRequired = colorMap.size();
-        vertices->reserve(numColumnsRequired*3);
-        for(ColorMap::iterator itr = colorMap.begin();
-            itr != colorMap.end();
-            ++itr)
-        {
-            float x = itr->first;
-            osg::Vec4 color = itr->second;
-
-            float y = itr->second[3];
-            color[3] = 1.0f;
-
-            vertices->push_back(osg::Vec3(x*xScale, 0.0f, depth));
-            colours->push_back(color);
-
-            vertices->push_back(osg::Vec3(x*xScale, y*yScale, depth));
-            colours->push_back(color);
-
-            vertices->push_back(osg::Vec3(x*xScale, y*yScale, depth));
-            colours->push_back(background_color);
-
-            vertices->push_back(osg::Vec3(x*xScale, yMax*yScale, depth));
-            colours->push_back(background_color);
-        }
-
-        osg::ref_ptr<osg::DrawElementsUShort> background_primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
-        osg::ref_ptr<osg::DrawElementsUShort> historgram_primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
-        osg::ref_ptr<osg::DrawElementsUShort> outline_primitives = new osg::DrawElementsUShort(GL_LINE_STRIP);
-        for(unsigned int i=0; i<numColumnsRequired; ++i)
-        {
-            int iv = i*4;
-
-            background_primitives->push_back(iv+3);
-            background_primitives->push_back(iv+2);
-
-            historgram_primitives->push_back(iv+1);
-            historgram_primitives->push_back(iv+0);
-
-            outline_primitives->push_back(iv+1);
-
-        }
-
-        geometry->addPrimitiveSet(outline_primitives.get());
-        geometry->addPrimitiveSet(historgram_primitives.get());
-        geometry->addPrimitiveSet(background_primitives.get());
-    }
-
-    //transform->setMatrix(osg::Matrix::scale(xScale/(maxX-minY), yScale/(yMax), 1.0f));
-
-    transform->setMatrix(osg::Matrix::scale(2.0,1.0,1.0)*osg::Matrix::rotate(osg::DegreesToRadians(90.0), osg::Vec3d(1.0,0.0,0.0)));
-
-    return transform.release();
-}
-
-
 osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float colorScale=1.0f)
 {
     std::string foundFile = osgDB::findDataFile(filename);
@@ -461,17 +368,72 @@ int main(int argc, char ** argv)
 
     osgViewer::Viewer viewer(arguments);
 
+    viewer.addEventHandler(new osgViewer::StatsHandler());
+
     osg::ref_ptr<osg::TransferFunction1D> tf;
     std::string filename;
     if (arguments.read("--tf",filename))
     {
-        tf = readTransferFunctionFile(filename);
+        tf = readTransferFunctionFile(filename, 1.0f);
+    }
+    if (arguments.read("--tf-255",filename))
+    {
+        tf = readTransferFunctionFile(filename,1.0f/255.0f);
     }
 
     bool createHistorgram = arguments.read("--histogram");
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+#if 0
+    for(int i=1; i<arguments.argc(); ++i)
+    {
+        if (!arguments.isOption(i))
+        {
+            osg::ref_ptr<osg::Image> image;
+            osg::ref_ptr<osgVolume::Volume> volume;
+            osg::ref_ptr<osgVolume::VolumeTile> volumeTile;
 
+            std::string filename = arguments[i];
+            osgDB::FileType fileType = osgDB::fileType(foundFile);
+
+            if (fileType == osgDB::DIRECTORY)
+            {
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(foundFile+".dicom", options.get());
+            }
+            else if (fileType == osgDB::REGULAR_FILE)
+            {
+                std::string ext = osgDB::getFileExtension(foundFile);
+                if (ext=="osg" || ext=="ive" || ext=="osgx" || ext=="osgb" || ext=="osgt")
+                {
+                    osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(foundFile);
+                    image = dynamic_cast<osg::Image*>(obj.get());
+                    volume = dynamic_cast<osgVolume::Volume*>(obj.get());
+                    volumeTile = dynamic_cast<osgVolume::VolumeTile*>(obj.get());
+                }
+                else
+                {
+                    image = osgDB::readImageFile( foundFile );
+                }
+            }
+            else
+            {
+                // not found image, so fallback to plugins/callbacks to find the model.
+                image = osgDB::readImageFile( filename);
+            }
+
+            if (image.valid())
+            {
+                volumeTile = new osgVolume::VolumeTile;
+            }
+
+        }
+        OSG_NOTICE<<"Argument "<<i<<" "<<arguments[i]<<std::endl;
+    }
+
+    return 1;
+#else
+
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+#endif
     typedef std::vector< osg::ref_ptr<osg::Node> > Nodes;
     Nodes nodes;
 
@@ -493,6 +455,9 @@ int main(int argc, char ** argv)
             osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
             volume->addChild(model.get());
             model = volume.get();
+
+//            volumeTile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+//            volumeTile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
         }
 
         nodes.push_back(model.get());
@@ -500,7 +465,12 @@ int main(int argc, char ** argv)
         FindVolumeTiles fvt;
         model->accept(fvt);
 
-        if (!fvt._tiles.empty()) imageLayer = dynamic_cast<osgVolume::ImageLayer*>(fvt._tiles[0]->getLayer());
+        if (!fvt._tiles.empty())
+        {
+            osgVolume::VolumeTile* tile = fvt._tiles[0].get();
+            imageLayer = dynamic_cast<osgVolume::ImageLayer*>(tile->getLayer());
+            tile->addEventCallback(new osgVolume::PropertyAdjustmentCallback());
+        }
     }
 
 
@@ -549,7 +519,10 @@ int main(int argc, char ** argv)
 
     if (tf.valid())
     {
-        nodes.push_back(createGraphicalRepresentation(tf.get()));
+        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+        transform->setMatrix(osg::Matrix::scale(2.0,1.0,1.0)*osg::Matrix::rotate(osg::DegreesToRadians(90.0), osg::Vec3d(1.0,0.0,0.0)));
+        transform->addChild(new osgUI::TransferFunctionWidget(tf.get()));
+        nodes.push_back(transform.get());
     }
 
     if (nodes.empty())
@@ -558,7 +531,10 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    if (nodes.size()==1) viewer.setSceneData(nodes[0].get());
+    if (nodes.size()==1)
+    {
+        viewer.setSceneData(nodes[0].get());
+    }
     else
     {
         osg::Vec3d position(0.0,0.0,0.0);
@@ -594,7 +570,7 @@ int main(int argc, char ** argv)
         viewer.setSceneData(group.get());
     }
 
-
+    OSG_NOTICE<<"Reading to run viewer"<<std::endl;
 
     osgDB::writeNodeFile(*viewer.getSceneData(),"graph.osgt");
 

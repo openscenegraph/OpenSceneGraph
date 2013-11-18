@@ -677,7 +677,17 @@ public:
 
         TouchData* getTouchData() const { return _touchData.get(); }
         bool isMultiTouchEvent() const { return (_touchData.valid()); }
-
+        
+        inline float getTouchPointNormalizedX(unsigned int ndx) const {
+            return (getTouchData()->get(ndx).x-_Xmin)/(_Xmax-_Xmin)*2.0f-1.0f;
+        }
+        
+        inline float getTouchPointNormalizedY(unsigned int ndx) const {
+            if (_mouseYOrientation==Y_INCREASING_UPWARDS)
+                return (getTouchData()->get(ndx).y-_Ymin)/(_Ymax-_Ymin)*2.0f-1.0f;
+            else
+                return -((getTouchData()->get(ndx).y-_Ymin)/(_Ymax-_Ymin)*2.0f-1.0f);
+        }
 
         typedef std::vector< osg::ref_ptr<PointerData> > PointerDataList;
         void setPointerDataList(const PointerDataList& pdl) { _pointerDataList = pdl; }

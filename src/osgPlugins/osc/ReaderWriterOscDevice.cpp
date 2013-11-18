@@ -30,12 +30,6 @@
  *  dump all registered handlers to the console. The device registers some convenient
  *  handlers to remote control a p3d-presentation.
  *
- *  you can feed a osgPresentation::PropertyManager into the plugin and set values on it via
- *  "/p3d/set_value key value" or "/p3d/set_value/key value"
- *  Additionally the plugin listens for
- *  "/osg/set_user_value key value" or "/osg/set_user_value/key value" and set the transmitted value on the
- *  UserDataContainer of the device.
- *
  *
  *  The plugin supports forwarding most of the events per osc to another host.
  *  It uses a special event-handler, which forwards the events. To get this
@@ -48,7 +42,6 @@
  *
  *
  *  TODO:
- *  - add multitouch support, preferably using the TUIO-protocol
  *  - be more tolerant with given filenames
  */
 

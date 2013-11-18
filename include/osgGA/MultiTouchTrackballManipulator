@@ -36,9 +36,9 @@ class OSGGA_EXPORT MultiTouchTrackballManipulator : public TrackballManipulator
 
     protected:
 
-        void handleMultiTouchDrag(GUIEventAdapter::TouchData* now, GUIEventAdapter::TouchData* last, const double eventTimeDelta);
+        void handleMultiTouchDrag(const GUIEventAdapter* now, const GUIEventAdapter* last, const double eventTimeDelta);
 
-        osg::ref_ptr<GUIEventAdapter::TouchData> _lastTouchData;
+        osg::ref_ptr<GUIEventAdapter> _lastEvent;
 };
 
 

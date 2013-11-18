@@ -98,9 +98,11 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
 
 class TestMultiTouchEventHandler : public osgGA::GUIEventHandler {
 public:
-    TestMultiTouchEventHandler(osg::Group* parent_group)
+    TestMultiTouchEventHandler(osg::Group* parent_group, float w, float h)
     :   osgGA::GUIEventHandler(),
-        _cleanupOnNextFrame(false)
+        _cleanupOnNextFrame(false),
+        _w(w),
+        _h(h)
     {
         createTouchRepresentations(parent_group, 10);
     }
@@ -149,6 +151,18 @@ private:
     
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
+        if (ea.getEventType() != osgGA::GUIEventAdapter::FRAME) {
+            std::cout << ea.getTime() << ": ";
+            switch(ea.getEventType()) {
+                case osgGA::GUIEventAdapter::PUSH: std::cout << "PUSH"; break;
+                case osgGA::GUIEventAdapter::DRAG:  std::cout << "DRAG"; break;
+                case osgGA::GUIEventAdapter::MOVE:  std::cout << "MOVE"; break;
+                case osgGA::GUIEventAdapter::RELEASE:  std::cout << "RELEASE"; break;
+                default: std::cout << ea.getEventType();
+            }
+            std::cout << std::endl;
+        }
+        
         switch(ea.getEventType())
         {
             case osgGA::GUIEventAdapter::FRAME:
@@ -174,7 +188,12 @@ private:
                     for(osgGA::GUIEventAdapter::TouchData::iterator i = ea.getTouchData()->begin(); i != ea.getTouchData()->end(); ++i, ++j)
                     {
                         const osgGA::GUIEventAdapter::TouchData::TouchPoint& tp = (*i);
-                        _mats[j]->setMatrix(osg::Matrix::translate(tp.x, ea.getWindowHeight() - tp.y, 0));
+                        float x = ea.getTouchPointNormalizedX(j);
+                        float y = ea.getTouchPointNormalizedY(j);
+                        
+                        // std::cout << j << ": " << tp.x << "/" << tp.y <<" "<< x << " " << y << " " << _w << " " << _h << std::endl;
+                        
+                        _mats[j]->setMatrix(osg::Matrix::translate((1+x) * 0.5 * _w, (1+y) * 0.5 * _h, 0));
                         _mats[j]->setNodeMask(0xffff);
                         
                         std::ostringstream ss;
@@ -238,6 +257,8 @@ private:
     std::vector<osg::MatrixTransform*> _mats;
     std::vector<osgText::Text*> _texts;
     bool _cleanupOnNextFrame;
+    
+    float _w, _h;
 
 };
 
@@ -246,7 +267,21 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
+    
 
+    unsigned int helpType = 0;
+    if ((helpType = arguments.readHelpType()))
+    {
+        arguments.getApplicationUsage()->write(std::cout, helpType);
+        return 1;
+    }
+
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
@@ -265,7 +300,19 @@ int main( int argc, char **argv )
 
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
+    
+    
+    //opening devices
+    std::string device;
+    while(arguments.read("--device", device))
+    {
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        if (dev.valid())
+        {
+            viewer.addDevice(dev.get());
+        }
+    }
     
     
     osg::ref_ptr<osg::Group> group  = new osg::Group;
@@ -288,7 +335,7 @@ int main( int argc, char **argv )
     osg::Camera* hud_camera = createHUD(gc->getTraits()->width, gc->getTraits()->height);
     
     
-    viewer.addEventHandler(new TestMultiTouchEventHandler(hud_camera));
+    viewer.addEventHandler(new TestMultiTouchEventHandler(hud_camera, gc->getTraits()->width, gc->getTraits()->height));
     
     
     group->addChild(hud_camera);

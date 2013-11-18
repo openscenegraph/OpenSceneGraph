@@ -31,6 +31,7 @@
 #include <osg/Camera>
 #include <osg/ValueObject>
 #include <osg/FrontFace>
+#include <osg/ShapeDrawable>
 #include <osgDB/ReadFile>
 
 #include <osgText/Text>
@@ -46,6 +47,8 @@
 #include <osgFX/Scribe>
 
 #include <osg/io_utils>
+
+#include <osgViewer/api/Cocoa/GraphicsWindowCocoa>
 
 
 // class to handle events with a pick
@@ -404,8 +407,11 @@ int main( int argc, char **argv )
 
     if (!scene)
     {
-        std::cout << argv[0] << ": requires filename argument." << std::endl;
-        return 1;
+        osg::Geode* geode = new osg::Geode();
+        osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box());
+        geode->addDrawable(drawable);
+        
+        scene = geode;
     }
 
     bool use_zeroconf(false);
@@ -490,6 +496,13 @@ int main( int argc, char **argv )
         traits->windowName = "Sender / view one";
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+        
+        
+        #ifdef __APPLE__
+            // as multitouch is disabled by default, enable it now
+            osgViewer::GraphicsWindowCocoa* win = dynamic_cast<osgViewer::GraphicsWindowCocoa*>(gc.get());
+            if (win) win->setMultiTouchEnabled(true);
+        #endif
 
 
         osgViewer::View* view = new osgViewer::View;

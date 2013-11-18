@@ -92,7 +92,7 @@ public:
         , _treatFirstArgumentAsValueName(treat_first_argument_as_value_name)
     {
     }
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m);
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint);
 
     virtual void describeTo(std::ostream& out) const
     {
@@ -135,7 +135,7 @@ private:
 
 
 
-bool StandardRequestHandler::operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+bool StandardRequestHandler::operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
 {
     try
     {
@@ -298,7 +298,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             float x_min(-1.0f), y_min(-1.0f), x_max(1.0f), y_max(1.0f);
@@ -330,7 +330,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             bool increasing_upwards(false);
@@ -364,7 +364,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             osc::int32 keycode(0);
@@ -401,7 +401,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             osc::int32 keycode(0);
@@ -440,7 +440,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
 
         try {
@@ -475,7 +475,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
 
         try {
@@ -516,7 +516,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         float down(0.0f);
 
@@ -568,7 +568,7 @@ public:
         }
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         float  x(0.0f), y(0.0f);
         osc::int32 btn(0);
@@ -621,7 +621,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             float pressure(0.0f);
@@ -652,7 +652,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             osc::int32 pt(osgGA::GUIEventAdapter::UNKNOWN);
@@ -686,7 +686,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m)
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
     {
         try {
             float rotation(0.0f), tilt_x(0.0f), tilt_y(0.0f);
@@ -707,6 +707,240 @@ public:
     {
         out << getRequestPath() << "(float rotation, float tilt_x, float tilt_y): send pen orientation";
     }
+};
+
+
+class TUIO2DCursorRequestHandler : public OscReceivingDevice::RequestHandler {
+
+public:
+
+    struct Cursor {
+        std::string source;
+        unsigned int id, frameId;
+        osg::Vec2f pos, vel;
+        float accel;
+        osgGA::GUIEventAdapter::TouchPhase phase;
+        
+        Cursor() : source(), id(0), frameId(0), pos(), vel(), accel(), phase(osgGA::GUIEventAdapter::TOUCH_UNKNOWN) {}
+        
+    };
+    struct EndpointData {
+        std::string source;
+        osc::int32 frameId;
+        bool mayClearUnhandledPointer;
+        std::set<unsigned int> unhandled;
+    };
+    
+    typedef std::map<std::string, EndpointData> EndpointDataMap;
+    typedef std::map<unsigned int, Cursor> CursorMap;
+    typedef std::map<std::string, CursorMap> ApplicationCursorMap;
+    typedef std::map<std::string, unsigned int> SourceIdMap;
+    TUIO2DCursorRequestHandler()
+        : OscReceivingDevice::RequestHandler("/tuio/2Dcur")
+    {
+    }
+    
+    virtual void setDevice(OscReceivingDevice* device) {
+        OscReceivingDevice::RequestHandler::setDevice(device);
+        device->addHandleOnCheckEvents(this);
+    }
+
+    
+    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    {
+        // std::cout << m << std::endl;
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+        std::string end_point(' ', IpEndpointName::ADDRESS_AND_PORT_STRING_LENGTH);
+        remoteEndPoint.AddressAndPortAsString(&end_point[0]);
+        
+        osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+        
+        
+        const char* str;
+        args >> str;
+        std::string what(str);
+        
+        if (what == "source")
+        {
+           args >> str;
+           _endpointData[end_point].source = std::string(str);
+           updateSourceIdMap(_endpointData[end_point].source);
+           
+           return true;
+        }
+        else if (what == "fseq")
+        {
+            args >> _endpointData[end_point].frameId;
+            return true;
+        }
+        else
+        {
+            std::string source = _endpointData[end_point].source;
+            unsigned int frame_id = _endpointData[end_point].frameId;
+            
+            if (what == "alive")
+            {
+                while (!args.Eos())
+                {
+                    osc::int32 id;
+                    args >> id;
+                    _endpointData[source].unhandled.insert(id);
+                }
+                _endpointData[source].mayClearUnhandledPointer = true;
+                
+                return true;
+            }
+            else if (what == "set")
+            {
+                osc::int32 id;
+                args >> id;
+                if (_alive[source].find(id) == _alive[source].end())
+                {
+                    _alive[source][id] = Cursor();
+                }
+                
+                Cursor& c(_alive[source][id]);
+                args >> c.pos.x() >> c.pos.y() >> c.vel.x() >> c.vel.y() >> c.accel >> osc::EndMessage;
+                c.source = source;
+                c.frameId = frame_id;
+                _endpointData[source].unhandled.insert(id);
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    virtual void operator()(osgGA::EventQueue* queue)
+    {
+        // dispatch all touchpoints in one GUIEventAdapter
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        
+        osg::ref_ptr<osgGA::GUIEventAdapter> event = NULL;
+        
+        
+        for(ApplicationCursorMap::iterator i = _alive.begin(); i != _alive.end(); ++i)
+        {
+            const std::string& source(i->first);
+            
+            /*
+            std::cout << source << ": ";
+            for(std::set<unsigned int>::iterator k = _endpointData[source].unhandled.begin();
+                k != _endpointData[source].unhandled.end();
+                ++k)
+            {
+                std::cout << *k << " ";
+            }
+            std::cout << std::endl;
+            */
+            
+            // remove all touchpoints which are not transmitted via alive-message, dispatching TOUCH_ENDED
+            
+            EndpointData& endpoint_data(_endpointData[source]);
+            if (endpoint_data.mayClearUnhandledPointer)
+            {
+                unsigned int source_id = getSourceId(source);
+                
+                std::vector<unsigned int> to_delete;
+                
+                for(CursorMap::iterator k = i->second.begin(); k != i->second.end(); ++k)
+                {
+                    //create a unique touchpoint-id
+                    unsigned int touch_id = (source_id << 16) + k->first;
+                    
+                    std::set<unsigned int>& unhandled(endpoint_data.unhandled);
+                    if ((unhandled.find(k->first) == unhandled.end()))
+                    {
+                        std::cout << "deleting: " << k->first << std::endl;
+                        to_delete.push_back(k->first);
+                        
+                        float win_x = k->second.pos.x();
+                        float win_y = k->second.pos.y();
+                    
+                        if (!event)
+                            event = queue->touchEnded(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
+                        else
+                            event->addTouchPoint(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
+                    }
+                }
+                // remove "dead" cursors
+                for(std::vector<unsigned int>::iterator k = to_delete.begin(); k != to_delete.end(); ++k)
+                {
+                    _alive[source].erase(i->second.find(*k));
+                }
+                
+                endpoint_data.mayClearUnhandledPointer = false;
+                endpoint_data.unhandled.clear();
+            }
+        
+            if (i->second.size() == 0)
+            {
+                // std::cout << "removing endpoint" << source << std::endl;
+                _endpointData.erase(_endpointData.find(source));
+                _alive.erase(_alive.find(source));
+            }
+        }
+        
+        // send all alive touchpoints
+        for(ApplicationCursorMap::iterator i = _alive.begin(); i != _alive.end(); ++i)
+        {
+            const std::string& source(i->first);
+            unsigned int source_id = getSourceId(source);
+            
+            for(CursorMap::iterator k = i->second.begin(); k != i->second.end(); ++k)
+            {
+                unsigned int id = k->first;
+                unsigned int touch_id = (source_id << 16) + id;
+                
+                Cursor& c(k->second);
+                float win_x = c.pos.x();
+                float win_y = c.pos.y();
+                
+                bool down = c.phase != osgGA::GUIEventAdapter::TOUCH_MOVED && c.phase != osgGA::GUIEventAdapter::TOUCH_STATIONERY;
+                if(!event)
+                {
+                     if(down)
+                        event = queue->touchBegan(touch_id, osgGA::GUIEventAdapter::TOUCH_BEGAN, win_x, win_y);
+                    else
+                        event = queue->touchMoved(touch_id, osgGA::GUIEventAdapter::TOUCH_MOVED, win_x, win_y);
+                }
+                else
+                {
+                    event->addTouchPoint(touch_id, down ? osgGA::GUIEventAdapter::TOUCH_BEGAN : osgGA::GUIEventAdapter::TOUCH_MOVED, win_x, win_y);
+                }
+                c.phase = osgGA::GUIEventAdapter::TOUCH_MOVED;
+            }
+        }
+    
+        // adjust time + input range
+        if (event)
+        {
+            event->setInputRange(0, 0, 1.0, 1.0);
+            event->setTime(queue->getTime());
+        }
+    }
+    
+    
+    inline void updateSourceIdMap(const std::string& source)
+    {
+        if (_sourceIdMap.find(source) == _sourceIdMap.end())
+            _sourceIdMap[source] = _sourceIdMap.size();
+    }
+    
+    inline unsigned int getSourceId(const std::string& source)
+    {
+        return _sourceIdMap[source];
+    }
+    
+private:
+    EndpointDataMap _endpointData;
+    ApplicationCursorMap  _alive;
+    OpenThreads::Mutex _mutex;
+    SourceIdMap _sourceIdMap;
 };
 
 
@@ -757,6 +991,8 @@ OscReceivingDevice::OscReceivingDevice(const std::string& server_address, int li
     addRequestHandler(new OscDevice::PenOrientationRequestHandler());
     addRequestHandler(new OscDevice::PenProximityRequestHandler(true));
     addRequestHandler(new OscDevice::PenProximityRequestHandler(false));
+    
+    addRequestHandler(new OscDevice::TUIO2DCursorRequestHandler());
 
     addRequestHandler(new OscDevice::StandardRequestHandler("/osg/set_user_value", true));
 
@@ -803,7 +1039,7 @@ void OscReceivingDevice::ProcessMessage( const osc::ReceivedMessage& m, const Ip
             {
                 // OSG_INFO << "OscDevice :: handling " << mangled_path << " with " << i->second << std::endl;
 
-                if (i->second->operator()(mangled_path, in_request_path, m) && !handled)
+                if (i->second->operator()(mangled_path, in_request_path, m, remoteEndpoint) && !handled)
                     handled = true;
             }
 
@@ -862,6 +1098,7 @@ void OscReceivingDevice::ProcessBundle( const osc::ReceivedBundle& b,
 }
 
 
+
 void OscReceivingDevice::ProcessPacket( const char *data, int size, const IpEndpointName& remoteEndpoint )
 {
     try {
@@ -882,7 +1119,7 @@ void OscReceivingDevice::ProcessPacket( const char *data, int size, const IpEndp
         remoteEndpoint.AddressAndPortAsString(address);
 
         _userDataEvent->setUserValue("osc/remote_end_point", std::string(address));
-
+        _userDataEvent->setTime(getEventQueue()->getTime());
         getEventQueue()->addEvent(_userDataEvent.get());
         _userDataEvent = NULL;
     }

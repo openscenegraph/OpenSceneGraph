@@ -876,7 +876,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
         
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (1-pos.y) * bounds.size.height);
+        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
         unsigned int touch_id = [self computeTouchId: touch mayCleanup:FALSE];
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
@@ -897,7 +897,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (1 - pos.y) * bounds.size.height);
+        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
         unsigned int touch_id = [self computeTouchId: touch mayCleanup:FALSE];
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
@@ -919,7 +919,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (1 - pos.y) * bounds.size.height);
+        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
         unsigned int touch_id = [self computeTouchId: touch mayCleanup: TRUE];
         if (!osg_event) {
             osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), 1);

@@ -746,6 +746,8 @@ void GraphicsWindowIOS::init()
 
 bool GraphicsWindowIOS::realizeImplementation()
 {
+    if (_realized) return true;
+    
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     BOOL bar_hidden = (_traits->windowDecoration) ? NO: YES;

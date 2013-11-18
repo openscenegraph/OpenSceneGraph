@@ -227,6 +227,15 @@ class BoundingBoxImpl
                    (v.y()>=_min.y() && v.y()<=_max.y()) &&
                    (v.z()>=_min.z() && v.z()<=_max.z());
         }
+
+        /** Returns true if this bounding box contains the specified coordinate allowing for specific epsilon. */
+        inline bool contains(const vec_type& v, value_type epsilon) const
+        {
+            return valid() &&
+                   ((v.x()+epsilon)>=_min.x() && (v.x()-epsilon)<=_max.x()) &&
+                   ((v.y()+epsilon)>=_min.y() && (v.y()-epsilon)<=_max.y()) &&
+                   ((v.z()+epsilon)>=_min.z() && (v.z()-epsilon)<=_max.z());
+        }
 };
 
 typedef BoundingBoxImpl<Vec3f> BoundingBoxf;

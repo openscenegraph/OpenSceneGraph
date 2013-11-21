@@ -69,6 +69,8 @@
 #include <osgVolume/VolumeTile>
 #include <osgVolume/RayTracedTechnique>
 #include <osgVolume/FixedFunctionTechnique>
+#include <osgVolume/MultipassTechnique>
+#include <osgVolume/VolumeScene>
 
 enum ShadingModel
 {
@@ -437,6 +439,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language. (default)");
+    arguments.getApplicationUsage()->addCommandLineOption("--multi-pass","Use MultipassTechnique to render volumes.");
+    arguments.getApplicationUsage()->addCommandLineOption("--model","load 3D model and insert into the scene along with the volume.");
+    arguments.getApplicationUsage()->addCommandLineOption("--hull","load 3D hull that defines the extents of the region to volume render.");
     arguments.getApplicationUsage()->addCommandLineOption("--no-shader","Disable use of OpenGL Shading Language.");
     arguments.getApplicationUsage()->addCommandLineOption("--gpu-tf","Aply the transfer function on the GPU. (default)");
     arguments.getApplicationUsage()->addCommandLineOption("--cpu-tf","Apply the transfer function on the CPU.");
@@ -618,10 +623,35 @@ int main( int argc, char **argv )
     bool useManipulator = false;
     while(arguments.read("--manipulator") || arguments.read("-m")) { useManipulator = true; }
 
-
     bool useShader = true;
     while(arguments.read("--shader")) { useShader = true; }
     while(arguments.read("--no-shader")) { useShader = false; }
+
+    bool useMultipass = false;
+    while(arguments.read("--multi-pass")) useMultipass = true;
+
+    std::string filename;
+    osg::ref_ptr<osg::Group> models;
+    while(arguments.read("--model",filename))
+    {
+        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(filename);
+        if (model.valid())
+        {
+            if (!models) models = new osg::Group;
+            models->addChild(model.get());
+        }
+    }
+
+    osg::ref_ptr<osg::Group> hulls;
+    while(arguments.read("--hull",filename))
+    {
+        osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(filename);
+        if (hull.valid())
+        {
+            if (!hulls) hulls = new osg::Group;
+            hulls->addChild(hull.get());
+        }
+    }
 
     bool gpuTransferFunction = true;
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }
@@ -1098,7 +1128,14 @@ int main( int argc, char **argv )
         layer->addProperty(sp);
 
 
-        tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+        if (useMultipass)
+        {
+            tile->setVolumeTechnique(new osgVolume::MultipassTechnique);
+        }
+        else
+        {
+            tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+        }
     }
     else
     {
@@ -1163,6 +1200,28 @@ int main( int argc, char **argv )
             group->addChild(volume.get());
 
             loadedModel = group;
+        }
+
+        if (hulls.get())
+        {
+            tile->addChild(hulls.get());
+        }
+
+        // add add models into the scene alongside the volume
+        if (models.get())
+        {
+            osg::ref_ptr<osg::Group> group = new osg::Group;
+            group->addChild(models.get());
+            group->addChild(loadedModel.get());
+            loadedModel = group.get();
+        }
+
+        // if we want to do multi-pass volume rendering we need decorate the whole scene with a VolumeScene node.
+        if (useMultipass)
+        {
+            osg::ref_ptr<osgVolume::VolumeScene> volumeScene = new osgVolume::VolumeScene;
+            volumeScene->addChild(loadedModel.get());
+            loadedModel = volumeScene.get();
         }
 
 

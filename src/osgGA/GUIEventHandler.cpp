@@ -16,6 +16,13 @@
 
 using namespace osgGA;
 
+
+GUIEventHandler::~GUIEventHandler()
+{
+
+}
+
+
 // adapt EventHandler usage to old style GUIEventHandler usage
 bool GUIEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
 {

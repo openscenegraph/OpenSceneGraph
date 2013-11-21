@@ -54,7 +54,7 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 
 bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
-    int maxAxis = std::max(glyph->s(), glyph->t());
+    int maxAxis = osg::maximum(glyph->s(), glyph->t());
     int margin = _margin + (int)((float)maxAxis * _marginRatio);
 
     int width = glyph->s()+2*margin;

@@ -703,7 +703,27 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
 
-    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
+    drawVertexArraysImplementation(renderInfo);
+
+    if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // draw the primitives themselves.
+    //
+    drawPrimitivesImplementation(renderInfo);
+    
+    // unbind the VBO's if any are used.
+    state.unbindVertexBufferObject();
+    state.unbindElementBufferObject();
+
+    if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
+}
+
+void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
+{
+    State& state = *renderInfo.getState();
+
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
@@ -777,15 +797,15 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     state.applyDisablingOfVertexAttributes();
+}
+
+void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
+{
+    State& state = *renderInfo.getState();
+    ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
 
     bool bindPerPrimitiveSetActive = arrayDispatchers.active(osg::Array::BIND_PER_PRIMITIVE_SET);
-
-    if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // draw the primitives themselves.
-    //
     for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
         // dispatch any attributes that are bound per primitive
@@ -795,12 +815,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
         primitiveset->draw(state, usingVertexBufferObjects);
     }
-
-    // unbind the VBO's if any are used.
-    state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
-
-    if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor

@@ -173,7 +173,13 @@ class OSG_EXPORT Geometry : public Drawable
         */
         virtual void drawImplementation(RenderInfo& renderInfo) const;
 
-        /** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
+	/** Set up the vertex arrays for the purpose of rendering, called by drawImplemtation() prior to it calling drawPrimitivesImplementation().*/
+	void drawVertexArraysImplementation(RenderInfo& renderInfo) const;
+	
+	/** dispatch the primitives to OpenGL, called by drawImplemtation() after calling drawVertexArraysImplementation().*/
+	void drawPrimitivesImplementation(RenderInfo& renderInfo) const;
+
+	/** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
         virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
         /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */

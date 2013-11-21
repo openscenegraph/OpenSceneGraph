@@ -133,9 +133,10 @@ void Image::read(DataInputStream* in)
 
 
         // Read image data if any
+        unsigned int dataSize = 0;
         if(in->readBool())
         {
-            unsigned int dataSize = (unsigned int)in->readInt();
+            dataSize = (unsigned int)in->readInt();
 
             //static int totalSize = 0;
 
@@ -154,6 +155,12 @@ void Image::read(DataInputStream* in)
         }
 
         _mipmapData.swap(mipmapData);
+
+        // If data size does not match computed image size, then clear mipmaps since we probably have invalid offsets
+        if (dataSize > 0 && dataSize != getTotalSizeInBytesIncludingMipmaps())
+        {
+            _mipmapData.clear();
+        }
     }
     else{
         in_THROW_EXCEPTION("Image::read(): Expected Image identification.");

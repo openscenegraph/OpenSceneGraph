@@ -5,7 +5,6 @@
 
 #include <osgDB/ReadFile>
 #include <osg/MatrixTransform>
-#include <osg/CameraNode>
 #include <osgText/Text>
 #include <osgViewer/Viewer>
 

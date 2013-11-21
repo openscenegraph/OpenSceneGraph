@@ -639,7 +639,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                 image = new osg::Image;
                 image->setOrigin( (osg::Image::Origin)origin );
                 image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
-                    (unsigned char*)data, (osg::Image::AllocationMode)mode, packing );
+                    (unsigned char*)data, osg::Image::USE_NEW_DELETE, packing );
             }
 
             // _mipmapData

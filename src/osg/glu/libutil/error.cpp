@@ -145,7 +145,7 @@ const GLubyte* gluErrorString(GLenum errorCode)
             return (const GLubyte *) Errors[i].String;
     }
     if ((errorCode >= GLU_TESS_ERROR1) && (errorCode <= GLU_TESS_ERROR6)) {
-	return (const GLubyte *) __gluTessErrorString(errorCode - (GLU_TESS_ERROR1 - 1));
+        return (const GLubyte *) __gluTessErrorString(errorCode - (GLU_TESS_ERROR1 - 1));
     }
     return (const GLubyte *) 0;
 }

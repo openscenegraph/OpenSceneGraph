@@ -24,23 +24,23 @@
 
 namespace osgViewer
 {
-    
+
 class OSGVIEWER_EXPORT Keystone : public osg::Object
 {
 public:
     Keystone();
 
     Keystone(const Keystone& rhs, const osg::CopyOp& copop=osg::CopyOp::SHALLOW_COPY);
-        
+
     META_Object(osgViewer, Keystone)
 
     void reset();
 
     Keystone& operator = (const Keystone& rhs);
-    
+
     void setKeystoneEditingEnabled(bool flag) { keystoneEditingEnabled = flag; }
     bool getKeystoneEditingEnabled() const { return keystoneEditingEnabled; }
-    
+
     void setGridColor(const osg::Vec4& color) { gridColour = color; }
     osg::Vec4& getGridColor() { return gridColour; }
     const osg::Vec4& getGridColor() const { return gridColour; }
@@ -61,23 +61,23 @@ public:
     osg::Vec2d& getTopRight() { return top_right; }
     const osg::Vec2d& getTopRight() const { return top_right; }
 
-    
-    
+
+
     void compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::Vec3& tr, osg::Vec3& br, osg::Vec3& bl) const;
-    
+
     osg::Geode* createKeystoneDistortionMesh();
-    
+
     osg::Node* createGrid();
-    
+
     /** Write the file specified by the "filename" user value field. Return true if file successfully written. */
     bool writeToFile();
-    
+
     /** convinience function that loads and assigns any keystone files specified in the DisplaySettings::KeystoneFileNames list, return true if Keystone's assigned to DisplaySettings.*/
     static bool loadKeystoneFiles(osg::DisplaySettings* ds);
 
 
-protected:    
-    
+protected:
+
     bool        keystoneEditingEnabled;
 
     osg::Vec4   gridColour;
@@ -91,8 +91,8 @@ protected:
 protected:
 
     virtual ~Keystone() {}
-    
-    
+
+
 };
 
 class OSGVIEWER_EXPORT KeystoneHandler : public osgGA::GUIEventHandler
@@ -125,7 +125,7 @@ public:
     osg::Vec2d incrementScale(const osgGA::GUIEventAdapter& ea) const;
     Region computeRegion(const osgGA::GUIEventAdapter& ea) const;
     void move(Region region, const osg::Vec2d& delta);
-    
+
 protected:
 
 
@@ -138,7 +138,7 @@ protected:
 
     osg::Vec2d                          _startPosition;
     osg::ref_ptr<Keystone>              _startControlPoints;
-    
+
     Region                              _selectedRegion;
     osg::ref_ptr<Keystone>              _currentControlPoints;
 

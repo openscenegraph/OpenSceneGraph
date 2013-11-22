@@ -712,14 +712,14 @@ InteractiveImageHandler::InteractiveImageHandler(osg::Image* image, osg::Texture
         double width = _camera->getViewport()->width();
         double height = _camera->getViewport()->height();
 
-        resize(width, height);
+        resize(static_cast<int>(width), static_cast<int>(height));
     }
 }
 
 bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const
 {
     if (!view) return false;
-    
+
     osgUtil::LineSegmentIntersector::Intersections intersections;
     bool foundIntersection = (nv==0) ? view->computeIntersections(ea, intersections) :
                                        view->computeIntersections(ea, nv->getNodePath(), intersections);

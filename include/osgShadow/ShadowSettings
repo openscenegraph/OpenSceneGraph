@@ -38,7 +38,7 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
         void setComputeNearFarModeOverride(osg::CullSettings::ComputeNearFarMode cnfn) { _computeNearFearModeOverride = cnfn; }
         osg::CullSettings::ComputeNearFarMode getComputeNearFarModeOverride() const { return _computeNearFearModeOverride; }
 
-        
+
         /** Set the LightNum of the light in the scene to assign a shadow for.
           * Default value is -1, which signifies that shadow technique should automatically select an active light
           * to assign a shadow, typically this will be the first active light found. */
@@ -67,7 +67,7 @@ class OSGSHADOW_EXPORT ShadowSettings : public osg::Object
 
         void setMaximumShadowMapDistance(double distance) { _maximumShadowMapDistance = distance; }
         double getMaximumShadowMapDistance() const { return _maximumShadowMapDistance; }
-        
+
 
         enum ShadowMapProjectionHint
         {

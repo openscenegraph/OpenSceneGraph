@@ -37,8 +37,6 @@ MultiTouchTrackballManipulator::MultiTouchTrackballManipulator( const MultiTouch
 
 void MultiTouchTrackballManipulator::handleMultiTouchDrag(const GUIEventAdapter* now, const GUIEventAdapter* last, const double eventTimeDelta)
 {
-    const float zoom_threshold = 0.0001f;
-
     osg::Vec2 pt_1_now(now->getTouchPointNormalizedX(0),now->getTouchPointNormalizedY(0));
     osg::Vec2 pt_2_now(now->getTouchPointNormalizedX(1),now->getTouchPointNormalizedY(1));
     osg::Vec2 pt_1_last(last->getTouchPointNormalizedX(0),last->getTouchPointNormalizedY(0));
@@ -51,7 +49,7 @@ void MultiTouchTrackballManipulator::handleMultiTouchDrag(const GUIEventAdapter*
 
     // osg::notify(osg::ALWAYS) << gap_now << " " << gap_last << std::endl;
 
-    
+
     // zoom gesture
     if (fabs(gap_last - gap_now) > 0.02)
         zoomModel( (gap_last - gap_now) , true );

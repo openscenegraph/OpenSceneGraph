@@ -908,10 +908,11 @@ static void halveImage_uint(GLint components, GLuint width, GLuint height,
         for (j = 0; j < newwidth; j++) {
             for (k = 0; k < components; k++) {
                 /* need to cast to double to hold large unsigned ints */
-                s[0] = ((double)*(const GLuint*)t +
-                        (double)*(const GLuint*)(t+group_size) +
-                        (double)*(const GLuint*)(t+ysize) +
-                        (double)*(const GLuint*)(t+ysize+group_size))/4 + 0.5;
+                GLdouble buf = (double)*(const GLuint*)t +
+                               (double)*(const GLuint*)(t+group_size) +
+                               (double)*(const GLuint*)(t+ysize) +
+                               (double)*(const GLuint*)(t+ysize+group_size);
+                s[0] = (GLuint)(buf/4.0 + 0.5);
                 s++; t += element_size;
 
             }
@@ -925,12 +926,11 @@ static void halveImage_uint(GLint components, GLuint width, GLuint height,
         for (j = 0; j < newwidth; j++) {
             for (k = 0; k < components; k++) {
                 /* need to cast to double to hold large unsigned ints */
-                GLdouble buf;
-                buf = (GLdouble)__GLU_SWAP_4_BYTES(t) +
-                      (GLdouble)__GLU_SWAP_4_BYTES(t+group_size) +
-                      (GLdouble)__GLU_SWAP_4_BYTES(t+ysize) +
-                      (GLdouble)__GLU_SWAP_4_BYTES(t+ysize+group_size);
-                s[0] = (GLuint)(buf/4 + 0.5);
+                GLdouble buf = (GLdouble)__GLU_SWAP_4_BYTES(t) +
+                               (GLdouble)__GLU_SWAP_4_BYTES(t+group_size) +
+                               (GLdouble)__GLU_SWAP_4_BYTES(t+ysize) +
+                               (GLdouble)__GLU_SWAP_4_BYTES(t+ysize+group_size);
+                s[0] = (GLuint)(buf/4.0 + 0.5);
 
                 s++; t += element_size;
             }

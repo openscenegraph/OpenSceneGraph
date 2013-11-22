@@ -401,14 +401,14 @@ void DebugShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
     {
         // view can be a slave that covers only a fraction of the screen
         // so adjust debug hud location to proper viewport location
-        _viewportOrigin[0] += vp->x();
-        _viewportOrigin[1] += vp->y();
+        _viewportOrigin[0] += static_cast<unsigned short>(vp->x());
+        _viewportOrigin[1] += static_cast<unsigned short>(vp->y());
 
-        if( _viewportSize[0] > vp->width() - _viewportOrigin[0] )
-            _viewportSize[0] = vp->width() - _viewportOrigin[0];
+        if( _viewportSize[0] > (static_cast<unsigned short>(vp->width()) - _viewportOrigin[0]) )
+            _viewportSize[0] = static_cast<unsigned short>(vp->width()) - _viewportOrigin[0];
 
-        if( _viewportSize[1] > vp->height() - _viewportOrigin[1] )
-            _viewportSize[1] = vp->height() - _viewportOrigin[1];
+        if( _viewportSize[1] > (static_cast<unsigned short>(vp->height()) - _viewportOrigin[1]) )
+            _viewportSize[1] = static_cast<unsigned short>(vp->height()) - _viewportOrigin[1];
     }
 
     _orthoSize                = st->_orthoSize;

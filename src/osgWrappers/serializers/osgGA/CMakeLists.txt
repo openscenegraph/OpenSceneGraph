@@ -3,5 +3,11 @@ FILE(GLOB TARGET_H *.h)
 
 SET(TARGET_ADDED_LIBRARIES osgGA )
 
+# fix an obscure compiler bug for xcode 5 + clang
+IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND APPLE)
+  SET(CMAKE_CXX_FLAGS_RELEASE "-O0 -DNDEBUG")
+  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O0 -g -DNDEBUG")
+ENDIF()
+
 #### end var setup  ###
 SETUP_PLUGIN(osgga)

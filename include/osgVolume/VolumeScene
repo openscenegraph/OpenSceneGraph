@@ -15,6 +15,8 @@
 #define OSGVOLUMESCENE 1
 
 #include <osg/Group>
+#include <osg/Texture2D>
+#include <osgUtil/CullVisitor>
 #include <osgVolume/Export>
 
 namespace osgVolume {
@@ -37,6 +39,22 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
 
         virtual ~VolumeScene();
 
+        class ViewData : public osg::Referenced
+        {
+            public:
+                ViewData();
+                osg::ref_ptr<osg::Texture2D> _depthTexture;
+                osg::ref_ptr<osg::Texture2D> _colorTexture;
+                osg::ref_ptr<osg::Camera> _rttCamera;
+                osg::ref_ptr<osg::Camera> _postCamera;
+                osg::ref_ptr<osgUtil::RenderStage> _parentRenderStage;
+            protected:
+                virtual ~ViewData() {}
+        };
+
+        typedef std::map< osgUtil::CullVisitor*, osg::ref_ptr<ViewData> >  ViewDataMap;
+        OpenThreads::Mutex _viewDataMapMutex;
+        ViewDataMap _viewDataMap;
 };
 
 }

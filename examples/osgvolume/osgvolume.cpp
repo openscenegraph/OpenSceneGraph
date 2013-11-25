@@ -49,6 +49,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgUtil/CullVisitor>
 
@@ -489,6 +490,9 @@ int main( int argc, char **argv )
 
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add stateset manipulator
+    viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 
     viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
@@ -1223,6 +1227,8 @@ int main( int argc, char **argv )
             volumeScene->addChild(loadedModel.get());
             loadedModel = volumeScene.get();
         }
+
+
 
 
         // set the scene to render

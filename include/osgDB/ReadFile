@@ -51,7 +51,7 @@ inline T* readFile(const std::string& filename, const Options* options)
 {
     osg::ref_ptr<osg::Object> object = readObjectFile(filename, options);
     osg::ref_ptr<T> t = dynamic_cast<T*>(object.get());
-    object = 0;    
+    object = 0;
     return t.release();
 }
 
@@ -281,7 +281,7 @@ inline osg::ref_ptr<osg::Node>  readRefNodeFile(const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to read the specified file.*/
-extern OSGDB_EXPORT osg::ref_ptr<osg::Shader>  readRefShaderFile(const std::string& filename,const Options* options);
+extern OSGDB_EXPORT osg::ref_ptr<osg::Shader> readRefShaderFile(const std::string& filename,const Options* options);
 
 /** Read an osg::Shader from file.
   * Return an assigned osg::ref_ptr on success,
@@ -291,7 +291,32 @@ extern OSGDB_EXPORT osg::ref_ptr<osg::Shader>  readRefShaderFile(const std::stri
   * to read the specified file.*/
 inline osg::ref_ptr<osg::Shader>  readRefShaderFile(const std::string& filename)
 {
-    return readRefShaderFile(filename,Registry::instance()->getOptions());
+    return readRefShaderFile(filename, Registry::instance()->getOptions());
+}
+
+/** Read an osg::Shader from file and set to specified shader type.
+  * Return valid osg::Shader on success,
+  * return NULL on failure.
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::ref_ptr<osg::Shader> readRefShaderFile(osg::Shader::Type type, const std::string& filename, const Options* options)
+{
+    osg::ref_ptr<osg::Shader> shader = readShaderFile(filename, options);
+    if (shader.valid() && type != osg::Shader::UNDEFINED) shader->setType(type);
+    return shader;
+}
+
+/** Read an osg::Shader from file and set to specified shader type
+  * Return valid osg::Shader on success,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::ref_ptr<osg::Shader> readRefShaderFile(osg::Shader::Type type, const std::string& filename)
+{
+    return readRefShaderFile(type, filename, Registry::instance()->getOptions());
 }
 
 

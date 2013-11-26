@@ -205,8 +205,8 @@ void RayTracedTechnique::init()
 
         // get shaders from source
 
-        osg::Shader* vertexShader = osgDB::readShaderFile(osg::Shader::VERTEX, "shaders/volume.vert");
-        if (vertexShader)
+        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/volume.vert");
+        if (vertexShader.valid())
         {
             program->addShader(vertexShader);
         }
@@ -287,10 +287,10 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_mip.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_mip.frag");
+                if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader);
+                    program->addShader(fragmentShader.get());
                 }
                 else
                 {
@@ -304,10 +304,10 @@ void RayTracedTechnique::init()
             }
             else
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_mip.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_mip.frag");
+                if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader);
+                    program->addShader(fragmentShader.get());
                 }
                 else
                 {
@@ -325,8 +325,8 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_iso.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_iso.frag");
+                if (fragmentShader.valid())
                 {
                     program->addShader(fragmentShader);
                 }
@@ -338,8 +338,8 @@ void RayTracedTechnique::init()
             }
             else
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_iso.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_iso.frag");
+                if (fragmentShader.valid())
                 {
                     OSG_INFO<<"Shader found"<<std::endl;
 
@@ -360,8 +360,8 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit_tf.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit_tf.frag");
+                if (fragmentShader.valid())
                 {
                     program->addShader(fragmentShader);
                 }
@@ -374,8 +374,8 @@ void RayTracedTechnique::init()
             }
             else
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
+                if (fragmentShader.valid())
                 {
                     program->addShader(fragmentShader);
                 }
@@ -392,8 +392,8 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf.frag");
+                if (fragmentShader.valid())
                 {
                     program->addShader(fragmentShader);
                 }
@@ -406,8 +406,8 @@ void RayTracedTechnique::init()
             }
             else
             {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
-                if (fragmentShader)
+                osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
+                if (fragmentShader.valid())
                 {
                     program->addShader(fragmentShader);
                 }

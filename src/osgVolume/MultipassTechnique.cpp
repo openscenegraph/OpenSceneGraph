@@ -13,6 +13,7 @@
 
 #include <osgVolume/MultipassTechnique>
 #include <osgVolume/VolumeTile>
+#include <osgVolume/VolumeScene>
 
 #include <osg/Geometry>
 #include <osg/io_utils>
@@ -77,6 +78,20 @@ void MultipassTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
 void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 {
     OSG_NOTICE<<"MultipassTechnique::cull() Need to set up"<<std::endl;
+    osg::NodePath& nodePath = cv->getNodePath();
+    for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+        itr != nodePath.rend();
+        ++itr)
+    {
+        OSG_NOTICE<<"  parent path node "<<*itr<<" "<<(*itr)->className()<<std::endl;
+        osgVolume::VolumeScene* vs = dynamic_cast<osgVolume::VolumeScene*>(*itr);
+        if (vs)
+        {
+            OSG_NOTICE<<"  HAVE VolumeScene"<<std::endl;
+            vs->tileVisited(cv, getVolumeTile());
+            break;
+        }
+    }
 }
 
 void MultipassTechnique::cleanSceneGraph()

@@ -222,3 +222,35 @@ void Locator::locatorModified()
     }
 
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TransformLocatorCallback
+//
+TransformLocatorCallback::TransformLocatorCallback(osg::MatrixTransform* transform):
+    _transform(transform)
+{}
+
+void TransformLocatorCallback::locatorModified(Locator* locator)
+{
+    if (_transform.valid()) _transform->setMatrix(locator->getTransform());
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TexGenLocatorCallback
+//
+TexGenLocatorCallback::TexGenLocatorCallback(osg::TexGen* texgen, Locator* geometryLocator, Locator* imageLocator):
+    _texgen(texgen),
+    _geometryLocator(geometryLocator),
+    _imageLocator(imageLocator) {}
+
+void TexGenLocatorCallback::locatorModified(Locator*)
+{
+    if (!_texgen || !_geometryLocator || !_imageLocator) return;
+
+    _texgen->setPlanesFromMatrix(
+        _geometryLocator->getTransform() *
+        osg::Matrix::inverse(_imageLocator->getTransform()));
+}

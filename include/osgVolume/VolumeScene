@@ -42,18 +42,29 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
 
         virtual ~VolumeScene();
 
+        struct TileData : public osg::Referenced
+        {
+            osg::NodePath nodePath;
+            osg::ref_ptr<osg::RefMatrix> projectionMatrix;
+            osg::ref_ptr<osg::RefMatrix> modelviewMatrix;
+        };
+        typedef std::list< osg::ref_ptr<TileData> > Tiles;
+
         class ViewData : public osg::Referenced
         {
             public:
                 ViewData();
-                osg::ref_ptr<osg::Texture2D> _depthTexture;
-                osg::ref_ptr<osg::Texture2D> _colorTexture;
-                osg::ref_ptr<osg::Camera> _rttCamera;
-                osg::ref_ptr<osg::Camera> _postCamera;
-                osg::ref_ptr<osgUtil::RenderStage> _parentRenderStage;
+                osg::ref_ptr<osg::Texture2D>    _depthTexture;
+                osg::ref_ptr<osg::Texture2D>    _colorTexture;
+                osg::ref_ptr<osg::Camera>       _rttCamera;
+                osg::ref_ptr<osg::Node>         _backdropSubgraph;
+                osg::ref_ptr<osg::Geometry>     _geometry;
+                osg::ref_ptr<osg::Vec3Array>    _vertices;
+                osg::ref_ptr<osg::StateSet>     _stateset;
+                osg::ref_ptr<osg::Uniform>      _viewportSizeUniform;
 
-                typedef std::list< osg::NodePath > Tiles;
-                Tiles _tiles;
+                Tiles                           _tiles;
+
             protected:
                 virtual ~ViewData() {}
         };

@@ -320,12 +320,12 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             else acceptNode->accept(*this);
         }
 
-        osg::ref_ptr<StateGraph>                                   _rootStateGraph;
-        StateGraph*                                                _currentStateGraph;
+        osg::ref_ptr<StateGraph>  _rootStateGraph;
+        StateGraph*               _currentStateGraph;
 
-        osg::ref_ptr<RenderStage>                                   _rootRenderStage;
-        RenderBin*                                                  _currentRenderBin;
-        std::vector<RenderBin*>                                     _renderBinStack;
+        osg::ref_ptr<RenderStage> _rootRenderStage;
+        RenderBin*                _currentRenderBin;
+        std::vector<RenderBin*>   _renderBinStack;
 
         unsigned int             _traversalNumber;
 

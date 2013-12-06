@@ -1225,9 +1225,9 @@ int main( int argc, char **argv )
         {
             osg::ref_ptr<osgVolume::VolumeScene> volumeScene = new osgVolume::VolumeScene;
             volumeScene->addChild(loadedModel.get());
+            loadedModel->getOrCreateStateSet();
             loadedModel = volumeScene.get();
         }
-
 
 
 

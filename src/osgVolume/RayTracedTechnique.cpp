@@ -30,49 +30,6 @@
 namespace osgVolume
 {
 
-class TransformLocatorCallback : public Locator::LocatorCallback
-{
-    public:
-
-        TransformLocatorCallback(osg::MatrixTransform* transform): _transform(transform) {}
-
-        void locatorModified(Locator* locator)
-        {
-            if (_transform.valid()) _transform->setMatrix(locator->getTransform());
-        }
-
-    protected:
-
-        osg::observer_ptr<osg::MatrixTransform> _transform;
-};
-
-
-class TexGenLocatorCallback : public Locator::LocatorCallback
-{
-    public:
-
-        TexGenLocatorCallback(osg::TexGen* texgen, Locator* geometryLocator, Locator* imageLocator):
-            _texgen(texgen),
-            _geometryLocator(geometryLocator),
-            _imageLocator(imageLocator) {}
-
-        void locatorModified(Locator*)
-        {
-            if (!_texgen || !_geometryLocator || !_imageLocator) return;
-
-            _texgen->setPlanesFromMatrix(
-                _geometryLocator->getTransform() *
-                osg::Matrix::inverse(_imageLocator->getTransform()));
-        }
-
-    protected:
-
-        osg::observer_ptr<osg::TexGen> _texgen;
-        osg::observer_ptr<osgVolume::Locator> _geometryLocator;
-        osg::observer_ptr<osgVolume::Locator> _imageLocator;
-};
-
-
 RayTracedTechnique::RayTracedTechnique()
 {
 }

@@ -17,7 +17,10 @@
 #include <osgVolume/Export>
 
 #include <osg/Object>
+#include <osg/observer_ptr>
 #include <osg/Matrixd>
+#include <osg/TexGen>
+#include <osg/MatrixTransform>
 
 #include <vector>
 
@@ -94,6 +97,36 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
 
         LocatorCallbacks    _locatorCallbacks;
 };
+
+class OSGVOLUME_EXPORT TransformLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TransformLocatorCallback(osg::MatrixTransform* transform);
+
+        void locatorModified(Locator* locator);
+
+    protected:
+
+        osg::observer_ptr<osg::MatrixTransform> _transform;
+};
+
+
+class OSGVOLUME_EXPORT TexGenLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TexGenLocatorCallback(osg::TexGen* texgen, Locator* geometryLocator, Locator* imageLocator);
+
+        void locatorModified(Locator*);
+
+    protected:
+
+        osg::observer_ptr<osg::TexGen> _texgen;
+        osg::observer_ptr<osgVolume::Locator> _geometryLocator;
+        osg::observer_ptr<osgVolume::Locator> _imageLocator;
+};
+
 
 }
 

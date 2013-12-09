@@ -87,6 +87,9 @@ void VolumeScene::tileVisited(osg::NodeVisitor* nv, osgVolume::VolumeTile* tile)
             tileData->modelviewMatrix = cv->getModelViewMatrix();
             viewData->_tiles.push_back(tileData.get());
         }
+
+        osg::BoundingBox bb(0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
+        cv->updateCalculatedNearFar(*(cv->getModelViewMatrix()),bb);
     }
 }
 

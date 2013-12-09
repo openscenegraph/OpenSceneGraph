@@ -227,8 +227,13 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Texture3D> texture3D = new osg::Texture3D;
     {
         osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
+#if 1
         osg::Texture::FilterMode minFilter = osg::Texture::LINEAR;
         osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
+#else
+        osg::Texture::FilterMode minFilter = osg::Texture::NEAREST;
+        osg::Texture::FilterMode magFilter = osg::Texture::NEAREST;
+#endif
 
         // set up the 3d texture itself,
         // note, well set the filtering up so that mip mapping is disabled,
@@ -255,8 +260,11 @@ void MultipassTechnique::init()
 
         stateset->setTextureAttributeAndModes(volumeTextureUnit, texture3D, osg::StateAttribute::ON);
 
-        osg::Uniform* baseTextureSampler = new osg::Uniform("volumeTexture", int(volumeTextureUnit));
-        stateset->addUniform(baseTextureSampler);
+        osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("volumeTexture", int(volumeTextureUnit));
+        stateset->addUniform(baseTextureSampler.get());
+
+        osg::ref_ptr<osg::Uniform> volumeCellSize = new osg::Uniform("volumeCellSize", osg::Vec3(1.0f/static_cast<float>(image_3d->s()),1.0f/static_cast<float>(image_3d->t()),1.0f/static_cast<float>(image_3d->r())));
+        stateset->addUniform(volumeCellSize.get());
     }
 
 

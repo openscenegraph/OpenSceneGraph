@@ -193,6 +193,21 @@ SampleDensityWhenMovingProperty::SampleDensityWhenMovingProperty(const SampleDen
 {
 }
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// SampleRatioProperty
+//
+SampleRatioProperty::SampleRatioProperty(float value):
+    ScalarProperty("SampleRatioValue",value)
+{
+}
+
+SampleRatioProperty::SampleRatioProperty(const SampleRatioProperty& srp,const osg::CopyOp& copyop):
+    ScalarProperty(srp, copyop)
+{
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -262,6 +277,7 @@ void CollectPropertiesVisitor::apply(MaximumIntensityProjectionProperty& mip) { 
 void CollectPropertiesVisitor::apply(LightingProperty& lp) { _lightingProperty = &lp; }
 void CollectPropertiesVisitor::apply(SampleDensityProperty& sdp) { _sampleDensityProperty = &sdp; }
 void CollectPropertiesVisitor::apply(SampleDensityWhenMovingProperty& sdp) { _sampleDensityWhenMovingProperty = &sdp; }
+void CollectPropertiesVisitor::apply(SampleRatioProperty& srp) { _sampleRatioProperty = &srp; }
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
 
 
@@ -400,31 +416,38 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
 
         if (_updateAlphaCutOff && cpv._isoProperty.valid())
         {
-            OSG_INFO<<"Setting isoProperty to "<<v<<std::endl;
+            OSG_NOTICE<<"Setting isoProperty to "<<v<<std::endl;
             cpv._isoProperty->setValue(v);
         }
 
         if (_updateAlphaCutOff && cpv._afProperty.valid())
         {
-            OSG_INFO<<"Setting afProperty to "<<v2<<std::endl;
+            OSG_NOTICE<<"Setting afProperty to "<<v2<<std::endl;
             cpv._afProperty->setValue(v2);
         }
 
         if (_updateTransparency && cpv._transparencyProperty.valid())
         {
-            OSG_INFO<<"Setting transparency to "<<v2<<std::endl;
+            OSG_NOTICE<<"Setting transparency to "<<v2<<std::endl;
             cpv._transparencyProperty->setValue(1.0f-v2);
         }
 
         if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
         {
-            OSG_INFO<<"Setting sample density to "<<v4<<std::endl;
+            OSG_NOTICE<<"Setting sample density to "<<v4<<std::endl;
             cpv._sampleDensityProperty->setValue(v4);
         }
         if (_updateSampleDensity && cpv._sampleDensityWhenMovingProperty.valid())
         {
             OSG_INFO<<"Setting sample density when moving to "<<v4<<std::endl;
             cpv._sampleDensityWhenMovingProperty->setValue(v4);
+        }
+
+        if (_updateSampleDensity && cpv._sampleRatioProperty.valid())
+        {
+            float sampleRatio = v2*4;
+            OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
+            cpv._sampleRatioProperty->setValue(sampleRatio);
         }
     }
 

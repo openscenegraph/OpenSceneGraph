@@ -1067,8 +1067,14 @@ int main( int argc, char **argv )
         sp->setActiveProperty(0);
 
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
-        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
+
+        // SampleDensity is now deprecated
+        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005f);
         osgVolume::SampleDensityWhenMovingProperty* sdwm = sampleDensityWhenMoving!=0.0 ? new osgVolume::SampleDensityWhenMovingProperty(sampleDensityWhenMoving) : 0;
+
+        // use SampleRatio in place of SampleDensity
+        osgVolume::SampleRatioProperty* sr = new osgVolume::SampleRatioProperty(1.0f);
+
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
         osgVolume::TransferFunctionProperty* tfp = transferFunction.valid() ? new osgVolume::TransferFunctionProperty(transferFunction.get()) : 0;
 
@@ -1076,8 +1082,10 @@ int main( int argc, char **argv )
             // Standard
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
-            cp->addProperty(sd);
+            if (useMultipass) cp->addProperty(sr);
+            else cp->addProperty(sd);
             cp->addProperty(tp);
+
             if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 
@@ -1088,7 +1096,8 @@ int main( int argc, char **argv )
             // Light
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
-            cp->addProperty(sd);
+            if (useMultipass) cp->addProperty(sr);
+            else cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::LightingProperty);
             if (sdwm) cp->addProperty(sdwm);
@@ -1100,7 +1109,8 @@ int main( int argc, char **argv )
         {
             // Isosurface
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(sd);
+            if (useMultipass) cp->addProperty(sr);
+            else cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
             if (sdwm) cp->addProperty(sdwm);
@@ -1113,7 +1123,10 @@ int main( int argc, char **argv )
             // MaximumIntensityProjection
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
-            cp->addProperty(sd);
+
+            if (useMultipass) cp->addProperty(sr);
+            else cp->addProperty(sd);
+
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
             if (sdwm) cp->addProperty(sdwm);

@@ -185,10 +185,10 @@ void MultipassTechnique::init()
             alphaFuncValue = cpv._isoProperty->getValue();
         }
 
-        if (cpv._sampleDensityProperty.valid())
-            stateset->addUniform(cpv._sampleDensityProperty->getUniform());
+        if (cpv._sampleRatioProperty.valid())
+            stateset->addUniform(cpv._sampleRatioProperty->getUniform());
         else
-            stateset->addUniform(new osg::Uniform("SampleDensityValue",0.0005f));
+            stateset->addUniform(new osg::Uniform("SampleRatioValue",1.0f));
 
 
         if (cpv._transparencyProperty.valid())
@@ -265,6 +265,8 @@ void MultipassTechnique::init()
 
         osg::ref_ptr<osg::Uniform> volumeCellSize = new osg::Uniform("volumeCellSize", osg::Vec3(1.0f/static_cast<float>(image_3d->s()),1.0f/static_cast<float>(image_3d->t()),1.0f/static_cast<float>(image_3d->r())));
         stateset->addUniform(volumeCellSize.get());
+
+        OSG_NOTICE<<"Texture Dimensions "<<image_3d->s()<<", "<<image_3d->t()<<", "<<image_3d->r()<<std::endl;
     }
 
 

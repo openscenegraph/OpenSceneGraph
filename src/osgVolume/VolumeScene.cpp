@@ -244,8 +244,8 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
             viewData->_stateset->setTextureAttributeAndModes(0, viewData->_colorTexture.get(), osg::StateAttribute::ON);
             viewData->_stateset->setTextureAttributeAndModes(1, viewData->_depthTexture.get(), osg::StateAttribute::ON);
 
-            viewData->_viewportSizeUniform = new osg::Uniform("viewportSize",osg::Vec2(1280.0,1024.0));
-            viewData->_stateset->addUniform(viewData->_viewportSizeUniform.get());
+            viewData->_viewportDimensionsUniform = new osg::Uniform("viewportDimensions",osg::Vec4(0.0,0.0,1280.0,1024.0));
+            viewData->_stateset->addUniform(viewData->_viewportDimensionsUniform.get());
 
             geode->setStateSet(viewData->_stateset.get());
 
@@ -266,7 +266,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
         if (viewport)
         {
-            viewData->_viewportSizeUniform->set(osg::Vec2(viewport->width(),viewport->height()));
+            viewData->_viewportDimensionsUniform->set(osg::Vec4(viewport->x(), viewport->y(), viewport->width(),viewport->height()));
 
             if (viewport->width() != viewData->_colorTexture->getTextureWidth() ||
                 viewport->height() != viewData->_colorTexture->getTextureHeight())

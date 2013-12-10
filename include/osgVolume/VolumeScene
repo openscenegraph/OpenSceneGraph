@@ -61,7 +61,7 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
                 osg::ref_ptr<osg::Geometry>     _geometry;
                 osg::ref_ptr<osg::Vec3Array>    _vertices;
                 osg::ref_ptr<osg::StateSet>     _stateset;
-                osg::ref_ptr<osg::Uniform>      _viewportSizeUniform;
+                osg::ref_ptr<osg::Uniform>      _viewportDimensionsUniform;
 
                 Tiles                           _tiles;
 

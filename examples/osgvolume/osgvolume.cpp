@@ -1067,6 +1067,7 @@ int main( int argc, char **argv )
         sp->setActiveProperty(0);
 
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
+        osgVolume::IsoSurfaceProperty* isop = new osgVolume::IsoSurfaceProperty(alphaFunc);
 
         // SampleDensity is now deprecated
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005f);
@@ -1087,7 +1088,13 @@ int main( int argc, char **argv )
             cp->addProperty(tp);
 
             if (sdwm) cp->addProperty(sdwm);
-            if (tfp) cp->addProperty(tfp);
+            if (tfp)
+            {
+                OSG_NOTICE<<"Adding TransferFunction"<<std::endl;
+                cp->addProperty(tfp);
+            }
+
+            cp->addProperty(isop);
 
             sp->addProperty(cp);
         }
@@ -1112,7 +1119,7 @@ int main( int argc, char **argv )
             if (useMultipass) cp->addProperty(sr);
             else cp->addProperty(sd);
             cp->addProperty(tp);
-            cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+            cp->addProperty(isop);
             if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 

@@ -147,6 +147,8 @@ void MultipassTechnique::init()
     Locator* masterLocator = _volumeTile->getLocator();
     Locator* layerLocator = _volumeTile->getLayer()->getLocator();
 
+    osg::TransferFunction1D* tf = 0;
+
     if (!masterLocator && layerLocator) masterLocator = layerLocator;
     if (!layerLocator && masterLocator) layerLocator = masterLocator;
 
@@ -201,6 +203,17 @@ void MultipassTechnique::init()
             stateset->addUniform(cpv._afProperty->getUniform());
         else
             stateset->addUniform(new osg::Uniform("AlphaFuncValue",alphaFuncValue));
+
+
+        if (cpv._isoProperty.valid())
+            stateset->addUniform(cpv._isoProperty->getUniform());
+        else
+            stateset->addUniform(new osg::Uniform("IsoSurfaceValue",alphaFuncValue));
+
+        if (cpv._tfProperty.valid())
+        {
+            tf = dynamic_cast<osg::TransferFunction1D*>(cpv._tfProperty->getTransferFunction());
+        }
 
 #if 1
         osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
@@ -269,6 +282,40 @@ void MultipassTechnique::init()
         OSG_NOTICE<<"Texture Dimensions "<<image_3d->s()<<", "<<image_3d->t()<<", "<<image_3d->r()<<std::endl;
     }
 
+    if (tf)
+    {
+        OSG_NOTICE<<"Setting up TransferFunction"<<std::endl;
+
+        float tfScale = 1.0f;
+        float tfOffset = 0.0f;
+
+        ImageLayer* imageLayer = dynamic_cast<ImageLayer*>(_volumeTile->getLayer());
+        if (imageLayer)
+        {
+            tfOffset = (imageLayer->getTexelOffset()[3] - tf->getMinimum()) / (tf->getMaximum() - tf->getMinimum());
+            tfScale = imageLayer->getTexelScale()[3] / (tf->getMaximum() - tf->getMinimum());
+        }
+        else
+        {
+            tfOffset = -tf->getMinimum() / (tf->getMaximum()-tf->getMinimum());
+            tfScale = 1.0f / (tf->getMaximum()-tf->getMinimum());
+        }
+        osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
+        tf_texture->setImage(tf->getImage());
+
+        tf_texture->setResizeNonPowerOfTwoHint(false);
+        tf_texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+        tf_texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        tf_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+
+        unsigned int transferFunctionTextureUnit = volumeTextureUnit+1;
+
+        stateset->setTextureAttributeAndModes(transferFunctionTextureUnit, tf_texture.get(), osg::StateAttribute::ON);
+        stateset->addUniform(new osg::Uniform("tfTexture",int(transferFunctionTextureUnit)));
+        stateset->addUniform(new osg::Uniform("tfOffset",tfOffset));
+        stateset->addUniform(new osg::Uniform("tfScale",tfScale));
+
+    }
 
 
     osg::ref_ptr<osg::Shader> computeRayColorShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_compute_ray_color.frag");

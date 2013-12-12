@@ -664,6 +664,9 @@ int main( int argc, char **argv )
     double sampleDensityWhenMoving = 0.0;
     while(arguments.read("--sdwm", sampleDensityWhenMoving)) {}
 
+    double sampleRatioWhenMoving = 0.0;
+    while(arguments.read("--srwm", sampleRatioWhenMoving)) {}
+
     while(arguments.read("--lod")) { sampleDensityWhenMoving = 0.02; }
 
     double sequenceLength = 10.0;
@@ -1075,6 +1078,7 @@ int main( int argc, char **argv )
 
         // use SampleRatio in place of SampleDensity
         osgVolume::SampleRatioProperty* sr = new osgVolume::SampleRatioProperty(1.0f);
+        osgVolume::SampleRatioWhenMovingProperty* srwm = sampleRatioWhenMoving!=0.0 ? new osgVolume::SampleRatioWhenMovingProperty(sampleRatioWhenMoving) : 0;
 
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
         osgVolume::TransferFunctionProperty* tfp = transferFunction.valid() ? new osgVolume::TransferFunctionProperty(transferFunction.get()) : 0;
@@ -1083,11 +1087,18 @@ int main( int argc, char **argv )
             // Standard
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
-            if (useMultipass) cp->addProperty(sr);
-            else cp->addProperty(sd);
+            if (useMultipass)
+            {
+                cp->addProperty(sr);
+                if (srwm) cp->addProperty(srwm);
+            }
+            else
+            {
+                cp->addProperty(sd);
+                if (sdwm) cp->addProperty(sdwm);
+            }
             cp->addProperty(tp);
 
-            if (sdwm) cp->addProperty(sdwm);
             if (tfp)
             {
                 OSG_NOTICE<<"Adding TransferFunction"<<std::endl;

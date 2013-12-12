@@ -207,6 +207,20 @@ SampleRatioProperty::SampleRatioProperty(const SampleRatioProperty& srp,const os
 {
 }
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// SampleRatioWhenMovingProperty
+//
+SampleRatioWhenMovingProperty::SampleRatioWhenMovingProperty(float value):
+    ScalarProperty("SampleRatioValue",value)
+{
+}
+
+SampleRatioWhenMovingProperty::SampleRatioWhenMovingProperty(const SampleRatioWhenMovingProperty& isp,const osg::CopyOp& copyop):
+    ScalarProperty(isp, copyop)
+{
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -278,6 +292,7 @@ void CollectPropertiesVisitor::apply(LightingProperty& lp) { _lightingProperty =
 void CollectPropertiesVisitor::apply(SampleDensityProperty& sdp) { _sampleDensityProperty = &sdp; }
 void CollectPropertiesVisitor::apply(SampleDensityWhenMovingProperty& sdp) { _sampleDensityWhenMovingProperty = &sdp; }
 void CollectPropertiesVisitor::apply(SampleRatioProperty& srp) { _sampleRatioProperty = &srp; }
+void CollectPropertiesVisitor::apply(SampleRatioWhenMovingProperty& srp) { _sampleRatioWhenMovingProperty = &srp; }
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
 
 
@@ -448,6 +463,13 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
             float sampleRatio = v2*4;
             OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
             cpv._sampleRatioProperty->setValue(sampleRatio);
+        }
+
+        if (_updateSampleDensity && cpv._sampleRatioWhenMovingProperty.valid())
+        {
+            float sampleRatio = v2*4;
+            OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
+            cpv._sampleRatioWhenMovingProperty->setValue(sampleRatio);
         }
     }
 

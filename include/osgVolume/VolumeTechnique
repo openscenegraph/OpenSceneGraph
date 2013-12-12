@@ -43,6 +43,8 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 
         virtual void update(osgUtil::UpdateVisitor* nv);
 
+        virtual bool isMoving(osgUtil::CullVisitor* nv);
+
         virtual void cull(osgUtil::CullVisitor* nv);
 
         /** Clean scene graph from any terrain technique specific nodes.*/
@@ -61,6 +63,9 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 
         VolumeTile*    _volumeTile;
 
+        typedef std::map<osgUtil::CullVisitor::Identifier*, osg::Matrix> ModelViewMatrixMap;
+        OpenThreads::Mutex _mutex;
+        ModelViewMatrixMap _modelViewMatrixMap;
 };
 
 }

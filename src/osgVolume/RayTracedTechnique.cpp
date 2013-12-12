@@ -498,36 +498,11 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
     if (!_transform.valid()) return;
 
-    if (_whenMovingStateSet.valid())
+    if (_whenMovingStateSet.valid() && isMoving(cv))
     {
-        bool moving = false;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
-            if (itr!=_modelViewMatrixMap.end())
-            {
-                osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
-                osg::Matrix& previousModelViewMatrix = itr->second;
-                moving = (newModelViewMatrix != previousModelViewMatrix);
-
-                previousModelViewMatrix = newModelViewMatrix;
-            }
-            else
-            {
-                _modelViewMatrixMap[cv->getIdentifier()] = *(cv->getModelViewMatrix());
-            }
-        }
-
-        if (moving)
-        {
-            cv->pushStateSet(_whenMovingStateSet.get());
-            _transform->accept(*cv);
-            cv->popStateSet();
-        }
-        else
-        {
-            _transform->accept(*cv);
-        }
+        cv->pushStateSet(_whenMovingStateSet.get());
+        _transform->accept(*cv);
+        cv->popStateSet();
     }
     else
     {

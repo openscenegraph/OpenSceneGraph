@@ -419,6 +419,12 @@ void MultipassTechnique::init()
     }
 
 
+    if (cpv._sampleRatioWhenMovingProperty.valid())
+    {
+        _whenMovingStateSet = new osg::StateSet;
+        _whenMovingStateSet->addUniform(cpv._sampleRatioWhenMovingProperty->getUniform(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+    }
+
 }
 
 void MultipassTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
@@ -435,8 +441,18 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 
     if (postTraversal)
     {
-        // OSG_NOTICE<<"  OK need to handle postTraversal"<<std::endl;
-        _transform->accept(*cv);
+        if (_whenMovingStateSet.valid() && isMoving(cv))
+        {
+            OSG_NOTICE<<"Using MovingStateSet"<<std::endl;
+            cv->pushStateSet(_whenMovingStateSet.get());
+            _transform->accept(*cv);
+            cv->popStateSet();
+        }
+        else
+        {
+            OSG_NOTICE<<"NOT using MovingStateSet"<<std::endl;
+            _transform->accept(*cv);
+        }
     }
     else
     {

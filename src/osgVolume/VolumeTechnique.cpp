@@ -86,3 +86,27 @@ void VolumeTechnique::traverse(osg::NodeVisitor& nv)
     // otherwise fallback to the Group::traverse()
     _volumeTile->osg::Group::traverse(nv);
 }
+
+bool VolumeTechnique::isMoving(osgUtil::CullVisitor* cv)
+{
+    bool moving = false;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+    OSG_NOTICE<<"cv="<<cv<<", cv->getIdentifier()="<<cv->getIdentifier()<<std::endl;
+
+    ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
+    if (itr!=_modelViewMatrixMap.end())
+    {
+        osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
+        osg::Matrix& previousModelViewMatrix = itr->second;
+        moving = (newModelViewMatrix != previousModelViewMatrix);
+
+        previousModelViewMatrix = newModelViewMatrix;
+    }
+    else
+    {
+        _modelViewMatrixMap[cv->getIdentifier()] = *(cv->getModelViewMatrix());
+    }
+    return moving;
+}

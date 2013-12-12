@@ -35,6 +35,7 @@ class MaximumIntensityProjectionProperty;
 class LightingProperty;
 class AlphaFuncProperty;
 class SampleRatioProperty;
+class SampleRatioWhenMovingProperty;
 class SampleDensityProperty;
 class SampleDensityWhenMovingProperty;
 class TransparencyProperty;
@@ -57,6 +58,7 @@ class OSGVOLUME_EXPORT PropertyVisitor
         virtual void apply(MaximumIntensityProjectionProperty&) {}
         virtual void apply(LightingProperty&) {}
         virtual void apply(SampleRatioProperty&) {}
+        virtual void apply(SampleRatioWhenMovingProperty&) {}
         virtual void apply(SampleDensityProperty&) {}
         virtual void apply(SampleDensityWhenMovingProperty&) {}
         virtual void apply(TransparencyProperty&) {}
@@ -329,7 +331,7 @@ class OSGVOLUME_EXPORT SampleDensityWhenMovingProperty : public ScalarProperty
         virtual ~SampleDensityWhenMovingProperty() {}
 };
 
-/** Sample density to use when the volume is static relative to the eye point or when moving if no SampleDensityWhenMovingProperty is assigned.*/
+/** Sample ratioto use when the volume is static relative to the eye point or when moving if no SampleRatioWhenMovingProperty is assigned.*/
 class OSGVOLUME_EXPORT SampleRatioProperty : public ScalarProperty
 {
     public:
@@ -345,6 +347,24 @@ class OSGVOLUME_EXPORT SampleRatioProperty : public ScalarProperty
     protected:
 
         virtual ~SampleRatioProperty() {}
+};
+
+/** Sample density to use when the volume is moving relative to the eye point.*/
+class OSGVOLUME_EXPORT SampleRatioWhenMovingProperty : public ScalarProperty
+{
+    public:
+
+        SampleRatioWhenMovingProperty(float value=1.0f);
+
+        SampleRatioWhenMovingProperty(const SampleRatioWhenMovingProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgVolume, SampleRatioWhenMovingProperty);
+
+        virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
+
+    protected:
+
+        virtual ~SampleRatioWhenMovingProperty() {}
 };
 
 
@@ -382,6 +402,7 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         virtual void apply(SampleDensityProperty& sdp);
         virtual void apply(SampleDensityWhenMovingProperty& sdp);
         virtual void apply(SampleRatioProperty& sdp);
+        virtual void apply(SampleRatioWhenMovingProperty& sdp);
         virtual void apply(TransparencyProperty& tp);
 
         osg::ref_ptr<TransferFunctionProperty>              _tfProperty;
@@ -392,6 +413,7 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         osg::ref_ptr<SampleDensityProperty>                 _sampleDensityProperty;
         osg::ref_ptr<SampleDensityWhenMovingProperty>       _sampleDensityWhenMovingProperty;
         osg::ref_ptr<SampleRatioProperty>                   _sampleRatioProperty;
+        osg::ref_ptr<SampleRatioWhenMovingProperty>         _sampleRatioWhenMovingProperty;
         osg::ref_ptr<TransparencyProperty>                  _transparencyProperty;
 
 };

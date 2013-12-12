@@ -430,9 +430,10 @@ Renderer::Renderer(osg::Camera* camera):
     {
         // assign CullVisitor::Identifier so that the double buffering of SceneView doesn't interfer
         // with code that requires a consistent knowledge and which effective cull traversal to taking place
-        osg::ref_ptr<osgUtil::CullVisitor::Identifier> leftEyeIdentifier = _sceneView[0]->getCullVisitor()->getIdentifier();
+        osg::ref_ptr<osgUtil::CullVisitor::Identifier> leftEyeIdentifier = new osgUtil::CullVisitor::Identifier();
         osg::ref_ptr<osgUtil::CullVisitor::Identifier> rightEyeIdentifier = new osgUtil::CullVisitor::Identifier();
 
+        _sceneView[0]->getCullVisitor()->setIdentifier(leftEyeIdentifier.get());
         _sceneView[0]->setCullVisitorLeft(_sceneView[0]->getCullVisitor()->clone());
         _sceneView[0]->getCullVisitorLeft()->setIdentifier(leftEyeIdentifier.get());
         _sceneView[0]->setCullVisitorRight(_sceneView[0]->getCullVisitor()->clone());

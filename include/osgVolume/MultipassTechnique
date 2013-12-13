@@ -53,6 +53,22 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
         ModelViewMatrixMap _modelViewMatrixMap;
 
         osg::ref_ptr<osg::StateSet> _whenMovingStateSet;
+
+        osg::StateSet* createStateSet(osg::StateSet* statesetPrototype, osg::Program* programPrototype, osg::Shader* shaderToAdd1=0, osg::Shader* shaderToAdd2=0);
+
+        enum ShaderMask
+        {
+            FRONT_SHADERS = 1,
+            BACK_SHADERS = 2,
+            STANDARD_SHADERS = 4,
+            LIT_SHADERS = 8,
+            ISO_SHADERS = 16,
+            MIP_SHADERS = 32,
+            TF_SHADERS = 64
+        };
+
+        typedef std::map<int, osg::ref_ptr<osg::StateSet> > StateSetMap;
+        StateSetMap _stateSetMap;
 };
 
 }

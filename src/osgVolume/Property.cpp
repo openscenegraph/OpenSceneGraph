@@ -13,6 +13,7 @@
 
 #include <osgVolume/Property>
 #include <osgVolume/VolumeTile>
+#include <osgVolume/RayTracedTechnique>
 
 using namespace osgVolume;
 
@@ -401,8 +402,11 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
                 property->accept(csv);
                 if (csv._switchModified)
                 {
-                    tile->setDirty(true);
-                    tile->init();
+                    if (dynamic_cast<osgVolume::RayTracedTechnique*>(tile->getVolumeTechnique()))
+                    {
+                        tile->setDirty(true);
+                        tile->init();
+                    }
                 }
             }
             else if (ea.getKey()==_transparencyKey) _updateTransparency = passOnUpdates = true;

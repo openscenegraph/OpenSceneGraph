@@ -145,9 +145,20 @@ Program::Program() :
 Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     osg::StateAttribute(rhs, copyop)
 {
-    for( unsigned int shaderIndex=0; shaderIndex < rhs.getNumShaders(); ++shaderIndex )
+
+    if ((copyop.getCopyFlags()&osg::CopyOp::DEEP_COPY_STATEATTRIBUTES)!=0)
     {
-        addShader( new osg::Shader( *rhs.getShader( shaderIndex ), copyop ) );
+        for( unsigned int shaderIndex=0; shaderIndex < rhs.getNumShaders(); ++shaderIndex )
+        {
+            addShader( new osg::Shader( *rhs.getShader( shaderIndex ), copyop ) );
+        }
+    }
+    else
+    {
+        for( unsigned int shaderIndex=0; shaderIndex < rhs.getNumShaders(); ++shaderIndex )
+        {
+            addShader( const_cast<osg::Shader*>(rhs.getShader( shaderIndex )) );
+        }
     }
 
     const osg::Program::AttribBindingList &abl = rhs.getAttribBindingList();

@@ -1105,8 +1105,6 @@ int main( int argc, char **argv )
                 cp->addProperty(tfp);
             }
 
-            cp->addProperty(isop);
-
             sp->addProperty(cp);
         }
 

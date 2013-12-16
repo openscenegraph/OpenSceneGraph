@@ -668,7 +668,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             GLint layer;
             GLenum access;
             GLenum format;
-            
+
             ImageAttachment()
             : unit(0), level(0), layered(GL_FALSE), layer(0), access(0), format(0) {}
         };
@@ -794,7 +794,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setTextureCompressionETCSupported(bool flag) { _isTextureCompressionETCSupported=flag; }
                 bool isTextureCompressionETCSupported() const { return _isTextureCompressionETCSupported; }
-                
+
                 void setTextureCompressionETC2Supported(bool flag) { _isTextureCompressionETC2Supported=flag; }
                 bool isTextureCompressionETC2Supported() const { return _isTextureCompressionETC2Supported; }
 
@@ -833,9 +833,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
-
-                void setNumTextureUnits(GLint nunits ) { _numTextureUnits=nunits; }
-                GLint numTextureUnits() const { return _numTextureUnits; }
 
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
                 bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
@@ -938,7 +935,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureMaxLevelSupported;
 
                 GLint   _maxTextureSize;
-                GLint   _numTextureUnits;
         };
 
         /** Gets the extension for the specified context. Creates the

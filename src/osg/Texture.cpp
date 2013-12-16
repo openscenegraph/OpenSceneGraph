@@ -2667,27 +2667,6 @@ Texture::Extensions::Extensions(unsigned int contextID)
         }
     }
 
-    if( _isMultiTexturingSupported )
-    {
-       _numTextureUnits = 0;
-       #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
-           glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
-       #else
-           if (osg::asciiToFloat(version)>=2.0)
-           {
-               glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
-           }
-           else
-           {
-               glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
-           }
-       #endif
-    }
-    else
-    {
-       _numTextureUnits = 1;
-    }
-
     setGLExtensionFuncPtr(_glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
     setGLExtensionFuncPtr(_glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
     setGLExtensionFuncPtr(_glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;

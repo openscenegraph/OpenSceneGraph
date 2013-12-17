@@ -49,8 +49,10 @@
 #include <osgFX/SpecularHighlights>
 
 #include <osgVolume/Volume>
+#include <osgVolume/VolumeScene>
 #include <osgVolume/RayTracedTechnique>
 #include <osgVolume/FixedFunctionTechnique>
+#include <osgVolume/MultipassTechnique>
 
 #include <sstream>
 #include <algorithm>
@@ -2660,11 +2662,32 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
 
         layer->addProperty(sp);
-        tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+
+        switch(volumeData.technique)
+        {
+            case(VolumeData::FixedFunction):
+                tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
+                break;
+            case(VolumeData::RayTraced):
+                tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+                break;
+            case(VolumeData::MultiPass):
+                tile->setVolumeTechnique(new osgVolume::MultipassTechnique);
+                break;
+        }
+
         tile->addEventCallback(new osgVolume::PropertyAdjustmentCallback());
     }
 
-
+    if (dynamic_cast<osgVolume::MultipassTechnique*>(tile->getVolumeTechnique())!=0)
+    {
+        if (dynamic_cast<osgVolume::VolumeScene*>(_root.get())==0)
+        {
+            osg::ref_ptr<osgVolume::VolumeScene> volumeScene = new osgVolume::VolumeScene;
+            volumeScene->addChild(_root.get());
+            _root = volumeScene.get();
+        }
+    }
 
 
     osg::ref_ptr<osg::Node> model = volume.get();

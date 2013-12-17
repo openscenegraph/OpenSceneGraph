@@ -1247,6 +1247,14 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         else if (technique=="light") volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Light;
     }
 
+    std::string renderer;
+    if (getProperty(cur, "renderer", renderer))
+    {
+        if      (renderer=="FixedFunction") volumeData.technique =  osgPresentation::SlideShowConstructor::VolumeData::FixedFunction;
+        else if (renderer=="RayTraced") volumeData.technique =  osgPresentation::SlideShowConstructor::VolumeData::RayTraced;
+        else if (renderer=="MultiPass") volumeData.technique =  osgPresentation::SlideShowConstructor::VolumeData::MultiPass;
+    }
+
     if (getProperty(cur, "alpha", volumeData.alphaValue)) {}
     if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
     if (getProperty(cur, "region", volumeData.region)) {}

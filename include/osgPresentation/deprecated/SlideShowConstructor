@@ -291,6 +291,13 @@ public:
             MaximumIntensityProjection
         };
 
+        enum Technique
+        {
+            FixedFunction,
+            RayTraced,
+            MultiPass
+        };
+
         VolumeData():
             shadingModel(Standard),
             useTabbedDragger(false),
@@ -300,7 +307,8 @@ public:
             cutoffValue("0.1"),
             sampleDensityValue("0.005"),
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
-            colorModulate(1.0f,1.0f,1.0f,1.0f)
+            colorModulate(1.0f,1.0f,1.0f,1.0f),
+            technique(RayTraced)
         {
         }
 
@@ -318,6 +326,7 @@ public:
 
         osg::ColorSpaceOperation                colorSpaceOperation;
         osg::Vec4                               colorModulate;
+        Technique                               technique;
     };
 
 

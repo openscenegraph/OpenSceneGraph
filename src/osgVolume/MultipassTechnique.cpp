@@ -26,6 +26,7 @@
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
+#include <osg/TexEnvFilter>
 #include <osg/TransferFunction>
 
 #include <osgDB/ReadFile>
@@ -33,6 +34,119 @@
 
 namespace osgVolume
 {
+
+osg::Image* createDownsampledImage(osg::Image* sourceImage)
+{
+    osg::ref_ptr<osg::Image> targetImage = new osg::Image;
+
+    int s_base = sourceImage->s()/2;
+    int s_odd = (sourceImage->s()%2);
+    int s = s_base + s_odd;
+
+    int t_base = sourceImage->t()/2;
+    int t_odd = (sourceImage->t()%2);
+    int t = t_base + t_odd;
+
+    int r_base = sourceImage->r()/2;
+    int r_odd = (sourceImage->r()%2);
+    int r = r_base + r_odd;
+
+    OSG_NOTICE<<"createDownsampledImage("<<sourceImage->s()<<", "<<sourceImage->t()<<", "<<sourceImage->r()<<")"<<std::endl;
+    OSG_NOTICE<<"  s_base = "<<s_base<<", s_odd = "<<s_odd<<", s="<<s<<std::endl;
+    OSG_NOTICE<<"  t_base = "<<t_base<<", t_odd = "<<t_odd<<", t="<<t<<std::endl;
+    OSG_NOTICE<<"  r_base = "<<r_base<<", r_odd = "<<r_odd<<", r="<<r<<std::endl;
+
+    targetImage->allocateImage(s, t, r, sourceImage->getPixelFormat(), sourceImage->getDataType());
+
+    int numComponents = 1;
+
+    for(int plane=0; plane<r_base; ++plane)
+    {
+        for(int row=0; row<t_base; ++row)
+        {
+#if 0
+            typedef unsigned char T;
+            typedef unsigned short TL;
+#else
+            typedef unsigned short T;
+            typedef unsigned int TL;
+#endif
+            T* ptr_source_1 = reinterpret_cast<T*>(sourceImage->data(0,row*2, plane*2));
+            T* ptr_source_2 = reinterpret_cast<T*>(sourceImage->data(1,row*2, plane*2));
+            T* ptr_source_3 = reinterpret_cast<T*>(sourceImage->data(0,row*2+1, plane*2));
+            T* ptr_source_4 = reinterpret_cast<T*>(sourceImage->data(1,row*2+1, plane*2));
+            T* ptr_source_5 = reinterpret_cast<T*>(sourceImage->data(0,row*2, plane*2+1));
+            T* ptr_source_6 = reinterpret_cast<T*>(sourceImage->data(1,row*2, plane*2+1));
+            T* ptr_source_7 = reinterpret_cast<T*>(sourceImage->data(0,row*2+1, plane*2+1));
+            T* ptr_source_8 = reinterpret_cast<T*>(sourceImage->data(1,row*2+1, plane*2+1));
+            T* ptr_target = reinterpret_cast<T*>(targetImage->data(0,row,plane));
+
+            for(int column=0; column<s_base; ++column)
+            {
+                // average and copy across the source data.
+                for(int i=0; i<numComponents; ++i)
+                {
+#if 1
+                    TL value = static_cast<TL>(*ptr_source_1)+
+                            static_cast<TL>(*ptr_source_2)+
+                            static_cast<TL>(*ptr_source_3)+
+                            static_cast<TL>(*ptr_source_4)+
+                            static_cast<TL>(*ptr_source_5)+
+                            static_cast<TL>(*ptr_source_6)+
+                            static_cast<TL>(*ptr_source_7)+
+                            static_cast<TL>(*ptr_source_8);
+                    value /= 8;
+#else
+                    TL value = 0;
+                    value = osg::maximum(static_cast<TL>(*ptr_source_1),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_2),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_3),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_4),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_5),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_6),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_7),value);
+                    value = osg::maximum(static_cast<TL>(*ptr_source_8),value);
+#endif
+                    *ptr_target = static_cast<T>(value);
+
+                    ++ptr_target;
+
+                    ++ptr_source_1;
+                    ++ptr_source_2;
+                    ++ptr_source_3;
+                    ++ptr_source_4;
+                    ++ptr_source_5;
+                    ++ptr_source_6;
+                    ++ptr_source_7;
+                    ++ptr_source_8;
+                }
+                // skip to the next set of source texels
+                ptr_source_1 += numComponents;
+                ptr_source_2 += numComponents;
+                ptr_source_3 += numComponents;
+                ptr_source_4 += numComponents;
+                ptr_source_5 += numComponents;
+                ptr_source_6 += numComponents;
+                ptr_source_7 += numComponents;
+                ptr_source_8 += numComponents;
+            }
+            if (s_odd)
+            {
+
+            }
+        }
+        if (t_odd)
+        {
+            OSG_NOTICE<<"Need to handle odd image row"<<std::endl;
+        }
+    }
+    if (r_odd)
+    {
+        OSG_NOTICE<<"Need to handle odd image plane"<<std::endl;
+    }
+
+    return targetImage.release();
+}
 
 
 MultipassTechnique::MultipassTechnique()
@@ -247,10 +361,21 @@ void MultipassTechnique::init()
 
     // set up 3D texture
     osg::ref_ptr<osg::Image> image_3d = _volumeTile->getLayer()->getImage();
+
+    // create a downsampled image to use when rendering at a lower quality.
+    // osg::ref_ptr<osg::Image> downsampled_image_3d = createDownsampledImage(image_3d.get());
+
+    //image_3d = createDownsampledImage(downsampled_image_3d.get());
+    // image_3d = downsampled_image_3d;
+
     osg::ref_ptr<osg::Texture3D> texture3D = new osg::Texture3D;
     {
         osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
-#if 1
+#define VOLUME_TYPE 2
+#if VOLUME_TYPE==1
+        osg::Texture::FilterMode minFilter = osg::Texture::LINEAR_MIPMAP_LINEAR;
+        osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
+#elif VOLUME_TYPE==2
         osg::Texture::FilterMode minFilter = osg::Texture::LINEAR;
         osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
 #else
@@ -268,6 +393,7 @@ void MultipassTechnique::init()
         texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_BORDER);
         texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_BORDER);
         texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_BORDER);
+        //texture3D->setMaxAnisotropy(16.0f);
         texture3D->setBorderColor(osg::Vec4(0.0,0.0,0.0,0.0));
         if (image_3d->getPixelFormat()==GL_ALPHA ||
             image_3d->getPixelFormat()==GL_LUMINANCE)
@@ -564,6 +690,7 @@ void MultipassTechnique::init()
     if (cpv._sampleRatioWhenMovingProperty.valid())
     {
         _whenMovingStateSet = new osg::StateSet;
+        //_whenMovingStateSet->setTextureAttributeAndModes(volumeTextureUnit, new osg::TexEnvFilter(1.0));
         _whenMovingStateSet->addUniform(cpv._sampleRatioWhenMovingProperty->getUniform(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
     }
 
@@ -616,8 +743,8 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
         int shaderMaskFront = shaderMask | FRONT_SHADERS;
         int shaderMaskBack = shaderMask | BACK_SHADERS;
 
-        OSG_NOTICE<<"shaderMaskFront "<<shaderMaskFront<<std::endl;
-        OSG_NOTICE<<"shaderMaskBack  "<<shaderMaskBack<<std::endl;
+        // OSG_NOTICE<<"shaderMaskFront "<<shaderMaskFront<<std::endl;
+        // OSG_NOTICE<<"shaderMaskBack  "<<shaderMaskBack<<std::endl;
 
 
         osg::ref_ptr<osg::StateSet> front_stateset = _stateSetMap[shaderMaskFront];
@@ -632,7 +759,7 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 
         if (front_stateset.valid())
         {
-            OSG_NOTICE<<"Have front stateset"<<std::endl;
+            // OSG_NOTICE<<"Have front stateset"<<std::endl;
             cv->pushStateSet(front_stateset.get());
             _transform->accept(*cv);
             cv->popStateSet();
@@ -640,7 +767,7 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 
         if (back_stateset.valid())
         {
-            OSG_NOTICE<<"Have back stateset"<<std::endl;
+            // OSG_NOTICE<<"Have back stateset"<<std::endl;
             cv->pushStateSet(back_stateset.get());
             _transform->accept(*cv);
             cv->popStateSet();

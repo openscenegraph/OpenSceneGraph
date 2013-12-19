@@ -203,6 +203,7 @@ public:
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::FontData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ModelData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ImageData& value) const;
+    bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ScriptData& value) const;
 
     bool getJumpProperties(osgDB::XmlNode*cur, osgPresentation::JumpData& jumpData) const;
 
@@ -1018,6 +1019,26 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     return propertiesRead;
 }
 
+bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::ScriptData& value) const
+{
+    bool propertiesRead=false;
+
+    std::string name;
+    if (getProperty(cur, "update_script", name))
+    {
+        value.scripts.push_back(osgPresentation::SlideShowConstructor::ScriptPair(osgPresentation::SlideShowConstructor::UPDATE_SCRIPT, name));
+        propertiesRead = true;
+    }
+
+    if (getProperty(cur, "event_script", name))
+    {
+        value.scripts.push_back(osgPresentation::SlideShowConstructor::ScriptPair(osgPresentation::SlideShowConstructor::EVENT_SCRIPT, name));
+        propertiesRead = true;
+    }
+
+    return propertiesRead;
+}
+
 bool ReaderWriterP3DXML::parseProperties(osgDB::XmlNode* root, osg::UserDataContainer& udc) const
 {
     bool readProperties = false;
@@ -1155,10 +1176,13 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
 {
 
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
-   bool positionRead = getProperties(cur,positionData);
+   bool positionRead = getProperties(cur, positionData);
 
     osgPresentation::SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
-    getProperties(cur,modelData);
+    getProperties(cur, modelData);
+
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
 
     std::string filename = cur->getTrimmedContents();
 
@@ -1166,7 +1190,9 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
     {
         constructor.addModel(filename,
                              positionRead ? positionData : constructor.getModelPositionData(),
-                             modelData);
+                             modelData,
+                             scriptData
+                            );
     }
 }
 
@@ -1312,12 +1338,17 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         }
     }
 
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
+
     std::string filename = cur->getTrimmedContents();
     if (!filename.empty())
     {
         constructor.addVolume(filename,
                              positionRead ? positionData : constructor.getModelPositionData(),
-                             volumeData);
+                             volumeData,
+                             scriptData
+                             );
     }
 }
 
@@ -1371,14 +1402,17 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
         }
     }
 
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
+
     OSG_INFO<<"    filenameLeft="<<filenameLeft<<std::endl;
     OSG_INFO<<"    filenameRight="<<filenameRight<<std::endl;
-
 
     if (!filenameLeft.empty() && !filenameRight.empty())
         constructor.addStereoImagePair(filenameLeft,imageDataLeft,
                                        filenameRight, imageDataRight,
-                                       positionRead ? positionData : constructor.getImagePositionData());
+                                       positionRead ? positionData : constructor.getImagePositionData(),
+                                       scriptData);
 
 }
 
@@ -1616,9 +1650,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
         bool fontRead = getProperties(cur,fontData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addBullet(cur->contents,
                                 positionRead ? positionData : constructor.getTextPositionData(),
-                                fontRead ? fontData : constructor.getTextFontData());
+                                fontRead ? fontData : constructor.getTextFontData(),
+                                scriptData
+                             );
         return true;
     }
     else if (cur->name == "paragraph")
@@ -1629,9 +1668,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
         bool fontRead = getProperties(cur,fontData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addParagraph(cur->contents,
                                     positionRead ? positionData : constructor.getTextPositionData(),
-                                    fontRead ? fontData : constructor.getTextFontData());
+                                    fontRead ? fontData : constructor.getTextFontData(),
+                                    scriptData
+                                );
         return true;
     }
     else if (cur->name == "image")
@@ -1642,9 +1686,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
         getProperties(cur,imageData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addImage(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
-                                imageData);
+                                imageData,
+                                scriptData
+                            );
         return true;
     }
     else if (cur->name == "imagesequence")
@@ -1656,9 +1705,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         imageData.imageSequence = true;
         getProperties(cur,imageData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addImage(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
-                                imageData);
+                                imageData,
+                                scriptData
+                            );
         return true;
     }
     else if (cur->name == "graph")
@@ -1672,9 +1726,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         std::string options;
         getProperty(cur, "options", options);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addGraph(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
-                                imageData);
+                                imageData,
+                                scriptData
+                            );
         return true;
     }
     else if (cur->name == "vnc")
@@ -1688,10 +1747,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         std::string password;
         getProperty(cur, "password", password);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addVNC(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
                                 imageData,
-                                password
+                                password,
+                                scriptData
                             );
         return true;
     }
@@ -1703,9 +1766,13 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
         getProperties(cur,imageData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addBrowser(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
-                                imageData);
+                                imageData,
+                                scriptData);
         return true;
     }
     else if (cur->name == "pdf")
@@ -1716,9 +1783,14 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
         getProperties(cur,imageData);
 
+        osgPresentation::SlideShowConstructor::ScriptData scriptData;
+        getProperties(cur, scriptData);
+
         constructor.addPDF(cur->getTrimmedContents(),
                                 positionRead ? positionData : constructor.getImagePositionData(),
-                                imageData);
+                                imageData,
+                                scriptData
+                          );
         return true;
     }
     else if (cur->name == "stereo_pair")
@@ -1772,6 +1844,17 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
     OSG_INFO<<std::endl<<"parseLayer"<<std::endl;
 
     float totalIndent = 0.0f;
+
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    if (getProperties(root, scriptData))
+    {
+        for(osgPresentation::SlideShowConstructor::ScriptData::Scripts::iterator itr = scriptData.scripts.begin();
+            itr != scriptData.scripts.end();
+            ++itr)
+        {
+            constructor.addScriptCallback(osgPresentation::SlideShowConstructor::CURRENT_LAYER, itr->first, itr->second);
+        }
+    }
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
@@ -1948,9 +2031,14 @@ void ReaderWriterP3DXML::parseBullets(osgPresentation::SlideShowConstructor& con
     osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
     bool fontRead = getProperties(cur,fontData);
 
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur,scriptData);
+
     constructor.addBullet(cur->contents,
                             positionRead ? positionData : constructor.getTextPositionData(),
-                            fontRead ? fontData : constructor.getTextFontData());
+                            fontRead ? fontData : constructor.getTextFontData(),
+                            scriptData
+                         );
 }
 
 
@@ -1965,9 +2053,14 @@ void ReaderWriterP3DXML::parseText(osgPresentation::SlideShowConstructor& constr
     osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
     bool fontRead = getProperties(cur,fontData);
 
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur,scriptData);
+
     constructor.addParagraph(cur->contents,
                             positionRead ? positionData : constructor.getTextPositionData(),
-                            fontRead ? fontData : constructor.getTextFontData());
+                            fontRead ? fontData : constructor.getTextFontData(),
+                            scriptData
+                            );
 }
 
 void ReaderWriterP3DXML::parsePage(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
@@ -2005,9 +2098,14 @@ void ReaderWriterP3DXML::parsePage(osgPresentation::SlideShowConstructor& constr
     osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
     bool fontRead = getProperties(cur,fontData);
 
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
+
     constructor.addParagraph(cur->contents,
                             positionRead ? positionData : constructor.getTextPositionData(),
-                            fontRead ? fontData : constructor.getTextFontData());
+                            fontRead ? fontData : constructor.getTextFontData(),
+                            scriptData
+                            );
 }
 
 void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
@@ -2046,7 +2144,10 @@ void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor&
     imageData.page = 0;
     getProperties(cur,imageData);
 
-    osg::Image* image = constructor.addInteractiveImage(cur->contents, positionData, imageData);
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
+
+    osg::Image* image = constructor.addInteractiveImage(cur->contents, positionData, imageData, scriptData);
     osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image);
     if (pdfImage)
     {
@@ -2080,7 +2181,7 @@ void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor&
 
                 constructor.addLayer(true,false);
 
-                constructor.addPDF(cur->getTrimmedContents(), positionData, imageData);
+                constructor.addPDF(cur->getTrimmedContents(), positionData, imageData, scriptData);
 
             }
         }
@@ -2095,6 +2196,17 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
 
     // create a keyPosition just in case we need it.
     osgPresentation::KeyPosition keyPosition;
+
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    if (getProperties(root, scriptData))
+    {
+        for(osgPresentation::SlideShowConstructor::ScriptData::Scripts::iterator itr = scriptData.scripts.begin();
+            itr != scriptData.scripts.end();
+            ++itr)
+        {
+            constructor.addScriptCallback(osgPresentation::SlideShowConstructor::CURRENT_SLIDE, itr->first, itr->second);
+        }
+    }
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
@@ -2808,7 +2920,25 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
     {
         osgDB::XmlNode* cur = itr->get();
 
-        if (cur->name == "name")
+        if (cur->name == "script_engine")
+        {
+            constructor.addScriptEngine(cur->contents);
+        }
+        else if (cur->name == "script_file")
+        {
+            std::string name;
+            getProperty(cur, "name", name);
+            constructor.addScriptFile(name, cur->contents);
+        }
+        else if (cur->name == "script")
+        {
+            std::string name;
+            getProperty(cur, "name", name);
+            std::string language("lua");
+            getProperty(cur, "language", language);
+            constructor.addScript(name, language, cur->contents);
+        }
+        else if (cur->name == "name")
         {
             constructor.setPresentationName(cur->contents);
         }
@@ -2944,6 +3074,17 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
                     }
                 }
             }
+    }
+
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    if (getProperties(root, scriptData))
+    {
+        for(osgPresentation::SlideShowConstructor::ScriptData::Scripts::iterator itr = scriptData.scripts.begin();
+            itr != scriptData.scripts.end();
+            ++itr)
+        {
+            constructor.addScriptCallback(osgPresentation::SlideShowConstructor::CURRENT_PRESENTATION, itr->first, itr->second);
+        }
     }
 
     osgDB::getDataFilePathList() = previousPaths;

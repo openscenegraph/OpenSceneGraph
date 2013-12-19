@@ -33,12 +33,10 @@ ELSE ()
 ENDIF()
 
 IF(APPLE AND NOT ANDROID)
-   IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
      # compile FileUtils.cpp as objective-c++
      SET_SOURCE_FILES_PROPERTIES(FileUtils.cpp
        PROPERTIES COMPILE_FLAGS "-x objective-c++"
      )
-   ENDIF()
 ENDIF()
 
 

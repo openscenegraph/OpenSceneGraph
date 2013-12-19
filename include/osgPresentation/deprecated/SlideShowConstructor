@@ -23,6 +23,7 @@
 #include <osg/TransferFunction>
 #include <osg/ImageStream>
 #include <osg/ImageSequence>
+#include <osg/ScriptEngine>
 #include <osgText/Text>
 #include <osgGA/GUIEventAdapter>
 
@@ -354,6 +355,24 @@ public:
         osg::Vec4                           color;
     };
 
+    enum ScriptCallbackType
+    {
+        UPDATE_SCRIPT,
+        EVENT_SCRIPT
+    };
+
+    typedef std::pair<ScriptCallbackType, std::string> ScriptPair;
+
+    struct ScriptData
+    {
+        ScriptData() {}
+
+        typedef std::vector<ScriptPair> Scripts;
+        Scripts scripts;
+
+        bool hasScripts() const { return !scripts.empty(); }
+    };
+
     SlideShowConstructor(osgDB::Options* options);
 
     void createPresentation();
@@ -372,6 +391,11 @@ public:
 
     void setPresentationDuration(double duration);
 
+    void addScriptEngine(const std::string& scriptEngineName);
+
+    void addScriptFile(const std::string& name, const std::string& filename);
+
+    void addScript(const std::string& name, const std::string& language, const std::string& script);
 
     void addSlide();
 
@@ -442,31 +466,37 @@ public:
 
     void addPropertyAnimation(PresentationContext presentationContext, PropertyAnimation* propertyAnimation);
 
+    void addScriptCallback(PresentationContext presentationContext, ScriptCallbackType scriptCallbackType, const std::string& functionName);
+
+    void addScriptToNode(ScriptCallbackType scriptCallbackType, const std::string& name, osg::Node* node);
+
+    void addScriptsToNode(const ScriptData& scriptData, osg::Node* node);
+
     void addToCurrentLayer(osg::Node* subgraph);
 
-    void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData);
+    void addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData, const ScriptData& scriptData);
 
-    void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData);
+    void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData, const ScriptData& scriptData);
 
     osg::Image* readImage(const std::string& filename, const ImageData& imageData);
 
-    void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
 
-    void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData);
+    void addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight,const ImageData& imageDataRight, const PositionData& positionData, const ScriptData& scriptData);
 
-    void addGraph(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
-    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password);
-    void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
-    void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
-    osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData);
+    void addGraph(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
+    void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password, const ScriptData& scriptData);
+    void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
+    void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
+    osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
 
-    void addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData);
+    void addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData, const ScriptData& scriptData);
 
-    void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData);
+    void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData, const ScriptData& scriptData);
 
     void setUpVolumeScalarProperty(osgVolume::VolumeTile* tile, osgVolume::ScalarProperty* property, const std::string& source);
 
-    void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData);
+    void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData, const ScriptData& scriptData);
 
     osg::Group* takePresentation() { return _root.release(); }
 
@@ -567,6 +597,12 @@ protected:
 
     osg::ref_ptr<osg::Group>        _root;
     osg::ref_ptr<osg::Switch>       _presentationSwitch;
+
+    typedef std::map< std::string, osg::ref_ptr<osg::ScriptEngine> > ScriptEngineMap;
+    ScriptEngineMap _scriptEngines;
+
+    typedef std::map< std::string, osg::ref_ptr<osg::Script> > ScriptMap;
+    ScriptMap                        _scripts;
 
     osg::ref_ptr<osg::ClearNode>    _slideClearNode;
     osg::ref_ptr<osg::Switch>       _slide;

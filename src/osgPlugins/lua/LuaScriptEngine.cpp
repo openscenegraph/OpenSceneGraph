@@ -1244,6 +1244,24 @@ void LuaScriptEngine::pushValue(const osg::Vec4d& value) const
     lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
 }
 
+void LuaScriptEngine::pushValue(const osg::Quat& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
+}
+
+void LuaScriptEngine::pushValue(const osg::Plane& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.asVec4().x()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.asVec4().y()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.asVec4().z()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.asVec4().w()); lua_settable(_lua, -3);
+}
+
 void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
 {
     lua_newtable(_lua);

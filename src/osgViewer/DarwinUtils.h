@@ -109,13 +109,6 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
     protected:
 
         virtual void _init();
-
-        /** implementation of setScreenResolution */
-        bool setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
-
-        /** implementation of setScreenRefreshRate */
-        bool setScreenRefreshRateImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
-
     
         template<class PixelBufferImplementation, class GraphicsWindowImplementation>
         osg::GraphicsContext* createGraphicsContextImplementation(osg::GraphicsContext::Traits* traits)

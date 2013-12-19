@@ -41,6 +41,8 @@ class ReaderWriterP3DXML : public osgDB::ReaderWriter
 public:
     ReaderWriterP3DXML()
     {
+        supportsOption("suppressEnvTags", "if set to (true|1) all env-tags in the p3d-file will be suppressed");
+        
         _colorMap["WHITE"]  .set(1.0f,1.0f,1.0f,1.0f);
         _colorMap["BLACK"]  .set(0.0f,0.0f,0.0f,1.0f);
         _colorMap["PURPLE"] .set(1.0f,0.0f,1.0f,1.0f);
@@ -112,6 +114,7 @@ public:
         return osgDB::equalCaseInsensitive(extension,"p3d") ||
                osgDB::equalCaseInsensitive(extension,"xml") ;
     }
+    
 
     virtual ReadResult readNode(const std::string& fileName,
                                 const osgDB::ReaderWriter::Options* options) const;
@@ -175,7 +178,8 @@ public:
     inline bool read(const char* str, osg::Vec2& value) const;
     inline bool read(const char* str, osg::Vec3& value) const;
     inline bool read(const char* str, osg::Vec4& value) const;
-
+    
+    inline bool read(const std::string& str, bool& value) const;
     inline bool read(const std::string& str, int& value) const;
     inline bool read(const std::string& str, float& value) const;
     inline bool read(const std::string& str, double& value) const;
@@ -186,6 +190,7 @@ public:
 
     bool getProperty(osgDB::XmlNode*cur, const char* token) const;
     bool getKeyProperty(osgDB::XmlNode*cur, const char* token, int& value) const;
+    bool getProperty(osgDB::XmlNode*cur, const char* token, bool& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, int& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, float& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, double& value) const;
@@ -324,6 +329,17 @@ bool ReaderWriterP3DXML::read(const char* str, osg::Vec4& value) const
     return !iss.fail();
 }
 
+bool ReaderWriterP3DXML::read(const std::string& str, bool& value) const
+{
+        if ((str == "1") || (str == "0")) {
+        value = (str == "1");
+        return true;
+    }
+    std::string s(osgDB::convertToLowerCase(str));
+    value = (s == "true");
+    return true;
+}
+
 bool ReaderWriterP3DXML::read(const std::string& str, int& value) const
 {
     std::istringstream iss(str);
@@ -381,6 +397,13 @@ bool ReaderWriterP3DXML::read(const std::string& str, osg::Vec4& value) const
 bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode* cur, const char* token) const
 {
     return cur->properties.count(token)!=0;
+}
+
+bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, bool& value) const
+{
+    osgDB::XmlNode::Properties::iterator itr = cur->properties.find(token);
+    if (itr==cur->properties.end()) return false;
+    return read(itr->second,value);
 }
 
 bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, int& value) const
@@ -1426,7 +1449,7 @@ bool ReaderWriterP3DXML::getKeyPosition(osgDB::XmlNode*cur, osgPresentation::Key
         cur->name == "esc" ||
         cur->name == "exit")
     {
-        keyPosition.set(osgGA::GUIEventAdapter::KEY_Escape, 0.0f, 0.0f);
+        keyPosition.set(osgGA::GUIEventAdapter::KEY_Escape, 0.0f, 0.0f, false);
         return true;
     }
     return false;
@@ -1455,7 +1478,9 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
         // v in range 0.0 to 1, from bottom to top
         y = v*2.0f-1.0f;
     }
-
+    
+    bool forward_to_devices = false;
+    getProperty(cur, "forward_to_devices", forward_to_devices);
 
     std::string key = cur->getTrimmedContents();
     unsigned int keyValue = 0;
@@ -1494,7 +1519,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
         return false;
     }
 
-    keyPosition.set(keyValue,x,y);
+    keyPosition.set(keyValue,x,y, forward_to_devices);
     return true;
 }
 
@@ -2855,13 +2880,15 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
 
     osgDB::FilePathList previousPaths = osgDB::getDataFilePathList();
 
+    bool env_tag_suppressed = false || (options && ((options->getPluginStringData("suppressEnvTags") == "1") || (options->getPluginStringData("suppressEnvTags") == "true")));
+
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
         ++itr)
     {
         osgDB::XmlNode* cur = itr->get();
 
-        if (cur->name=="env")
+        if (cur->name=="env" && !env_tag_suppressed)
         {
             char* str = strdup(cur->contents.c_str());
             OSG_INFO<<"putenv("<<str<<")"<<std::endl;

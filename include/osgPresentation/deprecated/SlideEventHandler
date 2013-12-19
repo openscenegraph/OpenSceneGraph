@@ -110,22 +110,25 @@ struct HomePosition : public virtual osg::Referenced
 
 struct KeyPosition
 {
-    KeyPosition(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX):
+    KeyPosition(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX, bool forward_to_devices = false):
         _key((osgGA::GUIEventAdapter::KeySymbol)key),
         _x(x),
-        _y(y) {}
+        _y(y),
+        _forwardToDevices(forward_to_devices) {}
 
 
-    void set(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX)
+    void set(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX, bool forward_to_devices = false)
     {
         _key = (osgGA::GUIEventAdapter::KeySymbol)key;
         _x = x;
         _y = y;
+        _forwardToDevices = forward_to_devices;
     }
 
     osgGA::GUIEventAdapter::KeySymbol _key;
     float        _x;
     float        _y;
+    bool _forwardToDevices;
 };
 
 struct LayerCallback : public virtual osg::Referenced
@@ -313,6 +316,7 @@ public:
     bool getLoopPresentation() const { return _loopPresentation; }
 
     void dispatchEvent(const KeyPosition& keyPosition);
+    void forwardEventToDevices(osgGA::Event* event);
 
     void setRequestReload(bool flag);
     bool getRequestReload() const { return _requestReload; }

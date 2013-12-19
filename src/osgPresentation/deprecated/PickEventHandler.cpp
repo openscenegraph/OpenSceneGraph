@@ -87,16 +87,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
 
                         // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
 
-
-                        // dispatch cloned event to devices
-                        osgViewer::View::Devices& devices = viewer->getDevices();
-                        for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
-                        {
-                            if((*i)->getCapabilities() & osgGA::Device::SEND_EVENTS)
-                            {
-                                (*i)->sendEvent(*cloned_ea);
-                            }
-                        }
+                        SlideEventHandler::instance()->forwardEventToDevices(cloned_ea);
                     }
                     else
                     {

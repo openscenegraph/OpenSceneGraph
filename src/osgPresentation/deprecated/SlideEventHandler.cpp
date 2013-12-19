@@ -1550,8 +1550,39 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
     _presentationSwitch->getChild(slideNum)->accept(globjVisitor);
 }
 
+void SlideEventHandler::forwardEventToDevices(osgGA::Event* event)
+{
+    // dispatch cloned event to devices
+    osgViewer::View::Devices& devices = _viewer->getDevices();
+    for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
+    {
+        if((*i)->getCapabilities() & osgGA::Device::SEND_EVENTS)
+        {
+            (*i)->sendEvent(*event);
+        }
+    }
+}
+
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
+    if (keyPosition._forwardToDevices)
+    {
+        osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter();
+        event->setKey(keyPosition._key);
+        event->setTime(_viewer->getEventQueue()->getTime());
+        
+        // forward key-down
+        event->setEventType(osgGA::GUIEventAdapter::KEYDOWN);
+        forwardEventToDevices(event);
+        
+        // forward key-up
+        event->setEventType(osgGA::GUIEventAdapter::KEYUP);
+        forwardEventToDevices(event);
+        
+        // ignore local event-queue
+        return;
+    }
+    
     osgGA::EventQueue* eq = _viewer->getEventQueue();
 
     // reset the time of the last key press to ensure that the event is disgarded as a key repeat.

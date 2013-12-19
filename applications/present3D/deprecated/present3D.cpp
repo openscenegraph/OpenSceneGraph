@@ -133,17 +133,44 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
 
 class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
 public:
-    ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::GUIEventHandler(), _device(device) {}
+    ForwardToDeviceEventHandler(osgGA::Device* device, bool format_mouse_events) : osgGA::GUIEventHandler(), _device(device), _forwardMouseEvents(format_mouse_events) {}
 
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
-        OSG_INFO<<"ForwardToDeviceEventHandler::setEvent("<<ea.getKey()<<")"<<std::endl;
-        _device->sendEvent(ea);
+        switch (ea.getEventType())
+        {
+            case osgGA::GUIEventAdapter::PUSH:
+            case osgGA::GUIEventAdapter::RELEASE:
+            case osgGA::GUIEventAdapter::MOVE:
+            case osgGA::GUIEventAdapter::DRAG:
+            case osgGA::GUIEventAdapter::SCROLL:
+                if (_forwardMouseEvents)
+                    _device->sendEvent(ea);
+                break;
+                
+            default:
+                _device->sendEvent(ea);
+                break;
+        }
         return false;
     }
+    
+    
+    bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
+    {
+        if (event->asGUIEventAdapter())
+            return osgGA::GUIEventHandler::handle(event, object, nv);
+        else
+        {
+            _device->sendEvent(*event);
+            return false;
+        }
+    }
+
 
 private:
     osg::ref_ptr<osgGA::Device> _device;
+    bool _forwardMouseEvents;
 };
 
 
@@ -183,7 +210,7 @@ void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_opti
     }
 }
 
-void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name)
+void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name, bool forward_mouse_events)
 {
     osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device_name);
     if (dev.valid())
@@ -191,8 +218,8 @@ void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name)
         OSG_INFO << "Adding Device : " << device_name << std::endl;
         viewer.addDevice(dev.get());
 
-        if (dev->getCapabilities() & osgGA::Device::SEND_EVENTS)
-            viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get()));
+        if ((dev->getCapabilities() & osgGA::Device::SEND_EVENTS))
+            viewer.getEventHandlers().push_front(new ForwardToDeviceEventHandler(dev.get(), forward_mouse_events));
     }
     else
     {
@@ -226,6 +253,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--html <filename>","Print out slides to a series of html & image files.");
     arguments.getApplicationUsage()->addCommandLineOption("--loop","Switch on looping of presentation.");
     arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
+    arguments.getApplicationUsage()->addCommandLineOption("--forwardMouseEvents","forward also mouse/touch-events to the devices");
+    arguments.getApplicationUsage()->addCommandLineOption("--suppressEnvTags", "suppresses all found ENV-tags in the presentation");
 
     // add alias from xml to p3d to provide backwards compatibility for old p3d files.
     osgDB::Registry::instance()->addFileExtensionAlias("xml","p3d");
@@ -238,10 +267,13 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    bool suppress_env_tags = false;
+    if (arguments.read("--suppressEnvTags"))
+        suppress_env_tags = true;
 
     // read any env vars from presentations before we create viewer to make sure the viewer
     // utilises these env vars
-    if (p3d::readEnvVars(arguments))
+    if (!suppress_env_tags && p3d::readEnvVars(arguments))
     {
         osg::DisplaySettings::instance()->readEnvironmentalVariables();
     }
@@ -328,6 +360,10 @@ int main( int argc, char **argv )
         viewer.readConfiguration(configurationFile);
         doSetViewer = false;
     }
+    
+    bool forwardMouseEvents = false;
+    if (arguments.read("--forwardMouseEvents"))
+        forwardMouseEvents = true;
 
     const char* p3dDevice = getenv("P3D_DEVICE");
     if (p3dDevice)
@@ -336,7 +372,7 @@ int main( int argc, char **argv )
         osgDB::split(p3dDevice, devices);
         for(osgDB::StringList::iterator i = devices.begin(); i != devices.end(); ++i)
         {
-            addDeviceTo(viewer, *i);
+            addDeviceTo(viewer, *i, forwardMouseEvents);
         }
     }
 
@@ -344,7 +380,7 @@ int main( int argc, char **argv )
     std::string device;
     while (arguments.read("--device", device))
     {
-        addDeviceTo(viewer, device);
+        addDeviceTo(viewer, device, forwardMouseEvents);
 
     }
 
@@ -658,6 +694,9 @@ int main( int argc, char **argv )
 
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> cacheAllOption = new osgDB::ReaderWriter::Options;
+    if(suppress_env_tags)
+        cacheAllOption->setPluginStringData("suppressEnvTags", "true");
+    
     cacheAllOption->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_ALL);
     osgDB::Registry::instance()->setOptions(cacheAllOption.get());
 

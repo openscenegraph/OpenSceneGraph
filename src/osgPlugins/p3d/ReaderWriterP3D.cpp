@@ -42,7 +42,7 @@ public:
     ReaderWriterP3DXML()
     {
         supportsOption("suppressEnvTags", "if set to (true|1) all env-tags in the p3d-file will be suppressed");
-        
+
         _colorMap["WHITE"]  .set(1.0f,1.0f,1.0f,1.0f);
         _colorMap["BLACK"]  .set(0.0f,0.0f,0.0f,1.0f);
         _colorMap["PURPLE"] .set(1.0f,0.0f,1.0f,1.0f);
@@ -114,7 +114,7 @@ public:
         return osgDB::equalCaseInsensitive(extension,"p3d") ||
                osgDB::equalCaseInsensitive(extension,"xml") ;
     }
-    
+
 
     virtual ReadResult readNode(const std::string& fileName,
                                 const osgDB::ReaderWriter::Options* options) const;
@@ -133,9 +133,12 @@ public:
     osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float scale) const;
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
+
     void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     void parseTimeout(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
+
+    void parseSwitch(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     bool parseLayerChild(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur, float& totalIndent) const;
 
@@ -178,7 +181,7 @@ public:
     inline bool read(const char* str, osg::Vec2& value) const;
     inline bool read(const char* str, osg::Vec3& value) const;
     inline bool read(const char* str, osg::Vec4& value) const;
-    
+
     inline bool read(const std::string& str, bool& value) const;
     inline bool read(const std::string& str, int& value) const;
     inline bool read(const std::string& str, float& value) const;
@@ -1478,7 +1481,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
         // v in range 0.0 to 1, from bottom to top
         y = v*2.0f-1.0f;
     }
-    
+
     bool forward_to_devices = false;
     getProperty(cur, "forward_to_devices", forward_to_devices);
 
@@ -1526,10 +1529,10 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
 
 void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* root) const
 {
-    // to allow the timeout to be nested with a Layer but still behave like a Layer itself we push the timeout as a Layer, saving the original Layer
-    constructor.pushCurrentLayer();
+    osg::ref_ptr<osgPresentation::Timeout> timeout = new osgPresentation::Timeout(constructor.getHUDSettings());
 
-    osg::ref_ptr<osgPresentation::Timeout> timeout = constructor.addTimeout();
+    // to allow the timeout to be nested with a Layer but still behave like a Layer itself we push the timeout as a Layer, saving the original Layer
+    constructor.pushCurrentLayer(timeout.get());
 
     OSG_NOTICE<<"parseTimeout"<<std::endl;
 
@@ -1641,9 +1644,9 @@ void ReaderWriterP3DXML::parseTimeout(osgPresentation::SlideShowConstructor& con
 
     }
 
-
-    constructor.popCurrentLayer(); // return the
+    constructor.popCurrentLayer(); // return the parent level
 }
+
 
 bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur, float& totalIndent) const
 {
@@ -1864,6 +1867,23 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
     return false;
 }
 
+
+void ReaderWriterP3DXML::parseSwitch(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
+{
+   osg::ref_ptr<osg::Switch> switchNode = new osg::Switch;;
+
+    // to allow the timeout to be nested with a Layer but still behave like a Layer itself we push the timeout as a Layer, saving the original Layer
+    constructor.pushCurrentLayer(switchNode.get());
+
+    OSG_NOTICE<<"parseSwitch"<<std::endl;
+
+    parseLayer(constructor, cur);
+
+    switchNode->setSingleChildOn(0);
+
+    constructor.popCurrentLayer(); // return the parent level
+}
+
 void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* root) const
 {
     OSG_INFO<<std::endl<<"parseLayer"<<std::endl;
@@ -1889,6 +1909,10 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         if (parseLayerChild(constructor, cur, totalIndent))
         {
             // no need to do anything
+        }
+        else if (cur->name == "switch")
+        {
+            parseSwitch(constructor, cur);
         }
         else if (cur->name == "timeout")
         {

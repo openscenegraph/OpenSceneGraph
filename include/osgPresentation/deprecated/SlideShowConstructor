@@ -506,7 +506,7 @@ public:
 
     osg::Switch* getCurrentSlide() { return _slide.get(); }
 
-    void pushCurrentLayer();
+    void pushCurrentLayer(osg::Group* newLayerGroup);
     void popCurrentLayer();
 
     osg::Group* getCurrentLayer() { return _currentLayer.get(); }

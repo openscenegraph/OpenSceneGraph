@@ -409,18 +409,16 @@ void SlideShowConstructor::setSlideDuration(double duration)
     }
 }
 
-
-Timeout* SlideShowConstructor::addTimeout()
+void SlideShowConstructor::pushCurrentLayer(osg::Group* group)
 {
-    osg::ref_ptr<osgPresentation::Timeout> timeout = new osgPresentation::Timeout(_hudSettings.get());
-    if (_currentLayer.valid()) _currentLayer->addChild(timeout.get());
-    _currentLayer = timeout.get();
-    return timeout.release();
-}
+    if (_currentLayer.valid())
+    {
+        _currentLayer->addChild(group);
+        _layerStack.push_back(_currentLayer.get());
+    }
 
-void SlideShowConstructor::pushCurrentLayer()
-{
-    _layerStack.push_back(_currentLayer.get());
+    _currentLayer = group;
+
 }
 
 void SlideShowConstructor::popCurrentLayer()
@@ -429,6 +427,10 @@ void SlideShowConstructor::popCurrentLayer()
     {
         _currentLayer = _layerStack.back();
         _layerStack.pop_back();
+    }
+    else
+    {
+        _currentLayer = 0;
     }
 }
 

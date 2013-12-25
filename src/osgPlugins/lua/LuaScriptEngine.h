@@ -26,6 +26,9 @@ extern "C" {
 namespace lua
 {
 
+// forward declare
+class LuaScriptEngine;
+
 class LuaScriptEngine : public osg::ScriptEngine
 {
     public:
@@ -37,10 +40,10 @@ class LuaScriptEngine : public osg::ScriptEngine
         virtual const std::string& getLanguage() const { return _language; }
 
         /** run a Script.*/
-        virtual bool run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters);
+        virtual bool run(osg::Script* script, const std::string& entryPoint, osg::Parameters& inputParameters, osg::Parameters& outputParameters);
 
         /** get the lua_State object.*/
-        lua_State* getLuaState() { return _lua; }
+        lua_State* getLuaState() const { return _lua; }
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
@@ -83,9 +86,9 @@ class LuaScriptEngine : public osg::ScriptEngine
         void pushValue(const osg::Plane& value) const;
         void pushValue(const osg::Matrixd& value) const;
 
-        bool pushParameter(osg::Object* object);
-        bool popParameter(osg::Object* object);
-        osg::Object* popParameterObject();
+        bool pushParameter(osg::Object* object) const;
+        bool popParameter(osg::Object* object) const;
+        osg::Object* popParameterObject() const;
 
 
         void createAndPushObject(const std::string& compoundName) const;
@@ -109,6 +112,13 @@ class LuaScriptEngine : public osg::ScriptEngine
             }
             else return 0;
         }
+
+        void assignClosure(const char* name, lua_CFunction fn) const;
+
+        bool matchLuaParameters(int luaType1) const { return ((lua_gettop(_lua)==1) && (lua_type(_lua, 1)==luaType1)); }
+        bool matchLuaParameters(int luaType1, int luaType2) const { return ((lua_gettop(_lua)==2) && (lua_type(_lua, 1)==luaType1) && (lua_type(_lua, 2)==luaType2)); }
+        bool matchLuaParameters(int luaType1, int luaType2, int luaType3) const { return ((lua_gettop(_lua)==3) && (lua_type(_lua, 1)==luaType1) && (lua_type(_lua, 2)==luaType2) && (lua_type(_lua, 3)==luaType3)); }
+        bool matchLuaParameters(int luaType1, int luaType2, int luaType3, int luaType4) const { return ((lua_gettop(_lua)==4) && (lua_type(_lua, 1)==luaType1) && (lua_type(_lua, 2)==luaType2) && (lua_type(_lua, 3)==luaType3) && (lua_type(_lua, 4)==luaType4)); }
 
     protected:
 

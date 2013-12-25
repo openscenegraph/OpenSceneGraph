@@ -45,12 +45,12 @@ void ScriptCallback::operator()(Node* node, NodeVisitor* nv)
         ref_ptr<NodeVisitor> ref_nv(nv);
 
         {
-            ScriptEngine::Parameters inputParameters;
+            Parameters inputParameters;
             inputParameters.push_back(node);
             inputParameters.push_back(nv);
 
             // empty outputParameters
-            ScriptEngine::Parameters outputParameters;
+            Parameters outputParameters;
 
             engine->run(_script.get(), _entryPoint, inputParameters, outputParameters);
         }

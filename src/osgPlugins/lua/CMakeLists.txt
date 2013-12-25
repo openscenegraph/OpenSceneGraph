@@ -1,7 +1,11 @@
 SET(TARGET_H
+    MethodObject.h
     LuaScriptEngine.h
 )
 SET(TARGET_SRC
+    MethodObject.cpp
+    GeodeMethods.cpp
+    GroupMethods.cpp
     LuaScriptEngine.cpp
     ReaderWriterLua.cpp
 )

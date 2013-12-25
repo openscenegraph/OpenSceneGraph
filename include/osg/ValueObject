@@ -95,7 +95,8 @@ class ValueObject : public Object
 
         virtual bool get(GetValueVisitor& /*gvv*/) const { return false; }
         virtual bool set(SetValueVisitor& /*gvv*/) { return false; }
-    protected:
+
+protected:
         virtual ~ValueObject() {}
 };
 
@@ -206,6 +207,7 @@ void osg::Object::setUserValue(const std::string& name, const T& value)
     if (i<udc->getNumUserObjects()) udc->setUserObject(i, new UserValueObject(name,value));
     else udc->addUserObject(new UserValueObject(name,value));
 }
+
 
 }
 #endif

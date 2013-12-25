@@ -451,8 +451,8 @@ int main(int argc, char** argv)
             osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
             if (script.valid())
             {
-                osg::ScriptEngine::Parameters inputParameters;
-                osg::ScriptEngine::Parameters outputParameters;
+                osg::Parameters inputParameters;
+                osg::Parameters outputParameters;
 
                 inputParameters.push_back(new osg::StringValueObject("string","my very first string input"));
                 inputParameters.push_back(new osg::DoubleValueObject("double",1.234));

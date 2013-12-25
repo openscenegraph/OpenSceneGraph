@@ -73,8 +73,8 @@ class ReaderWriterLua : public osgDB::ReaderWriter
             if (!script) return ReadResult::ERROR_IN_READING_FILE;
 
             std::string entryPoint = "";
-            osg::ScriptEngine::Parameters inputParameters;
-            osg::ScriptEngine::Parameters outputParameters;
+            osg::Parameters inputParameters;
+            osg::Parameters outputParameters;
 
             osg::ref_ptr<lua::LuaScriptEngine> se = new lua::LuaScriptEngine();
             if (!se->run(script.get(), entryPoint, inputParameters, outputParameters)) return 0;
@@ -84,7 +84,7 @@ class ReaderWriterLua : public osgDB::ReaderWriter
             typedef std::vector< osg::ref_ptr<osg::Object> > Objects;
             Objects objects;
 
-            for(osg::ScriptEngine::Parameters::iterator itr = outputParameters.begin();
+            for(osg::Parameters::iterator itr = outputParameters.begin();
                 itr != outputParameters.end();
                 ++itr)
             {

@@ -21,6 +21,9 @@
 namespace osg
 {
 
+typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
+
+
 // forward declare
 class ScriptEngine;
 
@@ -92,8 +95,6 @@ class ScriptEngine : public osg::Object
 
         /** get the scripting language supported by the ScriptEngine.*/
         inline const std::string& getLanguage() const { return _language; }
-
-        typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
 
         /** run a Script.*/
         bool run(osg::Script* script)

@@ -41,7 +41,7 @@ void V8ScriptEngine::initialize()
 
 }
 
-bool V8ScriptEngine::run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters)
+bool V8ScriptEngine::run(osg::Script* script, const std::string& entryPoint, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
 {
     if (!script || !_isolate) return false;
 

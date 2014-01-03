@@ -41,7 +41,7 @@ void PythonScriptEngine::initialize()
     _py_main = PyModule_GetDict(PyImport_AddModule("__main__"));
 }
 
-bool PythonScriptEngine::run(osg::Script* script, const std::string& entryPoint, Parameters& inputParameters, Parameters& outputParameters)
+bool PythonScriptEngine::run(osg::Script* script, const std::string& entryPoint, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
 {
     if (!script || !_py_main) return false;
 

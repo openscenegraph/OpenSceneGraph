@@ -1,13 +1,13 @@
 # Locate gdal
 # This module defines
 # OSG_LIBRARY
-# OSG_FOUND, if false, do not try to link to gdal 
+# OSG_FOUND, if false, do not try to link to gdal
 # OSG_INCLUDE_DIR, where to find the headers
 #
 # $OSG_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$OSG_DIR
 #
-# Created by Robert Osfield. 
+# Created by Robert Osfield.
 
 FIND_PATH(OSG_INCLUDE_DIR osg/Node
     ${OSG_DIR}/include
@@ -59,7 +59,7 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
         [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
         /usr/freeware/lib64
     )
-    
+
     FIND_LIBRARY(${MYLIBRARY}
         NAMES "${MYLIBRARYNAME}${CMAKE_RELEASE_POSTFIX}"
         PATHS
@@ -107,7 +107,7 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
         ENDIF(NOT MYLIBRARY)
 
     ENDIF( NOT ${MYLIBRARY}_DEBUG )
-           
+
 ENDMACRO(FIND_OSG_LIBRARY LIBRARY LIBRARYNAME)
 
 FIND_OSG_LIBRARY(OSG_LIBRARY osg)
@@ -126,7 +126,7 @@ FIND_OSG_LIBRARY(OSGANIMATION_LIBRARY osgAnimation)
 FIND_OSG_LIBRARY(OSGPARTICLE_LIBRARY osgParticle)
 FIND_OSG_LIBRARY(OSGSHADOW_LIBRARY osgShadow)
 FIND_OSG_LIBRARY(OSGPRESENTATION_LIBRARY osgPresentation)
-FIND_OSG_LIBRARY(OSGSIM osgSim)
+FIND_OSG_LIBRARY(OSGSIM_LIBRARY osgSim)
 FIND_OSG_LIBRARY(OPENTHREADS_LIBRARY OpenThreads)
 
 

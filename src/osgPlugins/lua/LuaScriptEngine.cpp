@@ -12,7 +12,6 @@
 */
 
 #include "LuaScriptEngine.h"
-#include "MethodObject.h"
 
 #include <osg/io_utils>
 #include <osgDB/ReadFile>
@@ -101,7 +100,8 @@ static int callClassMethod(lua_State* _lua)
             inputParameters.push_back(lse->popParameterObject());
         }
 
-        if (osgDB::MethodsObjectManager::instance()->run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))
+//        if (osgDB::MethodsObjectManager::instance()->run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))
+        if (lse->getPropertyInterface().run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))
         {
             for(osg::Parameters::iterator itr = outputParameters.begin();
                 itr != outputParameters.end();
@@ -556,7 +556,7 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
     osgDB::BaseSerializer::Type type;
     if (!_pi.getPropertyType(object, propertyName, type))
     {
-        if (osgDB::MethodsObjectManager::instance()->hasMethod(object->getCompoundClassName(), propertyName))
+        if (_pi.hasMethod(object, propertyName))
         {
             OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") has method need to call it."<<std::endl;
             lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));

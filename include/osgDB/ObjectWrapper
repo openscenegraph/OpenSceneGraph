@@ -16,12 +16,22 @@
 #define OSGDB_OBJECTWRAPPER
 
 #include <osgDB/Serializer>
+#include <osg/ScriptEngine>
 
 namespace osgDB
 {
 
 typedef std::vector<std::string> StringList;
 extern OSGDB_EXPORT void split( const std::string& src, StringList& list, char separator=' ' );
+
+struct MethodObject : public osg::Referenced
+{
+    typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
+
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const = 0;
+
+    virtual ~MethodObject() {}
+};
 
 class OSGDB_EXPORT BaseCompressor : public osg::Referenced
 {
@@ -81,8 +91,14 @@ public:
 
     bool readSchema( const StringList& properties, const TypeList& types );
     void writeSchema( StringList& properties, TypeList& types );
-    void resetSchema()
-    { if ( _backupSerializers.size()>0 ) _serializers = _backupSerializers; }
+    void resetSchema() { if ( _backupSerializers.size()>0 ) _serializers = _backupSerializers; }
+
+    void addMethodObject(const std::string& methodName, MethodObject* mo);
+
+    typedef std::multimap< std::string, osg::ref_ptr<MethodObject> > MethodObjectMap;
+
+    MethodObjectMap& getMethodObjectMap() { return _methodObjectMap; }
+    const MethodObjectMap& getMethodObjectMap() const { return _methodObjectMap; }
 
 protected:
     ObjectWrapper() : _version(0) {}
@@ -96,6 +112,7 @@ protected:
     SerializerList _backupSerializers;
     TypeList _typeList;
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
+    MethodObjectMap _methodObjectMap;
     int _version;  // Last updated version of the wrapper
 };
 
@@ -231,6 +248,8 @@ protected:
         wrapper_createinstancefunc##NAME, #DOMAIN, CLASSNAME, ASSOCIATES, &wrapper_propfunc_##NAME); \
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(const char* domain, osgDB::ObjectWrapper* wrapper)
+
+#define ADD_METHOD_OBJECT( METHODNAME, METHODOBJECTCLASS ) wrapper->addMethodObject(METHODNAME, new METHODOBJECTCLASS());
 
 class OSGDB_EXPORT RegisterCompressorProxy
 {

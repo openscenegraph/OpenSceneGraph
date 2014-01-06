@@ -15,10 +15,12 @@
 #define METHODSOBJECT_H
 
 #include <osg/ScriptEngine>
+#include <osgDB/ObjectWrapper>
 
 namespace osgDB
 {
 
+#if 0
 struct MethodObject : public osg::Referenced
 {
     typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
@@ -26,6 +28,7 @@ struct MethodObject : public osg::Referenced
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const = 0;
     virtual ~MethodObject() {}
 };
+#endif
 
 struct MethodsObject  : public osg::Referenced
 {

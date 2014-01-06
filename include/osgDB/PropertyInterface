@@ -153,6 +153,19 @@ public:
     bool getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates=true) const;
 
 
+    /// run method of object
+    bool run(void* objectPtr, const std::string& compoundClassName, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
+
+    /// run method of object
+    bool run(osg::Object* object, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
+
+    /// checked for support of specificed method
+    bool hasMethod(const std::string& compoundClassName, const std::string& methodName) const;
+
+    /// checked for support of specificed method
+    bool hasMethod(const osg::Object* object, const std::string& methodName) const;
+
+
     /// Properties supported for a range of classes, used for white and black lists
     typedef std::map<std::string, PropertyMap> ObjectPropertyMap;
 

@@ -45,6 +45,8 @@ class LuaScriptEngine : public osg::ScriptEngine
         /** get the lua_State object.*/
         lua_State* getLuaState() const { return _lua; }
 
+        osgDB::PropertyInterface& getPropertyInterface() const { return _pi; }
+
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
 

@@ -97,7 +97,7 @@ static int callClassMethod(lua_State* _lua)
         for(int i=2; i<=n; ++i)
         {
             OSG_NOTICE<<" need to push parameter "<<lua_typename(_lua, lua_type(_lua, n))<<std::endl;
-            inputParameters.push_back(lse->popParameterObject());
+            inputParameters.insert(inputParameters.begin(), lse->popParameterObject());
         }
 
 //        if (osgDB::MethodsObjectManager::instance()->run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))

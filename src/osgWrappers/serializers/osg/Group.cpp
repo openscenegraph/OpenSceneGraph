@@ -68,6 +68,34 @@ struct GroupGetChild : public osgDB::MethodObject
     }
 };
 
+struct GroupSetChild : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.size()<2) return false;
+
+        osg::Object* indexObject = inputParameters[0].get();
+        OSG_NOTICE<<"GroupSetChild "<<indexObject->className()<<std::endl;
+
+        unsigned int index = 0;
+        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
+        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
+        else
+        {
+            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
+            if (uivo) index = uivo->getValue();
+        }
+
+        osg::Node* child = dynamic_cast<osg::Node*>(inputParameters[1].get());
+        if (!child) return false;
+
+        osg::Group* group = reinterpret_cast<osg::Group*>(objectPtr);
+        group->setChild(index, child);
+
+        return true;
+    }
+};
+
 struct GroupAddChild : public osgDB::MethodObject
 {
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
@@ -110,6 +138,7 @@ REGISTER_OBJECT_WRAPPER( Group,
 
     ADD_METHOD_OBJECT( "getNumChildren", GroupGetNumChildren );
     ADD_METHOD_OBJECT( "getChild", GroupGetChild );
+    ADD_METHOD_OBJECT( "setChild", GroupSetChild );
     ADD_METHOD_OBJECT( "addChild", GroupAddChild );
     ADD_METHOD_OBJECT( "removeChild", GroupRemoveChild );
 }

@@ -1,5 +1,6 @@
 #include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/ValueObject>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
@@ -15,7 +16,7 @@ static bool readDrawables( osgDB::InputStream& is, osg::Geode& node )
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Drawable* drawable = dynamic_cast<osg::Drawable*>( is.readObject() );
-        if ( drawable ) 
+        if ( drawable )
         {
             node.addDrawable( drawable );
         }
@@ -35,6 +36,66 @@ static bool writeDrawables( osgDB::OutputStream& os, const osg::Geode& node )
     os << os.END_BRACKET << std::endl;
     return true;
 }
+struct GeodeGetNumDrawables : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        osg::Geode* geode = reinterpret_cast<osg::Geode*>(objectPtr);
+        outputParameters.push_back(new osg::UIntValueObject("return", geode->getNumDrawables()));
+        return true;
+    }
+};
+
+
+struct GeodeGetDrawable : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Object* indexObject = inputParameters[0].get();
+        osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
+        if (!uivo) return false;
+
+        osg::Geode* geode = reinterpret_cast<osg::Geode*>(objectPtr);
+        outputParameters.push_back(geode->getDrawable(uivo->getValue()));
+
+        return true;
+    }
+};
+
+struct GeodeAddDrawable : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Drawable* child = dynamic_cast<osg::Drawable*>(inputParameters[0].get());
+        if (!child) return false;
+
+        osg::Geode* geode = reinterpret_cast<osg::Geode*>(objectPtr);
+        geode->addDrawable(child);
+
+        return true;
+    }
+};
+
+
+struct GeodeRemoveDrawable : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Drawable* child = dynamic_cast<osg::Drawable*>(inputParameters[0].get());
+        if (!child) return false;
+
+        osg::Geode* geode = reinterpret_cast<osg::Geode*>(objectPtr);
+        geode->removeDrawable(child);
+
+        return true;
+    }
+};
 
 REGISTER_OBJECT_WRAPPER( Geode,
                          new osg::Geode,
@@ -42,4 +103,9 @@ REGISTER_OBJECT_WRAPPER( Geode,
                          "osg::Object osg::Node osg::Geode" )
 {
     ADD_USER_SERIALIZER( Drawables );  // _drawables
+
+    ADD_METHOD_OBJECT( "getNumDrawables", GeodeGetNumDrawables );
+    ADD_METHOD_OBJECT( "getDrawable", GeodeGetDrawable );
+    ADD_METHOD_OBJECT( "addDrawable", GeodeAddDrawable );
+    ADD_METHOD_OBJECT( "removeDrawable", GeodeRemoveDrawable );
 }

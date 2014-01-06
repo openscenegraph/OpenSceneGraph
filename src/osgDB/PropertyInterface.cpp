@@ -279,7 +279,7 @@ osgDB::ObjectWrapper* PropertyInterface::getObjectWrapper(const osg::Object* obj
 osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
 {
     osgDB::ObjectWrapper* ow = getObjectWrapper(object);
-    return ow ? ow->getSerializer(propertyName, type) : 0;
+    return (ow!=0) ? ow->getSerializer(propertyName, type) : 0;
 }
 
 osg::Object* PropertyInterface::createObject(const std::string& compoundClassName) const
@@ -520,6 +520,78 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
     return true;
 }
 
+
+bool PropertyInterface::run(void* objectPtr, const std::string& compoundClassName, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+{
+    ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+    if (!ow) return false;
+
+    const ObjectWrapper::MethodObjectMap& methodObjectMap = ow->getMethodObjectMap();
+    ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
+    while ((itr!=methodObjectMap.end()) && (itr->first==methodName))
+    {
+        MethodObject* mo = itr->second.get();
+        if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
+        ++itr;
+    }
+
+    const osgDB::StringList& associates = ow->getAssociates();
+    for(osgDB::StringList::const_iterator aitr = associates.begin();
+        aitr != associates.end();
+        ++aitr)
+    {
+        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+        if (aow)
+        {
+            const ObjectWrapper::MethodObjectMap& methodObjectMap = aow->getMethodObjectMap();
+            ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
+            while ((itr!=methodObjectMap.end()) && (itr->first==methodName))
+            {
+                MethodObject* mo = itr->second.get();
+                if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
+                ++itr;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool PropertyInterface::run(osg::Object* object, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+{
+    return run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters);
+}
+
+bool PropertyInterface::hasMethod(const std::string& compoundClassName, const std::string& methodName) const
+{
+    ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
+    if (!ow) return false;
+
+    const ObjectWrapper::MethodObjectMap& methodObjectMap = ow->getMethodObjectMap();
+    ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
+    if (itr!=methodObjectMap.end()) return true;
+
+    const osgDB::StringList& associates = ow->getAssociates();
+    for(osgDB::StringList::const_iterator aitr = associates.begin();
+        aitr != associates.end();
+        ++aitr)
+    {
+        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+        if (aow)
+        {
+            const ObjectWrapper::MethodObjectMap& methodObjectMap = aow->getMethodObjectMap();
+            ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
+            if (itr!=methodObjectMap.end()) return true;
+        }
+    }
+
+    return false;
+}
+
+bool PropertyInterface::hasMethod(const osg::Object* object, const std::string& methodName) const
+{
+    return hasMethod(object->getCompoundClassName(), methodName);
+}
 
 } // end of osgDB namespace
 

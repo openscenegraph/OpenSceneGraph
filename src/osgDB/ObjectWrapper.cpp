@@ -308,6 +308,13 @@ void ObjectWrapper::writeSchema( StringList& properties, TypeList& types )
     }
 }
 
+void ObjectWrapper::addMethodObject(const std::string& methodName, MethodObject* mo)
+{
+    OSG_NOTICE<<"Inserting MethodObject "<<methodName<<std::endl;
+    _methodObjectMap.insert(MethodObjectMap::value_type(methodName, mo));
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // RegisterWrapperProxy

@@ -30,7 +30,7 @@
 static const char* computeSrc = {
     "#version 430\n"
     "uniform float osg_FrameTime;\n"
-    "uniform image2D targetTex;\n"
+    "layout (r32f, binding =0) uniform image2D targetTex;\n"
     "layout (local_size_x = 16, local_size_y = 16) in;\n"
     "void main() {\n"
     "   ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);\n"

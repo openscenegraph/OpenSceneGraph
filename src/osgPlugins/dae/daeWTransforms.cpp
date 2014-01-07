@@ -280,8 +280,45 @@ void daeWriter::apply( osg::Transform &node )
         }
         else
         {
-            currentNode->setId(getNodeName(node, "transform").c_str());
-            OSG_WARN << "some other transform type. Missing " << node.getNumChildren() << " children" << std::endl;
+            std::string nodeName = getNodeName(node, "transform");
+            currentNode->setId(nodeName.c_str());
+
+            // Unknown transform type, just use local to world matrix
+            osg::Matrix matrix;
+            node.computeLocalToWorldMatrix(matrix, NULL);
+
+            osg::NodeCallback* ncb = node.getUpdateCallback();
+            bool handled = false;
+            if (ncb)
+            {
+                osgAnimation::UpdateMatrixTransform* ut = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(ncb);
+                // If targeted by an animation we split up the matrix into multiple place element so they can be targeted individually
+                if (ut)
+                {
+                    handled = true;
+
+                    // Note: though this is a generic matrix, based on the fact that it will be animated by and UpdateMatrixTransform,
+                    // we assume the initial matrix can be decomposed into translation, rotation and scale elements
+                    writeUpdateTransformElements(matrix.getTrans(), matrix.getRotate(), matrix.getScale());
+                }
+            }
+
+            // If not targeted by an animation simply write a single matrix place element
+            if (!handled)
+            {
+                domMatrix *mat = daeSafeCast< domMatrix >(currentNode->add( COLLADA_ELEMENT_MATRIX ) );
+                nodeName += "_matrix";
+                mat->setSid(nodeName.c_str());
+        
+                const osg::Matrix::value_type *mat_vals = matrix.ptr();
+                for ( int i = 0; i < 4; i++ )
+                {
+                    for ( int j = 0; j < 4; j++ )
+                    {
+                        mat->getValue().append( mat_vals[i + j*4] );
+                    }
+                }
+            }
         }
     }
 

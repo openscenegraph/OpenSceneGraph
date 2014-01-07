@@ -53,16 +53,6 @@
     #endif
 #endif
 
-#if !defined(GL_EXT_timer_query) && !defined(OSG_GL3_AVAILABLE)
-    #ifdef _WIN32
-        typedef          __int64 GLint64EXT;
-        typedef unsigned __int64 GLuint64EXT;
-    #else
-        typedef long long int GLint64EXT;
-        typedef unsigned long long int GLuint64EXT;
-    #endif
-#endif
-
 namespace osg {
 
 /** macro for use with osg::StateAttribute::apply methods for detecting and

@@ -107,8 +107,8 @@
 
         #define GL3_PROTOTYPES 1
         #ifdef __APPLE__
-            #include <OpenGL/OpenGL.h> 
-            #include <OpenGL/gl3.h> 
+            #include <OpenGL/OpenGL.h>
+            #include <OpenGL/gl3.h>
             #define GLint64EXT GLint64
             #define GLuint64EXT GLuint64
             #define GL_BGRA_EXT GL_BGRA
@@ -130,7 +130,18 @@
                 #endif
             #endif
         #endif
-    #endif
+
+        #if !defined(GL_EXT_timer_query)
+            #ifdef _WIN32
+                typedef          __int64 GLint64EXT;
+                typedef unsigned __int64 GLuint64EXT;
+            #else
+                typedef long long int GLint64EXT;
+                typedef unsigned long long int GLuint64EXT;
+            #endif
+        #endif
+
+#endif
 
     #ifndef GL_APIENTRY
         #define GL_APIENTRY APIENTRY

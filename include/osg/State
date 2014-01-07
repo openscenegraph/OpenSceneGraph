@@ -1203,6 +1203,13 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
 
+        /// For GL>=2.0 uses GL_MAX_TEXTURE_COORDS, for GL<2 uses GL_MAX_TEXTURE_UNITS
+        inline GLint getMaxTextureCoords() const { return _glMaxTextureCoords; }
+
+        /// For GL>=2.0 uses GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, for GL<2 uses GL_MAX_TEXTURE_UNITS
+        inline GLint getMaxTextureUnits() const { return _glMaxTextureUnits; }
+
+
         /** Set the current texture unit, return true if selected,
           * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/

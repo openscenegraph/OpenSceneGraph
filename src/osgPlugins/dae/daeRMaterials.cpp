@@ -1004,7 +1004,7 @@ osg::Texture2D* daeReader::processTexture(
     domImage *dImg = NULL;
 
     std::string target = std::string("./") + std::string(tex->getTexture());
-    OSG_NOTICE<<"processTexture("<<target<<")"<<std::endl;
+    OSG_INFO<<"processTexture("<<target<<")"<<std::endl;
 
     daeSIDResolver res1( _currentEffect, target.c_str() );
     daeElement *el = res1.getElement();
@@ -1036,6 +1036,12 @@ osg::Texture2D* daeReader::processTexture(
         if (sampler == NULL )
         {
             OSG_WARN << "Wrong newparam type. Expected sampler2D" << std::endl;
+            return NULL;
+        }
+
+        if (sampler->getSource() == NULL )
+        {
+            OSG_WARN << "Could not locate source for sampler2D" << std::endl;
             return NULL;
         }
 

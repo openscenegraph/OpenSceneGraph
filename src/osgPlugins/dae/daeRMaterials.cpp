@@ -1154,9 +1154,9 @@ optional opaque attribute whose valid values are:
  RGB_ZERO: Takes the transparency information from the colors red, green, and blue channels, where the value 0.0 is opaque,
  with each channel modulated independently.
 
- In the Specification, this is described in the “FX Reference” chapter in the
+ In the Specification, this is described in the FX Reference chapter in the
 common_color_or_texture_type entry, along with a description of how transparency works in the
-Getting Started with COLLADA FX” chapter in the “Determining Transparency section.
+Getting Started with COLLADA FX chapter in the Determining Transparency section.
 
 
 Collada Digital Asset Schema Release 1.5.0 Release Notes

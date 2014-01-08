@@ -62,11 +62,11 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
 
         const osg::Vec3d& getPosition() const { return _position; }
 
-        virtual ~AntiSquish();
-
         osg::Matrix computeUnSquishedMatrix(const osg::Matrix&, bool& flag);
 
     protected:
+
+        virtual ~AntiSquish();
 
         osg::NodeCallback* _asqCallback;
 

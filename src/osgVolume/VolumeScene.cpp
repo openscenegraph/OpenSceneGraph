@@ -19,6 +19,7 @@
 #include <osg/io_utils>
 #include <osgDB/ReadFile>
 #include <OpenThreads/ScopedLock>
+#include <limits>
 
 using namespace osgVolume;
 
@@ -302,8 +303,9 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         //OSG_NOTICE<<"tileVisited()"<<viewData->_tiles.size()<<std::endl;
 
 
-        double calculatedNearPlane = DBL_MAX;
-        double calculatedFarPlane = -DBL_MAX;
+        typedef osgUtil::CullVisitor::value_type NearFarValueType;
+        NearFarValueType calculatedNearPlane = std::numeric_limits<NearFarValueType>::max();
+        NearFarValueType calculatedFarPlane = -std::numeric_limits<NearFarValueType>::max();
         if (viewData->_rttCamera->getUserValue("CalculatedNearPlane",calculatedNearPlane) &&
             viewData->_rttCamera->getUserValue("CalculatedFarPlane",calculatedFarPlane))
         {

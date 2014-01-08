@@ -1150,19 +1150,20 @@ Collada 1.4.1 Specification (2nd Edition) Patch Release Notes: Revision C Releas
 
 In <blinn>, <constant>, <lambert>, and <phong>, the child element <transparent> now has an
 optional opaque attribute whose valid values are:
- A_ONE (the default): Takes the transparency information from the color’s alpha channel, where the value 1.0 is opaque.
- RGB_ZERO: Takes the transparency information from the color’s red, green, and blue channels, where the value 0.0 is opaque,
-with each channel modulated independently.
-In the Specification, this is described in the “FX Reference” chapter in the
+ A_ONE (the default): Takes the transparency information from the colors alpha channel, where the value 1.0 is opaque.
+ RGB_ZERO: Takes the transparency information from the colors red, green, and blue channels, where the value 0.0 is opaque,
+ with each channel modulated independently.
+
+ In the Specification, this is described in the “FX Reference” chapter in the
 common_color_or_texture_type entry, along with a description of how transparency works in the
-“Getting Started with COLLADA FX” chapter in the “Determining Transparency” section.
+Getting Started with COLLADA FX” chapter in the “Determining Transparency section.
 
 
 Collada Digital Asset Schema Release 1.5.0 Release Notes
 
-The <transparent> element’s opaque attribute now allows, in addition to A_ONE and RGB_ZERO, the following values:
- A_ZERO: Takes the transparency information from the color’s alpha channel, where the value 0.0 is opaque.
- RGB_ONE: Takes the transparency information from the color’s red, green, and blue channels, where the value 1.0
+The <transparent> elements opaque attribute now allows, in addition to A_ONE and RGB_ZERO, the following values:
+ A_ZERO: Takes the transparency information from the colors alpha channel, where the value 0.0 is opaque.
+ RGB_ONE: Takes the transparency information from the colors red, green, and blue channels, where the value 1.0
  is opaque, with each channel modulated independently.
 
 When we update to a version of the dom using that schema we will need to modify the code below

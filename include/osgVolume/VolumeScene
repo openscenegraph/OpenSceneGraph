@@ -44,16 +44,28 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
 
         struct TileData : public osg::Referenced
         {
+            TileData() : active(false) {}
+
+            bool active;
+
             osg::NodePath nodePath;
             osg::ref_ptr<osg::RefMatrix> projectionMatrix;
             osg::ref_ptr<osg::RefMatrix> modelviewMatrix;
+
+            osg::ref_ptr<osg::Texture2D> depthTexture;
+            osg::ref_ptr<osg::Camera>    rttCamera;
+            osg::ref_ptr<osg::Camera>    stateset;
         };
-        typedef std::list< osg::ref_ptr<TileData> > Tiles;
+        typedef std::map< VolumeTile*, osg::ref_ptr<TileData> > Tiles;
 
         class ViewData : public osg::Referenced
         {
             public:
                 ViewData();
+
+                void clearTiles();
+                void visitTile(VolumeTile* tile);
+
                 osg::ref_ptr<osg::Texture2D>    _depthTexture;
                 osg::ref_ptr<osg::Texture2D>    _colorTexture;
                 osg::ref_ptr<osg::Camera>       _rttCamera;

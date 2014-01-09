@@ -53,6 +53,19 @@ VolumeScene::ViewData::ViewData()
 {
 }
 
+void VolumeScene::ViewData::clearTiles()
+{
+    for(Tiles::iterator itr = _tiles.begin();
+        itr != _tiles.end();
+        ++itr)
+    {
+        if (itr->second.valid()) itr->second->active = false;
+    }
+}
+
+void VolumeScene::ViewData::visitTile(VolumeTile* tile)
+{
+}
 
 VolumeScene::VolumeScene()
 {
@@ -82,11 +95,12 @@ void VolumeScene::tileVisited(osg::NodeVisitor* nv, osgVolume::VolumeTile* tile)
 
         if (viewData.valid())
         {
-            osg::ref_ptr<TileData> tileData = new TileData;
+            osg::ref_ptr<TileData>& tileData = viewData->_tiles[tile];
+            if (!tileData) tileData = new TileData;
+            tileData->active = true;
             tileData->nodePath = cv->getNodePath();
             tileData->projectionMatrix = cv->getProjectionMatrix();
             tileData->modelviewMatrix = cv->getModelViewMatrix();
-            viewData->_tiles.push_back(tileData.get());
         }
 
         osg::BoundingBox bb(0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
@@ -262,7 +276,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
 
 
         // new frame so need to clear last frames log of VolumeTiles
-        viewData->_tiles.clear();
+        viewData->clearTiles();
 
         osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
         if (viewport)
@@ -357,7 +371,15 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
             itr != tiles.end();
             ++itr)
         {
-            TileData* tileData = itr->get();
+            TileData* tileData = itr->second.get();
+            if (!tileData || !(tileData->active))
+            {
+                OSG_NOTICE<<"Skipping TileData that is inactive : "<<tileData<<std::endl;
+                continue;
+            }
+            OSG_NOTICE<<"Handling TileData that is active : "<<tileData<<std::endl;
+
+
             unsigned int numStateSetPushed = 0;
 
             // OSG_NOTICE<<"VolumeTile to add "<<tileData->projectionMatrix.get()<<", "<<tileData->modelviewMatrix.get()<<std::endl;

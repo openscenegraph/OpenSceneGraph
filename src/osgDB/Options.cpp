@@ -56,3 +56,17 @@ void Options::parsePluginStringData(const std::string& str, char separator1, cha
         }
     }
 }
+
+bool Options::operator <(const Options &rhs) const
+{
+    // TODO add better compare
+    //OSG_DEBUG << "comparing <'" << _str << "' with '" << rhs._str << "'" << std::endl;
+    return _str.compare(rhs._str) < 0;
+}
+
+bool Options::operator ==(const Options &rhs) const
+{
+    // TODO add better compare
+    //OSG_DEBUG << "comparing == '" << _str << "' with '" << rhs._str << "'" << std::endl;
+    return _str.compare(rhs._str) == 0;
+}

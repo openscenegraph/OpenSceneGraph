@@ -138,7 +138,7 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
             tileData->stateset = new osg::StateSet;
             tileData->stateset->setTextureAttribute(2, tileData->depthTexture.get());
 
-            tileData->texgenUniform = new osg::Uniform("texgen2",osg::Matrixf());
+            tileData->texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
             tileData->stateset->addUniform(tileData->texgenUniform);
         }
 

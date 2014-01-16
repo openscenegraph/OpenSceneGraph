@@ -22,7 +22,6 @@
 #include <osg/Program>
 #include <osg/Material>
 #include <osg/CullFace>
-#include <osg/TexGen>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
@@ -298,7 +297,6 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
     _volumeRenderStateSet = stateset;
 
-    unsigned int texgenTextureUnit = 0;
     unsigned int volumeTextureUnit = 3;
 
     // set up uniforms
@@ -342,22 +340,6 @@ void MultipassTechnique::init()
         {
             tf = dynamic_cast<osg::TransferFunction1D*>(cpv._tfProperty->getTransferFunction());
         }
-
-        osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
-        texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-        texgen->setPlanesFromMatrix( geometryMatrix * osg::Matrix::inverse(imageMatrix));
-
-        if (masterLocator)
-        {
-            osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
-            masterLocator->addCallback(locatorCallback.get());
-            if (masterLocator != layerLocator)
-            {
-                if (layerLocator) layerLocator->addCallback(locatorCallback.get());
-            }
-        }
-
-        stateset->setTextureAttributeAndModes(texgenTextureUnit, texgen.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
     }
 
 

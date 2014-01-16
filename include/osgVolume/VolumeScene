@@ -36,12 +36,6 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
 
-        void tileVisited(osg::NodeVisitor* nv, osgVolume::VolumeTile* tile);
-
-    protected:
-
-        virtual ~VolumeScene();
-
         struct TileData : public osg::Referenced
         {
             TileData() : active(false) {}
@@ -54,8 +48,17 @@ class OSGVOLUME_EXPORT VolumeScene : public osg::Group
 
             osg::ref_ptr<osg::Texture2D> depthTexture;
             osg::ref_ptr<osg::Camera>    rttCamera;
-            osg::ref_ptr<osg::Camera>    stateset;
+            osg::ref_ptr<osg::StateSet>  stateset;
+            osg::ref_ptr<osg::Uniform>   texgenUniform;
         };
+
+        TileData* tileVisited(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile);
+        TileData* getTileData(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile);
+
+    protected:
+
+        virtual ~VolumeScene();
+
         typedef std::map< VolumeTile*, osg::ref_ptr<TileData> > Tiles;
 
         class ViewData : public osg::Referenced

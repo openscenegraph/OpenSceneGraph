@@ -1307,6 +1307,12 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         else if (renderer=="MultiPass") volumeData.technique =  osgPresentation::SlideShowConstructor::VolumeData::MultiPass;
     }
 
+    std::string hull;
+    if (getProperty(cur, "hull", hull))
+    {
+        volumeData.hull = hull;
+    }
+
     if (getProperty(cur, "alpha", volumeData.alphaValue)) {}
     if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
     if (getProperty(cur, "region", volumeData.region)) {}

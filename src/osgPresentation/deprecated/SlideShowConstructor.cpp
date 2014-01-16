@@ -2816,6 +2816,15 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
     }
 
+    if (!volumeData.hull.empty())
+    {
+        osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
+        if (hull.valid())
+        {
+            tile->addChild(hull);
+        }
+    }
+
 
     osg::ref_ptr<osg::Node> model = volume.get();
 

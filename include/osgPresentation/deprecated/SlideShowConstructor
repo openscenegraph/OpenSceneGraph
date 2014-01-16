@@ -328,6 +328,7 @@ public:
         osg::ColorSpaceOperation                colorSpaceOperation;
         osg::Vec4                               colorModulate;
         Technique                               technique;
+        std::string                             hull;
     };
 
 

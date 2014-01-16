@@ -33,7 +33,9 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
 
         virtual void update(osgUtil::UpdateVisitor* nv);
 
-        virtual void cull(osgUtil::CullVisitor* nv);
+        virtual void backfaceSubgraphCullTraversal(osgUtil::CullVisitor* cv);
+
+        virtual void cull(osgUtil::CullVisitor* cv);
 
         /** Clean scene graph from any terrain technique specific nodes.*/
         virtual void cleanSceneGraph();
@@ -53,6 +55,7 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
         ModelViewMatrixMap _modelViewMatrixMap;
 
         osg::ref_ptr<osg::StateSet> _whenMovingStateSet;
+        osg::ref_ptr<osg::StateSet> _volumeRenderStateSet;
 
         osg::StateSet* createStateSet(osg::StateSet* statesetPrototype, osg::Program* programPrototype, osg::Shader* shaderToAdd1=0, osg::Shader* shaderToAdd2=0);
 
@@ -69,6 +72,8 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
 
         typedef std::map<int, osg::ref_ptr<osg::StateSet> > StateSetMap;
         StateSetMap _stateSetMap;
+
+        osg::ref_ptr<osg::StateSet> _frontFaceStateSet;
 };
 
 }

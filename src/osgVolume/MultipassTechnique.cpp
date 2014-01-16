@@ -295,15 +295,17 @@ void MultipassTechnique::init()
     OSG_NOTICE<<"MultipassTechnique::init() : geometryMatrix = "<<geometryMatrix<<std::endl;
     OSG_NOTICE<<"MultipassTechnique::init() : imageMatrix = "<<imageMatrix<<std::endl;
 
-    osg::ref_ptr<osg::StateSet> stateset = _transform->getOrCreateStateSet();
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+    _volumeRenderStateSet = stateset;
 
     unsigned int texgenTextureUnit = 0;
-    unsigned int volumeTextureUnit = 2;
+    unsigned int volumeTextureUnit = 3;
 
     // set up uniforms
     {
         stateset->addUniform(new osg::Uniform("colorTexture",0));
         stateset->addUniform(new osg::Uniform("depthTexture",1));
+        stateset->addUniform(new osg::Uniform("frontFaceDepthTexture",2));
 
         stateset->setMode(GL_ALPHA_TEST,osg::StateAttribute::ON);
 
@@ -355,7 +357,7 @@ void MultipassTechnique::init()
             }
         }
 
-        stateset->setTextureAttributeAndModes(texgenTextureUnit, texgen.get(), osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(texgenTextureUnit, texgen.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
     }
 
 
@@ -407,7 +409,7 @@ void MultipassTechnique::init()
         }
         texture3D->setImage(image_3d);
 
-        stateset->setTextureAttributeAndModes(volumeTextureUnit, texture3D, osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(volumeTextureUnit, texture3D, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
         osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("volumeTexture", int(volumeTextureUnit));
         stateset->addUniform(baseTextureSampler.get());
@@ -446,7 +448,7 @@ void MultipassTechnique::init()
 
         unsigned int transferFunctionTextureUnit = volumeTextureUnit+1;
 
-        stateset->setTextureAttributeAndModes(transferFunctionTextureUnit, tf_texture.get(), osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(transferFunctionTextureUnit, tf_texture.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
         stateset->addUniform(new osg::Uniform("tfTexture",int(transferFunctionTextureUnit)));
         stateset->addUniform(new osg::Uniform("tfOffset",tfOffset));
         stateset->addUniform(new osg::Uniform("tfScale",tfScale));
@@ -487,12 +489,13 @@ void MultipassTechnique::init()
 #endif
 
 
-    osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back.frag");
+    osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back_with_front_depthtexture.frag");;
+    //osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back.frag");
 #if 0
     if (!back_main_fragmentShader)
     {
-        #include "Shaders/volume_multipass_back_frag.cpp"
-        back_main_fragmentShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_back_frag));
+        #include "Shaders/shaders/volume_multipass_back_with_front_depthtexture_frag.cpp"
+        back_main_fragmentShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_back_with_front_depthtexture_frag));
     }
 #endif
 
@@ -502,7 +505,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::StateSet> front_stateset_prototype = new osg::StateSet;
     osg::ref_ptr<osg::Program> front_program_prototype = new osg::Program;
     {
-        front_stateset_prototype->setAttributeAndModes(front_CullFace.get(), osg::StateAttribute::ON);
+        front_stateset_prototype->setAttributeAndModes(front_CullFace.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
         front_program_prototype->addShader(main_vertexShader.get());
         front_program_prototype->addShader(front_main_fragmentShader.get());
@@ -512,12 +515,27 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::StateSet> back_stateset_prototype = new osg::StateSet;
     osg::ref_ptr<osg::Program> back_program_prototype = new osg::Program;
     {
-        back_stateset_prototype->setAttributeAndModes(back_CullFace.get(), osg::StateAttribute::ON);
+        back_stateset_prototype->setAttributeAndModes(back_CullFace.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
         back_program_prototype->addShader(main_vertexShader.get());
         back_program_prototype->addShader(back_main_fragmentShader.get());
         back_program_prototype->addShader(computeRayColorShader.get());
     }
+
+
+    // set up the rendering of the front face
+    {
+        _frontFaceStateSet = new osg::StateSet;
+
+        // cull only the bac faces so we write only the front
+        _frontFaceStateSet->setAttributeAndModes(front_CullFace.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
+        // set up the front falce
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(main_vertexShader.get());
+        _frontFaceStateSet->setAttribute(program.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    }
+
 
     // STANDARD_SHADERS
     {
@@ -690,7 +708,6 @@ void MultipassTechnique::init()
     if (cpv._sampleRatioWhenMovingProperty.valid())
     {
         _whenMovingStateSet = new osg::StateSet;
-        //_whenMovingStateSet->setTextureAttributeAndModes(volumeTextureUnit, new osg::TexEnvFilter(1.0));
         _whenMovingStateSet->addUniform(cpv._sampleRatioWhenMovingProperty->getUniform(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
     }
 
@@ -701,14 +718,89 @@ void MultipassTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
 //    OSG_NOTICE<<"MultipassTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
 }
 
+void MultipassTechnique::backfaceSubgraphCullTraversal(osgUtil::CullVisitor* cv)
+{
+    if (!cv) return;
+
+    cv->pushStateSet(_frontFaceStateSet.get());
+
+    if (getVolumeTile()->getNumChildren()>0)
+    {
+        getVolumeTile()->osg::Group::traverse(*cv);
+    }
+    else
+    {
+        _transform->accept(*cv);
+    }
+
+    cv->popStateSet();
+}
+
+class RTTBackfaceCameraCullCallback : public osg::NodeCallback
+{
+    public:
+
+        RTTBackfaceCameraCullCallback(VolumeScene::TileData* tileData, MultipassTechnique* mt):
+            _tileData(tileData),
+            _mt(mt) {}
+
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+
+            cv->pushProjectionMatrix(_tileData->projectionMatrix);
+
+            _mt->backfaceSubgraphCullTraversal(cv);
+
+            cv->popProjectionMatrix();
+        }
+
+    protected:
+
+        virtual ~RTTBackfaceCameraCullCallback() {}
+
+        osg::observer_ptr<osgVolume::VolumeScene::TileData> _tileData;
+        osg::observer_ptr<osgVolume::MultipassTechnique> _mt;
+};
+
 void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 {
     std::string traversalPass;
-    bool postTraversal = cv->getUserValue("VolumeSceneTraversal", traversalPass) && traversalPass=="Post";
+    bool rttTraversal = cv->getUserValue("VolumeSceneTraversal", traversalPass) && traversalPass=="RenderToTexture";
 
     // OSG_NOTICE<<"MultipassTechnique::cull()  traversalPass="<<traversalPass<<std::endl;
+    osgVolume::VolumeScene* vs = 0;
+    osg::NodePath& nodePath = cv->getNodePath();
+    for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+        (itr != nodePath.rend()) && (vs == 0);
+        ++itr)
+    {
+        vs = dynamic_cast<osgVolume::VolumeScene*>(*itr);
+    }
 
-    if (postTraversal)
+    if (rttTraversal)
+    {
+        if (vs)
+        {
+            VolumeScene::TileData* tileData = vs->tileVisited(cv, getVolumeTile());
+            if (tileData->rttCamera.valid())
+            {
+                if (!(tileData->rttCamera->getCullCallback()))
+                {
+                    tileData->rttCamera->setCullCallback(new RTTBackfaceCameraCullCallback(tileData, this));
+                }
+
+                // traverse RTT Camera
+                tileData->rttCamera->accept(*cv);
+            }
+
+            osg::BoundingBox bb;
+            if (_transform.valid()) bb.expandBy(_transform->getBound());
+            if (getVolumeTile()->getNumChildren()>0) bb.expandBy(getVolumeTile()->getBound());
+            cv->updateCalculatedNearFar(*(cv->getModelViewMatrix()),bb);
+        }
+    }
+    else
     {
 
         int shaderMask = 0;
@@ -740,14 +832,27 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             }
         }
 
-        int shaderMaskFront = shaderMask | FRONT_SHADERS;
+        //int shaderMaskFront = shaderMask | FRONT_SHADERS;
         int shaderMaskBack = shaderMask | BACK_SHADERS;
 
         // OSG_NOTICE<<"shaderMaskFront "<<shaderMaskFront<<std::endl;
         // OSG_NOTICE<<"shaderMaskBack  "<<shaderMaskBack<<std::endl;
 
+        if (vs)
+        {
+            VolumeScene::TileData* tileData = vs->getTileData(cv, getVolumeTile());
+            if (tileData)
+            {
+                Locator* layerLocator = _volumeTile->getLayer()->getLocator();
+                osg::Matrix imv = layerLocator->getTransform() * (*(cv->getModelViewMatrix()));
+                osg::Matrix inverse_imv;
+                inverse_imv.invert(imv);
+                tileData->texgenUniform->set(osg::Matrixf(inverse_imv));
+            }
+        }
 
-        osg::ref_ptr<osg::StateSet> front_stateset = _stateSetMap[shaderMaskFront];
+
+        //osg::ref_ptr<osg::StateSet> front_stateset = _stateSetMap[shaderMaskFront];
         osg::ref_ptr<osg::StateSet> back_stateset = _stateSetMap[shaderMaskBack];
         osg::ref_ptr<osg::StateSet> moving_stateset = (_whenMovingStateSet.valid() && isMoving(cv)) ? _whenMovingStateSet : 0;
 
@@ -757,6 +862,7 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             cv->pushStateSet(moving_stateset.get());
         }
 
+#if 0
         if (front_stateset.valid())
         {
             // OSG_NOTICE<<"Have front stateset"<<std::endl;
@@ -764,12 +870,23 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             _transform->accept(*cv);
             cv->popStateSet();
         }
-
+#endif
         if (back_stateset.valid())
         {
             // OSG_NOTICE<<"Have back stateset"<<std::endl;
             cv->pushStateSet(back_stateset.get());
-            _transform->accept(*cv);
+            cv->pushStateSet(_volumeRenderStateSet.get());
+
+            if (getVolumeTile()->getNumChildren()>0)
+            {
+                getVolumeTile()->osg::Group::traverse(*cv);
+            }
+            else
+            {
+                _transform->accept(*cv);
+            }
+
+            cv->popStateSet();
             cv->popStateSet();
         }
 
@@ -777,21 +894,6 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
         {
             // OSG_NOTICE<<"Using MovingStateSet"<<std::endl;
             cv->popStateSet();
-        }
-    }
-    else
-    {
-        osg::NodePath& nodePath = cv->getNodePath();
-        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
-            itr != nodePath.rend();
-            ++itr)
-        {
-            osgVolume::VolumeScene* vs = dynamic_cast<osgVolume::VolumeScene*>(*itr);
-            if (vs)
-            {
-                vs->tileVisited(cv, getVolumeTile());
-                break;
-            }
         }
     }
 }

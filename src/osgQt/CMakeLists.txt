@@ -13,11 +13,8 @@ SET(SOURCES_H
 )
 
 IF ( Qt5Widgets_FOUND )
-    if (Qt5Widgets_VERSION VERSION_LESS 5.2.0)
-        QT5_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS "-f" )
-    else()
-        QT5_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} )
-    endif()
+    QT5_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS
+          "-fosgQt/QGraphicsViewAdapter" )
 ELSE()
     QT4_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS "-f" )
 ENDIF()

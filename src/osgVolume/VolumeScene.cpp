@@ -14,6 +14,7 @@
 #include <osgVolume/VolumeScene>
 #include <osg/Geometry>
 #include <osg/PrimitiveSet>
+#include <osg/Depth>
 #include <osg/Geode>
 #include <osg/ValueObject>
 #include <osg/io_utils>
@@ -119,6 +120,7 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
             tileData->depthTexture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
             tileData->rttCamera = new osg::Camera;
+            tileData->rttCamera->setName("tileData->rttCamera");
             tileData->rttCamera->attach(osg::Camera::DEPTH_BUFFER, tileData->depthTexture.get());
             tileData->rttCamera->setViewport(0,0,textureWidth,textureHeight);
 
@@ -136,7 +138,7 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
             tileData->rttCamera->setViewMatrix(osg::Matrixd::identity());
 
             tileData->stateset = new osg::StateSet;
-            tileData->stateset->setTextureAttribute(2, tileData->depthTexture.get());
+            tileData->stateset->setTextureAttribute(2, tileData->depthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
             tileData->texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
             tileData->stateset->addUniform(tileData->texgenUniform);
@@ -189,11 +191,6 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         Group::traverse(nv);
         return;
     }
-
-    // Save current cull settings
-    osg::CullSettings saved_cull_settings(*cv);
-
-    // cv->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
     osg::ref_ptr<ViewData> viewData;
     bool initializeViewData = false;
@@ -248,6 +245,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
 
         // set up the RTT Camera to capture the main scene to a color and depth texture that can be used in post processing
         viewData->_rttCamera = new osg::Camera;
+        viewData->_rttCamera->setName("viewData->_rttCamera");
         viewData->_rttCamera->attach(osg::Camera::DEPTH_BUFFER, viewData->_depthTexture.get());
         viewData->_rttCamera->attach(osg::Camera::COLOR_BUFFER, viewData->_colorTexture.get());
         viewData->_rttCamera->setCullCallback(new RTTCameraCullCallback(this));
@@ -301,7 +299,9 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
 
         stateset->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND, osg::StateAttribute::OFF);
+        stateset->setMode(GL_ALPHA_TEST, osg::StateAttribute::OFF);
+        stateset->setAttribute(new osg::Depth(osg::Depth::LEQUAL));
         stateset->setRenderBinDetails(10,"DepthSortedBin");
 
         osg::ref_ptr<osg::Program> program = new osg::Program;
@@ -337,8 +337,8 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         viewData->_stateset->addUniform(new osg::Uniform("colorTexture",0));
         viewData->_stateset->addUniform(new osg::Uniform("depthTexture",1));
 
-        viewData->_stateset->setTextureAttributeAndModes(0, viewData->_colorTexture.get(), osg::StateAttribute::ON);
-        viewData->_stateset->setTextureAttributeAndModes(1, viewData->_depthTexture.get(), osg::StateAttribute::ON);
+        viewData->_stateset->setTextureAttributeAndModes(0, viewData->_colorTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        viewData->_stateset->setTextureAttributeAndModes(1, viewData->_depthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
         viewData->_viewportDimensionsUniform = new osg::Uniform("viewportDimensions",osg::Vec4(0.0,0.0,1280.0,1024.0));
         viewData->_stateset->addUniform(viewData->_viewportDimensionsUniform.get());
@@ -381,9 +381,6 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
     }
 
     cv->setUserValue("VolumeSceneTraversal",std::string("RenderToTexture"));
-
-    osg::Camera* parentCamera = cv->getCurrentCamera();
-    viewData->_rttCamera->setClearColor(parentCamera->getClearColor());
 
     //OSG_NOTICE<<"Ready to traverse RTT Camera"<<std::endl;
     //OSG_NOTICE<<"   RTT Camera ProjectionMatrix Before "<<viewData->_rttCamera->getProjectionMatrix()<<std::endl;
@@ -515,7 +512,4 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
     //    each tile final render.
 
     cv->getNodePath() = nodePathPriorToTraversingSubgraph;
-
-    // restore the previous cull settings
-    cv->setCullSettings(saved_cull_settings);
 }

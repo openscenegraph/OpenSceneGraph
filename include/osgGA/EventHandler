@@ -37,6 +37,7 @@ public:
 
         EventHandler() {}
         EventHandler(const EventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::Object(eh,copyop),
             osg::NodeCallback(eh, copyop),
             osg::Drawable::EventCallback(eh, copyop) {}
 

@@ -54,7 +54,7 @@ public:
 #if 1
         GUIEventHandler() {}
         GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            EventHandler(eh, copyop) {}
+            osg::Object(eh, copyop), EventHandler(eh, copyop) {}
 #else
         GUIEventHandler() : _ignoreHandledEventsMask(GUIEventAdapter::NONE) {}
         GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):

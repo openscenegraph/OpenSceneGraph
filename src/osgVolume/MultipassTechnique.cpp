@@ -462,15 +462,6 @@ void MultipassTechnique::init()
     }
 #endif
 
-    osg::ref_ptr<osg::Shader> front_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_front.frag");
-#if 0
-    if (!front_main_fragmentShader)
-    {
-        #include "Shaders/volume_multipass_front_frag.cpp"
-        front_main_fragmentShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_front_frag));
-    }
-#endif
-
 
     osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back_with_front_depthtexture.frag");;
     //osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back.frag");
@@ -484,16 +475,6 @@ void MultipassTechnique::init()
 
     // clear any previous settings
     _stateSetMap.clear();
-
-    osg::ref_ptr<osg::StateSet> front_stateset_prototype = new osg::StateSet;
-    osg::ref_ptr<osg::Program> front_program_prototype = new osg::Program;
-    {
-        front_stateset_prototype->setAttributeAndModes(front_CullFace.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-
-        front_program_prototype->addShader(main_vertexShader.get());
-        front_program_prototype->addShader(front_main_fragmentShader.get());
-        front_program_prototype->addShader(computeRayColorShader.get());
-    }
 
     osg::ref_ptr<osg::StateSet> back_stateset_prototype = new osg::StateSet;
     osg::ref_ptr<osg::Program> back_program_prototype = new osg::Program;
@@ -533,9 +514,6 @@ void MultipassTechnique::init()
             }
             #endif
 
-            // front
-            _stateSetMap[STANDARD_SHADERS|FRONT_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
-
             // back
             _stateSetMap[STANDARD_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
         }
@@ -551,10 +529,6 @@ void MultipassTechnique::init()
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_tf_frag);
             }
             #endif
-
-
-            // front
-            _stateSetMap[STANDARD_SHADERS|FRONT_SHADERS|TF_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
 
             // back
             _stateSetMap[STANDARD_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -575,9 +549,6 @@ void MultipassTechnique::init()
             }
             #endif
 
-            // front
-            _stateSetMap[ISO_SHADERS|FRONT_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
-
             // back
             _stateSetMap[ISO_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
         }
@@ -593,10 +564,6 @@ void MultipassTechnique::init()
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_iso_tf_frag);
             }
             #endif
-
-
-            // front
-            _stateSetMap[ISO_SHADERS|FRONT_SHADERS|TF_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
 
             // back
             _stateSetMap[ISO_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -617,9 +584,6 @@ void MultipassTechnique::init()
             }
             #endif
 
-            // front
-            _stateSetMap[MIP_SHADERS|FRONT_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
-
             // back
             _stateSetMap[MIP_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
         }
@@ -635,10 +599,6 @@ void MultipassTechnique::init()
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_mip_tf_frag);
             }
             #endif
-
-
-            // front
-            _stateSetMap[MIP_SHADERS|FRONT_SHADERS|TF_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
 
             // back
             _stateSetMap[MIP_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -659,9 +619,6 @@ void MultipassTechnique::init()
             }
             #endif
 
-            // front
-            _stateSetMap[LIT_SHADERS|FRONT_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
-
             // back
             _stateSetMap[LIT_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
         }
@@ -677,10 +634,6 @@ void MultipassTechnique::init()
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_lit_tf_frag);
             }
             #endif
-
-
-            // front
-            _stateSetMap[LIT_SHADERS|FRONT_SHADERS|TF_SHADERS] = createStateSet(front_stateset_prototype.get(), front_program_prototype.get(), accumulateSamplesShader.get());
 
             // back
             _stateSetMap[LIT_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -815,10 +768,8 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             }
         }
 
-        //int shaderMaskFront = shaderMask | FRONT_SHADERS;
         int shaderMaskBack = shaderMask | BACK_SHADERS;
 
-        // OSG_NOTICE<<"shaderMaskFront "<<shaderMaskFront<<std::endl;
         // OSG_NOTICE<<"shaderMaskBack  "<<shaderMaskBack<<std::endl;
 
         if (vs)
@@ -835,7 +786,6 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
         }
 
 
-        //osg::ref_ptr<osg::StateSet> front_stateset = _stateSetMap[shaderMaskFront];
         osg::ref_ptr<osg::StateSet> back_stateset = _stateSetMap[shaderMaskBack];
         osg::ref_ptr<osg::StateSet> moving_stateset = (_whenMovingStateSet.valid() && isMoving(cv)) ? _whenMovingStateSet : 0;
 
@@ -845,15 +795,6 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             cv->pushStateSet(moving_stateset.get());
         }
 
-#if 0
-        if (front_stateset.valid())
-        {
-            // OSG_NOTICE<<"Have front stateset"<<std::endl;
-            cv->pushStateSet(front_stateset.get());
-            _transform->accept(*cv);
-            cv->popStateSet();
-        }
-#endif
         if (back_stateset.valid())
         {
             // OSG_NOTICE<<"Have back stateset"<<std::endl;

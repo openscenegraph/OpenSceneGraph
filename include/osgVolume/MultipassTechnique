@@ -61,13 +61,12 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
 
         enum ShaderMask
         {
-            FRONT_SHADERS = 1,
-            BACK_SHADERS = 2,
-            STANDARD_SHADERS = 4,
-            LIT_SHADERS = 8,
-            ISO_SHADERS = 16,
-            MIP_SHADERS = 32,
-            TF_SHADERS = 64
+            BACK_SHADERS = 1,
+            STANDARD_SHADERS = 2,
+            LIT_SHADERS = 4,
+            ISO_SHADERS = 8,
+            MIP_SHADERS = 16,
+            TF_SHADERS = 32
         };
 
         typedef std::map<int, osg::ref_ptr<osg::StateSet> > StateSetMap;

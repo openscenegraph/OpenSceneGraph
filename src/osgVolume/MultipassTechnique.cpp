@@ -306,6 +306,7 @@ void MultipassTechnique::init()
         stateset->addUniform(new osg::Uniform("frontFaceDepthTexture",2));
 
         stateset->setMode(GL_ALPHA_TEST,osg::StateAttribute::ON);
+        //stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
 
         float alphaFuncValue = 0.1;
         if (cpv._isoProperty.valid())

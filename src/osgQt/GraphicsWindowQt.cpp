@@ -126,11 +126,18 @@ void timerEvent( QTimerEvent *event );
 
 static HeartBeat heartBeat;
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
+    #define GETDEVICEPIXELRATIO() 1.0
+#else
+    #define GETDEVICEPIXELRATIO() devicePixelRatio()
+#endif
+
 GLWidget::GLWidget( QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f, bool forwardKeyEvents )
 : QGLWidget(parent, shareWidget, f),
 _gw( NULL ),
 _forwardKeyEvents( forwardKeyEvents )
 {
+    _devicePixelRatio = GETDEVICEPIXELRATIO();
 }
 
 GLWidget::GLWidget( QGLContext* context, QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f,
@@ -139,6 +146,7 @@ GLWidget::GLWidget( QGLContext* context, QWidget* parent, const QGLWidget* share
 _gw( NULL ),
 _forwardKeyEvents( forwardKeyEvents )
 {
+    _devicePixelRatio = GETDEVICEPIXELRATIO();
 }
 
 GLWidget::GLWidget( const QGLFormat& format, QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f,
@@ -147,6 +155,7 @@ GLWidget::GLWidget( const QGLFormat& format, QWidget* parent, const QGLWidget* s
 _gw( NULL ),
 _forwardKeyEvents( forwardKeyEvents )
 {
+    _devicePixelRatio = GETDEVICEPIXELRATIO();
 }
 
 GLWidget::~GLWidget()
@@ -238,16 +247,17 @@ void GLWidget::setKeyboardModifiers( QInputEvent* event )
 void GLWidget::resizeEvent( QResizeEvent* event )
 {
     const QSize& size = event->size();
-    _gw->resized( x(), y(), size.width(), size.height() );
-    _gw->getEventQueue()->windowResize( x(), y(), size.width(), size.height() );
+
+    _gw->resized( x(), y(), size.width()*_devicePixelRatio, size.height()*_devicePixelRatio );
+    _gw->getEventQueue()->windowResize( x(), y(), size.width()*_devicePixelRatio, size.height()*_devicePixelRatio );
     _gw->requestRedraw();
 }
 
 void GLWidget::moveEvent( QMoveEvent* event )
 {
     const QPoint& pos = event->pos();
-    _gw->resized( pos.x(), pos.y(), width(), height() );
-    _gw->getEventQueue()->windowResize( pos.x(), pos.y(), width(), height() );
+    _gw->resized( pos.x(), pos.y(), width()*_devicePixelRatio, height()*_devicePixelRatio );
+    _gw->getEventQueue()->windowResize( pos.x(), pos.y(), width()*_devicePixelRatio, height()*_devicePixelRatio );
 }
 
 void GLWidget::glDraw()
@@ -298,7 +308,7 @@ void GLWidget::mousePressEvent( QMouseEvent* event )
         default: button = 0; break;
     }
     setKeyboardModifiers( event );
-    _gw->getEventQueue()->mouseButtonPress( event->x(), event->y(), button );
+    _gw->getEventQueue()->mouseButtonPress( event->x()*_devicePixelRatio, event->y()*_devicePixelRatio, button );
 }
 
 void GLWidget::mouseReleaseEvent( QMouseEvent* event )
@@ -313,7 +323,7 @@ void GLWidget::mouseReleaseEvent( QMouseEvent* event )
         default: button = 0; break;
     }
     setKeyboardModifiers( event );
-    _gw->getEventQueue()->mouseButtonRelease( event->x(), event->y(), button );
+    _gw->getEventQueue()->mouseButtonRelease( event->x()*_devicePixelRatio, event->y()*_devicePixelRatio, button );
 }
 
 void GLWidget::mouseDoubleClickEvent( QMouseEvent* event )
@@ -328,13 +338,13 @@ void GLWidget::mouseDoubleClickEvent( QMouseEvent* event )
         default: button = 0; break;
     }
     setKeyboardModifiers( event );
-    _gw->getEventQueue()->mouseDoubleButtonPress( event->x(), event->y(), button );
+    _gw->getEventQueue()->mouseDoubleButtonPress( event->x()*_devicePixelRatio, event->y()*_devicePixelRatio, button );
 }
 
 void GLWidget::mouseMoveEvent( QMouseEvent* event )
 {
     setKeyboardModifiers( event );
-    _gw->getEventQueue()->mouseMotion( event->x(), event->y() );
+    _gw->getEventQueue()->mouseMotion( event->x()*_devicePixelRatio, event->y()*_devicePixelRatio );
 }
 
 void GLWidget::wheelEvent( QWheelEvent* event )

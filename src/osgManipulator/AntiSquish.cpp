@@ -12,71 +12,35 @@
 */
 //osgManipulator - Copyright (C) 2007 Fugro-Jason B.V.
 
+
 #include <osgManipulator/AntiSquish>
 
 using namespace osgManipulator;
 
-namespace
+
+AntiSquish::AntiSquish() : _usePivot(true), _usePosition(false), _cacheDirty( true )
 {
-    class AntiSquishCallback: public osg::NodeCallback
-    {
-        public:
-            AntiSquishCallback(AntiSquish* asq) : osg::NodeCallback(), _antiSquish(asq) {}
-            virtual ~AntiSquishCallback() {};
-
-            virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
-            {
-                // Get the node path.
-                osg::NodePath np = nv->getNodePath();
-
-                // Remove the last node which is the anti squish node itself.
-                np.pop_back();
-
-                // Get the accumulated modeling matrix.
-                osg::Matrix localToWorld = osg::computeLocalToWorld(np);
-
-                // compute the unsquished matrix.
-                bool flag = false;
-                osg::Matrix _unsquishedMatrix = _antiSquish->computeUnSquishedMatrix(localToWorld, flag);
-                if (flag)
-                    _antiSquish->setMatrix(_unsquishedMatrix);
-                traverse(node,nv);
-            }
-
-        protected:
-            AntiSquish* _antiSquish;
-    };
-
 }
 
-AntiSquish::AntiSquish() : _usePivot(true), _usePosition(false)
+AntiSquish::AntiSquish(const osg::Vec3d& pivot) : _pivot(pivot), _usePivot(true), _usePosition(false), _cacheDirty( true )
 {
-    _asqCallback = new AntiSquishCallback(this);
-    setUpdateCallback(_asqCallback);
-}
-
-AntiSquish::AntiSquish(const osg::Vec3d& pivot) : _pivot(pivot), _usePivot(true), _usePosition(false)
-{
-    _asqCallback = new AntiSquishCallback(this);
-    setUpdateCallback(_asqCallback);
 }
 
 AntiSquish::AntiSquish(const osg::Vec3d& pivot, const osg::Vec3d& pos)
-    : _pivot(pivot), _usePivot(true), _position(pos), _usePosition(true)
+    : _pivot(pivot), _usePivot(true), _position(pos), _usePosition(true), _cacheDirty( true )
 {
-    _asqCallback = new AntiSquishCallback(this);
-    setUpdateCallback(_asqCallback);
 }
 
 
 AntiSquish::AntiSquish(const AntiSquish& pat,const osg::CopyOp& copyop) :
-    MatrixTransform(pat,copyop),
-    _asqCallback(pat._asqCallback),
+    Transform(pat,copyop),
     _pivot(pat._pivot),
     _usePivot(pat._usePivot),
     _position(pat._position),
     _usePosition(pat._usePosition),
-    _cachedLocalToWorld(pat._cachedLocalToWorld)
+    _cacheDirty(pat._cacheDirty),
+    _cacheLocalToWorld(pat._cacheLocalToWorld),
+    _cache(pat._cache)
 {
 }
 
@@ -84,32 +48,87 @@ AntiSquish::~AntiSquish()
 {
 }
 
-osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& flag)
+
+bool AntiSquish::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
 {
+    osg::Matrix unsquishedMatrix;
+    if ( !computeUnSquishedMatrix( nv, unsquishedMatrix ) )
+        return Transform::computeLocalToWorldMatrix( matrix, nv );
+
+    if (_referenceFrame==RELATIVE_RF)
+    {
+        matrix.preMult(unsquishedMatrix);
+    }
+    else // absolute
+    {
+        matrix = unsquishedMatrix;
+    }
+
+    return true;
+}
+
+
+bool AntiSquish::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
+{
+    osg::Matrix unsquishedMatrix;
+    if ( !computeUnSquishedMatrix( nv, unsquishedMatrix ) )
+        return Transform::computeWorldToLocalMatrix( matrix, nv );
+
+    osg::Matrixd inverse;
+    inverse.invert( unsquishedMatrix );
+
+    if (_referenceFrame==RELATIVE_RF)
+    {
+        matrix.postMult(inverse);
+    }
+    else // absolute
+    {
+        matrix = inverse;
+    }
+    return true;
+}
+
+
+bool AntiSquish::computeUnSquishedMatrix(const osg::NodeVisitor* nv, osg::Matrix& unsquished) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _cacheLock );
+
+    if ( !nv )
+    {
+        if ( !_cacheDirty )
+        {
+            unsquished = _cache;
+            return true;
+        }
+
+        return false;
+    }
+
+    osg::NodePath np = nv->getNodePath();
+
+    // Remove the last node which is the anti squish node itself.
+    np.pop_back();
+
+    // Get the accumulated modeling matrix.
+    const osg::Matrix localToWorld = osg::computeLocalToWorld(np);
+
+    if ( !_cacheDirty && _cacheLocalToWorld==localToWorld )
+    {
+        unsquished = _cache;
+        return true;
+    }
+
     osg::Vec3d t, s;
     osg::Quat r, so;
 
-    if (LTW == _cachedLocalToWorld && _dirty == false)
-    {
-        flag = false;
-        return osg::Matrix::identity();
-    }
-
-    _cachedLocalToWorld = LTW;
-
-    LTW.decompose(t, r, s, so);
+    localToWorld.decompose(t, r, s, so);
 
     // Let's take an average of the scale.
     double av = (s[0] + s[1] + s[2])/3.0;
     s[0] = av; s[1] = av; s[2]=av;
 
     if (av == 0)
-    {
-        flag = false;
-        return osg::Matrix::identity();
-    }
-
-    osg::Matrix unsquished;
+        return false;
 
     //
     // Final Matrix: [-Pivot][SO]^[S][SO][R][T][Pivot][LOCALTOWORLD]^[position]
@@ -122,10 +141,7 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
         osg::Matrix tmps, invtmps;
         so.get(tmps);
         if (!invtmps.invert(tmps))
-        {
-            flag = false;
-            return osg::Matrix::identity();
-        }
+            return false;
 
         //SO^
         unsquished.postMult(invtmps);
@@ -139,11 +155,9 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
         unsquished.postMultTranslate(t);
 
         osg::Matrix invltw;
-        if (!invltw.invert(LTW))
-        {
-            flag = false;
-            return osg::Matrix::identity();
-        }
+        if (!invltw.invert(localToWorld))
+            return false;
+
         // LTW^
         unsquished.postMult( invltw );
 
@@ -158,33 +172,31 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
         osg::Matrix tmps, invtmps;
         so.get(tmps);
         if (!invtmps.invert(tmps))
-        {
-            flag = false;
-            return osg::Matrix::identity();
-        }
+            return false;
+
         unsquished.postMult(invtmps);
         unsquished.postMultScale(s);
         unsquished.postMult(tmps);
         unsquished.postMultRotate(r);
         unsquished.postMultTranslate(t);
         osg::Matrix invltw;
-        if (!invltw.invert(LTW))
-        {
-            flag = false;
-            return osg::Matrix::identity();
-        }
+        if (!invltw.invert(localToWorld))
+            return false;
         unsquished.postMult( invltw );
     }
 
     if (unsquished.isNaN())
-    {
-        flag = false;
-        return  osg::Matrix::identity();
-    }
+        return false;
 
-    flag = true;
-    _dirty = false;
-    return unsquished;
+    _cache = unsquished;
+    _cacheLocalToWorld = localToWorld;
+    _cacheDirty = false;
+
+    //As Transform::computeBounde calls us without a node-path it relies on
+    //The cache. Hence a new _cache affects the bound.
+    const_cast<AntiSquish*>(this)->dirtyBound();
+
+    return true;
 }
 
 

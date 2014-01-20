@@ -131,17 +131,7 @@
             #endif
         #endif
 
-        #if !defined(GL_EXT_timer_query)
-            #ifdef _WIN32
-                typedef          __int64 GLint64EXT;
-                typedef unsigned __int64 GLuint64EXT;
-            #else
-                typedef long long int GLint64EXT;
-                typedef unsigned long long int GLuint64EXT;
-            #endif
-        #endif
-
-#endif
+    #endif
 
     #ifndef GL_APIENTRY
         #define GL_APIENTRY APIENTRY
@@ -149,6 +139,17 @@
 
 #endif
 
+
+#if !defined(GL_EXT_timer_query) && !defined(OSG_GL3_AVAILABLE)
+
+    #ifdef _WIN32
+        typedef          __int64 GLint64EXT;
+        typedef unsigned __int64 GLuint64EXT;
+    #else
+        typedef long long int GLint64EXT;
+        typedef unsigned long long int GLuint64EXT;
+    #endif
+#endif
 
 #ifdef OSG_GL_MATRICES_AVAILABLE
 

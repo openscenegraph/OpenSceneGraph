@@ -109,6 +109,7 @@ protected:
     QSet<QEvent::Type> _eventCompressor;
 
     bool _forwardKeyEvents;
+    qreal _devicePixelRatio;
 
     virtual void resizeEvent( QResizeEvent* event );
     virtual void moveEvent( QMoveEvent* event );

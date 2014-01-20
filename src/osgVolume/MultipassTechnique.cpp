@@ -444,34 +444,27 @@ void MultipassTechnique::init()
 
 
 
-    osg::ref_ptr<osg::Shader> computeRayColorShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_compute_ray_color.frag");
-#if 0
-    if (!computeRayColorShader)
-    {
-        #include "Shaders/volume_compute_ray_color_frag.cpp";
-        computeRayColorShader = new osg::Shader(osg::Shader::FRAGMENT, volume_compute_ray_color_frag);
-    }
-#endif
-
     osg::ref_ptr<osg::Shader> main_vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/volume_multipass.vert");
-#if 0
     if (!main_vertexShader)
     {
         #include "Shaders/volume_multipass_vert.cpp"
-        main_vertexShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_vert));
+        main_vertexShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_vert);
     }
-#endif
 
 
-    osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back_with_front_depthtexture.frag");;
-    //osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_back.frag");
-#if 0
+    osg::ref_ptr<osg::Shader> back_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass.frag");;
     if (!back_main_fragmentShader)
     {
-        #include "Shaders/shaders/volume_multipass_back_with_front_depthtexture_frag.cpp"
-        back_main_fragmentShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_back_with_front_depthtexture_frag));
+        #include "Shaders/volume_multipass_frag.cpp"
+        back_main_fragmentShader = new osg::Shader(osg::Shader::FRAGMENT, volume_multipass_frag);
     }
-#endif
+
+    osg::ref_ptr<osg::Shader> computeRayColorShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_compute_ray_color.frag");
+    if (!computeRayColorShader)
+    {
+        #include "Shaders/volume_compute_ray_color_frag.cpp"
+        computeRayColorShader = new osg::Shader(osg::Shader::FRAGMENT, volume_compute_ray_color_frag);
+    }
 
     // clear any previous settings
     _stateSetMap.clear();
@@ -506,13 +499,11 @@ void MultipassTechnique::init()
         // STANDARD_SHADERS without TransferFunction
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_standard.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_frag.cpp";
+                #include "Shaders/volume_accumulateSamples_standard_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_frag);
             }
-            #endif
 
             // back
             _stateSetMap[STANDARD_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -522,13 +513,11 @@ void MultipassTechnique::init()
         if (tf)
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_standard_tf.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_tf_frag.cpp";
+                #include "Shaders/volume_accumulateSamples_standard_tf_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_tf_frag);
             }
-            #endif
 
             // back
             _stateSetMap[STANDARD_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -541,13 +530,11 @@ void MultipassTechnique::init()
         // ISO_SHADERS without TransferFunction
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_iso.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_iso_frag.cpp";
+                #include "Shaders/volume_accumulateSamples_iso_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_iso_frag);
             }
-            #endif
 
             // back
             _stateSetMap[ISO_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -557,13 +544,11 @@ void MultipassTechnique::init()
         if (tf)
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_iso_tf.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_iso_tf_frag.cpp";
-                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_iso_tf_frag);
+                #include "Shaders/volume_accumulateSamples_iso_tf_frag.cpp"
+                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_iso_tf_frag);
             }
-            #endif
 
             // back
             _stateSetMap[ISO_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -576,13 +561,11 @@ void MultipassTechnique::init()
         // MIP_SHADERS without TransferFunction
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_mip.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_mip_frag.cpp";
+                #include "Shaders/volume_accumulateSamples_mip_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_mip_frag);
             }
-            #endif
 
             // back
             _stateSetMap[MIP_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -592,13 +575,11 @@ void MultipassTechnique::init()
         if (tf)
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_mip_tf.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_mip_tf_frag.cpp";
-                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_mip_tf_frag);
+                #include "Shaders/volume_accumulateSamples_mip_tf_frag.cpp"
+                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_mip_tf_frag);
             }
-            #endif
 
             // back
             _stateSetMap[MIP_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -611,13 +592,11 @@ void MultipassTechnique::init()
         // LIT_SHADERS without TransferFunction
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_lit.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_lit_frag.cpp";
+                #include "Shaders/volume_accumulateSamples_lit_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_lit_frag);
             }
-            #endif
 
             // back
             _stateSetMap[LIT_SHADERS|BACK_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());
@@ -627,13 +606,11 @@ void MultipassTechnique::init()
         if (tf)
         {
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_lit_tf.frag");
-            #if 0
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_lit_tf_frag.cpp";
-                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_lit_tf_frag);
+                #include "Shaders/volume_accumulateSamples_lit_tf_frag.cpp"
+                accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_lit_tf_frag);
             }
-            #endif
 
             // back
             _stateSetMap[LIT_SHADERS|BACK_SHADERS|TF_SHADERS] = createStateSet(back_stateset_prototype.get(), back_program_prototype.get(), accumulateSamplesShader.get());

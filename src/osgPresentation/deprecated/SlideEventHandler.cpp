@@ -1570,19 +1570,19 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
         osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter();
         event->setKey(keyPosition._key);
         event->setTime(_viewer->getEventQueue()->getTime());
-        
+
         // forward key-down
         event->setEventType(osgGA::GUIEventAdapter::KEYDOWN);
-        forwardEventToDevices(event);
-        
+        forwardEventToDevices(event.get());
+
         // forward key-up
         event->setEventType(osgGA::GUIEventAdapter::KEYUP);
-        forwardEventToDevices(event);
-        
+        forwardEventToDevices(event.get());
+
         // ignore local event-queue
         return;
     }
-    
+
     osgGA::EventQueue* eq = _viewer->getEventQueue();
 
     // reset the time of the last key press to ensure that the event is disgarded as a key repeat.

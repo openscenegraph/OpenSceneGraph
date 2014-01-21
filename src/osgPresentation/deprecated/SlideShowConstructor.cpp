@@ -2702,37 +2702,50 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         tile->setLayer(layer.get());
 
-        osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
+        osg::ref_ptr<osgVolume::SwitchProperty> sp = new osgVolume::SwitchProperty;
         sp->setActiveProperty(0);
 
 
 
-        osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(0.1f);
-        setUpVolumeScalarProperty(tile.get(), ap, volumeData.cutoffValue);
+        osg::ref_ptr<osgVolume::AlphaFuncProperty> ap = new osgVolume::AlphaFuncProperty(0.1f);
+        setUpVolumeScalarProperty(tile.get(), ap.get(), volumeData.cutoffValue);
 
-        osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0f);
-        setUpVolumeScalarProperty(tile.get(), tp, volumeData.alphaValue);
+        osg::ref_ptr<osgVolume::TransparencyProperty> tp = new osgVolume::TransparencyProperty(1.0f);
+        setUpVolumeScalarProperty(tile.get(), tp.get(), volumeData.alphaValue);
 
-        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
-        setUpVolumeScalarProperty(tile.get(), sd, volumeData.sampleDensityValue);
+        osg::ref_ptr<osgVolume::SampleDensityProperty> sd = new osgVolume::SampleDensityProperty(0.005);
+        setUpVolumeScalarProperty(tile.get(), sd.get(), volumeData.sampleDensityValue);
 
-        osgVolume::SampleDensityWhenMovingProperty* sdm = 0;
+        osg::ref_ptr<osgVolume::SampleDensityWhenMovingProperty> sdm;
         if (!volumeData.sampleDensityWhenMovingValue.empty())
         {
             sdm = new osgVolume::SampleDensityWhenMovingProperty(0.005);
-            setUpVolumeScalarProperty(tile.get(), sdm, volumeData.sampleDensityWhenMovingValue);
+            setUpVolumeScalarProperty(tile.get(), sdm.get(), volumeData.sampleDensityWhenMovingValue);
         }
 
-        osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
+
+        osg::ref_ptr<osgVolume::SampleRatioProperty> sr = new osgVolume::SampleRatioProperty(1.0);
+        setUpVolumeScalarProperty(tile.get(), sr.get(), volumeData.sampleRatioValue);
+
+        osg::ref_ptr<osgVolume::SampleRatioWhenMovingProperty> srm;
+        if (!volumeData.sampleRatioWhenMovingValue.empty())
+        {
+            srm = new osgVolume::SampleRatioWhenMovingProperty(0.5);
+            setUpVolumeScalarProperty(tile.get(), srm.get(), volumeData.sampleRatioWhenMovingValue);
+        }
+
+        osg::ref_ptr<osgVolume::TransferFunctionProperty> tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
 
         {
             // Standard
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(ap);
-            cp->addProperty(sd);
-            cp->addProperty(tp);
-            if (sdm) cp->addProperty(sdm);
-            if (tfp) cp->addProperty(tfp);
+            cp->addProperty(ap.get());
+            cp->addProperty(tp.get());
+            if (sd.valid()) cp->addProperty(sd.get());
+            if (sdm.valid()) cp->addProperty(sdm.get());
+            if (sr.valid()) cp->addProperty(sr.get());
+            if (srm.valid()) cp->addProperty(srm.get());
+            if (tfp.valid()) cp->addProperty(tfp.get());
 
             sp->addProperty(cp);
         }
@@ -2740,12 +2753,14 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         {
             // Light
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(ap);
-            cp->addProperty(sd);
-            cp->addProperty(tp);
+            cp->addProperty(ap.get());
+            cp->addProperty(tp.get());
             cp->addProperty(new osgVolume::LightingProperty);
-            if (sdm) cp->addProperty(sdm);
-            if (tfp) cp->addProperty(tfp);
+            if (sd.valid()) cp->addProperty(sd.get());
+            if (sdm.valid()) cp->addProperty(sdm.get());
+            if (sr.valid()) cp->addProperty(sr.get());
+            if (srm.valid()) cp->addProperty(srm.get());
+            if (tfp.valid()) cp->addProperty(tfp.get());
 
             sp->addProperty(cp);
         }
@@ -2753,16 +2768,18 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         {
             // Isosurface
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(sd);
-            cp->addProperty(tp);
+            cp->addProperty(tp.get());
 
 
             osgVolume::IsoSurfaceProperty* isp = new osgVolume::IsoSurfaceProperty(0.1);
             setUpVolumeScalarProperty(tile.get(), isp, volumeData.alphaValue);
             cp->addProperty(isp);
 
-            if (sdm) cp->addProperty(sdm);
-            if (tfp) cp->addProperty(tfp);
+            if (sd.valid()) cp->addProperty(sd.get());
+            if (sdm.valid()) cp->addProperty(sdm.get());
+            if (sr.valid()) cp->addProperty(sr.get());
+            if (srm.valid()) cp->addProperty(srm.get());
+            if (tfp.valid()) cp->addProperty(tfp.get());
 
             sp->addProperty(cp);
         }
@@ -2770,12 +2787,14 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         {
             // MaximumIntensityProjection
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(ap);
-            cp->addProperty(sd);
-            cp->addProperty(tp);
+            cp->addProperty(ap.get());
+            cp->addProperty(tp.get());
             cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
-            if (sdm) cp->addProperty(sdm);
-            if (tfp) cp->addProperty(tfp);
+            if (sd.valid()) cp->addProperty(sd.get());
+            if (sdm.valid()) cp->addProperty(sdm.get());
+            if (sr.valid()) cp->addProperty(sr.get());
+            if (srm.valid()) cp->addProperty(srm.get());
+            if (tfp.valid()) cp->addProperty(tfp.get());
 
             sp->addProperty(cp);
         }
@@ -2788,7 +2807,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             case(VolumeData::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
         }
 
-        layer->addProperty(sp);
+        layer->addProperty(sp.get());
 
         switch(volumeData.technique)
         {
@@ -2816,12 +2835,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
     }
 
-    if (!volumeData.hull.empty())
+//     if (!volumeData.hull.empty())
     {
         osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
         if (hull.valid())
         {
-            tile->addChild(hull);
+            tile->addChild(hull.get());
         }
     }
 

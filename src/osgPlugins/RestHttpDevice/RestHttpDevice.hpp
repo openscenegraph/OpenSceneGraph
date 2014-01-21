@@ -171,7 +171,7 @@ public:
 
     virtual bool checkEvents()
     {
-        if (_targetMouseChanged && ((fabs(_currentMouseX - _targetMouseY) > 0.1f) || (fabs(_currentMouseY - _targetMouseY) > 0.1y)))
+        if (_targetMouseChanged && ((fabs(_currentMouseX - _targetMouseY) > 0.1f) || (fabs(_currentMouseY - _targetMouseY) > 0.1f)))
         {
             static const float scalar = 0.2f;
             _currentMouseX = (1.0f - scalar) * _currentMouseX + scalar * _targetMouseX;

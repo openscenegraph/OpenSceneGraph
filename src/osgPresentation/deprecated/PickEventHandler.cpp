@@ -87,7 +87,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
 
                         // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
 
-                        SlideEventHandler::instance()->forwardEventToDevices(cloned_ea);
+                        SlideEventHandler::instance()->forwardEventToDevices(cloned_ea.get());
                     }
                     else
                     {

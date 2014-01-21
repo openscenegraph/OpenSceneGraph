@@ -307,6 +307,7 @@ public:
             alphaValue("1.0"),
             cutoffValue("0.1"),
             sampleDensityValue("0.005"),
+            sampleRatioValue("1.0"),
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
             colorModulate(1.0f,1.0f,1.0f,1.0f),
             technique(RayTraced)
@@ -324,6 +325,9 @@ public:
         std::string                             cutoffValue;
         std::string                             sampleDensityValue;
         std::string                             sampleDensityWhenMovingValue;
+
+        std::string                             sampleRatioValue;
+        std::string                             sampleRatioWhenMovingValue;
 
         osg::ColorSpaceOperation                colorSpaceOperation;
         osg::Vec4                               colorModulate;

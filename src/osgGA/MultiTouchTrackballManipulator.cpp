@@ -99,7 +99,7 @@ bool MultiTouchTrackballManipulator::handle( const GUIEventAdapter& ea, GUIActio
                 {
                     if ((_lastEvent.valid()) && (_lastEvent->getTouchData()->getNumTouchPoints() >= 2))
                     {
-                        handleMultiTouchDrag(&ea, _lastEvent, eventTimeDelta);
+                        handleMultiTouchDrag(&ea, _lastEvent.get(), eventTimeDelta);
                     }
 
                     handled = true;

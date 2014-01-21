@@ -269,7 +269,7 @@ void TransferFunctionWidget::createGraphics()
             stateset->setMode(GL_BLEND, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
 
             osg::ref_ptr<osg::AlphaFunc> alphaFunc = new osg::AlphaFunc(osg::AlphaFunc::GREATER, 0.0f);
-            stateset->setAttributeAndModes(alphaFunc, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
+            stateset->setAttributeAndModes(alphaFunc.get(), osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
 
             osg::ref_ptr<osg::Image> image = new osg::Image;
             image->allocateImage(1,1,1, GL_RGBA, GL_UNSIGNED_BYTE);

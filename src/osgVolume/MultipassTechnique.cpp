@@ -390,9 +390,9 @@ void MultipassTechnique::init()
         {
             texture3D->setInternalFormatMode(internalFormatMode);
         }
-        texture3D->setImage(image_3d);
+        texture3D->setImage(image_3d.get());
 
-        stateset->setTextureAttributeAndModes(volumeTextureUnit, texture3D, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        stateset->setTextureAttributeAndModes(volumeTextureUnit, texture3D.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
         osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("volumeTexture", int(volumeTextureUnit));
         stateset->addUniform(baseTextureSampler.get());
@@ -661,7 +661,7 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
         {
             osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
 
-            cv->pushProjectionMatrix(_tileData->projectionMatrix);
+            cv->pushProjectionMatrix(_tileData->projectionMatrix.get());
 
             _mt->backfaceSubgraphCullTraversal(cv);
 

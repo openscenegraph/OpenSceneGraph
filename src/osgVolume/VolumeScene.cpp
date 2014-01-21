@@ -141,7 +141,7 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
             tileData->stateset->setTextureAttribute(2, tileData->depthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
             tileData->texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
-            tileData->stateset->addUniform(tileData->texgenUniform);
+            tileData->stateset->addUniform(tileData->texgenUniform.get());
         }
 
         tileData->active = true;
@@ -305,7 +305,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         stateset->setRenderBinDetails(10,"DepthSortedBin");
 
         osg::ref_ptr<osg::Program> program = new osg::Program;
-        stateset->setAttribute(program);
+        stateset->setAttribute(program.get());
 
         // get vertex shaders from source
         osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/volume_color_depth.vert");

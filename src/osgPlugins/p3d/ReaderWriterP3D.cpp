@@ -1318,6 +1318,8 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     if (getProperty(cur, "region", volumeData.region)) {}
     if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
     if (getProperty(cur, "sampleDensityWhenMoving", volumeData.sampleDensityWhenMovingValue)) {}
+    if (getProperty(cur, "sampleRatio", volumeData.sampleRatioValue)) {}
+    if (getProperty(cur, "sampleRatioWhenMoving", volumeData.sampleRatioWhenMovingValue)) {}
 
 
     if (getProperty(cur, "colourModulate", volumeData.colorModulate)) {}

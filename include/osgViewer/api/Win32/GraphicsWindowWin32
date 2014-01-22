@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -30,15 +30,15 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
     public:
 
         GraphicsWindowWin32(osg::GraphicsContext::Traits* traits);
-        
+
         ~GraphicsWindowWin32();
-    
+
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowWin32*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
         virtual const char* className() const { return "GraphicsWindowWin32"; }
 
         virtual bool valid() const { return _valid; }
-        
+
         /** Realize the GraphicsContext.*/
         virtual bool realizeImplementation();
 
@@ -56,7 +56,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
-        
+
         /** Check to see if any events have been generated.*/
         virtual bool checkEvents();
 
@@ -68,10 +68,10 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         /** Get focus.*/
         virtual void grabFocus();
-        
+
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
-        
+
         /** Override from GUIActionAdapter.*/
         virtual void requestWarpPointer(float x,float y);
 
@@ -80,10 +80,10 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         /** Set the name of the window */
         virtual void setWindowName(const std::string& /*name*/);
-        
+
         /** Switch on/off the cursor.*/
         virtual void useCursor(bool /*cursorOn*/);
-        
+
         /** Set mouse cursor to a specific shape.*/
         virtual void setCursor(MouseCursor cursor);
 
@@ -95,35 +95,35 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-        
+
         /** WindowData is used to pass in the Win32 window handle attached the GraphicsContext::Traits structure.*/
         struct WindowData : public osg::Referenced
         {
             WindowData(HWND window, bool installEventHandler = true):
                 _hwnd(window), _installEventHandler(installEventHandler) {}
-                
+
             HWND    _hwnd;
             bool   _installEventHandler;
         };
-        
-    protected:
-    
-        void init();
 
-        void registerWindow();
-        void unregisterWindow();
-        
-        bool registerWindowProcedure();
-        bool unregisterWindowProcedure();
-        
-        HGLRC createContextImplementation();
-        bool createWindow();
-        bool setWindow( HWND handle );
-        
-        void destroyWindow( bool deleteNativeWindow = true );
-        void recreateWindow();
-        
-        bool determineWindowPositionAndStyle( unsigned int  screenNum,
+    protected:
+
+        virtual void init();
+
+        virtual void registerWindow();
+        virtual void unregisterWindow();
+
+        virtual bool registerWindowProcedure();
+        virtual bool unregisterWindowProcedure();
+
+        virtual HGLRC createContextImplementation();
+        virtual bool createWindow();
+        virtual bool setWindow( HWND handle );
+
+        virtual void destroyWindow( bool deleteNativeWindow = true );
+        virtual void recreateWindow();
+
+        virtual bool determineWindowPositionAndStyle( unsigned int  screenNum,
                                               int           clientAreaX,
                                               int           clientAreaY,
                                               unsigned int  clientAreaWidth,
@@ -135,41 +135,41 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
                                               unsigned int& h,
                                               unsigned int& style,
                                               unsigned int& extendedStyle );
-        
-        bool setPixelFormat();
-        
-        void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol );
-                
-        void transformMouseXY(float& x, float& y);
-        
-        void setCursorImpl(MouseCursor cursor);
 
-        HCURSOR getOrCreateCursor(MouseCursor mouseShape);
-        
+        virtual bool setPixelFormat();
+
+        virtual void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol );
+
+        virtual void transformMouseXY(float& x, float& y);
+
+        virtual void setCursorImpl(MouseCursor cursor);
+
+        virtual HCURSOR getOrCreateCursor(MouseCursor mouseShape);
+
         HCURSOR         _currentCursor;
-        
+
         WNDPROC         _windowProcedure;
-        
+
         double          _timeOfLastCheckEvents;
-        
-        
-        
-        
+
+
+
+
         int             _screenOriginX;
         int             _screenOriginY;
         unsigned int    _screenWidth;
         unsigned int    _screenHeight;
-        
+
         int             _windowOriginXToRealize;
         int             _windowOriginYToRealize;
         unsigned int    _windowWidthToRealize;
         unsigned int    _windowHeightToRealize;
-               
+
         bool            _initialized;
         bool            _valid;
         bool            _realized;
 
-        bool            _ownsWindow;        
+        bool            _ownsWindow;
         bool            _closeWindow;
         bool            _destroyWindow;
         bool            _destroying;
@@ -178,7 +178,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         /// Persist which mouse cursor was used before switching to the resize cursors.
         MouseCursor     _appMouseCursor;
-        
+
         std::map<MouseCursor,HCURSOR> _mouseCursorMap;
 
         std::map<std::pair<int, int>, bool> _keyMap;

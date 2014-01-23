@@ -13,6 +13,22 @@
 #include <osgViewer/api/IOS/GraphicsWindowIOS> 
 
 
+@interface MyViewController : UIViewController
+
+- (BOOL)shouldAutorotate;
+
+
+@end
+
+@implementation MyViewController
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+@end
+
+
 @implementation iphoneViewerAppDelegate
 
 @synthesize _window;
@@ -148,7 +164,11 @@ private:
                 for(osgGA::GUIEventAdapter::TouchData::iterator i = ea.getTouchData()->begin(); i != ea.getTouchData()->end(); ++i, ++j)
                 {
                     const osgGA::GUIEventAdapter::TouchData::TouchPoint& tp = (*i);
-                    _mats[j]->setMatrix(osg::Matrix::translate(tp.x, ea.getWindowHeight() - tp.y, 0));
+                    if (ea.getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
+                        _mats[j]->setMatrix(osg::Matrix::translate(tp.x, ea.getWindowHeight() - tp.y, 0));
+                    else
+                        _mats[j]->setMatrix(osg::Matrix::translate(tp.x, tp.y, 0));
+                    
                     _mats[j]->setNodeMask(0xffff);
                     
                     std::ostringstream ss;
@@ -227,55 +247,62 @@ private:
     
     //get the screen size
     CGRect lFrame = [[UIScreen mainScreen] bounds];
-    unsigned int w = lFrame.size.width;
-    unsigned int h = lFrame.size.height;
+    unsigned int w = lFrame.size.width * [[UIScreen mainScreen] scale];
+    unsigned int h = lFrame.size.height  * [[UIScreen mainScreen] scale];
     
     //create the viewer
     _viewer = new osgViewer::Viewer();
     
     
-    /*
+    if(1) {
      
-    // If you want full control over the graphics context / window creation, please uncomment this section
-     
-    // create the main window at screen size
-    self._window = [[UIWindow alloc] initWithFrame: lFrame]; 
-    
-    //show window
-    [_window makeKeyAndVisible];
+        // If you want full control over the graphics context / window creation, please uncomment this section
+         
+        // create the main window at screen size
+        self._window = [[UIWindow alloc] initWithFrame: lFrame]; 
+        
+        //show window
+        [_window makeKeyAndVisible];
+        
+        UIView* parent_view = [[UIView alloc] initWithFrame: CGRectMake(0,0, w, h)];
+        parent_view.backgroundColor = [UIColor redColor];
+        [self._window addSubview: parent_view];
+        MyViewController* view_controller = [[MyViewController alloc] init];
+        view_controller.view = parent_view;
+        self._window.rootViewController = view_controller;
+        
+        
+        //create our graphics context directly so we can pass our own window
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        
+        // Init the Windata Variable that holds the handle for the Window to display OSG in.
+        osg::ref_ptr<osg::Referenced> windata = new osgViewer::GraphicsWindowIOS::WindowData(parent_view);
+        
+        // Setup the traits parameters
+        traits->x = 50;
+        traits->y = 50;
+        traits->width = w-100;
+        traits->height = h-100;
+        traits->depth = 16; //keep memory down, default is currently 24
+        traits->windowDecoration = false;
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
+        traits->setInheritedWindowPixelFormat = true;
+        traits->samples = 4;
+        traits->sampleBuffers = 1;
+        
+        traits->inheritedWindowData = windata;
 
-    
-    //create our graphics context directly so we can pass our own window
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    
-    // Init the Windata Variable that holds the handle for the Window to display OSG in.
-    osg::ref_ptr<osg::Referenced> windata = new osgViewer::GraphicsWindowIOS::WindowData(_window);
-    
-    // Setup the traits parameters
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = w;
-    traits->height = h;
-    traits->depth = 16; //keep memory down, default is currently 24
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-    traits->setInheritedWindowPixelFormat = true;
-    traits->samples = 4;
-    traits->sampleBuffers = 1;
-    
-    traits->inheritedWindowData = windata;
-
-    // Create the Graphics Context
-    osg::ref_ptr<osg::GraphicsContext> graphicsContext = osg::GraphicsContext::createGraphicsContext(traits.get());
-    
-    // if the context was created then attach to our viewer
-    if(graphicsContext)
-    {
-        _viewer->getCamera()->setGraphicsContext(graphicsContext);
-        _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+        // Create the Graphics Context
+        osg::ref_ptr<osg::GraphicsContext> graphicsContext = osg::GraphicsContext::createGraphicsContext(traits.get());
+        
+        // if the context was created then attach to our viewer
+        if(graphicsContext)
+        {
+            _viewer->getCamera()->setGraphicsContext(graphicsContext);
+            _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+        }
     }
-     */
         
     
     //create root

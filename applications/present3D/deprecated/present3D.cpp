@@ -36,6 +36,7 @@
 #include <osgGA/TerrainManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/MultiTouchTrackballManipulator>
 
 #include <osgPresentation/deprecated/SlideEventHandler>
 #include <osgPresentation/Cursor>
@@ -49,6 +50,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+
 
 #include <string.h>
 
@@ -171,6 +173,58 @@ public:
 private:
     osg::ref_ptr<osgGA::Device> _device;
     bool _forwardMouseEvents;
+};
+
+
+class DumpEventHandler : public osgGA::GUIEventHandler {
+public:
+    DumpEventHandler() : osgGA::GUIEventHandler() {}
+
+    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    {
+        switch (ea.getEventType())
+        {
+            case osgGA::GUIEventAdapter::FRAME:
+                return false;
+                break;
+            case osgGA::GUIEventAdapter::PUSH:
+                std::cout << "PUSH: ";
+                break;
+            case osgGA::GUIEventAdapter::RELEASE:
+                std::cout << "RELEASE: ";
+                break;
+            case osgGA::GUIEventAdapter::MOVE:
+                std::cout << "MOVE: ";
+                break;
+            case osgGA::GUIEventAdapter::DRAG:
+                std::cout << "DRAG: ";
+                break;
+            case osgGA::GUIEventAdapter::SCROLL:
+                std::cout << "SCROLL: ";
+                break;
+                break;
+                
+            default:
+                std::cout << ea.getEventType() << " ";
+                break;
+        }
+        std::cout << ea.getX() << "/" << ea.getY() << " " << ea.isMultiTouchEvent() << std::endl;
+        return false;
+    }
+    
+    
+    bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
+    {
+        if (event->asGUIEventAdapter())
+            return osgGA::GUIEventHandler::handle(event, object, nv);
+        else
+        {
+            return false;
+        }
+    }
+
+
+private:
 };
 
 
@@ -423,7 +477,7 @@ int main( int argc, char **argv )
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
-        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::MultiTouchTrackballManipulator() );
         keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
@@ -444,6 +498,8 @@ int main( int argc, char **argv )
 
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
+    
+    //viewer.getEventHandlers().push_front(new DumpEventHandler());
 
     // add the state manipulator
     osg::ref_ptr<osgGA::StateSetManipulator> ssManipulator = new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet());

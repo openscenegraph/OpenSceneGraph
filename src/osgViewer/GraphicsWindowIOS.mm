@@ -580,11 +580,17 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
         unsigned int touch_id = [self computeTouchId: touch mayCleanup: FALSE];
         
-        if (!osg_event) {
+        if (!osg_event)
+        {
             osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
-        } else {
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
+
+        }
+        else
+        {
             osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         }
+
     }
     
     [super touchesBegan:touches withEvent:event];
@@ -603,11 +609,17 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
         unsigned int touch_id = [self computeTouchId: touch mayCleanup: FALSE];
 
-        if (!osg_event) {
+        if (!osg_event)
+        {
             osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
-        } else {
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
+
+        }
+        else
+        {
             osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
         }
+
     }
     
     [super touchesMoved:touches withEvent:event];    
@@ -626,11 +638,17 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         CGPoint pos = [touch locationInView:self];
         osg::Vec2 pixelPos = [self convertPointToPixel: osg::Vec2(pos.x,pos.y)];
         unsigned int touch_id = [self computeTouchId: touch mayCleanup: TRUE];
-        if (!osg_event) {
+        if (!osg_event)
+        {
             osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
-        } else {
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
+
+        }
+        else
+        {
             osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), [touch tapCount]);
         }
+
     }
     
     [super touchesEnded:touches withEvent:event];    

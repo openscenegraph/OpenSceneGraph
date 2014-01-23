@@ -675,13 +675,14 @@ public:
 
         void addTouchPoint(unsigned int id, TouchPhase phase, float x, float y, unsigned int tapCount = 0);
 
+        void setTouchData(TouchData* td) { _touchData = td; }
         TouchData* getTouchData() const { return _touchData.get(); }
         bool isMultiTouchEvent() const { return (_touchData.valid()); }
-        
+
         inline float getTouchPointNormalizedX(unsigned int ndx) const {
             return (getTouchData()->get(ndx).x-_Xmin)/(_Xmax-_Xmin)*2.0f-1.0f;
         }
-        
+
         inline float getTouchPointNormalizedY(unsigned int ndx) const {
             if (_mouseYOrientation==Y_INCREASING_UPWARDS)
                 return (getTouchData()->get(ndx).y-_Ymin)/(_Ymax-_Ymin)*2.0f-1.0f;

@@ -2020,12 +2020,19 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             OSG_INFO<<"click_to_run ["<<cur->contents<<"]"<<std::endl;
             constructor.layerClickToDoOperation(cur->contents,osgPresentation::RUN, jumpData);
         }
-        else if (match(cur->name, "forward_mouse_event_to_device"))
+        else if (match(cur->name,"forward_mouse_event_to_device") || match(cur->name,"forward_event_to_device"))
         {
             osgPresentation::JumpData jumpData;
 
-            OSG_ALWAYS<<"forward_mouse_event_to_device ["<<cur->contents<<"]"<<std::endl;
-            constructor.layerClickToDoOperation(cur->contents,osgPresentation::FORWARD_EVENT, jumpData);
+            OSG_INFO<<"forward_mouse_event_to_device ["<<cur->contents<<"]"<<std::endl;
+            constructor.layerClickToDoOperation(cur->contents,osgPresentation::FORWARD_MOUSE_EVENT, jumpData);
+        }
+        else if (match(cur->name,"forward_touch_event_to_device"))
+        {
+            osgPresentation::JumpData jumpData;
+
+            OSG_INFO<<"forward_touch_event_to_device ["<<cur->contents<<"]"<<std::endl;
+            constructor.layerClickToDoOperation(cur->contents,osgPresentation::FORWARD_TOUCH_EVENT, jumpData);
         }
         else if (match(cur->name, "click_to_load"))
         {

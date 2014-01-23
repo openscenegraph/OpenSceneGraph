@@ -37,7 +37,8 @@ enum Operation
     LOAD,
     EVENT,
     JUMP,
-    FORWARD_EVENT
+    FORWARD_MOUSE_EVENT,
+    FORWARD_TOUCH_EVENT
 };
 
 struct JumpData

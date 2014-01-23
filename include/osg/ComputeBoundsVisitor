@@ -48,10 +48,13 @@ public:
 
     void applyDrawable(osg::Drawable* drawable);
 
-protected:
+    void applyBoundingBox(const osg::BoundingBox&);
 
     typedef std::vector<osg::Matrix> MatrixStack;
 
+    const MatrixStack& getMatrixStack() const { return _matrixStack; }
+
+protected:
     MatrixStack         _matrixStack;
     osg::BoundingBox    _bb;
 };

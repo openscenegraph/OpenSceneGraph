@@ -601,7 +601,7 @@ IF(OSG_USE_QT AND NOT ANDROID)
 
     #If we have found Qt5, let's try to top off by getting the webkit as well
     IF ( Qt5Widgets_FOUND )
-        FIND_PACKAGE(Qt5WebKitWidgets)
+        FIND_PACKAGE(Qt5WebKitWidgets QUIET)
     ENDIF()
 
 ENDIF()

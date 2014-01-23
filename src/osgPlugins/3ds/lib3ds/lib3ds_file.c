@@ -1,19 +1,19 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
@@ -231,7 +231,7 @@ named_object_read(Lib3dsFile *file, Lib3dsIo *io) {
     uint32_t object_flags;
 
     lib3ds_chunk_read_start(&c, CHK_NAMED_OBJECT, io);
-    
+
     lib3ds_io_read_string(io, name, 64);
     lib3ds_io_log(io, LIB3DS_LOG_INFO, "  NAME=%s", name);
     lib3ds_chunk_read_tell(&c, io);
@@ -444,13 +444,13 @@ mdata_read(Lib3dsFile *file, Lib3dsIo *io) {
 }
 
 
-static int 
+static int
 compare_node_id( const void *a, const void *b ) {
    return (int)((*((Lib3dsNode**)a))->node_id) - (int)((*((Lib3dsNode**)b))->node_id);
 }
 
 
-static int 
+static int
 compare_node_id2( const void *a, const void *b ) {
    // not a is a pointer in the calling bsearch routine the user_id is an unsigned, while the node_id is an unsigned short?!
    return (int)(*((unsigned*)a)) - (int)((*((Lib3dsNode**)b))->node_id);
@@ -494,33 +494,33 @@ kfdata_read(Lib3dsFile *file, Lib3dsIo *io) {
                 break;
             }
 
-            case CHK_AMBIENT_NODE_TAG: 
-            case CHK_OBJECT_NODE_TAG: 
-            case CHK_CAMERA_NODE_TAG: 
-            case CHK_TARGET_NODE_TAG: 
-            case CHK_LIGHT_NODE_TAG: 
-            case CHK_SPOTLIGHT_NODE_TAG: 
+            case CHK_AMBIENT_NODE_TAG:
+            case CHK_OBJECT_NODE_TAG:
+            case CHK_CAMERA_NODE_TAG:
+            case CHK_TARGET_NODE_TAG:
+            case CHK_LIGHT_NODE_TAG:
+            case CHK_SPOTLIGHT_NODE_TAG:
             case CHK_L_TARGET_NODE_TAG: {
                 Lib3dsNodeType type = 0;
                 Lib3dsNode *node;
 
                 switch (chunk) {
-                    case CHK_AMBIENT_NODE_TAG: 
+                    case CHK_AMBIENT_NODE_TAG:
                         type = LIB3DS_NODE_AMBIENT_COLOR;
                         break;
-                    case CHK_OBJECT_NODE_TAG: 
+                    case CHK_OBJECT_NODE_TAG:
                         type = LIB3DS_NODE_MESH_INSTANCE;
                         break;
-                    case CHK_CAMERA_NODE_TAG: 
+                    case CHK_CAMERA_NODE_TAG:
                         type = LIB3DS_NODE_CAMERA;
                         break;
-                    case CHK_TARGET_NODE_TAG: 
+                    case CHK_TARGET_NODE_TAG:
                         type = LIB3DS_NODE_CAMERA_TARGET;
                         break;
-                    case CHK_LIGHT_NODE_TAG: 
+                    case CHK_LIGHT_NODE_TAG:
                         type = LIB3DS_NODE_OMNILIGHT;
                         break;
-                    case CHK_SPOTLIGHT_NODE_TAG: 
+                    case CHK_SPOTLIGHT_NODE_TAG:
                         type = LIB3DS_NODE_SPOTLIGHT;
                         break;
                     case CHK_L_TARGET_NODE_TAG:
@@ -565,7 +565,7 @@ kfdata_read(Lib3dsFile *file, Lib3dsIo *io) {
             if (p->user_id != 65535) {
                 parent = *(Lib3dsNode**)bsearch(&p->user_id, nodes, num_nodes, sizeof(Lib3dsNode*), compare_node_id2);
                 if (parent) {
-                    q->next = p->next;    
+                    q->next = p->next;
                     p->next = parent->childs;
                     p->parent = parent;
                     parent->childs = p;
@@ -927,7 +927,7 @@ lib3ds_file_write(Lib3dsFile *file, Lib3dsIo *io) {
 
 void lib3ds_file_reserve_materials(Lib3dsFile *file, int size, int force) {
     assert(file);
-    lib3ds_util_reserve_array((void***)&file->materials, &file->nmaterials, &file->materials_size, 
+    lib3ds_util_reserve_array((void***)&file->materials, &file->nmaterials, &file->materials_size,
                               size, force, (Lib3dsFreeFunc)lib3ds_material_free);
 }
 
@@ -960,10 +960,10 @@ lib3ds_file_material_by_name(Lib3dsFile *file, const char *name) {
 }
 
 
-void 
+void
 lib3ds_file_reserve_cameras(Lib3dsFile *file, int size, int force) {
     assert(file);
-    lib3ds_util_reserve_array((void***)&file->cameras, &file->ncameras, &file->cameras_size, 
+    lib3ds_util_reserve_array((void***)&file->cameras, &file->ncameras, &file->cameras_size,
                               size, force, (Lib3dsFreeFunc)lib3ds_camera_free);
 }
 
@@ -996,10 +996,10 @@ lib3ds_file_camera_by_name(Lib3dsFile *file, const char *name) {
 }
 
 
-void 
+void
 lib3ds_file_reserve_lights(Lib3dsFile *file, int size, int force) {
     assert(file);
-    lib3ds_util_reserve_array((void***)&file->lights, &file->nlights, &file->lights_size, 
+    lib3ds_util_reserve_array((void***)&file->lights, &file->nlights, &file->lights_size,
                               size, force, (Lib3dsFreeFunc)lib3ds_light_free);
 }
 
@@ -1032,10 +1032,10 @@ lib3ds_file_light_by_name(Lib3dsFile *file, const char *name) {
 }
 
 
-void 
+void
 lib3ds_file_reserve_meshes(Lib3dsFile *file, int size, int force) {
     assert(file);
-    lib3ds_util_reserve_array((void***)&file->meshes, &file->nmeshes, &file->meshes_size, 
+    lib3ds_util_reserve_array((void***)&file->meshes, &file->nmeshes, &file->meshes_size,
                                size, force, (Lib3dsFreeFunc)lib3ds_mesh_free);
 }
 
@@ -1068,7 +1068,7 @@ lib3ds_file_mesh_by_name(Lib3dsFile *file, const char *name) {
 }
 
 
-Lib3dsMesh* 
+Lib3dsMesh*
 lib3ds_file_mesh_for_node(Lib3dsFile *file, Lib3dsNode *node) {
     int index;
     Lib3dsMeshInstanceNode *n;
@@ -1162,7 +1162,7 @@ lib3ds_file_append_node(Lib3dsFile *file, Lib3dsNode *node, Lib3dsNode *parent) 
             parent->childs = node;
         } else {
             file->nodes = node;
-        } 
+        }
     }
     node->parent = parent;
     node->next = NULL;
@@ -1249,12 +1249,12 @@ lib3ds_file_remove_node(Lib3dsFile *file, Lib3dsNode *node) {
 static void
 file_minmax_node_id_impl(Lib3dsFile *file, Lib3dsNode *node, uint16_t *min_id, uint16_t *max_id) {
     Lib3dsNode *p;
-    
+
     if (min_id && (*min_id > node->node_id))
         *min_id = node->node_id;
     if (max_id && (*max_id < node->node_id))
         *max_id = node->node_id;
-    
+
     p = node->childs;
     while (p) {
         file_minmax_node_id_impl(file, p, min_id, max_id);
@@ -1263,10 +1263,10 @@ file_minmax_node_id_impl(Lib3dsFile *file, Lib3dsNode *node, uint16_t *min_id, u
 }
 
 
-void 
+void
 lib3ds_file_minmax_node_id(Lib3dsFile *file, uint16_t *min_id, uint16_t *max_id) {
     Lib3dsNode *p;
-    
+
     if (min_id)
         *min_id = 65535;
     if (max_id)
@@ -1281,7 +1281,7 @@ lib3ds_file_minmax_node_id(Lib3dsFile *file, uint16_t *min_id, uint16_t *max_id)
 
 
 void
-lib3ds_file_bounding_box_of_objects(Lib3dsFile *file, int 
+lib3ds_file_bounding_box_of_objects(Lib3dsFile *file, int
                                     include_meshes, int include_cameras, int include_lights,
                                     float bmin[3], float bmax[3]) {
     bmin[0] = bmin[1] = bmin[2] = FLT_MAX;
@@ -1320,10 +1320,13 @@ lib3ds_file_bounding_box_of_objects(Lib3dsFile *file, int
 
 
 static void
-file_bounding_box_of_nodes_impl(Lib3dsNode *node, Lib3dsFile *file, 
+file_bounding_box_of_nodes_impl(Lib3dsNode *node, Lib3dsFile *file,
                                 int include_meshes, int include_cameras, int include_lights,
                                 float bmin[3], float bmax[3], float matrix[4][4]) {
     switch (node->type) {
+        case LIB3DS_NODE_AMBIENT_COLOR:
+            break;
+            
         case LIB3DS_NODE_MESH_INSTANCE:
             if (include_meshes) {
                 int index;
@@ -1392,7 +1395,7 @@ file_bounding_box_of_nodes_impl(Lib3dsNode *node, Lib3dsFile *file,
 
 
 void
-lib3ds_file_bounding_box_of_nodes(Lib3dsFile *file, 
+lib3ds_file_bounding_box_of_nodes(Lib3dsFile *file,
                                   int include_meshes, int include_cameras,int include_lights,
                                   float bmin[3], float bmax[3], float matrix[4][4]) {
     Lib3dsNode *p;

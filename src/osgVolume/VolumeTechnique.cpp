@@ -93,8 +93,6 @@ bool VolumeTechnique::isMoving(osgUtil::CullVisitor* cv)
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    OSG_NOTICE<<"cv="<<cv<<", cv->getIdentifier()="<<cv->getIdentifier()<<std::endl;
-
     ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
     if (itr!=_modelViewMatrixMap.end())
     {

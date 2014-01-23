@@ -35,7 +35,7 @@ namespace lwo2
         virtual iff::Chunk *parse_chunk_data(const std::string &tag, const std::string &context, Iter it, Iter end);
         iff::Chunk *parse_subchunk(Iter &it, const std::string &context);
 
-                Parser& operator = (const Parser&) { return *this; }
+        Parser& operator = (const Parser&) { return *this; }
     };
 
 
@@ -894,8 +894,10 @@ namespace lwo2
     {
         std::string tag;
         for (int i=0; i<4; ++i) tag += *(it++);
-        unsigned int len = ((static_cast<unsigned int>(*(it++)) & 0xFF) << 8) |
-            (static_cast<unsigned int>(*(it++)) & 0xFF);
+
+        unsigned int len = ((static_cast<unsigned int>(*it) & 0xFF) << 8) | (static_cast<unsigned int>(*(it+1)) & 0xFF);
+        it += 2;
+
         this->os() << "DEBUG INFO: lwo2parser: reading subchunk " << tag << ", length = " << len << ", context = " << context << "\n";
         iff::Chunk *chk = parse_chunk_data(tag, context, it, it+len);
         if (!chk) this->os() << "DEBUG INFO: lwo2parser: \tprevious subchunk not handled\n";

@@ -77,21 +77,22 @@ void ComputeBoundsVisitor::apply(osg::Geode& geode)
 
 void ComputeBoundsVisitor::applyDrawable(osg::Drawable* drawable)
 {
-    if (_matrixStack.empty()) _bb.expandBy(drawable->getBound());
-    else
+    applyBoundingBox(drawable->getBound());
+}
+
+void ComputeBoundsVisitor::applyBoundingBox(const osg::BoundingBox& bbox)
+{
+    if (_matrixStack.empty()) _bb.expandBy(bbox);
+    else if (bbox.valid())
     {
-        osg::Matrix& matrix = _matrixStack.back();
-        const osg::BoundingBox& dbb = drawable->getBound();
-        if (dbb.valid())
-        {
-            _bb.expandBy(dbb.corner(0) * matrix);
-            _bb.expandBy(dbb.corner(1) * matrix);
-            _bb.expandBy(dbb.corner(2) * matrix);
-            _bb.expandBy(dbb.corner(3) * matrix);
-            _bb.expandBy(dbb.corner(4) * matrix);
-            _bb.expandBy(dbb.corner(5) * matrix);
-            _bb.expandBy(dbb.corner(6) * matrix);
-            _bb.expandBy(dbb.corner(7) * matrix);
-        }
+        const osg::Matrix& matrix = _matrixStack.back();
+        _bb.expandBy(bbox.corner(0) * matrix);
+        _bb.expandBy(bbox.corner(1) * matrix);
+        _bb.expandBy(bbox.corner(2) * matrix);
+        _bb.expandBy(bbox.corner(3) * matrix);
+        _bb.expandBy(bbox.corner(4) * matrix);
+        _bb.expandBy(bbox.corner(5) * matrix);
+        _bb.expandBy(bbox.corner(6) * matrix);
+        _bb.expandBy(bbox.corner(7) * matrix);
     }
 }

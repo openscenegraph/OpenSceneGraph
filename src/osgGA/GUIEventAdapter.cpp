@@ -67,8 +67,11 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& c
     _mouseYOrientation(rhs._mouseYOrientation),
     _scrolling(rhs._scrolling),
     _tabletPen(rhs._tabletPen),
-    _touchData(rhs._touchData)
-{}
+    _touchData(NULL)
+{
+    if(TouchData* td = rhs.getTouchData())
+        setTouchData(osg::clone(td, copyop));
+}
 
 GUIEventAdapter::~GUIEventAdapter()
 {

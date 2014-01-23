@@ -72,9 +72,14 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     hitr!=intersections.end();
                     ++hitr)
                 {
-                    if (_operation == FORWARD_EVENT)
+                    if (_operation == FORWARD_MOUSE_EVENT)
                     {
                         osg::ref_ptr<osgGA::GUIEventAdapter> cloned_ea = osg::clone(&ea);
+
+                        // clear touch-data as this prevents sending the event as mouse-event
+                        cloned_ea->setTouchData(NULL);
+
+                        // reproject mouse-coord
                         const osg::BoundingBox bb(hitr->drawable->getBound());
                         const osg::Vec3& p(hitr->localIntersectionPoint);
 
@@ -85,7 +90,52 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         cloned_ea->setY(ea.getYmin() + transformed_y * (ea.getYmax() - ea.getYmin()));
                         cloned_ea->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
+
+
                         // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
+
+                        SlideEventHandler::instance()->forwardEventToDevices(cloned_ea.get());
+                    }
+                    else if ((_operation == FORWARD_TOUCH_EVENT) && ea.isMultiTouchEvent())
+                    {
+                        osg::ref_ptr<osgGA::GUIEventAdapter> cloned_ea = osg::clone(&ea);
+                        osgGA::GUIEventAdapter::TouchData* touch_data = cloned_ea->getTouchData();
+
+
+
+                        // reproject touch-points
+                        const osg::BoundingBox bb(hitr->drawable->getBound());
+
+                        osg::Camera* camera = viewer->getCamera();
+                        osg::Matrix matrix = osg::computeLocalToWorld(hitr->nodePath, false) * camera->getViewMatrix() * camera->getProjectionMatrix();
+                        matrix.postMult(camera->getViewport()->computeWindowMatrix());
+
+                        osg::Matrixd inverse;
+                        inverse.invert(matrix);
+
+                        // transform touch-points into local coord-system
+                        unsigned int j(0);
+                        for(osgGA::GUIEventAdapter::TouchData::iterator i = touch_data->begin(); i != touch_data->end(); ++i, ++j)
+                        {
+                            osg::Vec3 local = osg::Vec3(i->x, i->y, 0) * inverse;
+
+                            // std::cout << local << " hit: " << hitr->localIntersectionPoint << std::endl;
+
+                            local.x() = (local.x() - bb.xMin()) / (bb.xMax() - bb.xMin());
+                            local.z() = (local.z() - bb.zMin()) / (bb.zMax() - bb.zMin());
+
+                            local.x() = (ea.getXmin() + local.x() * (ea.getXmax() - ea.getXmin()));
+                            local.z() = (ea.getYmin() + local.z() * (ea.getYmax() - ea.getYmin()));
+
+                            // std::cout << ea.getX() << "/" << ea.getY() << " -- " << i->x << " " << i->y << " -> " << local.x() <<"/" << local.z() << std::endl;
+
+                            i->x = local.x();
+                            i->y = local.z();
+                        }
+
+
+                        // std::cout << transformed_x << "/" << transformed_x << " -> " << cloned_ea->getX() << "/" <<cloned_ea->getY() << std::endl;
+
 
                         SlideEventHandler::instance()->forwardEventToDevices(cloned_ea.get());
                     }
@@ -206,7 +256,8 @@ void PickEventHandler::doOperation()
             OSG_INFO<<"Requires jump "<<std::endl;
             break;
         }
-        case(osgPresentation::FORWARD_EVENT):
+        case(osgPresentation::FORWARD_MOUSE_EVENT):
+        case(osgPresentation::FORWARD_TOUCH_EVENT):
             break;
     }
 

@@ -58,7 +58,7 @@ void MultiTouchTrackballManipulator::handleMultiTouchDrag(const GUIEventAdapter*
     osg::Vec2 delta = ((pt_1_last - pt_1_now) + (pt_2_last - pt_2_now)) / 2.0f;
 
     float scale = _distance / 3.0f;
-
+    
     // osg::notify(osg::ALWAYS) << "drag: " << delta << " scale: " << scale << std::endl;
 
     panModel( delta.x() * scale, delta.y() * scale);

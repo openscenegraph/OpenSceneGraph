@@ -65,7 +65,8 @@ private:
     bool sendUIEventImpl(const osgGA::GUIEventAdapter &ea,MsgIdType msg_id);
     void beginBundle(MsgIdType msg_id);
     void beginSendInputRange(const osgGA::GUIEventAdapter& ea, MsgIdType msg_id);
-    void sendMultiTouchData(const osgGA::GUIEventAdapter& ea);
+    void beginMultiTouchSequence();
+    bool sendMultiTouchData(const osgGA::GUIEventAdapter& ea);
     int getButtonNum(const osgGA::GUIEventAdapter& ea);
     void sendUserDataContainer(const std::string& key, const osg::UserDataContainer* udc, bool asBundle, MsgIdType msg_id);
     std::string transliterateKey(const std::string& key) const;
@@ -76,6 +77,7 @@ private:
     unsigned int _numMessagesPerEvent, _delayBetweenSendsInMilliSecs;
     osc::int64  _msgId;
     osg::ref_ptr<osgGA::GUIEventAdapter> _lastEvent;
+    bool                                 _finishMultiTouchSequence;
  
 };
 

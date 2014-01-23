@@ -149,7 +149,8 @@ void KeyEventHandler::doOperation()
             OSG_NOTICE<<"Requires jump "<<std::endl;
             break;
         }
-        case(osgPresentation::FORWARD_EVENT):
+        case(osgPresentation::FORWARD_MOUSE_EVENT):
+        case(osgPresentation::FORWARD_TOUCH_EVENT):
             break;
     }
 

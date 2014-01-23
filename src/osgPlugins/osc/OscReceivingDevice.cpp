@@ -715,13 +715,13 @@ class TUIO2DCursorRequestHandler : public OscReceivingDevice::RequestHandler {
 public:
 
     struct Cursor {
-        std::string source;
+        std::string end_point;
         unsigned int id, frameId;
         osg::Vec2f pos, vel;
         float accel;
         osgGA::GUIEventAdapter::TouchPhase phase;
         
-        Cursor() : source(), id(0), frameId(0), pos(), vel(), accel(), phase(osgGA::GUIEventAdapter::TOUCH_UNKNOWN) {}
+        Cursor() : end_point(), id(0), frameId(0), pos(), vel(), accel(), phase(osgGA::GUIEventAdapter::TOUCH_UNKNOWN) {}
         
     };
     struct EndpointData {
@@ -764,9 +764,12 @@ public:
         
         if (what == "source")
         {
-           args >> str;
-           _endpointData[end_point].source = std::string(str);
-           updateSourceIdMap(_endpointData[end_point].source);
+            args >> str;
+            _endpointData[end_point].source = std::string(str);
+            updateSourceIdMap(_endpointData[end_point].source);
+            
+            _endpointData[end_point].unhandled.clear();
+            _endpointData[end_point].mayClearUnhandledPointer = true;
            
            return true;
         }
@@ -786,10 +789,8 @@ public:
                 {
                     osc::int32 id;
                     args >> id;
-                    _endpointData[source].unhandled.insert(id);
+                    _endpointData[end_point].unhandled.insert(id);
                 }
-                _endpointData[source].mayClearUnhandledPointer = true;
-                
                 return true;
             }
             else if (what == "set")
@@ -803,9 +804,9 @@ public:
                 
                 Cursor& c(_alive[source][id]);
                 args >> c.pos.x() >> c.pos.y() >> c.vel.x() >> c.vel.y() >> c.accel >> osc::EndMessage;
-                c.source = source;
                 c.frameId = frame_id;
-                _endpointData[source].unhandled.insert(id);
+                c.end_point = end_point;
+                _endpointData[end_point].unhandled.insert(id);
                 
                 return true;
             }
@@ -840,50 +841,49 @@ public:
             
             // remove all touchpoints which are not transmitted via alive-message, dispatching TOUCH_ENDED
             
-            EndpointData& endpoint_data(_endpointData[source]);
-            if (endpoint_data.mayClearUnhandledPointer)
+            unsigned int source_id = getSourceId(source);
+            
+            std::vector<unsigned int> to_delete;
+                
+            for(CursorMap::iterator k = i->second.begin(); k != i->second.end(); ++k)
             {
-                unsigned int source_id = getSourceId(source);
-                
-                std::vector<unsigned int> to_delete;
-                
-                for(CursorMap::iterator k = i->second.begin(); k != i->second.end(); ++k)
+                EndpointData& endpoint_data(_endpointData[k->second.end_point]);
+                /*if (!endpoint_data.mayClearUnhandledPointer)
                 {
-                    //create a unique touchpoint-id
-                    unsigned int touch_id = (source_id << 16) + k->first;
-                    
-                    std::set<unsigned int>& unhandled(endpoint_data.unhandled);
-                    if ((unhandled.find(k->first) == unhandled.end()))
-                    {
-                        std::cout << "deleting: " << k->first << std::endl;
-                        to_delete.push_back(k->first);
-                        
-                        float win_x = k->second.pos.x();
-                        float win_y = k->second.pos.y();
-                    
-                        if (!event)
-                            event = queue->touchEnded(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
-                        else
-                            event->addTouchPoint(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
-                    }
-                }
-                // remove "dead" cursors
-                for(std::vector<unsigned int>::iterator k = to_delete.begin(); k != to_delete.end(); ++k)
-                {
-                    _alive[source].erase(i->second.find(*k));
-                }
+                    continue;
+                }*/
+            
+                //create a unique touchpoint-id
+                unsigned int touch_id = (source_id << 16) + k->first;
                 
-                endpoint_data.mayClearUnhandledPointer = false;
-                endpoint_data.unhandled.clear();
+                std::set<unsigned int>& unhandled(endpoint_data.unhandled);
+                if ((unhandled.find(k->first) == unhandled.end()))
+                {
+                    // std::cout << "deleting: " << k->first << " from " << k->second.end_point << std::endl;
+                    to_delete.push_back(k->first);
+                    
+                    float win_x = k->second.pos.x();
+                    float win_y = k->second.pos.y();
+                
+                    if (!event)
+                        event = queue->touchEnded(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
+                    else
+                        event->addTouchPoint(touch_id, osgGA::GUIEventAdapter::TOUCH_ENDED, win_x, win_y, 1);
+                }
             }
-        
+            // remove "dead" cursors
+            for(std::vector<unsigned int>::iterator k = to_delete.begin(); k != to_delete.end(); ++k)
+            {
+                _alive[source].erase(i->second.find(*k));
+            }
+            
             if (i->second.size() == 0)
             {
                 // std::cout << "removing endpoint" << source << std::endl;
-                _endpointData.erase(_endpointData.find(source));
-                _alive.erase(_alive.find(source));
+                // _alive.erase(_alive.find(source));
             }
         }
+        
         
         // send all alive touchpoints
         for(ApplicationCursorMap::iterator i = _alive.begin(); i != _alive.end(); ++i)
@@ -912,6 +912,7 @@ public:
                 {
                     event->addTouchPoint(touch_id, down ? osgGA::GUIEventAdapter::TOUCH_BEGAN : osgGA::GUIEventAdapter::TOUCH_MOVED, win_x, win_y);
                 }
+                
                 c.phase = osgGA::GUIEventAdapter::TOUCH_MOVED;
             }
         }
@@ -921,6 +922,7 @@ public:
         {
             event->setInputRange(0, 0, 1.0, 1.0);
             event->setTime(queue->getTime());
+            event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
         }
     }
     
@@ -997,6 +999,9 @@ OscReceivingDevice::OscReceivingDevice(const std::string& server_address, int li
     addRequestHandler(new OscDevice::StandardRequestHandler("/osg/set_user_value", true));
 
     addRequestHandler(new OscDevice::StandardRequestHandler("", false));
+    
+    // getEventQueue()->setFirstTouchEmulatesMouse(false);
+    
     setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_LOW);
     start();
 }

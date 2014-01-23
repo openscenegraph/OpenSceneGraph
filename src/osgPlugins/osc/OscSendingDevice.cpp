@@ -31,12 +31,10 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port, unsigne
     , _delayBetweenSendsInMilliSecs( (_numMessagesPerEvent > 1) ? delay_between_sends_in_millisecs : 0)
     , _msgId(0)
     , _lastEvent(NULL)
+    , _finishMultiTouchSequence(false)
 {
     setCapabilities(SEND_EVENTS);
-    
-
-    
-    
+     
     OSG_NOTICE << "OscDevice :: sending events to " << address << ":" << port << " ";
     #ifdef OSC_HOST_LITTLE_ENDIAN
         OSG_NOTICE << "(little endian)";
@@ -164,23 +162,24 @@ bool OscSendingDevice::sendUIEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdTy
         
         case osgGA::GUIEventAdapter::PUSH:
             beginSendInputRange(ea, msg_id);
-            sendMultiTouchData(ea);
-            _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
+            if (!sendMultiTouchData(ea))
+                _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
             
         case osgGA::GUIEventAdapter::RELEASE:
             beginSendInputRange(ea, msg_id);
-            sendMultiTouchData(ea);
-            _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
+            if (!sendMultiTouchData(ea))
+                _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
         
         case osgGA::GUIEventAdapter::DOUBLECLICK:
             beginSendInputRange(ea, msg_id);
-            _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << getButtonNum(ea) << osc::EndMessage;
+            if (!sendMultiTouchData(ea))
+                _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << getButtonNum(ea) << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
@@ -188,8 +187,8 @@ bool OscSendingDevice::sendUIEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdTy
         case osgGA::GUIEventAdapter::MOVE:
         case osgGA::GUIEventAdapter::DRAG:
             beginSendInputRange(ea, msg_id);
-            sendMultiTouchData(ea);
-            _oscStream << osc::BeginMessage("/osgga/mouse/motion") << ea.getX() << ea.getY() << osc::EndMessage;
+            if (!sendMultiTouchData(ea))
+                _oscStream << osc::BeginMessage("/osgga/mouse/motion") << ea.getX() << ea.getY() << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
@@ -227,10 +226,21 @@ bool OscSendingDevice::sendUIEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdTy
     
     if (do_send)
     {
-        OSG_INFO << "OscDevice :: sending ui-event per OSC " << std::endl;
+        // OSG_INFO << "OscDevice :: sending ui-event per OSC " << std::endl;
         
         _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
         _oscStream.Clear();
+        
+        if (_finishMultiTouchSequence)
+        {
+            // if the last touch-point ended we'll need to send an empty tuio-bundle, so the receiver gets a chance to clean up
+            beginBundle(msg_id);
+            beginMultiTouchSequence();
+            _oscStream << osc::EndBundle;
+            _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
+            _oscStream.Clear();
+            _finishMultiTouchSequence = false;
+        }
     }
     
     return do_send;
@@ -273,21 +283,28 @@ void OscSendingDevice::beginSendInputRange(const osgGA::GUIEventAdapter &ea, Msg
 }
 
 
+void OscSendingDevice::beginMultiTouchSequence() {
 
-void OscSendingDevice::sendMultiTouchData(const osgGA::GUIEventAdapter &ea)
-{
-    if(!ea.isMultiTouchEvent())
-        return;
-    
     std::string application_name;
     getUserValue("tuio_application_name", application_name);
     
     if (application_name.empty())
         application_name = std::string("OpenSceneGraph ") + osgGetVersion() + "@127.0.0.1";
     
-    osgGA::GUIEventAdapter::TouchData* touch_data = ea.getTouchData();
-    
     _oscStream << osc::BeginMessage("/tuio/2Dcur") << "source" << application_name.c_str() << osc::EndMessage;
+    _oscStream << osc::BeginMessage("/tuio/2Dcur") << "fseq" << static_cast<osc::int32>(_msgId) << osc::EndMessage;
+
+}
+
+
+bool OscSendingDevice::sendMultiTouchData(const osgGA::GUIEventAdapter &ea)
+{
+    if(!ea.isMultiTouchEvent())
+        return false;
+    
+    beginMultiTouchSequence();
+    
+    osgGA::GUIEventAdapter::TouchData* touch_data = ea.getTouchData();
     
     _oscStream << osc::BeginMessage("/tuio/2Dcur") << "alive";
     for(osgGA::GUIEventAdapter::TouchData::iterator i = touch_data->begin(); i != touch_data->end(); ++i)
@@ -295,23 +312,33 @@ void OscSendingDevice::sendMultiTouchData(const osgGA::GUIEventAdapter &ea)
     _oscStream << osc::EndMessage;
     
     unsigned int j(0);
+    unsigned int num_ended(0);
     for(osgGA::GUIEventAdapter::TouchData::iterator i = touch_data->begin(); i != touch_data->end(); ++i, ++j)
     {
         float x = (ea.getTouchPointNormalizedX(j) + 1.0) / 2.0;
         float y =(ea.getTouchPointNormalizedY(j) + 1.0) / 2.0;
         
+        // flip y if origin is not top/left
+        if(ea.getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
+            y *= -1;
+        
         float vel_x(0), vel_y(0), accel(0);
         if (_lastEvent.valid())
         {
-        
+            // TODO: add velocity + acceleration
         }
         
         _oscStream << osc::BeginMessage("/tuio/2Dcur") << "set" << static_cast<osc::int32>(i->id) << x << y << vel_x << vel_y << accel << osc::EndMessage;
+        if(i->phase == osgGA::GUIEventAdapter::TOUCH_ENDED)
+            num_ended++;
     }
     
-    _oscStream << osc::BeginMessage("/tuio/2Dcur") << "fseq" << static_cast<osc::int32>(_msgId) << osc::EndMessage;
-    
     _lastEvent = new osgGA::GUIEventAdapter(ea);
+    
+    _finishMultiTouchSequence = (num_ended == touch_data->getNumTouchPoints());
+    
+    
+    return true;
 }
 
 

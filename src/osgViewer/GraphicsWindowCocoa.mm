@@ -869,19 +869,25 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     NSSet *allTouches = [event touchesMatchingPhase: NSTouchPhaseAny inView: self];
     
     osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
-    
     NSRect bounds = [self bounds];
+
     for(unsigned int i=0; i<[allTouches count]; i++)
     {
         
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
+        pos.x *= bounds.size.width;
+        pos.y *= bounds.size.height;
         unsigned int touch_id = [self computeTouchId: touch mayCleanup:FALSE];
-        if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
-        } else {
-            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+        if (!osg_event)
+        {
+            osg_event = _win->getEventQueue()->touchBegan(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y);
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+            osg_event->setInputRange(0, 0, bounds.size.width, bounds.size.height);
+        }
+        else
+        {
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y);
         }
     }
 }
@@ -897,12 +903,18 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
+        pos.x *= bounds.size.width;
+        pos.y *= bounds.size.height;
         unsigned int touch_id = [self computeTouchId: touch mayCleanup:FALSE];
-        if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
-        } else {
-            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y());
+        if (!osg_event)
+        {
+            osg_event = _win->getEventQueue()->touchMoved(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y);
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+            osg_event->setInputRange(0, 0, bounds.size.width, bounds.size.height);
+        }
+        else
+        {
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y);
         }
     }
 }
@@ -914,17 +926,24 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     
     osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
     NSRect bounds = [self bounds];
+
     
     for(unsigned int i=0; i<[allTouches count]; i++)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
-        osg::Vec2 pixelPos(pos.x * bounds.size.width, (pos.y) * bounds.size.height);
+        pos.x *= bounds.size.width;
+        pos.y *= bounds.size.height;
         unsigned int touch_id = [self computeTouchId: touch mayCleanup: TRUE];
-        if (!osg_event) {
-            osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), 1);
-        } else {
-            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pixelPos.x(), pixelPos.y(), 1);
+        if (!osg_event)
+        {
+            osg_event = _win->getEventQueue()->touchEnded(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y, 1);
+            osg_event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+            osg_event->setInputRange(0, 0, bounds.size.width, bounds.size.height);
+        }
+        else
+        {
+            osg_event->addTouchPoint(touch_id, [self convertTouchPhase: [touch phase]], pos.x, pos.y, 1);
         }
 
     }

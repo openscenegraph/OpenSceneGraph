@@ -448,7 +448,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         if (_updateTransparency && cpv._transparencyProperty.valid())
         {
             OSG_NOTICE<<"Setting transparency to "<<v2<<std::endl;
-            cpv._transparencyProperty->setValue(1.0f-v2);
+            cpv._transparencyProperty->setValue((1.0f-v2)*2.0f);
         }
 
         if (_updateSampleDensity && cpv._sampleDensityProperty.valid())

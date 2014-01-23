@@ -3685,8 +3685,8 @@ int unzReadCurrentFile  (unzFile file, voidp buf, unsigned len, bool *reached_eo
   if (s==NULL) return UNZ_PARAMERROR;
 
   file_in_zip_read_info_s* pfile_in_zip_read_info = s->pfile_in_zip_read;
-  if (pfile_in_zip_read_info==NULL) return UNZ_PARAMERROR;
-  if ((pfile_in_zip_read_info->read_buffer == NULL)) return UNZ_END_OF_LIST_OF_FILE;
+  if (pfile_in_zip_read_info == NULL) return UNZ_PARAMERROR;
+  if (pfile_in_zip_read_info->read_buffer == NULL) return UNZ_END_OF_LIST_OF_FILE;
   if (len==0) return 0;
 
   pfile_in_zip_read_info->stream.next_out = (Byte*)buf;

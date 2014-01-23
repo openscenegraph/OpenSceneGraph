@@ -21,9 +21,9 @@ public:
                     const std::pair<Triangle, int>    &    t2) const;
 private:
     void // This function prevent from cut scene in too many blocs
-        setMaxMin(unsigned int & nbVerticesX,
-                  unsigned int & nbVerticesY,
-                  unsigned int & nbVerticesZ) const;
+        setMaxMin(int & nbVerticesX,
+                  int & nbVerticesY,
+                  int & nbVerticesZ) const;
 
     /**
     *  Cut the scene in different bloc to sort.

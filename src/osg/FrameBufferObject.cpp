@@ -914,16 +914,19 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     ext->glBindFramebuffer(target, fboID);
 
     // enable drawing buffers to render the result to fbo
-    if (_drawBuffers.size() > 0)
+    if ( (target == READ_DRAW_FRAMEBUFFER) || (target == DRAW_FRAMEBUFFER) )
     {
-        GL2Extensions *gl2e = GL2Extensions::Get(state.getContextID(), true );
-        if (gl2e && gl2e->isDrawBuffersSupported())
+        if (_drawBuffers.size() > 0)
         {
-            gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));
-        }
-        else
-        {
-            OSG_WARN <<"Warning: FrameBufferObject: could not set draw buffers, glDrawBuffers is not supported!" << std::endl;
+            GL2Extensions *gl2e = GL2Extensions::Get(state.getContextID(), true );
+            if (gl2e && gl2e->isDrawBuffersSupported())
+            {
+                gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));
+            }
+            else
+            {
+                OSG_WARN <<"Warning: FrameBufferObject: could not set draw buffers, glDrawBuffers is not supported!" << std::endl;
+            }
         }
     }
 

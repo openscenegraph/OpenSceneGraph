@@ -74,7 +74,7 @@ struct MyScalarPrinter: public ScalarBar::ScalarPrinter
 };
 #endif
 
-osg::Node* createScalarBar()
+osg::Node* createScalarBar(bool vertical)
 {
 #if 1
     //ScalarsToColors* stc = new ScalarsToColors(0.0f,1.0f);
@@ -90,8 +90,16 @@ osg::Node* createScalarBar()
 
 
     ColorRange* cr = new ColorRange(0.0f,1.0f,cs);
-    ScalarBar* sb = new ScalarBar(20, 11, cr, "ScalarBar", ScalarBar::VERTICAL, 0.1f, new MyScalarPrinter);
+    ScalarBar* sb = new ScalarBar(20, 11, cr,
+                      vertical ? "Vertical" : "Horizontal",
+                      vertical ? ScalarBar::VERTICAL : ScalarBar::HORIZONTAL,
+                      0.1f, new MyScalarPrinter);
     sb->setScalarPrinter(new MyScalarPrinter);
+
+    if ( !vertical )
+    {
+        sb->setPosition( osg::Vec3(0.5f,-0.5f,0));
+    }
 
     return sb;
 #else
@@ -137,7 +145,8 @@ int main(int , char **)
     osgViewer::Viewer viewer;
 
     osg::Group* group = new osg::Group;
-    group->addChild(createScalarBar());
+    group->addChild(createScalarBar(true));
+    group->addChild(createScalarBar(false));
     group->addChild(createScalarBar_HUD());
 
     // add model to viewer.

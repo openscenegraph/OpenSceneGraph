@@ -67,6 +67,21 @@ void OscSendingDevice::sendEvent(const osgGA::Event &ea)
         if ((_delayBetweenSendsInMilliSecs > 0) && (i < num_messages-1))
             OpenThreads::Thread::microSleep(1000 * _delayBetweenSendsInMilliSecs);
     }
+    if (_finishMultiTouchSequence)
+    {
+        // if the last touch-point ended we'll need to send an empty tuio-bundle, so the receiver gets a chance to clean up
+        
+        _msgId++;
+        for(unsigned int i = 0; i < num_messages; ++i) {
+            beginBundle(_msgId);
+            beginMultiTouchSequence();
+            _oscStream << osc::EndBundle;
+            _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
+            _oscStream.Clear();
+        }
+        _finishMultiTouchSequence = false;
+    }
+
     if (msg_sent)
         _msgId++;
 }
@@ -226,21 +241,8 @@ bool OscSendingDevice::sendUIEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdTy
     
     if (do_send)
     {
-        // OSG_INFO << "OscDevice :: sending ui-event per OSC " << std::endl;
-        
         _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
         _oscStream.Clear();
-        
-        if (_finishMultiTouchSequence)
-        {
-            // if the last touch-point ended we'll need to send an empty tuio-bundle, so the receiver gets a chance to clean up
-            beginBundle(msg_id);
-            beginMultiTouchSequence();
-            _oscStream << osc::EndBundle;
-            _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
-            _oscStream.Clear();
-            _finishMultiTouchSequence = false;
-        }
     }
     
     return do_send;

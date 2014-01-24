@@ -99,6 +99,8 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     else if ((_operation == FORWARD_TOUCH_EVENT) && ea.isMultiTouchEvent())
                     {
                         osg::ref_ptr<osgGA::GUIEventAdapter> cloned_ea = osg::clone(&ea);
+                        cloned_ea->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
+
                         osgGA::GUIEventAdapter::TouchData* touch_data = cloned_ea->getTouchData();
 
 
@@ -130,7 +132,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                             // std::cout << ea.getX() << "/" << ea.getY() << " -- " << i->x << " " << i->y << " -> " << local.x() <<"/" << local.z() << std::endl;
 
                             i->x = local.x();
-                            i->y = local.z();
+                            i->y = 1 + local.z(); // no idea why I have to add 1 to get y in the range [0..1]
                         }
 
 

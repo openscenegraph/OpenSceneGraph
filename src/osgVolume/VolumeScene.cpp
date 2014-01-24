@@ -101,8 +101,8 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
         osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
         if (viewport)
         {
-            textureWidth = viewport->width();
-            textureHeight = viewport->height();
+            textureWidth = static_cast<int>(viewport->width());
+            textureHeight = static_cast<int>(viewport->height());
         }
 
         osg::ref_ptr<TileData>& tileData = viewData->_tiles[tile];
@@ -209,14 +209,14 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
     {
         OSG_NOTICE<<"Creating ViewData"<<std::endl;
 
-        unsigned textureWidth = 512;
-        unsigned textureHeight = 512;
+        int textureWidth = 512;
+        int textureHeight = 512;
 
         osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
         if (viewport)
         {
-            textureWidth = viewport->width();
-            textureHeight = viewport->height();
+            textureWidth = static_cast<int>(viewport->width());
+            textureHeight = static_cast<int>(viewport->height());
         }
 
         // set up depth texture
@@ -364,15 +364,18 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
     {
         viewData->_viewportDimensionsUniform->set(osg::Vec4(viewport->x(), viewport->y(), viewport->width(),viewport->height()));
 
-        if (viewport->width() != viewData->_colorTexture->getTextureWidth() ||
-            viewport->height() != viewData->_colorTexture->getTextureHeight())
+        int textureWidth = static_cast<int>(viewport->width());
+        int textureHeight = static_cast<int>(viewport->height());
+
+        if (textureWidth != viewData->_colorTexture->getTextureWidth() ||
+            textureHeight != viewData->_colorTexture->getTextureHeight())
         {
-            OSG_NOTICE<<"Need to change texture size to "<<viewport->width()<<", "<< viewport->height()<<std::endl;
-            viewData->_colorTexture->setTextureSize(viewport->width(), viewport->height());
+            OSG_NOTICE<<"Need to change texture size to "<<textureWidth<<", "<< textureHeight<<std::endl;
+            viewData->_colorTexture->setTextureSize(textureWidth, textureHeight);
             viewData->_colorTexture->dirtyTextureObject();
-            viewData->_depthTexture->setTextureSize(viewport->width(), viewport->height());
+            viewData->_depthTexture->setTextureSize(textureWidth, textureHeight);
             viewData->_depthTexture->dirtyTextureObject();
-            viewData->_rttCamera->setViewport(0, 0, viewport->width(), viewport->height());
+            viewData->_rttCamera->setViewport(0, 0, textureWidth, textureHeight);
             if (viewData->_rttCamera->getRenderingCache())
             {
                 viewData->_rttCamera->getRenderingCache()->releaseGLObjects(0);

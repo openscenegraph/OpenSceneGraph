@@ -973,7 +973,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             if (settings->getDebugDraw())
             {
                 camera->getViewport()->x() = pos_x;
-                pos_x += camera->getViewport()->width() + 40;
+                pos_x += static_cast<unsigned int>(camera->getViewport()->width()) + 40;
             }
 
             // transform polytope in model coords into light spaces eye coords.

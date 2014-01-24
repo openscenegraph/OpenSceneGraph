@@ -93,7 +93,7 @@ struct ModesAndNames
         {
             return false;
         }
-            
+
     }
 
     inline bool getNameForGLMode(const osg::StateAttribute::GLMode& mode, std::string& str) const
@@ -444,7 +444,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         {
             if (StateSet_matchModeStr(fr[1].getStr(),value))
             {
-                StateAttribute::GLMode mode;
+                StateAttribute::GLMode mode=0;
                 if (s_ModesAndNames.getGLModeForName(fr[0].getStr(), mode))
                 {
                     if (s_ModesAndNames.isTextureMode(mode))
@@ -523,7 +523,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                 {
                     if (StateSet_matchModeStr(fr[1].getStr(),value))
                     {
-                        StateAttribute::GLMode mode;
+                        StateAttribute::GLMode mode=0;
                         if (s_ModesAndNames.getGLModeForName(fr[0].getStr(), mode))
                         {
                             stateset.setTextureMode(unit,mode,value);

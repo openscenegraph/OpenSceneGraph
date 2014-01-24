@@ -266,9 +266,14 @@ void Viewer::take(osg::View& rhs)
         _startRenderingBarrier = rhs_viewer->_startRenderingBarrier;
         _endRenderingDispatchBarrier = rhs_viewer->_endRenderingDispatchBarrier;
         _endDynamicDrawBlock = rhs_viewer->_endDynamicDrawBlock;
+
         _eventVisitor = rhs_viewer->_eventVisitor;
+        _eventVisitor->setActionAdapter(this);
+        _eventVisitor->setFrameStamp(_frameStamp.get());
+
         _updateOperations = rhs_viewer->_updateOperations;
         _updateVisitor = rhs_viewer->_updateVisitor;
+
         _realizeOperation = rhs_viewer->_realizeOperation;
         _currentContext = rhs_viewer->_currentContext;
 
@@ -283,6 +288,7 @@ void Viewer::take(osg::View& rhs)
         rhs_viewer->_updateVisitor = 0;
         rhs_viewer->_realizeOperation = 0;
         rhs_viewer->_currentContext = 0;
+
     }
 #endif
 }

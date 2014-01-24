@@ -47,6 +47,9 @@ class OSG_EXPORT Texture2DMultisample : public Texture
           return GL_TEXTURE_2D_MULTISAMPLE;
         }
 
+        /** Texture2DMultisample is related to non fixed pipeline usage only so isn't appropriate to enable/disable.*/
+        virtual bool getModeUsage(StateAttribute::ModeUsage&) const { return false; }
+
         /** Sets the texture width and height. If width or height are zero,
           * calculate the respective value from the source image size. */
         inline void setTextureSize(int width, int height) const

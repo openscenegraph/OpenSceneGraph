@@ -42,6 +42,9 @@ class OSG_EXPORT Texture2DArray : public Texture
 
         virtual GLenum getTextureTarget() const { return GL_TEXTURE_2D_ARRAY_EXT; }
 
+        /** Texture2DArray is related to non fixed pipeline usage only so isn't appropriate to enable/disable.*/
+        virtual bool getModeUsage(StateAttribute::ModeUsage&) const { return false; }
+
         /** Set the texture image for specified layer. */
         virtual void setImage(unsigned int layer, Image* image);
 

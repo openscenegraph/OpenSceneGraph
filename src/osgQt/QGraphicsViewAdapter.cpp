@@ -91,8 +91,8 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _graphicsScene->setStickyFocus(true);
 #endif
 
-    _width = _graphicsScene->width();
-    _height = _graphicsScene->height();
+    _width = static_cast<int>(_graphicsScene->width());
+    _height = static_cast<int>(_graphicsScene->height());
 
     _qimages[0] = QImage(QSize(_width, _height), s_imageFormat);
     _qimages[1] = QImage(QSize(_width, _height), s_imageFormat);

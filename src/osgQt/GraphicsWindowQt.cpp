@@ -248,16 +248,20 @@ void GLWidget::resizeEvent( QResizeEvent* event )
 {
     const QSize& size = event->size();
 
-    _gw->resized( x(), y(), size.width()*_devicePixelRatio, size.height()*_devicePixelRatio );
-    _gw->getEventQueue()->windowResize( x(), y(), size.width()*_devicePixelRatio, size.height()*_devicePixelRatio );
+    int scaled_width = static_cast<int>(size.width()*_devicePixelRatio);
+    int scaled_height = static_cast<int>(size.height()*_devicePixelRatio);
+    _gw->resized( x(), y(), scaled_width,  scaled_height);
+    _gw->getEventQueue()->windowResize( x(), y(), scaled_width, scaled_height );
     _gw->requestRedraw();
 }
 
 void GLWidget::moveEvent( QMoveEvent* event )
 {
     const QPoint& pos = event->pos();
-    _gw->resized( pos.x(), pos.y(), width()*_devicePixelRatio, height()*_devicePixelRatio );
-    _gw->getEventQueue()->windowResize( pos.x(), pos.y(), width()*_devicePixelRatio, height()*_devicePixelRatio );
+    int scaled_width = static_cast<int>(width()*_devicePixelRatio);
+    int scaled_height = static_cast<int>(height()*_devicePixelRatio);
+    _gw->resized( pos.x(), pos.y(), scaled_width,  scaled_height );
+    _gw->getEventQueue()->windowResize( pos.x(), pos.y(), scaled_width,  scaled_height );
 }
 
 void GLWidget::glDraw()

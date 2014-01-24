@@ -102,12 +102,11 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
     std::map<RenderSurface*,osg::ref_ptr<osg::GraphicsContext> > surfaces;
     osg::ref_ptr<osgViewer::View> _view = new osgViewer::View;
 
-    for (int i = 0; i < (int)config->getNumberOfCameras(); i++)
+    if (config->getNumberOfCameras()==1)
     {
-        cm = config->getCamera(i);
+        cm = config->getCamera(0);
         rs = cm->getRenderSurface();
-        if (rs->getDrawableType() != osgProducer::RenderSurface::DrawableType_Window)
-            continue;
+        if (rs->getDrawableType() != osgProducer::RenderSurface::DrawableType_Window) return 0;
 
         osg::ref_ptr<const osg::GraphicsContext::Traits> traits;
         osg::ref_ptr<osg::GraphicsContext> gc;
@@ -140,9 +139,9 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
         {
             OSG_INFO<<"  GraphicsWindow has been created successfully."<<std::endl;
 
-            osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-            camera->setGraphicsContext(gc.get());
+            osg::ref_ptr<osg::Camera> camera = _view->getCamera();
 
+            camera->setGraphicsContext(gc.get());
 
             int x,y;
             unsigned int width,height;
@@ -153,16 +152,8 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
             GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);
-
-            osg::Matrix projection(cm->getProjectionMatrix());
-
-            osg::Matrix offset = osg::Matrix::identity();
-            cm->setViewByMatrix(offset);
-            osg::Matrix view = osg::Matrix(cm->getPositionAndAttitudeMatrix());
-
-            // setup projection from parent
-            osg::Matrix offsetProjection = osg::Matrix::inverse(_view->getCamera()->getProjectionMatrix()) * projection;
-            _view->addSlave(camera.get(), offsetProjection, view);
+            camera->setProjectionMatrix(osg::Matrixd(cm->getProjectionMatrix()));
+            camera->setViewMatrix(osg::Matrixd(cm->getPositionAndAttitudeMatrix()));
 
             #if 0
             std::cout << "Matrix Projection " << projection << std::endl;
@@ -178,6 +169,85 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
             return 0;
         }
 
+    }
+    else
+    {
+        for (int i = 0; i < (int)config->getNumberOfCameras(); i++)
+        {
+            cm = config->getCamera(i);
+            rs = cm->getRenderSurface();
+            if (rs->getDrawableType() != osgProducer::RenderSurface::DrawableType_Window)
+                continue;
+
+            osg::ref_ptr<const osg::GraphicsContext::Traits> traits;
+            osg::ref_ptr<osg::GraphicsContext> gc;
+            if (surfaces.find(rs) != surfaces.end())
+            {
+                gc = surfaces[rs];
+                traits = gc.valid() ? gc->getTraits() : 0;
+            }
+            else
+            {
+                osg::GraphicsContext::Traits* newtraits = buildTrait(*rs);
+
+    #if 0
+                osg::GraphicsContext::ScreenIdentifier si;
+                si.readDISPLAY();
+
+                if (si.displayNum>=0) newtraits->displayNum = si.displayNum;
+                if (si.screenNum>=0) newtraits->screenNum = si.screenNum;
+    #endif
+
+                gc = osg::GraphicsContext::createGraphicsContext(newtraits);
+
+                surfaces[rs] = gc.get();
+                traits = gc.valid() ? gc->getTraits() : 0;
+            }
+
+            // std::cout << rs->getWindowName() << " " << rs->getWindowOriginX() << " " << rs->getWindowOriginY() << " " << rs->getWindowWidth() << " " << rs->getWindowHeight() << std::endl;
+
+            if (gc.valid())
+            {
+                OSG_INFO<<"  GraphicsWindow has been created successfully."<<std::endl;
+
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+
+
+                int x,y;
+                unsigned int width,height;
+                cm->applyLens();
+                cm->getProjectionRectangle(x, y, width, height);
+                camera->setViewport(new osg::Viewport(x, y, width, height));
+
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                osg::Matrix projection(cm->getProjectionMatrix());
+
+                osg::Matrix offset = osg::Matrix::identity();
+                cm->setViewByMatrix(offset);
+                osg::Matrix view = osg::Matrix(cm->getPositionAndAttitudeMatrix());
+
+                // setup projection from parent
+                osg::Matrix offsetProjection = osg::Matrix::inverse(_view->getCamera()->getProjectionMatrix()) * projection;
+                _view->addSlave(camera.get(), offsetProjection, view);
+
+                #if 0
+                std::cout << "Matrix Projection " << projection << std::endl;
+                std::cout << "Matrix Projection master " << _view->getCamera()->getProjectionMatrix() << std::endl;
+                // will work only if it's a post multyply in the producer camera
+                std::cout << "Matrix View " << view << std::endl;
+                std::cout << _view->getCamera()->getProjectionMatrix() * offsetProjection << std::endl;
+                #endif
+            }
+            else
+            {
+                OSG_INFO<<"  GraphicsWindow has not been created successfully."<<std::endl;
+                return 0;
+            }
+        }
     }
 
     // std::cout << "done" << std::endl;

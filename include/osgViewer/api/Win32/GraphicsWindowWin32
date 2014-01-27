@@ -121,7 +121,6 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         virtual bool setWindow( HWND handle );
 
         virtual void destroyWindow( bool deleteNativeWindow = true );
-        virtual void recreateWindow();
 
         virtual bool determineWindowPositionAndStyle( unsigned int  screenNum,
                                               int           clientAreaX,

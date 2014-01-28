@@ -217,8 +217,10 @@
 #include <fcntl.h>
 #endif
 
+#if 0
 #ifndef WIN32
 #define SUPPORT_CPP 1
+#endif
 #endif
 
 #include <osgDB/fstream>
@@ -1006,7 +1008,7 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
+
 
 #if YYERROR_VERBOSE
 
@@ -1061,7 +1063,7 @@ yystpcpy (yydest, yysrc)
 
 #endif /* !YYERROR_VERBOSE */
 
-
+
 
 #if YYDEBUG
 /*--------------------------------.
@@ -1996,7 +1998,7 @@ yyreduce:
 
 /* Line 991 of yacc.c.  */
 
-
+
   yyvsp -= yylen;
   yyssp -= yylen;
 

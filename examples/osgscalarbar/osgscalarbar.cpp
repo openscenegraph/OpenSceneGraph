@@ -98,7 +98,7 @@ osg::Node* createScalarBar(bool vertical)
 
     if ( !vertical )
     {
-        sb->setPosition( osg::Vec3(0.5f,-0.5f,0));
+        sb->setPosition( osg::Vec3(0.5f,0.5f,0));
     }
 
     return sb;
@@ -145,9 +145,15 @@ int main(int , char **)
     osgViewer::Viewer viewer;
 
     osg::Group* group = new osg::Group;
-    group->addChild(createScalarBar(true));
-    group->addChild(createScalarBar(false));
+
     group->addChild(createScalarBar_HUD());
+
+    // rotate the scalar from XY plane to XZ so we see them viewing it with the default camera manipulators that look along the Y axis, with Z up.
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
+    group->addChild(transform);
+    transform->setMatrix(osg::Matrix::rotate(osg::inDegrees(90.0),1.0,0.0,0.0));
+    transform->addChild(createScalarBar(true));
+    transform->addChild(createScalarBar(false));
 
     // add model to viewer.
     viewer.setSceneData( group );

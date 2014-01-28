@@ -134,7 +134,7 @@ void ScalarBar::createDrawables()
     }
     else
     {
-        matrix = osg::Matrix::rotate(osg::DegreesToRadians(90.0f),0.0f,0.0f,-1.0f) * osg::Matrix::translate(_position);
+        matrix = osg::Matrix::rotate(osg::DegreesToRadians(90.0f),0.0f,0.0f,1.0f) * osg::Matrix::translate(_position);
     }
 
     // 1. First the bar
@@ -206,7 +206,10 @@ void ScalarBar::createDrawables()
     std::vector<osgText::Text*> texts(_numLabels);      // We'll need to collect pointers to these for later
     float labelIncr = (_numLabels>0) ? (_stc->getMax()-_stc->getMin())/(_numLabels-1) : 0.0f;
     float labelxIncr = (_numLabels>0) ? (_width)/(_numLabels-1) : 0.0f;
-    const float labely = arOffset + characterSize*CHARACTER_OFFSET_FACTOR;
+    const float labelStickStartY = _orientation==HORIZONTAL ? arOffset : 0;
+    const float labelY = labelStickStartY +
+        (_orientation==HORIZONTAL ?  characterSize : -characterSize) * CHARACTER_OFFSET_FACTOR;
+
 
     for(i=0; i<_numLabels; ++i)
     {
@@ -217,7 +220,7 @@ void ScalarBar::createDrawables()
         text->setCharacterSize(characterSize);
         text->setText(_sp->printScalar(_stc->getMin()+(i*labelIncr)));
 
-        text->setPosition(osg::Vec3((i*labelxIncr), labely, 0.0f)*matrix);
+        text->setPosition(osg::Vec3((i*labelxIncr), labelY, 0.0f)*matrix);
         text->setAlignment( (_orientation==HORIZONTAL) ? osgText::Text::CENTER_BASE_LINE : osgText::Text::LEFT_CENTER);
 
         addDrawable(text);
@@ -240,15 +243,13 @@ void ScalarBar::createDrawables()
         osg::Vec3 titlePos;
         if ( _orientation==HORIZONTAL )
         {
-            const float titleY = (_numLabels>0) ? labely + characterSize : labely;
+            const float titleY = (_numLabels>0) ? labelY + characterSize : labelY;
             titlePos = osg::Vec3((_width/2.0f), titleY, 0.0f);
         }
         else
         {
-            titlePos = osg::Vec3( 0, arOffset/2, 0 );
+            titlePos = osg::Vec3(_width+characterSize*0.5, arOffset*0.5, 0 );
         }
-
-        float titleY = (_numLabels>0) ? labely + characterSize : labely;
 
         // Position the title at the middle of the bar above any labels.
         text->setPosition(titlePos*matrix);
@@ -279,8 +280,8 @@ void ScalarBar::createDrawables()
     //Sticks
     for(i=0; i<_numLabels; ++i)
     {
-        const osg::Vec3 p1(osg::Vec3((i*labelxIncr), arOffset, 0.0f)*matrix);
-        const osg::Vec3 p2(osg::Vec3((i*labelxIncr), labely, 0.0f)*matrix);
+        const osg::Vec3 p1(osg::Vec3((i*labelxIncr), labelStickStartY, 0.0f)*matrix);
+        const osg::Vec3 p2(osg::Vec3((i*labelxIncr), labelY, 0.0f)*matrix);
         annotVertices->push_back( p1 );
         annotVertices->push_back( p2 );
     }

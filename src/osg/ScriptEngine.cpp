@@ -16,7 +16,14 @@
 
 using namespace osg;
 
-ScriptEngine* ScriptCallback::getScriptEngine(osg::NodePath& nodePath)
+
+bool CallbackObject::run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+{
+    OSG_NOTICE<<"CallbackObject::run(object="<<object<<")"<<std::endl;
+    return false;
+}
+
+ScriptEngine* ScriptNodeCallback::getScriptEngine(osg::NodePath& nodePath)
 {
     if (!_script) return 0;
 
@@ -35,7 +42,7 @@ ScriptEngine* ScriptCallback::getScriptEngine(osg::NodePath& nodePath)
     return 0;
 }
 
-void ScriptCallback::operator()(Node* node, NodeVisitor* nv)
+void ScriptNodeCallback::operator()(Node* node, NodeVisitor* nv)
 {
     ScriptEngine* engine = getScriptEngine(nv->getNodePath());
     if (engine && _script.valid())

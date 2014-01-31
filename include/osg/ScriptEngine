@@ -17,6 +17,7 @@
 #include <osg/Object>
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>
+#include <osg/UserDataContainer>
 
 namespace osg
 {
@@ -26,6 +27,7 @@ typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
 
 // forward declare
 class ScriptEngine;
+
 
 /* Script class for wrapping a script and the language used in the script.*/
 class Script : public osg::Object
@@ -55,14 +57,41 @@ class Script : public osg::Object
         unsigned int _modifiedCount;
 };
 
+/** Callback for attaching a script to a Node's via there UserDataContainer for the purpose of overriding class methods within scripts.*/
+class OSG_EXPORT CallbackObject : public osg::Object
+{
+public:
+    CallbackObject() {}
+    CallbackObject(const std::string& name) { setName(name); }
+    CallbackObject(const CallbackObject& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):osg::Object(rhs,copyop) {}
+    META_Object(osg, CallbackObject);
+
+    inline bool run(osg::Object* object) const
+    {
+        osg::Parameters inputParameters;
+        osg::Parameters outputParameters;
+        return run(object, inputParameters, outputParameters);
+    }
+
+    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
+
+};
+
+/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
+inline CallbackObject* getCallbackObject(osg::Object* object, const std::string& name)
+{
+    osg::UserDataContainer* udc = object->getUserDataContainer();
+    return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
+}
+
 /** NodeCallback for attaching a script to a NodeCallback so that it can be called as an update or event callback.*/
-class OSG_EXPORT ScriptCallback : public osg::NodeCallback
+class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback
 {
     public:
-        ScriptCallback(Script* script=0, const std::string& entryPoint="") : _script(script), _entryPoint(entryPoint) {}
-        ScriptCallback(const ScriptCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::NodeCallback(rhs,copyop), _script(rhs._script) {}
+        ScriptNodeCallback(Script* script=0, const std::string& entryPoint="") : _script(script), _entryPoint(entryPoint) {}
+        ScriptNodeCallback(const ScriptNodeCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::NodeCallback(rhs,copyop), _script(rhs._script) {}
 
-        META_Object(osg, ScriptCallback)
+        META_Object(osg, ScriptNodeCallback)
 
         /** Set the script to call.*/
         void setScript(osg::Script* script) { _script  = script; }
@@ -81,7 +110,7 @@ class OSG_EXPORT ScriptCallback : public osg::NodeCallback
 
     protected:
 
-        virtual ~ScriptCallback() {}
+        virtual ~ScriptNodeCallback() {}
 
         osg::ref_ptr<Script>    _script;
         std::string             _entryPoint;

@@ -18,6 +18,53 @@
 
 using namespace lua;
 
+class LuaCallbackObject : public osg::CallbackObject
+{
+public:
+    LuaCallbackObject(const std::string& methodName, const LuaScriptEngine* lse, int ref):_lse(lse),_ref(ref) { setName(methodName); }
+
+    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        int topBeforeCall = lua_gettop(_lse->getLuaState());
+
+        lua_rawgeti(_lse->getLuaState(), LUA_REGISTRYINDEX, _ref);
+
+        int numInputs = 1;
+        _lse->pushParameter(object);
+
+        for(osg::Parameters::iterator itr = inputParameters.begin();
+            itr != inputParameters.end();
+            ++itr)
+        {
+            _lse->pushParameter(itr->get());
+            ++numInputs;
+        }
+
+        if (lua_pcall(_lse->getLuaState(), numInputs, LUA_MULTRET,0)!=0)
+        {
+            OSG_NOTICE<<"Lua error : "<<lua_tostring(_lse->getLuaState(), -1)<<std::endl;
+            return false;
+        }
+
+        int topAfterCall = lua_gettop(_lse->getLuaState());
+        int numReturns = topAfterCall-topBeforeCall;
+        for(int i=1; i<=numReturns; ++i)
+        {
+            outputParameters.insert(outputParameters.begin(), _lse->popParameterObject());
+        }
+
+        return true;
+    }
+
+    int getRef() const { return _ref; }
+
+protected:
+
+    osg::ref_ptr<const LuaScriptEngine> _lse;
+    int _ref;
+};
+
+
 static int getProperty(lua_State * _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -439,6 +486,8 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, os
         }
     }
 
+    int topBeforeCall = lua_gettop(_lua);
+
     if (entryPoint.empty())
     {
         ScriptMap::iterator itr = _loadedScripts.find(script);
@@ -460,7 +509,6 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, os
         pushParameter(itr->get());
     }
 
-    int topBeforeCall = lua_gettop(_lua);
 
     if (lua_pcall(_lua, inputParameters.size(), LUA_MULTRET,0)!=0)
     {
@@ -563,6 +611,15 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             lua_pushstring(_lua, propertyName.c_str());
             lua_pushcclosure(_lua, callClassMethod, 2);
 
+            return 1;
+        }
+
+        osg::CallbackObject* co = osg::getCallbackObject(object, propertyName);
+        LuaCallbackObject* lco = dynamic_cast<LuaCallbackObject*>(co);
+        if (lco)
+        {
+            lua_rawgeti(_lua, LUA_REGISTRYINDEX, lco->getRef());
+            OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") has callback object method need to call it, ref="<<lco->getRef()<<std::endl;
             return 1;
         }
 
@@ -740,6 +797,16 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
     osgDB::BaseSerializer::Type type;
     if (!_pi.getPropertyType(object, propertyName, type))
     {
+        if (lua_type(_lua,-1)==LUA_TFUNCTION)
+        {
+            int ref = luaL_ref(_lua, LUA_REGISTRYINDEX);
+
+            OSG_NOTICE<<"LuaScriptEngine::setPropertyFromStack("<<object<<", "<<propertyName<<") need to handle lua function assigment, ref="<<ref<<std::endl;
+            osg::ref_ptr<LuaCallbackObject> lco = new LuaCallbackObject(propertyName, this, ref);
+            object->getOrCreateUserDataContainer()->addUserObject(lco.get());
+            return 0;
+        }
+
         type = LuaScriptEngine::getType();
     }
 

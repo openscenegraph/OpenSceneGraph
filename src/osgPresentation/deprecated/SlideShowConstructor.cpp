@@ -731,10 +731,10 @@ void SlideShowConstructor::addScriptToNode(ScriptCallbackType scriptCallbackType
         switch(scriptCallbackType)
         {
             case(UPDATE_SCRIPT) :
-                node->addUpdateCallback(new osg::ScriptCallback(script_itr->second.get(), entry_point));
+                node->addUpdateCallback(new osg::ScriptNodeCallback(script_itr->second.get(), entry_point));
                 break;
             case(EVENT_SCRIPT) :
-                node->addEventCallback(new osg::ScriptCallback(script_itr->second.get(), entry_point));
+                node->addEventCallback(new osg::ScriptNodeCallback(script_itr->second.get(), entry_point));
                 break;
         }
     }

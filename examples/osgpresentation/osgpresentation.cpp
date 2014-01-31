@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         itr != scripts.end();
         ++itr)
     {
-       model->addUpdateCallback(new osg::ScriptCallback(itr->get()));
+       model->addUpdateCallback(new osg::ScriptNodeCallback(itr->get()));
     }
 
     std::string str;
@@ -441,7 +441,7 @@ int main(int argc, char** argv)
             osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
             if (script.valid())
             {
-                presentation->addUpdateCallback(new osg::ScriptCallback(script.get(),"update"));
+                presentation->addUpdateCallback(new osg::ScriptNodeCallback(script.get(),"update"));
             }
         }
 

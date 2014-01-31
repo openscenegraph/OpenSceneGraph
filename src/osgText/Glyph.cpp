@@ -528,7 +528,7 @@ void Glyph::subload() const
                                  "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
                                  "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
                                  "\t                0x"<<(GLenum)getDataType()<<std::endl<<
-                                 "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
+                                 "\t                "<<static_cast<const void*>(data())<<");"<<dec<<std::endl;
     }
 }
 

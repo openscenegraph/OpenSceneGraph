@@ -22,6 +22,8 @@
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/ComputeBoundsVisitor>
+#include <osg/UserDataContainer>
+#include <osg/ValueObject>
 #include <osg/io_utils>
 
 #include <osgDB/ReadFile>
@@ -362,10 +364,87 @@ public:
     }
 };
 
+
+
+class MyScriptCallback : public osg::CallbackObject
+{
+public:
+    MyScriptCallback(osg::ScriptEngine* se, osg::Script* script, const std::string& entryPoint) : _scriptEngine(se), _script(script) { setName(entryPoint); }
+
+    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        inputParameters.insert(inputParameters.begin(), object);
+        return _scriptEngine->run(_script.get(), getName(), inputParameters, outputParameters);
+    }
+
+    osg::ref_ptr<osg::ScriptEngine> _scriptEngine;
+    osg::ref_ptr<osg::Script> _script;
+};
+
+class MyClass : public osg::Object
+{
+public:
+    MyClass() {}
+    MyClass(const MyClass& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):osg::Object(rhs,copyop) {}
+    META_Object(local,MyClass)
+
+    void myMethod()
+    {
+        osg::CallbackObject* co = osg::getCallbackObject(this, "myMethod");
+        if (co) co->run(this);
+        else myMethodImplementation();
+    }
+
+    virtual void myMethodImplementation()
+    {
+        OSG_NOTICE<<"MyClass::myMethodImplementation()"<<std::endl;
+    }
+};
+
+
 int main(int argc, char ** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
 
+#if 0
+
+    osg::ref_ptr<MyClass> myobject = new MyClass;
+    myobject->getOrCreateUserDataContainer()->addUserObject(new osg::CallbackObject("myMethod"));
+    myobject->myMethod();
+
+    osg::ref_ptr<osg::ScriptEngine> se = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
+    osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>("script.lua");
+
+    osg::ref_ptr<MyClass> copyobject = new MyClass;
+    copyobject->getOrCreateUserDataContainer()->addUserObject(new MyScriptCallback(se.get(), script.get(), "myMethod"));
+    copyobject->myMethod();
+#endif
+
+    osg::ref_ptr<osg::Object> object = osgDB::readNodeFile("load.lua");
+    if (object.valid())
+    {
+        osg::CallbackObject* co = osg::getCallbackObject(object.get(), "method");
+        OSG_NOTICE<<"Have object = "<<object->className()<<std::endl;
+        OSG_NOTICE<<"Have co = "<<co<<std::endl;
+        if (co)
+        {
+            osg::Parameters inputParameters, outputParameters;
+            inputParameters.push_back(new osg::StringValueObject("string",std::string("all there is to celeberate is here.")));
+            co->run(object.get(), inputParameters, outputParameters);
+            OSG_NOTICE<<"outputParameters.size()="<<outputParameters.size()<<std::endl;
+            for(osg::Parameters::iterator itr = outputParameters.begin();
+                itr != outputParameters.end();
+                ++itr)
+            {
+                OSG_NOTICE<<"   returned "<<(*itr)->className()<<std::endl;
+            }
+        }
+    }
+    return 0;
+
+
+
+    #if 0
     osgViewer::Viewer viewer(arguments);
 
     viewer.addEventHandler(new osgViewer::StatsHandler());
@@ -575,4 +654,6 @@ int main(int argc, char ** argv)
     osgDB::writeNodeFile(*viewer.getSceneData(),"graph.osgt");
 
     return viewer.run();
+#endif
+
 }

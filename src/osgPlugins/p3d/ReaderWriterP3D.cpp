@@ -1353,6 +1353,14 @@ osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std:
 void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
 {
 
+    for(osgDB::XmlNode::Children::iterator itr = cur->children.begin();
+    itr != cur->children.end();
+    ++itr)
+    {
+        osgDB::XmlNode* child = itr->get();
+        OSG_NOTICE<<"parseVolume has child "<<child->contents<<std::endl;
+    }
+
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
     bool positionRead = getProperties(cur,positionData);
 

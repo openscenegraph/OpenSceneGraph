@@ -2840,7 +2840,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
         if (hull.valid())
         {
-            if (volumeData.hullPositionData.requiresPosition() || volumeData.hullPositionData.requiresScale() || volumeData.hullPositionData.requiresRotate())
+            if (volumeData.hullPositionData.position!=osg::Vec3(0.0f,0.0f,0.0f) || volumeData.hullPositionData.requiresScale() || volumeData.hullPositionData.requiresRotate())
             {
                 osg::Matrix matrix(osg::Matrix::scale(1.0f/volumeData.hullPositionData.scale.x(),1.0f/volumeData.hullPositionData.scale.y(),1.0f/volumeData.hullPositionData.scale.z())*
                                 osg::Matrix::rotate(osg::DegreesToRadians(volumeData.hullPositionData.rotate[0]),volumeData.hullPositionData.rotate[1],volumeData.hullPositionData.rotate[2],volumeData.hullPositionData.rotate[3])*

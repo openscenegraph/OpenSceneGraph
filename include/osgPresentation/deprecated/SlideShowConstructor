@@ -333,6 +333,7 @@ public:
         osg::Vec4                               colorModulate;
         Technique                               technique;
         std::string                             hull;
+        PositionData                            hullPositionData;
     };
 
 

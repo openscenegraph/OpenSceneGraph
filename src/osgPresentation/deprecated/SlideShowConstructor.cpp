@@ -2840,7 +2840,22 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
         if (hull.valid())
         {
-            tile->addChild(hull.get());
+            if (volumeData.hullPositionData.requiresPosition() || volumeData.hullPositionData.requiresScale() || volumeData.hullPositionData.requiresRotate())
+            {
+                osg::Matrix matrix(osg::Matrix::scale(1.0f/volumeData.hullPositionData.scale.x(),1.0f/volumeData.hullPositionData.scale.y(),1.0f/volumeData.hullPositionData.scale.z())*
+                                osg::Matrix::rotate(osg::DegreesToRadians(volumeData.hullPositionData.rotate[0]),volumeData.hullPositionData.rotate[1],volumeData.hullPositionData.rotate[2],volumeData.hullPositionData.rotate[3])*
+                                osg::Matrix::translate(volumeData.hullPositionData.position));
+
+                osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+                transform->setMatrix(osg::Matrix::inverse(matrix));
+
+                transform->addChild(hull.get());
+                tile->addChild(transform.get());
+            }
+            else
+            {
+                tile->addChild(hull.get());
+            }
         }
     }
 

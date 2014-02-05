@@ -1353,18 +1353,31 @@ osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std:
 void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
 {
 
+    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
+    bool positionRead = getProperties(cur,positionData);
+
+    osgPresentation::SlideShowConstructor::VolumeData volumeData;
+
+    // check for any hulls
     for(osgDB::XmlNode::Children::iterator itr = cur->children.begin();
     itr != cur->children.end();
     ++itr)
     {
         osgDB::XmlNode* child = itr->get();
-        OSG_NOTICE<<"parseVolume has child "<<child->contents<<std::endl;
+        if (match(child->name,"hull"))
+        {
+            osgPresentation::SlideShowConstructor::PositionData hullPositionData;
+            hullPositionData.position = osg::Vec3(0.0,0.0,0.0);
+            volumeData.hull = child->contents;
+
+            if (getProperties(child,hullPositionData))
+            {
+                volumeData.hullPositionData = hullPositionData;
+            }
+
+        }
     }
 
-    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
-    bool positionRead = getProperties(cur,positionData);
-
-    osgPresentation::SlideShowConstructor::VolumeData volumeData;
 
     // check the rendering technique/shading model to use
     std::string technique;

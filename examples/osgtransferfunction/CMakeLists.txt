@@ -1,5 +1,4 @@
 SET(TARGET_SRC
-    Widget.cpp
     TransferFunctionWidget.cpp
     osgtransferfunction.cpp
 )

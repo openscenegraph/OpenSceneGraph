@@ -11,7 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include "Widget.h"
 
 #include <osg/Geode>
 #include <osg/ScriptEngine>
@@ -19,10 +18,11 @@
 #include <osg/MatrixTransform>
 #include <osg/io_utils>
 
+#include <osgGA/Widget>
 #include <osgGA/EventVisitor>
-#include <osgViewer/View>
+#include <osgGA/GUIActionAdapter>
 
-using namespace osgUI;
+using namespace osgGA;
 
 Widget::Widget():
     _focusBehaviour(FOCUS_FOLLOWS_POINTER),
@@ -50,8 +50,8 @@ void Widget::setExtents(const osg::BoundingBox& bb)
 void Widget::updateFocus(osg::NodeVisitor& nv)
 {
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
-    osgViewer::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : 0;
-    if (ev && view)
+    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
+    if (ev && aa)
     {
         osgGA::EventQueue::Events& events = ev->getEvents();
         for(osgGA::EventQueue::Events::iterator itr = events.begin();
@@ -74,7 +74,7 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
                         if (numButtonsPressed==1)
                         {
                             osgUtil::LineSegmentIntersector::Intersections intersections;
-                            bool withinWidget = view->computeIntersections(*ea, nv.getNodePath(), intersections);
+                            bool withinWidget = aa->computeIntersections(*ea, nv.getNodePath(), intersections);
                             if (withinWidget) _hasEventFocus = true;
                             else _hasEventFocus = false;
                         }
@@ -104,7 +104,7 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
                     if (checkWithinWidget)
                     {
                         osgUtil::LineSegmentIntersector::Intersections intersections;
-                        bool withinWidget = view->computeIntersections(*ea, nv.getNodePath(), intersections);
+                        bool withinWidget = aa->computeIntersections(*ea, nv.getNodePath(), intersections);
 
                         _hasEventFocus = withinWidget;
                     }
@@ -205,8 +205,7 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
 
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
-    osgViewer::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : 0;
-    if (ev && view)
+    if (ev)
     {
         updateFocus(nv);
 
@@ -263,9 +262,9 @@ bool Widget::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*e
 
 bool Widget::computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const
 {
-    osgViewer::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : 0;
+    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (view && view->computeIntersections(*event, ev->getNodePath(), intersections))
+    if (aa && aa->computeIntersections(*event, ev->getNodePath(), intersections))
     {
         localPosition = intersections.begin()->getLocalIntersectPoint();
 

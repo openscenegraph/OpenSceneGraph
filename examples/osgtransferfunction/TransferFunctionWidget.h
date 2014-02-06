@@ -17,14 +17,14 @@
 #include <osg/Group>
 #include <osg/TransferFunction>
 
-#include "Widget.h"
+#include <osgGA/Widget>
 
 #define OSGUI_EXPORT
 
 namespace osgUI
 {
 
-class OSGUI_EXPORT TransferFunctionWidget : public osgUI::Widget
+class OSGUI_EXPORT TransferFunctionWidget : public osgGA::Widget
 {
 public:
     TransferFunctionWidget(osg::TransferFunction1D* tf=0);

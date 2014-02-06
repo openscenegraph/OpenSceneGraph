@@ -14,6 +14,7 @@
 #include "Widget.h"
 
 #include <osg/Geode>
+#include <osg/ScriptEngine>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
 #include <osg/io_utils>
@@ -150,15 +151,56 @@ bool Widget::getHasEventFocus() const
 
 void Widget::enter()
 {
+    osg::CallbackObject* co = osg::getCallbackObject(this, "enter");
+    if (co)
+    {
+        co->run(this);
+    }
+    else
+    {
+        enterImplementation();
+    }
+}
+
+void Widget::enterImplementation()
+{
     OSG_NOTICE<<"enter()"<<std::endl;
 }
 
 void Widget::leave()
 {
+    osg::CallbackObject* co = osg::getCallbackObject(this, "leave");
+    if (co)
+    {
+        co->run(this);
+    }
+    else
+    {
+        leaveImplementation();
+    }
+}
+
+void Widget::leaveImplementation()
+{
     OSG_NOTICE<<"leave()"<<std::endl;
 }
 
 void Widget::traverse(osg::NodeVisitor& nv)
+{
+    osg::CallbackObject* co = osg::getCallbackObject(this, "traverse");
+    if (co)
+    {
+        osg::Parameters inputParameters, outputParameters;
+        inputParameters.push_back(&nv);
+        co->run(this, inputParameters, outputParameters);
+    }
+    else
+    {
+        traverseImplementation(nv);
+    }
+}
+
+void Widget::traverseImplementation(osg::NodeVisitor& nv)
 {
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
 
@@ -190,7 +232,31 @@ void Widget::traverse(osg::NodeVisitor& nv)
     }
 }
 
-bool Widget::handle(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*event*/)
+bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
+{
+    osg::CallbackObject* co = osg::getCallbackObject(this, "handle");
+    if (co)
+    {
+        osg::Parameters inputParameters, outputParameters;
+        inputParameters.push_back(ev);
+        inputParameters.push_back(event);
+        if (co->run(this, inputParameters, outputParameters))
+        {
+            if (outputParameters.size()>=1)
+            {
+                return true;
+            }
+        }
+        return false;
+
+    }
+    else
+    {
+        return handleImplementation(ev, event);
+    }
+}
+
+bool Widget::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*event*/)
 {
     return false;
 }
@@ -213,6 +279,20 @@ bool Widget::computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::G
 
 
 void Widget::createGraphics()
+{
+    osg::CallbackObject* co = osg::getCallbackObject(this, "createGraphics");
+    if (co)
+    {
+        co->run(this);
+    }
+    else
+    {
+        createGraphicsImplementation();
+    }
+
+}
+
+void Widget::createGraphicsImplementation()
 {
     _graphicsInitialized = true;
 }

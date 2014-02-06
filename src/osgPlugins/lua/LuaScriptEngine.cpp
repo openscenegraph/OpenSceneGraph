@@ -137,7 +137,8 @@ static int callClassMethod(lua_State* _lua)
     if (n>=1 && lua_type(_lua, 1)==LUA_TTABLE)
     {
         osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
-        OSG_NOTICE<<"callClassMethod() on "<<object->className()<<" method name "<<methodName<<std::endl;
+        const std::string compoundClassName = lse->getObjectCompoundClassName(1); // object->getCompoundClassName();
+        OSG_NOTICE<<"callClassMethod() on "<<object->className()<<" method name "<<methodName<<", stored compoundClassName "<<compoundClassName<<std::endl;
 
         // need to put within a c function
         osg::Parameters inputParameters, outputParameters;
@@ -147,8 +148,7 @@ static int callClassMethod(lua_State* _lua)
             inputParameters.insert(inputParameters.begin(), lse->popParameterObject());
         }
 
-//        if (osgDB::MethodsObjectManager::instance()->run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))
-        if (lse->getPropertyInterface().run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters))
+        if (lse->getPropertyInterface().run(object, compoundClassName, methodName, inputParameters, outputParameters))
         {
             for(osg::Parameters::iterator itr = outputParameters.begin();
                 itr != outputParameters.end();
@@ -162,106 +162,6 @@ static int callClassMethod(lua_State* _lua)
     }
     return 0;
 }
-
-#if 0
-static int getChild(lua_State * _lua)
-{
-    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
-
-    int n = lua_gettop(_lua);    /* number of arguments */
-    if (n==2 &&
-        lua_type(_lua, 1)==LUA_TTABLE &&
-        lua_type(_lua, 2)==LUA_TNUMBER)
-    {
-
-        osg::Group* group = lse->getObjectFromTable<osg::Group>(1);
-        int index = static_cast<int>(lua_tonumber(_lua, 2));
-        if (group)
-        {
-            if (index>=0 && index<static_cast<int>(group->getNumChildren()))
-            {
-                lse->pushObject(group->getChild(index));
-                return 1;
-            }
-            else
-            {
-                OSG_NOTICE<<"Warning: child index out of range "<<index<<std::endl;
-                return 0;
-            }
-        }
-    }
-
-    OSG_NOTICE<<"Warning: Lua Group::getChild() not matched"<<std::endl;
-    return 0;
-}
-
-static int setChild(lua_State* _lua)
-{
-    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
-
-    if (lse->matchLuaParameters(LUA_TTABLE, LUA_TNUMBER, LUA_TTABLE))
-    {
-
-        osg::Group* group = lse->getObjectFromTable<osg::Group>(1);
-        osg::Node* child = lse->getObjectFromTable<osg::Node>(3);
-        int index = static_cast<int>(lua_tonumber(_lua, 2));
-        if (group && child)
-        {
-            if (index>=0 && index<static_cast<int>(group->getNumChildren()))
-            {
-                group->setChild(index, child);
-                return 1;
-            }
-            else
-            {
-                OSG_NOTICE<<"Warning: child index out of range "<<index<<std::endl;
-                return 0;
-            }
-        }
-    }
-
-    OSG_NOTICE<<"Warning: Lua Group::setChild() parameters not matched"<<std::endl;
-    return 0;
-}
-
-static int addChild(lua_State* _lua)
-{
-    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
-
-    if (lse->matchLuaParameters(LUA_TTABLE, LUA_TTABLE))
-    {
-        osg::Group* group = lse->getObjectFromTable<osg::Group>(1);
-        osg::Node* child = lse->getObjectFromTable<osg::Node>(2);
-        if (group && child)
-        {
-            OSG_NOTICE<<"addChild("<<child->className()<<") ptr = "<<child<<std::endl;
-            group->addChild(child);
-            return 0;
-        }
-    }
-
-    OSG_NOTICE<<"Warning: Lua Group::addChild() parameters not matched"<<std::endl;
-    return 0;
-}
-
-static int getNumChildren(lua_State * _lua)
-{
-    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
-
-    if (lse->matchLuaParameters(LUA_TTABLE))
-    {
-        osg::Group* group = lse->getObjectFromTable<osg::Group>(1);
-        if (group)
-        {
-            lua_pushinteger(_lua, group->getNumChildren());
-            return 1;
-        }
-    }
-
-    OSG_NOTICE<<"Warning: Lua Group::getNumChildren() not matched"<<std::endl;
-    return 0;
-}
-#endif
 
 static int garabageCollectObject(lua_State* _lua)
 {
@@ -290,6 +190,26 @@ static int newObject(lua_State * _lua)
             std::string compoundName = lua_tostring(_lua, 1);
 
             lse->createAndPushObject(compoundName);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int castObject(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==2)
+    {
+        if (lua_type(_lua, 1)==LUA_TSTRING && lua_type(_lua, 2)==LUA_TTABLE)
+        {
+            std::string new_compoundClassName = lua_tostring(_lua, 1);
+            osg::Object* object  = lse->getObjectFromTable<osg::Object>(2);
+
+            lse->pushAndCastObject(new_compoundClassName, object);
+
             return 1;
         }
     }
@@ -391,6 +311,13 @@ void LuaScriptEngine::initialize()
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, newObject, 1);
         lua_setglobal(_lua, "new");
+    }
+
+    // provide global new method for casting osg::Object's.
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, castObject, 1);
+        lua_setglobal(_lua, "cast");
     }
 
     // provide global new method for reading Objects
@@ -1081,6 +1008,7 @@ osgDB::BaseSerializer::Type LuaScriptEngine::getType() const
 {
     switch(lua_type(_lua,-1))
     {
+        case(LUA_TNIL): return osgDB::BaseSerializer::RW_UNDEFINED;
         case(LUA_TNUMBER): return osgDB::BaseSerializer::RW_DOUBLE;
         case(LUA_TBOOLEAN): return osgDB::BaseSerializer::RW_BOOL;
         case(LUA_TSTRING): return osgDB::BaseSerializer::RW_STRING;
@@ -1603,57 +1531,54 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
 
         lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, object->libraryName()); lua_settable(_lua, -3);
         lua_pushstring(_lua, "className"); lua_pushstring(_lua, object->className()); lua_settable(_lua, -3);
+        lua_pushstring(_lua, "compoundClassName"); lua_pushstring(_lua, object->getCompoundClassName().c_str()); lua_settable(_lua, -3);
 
-        osg::Group* group = dynamic_cast<osg::Group*>(object);
-        osg::Geode* geode = dynamic_cast<osg::Geode*>(object);
-        if (group)
+        luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+        lua_setmetatable(_lua, -2);
+    }
+    else
+    {
+        lua_pushnil(_lua);
+    }
+}
+
+void LuaScriptEngine::pushAndCastObject(const std::string& compoundClassName, osg::Object* object) const
+{
+    if (object && _pi.isObjectOfType(object, compoundClassName))
+    {
+        lua_newtable(_lua);
+
+        // set up objbect_ptr to handle ref/unref of the object
         {
-#if 0
-            assignClosure("getChild", getChild);
-            assignClosure("setChild", setChild);
-            assignClosure("addChild", addChild);
-            assignClosure("getNumChildren", getNumChildren);
-#endif
-#if 0
-            lua_pushstring(_lua, "getChild");
-            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
-            lua_pushcclosure(_lua, getChild, 1);
+            lua_pushstring(_lua, "object_ptr");
+
+            // create user data for pointer
+            void* userdata = lua_newuserdata( _lua, sizeof(osg::Object*));
+            (*reinterpret_cast<osg::Object**>(userdata)) = object;
+
+            luaL_getmetatable( _lua, "LuaScriptEngine.UnrefObject");
+            lua_setmetatable( _lua, -2 );
+
             lua_settable(_lua, -3);
 
-            lua_pushstring(_lua, "setChild");
-            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
-            lua_pushcclosure(_lua, setChild, 1);
-            lua_settable(_lua, -3);
+            // increment the reference count as the lua now will unreference it once it's finished with the userdata for the pointer
+            object->ref();
+        }
 
-            lua_pushstring(_lua, "addChild");
-            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
-            lua_pushcclosure(_lua, addChild, 1);
-            lua_settable(_lua, -3);
+        std::string::size_type seperator = compoundClassName.find("::");
+        std::string libraryName = (seperator==std::string::npos) ? object->libraryName() : compoundClassName.substr(0, seperator);
+        std::string className = (seperator==std::string::npos) ? object->className() : compoundClassName.substr(seperator+2,std::string::npos);
 
-            lua_pushstring(_lua, "getNumChildren");
-            lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
-            lua_pushcclosure(_lua, getNumChildren, 1);
-            lua_settable(_lua, -3);
-#endif
-            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
-            lua_setmetatable(_lua, -2);
-        }
-        else if (geode)
-        {
-#if 0
-            assignClosure("getDrawable",getDrawable,1);
-            assignClosure("setDrawable",setDrawable,1);
-            assignClosure("addDrawable",addDrawable,1);
-            assignClosure("getNumDrawables",getNumDrawables,1);
-#endif
-            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
-            lua_setmetatable(_lua, -2);
-        }
-        else
-        {
-            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
-            lua_setmetatable(_lua, -2);
-        }
+
+        OSG_NOTICE<<"pushAndCastObject("<<compoundClassName<<" -> libraryName="<<libraryName<<" & className="<<className<<", object"<<object<<")"<<std::endl;
+
+        lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, libraryName.c_str()); lua_settable(_lua, -3);
+        lua_pushstring(_lua, "className"); lua_pushstring(_lua, className.c_str()); lua_settable(_lua, -3);
+
+        lua_pushstring(_lua, "compoundClassName"); lua_pushstring(_lua, compoundClassName.c_str()); lua_settable(_lua, -3);
+
+        luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+        lua_setmetatable(_lua, -2);
     }
     else
     {

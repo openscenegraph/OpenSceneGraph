@@ -520,6 +520,27 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
     return true;
 }
 
+bool PropertyInterface::isObjectOfType(const osg::Object* object, const std::string& compoundClassName) const
+{
+    if (!object) return false;
+
+    if (object->getCompoundClassName()==compoundClassName) return true;
+
+    osgDB::ObjectWrapper* ow = getObjectWrapper(object);
+    if (!ow)
+    {
+        return false;
+    }
+
+    const osgDB::StringList& associates = ow->getAssociates();
+    for(osgDB::StringList::const_iterator aitr = associates.begin();
+        aitr != associates.end();
+        ++aitr)
+    {
+        if ((*aitr)==compoundClassName) return true;
+    }
+    return false;
+}
 
 bool PropertyInterface::run(void* objectPtr, const std::string& compoundClassName, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
 {

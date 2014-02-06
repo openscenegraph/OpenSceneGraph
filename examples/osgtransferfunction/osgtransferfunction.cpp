@@ -420,6 +420,7 @@ int main(int argc, char ** argv)
     copyobject->myMethod();
 #endif
 
+#if 0
     osg::ref_ptr<osg::Object> object = osgDB::readNodeFile("load.lua");
     if (object.valid())
     {
@@ -441,10 +442,10 @@ int main(int argc, char ** argv)
         }
     }
     return 0;
+#endif
 
 
-
-    #if 0
+    #if 1
     osgViewer::Viewer viewer(arguments);
 
     viewer.addEventHandler(new osgViewer::StatsHandler());

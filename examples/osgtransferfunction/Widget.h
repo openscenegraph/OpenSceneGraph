@@ -32,12 +32,15 @@ public:
     META_Node(osgUI, Widget);
 
     virtual void traverse(osg::NodeVisitor& nv);
+    virtual void traverseImplementation(osg::NodeVisitor& nv);
 
     virtual bool handle(osgGA::EventVisitor* ev, osgGA::Event* event);
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
 
     virtual bool computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const;
 
     virtual void createGraphics();
+    virtual void createGraphicsImplementation();
 
     virtual void setExtents(const osg::BoundingBox& bb);
     const osg::BoundingBox& getExtents() const { return _extents; }
@@ -63,14 +66,17 @@ public:
 
     virtual osg::BoundingSphere computeBound() const;
 
-protected:
-    virtual ~Widget() {}
-
     /** update any focus related graphics+state to the focused state.*/
     virtual void enter();
+    virtual void enterImplementation();
 
     /** update any focus related graphics+state to the unfocused state.*/
     virtual void leave();
+    virtual void leaveImplementation();
+
+
+protected:
+    virtual ~Widget() {}
 
     FocusBehaviour      _focusBehaviour;
     bool                _hasEventFocus;

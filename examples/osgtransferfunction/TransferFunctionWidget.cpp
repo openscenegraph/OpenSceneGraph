@@ -120,12 +120,12 @@ void TransferFunctionWidget::scaleVisibleRange(float center, float delta)
 }
 
 
-void TransferFunctionWidget::traverse(osg::NodeVisitor& nv)
+void TransferFunctionWidget::traverseImplementation(osg::NodeVisitor& nv)
 {
-    Widget::traverse(nv);
+    Widget::traverseImplementation(nv);
 }
 
-bool TransferFunctionWidget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool TransferFunctionWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
@@ -222,7 +222,7 @@ bool TransferFunctionWidget::handle(osgGA::EventVisitor* ev, osgGA::Event* event
     return false;
 }
 
-void TransferFunctionWidget::createGraphics()
+void TransferFunctionWidget::createGraphicsImplementation()
 {
 //    OSG_NOTICE<<"Create graphics"<<std::endl;
 
@@ -390,5 +390,5 @@ void TransferFunctionWidget::createGraphics()
     _geometry->dirtyBound();
 
     // make sure the general widget geometry/state is created and _graphicsInitialized reset to false
-    Widget::createGraphics();
+    Widget::createGraphicsImplementation();
 }

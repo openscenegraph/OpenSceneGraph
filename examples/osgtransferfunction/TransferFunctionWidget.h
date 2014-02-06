@@ -31,9 +31,9 @@ public:
     TransferFunctionWidget(const TransferFunctionWidget& tfw, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Node(osgUI, TransferFunctionWidget);
 
-    void traverse(osg::NodeVisitor& nv);
+    virtual void traverseImplementation(osg::NodeVisitor& nv);
 
-    virtual bool handle(osgGA::EventVisitor* ev, osgGA::Event* event);
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
 
     void setTransferFunction(const osg::TransferFunction1D* tf);
     osg::TransferFunction1D* getTransferFunction() { return _transferFunction.get(); }
@@ -44,7 +44,7 @@ public:
     void translateVisibleRange(float delta);
     void scaleVisibleRange(float center, float delta);
 
-    virtual void createGraphics();
+    virtual void createGraphicsImplementation();
 
 protected:
     virtual ~TransferFunctionWidget() {}

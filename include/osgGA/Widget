@@ -21,7 +21,7 @@
 
 #define OSGUI_EXPORT
 
-namespace osgUI
+namespace osgGA
 {
 
 class OSGUI_EXPORT Widget : public osg::Group

@@ -127,7 +127,7 @@ public:
 
 
     /** create an object of specified type for provided compound class name  in the form libraryName::className. */
-    osg::Object* createObject(const std::string& compounClassdName) const;
+    osg::Object* createObject(const std::string& compoundClassdName) const;
 
 
     /// template method for getting property data, return true if property available and the type is compatible, otherwise returns false.
@@ -151,6 +151,9 @@ public:
 
     /// Get the list of of properties supported by object
     bool getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates=true) const;
+
+    /// return true if the object can be cast to the specified class specified by compoundClassName
+    bool isObjectOfType(const osg::Object* object, const std::string& compoundClassName) const;
 
 
     /// run method of object

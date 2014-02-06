@@ -95,6 +95,7 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         void createAndPushObject(const std::string& compoundName) const;
         void pushObject(osg::Object* object) const;
+        void pushAndCastObject(const std::string& compoundClassName, osg::Object* object) const;
 
         template<class T>
         T* getObjectFromTable(int pos) const
@@ -113,6 +114,22 @@ class LuaScriptEngine : public osg::ScriptEngine
                 return dynamic_cast<T*>(object);
             }
             else return 0;
+        }
+
+        std::string getObjectCompoundClassName(int pos) const
+        {
+            if (lua_type(_lua, pos)==LUA_TTABLE)
+            {
+                lua_pushstring(_lua, "compoundClassName");
+                lua_rawget(_lua, pos);
+
+                std::string compoundClassName = lua_tostring(_lua, -1);
+
+                lua_pop(_lua,1);
+
+                return compoundClassName;
+            }
+            else return std::string("");
         }
 
         void assignClosure(const char* name, lua_CFunction fn) const;

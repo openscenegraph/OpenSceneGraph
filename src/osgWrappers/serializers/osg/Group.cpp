@@ -51,7 +51,6 @@ struct GroupGetChild : public osgDB::MethodObject
         if (inputParameters.empty()) return false;
 
         osg::Object* indexObject = inputParameters[0].get();
-        OSG_NOTICE<<"GroupGetChild "<<indexObject->className()<<std::endl;
 
         unsigned int index = 0;
         osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);

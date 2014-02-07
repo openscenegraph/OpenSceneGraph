@@ -29,7 +29,7 @@ class OSGUI_EXPORT Widget : public osg::Group
 public:
     Widget();
     Widget(const Widget& tfw, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-    META_Node(osgUI, Widget);
+    META_Node(osgGA, Widget);
 
     virtual void traverse(osg::NodeVisitor& nv);
     virtual void traverseImplementation(osg::NodeVisitor& nv);

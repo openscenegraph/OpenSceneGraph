@@ -52,7 +52,6 @@ public:
         {
             outputParameters.insert(outputParameters.begin(), _lse->popParameterObject());
         }
-
         return true;
     }
 
@@ -133,18 +132,18 @@ static int callClassMethod(lua_State* _lua)
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     std::string methodName = lua_tostring(_lua, lua_upvalueindex(2));
     int n = lua_gettop(_lua);    /* number of arguments */
-    OSG_NOTICE<<"callClassMethod(), n =  "<<n<<", "<<lua_type(_lua, 1)<<std::endl;
+
     if (n>=1 && lua_type(_lua, 1)==LUA_TTABLE)
     {
         osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
         const std::string compoundClassName = lse->getObjectCompoundClassName(1); // object->getCompoundClassName();
-        OSG_NOTICE<<"callClassMethod() on "<<object->className()<<" method name "<<methodName<<", stored compoundClassName "<<compoundClassName<<std::endl;
+        // OSG_NOTICE<<"callClassMethod() on "<<object->className()<<" method name "<<methodName<<", stored compoundClassName "<<compoundClassName<<std::endl;
 
         // need to put within a c function
         osg::Parameters inputParameters, outputParameters;
         for(int i=2; i<=n; ++i)
         {
-            OSG_NOTICE<<" need to push parameter "<<lua_typename(_lua, lua_type(_lua, n))<<std::endl;
+            // OSG_NOTICE<<" need to push parameter "<<lua_typename(_lua, lua_type(_lua, n))<<std::endl;
             inputParameters.insert(inputParameters.begin(), lse->popParameterObject());
         }
 
@@ -154,12 +153,17 @@ static int callClassMethod(lua_State* _lua)
                 itr != outputParameters.end();
                 ++itr)
             {
-                OSG_NOTICE<<" pushing return "<<(*itr)->className()<<std::endl;
+                // OSG_NOTICE<<" pushing return "<<(*itr)->className()<<std::endl;
                 lse->pushParameter(itr->get());
             }
             return outputParameters.size();
         }
     }
+    else
+    {
+        OSG_NOTICE<<"Warning: lua method called without passing object, use object::method() convention."<<std::endl;
+    }
+
     return 0;
 }
 
@@ -443,7 +447,8 @@ bool LuaScriptEngine::run(osg::Script* script, const std::string& entryPoint, os
         return false;
     }
 
-    int numReturns = (lua_gettop(_lua)+1)-topBeforeCall;
+    int topAfterCall = lua_gettop(_lua);
+    int numReturns = topAfterCall-topBeforeCall;
 
     outputParameters.clear();
 
@@ -533,7 +538,6 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
     {
         if (_pi.hasMethod(object, propertyName))
         {
-            OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") has method need to call it."<<std::endl;
             lua_pushlightuserdata(_lua, const_cast<LuaScriptEngine*>(this));
             lua_pushstring(_lua, propertyName.c_str());
             lua_pushcclosure(_lua, callClassMethod, 2);
@@ -728,7 +732,6 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         {
             int ref = luaL_ref(_lua, LUA_REGISTRYINDEX);
 
-            OSG_NOTICE<<"LuaScriptEngine::setPropertyFromStack("<<object<<", "<<propertyName<<") need to handle lua function assigment, ref="<<ref<<std::endl;
             osg::ref_ptr<LuaCallbackObject> lco = new LuaCallbackObject(propertyName, this, ref);
             object->getOrCreateUserDataContainer()->addUserObject(lco.get());
             return 0;
@@ -1568,9 +1571,6 @@ void LuaScriptEngine::pushAndCastObject(const std::string& compoundClassName, os
         std::string::size_type seperator = compoundClassName.find("::");
         std::string libraryName = (seperator==std::string::npos) ? object->libraryName() : compoundClassName.substr(0, seperator);
         std::string className = (seperator==std::string::npos) ? object->className() : compoundClassName.substr(seperator+2,std::string::npos);
-
-
-        OSG_NOTICE<<"pushAndCastObject("<<compoundClassName<<" -> libraryName="<<libraryName<<" & className="<<className<<", object"<<object<<")"<<std::endl;
 
         lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, libraryName.c_str()); lua_settable(_lua, -3);
         lua_pushstring(_lua, "className"); lua_pushstring(_lua, className.c_str()); lua_settable(_lua, -3);

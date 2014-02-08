@@ -47,7 +47,7 @@ public:
         _str.insert(_str.size(), ptr, sizeof(T));
     }
 
-    virtual void writeBool( bool b ) { _str.push_back(b?0:1); }
+    virtual void writeBool( bool b ) { _str.push_back(static_cast<char>(b?1:0)); }
     virtual void writeChar( char c ) { _str.push_back(c); }
     virtual void writeUChar( unsigned char c ) { _str.push_back(static_cast<char>(c)); }
     virtual void writeShort( short s ) { write(s); }
@@ -109,7 +109,7 @@ public:
         _currentPtr += sizeof(T);
     }
 
-    virtual void readBool( bool& b ) { char c; read(c); b = (c==1);}
+    virtual void readBool( bool& b ) { char c; read(c); b = (c!=0); }
     virtual void readChar( char& c ) { read(c); }
     virtual void readSChar( signed char& c ) { read(c); }
     virtual void readUChar( unsigned char& c ) { read(c); }

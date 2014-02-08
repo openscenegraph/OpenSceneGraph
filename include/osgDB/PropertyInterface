@@ -184,6 +184,10 @@ public:
     /// Get the const list of properties that are explictly defined as not supported
     const ObjectPropertyMap& getBlackList() const { return _blackList; }
 
+    osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const;
+
+    osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const;
+
 protected:
 
     bool copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
@@ -194,9 +198,7 @@ protected:
 
     bool copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType);
 
-    osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const;
 
-    osgDB::BaseSerializer* getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const;
 
     osgDB::OutputStream _outputStream;
     PropertyOutputIterator* _poi;

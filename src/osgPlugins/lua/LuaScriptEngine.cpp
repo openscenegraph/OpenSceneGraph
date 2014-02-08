@@ -761,6 +761,26 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             break;
         }
         case(osgDB::BaseSerializer::RW_ENUM):
+        {
+            if (lua_isnumber(_lua, -1))
+            {
+                _pi.setProperty(object, propertyName, static_cast<int>(lua_tonumber(_lua, -1)));
+                return 0;
+            }
+            else if (lua_isstring(_lua, -1))
+            {
+                const char* enumString = lua_tostring(_lua, -1);
+                osgDB::BaseSerializer* serializer = _pi.getSerializer(object, propertyName, type);
+                osgDB::IntLookup* lookup = serializer ? serializer->getIntLookup() : 0;
+                if (lookup)
+                {
+                    int value = lookup->getValue(enumString);
+                    _pi.setProperty(object, propertyName, value);
+                }
+                return 0;
+            }
+            break;
+        }
         case(osgDB::BaseSerializer::RW_INT):
         {
             if (lua_isnumber(_lua, -1))

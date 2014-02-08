@@ -550,7 +550,6 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
         if (lco)
         {
             lua_rawgeti(_lua, LUA_REGISTRYINDEX, lco->getRef());
-            OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") has callback object method need to call it, ref="<<lco->getRef()<<std::endl;
             return 1;
         }
 
@@ -560,6 +559,16 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
 
     switch(type)
     {
+        case(osgDB::BaseSerializer::RW_BOOL):
+        {
+            bool value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                lua_pushboolean(_lua, value ? 1 : 0);
+                return 1;
+            }
+            break;
+        }
         case(osgDB::BaseSerializer::RW_STRING):
         {
             std::string value;
@@ -708,11 +717,9 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             osg::Object* value = 0;
             if (_pi.getProperty(object, propertyName, value))
             {
-                OSG_NOTICE<<"Sucessful getProperty("<<object<<", "<<propertyName<<" "<<value<<std::endl;
                 pushObject(value);
                 return 1;
             }
-            OSG_NOTICE<<"Error getProperty("<<object<<", "<<propertyName<<" "<<value<<" Failed"<<std::endl;
             break;
         }
         default:
@@ -746,7 +753,12 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         {
             if (lua_isboolean(_lua, -1))
             {
-                _pi.setProperty(object, propertyName, static_cast<bool>(lua_toboolean(_lua, -1)!=0));
+                _pi.setProperty(object, propertyName, static_cast<bool>(lua_toboolean(_lua, -1)));
+                return 0;
+            }
+            else if (lua_isnumber(_lua, -1))
+            {
+                _pi.setProperty(object, propertyName, static_cast<bool>(lua_tonumber(_lua, -1)!=0));
                 return 0;
             }
             break;

@@ -242,8 +242,7 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if ( ParentType::_defaultValue!=value )
-                (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {

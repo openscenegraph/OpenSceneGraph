@@ -145,6 +145,8 @@ public:
     virtual bool write( OutputStream&, const osg::Object& ) = 0;
     virtual const std::string& getName() const = 0;
 
+    virtual IntLookup* getIntLookup() { return 0; }
+
 protected:
     int _firstVersion;  // Library version when the serializer is first introduced
     int _lastVersion;  // Library version when the serializer is last required.
@@ -653,6 +655,8 @@ public:
 
     EnumSerializer( const char* name, P def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
+
+    virtual IntLookup* getIntLookup() { return &_lookup; }
 
     void add( const char* str, P value )
     { _lookup.add(str, static_cast<IntLookup::Value>(value)); }

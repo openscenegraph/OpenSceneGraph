@@ -24,7 +24,7 @@
 namespace osgGA
 {
 
-class OSGUI_EXPORT Widget : public osg::Group
+class OSGGA_EXPORT Widget : public osg::Group
 {
 public:
     Widget();

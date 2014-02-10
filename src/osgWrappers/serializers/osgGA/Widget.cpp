@@ -4,6 +4,7 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+
 struct CreateGraphics : public osgDB::MethodObject
 {
     virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
@@ -76,6 +77,8 @@ REGISTER_OBJECT_WRAPPER( Widget,
     END_ENUM_SERIALIZER();
 
     ADD_BOOL_SERIALIZER(HasEventFocus, false);
+
+    ADD_BOUNDINGBOXF_SERIALIZER(Extents, osg::BoundingBoxf());
 
     ADD_METHOD_OBJECT( "createGraphics", CreateGraphics );
     ADD_METHOD_OBJECT( "createGraphicsImplementation", CreateGraphicsImplementation );

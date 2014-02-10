@@ -105,6 +105,12 @@ DECLARE_TYPE(osg::Vec4us, VEC4US)
 DECLARE_TYPE(osg::Vec4i, VEC4I)
 DECLARE_TYPE(osg::Vec4ui, VEC4UI)
 
+DECLARE_TYPE(osg::BoundingBoxf, BOUNDINGBOXF)
+DECLARE_TYPE(osg::BoundingBoxd, BOUNDINGBOXD)
+
+DECLARE_TYPE(osg::BoundingSpheref, BOUNDINGSPHEREF)
+DECLARE_TYPE(osg::BoundingSphered, BOUNDINGSPHERED)
+
 // forward decalare
 class PropertyOutputIterator;
 class PropertyInputIterator;

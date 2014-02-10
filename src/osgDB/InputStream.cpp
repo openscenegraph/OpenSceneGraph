@@ -289,6 +289,32 @@ InputStream& InputStream::operator>>( osg::Matrixd& mat )
 }
 #endif
 
+InputStream& InputStream::operator>>( osg::BoundingBoxf& bb)
+{
+    float p0, p1, p2, p3, p4, p5; *this >> p0 >> p1 >> p2 >> p3>> p4>> p5;
+    bb.set( p0, p1, p2, p3, p4, p5 ); return *this;
+}
+
+InputStream& InputStream::operator>>( osg::BoundingBoxd& bb)
+{
+    double p0, p1, p2, p3, p4, p5; *this >> p0 >> p1 >> p2 >> p3>> p4>> p5;
+    bb.set( p0, p1, p2, p3, p4, p5 ); return *this;
+}
+
+InputStream& InputStream::operator>>( osg::BoundingSpheref& bs)
+{
+    float p0, p1, p2, p3; *this >> p0 >> p1 >> p2 >> p3;
+    bs.set( osg::Vec3f(p0, p1, p2), p3 ); return *this;
+}
+
+InputStream& InputStream::operator>>( osg::BoundingSphered& bs)
+{
+    double p0, p1, p2, p3; *this >> p0 >> p1 >> p2 >> p3;
+    bs.set( osg::Vec3d(p0, p1, p2), p3 ); return *this;
+}
+
+
+
 osg::Array* InputStream::readArray()
 {
     osg::ref_ptr<osg::Array> array = NULL;

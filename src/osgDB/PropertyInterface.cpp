@@ -208,6 +208,13 @@ PropertyInterface::PropertyInterface():
     TYPENAME(MATRIXF)
     TYPENAME(MATRIXD)
     TYPENAME(MATRIX)
+
+    TYPENAME(BOUNDINGBOXF)
+    TYPENAME(BOUNDINGBOXD)
+
+    TYPENAME(BOUNDINGSPHEREF)
+    TYPENAME(BOUNDINGSPHERED)
+
     TYPENAME(GLENUM)
     TYPENAME(STRING)
     TYPENAME(ENUM)
@@ -439,6 +446,10 @@ public:
     virtual void apply(const osg::Plane& /*value*/) { type = osgDB::BaseSerializer::RW_PLANE; }
     virtual void apply(const osg::Matrixf& /*value*/) { type = osgDB::BaseSerializer::RW_MATRIXF; }
     virtual void apply(const osg::Matrixd& /*value*/) { type = osgDB::BaseSerializer::RW_MATRIXD; }
+    virtual void apply(const osg::BoundingBoxf& /*value*/) { type = osgDB::BaseSerializer::RW_BOUNDINGBOXF; }
+    virtual void apply(const osg::BoundingBoxd& /*value*/) { type = osgDB::BaseSerializer::RW_BOUNDINGBOXD; }
+    virtual void apply(const osg::BoundingSpheref& /*value*/) { type = osgDB::BaseSerializer::RW_BOUNDINGSPHEREF; }
+    virtual void apply(const osg::BoundingSphered& /*value*/) { type = osgDB::BaseSerializer::RW_BOUNDINGSPHERED; }
 };
 
 bool PropertyInterface::getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const

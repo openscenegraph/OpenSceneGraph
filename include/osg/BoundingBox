@@ -73,6 +73,9 @@ class BoundingBoxImpl
                      -FLT_MAX);
         }
 
+        inline bool operator == (const BoundingBoxImpl& rhs) const { return _min==rhs._min && _max==rhs._max; }
+        inline bool operator != (const BoundingBoxImpl& rhs) const { return _min!=rhs._min || _max!=rhs._max; }
+
         /** Returns true if the bounding box extents are valid, false otherwise. */
         inline bool valid() const
         {

@@ -42,7 +42,7 @@ Widget::Widget(const Widget& widget, const osg::CopyOp& copyop):
     setNumChildrenRequiringEventTraversal(1);
 }
 
-void Widget::setExtents(const osg::BoundingBox& bb)
+void Widget::setExtents(const osg::BoundingBoxf& bb)
 {
     _extents = bb;
 }

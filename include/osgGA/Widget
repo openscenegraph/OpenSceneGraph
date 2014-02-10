@@ -42,8 +42,8 @@ public:
     virtual void createGraphics();
     virtual void createGraphicsImplementation();
 
-    virtual void setExtents(const osg::BoundingBox& bb);
-    const osg::BoundingBox& getExtents() const { return _extents; }
+    virtual void setExtents(const osg::BoundingBoxf& bb);
+    const osg::BoundingBoxf& getExtents() const { return _extents; }
 
     enum FocusBehaviour
     {
@@ -82,7 +82,7 @@ protected:
     bool                _hasEventFocus;
     bool                _graphicsInitialized;
 
-    osg::BoundingBox    _extents;
+    osg::BoundingBoxf   _extents;
 };
 
 }

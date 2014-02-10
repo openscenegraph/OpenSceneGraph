@@ -133,7 +133,9 @@ public:
         RW_MATRIXF, RW_MATRIXD, RW_MATRIX, RW_GLENUM, RW_STRING, RW_ENUM,
         RW_VEC2B, RW_VEC2UB, RW_VEC2S, RW_VEC2US, RW_VEC2I, RW_VEC2UI,
         RW_VEC3B, RW_VEC3UB, RW_VEC3S, RW_VEC3US, RW_VEC3I, RW_VEC3UI,
-        RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI
+        RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI,
+        RW_BOUNDINGBOXF, RW_BOUNDINGBOXD,
+        RW_BOUNDINGSPHEREF, RW_BOUNDINGSPHERED
     };
 
     BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
@@ -300,8 +302,7 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if ( ParentType::_defaultValue!=value )
-                (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -349,8 +350,7 @@ public:
         if ( is.isBinary() )
         {
             readMatrixImplementation( is, value );
-            if ( ParentType::_defaultValue!=value )
-                (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -417,8 +417,7 @@ public:
         if ( is.isBinary() )
         {
             GLenum value; is >> value;
-            if ( ParentType::_defaultValue!=static_cast<P>(value) )
-                (object.*_setter)( static_cast<P>(value) );
+            (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -466,8 +465,7 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if ( ParentType::_defaultValue!=value )
-                (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -524,8 +522,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readObject() );
-                if ( ParentType::_defaultValue!=value )
-                    (object.*_setter)( value );
+                (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -535,8 +532,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readObject() );
-                if ( ParentType::_defaultValue!=value )
-                    (object.*_setter)( value );
+                (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -596,8 +592,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readImage() );
-                if ( ParentType::_defaultValue!=value )
-                    (object.*_setter)( value );
+                (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -607,8 +602,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readImage() );
-                if ( ParentType::_defaultValue!=value )
-                    (object.*_setter)( value );
+                (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -673,8 +667,7 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if ( ParentType::_defaultValue!=static_cast<P>(value) )
-                (object.*_setter)( static_cast<P>(value) );
+            (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -1018,6 +1011,24 @@ public:
 #define ADD_MATRIX_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::MatrixSerializer< MyClass >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_MATRIX )
+
+
+#define ADD_BOUNDINGBOXF_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::BoundingBoxf >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOUNDINGBOXF )
+
+#define ADD_BOUNDINGBOXD_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::BoundingBoxd >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOUNDINGBOXD )
+
+#define ADD_BOUNDINGSPHEREF_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::BoundingSpheref >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOUNDINGSPHEREF )
+
+#define ADD_BOUNDINGSPHERED_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::BoundingSphered >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOUNDINGSPHERED )
+
 
 #define ADD_GLENUM_SERIALIZER(PROP, TYPE, DEF) \
     wrapper->addSerializer( new osgDB::GLenumSerializer< MyClass, TYPE >( \

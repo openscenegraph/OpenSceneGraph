@@ -20,6 +20,8 @@
 #include <osg/Vec4>
 #include <osg/Quat>
 #include <osg/Matrix>
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 #include <osgDB/ReaderWriter>
@@ -135,6 +137,10 @@ public:
     OutputStream& operator<<( const osg::Plane& p );
     OutputStream& operator<<( const osg::Matrixf& mat );
     OutputStream& operator<<( const osg::Matrixd& mat );
+    OutputStream& operator<<( const osg::BoundingBoxf& bb );
+    OutputStream& operator<<( const osg::BoundingBoxd& bb );
+    OutputStream& operator<<( const osg::BoundingSpheref& bb );
+    OutputStream& operator<<( const osg::BoundingSphered& bb );
 
     OutputStream& operator<<( const osg::Array* a ) { writeArray(a); return *this; }
     OutputStream& operator<<( const osg::Image* img ) { writeImage(img); return *this; }

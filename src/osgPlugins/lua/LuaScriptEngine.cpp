@@ -527,8 +527,12 @@ public:
     virtual void apply(osg::Vec4d& value)       { _lsg->getValue(value); _numberToPop = 4; }
     virtual void apply(osg::Quat& value)        { _lsg->getValue(value); _numberToPop = 4; }
     virtual void apply(osg::Plane& value)       { _lsg->getValue(value); _numberToPop = 4; }
-    virtual void apply(osg::Matrixf& value) { _lsg->getValue(value); }
-    virtual void apply(osg::Matrixd& value) { _lsg->getValue(value); }
+    virtual void apply(osg::Matrixf& value)     { _lsg->getValue(value); }
+    virtual void apply(osg::Matrixd& value)     { _lsg->getValue(value); }
+    virtual void apply(osg::BoundingBoxf& value) { _lsg->getValue(value); }
+    virtual void apply(osg::BoundingBoxd& value) { _lsg->getValue(value); }
+    virtual void apply(osg::BoundingSpheref& value) { _lsg->getValue(value); }
+    virtual void apply(osg::BoundingSphered& value) { _lsg->getValue(value); }
 };
 
 int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string& propertyName) const
@@ -650,19 +654,6 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
-#ifdef OSG_USE_FLOAT_MATRIX
-        case(osgDB::BaseSerializer::RW_MATRIX):
-#endif
-        case(osgDB::BaseSerializer::RW_MATRIXF):
-        {
-            osg::Matrixf value;
-            if (_pi.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
         case(osgDB::BaseSerializer::RW_VEC2D):
         {
             osg::Vec2d value;
@@ -693,12 +684,65 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
+#ifdef OSG_USE_FLOAT_MATRIX
+        case(osgDB::BaseSerializer::RW_MATRIX):
+#endif
+        case(osgDB::BaseSerializer::RW_MATRIXF):
+        {
+            osg::Matrixf value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return 1;
+            }
+            break;
+        }
 #ifndef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXD):
         {
             osg::Matrixd value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXF):
+        {
+            osg::BoundingBoxf value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXD):
+        {
+            osg::BoundingBoxd value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHEREF):
+        {
+            osg::BoundingSpheref value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHERED):
+        {
+            osg::BoundingSphered value;
             if (_pi.getProperty(object, propertyName, value))
             {
                 pushValue(value);
@@ -859,19 +903,6 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
-#ifdef OSG_USE_FLOAT_MATRIX
-        case(osgDB::BaseSerializer::RW_MATRIX):
-#endif
-        case(osgDB::BaseSerializer::RW_MATRIXF):
-        {
-            osg::Matrixf value;
-            if (getValue(value))
-            {
-                _pi.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
         case(osgDB::BaseSerializer::RW_VEC2D):
         {
             osg::Vec2d value;
@@ -922,12 +953,65 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
+#ifdef OSG_USE_FLOAT_MATRIX
+        case(osgDB::BaseSerializer::RW_MATRIX):
+#endif
+        case(osgDB::BaseSerializer::RW_MATRIXF):
+        {
+            osg::Matrixd value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
 #ifndef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXD):
         {
             osg::Matrixd value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXF):
+        {
+            osg::BoundingBoxf value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXD):
+        {
+            osg::BoundingBoxd value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHEREF):
+        {
+            osg::BoundingSpheref value;
+            if (getValue(value))
+            {
+                _pi.setProperty(object, propertyName, value);
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHERED):
+        {
+            osg::BoundingSphered value;
             if (getValue(value))
             {
                 _pi.setProperty(object, propertyName, value);
@@ -1026,6 +1110,29 @@ bool LuaScriptEngine::getfields(const char* f1, const char* f2, const char* f3, 
     return true;
 }
 
+bool LuaScriptEngine::getfields(const char* f1, const char* f2, const char* f3, const char* f4, const char* f5, const char* f6, int type) const
+{
+    lua_getfield(_lua, -1, f1);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 1); return false; }
+
+    lua_getfield(_lua, -2, f2);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 2); return false; }
+
+    lua_getfield(_lua, -3, f3);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 3); return false; }
+
+    lua_getfield(_lua, -4, f4);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 4); return false; }
+
+    lua_getfield(_lua, -5, f5);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 5); return false; }
+
+    lua_getfield(_lua, -6, f6);
+    if (lua_type(_lua, -1)!=type) { lua_pop(_lua, 6); return false; }
+
+    return true;
+}
+
 bool LuaScriptEngine::getelements(int numElements, int type) const
 {
     int abs_pos = lua_gettop(_lua);
@@ -1097,6 +1204,11 @@ osgDB::BaseSerializer::Type LuaScriptEngine::getType() const
                 OSG_NOTICE<<"Could be Matrixd"<<std::endl;
                 return osgDB::BaseSerializer::RW_MATRIXD;
             }
+            else if ((numNumberKeys==6) && (numNumberFields==6))
+            {
+                OSG_NOTICE<<"Could be BoundingBoxd"<<std::endl;
+                return osgDB::BaseSerializer::RW_BOUNDINGBOXD;
+            }
             // not supported
             OSG_NOTICE<<"Warning: LuaScriptEngine::getType() Lua table configuration not supported."<<std::endl;
             break;
@@ -1159,6 +1271,32 @@ bool LuaScriptEngine::getmatrix() const
     if (lua_istable(_lua, -1))
     {
         if (getelements(16,LUA_TNUMBER))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getboundingbox() const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getfields("xMin", "yMin", "zMin", "xMax", "yMax", "zMax", LUA_TNUMBER) ||
+            getelements(6, LUA_TNUMBER))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LuaScriptEngine::getboundingsphere() const
+{
+    if (lua_istable(_lua, -1))
+    {
+        if (getfields("x", "y", "z", "radius", LUA_TNUMBER) ||
+            getelements(4, LUA_TNUMBER))
         {
             return true;
         }
@@ -1262,6 +1400,38 @@ bool LuaScriptEngine::getValue(osg::Matrixd& value) const
     return true;
 }
 
+bool LuaScriptEngine::getValue(osg::BoundingBoxf& value) const
+{
+    if (!getboundingbox()) return false;
+    value.set(lua_tonumber(_lua, -6), lua_tonumber(_lua, -5), lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+    lua_pop(_lua, 6);
+    return true;
+}
+
+bool LuaScriptEngine::getValue(osg::BoundingBoxd& value) const
+{
+    if (!getboundingbox()) return false;
+    value.set(lua_tonumber(_lua, -6), lua_tonumber(_lua, -5), lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+    lua_pop(_lua, 6);
+    return true;
+}
+
+bool LuaScriptEngine::getValue(osg::BoundingSpheref& value) const
+{
+    if (!getboundingsphere()) return false;
+    value.set(osg::Vec3f(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2)), lua_tonumber(_lua, -1));
+    lua_pop(_lua, 4);
+    return true;
+}
+
+bool LuaScriptEngine::getValue(osg::BoundingSphered& value) const
+{
+    if (!getboundingsphere()) return false;
+    value.set(osg::Vec3d(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2)), lua_tonumber(_lua, -1));
+    lua_pop(_lua, 4);
+    return true;
+}
+
 void LuaScriptEngine::pushValue(const osg::Vec2f& value) const
 {
     lua_newtable(_lua);
@@ -1352,6 +1522,46 @@ void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
             lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, value(r,c)); lua_settable(_lua, -3);
         }
     }
+}
+
+void LuaScriptEngine::pushValue(const osg::BoundingBoxf& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "xMin"); lua_pushnumber(_lua, value.xMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "yMin"); lua_pushnumber(_lua, value.yMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "zMin"); lua_pushnumber(_lua, value.zMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "xMax"); lua_pushnumber(_lua, value.xMax()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "yMax"); lua_pushnumber(_lua, value.yMax()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "zMax"); lua_pushnumber(_lua, value.zMax()); lua_settable(_lua, -3);
+}
+
+void LuaScriptEngine::pushValue(const osg::BoundingBoxd& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "xMin"); lua_pushnumber(_lua, value.xMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "yMin"); lua_pushnumber(_lua, value.yMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "zMin"); lua_pushnumber(_lua, value.zMin()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "xMax"); lua_pushnumber(_lua, value.xMax()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "yMax"); lua_pushnumber(_lua, value.yMax()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "zMax"); lua_pushnumber(_lua, value.zMax()); lua_settable(_lua, -3);
+}
+
+void LuaScriptEngine::pushValue(const osg::BoundingSpheref& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.center().x()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.center().y()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.center().z()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "radius"); lua_pushnumber(_lua, value.radius()); lua_settable(_lua, -3);
+}
+
+void LuaScriptEngine::pushValue(const osg::BoundingSphered& value) const
+{
+    lua_newtable(_lua);
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.center().x()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.center().y()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.center().z()); lua_settable(_lua, -3);
+    lua_pushstring(_lua, "radius"); lua_pushnumber(_lua, value.radius()); lua_settable(_lua, -3);
 }
 
 bool LuaScriptEngine::pushParameter(osg::Object* object) const
@@ -1489,6 +1699,30 @@ osg::Object* LuaScriptEngine::popParameterObject() const
         {
             osg::Matrixd value;
             if (getValue(value)) object = new osg::MatrixdValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXF):
+        {
+            osg::BoundingBoxf value;
+            if (getValue(value)) object = new osg::BoundingBoxfValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGBOXD):
+        {
+            osg::BoundingBoxd value;
+            if (getValue(value)) object = new osg::BoundingBoxdValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHEREF):
+        {
+            osg::BoundingSpheref value;
+            if (getValue(value)) object = new osg::BoundingSpherefValueObject("", value);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_BOUNDINGSPHERED):
+        {
+            osg::BoundingSphered value;
+            if (getValue(value)) object = new osg::BoundingSpheredValueObject("", value);
             break;
         }
         case(osgDB::BaseSerializer::RW_LIST):

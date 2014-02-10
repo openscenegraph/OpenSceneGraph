@@ -27,6 +27,8 @@
 #include <osg/Vec4ui>
 #include <osg/Quat>
 #include <osg/Matrix>
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 #include <osgDB/ReaderWriter>
@@ -130,6 +132,10 @@ public:
     InputStream& operator>>( osg::Plane& p );
     InputStream& operator>>( osg::Matrixf& mat );
     InputStream& operator>>( osg::Matrixd& mat );
+    InputStream& operator>>( osg::BoundingBoxf& bb );
+    InputStream& operator>>( osg::BoundingBoxd& bb );
+    InputStream& operator>>( osg::BoundingSpheref& bs );
+    InputStream& operator>>( osg::BoundingSphered& bs );
 
     InputStream& operator>>( osg::Array*& a ) { a = readArray(); return *this; }
     InputStream& operator>>( osg::Image*& img ) { img = readImage(); return *this; }

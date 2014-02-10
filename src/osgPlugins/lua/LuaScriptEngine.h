@@ -57,36 +57,53 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool getfields(const char* f1, const char* f2, int type) const;
         bool getfields(const char* f1, const char* f2, const char* f3, int type) const;
         bool getfields(const char* f1, const char* f2, const char* f3, const char* f4, int type) const;
+        bool getfields(const char* f1, const char* f2, const char* f3, const char* f4, const char* f5, const char* f6, int type) const;
         bool getelements(int numElements, int type) const;
 
         bool getvec2() const;
         bool getvec3() const;
         bool getvec4() const;
         bool getmatrix() const;
+        bool getboundingbox() const;
+        bool getboundingsphere() const;
 
         bool getValue(osg::Vec2f& value) const;
         bool getValue(osg::Vec3f& value) const;
         bool getValue(osg::Vec4f& value) const;
-        bool getValue(osg::Matrixf& value) const;
 
         bool getValue(osg::Vec2d& value) const;
         bool getValue(osg::Vec3d& value) const;
         bool getValue(osg::Vec4d& value) const;
         bool getValue(osg::Quat& value) const;
         bool getValue(osg::Plane& value) const;
+
+        bool getValue(osg::Matrixf& value) const;
         bool getValue(osg::Matrixd& value) const;
+
+        bool getValue(osg::BoundingBoxf& value) const;
+        bool getValue(osg::BoundingBoxd& value) const;
+
+        bool getValue(osg::BoundingSpheref& value) const;
+        bool getValue(osg::BoundingSphered& value) const;
 
         void pushValue(const osg::Vec2f& value) const;
         void pushValue(const osg::Vec3f& value) const;
         void pushValue(const osg::Vec4f& value) const;
-        void pushValue(const osg::Matrixf& value) const;
 
         void pushValue(const osg::Vec2d& value) const;
         void pushValue(const osg::Vec3d& value) const;
         void pushValue(const osg::Vec4d& value) const;
         void pushValue(const osg::Quat& value) const;
         void pushValue(const osg::Plane& value) const;
+
+        void pushValue(const osg::Matrixf& value) const;
         void pushValue(const osg::Matrixd& value) const;
+
+        void pushValue(const osg::BoundingBoxf& value) const;
+        void pushValue(const osg::BoundingBoxd& value) const;
+
+        void pushValue(const osg::BoundingSpheref& value) const;
+        void pushValue(const osg::BoundingSphered& value) const;
 
         bool pushParameter(osg::Object* object) const;
         bool popParameter(osg::Object* object) const;

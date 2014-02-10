@@ -65,6 +65,58 @@ struct LeaveImplementation : public osgDB::MethodObject
     }
 };
 
+
+struct Traverse : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters&) const
+    {
+        osgGA::Widget* widget = reinterpret_cast<osgGA::Widget*>(objectPtr);
+        osg::NodeVisitor* nv = (inputParameters.size()>=1) ? dynamic_cast<osg::NodeVisitor*>(inputParameters[0].get()) : 0;
+        if (!nv) return false;
+        widget->traverse(*nv);
+        return true;
+    }
+};
+
+struct TraverseImplementation : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters&) const
+    {
+        osgGA::Widget* widget = reinterpret_cast<osgGA::Widget*>(objectPtr);
+        osg::NodeVisitor* nv = (inputParameters.size()>=1) ? dynamic_cast<osg::NodeVisitor*>(inputParameters[0].get()) : 0;
+        if (!nv) return false;
+        widget->traverseImplementation(*nv);
+        return true;
+    }
+};
+
+struct Handle : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters&) const
+    {
+        osgGA::Widget* widget = reinterpret_cast<osgGA::Widget*>(objectPtr);
+        osgGA::EventVisitor* ev = (inputParameters.size()>=1) ? dynamic_cast<osgGA::EventVisitor*>(inputParameters[0].get()) : 0;
+        osgGA::Event* event = (inputParameters.size()>=2) ? dynamic_cast<osgGA::Event*>(inputParameters[1].get()) : 0;
+        if (!widget || !ev || !event) return false;
+        widget->handle(ev, event);
+        return true;
+    }
+};
+
+struct HandleImplementation : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters&) const
+    {
+        osgGA::Widget* widget = reinterpret_cast<osgGA::Widget*>(objectPtr);
+        osgGA::EventVisitor* ev = (inputParameters.size()>=1) ? dynamic_cast<osgGA::EventVisitor*>(inputParameters[0].get()) : 0;
+        osgGA::Event* event = (inputParameters.size()>=2) ? dynamic_cast<osgGA::Event*>(inputParameters[1].get()) : 0;
+        if (!widget || !ev || !event) return false;
+        widget->handleImplementation(ev, event);
+        return true;
+    }
+};
+
+
 REGISTER_OBJECT_WRAPPER( Widget,
                          new osgGA::Widget,
                          osgGA::Widget,
@@ -89,5 +141,10 @@ REGISTER_OBJECT_WRAPPER( Widget,
     ADD_METHOD_OBJECT( "leave", Leave );
     ADD_METHOD_OBJECT( "leaveImplementation", LeaveImplementation );
 
+    ADD_METHOD_OBJECT( "traverse", Traverse );
+    ADD_METHOD_OBJECT( "traverseImplementation", TraverseImplementation );
+
+    ADD_METHOD_OBJECT( "handle", Handle );
+    ADD_METHOD_OBJECT( "handleImplementation", HandleImplementation );
 
 }

@@ -190,6 +190,14 @@ void Widget::traverse(osg::NodeVisitor& nv)
     osg::CallbackObject* co = osg::getCallbackObject(this, "traverse");
     if (co)
     {
+        // currently lua scripting takes a ref count so messes up handling of NodeVisitor's created on stack,
+        // so don't attempt to call the sctipt.
+        if (nv.referenceCount()==0)
+        {
+            traverseImplementation(nv);
+            return;
+        }
+
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(&nv);
         co->run(this, inputParameters, outputParameters);
@@ -203,6 +211,7 @@ void Widget::traverse(osg::NodeVisitor& nv)
 void Widget::traverseImplementation(osg::NodeVisitor& nv)
 {
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
+
 
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
     if (ev)
@@ -236,18 +245,17 @@ bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
     osg::CallbackObject* co = osg::getCallbackObject(this, "handle");
     if (co)
     {
+        // currently lua scripting takes a ref count so messes up handling of NodeVisitor's created on stack,
+        // so don't attempt to call the sctipt.
+        if (ev->referenceCount()==0)
+        {
+            return handleImplementation(ev, event);
+        }
+
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(ev);
         inputParameters.push_back(event);
-        if (co->run(this, inputParameters, outputParameters))
-        {
-            if (outputParameters.size()>=1)
-            {
-                return true;
-            }
-        }
-        return false;
-
+        return co->run(this, inputParameters, outputParameters) && outputParameters.size()>=1;
     }
     else
     {
@@ -255,7 +263,7 @@ bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
     }
 }
 
-bool Widget::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*event*/)
+bool Widget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
     return false;
 }

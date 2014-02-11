@@ -247,13 +247,38 @@ typedef osg::Object* ObjectPtr;
 template<>
 inline bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, ObjectPtr& value)
 {
-    return copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>());
+    if (copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::getProperty("<<propertyName<<", "<<value->className()<<") Checking UserDataContainer for object ptr"<<std::endl;
+        const osg::UserDataContainer* udc = object->getUserDataContainer();
+        if (udc)
+        {
+            OSG_NOTICE<<"   Checking UserDataContainer for object ptr"<<std::endl;
+            const osg::Object* ptr = udc->getUserObject(propertyName);
+            if (ptr)
+            {
+                value = const_cast<ObjectPtr>(ptr);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 template<>
 inline bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const ObjectPtr& value)
 {
-    return copyPropertyObjectToObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>());
+    if (copyPropertyObjectToObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") Adding object to UserDataContainer"<<std::endl;
+        // fallback to using user data to store property data
+        osg::UserDataContainer* udc = object->getOrCreateUserDataContainer();
+        value->setName(propertyName);
+        udc->addUserObject(value);
+        return true;
+    }
 }
 
 }

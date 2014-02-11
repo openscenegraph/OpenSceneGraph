@@ -292,7 +292,18 @@ osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* objec
 osg::Object* PropertyInterface::createObject(const std::string& compoundClassName) const
 {
     osgDB::ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
-    return (ow!=0) ? ow->createInstance() : 0;
+    if (ow)
+    {
+        osg::Object* object = ow->createInstance();
+        OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), wrapper found, created object="<<object<<std::endl;
+        return object;
+    }
+    else
+    {
+        OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), No object wrapper avaiable."<<std::endl;
+        return 0;
+    }
+    // return (ow!=0) ? ow->createInstance() : 0;
 }
 
 bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
@@ -366,7 +377,7 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
+        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
@@ -389,7 +400,7 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
+        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
         return false;
     }
 }

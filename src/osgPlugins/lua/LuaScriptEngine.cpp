@@ -584,6 +584,25 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             break;
         }
         case(osgDB::BaseSerializer::RW_ENUM):
+        {
+            int value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                osgDB::BaseSerializer* serializer = _pi.getSerializer(object, propertyName, type);
+                osgDB::IntLookup* lookup = serializer ? serializer->getIntLookup() : 0;
+                if (lookup)
+                {
+                    std::string enumString = lookup->getString(value);
+                    lua_pushstring(_lua, enumString.c_str());
+                }
+                else
+                {
+                    lua_pushinteger(_lua, value);
+                }
+                return 1;
+            }
+            break;
+        }
         case(osgDB::BaseSerializer::RW_INT):
         {
             int value;
@@ -1615,6 +1634,15 @@ osg::Object* LuaScriptEngine::popParameterObject() const
             break;
         }
         case(osgDB::BaseSerializer::RW_ENUM):
+            if (lua_isstring(_lua, -1))
+            {
+                object = new osg::StringValueObject("", lua_tostring(_lua, -1));
+            }
+            else if (lua_isnumber(_lua, -1))
+            {
+                object = new osg::IntValueObject("", static_cast<int>(lua_tonumber(_lua, -1)));
+            }
+            break;
         case(osgDB::BaseSerializer::RW_INT):
         {
             if (lua_isnumber(_lua, -1)) object = new osg::IntValueObject("", static_cast<int>(lua_tonumber(_lua, -1)));

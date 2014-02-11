@@ -557,7 +557,7 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             return 1;
         }
 
-        OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") no property found."<<std::endl;
+        OSG_INFO<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") no property found."<<std::endl;
         return 0;
     }
 

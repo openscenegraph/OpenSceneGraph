@@ -332,7 +332,7 @@ bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, co
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() serializer write failed."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() serializer write failed."<<std::endl;
         return false;
     }
 }
@@ -366,7 +366,7 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
@@ -389,7 +389,7 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
         return false;
     }
 }

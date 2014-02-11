@@ -537,6 +537,8 @@ public:
 
 int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string& propertyName) const
 {
+    OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<")"<<std::endl;
+
     osgDB::BaseSerializer::Type type;
     if (!_pi.getPropertyType(object, propertyName, type))
     {
@@ -549,15 +551,20 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             return 1;
         }
 
-        osg::CallbackObject* co = osg::getCallbackObject(object, propertyName);
-        LuaCallbackObject* lco = dynamic_cast<LuaCallbackObject*>(co);
+        osg::Object* uo = osg::getUserObject(object, propertyName);
+        LuaCallbackObject* lco = dynamic_cast<LuaCallbackObject*>(uo);
         if (lco)
         {
             lua_rawgeti(_lua, LUA_REGISTRYINDEX, lco->getRef());
             return 1;
         }
+        else if (uo)
+        {
+            pushObject(uo);
+            return 1;
+        }
 
-        OSG_INFO<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") no property found."<<std::endl;
+        OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<") no property found."<<std::endl;
         return 0;
     }
 

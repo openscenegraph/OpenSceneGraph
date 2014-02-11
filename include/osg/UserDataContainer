@@ -187,6 +187,15 @@ protected:
         ObjectList              _objectList;
 };
 
+
+/** Convinience function for getting the User Object associated with specificed name from an Object's UserDataContainer.*/
+inline Object* getUserObject(osg::Object* object, const std::string& name)
+{
+    osg::UserDataContainer* udc = object->getUserDataContainer();
+    return udc ? udc->getUserObject(name) : 0;
+}
+
+
 }
 
 #endif

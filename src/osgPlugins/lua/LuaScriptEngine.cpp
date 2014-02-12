@@ -537,7 +537,7 @@ public:
 
 int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string& propertyName) const
 {
-    OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<")"<<std::endl;
+    // OSG_NOTICE<<"LuaScriptEngine::pushPropertyToStack("<<object<<", "<<propertyName<<")"<<std::endl;
 
     osgDB::BaseSerializer::Type type;
     if (!_pi.getPropertyType(object, propertyName, type))
@@ -586,6 +586,18 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             if (_pi.getProperty(object, propertyName, value))
             {
                 lua_pushstring(_lua, value.c_str());
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_GLENUM):
+        {
+            GLenum value;
+            if (_pi.getProperty(object, propertyName, value))
+            {
+                osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
+                std::string enumString = ow->getString("GL",value);
+                lua_pushstring(_lua, enumString.c_str());
                 return 1;
             }
             break;
@@ -839,6 +851,23 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             {
                 _pi.setProperty(object, propertyName, std::string(lua_tostring(_lua, -1)));
                 return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_GLENUM):
+        {
+            if (lua_isnumber(_lua, -1))
+            {
+                _pi.setProperty(object, propertyName, static_cast<int>(lua_tonumber(_lua, -1)));
+                return 0;
+            }
+            else if (lua_isstring(_lua, -1))
+            {
+                const char* enumString = lua_tostring(_lua, -1);
+                osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
+
+                int value = ow->getValue("GL",enumString);
+                _pi.setProperty(object, propertyName, value);
             }
             break;
         }
@@ -1640,6 +1669,7 @@ osg::Object* LuaScriptEngine::popParameterObject() const
             if (lua_isstring(_lua, -1)) object = new osg::StringValueObject("", lua_tostring(_lua, -1));
             break;
         }
+        case(osgDB::BaseSerializer::RW_GLENUM):
         case(osgDB::BaseSerializer::RW_ENUM):
             if (lua_isstring(_lua, -1))
             {

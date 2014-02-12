@@ -244,14 +244,14 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             if ( _useHex ) is >> std::hex;
             is >> value;
             if ( _useHex ) is >> std::dec;
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         return true;
     }
@@ -302,12 +302,12 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             is >> value;
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         return true;
     }
@@ -350,12 +350,12 @@ public:
         if ( is.isBinary() )
         {
             readMatrixImplementation( is, value );
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             readMatrixImplementation( is, value );
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         return true;
     }
@@ -417,12 +417,12 @@ public:
         if ( is.isBinary() )
         {
             GLenum value; is >> value;
-            (object.*_setter)( static_cast<P>(value) );
+            if (_setter!=0) (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             DEF_GLENUM(value); is >> value;
-            (object.*_setter)( static_cast<P>(value.get()) );
+            if (_setter!=0) (object.*_setter)( static_cast<P>(value.get()) );
         }
         return true;
     }
@@ -465,12 +465,12 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            (object.*_setter)( value );
+            if (_setter!=0) (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             is.readWrappedString( value );
-            if ( !value.empty() )
+            if ( !value.empty() && (_setter!=0) )
                 (object.*_setter)( value );
         }
         return true;
@@ -522,7 +522,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readObject() );
-                (object.*_setter)( value );
+                if (_setter!=0) (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -532,7 +532,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readObject() );
-                (object.*_setter)( value );
+                if (_setter!=0) (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -592,7 +592,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readImage() );
-                (object.*_setter)( value );
+                if (_setter!=0) (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -602,7 +602,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readImage() );
-                (object.*_setter)( value );
+                if (_setter!=0) (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -667,12 +667,12 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            (object.*_setter)( static_cast<P>(value) );
+            if (_setter!=0) (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             std::string str; is >> str;
-            (object.*_setter)( getValue(str.c_str()) );
+            if (_setter!=0) (object.*_setter)( getValue(str.c_str()) );
         }
         return true;
     }
@@ -820,9 +820,17 @@ public:
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, int >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_INT )
 
+#define ADD_INT_SERIALIZER_NO_SET(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, int >( \
+        #PROP, DEF, &MyClass::get##PROP, 0), osgDB::BaseSerializer::RW_INT )
+
 #define ADD_UINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned int >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UINT )
+
+#define ADD_UINT_SERIALIZER_NO_SET(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned int >( \
+        #PROP, DEF, &MyClass::get##PROP, 0), osgDB::BaseSerializer::RW_UINT )
 
 #define ADD_GLINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, GLint >( \
@@ -1034,6 +1042,10 @@ public:
     wrapper->addSerializer( new osgDB::GLenumSerializer< MyClass, TYPE >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_GLENUM )
 
+#define ADD_GLENUM_SERIALIZER_NO_SET(PROP, TYPE, DEF) \
+    wrapper->addSerializer( new osgDB::GLenumSerializer< MyClass, TYPE >( \
+        #PROP, DEF, &MyClass::get##PROP, 0), osgDB::BaseSerializer::RW_GLENUM )
+
 #define ADD_STRING_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::StringSerializer< MyClass >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_STRING )
@@ -1069,6 +1081,11 @@ public:
     { typedef osgDB::EnumSerializer<MyClass, PROPERTIES_CLASS::PROP, void> MySerializer; \
     osg::ref_ptr<MySerializer> serializer = new MySerializer( \
         #PROP, PROPERTIES_CLASS::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+#define BEGIN_ENUM_SERIALIZER_NO_SET(PROP, DEF) \
+    { typedef osgDB::EnumSerializer<MyClass, MyClass::PROP, void> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+        #PROP, MyClass::DEF, &MyClass::get##PROP, 0)
 
 #define ADD_ENUM_VALUE(VALUE) \
     serializer->add(#VALUE, MyClass::VALUE)

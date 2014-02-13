@@ -111,7 +111,7 @@ REGISTER_OBJECT_WRAPPER( Array,
 }
 
 #define ARRAY_WRAPPERS( ARRAY ) \
-    namespace Wrappers##ARRAY { REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::Array "#ARRAY ) {} }
+    namespace Wrappers##ARRAY { REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::Array osg::"#ARRAY ) {} }
 
 ARRAY_WRAPPERS(FloatArray)
 ARRAY_WRAPPERS(Vec2Array)

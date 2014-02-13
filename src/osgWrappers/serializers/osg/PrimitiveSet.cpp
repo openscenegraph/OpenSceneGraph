@@ -21,10 +21,13 @@ REGISTER_OBJECT_WRAPPER( PrimitiveSet,
             ADD_ENUM_VALUE( DrawElementsUIntPrimitiveType );
     END_ENUM_SERIALIZER();
 
+    ADD_INT_SERIALIZER( NumInstances, 0);
     ADD_GLENUM_SERIALIZER( Mode, GLenum, GL_NONE );
 
     ADD_UINT_SERIALIZER_NO_SET( TotalDataSize, 0);
     ADD_UINT_SERIALIZER_NO_SET( NumPrimitives, 0);
+    ADD_UINT_SERIALIZER_NO_SET( NumIndices, 0);
+
 
     wrapper->addSerializer(
         new osgDB::PropByValSerializer< osg::PrimitiveSet, bool > ("supportsBufferObject", false, &osg::PrimitiveSet::supportsBufferObject, 0, osgDB::BaseSerializer::RW_BOOL )

@@ -156,6 +156,9 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool matchLuaParameters(int luaType1, int luaType2, int luaType3) const { return ((lua_gettop(_lua)==3) && (lua_type(_lua, 1)==luaType1) && (lua_type(_lua, 2)==luaType2) && (lua_type(_lua, 3)==luaType3)); }
         bool matchLuaParameters(int luaType1, int luaType2, int luaType3, int luaType4) const { return ((lua_gettop(_lua)==4) && (lua_type(_lua, 1)==luaType1) && (lua_type(_lua, 2)==luaType2) && (lua_type(_lua, 3)==luaType3) && (lua_type(_lua, 4)==luaType4)); }
 
+        std::string lookUpGLenumString(GLenum value) const;
+        GLenum lookUpGLenumValue(const std::string& str) const;
+
     protected:
 
         void initialize();

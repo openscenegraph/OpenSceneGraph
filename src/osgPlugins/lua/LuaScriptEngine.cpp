@@ -595,8 +595,7 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             GLenum value;
             if (_pi.getProperty(object, propertyName, value))
             {
-                osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
-                std::string enumString = ow->getString("GL",value);
+                std::string enumString = lookUpGLenumString(value);
                 lua_pushstring(_lua, enumString.c_str());
                 return 1;
             }
@@ -812,6 +811,52 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
     return 0;
 }
 
+std::string LuaScriptEngine::lookUpGLenumString(GLenum value) const
+{
+    osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
+
+    {
+        const osgDB::IntLookup& lookup = ow->getLookupMap()["GL"];
+        const osgDB::IntLookup::ValueToString& vts = lookup.getValueToString();
+        osgDB::IntLookup::ValueToString::const_iterator itr = vts.find(value);
+        if (itr!=vts.end()) return itr->second;
+    }
+
+    {
+        const osgDB::IntLookup& lookup = ow->getLookupMap()["PrimitiveType"];
+        const osgDB::IntLookup::ValueToString& vts = lookup.getValueToString();
+        osgDB::IntLookup::ValueToString::const_iterator itr = vts.find(value);
+        if (itr!=vts.end()) return itr->second;
+    }
+
+    OSG_NOTICE<<"Warning: LuaScriptEngine did not find valid GL enum value for GLenum value: "<<value<<std::endl;
+
+    return std::string();
+}
+
+GLenum LuaScriptEngine::lookUpGLenumValue(const std::string& str) const
+{
+    osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
+
+    {
+        const osgDB::IntLookup& lookup = ow->getLookupMap()["GL"];
+        const osgDB::IntLookup::StringToValue& stv = lookup.getStringToValue();
+        osgDB::IntLookup::StringToValue::const_iterator itr = stv.find(str);
+        if (itr!=stv.end()) return itr->second;
+    }
+
+    {
+        const osgDB::IntLookup& lookup = ow->getLookupMap()["PrimitiveType"];
+        const osgDB::IntLookup::StringToValue& stv = lookup.getStringToValue();
+        osgDB::IntLookup::StringToValue::const_iterator itr = stv.find(str);
+        if (itr!=stv.end()) return itr->second;
+    }
+
+    OSG_NOTICE<<"Warning: LuaScriptEngine did not find valid GL enum value for string value: "<<str<<std::endl;
+
+    return GL_NONE;
+}
+
 int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string& propertyName) const
 {
     osgDB::BaseSerializer::Type type;
@@ -856,19 +901,23 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         }
         case(osgDB::BaseSerializer::RW_GLENUM):
         {
+            OSG_NOTICE<<"LuaScriptEngine::setPropertyFromStack("<<propertyName<<") osgDB::BaseSerializer::RW_GLENUM"<<std::endl;
             if (lua_isnumber(_lua, -1))
             {
-                _pi.setProperty(object, propertyName, static_cast<int>(lua_tonumber(_lua, -1)));
+                _pi.setProperty(object, propertyName, static_cast<GLenum>(lua_tonumber(_lua, -1)));
                 return 0;
             }
             else if (lua_isstring(_lua, -1))
             {
                 const char* enumString = lua_tostring(_lua, -1);
-                osgDB::ObjectWrapperManager* ow = osgDB::Registry::instance()->getObjectWrapperManager();
+                GLenum value = lookUpGLenumValue(enumString); //getValue("GL",enumString);
 
-                int value = ow->getValue("GL",enumString);
+                OSG_NOTICE<<"Checking enumString="<<enumString<<", got back value ="<<value<<std::endl;
+
                 _pi.setProperty(object, propertyName, value);
+                return 0;
             }
+            OSG_NOTICE<<"LuaScriptEngine::setPropertyFromStack("<<propertyName<<") osgDB::BaseSerializer::RW_GLENUM Failed"<<std::endl;
             break;
         }
         case(osgDB::BaseSerializer::RW_ENUM):

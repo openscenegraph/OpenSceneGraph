@@ -31,7 +31,7 @@ unsigned int PrimitiveSet::getNumPrimitives() const
         case(TRIANGLE_FAN):
         case(QUAD_STRIP):
         case(PATCHES):
-        case(POLYGON): return 1;
+        case(POLYGON): return (getNumIndices()>0) ? 1 : 0;
     }
     return 0;
 }

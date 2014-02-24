@@ -135,7 +135,8 @@ public:
         RW_VEC3B, RW_VEC3UB, RW_VEC3S, RW_VEC3US, RW_VEC3I, RW_VEC3UI,
         RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI,
         RW_BOUNDINGBOXF, RW_BOUNDINGBOXD,
-        RW_BOUNDINGSPHEREF, RW_BOUNDINGSPHERED
+        RW_BOUNDINGSPHEREF, RW_BOUNDINGSPHERED,
+        RW_VECTOR
     };
 
     BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
@@ -784,6 +785,345 @@ public:
     Setter _setter;
 };
 
+class VectorBaseSerializer : public BaseSerializer
+{
+public:
+
+    VectorBaseSerializer(BaseSerializer::Type elementType):_elementType(elementType) {}
+
+    Type getElementType() const { return _elementType; }
+
+    virtual unsigned int size(const osg::Object& obj) const { return 0; }
+    virtual void resize(osg::Object& obj, unsigned int numElements) const {}
+    virtual void reserve(osg::Object& obj, unsigned int numElements) const {}
+    virtual void clear(osg::Object& obj) const {}
+    virtual void addElement(osg::Object& obj, void* ptr) const {}
+    virtual void insertElement(osg::Object& obj, unsigned int index, void* ptr) const {}
+    virtual void setElement(osg::Object& obj, unsigned int index, void* ptr) const {}
+    virtual void* getElement(osg::Object& obj, unsigned int index) const { return 0; }
+    virtual const void* getElement(const osg::Object& obj, unsigned int index) const { return 0; }
+
+protected:
+    Type _elementType;
+};
+
+
+template<typename C, typename P>
+class VectorSerializer : public VectorBaseSerializer
+{
+public:
+    typedef typename P::value_type ValueType;
+    typedef typename P::const_iterator ConstIterator;
+    typedef P& (C::*Getter)();
+    typedef const P& (C::*ConstGetter)() const;
+    typedef void (C::*Setter)( const P& );
+
+    VectorSerializer( const char* name, ConstGetter cgf, Getter gf, Setter sf, BaseSerializer::Type elementType, unsigned int numElementsOnRow):
+        VectorBaseSerializer(elementType),
+        _name(name),
+        _constgetter(cgf), _getter(gf), _setter(sf),
+        _numElementsOnRow(numElementsOnRow) {}
+
+    virtual const std::string& getName() const { return _name; }
+
+    virtual unsigned int size(const osg::Object& obj) const
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& list = (object.*_constgetter)();
+        return static_cast<unsigned int>(list.size());
+    }
+    virtual void resize(osg::Object& obj, unsigned int numElements) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        list.resize(numElements);
+    }
+    virtual void reserve(osg::Object& obj, unsigned int numElements) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        list.reserve(numElements);
+    }
+    virtual void clear(osg::Object& obj) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        list.clear();
+    }
+    virtual void addElement(osg::Object& obj, void* ptr) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        list.push_back(*reinterpret_cast<ValueType*>(ptr));
+    }
+    virtual void insertElement(osg::Object& obj, unsigned int index, void* ptr) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        if (index>=list.size()) list.resize(index+1);
+        list.insert(list.begin()+index, *reinterpret_cast<ValueType*>(ptr));
+    }
+    virtual void setElement(osg::Object& obj, unsigned int index, void* ptr) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        if (index>=list.size()) list.resize(index+1);
+        list[index] = *reinterpret_cast<ValueType*>(ptr);
+    }
+    virtual void* getElement(osg::Object& obj, unsigned int index) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& list = (object.*_getter)();
+        if (index>=list.size()) return 0;
+        else return &list[index];
+    }
+    virtual const void* getElement(const osg::Object& obj, unsigned int index) const
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& list = (object.*_constgetter)();
+        if (index>=list.size()) return 0;
+        else return &list[index];
+    }
+
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        unsigned int size = 0;
+        P list;
+        if ( is.isBinary() )
+        {
+            is >> size;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+            if ( size>0 ) (object.*_setter)( list );
+        }
+        else if ( is.matchString(_name) )
+        {
+            is >> size;
+            if ( size>0 ) is >> is.BEGIN_BRACKET;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+            if ( size>0 )
+            {
+                is >> is.END_BRACKET;
+                (object.*_setter)( list );
+            }
+        }
+        return true;
+    }
+
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& list = (object.*_constgetter)();
+        unsigned int size = (unsigned int)list.size();
+        if ( os.isBinary() )
+        {
+            os << size;
+            for ( ConstIterator itr=list.begin();
+                  itr!=list.end(); ++itr )
+            {
+                os << (*itr);
+            }
+        }
+        else if ( size>0 )
+        {
+            os << os.PROPERTY((_name).c_str()) << size << os.BEGIN_BRACKET << std::endl;
+            if (_numElementsOnRow==0)
+            {
+                for ( ConstIterator itr=list.begin(); itr!=list.end(); ++itr )
+                {
+                    os << (*itr);
+                }
+            }
+            else if (_numElementsOnRow==1)
+            {
+                for ( ConstIterator itr=list.begin(); itr!=list.end(); ++itr )
+                {
+                    os << (*itr); os << std::endl;
+                }
+            }
+            else
+            {
+                unsigned int i = _numElementsOnRow-1;
+                for (ConstIterator itr=list.begin(); itr!=list.end(); ++itr)
+                {
+                    os << (*itr);
+                    if (i==0) { os << std::endl; i = _numElementsOnRow-1; }
+                    else --i;
+                }
+                if (i!=_numElementsOnRow) os << std::endl;
+            }
+            os << os.END_BRACKET << std::endl;
+        }
+        return true;
+    }
+
+public:
+    std::string         _name;
+    ConstGetter         _constgetter;
+    Getter              _getter;
+    Setter              _setter;
+    unsigned int        _numElementsOnRow;
+};
+
+
+template<typename C>
+class IsAVectorSerializer : public VectorBaseSerializer
+{
+public:
+    typedef typename C::value_type ValueType;
+    typedef typename C::const_iterator ConstIterator;
+
+    IsAVectorSerializer( const char* name, BaseSerializer::Type elementType, unsigned int numElementsOnRow) :
+        VectorBaseSerializer(elementType),
+        _name(name),
+        _numElementsOnRow(numElementsOnRow) {}
+
+    virtual const std::string& getName() const { return _name; }
+
+    virtual unsigned int size(const osg::Object& obj) const
+    {
+        const C& list = OBJECT_CAST<const C&>(obj);
+        return static_cast<unsigned int>(list.size());
+    }
+    virtual void resize(osg::Object& obj, unsigned int numElements) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        list.resize(numElements);
+    }
+    virtual void reserve(osg::Object& obj, unsigned int numElements) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        list.reserve(numElements);
+    }
+    virtual void clear(osg::Object& obj) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        list.clear();
+    }
+    virtual void addElement(osg::Object& obj, void* ptr) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        list.push_back(*reinterpret_cast<ValueType*>(ptr));
+    }
+    virtual void insertElement(osg::Object& obj, unsigned int index, void* ptr) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        if (index>=list.size()) list.resize(index+1);
+        list.insert(list.begin()+index, *reinterpret_cast<ValueType*>(ptr));
+    }
+    virtual void setElement(osg::Object& obj, unsigned int index, void* ptr) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        if (index>=list.size()) list.resize(index+1);
+        list[index] = *reinterpret_cast<ValueType*>(ptr);
+    }
+    virtual void* getElement(osg::Object& obj, unsigned int index) const
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        if (index>=list.size()) return 0;
+        else return &list[index];
+    }
+
+    virtual const void* getElement(const osg::Object& obj, unsigned int index) const
+    {
+        const C& list = OBJECT_CAST<const C&>(obj);
+        if (index>=list.size()) return 0;
+        else return &list[index];
+    }
+
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& list = OBJECT_CAST<C&>(obj);
+        unsigned int size = 0;
+        if ( is.isBinary() )
+        {
+            is >> size;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+        }
+        else if ( is.matchString(_name) )
+        {
+            is >> size;
+            if ( size>0 ) is >> is.BEGIN_BRACKET;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+            if ( size>0 )
+            {
+                is >> is.END_BRACKET;
+            }
+        }
+        return true;
+    }
+
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& list = OBJECT_CAST<const C&>(obj);
+        unsigned int size = (unsigned int)list.size();
+        if ( os.isBinary() )
+        {
+            os << size;
+            for ( ConstIterator itr=list.begin();
+                  itr!=list.end(); ++itr )
+            {
+                os << (*itr);
+            }
+        }
+        else if ( size>0 )
+        {
+            os << os.PROPERTY((_name).c_str()) << size << os.BEGIN_BRACKET << std::endl;
+            if (_numElementsOnRow==0)
+            {
+                for ( ConstIterator itr=list.begin(); itr!=list.end(); ++itr )
+                {
+                    os << (*itr);
+                }
+            }
+            else if (_numElementsOnRow==1)
+            {
+                for ( ConstIterator itr=list.begin(); itr!=list.end(); ++itr )
+                {
+                    os << (*itr); os << std::endl;
+                }
+            }
+            else
+            {
+                unsigned int i = _numElementsOnRow-1;
+                for (ConstIterator itr=list.begin(); itr!=list.end(); ++itr)
+                {
+                    os << (*itr);
+                    if (i==0) { os << std::endl; i = _numElementsOnRow-1; }
+                    else --i;
+                }
+                if (i!=_numElementsOnRow) os << std::endl;
+            }
+            os << os.END_BRACKET << std::endl;
+        }
+        return true;
+    }
+
+public:
+    std::string         _name;
+    unsigned int        _numElementsOnRow;
+};
+
 // ADDING MANIPULATORS
 #define ADD_SERIALIZER(S) \
     wrapper->addSerializer( (S) )
@@ -1061,6 +1401,14 @@ public:
 #define ADD_LIST_SERIALIZER(PROP, TYPE) \
     wrapper->addSerializer( new osgDB::ListSerializer< MyClass, TYPE >( \
         #PROP, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_LIST )
+
+
+#define ADD_VECTOR_SERIALIZER(PROP, TYPE, ELEMENTTYPE, NUMELEMENTSONROW) \
+    wrapper->addSerializer( new osgDB::VectorSerializer< MyClass, TYPE >( \
+        #PROP, &MyClass::get##PROP, &MyClass::get##PROP, &MyClass::set##PROP, ELEMENTTYPE, NUMELEMENTSONROW), osgDB::BaseSerializer::RW_VECTOR )
+
+#define ADD_ISAVECTOR_SERIALIZER(PROP, ELEMENTTYPE, NUMELEMENTSONROW) \
+    wrapper->addSerializer( new osgDB::IsAVectorSerializer< MyClass >( #PROP, ELEMENTTYPE, NUMELEMENTSONROW), osgDB::BaseSerializer::RW_VECTOR )
 
 #define BEGIN_ENUM_SERIALIZER(PROP, DEF) \
     { typedef osgDB::EnumSerializer<MyClass, MyClass::PROP, void> MySerializer; \

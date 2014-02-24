@@ -189,6 +189,22 @@ const Array* Geometry::getTexCoordArray(unsigned int index) const
     else return 0;
 }
 
+void Geometry::setTexCoordArrayList(const ArrayList& arrayList)
+{
+    _texCoordList = arrayList;
+
+    dirtyDisplayList();
+
+    if (_useVertexBufferObjects)
+    {
+        for(ArrayList::iterator itr = _texCoordList.begin();
+            itr != _texCoordList.end();
+            ++itr)
+        {
+            addVertexBufferObjectIfRequired(itr->get());
+        }
+    }
+}
 
 void Geometry::setVertexAttribArray(unsigned int index, Array* array, osg::Array::Binding binding)
 {
@@ -214,6 +230,23 @@ const Array *Geometry::getVertexAttribArray(unsigned int index) const
 {
     if (index<_vertexAttribList.size()) return _vertexAttribList[index].get();
     else return 0;
+}
+
+void Geometry::setVertexAttribArrayList(const ArrayList& arrayList)
+{
+    _vertexAttribList = arrayList;
+
+    dirtyDisplayList();
+
+    if (_useVertexBufferObjects)
+    {
+        for(ArrayList::iterator itr = _vertexAttribList.begin();
+            itr != _vertexAttribList.end();
+            ++itr)
+        {
+            addVertexBufferObjectIfRequired(itr->get());
+        }
+    }
 }
 
 
@@ -712,7 +745,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     // draw the primitives themselves.
     //
     drawPrimitivesImplementation(renderInfo);
-    
+
     // unbind the VBO's if any are used.
     state.unbindVertexBufferObject();
     state.unbindElementBufferObject();

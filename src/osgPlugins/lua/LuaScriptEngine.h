@@ -29,6 +29,56 @@ namespace lua
 // forward declare
 class LuaScriptEngine;
 
+struct SerializerScratchPad : public osg::Referenced
+{
+    SerializerScratchPad(unsigned int s=256):dataType(osgDB::BaseSerializer::RW_UNDEFINED),dataSize(0) { maxDataSize = s; data = new char[s]; }
+
+    unsigned int                maxDataSize;
+    char*                       data;
+
+    osgDB::BaseSerializer::Type dataType;
+    unsigned int                dataSize;
+
+    void reset()
+    {
+        dataType = osgDB::BaseSerializer::RW_UNDEFINED;
+        dataSize = 0;
+    }
+
+    template<typename T>
+    bool set(const T& t)
+    {
+        if (sizeof(T)<=maxDataSize)
+        {
+            *(reinterpret_cast<T*>(data)) = t;
+            dataType = osgDB::getTypeEnum<T>();
+            dataSize = sizeof(T);
+            return true;
+        }
+        else
+        {
+            dataSize = 0;
+            dataType = osgDB::BaseSerializer::RW_UNDEFINED;
+            return false;
+        }
+    }
+
+    template<typename T>
+    bool get(T& t) const
+    {
+        if (sizeof(T)==dataSize && dataType == osgDB::getTypeEnum<T>())
+        {
+            t = *(reinterpret_cast<T*>(data));
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+};
+
+
 class LuaScriptEngine : public osg::ScriptEngine
 {
     public:
@@ -46,6 +96,9 @@ class LuaScriptEngine : public osg::ScriptEngine
         lua_State* getLuaState() const { return _lua; }
 
         osgDB::PropertyInterface& getPropertyInterface() const { return _pi; }
+
+        int pushDataToStack(SerializerScratchPad* ssp) const;
+        int popDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type) const;
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
@@ -109,6 +162,7 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool popParameter(osg::Object* object) const;
         osg::Object* popParameterObject() const;
 
+        void pushContainer(osg::Object* object, const std::string& propertyName) const;
 
         void createAndPushObject(const std::string& compoundName) const;
         void pushObject(osg::Object* object) const;
@@ -131,6 +185,24 @@ class LuaScriptEngine : public osg::ScriptEngine
                 return dynamic_cast<T*>(object);
             }
             else return 0;
+        }
+
+        std::string getStringFromTable(int pos, const std::string& field) const
+        {
+            std::string result;
+            if (lua_type(_lua, pos)==LUA_TTABLE)
+            {
+                lua_pushstring(_lua, field.c_str());
+                lua_rawget(_lua, pos);
+
+                if (lua_type(_lua, -1)==LUA_TSTRING)
+                {
+                    result = lua_tostring(_lua, -1);
+                }
+
+                lua_pop(_lua,1);
+            }
+            return result;
         }
 
         std::string getObjectCompoundClassName(int pos) const

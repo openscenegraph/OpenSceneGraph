@@ -146,7 +146,9 @@ REGISTER_OBJECT_WRAPPER( Geometry,
                          osg::Geometry,
                          "osg::Object osg::Drawable osg::Geometry" )
 {
-    ADD_LIST_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList );  // _primitives
+    //ADD_LIST_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList );  // _primitives
+    ADD_VECTOR_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList, osgDB::BaseSerializer::RW_OBJECT, 0 );
+
     ADD_USER_SERIALIZER( VertexData );  // _vertexData
     ADD_USER_SERIALIZER( NormalData );  // _normalData
     ADD_USER_SERIALIZER( ColorData );  // _colorData
@@ -156,6 +158,28 @@ REGISTER_OBJECT_WRAPPER( Geometry,
     ADD_USER_SERIALIZER( VertexAttribData );  // _vertexAttribList
 
     ADD_USER_SERIALIZER( FastPathHint );  // _fastPathHint
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 112 )
+        REMOVE_SERIALIZER( VertexData );
+        REMOVE_SERIALIZER( NormalData );
+        REMOVE_SERIALIZER( ColorData );
+        REMOVE_SERIALIZER( SecondaryColorData );
+        REMOVE_SERIALIZER( FogCoordData );
+        REMOVE_SERIALIZER( TexCoordData );
+        REMOVE_SERIALIZER( VertexAttribData );
+        REMOVE_SERIALIZER( FastPathHint );
+
+        ADD_OBJECT_SERIALIZER( VertexArray, osg::Array, NULL );
+        ADD_OBJECT_SERIALIZER( NormalArray, osg::Array, NULL );
+        ADD_OBJECT_SERIALIZER( ColorArray, osg::Array, NULL );
+        ADD_OBJECT_SERIALIZER( SecondaryColorArray, osg::Array, NULL );
+        ADD_OBJECT_SERIALIZER( FogCoordArray, osg::Array, NULL );
+
+        ADD_VECTOR_SERIALIZER( TexCoordArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
+        ADD_VECTOR_SERIALIZER( VertexAttribArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
+    }
+
 
     wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

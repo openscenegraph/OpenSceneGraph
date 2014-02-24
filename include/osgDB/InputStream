@@ -137,14 +137,14 @@ public:
     InputStream& operator>>( osg::BoundingSpheref& bs );
     InputStream& operator>>( osg::BoundingSphered& bs );
 
-    InputStream& operator>>( osg::Array*& a ) { a = readArray(); return *this; }
     InputStream& operator>>( osg::Image*& img ) { img = readImage(); return *this; }
-    InputStream& operator>>( osg::PrimitiveSet*& p ) { p = readPrimitiveSet(); return *this; }
+    InputStream& operator>>( osg::Array*& a ) { if (_fileVersion>=112) a = readObjectOfType<osg::Array>(); else a = readArray(); return *this; }
+    InputStream& operator>>( osg::PrimitiveSet*& p ) { if (_fileVersion>=112) p = readObjectOfType<osg::PrimitiveSet>(); else p = readPrimitiveSet(); return *this; }
     InputStream& operator>>( osg::Object*& obj ) { obj = readObject(); return *this; }
 
-    InputStream& operator>>( osg::ref_ptr<osg::Array>& ptr ) { ptr = readArray(); return *this; }
     InputStream& operator>>( osg::ref_ptr<osg::Image>& ptr ) { ptr = readImage(); return *this; }
-    InputStream& operator>>( osg::ref_ptr<osg::PrimitiveSet>& ptr ) { ptr = readPrimitiveSet(); return *this; }
+    InputStream& operator>>( osg::ref_ptr<osg::Array>& ptr ) { if (_fileVersion>=112) ptr = readObjectOfType<osg::Array>(); else ptr = readArray(); return *this; }
+    InputStream& operator>>( osg::ref_ptr<osg::PrimitiveSet>& ptr ) { if (_fileVersion>=112) ptr = readObjectOfType<osg::PrimitiveSet>(); else ptr = readPrimitiveSet(); return *this; }
 
     template<typename T> InputStream& operator>>( osg::ref_ptr<T>& ptr )
     { ptr = static_cast<T*>(readObject()); return *this; }
@@ -163,7 +163,19 @@ public:
     osg::Array* readArray();
     osg::PrimitiveSet* readPrimitiveSet();
     osg::Image* readImage(bool readFromExternal=true);
+
+    template<typename T>
+    T* readObjectOfType()
+    {
+        osg::ref_ptr<osg::Object> obj = readObject();
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr) { obj.release(); return ptr; }
+        else return 0;
+    }
+
     osg::Object* readObject( osg::Object* existingObj=0 );
+
+
     osg::Object* readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj=0);
 
     /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.

@@ -239,6 +239,9 @@ PropertyInterface::PropertyInterface():
     TYPENAME(VEC4US)
     TYPENAME(VEC4I)
     TYPENAME(VEC4UI)
+
+    TYPENAME(LIST)
+    TYPENAME(VECTOR)
 }
 
 
@@ -371,7 +374,7 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyDataToObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<destinationType<<std::endl;
+            OSG_NOTICE<<"PropertyInterface::copyPropertyDataToObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , destinationType="<<destinationType<<" ["<<getTypeName(destinationType)<<"]"<<std::endl;
             return false;
         }
     }
@@ -394,7 +397,7 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<sourceType<<std::endl;
+            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , sourceType="<<sourceType<<" ["<<getTypeName(sourceType)<<"]"<<std::endl;
             return false;
         }
     }
@@ -635,6 +638,7 @@ bool PropertyInterface::hasMethod(const osg::Object* object, const std::string& 
 {
     return hasMethod(object->getCompoundClassName(), methodName);
 }
+
 
 } // end of osgDB namespace
 

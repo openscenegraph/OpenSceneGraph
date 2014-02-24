@@ -12,7 +12,6 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#include <osg/Version>
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>

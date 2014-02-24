@@ -135,7 +135,6 @@ public:
     /** create an object of specified type for provided compound class name  in the form libraryName::className. */
     osg::Object* createObject(const std::string& compoundClassdName) const;
 
-
     /// template method for getting property data, return true if property available and the type is compatible, otherwise returns false.
     template<typename T>
     bool getProperty(const osg::Object* object, const std::string& propertyName, T& value);
@@ -250,7 +249,7 @@ inline bool PropertyInterface::getProperty(const osg::Object* object, const std:
     if (copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
     else
     {
-        OSG_NOTICE<<"PropertyInterface::getProperty("<<propertyName<<", "<<value->className()<<") Checking UserDataContainer for object ptr"<<std::endl;
+        OSG_NOTICE<<"PropertyInterface::getProperty("<<propertyName<<", Checking UserDataContainer for object ptr"<<std::endl;
         const osg::UserDataContainer* udc = object->getUserDataContainer();
         if (udc)
         {
@@ -293,6 +292,7 @@ inline bool PropertyInterface::setProperty(osg::Object* object, const std::strin
         return true;
     }
 }
+
 
 }
 

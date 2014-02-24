@@ -6,6 +6,7 @@
 
 namespace ArrayWrappers {
 
+#if 0
 struct ResizeArray : public osgDB::MethodObject
 {
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
@@ -28,14 +29,14 @@ struct ResizeArray : public osgDB::MethodObject
         return true;
     }
 };
-
+#endif
 
 REGISTER_OBJECT_WRAPPER( Array,
                          0,
                          osg::Array,
                          "osg::Object osg::Array" )
 {
-
+#if 0
     BEGIN_ENUM_SERIALIZER_NO_SET( Type, ArrayType );
         ADD_ENUM_VALUE( ArrayType );
 
@@ -94,6 +95,8 @@ REGISTER_OBJECT_WRAPPER( Array,
     ADD_UINT_SERIALIZER_NO_SET( TotalDataSize, 0);
     ADD_UINT_SERIALIZER_NO_SET( NumElements, 0);
 
+    ADD_METHOD_OBJECT( "resizeArray", ResizeArray );
+#endif
     BEGIN_ENUM_SERIALIZER( Binding, BIND_UNDEFINED );
         ADD_ENUM_VALUE( BIND_UNDEFINED );
         ADD_ENUM_VALUE( BIND_OFF );
@@ -105,50 +108,54 @@ REGISTER_OBJECT_WRAPPER( Array,
     ADD_BOOL_SERIALIZER(Normalize, false);
     ADD_BOOL_SERIALIZER(PreserveDataType, false);
 
-    ADD_METHOD_OBJECT( "resizeArray", ResizeArray );
 }
 
 }
 
-#define ARRAY_WRAPPERS( ARRAY ) \
-    namespace Wrappers##ARRAY { REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::Array osg::"#ARRAY ) {} }
+#define ARRAY_WRAPPERS( ARRAY, ELEMENTTYPE, NUMELEMENTSONROW ) \
+    namespace Wrappers##ARRAY { \
+        REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::Array osg::"#ARRAY) \
+        { \
+                ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, NUMELEMENTSONROW ); \
+        } \
+    }
 
-ARRAY_WRAPPERS(FloatArray)
-ARRAY_WRAPPERS(Vec2Array)
-ARRAY_WRAPPERS(Vec3Array)
-ARRAY_WRAPPERS(Vec4Array)
+ARRAY_WRAPPERS(FloatArray, RW_FLOAT, 4)
+ARRAY_WRAPPERS(Vec2Array, RW_VEC2F, 1)
+ARRAY_WRAPPERS(Vec3Array, RW_VEC3F, 1)
+ARRAY_WRAPPERS(Vec4Array, RW_VEC4F, 1)
 
-ARRAY_WRAPPERS(DoubleArray)
-ARRAY_WRAPPERS(Vec2dArray)
-ARRAY_WRAPPERS(Vec3dArray)
-ARRAY_WRAPPERS(Vec4dArray)
+ARRAY_WRAPPERS(DoubleArray, RW_DOUBLE, 4)
+ARRAY_WRAPPERS(Vec2dArray, RW_VEC2D, 1)
+ARRAY_WRAPPERS(Vec3dArray, RW_VEC3D, 1)
+ARRAY_WRAPPERS(Vec4dArray, RW_VEC4D, 1)
 
-ARRAY_WRAPPERS(ByteArray)
-ARRAY_WRAPPERS(Vec2bArray)
-ARRAY_WRAPPERS(Vec3bArray)
-ARRAY_WRAPPERS(Vec4bArray)
+ARRAY_WRAPPERS(ByteArray, RW_CHAR, 4)
+ARRAY_WRAPPERS(Vec2bArray, RW_VEC2B, 1)
+ARRAY_WRAPPERS(Vec3bArray, RW_VEC3B, 1)
+ARRAY_WRAPPERS(Vec4bArray, RW_VEC4B, 1)
 
-ARRAY_WRAPPERS(UByteArray)
-ARRAY_WRAPPERS(Vec2ubArray)
-ARRAY_WRAPPERS(Vec3ubArray)
-ARRAY_WRAPPERS(Vec4ubArray)
+ARRAY_WRAPPERS(UByteArray, RW_UCHAR, 4)
+ARRAY_WRAPPERS(Vec2ubArray, RW_VEC2UB, 1)
+ARRAY_WRAPPERS(Vec3ubArray, RW_VEC3UB, 1)
+ARRAY_WRAPPERS(Vec4ubArray, RW_VEC4UB, 1)
 
-ARRAY_WRAPPERS(ShortArray)
-ARRAY_WRAPPERS(Vec2sArray)
-ARRAY_WRAPPERS(Vec3sArray)
-ARRAY_WRAPPERS(Vec4sArray)
+ARRAY_WRAPPERS(ShortArray, RW_SHORT, 4)
+ARRAY_WRAPPERS(Vec2sArray, RW_VEC2S, 1)
+ARRAY_WRAPPERS(Vec3sArray, RW_VEC3S, 1)
+ARRAY_WRAPPERS(Vec4sArray, RW_VEC4S, 1)
 
-ARRAY_WRAPPERS(UShortArray)
-ARRAY_WRAPPERS(Vec2usArray)
-ARRAY_WRAPPERS(Vec3usArray)
-ARRAY_WRAPPERS(Vec4usArray)
+ARRAY_WRAPPERS(UShortArray, RW_USHORT, 4)
+ARRAY_WRAPPERS(Vec2usArray, RW_VEC2US, 1)
+ARRAY_WRAPPERS(Vec3usArray, RW_VEC3US, 1)
+ARRAY_WRAPPERS(Vec4usArray, RW_VEC4US, 1)
 
-ARRAY_WRAPPERS(IntArray)
-ARRAY_WRAPPERS(Vec2iArray)
-ARRAY_WRAPPERS(Vec3iArray)
-ARRAY_WRAPPERS(Vec4iArray)
+ARRAY_WRAPPERS(IntArray, RW_INT, 4)
+ARRAY_WRAPPERS(Vec2iArray, RW_VEC2I, 1)
+ARRAY_WRAPPERS(Vec3iArray, RW_VEC3I, 1)
+ARRAY_WRAPPERS(Vec4iArray, RW_VEC4I, 1)
 
-ARRAY_WRAPPERS(UIntArray)
-ARRAY_WRAPPERS(Vec2uiArray)
-ARRAY_WRAPPERS(Vec3uiArray)
-ARRAY_WRAPPERS(Vec4uiArray)
+ARRAY_WRAPPERS(UIntArray, RW_UINT, 4)
+ARRAY_WRAPPERS(Vec2uiArray, RW_VEC2UI, 1)
+ARRAY_WRAPPERS(Vec3uiArray, RW_VEC3UI, 1)
+ARRAY_WRAPPERS(Vec4uiArray, RW_VEC4UI, 1)

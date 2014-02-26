@@ -195,6 +195,13 @@ inline Object* getUserObject(osg::Object* object, const std::string& name)
     return udc ? udc->getUserObject(name) : 0;
 }
 
+/** Convinience function for getting the User Object associated with specificed name from an Object's UserDataContainer.*/
+inline const Object* getUserObject(const osg::Object* object, const std::string& name)
+{
+    const osg::UserDataContainer* udc = object->getUserDataContainer();
+    return udc ? udc->getUserObject(name) : 0;
+}
+
 
 }
 

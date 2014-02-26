@@ -242,6 +242,7 @@ PropertyInterface::PropertyInterface():
 
     TYPENAME(LIST)
     TYPENAME(VECTOR)
+    TYPENAME(MAP)
 }
 
 
@@ -380,7 +381,7 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
@@ -403,7 +404,7 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
@@ -426,7 +427,7 @@ bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const st
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() no serializer available."<<std::endl;
+        OSG_INFO<<"PropertyInterface::copyPropertyObjectToObject() no serializer available."<<std::endl;
         return false;
     }
 }

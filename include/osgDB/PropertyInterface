@@ -249,11 +249,11 @@ inline bool PropertyInterface::getProperty(const osg::Object* object, const std:
     if (copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
     else
     {
-        OSG_NOTICE<<"PropertyInterface::getProperty("<<propertyName<<", Checking UserDataContainer for object ptr"<<std::endl;
+        OSG_INFO<<"PropertyInterface::getProperty("<<propertyName<<", Checking UserDataContainer for object ptr"<<std::endl;
         const osg::UserDataContainer* udc = object->getUserDataContainer();
         if (udc)
         {
-            OSG_NOTICE<<"   Checking UserDataContainer for object ptr"<<std::endl;
+            OSG_INFO<<"   Checking UserDataContainer for object ptr"<<std::endl;
             const osg::Object* ptr = udc->getUserObject(propertyName);
             if (ptr)
             {
@@ -279,13 +279,13 @@ inline bool PropertyInterface::setProperty(osg::Object* object, const std::strin
             const osg::Object* outgoingObject = udc->getUserObject(objectIndex);
             if (outgoingObject==value) return true;
 
-            OSG_NOTICE<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") replace object on UserDataContainer"<<std::endl;
+            OSG_INFO<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") replace object on UserDataContainer"<<std::endl;
             value->setName(propertyName);
             udc->setUserObject(objectIndex, value);
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") Adding object to UserDataContainer"<<std::endl;
+            OSG_INFO<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") Adding object to UserDataContainer"<<std::endl;
             value->setName(propertyName);
             udc->addUserObject(value);
         }

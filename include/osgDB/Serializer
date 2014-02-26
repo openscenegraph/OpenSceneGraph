@@ -136,7 +136,7 @@ public:
         RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI,
         RW_BOUNDINGBOXF, RW_BOUNDINGBOXD,
         RW_BOUNDINGSPHEREF, RW_BOUNDINGSPHERED,
-        RW_VECTOR
+        RW_VECTOR, RW_MAP
     };
 
     BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
@@ -789,9 +789,11 @@ class VectorBaseSerializer : public BaseSerializer
 {
 public:
 
-    VectorBaseSerializer(BaseSerializer::Type elementType):_elementType(elementType) {}
+    VectorBaseSerializer(BaseSerializer::Type elementType, unsigned int elementSize):
+        _elementType(elementType),_elementSize(elementSize) {}
 
     Type getElementType() const { return _elementType; }
+    unsigned int getElementSize() const { return _elementSize; }
 
     virtual unsigned int size(const osg::Object& obj) const { return 0; }
     virtual void resize(osg::Object& obj, unsigned int numElements) const {}
@@ -804,7 +806,8 @@ public:
     virtual const void* getElement(const osg::Object& obj, unsigned int index) const { return 0; }
 
 protected:
-    Type _elementType;
+    Type         _elementType;
+    unsigned int _elementSize;
 };
 
 
@@ -819,7 +822,7 @@ public:
     typedef void (C::*Setter)( const P& );
 
     VectorSerializer( const char* name, ConstGetter cgf, Getter gf, Setter sf, BaseSerializer::Type elementType, unsigned int numElementsOnRow):
-        VectorBaseSerializer(elementType),
+        VectorBaseSerializer(elementType, sizeof(ValueType)),
         _name(name),
         _constgetter(cgf), _getter(gf), _setter(sf),
         _numElementsOnRow(numElementsOnRow) {}
@@ -984,7 +987,7 @@ public:
     typedef typename C::const_iterator ConstIterator;
 
     IsAVectorSerializer( const char* name, BaseSerializer::Type elementType, unsigned int numElementsOnRow) :
-        VectorBaseSerializer(elementType),
+        VectorBaseSerializer(elementType, sizeof(ValueType)),
         _name(name),
         _numElementsOnRow(numElementsOnRow) {}
 
@@ -1122,6 +1125,153 @@ public:
 public:
     std::string         _name;
     unsigned int        _numElementsOnRow;
+};
+
+class MapBaseSerializer : public BaseSerializer
+{
+public:
+
+    MapBaseSerializer(BaseSerializer::Type keyType, unsigned int keySize, BaseSerializer::Type elementType, unsigned int elementSize):
+        _keyType(keyType), _keySize(keySize),
+        _elementType(elementType),_elementSize(elementSize) {}
+
+    Type getKeyType() const { return _keyType; }
+    unsigned int getKeySize() const { return _keySize; }
+
+    Type getElementType() const { return _elementType; }
+    unsigned int getElementSize() const { return _elementSize; }
+
+    virtual void clear(osg::Object& obj) const {}
+    virtual void setElement(osg::Object& obj, void* ptrKey, void* ptrValue) const {}
+    virtual void* getElement(osg::Object& obj, void* ptrKey) const { return 0; }
+    virtual const void* getElement(const osg::Object& obj, void* ptrKey) const { return 0; }
+
+protected:
+    Type _keyType;
+    unsigned int _keySize;
+
+    Type _elementType;
+    unsigned int _elementSize;
+};
+
+
+template<typename C, typename P>
+class MapSerializer : public MapBaseSerializer
+{
+public:
+    typedef typename P::value_type ValueType;
+    typedef typename P::key_type  KeyType;
+    typedef typename P::mapped_type  ElementType;
+    typedef typename P::const_iterator ConstIterator;
+    typedef P& (C::*Getter)();
+    typedef const P& (C::*ConstGetter)() const;
+    typedef void (C::*Setter)( const P& );
+
+    MapSerializer( const char* name, ConstGetter cgf, Getter gf, Setter sf, BaseSerializer::Type keyType, BaseSerializer::Type elementType):
+        MapBaseSerializer(keyType, sizeof(KeyType), elementType, sizeof(ElementType)),
+        _name(name),
+        _constgetter(cgf), _getter(gf), _setter(sf) {}
+
+    virtual const std::string& getName() const { return _name; }
+
+    virtual void clear(osg::Object& obj) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& map = (object.*_getter)();
+        map.clear();
+    }
+
+    virtual void setElement(osg::Object& obj, void* ptrKey, void* ptrValue) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& map = (object.*_getter)();
+        map[*reinterpret_cast<KeyType*>(ptrKey)] = *reinterpret_cast<ElementType*>(ptrValue);
+    }
+
+    virtual void* getElement(osg::Object& obj, void* ptrKey) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& map = (object.*_getter)();
+        return &(map[*reinterpret_cast<KeyType*>(ptrKey)]);
+    }
+
+    virtual const void* getElement(const osg::Object& obj, void* ptrKey) const
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& map = (object.*_constgetter)();
+        ConstIterator itr = map.find(*reinterpret_cast<KeyType*>(ptrKey));
+        if (itr==map.end()) return 0;
+        else return &(itr->second);
+    }
+
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        unsigned int size = 0;
+        P map;
+        if ( is.isBinary() )
+        {
+            is >> size;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                KeyType key;
+                ElementType value;
+                is >> key >> value;
+                map[key] = value;
+            }
+            (object.*_setter)( map );
+        }
+        else if ( is.matchString(_name) )
+        {
+            is >> size;
+            if ( size>0 )
+            {
+                is >> is.BEGIN_BRACKET;
+                for ( unsigned int i=0; i<size; ++i )
+                {
+                    KeyType key;
+                    ElementType value;
+                    is >> key >> value;
+                    map[key] = value;
+                }
+                is >> is.END_BRACKET;
+            }
+            (object.*_setter)( map );
+        }
+        return true;
+    }
+
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& map = (object.*_constgetter)();
+        unsigned int size = (unsigned int)map.size();
+        if ( os.isBinary() )
+        {
+            os << size;
+            for ( ConstIterator itr=map.begin();
+                  itr!=map.end(); ++itr )
+            {
+                os << itr->first << itr->second;
+            }
+        }
+        else if ( size>0 )
+        {
+            os << os.PROPERTY((_name).c_str()) << size << os.BEGIN_BRACKET << std::endl;
+            for ( ConstIterator itr=map.begin(); itr!=map.end(); ++itr )
+            {
+                os << itr->first << itr->second; os << std::endl;
+            }
+            os << os.END_BRACKET << std::endl;
+        }
+        return true;
+    }
+
+public:
+    std::string         _name;
+    ConstGetter         _constgetter;
+    Getter              _getter;
+    Setter              _setter;
 };
 
 // ADDING MANIPULATORS

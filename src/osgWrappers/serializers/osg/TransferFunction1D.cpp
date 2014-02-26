@@ -3,6 +3,8 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+#if 0
+
 static bool checkColorMap( const osg::TransferFunction1D& func )
 {
     return func.getColorMap().size()>0;
@@ -34,11 +36,21 @@ static bool writeColorMap( osgDB::OutputStream& os, const osg::TransferFunction1
     os << os.END_BRACKET << std::endl;
     return true;
 }
+#endif
+
+#define ADD_MAP_SERIALIZER(PROP, TYPE, KEYTYPE, ELEMENTTYPE) \
+    wrapper->addSerializer( new osgDB::MapSerializer< MyClass, TYPE >( \
+        #PROP, &MyClass::get##PROP, &MyClass::get##PROP, &MyClass::set##PROP, KEYTYPE, ELEMENTTYPE), osgDB::BaseSerializer::RW_MAP )
+
 
 REGISTER_OBJECT_WRAPPER( TransferFunction1D,
                          new osg::TransferFunction1D,
                          osg::TransferFunction1D,
                          "osg::Object osg::TransferFunction osg::TransferFunction1D" )
 {
+#if 0
     ADD_USER_SERIALIZER( ColorMap );  // _colorMap
+#else
+    ADD_MAP_SERIALIZER(ColorMap, osg::TransferFunction1D::ColorMap, osgDB::BaseSerializer::RW_FLOAT, osgDB::BaseSerializer::RW_VEC4F);
+#endif
 }

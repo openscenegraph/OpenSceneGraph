@@ -31,8 +31,11 @@ class LuaScriptEngine;
 
 struct SerializerScratchPad : public osg::Referenced
 {
-    SerializerScratchPad(unsigned int s=256):dataType(osgDB::BaseSerializer::RW_UNDEFINED),dataSize(0) { maxDataSize = s; data = new char[s]; }
+    SerializerScratchPad(unsigned int s=256) : deleteData(true), dataType(osgDB::BaseSerializer::RW_UNDEFINED), dataSize(0) { maxDataSize = s; data = new char[s]; }
+    SerializerScratchPad(osgDB::BaseSerializer::Type type, const void* ptr, unsigned int s) : deleteData(false), maxDataSize(s), data(const_cast<char*>(reinterpret_cast<const char*>(ptr))), dataType(type),dataSize(s) {}
+    virtual ~SerializerScratchPad() { if (deleteData && data) delete [] data; }
 
+    bool                        deleteData;
     unsigned int                maxDataSize;
     char*                       data;
 
@@ -98,46 +101,50 @@ class LuaScriptEngine : public osg::ScriptEngine
         osgDB::PropertyInterface& getPropertyInterface() const { return _pi; }
 
         int pushDataToStack(SerializerScratchPad* ssp) const;
-        int popDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type) const;
+        int getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type, int pos) const;
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
 
         bool loadScript(osg::Script* script);
 
-        osgDB::BaseSerializer::Type getType() const;
+        int getAbsolutePos(int pos) const { return (pos<0) ? (lua_gettop(_lua)+pos+1) : pos; }
 
-        bool getfields(const char* f1, const char* f2, int type) const;
-        bool getfields(const char* f1, const char* f2, const char* f3, int type) const;
-        bool getfields(const char* f1, const char* f2, const char* f3, const char* f4, int type) const;
-        bool getfields(const char* f1, const char* f2, const char* f3, const char* f4, const char* f5, const char* f6, int type) const;
-        bool getelements(int numElements, int type) const;
+        osgDB::BaseSerializer::Type getType(int pos) const;
 
-        bool getvec2() const;
-        bool getvec3() const;
-        bool getvec4() const;
-        bool getmatrix() const;
-        bool getboundingbox() const;
-        bool getboundingsphere() const;
+        bool getfields(int pos, const char* f1, const char* f2, int type) const;
+        bool getfields(int pos, const char* f1, const char* f2, const char* f3, int type) const;
+        bool getfields(int pos, const char* f1, const char* f2, const char* f3, const char* f4, int type) const;
+        bool getfields(int pos, const char* f1, const char* f2, const char* f3, const char* f4, const char* f5, const char* f6, int type) const;
+        bool getelements(int pos, int numElements, int type) const;
 
-        bool getValue(osg::Vec2f& value) const;
-        bool getValue(osg::Vec3f& value) const;
-        bool getValue(osg::Vec4f& value) const;
+        bool getvec2(int pos) const;
+        bool getvec3(int pos) const;
+        bool getvec4(int pos) const;
+        bool getmatrix(int pos) const;
+        bool getboundingbox(int pos) const;
+        bool getboundingsphere(int pos) const;
 
-        bool getValue(osg::Vec2d& value) const;
-        bool getValue(osg::Vec3d& value) const;
-        bool getValue(osg::Vec4d& value) const;
-        bool getValue(osg::Quat& value) const;
-        bool getValue(osg::Plane& value) const;
+        bool getValue(int pos, osg::Vec2f& value) const;
+        bool getValue(int pos, osg::Vec3f& value) const;
+        bool getValue(int pos, osg::Vec4f& value) const;
 
-        bool getValue(osg::Matrixf& value) const;
-        bool getValue(osg::Matrixd& value) const;
+        bool getValue(int pos, osg::Vec2d& value) const;
+        bool getValue(int pos, osg::Vec3d& value) const;
+        bool getValue(int pos, osg::Vec4d& value) const;
+        bool getValue(int pos, osg::Quat& value) const;
+        bool getValue(int pos, osg::Plane& value) const;
 
-        bool getValue(osg::BoundingBoxf& value) const;
-        bool getValue(osg::BoundingBoxd& value) const;
+        bool getValue(int pos, osg::Matrixf& value) const;
+        bool getValue(int pos, osg::Matrixd& value) const;
 
-        bool getValue(osg::BoundingSpheref& value) const;
-        bool getValue(osg::BoundingSphered& value) const;
+        bool getValue(int pos, osg::BoundingBoxf& value) const;
+        bool getValue(int pos, osg::BoundingBoxd& value) const;
+
+        bool getValue(int pos, osg::BoundingSpheref& value) const;
+        bool getValue(int pos, osg::BoundingSphered& value) const;
+
+        void pushValue(osgDB::BaseSerializer::Type type, const void* ptr) const;
 
         void pushValue(const osg::Vec2f& value) const;
         void pushValue(const osg::Vec3f& value) const;

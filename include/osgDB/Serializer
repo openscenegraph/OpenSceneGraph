@@ -1127,6 +1127,44 @@ public:
     unsigned int        _numElementsOnRow;
 };
 
+class MapIteratorObject : public osg::Object
+{
+public:
+    MapIteratorObject():
+        _keyType(BaseSerializer::RW_UNDEFINED), _keySize(0),
+        _elementType(BaseSerializer::RW_UNDEFINED),_elementSize(0) {}
+
+    MapIteratorObject(BaseSerializer::Type keyType, unsigned int keySize, BaseSerializer::Type elementType, unsigned int elementSize):
+        _keyType(keyType), _keySize(keySize),
+        _elementType(elementType),_elementSize(elementSize) {}
+
+    MapIteratorObject(const MapIteratorObject& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(rhs, copyop),
+        _keyType(rhs._keyType), _keySize(rhs._keySize),
+        _elementType(rhs._elementType),_elementSize(rhs._elementSize) {}
+
+    META_Object(osgDB, MapIteratorObject);
+
+    BaseSerializer::Type getKeyType() const { return _keyType; }
+    unsigned int getKeySize() const { return _keySize; }
+
+    BaseSerializer::Type getElementType() const { return _elementType; }
+    unsigned int getElementSize() const { return _elementSize; }
+
+    virtual bool advance() { return false; }
+    virtual bool valid() const { return false; }
+    virtual const void* getKey() const { return 0; }
+    virtual void* getElement() const { return 0; }
+    virtual void setElement(void* ptr) const {}
+
+protected:
+    BaseSerializer::Type _keyType;
+    unsigned int _keySize;
+
+    BaseSerializer::Type _elementType;
+    unsigned int _elementSize;
+};
+
 class MapBaseSerializer : public BaseSerializer
 {
 public:
@@ -1147,6 +1185,8 @@ public:
     virtual const void* getElement(const osg::Object& obj, void* ptrKey) const { return 0; }
     virtual unsigned int size(const osg::Object& obj) const { return 0; }
 
+    virtual MapIteratorObject* createIterator(osg::Object& obj) const { return 0; }
+
 protected:
     Type _keyType;
     unsigned int _keySize;
@@ -1163,6 +1203,7 @@ public:
     typedef typename P::value_type ValueType;
     typedef typename P::key_type  KeyType;
     typedef typename P::mapped_type  ElementType;
+    typedef typename P::iterator Iterator;
     typedef typename P::const_iterator ConstIterator;
     typedef P& (C::*Getter)();
     typedef const P& (C::*ConstGetter)() const;
@@ -1210,6 +1251,30 @@ public:
         const C& object = OBJECT_CAST<const C&>(obj);
         const P& map = (object.*_constgetter)();
         return map.size();
+    }
+
+    struct MapIterator : public MapIteratorObject
+    {
+        MapIterator(BaseSerializer::Type keyType, unsigned int keySize, BaseSerializer::Type elementType, unsigned int elementSize,
+                    Iterator itr, Iterator endItr):
+            MapIteratorObject(keyType, keySize, elementType, elementSize),
+            _itr(itr),_endItr(endItr) {}
+
+        Iterator _itr;
+        Iterator _endItr;
+
+        virtual bool advance() { if (valid()) ++_itr; return valid(); }
+        virtual bool valid() const { return _itr!=_endItr; }
+        virtual const void* getKey() const { return valid() ? &(_itr->first) : 0; }
+        virtual void* getElement() const { return valid() ? &(_itr->second) : 0; }
+        virtual void setElement(void* ptr) const { if (valid()) _itr->second = *reinterpret_cast<ElementType*>(ptr); }
+    };
+
+    virtual MapIteratorObject* createIterator(osg::Object& obj) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& map = (object.*_getter)();
+        return new MapIterator(_keyType, _keySize, _elementType, _elementSize, map.begin(), map.end());
     }
 
     virtual bool read( InputStream& is, osg::Object& obj )

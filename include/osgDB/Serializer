@@ -1145,6 +1145,7 @@ public:
     virtual void setElement(osg::Object& obj, void* ptrKey, void* ptrValue) const {}
     virtual void* getElement(osg::Object& obj, void* ptrKey) const { return 0; }
     virtual const void* getElement(const osg::Object& obj, void* ptrKey) const { return 0; }
+    virtual unsigned int size(const osg::Object& obj) const { return 0; }
 
 protected:
     Type _keyType;
@@ -1202,6 +1203,13 @@ public:
         ConstIterator itr = map.find(*reinterpret_cast<KeyType*>(ptrKey));
         if (itr==map.end()) return 0;
         else return &(itr->second);
+    }
+
+    virtual unsigned int size(const osg::Object& obj) const
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& map = (object.*_constgetter)();
+        return map.size();
     }
 
     virtual bool read( InputStream& is, osg::Object& obj )

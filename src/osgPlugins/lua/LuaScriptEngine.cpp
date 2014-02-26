@@ -223,7 +223,7 @@ static int getContainerSize(lua_State* _lua)
     return 0;
 }
 
-static int getContainerClear(lua_State* _lua)
+static int callVectorClear(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -245,7 +245,7 @@ static int getContainerClear(lua_State* _lua)
     return 0;
 }
 
-static int getContainerResize(lua_State* _lua)
+static int callVectorResize(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -267,7 +267,7 @@ static int getContainerResize(lua_State* _lua)
     return 0;
 }
 
-static int getContainerReserve(lua_State* _lua)
+static int callVectorReserve(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -290,7 +290,7 @@ static int getContainerReserve(lua_State* _lua)
 }
 
 
-static int getContainerAdd(lua_State* _lua)
+static int callVectorAdd(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -425,7 +425,7 @@ static int setMapProperty(lua_State* _lua)
     return 0;
 }
 
-static int getMapClear(lua_State* _lua)
+static int callMapClear(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
     int n = lua_gettop(_lua);    /* number of arguments */
@@ -440,10 +440,30 @@ static int getMapClear(lua_State* _lua)
     osgDB::MapBaseSerializer* ms = dynamic_cast<osgDB::MapBaseSerializer*>(bs);
     if (ms)
     {
-        OSG_NOTICE<<"Doing map clear"<<std::endl;
-
         ms->clear(*object);
         return 0;
+    }
+
+    return 0;
+}
+
+static int getMapSize(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
+    std::string containerPropertyName = lse->getStringFromTable(1,"containerPropertyName");
+
+    // check to see if Object "is a" vector
+    osgDB::BaseSerializer::Type type;
+    osgDB::BaseSerializer* bs = lse->getPropertyInterface().getSerializer(object, containerPropertyName, type);
+    osgDB::MapBaseSerializer* ms = dynamic_cast<osgDB::MapBaseSerializer*>(bs);
+    if (ms)
+    {
+        lua_pushinteger(lse->getLuaState(), ms->size(*object));
+        return 1;
     }
 
     return 0;
@@ -2875,10 +2895,10 @@ void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& prop
         if (vs)
         {
             assignClosure("size", getContainerSize);
-            assignClosure("clear", getContainerClear);
-            assignClosure("resize", getContainerResize);
-            assignClosure("reserve", getContainerReserve);
-            assignClosure("add", getContainerAdd);
+            assignClosure("clear", callVectorClear);
+            assignClosure("resize", callVectorResize);
+            assignClosure("reserve", callVectorReserve);
+            assignClosure("add", callVectorAdd);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Container");
             lua_setmetatable(_lua, -2);
@@ -2886,7 +2906,8 @@ void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& prop
         else if (ms)
         {
             OSG_NOTICE<<"Need to set up map object"<<std::endl;
-            assignClosure("clear", getMapClear);
+            assignClosure("clear", callMapClear);
+            assignClosure("size", getMapSize);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Map");
             lua_setmetatable(_lua, -2);
@@ -2949,10 +2970,10 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
             lua_pushstring(_lua, "containerPropertyName"); lua_pushstring(_lua, "vector"); lua_settable(_lua, -3);
 
             assignClosure("size", getContainerSize);
-            assignClosure("clear", getContainerClear);
-            assignClosure("resize", getContainerResize);
-            assignClosure("reserve", getContainerReserve);
-            assignClosure("add", getContainerAdd);
+            assignClosure("clear", callVectorClear);
+            assignClosure("resize", callVectorResize);
+            assignClosure("reserve", callVectorReserve);
+            assignClosure("add", callVectorAdd);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Container");
             lua_setmetatable(_lua, -2);

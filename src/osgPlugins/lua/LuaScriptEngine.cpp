@@ -362,7 +362,7 @@ static int getMapProperty(lua_State * _lua)
                         return 1;
                     }
 
-                    return 0;
+                   return 0;
                 }
             }
         }
@@ -468,6 +468,135 @@ static int getMapSize(lua_State* _lua)
 
     return 0;
 }
+
+
+static int createMapIterator(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
+    std::string containerPropertyName = lse->getStringFromTable(1,"containerPropertyName");
+
+    // check to see if Object "is a" vector
+    osgDB::BaseSerializer::Type type;
+    osgDB::BaseSerializer* bs = lse->getPropertyInterface().getSerializer(object, containerPropertyName, type);
+    osgDB::MapBaseSerializer* ms = dynamic_cast<osgDB::MapBaseSerializer*>(bs);
+    if (ms)
+    {
+        lse->pushObject(ms->createIterator(*object));
+        return 1;
+    }
+
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  MapIteratorObject support
+//
+static int callMapIteratorAdvance(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    if (lua_gettop(_lua)<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+    osgDB::MapIteratorObject* mio  = lse->getObjectFromTable<osgDB::MapIteratorObject>(1);
+    if (mio)
+    {
+        lua_pushboolean(lse->getLuaState(), mio->advance());
+        return 1;
+    }
+
+    return 0;
+}
+
+static int callMapIteratorValid(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    if (lua_gettop(_lua)<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+    osgDB::MapIteratorObject* mio  = lse->getObjectFromTable<osgDB::MapIteratorObject>(1);
+    if (mio)
+    {
+        lua_pushboolean(lse->getLuaState(), mio->valid());
+        return 1;
+    }
+
+    return 0;
+}
+
+static int getMapIteratorKey(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    if (lua_gettop(_lua)<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+    osgDB::MapIteratorObject* mio  = lse->getObjectFromTable<osgDB::MapIteratorObject>(1);
+    if (mio)
+    {
+        const void* dataPtr = mio->getKey();
+        if (dataPtr)
+        {
+            SerializerScratchPad valuesp(mio->getKeyType(), dataPtr, mio->getKeySize());
+            return lse->pushDataToStack(&valuesp);
+        }
+        else
+        {
+            lua_pushnil(_lua);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static int getMapIteratorElement(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    if (lua_gettop(_lua)<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+    osgDB::MapIteratorObject* mio  = lse->getObjectFromTable<osgDB::MapIteratorObject>(1);
+    if (mio)
+    {
+        const void* dataPtr = mio->getElement();
+        if (dataPtr)
+        {
+            SerializerScratchPad valuesp(mio->getElementType(), dataPtr, mio->getElementSize());
+            return lse->pushDataToStack(&valuesp);
+        }
+        else
+        {
+            lua_pushnil(_lua);
+            return 1;
+        }
+    }
+    OSG_NOTICE<<"getMapIteratorElement failed. "<<std::endl;
+    return 0;
+}
+
+
+static int setMapIteratorElement(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    if (lua_gettop(_lua)<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+    osgDB::MapIteratorObject* mio  = lse->getObjectFromTable<osgDB::MapIteratorObject>(1);
+    if (mio)
+    {
+        SerializerScratchPad valuesp;
+        lse->getDataFromStack(&valuesp, mio->getElementType(), 2);
+
+        if (mio->getElementType()==valuesp.dataType)
+        {
+            OSG_NOTICE<<"Assigning element "<<valuesp.data<<std::endl;
+            mio->setElement(valuesp.data);
+            return 0;
+        }
+        else
+        {
+            OSG_NOTICE<<"Warning: Lua setMapIteratorElement() : Failed to matched map element type, valuesp.dataType="<<valuesp.dataType<<std::endl;
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -846,10 +975,10 @@ class PushStackValueVisitor : public osg::ValueObject::GetValueVisitor
 {
 public:
 
-    const LuaScriptEngine* _lsg;
+    const LuaScriptEngine* _lse;
     lua_State* _lua;
 
-    PushStackValueVisitor(const LuaScriptEngine* lsg) : _lsg(lsg) { _lua = const_cast<LuaScriptEngine*>(lsg)->getLuaState(); }
+    PushStackValueVisitor(const LuaScriptEngine* lse) : _lse(lse) { _lua = const_cast<LuaScriptEngine*>(lse)->getLuaState(); }
 
     virtual void apply(bool value)                      { lua_pushboolean(_lua, value ? 0 : 1); }
     virtual void apply(char value)                      { lua_pushnumber(_lua, value); }
@@ -861,16 +990,16 @@ public:
     virtual void apply(float value)                     { lua_pushnumber(_lua, value); }
     virtual void apply(double value)                    { lua_pushnumber(_lua, value); }
     virtual void apply(const std::string& value)        { lua_pushlstring(_lua, &value[0], value.size()); }
-    virtual void apply(const osg::Vec2f& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Vec3f& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Vec4f& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Vec2d& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Vec3d& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Vec4d& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Quat& value)          { _lsg->pushValue(value); }
-    virtual void apply(const osg::Plane& value)         { _lsg->pushValue(value); }
-    virtual void apply(const osg::Matrixf& value)       { _lsg->pushValue(value); }
-    virtual void apply(const osg::Matrixd& value)       { _lsg->pushValue(value); }
+    virtual void apply(const osg::Vec2f& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3f& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4f& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec2d& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3d& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4d& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Quat& value)          { _lse->pushValue(value); }
+    virtual void apply(const osg::Plane& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Matrixf& value)       { _lse->pushValue(value); }
+    virtual void apply(const osg::Matrixd& value)       { _lse->pushValue(value); }
 };
 
 #if LUA_VERSION_NUM<=501
@@ -881,12 +1010,12 @@ class GetStackValueVisitor : public osg::ValueObject::SetValueVisitor
 {
 public:
 
-    const LuaScriptEngine* _lsg;
+    const LuaScriptEngine* _lse;
     lua_State* _lua;
     int _index;
     int _numberToPop;
 
-    GetStackValueVisitor(const LuaScriptEngine* lsg, int index) : _lsg(lsg), _lua(0), _index(index), _numberToPop(0) { _lua = const_cast<LuaScriptEngine*>(lsg)->getLuaState(); }
+    GetStackValueVisitor(const LuaScriptEngine* lse, int index) : _lse(lse), _lua(0), _index(index), _numberToPop(0) { _lua = const_cast<LuaScriptEngine*>(lse  )->getLuaState(); }
 
 
     virtual void apply(bool& value)             { if (lua_isboolean(_lua, _index)) { value = (lua_toboolean(_lua, _index)!=0); _numberToPop = 1; } }
@@ -899,20 +1028,20 @@ public:
     virtual void apply(float& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
     virtual void apply(double& value)           { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
     virtual void apply(std::string& value)      { if (lua_isstring(_lua, _index)) { value = std::string(lua_tostring(_lua, _index), lua_rawlen(_lua, _index)); _numberToPop = 1; } }
-    virtual void apply(osg::Vec2f& value)       { _lsg->getValue(_index, value); _numberToPop = 2;}
-    virtual void apply(osg::Vec3f& value)       { _lsg->getValue(_index, value); _numberToPop = 2; }
-    virtual void apply(osg::Vec4f& value)       { _lsg->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Vec2d& value)       { _lsg->getValue(_index, value); _numberToPop = 2; }
-    virtual void apply(osg::Vec3d& value)       { _lsg->getValue(_index, value); _numberToPop = 3; }
-    virtual void apply(osg::Vec4d& value)       { _lsg->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Quat& value)        { _lsg->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Plane& value)       { _lsg->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Matrixf& value)     { _lsg->getValue(_index, value); }
-    virtual void apply(osg::Matrixd& value)     { _lsg->getValue(_index, value); }
-    virtual void apply(osg::BoundingBoxf& value) { _lsg->getValue(_index, value); }
-    virtual void apply(osg::BoundingBoxd& value) { _lsg->getValue(_index, value); }
-    virtual void apply(osg::BoundingSpheref& value) { _lsg->getValue(_index, value); }
-    virtual void apply(osg::BoundingSphered& value) { _lsg->getValue(_index, value); }
+    virtual void apply(osg::Vec2f& value)       { _lse->getValue(_index, value); _numberToPop = 2;}
+    virtual void apply(osg::Vec3f& value)       { _lse->getValue(_index, value); _numberToPop = 2; }
+    virtual void apply(osg::Vec4f& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
+    virtual void apply(osg::Vec2d& value)       { _lse->getValue(_index, value); _numberToPop = 2; }
+    virtual void apply(osg::Vec3d& value)       { _lse->getValue(_index, value); _numberToPop = 3; }
+    virtual void apply(osg::Vec4d& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
+    virtual void apply(osg::Quat& value)        { _lse->getValue(_index, value); _numberToPop = 4; }
+    virtual void apply(osg::Plane& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
+    virtual void apply(osg::Matrixf& value)     { _lse->getValue(_index, value); }
+    virtual void apply(osg::Matrixd& value)     { _lse->getValue(_index, value); }
+    virtual void apply(osg::BoundingBoxf& value) { _lse->getValue(_index, value); }
+    virtual void apply(osg::BoundingBoxd& value) { _lse->getValue(_index, value); }
+    virtual void apply(osg::BoundingSpheref& value) { _lse->getValue(_index, value); }
+    virtual void apply(osg::BoundingSphered& value) { _lse->getValue(_index, value); }
 };
 
 int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string& propertyName) const
@@ -2338,7 +2467,7 @@ bool LuaScriptEngine::getvec4(int pos) const
     int abs_pos = getAbsolutePos(pos);
     if (lua_istable(_lua, abs_pos))
     {
-        if (getfields(abs_pos, "x", "y", "z", LUA_TNUMBER) ||
+        if (getfields(abs_pos, "x", "y", "z", "w", LUA_TNUMBER) ||
             getfields(abs_pos, "r", "g", "b", "a", LUA_TNUMBER) ||
             getfields(abs_pos, "red", "green", "blue", "alpha", LUA_TNUMBER) ||
             getfields(abs_pos, "s", "t", "r", "q", LUA_TNUMBER) ||
@@ -2905,9 +3034,9 @@ void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& prop
         }
         else if (ms)
         {
-            OSG_NOTICE<<"Need to set up map object"<<std::endl;
             assignClosure("clear", callMapClear);
             assignClosure("size", getMapSize);
+            assignClosure("createIterator", createMapIterator);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Map");
             lua_setmetatable(_lua, -2);
@@ -2977,6 +3106,14 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Container");
             lua_setmetatable(_lua, -2);
+        }
+        else if (dynamic_cast<osgDB::MapIteratorObject*>(object)!=0)
+        {
+            assignClosure("advance", callMapIteratorAdvance);
+            assignClosure("valid", callMapIteratorValid);
+            assignClosure("getKey", getMapIteratorKey);
+            assignClosure("getElement", getMapIteratorElement);
+            assignClosure("setElement", setMapIteratorElement);
         }
         else
         {

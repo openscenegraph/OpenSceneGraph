@@ -1186,6 +1186,7 @@ public:
     virtual unsigned int size(const osg::Object& obj) const { return 0; }
 
     virtual MapIteratorObject* createIterator(osg::Object& obj) const { return 0; }
+    virtual MapIteratorObject* createReverseIterator(osg::Object& obj) const { return 0; }
 
 protected:
     Type _keyType;
@@ -1204,6 +1205,7 @@ public:
     typedef typename P::key_type  KeyType;
     typedef typename P::mapped_type  ElementType;
     typedef typename P::iterator Iterator;
+    typedef typename P::reverse_iterator ReverseIterator;
     typedef typename P::const_iterator ConstIterator;
     typedef P& (C::*Getter)();
     typedef const P& (C::*ConstGetter)() const;
@@ -1270,11 +1272,35 @@ public:
         virtual void setElement(void* ptr) const { if (valid()) _itr->second = *reinterpret_cast<ElementType*>(ptr); }
     };
 
+    struct ReverseMapIterator : public MapIteratorObject
+    {
+        ReverseMapIterator(BaseSerializer::Type keyType, unsigned int keySize, BaseSerializer::Type elementType, unsigned int elementSize,
+                    ReverseIterator itr, ReverseIterator endItr):
+            MapIteratorObject(keyType, keySize, elementType, elementSize),
+            _itr(itr),_endItr(endItr) {}
+
+        ReverseIterator _itr;
+        ReverseIterator _endItr;
+
+        virtual bool advance() { if (valid()) ++_itr; return valid(); }
+        virtual bool valid() const { return _itr!=_endItr; }
+        virtual const void* getKey() const { return valid() ? &(_itr->first) : 0; }
+        virtual void* getElement() const { return valid() ? &(_itr->second) : 0; }
+        virtual void setElement(void* ptr) const { if (valid()) _itr->second = *reinterpret_cast<ElementType*>(ptr); }
+    };
+
     virtual MapIteratorObject* createIterator(osg::Object& obj) const
     {
         C& object = OBJECT_CAST<C&>(obj);
         P& map = (object.*_getter)();
         return new MapIterator(_keyType, _keySize, _elementType, _elementSize, map.begin(), map.end());
+    }
+
+    virtual MapIteratorObject* createReverseIterator(osg::Object& obj) const
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P& map = (object.*_getter)();
+        return new ReverseMapIterator(_keyType, _keySize, _elementType, _elementSize, map.rbegin(), map.rend());
     }
 
     virtual bool read( InputStream& is, osg::Object& obj )

@@ -492,6 +492,28 @@ static int createMapIterator(lua_State* _lua)
     return 0;
 }
 
+static int createMapReverseIterator(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
+    std::string containerPropertyName = lse->getStringFromTable(1,"containerPropertyName");
+
+    // check to see if Object "is a" vector
+    osgDB::BaseSerializer::Type type;
+    osgDB::BaseSerializer* bs = lse->getPropertyInterface().getSerializer(object, containerPropertyName, type);
+    osgDB::MapBaseSerializer* ms = dynamic_cast<osgDB::MapBaseSerializer*>(bs);
+    if (ms)
+    {
+        lse->pushObject(ms->createReverseIterator(*object));
+        return 1;
+    }
+
+    return 0;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  MapIteratorObject support
@@ -3037,6 +3059,7 @@ void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& prop
             assignClosure("clear", callMapClear);
             assignClosure("size", getMapSize);
             assignClosure("createIterator", createMapIterator);
+            assignClosure("createReverseIterator", createMapReverseIterator);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Map");
             lua_setmetatable(_lua, -2);

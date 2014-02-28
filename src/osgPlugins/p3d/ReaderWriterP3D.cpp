@@ -2789,6 +2789,13 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
             OSG_INFO<<"   MyReadFileCallback::reading file C"<<filename<<std::endl;
 
+            // so we did not find anything, neither remote nor local, so try to open file directly, if it has an absolute path.
+            if (osgDB::isAbsolutePath(filename))
+            {
+                osgDB::ReaderWriter::ReadResult result = readLocal(type, filename, options);
+                if (result.success()) return result;
+            }
+
             _objectCache[filename] = 0;
 
             return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;

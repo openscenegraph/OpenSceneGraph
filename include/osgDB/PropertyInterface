@@ -268,7 +268,9 @@ inline bool PropertyInterface::getProperty(const osg::Object* object, const std:
 template<>
 inline bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const ObjectPtr& value)
 {
-    if (copyPropertyObjectToObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
+    osgDB::BaseSerializer::Type type = dynamic_cast<osg::Image*>(value) ? osgDB::BaseSerializer::RW_IMAGE : getTypeEnum<ObjectPtr>();
+    // osgDB::BaseSerializer::Type type = getTypeEnum<ObjectPtr>();
+    if (copyPropertyObjectToObject(object, propertyName, &value, sizeof(ObjectPtr), type)) return true;
     else
     {
         // fallback to using user data to store property data

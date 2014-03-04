@@ -264,6 +264,8 @@ bool PropertyInterface::areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgD
     if (lhs==osgDB::BaseSerializer::RW_ENUM) lhs = osgDB::BaseSerializer::RW_INT;
     if (rhs==osgDB::BaseSerializer::RW_ENUM) rhs = osgDB::BaseSerializer::RW_INT;
 
+    if (lhs==osgDB::BaseSerializer::RW_IMAGE) lhs = osgDB::BaseSerializer::RW_OBJECT;
+
     return lhs==rhs;
 }
 
@@ -392,7 +394,7 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
     if (serializer)
     {
-        if (areTypesCompatible(valueType, sourceType))
+        if (areTypesCompatible(sourceType, valueType))
         {
             return serializer->get(*object, valuePtr);
         }

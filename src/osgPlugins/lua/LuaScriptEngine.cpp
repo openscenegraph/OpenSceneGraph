@@ -307,9 +307,16 @@ static int callVectorAdd(lua_State* _lua)
     {
         SerializerScratchPad ssp;
         lse->getDataFromStack(&ssp, vs->getElementType(), 2);
+
+        if (ssp.dataType==vs->getElementType())
         {
             vs->addElement(*object, ssp.data);
         }
+        else
+        {
+            OSG_NOTICE<<"Failed to match table type"<<std::endl;
+        }
+
     }
 
     return 0;
@@ -605,7 +612,6 @@ static int setMapIteratorElement(lua_State* _lua)
 
         if (mio->getElementType()==valuesp.dataType)
         {
-            OSG_NOTICE<<"Assigning element "<<valuesp.data<<std::endl;
             mio->setElement(valuesp.data);
             return 0;
         }
@@ -619,6 +625,521 @@ static int setMapIteratorElement(lua_State* _lua)
     return 0;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  StateSet support
+//
+static int convertStringToStateAttributeValue(const std::string& valueString, osg::StateAttribute::OverrideValue defaultValue, bool& setOnOff)
+{
+    osg::StateAttribute::OverrideValue value=defaultValue;
+
+    if (valueString.find("ON")!=std::string::npos) { value = osg::StateAttribute::ON; setOnOff = true; }
+    if (valueString.find("OFF")!=std::string::npos) { value = osg::StateAttribute::OFF; setOnOff = true; }
+
+    if (valueString.find("OVERRIDE")!=std::string::npos) value = value | osg::StateAttribute::OVERRIDE;
+    if (valueString.find("PROTECTED")!=std::string::npos) value = value | osg::StateAttribute::PROTECTED;
+    if (valueString.find("INHERIT")!=std::string::npos) value = value | osg::StateAttribute::INHERIT;
+    return value;
+}
+
+static std::string convertStateAttributeValueToString(unsigned int value, bool withOnOffCheck)
+{
+    std::string valueString;
+    if (withOnOffCheck)
+    {
+        if ((value&osg::StateAttribute::ON)!=0) { if (!valueString.empty()) valueString.append(", "); valueString.append("ON"); }
+        else { if (!valueString.empty()) valueString.append(", "); valueString.append("OFF"); }
+    }
+    if ((value&osg::StateAttribute::OVERRIDE)!=0) { if (!valueString.empty()) valueString.append(", "); valueString.append("OVERRIDE"); }
+    if ((value&osg::StateAttribute::PROTECTED)!=0) { if (!valueString.empty()) valueString.append(", "); valueString.append("PROTECTED"); }
+    if ((value&osg::StateAttribute::INHERIT)!=0) { if (!valueString.empty()) valueString.append(", "); valueString.append("INHERIT"); }
+    return valueString;
+}
+
+static int callStateSetSet(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::StateSet* stateset  = lse->getObjectFromTable<osg::StateSet>(1);
+    if (!stateset)
+    {
+        OSG_NOTICE<<"Warning: StateSet:add() can only be called on a StateSet"<<std::endl;
+        return 0;
+    }
+
+    if (lua_type(_lua,2)==LUA_TTABLE)
+    {
+        osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
+        osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+
+        osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+        bool setOnOff = false;
+        if (n>=3 && lua_type(_lua,3)==LUA_TSTRING)
+        {
+            value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
+        }
+
+        if (sa)
+        {
+            if (setOnOff)
+            {
+                if (sa->isTextureAttribute()) stateset->setTextureAttributeAndModes(0, sa, value);
+                else  stateset->setAttributeAndModes(sa, value);
+            }
+            else
+            {
+                if (sa->isTextureAttribute()) stateset->setTextureAttribute(0, sa, value);
+                else  stateset->setAttribute(sa, value);
+            }
+            return 0;
+        }
+        else if (uniform)
+        {
+            stateset->addUniform(uniform, value);
+            return 0;
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TNUMBER)
+    {
+        double index = lua_tonumber(_lua, 2);
+        if (n>=3)
+        {
+            if (lua_type(_lua,3)==LUA_TTABLE)
+            {
+                osg::Object* po  = lse->getObjectFromTable<osg::Object>(3);
+                osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                bool setOnOff = false;
+                if (n>=4 && lua_type(_lua,4)==LUA_TSTRING)
+                {
+                    value = convertStringToStateAttributeValue(lua_tostring(_lua, 4), value, setOnOff);
+                }
+
+                if (sa)
+                {
+                    if (setOnOff)
+                    {
+                        stateset->setTextureAttributeAndModes(static_cast<unsigned int>(index), sa, value);
+                    }
+                    else
+                    {
+                        stateset->setTextureAttribute(static_cast<unsigned int>(index), sa, value);
+                    }
+                    return 0;
+                }
+            }
+            else if (lua_type(_lua,3)==LUA_TSTRING)
+            {
+                std::string modeString = lua_tostring(_lua, 3);
+                GLenum mode = lse->lookUpGLenumValue(modeString);
+
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                bool setOnOff = false;
+                if (n>=4 && lua_type(_lua,4)==LUA_TSTRING)
+                {
+                    value = convertStringToStateAttributeValue(lua_tostring(_lua, 4), value, setOnOff);
+                }
+                stateset->setTextureMode(static_cast<unsigned int>(index), mode, value);
+                return 0;
+            }
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TSTRING)
+    {
+        std::string modeString = lua_tostring(_lua, 2);
+        GLenum mode = lse->lookUpGLenumValue(modeString);
+        if (n>=3)
+        {
+            osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+            bool setOnOff = false;
+            if (lua_type(_lua,3)==LUA_TSTRING)
+            {
+                value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
+            }
+
+            stateset->setMode(mode, value);
+            return 0;
+        }
+    }
+
+    OSG_NOTICE<<"Warning: StateSet:set() inappropriate parameters, use form:"<<std::endl;
+    OSG_NOTICE<<"   StateSet:set(modestring [,value=\"ON,OFF,OVERRIDE,PROTECTED\"]); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:set(uniform [,value=\"ON,OFF,OVERRIDE,PROTECTED\"]); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:set(attribute [,value=\"ON,OFF,OVERRIDE,PROTECTED\"]); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:set(textureUnit, textureAttribute [,value=\"ON,OFF,OVERRIDE,PROTECTED\"]); "<<std::endl;
+    return 0;
+}
+
+static int callStateSetGet(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::StateSet* stateset  = lse->getObjectFromTable<osg::StateSet>(1);
+    if (!stateset)
+    {
+        OSG_NOTICE<<"Warning: StateSet:get() can only be called on a StateSet"<<std::endl;
+        return 0;
+    }
+
+    if (lua_type(_lua,2)==LUA_TNUMBER)
+    {
+        if (n<3)
+        {
+            OSG_NOTICE<<"Warning: StateSet:get() must be in form get(textureUnit, ClassName|ModeName|ObjectName)"<<std::endl;
+            return 0;
+        }
+
+        unsigned int index = static_cast<unsigned int>(lua_tonumber(_lua, 2));
+        if (lua_type(_lua,3)==LUA_TTABLE)
+        {
+            osg::Object* po  = lse->getObjectFromTable<osg::Object>(3);
+            osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+            if (sa && sa->isTextureAttribute())
+            {
+                if (stateset->getTextureAttributeList().size()>index)
+                {
+                    const osg::StateSet::AttributeList& al = stateset->getTextureAttributeList()[index];
+                    for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+                        itr != al.end();
+                        ++itr)
+                    {
+                        if (itr->second.first==sa)
+                        {
+                            lua_newtable(_lua);
+                            lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                            lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                            return 1;
+                        }
+                    }
+                }
+                OSG_NOTICE<<"Warning: StateSet:get() Could not find attribute : "<<sa->className()<<std::endl;
+                lua_pushnil(_lua);
+                return 1;
+            }
+            lua_pushnil(_lua);
+            return 1;
+        }
+        else if (lua_type(_lua,3)==LUA_TSTRING)
+        {
+            std::string value = lua_tostring(_lua, 3);
+            // need to look for attribute of mode with specified value
+            if (stateset->getTextureAttributeList().size()>index)
+            {
+                const osg::StateSet::AttributeList& al = stateset->getTextureAttributeList()[index];
+                for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+                    itr != al.end();
+                    ++itr)
+                {
+                    if (value == itr->second.first->className() ||
+                        value == itr->second.first->getName())
+                    {
+                        lua_newtable(_lua);
+                        lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                        lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                        return 1;
+                    }
+                }
+            }
+            if (stateset->getTextureModeList().size()>index)
+            {
+                osg::StateAttribute::GLMode mode = lse->lookUpGLenumValue(value);
+                const osg::StateSet::ModeList& ml = stateset->getTextureModeList()[index];
+                for(osg::StateSet::ModeList::const_iterator itr = ml.begin();
+                    itr != ml.end();
+                    ++itr)
+                {
+                    if (mode == itr->first)
+                    {
+                        lua_pushstring(_lua, convertStateAttributeValueToString(itr->second, true).c_str());
+                        return 1;
+                    }
+                }
+            }
+
+            OSG_NOTICE<<"Warning: StateSet:get() Could not find attribute : "<<value<<std::endl;
+            lua_pushnil(_lua);
+            return 1;
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TTABLE)
+    {
+        osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
+        osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+
+        if (sa && sa->isTextureAttribute() && stateset->getTextureAttributeList().size()>0)
+        {
+            const osg::StateSet::AttributeList& al = stateset->getTextureAttributeList()[0];
+            for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+                itr != al.end();
+                ++itr)
+            {
+                if (itr->second.first==sa)
+                {
+                    lua_newtable(_lua);
+                    lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                    lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                    return 1;
+                }
+            }
+            OSG_NOTICE<<"Warning: StateSet:get("<<sa->className()<<") Could not find attribute"<<std::endl;
+            lua_pushnil(_lua);
+            return 1;
+        }
+        else if (sa)
+        {
+            const osg::StateSet::AttributeList& al = stateset->getAttributeList();
+            for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+                itr != al.end();
+                ++itr)
+            {
+                if (itr->second.first==sa)
+                {
+                    lua_newtable(_lua);
+                    lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                    lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                    return 1;
+                }
+            }
+            OSG_NOTICE<<"Warning: StateSet:get("<<sa->className()<<") Could not find attribute"<<std::endl;
+            lua_pushnil(_lua);
+            return 1;
+        }
+        else if (uniform)
+        {
+            const osg::StateSet::UniformList& ul = stateset->getUniformList();
+            for(osg::StateSet::UniformList::const_iterator itr = ul.begin();
+                itr != ul.end();
+                ++itr)
+            {
+                if (itr->second.first==uniform)
+                {
+                    lua_newtable(_lua);
+                    lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                    lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                    return 1;
+                }
+            }
+            OSG_NOTICE<<"Warning: StateSet:get("<<sa->className()<<") Could not find uniform"<<std::endl;
+            lua_pushnil(_lua);
+            return 1;
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TSTRING)
+    {
+        std::string value = lua_tostring(_lua, 2);
+        const osg::StateSet::AttributeList& al = stateset->getAttributeList();
+        for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+            itr != al.end();
+            ++itr)
+        {
+            if (value == itr->second.first->className() ||
+                value == itr->second.first->getName())
+            {
+                lua_newtable(_lua);
+                lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                return 1;
+            }
+        }
+
+        const osg::StateSet::UniformList& ul = stateset->getUniformList();
+        for(osg::StateSet::UniformList::const_iterator itr = ul.begin();
+            itr != ul.end();
+            ++itr)
+        {
+            if (value == itr->second.first->className() ||
+                value == itr->second.first->getName())
+            {
+                lua_newtable(_lua);
+                lua_pushstring(_lua, "attribute"); lse->pushObject(itr->second.first.get()); lua_settable(_lua, -3);
+                lua_pushstring(_lua, "value"); lua_pushstring(_lua, convertStateAttributeValueToString(itr->second.second, false).c_str()); lua_settable(_lua, -3);
+                return 1;
+            }
+        }
+
+        osg::StateAttribute::GLMode mode = lse->lookUpGLenumValue(value);
+        const osg::StateSet::ModeList& ml = stateset->getModeList();
+        for(osg::StateSet::ModeList::const_iterator itr = ml.begin();
+            itr != ml.end();
+            ++itr)
+        {
+            if (mode == itr->first)
+            {
+                lua_pushstring(_lua, convertStateAttributeValueToString(itr->second, true).c_str());
+                return 1;
+            }
+        }
+
+        OSG_NOTICE<<"Warning: StateSet:get("<<value<<") Could not find matching mode or attribute"<<std::endl;
+        lua_pushnil(_lua);
+        return 1;
+    }
+
+    OSG_NOTICE<<"Warning: StateSet:get() inappropriate parameters, use form:"<<std::endl;
+    OSG_NOTICE<<"   StateSet:get(modestring); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:get(uniformName); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:get(attributeNameOrClassType); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:get(textureUnit, textureNameOrClassType); "<<std::endl;
+
+    lua_pushnil(_lua);
+    return 1;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  StateSet support
+//
+static int callStateSetRemove(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::StateSet* stateset  = lse->getObjectFromTable<osg::StateSet>(1);
+    if (!stateset)
+    {
+            OSG_NOTICE<<"Warning: StateSet:remove() can only be called on a StateSet"<<std::endl;
+            return 0;
+    }
+
+    if (lua_type(_lua,2)==LUA_TNUMBER)
+    {
+        if (n<3)
+        {
+            OSG_NOTICE<<"Warning: StateSet:remove() must be in form remove(textureUnit, textureAttribute)"<<std::endl;
+            return 0;
+        }
+
+        unsigned int index = static_cast<unsigned int>(lua_tonumber(_lua, 2));
+        if (lua_type(_lua,3)==LUA_TTABLE)
+        {
+            osg::Object* po  = lse->getObjectFromTable<osg::Object>(3);
+            osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+            stateset->removeTextureAttribute(static_cast<unsigned int>(index), sa);
+            return 0;
+        }
+        else if (lua_type(_lua,3)==LUA_TSTRING)
+        {
+            std::string value = lua_tostring(_lua, 3);
+            if (stateset->getTextureAttributeList().size()>index)
+            {
+                const osg::StateSet::AttributeList& al = stateset->getTextureAttributeList()[index];
+                for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+                    itr != al.end();
+                    ++itr)
+                {
+                    if (value == itr->second.first->className() ||
+                        value == itr->second.first->getName())
+                    {
+                        stateset->removeTextureAttribute(index, itr->second.first.get());
+                        return 0;
+                    }
+                }
+            }
+
+            if (stateset->getTextureModeList().size()>index)
+            {
+                osg::StateAttribute::GLMode mode = lse->lookUpGLenumValue(value);
+                const osg::StateSet::ModeList& ml = stateset->getTextureModeList()[static_cast<unsigned int>(index)];
+                for(osg::StateSet::ModeList::const_iterator itr = ml.begin();
+                    itr != ml.end();
+                    ++itr)
+                {
+                    if (mode == itr->first)
+                    {
+                        stateset->removeTextureMode(static_cast<unsigned int>(index), mode);
+                        return 1;
+                    }
+                }
+            }
+
+            OSG_NOTICE<<"Warning: StateSet:remove("<<index<<", "<<value<<") could not find entry to remove."<<std::endl;
+            return 0;
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TTABLE)
+    {
+        osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
+        osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
+        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+
+        if (sa && sa->isTextureAttribute())
+        {
+            stateset->removeTextureAttribute(0, sa);
+            return 0;
+        }
+        else if (sa)
+        {
+            stateset->removeAttribute(sa);
+            return 0;
+        }
+        else if (uniform)
+        {
+            stateset->removeUniform(uniform);
+            return 0;
+        }
+    }
+    else if (lua_type(_lua,2)==LUA_TSTRING)
+    {
+        std::string value = lua_tostring(_lua, 2);
+        const osg::StateSet::AttributeList& al = stateset->getAttributeList();
+        for(osg::StateSet::AttributeList::const_iterator itr = al.begin();
+            itr != al.end();
+            ++itr)
+        {
+            if (value == itr->second.first->className() ||
+                value == itr->second.first->getName())
+            {
+                stateset->removeAttribute(itr->second.first.get());
+                return 0;
+            }
+        }
+
+        const osg::StateSet::UniformList& ul = stateset->getUniformList();
+        for(osg::StateSet::UniformList::const_iterator itr = ul.begin();
+            itr != ul.end();
+            ++itr)
+        {
+            if (value == itr->second.first->className() ||
+                value == itr->second.first->getName())
+            {
+                stateset->removeUniform(itr->second.first.get());
+                return 0;
+            }
+        }
+
+        osg::StateAttribute::GLMode mode = lse->lookUpGLenumValue(value);
+        const osg::StateSet::ModeList& ml = stateset->getModeList();
+        for(osg::StateSet::ModeList::const_iterator itr = ml.begin();
+            itr != ml.end();
+            ++itr)
+        {
+            if (mode == itr->first)
+            {
+                stateset->removeMode(mode);
+                return 1;
+            }
+        }
+
+
+        OSG_NOTICE<<"Warning: StateSet:remove("<<value<<") could not find entry to remove."<<std::endl;
+        return 0;
+    }
+
+    OSG_NOTICE<<"Warning: StateSet:remove() inappropriate parameters, use form:"<<std::endl;
+    OSG_NOTICE<<"   StateSet:remove(uniform); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:remove(attribute); "<<std::endl;
+    OSG_NOTICE<<"   StateSet:remove(textureUnit, textureAttribute); "<<std::endl;
+    return 0;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1947,7 +2468,7 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
                 osg::Object* value = 0;
                 lua_pushstring(_lua, "object_ptr");
                 lua_rawget(_lua, pos);
-                if (lua_type(_lua, pos)==LUA_TUSERDATA) value = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
+                if (lua_type(_lua, -1)==LUA_TUSERDATA) value = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
                 lua_pop(_lua, 1);
 
                 if (value)
@@ -3137,6 +3658,33 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
             assignClosure("getKey", getMapIteratorKey);
             assignClosure("getElement", getMapIteratorElement);
             assignClosure("setElement", setMapIteratorElement);
+        }
+        else if (dynamic_cast<osg::Image*>(object)!=0)
+        {
+            OSG_NOTICE<<"Have osg::Image need to implement Image methods"<<std::endl;
+
+/*
+            assignClosure("allocate", );
+            assignClosure("s", );
+            assignClosure("t", );
+            assignClosure("r", );
+            assignClosure("getData", );
+            assignClosure("setData", );
+*/
+            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+            lua_setmetatable(_lua, -2);
+        }
+        else if (dynamic_cast<osg::StateSet*>(object)!=0)
+        {
+            OSG_NOTICE<<"Have osg::StateSet need to implement stateset methods"<<std::endl;
+
+            assignClosure("add", callStateSetSet);
+            assignClosure("set", callStateSetSet);
+            assignClosure("get", callStateSetGet);
+            assignClosure("remove", callStateSetRemove);
+
+            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+            lua_setmetatable(_lua, -2);
         }
         else
         {

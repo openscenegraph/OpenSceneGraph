@@ -5,24 +5,19 @@
 
 static int readValue( osgDB::InputStream& is )
 {
-    int value = osg::StateAttribute::INHERIT;
+    int value = 0;
     if ( is.isBinary() )
         is >> value;
     else
     {
         std::string enumValue;
         is >> enumValue;
-        if ( enumValue=="OFF" ) value = osg::StateAttribute::OFF;
-        else if ( enumValue=="ON" ) value = osg::StateAttribute::ON;
-        else if ( enumValue=="INHERIT" ) value = osg::StateAttribute::INHERIT;
-        else if ( enumValue=="OFF|OVERRIDE" )
-            value = osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE;
-        else if ( enumValue=="OFF|PROTECTED" )
-            value = osg::StateAttribute::OFF|osg::StateAttribute::PROTECTED;
-        else if ( enumValue=="ON|OVERRIDE" )
-            value = osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE;
-        else if ( enumValue=="ON|PROTECTED" )
-            value = osg::StateAttribute::ON|osg::StateAttribute::PROTECTED;
+
+        if (enumValue.find("OFF")!=std::string::npos) value = osg::StateAttribute::OFF;
+        if (enumValue.find("ON")!=std::string::npos) value = osg::StateAttribute::ON;
+        if (enumValue.find("OVERRIDE")!=std::string::npos) value = value | osg::StateAttribute::OVERRIDE;
+        if (enumValue.find("PROTECTED")!=std::string::npos) value = value | osg::StateAttribute::PROTECTED;
+        if (enumValue.find("INHERIT")!=std::string::npos) value = value | osg::StateAttribute::INHERIT;
     }
     return value;
 }
@@ -67,18 +62,13 @@ static void writeValue( osgDB::OutputStream& os, int value )
         os << value;
     else
     {
-        if ( value==osg::StateAttribute::OFF ) os << std::string("OFF");
-        else if ( value==osg::StateAttribute::ON ) os << std::string("ON");
-        else if ( value==osg::StateAttribute::INHERIT ) os << std::string("INHERIT");
-        else if ( value==osg::StateAttribute::OFF+osg::StateAttribute::OVERRIDE )
-            os << std::string("OFF|OVERRIDE");
-        else if ( value==osg::StateAttribute::OFF+osg::StateAttribute::PROTECTED )
-            os << std::string("OFF|PROTECTED");
-        else if ( value==osg::StateAttribute::ON+osg::StateAttribute::OVERRIDE )
-            os << std::string("ON|OVERRIDE");
-        else if ( value==osg::StateAttribute::ON+osg::StateAttribute::PROTECTED )
-            os << std::string("ON|PROTECTED");
-        else os << std::string("INHERIT");
+        std::string valueString;
+        if ((value&osg::StateAttribute::ON)!=0) { if (!valueString.empty()) valueString.append("|"); valueString.append("ON"); }
+        if ((value&osg::StateAttribute::OVERRIDE)!=0) { if (!valueString.empty()) valueString.append("|"); valueString.append("OVERRIDE"); }
+        if ((value&osg::StateAttribute::PROTECTED)!=0) { if (!valueString.empty()) valueString.append("|"); valueString.append("PROTECTED"); }
+        if ((value&osg::StateAttribute::INHERIT)!=0) { if (!valueString.empty()) valueString.append("|"); valueString.append("INHERIT"); }
+        if (!valueString.empty()) os << valueString;
+        else os << "OFF";
     }
 }
 

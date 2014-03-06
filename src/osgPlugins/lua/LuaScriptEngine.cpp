@@ -993,10 +993,6 @@ static int callStateSetGet(lua_State* _lua)
     return 1;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  StateSet support
-//
 static int callStateSetRemove(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -1138,6 +1134,474 @@ static int callStateSetRemove(lua_State* _lua)
     OSG_NOTICE<<"   StateSet:remove(uniform); "<<std::endl;
     OSG_NOTICE<<"   StateSet:remove(attribute); "<<std::endl;
     OSG_NOTICE<<"   StateSet:remove(textureUnit, textureAttribute); "<<std::endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Image calling support
+//
+static int callImageAllocate(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:allocate() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    int s=0, t=0, r=0;
+    GLenum pixelFormat=0;
+    GLenum dataType = 0;
+    int packing = 1;
+
+    if (n>=2 && lua_isnumber(_lua, 2)) s = static_cast<int>(lua_tonumber(_lua, 2));
+    if (n>=3 && lua_isnumber(_lua, 3)) t = static_cast<int>(lua_tonumber(_lua, 3));
+    if (n>=4 && lua_isnumber(_lua, 4)) r = static_cast<int>(lua_tonumber(_lua, 4));
+
+    if (n>=5)
+    {
+        if (lua_isnumber(_lua, 5)) pixelFormat = static_cast<int>(lua_tonumber(_lua, 5));
+        else if (lua_isstring(_lua, 5))
+        {
+            pixelFormat = lse->lookUpGLenumValue(lua_tostring(_lua,5));
+        }
+    }
+
+    if (n>=6)
+    {
+        if (lua_isnumber(_lua, 6)) dataType = static_cast<int>(lua_tonumber(_lua, 6));
+        else if (lua_isstring(_lua, 6))
+        {
+            dataType = lse->lookUpGLenumValue(lua_tostring(_lua,6));
+        }
+    }
+
+    if (n>=7)
+    {
+        if (lua_isnumber(_lua, 7)) packing = static_cast<int>(lua_tonumber(_lua, 7));
+    }
+
+
+    if (s<=0 || t<=0 || r<=0 || pixelFormat==0 || dataType==0)
+    {
+        OSG_NOTICE<<"Warning: Cannot not image:allocator("<<s<<", "<<t<<", "<<r<<", "<<pixelFormat<<", "<<dataType<<") a zero sized image, use non zero, positive values for s,t,r, pixelFormat and dataType."<<std::endl;
+        return 0;
+    }
+
+    image->allocateImage(s,t,r,pixelFormat,dataType,packing);
+
+    return 0;
+}
+
+static int callImageS(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:s() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    lua_pushinteger(_lua, image->s());
+
+    return 1;
+}
+
+static int callImageT(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:t() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    lua_pushinteger(_lua, image->t());
+
+    return 1;
+}
+
+static int callImageR(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:r() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    lua_pushinteger(_lua, image->r());
+
+    return 1;
+}
+
+// conversion of a lua value/table to a std::string, supports recursion when tables contain tables
+static std::string cpp_tostring(lua_State* _lua, int index)
+{
+    if (!lua_istable(_lua, index))
+    {
+        const char* str = lua_tostring(_lua, index);
+        if (str)
+        {
+            return str;
+        }
+        else
+        {
+            return "value-cannot-be-converted-to-string";
+        }
+    }
+
+    // Push another reference to the table on top of the stack (so we know
+    // where it is, and this function can work for negative, positive and
+    // pseudo indices
+    lua_pushvalue(_lua, index);
+    // stack now contains: -1 => table
+    lua_pushnil(_lua);
+    // stack now contains: -1 => nil; -2 => table
+    bool first = true;
+    std::string str("{");
+    while (lua_next(_lua, -2))
+    {
+        if (!first) str.append(", ");
+        else first = false;
+
+        // stack now contains: -1 => value; -2 => key; -3 => table
+        // copy the key so that lua_tostring does not modify the original
+        lua_pushvalue(_lua, -2);
+        // stack now contains: -1 => key; -2 => value; -3 => key; -4 => table
+
+        // handle key
+        if (lua_isstring(_lua, -1))
+        {
+            const char *key = lua_tostring(_lua, -1);
+            if (key)
+            {
+                str.append(key);
+                str.append("=");
+            }
+        }
+
+        // handle value
+        if (lua_istable(_lua, -2))
+        {
+            str.append(cpp_tostring(_lua,-2));
+        }
+        else if (lua_isfunction(_lua, -2))
+        {
+            str.append("function");
+        }
+        else if (lua_isnil(_lua, -2))
+        {
+            str.append("nil");
+        }
+        else if (lua_isstring(_lua,-2))
+        {
+            const char *value = lua_tostring(_lua, -2);
+            str.append("\"");
+            if (value)
+            {
+                str.append(value);
+            }
+            str.append("\"");
+        }
+        else
+        {
+            const char *value = lua_tostring(_lua, -2);
+            if (value)
+            {
+                str.append(value);
+            }
+        }
+
+        // pop value + copy of key, leaving original key
+        lua_pop(_lua, 2);
+        // stack now contains: -1 => key; -2 => table
+    }
+    str.append("}");
+
+    // stack now contains: -1 => table (when lua_next returns 0 it pops the key
+    // but does not push anything.)
+    // Pop table
+    lua_pop(_lua, 1);
+    // Stack is now the same as it was on entry to this function
+
+    return str;
+}
+
+static int tostring(lua_State* _lua)
+{
+    lua_pushstring(_lua, cpp_tostring(_lua,-1) .c_str());
+    return 1;
+}
+
+static int callImageGet(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:get() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    if (n>=2 && lua_isnumber(_lua, 2)) i = static_cast<int>(lua_tonumber(_lua, 2));
+    if (n>=3 && lua_isnumber(_lua, 3)) j = static_cast<int>(lua_tonumber(_lua, 3));
+    if (n>=4 && lua_isnumber(_lua, 4)) k = static_cast<int>(lua_tonumber(_lua, 4));
+
+    const unsigned char* ptr = image->data(i,j,k);
+    unsigned int numComponents = osg::Image::computeNumComponents(image->getPixelFormat());
+
+    // OSG_NOTICE<<"Need to implement Image::get("<<i<<", "<<j<<", "<<k<<") ptr="<<(void*)ptr<<", numComponents="<<numComponents<<std::endl;
+
+    osg::Vec4d colour;
+    switch(image->getDataType())
+    {
+        case(GL_BYTE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const char*>(ptr)+i)); } break;
+        case(GL_UNSIGNED_BYTE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(ptr+i)); } break;
+        case(GL_SHORT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const short*>(ptr)+i)); } break;
+        case(GL_UNSIGNED_SHORT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const unsigned short*>(ptr)+i)); } break;
+        case(GL_INT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const int*>(ptr)+i)); } break;
+        case(GL_UNSIGNED_INT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const unsigned int*>(ptr)+i)); } break;
+        case(GL_FLOAT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const float*>(ptr)+i)); } break;
+        case(GL_DOUBLE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const double*>(ptr)+i)); } break;
+        default:
+            OSG_NOTICE<<"Warning: Unsupported DataType in Image::get()"<<std::endl;
+            return 0;
+    }
+
+    switch(image->getPixelFormat())
+    {
+        case(GL_INTENSITY):     lua_pushnumber(_lua, colour[0]); return 1;
+        case(GL_LUMINANCE):     lua_pushnumber(_lua, colour[0]); return 1;
+        case(GL_ALPHA):         lua_pushnumber(_lua, colour[0]); return 1;
+        case(GL_LUMINANCE_ALPHA):
+        {
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "luminance"); lua_pushnumber(_lua, colour[0]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "alpha"); lua_pushnumber(_lua, colour[1]); lua_settable(_lua, -3);
+            return 1;
+        }
+        case(GL_RGB):
+        {
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "red"); lua_pushnumber(_lua, colour[0]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "green"); lua_pushnumber(_lua, colour[1]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "blue"); lua_pushnumber(_lua, colour[2]); lua_settable(_lua, -3);
+            return 1;
+        }
+        case(GL_RGBA):
+        {
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "red"); lua_pushnumber(_lua, colour[0]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "green"); lua_pushnumber(_lua, colour[1]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "blue"); lua_pushnumber(_lua, colour[2]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "alpha"); lua_pushnumber(_lua, colour[3]); lua_settable(_lua, -3);
+            return 1;
+        }
+        case(GL_BGR):
+        {
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "red"); lua_pushnumber(_lua, colour[2]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "green"); lua_pushnumber(_lua, colour[1]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "blue"); lua_pushnumber(_lua, colour[0]); lua_settable(_lua, -3);
+            return 1;
+        }
+        case(GL_BGRA):
+        {
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "red"); lua_pushnumber(_lua, colour[2]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "green"); lua_pushnumber(_lua, colour[1]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "blue"); lua_pushnumber(_lua, colour[0]); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "alpha"); lua_pushnumber(_lua, colour[3]); lua_settable(_lua, -3);
+            return 1;
+        }
+    }
+
+    OSG_NOTICE<<"Warning: Image:get() unsupported PixelFormat"<<std::endl;
+    return 0;
+}
+
+static void setImageColour(osg::Image* image, int i, int j, int k, const osg::Vec4d& colourToWrite)
+{
+    if (i>=image->s() || j>=image->t() || k>=image->r())
+    {
+        OSG_NOTICE<<"Warning: Image::set("<<i<<", "<<j<<", "<<k<<") out of range"<<std::endl;
+        return;
+    }
+
+    unsigned char* ptr = image->data(i,j,k);
+    unsigned int numComponents = osg::Image::computeNumComponents(image->getPixelFormat());
+
+    switch(image->getDataType())
+    {
+        case(GL_BYTE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<char*>(ptr)+i) = static_cast<char>(colourToWrite[i]); } break;
+        case(GL_UNSIGNED_BYTE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned char*>(ptr)+i) = static_cast<unsigned char>(colourToWrite[i]); } break;
+        case(GL_SHORT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<short*>(ptr)+i) = static_cast<short>(colourToWrite[i]); } break;
+        case(GL_UNSIGNED_SHORT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned short*>(ptr)+i) = static_cast<unsigned short>(colourToWrite[i]); } break;
+        case(GL_INT): for(unsigned int i=0; i<numComponents; ++i) {  *(reinterpret_cast<int*>(ptr)+i) = static_cast<int>(colourToWrite[i]); } break;
+        case(GL_UNSIGNED_INT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned int*>(ptr)+i) = static_cast<unsigned int>(colourToWrite[i]); } break;
+        case(GL_FLOAT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<float*>(ptr)+i) = static_cast<float>(colourToWrite[i]); } break;
+        case(GL_DOUBLE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<double*>(ptr)+i) = static_cast<double>(colourToWrite[i]); } break;
+        default:
+            OSG_NOTICE<<"Warning: Unsupported DataType in Image::set()"<<std::endl;
+            return;
+    }
+}
+
+static int callImageSet(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<2 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Image* image  = lse->getObjectFromTable<osg::Image>(1);
+    if (!image)
+    {
+        OSG_NOTICE<<"Warning: Image:set() can only be called on a Image"<<std::endl;
+        return 0;
+    }
+
+    bool positionSet = false;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    if (n>=3 && lua_isnumber(_lua, 2)) { i = static_cast<int>(lua_tonumber(_lua, 2)); positionSet = true; }
+    if (n>=4 && lua_isnumber(_lua, 3)) { j = static_cast<int>(lua_tonumber(_lua, 3)); positionSet = true; }
+    if (n>=5 && lua_isnumber(_lua, 4)) { k = static_cast<int>(lua_tonumber(_lua, 4)); positionSet = true; }
+
+    osg::Vec4d colour(1.0,1.0,1.0,1.0);
+    if (lua_isnumber(_lua, n))
+    {
+        colour[0] = colour[1] = colour[2] = colour[3] = lua_tonumber(_lua, n);
+    }
+    else if (lua_istable(_lua, n))
+    {
+        lua_getfield(_lua, n, "intensity");
+        if (lua_isnumber(_lua, -1)) { double i = lua_tonumber(_lua, -1); colour[0] = i; colour[1] = i; colour[2] = i; colour[3] = i; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "i");
+        if (lua_isnumber(_lua, -1)) { double i = lua_tonumber(_lua, -1); colour[0] = i; colour[1] = i; colour[2] = i; colour[3] = i; }
+        lua_pop(_lua, 1);
+
+
+        lua_getfield(_lua, n, "luminance");
+        if (lua_isnumber(_lua, -1)) { double l = lua_tonumber(_lua, -1); colour[0] = l; colour[1] = l; colour[2] = l; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "l");
+        if (lua_isnumber(_lua, -1)) { double l = lua_tonumber(_lua, -1); colour[0] = l; colour[1] = l; colour[2] = l; }
+        lua_pop(_lua, 1);
+
+
+        lua_getfield(_lua, n, "alpha");
+        if (lua_isnumber(_lua, -1)) { double a = lua_tonumber(_lua, -1); colour[3] = a; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "a");
+        if (lua_isnumber(_lua, -1)) { double a = lua_tonumber(_lua, -1); colour[3] = a; }
+        lua_pop(_lua, 1);
+
+
+        lua_getfield(_lua, n, "red");
+        if (lua_isnumber(_lua, -1)) { double r = lua_tonumber(_lua, -1); colour[0] = r; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "r");
+        if (lua_isnumber(_lua, -1)) { double r = lua_tonumber(_lua, -1); colour[0] = r; }
+        lua_pop(_lua, 1);
+
+
+        lua_getfield(_lua, n, "green");
+        if (lua_isnumber(_lua, -1)) { double g = lua_tonumber(_lua, -1); colour[1] = g; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "g");
+        if (lua_isnumber(_lua, -1)) { double g = lua_tonumber(_lua, -1); colour[1] = g; }
+        lua_pop(_lua, 1);
+
+
+        lua_getfield(_lua, n, "blue");
+        if (lua_isnumber(_lua, -1)) { double b = lua_tonumber(_lua, -1); colour[2] = b; }
+        lua_pop(_lua, 1);
+
+        lua_getfield(_lua, n, "b");
+        if (lua_isnumber(_lua, -1)) { double b = lua_tonumber(_lua, -1); colour[2] = b; }
+        lua_pop(_lua, 1);
+
+    }
+
+    // repack the colour data to the final destination form
+    osg::Vec4d colourToWrite = colour;
+    switch(image->getPixelFormat())
+    {
+        case(GL_INTENSITY):     colourToWrite[0] = colour[0]; break;
+        case(GL_LUMINANCE):     colourToWrite[0] = colour[0]; break;
+        case(GL_ALPHA):         colourToWrite[0] = colour[3]; break;
+        case(GL_LUMINANCE_ALPHA):
+        {
+            colourToWrite[0] = colour[0];
+            colourToWrite[1] = colour[3];
+            break;
+        }
+        case(GL_RGB):
+        case(GL_RGBA):
+        {
+            // nothing to do as data is already in the correct form
+            break;
+        }
+        case(GL_BGR):
+        case(GL_BGRA):
+        {
+            colourToWrite[0] = colour[2];
+            colourToWrite[1] = colour[1];
+            colourToWrite[2] = colour[0];
+            colourToWrite[3] = colour[3];
+            return 1;
+        }
+    }
+
+    if (positionSet)
+    {
+        setImageColour(image, i,j,k, colourToWrite);
+    }
+    else
+    {
+        for(k=0; k<image->r(); ++k)
+        {
+            for(j=0; j<image->t(); ++j)
+            {
+                for(i=0; i<image->s(); ++i)
+                {
+                    setImageColour(image, i,j,k, colourToWrite);
+                }
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -1375,6 +1839,23 @@ void LuaScriptEngine::initialize()
         lua_pushstring(_lua, "__newindex");
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, setProperty, 1);
+        lua_settable(_lua, -3);
+
+        lua_pushstring(_lua, "__tostring");
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, tostring, 1);
+        lua_settable(_lua, -3);
+
+        lua_pop(_lua,1);
+    }
+
+    // Set up the __newindex and __index methods for looking up implementations of Object properties
+    {
+        luaL_newmetatable(_lua, "LuaScriptEngine.Table");
+
+        lua_pushstring(_lua, "__tostring");
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, tostring, 1);
         lua_settable(_lua, -3);
 
         lua_pop(_lua,1);
@@ -2981,6 +3462,7 @@ bool LuaScriptEngine::getvec2(int pos) const
     {
         if (getfields(abs_pos, "x", "y", LUA_TNUMBER) ||
             getfields(abs_pos, "s", "t", LUA_TNUMBER) ||
+            getfields(abs_pos, "luminance", "alpha", LUA_TNUMBER) ||
             getelements(abs_pos, 2, LUA_TNUMBER))
         {
             return true;
@@ -3194,6 +3676,7 @@ bool LuaScriptEngine::getValue(int pos, osg::BoundingSphered& value) const
 void LuaScriptEngine::pushValue(const osg::Vec2f& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
 }
@@ -3201,6 +3684,7 @@ void LuaScriptEngine::pushValue(const osg::Vec2f& value) const
 void LuaScriptEngine::pushValue(const osg::Vec3f& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
@@ -3209,6 +3693,7 @@ void LuaScriptEngine::pushValue(const osg::Vec3f& value) const
 void LuaScriptEngine::pushValue(const osg::Vec4f& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
@@ -3218,6 +3703,7 @@ void LuaScriptEngine::pushValue(const osg::Vec4f& value) const
 void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
 
     for(unsigned int r=0; r<4; ++r)
     {
@@ -3231,6 +3717,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
 void LuaScriptEngine::pushValue(const osg::Vec2d& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
 }
@@ -3238,6 +3725,7 @@ void LuaScriptEngine::pushValue(const osg::Vec2d& value) const
 void LuaScriptEngine::pushValue(const osg::Vec3d& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
@@ -3246,6 +3734,7 @@ void LuaScriptEngine::pushValue(const osg::Vec3d& value) const
 void LuaScriptEngine::pushValue(const osg::Vec4d& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
@@ -3255,6 +3744,7 @@ void LuaScriptEngine::pushValue(const osg::Vec4d& value) const
 void LuaScriptEngine::pushValue(const osg::Quat& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
@@ -3264,6 +3754,7 @@ void LuaScriptEngine::pushValue(const osg::Quat& value) const
 void LuaScriptEngine::pushValue(const osg::Plane& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.asVec4().x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.asVec4().y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.asVec4().z()); lua_settable(_lua, -3);
@@ -3273,6 +3764,7 @@ void LuaScriptEngine::pushValue(const osg::Plane& value) const
 void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
 
     for(unsigned int r=0; r<4; ++r)
     {
@@ -3286,6 +3778,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
 void LuaScriptEngine::pushValue(const osg::BoundingBoxf& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "xMin"); lua_pushnumber(_lua, value.xMin()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "yMin"); lua_pushnumber(_lua, value.yMin()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "zMin"); lua_pushnumber(_lua, value.zMin()); lua_settable(_lua, -3);
@@ -3297,6 +3790,7 @@ void LuaScriptEngine::pushValue(const osg::BoundingBoxf& value) const
 void LuaScriptEngine::pushValue(const osg::BoundingBoxd& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "xMin"); lua_pushnumber(_lua, value.xMin()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "yMin"); lua_pushnumber(_lua, value.yMin()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "zMin"); lua_pushnumber(_lua, value.zMin()); lua_settable(_lua, -3);
@@ -3308,6 +3802,7 @@ void LuaScriptEngine::pushValue(const osg::BoundingBoxd& value) const
 void LuaScriptEngine::pushValue(const osg::BoundingSpheref& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.center().x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.center().y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.center().z()); lua_settable(_lua, -3);
@@ -3317,6 +3812,7 @@ void LuaScriptEngine::pushValue(const osg::BoundingSpheref& value) const
 void LuaScriptEngine::pushValue(const osg::BoundingSphered& value) const
 {
     lua_newtable(_lua);
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
     lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.center().x()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.center().y()); lua_settable(_lua, -3);
     lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.center().z()); lua_settable(_lua, -3);
@@ -3639,7 +4135,6 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
         osgDB::BaseSerializer* vs = _pi.getSerializer(object, "vector", type);
         if (vs)
         {
-            OSG_NOTICE<<"pushObject("<<object->className()<<" Have vector"<<std::endl;
             lua_pushstring(_lua, "containerPropertyName"); lua_pushstring(_lua, "vector"); lua_settable(_lua, -3);
 
             assignClosure("size", getContainerSize);
@@ -3661,23 +4156,18 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
         }
         else if (dynamic_cast<osg::Image*>(object)!=0)
         {
-            OSG_NOTICE<<"Have osg::Image need to implement Image methods"<<std::endl;
+            assignClosure("allocate", callImageAllocate);
+            assignClosure("s", callImageS);
+            assignClosure("t", callImageT);
+            assignClosure("r", callImageR);
+            assignClosure("get", callImageGet);
+            assignClosure("set", callImageSet);
 
-/*
-            assignClosure("allocate", );
-            assignClosure("s", );
-            assignClosure("t", );
-            assignClosure("r", );
-            assignClosure("getData", );
-            assignClosure("setData", );
-*/
             luaL_getmetatable(_lua, "LuaScriptEngine.Object");
             lua_setmetatable(_lua, -2);
         }
         else if (dynamic_cast<osg::StateSet*>(object)!=0)
         {
-            OSG_NOTICE<<"Have osg::StateSet need to implement stateset methods"<<std::endl;
-
             assignClosure("add", callStateSetSet);
             assignClosure("set", callStateSetSet);
             assignClosure("get", callStateSetGet);

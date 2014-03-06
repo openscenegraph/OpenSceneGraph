@@ -168,6 +168,7 @@ public:
     void writeImage( const osg::Image* img );
     void writeObject( const osg::Object* obj );
     void writeObjectFields( const osg::Object* obj );
+    void writeObjectFields( const osg::Object* obj, const std::string& compoundName );
 
     /// set an output iterator, used directly when not using OutputStream with a traditional file releated stream.
     void setOutputIterator( OutputIterator* oi ) { _out = oi; }

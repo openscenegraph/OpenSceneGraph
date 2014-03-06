@@ -301,7 +301,7 @@ osg::Object* PropertyInterface::createObject(const std::string& compoundClassNam
     if (ow)
     {
         osg::Object* object = ow->createInstance();
-        OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), wrapper found, created object="<<object<<std::endl;
+        // OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), wrapper found, created object="<<object<<std::endl;
         return object;
     }
     else

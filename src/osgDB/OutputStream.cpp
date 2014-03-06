@@ -569,7 +569,7 @@ void OutputStream::writeImage( const osg::Image* img )
             break;
         }
 
-        writeObjectFields( img );
+        writeObjectFields( img, "osg::Object" );
     }
 
     // *this << END_BRACKET << std::endl;
@@ -601,6 +601,12 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
 {
     std::string name = obj->libraryName();
     name += std::string("::") + obj->className();
+    writeObjectFields(obj, name);
+}
+
+void OutputStream::writeObjectFields( const osg::Object* obj, const std::string& name )
+{
+    // OSG_NOTICE<<"OutputStream::writeObjectFields("<<obj->className()<<", name="<<name<<")"<<std::endl;
 
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
     if ( !wrapper )

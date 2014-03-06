@@ -778,7 +778,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         if ( !image && _forceReadingImage ) image = new osg::Image;
     }
 
-    image = static_cast<osg::Image*>( readObjectFields(className, id, image.get()) );
+    image = static_cast<osg::Image*>( readObjectFields("osg::Object", id, image.get()) );
     if ( image.valid() )
     {
         image->setFileName( name );

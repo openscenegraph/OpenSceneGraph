@@ -747,7 +747,7 @@ unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
         case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
         case(GL_COMPRESSED_R11_EAC):
         case(GL_COMPRESSED_SIGNED_R11_EAC):
-            return osg::maximum(8u,packing); // block size of 8            
+            return osg::maximum(8u,packing); // block size of 8
 
         case(GL_COMPRESSED_RGBA8_ETC2_EAC):
         case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
@@ -1912,6 +1912,7 @@ Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
         case(GL_INT):               return _readColor(_pixelFormat, (int*)ptr,              1.0f/2147483648.0f);
         case(GL_UNSIGNED_INT):      return _readColor(_pixelFormat, (unsigned int*)ptr,     1.0f/4294967295.0f);
         case(GL_FLOAT):             return _readColor(_pixelFormat, (float*)ptr,            1.0f);
+        case(GL_DOUBLE):            return _readColor(_pixelFormat, (double*)ptr,           1.0f);
     }
     return Vec4(1.0f,1.0f,1.0f,1.0f);
 }

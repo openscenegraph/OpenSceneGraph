@@ -306,5 +306,6 @@ void Widget::createGraphicsImplementation()
 
 osg::BoundingSphere Widget::computeBound() const
 {
-    return osg::BoundingSphere(_extents);
+    if (_extents.valid()) return osg::BoundingSphere(_extents);
+    else return osg::Group::computeBound();
 }

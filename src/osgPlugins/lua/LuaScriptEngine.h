@@ -105,6 +105,7 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
+        int setPropertyFromStack(osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type type) const;
 
         bool loadScript(osg::Script* script);
 

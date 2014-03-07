@@ -11,7 +11,6 @@ struct SwitchGetValue : public osgDB::MethodObject
         if (inputParameters.empty()) return false;
 
         osg::Object* indexObject = inputParameters[0].get();
-        OSG_NOTICE<<"SwitchGetValue "<<indexObject->className()<<std::endl;
 
         unsigned int index = 0;
         osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
@@ -37,7 +36,6 @@ struct SwitchSetValue : public osgDB::MethodObject
         if (inputParameters.size()<2) return false;
 
         osg::Object* indexObject = inputParameters[0].get();
-        OSG_NOTICE<<"SwitchSetValue "<<indexObject->className()<<std::endl;
 
         unsigned int index = 0;
         osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
@@ -49,16 +47,30 @@ struct SwitchSetValue : public osgDB::MethodObject
         }
 
         bool enabled = false;
-        indexObject = inputParameters[1].get();
-        dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) enabled = dvo->getValue()!=0.0;
+        osg::Object* valueObject = inputParameters[1].get();
+        if (!valueObject) return false;
+
+        dvo = dynamic_cast<osg::DoubleValueObject*>(valueObject);
+        if (dvo)
+        {
+            enabled = dvo->getValue()!=0.0;
+        }
         else
         {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) enabled = uivo->getValue()!=0;
+            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(valueObject);
+            if (uivo)
+            {
+                enabled = uivo->getValue()!=0;
+            }
+            else
+            {
+                osg::BoolValueObject* bo = dynamic_cast<osg::BoolValueObject*>(valueObject);
+                if (bo)
+                {
+                    enabled = bo->getValue();
+                }
+            }
         }
-
-        OSG_NOTICE<<"switch->setValue("<<index<<", "<<enabled<<")"<<std::endl;
 
         osg::Switch* sw = reinterpret_cast<osg::Switch*>(objectPtr);
         sw->setValue(index, enabled);

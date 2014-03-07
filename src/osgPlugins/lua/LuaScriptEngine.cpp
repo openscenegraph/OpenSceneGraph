@@ -2004,7 +2004,7 @@ public:
 
     PushStackValueVisitor(const LuaScriptEngine* lse) : _lse(lse) { _lua = const_cast<LuaScriptEngine*>(lse)->getLuaState(); }
 
-    virtual void apply(bool value)                      { lua_pushboolean(_lua, value ? 0 : 1); }
+    virtual void apply(bool value)                      { lua_pushboolean(_lua, value ? 1 : 0); }
     virtual void apply(char value)                      { lua_pushnumber(_lua, value); }
     virtual void apply(unsigned char value)             { lua_pushnumber(_lua, value); }
     virtual void apply(short value)                     { lua_pushnumber(_lua, value); }
@@ -2993,15 +2993,30 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         if (lua_type(_lua,-1)==LUA_TFUNCTION)
         {
             int ref = luaL_ref(_lua, LUA_REGISTRYINDEX);
-
             osg::ref_ptr<LuaCallbackObject> lco = new LuaCallbackObject(propertyName, this, ref);
-            object->getOrCreateUserDataContainer()->addUserObject(lco.get());
+
+            osg::UserDataContainer* udc = object->getOrCreateUserDataContainer();
+            unsigned int objectIndex = udc->getUserObjectIndex(propertyName);
+            if (objectIndex < udc->getNumUserObjects())
+            {
+                udc->setUserObject(objectIndex, lco.get());
+            }
+            else
+            {
+                udc->addUserObject(lco.get());
+            }
+
             return 0;
         }
 
         type = LuaScriptEngine::getType(-1);
     }
 
+    return setPropertyFromStack(object, propertyName, type);
+}
+
+int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type type) const
+{
     switch(type)
     {
         case(osgDB::BaseSerializer::RW_BOOL):
@@ -3266,11 +3281,6 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_LIST):
-        {
-            OSG_NOTICE<<"Need to implement RW_LIST support"<<std::endl;
-            break;
-        }
         case(osgDB::BaseSerializer::RW_IMAGE):
         case(osgDB::BaseSerializer::RW_OBJECT):
         {
@@ -3306,6 +3316,7 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
+        case(osgDB::BaseSerializer::RW_LIST):
         default:
             break;
     }
@@ -3420,27 +3431,22 @@ osgDB::BaseSerializer::Type LuaScriptEngine::getType(int pos) const
 
             if ((numStringKeys==2 || numNumberKeys==2) && (numNumberFields==2))
             {
-                OSG_NOTICE<<"Could be Vec2d"<<std::endl;
                 return osgDB::BaseSerializer::RW_VEC2D;
             }
             else if ((numStringKeys==3 || numNumberKeys==3) && (numNumberFields==3))
             {
-                OSG_NOTICE<<"Could be Vec3d"<<std::endl;
                 return osgDB::BaseSerializer::RW_VEC3D;
             }
             else if ((numStringKeys==4 || numNumberKeys==4) && (numNumberFields==4))
             {
-                OSG_NOTICE<<"Could be Vec4d"<<std::endl;
                 return osgDB::BaseSerializer::RW_VEC4D;
             }
             else if ((numNumberKeys==16) && (numNumberFields==16))
             {
-                OSG_NOTICE<<"Could be Matrixd"<<std::endl;
                 return osgDB::BaseSerializer::RW_MATRIXD;
             }
             else if ((numNumberKeys==6) && (numNumberFields==6))
             {
-                OSG_NOTICE<<"Could be BoundingBoxd"<<std::endl;
                 return osgDB::BaseSerializer::RW_BOUNDINGBOXD;
             }
             // not supported

@@ -41,7 +41,7 @@ enum Operation
     FORWARD_TOUCH_EVENT
 };
 
-struct JumpData
+struct JumpData : public osg::Object
 {
     JumpData():
         relativeJump(true),
@@ -60,7 +60,8 @@ struct JumpData
         slideName(in_slideName),
         layerName(in_layerName) {}
 
-    JumpData(const JumpData& rhs):
+    JumpData(const JumpData& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(rhs, copyop),
         relativeJump(rhs.relativeJump),
         slideNum(rhs.slideNum),
         layerNum(rhs.layerNum),
@@ -78,6 +79,8 @@ struct JumpData
         return *this;
     }
 
+    META_Object(osgPresentation, JumpData);
+
     bool requiresJump() const
     {
         if (!slideName.empty() || !layerName.empty()) return true;
@@ -85,6 +88,21 @@ struct JumpData
     }
 
     bool jump(SlideEventHandler* seh) const;
+
+    void setRelativeJump(bool flag) { relativeJump = flag; }
+    bool getRelativeJump() const { return relativeJump; }
+
+    void setSlideNum(int num) { slideNum = num; }
+    int getSlideNum() const { return slideNum; }
+
+    void setLayerNum(int num) { layerNum = num; }
+    int getLayerNum() const { return layerNum; }
+
+    void setSlideName(const std::string& name) { slideName = name; }
+    const std::string& getSlideName() const { return slideName; }
+
+    void setLayerName(const std::string& name) { layerName = name; }
+    const std::string& getLayerName() const { return layerName; }
 
     bool relativeJump;
     int slideNum;
@@ -95,21 +113,50 @@ struct JumpData
 };
 
 
-struct HomePosition : public virtual osg::Referenced
+struct HomePosition : public osg::Object
 {
-    HomePosition() {}
+    HomePosition():
+        eye(0.0, -1.0, 0.0),
+        center(0.0, 0.0, 0.0),
+        up(0.0, 0.0, 1.0) {}
 
     HomePosition(const osg::Vec3& in_eye, const osg::Vec3& in_center, const osg::Vec3& in_up):
         eye(in_eye),
         center(in_center),
         up(in_up) {}
 
-    osg::Vec3   eye;
-    osg::Vec3   center;
-    osg::Vec3   up;
+    HomePosition(const HomePosition& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(rhs, copyop),
+        eye(rhs.eye),
+        center(rhs.center),
+        up(rhs.up) {}
+
+    HomePosition& operator = (const HomePosition& rhs)
+    {
+        if (&rhs==this) return *this;
+        eye = rhs.eye;
+        center = rhs.center;
+        up = rhs.up;
+        return *this;
+    }
+
+    META_Object(osgPresentation, HomePosition);
+
+    void setEye(const osg::Vec3d& e) { eye = e; }
+    const osg::Vec3d& getEye() const { return eye; }
+
+    void setCenter(const osg::Vec3d& c) { center = c; }
+    const osg::Vec3d& getCenter() const { return center; }
+
+    void setUp(const osg::Vec3d& u) { up = u; }
+    const osg::Vec3d& getUp() const { return up; }
+
+    osg::Vec3d   eye;
+    osg::Vec3d   center;
+    osg::Vec3d   up;
 };
 
-struct KeyPosition
+struct KeyPosition : public osg::Object
 {
     KeyPosition(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX, bool forward_to_devices = false):
         _key((osgGA::GUIEventAdapter::KeySymbol)key),
@@ -117,6 +164,24 @@ struct KeyPosition
         _y(y),
         _forwardToDevices(forward_to_devices) {}
 
+    KeyPosition(const KeyPosition& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(rhs, copyop),
+        _key(rhs._key),
+        _x(rhs._x),
+        _y(rhs._y),
+        _forwardToDevices(rhs._forwardToDevices) {}
+
+    META_Object(osgPresentation, KeyPosition);
+
+    KeyPosition& operator = (const KeyPosition& rhs)
+    {
+        if (&rhs==this) return *this;
+        _key = rhs._key;
+        _x = rhs._x;
+        _y = rhs._y;
+        _forwardToDevices = rhs._forwardToDevices;
+        return *this;
+    }
 
     void set(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX, bool forward_to_devices = false)
     {
@@ -126,10 +191,23 @@ struct KeyPosition
         _forwardToDevices = forward_to_devices;
     }
 
+    void setKey(int key) { _key = static_cast<osgGA::GUIEventAdapter::KeySymbol>(key); }
+    int getKey() const { return _key; }
+
+    void setX(float x) { _x = x; }
+    float getX() const { return _x; }
+
+    void setY(float y) { _y = y; }
+    float getY() const { return _y; }
+
+    void setForwardToDevices(bool flag) { _forwardToDevices = flag; }
+    bool getForwardToDevices() const { return _forwardToDevices; }
+
+
     osgGA::GUIEventAdapter::KeySymbol _key;
-    float        _x;
-    float        _y;
-    bool _forwardToDevices;
+    float                             _x;
+    float                             _y;
+    bool                              _forwardToDevices;
 };
 
 struct LayerCallback : public virtual osg::Referenced
@@ -254,7 +332,7 @@ public:
 
     static SlideEventHandler* instance();
 
-    META_Object(osgslideshowApp,SlideEventHandler);
+    META_Object(osgPresentation,SlideEventHandler);
 
     void set(osg::Node* model);
 
@@ -316,7 +394,10 @@ public:
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
     bool getLoopPresentation() const { return _loopPresentation; }
 
+
     void dispatchEvent(const KeyPosition& keyPosition);
+    void dispatchEvent(osgGA::Event* event);
+
     void forwardEventToDevices(osgGA::Event* event);
 
     void setRequestReload(bool flag);

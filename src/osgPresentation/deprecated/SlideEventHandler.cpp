@@ -39,7 +39,7 @@ SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
 
 bool JumpData::jump(SlideEventHandler* seh) const
 {
-        OSG_INFO<<"Requires jump "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
+        OSG_NOTICE<<"Requires jump"<<seh<<", "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
 
         int slideNumToUse = slideNum;
         int layerNumToUse = layerNum;
@@ -47,15 +47,17 @@ bool JumpData::jump(SlideEventHandler* seh) const
         if (!slideName.empty())
         {
             osg::Switch* presentation = seh->getPresentationSwitch();
-
-            for(unsigned int i=0; i<presentation->getNumChildren(); ++i)
+            if (presentation)
             {
-                osg::Node* node = seh->getSlide(i);
-                std::string name;
-                if (node->getUserValue("name",name) && slideName==name)
+                for(unsigned int i=0; i<presentation->getNumChildren(); ++i)
                 {
-                    slideNumToUse = i;
-                    break;
+                    osg::Node* node = seh->getSlide(i);
+                    std::string name;
+                    if (node->getUserValue("name",name) && slideName==name)
+                    {
+                        slideNumToUse = i;
+                        break;
+                    }
                 }
             }
         }
@@ -1552,7 +1554,15 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
 
 void SlideEventHandler::forwardEventToDevices(osgGA::Event* event)
 {
+    if (!event) return;
+
     // dispatch cloned event to devices
+    if (!_viewer)
+    {
+        OSG_NOTICE<<"Warning: SlideEventHandler::forwardEventToDevices(Event*) error, no Viewer to dispatch to."<<std::endl;
+        return;
+    }
+
     osgViewer::View::Devices& devices = _viewer->getDevices();
     for(osgViewer::View::Devices::iterator i = devices.begin(); i != devices.end(); ++i)
     {
@@ -1563,8 +1573,36 @@ void SlideEventHandler::forwardEventToDevices(osgGA::Event* event)
     }
 }
 
+void SlideEventHandler::dispatchEvent(osgGA::Event* event)
+{
+    if (!event) return;
+
+    // dispatch cloned event to devices
+    if (!_viewer)
+    {
+        OSG_NOTICE<<"Warning: SlideEventHandler::forwardEventToDevices(Event*) error, no Viewer to dispatch to."<<std::endl;
+        return;
+    }
+
+    osgGA::EventQueue* eq = _viewer!=0 ? _viewer->getEventQueue() : 0;
+    if (!eq)
+    {
+        OSG_NOTICE<<"Warning: SlideEventHandler::dispatchEvent(KeyPosition&) error, no EventQueue to dispatch to."<<std::endl;
+        return;
+    }
+
+    eq->addEvent(event);
+
+}
+
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
+    if (!_viewer)
+    {
+        OSG_NOTICE<<"Warning: SlideEventHandler::dispatchEvent(KeyPosition*) error, no Viewer to dispatch to."<<std::endl;
+        return;
+    }
+
     if (keyPosition._forwardToDevices)
     {
         osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter();
@@ -1583,7 +1621,12 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
         return;
     }
 
-    osgGA::EventQueue* eq = _viewer->getEventQueue();
+    osgGA::EventQueue* eq = _viewer!=0 ? _viewer->getEventQueue() : 0;
+    if (!eq)
+    {
+        OSG_NOTICE<<"Warning: SlideEventHandler::dispatchEvent(KeyPosition&) error, no EventQueue to dispatch to."<<std::endl;
+        return;
+    }
 
     // reset the time of the last key press to ensure that the event is disgarded as a key repeat.
     _timeLastKeyPresses = -1.0;

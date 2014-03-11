@@ -27,6 +27,8 @@ SET(TARGET_H
     ${HEADER_PATH}/Text
     ${HEADER_PATH}/Volume
 
+    ${HEADER_PATH}/PresentationInterface
+
     ${HEADER_PATH}/deprecated/AnimationMaterial
     ${HEADER_PATH}/deprecated/CompileSlideCallback
     ${HEADER_PATH}/deprecated/PickEventHandler
@@ -56,6 +58,8 @@ SET(TARGET_SRC
     Movie.cpp
     Text.cpp
     Volume.cpp
+
+    PresentationInterface.cpp
 
     deprecated/AnimationMaterial.cpp
     deprecated/CompileSlideCallback.cpp

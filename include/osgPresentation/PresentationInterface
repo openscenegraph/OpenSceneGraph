@@ -1,0 +1,62 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGPRESENTATION_PRESENTATIONINTERFACE
+#define OSGPRESENTATION_PRESENTATIONINTERFACE 1
+
+#include <osgViewer/ViewerBase>
+#include <osgPresentation/deprecated/SlideEventHandler>
+
+namespace osgPresentation {
+
+/** PresentationInterface is a helper class for scripting languages to use to access the key services of the presentation.*/
+class OSGPRESENTATION_EXPORT PresentationInterface : public osg::Object
+{
+    public :
+
+        PresentationInterface() {}
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        PresentationInterface(const PresentationInterface& pi,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(pi,copyop) {}
+
+        META_Object(osgPresentation, PresentationInterface);
+
+        /** get the viewer associated with the current active presentation.*/
+        osgViewer::ViewerBase* getViewer();
+
+        /** get current active root presentation Node.*/
+        osg::Node* getPresentation();
+
+        /** get SlideEventHandler that is managing the current active presentation.*/
+        osgPresentation::SlideEventHandler* getSlideEventHandler();
+
+        /** pass on a jump command to the presentation to change layer/slide.*/
+        void jump(const osgPresentation::JumpData* jumpdata);
+
+        /** send KeyPosition event to viewer so that that it can be handled by the viewer and associated event handlers. */
+        void sendEventToViewer(const osgPresentation::KeyPosition* kp);
+
+        /** send event to viewer so that that it can be handled by the viewer and associated event handlers. */
+        void sendEventToViewer(osgGA::Event* event);
+
+        /** send event to devices attached to the viewer. */
+        void sendEventToDevices(osgGA::Event* event);
+
+protected :
+
+        virtual ~PresentationInterface() {}
+};
+
+}
+
+#endif

@@ -14,6 +14,26 @@ struct PresentationInterfaceGetSlideEventHandler : public osgDB::MethodObject
     }
 };
 
+struct PresentationInterfaceGetViewer : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        osgPresentation::PresentationInterface* pi = reinterpret_cast<osgPresentation::PresentationInterface*>(objectPtr);
+        outputParameters.push_back(pi->getViewer());
+        return true;
+    }
+};
+
+struct PresentationInterfaceGetPresentation : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        osgPresentation::PresentationInterface* pi = reinterpret_cast<osgPresentation::PresentationInterface*>(objectPtr);
+        outputParameters.push_back(pi->getPresentation());
+        return true;
+    }
+};
+
 struct PresentationInterfaceSendEventToViewer : public osgDB::MethodObject
 {
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
@@ -27,7 +47,6 @@ struct PresentationInterfaceSendEventToViewer : public osgDB::MethodObject
         {
             osgGA::Event* event = dynamic_cast<osgGA::Event*>(itr->get());
             osgPresentation::KeyPosition* kp = dynamic_cast<osgPresentation::KeyPosition*>(itr->get());
-            OSG_NOTICE<<"Dispatch event "<<pi<<", "<<kp<<", "<<event<<std::endl;
             if (kp) pi->sendEventToViewer(kp);
             else if (event) pi->sendEventToViewer(event);
         }
@@ -48,7 +67,6 @@ struct PresentationInterfaceSendEventToDevices : public osgDB::MethodObject
             ++itr)
         {
             osgGA::Event* event = dynamic_cast<osgGA::Event*>(itr->get());
-            OSG_NOTICE<<"forward event "<<pi<<", "<<event<<std::endl;
             if (event) pi->sendEventToDevices(event);
         }
 
@@ -62,6 +80,8 @@ REGISTER_OBJECT_WRAPPER( osgPresentation_PresentationInterface,
                          "osg::Object osgPresentation::PresentationInterface" )
 {
     ADD_METHOD_OBJECT( "getSlideEventHandler", PresentationInterfaceGetSlideEventHandler );
+    ADD_METHOD_OBJECT( "getViewer", PresentationInterfaceGetViewer );
+    ADD_METHOD_OBJECT( "getPresentation", PresentationInterfaceGetPresentation );
     ADD_METHOD_OBJECT( "sendEventToViewer", PresentationInterfaceSendEventToViewer );
     ADD_METHOD_OBJECT( "sendEventToDevices", PresentationInterfaceSendEventToDevices );
 }

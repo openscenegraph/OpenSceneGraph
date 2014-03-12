@@ -16,6 +16,7 @@
 #include <osg/ScriptEngine>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
+#include <osg/ValueObject>
 #include <osg/io_utils>
 
 #include <osgGA/Widget>
@@ -228,9 +229,10 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
                 itr != events.end();
                 ++itr)
             {
-                handle(ev, itr->get());
-
-                (*itr)->setHandled(true);
+                if (handle(ev, itr->get()))
+                {
+                    (*itr)->setHandled(true);
+                }
             }
         }
     }
@@ -255,7 +257,19 @@ bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(ev);
         inputParameters.push_back(event);
-        return co->run(this, inputParameters, outputParameters) && outputParameters.size()>=1;
+        if (co->run(this, inputParameters, outputParameters))
+        {
+            if (outputParameters.size()>=1)
+            {
+                osg::BoolValueObject* bvo = dynamic_cast<osg::BoolValueObject*>(outputParameters[0].get());
+                if (bvo)
+                {
+                    return bvo->getValue();
+                }
+                return false;
+            }
+        }
+        return false;
     }
     else
     {

@@ -1592,7 +1592,6 @@ void SlideEventHandler::dispatchEvent(osgGA::Event* event)
     }
 
     eq->addEvent(event);
-
 }
 
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)

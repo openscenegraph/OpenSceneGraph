@@ -14,6 +14,7 @@
 #include <osg/io_utils>
 #include <osg/PagedLOD>
 
+#include <osgDB/ReadFile>
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -175,6 +176,7 @@ public:
     bool parsePropertyAnimation(osgDB::XmlNode* root, osgPresentation::PropertyAnimation& pa) const;
 
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
+    void parseModelScript(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
 
     osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float scale) const;
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
@@ -194,6 +196,9 @@ public:
     void parseText(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
 
     void parsePage (osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
+
+    void parseRunScriptFile (osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
+    void parseRunScript (osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
 
     void parseSlide (osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur, bool parseTitles=true, bool parseLayers=true) const;
 
@@ -1269,9 +1274,8 @@ bool ReaderWriterP3DXML::getJumpProperties(osgDB::XmlNode* cur, osgPresentation:
 
 void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
 {
-
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
-   bool positionRead = getProperties(cur, positionData);
+    bool positionRead = getProperties(cur, positionData);
 
     osgPresentation::SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
     getProperties(cur, modelData);
@@ -1288,6 +1292,59 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
                              modelData,
                              scriptData
                             );
+    }
+}
+
+
+void ReaderWriterP3DXML::parseModelScript(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
+{
+    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
+    bool positionRead = getProperties(cur, positionData);
+
+    osgPresentation::SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
+    getProperties(cur, modelData);
+
+    osgPresentation::SlideShowConstructor::ScriptData scriptData;
+    getProperties(cur, scriptData);
+
+    std::string language = "lua";
+    getProperty(cur, "language", language);
+
+    std::string function = "";
+    getProperty(cur, "function", function);
+
+    std::string scriptContents = cur->contents;
+
+    if (!scriptContents.empty())
+    {
+        osg::ref_ptr<osg::Script> script = new osg::Script;
+        script->setLanguage(language);
+        script->setScript(scriptContents);
+
+        osg::ScriptEngine* se = constructor.getOrCreateScriptEngine(language);
+        if (se)
+        {
+            osg::Parameters inputParameters, outputParameters;
+            se->run(script.get(), function, inputParameters, outputParameters);
+
+            for(osg::Parameters::iterator itr = outputParameters.begin();
+                itr != outputParameters.end();
+                ++itr)
+            {
+                OSG_NOTICE<<"Parsing return object "<<(*itr)->className()<<std::endl;
+                osg::Node* model = dynamic_cast<osg::Node*>(itr->get());
+                if (model)
+                {
+                    OSG_NOTICE<<"Adding model "<<std::endl;
+                    constructor.addModel(model,
+                                         positionRead ? positionData : constructor.getModelPositionData(),
+                                         modelData,
+                                         scriptData
+                                         );
+                }
+            }
+        }
+
     }
 }
 
@@ -1929,6 +1986,11 @@ bool ReaderWriterP3DXML::parseLayerChild(osgPresentation::SlideShowConstructor& 
         parseModel(constructor, cur);
         return true;
     }
+    else if (match(cur->name, "model-script"))
+    {
+        parseModelScript(constructor, cur);
+        return true;
+    }
     else if (match(cur->name, "volume"))
     {
         parseVolume(constructor, cur);
@@ -2143,6 +2205,28 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             {
                 OSG_NOTICE<<"key_to_jump failed."<<std::endl;
             }
+        }
+        else if (match(cur->name, "script_file"))
+        {
+            std::string name;
+            getProperty(cur, "name", name);
+            constructor.addScriptFile(name, cur->contents);
+        }
+        else if (match(cur->name, "script"))
+        {
+            std::string name;
+            getProperty(cur, "name", name);
+            std::string language("lua");
+            getProperty(cur, "language", language);
+            constructor.addScript(name, language, cur->contents);
+        }
+        else if (match(cur->name, "run_script_file"))
+        {
+            parseRunScriptFile(constructor, cur);
+        }
+        else if (match(cur->name, "run_script"))
+        {
+            parseRunScript(constructor, cur);
         }
         else
         {
@@ -2479,6 +2563,28 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
                     }
                 }
             }
+            else if (match(cur->name, "script_file"))
+            {
+                std::string name;
+                getProperty(cur, "name", name);
+                constructor.addScriptFile(name, cur->contents);
+            }
+            else if (match(cur->name, "script"))
+            {
+                std::string name;
+                getProperty(cur, "name", name);
+                std::string language("lua");
+                getProperty(cur, "language", language);
+                constructor.addScript(name, language, cur->contents);
+            }
+            else if (match(cur->name, "run_script_file"))
+            {
+                parseRunScriptFile(constructor, cur);
+            }
+            else if (match(cur->name, "run_script"))
+            {
+                parseRunScript(constructor, cur);
+            }
             else if (getKeyPosition(cur, keyPosition))
             {
                 constructor.addSlideKey(keyPosition);
@@ -2506,8 +2612,47 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
     return;
 }
 
-#include <iostream>
+void ReaderWriterP3DXML::parseRunScriptFile(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
+{
+    std::string function = "";
+    getProperty(cur, "function", function);
 
+    osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(cur->getTrimmedContents());
+    if (script.valid())
+    {
+        osg::ScriptEngine* se = constructor.getOrCreateScriptEngine(script->getLanguage());
+        if (se)
+        {
+            osg::Parameters inputParameters, outputParameters;
+            se->run(script.get(), function, inputParameters, outputParameters);
+        }
+    }
+}
+
+void ReaderWriterP3DXML::parseRunScript(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
+{
+    std::string language = "lua";
+    getProperty(cur, "language", language);
+
+    std::string function = "";
+    getProperty(cur, "function", function);
+
+    std::string scriptContents = cur->contents;
+
+    if (!scriptContents.empty())
+    {
+        osg::ref_ptr<osg::Script> script = new osg::Script;
+        script->setLanguage(language);
+        script->setScript(scriptContents);
+
+        osg::ScriptEngine* se = constructor.getOrCreateScriptEngine(language);
+        if (se)
+        {
+            osg::Parameters inputParameters, outputParameters;
+            se->run(script.get(), function, inputParameters, outputParameters);
+        }
+    }
+}
 
 struct MyFindFileCallback : public osgDB::FindFileCallback
 {
@@ -3100,6 +3245,14 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             std::string language("lua");
             getProperty(cur, "language", language);
             constructor.addScript(name, language, cur->contents);
+        }
+        else if (match(cur->name, "run_script_file"))
+        {
+            parseRunScriptFile(constructor, cur);
+        }
+        else if (match(cur->name, "run_script"))
+        {
+            parseRunScript(constructor, cur);
         }
         else if (match(cur->name, "name"))
         {

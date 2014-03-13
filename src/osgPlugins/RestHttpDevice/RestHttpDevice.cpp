@@ -20,9 +20,9 @@
 namespace RestHttp {
 
 
-class StandardRequestHandler : public RestHttpDevice::RequestHandler {
+class UserEventRequestHandler : public RestHttpDevice::RequestHandler {
 public:
-    StandardRequestHandler() : RestHttpDevice::RequestHandler("") {}
+    UserEventRequestHandler() : RestHttpDevice::RequestHandler("/user-event") {}
     virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const Arguments& arguments, http::server::reply& reply)
     {
         OSG_INFO << "RestHttpDevice :: handling request " << full_request_path << " as user-event" << std::endl;
@@ -293,7 +293,7 @@ RestHttpDevice::RestHttpDevice(const std::string& listening_address, const std::
     
     addRequestHandler(new RestHttp::HomeRequestHandler());
     
-    addRequestHandler(new RestHttp::StandardRequestHandler());
+    addRequestHandler(new RestHttp::UserEventRequestHandler());
     
     // start the thread
     start();

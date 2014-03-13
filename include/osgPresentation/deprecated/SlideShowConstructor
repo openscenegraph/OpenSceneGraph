@@ -527,6 +527,7 @@ public:
     HUDSettings* getHUDSettings() { return _hudSettings.get(); }
     const HUDSettings* getHUDSettings() const { return _hudSettings.get(); }
 
+    osg::ScriptEngine* getOrCreateScriptEngine(const std::string& language);
 
 protected:
 

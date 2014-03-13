@@ -299,6 +299,18 @@ void SlideShowConstructor::setPresentationDuration(double duration)
     }
 }
 
+osg::ScriptEngine* SlideShowConstructor::getOrCreateScriptEngine(const std::string& language)
+{
+    ScriptEngineMap::iterator itr = _scriptEngines.find(language);
+    if (itr==_scriptEngines.end())
+    {
+        addScriptEngine(language);
+        itr = _scriptEngines.find(language);
+    }
+
+    return (itr!=_scriptEngines.end()) ? itr->second.get() : 0;
+}
+
 void SlideShowConstructor::addScriptEngine(const std::string& scriptEngineName)
 {
     if (_scriptEngines.count(scriptEngineName)!=0)

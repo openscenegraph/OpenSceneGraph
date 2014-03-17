@@ -312,6 +312,8 @@ public:
             colorModulate(1.0f,1.0f,1.0f,1.0f),
             technique(RayTraced)
         {
+            hullPositionData.position = osg::Vec3(0.0,0.0,0.0);
+            hullPositionData.frame = osgPresentation::SlideShowConstructor::MODEL;
         }
 
         std::string                             options;
@@ -557,6 +559,7 @@ protected:
     }
 
     osg::Node* decorateSubgraphForPosition(osg::Node* node, PositionData& positionData);
+    osg::Node* decorateSubgraphForPositionAndAnimation(osg::Node* node, const PositionData& positionData);
 
     osg::ref_ptr<osgDB::Options> _options;
 

@@ -1423,15 +1423,8 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         osgDB::XmlNode* child = itr->get();
         if (match(child->name,"hull"))
         {
-            osgPresentation::SlideShowConstructor::PositionData hullPositionData;
-            hullPositionData.position = osg::Vec3(0.0,0.0,0.0);
             volumeData.hull = child->contents;
-
-            if (getProperties(child,hullPositionData))
-            {
-                volumeData.hullPositionData = hullPositionData;
-            }
-
+            getProperties(child, volumeData.hullPositionData);
         }
     }
 

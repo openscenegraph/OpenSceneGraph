@@ -626,9 +626,17 @@ void MultipassTechnique::init()
 
 }
 
-void MultipassTechnique::update(osgUtil::UpdateVisitor* /*uv*/)
+void MultipassTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-//    OSG_NOTICE<<"MultipassTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
+//    OSG_NOTICE<<"MultipassTechnique:update(osgUtil::UpdateVisitor* uv):"<<std::endl;
+    if (getVolumeTile()->getNumChildren()>0)
+    {
+        getVolumeTile()->osg::Group::traverse(*uv);
+    }
+    else
+    {
+        _transform->accept(*uv);
+    }
 }
 
 void MultipassTechnique::backfaceSubgraphCullTraversal(osgUtil::CullVisitor* cv)

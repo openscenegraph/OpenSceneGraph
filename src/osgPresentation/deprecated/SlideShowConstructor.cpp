@@ -2134,21 +2134,12 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
 
 }
 
-void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData, const ScriptData& scriptData)
+osg::Node* SlideShowConstructor::decorateSubgraphForPositionAndAnimation(osg::Node* node, const PositionData& positionData)
 {
+    osg::Node* subgraph = node;
     osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
 
-    if (!modelData.effect.empty())
-    {
-        if (modelData.effect=="SpecularHighlights" || modelData.effect=="glossy")
-        {
-            osgFX::SpecularHighlights* specularHighlights = new osgFX::SpecularHighlights;
-            specularHighlights->setTextureUnit(1);
-            specularHighlights->addChild(subgraph);
-            subgraph = specularHighlights;
-        }
-    }
-
+    OSG_INFO<<"SlideShowConstructor::decorateSubgraphForPositionAndAnimation() "<<std::endl;
 
     if (positionData.frame==SLIDE)
     {
@@ -2190,11 +2181,6 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
 
     float referenceSizeRatio = 0.707;
     float referenceSize = subgraph->getBound().radius() * referenceSizeRatio;
-
-
-    // attach any meterial animation.
-    if (positionData.requiresMaterialAnimation())
-        subgraph = attachMaterialAnimation(subgraph,positionData);
 
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
@@ -2298,6 +2284,32 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
 
         subgraph = animation_transform;
     }
+
+    return subgraph;
+}
+
+
+void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData, const ScriptData& scriptData)
+{
+    if (!modelData.effect.empty())
+    {
+        if (modelData.effect=="SpecularHighlights" || modelData.effect=="glossy")
+        {
+            osgFX::SpecularHighlights* specularHighlights = new osgFX::SpecularHighlights;
+            specularHighlights->setTextureUnit(1);
+            specularHighlights->addChild(subgraph);
+            subgraph = specularHighlights;
+        }
+    }
+
+
+
+    // attach any meterial animation.
+    if (positionData.requiresMaterialAnimation())
+        subgraph = attachMaterialAnimation(subgraph,positionData);
+
+
+    subgraph = decorateSubgraphForPositionAndAnimation(subgraph, positionData);
 
     findImageStreamsAndAddCallbacks(subgraph);
 
@@ -2847,27 +2859,13 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         }
     }
 
-//     if (!volumeData.hull.empty())
+    if (!volumeData.hull.empty())
     {
         osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
         if (hull.valid())
         {
-            if (volumeData.hullPositionData.position!=osg::Vec3(0.0f,0.0f,0.0f) || volumeData.hullPositionData.requiresScale() || volumeData.hullPositionData.requiresRotate())
-            {
-                osg::Matrix matrix(osg::Matrix::scale(1.0f/volumeData.hullPositionData.scale.x(),1.0f/volumeData.hullPositionData.scale.y(),1.0f/volumeData.hullPositionData.scale.z())*
-                                osg::Matrix::rotate(osg::DegreesToRadians(volumeData.hullPositionData.rotate[0]),volumeData.hullPositionData.rotate[1],volumeData.hullPositionData.rotate[2],volumeData.hullPositionData.rotate[3])*
-                                osg::Matrix::translate(volumeData.hullPositionData.position));
-
-                osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
-                transform->setMatrix(osg::Matrix::inverse(matrix));
-
-                transform->addChild(hull.get());
-                tile->addChild(transform.get());
-            }
-            else
-            {
-                tile->addChild(hull.get());
-            }
+            hull = decorateSubgraphForPositionAndAnimation(hull.get(), volumeData.hullPositionData);
+            tile->addChild(hull.get());
         }
     }
 

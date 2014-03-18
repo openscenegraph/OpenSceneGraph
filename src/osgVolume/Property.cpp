@@ -240,6 +240,20 @@ TransparencyProperty::TransparencyProperty(const TransparencyProperty& isp,const
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// ExteriorTransparencyFactorProperty
+//
+ExteriorTransparencyFactorProperty::ExteriorTransparencyFactorProperty(float value):
+    ScalarProperty("ExteriorTransparencyFactorValue",value)
+{
+}
+
+ExteriorTransparencyFactorProperty::ExteriorTransparencyFactorProperty(const ExteriorTransparencyFactorProperty& etfp,const osg::CopyOp& copyop):
+    ScalarProperty(etfp, copyop)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // PropertyVisitor
 //
 PropertyVisitor::PropertyVisitor(bool traverseOnlyActiveChildren):
@@ -295,6 +309,7 @@ void CollectPropertiesVisitor::apply(SampleDensityWhenMovingProperty& sdp) { _sa
 void CollectPropertiesVisitor::apply(SampleRatioProperty& srp) { _sampleRatioProperty = &srp; }
 void CollectPropertiesVisitor::apply(SampleRatioWhenMovingProperty& srp) { _sampleRatioWhenMovingProperty = &srp; }
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
+void CollectPropertiesVisitor::apply(ExteriorTransparencyFactorProperty& etfp) { _exteriorTransparencyFactorProperty = &etfp; }
 
 
 class CycleSwitchVisitor : public osgVolume::PropertyVisitor
@@ -355,6 +370,7 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback():
     _cyleForwardKey('v'),
     _cyleBackwardKey('V'),
     _transparencyKey('t'),
+    _exteriorTransparencyFactorKey('T'),
     _alphaFuncKey('a'),
     _sampleDensityKey('d'),
     _updateTransparency(false),
@@ -367,6 +383,7 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentC
     _cyleForwardKey(pac._cyleForwardKey),
     _cyleBackwardKey(pac._cyleBackwardKey),
     _transparencyKey(pac._transparencyKey),
+    _exteriorTransparencyFactorKey(pac._exteriorTransparencyFactorKey),
     _alphaFuncKey(pac._alphaFuncKey),
     _sampleDensityKey(pac._sampleDensityKey),
     _updateTransparency(false),
@@ -410,6 +427,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
                 }
             }
             else if (ea.getKey()==_transparencyKey) _updateTransparency = passOnUpdates = true;
+            else if (ea.getKey()==_exteriorTransparencyFactorKey) _updateExteriorTransparencyFactor = passOnUpdates = true;
             else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = passOnUpdates = true;
             else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = passOnUpdates = true;
             break;
@@ -417,6 +435,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         case(osgGA::GUIEventAdapter::KEYUP):
         {
             if (ea.getKey()==_transparencyKey) _updateTransparency = false;
+            else if (ea.getKey()==_exteriorTransparencyFactorKey) _updateExteriorTransparencyFactor = false;
             else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = false;
             else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = false;
             break;
@@ -447,8 +466,14 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
 
         if (_updateTransparency && cpv._transparencyProperty.valid())
         {
-            OSG_NOTICE<<"Setting transparency to "<<v2<<std::endl;
             cpv._transparencyProperty->setValue((1.0f-v2)*2.0f);
+            OSG_NOTICE<<"Setting transparency to "<<cpv._transparencyProperty->getValue()<<std::endl;
+        }
+
+        if (_updateExteriorTransparencyFactor && cpv._exteriorTransparencyFactorProperty.valid())
+        {
+            cpv._exteriorTransparencyFactorProperty->setValue((1.0f-v));
+            OSG_NOTICE<<"Setting exterior transparency factor to "<<cpv._exteriorTransparencyFactorProperty->getValue()<<std::endl;
         }
 
         if (_updateSampleDensity && cpv._sampleDensityProperty.valid())

@@ -2737,6 +2737,13 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osg::ref_ptr<osgVolume::TransparencyProperty> tp = new osgVolume::TransparencyProperty(1.0f);
         setUpVolumeScalarProperty(tile.get(), tp.get(), volumeData.alphaValue);
 
+        osg::ref_ptr<osgVolume::ExteriorTransparencyFactorProperty> etfp;
+        if (!volumeData.exteriorTransparencyFactorValue.empty())
+        {
+            etfp = new osgVolume::ExteriorTransparencyFactorProperty(0.0f);
+            setUpVolumeScalarProperty(tile.get(), etfp.get(), volumeData.exteriorTransparencyFactorValue);
+        }
+
         osg::ref_ptr<osgVolume::SampleDensityProperty> sd = new osgVolume::SampleDensityProperty(0.005);
         setUpVolumeScalarProperty(tile.get(), sd.get(), volumeData.sampleDensityValue);
 
@@ -2770,6 +2777,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             if (sr.valid()) cp->addProperty(sr.get());
             if (srm.valid()) cp->addProperty(srm.get());
             if (tfp.valid()) cp->addProperty(tfp.get());
+            if (etfp.valid()) cp->addProperty(etfp.get());
 
             sp->addProperty(cp);
         }
@@ -2785,6 +2793,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             if (sr.valid()) cp->addProperty(sr.get());
             if (srm.valid()) cp->addProperty(srm.get());
             if (tfp.valid()) cp->addProperty(tfp.get());
+            if (etfp.valid()) cp->addProperty(etfp.get());
 
             sp->addProperty(cp);
         }
@@ -2804,6 +2813,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             if (sr.valid()) cp->addProperty(sr.get());
             if (srm.valid()) cp->addProperty(srm.get());
             if (tfp.valid()) cp->addProperty(tfp.get());
+            if (etfp.valid()) cp->addProperty(etfp.get());
 
             sp->addProperty(cp);
         }
@@ -2819,6 +2829,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             if (sr.valid()) cp->addProperty(sr.get());
             if (srm.valid()) cp->addProperty(srm.get());
             if (tfp.valid()) cp->addProperty(tfp.get());
+            if (etfp.valid()) cp->addProperty(etfp.get());
 
             sp->addProperty(cp);
         }

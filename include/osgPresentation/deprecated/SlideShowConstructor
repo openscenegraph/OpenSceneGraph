@@ -306,6 +306,7 @@ public:
             region_in_pixel_coords(false),
             alphaValue("1.0"),
             cutoffValue("0.1"),
+            exteriorTransparencyFactorValue(""),
             sampleDensityValue("0.005"),
             sampleRatioValue("1.0"),
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
@@ -325,6 +326,7 @@ public:
         bool                                    region_in_pixel_coords;
         std::string                             alphaValue;
         std::string                             cutoffValue;
+        std::string                             exteriorTransparencyFactorValue;
         std::string                             sampleDensityValue;
         std::string                             sampleDensityWhenMovingValue;
 

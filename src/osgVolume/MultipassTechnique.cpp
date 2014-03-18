@@ -299,6 +299,17 @@ void MultipassTechnique::init()
 
     unsigned int volumeTextureUnit = 3;
 
+    bool requiresRenderingOfCubeAndHull = cpv._exteriorTransparencyFactorProperty.valid() && cpv._exteriorTransparencyFactorProperty->getValue()!=0.0f;
+    if (requiresRenderingOfCubeAndHull)
+    {
+        OSG_NOTICE<<"******* We need to set up the rendering of the Cube and Hull, ETF = "<<cpv._exteriorTransparencyFactorProperty->getValue()<<std::endl;
+    }
+    else
+    {
+        OSG_NOTICE<<"--- We do not need to render Cube and Hull, ETF = "<<std::endl;
+    }
+
+
     // set up uniforms
     {
         stateset->addUniform(new osg::Uniform("colorTexture",0));
@@ -325,6 +336,11 @@ void MultipassTechnique::init()
         else
             stateset->addUniform(new osg::Uniform("TransparencyValue",1.0f));
 
+        if (cpv._exteriorTransparencyFactorProperty.valid())
+            stateset->addUniform(cpv._exteriorTransparencyFactorProperty->getUniform());
+        else
+            stateset->addUniform(new osg::Uniform("ExteriorTransparencyFactorValue",0.0f));
+
 
         if (cpv._afProperty.valid())
             stateset->addUniform(cpv._afProperty->getUniform());
@@ -341,6 +357,7 @@ void MultipassTechnique::init()
         {
             tf = dynamic_cast<osg::TransferFunction1D*>(cpv._tfProperty->getTransferFunction());
         }
+
     }
 
 

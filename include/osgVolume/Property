@@ -39,6 +39,7 @@ class SampleRatioWhenMovingProperty;
 class SampleDensityProperty;
 class SampleDensityWhenMovingProperty;
 class TransparencyProperty;
+class ExteriorTransparencyFactorProperty;
 
 class OSGVOLUME_EXPORT PropertyVisitor
 {
@@ -62,6 +63,7 @@ class OSGVOLUME_EXPORT PropertyVisitor
         virtual void apply(SampleDensityProperty&) {}
         virtual void apply(SampleDensityWhenMovingProperty&) {}
         virtual void apply(TransparencyProperty&) {}
+        virtual void apply(ExteriorTransparencyFactorProperty&) {}
 
         bool _traverseOnlyActiveChildren;
 
@@ -385,6 +387,23 @@ class OSGVOLUME_EXPORT TransparencyProperty : public ScalarProperty
         virtual ~TransparencyProperty() {}
 };
 
+class OSGVOLUME_EXPORT ExteriorTransparencyFactorProperty : public ScalarProperty
+{
+    public:
+
+        ExteriorTransparencyFactorProperty(float value=0.0f);
+
+        ExteriorTransparencyFactorProperty(const ExteriorTransparencyFactorProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgVolume, ExteriorTransparencyFactorProperty);
+
+        virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
+
+    protected:
+
+        virtual ~ExteriorTransparencyFactorProperty() {}
+};
+
 
 class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisitor
 {
@@ -404,6 +423,7 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         virtual void apply(SampleRatioProperty& sdp);
         virtual void apply(SampleRatioWhenMovingProperty& sdp);
         virtual void apply(TransparencyProperty& tp);
+        virtual void apply(ExteriorTransparencyFactorProperty& tp);
 
         osg::ref_ptr<TransferFunctionProperty>              _tfProperty;
         osg::ref_ptr<IsoSurfaceProperty>                    _isoProperty;
@@ -415,6 +435,7 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         osg::ref_ptr<SampleRatioProperty>                   _sampleRatioProperty;
         osg::ref_ptr<SampleRatioWhenMovingProperty>         _sampleRatioWhenMovingProperty;
         osg::ref_ptr<TransparencyProperty>                  _transparencyProperty;
+        osg::ref_ptr<ExteriorTransparencyFactorProperty>    _exteriorTransparencyFactorProperty;
 
 };
 
@@ -437,6 +458,9 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
         void setKeyEventActivatesTransparencyAdjustment(int key) { _transparencyKey = key; }
         int getKeyEventActivatesTransparencyAdjustment() const { return _transparencyKey; }
 
+        void setKeyEventActivatesExteriorTransparencyFactorAdjustment(int key) { _exteriorTransparencyFactorKey = key; }
+        int getKeyEventActivatesExteriorTransparencyFactorAdjustment() const { return _exteriorTransparencyFactorKey; }
+
         void setKeyEventActivatesSampleDensityAdjustment(int key) { _sampleDensityKey = key; }
         int getKeyEventActivatesSampleDensityAdjustment() const { return _sampleDensityKey; }
 
@@ -448,10 +472,12 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
         int     _cyleForwardKey;
         int     _cyleBackwardKey;
         int     _transparencyKey;
+        int     _exteriorTransparencyFactorKey;
         int     _alphaFuncKey;
         int     _sampleDensityKey;
 
         bool    _updateTransparency;
+        bool    _updateExteriorTransparencyFactor;
         bool    _updateAlphaCutOff;
         bool    _updateSampleDensity;
 };

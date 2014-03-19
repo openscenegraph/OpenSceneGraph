@@ -25,6 +25,23 @@ namespace osgVolume {
 
 class VolumeTile;
 
+/** Container for render to texture objects used when doing multi-pass volume rendering techniques.*/
+struct TileData : public osg::Referenced
+{
+    TileData() : active(false) {}
+
+    virtual void update(osgUtil::CullVisitor* cv) = 0;
+
+    bool active;
+
+    osg::NodePath nodePath;
+    osg::ref_ptr<osg::RefMatrix> projectionMatrix;
+    osg::ref_ptr<osg::RefMatrix> modelviewMatrix;
+
+    osg::ref_ptr<osg::StateSet>  stateset;
+};
+
+
 class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 {
     public:
@@ -52,6 +69,10 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 
         /** Traverse the terrain subgraph.*/
         virtual void traverse(osg::NodeVisitor& nv);
+
+        /** Called from VolumeScene to create the TileData container when a multi-pass technique is being used.
+         *  The TileData container caches any render to texture objects that are required. */
+        virtual TileData* createTileData(osgUtil::CullVisitor* cv) { return 0; }
 
     protected:
 

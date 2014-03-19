@@ -147,7 +147,97 @@ osg::Image* createDownsampledImage(osg::Image* sourceImage)
     return targetImage.release();
 }
 
+////////////////////////////////////////////////////////////////////////
+//
+// MultipassTileData
+//
+MultipassTileData::MultipassTileData(osgUtil::CullVisitor* cv):
+    TileData()
+{
+    int width = 512;
+    int height = 512;
 
+    osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
+    if (viewport)
+    {
+        width = static_cast<int>(viewport->width());
+        height = static_cast<int>(viewport->height());
+    }
+
+    osg::ref_ptr<osg::Texture2D> depthTexture = new osg::Texture2D;
+    frontFaceDepthTexture = depthTexture;
+
+    depthTexture->setTextureSize(width, height);
+    depthTexture->setInternalFormat(GL_DEPTH_COMPONENT);
+    depthTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    depthTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    depthTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+    depthTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+    depthTexture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+
+    osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+    frontFaceRttCamera = camera;
+    frontFaceRttCamera->setName("frontFaceRttCamera");
+    camera->attach(osg::Camera::DEPTH_BUFFER, depthTexture.get());
+    camera->setViewport(0, 0, width, height);
+
+    // clear the depth and colour bufferson each clear.
+    camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+
+    // set the camera to render before the main camera.
+    camera->setRenderOrder(osg::Camera::PRE_RENDER);
+
+    // tell the camera to use OpenGL frame buffer object where supported.
+    camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+
+    camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+    camera->setProjectionMatrix(osg::Matrixd::identity());
+    camera->setViewMatrix(osg::Matrixd::identity());
+
+    stateset = new osg::StateSet;
+    stateset->setTextureAttribute(2, depthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
+    texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
+
+    stateset->addUniform(texgenUniform.get());
+}
+
+void MultipassTileData::update(osgUtil::CullVisitor* cv)
+{
+    active = true;
+    nodePath = cv->getNodePath();
+    projectionMatrix = cv->getProjectionMatrix();
+    modelviewMatrix = cv->getModelViewMatrix();
+
+    int width = 512;
+    int height = 512;
+
+    osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
+    if (viewport)
+    {
+        width = static_cast<int>(viewport->width());
+        height = static_cast<int>(viewport->height());
+    }
+
+    if (frontFaceDepthTexture.valid())
+    {
+        if (frontFaceDepthTexture->getTextureWidth()!=width || frontFaceDepthTexture->getTextureHeight()!=height)
+        {
+            OSG_NOTICE<<"Need to change texture size to "<<width<<", "<<height<<std::endl;
+            frontFaceDepthTexture->setTextureSize(width, height);
+            frontFaceRttCamera->setViewport(0, 0, width, height);
+            if (frontFaceRttCamera->getRenderingCache())
+            {
+                frontFaceRttCamera->getRenderingCache()->releaseGLObjects(0);
+            }
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+// MultipassTechnique
+//
 MultipassTechnique::MultipassTechnique()
 {
 }
@@ -678,7 +768,7 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
 {
     public:
 
-        RTTBackfaceCameraCullCallback(VolumeScene::TileData* tileData, MultipassTechnique* mt):
+        RTTBackfaceCameraCullCallback(MultipassTileData* tileData, MultipassTechnique* mt):
             _tileData(tileData),
             _mt(mt) {}
 
@@ -697,7 +787,7 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
 
         virtual ~RTTBackfaceCameraCullCallback() {}
 
-        osg::observer_ptr<osgVolume::VolumeScene::TileData> _tileData;
+        osg::observer_ptr<osgVolume::MultipassTileData> _tileData;
         osg::observer_ptr<osgVolume::MultipassTechnique> _mt;
 };
 
@@ -720,16 +810,16 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
     {
         if (vs)
         {
-            VolumeScene::TileData* tileData = vs->tileVisited(cv, getVolumeTile());
-            if (tileData->rttCamera.valid())
+            MultipassTileData* tileData = dynamic_cast<MultipassTileData*>(vs->tileVisited(cv, getVolumeTile()));
+            if (tileData && tileData->frontFaceRttCamera.valid())
             {
-                if (!(tileData->rttCamera->getCullCallback()))
+                if (!(tileData->frontFaceRttCamera->getCullCallback()))
                 {
-                    tileData->rttCamera->setCullCallback(new RTTBackfaceCameraCullCallback(tileData, this));
+                    tileData->frontFaceRttCamera->setCullCallback(new RTTBackfaceCameraCullCallback(tileData, this));
                 }
 
                 // traverse RTT Camera
-                tileData->rttCamera->accept(*cv);
+                tileData->frontFaceRttCamera->accept(*cv);
             }
 
             osg::BoundingBox bb;
@@ -776,7 +866,7 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 
         if (vs)
         {
-            VolumeScene::TileData* tileData = vs->getTileData(cv, getVolumeTile());
+            MultipassTileData* tileData = dynamic_cast<MultipassTileData*>(vs->getTileData(cv, getVolumeTile()));
             if (tileData)
             {
                 Locator* layerLocator = _volumeTile->getLayer()->getLocator();

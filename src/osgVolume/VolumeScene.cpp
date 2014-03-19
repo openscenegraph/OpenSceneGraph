@@ -49,6 +49,10 @@ class RTTCameraCullCallback : public osg::NodeCallback
 };
 
 
+////////////////////////////////////////////////////////////////////////
+//
+// VolumeScene::ViewData
+//
 VolumeScene::ViewData::ViewData()
 {
 }
@@ -67,6 +71,10 @@ void VolumeScene::ViewData::visitTile(VolumeTile* tile)
 {
 }
 
+////////////////////////////////////////////////////////////////////////
+//
+// VolumeScene
+//
 VolumeScene::VolumeScene()
 {
 }
@@ -81,7 +89,7 @@ VolumeScene::~VolumeScene()
 {
 }
 
-VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile)
+TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile)
 {
     osg::ref_ptr<ViewData> viewData;
 
@@ -95,73 +103,15 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
 
     if (viewData.valid())
     {
-        int textureWidth = 512;
-        int textureHeight = 512;
-
-        osg::Viewport* viewport = cv->getCurrentRenderStage()->getViewport();
-        if (viewport)
-        {
-            textureWidth = static_cast<int>(viewport->width());
-            textureHeight = static_cast<int>(viewport->height());
-        }
-
         osg::ref_ptr<TileData>& tileData = viewData->_tiles[tile];
         if (!tileData)
         {
-            tileData = new TileData;
-
-            tileData->depthTexture = new osg::Texture2D;
-            tileData->depthTexture->setTextureSize(textureWidth, textureHeight);
-            tileData->depthTexture->setInternalFormat(GL_DEPTH_COMPONENT);
-            tileData->depthTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-            tileData->depthTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-            tileData->depthTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
-            tileData->depthTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-            tileData->depthTexture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-
-            tileData->rttCamera = new osg::Camera;
-            tileData->rttCamera->setName("tileData->rttCamera");
-            tileData->rttCamera->attach(osg::Camera::DEPTH_BUFFER, tileData->depthTexture.get());
-            tileData->rttCamera->setViewport(0,0,textureWidth,textureHeight);
-
-            // clear the depth and colour bufferson each clear.
-            tileData->rttCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
-
-            // set the camera to render before the main camera.
-            tileData->rttCamera->setRenderOrder(osg::Camera::PRE_RENDER);
-
-            // tell the camera to use OpenGL frame buffer object where supported.
-            tileData->rttCamera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-
-            tileData->rttCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-            tileData->rttCamera->setProjectionMatrix(osg::Matrixd::identity());
-            tileData->rttCamera->setViewMatrix(osg::Matrixd::identity());
-
-            tileData->stateset = new osg::StateSet;
-            tileData->stateset->setTextureAttribute(2, tileData->depthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-
-            tileData->texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
-            tileData->stateset->addUniform(tileData->texgenUniform.get());
+            tileData = tile->getVolumeTechnique() ? tile->getVolumeTechnique()->createTileData(cv) : 0;
         }
 
-        tileData->active = true;
-        tileData->nodePath = cv->getNodePath();
-        tileData->projectionMatrix = cv->getProjectionMatrix();
-        tileData->modelviewMatrix = cv->getModelViewMatrix();
-
-
-        if (tileData->depthTexture.valid())
+        if (tileData)
         {
-            if (tileData->depthTexture->getTextureWidth()!=textureWidth || tileData->depthTexture->getTextureHeight()!=textureHeight)
-            {
-                OSG_NOTICE<<"Need to change texture size to "<<textureHeight<<", "<<textureWidth<<std::endl;
-                tileData->depthTexture->setTextureSize(textureWidth, textureHeight);
-                tileData->rttCamera->setViewport(0, 0, textureWidth, textureHeight);
-                if (tileData->rttCamera->getRenderingCache())
-                {
-                    tileData->rttCamera->getRenderingCache()->releaseGLObjects(0);
-                }
-            }
+            tileData->update(cv);
         }
 
         return tileData.get();
@@ -169,7 +119,7 @@ VolumeScene::TileData* VolumeScene::tileVisited(osgUtil::CullVisitor* cv, osgVol
     return 0;
 }
 
-VolumeScene::TileData* VolumeScene::getTileData(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile)
+TileData* VolumeScene::getTileData(osgUtil::CullVisitor* cv, osgVolume::VolumeTile* tile)
 {
     osg::ref_ptr<ViewData> viewData;
     {
@@ -479,7 +429,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
 
         osg::NodePath::iterator np_itr = nodePath.begin();
 
-        // skip over all nodes above VolumeScene as this will have already been traverse by CullVisitor
+        // skip over all nodes above VolumeScene as this will have already been traversed by CullVisitor
         while(np_itr!=nodePath.end() && (*np_itr)!=viewData->_rttCamera.get()) { ++np_itr; }
         if (np_itr!=nodePath.end()) ++np_itr;
 

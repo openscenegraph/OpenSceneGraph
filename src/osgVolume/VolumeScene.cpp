@@ -405,7 +405,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
         TileData* tileData = itr->second.get();
         if (!tileData || !(tileData->active))
         {
-            OSG_INFO<<"Skipping TileData that is inactive : "<<tileData<<std::endl;
+            OSG_NOTICE<<"Skipping TileData that is inactive : "<<tileData<<std::endl;
             continue;
         }
 

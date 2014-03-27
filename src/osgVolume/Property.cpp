@@ -370,10 +370,11 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback():
     _cyleForwardKey('v'),
     _cyleBackwardKey('V'),
     _transparencyKey('t'),
-    _exteriorTransparencyFactorKey('T'),
+    _exteriorTransparencyFactorKey('y'),
     _alphaFuncKey('a'),
     _sampleDensityKey('d'),
     _updateTransparency(false),
+    _updateExteriorTransparencyFactor(false),
     _updateAlphaCutOff(false),
     _updateSampleDensity(false)
 {
@@ -387,6 +388,7 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentC
     _alphaFuncKey(pac._alphaFuncKey),
     _sampleDensityKey(pac._sampleDensityKey),
     _updateTransparency(false),
+    _updateExteriorTransparencyFactor(false),
     _updateAlphaCutOff(false),
     _updateSampleDensity(false)
 {

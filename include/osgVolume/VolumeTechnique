@@ -72,7 +72,7 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 
         /** Called from VolumeScene to create the TileData container when a multi-pass technique is being used.
          *  The TileData container caches any render to texture objects that are required. */
-        virtual TileData* createTileData(osgUtil::CullVisitor* cv) { return 0; }
+        virtual TileData* createTileData(osgUtil::CullVisitor* /*cv*/) { return 0; }
 
     protected:
 

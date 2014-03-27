@@ -19,22 +19,6 @@
 
 namespace osgVolume {
 
-/** Container for render to texture objects used when doing multi-pass volume rendering techniques.*/
-struct OSGVOLUME_EXPORT MultipassTileData : public TileData
-{
-    MultipassTileData(osgUtil::CullVisitor* cv);
-
-    virtual void update(osgUtil::CullVisitor* cv);
-
-
-    osg::ref_ptr<osg::Texture2D> frontFaceDepthTexture;
-    osg::ref_ptr<osg::Camera>    frontFaceRttCamera;
-
-    osg::ref_ptr<osg::Texture2D> backFaceDepthTexture;
-    osg::ref_ptr<osg::Camera>    backFaceRttCamera;
-
-    osg::ref_ptr<osg::Uniform>   texgenUniform;
-};
 
 
 class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
@@ -61,9 +45,40 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
         /** Traverse the terrain subgraph.*/
         virtual void traverse(osg::NodeVisitor& nv);
 
+        enum RenderingMode
+        {
+            CUBE,
+            HULL,
+            CUBE_AND_HULL
+        };
+
+        RenderingMode computeRenderingMode();
+
+        /** Container for render to texture objects used when doing multi-pass volume rendering techniques.*/
+        struct OSGVOLUME_EXPORT MultipassTileData : public TileData
+        {
+            MultipassTileData(osgUtil::CullVisitor* cv, MultipassTechnique* mpt);
+
+            virtual void update(osgUtil::CullVisitor* cv);
+
+            void setUp(osg::ref_ptr<osg::Camera>& camera, osg::ref_ptr<osg::Texture2D>& texture2D, int width, int height);
+
+
+            osg::observer_ptr<MultipassTechnique>       multipassTechnique;
+            RenderingMode                               currentRenderingMode;
+
+            osg::ref_ptr<osg::Texture2D>                frontFaceDepthTexture;
+            osg::ref_ptr<osg::Camera>                   frontFaceRttCamera;
+
+            osg::ref_ptr<osg::Texture2D>                backFaceDepthTexture;
+            osg::ref_ptr<osg::Camera>                   backFaceRttCamera;
+
+            osg::ref_ptr<osg::Uniform>                  texgenUniform;
+        };
+
         /** Called from VolumeScene to create the TileData container when a multi-pass technique is being used.
          *  The TileData container caches any render to texture objects that are required. */
-        virtual TileData* createTileData(osgUtil::CullVisitor* cv) { return new MultipassTileData(cv); }
+        virtual TileData* createTileData(osgUtil::CullVisitor* cv) { return new MultipassTileData(cv, this); }
 
     protected:
 
@@ -83,12 +98,14 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
 
         enum ShaderMask
         {
-            BACK_SHADERS = 1,
-            STANDARD_SHADERS = 2,
-            LIT_SHADERS = 4,
-            ISO_SHADERS = 8,
-            MIP_SHADERS = 16,
-            TF_SHADERS = 32
+            CUBE_SHADERS = 1,
+            HULL_SHADERS = 2,
+            CUBE_AND_HULL_SHADERS = 4,
+            STANDARD_SHADERS = 8,
+            LIT_SHADERS = 16,
+            ISO_SHADERS = 32,
+            MIP_SHADERS = 64,
+            TF_SHADERS = 128
         };
 
         typedef std::map<int, osg::ref_ptr<osg::StateSet> > StateSetMap;

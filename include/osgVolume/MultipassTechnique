@@ -73,7 +73,8 @@ class OSGVOLUME_EXPORT MultipassTechnique : public VolumeTechnique
             osg::ref_ptr<osg::Texture2D>                backFaceDepthTexture;
             osg::ref_ptr<osg::Camera>                   backFaceRttCamera;
 
-            osg::ref_ptr<osg::Uniform>                  texgenUniform;
+            osg::ref_ptr<osg::Uniform>                  eyeToTileUniform;
+            osg::ref_ptr<osg::Uniform>                  tileToImageUniform;
         };
 
         /** Called from VolumeScene to create the TileData container when a multi-pass technique is being used.

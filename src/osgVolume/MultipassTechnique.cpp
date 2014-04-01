@@ -199,6 +199,12 @@ MultipassTechnique::MultipassTileData::MultipassTileData(osgUtil::CullVisitor* c
 
     stateset = new osg::StateSet;
 
+    eyeToTileUniform = new osg::Uniform("eyeToTile",osg::Matrixf());
+    stateset->addUniform(eyeToTileUniform.get());
+
+    tileToImageUniform = new osg::Uniform("tileToImage",osg::Matrixf());
+    stateset->addUniform(tileToImageUniform.get());
+
     switch(currentRenderingMode)
     {
         case(MultipassTechnique::CUBE):
@@ -206,8 +212,6 @@ MultipassTechnique::MultipassTileData::MultipassTileData(osgUtil::CullVisitor* c
             // no need to set up RTT Cameras;
             OSG_NOTICE<<"Setting up MultipassTileData for CUBE rendering"<<std::endl;
 
-            texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
-            stateset->addUniform(texgenUniform.get());
             break;
         }
         case(MultipassTechnique::HULL):
@@ -218,10 +222,7 @@ MultipassTechnique::MultipassTileData::MultipassTileData(osgUtil::CullVisitor* c
             frontFaceRttCamera->setCullCallback(new RTTCameraCullCallback(this, mpt));
             frontFaceRttCamera->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
-            texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
-
             stateset->setTextureAttribute(2, frontFaceDepthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-            stateset->addUniform(texgenUniform.get());
             break;
         }
         case(MultipassTechnique::CUBE_AND_HULL):
@@ -237,11 +238,8 @@ MultipassTechnique::MultipassTileData::MultipassTileData(osgUtil::CullVisitor* c
             backFaceRttCamera->setCullCallback(new RTTCameraCullCallback(this, mpt));
             backFaceRttCamera->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
-            texgenUniform = new osg::Uniform("texgen",osg::Matrixf());
-
             stateset->setTextureAttribute(2, frontFaceDepthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
             stateset->setTextureAttribute(3, backFaceDepthTexture.get(), osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-            stateset->addUniform(texgenUniform.get());
             break;
         }
     }
@@ -1056,13 +1054,27 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
         if (vs)
         {
             MultipassTileData* tileData = dynamic_cast<MultipassTileData*>(vs->getTileData(cv, getVolumeTile()));
-            if (tileData && tileData->texgenUniform.valid())
+            if (tileData)
             {
+                Locator* tileLocator = _volumeTile->getLocator();
+                osg::Matrixd tileToEye = tileLocator->getTransform() * (*(cv->getModelViewMatrix()));
+                osg::Matrixd eyeToTile;
+                eyeToTile.invert(tileToEye);
+
+                tileData->eyeToTileUniform->set(osg::Matrixf(eyeToTile));
+
                 Locator* layerLocator = _volumeTile->getLayer()->getLocator();
-                osg::Matrix imv = layerLocator->getTransform() * (*(cv->getModelViewMatrix()));
-                osg::Matrix inverse_imv;
-                inverse_imv.invert(imv);
-                tileData->texgenUniform->set(osg::Matrixf(inverse_imv));
+                if (tileLocator==layerLocator)
+                {
+                    tileData->tileToImageUniform->set(osg::Matrixf::identity());
+                }
+                else
+                {
+                    osg::Matrixd tileToImage(tileLocator->getTransform() * osg::Matrixd::inverse(layerLocator->getTransform()));
+                    tileData->tileToImageUniform->set(osg::Matrixf(tileToImage));
+                }
+
+
                 // OSG_NOTICE<<"Updating texgen"<<std::endl;
             }
         }

@@ -452,7 +452,8 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         if (ea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS) v = 1.0f-v;
 
         float v2 = v*v;
-        float v4 = v2*v2;
+        float sampleRatio = powf((1.0f-v)*2.0f,3.0f);
+        float sampleDensity = (1.0/sampleRatio)/512.0f;
 
         if (_updateAlphaCutOff && cpv._isoProperty.valid())
         {
@@ -480,26 +481,23 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
 
         if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
         {
-            OSG_NOTICE<<"Setting sample density to "<<v4<<std::endl;
-            cpv._sampleDensityProperty->setValue(v4);
+            OSG_NOTICE<<"Setting sample density to "<<sampleDensity<<std::endl;
+            cpv._sampleDensityProperty->setValue(sampleDensity);
         }
         if (_updateSampleDensity && cpv._sampleDensityWhenMovingProperty.valid())
         {
-            OSG_INFO<<"Setting sample density when moving to "<<v4<<std::endl;
-            cpv._sampleDensityWhenMovingProperty->setValue(v4);
+            OSG_INFO<<"Setting sample density when moving to "<<sampleDensity<<std::endl;
+            cpv._sampleDensityWhenMovingProperty->setValue(sampleDensity);
         }
 
         if (_updateSampleDensity && cpv._sampleRatioProperty.valid())
         {
-            float sampleDensity = v4;
-            float sampleRatio = 1.0/(512*sampleDensity);
             OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
             cpv._sampleRatioProperty->setValue(sampleRatio);
         }
 
         if (_updateSampleDensity && cpv._sampleRatioWhenMovingProperty.valid())
         {
-            float sampleRatio = (1.0-v2)*20.0;
             OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
             cpv._sampleRatioWhenMovingProperty->setValue(sampleRatio);
         }

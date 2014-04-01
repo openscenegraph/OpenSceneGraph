@@ -491,14 +491,15 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
 
         if (_updateSampleDensity && cpv._sampleRatioProperty.valid())
         {
-            float sampleRatio = v2*4;
+            float sampleDensity = v4;
+            float sampleRatio = 1.0/(512*sampleDensity);
             OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
             cpv._sampleRatioProperty->setValue(sampleRatio);
         }
 
         if (_updateSampleDensity && cpv._sampleRatioWhenMovingProperty.valid())
         {
-            float sampleRatio = v2*4;
+            float sampleRatio = (1.0-v2)*20.0;
             OSG_NOTICE<<"Setting sample ratio to "<<sampleRatio<<std::endl;
             cpv._sampleRatioWhenMovingProperty->setValue(sampleRatio);
         }

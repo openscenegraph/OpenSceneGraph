@@ -51,6 +51,12 @@ class BoundingBoxImpl
                  -FLT_MAX)
         {}
 
+        template<typename BT>
+        inline BoundingBoxImpl(const BoundingBoxImpl<BT>& bb) :
+            _min(bb._min),
+            _max(bb._max)
+        {}
+
         /** Creates a bounding box initialized to the given extents. */
         inline BoundingBoxImpl(value_type xmin, value_type ymin, value_type zmin,
                            value_type xmax, value_type ymax, value_type zmax) :
@@ -192,7 +198,8 @@ class BoundingBoxImpl
 
         /** Expands this bounding box to include the given sphere.
           * If this box is uninitialized, set it to include sh. */
-        void expandBy(const BoundingSphereImpl<VT>& sh)
+        template<typename BST>
+        void expandBy(const BoundingSphereImpl<BST>& sh)
         {
             if (!sh.valid()) return;
 

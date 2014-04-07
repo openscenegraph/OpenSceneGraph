@@ -51,6 +51,12 @@ class BoundingBoxImpl
                  -FLT_MAX)
         {}
 
+        template<typename BT>
+        inline BoundingBoxImpl(const BoundingBoxImpl<BT>& bb) :
+            _min(bb._min),
+            _max(bb._max)
+        {}
+
         /** Creates a bounding box initialized to the given extents. */
         inline BoundingBoxImpl(value_type xmin, value_type ymin, value_type zmin,
                            value_type xmax, value_type ymax, value_type zmax) :
@@ -72,6 +78,9 @@ class BoundingBoxImpl
                      -FLT_MAX,
                      -FLT_MAX);
         }
+
+        inline bool operator == (const BoundingBoxImpl& rhs) const { return _min==rhs._min && _max==rhs._max; }
+        inline bool operator != (const BoundingBoxImpl& rhs) const { return _min!=rhs._min || _max!=rhs._max; }
 
         /** Returns true if the bounding box extents are valid, false otherwise. */
         inline bool valid() const
@@ -189,7 +198,8 @@ class BoundingBoxImpl
 
         /** Expands this bounding box to include the given sphere.
           * If this box is uninitialized, set it to include sh. */
-        void expandBy(const BoundingSphereImpl<VT>& sh)
+        template<typename BST>
+        void expandBy(const BoundingSphereImpl<BST>& sh)
         {
             if (!sh.valid()) return;
 
@@ -226,6 +236,15 @@ class BoundingBoxImpl
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&
                    (v.y()>=_min.y() && v.y()<=_max.y()) &&
                    (v.z()>=_min.z() && v.z()<=_max.z());
+        }
+
+        /** Returns true if this bounding box contains the specified coordinate allowing for specific epsilon. */
+        inline bool contains(const vec_type& v, value_type epsilon) const
+        {
+            return valid() &&
+                   ((v.x()+epsilon)>=_min.x() && (v.x()-epsilon)<=_max.x()) &&
+                   ((v.y()+epsilon)>=_min.y() && (v.y()-epsilon)<=_max.y()) &&
+                   ((v.z()+epsilon)>=_min.z() && (v.z()-epsilon)<=_max.z());
         }
 };
 

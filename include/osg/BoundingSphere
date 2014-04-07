@@ -63,6 +63,9 @@ class BoundingSphereImpl
           * otherwise. */
         inline bool valid() const { return _radius>=0.0; }
 
+        inline bool operator == (const BoundingSphereImpl& rhs) const { return _center==rhs._center && _radius==rhs._radius; }
+        inline bool operator != (const BoundingSphereImpl& rhs) const { return _center!=rhs._center || _radius==rhs._radius; }
+
         /** Set the bounding sphere to the given center/radius using floats. */
         inline void set(const vec_type& center,value_type radius)
         {
@@ -110,11 +113,13 @@ class BoundingSphereImpl
 
         /** Expands the sphere to encompass the given box. Repositions the
           * sphere center to minimize the radius increase. */
-        void expandBy(const BoundingBoxImpl<VT>& bb);
+        template<typename BBT>
+        void expandBy(const BoundingBoxImpl<BBT>& bb);
 
         /** Expands the sphere to encompass the given box. Does not
           * repositions the sphere center. */
-        void expandRadiusBy(const BoundingBoxImpl<VT>& bb);
+        template<typename BBT>
+        void expandRadiusBy(const BoundingBoxImpl<BBT>& bb);
 
         /** Returns true if v is within the sphere. */
         inline bool contains(const vec_type& v) const
@@ -135,12 +140,12 @@ class BoundingSphereImpl
 
 
 template<typename VT>
- template<typename vector_type>
+template<typename vector_type>
 void BoundingSphereImpl<VT>::expandBy(const vector_type& v)
 {
     if (valid())
     {
-        vec_type dv = v-_center;
+        vec_type dv = vec_type(v)-_center;
         value_type r = dv.length();
         if (r>_radius)
         {
@@ -157,12 +162,12 @@ void BoundingSphereImpl<VT>::expandBy(const vector_type& v)
 }
 
 template<typename VT>
- template<typename vector_type>
+template<typename vector_type>
 void BoundingSphereImpl<VT>::expandRadiusBy(const vector_type& v)
 {
     if (valid())
     {
-        value_type r = (v-_center).length();
+        value_type r = (vec_type(v)-_center).length();
         if (r>_radius) _radius = r;
         // else do nothing as vertex is within sphere.
     }
@@ -244,7 +249,8 @@ void BoundingSphereImpl<VT>::expandRadiusBy(const BoundingSphereImpl& sh)
 }
 
 template<typename VT>
-void BoundingSphereImpl<VT>::expandBy(const BoundingBoxImpl<VT>& bb)
+template<typename BBT>
+void BoundingSphereImpl<VT>::expandBy(const BoundingBoxImpl<BBT>& bb)
 {
     if (bb.valid())
     {
@@ -274,7 +280,8 @@ void BoundingSphereImpl<VT>::expandBy(const BoundingBoxImpl<VT>& bb)
 }
 
 template<typename VT>
-void BoundingSphereImpl<VT>::expandRadiusBy(const BoundingBoxImpl<VT>& bb)
+template<typename BBT>
+void BoundingSphereImpl<VT>::expandRadiusBy(const BoundingBoxImpl<BBT>& bb)
 {
     if (bb.valid())
     {

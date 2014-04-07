@@ -242,6 +242,7 @@ typedef struct Lib3dsMaterial {
     int                 soften;         /* bool */
     int                 face_map;       /* bool */
     int                 two_sided;      /* Material visible from back */
+    int                 transparency_falloff; /* Transparency falloff in/out */    
     int                 map_decal;      /* bool */
     int                 use_wire;
     int                 use_wire_abs;

@@ -10,7 +10,7 @@
     by the Free Software Foundation, either version 2.1 of the License, or 
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
+    This program  is  distributed in the hope that it will be useful, 
     but WITHOUT ANY WARRANTY; without even the implied warranty of 
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
     GNU Lesser General Public License for more details.
@@ -132,6 +132,7 @@ typedef enum Lib3dsChunks {
   CHK_MAT_SELF_ILPCT         =0xA084,
   CHK_MAT_WIRE               =0xA085,
   CHK_MAT_FACEMAP            =0xA088,
+  CHK_MAT_TRANSPARENCY_FALLOFF     =0xA08A,
   CHK_MAT_PHONGSOFT          =0xA08C,
   CHK_MAT_WIREABS            =0xA08E,
   CHK_MAT_WIRE_SIZE          =0xA087,

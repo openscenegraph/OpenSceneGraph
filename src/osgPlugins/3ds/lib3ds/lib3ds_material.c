@@ -371,6 +371,11 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io) {
                 break;
             }
 
+            case CHK_MAT_TRANSPARENCY_FALLOFF: {
+                material->transparency_falloff = TRUE;
+                break;
+            }
+
             case CHK_MAT_PHONGSOFT: {
                 material->soften = TRUE;
                 break;
@@ -492,7 +497,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io) {
                 material->autorefl_map_frame_step = lib3ds_io_read_intd(io);
                 break;
             }
-
+            
             default:
                 lib3ds_chunk_unknown(chunk, io);
         }
@@ -817,6 +822,13 @@ lib3ds_material_write(Lib3dsMaterial *material, Lib3dsIo *io) {
     if (material->face_map) { /*---- CHK_MAT_FACEMAP ----*/
         Lib3dsChunk c;
         c.chunk = CHK_MAT_FACEMAP;
+        c.size = 6;
+        lib3ds_chunk_write(&c, io);
+    }
+
+    if (material->transparency_falloff) { /*---- CHK_MAT_TRANSPARENCY_FALLOFF ----*/
+        Lib3dsChunk c;
+        c.chunk = CHK_MAT_TRANSPARENCY_FALLOFF;
         c.size = 6;
         lib3ds_chunk_write(&c, io);
     }

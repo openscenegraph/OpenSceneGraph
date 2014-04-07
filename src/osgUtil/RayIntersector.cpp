@@ -39,6 +39,7 @@ RayIntersector::RayIntersector(CoordinateFrame cf, RayIntersector* parent,
 
 RayIntersector::RayIntersector(const Vec3d& start, const Vec3d& direction) :
     Intersector(),
+    _parent(0),
     _start(start),
     _direction(direction)
 {

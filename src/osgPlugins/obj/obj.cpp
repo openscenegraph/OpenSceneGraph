@@ -31,7 +31,8 @@ using namespace obj;
 static std::string strip( const std::string& ss )
 {
     std::string result;
-    result.assign( ss.begin() + ss.find_first_not_of( ' ' ), ss.begin() + 1 + ss.find_last_not_of( ' ' ) );
+    result.assign( std::find_if( ss.begin(), ss.end(), std::not1( std::ptr_fun< int, int >( isspace ) ) ),
+                   std::find_if( ss.rbegin(), ss.rend(), std::not1( std::ptr_fun< int, int >( isspace ) ) ).base() );
     return( result );
 }
 
@@ -107,7 +108,7 @@ static Material::Map parseTextureMap( const std::string& ss, Material::Map::Text
         s = strip(s.substr(n));
     }
 
-    map.name = s;
+    map.name = osgDB::convertFileNameToNativeStyle(s);
     map.type = type;
     return map;
 }
@@ -220,6 +221,7 @@ bool Model::readMTL(std::istream& fin)
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
     float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
+    bool usingDissolve = false;
 
     Material* material = 0;// &(materialMap[""]);
     std::string filename;
@@ -236,9 +238,11 @@ bool Model::readMTL(std::istream& fin)
         {
             if (strncmp(line,"newmtl ",7)==0)
             {
-                std::string materialName(line+7);
+                // get material name and left- and right-trim all the white-space
+                std::string materialName(strip(line+7));
                 material = & materialMap[materialName];
                 material->name = materialName;
+                usingDissolve = false;
             }
             else if (material)
             {
@@ -405,19 +409,52 @@ bool Model::readMTL(std::istream& fin)
 
                     if (fieldsRead==1) material->Ni = Ni;
                 }
+                //
+                // Tr - transparency
+                //
+                // Seems that the world did not agreed about the specification of the item.
+                //
+                // Some thinks that value of 1 means opaque material and 0 transparent material,
+                // such as http://people.sc.fsu.edu/~jburkardt/data/mtl/mtl.html .
+                //
+                // However, 3ds Max export uses the opposite: 0 means opaque material and
+                // 1 completely transparent material. These 3ds Max exported files
+                // carry the following signature as the first line in the file (*.obj, *.mtl):
+                // # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+                //
+                // Moreover, at least one model uses Tr followed by two numbers.
+                // Such model can be downloaded from http://graphics.cs.williams.edu/data/meshes/cube.zip
+                // (part of the following collection: http://graphics.cs.williams.edu/data/meshes.xml).
+                //
+                // Current solution: As we do not know what is the correct interpretation of
+                // the value 0 and value 1 for Tr, we will rely on d (dissolve) parameter instead
+                // whenever it is present. This seems to fix the problem on large number of models.
+                //
                 else if (strncmp(line,"Tr ",3)==0)
                 {
-                    float alpha=1.0f;
-                    unsigned int fieldsRead = sscanf(line+3,"%f", &alpha);
-
-                    if (fieldsRead==1)
+                    if( !usingDissolve )
                     {
-                        material->ambient[3] = alpha;
-                        material->diffuse[3] = alpha;
-                        material->specular[3] = alpha;
-                        material->emissive[3] = alpha;
+                        float alpha=1.0f;
+                        unsigned int fieldsRead = sscanf(line+3,"%f", &alpha);
+
+                        if (fieldsRead==1)
+                        {
+                            material->ambient[3] = alpha;
+                            material->diffuse[3] = alpha;
+                            material->specular[3] = alpha;
+                            material->emissive[3] = alpha;
+                        }
                     }
                 }
+                //
+                // d - dissolve (pseudo-transparency)
+                //
+                // Dissolve of value 1 means completely opaque material
+                // and value of 0 results in completely transparent material.
+                //
+                // To be compatible with 3D Max obj exporter,
+                // d takes precedence over Tr (handled through usingDissolve variable).
+                //
                 else if (strncmp(line,"d ",2)==0)
                 {
                     float alpha=1.0f;
@@ -429,6 +466,7 @@ bool Model::readMTL(std::istream& fin)
                         material->diffuse[3] = alpha;
                         material->specular[3] = alpha;
                         material->emissive[3] = alpha;
+                        usingDissolve = true;
                     }
                 }
                 else if (strncmp(line,"map_Ka ",7)==0)

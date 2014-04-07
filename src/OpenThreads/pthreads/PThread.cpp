@@ -149,7 +149,30 @@ private:
 #endif
 #endif
         }
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+        else
+        {
+            // BUG-fix for linux:
+            // Each thread inherits the processor affinity mask from its parent thread.
+            // We need to explicitly set it to all CPUs, if no affinity was specified.
 
+            cpu_set_t cpumask;
+            CPU_ZERO( &cpumask );
+
+            for (int i = 0; i < OpenThreads::GetNumberOfProcessors(); ++i)
+            {
+                CPU_SET( i, &cpumask );
+            }
+
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
+            pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
+            sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+            sched_setaffinity( 0, &cpumask );
+#endif
+        }
+#endif
 
         ThreadCleanupStruct tcs;
         tcs.thread = thread;

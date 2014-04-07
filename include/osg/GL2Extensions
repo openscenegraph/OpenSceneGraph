@@ -385,8 +385,6 @@ typedef char GLchar;
 #define GL_TEXTURE_BINDING_RECTANGLE      0x84F6
 #define GL_PROXY_TEXTURE_RECTANGLE        0x84F7
 #define GL_MAX_RECTANGLE_TEXTURE_SIZE     0x84F8
-#define GL_RED_SNORM                      0x8F90
-#define GL_RG_SNORM                       0x8F91
 #define GL_RGB_SNORM                      0x8F92
 #define GL_RGBA_SNORM                     0x8F93
 #define GL_R8_SNORM                       0x8F94
@@ -401,6 +399,14 @@ typedef char GLchar;
 #define GL_PRIMITIVE_RESTART              0x8F9D
 #define GL_PRIMITIVE_RESTART_INDEX        0x8F9E
 #endif
+
+#ifndef GL_RED_SNORM
+#define GL_RED_SNORM                      0x8F90
+#endif
+#ifndef GL_RG_SNORM
+#define GL_RG_SNORM                       0x8F91
+#endif
+
 
 #ifndef GL_VERSION_4_0
 #define GL_SAMPLER_CUBE_MAP_ARRAY         0x900C

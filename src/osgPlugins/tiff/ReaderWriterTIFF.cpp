@@ -829,8 +829,34 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return pOsgImage;
         }
 
-        WriteResult::WriteStatus writeTIFStream(std::ostream& fout, const osg::Image& img) const
+        WriteResult::WriteStatus writeTIFStream(std::ostream& fout, const osg::Image& img, const osgDB::ReaderWriter::Options* options) const
         {
+            int compressionType = COMPRESSION_PACKBITS;
+            if (options) {
+                std::istringstream iss(options->getOptionString());
+                std::string opt;
+                while (iss >> opt) {
+                    opt = osgDB::convertToLowerCase(opt);
+
+                    std::size_t eqInd = opt.find("=");
+                    if (opt.substr(0, eqInd) == "tiff_compression") {
+                        std::string compressTypeOpt;
+                        compressTypeOpt = opt.substr(eqInd + 1);
+                        compressTypeOpt = osgDB::convertToLowerCase(compressTypeOpt);
+                        if (compressTypeOpt == "packbits") {
+                            compressionType = COMPRESSION_PACKBITS;
+                        }
+                        else if (compressTypeOpt == "lzw") {
+                            compressionType = COMPRESSION_LZW;
+                        }
+                        else if (compressTypeOpt == "jpeg") {
+                            compressionType = COMPRESSION_JPEG;
+                        }
+                    }
+                }
+            }
+
+
             //Code is based from the following article on CodeProject.com
             //http://www.codeproject.com/bitmap/BitmapsToTiffs.asp
 
@@ -897,7 +923,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,bitsPerSample);
             TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL,samplesPerPixel);
             TIFFSetField(image, TIFFTAG_PHOTOMETRIC, photometric);
-            TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
+            TIFFSetField(image, TIFFTAG_COMPRESSION, compressionType);
             TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
             TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 
@@ -945,9 +971,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return rr;
         }
 
-        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* /*options*/) const
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* options) const
         {
-            WriteResult::WriteStatus ws = writeTIFStream(fout,img);
+            WriteResult::WriteStatus ws = writeTIFStream(fout,img, options);
             return ws;
         }
 

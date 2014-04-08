@@ -16,6 +16,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <functional>
 
 #include "obj.h"
 

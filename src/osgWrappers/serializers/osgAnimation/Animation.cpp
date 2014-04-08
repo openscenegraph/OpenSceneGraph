@@ -8,8 +8,8 @@
 static void readChannel( osgDB::InputStream& is, osgAnimation::Channel* ch )
 {
     std::string name, targetName;
-    is >> is.PROPERTY("Name") >> name;
-    is >> is.PROPERTY("TargetName") >> targetName;
+    is >> is.PROPERTY("Name"); is.readWrappedString(name);
+    is >> is.PROPERTY("TargetName"); is.readWrappedString(targetName);
     ch->setName( name );
     ch->setTargetName( targetName );
 }
@@ -80,8 +80,8 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
 
 static void writeChannel( osgDB::OutputStream& os, osgAnimation::Channel* ch )
 {
-    os << os.PROPERTY("Name") << ch->getName() << std::endl;
-    os << os.PROPERTY("TargetName") << ch->getTargetName() << std::endl;
+    os << os.PROPERTY("Name"); os.writeWrappedString(ch->getName()); os << std::endl;
+    os << os.PROPERTY("TargetName");os.writeWrappedString(ch->getTargetName()); os << std::endl;
 }
 
 template <typename ContainerType>

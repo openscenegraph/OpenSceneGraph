@@ -48,7 +48,7 @@ FIND_PATH(FREETYPE_INCLUDE_DIR_ft2build ft2build.h
   /opt/csw
   /opt
   /usr/freeware
-  PATH_SUFFIXES include
+  PATH_SUFFIXES include include/freetype2
 )
 
 FIND_PATH(FREETYPE_INCLUDE_DIR_freetype2 freetype/config/ftheader.h 
@@ -61,6 +61,20 @@ FIND_PATH(FREETYPE_INCLUDE_DIR_freetype2 freetype/config/ftheader.h
   PATH_SUFFIXES include/freetype2
 )
 FIND_PATH(FREETYPE_INCLUDE_DIR_freetype2 freetype/config/ftheader.h 
+  /usr/local/include/freetype2
+  /usr/include/freetype2
+  /usr/local/X11R6/include/freetype2
+  /usr/local/X11/include/freetype2
+  /usr/X11R6/include/freetype2
+  /usr/X11/include/freetype2
+  /sw/include/freetype2
+  /opt/local/include/freetype2
+  /opt/csw/include/freetype2
+  /opt/include/freetype2
+  /usr/freeware/include/freetype2
+)
+
+FIND_PATH(FREETYPE_INCLUDE_DIR_freetype2 config/ftheader.h 
   /usr/local/include/freetype2
   /usr/include/freetype2
   /usr/local/X11R6/include/freetype2

@@ -52,7 +52,12 @@ You can override requestRedraw() and implement to call your own window
 redraw straight away. Or you can implement so that a flag is set and
 then you then respond the flag being set in your own leisure.
 
+
+
 */
+
+class GUIEventAdapter;
+
 class GUIActionAdapter
 {
 public:

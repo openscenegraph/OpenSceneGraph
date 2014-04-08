@@ -256,7 +256,10 @@ const char* invalidNames[] =
     "GeometryNew",
     "FrameBufferObject",
     "Lua",
-    "VolumeTile"
+    "VolumeTile",
+    "PushStackValueVisitor",
+    "RayIntersector",
+    "OpenSceneGraph-Data"
 };
 
 
@@ -459,7 +462,12 @@ TypoCorrection typoCorrections[] =
     {"Baeurele","Baeuerle"},
     {"Nillson","Nilsson"},
     {"Bjorn","Björn"},
-    {"BjÃ¶rn","Björn"}
+    {"BjÃ¶rn","Björn"},
+    {"Stepan","Stephan"},
+    {"Kristoger","Kristofer"},
+    {"Blessing","Blissing"},
+    {"Dannahuer","Dannhauer"},
+    {"Chebeav", "Chebaev"}
 };
 
 

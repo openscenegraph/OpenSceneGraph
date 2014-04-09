@@ -265,6 +265,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             bool useFbxRoot = false;
             bool lightmapTextures = false;
             bool tessellatePolygons = false;
+            bool zUp = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -282,6 +283,10 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     if (opt == "TessellatePolygons")
                     {
                         tessellatePolygons = true;
+                    }
+                    if (opt == "ZUp")
+                    {
+                        zUp = true;
                     }
                 }
             }
@@ -370,29 +375,53 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 }
 
                 FbxAxisSystem fbxAxis = pScene->GetGlobalSettings().GetAxisSystem();
+                // some reminder: http://www.realtimerendering.com/blog/left-handed-vs-right-handed-world-coordinates/                
+                int upSign;
+                FbxAxisSystem::EUpVector eUp = fbxAxis.GetUpVector(upSign);
+                bool bLeftHanded = fbxAxis.GetCoorSystem() == FbxAxisSystem::eLeftHanded;
+                float fSign = upSign < 0 ? 1.0f : -1.0f;
+                float HorizSign = bLeftHanded ? -1.0f : 1.0f;
 
-                if (fbxAxis != FbxAxisSystem::OpenGL)
+                bool refCoordSysChange = false;
+                osg::Matrix mat;
+               
+                if (zUp)
                 {
-                    int upSign;
-                    FbxAxisSystem::EUpVector eUp = fbxAxis.GetUpVector(upSign);
-                    bool bLeftHanded = fbxAxis.GetCoorSystem() == FbxAxisSystem::eLeftHanded;
-                    float fSign = upSign < 0 ? -1.0f : 1.0f;
-                    float zScale = bLeftHanded ? -1.0f : 1.0f;
-
-                    osg::Matrix mat;
+                    if (eUp != FbxAxisSystem::eZAxis || fSign != 1.0  || upSign != 1.0)
+                    {                    
+                        switch (eUp)
+                        {
+                        case FbxAxisSystem::eXAxis:
+                            mat.set(0,fSign,0,0,-fSign,0,0,0,0,0,HorizSign,0,0,0,0,1);
+                            break;
+                        case FbxAxisSystem::eYAxis:
+                            mat.set(1,0,0,0,0,0,-fSign*HorizSign,0,0,fSign,0,0,0,0,0,1);
+                            break;
+                        case FbxAxisSystem::eZAxis:
+                            mat.set(1,0,0,0,0,fSign,0,0,0,0,fSign*HorizSign,0,0,0,0,1);
+                            break;
+                        }
+                        refCoordSysChange = true;
+                    }
+                } 
+                else if (fbxAxis != FbxAxisSystem::OpenGL)
+                {
                     switch (eUp)
                     {
                     case FbxAxisSystem::eXAxis:
-                        mat.set(0,fSign,0,0,-fSign,0,0,0,0,0,zScale,0,0,0,0,1);
+                        mat.set(0,fSign,0,0,-fSign,0,0,0,0,0,HorizSign,0,0,0,0,1);
                         break;
                     case FbxAxisSystem::eYAxis:
-                        mat.set(1,0,0,0,0,fSign,0,0,0,0,fSign*zScale,0,0,0,0,1);
+                        mat.set(1,0,0,0,0,fSign,0,0,0,0,fSign*HorizSign,0,0,0,0,1);
                         break;
                     case FbxAxisSystem::eZAxis:
-                        mat.set(1,0,0,0,0,0,-fSign*zScale,0,0,fSign,0,0,0,0,0,1);
+                        mat.set(1,0,0,0,0,0,-fSign*HorizSign,0,0,fSign,0,0,0,0,0,1);
                         break;
-                    }
-
+                    } 
+                    refCoordSysChange = true;
+                }
+                if (refCoordSysChange)
+                {
                     osg::Transform* pTransformTemp = osgNode->asTransform();
                     osg::MatrixTransform* pMatrixTransform = pTransformTemp ?
                         pTransformTemp->asMatrixTransform() : NULL;

@@ -18,8 +18,10 @@ ELSEIF(MSVC90)
     SET(FBX_LIBDIR "vs2008")
 ELSEIF(MSVC10)
     SET(FBX_LIBDIR "vs2010")
-ELSEIF(MSVC11 OR MSVC_VERSION>1700)
+ELSEIF(MSVC11)
     SET(FBX_LIBDIR "vs2012")
+ELSEIF(MSVC12 OR MSVC_VERSION>1800)
+    SET(FBX_LIBDIR "vs2013")
 ENDIF()
 
 IF(APPLE)
@@ -44,8 +46,8 @@ SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
 
 SET( FBX_SEARCH_PATHS
     $ENV{FBX_DIR}
-    "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.1"
-    "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.1"
+    "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.2"
+    "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.2"
     /Applications/Autodesk/FBXSDK20141
 )
 
@@ -74,6 +76,44 @@ ELSE()
 ENDIF()
 
 IF(NOT FBX_FOUND)
+#try to use 2014.1 version
+    IF(APPLE)
+        SET(FBX_LIBNAME "fbxsdk-2014.1")
+    ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
+        SET(FBX_LIBNAME "fbxsdk-2014.1")
+    ELSE()
+        SET(FBX_LIBNAME "fbxsdk-2014.1")
+    ENDIF()
+
+    SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
+
+    SET( FBX_SEARCH_PATHS
+        $ENV{FBX_DIR}
+        $ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.1
+        $ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.1
+        /Applications/Autodesk/FBXSDK20141
+    )
+
+    # search for headers & debug/release libraries
+    FIND_PATH(FBX_INCLUDE_DIR "fbxsdk.h"
+        PATHS ${FBX_SEARCH_PATHS}
+        PATH_SUFFIXES "include")
+    FIND_LIBRARY( FBX_LIBRARY ${FBX_LIBNAME}
+        PATHS ${FBX_SEARCH_PATHS}
+        PATH_SUFFIXES "lib/${FBX_LIBDIR}")
+
+    FIND_LIBRARY( FBX_LIBRARY_DEBUG ${FBX_LIBNAME_DEBUG}
+        PATHS ${FBX_SEARCH_PATHS}
+        PATH_SUFFIXES "lib/${FBX_LIBDIR}")
+    IF(FBX_LIBRARY AND FBX_LIBRARY_DEBUG AND FBX_INCLUDE_DIR)
+        SET(FBX_FOUND "YES")
+    ELSE()
+        SET(FBX_FOUND "NO")
+    ENDIF()
+
+ENDIF()
+
+IF(NOT FBX_FOUND)
 #try to use 2013.3 version
     IF(APPLE)
         SET(FBX_LIBNAME "fbxsdk-2013.3-static")
@@ -89,7 +129,7 @@ IF(NOT FBX_FOUND)
         $ENV{FBX_DIR}
         $ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2013.3
         $ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2013.3
-        /Applications/Autodesk/FBXSDK20141
+        /Applications/Autodesk/FBXSDK20133
     )
 
     # search for headers & debug/release libraries

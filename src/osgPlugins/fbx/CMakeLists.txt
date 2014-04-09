@@ -12,13 +12,19 @@ SET(TARGET_SRC
     fbxMaterialToOsgStateSet.cpp
 )
 
-SET(TARGET_H 
+SET(TARGET_H
     fbxMaterialToOsgStateSet.h
     fbxReader.h
     ReaderWriterFBX.h
     WriterCompareTriangle.h
     WriterNodeVisitor.h
 )
+
+IF(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    REMOVE_CXX_FLAG(-pedantic)
+    REMOVE_CXX_FLAG(-Wall)
+    REMOVE_CXX_FLAG(-Wunused)
+ENDIF()
 
 IF(WIN32)
     SET(TARGET_EXTERNAL_LIBRARIES wininet)
@@ -31,7 +37,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 SET(TARGET_LIBRARIES_VARS FBX_LIBRARY)
-SET(TARGET_ADDED_LIBRARIES osgAnimation) 
+SET(TARGET_ADDED_LIBRARIES osgAnimation)
 
 #### end var setup  ###
 SETUP_PLUGIN(fbx)

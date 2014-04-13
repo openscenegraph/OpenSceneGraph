@@ -517,7 +517,7 @@ IF(ANDROID)
     ANDROID_3RD_PARTY()
 ELSE()
 # Common to all platforms except android:
-    FIND_PACKAGE(FreeType)
+    FIND_PACKAGE(Freetype)
     FIND_PACKAGE(Inventor)
     FIND_PACKAGE(Jasper)
     FIND_PACKAGE(OpenEXR)

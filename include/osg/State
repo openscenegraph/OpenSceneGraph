@@ -1495,9 +1495,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             return osg::Timer::instance()->delta_s(_startTick, _gpuTick);
         }
-        GLuint64EXT getGpuTimestamp() const { return _gpuTimestamp; }
+        GLuint64 getGpuTimestamp() const { return _gpuTimestamp; }
 
-        void setGpuTimestamp(Timer_t tick, GLuint64EXT timestamp)
+        void setGpuTimestamp(Timer_t tick, GLuint64 timestamp)
         {
             _gpuTick = tick;
             _gpuTimestamp = timestamp;
@@ -1930,8 +1930,8 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         Timer_t                      _startTick;
         Timer_t                      _gpuTick;
-        GLuint64EXT                 _gpuTimestamp;
-        int                         _timestampBits;
+        GLuint64                     _gpuTimestamp;
+        int                          _timestampBits;
 };
 
 inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)

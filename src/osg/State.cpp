@@ -1785,7 +1785,7 @@ void State::frameCompleted()
     osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
     if (extensions && getTimestampBits())
     {
-        GLint64EXT timestamp;
+        GLint64 timestamp;
         extensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
         //OSG_NOTICE<<"State::frameCompleted() setting time stamp. timestamp="<<timestamp<<std::endl;

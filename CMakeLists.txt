@@ -286,6 +286,10 @@ ELSE()
 ENDIF()
 ENDIF()
 
+
+
+
+
 IF(UNIX AND NOT ANDROID)
     # Not sure what this will do on Cygwin and Msys
     # Also, remember OS X X11 is a user installed option so it may not exist.
@@ -450,28 +454,145 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 
-OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON)
-OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." ON)
-OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF)
-OPTION(OSG_GLES1_AVAILABLE "Set to OFF to disable use of OpenGL ES 1.x functions library." OFF)
-OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." OFF)
+# Map the OPENGL_PROFILE to OSG_GL*_AVAILABLE settings
+SET(OPENGL_PROFILE "GL2" CACHE STRING "OpenGL Profile to use, choose from GL2, GL3, GLES1, GLES2")
+
+IF ((OPENGL_PROFILE STREQUAL "GL1") OR (OPENGL_PROFILE STREQUAL "GL2"))
+    OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON )
+ELSE()
+    OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." OFF )
+ENDIF()
+
+IF ((OPENGL_PROFILE STREQUAL "GL2"))
+    OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." ON )
+ELSE()
+    OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." OFF )
+ENDIF()
+
+IF ((OPENGL_PROFILE STREQUAL "GL3") OR (OPENGL_PROFILE STREQUAL "GLCORE"))
+    OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." ON )
+ELSE()
+    OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF )
+ENDIF()
+
+IF ((OPENGL_PROFILE STREQUAL "GLES1"))
+    OPTION(OSG_GLES1_AVAILABLE "Set to OFF to disable use of OpenGL ES 1.x functions library." ON )
+ELSE()
+    OPTION(OSG_GLES1_AVAILABLE "Set to OFF to disable use of OpenGL ES 1.x functions library." OFF )
+ENDIF()
+
+IF ((OPENGL_PROFILE STREQUAL "GLES2"))
+    OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." ON )
+ELSE()
+    OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." OFF )
+ENDIF()
+
+
 OPTION(OSG_GL_LIBRARY_STATIC "Set to ON to statically link with OpenGL/GLES library." OFF)
 
 SET(OPENGL_egl_LIBRARY CACHE STRING "Set the OpenGL egl library.")
 
-# SET(OSG_GL_DISPLAYLISTS_AVAILABLE ${OSG_GL1_AVAILABLE})
-# SET(OSG_GL_MATRICES_AVAILABLE ${OSG_GL1_AVAILABLE})
-# SET(OSG_GL_VERTEX_FUNCS_AVAILABLE ${OSG_GL1_AVAILABLE})
-# SET(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE ${OSG_GL1_AVAILABLE})
-# SET(OSG_GL_FIXED_FUNCTION_AVAILABLE ${OSG_GL1_AVAILABLE})
+# Map the OSG_GL*_AVAILABLE settings to OSG_GL_* settings
+IF (OSG_GLES2_AVAILABLE OR OSG_GL3_AVAILABLE)
+    OPTION(OSG_GL_DISPLAYLISTS_AVAILABLE "Set to OFF to disable use of OpenGL display lists." OFF)
+    OPTION(OSG_GL_MATRICES_AVAILABLE "Set to OFF to disable use of OpenGL built-in matrices." OFF)
+    OPTION(OSG_GL_VERTEX_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertex/glColor etc." OFF)
+    OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertexPointer/glColorPointer etc." OFF)
+    OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." OFF)
+ELSEIF (OSG_GLES1_AVAILABLE)
+    OPTION(OSG_GL_DISPLAYLISTS_AVAILABLE "Set to OFF to disable use of OpenGL display lists." OFF)
+    OPTION(OSG_GL_MATRICES_AVAILABLE "Set to OFF to disable use of OpenGL built-in matrices." ON)
+    OPTION(OSG_GL_VERTEX_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertex/glColor etc." ON)
+    OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertexPointer/glColorPointer etc." ON)
+    OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." ON)
+ELSE()
+    OPTION(OSG_GL_DISPLAYLISTS_AVAILABLE "Set to OFF to disable use of OpenGL display lists." ON)
+    OPTION(OSG_GL_MATRICES_AVAILABLE "Set to OFF to disable use of OpenGL built-in matrices." ON)
+    OPTION(OSG_GL_VERTEX_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertex/glColor etc." ON)
+    OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertexPointer/glColorPointer etc." ON)
+    OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." ON)
+ENDIF()
 
-OPTION(OSG_GL_DISPLAYLISTS_AVAILABLE "Set to OFF to disable use of OpenGL display lists." ${OSG_GL1_AVAILABLE})
-OPTION(OSG_GL_MATRICES_AVAILABLE "Set to OFF to disable use of OpenGL built-in matrices." ${OSG_GL1_AVAILABLE})
-OPTION(OSG_GL_VERTEX_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertex/glColor etc." ${OSG_GL1_AVAILABLE})
-OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertexPointer/glColorPointer etc." ${OSG_GL1_AVAILABLE})
-OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." ${OSG_GL1_AVAILABLE})
+IF (OSG_GLES1_AVAILABLE OR OSG_GLES2_AVAILABLE)
+    OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." OFF)
+ELSE()
+    OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
+ENDIF()
 
-OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
+
+# Map the OSG_GL*_AVAILABLE settings to OpenGL header settings
+IF (OSG_GL3_AVAILABLE)
+    IF (APPLE)
+        SET(OPENGL_HEADER1 "#include <OpenGL/OpenGL.h>" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "#include <OpenGL/gl3.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ELSE()
+
+        IF (OPENGL_PROFILE STREQUAL "GLCORE")
+            SET(OPENGL_HEADER1 "#include <GL/glcorearb.h>" CACHE STRING "#include<> line for OpenGL Header")
+            SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+        ELSE()
+            SET(OPENGL_HEADER1 "#include <GL3/gl3.h>" CACHE STRING "#include<> line for OpenGL Header")
+            SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+        ENDIF()
+
+    ENDIF()
+ELSEIF(OSG_GLES1_AVAILABLE)
+    IF (APPLE)
+        SET(OPENGL_HEADER1 "#include \"TargetConditionals.h\"" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "#include <OpenGLES/ES1/gl.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ELSE()
+        SET(OPENGL_HEADER1 "#include <GLES/gl.h>" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ENDIF()
+ELSEIF(OSG_GLES2_AVAILABLE)
+    IF (APPLE)
+        SET(OPENGL_HEADER1 "#include \"TargetConditiona2s.h\"" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "#include <OpenGLES/ES2/gl.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ELSE()
+        SET(OPENGL_HEADER1 "#include <GLES2/gl2.h>" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ENDIF()
+ELSE()
+    IF (APPLE)
+        SET(OPENGL_HEADER1 "#include <OpenGL/OpenGL.h>" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ELSE()
+        SET(OPENGL_HEADER1 "#include <GL/gl.h>" CACHE STRING "#include<> line for OpenGL Header")
+        SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+    ENDIF()
+ENDIF()
+
+IF (OSG_GL1_AVAILABLE)
+    SET(OSG_GL1_FEATURES "true")
+ELSE()
+    SET(OSG_GL1_FEATURES "false")
+ENDIF()
+
+IF (OSG_GL2_AVAILABLE)
+    SET(OSG_GL2_FEATURES "true")
+ELSE()
+    SET(OSG_GL2_FEATURES "false")
+ENDIF()
+
+IF (OSG_GL3_AVAILABLE)
+    SET(OSG_GL3_FEATURES "true")
+ELSE()
+    SET(OSG_GL3_FEATURES "false")
+ENDIF()
+
+IF (OSG_GLES1_AVAILABLE)
+    SET(OSG_GLES1_FEATURES "true")
+ELSE()
+    SET(OSG_GLES1_FEATURES "false")
+ENDIF()
+
+IF (OSG_GLES1_AVAILABLE)
+    SET(OSG_GLES2_FEATURES "true")
+ELSE()
+    SET(OSG_GLES2_FEATURES "false")
+ENDIF()
+
+
 
 ################################################################################
 # Set Config file
@@ -483,6 +604,10 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
 SET(OPENSCENEGRAPH_VERSION_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/osg/Version")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Version.in"
                "${OPENSCENEGRAPH_VERSION_HEADER}")
+
+SET(OPENSCENEGRAPH_OPENGGL_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/osg/OpenGL")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/OpenGL.in"
+               "${OPENSCENEGRAPH_OPENGGL_HEADER}")
 
 # INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
 

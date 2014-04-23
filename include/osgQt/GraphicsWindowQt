@@ -14,6 +14,8 @@
 #ifndef OSGVIEWER_GRAPHICSWINDOWQT
 #define OSGVIEWER_GRAPHICSWINDOWQT
 
+#include <QGLWidget>
+
 #include <osgViewer/GraphicsWindow>
 #include <osgQt/Export>
 
@@ -21,7 +23,6 @@
 #include <QEvent>
 #include <QQueue>
 #include <QSet>
-#include <QGLWidget>
 
 class QInputEvent;
 

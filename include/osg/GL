@@ -14,8 +14,16 @@
 #ifndef OSG_GL
 #define OSG_GL 1
 
+#if 1
+
+#include <osg/OpenGL>
+
+#else
+
+
 #include <osg/Config>
 #include <osg/Export>
+
 
 #if defined(OSG_GLES1_AVAILABLE)
 
@@ -243,5 +251,7 @@
     #define OSG_GLES2_FEATURES false
 #endif
 
+
+#endif
 
 #endif  // __osgGL_h

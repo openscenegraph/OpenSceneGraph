@@ -11,8 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osg/DeleteHandler>
 #include <osgQt/GraphicsWindowQt>
+
+#include <osg/DeleteHandler>
 #include <osgViewer/ViewerBase>
 #include <QInputEvent>
 

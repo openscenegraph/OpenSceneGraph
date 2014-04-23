@@ -657,8 +657,8 @@ class OSG_EXPORT Drawable : public Object
             void glDeleteQueries(GLsizei n, const GLuint *ids) const;
             void glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const;
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
-            void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const;
-            void glGetInteger64v(GLenum pname, GLint64EXT *params) const;
+            void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64 *params) const;
+            void glGetInteger64v(GLenum pname, GLint64 *params) const;
 
         protected:
 
@@ -701,7 +701,7 @@ class OSG_EXPORT Drawable : public Object
             typedef void (GL_APIENTRY * EndOcclusionQueryProc) ();
             typedef void (GL_APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
             typedef void (GL_APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
-            typedef void (GL_APIENTRY * GetOcclusionQueryui64vProc) ( GLuint id, GLenum pname, GLuint64EXT *params );
+            typedef void (GL_APIENTRY * GetOcclusionQueryui64vProc) ( GLuint id, GLenum pname, GLuint64 *params );
 
             typedef void (GL_APIENTRY *GenQueriesProc) (GLsizei n, GLuint *ids);
             typedef void (GL_APIENTRY *DeleteQueriesProc) (GLsizei n, const GLuint *ids);
@@ -712,8 +712,8 @@ class OSG_EXPORT Drawable : public Object
             typedef void (GL_APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
             typedef void (GL_APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
             typedef void (GL_APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
-            typedef void (GL_APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64EXT *params);
-            typedef void (GL_APIENTRY *GetInteger64vProc) (GLenum pname, GLint64EXT *params);
+            typedef void (GL_APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64 *params);
+            typedef void (GL_APIENTRY *GetInteger64vProc) (GLenum pname, GLint64 *params);
 
             ~Extensions() {}
 

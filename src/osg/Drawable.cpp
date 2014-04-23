@@ -1516,7 +1516,7 @@ void Drawable::Extensions::glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *
     OSG_WARN << "Error: glGetQueryObjectuiv not supported by OpenGL driver" << std::endl;
 }
 
-void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const
+void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64 *params) const
 {
   if (_gl_get_query_objectui64v)
     _gl_get_query_objectui64v(id, pname, params);
@@ -1524,7 +1524,7 @@ void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint
     OSG_WARN << "Error: glGetQueryObjectui64v not supported by OpenGL driver" << std::endl;
 }
 
-void Drawable::Extensions::glGetInteger64v(GLenum pname, GLint64EXT *params)
+void Drawable::Extensions::glGetInteger64v(GLenum pname, GLint64 *params)
     const
 {
     if (_glGetInteger64v)

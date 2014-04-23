@@ -14,8 +14,8 @@
 #ifndef QWIDGETIMAGE
 #define QWIDGETIMAGE
 
-#include <osg/Image>
 #include <osgQt/QGraphicsViewAdapter>
+#include <osg/Image>
 
 namespace osgQt
 {

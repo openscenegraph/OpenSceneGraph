@@ -1008,11 +1008,7 @@ void CompositeViewer::eventTraversal()
                 event->setInputRange(pd->xMin, pd->yMin, pd->xMax, pd->yMax);
                 event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 #else
-                if (event->getMouseYOrientation()!=osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
-                {
-                    event->setY((event->getYmax()-event->getY())+event->getYmin());
-                    event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-                }
+                event->setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 #endif
 
                 _previousEvent = event;

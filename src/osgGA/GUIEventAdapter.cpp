@@ -132,3 +132,20 @@ void GUIEventAdapter::copyPointerDataFrom(const osgGA::GUIEventAdapter& sourceEv
     setMouseYOrientation(sourceEvent.getMouseYOrientation());
     setPointerDataList(sourceEvent.getPointerDataList());
 }
+
+
+
+void GUIEventAdapter::setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::MouseYOrientation myo)
+{
+    if ( myo==_mouseYOrientation )
+    return;
+
+    setMouseYOrientation( myo );
+
+    _my = _Ymax - _my + _Ymin;
+    if( isMultiTouchEvent() )
+    {
+        for( TouchData::iterator itr =  getTouchData()->begin(); itr != getTouchData()->end(); itr++ ) 
+            itr->y = _Ymax - itr->y + _Ymin;
+    }
+}

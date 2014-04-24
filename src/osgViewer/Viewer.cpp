@@ -929,16 +929,7 @@ void Viewer::eventTraversal()
                         event->setInputRange(pd->xMin, pd->yMin, pd->xMax, pd->yMax);
                         event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 #else
-                        if (event->getMouseYOrientation()!=osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
-                        {
-                            event->setY((event->getYmax()-event->getY())+event->getYmin());
-                            event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-                            if(event->isMultiTouchEvent()) {
-                                for(osgGA::GUIEventAdapter::TouchData::iterator itr = event->getTouchData()->begin(); itr != event->getTouchData()->end(); itr++) {
-                                    itr->y = event->getYmax() - itr->y + event->getYmin();
-                                }
-                            }
-                        }
+                        event->setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 #endif
 
                         eventState->copyPointerDataFrom(*event);

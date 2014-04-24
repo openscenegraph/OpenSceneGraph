@@ -5,7 +5,7 @@
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/ViewerEventHandlers>
 
-#include <osgGA/TrackballManipulator>
+#include <osgGA/MultiTouchTrackballManipulator>
 
 #include <osgDB/ReadFile>
 
@@ -57,8 +57,8 @@ public:
 
         view->setSceneData( scene );
         view->addEventHandler( new osgViewer::StatsHandler );
-        view->setCameraManipulator( new osgGA::TrackballManipulator );
-
+        view->setCameraManipulator( new osgGA::MultiTouchTrackballManipulator );
+        gw->setTouchEventsEnabled( true );
         return gw->getGLWidget();
     }
 

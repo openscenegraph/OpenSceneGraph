@@ -23,8 +23,10 @@
 #include <QEvent>
 #include <QQueue>
 #include <QSet>
+#include <QGLWidget>
 
 class QInputEvent;
+class QGestureEvent;
 
 namespace osgViewer {
     class ViewerBase;
@@ -66,6 +68,9 @@ public:
 
     inline bool getForwardKeyEvents() const { return _forwardKeyEvents; }
     virtual void setForwardKeyEvents( bool f ) { _forwardKeyEvents = f; }
+    
+    inline bool getTouchEventsEnabled() const { return _touchEventsEnabled; }
+    void setTouchEventsEnabled( bool e );
 
     void setKeyboardModifiers( QInputEvent* event );
 
@@ -76,6 +81,7 @@ public:
     virtual void mouseDoubleClickEvent( QMouseEvent* event );
     virtual void mouseMoveEvent( QMouseEvent* event );
     virtual void wheelEvent( QWheelEvent* event );
+    virtual bool gestureEvent( QGestureEvent* event );
 
 protected:
 
@@ -108,6 +114,8 @@ protected:
     QMutex _deferredEventQueueMutex;
     QQueue<QEvent::Type> _deferredEventQueue;
     QSet<QEvent::Type> _eventCompressor;
+
+    bool _touchEventsEnabled;
 
     bool _forwardKeyEvents;
     qreal _devicePixelRatio;
@@ -157,6 +165,9 @@ public:
     virtual std::string getWindowName();
     virtual void useCursor( bool cursorOn );
     virtual void setCursor( MouseCursor cursor );
+    inline bool getTouchEventsEnabled() const { return _widget->getTouchEventsEnabled(); }
+    virtual void setTouchEventsEnabled( bool e ) { _widget->setTouchEventsEnabled(e); }
+
 
     virtual bool valid() const;
     virtual bool realizeImplementation();

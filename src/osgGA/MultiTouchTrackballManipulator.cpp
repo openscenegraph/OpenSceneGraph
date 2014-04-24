@@ -37,29 +37,28 @@ MultiTouchTrackballManipulator::MultiTouchTrackballManipulator( const MultiTouch
 
 void MultiTouchTrackballManipulator::handleMultiTouchDrag(const GUIEventAdapter* now, const GUIEventAdapter* last, const double eventTimeDelta)
 {
-    osg::Vec2 pt_1_now(now->getTouchPointNormalizedX(0),now->getTouchPointNormalizedY(0));
-    osg::Vec2 pt_2_now(now->getTouchPointNormalizedX(1),now->getTouchPointNormalizedY(1));
-    osg::Vec2 pt_1_last(last->getTouchPointNormalizedX(0),last->getTouchPointNormalizedY(0));
-    osg::Vec2 pt_2_last(last->getTouchPointNormalizedX(1),last->getTouchPointNormalizedY(1));
+    const osg::Vec2 pt_1_now( now->getTouchData()->get(0).x, now->getTouchData()->get(0).y);
+    const osg::Vec2 pt_2_now( now->getTouchData()->get(1).x, now->getTouchData()->get(1).y);
+    const osg::Vec2 pt_1_last( last->getTouchData()->get(0).x, last->getTouchData()->get(0).y);
+    const osg::Vec2 pt_2_last( last->getTouchData()->get(1).x, last->getTouchData()->get(1).y);
 
-
-
-    float gap_now((pt_1_now - pt_2_now).length());
-    float gap_last((pt_1_last - pt_2_last).length());
+    const float gap_now((pt_1_now - pt_2_now).length());
+    const float gap_last((pt_1_last - pt_2_last).length());
 
     // osg::notify(osg::ALWAYS) << gap_now << " " << gap_last << std::endl;
 
+    const float relativeChange = (gap_last - gap_now)/gap_last;
+
 
     // zoom gesture
-    if (fabs(gap_last - gap_now) > 0.02)
-        zoomModel( (gap_last - gap_now) , true );
+    if (fabs(relativeChange) > 0.02)
+        zoomModel( relativeChange , true );
 
     // drag gesture
-    osg::Vec2 delta = ((pt_1_last - pt_1_now) + (pt_2_last - pt_2_now)) / 2.0f;
+    const osg::Vec2 delta = ((pt_1_last - pt_1_now) + (pt_2_last - pt_2_now)) / 2.0f;
 
-    float scale = _distance / 3.0f;
-    
-    // osg::notify(osg::ALWAYS) << "drag: " << delta << " scale: " << scale << std::endl;
+    const float scale = -0.3f * _distance * getThrowScale( eventTimeDelta );
+    //osg::notify(osg::ALWAYS) << "drag: " << delta << " scale: " << scale << std::endl;
 
     panModel( delta.x() * scale, delta.y() * scale);
 }

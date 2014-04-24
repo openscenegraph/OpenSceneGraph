@@ -602,6 +602,9 @@ public:
         /// get mouse-Y orientation (mouse-Y increases upwards or downwards).
         MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
 
+        /// set mouse-Y orientation (mouse-Y increases upwards or downwards) and recompute variables
+        void setMouseYOrientationAndUpdateCoords(MouseYOrientation myo);
+
         /// set current mouse button state.
         void setButtonMask(int mask) { _buttonMask = mask; }
 

@@ -249,7 +249,7 @@ void Texture2DArray::apply(State& state) const
             // compute the dimensions of the texture.
             computeRequiredTextureDimensions(state, *image, new_width, new_height, new_numMipmapLevels);
 
-            if (!textureObject->match(GL_TEXTURE_2D_ARRAY_EXT, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
+            if (!textureObject->match(GL_TEXTURE_2D_ARRAY_EXT, new_numMipmapLevels, _internalFormat, new_width, new_height, _textureDepth, _borderWidth))
             {
                 Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
                 _textureObjectBuffer[contextID] = 0;

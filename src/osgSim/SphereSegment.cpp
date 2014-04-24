@@ -1030,14 +1030,12 @@ class PolytopeVisitor : public osg::NodeVisitor
         {
             if (_polytopeStack.back().second.contains(transform.getBound()))
             {
-                const osg::Polytope& polytope = _polytopeStack.front().second;
-
                 osg::Matrix matrix = _polytopeStack.back().first;
                 transform.computeLocalToWorldMatrix(matrix, this);
 
                 _polytopeStack.push_back(MatrixPolytopePair());
                 _polytopeStack.back().first = matrix;
-                _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, matrix);
+                _polytopeStack.back().second.setAndTransformProvidingInverse(_polytopeStack.front().second, matrix);
 
                 traverse(transform);
 

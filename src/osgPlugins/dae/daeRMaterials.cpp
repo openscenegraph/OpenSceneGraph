@@ -200,9 +200,17 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
 // 0..* <extra>
 void    daeReader::processMaterial(osg::StateSet *ss, domMaterial *mat )
 {
-    _currentInstance_effect = mat->getInstance_effect();
-    if (mat && mat->getName()) {
+    if (!mat)
+    {
+        return;
+    }
+    if (mat->getName()) {
         ss->setName(mat->getName());
+    }
+    _currentInstance_effect = mat->getInstance_effect();
+    if (!_currentInstance_effect)
+    {
+        return;
     }
     domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( _currentInstance_effect->getUrl() ) );
     if (effect)

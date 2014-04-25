@@ -594,16 +594,13 @@ ENDIF()
 
 
 
+
 ################################################################################
-# Set Config file
+# Set Config/OpenGL header file
 
 SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
                "${OPENSCENEGRAPH_CONFIG_HEADER}")
-
-SET(OPENSCENEGRAPH_VERSION_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/osg/Version")
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Version.in"
-               "${OPENSCENEGRAPH_VERSION_HEADER}")
 
 SET(OPENSCENEGRAPH_OPENGL_HEADER "${PROJECT_BINARY_DIR}/include/osg/OpenGL")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/OpenGL.in"
@@ -613,7 +610,15 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/OpenGL.in"
 
 
 ################################################################################
+# Set Vertsion header file
+
+SET(OPENSCENEGRAPH_VERSION_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/osg/Version")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Version.in"
+               "${OPENSCENEGRAPH_VERSION_HEADER}")
+
+################################################################################
 # Set Version Info resource file
+
 
 IF(MSVC)
     SET(OPENSCENEGRAPH_VERSIONINFO_RC "${PROJECT_BINARY_DIR}/PlatformSpecifics/Windows/OpenSceneGraphVersionInfo.rc")

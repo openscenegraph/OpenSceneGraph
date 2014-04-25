@@ -77,7 +77,7 @@ void EXTQuerySupport::checkQuery(osg::Stats* stats, osg::State* /*state*/,
         _extensions->glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &available);
         if (available)
         {
-            GLuint64EXT timeElapsed = 0;
+            GLuint64 timeElapsed = 0;
             _extensions->glGetQueryObjectui64v(query, GL_QUERY_RESULT, &timeElapsed);
 
             double timeElapsedSeconds = double(timeElapsed)*1e-9;
@@ -214,13 +214,13 @@ void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
         if (available)
         {
             QueryPair queries = itr->queries;
-            GLuint64EXT beginTimestamp = 0;
-            GLuint64EXT endTimestamp = 0;
+            GLuint64 beginTimestamp = 0;
+            GLuint64 endTimestamp = 0;
             _extensions->glGetQueryObjectui64v(queries.first, GL_QUERY_RESULT,
                                                &beginTimestamp);
             _extensions->glGetQueryObjectui64v(queries.second, GL_QUERY_RESULT,
                                                &endTimestamp);
-            GLuint64EXT gpuTimestamp = state->getGpuTimestamp();
+            GLuint64 gpuTimestamp = state->getGpuTimestamp();
             // Have any of the timestamps wrapped around?
             int tbits = state->getTimestampBits();
             if (tbits < 64)
@@ -228,11 +228,11 @@ void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
                 // If the high bits on any of the timestamp bits are
                 // different then the counters may have wrapped.
                 const int hiShift = (tbits - 1);
-                const GLuint64EXT hiMask = 1 << hiShift;
-                const GLuint64EXT sum = (beginTimestamp >> hiShift)
+                const GLuint64 hiMask = 1 << hiShift;
+                const GLuint64 sum = (beginTimestamp >> hiShift)
                     + (endTimestamp >> hiShift) + (gpuTimestamp >> hiShift);
                 if (sum == 1 || sum == 2) {
-                    const GLuint64EXT wrapAdd = 1 << tbits;
+                    const GLuint64 wrapAdd = 1 << tbits;
                     // Counter wrapped between begin and end?
                     if (beginTimestamp > endTimestamp)
                     {
@@ -251,7 +251,7 @@ void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
                     }
                 }
             }
-            GLuint64EXT timeElapsed = endTimestamp - beginTimestamp;
+            GLuint64 timeElapsed = endTimestamp - beginTimestamp;
             double timeElapsedSeconds = double(timeElapsed)*1e-9;
             double gpuTick = state->getGpuTime();
                      double beginTime = 0.0;

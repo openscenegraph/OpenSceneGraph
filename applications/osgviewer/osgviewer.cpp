@@ -94,7 +94,7 @@ public:
             if (_previousSync)
             {
                 unsigned int num_seconds = 1;
-		GLuint64EXT timeout = num_seconds * ((GLuint64EXT)1000 * 1000 * 1000);
+                GLuint64 timeout = num_seconds * ((GLuint64)1000 * 1000 * 1000);
                 _glClientWaitSync(_previousSync, 0, timeout);
 
                 _glDeleteSync(_previousSync);
@@ -112,8 +112,8 @@ public:
     typedef GLsync (GL_APIENTRY * PFNGLFENCESYNCPROC) (GLenum condition, GLbitfield flags);
     typedef GLboolean (GL_APIENTRY * PFNGLISSYNCPROC) (GLsync sync);
     typedef void (GL_APIENTRY * PFNGLDELETESYNCPROC) (GLsync sync);
-    typedef GLenum (GL_APIENTRY * PFNGLCLIENTWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64EXT timeout);
-    typedef void (GL_APIENTRY * PFNGLWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64EXT timeout);
+    typedef GLenum (GL_APIENTRY * PFNGLCLIENTWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64 timeout);
+    typedef void (GL_APIENTRY * PFNGLWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64 timeout);
     typedef void (GL_APIENTRY * PFNGLGETINTEGER64VPROC) (GLenum pname, GLint64 *params);
     typedef void (GL_APIENTRY * PFNGLGETSYNCIVPROC) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
 

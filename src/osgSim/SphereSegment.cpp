@@ -1039,7 +1039,7 @@ class PolytopeVisitor : public osg::NodeVisitor
 
                 traverse(transform);
 
-                _polytopeStack.back();
+                _polytopeStack.pop_back();
             }
         }
 

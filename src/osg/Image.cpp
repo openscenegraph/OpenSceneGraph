@@ -239,7 +239,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
 {
     if (image._data)
     {
-        int size = image.getTotalSizeInBytesIncludingMipmaps();
+        unsigned int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
         unsigned char* dest_ptr = _data;
         for(DataIterator itr(&image); itr.valid(); ++itr)

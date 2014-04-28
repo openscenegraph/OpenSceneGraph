@@ -214,8 +214,13 @@ bool osgDB::makeDirectory( const std::string &path )
         if( mkdir( dir.c_str(), 0755 )< 0 )
 #endif
         {
-            OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
-            return false;
+            // Only return an error if the directory actually doesn't exist.  It's possible that the directory was created
+            // by another thread or process
+            if (!osgDB::fileExists(dir))
+            {
+                OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
+                return false;
+            }
         }
         paths.pop();
     }

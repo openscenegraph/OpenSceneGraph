@@ -10,6 +10,16 @@
 #
 # Created by Ulrich Hertlein. 
 
+# prefer FindZLIB from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindZLIB.cmake)
+  include(${CMAKE_ROOT}/Modules/FindZLIB.cmake)
+
+  if(ZLIB_FOUND)
+    return()
+  endif()
+endif()
+
+
 FIND_PATH(ZLIB_INCLUDE_DIR zlib.h
     $ENV{ZLIB_DIR}/include
     $ENV{ZLIB_DIR}

@@ -9,6 +9,15 @@
 #
 # Created by Robert Osfield. 
 
+# prefer FindFLTK from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindFLTK.cmake)
+  include(${CMAKE_ROOT}/Modules/FindFLTK.cmake)
+
+  if(FLTK_FOUND)
+    return()
+  endif()
+endif()
+
 FIND_PATH(FLTK_INCLUDE_DIR Fl/Fl.H Fl/Fl.h
     $ENV{FLTK_DIR}/include
     $ENV{FLTK_DIR}

@@ -9,6 +9,16 @@
 #
 # Created by Eric Wing. 
 
+# prefer FindQuickTime from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindQuickTime.cmake)
+  include(${CMAKE_ROOT}/Modules/FindQuickTime.cmake)
+
+  if(QUICKTIME_FOUND)
+    return()
+  endif()
+endif()
+
+
 # QuickTime on OS X looks different than QuickTime for Windows,
 # so I am going to case the two.
 

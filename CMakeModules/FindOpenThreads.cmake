@@ -17,6 +17,16 @@
 #
 # Created by Eric Wing.
 
+# prefer FindOpenThreads from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindOpenThreads.cmake)
+  include(${CMAKE_ROOT}/Modules/FindOpenThreads.cmake)
+
+  if(OPENTHREADS_FOUND)
+    return()
+  endif()
+endif()
+
+
 # Header files are presumed to be included like
 # #include <OpenThreads/Thread>
 

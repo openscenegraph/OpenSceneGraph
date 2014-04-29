@@ -89,6 +89,7 @@ public:
     // Serialization related functions
     OutputStream& operator<<( bool b ) { _out->writeBool(b); return *this; }
     OutputStream& operator<<( char c ) { _out->writeChar(c); return *this; }
+    OutputStream& operator<<( signed char c) { _out->writeChar(c); return *this; }
     OutputStream& operator<<( unsigned char c ) { _out->writeUChar(c); return *this; }
     OutputStream& operator<<( short s ) { _out->writeShort(s); return *this; }
     OutputStream& operator<<( unsigned short s ) { _out->writeUShort(s); return *this; }

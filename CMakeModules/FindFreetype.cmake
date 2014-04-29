@@ -12,6 +12,15 @@
 # used in building FREETYPE.
 # Created by Eric Wing. 
 
+# prefer FindFreetype from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindFreetype.cmake)
+  include(${CMAKE_ROOT}/Modules/FindFreetype.cmake)
+
+  if(FREETYPE_FOUND)
+    return()
+  endif()
+endif()
+
 # Ugh, FreeType seems to use some #include trickery which 
 # makes this harder than it should be. It looks like they
 # put ft2build.h in a common/easier-to-find location which
@@ -24,6 +33,7 @@
 # wants explicit full paths and this trickery doesn't work too well.
 # I'm going to attempt to cut out the middleman and hope 
 # everything still works.
+
 FIND_PATH(FREETYPE_INCLUDE_DIR_ft2build ft2build.h 
   PATHS
   $ENV{FREETYPE_DIR}

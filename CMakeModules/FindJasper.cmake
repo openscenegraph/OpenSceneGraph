@@ -9,6 +9,15 @@
 #
 # Created by Robert Osfield. 
 
+# prefer FindJasper from cmake distribution
+if(EXISTS ${CMAKE_ROOT}/Modules/FindJasper.cmake)
+  include(${CMAKE_ROOT}/Modules/FindJasper.cmake)
+
+  if(JASPER_FOUND)
+    return()
+  endif()
+endif()
+
 FIND_PATH(JASPER_INCLUDE_DIR jasper/jasper.h
     $ENV{JASPER_DIR}/include
     $ENV{JASPER_DIR}/src/libjasper/include

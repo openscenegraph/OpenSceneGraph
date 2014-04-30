@@ -55,8 +55,8 @@ extern OSGDB_EXPORT const char* getTypeStringFromPtr(const osg::Image*);
 
 
 #define DECLARE_TYPE(A,B) \
-    template<> osgDB::BaseSerializer::Type getTypeEnum<A>() { return osgDB::BaseSerializer::RW_##B; } \
-    template<> const char* getTypeString<A>() { return #B; }
+    template<> inline osgDB::BaseSerializer::Type getTypeEnum<A>() { return osgDB::BaseSerializer::RW_##B; } \
+    template<> inline const char* getTypeString<A>() { return #B; }
 
 DECLARE_TYPE(osg::Image*, IMAGE)
 DECLARE_TYPE(osg::Object*, OBJECT)

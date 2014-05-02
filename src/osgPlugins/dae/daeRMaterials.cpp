@@ -296,9 +296,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
             //  <technique profile="GOOGLEEARTH">
             //      <double_sided>0</double_sided>
             //  </technique>
-            if (strcmp(TechniqueArray[CurrentTechnique]->getProfile(), "GOOGLEEARTH") == 0)
+            const domTechniqueRef& TechniqueRef = TechniqueArray[CurrentTechnique];
+            if (TechniqueRef->getProfile() && strcmp(TechniqueRef->getProfile(), "GOOGLEEARTH") == 0)
             {
-                const daeElementRefArray& ElementArray = TechniqueArray[CurrentTechnique]->getContents();
+                const daeElementRefArray& ElementArray = TechniqueRef->getContents();
                 size_t NumberOfElements = ElementArray.getCount();
                 size_t CurrentElement;
                 for (CurrentElement = 0; CurrentElement < NumberOfElements; CurrentElement++)
@@ -307,7 +308,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                     if (strcmp(pAny->getElementName(), "double_sided") == 0)
                     {
                         daeString Value = pAny->getValue();
-                        if (strcmp(Value, "1") == 0)
+                        if (Value && strcmp(Value, "1") == 0)
                             ss->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
                     }
                 }

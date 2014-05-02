@@ -344,7 +344,8 @@ int Thread::start() {
     
     pd->threadStartedBlock.reset();
 
-    pd->tid.set( (void*)_beginthreadex(NULL,static_cast<unsigned>(pd->stackSize),ThreadPrivateActions::StartThread,static_cast<void *>(this),0,&ID));
+    pd->tid.set( (void*)_beginthreadex(NULL,static_cast<unsigned>(pd->stackSize),ThreadPrivateActions::StartThread,static_cast<void *>(this),CREATE_SUSPENDED,&ID));
+    ResumeThread(pd->tid.get());
 
     pd->uniqueId = (int)ID;
 

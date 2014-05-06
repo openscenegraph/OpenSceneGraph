@@ -1,22 +1,13 @@
 # Locate QuickTime
 # This module defines
 # QUICKTIME_LIBRARY
-# QUICKTIME_FOUND, if false, do not try to link to gdal 
+# QUICKTIME_FOUND, if false, do not try to link to gdal
 # QUICKTIME_INCLUDE_DIR, where to find the headers
 #
 # $QUICKTIME_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$QUICKTIME_DIR
 #
-# Created by Eric Wing. 
-
-# prefer FindQuickTime from cmake distribution
-if(EXISTS ${CMAKE_ROOT}/Modules/FindQuickTime.cmake)
-  include(${CMAKE_ROOT}/Modules/FindQuickTime.cmake)
-
-  if(QUICKTIME_FOUND)
-    return()
-  endif()
-endif()
+# Created by Eric Wing.
 
 
 # QuickTime on OS X looks different than QuickTime for Windows,
@@ -73,7 +64,7 @@ ELSE()
           ENDIF()
       ENDIF()
       # Disable quicktime for >= 10.7, as it's officially deprecated
-      
+
       IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.7" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9")
           MESSAGE("disabling quicktime because it's not supported by the selected SDK ${OSG_OSX_SDK_NAME}")
           SET(QUICKTIME_FOUND "NO")

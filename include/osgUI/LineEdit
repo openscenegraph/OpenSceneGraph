@@ -1,0 +1,50 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUI_LINEEDIT
+#define OSGUI_LINEEDIT
+
+#include <osgUI/Widget>
+#include <osgText/Text>
+
+namespace osgUI
+{
+
+class OSGUI_EXPORT LineEdit : public osgUI::Widget
+{
+public:
+    LineEdit();
+    LineEdit(const LineEdit& label, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Node(osgUI, LineEdit);
+
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
+
+    void setText(const std::string& text) { _text = text; dirty(); }
+    std::string& getText() { return _text; }
+    const std::string& getText() const { return _text; }
+
+    virtual void createGraphicsImplementation();
+
+protected:
+    virtual ~LineEdit() {}
+
+    std::string                         _text;
+
+    // implementation detail
+    osg::ref_ptr<osgText::Text>         _textDrawable;
+    osg::ref_ptr<osg::Geode>            _textGeode;
+};
+
+}
+
+#endif

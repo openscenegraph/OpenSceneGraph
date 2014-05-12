@@ -1,0 +1,116 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUI_WIDGET
+#define OSGUI_WIDGET
+
+#include <osg/Group>
+#include <osg/BoundingBox>
+#include <osgGA/Event>
+#include <osgGA/EventVisitor>
+
+#include <osgUI/Style>
+
+namespace osgUI
+{
+
+class OSGUI_EXPORT Widget : public osg::Group
+{
+public:
+    Widget();
+    Widget(const Widget& widget, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Node(osgUI, Widget);
+
+    virtual void traverse(osg::NodeVisitor& nv);
+    virtual void traverseImplementation(osg::NodeVisitor& nv);
+
+    virtual bool handle(osgGA::EventVisitor* ev, osgGA::Event* event);
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
+
+    virtual bool computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const;
+
+    virtual void dirty();
+
+    virtual void createGraphics();
+    virtual void createGraphicsImplementation();
+
+    virtual void setExtents(const osg::BoundingBoxf& bb);
+    const osg::BoundingBoxf& getExtents() const { return _extents; }
+
+    void setStyle(Style* style) { _style = style; }
+    Style* getStyle() { return _style.get(); }
+    const Style* getStyle() const { return _style.get(); }
+
+    void setAlignmentSettings(AlignmentSettings* alignmentSettings) { _alignmentSettings = alignmentSettings; }
+    AlignmentSettings* getAlignmentSettings() { return _alignmentSettings.get(); }
+    const AlignmentSettings* getAlignmentSettings() const { return _alignmentSettings.get(); }
+
+    void setFrameSettings(FrameSettings* textSettings) { _frameSettings = textSettings; }
+    FrameSettings* getFrameSettings() { return _frameSettings.get(); }
+    const FrameSettings* getFrameSettings() const { return _frameSettings.get(); }
+
+    void setTextSettings(TextSettings* textSettings) { _textSettings = textSettings; }
+    TextSettings* getTextSettings() { return _textSettings.get(); }
+    const TextSettings* getTextSettings() const { return _textSettings.get(); }
+
+
+    enum FocusBehaviour
+    {
+        CLICK_TO_FOCUS,
+        FOCUS_FOLLOWS_POINTER,
+        EVENT_DRIVEN_FOCUS_DISABLED
+    };
+
+    void setFocusBehaviour(FocusBehaviour behaviour) { _focusBehaviour = behaviour; }
+    FocusBehaviour getFocusBehaviour() const { return _focusBehaviour; }
+
+    /** update the focus according to events.*/
+    virtual void updateFocus(osg::NodeVisitor& nv);
+
+    /** set whether the widget has focus or not.*/
+    virtual void setHasEventFocus(bool focus);
+
+    /** get whether the widget has focus or not.*/
+    virtual bool getHasEventFocus() const;
+
+    virtual osg::BoundingSphere computeBound() const;
+
+    /** update any focus related graphics+state to the focused state.*/
+    virtual void enter();
+    virtual void enterImplementation();
+
+    /** update any focus related graphics+state to the unfocused state.*/
+    virtual void leave();
+    virtual void leaveImplementation();
+
+
+protected:
+    virtual ~Widget() {}
+
+    FocusBehaviour      _focusBehaviour;
+    bool                _hasEventFocus;
+    bool                _graphicsInitialized;
+
+    osg::BoundingBoxf   _extents;
+
+    osg::ref_ptr<Style> _style;
+
+    osg::ref_ptr<AlignmentSettings> _alignmentSettings;
+    osg::ref_ptr<FrameSettings> _frameSettings;
+    osg::ref_ptr<TextSettings> _textSettings;
+
+};
+
+}
+
+#endif

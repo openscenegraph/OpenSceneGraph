@@ -41,6 +41,8 @@ class OSG_EXPORT Geode : public Node
         virtual Geode* asGeode() { return this; }
         virtual const Geode* asGeode() const { return this; }
 
+        virtual void traverse(NodeVisitor& nv);
+
         /** Add a \c Drawable to the \c Geode.
           * If \c drawable is not \c NULL and is not contained in the \c Geode
           * then increment its reference count, add it to the drawables list and

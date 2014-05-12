@@ -44,7 +44,6 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
         bool empty() const { return _textures.empty() &&  _programs.empty() && _drawables.empty(); }
 
         virtual void apply(osg::Node& node);
-        virtual void apply(osg::Geode& node);
 
         virtual void apply(osg::Drawable& drawable);
         virtual void apply(osg::StateSet& stateset);

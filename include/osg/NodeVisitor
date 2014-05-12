@@ -41,6 +41,8 @@ class TexGenNode;
 class Transform;
 class Camera;
 class CameraView;
+class Drawable;
+class Geometry;
 
 const unsigned int UNINITIALIZED_FRAME_NUMBER=0xffffffff;
 
@@ -89,7 +91,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
 
         NodeVisitor(const NodeVisitor& nv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-	virtual ~NodeVisitor();
+    virtual ~NodeVisitor();
         
         META_Object(osg, NodeVisitor)
 
@@ -237,6 +239,8 @@ class OSG_EXPORT NodeVisitor : public virtual Object
           * If the getDistanceToViewPoint(pos) is not implemented then a default value of 0.0 is returned.*/
         virtual float getDistanceToViewPoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
+        virtual void apply(Drawable& drawable);
+        virtual void apply(Geometry& drawable);
 
         virtual void apply(Node& node);
 

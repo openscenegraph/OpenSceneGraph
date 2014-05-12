@@ -115,6 +115,8 @@ class OSG_EXPORT Drawable : public Object
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
 
+        /** Visitor Pattern : calls the apply method of a NodeVisitor with this drawable's type.*/
+        virtual void accept(NodeVisitor& nv);
 
         /** Compute the DataVariance based on an assessment of callback etc.*/
         virtual void computeDataVariance();

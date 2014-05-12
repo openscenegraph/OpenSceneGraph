@@ -251,11 +251,6 @@ void StatsVisitor::apply(osg::Geode& node)
     ++_numInstancedGeode;
     _geodeSet.insert(&node);
 
-    for(unsigned int i=0; i<node.getNumDrawables();++i)
-    {
-        apply(*node.getDrawable(i));
-    }
-
     traverse(node);
 }
 

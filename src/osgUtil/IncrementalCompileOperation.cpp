@@ -70,27 +70,6 @@ void StateToCompile::apply(osg::Node& node)
     traverse(node);
 }
 
-void StateToCompile::apply(osg::Geode& node)
-{
-    if (node.getStateSet())
-    {
-        apply(*(node.getStateSet()));
-    }
-
-    for(unsigned int i=0;i<node.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = node.getDrawable(i);
-        if (drawable)
-        {
-            apply(*drawable);
-            if (drawable->getStateSet())
-            {
-                apply(*(drawable->getStateSet()));
-            }
-        }
-    }
-}
-
 void StateToCompile::apply(osg::Drawable& drawable)
 {
     if (_drawablesHandled.count(&drawable)!=0) return;
@@ -121,6 +100,11 @@ void StateToCompile::apply(osg::Drawable& drawable)
         (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
     {
         _drawables.insert(&drawable);
+    }
+
+    if (drawable.getStateSet())
+    {
+        apply(*(drawable.getStateSet()));
     }
 }
 

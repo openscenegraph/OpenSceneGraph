@@ -44,6 +44,8 @@ class OSG_EXPORT Geometry : public Drawable
         virtual Geometry* asGeometry() { return this; }
         virtual const Geometry* asGeometry() const { return this; }
 
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
         bool empty() const;
 
         typedef std::vector< osg::ref_ptr<osg::Array> >  ArrayList;

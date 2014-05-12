@@ -1,0 +1,41 @@
+
+IF   (DYNAMIC_OPENSCENEGRAPH)
+    ADD_DEFINITIONS(-DOSGGA_LIBRARY)
+ELSE (DYNAMIC_OPENSCENEGRAPH)
+    ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
+ENDIF(DYNAMIC_OPENSCENEGRAPH)
+
+SET(LIB_NAME osgUI)
+SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
+SET(TARGET_H
+    ${HEADER_PATH}/Export
+    ${HEADER_PATH}/Widget
+    ${HEADER_PATH}/Label
+    ${HEADER_PATH}/LineEdit
+    ${HEADER_PATH}/Style
+    ${HEADER_PATH}/AlignmentSettings
+    ${HEADER_PATH}/FrameSettings
+    ${HEADER_PATH}/TextSettings
+)
+
+SET(TARGET_SRC
+    Widget.cpp
+    Label.cpp
+    LineEdit.cpp
+    Style.cpp
+    AlignmentSettings.cpp
+    FrameSettings.cpp
+    TextSettings.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
+)
+
+SET(TARGET_LIBRARIES
+    osgDB
+    osgUtil
+    osgText
+    osg
+    OpenThreads
+)
+
+SETUP_LIBRARY(${LIB_NAME})
+

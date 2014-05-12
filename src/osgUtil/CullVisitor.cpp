@@ -961,91 +961,94 @@ void CullVisitor::apply(Geode& node)
 {
     if (isCulled(node)) return;
 
+    // push the culling mode.
+    pushCurrentMask();
+
     // push the node's state.
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    // traverse any call callbacks and traverse any children.
     handle_cull_callbacks_and_traverse(node);
-
-    RefMatrix& matrix = *getModelViewMatrix();
-    for(unsigned int i=0;i<node.getNumDrawables();++i)
-    {
-        Drawable* drawable = node.getDrawable(i);
-        const BoundingBox &bb =drawable->getBound();
-
-        if( drawable->getCullCallback() )
-        {
-            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
-            continue;
-        }
-
-        //else
-        {
-            if (node.isCullingActive() && isCulled(bb)) continue;
-        }
-
-
-        if (_computeNearFar && bb.valid())
-        {
-            if (!updateCalculatedNearFar(matrix,*drawable,false)) continue;
-        }
-
-        // need to track how push/pops there are, so we can unravel the stack correctly.
-        unsigned int numPopStateSetRequired = 0;
-
-        // push the geoset's state on the geostate stack.
-        StateSet* stateset = drawable->getStateSet();
-        if (stateset)
-        {
-            ++numPopStateSetRequired;
-            pushStateSet(stateset);
-        }
-
-        CullingSet& cs = getCurrentCullingSet();
-        if (!cs.getStateFrustumList().empty())
-        {
-            osg::CullingSet::StateFrustumList& sfl = cs.getStateFrustumList();
-            for(osg::CullingSet::StateFrustumList::iterator itr = sfl.begin();
-                itr != sfl.end();
-                ++itr)
-            {
-                if (itr->second.contains(bb))
-                {
-                    ++numPopStateSetRequired;
-                    pushStateSet(itr->first.get());
-                }
-            }
-        }
-
-        float depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
-
-        if (osg::isNaN(depth))
-        {
-            OSG_NOTICE<<"CullVisitor::apply(Geode&) detected NaN,"<<std::endl
-                                    <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
-                                    <<"    matrix="<<matrix<<std::endl;
-            OSG_DEBUG << "    NodePath:" << std::endl;
-            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
-            {
-                OSG_DEBUG << "        \"" << (*i)->getName() << "\"" << std::endl;
-            }
-        }
-        else
-        {
-            addDrawableAndDepth(drawable,&matrix,depth);
-        }
-
-        for(unsigned int i=0;i< numPopStateSetRequired; ++i)
-        {
-            popStateSet();
-        }
-
-    }
 
     // pop the node's state off the geostate stack.
     if (node_state) popStateSet();
 
+    // pop the culling mode.
+    popCurrentMask();
+}
+
+void CullVisitor::apply(osg::Drawable& drawable)
+{
+    RefMatrix& matrix = *getModelViewMatrix();
+
+    const BoundingBox &bb =drawable.getBound();
+
+    if( drawable.getCullCallback() )
+    {
+        if( drawable.getCullCallback()->cull( this, &drawable, &_renderInfo ) == true )
+        return;
+    }
+
+    //else
+    {
+        if (getNodePath().back()->isCullingActive() && isCulled(bb)) return;
+    }
+
+
+    if (_computeNearFar && bb.valid())
+    {
+        if (!updateCalculatedNearFar(matrix,drawable,false)) return;
+    }
+
+    // need to track how push/pops there are, so we can unravel the stack correctly.
+    unsigned int numPopStateSetRequired = 0;
+
+    // push the geoset's state on the geostate stack.
+    StateSet* stateset = drawable.getStateSet();
+    if (stateset)
+    {
+        ++numPopStateSetRequired;
+        pushStateSet(stateset);
+    }
+
+    CullingSet& cs = getCurrentCullingSet();
+    if (!cs.getStateFrustumList().empty())
+    {
+        osg::CullingSet::StateFrustumList& sfl = cs.getStateFrustumList();
+        for(osg::CullingSet::StateFrustumList::iterator itr = sfl.begin();
+            itr != sfl.end();
+            ++itr)
+        {
+            if (itr->second.contains(bb))
+            {
+                ++numPopStateSetRequired;
+                pushStateSet(itr->first.get());
+            }
+        }
+    }
+
+    float depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
+
+    if (osg::isNaN(depth))
+    {
+        OSG_NOTICE<<"CullVisitor::apply(Geode&) detected NaN,"<<std::endl
+                                <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
+                                <<"    matrix="<<matrix<<std::endl;
+        OSG_DEBUG << "    NodePath:" << std::endl;
+        for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+        {
+            OSG_DEBUG << "        \"" << (*i)->getName() << "\"" << std::endl;
+        }
+    }
+    else
+    {
+        addDrawableAndDepth(&drawable,&matrix,depth);
+    }
+
+    for(unsigned int i=0;i< numPopStateSetRequired; ++i)
+    {
+        popStateSet();
+    }
 }
 
 
@@ -1057,8 +1060,8 @@ void CullVisitor::apply(Billboard& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    // traverse any call callbacks and traverse any children.
-    handle_cull_callbacks_and_traverse(node);
+    // Don't traverse billboard, since drawables are handled manually below
+    //handle_cull_callbacks_and_traverse(node);
 
     const Vec3& eye_local = getEyeLocal();
     const RefMatrix& modelview = *getModelViewMatrix();

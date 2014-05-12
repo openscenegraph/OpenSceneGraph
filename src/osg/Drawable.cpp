@@ -272,6 +272,11 @@ Drawable::~Drawable()
     dirtyDisplayList();
 }
 
+void Drawable::accept(NodeVisitor& nv)
+{
+    nv.apply(*this);
+}
+
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
 {
     osg::MatrixList matrices;

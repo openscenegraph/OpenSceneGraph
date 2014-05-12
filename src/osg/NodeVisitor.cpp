@@ -33,6 +33,7 @@
 #include <osg/Transform>
 #include <osg/Camera>
 #include <osg/CameraView>
+#include <osg/Geometry>
 
 #include <stdlib.h>
 
@@ -73,6 +74,16 @@ NodeVisitor::NodeVisitor(const NodeVisitor& nv, const osg::CopyOp& copyop):
 NodeVisitor::~NodeVisitor()
 {
     // if (_traversalVisitor) detach from _traversalVisitor;
+}
+
+void NodeVisitor::apply(Drawable& drawable)
+{
+    // It all ends here...
+}
+
+void NodeVisitor::apply(Geometry& drawable)
+{
+    apply(static_cast<Drawable&>(drawable));
 }
 
 void NodeVisitor::apply(Node& node)

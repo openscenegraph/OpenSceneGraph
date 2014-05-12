@@ -61,18 +61,7 @@ void GLObjectsVisitor::apply(osg::Geode& node)
         apply(*(node.getStateSet()));
     }
 
-    for(unsigned int i=0;i<node.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = node.getDrawable(i);
-        if (drawable)
-        {
-            apply(*drawable);
-            if (drawable->getStateSet())
-            {
-                apply(*(drawable->getStateSet()));
-            }
-        }
-    }
+    traverse(node);
 
     bool programSetAfter = _lastCompiledProgram.valid();
     if (!programSetBefore && programSetAfter)
@@ -119,6 +108,11 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
     if (_mode&RELEASE_DISPLAY_LISTS)
     {
         drawable.releaseGLObjects(_renderInfo.getState());
+    }
+
+    if (drawable.getStateSet())
+    {
+        apply(*(drawable.getStateSet()));
     }
 }
 

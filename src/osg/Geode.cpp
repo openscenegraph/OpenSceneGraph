@@ -48,6 +48,16 @@ Geode::~Geode()
     }
 }
 
+void Geode::traverse(NodeVisitor& nv)
+{
+    for(DrawableList::iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr)
+    {
+        (*itr)->accept(nv);
+    }
+}
+
 bool Geode::addDrawable( Drawable *drawable )
 {
     if (drawable /* && !containsDrawable(drawable)*/)

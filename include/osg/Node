@@ -148,7 +148,7 @@ class OSG_EXPORT Node : public Object
         virtual void traverse(NodeVisitor& /*nv*/) {}
 
         /** A vector of osg::Group pointers which is used to store the parent(s) of node.*/
-        typedef std::vector<Group*> ParentList;
+        typedef std::vector<Node*> ParentList;
 
         /** Get the parent list of node. */
         inline const ParentList& getParents() const { return _parents; }
@@ -157,20 +157,36 @@ class OSG_EXPORT Node : public Object
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
-        inline Group* getParent(unsigned int i)  { return _parents[i]; }
+        inline Node* getParent(unsigned int i)  { return _parents[i]; }
 
         /**
          * Get a single const parent of node.
          * @param i index of the parent to get.
          * @return the parent i.
          */
-        inline const Group* getParent(unsigned int i) const  { return _parents[i]; }
+        inline const Node* getParent(unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
         inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
+
+
+
+        /** Provide interface for Composite like Group nodes to implement.*/
+        virtual unsigned int getNumChildren() const { return 0; }
+
+        /** Provide interface for Composite like Group nodes to implement.*/
+        virtual bool addChild( Node* /*child*/ ) { return false; }
+
+        /** Provide interface for Composite like Group nodes to implement.*/
+        virtual bool removeChild( Node* /*child*/ ) { return false; }
+
+        /** Provide interface for Composite like Group nodes to implement.*/
+        virtual bool replaceChild( Node* /*origChild*/, Node* /*newChild*/ ) { return false; }
+
+
 
         /** Get the list of node paths parent paths.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
@@ -451,8 +467,8 @@ class OSG_EXPORT Node : public Object
         mutable BoundingSphere                  _boundingSphere;
         mutable bool                            _boundingSphereComputed;
 
-        void addParent(osg::Group* node);
-        void removeParent(osg::Group* node);
+        void addParent(osg::Node* node);
+        void removeParent(osg::Node* node);
 
         ParentList _parents;
         friend class osg::Group;

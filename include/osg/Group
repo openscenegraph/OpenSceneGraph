@@ -65,12 +65,7 @@ class OSG_EXPORT Group : public Node
           * and do not change the reference count of the Node.
           * Note, do not override, only override removeChildren(,) is required.
         */
-        inline bool removeChild( Node *child )
-        {
-            unsigned int pos = getChildIndex(child);
-            if (pos<_children.size()) return removeChildren(pos,1);
-            else return false;
-        }
+        virtual bool removeChild( Node *child );
 
         /** Remove Node from Group.
           * If Node is contained in Group then remove it from the child
@@ -90,14 +85,14 @@ class OSG_EXPORT Group : public Node
           * Note, must be override by subclasses of Group which add per child attributes.*/
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
-        /** Replace specified Node with another Node.
+        /** Replace specified child Node with another Node.
           * Equivalent to setChild(getChildIndex(orignChild),node)
           * See docs for setChild for further details on implementation.
           */
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
         /** Return the number of children nodes. */
-        inline unsigned int getNumChildren() const { return static_cast<unsigned int>(_children.size()); }
+        virtual unsigned int getNumChildren() const;
 
         /** Set child node at position i.
           * Return true if set correctly, false on failure (if node==NULL || i is out of range).

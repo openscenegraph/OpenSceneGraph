@@ -145,6 +145,20 @@ bool Group::insertChild( unsigned int index, Node *child )
     else return false;
 }
 
+unsigned int Group::getNumChildren() const
+{
+    return static_cast<unsigned int>(_children.size());
+}
+
+
+bool Group::removeChild( Node *child )
+{
+    unsigned int pos = getChildIndex(child);
+    if (pos<_children.size()) return removeChildren(pos,1);
+    else return false;
+}
+
+
 bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 {
     if (pos<_children.size() && numChildrenToRemove>0)

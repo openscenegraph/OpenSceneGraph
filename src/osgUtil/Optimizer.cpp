@@ -1387,7 +1387,7 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
                 pitr!=parents.end();
                 ++pitr)
             {
-                osg::Group* parent = *pitr;
+                osg::Node* parent = *pitr;
                 if (!dynamic_cast<osg::Sequence*>(parent) &&
                     !dynamic_cast<osg::Switch*>(parent) &&
                     strcmp(parent->className(),"MultiSwitch")!=0)
@@ -1580,7 +1580,7 @@ void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
             {
                 if (isOperationPermissibleForObject(&lod))
                 {
-                    _groupList.insert(lod.getParent(i));
+                    _groupList.insert(lod.getParent(i)->asGroup());
                 }
             }
         }

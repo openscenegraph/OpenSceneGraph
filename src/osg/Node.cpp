@@ -93,14 +93,14 @@ Node::~Node()
     setStateSet(0);
 }
 
-void Node::addParent(osg::Group* node)
+void Node::addParent(osg::Node* node)
 {
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 
     _parents.push_back(node);
 }
 
-void Node::removeParent(osg::Group* node)
+void Node::removeParent(osg::Node* node)
 {
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 

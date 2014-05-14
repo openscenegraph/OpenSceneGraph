@@ -654,7 +654,7 @@ protected:
                 {
                     for (unsigned int i=0; i<billboard->getNumDrawables(); ++i)
                     {
-                        osg::BoundingBox bb = billboard->getDrawable(i)->getBound();
+                        const osg::BoundingBox& bb = billboard->getDrawable(i)->getBoundingBox();
                         billboard->setPosition(i,bb.center());
 
                         osgUtil::TransformAttributeFunctor tf(osg::Matrix::translate(-bb.center()));
@@ -1168,7 +1168,7 @@ protected:
                 {
                     for (unsigned int i=0; i<billboard->getNumDrawables(); ++i)
                     {
-                        osg::BoundingBox bb = billboard->getDrawable(i)->getBound();
+                        const osg::BoundingBox& bb = billboard->getDrawable(i)->getBoundingBox();
                         billboard->setPosition(i,bb.center());
 
                         osgUtil::TransformAttributeFunctor tf(osg::Matrix::translate(-bb.center()));

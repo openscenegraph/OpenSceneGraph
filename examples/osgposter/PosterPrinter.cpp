@@ -44,13 +44,13 @@ public:
             {
                 double timeStamp = nv->getFrameStamp()?nv->getFrameStamp()->getReferenceTime():0.0;
                 unsigned int frameNumber = nv->getFrameStamp()?nv->getFrameStamp()->getFrameNumber():0;
-                
+
                 pagedLOD->setFrameNumberOfLastTraversal( frameNumber );
                 pagedLOD->setTimeStamp( numChildren-1, timeStamp );
                 pagedLOD->setFrameNumber( numChildren-1, frameNumber );
                 pagedLOD->getChild(numChildren-1)->accept(*nv);
             }
-            
+
             // Request for new child
             if ( !pagedLOD->getDisableExternalChildrenPaging() &&
                  nv->getDatabaseRequestHandler() &&
@@ -114,7 +114,7 @@ void PosterVisitor::apply( osg::PagedLOD& node )
         for ( unsigned int i=0; i<node.getNumFileNames(); ++i )
         {
             if ( node.getFileName(i).empty() ) continue;
-            
+
             PagedNodeNameSet::iterator itr = _pagedNodeNames.find( node.getFileName(i) );
             if ( itr!=_pagedNodeNames.end() )
             {
@@ -153,10 +153,10 @@ osgUtil::Intersector* PosterIntersector::clone( osgUtil::IntersectionVisitor& iv
     if ( iv.getProjectionMatrix() ) matrix.preMult( *iv.getProjectionMatrix() );
     if ( iv.getViewMatrix() ) matrix.preMult( *iv.getViewMatrix() );
     if ( iv.getModelMatrix() ) matrix.preMult( *iv.getModelMatrix() );
-    
+
     osg::Polytope transformedPolytope;
     transformedPolytope.setAndTransformProvidingInverse( _polytope, matrix );
-    
+
     osg::ref_ptr<PosterIntersector> pi = new PosterIntersector( transformedPolytope );
     pi->_intersectionVisitor = &iv;
     pi->_parent = this;
@@ -187,9 +187,9 @@ void PosterIntersector::reset()
 
 void PosterIntersector::intersect( osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable )
 {
-    if ( !_polytope.contains(drawable->getBound()) ) return;
+    if ( !_polytope.contains(drawable->getBoundingBox()) ) return;
     if ( iv.getDoDummyTraversal() ) return;
-    
+
     // Find and collect all paged LODs in the node path
     osg::NodePath& nodePath = iv.getNodePath();
     for ( osg::NodePath::iterator itr=nodePath.begin(); itr!=nodePath.end(); ++itr )
@@ -208,7 +208,7 @@ void PosterIntersector::intersect( osgUtil::IntersectionVisitor& iv, osg::Drawab
             }
             continue;
         }
-        
+
         /*osg::LOD* lod = dynamic_cast<osg::LOD*>(*itr);
         if ( lod )
         {
@@ -258,7 +258,7 @@ void PosterPrinter::frame( const osg::FrameStamp* fs, osg::Node* node )
     // and advance frame when all callbacks are dispatched.
     if ( addCullCallbacks(fs, node) )
         return;
-    
+
     if ( _isFinishing )
     {
         if ( (fs->getFrameNumber()-_lastBindingFrame)>2 )
@@ -270,16 +270,16 @@ void PosterPrinter::frame( const osg::FrameStamp* fs, osg::Node* node )
                 std::cout << "Writing final result to file..." << std::endl;
                 osgDB::writeImageFile( *_finalPoster, _outputPosterName );
             }
-            
+
             // Release all cull callbacks to free unused paged nodes
             removeCullCallbacks( node );
             _visitor->clearNames();
-            
+
             _isFinishing = false;
             std::cout << "Recording images finished." << std::endl;
         }
     }
-    
+
     if ( _isRunning )
     {
         // Every "copy-to-image" process seems to be finished in 2 frames.
@@ -288,11 +288,11 @@ void PosterPrinter::frame( const osg::FrameStamp* fs, osg::Node* node )
         {
             // Record images and unref them to free memory
             recordImages();
-            
+
             // Release all cull callbacks to free unused paged nodes
             removeCullCallbacks( node );
             _visitor->clearNames();
-            
+
             if ( _camera.valid() )
             {
                 std::cout << "Binding sub-camera " << _currentRow << "_" << _currentColumn
@@ -325,11 +325,11 @@ bool PosterPrinter::addCullCallbacks( const osg::FrameStamp* fs, osg::Node* node
 {
     if ( !_visitor->inQueue() || done() )
         return false;
-    
+
     _visitor->setAddingCallbacks( true );
     _camera->accept( *_visitor );
     _lastBindingFrame = fs->getFrameNumber();
-    
+
     std::cout << "Dispatching callbacks to paged nodes... "
               << _visitor->inQueue() << std::endl;
     return true;
@@ -345,19 +345,19 @@ void PosterPrinter::bindCameraToImage( osg::Camera* camera, int row, int col )
 {
     std::stringstream stream;
     stream << "image_" << row << "_" << col;
-    
+
     osg::ref_ptr<osg::Image> image = new osg::Image;
     image->setName( stream.str() );
     image->allocateImage( (int)_tileSize.x(), (int)_tileSize.y(), 1, GL_RGBA, GL_UNSIGNED_BYTE );
     _images[TilePosition(row,col)] = image.get();
-    
+
     // Calculate projection matrix offset of each tile
     osg::Matrix offsetMatrix =
         osg::Matrix::scale(_tileColumns, _tileRows, 1.0) *
         osg::Matrix::translate(_tileColumns-1-2*col, _tileRows-1-2*row, 0.0);
     camera->setViewMatrix( _currentViewMatrix );
     camera->setProjectionMatrix( _currentProjectionMatrix * offsetMatrix );
-    
+
     // Check intersections between the image-tile box and the model
     osgUtil::IntersectionVisitor iv( _intersector.get() );
     iv.setReadCallback( g_pagedLoadingCallback.get() );
@@ -368,7 +368,7 @@ void PosterPrinter::bindCameraToImage( osg::Camera* camera, int row, int col )
         // Apply a cull calback to every paged node obtained, to force the highest level displaying.
         // This will be done by the PosterVisitor, who already records all the paged nodes.
     }
-    
+
     // Reattach cameras and new allocated images
     camera->setRenderingCache( NULL );  // FIXME: Uses for reattaching camera with image, maybe inefficient?
     camera->detach( osg::Camera::COLOR_BUFFER );
@@ -391,7 +391,7 @@ void PosterPrinter::recordImages()
                 memcpy( target, source, image->s() * 4 * sizeof(unsigned char) );
             }
         }
-        
+
         if ( _outputTiles )
             osgDB::writeImageFile( *image, image->getName()+"."+_outputTileExt );
     }

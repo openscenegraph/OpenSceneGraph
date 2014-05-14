@@ -738,7 +738,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::B
 
 bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable, bool isBillboard)
 {
-    const osg::BoundingBox& bb = drawable.getBound();
+    const osg::BoundingBox& bb = drawable.getBoundingBox();
 
     value_type d_near, d_far;
 
@@ -981,7 +981,7 @@ void CullVisitor::apply(osg::Drawable& drawable)
 {
     RefMatrix& matrix = *getModelViewMatrix();
 
-    const BoundingBox &bb =drawable.getBound();
+    const BoundingBox &bb =drawable.getBoundingBox();
 
     if( drawable.getCullCallback() )
     {
@@ -1085,7 +1085,7 @@ void CullVisitor::apply(Billboard& node)
         node.computeMatrix(*billboard_matrix,eye_local,pos);
 
 
-        if (_computeNearFar && drawable->getBound().valid()) updateCalculatedNearFar(*billboard_matrix,*drawable,true);
+        if (_computeNearFar && drawable->getBoundingBox().valid()) updateCalculatedNearFar(*billboard_matrix,*drawable,true);
         float depth = distance(pos,modelview);
 /*
         if (_computeNearFar)

@@ -151,7 +151,7 @@ void HelpHandler::setUpScene(osgViewer::ViewerBase* viewer)
         label->setPosition(pos);
         label->setText(_applicationUsage->getDescription());
 
-        pos.x() = label->getBound().xMax();
+        pos.x() = label->getBoundingBox().xMax();
         pos.y() -= characterSize*2.5f;
     }
 

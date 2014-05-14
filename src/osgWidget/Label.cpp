@@ -141,7 +141,7 @@ void Label::setShadow(point_type offset) {
 }
 
 XYCoord Label::getTextSize() const {
-    osg::BoundingBox bb = _text->getBound();
+    const osg::BoundingBox& bb = _text->getBoundingBox();
 
     return XYCoord(
         osg::round(bb.xMax() - bb.xMin()),

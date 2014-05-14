@@ -1074,7 +1074,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             {
                 osg::Group* group = new osg::Group;
 
-                osg::BoundingBox box = text->getBound();
+                const osg::BoundingBox& box = text->getBoundingBox();
                 float shift = box.radius()+1.f;
 
                 // front
@@ -1518,8 +1518,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             case trpgBillboard::Individual:
             {
                 // compute center of billboard geometry
-                const osg::BoundingBox& bbox = geometry->getBound();
-                osg::Vec3 center ((bbox._min + bbox._max) * 0.5f);
+                const osg::BoundingBox& bbox = geometry->getBoundingBox();
+                osg::Vec3 center (bbox.center());
 
                 // make billboard geometry coordinates relative to computed center
                 osg::Matrix matrix;

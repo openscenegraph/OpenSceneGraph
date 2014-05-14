@@ -57,13 +57,13 @@ osg::Group* createHUDText()
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up different text layout
 //
 
     osg::Vec4 layoutColor(1.0f,1.0f,0.0f,1.0f);
-    float layoutCharacterSize = 20.0f;    
-    
+    float layoutCharacterSize = 20.0f;
+
     {
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
@@ -107,32 +107,32 @@ osg::Group* createHUDText()
         text->setText("text->setLayout(osgText::Text::VERTICAL);");
         geode->addDrawable(text);
     }
-    
-    
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up different font resolution
 //
 
     osg::Vec4 fontSizeColor(0.0f,1.0f,1.0f,1.0f);
     float fontSizeCharacterSize = 30;
-    
+
     osg::Vec3 cursor = osg::Vec3(margin*2,windowHeight-margin*2,0.0f);
-    
+
     {
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(fontSizeColor);
         text->setCharacterSize(fontSizeCharacterSize);
         text->setPosition(cursor);
-        
+
         // use text that uses 10 by 10 texels as a target resolution for fonts.
         text->setFontResolution(10,10); // blocky but small texture memory usage
-        
+
         text->setText("text->setFontResolution(10,10); // blocky but small texture memory usage");
         geode->addDrawable(text);
     }
-    
+
     cursor.y() -= fontSizeCharacterSize;
     {
         osgText::Text* text = new osgText::Text;
@@ -140,14 +140,14 @@ osg::Group* createHUDText()
         text->setColor(fontSizeColor);
         text->setCharacterSize(fontSizeCharacterSize);
         text->setPosition(cursor);
-        
+
         // use text that uses 20 by 20 texels as a target resolution for fonts.
         text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).
-        
+
         text->setText("text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).");
         geode->addDrawable(text);
     }
-    
+
     cursor.y() -= fontSizeCharacterSize;
     {
         osgText::Text* text = new osgText::Text;
@@ -155,38 +155,38 @@ osg::Group* createHUDText()
         text->setColor(fontSizeColor);
         text->setCharacterSize(fontSizeCharacterSize);
         text->setPosition(cursor);
-        
+
         // use text that uses 40 by 40 texels as a target resolution for fonts.
         text->setFontResolution(40,40); // even smoother but again higher texture memory usage.
-        
+
         text->setText("text->setFontResolution(40,40); // even smoother but again higher texture memory usage.");
         geode->addDrawable(text);
     }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up different sized text
 //
 
     osg::Vec4 characterSizeColor(1.0f,0.0f,1.0f,1.0f);
-    
+
     cursor.y() -= fontSizeCharacterSize*2.0f;
-    
+
     {
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(characterSizeColor);
         text->setFontResolution(20,20);
         text->setPosition(cursor);
-        
+
         // use text that is 20 units high.
         text->setCharacterSize(20); // small
-        
+
         text->setText("text->setCharacterSize(20.0f); // small");
         geode->addDrawable(text);
     }
-    
+
     cursor.y() -= 30.0f;
     {
         osgText::Text* text = new osgText::Text;
@@ -194,14 +194,14 @@ osg::Group* createHUDText()
         text->setColor(characterSizeColor);
         text->setFontResolution(30,30);
         text->setPosition(cursor);
-        
+
         // use text that is 30 units high.
         text->setCharacterSize(30.0f); // medium
-        
+
         text->setText("text->setCharacterSize(30.0f); // medium");
         geode->addDrawable(text);
     }
-    
+
     cursor.y() -= 50.0f;
     {
         osgText::Text* text = new osgText::Text;
@@ -209,17 +209,17 @@ osg::Group* createHUDText()
         text->setColor(characterSizeColor);
         text->setFontResolution(40,40);
         text->setPosition(cursor);
-        
+
         // use text that is 60 units high.
         text->setCharacterSize(60.0f); // large
-        
+
         text->setText("text->setCharacterSize(60.0f); // large");
         geode->addDrawable(text);
     }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up different alignments
 //
 
@@ -227,7 +227,7 @@ osg::Group* createHUDText()
     float alignmentCharacterSize = 25.0f;
     cursor.x() = 640;
     cursor.y() = margin*4.0f;
-    
+
     typedef std::pair<osgText::Text::AlignmentType,std::string> AlignmentPair;
     typedef std::vector<AlignmentPair> AlignmentList;
     AlignmentList alignmentList;
@@ -264,49 +264,49 @@ osg::Group* createHUDText()
             text->setCharacterSize(alignmentCharacterSize);
             text->setPosition(cursor);
             text->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
-            
+
             text->setAlignment(itr->first);
             text->setText(itr->second);
-            
+
             alignmentGeode->addDrawable(text);
 
 
         }
-        
+
     }
 
     sequence->setMode(osg::Sequence::START);
     sequence->setInterval(osg::Sequence::LOOP, 0, -1);
     sequence->setDuration(1.0f, -1);
-    
+
     rootNode->addChild(sequence);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up different fonts...
 //
 
     cursor.x() = margin*2.0f;
     cursor.y() = margin*2.0f;
-    
+
     osg::Vec4 fontColor(1.0f,0.5f,0.0f,1.0f);
     float fontCharacterSize = 20.0f;
     float spacing = 40.0f;
-    
+
     {
         osgText::Text* text = new osgText::Text;
         text->setColor(fontColor);
         text->setPosition(cursor);
         text->setCharacterSize(fontCharacterSize);
-        
+
         text->setFont(0);
         text->setText("text->setFont(0); // inbuilt font.");
         geode->addDrawable(text);
 
-        cursor.x() = text->getBound().xMax() + spacing ;
+        cursor.x() = text->getBoundingBox().xMax() + spacing ;
     }
-    
+
     {
         osgText::Font* arial = new osgText::Font(new osgQt::QFontImplementation(QFont("Arial")));
 
@@ -314,16 +314,16 @@ osg::Group* createHUDText()
         text->setColor(fontColor);
         text->setPosition(cursor);
         text->setCharacterSize(fontCharacterSize);
-        
+
         text->setFont(arial);
         text->setText(arial!=0?
                       "text->setFont(\"fonts/arial.ttf\");":
                       "unable to load \"fonts/arial.ttf\"");
         geode->addDrawable(text);
 
-        cursor.x() = text->getBound().xMax() + spacing ;
+        cursor.x() = text->getBoundingBox().xMax() + spacing ;
     }
-    
+
     {
         osgText::Font* times = new osgText::Font(new osgQt::QFontImplementation(QFont("Times")));
 
@@ -331,16 +331,16 @@ osg::Group* createHUDText()
         text->setColor(fontColor);
         text->setPosition(cursor);
         text->setCharacterSize(fontCharacterSize);
-        
+
         geode->addDrawable(text);
         text->setFont(times);
         text->setText(times!=0?
                       "text->setFont(\"fonts/times.ttf\");":
                       "unable to load \"fonts/times.ttf\"");
 
-        cursor.x() = text->getBound().xMax() + spacing ;
+        cursor.x() = text->getBoundingBox().xMax() + spacing ;
     }
-    
+
     cursor.x() = margin*2.0f;
     cursor.y() = margin;
 
@@ -351,34 +351,34 @@ osg::Group* createHUDText()
         text->setColor(fontColor);
         text->setPosition(cursor);
         text->setCharacterSize(fontCharacterSize);
-        
+
         text->setFont(dirtydoz);
         text->setText(dirtydoz!=0?
                       "text->setFont(\"fonts/dirtydoz.ttf\");":
                       "unable to load \"fonts/dirtydoz.ttf\"");
         geode->addDrawable(text);
 
-        cursor.x() = text->getBound().xMax() + spacing ;
+        cursor.x() = text->getBoundingBox().xMax() + spacing ;
     }
-    
+
     {
         osgText::Font* fudd = new osgText::Font(new osgQt::QFontImplementation(QFont("Times")));
-    
+
         osgText::Text* text = new osgText::Text;
         text->setColor(fontColor);
         text->setPosition(cursor);
         text->setCharacterSize(fontCharacterSize);
-        
+
         text->setFont(fudd);
         text->setText(fudd!=0?
                       "text->setFont(\"fonts/fudd.ttf\");":
                       "unable to load \"fonts/fudd.ttf\"");
         geode->addDrawable(text);
 
-        cursor.x() = text->getBound().xMax() + spacing ;
+        cursor.x() = text->getBoundingBox().xMax() + spacing ;
     }
-            
-    return rootNode;    
+
+    return rootNode;
 }
 
 
@@ -391,12 +391,12 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     osg::Geode* geode  = new osg::Geode;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    
+//
 // Examples of how to set up axis/orientation alignments
 //
 
     float characterSize=radius*0.2f;
-    
+
     osg::Vec3 pos(center.x()-radius*.5f,center.y()-radius*.5f,center.z()-radius*.5f);
 
     osgText::Text* text1 = new osgText::Text;
@@ -479,7 +479,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     osg::Group* rootNode = new osg::Group;
     rootNode->addChild(geode);
 
-    return rootNode;    
+    return rootNode;
 }
 
 class MainWindow : public QWidget {
@@ -535,7 +535,7 @@ int main(int argc, char** argv)
     // prepare scene.
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 1.0f;
-    
+
     // create the hud.
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -544,7 +544,7 @@ int main(int argc, char** argv)
     camera->setClearMask(GL_DEPTH_BUFFER_BIT);
     camera->addChild(createHUDText());
     camera->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    
+
     // make sure the root node is group so we can add extra nodes to it.
     osg::ref_ptr<osg::Group> group = new osg::Group;
     group->addChild(camera.get());
@@ -552,7 +552,7 @@ int main(int argc, char** argv)
 
     // The qt window
     MainWindow widget;
-    
+
     // set the scene to render
     widget.setSceneData(group.get());
     widget.setCameraManipulator(new osgGA::TrackballManipulator);

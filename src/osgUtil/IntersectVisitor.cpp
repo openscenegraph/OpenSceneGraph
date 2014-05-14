@@ -590,7 +590,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
 
     IntersectState* cis = _intersectStateStack.back().get();
 
-    const BoundingBox& bb = drawable.getBound();
+    const BoundingBox& bb = drawable.getBoundingBox();
 
     for(IntersectState::LineSegmentList::iterator sitr=cis->_segList.begin();
         sitr!=cis->_segList.end();

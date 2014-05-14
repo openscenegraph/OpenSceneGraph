@@ -285,7 +285,7 @@ public:
         {
             if (node.getDrawable(i))
             {
-                updateBound(node.getDrawable(i)->getBound());
+                updateBound(node.getDrawable(i)->getBoundingBox());
             }
         }
 
@@ -1870,7 +1870,7 @@ struct RenderLeafBounds
             // OSG_INFO<<"Reusing light_mvp "<<light_mvp<<std::endl;
         }
 
-        const osg::BoundingBox& bb = renderLeaf->_drawable->getBound();
+        const osg::BoundingBox& bb = renderLeaf->_drawable->getBoundingBox();
         if (bb.valid())
         {
             // OSG_NOTICE<<"checked extents of "<<renderLeaf->_drawable->getName()<<std::endl;

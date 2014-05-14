@@ -2876,7 +2876,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
     unsigned int i;
     for(i=0; i<geode->getNumDrawables(); ++i)
     {
-        bb.expandBy(geode->getDrawable(i)->getBound().center());
+        bb.expandBy(geode->getDrawable(i)->getBoundingBox().center());
     }
 
     float radius = bb.radius();

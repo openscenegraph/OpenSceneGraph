@@ -303,7 +303,7 @@ bool DePee::createHUD()
       osg::BoundingBox bb;
       for(unsigned int i=0;i<geode->getNumDrawables();++i)
         {
-	  bb.expandBy(geode->getDrawable(i)->getBound());
+	  bb.expandBy(geode->getDrawable(i)->getBoundingBox());
         }
 
       osg::Geometry* geom = new osg::Geometry;

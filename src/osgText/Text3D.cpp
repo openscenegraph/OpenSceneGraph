@@ -409,7 +409,7 @@ void Text3D::computeGlyphRepresentation()
     TextBase::computePositions();
 }
 
-osg::BoundingBox Text3D::computeBound() const
+osg::BoundingBox Text3D::computeBoundingBox() const
 {
     osg::BoundingBox  bbox;
 

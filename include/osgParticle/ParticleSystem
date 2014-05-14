@@ -243,7 +243,7 @@ namespace osgParticle
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
-        virtual osg::BoundingBox computeBound() const;
+        virtual osg::BoundingBox computeBoundingBox() const;
 
 #ifdef OSGPARTICLE_USE_ReadWriteMutex
         typedef OpenThreads::ReadWriteMutex ReadWriterMutex;

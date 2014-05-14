@@ -213,7 +213,7 @@ BoundingSphere Switch::computeBound() const
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
             if( _values[pos] == true )
-                bsphere.expandRadiusBy(_children[pos]->getBound());
+                bsphere.expandRadiusBy(static_cast<const BoundingSphere&>(_children[pos]->getBound()));
         }
     }
     return bsphere;

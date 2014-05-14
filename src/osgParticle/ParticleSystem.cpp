@@ -154,10 +154,10 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
             // Repopulate the death stack as it will have been invalidated by the sort.
             unsigned int numDead = _deadparts.size();
             if (numDead>0)
-            {            
+            {
                  // clear the death stack
                 _deadparts = Death_stack();
-                
+
                 // copy the tail of the _particles vector as this will contain all the dead Particle thanks to the depth sort against DBL_MAX
                 Particle* first_dead_ptr  = &_particles[_particles.size()-numDead];
                 Particle* last_dead_ptr  = &_particles[_particles.size()-1];
@@ -528,7 +528,7 @@ void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInf
     glDrawArrays(GL_POINTS, 0, _particles.size());
 }
 
-osg::BoundingBox osgParticle::ParticleSystem::computeBound() const
+osg::BoundingBox osgParticle::ParticleSystem::computeBoundingBox() const
 {
     if (!_bounds_computed)
     {

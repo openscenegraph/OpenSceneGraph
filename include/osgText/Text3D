@@ -113,7 +113,7 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
     //    // forcefully unloaded.
         friend class Font;
 
-        virtual osg::BoundingBox computeBound() const;
+        virtual osg::BoundingBox computeBoundingBox() const;
 
 
     protected:

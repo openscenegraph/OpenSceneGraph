@@ -18,6 +18,7 @@
 #include <osg/Object>
 #include <osg/StateSet>
 #include <osg/BoundingSphere>
+#include <osg/BoundingBox>
 #include <osg/NodeCallback>
 
 #include <string>
@@ -48,6 +49,46 @@ typedef std::vector< NodePath > NodePathList;
 
 /** A vector of NodePath, typically used to describe all the paths from a node to the potential root nodes it has.*/
 typedef std::vector< Matrix > MatrixList;
+
+#ifdef OSG_USE_BOUND
+struct Bound
+{
+    Bound():
+        bb(0),
+        bs(0) {}
+
+    Bound(const osg::BoundingSphere& bs):
+        bb(0),
+        bs(&bs) {}
+
+    Bound(const osg::BoundingBox& bb):
+        bb(&bb),
+        bs(0) {}
+
+    Bound(const osg::BoundingSphere& bs, const osg::BoundingBox& bb):
+        bb(&bb),
+        bs(&bs) {}
+
+    const osg::BoundingBox*    bb;
+    const osg::BoundingSphere* bs;
+
+    bool valid() const { return bs ? bs->valid() : false; }
+
+    const osg::Vec3& center() const { return bs->center(); }
+    float radius() const { return bs->radius(); }
+
+    float xMin() const { return bb->xMin(); }
+    float yMin() const { return bb->yMin(); }
+    float zMin() const { return bb->zMin(); }
+
+    float xMax() const { return bb->xMax(); }
+    float yMax() const { return bb->yMax(); }
+    float zMax() const { return bb->zMax(); }
+
+    operator const osg::BoundingBox& () const { return *bb; }
+    operator const osg::BoundingSphere& () const { return *bs; }
+};
+#endif
 
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
@@ -395,7 +436,23 @@ class OSG_EXPORT Node : public Object
 
         /** Get the bounding sphere of node.
            Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
-        inline const BoundingSphere& getBound() const
+#ifdef OSG_USE_BOUND
+        inline Bound getBound() const
+        {
+            if(!_boundingSphereComputed)
+            {
+                _boundingSphere = _initialBound;
+                if (_computeBoundCallback.valid())
+                    _boundingSphere.expandBy(_computeBoundCallback->computeBound(*this));
+                else
+                    _boundingSphere.expandBy(computeBound());
+
+                _boundingSphereComputed = true;
+            }
+            return Bound(_boundingSphere);
+        }
+#else
+        inline BoundingSphere getBound() const
         {
             if(!_boundingSphereComputed)
             {
@@ -409,7 +466,7 @@ class OSG_EXPORT Node : public Object
             }
             return _boundingSphere;
         }
-
+#endif
 
         /** Compute the bounding sphere around Node's geometry or children.
             This method is automatically called by getBound() when the bounding

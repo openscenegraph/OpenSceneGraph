@@ -174,7 +174,7 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 #endif
 }
 
-osg::BoundingBox LightPointDrawable::computeBound() const
+osg::BoundingBox LightPointDrawable::computeBoundingBox() const
 {
     osg::BoundingBox bbox;
 

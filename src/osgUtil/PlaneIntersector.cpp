@@ -656,8 +656,8 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     // OSG_NOTICE<<"PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     if (reachedLimit()) return;
-    if ( _plane.intersect( drawable->getBound() )!=0 ) return;
-    if ( !_polytope.contains( drawable->getBound() ) ) return;
+    if ( _plane.intersect( drawable->getBoundingBox() )!=0 ) return;
+    if ( !_polytope.contains( drawable->getBoundingBox() ) ) return;
 
     // OSG_NOTICE<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,7 +35,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
     public :
 
         LightPointDrawable();
-        
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         LightPointDrawable(const LightPointDrawable&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
@@ -44,7 +44,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const LightPointDrawable*>(obj)!=NULL; }
         virtual const char* className() const { return "LightPointDrawable"; }
 
-        
+
         //typedef std::pair<unsigned int,osg::Vec3> ColorPosition;
         struct ColorPosition
         {
@@ -53,7 +53,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
             ColorPosition() {}
             ColorPosition(unsigned int f,const osg::Vec3& s):first(f),second(s) {}
         };
-        
+
         void reset();
 
         inline unsigned int asRGBA(const osg::Vec4& color) const
@@ -78,7 +78,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
             if (pointSize>=_sizedBlendedLightPointList.size()) _sizedBlendedLightPointList.resize(pointSize+1);
             _sizedBlendedLightPointList[pointSize].push_back(ColorPosition(asRGBA(color),position));
         }
-        
+
         /** draw LightPoints. */
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
@@ -94,21 +94,21 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
             _simulationTimeInterval = osg::clampAbove(time-_simulationTime,0.0);
             _simulationTime = time;
         }
-        
+
         double getSimulationTime() const { return _simulationTime; }
         double getSimulationTimeInterval() const { return _simulationTimeInterval; }
-        
-        virtual osg::BoundingBox computeBound() const;
+
+        virtual osg::BoundingBox computeBoundingBox() const;
 
     protected:
-    
+
         virtual ~LightPointDrawable() {}
-        
+
         osg::Endian                     _endian;
-               
+
         double                          _simulationTime;
         double                          _simulationTimeInterval;
-        
+
         typedef std::vector<ColorPosition>  LightPointList;
         typedef std::vector<LightPointList> SizedLightPointList;
 
@@ -122,7 +122,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         osg::ref_ptr<osg::BlendFunc>    _blendOneMinusSrcAlpha;
         osg::ref_ptr<osg::ColorMask>    _colorMaskOff;
 
-        
+
 };
 
 }

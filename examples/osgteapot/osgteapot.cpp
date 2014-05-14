@@ -238,19 +238,19 @@ class Teapot : public osg::Drawable
             // teapot(..) doens't use vertex arrays at all so we don't need to toggle their state
             // if we did we'd need to something like following call
             // state.disableAllVertexArrays(), see src/osg/Geometry.cpp for the low down.
-        
+
             // just call the OpenGL code.
             teapot(14,GL_FILL);
         }
-        
-        
+
+
         // we need to set up the bounding box of the data too, so that the scene graph knows where this
         // objects is, for both positioning the camera at start up, and most importantly for culling.
-        virtual osg::BoundingBox computeBound() const
+        virtual osg::BoundingBox computeBoundingBox() const
         {
             osg::BoundingBox bbox;
 
-            // follow is some truely horrible code required to calculate the 
+            // follow is some truely horrible code required to calculate the
             // bounding box of the teapot.  Have used the original code above to do
             // help compute it.
             float p[4][4][3], q[4][4][3], r[4][4][3], s[4][4][3];
@@ -259,13 +259,13 @@ class Teapot : public osg::Drawable
             for (i = 0; i < 10; i++) {
               for (j = 0; j < 4; j++) {
                 for (k = 0; k < 4; k++) {
-                
+
                   for (l = 0; l < 3; l++) {
                     p[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
                     q[j][k][l] = cpdata[patchdata[i][j * 4 + (3 - k)]][l];
                     if (l == 1)
                       q[j][k][l] *= -1.0;
-                      
+
                     if (i < 6) {
                       r[j][k][l] =
                         cpdata[patchdata[i][j * 4 + (3 - k)]][l];
@@ -278,7 +278,7 @@ class Teapot : public osg::Drawable
                         s[j][k][l] *= -1.0;
                     }
                   }
-                  
+
                   bbox.expandBy(osg::Vec3(p[j][k][0],p[j][k][1],p[j][k][2]));
                   bbox.expandBy(osg::Vec3(q[j][k][0],q[j][k][1],q[j][k][2]));
 
@@ -287,8 +287,8 @@ class Teapot : public osg::Drawable
                     bbox.expandBy(osg::Vec3(r[j][k][0],r[j][k][1],r[j][k][2]));
                     bbox.expandBy(osg::Vec3(s[j][k][0],s[j][k][1],s[j][k][2]));
                   }
-                  
-                  
+
+
                 }
               }
             }
@@ -297,9 +297,9 @@ class Teapot : public osg::Drawable
         }
 
     protected:
-    
+
         virtual ~Teapot() {}
-        
+
 };
 
 
@@ -310,7 +310,7 @@ osg::Geode* createTeapot()
     // add the teapot to the geode.
     geode->addDrawable( new Teapot );
 
-    // add a reflection map to the teapot.     
+    // add a reflection map to the teapot.
     osg::Image* image = osgDB::readImageFile("Images/reflect.rgb");
     if (image)
     {
@@ -323,10 +323,10 @@ osg::Geode* createTeapot()
         osg::StateSet* stateset = new osg::StateSet;
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         stateset->setTextureAttributeAndModes(0,texgen,osg::StateAttribute::ON);
-        
+
         geode->setStateSet(stateset);
     }
-   
+
     return geode;
 }
 
@@ -335,8 +335,8 @@ int main(int , char **)
 #if 1
 
     // create viewer on heap as a test, this looks to be causing problems
-    // on init on some platforms, and seg fault on exit when multi-threading on linux.   
-    // Normal stack based version below works fine though... 
+    // on init on some platforms, and seg fault on exit when multi-threading on linux.
+    // Normal stack based version below works fine though...
 
     // construct the viewer.
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
@@ -345,7 +345,7 @@ int main(int , char **)
     viewer->setSceneData( createTeapot() );
 
     return viewer->run();
-    
+
 #else
 
     // construct the viewer.

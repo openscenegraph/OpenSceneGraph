@@ -812,9 +812,9 @@ class ShaderGeometry : public osg::Drawable
             }
         }
 
-        virtual osg::BoundingBox computeBound() const
+        virtual osg::BoundingBox computeBoundingBox() const
         {
-            osg::BoundingBox geom_box = _geometry->getBound();
+            osg::BoundingBox geom_box = _geometry->getBoundingBox();
             osg::BoundingBox bb;
             for(PositionSizeList::const_iterator itr = _trees.begin();
                 itr != _trees.end();

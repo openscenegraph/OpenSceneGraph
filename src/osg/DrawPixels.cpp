@@ -69,7 +69,7 @@ void DrawPixels::getSubImageDimensions(unsigned int& offsetX,unsigned int& offse
 }
 
 
-BoundingBox DrawPixels::computeBound() const
+BoundingBox DrawPixels::computeBoundingBox() const
 {
     // really needs to be dependent of view position and projection... will implement simple version right now.
     BoundingBox bbox;

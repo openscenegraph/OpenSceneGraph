@@ -1987,7 +1987,7 @@ void ShapeDrawable::accept(PrimitiveFunctor& pf) const
 }
 
 
-BoundingBox ShapeDrawable::computeBound() const
+BoundingBox ShapeDrawable::computeBoundingBox() const
 {
     BoundingBox bbox;
     if (_shape.valid())

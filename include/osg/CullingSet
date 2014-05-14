@@ -271,6 +271,12 @@ class OSG_EXPORT CullingSet : public Referenced
             return false;
         }
 
+        inline bool isCulled(const Bound& bound)
+        {
+            if (bound.bb) return isCulled(*bound.bb);
+            else return isCulled(*bound.bs);
+        }
+
         inline void pushCurrentMask()
         {
             _frustum.pushCurrentMask();

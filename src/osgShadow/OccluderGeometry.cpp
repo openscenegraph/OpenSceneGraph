@@ -904,7 +904,7 @@ void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 }
 
-osg::BoundingBox OccluderGeometry::computeBound() const
+osg::BoundingBox OccluderGeometry::computeBoundingBox() const
 {
     osg::BoundingBox bb;
     for(Vec3List::const_iterator itr =  _vertices.begin();
@@ -989,7 +989,7 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 }
 
-osg::BoundingBox ShadowVolumeGeometry::computeBound() const
+osg::BoundingBox ShadowVolumeGeometry::computeBoundingBox() const
 {
     osg::BoundingBox bb;
     for(Vec3List::const_iterator itr =  _vertices.begin();

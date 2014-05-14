@@ -559,7 +559,7 @@ void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawa
 {
     if (reachedLimit()) return;
 
-    if ( !_polytope.contains( drawable->getBound() ) ) return;
+    if ( !_polytope.contains( drawable->getBoundingBox() ) ) return;
 
     osg::TemplatePrimitiveFunctor<PolytopeIntersectorUtils::PolytopePrimitiveIntersector> func;
     func.setPolytope( _polytope, _referencePlane );

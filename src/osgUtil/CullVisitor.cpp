@@ -989,10 +989,7 @@ void CullVisitor::apply(osg::Drawable& drawable)
         return;
     }
 
-    //else
-    {
-        if (getNodePath().back()->isCullingActive() && isCulled(bb)) return;
-    }
+    if (!getNodePath().empty() && getNodePath().back()->isCullingActive() && isCulled(bb)) return;
 
 
     if (_computeNearFar && bb.valid())

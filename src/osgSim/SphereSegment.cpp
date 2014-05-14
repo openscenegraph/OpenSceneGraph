@@ -55,7 +55,7 @@ public:
 
     void drawImplementation(osg::RenderInfo& renderInfo) const;
 
-    virtual osg::BoundingBox computeBound() const;
+    virtual osg::BoundingBox computeBoundingBox() const;
 
 protected:
 
@@ -69,7 +69,7 @@ void SphereSegment::Surface::drawImplementation(osg::RenderInfo& renderInfo) con
     _ss->Surface_drawImplementation(*renderInfo.getState());
 }
 
-osg:: BoundingBox SphereSegment::Surface::computeBound() const
+osg:: BoundingBox SphereSegment::Surface::computeBoundingBox() const
 {
     osg:: BoundingBox bbox;
     _ss->Surface_computeBound(bbox);
@@ -114,7 +114,7 @@ protected:
     }
 
 
-    virtual osg::BoundingBox computeBound() const;
+    virtual osg::BoundingBox computeBoundingBox() const;
 
 private:
 
@@ -126,7 +126,7 @@ void SphereSegment::EdgeLine::drawImplementation(osg::RenderInfo& renderInfo) co
     _ss->EdgeLine_drawImplementation(*renderInfo.getState());
 }
 
-osg::BoundingBox SphereSegment::EdgeLine::computeBound() const
+osg::BoundingBox SphereSegment::EdgeLine::computeBoundingBox() const
 {
     osg::BoundingBox bbox;
     _ss->EdgeLine_computeBound(bbox);
@@ -167,7 +167,7 @@ protected:
             "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
     }
 
-    virtual osg::BoundingBox computeBound() const;
+    virtual osg::BoundingBox computeBoundingBox() const;
 
 private:
     SphereSegment* _ss;
@@ -181,7 +181,7 @@ void SphereSegment::Side::drawImplementation(osg::RenderInfo& renderInfo) const
     _ss->Side_drawImplementation(*renderInfo.getState(), _planeOrientation, _BoundaryAngle);
 }
 
-osg::BoundingBox SphereSegment::Side::computeBound() const
+osg::BoundingBox SphereSegment::Side::computeBoundingBox() const
 {
     osg::BoundingBox bbox;
     _ss->Side_computeBound(bbox, _planeOrientation, _BoundaryAngle);
@@ -230,7 +230,7 @@ protected:
         //getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
     }
 
-    virtual osg::BoundingBox computeBound() const;
+    virtual osg::BoundingBox computeBoundingBox() const;
 
 private:
     SphereSegment* _ss;
@@ -242,7 +242,7 @@ void SphereSegment::Spoke::drawImplementation(osg::RenderInfo& renderInfo) const
     _ss->Spoke_drawImplementation(*renderInfo.getState(), _azAngle, _elevAngle);
 }
 
-osg::BoundingBox SphereSegment::Spoke::computeBound() const
+osg::BoundingBox SphereSegment::Spoke::computeBoundingBox() const
 {
     osg::BoundingBox bbox;
     _ss->Spoke_computeBound(bbox, _azAngle, _elevAngle);
@@ -1049,7 +1049,7 @@ class PolytopeVisitor : public osg::NodeVisitor
             {
                 for(unsigned int i=0; i<node.getNumDrawables(); ++i)
                 {
-                    if (_polytopeStack.back().second.contains(node.getDrawable(i)->getBound()))
+                    if (_polytopeStack.back().second.contains(node.getDrawable(i)->getBoundingBox()))
                     {
                         _hits.push_back(Hit(_polytopeStack.back().first,getNodePath(),node.getDrawable(i)));
                     }

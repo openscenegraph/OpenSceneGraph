@@ -264,7 +264,7 @@ public:
     virtual void releaseGLObjects(osg::State* state=0) const;
 
 
-    virtual osg::BoundingBox computeBound() const;
+    virtual osg::BoundingBox computeBoundingBox() const;
 
 protected:
 

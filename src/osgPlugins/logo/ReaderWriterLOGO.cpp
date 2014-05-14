@@ -200,7 +200,7 @@ class Logos: public osg::Drawable
             return (n != 0);
         }
 
-        virtual osg::BoundingBox computeBound() const
+        virtual osg::BoundingBox computeBoundingBox() const
         {
             return osg::BoundingBox( -1, -1, -1, 1, 1, 1);
         }

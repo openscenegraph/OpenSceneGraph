@@ -268,7 +268,7 @@ void TextBase::setBoundingBoxMargin(float margin)
 }
 
 
-osg::BoundingBox TextBase::computeBound() const
+osg::BoundingBox TextBase::computeBoundingBox() const
 {
     osg::BoundingBox  bbox;
 

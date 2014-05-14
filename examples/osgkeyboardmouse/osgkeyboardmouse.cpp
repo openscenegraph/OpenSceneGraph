@@ -44,12 +44,12 @@ class CreateModelToSaveVisitor : public osg::NodeVisitor
 public:
 
     CreateModelToSaveVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)        
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
         _group = new osg::Group;
         _addToModel = false;
     }
-    
+
     virtual void apply(osg::Node& node)
     {
         osgFX::Scribe* scribe = dynamic_cast<osgFX::Scribe*>(&node);
@@ -65,7 +65,7 @@ public:
             traverse(node);
         }
     }
-    
+
     osg::ref_ptr<osg::Group> _group;
     bool _addToModel;
 };
@@ -75,10 +75,10 @@ class DeleteSelectedNodesVisitor : public osg::NodeVisitor
 public:
 
     DeleteSelectedNodesVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)        
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
     }
-    
+
     virtual void apply(osg::Node& node)
     {
         osgFX::Scribe* scribe = dynamic_cast<osgFX::Scribe*>(&node);
@@ -91,7 +91,7 @@ public:
             traverse(node);
         }
     }
-    
+
     void pruneSelectedNodes()
     {
         for(SelectedNodes::iterator itr = _selectedNodes.begin();
@@ -104,21 +104,21 @@ public:
                 pitr != parents.end();
                 ++pitr)
             {
-                osg::Group* parent = *pitr;
+                osg::Node* parent = *pitr;
                 parent->removeChild(node);
             }
         }
     }
-    
+
     typedef std::vector< osg::ref_ptr<osgFX::Scribe> > SelectedNodes;
     SelectedNodes _selectedNodes;
-    
+
 };
 
 // class to handle events with a pick
-class PickHandler : public osgGA::GUIEventHandler 
+class PickHandler : public osgGA::GUIEventHandler
 {
-public: 
+public:
 
     PickHandler():
         _mx(0.0),_my(0.0),
@@ -139,7 +139,7 @@ public:
                 if (ea.getKey()=='s')
                 {
                     saveSelectedModel(viewer->getSceneData());
-                }                
+                }
                 else if (ea.getKey()=='o')
                 {
                     osg::notify(osg::NOTICE)<<"Saved model to file 'saved_model.osgt'"<<std::endl;
@@ -189,7 +189,7 @@ public:
                     pick(ea,viewer);
                 }
                 return true;
-            }    
+            }
 
             default:
                 return false;
@@ -248,7 +248,7 @@ public:
                 node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
                 parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
 
-                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size "<<nodePath.size()<<std::endl;    
+                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size "<<nodePath.size()<<std::endl;
                 toggleScribe(parent, node);
             }
 
@@ -284,7 +284,7 @@ public:
                 if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
                 toggleScribe(parent, node);
             }
-        }        
+        }
 
         // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
     }
@@ -319,10 +319,10 @@ public:
     void saveSelectedModel(osg::Node* scene)
     {
         if (!scene) return;
-    
+
         CreateModelToSaveVisitor cmtsv;
         scene->accept(cmtsv);
-        
+
         if (cmtsv._group->getNumChildren()>0)
         {
             std::cout<<"Writing selected compoents to 'selected_model.osgt'"<<std::endl;
@@ -340,19 +340,19 @@ protected:
 int main( int argc, char **argv )
 {
     osg::ref_ptr<osg::Node> loadedModel;
-    
+
     // load the scene.
     if (argc>1) loadedModel = osgDB::readNodeFile(argv[1]);
-    
+
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osgt");
-    
-    if (!loadedModel) 
+
+    if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
         return 1;
     }
-    
+
     // create the window to draw to.
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 200;
@@ -376,7 +376,7 @@ int main( int argc, char **argv )
     viewer.getCamera()->setGraphicsContext(gc.get());
     viewer.getCamera()->setViewport(0,0,800,600);
     viewer.setSceneData(loadedModel.get());
-    
+
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
     viewer.setCameraManipulator( new osgGA::TrackballManipulator );
 

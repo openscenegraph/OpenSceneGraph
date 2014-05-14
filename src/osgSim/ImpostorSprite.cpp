@@ -114,7 +114,7 @@ void ImpostorSprite::drawImplementation(osg::RenderInfo& renderInfo) const
     gl.End();
 }
 
-osg::BoundingBox ImpostorSprite::computeBound() const
+osg::BoundingBox ImpostorSprite::computeBoundingBox() const
 {
     osg::BoundingBox bbox;
     bbox.expandBy(_coords[0]);

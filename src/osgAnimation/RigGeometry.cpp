@@ -34,7 +34,7 @@ osg::BoundingBox RigComputeBoundingBoxCallback::computeBound(const osg::Drawable
 
     // if the computing of bb is invalid (like no geometry inside)
     // then dont tag the bounding box as computed
-    osg::BoundingBox bb = rig.computeBound();
+    osg::BoundingBox bb = rig.computeBoundingBox();
     if (!bb.valid())
         return bb;
 

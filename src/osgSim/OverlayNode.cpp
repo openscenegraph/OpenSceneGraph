@@ -1248,7 +1248,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
             osg::BoundingSphere bs;
             for(unsigned int i=0; i<camera->getNumChildren(); ++i)
             {
-                bs.expandBy(camera->getChild(i)->getBound());
+                bs.expandBy(static_cast<const osg::BoundingSphere&>(camera->getChild(i)->getBound()));
             }
 
             if (bs.valid())

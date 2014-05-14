@@ -149,7 +149,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         // for debugging purposes.
         osg::Vec4 _color;
 
-        virtual osg::BoundingBox computeBound() const;
+        virtual osg::BoundingBox computeBoundingBox() const;
 
         /** Set the camera node to use for pre rendering the impostor sprite's texture.*/
         void setCamera(osg::Camera* camera) { _camera = camera; }

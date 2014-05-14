@@ -387,7 +387,8 @@ BoundingSphere Group::computeBound() const
         const osg::Transform* transform = (*itr)->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            bsphere.expandRadiusBy((*itr)->getBound());
+            const BoundingSphere& bs = (*itr)->getBound();
+            bsphere.expandRadiusBy(bs);
         }
     }
 

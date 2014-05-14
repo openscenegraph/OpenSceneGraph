@@ -42,33 +42,33 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
-osg::Vec3 wind(1.0f,0.0f,0.0f);            
+osg::Vec3 wind(1.0f,0.0f,0.0f);
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
 {
-    // set up the animation path 
+    // set up the animation path
     osg::AnimationPath* animationPath = new osg::AnimationPath;
     animationPath->setLoopMode(osg::AnimationPath::LOOP);
-    
+
     int numSamples = 40;
     float yaw = 0.0f;
     float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
     float roll = osg::inDegrees(30.0f);
-    
+
     double time=0.0f;
     double time_delta = looptime/(double)numSamples;
     for(int i=0;i<numSamples;++i)
     {
         osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
         osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
-        
+
         animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
 
         yaw += yaw_delta;
         time += time_delta;
 
     }
-    return animationPath;    
+    return animationPath;
 }
 
 osg::Node* createMovingModel(const osg::Vec3& center, float radius)
@@ -90,9 +90,9 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                                      osg::Matrix::scale(size,size,size)*
                                      osg::Matrix::rotate(osg::inDegrees(-90.0f),0.0f,0.0f,1.0f));
-    
+
         positioned->addChild(glider);
-    
+
         osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;
         xform->setDataVariance(osg::Object::DYNAMIC);
         xform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
@@ -101,7 +101,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
         model->addChild(xform);
     }
- 
+
     osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
     if (cessna)
     {
@@ -114,10 +114,10 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                                      osg::Matrix::scale(size,size,size)*
                                      osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,1.0f));
-    
+
         //positioned->addChild(cessna);
         positioned->addChild(cessna);
-    
+
         osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setDataVariance(osg::Object::DYNAMIC);
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,1.0));
@@ -125,7 +125,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
         model->addChild(xform);
     }
-    
+
     return model;
 }
 
@@ -135,8 +135,8 @@ osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
     const osg::BoundingSphere& bs = subgraph->getBound();
     float zMax = bs.center().z()+bs.radius();
     float zMin = bs.center().z()-bs.radius();
-    
-    osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = 
+
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
         new osgUtil::LineSegmentIntersector(osg::Vec3(x,y,zMin),osg::Vec3(x,y,zMax));
 
     osgUtil::IntersectionVisitor iv(intersector.get());
@@ -190,13 +190,13 @@ void build_world(osg::Group *root)
             }
         }
         terrainGeode->addDrawable(new osg::ShapeDrawable(grid));
-        
+
         root->addChild(terrainGeode);
-    }    
+    }
 
 
     // create particle effects
-    {    
+    {
         osg::Vec3 position = computeTerrainIntersection(terrainGeode,100.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 10.0f);
@@ -214,9 +214,9 @@ void build_world(osg::Group *root)
         root->addChild(smoke);
         root->addChild(fire);
     }
-    
+
     // create particle effects
-    {    
+    {
         osg::Vec3 position = computeTerrainIntersection(terrainGeode,200.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 1.0f);
@@ -244,10 +244,10 @@ void build_world(osg::Group *root)
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
-public: 
+public:
 
-    PickHandler() {}        
-    
+    PickHandler() {}
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
     {
         switch(ea.getEventType())
@@ -266,9 +266,9 @@ public:
 
     void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
     {
-        osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());       
+        osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());
         if (!root) return;
-        
+
         osgUtil::LineSegmentIntersector::Intersections intersections;
         if (viewer->computeIntersections(ea,intersections))
         {
@@ -286,7 +286,7 @@ public:
                     if (transform->getDataVariance()==osg::Object::DYNAMIC) handleMovingModels=true;
                 }
             }
-            
+
             osg::Vec3 position = handleMovingModels ? hit.getLocalIntersectPoint() : hit.getWorldIntersectPoint();
             float scale = 10.0f * ((float)rand() / (float)RAND_MAX);
             float intensity = 1.0f;
@@ -299,7 +299,7 @@ public:
                 smoke =  new osgParticle::SmokeTrailEffect(position, scale, intensity);
             else
                 smoke =  new osgParticle::SmokeEffect(position, scale, intensity);
-            
+
             explosion->setWind(wind);
             explosionDebri->setWind(wind);
             smoke->setWind(wind);
@@ -310,17 +310,17 @@ public:
             effectsGroup->addChild(explosionDebri);
             effectsGroup->addChild(smoke);
             effectsGroup->addChild(fire);
-            
+
 
             if (handleMovingModels)
             {
                 // insert particle effects alongside the hit node, therefore able to track that nodes movement,
                 // however, this does require us to insert the ParticleSystem itself into the root of the scene graph
                 // separately from the the main particle effects group which contains the emitters and programs.
-                // the follow code block implements this, note the path for handling particle effects which arn't attached to 
+                // the follow code block implements this, note the path for handling particle effects which arn't attached to
                 // moving models is easy - just a single line of code!
-            
-                // tell the effects not to attach to the particle system locally for rendering, as we'll handle add it into the 
+
+                // tell the effects not to attach to the particle system locally for rendering, as we'll handle add it into the
                 // scene graph ourselves.
                 explosion->setUseLocalParticleSystem(false);
                 explosionDebri->setUseLocalParticleSystem(false);
@@ -333,8 +333,8 @@ public:
                 // is found then this needs to be inserted above the hit node, and then the
                 // particle effect can be inserted into this.
                 osg::ref_ptr<osg::Node> hitNode = hit.nodePath.back();
-                osg::Node::ParentList parents = hitNode->getParents();                
-                osg::Group* insertGroup = 0;
+                osg::Node::ParentList parents = hitNode->getParents();
+                osg::Node* insertGroup = 0;
                 unsigned int numGroupsFound = 0;
                 for(osg::Node::ParentList::iterator itr=parents.begin();
                     itr!=parents.end();
@@ -345,7 +345,7 @@ public:
                         ++numGroupsFound;
                         insertGroup = *itr;
                     }
-                }                
+                }
                 if (numGroupsFound==parents.size() && numGroupsFound==1 && insertGroup)
                 {
                     osg::notify(osg::INFO)<<"PickHandler::pick(,) hit node's parent is a single osg::Group so we can simple the insert the particle effects group here."<<std::endl;
@@ -354,7 +354,7 @@ public:
                     insertGroup->addChild(effectsGroup);
                 }
                 else
-                {            
+                {
                     osg::notify(osg::INFO)<<"PickHandler::pick(,) hit node doesn't have an appropriate osg::Group node to insert particle effects into, inserting a new osg::Group."<<std::endl;
                     insertGroup = new osg::Group;
                     for(osg::Node::ParentList::iterator itr=parents.begin();
@@ -374,7 +374,7 @@ public:
                 geode->addDrawable(explosionDebri->getParticleSystem());
                 geode->addDrawable(smoke->getParticleSystem());
                 geode->addDrawable(fire->getParticleSystem());
-                
+
                 root->addChild(geode);
 
             }
@@ -385,15 +385,15 @@ public:
                 root->addChild(effectsGroup);
             }
 
-#if 0            
+#if 0
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(position,scale)));
             group->addChild(geode);
 #endif
- 
+
         }
     }
-    
+
 protected:
     virtual ~PickHandler() {}
 };
@@ -403,7 +403,7 @@ void insertParticle(osg::Group* root, const osg::Vec3& center, float radius)
 {
     bool handleMovingModels = false;
 
-    osg::Vec3 position = center + 
+    osg::Vec3 position = center +
                osg::Vec3( radius * (((float)rand() / (float)RAND_MAX)-0.5)*2.0,
                           radius * (((float)rand() / (float)RAND_MAX)-0.5)*2.0,
                           0.0f);
@@ -445,15 +445,15 @@ int main(int, char **)
 
     // register the pick handler
     viewer.addEventHandler(new PickHandler());
-    
+
     osg::Group *root = new osg::Group;
     build_world(root);
 
     osgUtil::Optimizer optimizer;
     optimizer.optimize(root);
-   
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);
-        
+
     return viewer.run();
 }

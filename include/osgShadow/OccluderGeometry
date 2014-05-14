@@ -69,7 +69,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
         /** Compute the bounding box around occluder geometry.*/
-        virtual osg::BoundingBox computeBound() const;
+        virtual osg::BoundingBox computeBoundingBox() const;
 
         typedef std::vector<osg::Vec3> Vec3List;
         typedef std::vector<GLuint> UIntList;
@@ -240,7 +240,7 @@ class OSGSHADOW_EXPORT ShadowVolumeGeometry : public osg::Drawable
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
         /** Compute the bounding box around occluder geometry.*/
-        virtual osg::BoundingBox computeBound() const;
+        virtual osg::BoundingBox computeBoundingBox() const;
 
     public:
 

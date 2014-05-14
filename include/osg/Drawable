@@ -19,6 +19,7 @@
 #include <osg/BufferObject>
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
+#include <osg/Node>
 
 
 #ifndef GL_NV_occlusion_query
@@ -90,7 +91,7 @@ class ArrayDispatchers;
  *  <tt>Geode</tt>s, so that the same geometry (loaded to memory just once) can
  *  be used in different parts of the scene graph.
 */
-class OSG_EXPORT Drawable : public Object
+class OSG_EXPORT Drawable : public Node
 {
     public:
 
@@ -103,9 +104,7 @@ class OSG_EXPORT Drawable : public Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Drawable(const Drawable& drawable,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Drawable"; }
+        META_Node(osg, Drawable);
 
         /** Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<Geometry*>(this).*/
@@ -115,60 +114,12 @@ class OSG_EXPORT Drawable : public Object
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
 
-        /** Visitor Pattern : calls the apply method of a NodeVisitor with this drawable's type.*/
-        virtual void accept(NodeVisitor& nv);
-
         /** Compute the DataVariance based on an assessment of callback etc.*/
         virtual void computeDataVariance();
-
-
-        /** A vector of osg::Node pointers which is used to store the parent(s) of drawable.*/
-        typedef std::vector<Node*> ParentList;
-
-        /** Get the parent list of drawable. */
-        inline const ParentList& getParents() const { return _parents; }
-
-        /** Get the a copy of parent list of node. A copy is returned to
-          * prevent modification of the parent list.*/
-        inline ParentList getParents() { return _parents; }
-
-        /** Get a single parent of Drawable.
-          * @param i index of the parent to get.
-          * @return the parent i.
-          */
-        inline Node* getParent(unsigned int i)  { return _parents[i]; }
-        /** Get a single const parent of Drawable.
-          * @param i index of the parent to get.
-          * @return the parent i.
-          */
-        inline const Node* getParent(unsigned int i) const  { return _parents[i]; }
-
-        /**
-         * Get the number of parents of node.
-         * @return the number of parents of this node.
-         */
-        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
         MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
-
-
-        /** Set the StateSet attached to the Drawable.
-            Previously attached StateSet are automatically unreferenced on
-            assignment of a new drawstate.*/
-        void setStateSet(StateSet* stateset);
-
-        /** Get the attached StateSet.*/
-        inline StateSet* getStateSet() { return _stateset.get();}
-
-        /** Get the attached const StateSet.*/
-        inline const StateSet* getStateSet() const { return _stateset.get();}
-
-        /** Get the attached const StateSet,
-          * if one is not already attached create one,
-          * attach it to the drawable and return a pointer to it.*/
-        StateSet* getOrCreateStateSet();
 
 
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
@@ -177,32 +128,30 @@ class OSG_EXPORT Drawable : public Object
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         const BoundingBox& getInitialBound() const { return _initialBound; }
 
-        /** Dirty the bounding box, forcing a computeBound() on the next call
-          * to getBound(). Should be called in the internal geometry of the Drawable
-          * is modified.*/
-        void dirtyBound();
-
         /** Get BoundingBox of Drawable.
           * If the BoundingBox is not up to date then its updated via an internal call to computeBond().
           */
-        inline const BoundingBox& getBound() const
+        inline const BoundingBox& getBoundingBox() const
         {
-            if(!_boundingBoxComputed)
+            if(!_boundingSphereComputed)
             {
                 _boundingBox = _initialBound;
                 if (_computeBoundCallback.valid())
                     _boundingBox.expandBy(_computeBoundCallback->computeBound(*this));
                 else
-                    _boundingBox.expandBy(computeBound());
+                    _boundingBox.expandBy(computeBoundingBox());
 
-                _boundingBoxComputed = true;
+                _boundingSphereComputed = true;
             }
             return _boundingBox;
         }
 
 
+        /** Compute the bounding sphere around Drawables's geometry.*/
+        virtual BoundingSphere computeBound() const;
+
         /** Compute the bounding box around Drawables's geometry.*/
-        virtual BoundingBox computeBound() const;
+        virtual BoundingBox computeBoundingBox() const;
 
         /** Callback to allow users to override the default computation of bounding volume. */
         struct ComputeBoundingBoxCallback : public osg::Object
@@ -418,7 +367,7 @@ class OSG_EXPORT Drawable : public Object
           * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
           * and drawImplementation(RenderInfo&) handling the actual drawing itself.
           * @param renderInfo The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
-        virtual void drawImplementation(RenderInfo& renderInfo) const = 0;
+        virtual void drawImplementation(RenderInfo& /*renderInfo*/) const {}
 
 
         /** Return a OpenGL display list handle a newly generated or reused from display list cache. */
@@ -810,19 +759,12 @@ class OSG_EXPORT Drawable : public Object
 
         virtual ~Drawable();
 
-
         /** set the bounding box .*/
         void setBound(const BoundingBox& bb) const;
 
-        void addParent(osg::Node* node);
-        void removeParent(osg::Node* node);
-
-        ParentList _parents;
         friend class Node;
         friend class Geode;
         friend class StateSet;
-
-        ref_ptr<StateSet>       _stateset;
 
         BoundingBox                         _initialBound;
         ref_ptr<ComputeBoundingBoxCallback> _computeBoundCallback;
@@ -840,14 +782,7 @@ class OSG_EXPORT Drawable : public Object
         mutable GLObjectList    _globjList;
 
         ref_ptr<UpdateCallback> _updateCallback;
-        unsigned int _numChildrenRequiringUpdateTraversal;
-        void setNumChildrenRequiringUpdateTraversal(unsigned int num);
-        unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
-
         ref_ptr<EventCallback>  _eventCallback;
-        unsigned int _numChildrenRequiringEventTraversal;
-        void setNumChildrenRequiringEventTraversal(unsigned int num);
-        unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
 
         ref_ptr<CullCallback>   _cullCallback;
         ref_ptr<DrawCallback>   _drawCallback;

@@ -110,7 +110,7 @@ bool BuildKdTree::build(KdTree::BuildOptions& options, osg::Geometry* geometry)
 
     if (vertices->size() <= options._targetNumTrianglesPerLeaf) return false;
 
-    _bb = geometry->getBound();
+    _bb = geometry->getBoundingBox();
     _kdTree.setVertices(vertices);
 
     unsigned int estimatedSize = (unsigned int)(2.0*float(vertices->size())/float(options._targetNumTrianglesPerLeaf));

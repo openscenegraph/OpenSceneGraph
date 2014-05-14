@@ -437,7 +437,7 @@ class OSG_EXPORT Node : public Object
         /** Get the bounding sphere of node.
            Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
 #ifdef OSG_USE_BOUND
-        inline Bound getBound() const
+        virtual Bound getBound() const
         {
             if(!_boundingSphereComputed)
             {
@@ -452,7 +452,7 @@ class OSG_EXPORT Node : public Object
             return Bound(_boundingSphere);
         }
 #else
-        inline BoundingSphere getBound() const
+        inline const BoundingSphere& getBound() const
         {
             if(!_boundingSphereComputed)
             {

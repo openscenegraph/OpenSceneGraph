@@ -77,7 +77,7 @@ void ComputeBoundsVisitor::apply(osg::Geode& geode)
 
 void ComputeBoundsVisitor::applyDrawable(osg::Drawable* drawable)
 {
-    applyBoundingBox(drawable->getBound());
+    applyBoundingBox(drawable->getBoundingBox());
 }
 
 void ComputeBoundsVisitor::applyBoundingBox(const osg::BoundingBox& bbox)

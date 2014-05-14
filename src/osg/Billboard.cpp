@@ -317,7 +317,7 @@ BoundingSphere Billboard::computeBound() const
     for( i = 0; i < ngsets; i++ )
     {
         const Drawable *gset = _drawables[i].get();
-        const BoundingBox& bbox = gset->getBound();
+        const BoundingBox& bbox = gset->getBoundingBox();
 
         bsphere._center += bbox.center();
         bsphere._center += _positionList[i];
@@ -329,7 +329,7 @@ BoundingSphere Billboard::computeBound() const
     for( i = 0; i < ngsets; ++i )
     {
         const Drawable *gset = _drawables[i].get();
-        const BoundingBox& bbox = gset->getBound();
+        const BoundingBox& bbox = gset->getBoundingBox();
         Vec3 local_center = bsphere._center-_positionList[i];
         for(unsigned int c=0;c<8;++c)
         {

@@ -1149,7 +1149,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateLabel->setPosition(pos);
         frameRateLabel->setText("Frame Rate: ");
 
-        pos.x() = frameRateLabel->getBound().xMax();
+        pos.x() = frameRateLabel->getBoundingBox().xMax();
 
         osg::ref_ptr<osgText::Text> frameRateValue = new osgText::Text;
         geode->addDrawable( frameRateValue.get() );
@@ -1347,7 +1347,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageLabel->setPosition(pos);
                 averageLabel->setText("DatabasePager time to merge new tiles - average: ");
 
-                pos.x() = averageLabel->getBound().xMax();
+                pos.x() = averageLabel->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
                 _statsGeode->addDrawable( averageValue.get() );
@@ -1358,7 +1358,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageValue->setPosition(pos);
                 averageValue->setText("1000");
 
-                pos.x() = averageValue->getBound().xMax() + 2.0f*_characterSize;
+                pos.x() = averageValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
 
                 osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
@@ -1370,7 +1370,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minLabel->setPosition(pos);
                 minLabel->setText("min: ");
 
-                pos.x() = minLabel->getBound().xMax();
+                pos.x() = minLabel->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
                 _statsGeode->addDrawable( minValue.get() );
@@ -1381,7 +1381,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minValue->setPosition(pos);
                 minValue->setText("1000");
 
-                pos.x() = minValue->getBound().xMax() + 2.0f*_characterSize;
+                pos.x() = minValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
                 osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
                 _statsGeode->addDrawable( maxLabel.get() );
@@ -1392,7 +1392,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxLabel->setPosition(pos);
                 maxLabel->setText("max: ");
 
-                pos.x() = maxLabel->getBound().xMax();
+                pos.x() = maxLabel->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
                 _statsGeode->addDrawable( maxValue.get() );
@@ -1403,7 +1403,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxValue->setPosition(pos);
                 maxValue->setText("1000");
 
-                pos.x() = maxValue->getBound().xMax();
+                pos.x() = maxValue->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> requestsLabel = new osgText::Text;
                 _statsGeode->addDrawable( requestsLabel.get() );
@@ -1414,7 +1414,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestsLabel->setPosition(pos);
                 requestsLabel->setText("requests: ");
 
-                pos.x() = requestsLabel->getBound().xMax();
+                pos.x() = requestsLabel->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> requestList = new osgText::Text;
                 _statsGeode->addDrawable( requestList.get() );
@@ -1425,7 +1425,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestList->setPosition(pos);
                 requestList->setText("0");
 
-                pos.x() = requestList->getBound().xMax() + 2.0f*_characterSize;;
+                pos.x() = requestList->getBoundingBox().xMax() + 2.0f*_characterSize;;
 
                 osg::ref_ptr<osgText::Text> compileLabel = new osgText::Text;
                 _statsGeode->addDrawable( compileLabel.get() );
@@ -1436,7 +1436,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileLabel->setPosition(pos);
                 compileLabel->setText("tocompile: ");
 
-                pos.x() = compileLabel->getBound().xMax();
+                pos.x() = compileLabel->getBoundingBox().xMax();
 
                 osg::ref_ptr<osgText::Text> compileList = new osgText::Text;
                 _statsGeode->addDrawable( compileList.get() );
@@ -1447,7 +1447,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileList->setPosition(pos);
                 compileList->setText("0");
 
-                pos.x() = maxLabel->getBound().xMax();
+                pos.x() = maxLabel->getBoundingBox().xMax();
 
                 _statsGeode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), requestList.get(), compileList.get(), 1000.0));
             }
@@ -1626,7 +1626,7 @@ void StatsHandler::createTimeStatsLine(const std::string& lineLabel,
     label->setPosition(pos);
     label->setText(lineLabel + ": ");
 
-    pos.x() = label->getBound().xMax();
+    pos.x() = label->getBoundingBox().xMax();
 
     osg::ref_ptr<osgText::Text> value = new osgText::Text;
     _statsGeode->addDrawable( value.get() );

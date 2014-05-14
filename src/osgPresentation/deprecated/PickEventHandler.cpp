@@ -80,7 +80,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         cloned_ea->setTouchData(NULL);
 
                         // reproject mouse-coord
-                        const osg::BoundingBox bb(hitr->drawable->getBound());
+                        const osg::BoundingBox bb(hitr->drawable->getBoundingBox());
                         const osg::Vec3& p(hitr->localIntersectionPoint);
 
                         float transformed_x = (p.x() - bb.xMin()) / (bb.xMax() - bb.xMin());
@@ -106,7 +106,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
 
 
                         // reproject touch-points
-                        const osg::BoundingBox bb(hitr->drawable->getBound());
+                        const osg::BoundingBox bb(hitr->drawable->getBoundingBox());
 
                         osg::Camera* camera = viewer->getCamera();
                         osg::Matrix matrix = osg::computeLocalToWorld(hitr->nodePath, false) * camera->getViewMatrix() * camera->getProjectionMatrix();

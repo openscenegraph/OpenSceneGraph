@@ -82,7 +82,11 @@ public:
     // an attempt to return a reasonable bounding box. Still does not prevent clipping of the heat map.
     virtual const osg::BoundingBox& getBoundingBox() const {return m_bounds;}
     virtual osg::BoundingBox computeBoundingBox() const {return m_bounds;}
+#ifdef OSG_USE_BOUND
+    virtual osg::Bound getBound() const { return osg::Bound(m_bounds, m_bounds); }
+#else
     virtual const osg::BoundingSphere& getBound() const {return m_bsphere;}
+#endif
 
 protected:
     osg::BoundingBox m_bounds;

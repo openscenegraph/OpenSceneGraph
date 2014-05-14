@@ -108,7 +108,7 @@ void RayIntersector::intersect(IntersectionVisitor& iv, Drawable* drawable)
 
     // clip ray to finite line segment
     Vec3d s(_start), e;
-    if (!intersectAndClip(s, _direction, e, drawable->getBound())) return;
+    if (!intersectAndClip(s, _direction, e, drawable->getBoundingBox())) return;
 
     // dummy traversal
     if (iv.getDoDummyTraversal()) return;

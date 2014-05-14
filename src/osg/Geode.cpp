@@ -65,7 +65,7 @@ bool Geode::addDrawable( Drawable *drawable )
         // fallback for handling geometry with deprecated data
         osg::Geometry* geometry = drawable->asGeometry();
         if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
-        
+
         // note ref_ptr<> automatically handles incrementing drawable's reference count.
         _drawables.push_back(drawable);
 
@@ -204,7 +204,7 @@ BoundingSphere Geode::computeBound() const
         itr!=_drawables.end();
         ++itr)
     {
-        _bbox.expandBy((*itr)->getBound());
+        _bbox.expandBy((*itr)->getBoundingBox());
     }
 
     if (_bbox.valid())

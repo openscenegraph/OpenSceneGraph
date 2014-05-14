@@ -128,6 +128,20 @@ class OSG_EXPORT Drawable : public Node
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         const BoundingBox& getInitialBound() const { return _initialBound; }
 
+#ifdef OSG_USE_BOUND
+        virtual Bound getBound() const
+        {
+            if(!_boundingSphereComputed) getBoundingBox();
+            return Bound(_boundingSphere, _boundingBox);
+        }
+#else
+        inline const BoundingSphere& getBound() const
+        {
+            if(!_boundingSphereComputed) getBoundingBox();
+            return _boundingSphere;
+        }
+#endif
+
         /** Get BoundingBox of Drawable.
           * If the BoundingBox is not up to date then its updated via an internal call to computeBond().
           */

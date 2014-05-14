@@ -4,7 +4,7 @@ WriterCompareTriangle::WriterCompareTriangle(const osg::Geode& geode,
                                              unsigned int      nbVertices)
                                              :    geode(geode)
 {
-    cutscene(nbVertices, geode.getDrawable(0)->asGeometry()->getBound());
+    cutscene(nbVertices, geode.getDrawable(0)->asGeometry()->getBoundingBox());
 }
 
 bool

@@ -264,7 +264,7 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
 
         // Stay as long as possible in model space to minimize matrix ops
         if( rl && rl->_modelview == modelview && rl->_projection == projection ){
-            bb.expandBy( rl->_drawable->getBound() );
+            bb.expandBy( rl->_drawable->getBoundingBox() );
         } else {
             if( bb.valid() ) {
                 // Conditions to avoid matrix multiplications
@@ -292,7 +292,7 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
                     bbResult.expandBy( bb.corner( i ) * *ptrModelToWorld );
             }
             if( !rl ) break;
-            bb = rl->_drawable->getBound();
+            bb = rl->_drawable->getBoundingBox();
             modelview = rl->_modelview;
             projection = rl->_projection;
         }
@@ -331,7 +331,7 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
         if(rl->_modelview == NULL )
             rl->_drawable->dirtyBound();
 
-        bb = rl->_drawable->getBound();
+        bb = rl->_drawable->getBoundingBox();
         if( !bb.valid() ) continue;
 
         // Stay as long as possible in model space to minimize matrix ops

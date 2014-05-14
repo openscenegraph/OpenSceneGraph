@@ -833,7 +833,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
     text->setText(bullet);
 
-    osg::BoundingBox bb = text->getBound();
+    const osg::BoundingBox& bb = text->getBoundingBox();
 
     // note, this increment is only "correct" when text is on the plane of the slide..
     // will need to make this more general later.
@@ -882,7 +882,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
     }
     text->setText(paragraph);
 
-    osg::BoundingBox bb = text->getBound();
+    const osg::BoundingBox& bb = text->getBoundingBox();
 
     // note, this increment is only "correct" when text is on the plane of the slide..
     // will need to make this more general later.

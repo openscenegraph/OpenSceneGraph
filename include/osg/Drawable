@@ -157,6 +157,8 @@ class OSG_EXPORT Drawable : public Node
 
                 _boundingSphereComputed = true;
             }
+            _boundingSphere.set(_boundingBox.center(), _boundingBox.radius());
+
             return _boundingBox;
         }
 

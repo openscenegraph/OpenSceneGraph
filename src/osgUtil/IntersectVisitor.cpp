@@ -399,7 +399,6 @@ void IntersectVisitor::apply(Node& node)
     leaveNode();
 }
 
-
 struct TriangleHit
 {
     TriangleHit(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
@@ -659,6 +658,12 @@ bool IntersectVisitor::intersect(Drawable& drawable)
 
     return hitFlag;
 
+}
+
+
+void IntersectVisitor::apply(Drawable& drawable)
+{
+    intersect(drawable);
 }
 
 void IntersectVisitor::apply(Geode& geode)

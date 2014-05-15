@@ -29,7 +29,7 @@ namespace osg
 class NullStreamBuffer : public std::streambuf
 {
 private:
-    std::streamsize xsputn(const std::streambuf::char_type */*str*/, std::streamsize n)
+    std::streamsize xsputn(const std::streambuf::char_type * /*str*/, std::streamsize n)
     {
         return n;
     }

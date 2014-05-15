@@ -223,6 +223,11 @@ void IntersectionVisitor::apply(osg::Group& group)
     leave();
 }
 
+void IntersectionVisitor::apply(osg::Drawable& drawable)
+{
+    intersect( &drawable );
+}
+
 void IntersectionVisitor::apply(osg::Geode& geode)
 {
     // OSG_NOTICE<<"apply(Geode&)"<<std::endl;

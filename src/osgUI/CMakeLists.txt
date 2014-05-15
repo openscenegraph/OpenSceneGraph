@@ -31,6 +31,7 @@ SET(TARGET_SRC
 
 SET(TARGET_LIBRARIES
     osgDB
+    osgGA
     osgUtil
     osgText
     osg

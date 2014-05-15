@@ -21,7 +21,10 @@
 #include <osg/Matrix>
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
+
+#ifdef OSG_USE_BOUND
 #include <osg/Node>
+#endif
 
 #include <vector>
 

@@ -35,16 +35,10 @@ class OSG_EXPORT Geometry : public Drawable
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Geometry(const Geometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        virtual Object* cloneType() const { return new Geometry(); }
-        virtual Object* clone(const CopyOp& copyop) const { return new Geometry(*this,copyop); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Geometry"; }
+        META_Node(osg, Geometry);
 
         virtual Geometry* asGeometry() { return this; }
         virtual const Geometry* asGeometry() const { return this; }
-
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
 
         bool empty() const;
 

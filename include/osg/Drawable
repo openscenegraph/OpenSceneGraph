@@ -106,13 +106,8 @@ class OSG_EXPORT Drawable : public Node
 
         META_Node(osg, Drawable);
 
-        /** Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
-          * Equivalent to dynamic_cast<Geometry*>(this).*/
-        virtual Geometry* asGeometry() { return 0; }
-
-        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
-          * Equivalent to dynamic_cast<const Geometry*>(this).*/
-        virtual const Geometry* asGeometry() const { return 0; }
+        virtual Drawable* asDrawable() { return this; }
+        virtual const Drawable* asDrawable() const { return this; }
 
         /** Compute the DataVariance based on an assessment of callback etc.*/
         virtual void computeDataVariance();

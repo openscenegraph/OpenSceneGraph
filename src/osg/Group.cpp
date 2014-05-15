@@ -15,6 +15,7 @@
 #include <osg/BoundingBox>
 #include <osg/Transform>
 #include <osg/OccluderNode>
+#include <osg/Drawable>
 #include <osg/Notify>
 
 #include <stdio.h>
@@ -366,11 +367,20 @@ BoundingSphere Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        const osg::Transform* transform = (*itr)->asTransform();
+        osg::Node* child = itr->get();
+        const osg::Transform* transform = child->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            const osg::BoundingSphere& bs = (*itr)->getBound();
-            bb.expandBy(bs);
+            osg::Drawable* drawable = child->asDrawable();
+            if (drawable)
+            {
+                bb.expandBy(drawable->getBoundingBox());
+            }
+            else
+            {
+                const osg::BoundingSphere& bs = child->getBound();
+                bb.expandBy(bs);
+            }
         }
     }
 
@@ -385,10 +395,11 @@ BoundingSphere Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        const osg::Transform* transform = (*itr)->asTransform();
+        osg::Node* child = itr->get();
+        const osg::Transform* transform = child->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            const BoundingSphere& bs = (*itr)->getBound();
+            const BoundingSphere& bs = child->getBound();
             bsphere.expandRadiusBy(bs);
         }
     }

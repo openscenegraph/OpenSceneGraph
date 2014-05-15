@@ -34,6 +34,8 @@ namespace osg {
 
 // forcing declare classes to enable declaration of as*() methods.
 class NodeVisitor;
+class Drawable;
+class Geometry;
 class Group;
 class Transform;
 class Node;
@@ -131,6 +133,20 @@ class OSG_EXPORT Node : public Object
 
         /** return the name of the node's class type.*/
         virtual const char* className() const { return "Node"; }
+
+        /** convert 'this' into a Drawable pointer if Node is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<Group*>(this).*/
+        virtual Drawable* asDrawable() { return 0; }
+        /** convert 'const this' into a const Drawable pointer if Node is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<const Group*>(this).*/
+        virtual const Drawable* asDrawable() const { return 0; }
+
+        /** convert 'this' into a Geometry pointer if Node is a Geometry, otherwise return 0.
+          * Equivalent to dynamic_cast<Group*>(this).*/
+        virtual Geometry* asGeometry() { return 0; }
+        /** convert 'const this' into a const Geometry pointer if Node is a Geometry, otherwise return 0.
+          * Equivalent to dynamic_cast<const Group*>(this).*/
+        virtual const Geometry* asGeometry() const { return 0; }
 
         /** convert 'this' into a Group pointer if Node is a Group, otherwise return 0.
           * Equivalent to dynamic_cast<Group*>(this).*/

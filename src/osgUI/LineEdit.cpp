@@ -16,6 +16,7 @@
 #include <osgText/String>
 #include <osgText/Font>
 #include <osgText/Text>
+#include <osg/Notify>
 
 using namespace osgUI;
 
@@ -31,6 +32,8 @@ LineEdit::LineEdit(const osgUI::LineEdit& label, const osg::CopyOp& copyop):
 
 bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
+    OSG_NOTICE<<"LineEdit::handleImplementation"<<std::endl;
+
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
@@ -47,6 +50,9 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
                 _text.push_back(ea->getKey());
             }
             dirty();
+
+            OSG_NOTICE<<"Key pressed : "<<ea->getKey()<<std::endl;
+
             break;
         default:
             break;
@@ -57,13 +63,29 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
 void LineEdit::createGraphicsImplementation()
 {
-    OSG_NOTICE<<"LineEdit::createGraphicsImplementation()"<<std::endl;
 
-    Widget::createGraphicsImplementation();
+    if (_textDrawable.valid())
+    {
+        OSG_NOTICE<<"LineEdit::createGraphicsImplementation() updating existing TextDrawable"<<std::endl;
+        _textDrawable->setText(_text);
+        _graphicsInitialized = true;
+    }
+    else
+    {
+        OSG_NOTICE<<"LineEdit::createGraphicsImplementation()"<<std::endl;
 
-    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+        Widget::createGraphicsImplementation();
 
-    removeChildren(0, getNumChildren());
-
-    addChild(style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text));
+        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+        osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+        _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+        _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+#if 0
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        geode->addDrawable(_textDrawable.get());
+        addChild(geode.get());
+#else
+        addChild(_textDrawable.get());
+#endif
+    }
 }

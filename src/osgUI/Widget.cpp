@@ -56,6 +56,8 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
     osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
     if (ev && aa)
     {
+        // OSG_NOTICE<<"updateFocus"<<std::endl;
+
         osgGA::EventQueue::Events& events = ev->getEvents();
         for(osgGA::EventQueue::Events::iterator itr = events.begin();
             itr != events.end();
@@ -167,7 +169,7 @@ void Widget::enter()
 
 void Widget::enterImplementation()
 {
-    OSG_NOTICE<<"enter()"<<std::endl;
+    OSG_NOTICE<<"Widget::enter()"<<std::endl;
 }
 
 void Widget::leave()
@@ -185,7 +187,7 @@ void Widget::leave()
 
 void Widget::leaveImplementation()
 {
-    OSG_NOTICE<<"leave()"<<std::endl;
+    OSG_NOTICE<<"Widget::leave()"<<std::endl;
 }
 
 void Widget::traverse(osg::NodeVisitor& nv)
@@ -215,11 +217,13 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
 {
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
 
-
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
     if (ev)
     {
+
         updateFocus(nv);
+
+        // OSG_NOTICE<<"EventTraversal getHasEventFocus()="<<getHasEventFocus()<<std::endl;
 
         if (getHasEventFocus())
         {

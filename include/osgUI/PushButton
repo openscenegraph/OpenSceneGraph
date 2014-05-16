@@ -11,34 +11,39 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUI_LABEL
-#define OSGUI_LABEL
+#ifndef OSGUI_PUSHBUTTON
+#define OSGUI_PUSHBUTTON
 
 #include <osgUI/Widget>
+#include <osg/Switch>
 #include <osgText/Text>
 
 namespace osgUI
 {
 
-class OSGUI_EXPORT Label : public osgUI::Widget
+class OSGUI_EXPORT PushButton : public osgUI::Widget
 {
 public:
-    Label();
-    Label(const Label& label, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-    META_Node(osgUI, Label);
+    PushButton();
+    PushButton(const PushButton& label, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Node(osgUI, PushButton);
 
     void setText(const std::string& text) { _text = text; dirty(); }
     std::string& getText() { return _text; }
     const std::string& getText() const { return _text; }
 
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
     virtual void createGraphicsImplementation();
+    virtual void enterImplementation();
+    virtual void leaveImplementation();
 
 protected:
-    virtual ~Label() {}
+    virtual ~PushButton() {}
 
     std::string                         _text;
 
     // implementation detail
+    osg::ref_ptr<osg::Switch>           _buttonSwitch;
     osg::ref_ptr<osgText::Text>         _textDrawable;
 };
 

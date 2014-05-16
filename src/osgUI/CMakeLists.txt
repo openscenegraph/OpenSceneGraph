@@ -12,6 +12,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Widget
     ${HEADER_PATH}/Label
     ${HEADER_PATH}/LineEdit
+    ${HEADER_PATH}/PushButton
     ${HEADER_PATH}/Style
     ${HEADER_PATH}/AlignmentSettings
     ${HEADER_PATH}/FrameSettings
@@ -22,6 +23,7 @@ SET(TARGET_SRC
     Widget.cpp
     Label.cpp
     LineEdit.cpp
+    PushButton.cpp
     Style.cpp
     AlignmentSettings.cpp
     FrameSettings.cpp

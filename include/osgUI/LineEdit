@@ -42,7 +42,6 @@ protected:
 
     // implementation detail
     osg::ref_ptr<osgText::Text>         _textDrawable;
-    osg::ref_ptr<osg::Geode>            _textGeode;
 };
 
 }

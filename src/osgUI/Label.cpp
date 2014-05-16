@@ -33,8 +33,18 @@ void Label::createGraphicsImplementation()
 {
     OSG_NOTICE<<"Label::createGraphicsImplementation()"<<std::endl;
 
-    Widget::createGraphicsImplementation();
+    if (_textDrawable.valid())
+    {
+        _textDrawable->setText(_text);
+        _graphicsInitialized = true;
+    }
+    else
+    {
+        Widget::createGraphicsImplementation();
 
-    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-    addChild(style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text));
+        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+        osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+        _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+        addChild(node.get());
+    }
 }

@@ -13,6 +13,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Label
     ${HEADER_PATH}/LineEdit
     ${HEADER_PATH}/PushButton
+    ${HEADER_PATH}/ComboBox
     ${HEADER_PATH}/Style
     ${HEADER_PATH}/AlignmentSettings
     ${HEADER_PATH}/FrameSettings
@@ -24,6 +25,7 @@ SET(TARGET_SRC
     Label.cpp
     LineEdit.cpp
     PushButton.cpp
+    ComboBox.cpp
     Style.cpp
     AlignmentSettings.cpp
     FrameSettings.cpp

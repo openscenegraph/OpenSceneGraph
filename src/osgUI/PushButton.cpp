@@ -24,9 +24,9 @@ PushButton::PushButton()
 {
 }
 
-PushButton::PushButton(const osgUI::PushButton& label, const osg::CopyOp& copyop):
-    Widget(label, copyop),
-    _text(label._text)
+PushButton::PushButton(const osgUI::PushButton& pb, const osg::CopyOp& copyop):
+    Widget(pb, copyop),
+    _text(pb._text)
 {
 }
 

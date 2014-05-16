@@ -25,7 +25,7 @@ class OSGUI_EXPORT PushButton : public osgUI::Widget
 {
 public:
     PushButton();
-    PushButton(const PushButton& label, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    PushButton(const PushButton& pb, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Node(osgUI, PushButton);
 
     void setText(const std::string& text) { _text = text; dirty(); }

@@ -41,17 +41,29 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
     switch(ea->getEventType())
     {
         case(osgGA::GUIEventAdapter::SCROLL):
-            OSG_NOTICE<<"Scroll "<<std::endl;
             if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_DOWN)
             {
-                OSG_NOTICE<<"Scroll Down`"<<std::endl;
                 if (getCurrentItem()<getNumItems()-1) setCurrentItem(getCurrentItem()+1);
+                return true;
             }
             else if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_UP)
             {
-                OSG_NOTICE<<"Scroll Up`"<<std::endl;
                 if (getCurrentItem()>0) setCurrentItem(getCurrentItem()-1);
+                return true;
             }
+            break;
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+            if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Down)
+            {
+                if (getCurrentItem()<getNumItems()-1) setCurrentItem(getCurrentItem()+1);
+                return true;
+            }
+            else if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Up)
+            {
+                if (getCurrentItem()>0) setCurrentItem(getCurrentItem()-1);
+                return true;
+            }
+
             break;
         case(osgGA::GUIEventAdapter::PUSH):
             OSG_NOTICE<<"Button pressed "<<std::endl;

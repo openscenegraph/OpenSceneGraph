@@ -1,0 +1,92 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+
+#include <osgUI/Popup>
+#include <osgText/String>
+#include <osgText/Font>
+#include <osgText/Text>
+#include <osg/Notify>
+
+using namespace osgUI;
+
+Popup::Popup()
+{
+}
+
+Popup::Popup(const osgUI::Popup& dialog, const osg::CopyOp& copyop):
+    Widget(dialog, copyop),
+    _title(dialog._title)
+{
+}
+
+bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+{
+    OSG_NOTICE<<"Popup::handleImplementation"<<std::endl;
+
+    osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
+    if (!ea) return false;
+
+    switch(ea->getEventType())
+    {
+        //case(osgGA::GUIEventAdapter::KEYDOWN):
+        case(osgGA::GUIEventAdapter::KEYUP):
+            OSG_NOTICE<<"Key pressed : "<<(char)ea->getKey()<<std::endl;
+
+            if (ea->getKey()=='c')
+            {
+                close();
+                ea->setHandled(true);
+
+                return true;
+            }
+
+            break;
+        default:
+            break;
+    }
+
+    return false;
+}
+
+void Popup::close()
+{
+    if (_transform.valid()) _transform->setNodeMask(0x0);
+}
+
+void Popup::open()
+{
+    if (_transform.valid()) _transform->setNodeMask(0xffffffff);
+}
+
+void Popup::leaveImplementation()
+{
+    close();
+}
+
+void Popup::createGraphicsImplementation()
+{
+
+    OSG_NOTICE<<"Popup::createGraphicsImplementation()"<<std::endl;
+
+    Widget::createGraphicsImplementation();
+
+    _transform = new osg::PositionAttitudeTransform;
+    addChild(_transform.get());
+
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+
+    osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
+
+    _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
+}

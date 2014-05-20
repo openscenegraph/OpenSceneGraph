@@ -13,6 +13,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Label
     ${HEADER_PATH}/LineEdit
     ${HEADER_PATH}/Dialog
+    ${HEADER_PATH}/Popup
     ${HEADER_PATH}/PushButton
     ${HEADER_PATH}/ComboBox
     ${HEADER_PATH}/Style
@@ -26,6 +27,7 @@ SET(TARGET_SRC
     Label.cpp
     LineEdit.cpp
     Dialog.cpp
+    Popup.cpp
     PushButton.cpp
     ComboBox.cpp
     Style.cpp

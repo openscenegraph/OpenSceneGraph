@@ -43,13 +43,20 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
             if (ea->getKey()==osgGA::GUIEventAdapter::KEY_BackSpace ||
                 ea->getKey()==osgGA::GUIEventAdapter::KEY_Delete)
             {
-                if (!_text.empty()) _text.erase(_text.size()-1, 1);
+                if (!_text.empty())
+                {
+                    _text.erase(_text.size()-1, 1);
+                    if (_textDrawable) _textDrawable->setText(_text);
+                    return true;
+
+                }
             }
             else if (ea->getKey()>=32 && ea->getKey()<=0xff00)
             {
                 _text.push_back(ea->getKey());
+                if (_textDrawable) _textDrawable->setText(_text);
+                return true;
             }
-            dirty();
 
             OSG_NOTICE<<"Key pressed : "<<ea->getKey()<<std::endl;
 
@@ -60,6 +67,14 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
     return false;
 }
+
+void LineEdit::setText(const std::string& text)
+{
+    _text = text;
+    if (_textDrawable) _textDrawable->setText(_text);
+}
+
+
 
 void LineEdit::createGraphicsImplementation()
 {

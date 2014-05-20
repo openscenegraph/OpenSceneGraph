@@ -39,13 +39,15 @@ bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
     switch(ea->getEventType())
     {
-        case(osgGA::GUIEventAdapter::KEYDOWN):
+        //case(osgGA::GUIEventAdapter::KEYDOWN):
+        case(osgGA::GUIEventAdapter::KEYUP):
             OSG_NOTICE<<"Key pressed : "<<ea->getKey()<<std::endl;
 
-            if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Escape)
+            if (ea->getKey()=='c')
             {
                 close();
-                dirty();
+                ea->setHandled(true);
+
                 return true;
             }
 

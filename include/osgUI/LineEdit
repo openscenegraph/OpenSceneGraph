@@ -29,8 +29,7 @@ public:
 
     virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
 
-    void setText(const std::string& text) { _text = text; dirty(); }
-    std::string& getText() { return _text; }
+    void setText(const std::string& text);
     const std::string& getText() const { return _text; }
 
     virtual void createGraphicsImplementation();

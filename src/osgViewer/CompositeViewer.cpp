@@ -1120,6 +1120,10 @@ void CompositeViewer::eventTraversal()
             {
                 osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
                 if (!event) continue;
+
+                // ignore event if it's already been handled.
+                if (event->getHandled()) continue;
+
                 switch(event->getEventType())
                 {
                     case(osgGA::GUIEventAdapter::KEYUP):

@@ -37,6 +37,13 @@ public:
     virtual void enterImplementation();
     virtual void leaveImplementation();
 
+    virtual void pressed() { if (!runCallbacks("pressed")) pressedImplementation(); }
+    virtual void pressedImplementation();
+
+    virtual void released() { if (!runCallbacks("released")) releasedImplementation(); }
+    virtual void releasedImplementation();
+
+
 protected:
     virtual ~PushButton() {}
 

@@ -249,8 +249,6 @@ protected:
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(const char* domain, osgDB::ObjectWrapper* wrapper)
 
-#define ADD_METHOD_OBJECT( METHODNAME, METHODOBJECTCLASS ) wrapper->addMethodObject(METHODNAME, new METHODOBJECTCLASS());
-
 class OSGDB_EXPORT RegisterCompressorProxy
 {
 public:

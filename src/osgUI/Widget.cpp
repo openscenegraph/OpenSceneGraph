@@ -180,8 +180,7 @@ void Widget::traverse(osg::NodeVisitor& nv)
     {
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(&nv);
-        runCallbacks("traverse",inputParameters, outputParameters);
-        return;
+        if (runCallbacks("traverse",inputParameters, outputParameters)) return;
     }
 
     traverseImplementation(nv);

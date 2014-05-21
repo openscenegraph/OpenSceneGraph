@@ -32,20 +32,24 @@ PushButton::PushButton(const osgUI::PushButton& pb, const osg::CopyOp& copyop):
 
 bool PushButton::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    OSG_NOTICE<<"PushButton::handleImplementation"<<std::endl;
-
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
     switch(ea->getEventType())
     {
         case(osgGA::GUIEventAdapter::PUSH):
-            OSG_NOTICE<<"Button pressed "<<std::endl;
-            if (_buttonSwitch.valid()) _buttonSwitch->setSingleChildOn(2);
+            if (_buttonSwitch.valid())
+            {
+                _buttonSwitch->setSingleChildOn(2);
+                runCallbacks("pressed");
+            }
             break;
         case(osgGA::GUIEventAdapter::RELEASE):
-            OSG_NOTICE<<"Button release "<<std::endl;
-            if (_buttonSwitch.valid()) _buttonSwitch->setSingleChildOn(1);
+            if (_buttonSwitch.valid())
+            {
+                _buttonSwitch->setSingleChildOn(1);
+                runCallbacks("released");
+            }
             break;
         default:
             break;
@@ -69,7 +73,6 @@ void PushButton::leaveImplementation()
 
 void PushButton::createGraphicsImplementation()
 {
-
     if (_textDrawable.valid())
     {
         OSG_NOTICE<<"PushButton::createGraphicsImplementation() updating existing TextDrawable"<<std::endl;

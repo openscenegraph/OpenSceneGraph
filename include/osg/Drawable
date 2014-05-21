@@ -145,7 +145,7 @@ class OSG_EXPORT Drawable : public Node
             if(!_boundingSphereComputed)
             {
                 _boundingBox = _initialBound;
-                
+
                 if (_computeBoundCallback.valid())
                     _boundingBox.expandBy(_computeBoundCallback->computeBound(*this));
                 else
@@ -292,13 +292,13 @@ class OSG_EXPORT Drawable : public Node
         virtual void setUpdateCallback(UpdateCallback* ac);
 
         /** Get the non const UpdateCallback.*/
-        UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
+        UpdateCallback* getUpdateCallback() { return _drawableUpdateCallback.get(); }
 
         /** Get the const UpdateCallback.*/
-        const UpdateCallback* getUpdateCallback() const { return _updateCallback.get(); }
+        const UpdateCallback* getUpdateCallback() const { return _drawableUpdateCallback.get(); }
 
         /** Return whether this Drawable has update callbacks associated with it, and therefore must be traversed.*/
-        bool requiresUpdateTraversal() const { return _updateCallback.valid() || (_stateset.valid() && _stateset->requiresUpdateTraversal()); }
+        bool requiresUpdateTraversal() const { return _drawableUpdateCallback.valid() || (_stateset.valid() && _stateset->requiresUpdateTraversal()); }
 
 
         struct EventCallback : public virtual osg::Object
@@ -317,13 +317,13 @@ class OSG_EXPORT Drawable : public Node
         virtual void setEventCallback(EventCallback* ac);
 
         /** Get the non const EventCallback.*/
-        EventCallback* getEventCallback() { return _eventCallback.get(); }
+        EventCallback* getEventCallback() { return _drawableEventCallback.get(); }
 
         /** Get the const EventCallback.*/
-        const EventCallback* getEventCallback() const { return _eventCallback.get(); }
+        const EventCallback* getEventCallback() const { return _drawableEventCallback.get(); }
 
         /** Return whether this Drawable has event callbacks associated with it, and therefore must be traversed.*/
-        bool requiresEventTraversal() const { return _eventCallback.valid() || (_stateset.valid() && _stateset->requiresEventTraversal()); }
+        bool requiresEventTraversal() const { return _drawableEventCallback.valid() || (_stateset.valid() && _stateset->requiresEventTraversal()); }
 
 
         struct CullCallback : public virtual osg::Object
@@ -342,13 +342,13 @@ class OSG_EXPORT Drawable : public Node
         };
 
         /** Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal.*/
-        virtual void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
+        virtual void setCullCallback(CullCallback* cc) { _drawableCullCallback=cc; }
 
         /** Get the non const CullCallback.*/
-        CullCallback* getCullCallback() { return _cullCallback.get(); }
+        CullCallback* getCullCallback() { return _drawableCullCallback.get(); }
 
         /** Get the const CullCallback.*/
-        const CullCallback* getCullCallback() const { return _cullCallback.get(); }
+        const CullCallback* getCullCallback() const { return _drawableCullCallback.get(); }
 
 
 
@@ -798,10 +798,10 @@ class OSG_EXPORT Drawable : public Node
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
-        ref_ptr<UpdateCallback> _updateCallback;
-        ref_ptr<EventCallback>  _eventCallback;
+        ref_ptr<UpdateCallback> _drawableUpdateCallback;
+        ref_ptr<EventCallback>  _drawableEventCallback;
 
-        ref_ptr<CullCallback>   _cullCallback;
+        ref_ptr<CullCallback>   _drawableCullCallback;
         ref_ptr<DrawCallback>   _drawCallback;
 };
 

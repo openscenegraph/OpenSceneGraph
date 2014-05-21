@@ -249,9 +249,9 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _useDisplayList(drawable._useDisplayList),
     _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
-    _updateCallback(drawable._updateCallback),
-    _eventCallback(drawable._eventCallback),
-    _cullCallback(drawable._cullCallback),
+    _drawableUpdateCallback(drawable._drawableUpdateCallback),
+    _drawableEventCallback(drawable._drawableEventCallback),
+    _drawableCullCallback(drawable._drawableCullCallback),
     _drawCallback(drawable._drawCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
@@ -328,9 +328,9 @@ void Drawable::setThreadSafeRefUnref(bool threadSafe)
     Object::setThreadSafeRefUnref(threadSafe);
 
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-    if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
-    if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);
-    if (_cullCallback.valid()) _cullCallback->setThreadSafeRefUnref(threadSafe);
+    if (_drawableUpdateCallback.valid()) _drawableUpdateCallback->setThreadSafeRefUnref(threadSafe);
+    if (_drawableEventCallback.valid()) _drawableEventCallback->setThreadSafeRefUnref(threadSafe);
+    if (_drawableCullCallback.valid()) _drawableCullCallback->setThreadSafeRefUnref(threadSafe);
     if (_drawCallback.valid()) _drawCallback->setThreadSafeRefUnref(threadSafe);
 }
 
@@ -470,13 +470,13 @@ void Drawable::dirtyDisplayList()
 
 void Drawable::setUpdateCallback(UpdateCallback* ac)
 {
-    if (_updateCallback==ac) return;
+    if (_drawableUpdateCallback==ac) return;
 
     int delta = 0;
-    if (_updateCallback.valid()) --delta;
+    if (_drawableUpdateCallback.valid()) --delta;
     if (ac) ++delta;
 
-    _updateCallback = ac;
+    _drawableUpdateCallback = ac;
 
     if (delta!=0 && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
     {
@@ -491,13 +491,13 @@ void Drawable::setUpdateCallback(UpdateCallback* ac)
 
 void Drawable::setEventCallback(EventCallback* ac)
 {
-    if (_eventCallback==ac) return;
+    if (_drawableEventCallback==ac) return;
 
     int delta = 0;
-    if (_eventCallback.valid()) --delta;
+    if (_drawableEventCallback.valid()) --delta;
     if (ac) ++delta;
 
-    _eventCallback = ac;
+    _drawableEventCallback = ac;
 
     if (delta!=0 && !(_stateset.valid() && _stateset->requiresEventTraversal()))
     {

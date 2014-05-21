@@ -16,6 +16,7 @@
 
 #include <osg/Group>
 #include <osg/BoundingBox>
+#include <osg/ScriptEngine>
 #include <osgGA/Event>
 #include <osgGA/EventVisitor>
 
@@ -43,6 +44,7 @@ public:
 
     virtual void createGraphics();
     virtual void createGraphicsImplementation();
+
 
     virtual void setExtents(const osg::BoundingBoxf& bb);
     const osg::BoundingBoxf& getExtents() const { return _extents; }
@@ -83,6 +85,15 @@ public:
     /** get whether the widget has focus or not.*/
     virtual bool getHasEventFocus() const;
 
+
+    /** invoke all callbacks with specified names providing input and output parameters.*/
+    bool runCallbacks(const std::string& name, osg::Parameters& inputParameters, osg::Parameters& outputParameters) { return osg::runNamedCallbackObjects(this, name, inputParameters, outputParameters); }
+
+    /** invoke all callbacks with specified names without any specified input or output parameters.*/
+    bool runCallbacks(const std::string& name) { osg::Parameters inputParameters, outputParameters; return osg::runNamedCallbackObjects(this, name, inputParameters, outputParameters); }
+
+
+    /** Compute the bounding sphere of the widget.*/
     virtual osg::BoundingSphere computeBound() const;
 
     /** update any focus related graphics+state to the focused state.*/
@@ -108,7 +119,6 @@ protected:
     osg::ref_ptr<AlignmentSettings> _alignmentSettings;
     osg::ref_ptr<FrameSettings> _frameSettings;
     osg::ref_ptr<TextSettings> _textSettings;
-
 };
 
 }

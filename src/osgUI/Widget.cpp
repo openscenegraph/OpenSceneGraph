@@ -156,15 +156,7 @@ bool Widget::getHasEventFocus() const
 
 void Widget::enter()
 {
-    osg::CallbackObject* co = osg::getCallbackObject(this, "enter");
-    if (co)
-    {
-        co->run(this);
-    }
-    else
-    {
-        enterImplementation();
-    }
+    if (!runCallbacks("enter")) enterImplementation();
 }
 
 void Widget::enterImplementation()
@@ -174,15 +166,7 @@ void Widget::enterImplementation()
 
 void Widget::leave()
 {
-    osg::CallbackObject* co = osg::getCallbackObject(this, "leave");
-    if (co)
-    {
-        co->run(this);
-    }
-    else
-    {
-        leaveImplementation();
-    }
+    if (!runCallbacks("leave")) leaveImplementation();
 }
 
 void Widget::leaveImplementation()
@@ -192,25 +176,16 @@ void Widget::leaveImplementation()
 
 void Widget::traverse(osg::NodeVisitor& nv)
 {
-    osg::CallbackObject* co = osg::getCallbackObject(this, "traverse");
-    if (co)
+    if (nv.referenceCount()!=0)
     {
-        // currently lua scripting takes a ref count so messes up handling of NodeVisitor's created on stack,
-        // so don't attempt to call the sctipt.
-        if (nv.referenceCount()==0)
-        {
-            traverseImplementation(nv);
-            return;
-        }
-
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(&nv);
-        co->run(this, inputParameters, outputParameters);
+        runCallbacks("traverse",inputParameters, outputParameters);
+        return;
     }
-    else
-    {
-        traverseImplementation(nv);
-    }
+
+    traverseImplementation(nv);
+
 }
 
 void Widget::traverseImplementation(osg::NodeVisitor& nv)
@@ -250,37 +225,24 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
 
 bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    osg::CallbackObject* co = osg::getCallbackObject(this, "handle");
-    if (co)
+    // currently lua scripting takes a ref count so messes up handling of NodeVisitor's created on stack,
+    // so don't attempt to call the sctipt.
+    if (ev->referenceCount()!=0)
     {
-        // currently lua scripting takes a ref count so messes up handling of NodeVisitor's created on stack,
-        // so don't attempt to call the sctipt.
-        if (ev->referenceCount()==0)
-        {
-            return handleImplementation(ev, event);
-        }
-
         osg::Parameters inputParameters, outputParameters;
         inputParameters.push_back(ev);
         inputParameters.push_back(event);
-        if (co->run(this, inputParameters, outputParameters))
+        if (runCallbacks("handle",inputParameters, outputParameters))
         {
             if (outputParameters.size()>=1)
             {
                 osg::BoolValueObject* bvo = dynamic_cast<osg::BoolValueObject*>(outputParameters[0].get());
-                if (bvo)
-                {
-                    return bvo->getValue();
-                }
-                return false;
+                return bvo ? bvo->getValue() : false;
             }
         }
-        return false;
     }
-    else
-    {
-        return handleImplementation(ev, event);
-    }
+
+    return handleImplementation(ev, event);
 }
 
 bool Widget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
@@ -311,16 +273,7 @@ void Widget::dirty()
 
 void Widget::createGraphics()
 {
-    osg::CallbackObject* co = osg::getCallbackObject(this, "createGraphics");
-    if (co)
-    {
-        co->run(this);
-    }
-    else
-    {
-        createGraphicsImplementation();
-    }
-
+    if (!runCallbacks("createGraphics")) createGraphicsImplementation();
 }
 
 void Widget::createGraphicsImplementation()

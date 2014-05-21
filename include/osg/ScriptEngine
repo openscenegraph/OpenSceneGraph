@@ -84,6 +84,27 @@ inline CallbackObject* getCallbackObject(osg::Object* object, const std::string&
     return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
 }
 
+/** Call run(..) on named CallbackObjects attached to specified Object. Return true if at least one CallbackObject has been successfully invoked.*/
+inline bool runNamedCallbackObjects(osg::Object* object, const std::string& name, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
+{
+    bool result = false;
+    osg::UserDataContainer* udc = object->getUserDataContainer();
+    if (udc)
+    {
+        for(unsigned int i = 0; i<udc->getNumUserObjects(); ++i)
+        {
+            osg::Object* obj = udc->getUserObject(i);
+            if (obj && obj->getName()==name)
+            {
+                osg::CallbackObject* co = dynamic_cast<osg::CallbackObject*>(obj);
+                if (co) result = co->run(object, inputParameters, outputParameters) | result;
+            }
+        }
+    }
+
+    return result;
+}
+
 /** NodeCallback for attaching a script to a NodeCallback so that it can be called as an update or event callback.*/
 class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback
 {

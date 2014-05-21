@@ -5,67 +5,6 @@
 #include <osgDB/OutputStream>
 
 
-struct CreateGraphics : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->createGraphics();
-        return true;
-    }
-};
-
-struct CreateGraphicsImplementation : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->createGraphicsImplementation();
-        return true;
-    }
-};
-
-struct Enter : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->enter();
-        return true;
-    }
-};
-
-struct EnterImplementation : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->enterImplementation();
-        return true;
-    }
-};
-
-struct Leave : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->leave();
-        return true;
-    }
-};
-
-struct LeaveImplementation : public osgDB::MethodObject
-{
-    virtual bool run(void* objectPtr, osg::Parameters&, osg::Parameters&) const
-    {
-        osgUI::Widget* widget = reinterpret_cast<osgUI::Widget*>(objectPtr);
-        widget->leaveImplementation();
-        return true;
-    }
-};
-
-
 struct Traverse : public osgDB::MethodObject
 {
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters&) const
@@ -137,14 +76,14 @@ REGISTER_OBJECT_WRAPPER( Widget,
     ADD_OBJECT_SERIALIZER( TextSettings, osgUI::TextSettings, NULL );
 
 
-    ADD_METHOD_OBJECT( "createGraphics", CreateGraphics );
-    ADD_METHOD_OBJECT( "createGraphicsImplementation", CreateGraphicsImplementation );
+    ADD_METHOD( createGraphics );
+    ADD_METHOD( createGraphicsImplementation );
 
-    ADD_METHOD_OBJECT( "enter", Enter );
-    ADD_METHOD_OBJECT( "enterImplementation", EnterImplementation );
+    ADD_METHOD( enter );
+    ADD_METHOD( enterImplementation );
 
-    ADD_METHOD_OBJECT( "leave", Leave );
-    ADD_METHOD_OBJECT( "leaveImplementation", LeaveImplementation );
+    ADD_METHOD( leave );
+    ADD_METHOD( leaveImplementation );
 
     ADD_METHOD_OBJECT( "traverse", Traverse );
     ADD_METHOD_OBJECT( "traverseImplementation", TraverseImplementation );

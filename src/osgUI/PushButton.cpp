@@ -40,15 +40,13 @@ bool PushButton::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* eve
         case(osgGA::GUIEventAdapter::PUSH):
             if (_buttonSwitch.valid())
             {
-                _buttonSwitch->setSingleChildOn(2);
-                runCallbacks("pressed");
+                pressed();
             }
             break;
         case(osgGA::GUIEventAdapter::RELEASE):
             if (_buttonSwitch.valid())
             {
-                _buttonSwitch->setSingleChildOn(1);
-                runCallbacks("released");
+                released();
             }
             break;
         default:
@@ -106,4 +104,14 @@ void PushButton::createGraphicsImplementation()
         addChild(_buttonSwitch.get());
 
     }
+}
+
+void PushButton::pressedImplementation()
+{
+    _buttonSwitch->setSingleChildOn(2);
+}
+
+void PushButton::releasedImplementation()
+{
+    _buttonSwitch->setSingleChildOn(1);
 }

@@ -71,39 +71,31 @@ void PushButton::leaveImplementation()
 
 void PushButton::createGraphicsImplementation()
 {
-    if (_textDrawable.valid())
-    {
-        OSG_NOTICE<<"PushButton::createGraphicsImplementation() updating existing TextDrawable"<<std::endl;
-        _textDrawable->setText(_text);
-        _graphicsInitialized = true;
-    }
-    else
-    {
-        OSG_NOTICE<<"PushButton::createGraphicsImplementation()"<<std::endl;
+    OSG_NOTICE<<"PushButton::createGraphicsImplementation()"<<std::endl;
 
-        Widget::createGraphicsImplementation();
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
-        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-        osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
-        _textDrawable = dynamic_cast<osgText::Text*>(node.get());
-        _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
 
-        addChild(_textDrawable.get());
+    group->addChild(_textDrawable.get());
 
-        _buttonSwitch = new osg::Switch;
+    _buttonSwitch = new osg::Switch;
 
-        float unFocused = 0.7;
-        float withFocus = 0.8;
-        float pressed = 0.5;
+    float unFocused = 0.7;
+    float withFocus = 0.8;
+    float pressed = 0.5;
 
-        _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
-        _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
-        _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(pressed,pressed,pressed,1.0)));
-        _buttonSwitch->setSingleChildOn(0);
+    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
+    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
+    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(pressed,pressed,pressed,1.0)));
+    _buttonSwitch->setSingleChildOn(0);
 
-        addChild(_buttonSwitch.get());
+    group->addChild(_buttonSwitch.get());
 
-    }
+    setGraphicsSubgraph(group.get());
 }
 
 void PushButton::pressedImplementation()

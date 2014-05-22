@@ -42,7 +42,18 @@ public:
 
     virtual void dirty();
 
+
+    /** Set the subgraph to be used to erndering the widget.*/
+    void setGraphicsSubgraph(osg::Node* node) { _graphicsSubgraph = node; _graphicsInitialized = true; }
+    /** Get the subgraph to be used to erndering the widget.*/
+    osg::Node* getGraphicsSubgraph() { return _graphicsSubgraph.get(); }
+    /** Get the const subgraph to be used to erndering the widget.*/
+    const osg::Node* getGraphicsSubgraph() const { return _graphicsSubgraph.get(); }
+
+    /** createGraphics entry method, calls either callback object named "createGraphics" or the createGraphicsImplementation() method.*/
     virtual void createGraphics();
+
+    /** createGraphicsImplementation method that creates the subgraph that will render the widget and assigns it to the Widget via the Widet::setGraphicsSubgraph() method.*/
     virtual void createGraphicsImplementation();
 
 
@@ -104,6 +115,10 @@ public:
     virtual void leave();
     virtual void leaveImplementation();
 
+    /** resize all GLObjectBuffers.*/
+    virtual void resizeGLObjectBuffers(unsigned int maxSize);
+    /** resize all GLObjectBuffers.*/
+    virtual void releaseGLObjects(osg::State* = 0) const;
 
 protected:
     virtual ~Widget() {}
@@ -111,6 +126,8 @@ protected:
     FocusBehaviour      _focusBehaviour;
     bool                _hasEventFocus;
     bool                _graphicsInitialized;
+
+    osg::ref_ptr<osg::Node> _graphicsSubgraph;
 
     osg::BoundingBoxf   _extents;
 

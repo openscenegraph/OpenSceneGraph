@@ -69,6 +69,8 @@ REGISTER_OBJECT_WRAPPER( Widget,
 
     ADD_BOOL_SERIALIZER(HasEventFocus, false);
 
+    ADD_OBJECT_SERIALIZER( GraphicsSubgraph, osg::Node, NULL );
+
     ADD_BOUNDINGBOXF_SERIALIZER(Extents, osg::BoundingBoxf());
 
     ADD_OBJECT_SERIALIZER( FrameSettings, osgUI::FrameSettings, NULL );

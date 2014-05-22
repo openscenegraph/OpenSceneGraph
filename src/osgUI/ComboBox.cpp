@@ -114,7 +114,6 @@ void ComboBox::createGraphicsImplementation()
         Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
         _switch = new osg::Switch;
-        addChild(_switch.get());
 
         if (!_items.empty())
         {
@@ -136,5 +135,7 @@ void ComboBox::createGraphicsImplementation()
         }
 
         _switch->setSingleChildOn(_currentItem);
+
+        setGraphicsSubgraph(_switch.get());
     }
 }

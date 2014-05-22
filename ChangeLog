@@ -1,3 +1,236 @@
+2014-05-15 14:58  robert
+
+	* src/osg/Notify.cpp: From Sebastian Messershmidt, "There was some
+	  small error due to MS non-conformity handling comments
+	  correctly."
+
+2014-04-29 13:41  robert
+
+	* include/osgDB/OutputStream: From Pjotr Svetachov, "Today I found
+	  a bug in the IutputStream class when saving array
+	  attributes in vec3b format. It looks like my compiler takes the
+	  wrong
+	  overload and outputs integers instead of characters. The problem
+	  is
+	  that vec3b is of type signed char and that is not the same as
+	  char (
+	  see
+	  http://stackoverflow.com/questions/436513/char-signed-char-char-unsigned-char
+	  ) and visual studio 2013 will promote it to integer when choosing
+	  an
+	  overload.
+	  It looks like that the InputStream class already takes care of
+	  this
+	  issue (if it didn't it would have read everything ok and I would
+	  have
+	  not even stumbled upon this bug. :) )"
+
+2014-04-28 14:58  robert
+
+	* src/osg/Image.cpp: From Pjotr Svetachov, "I had the osgvolume
+	  example crash on me when loading large volume
+	  datasets due to an overflow in image.cpp after a unneeded cast
+	  from
+	  unsigned int to int. Here is a small fix."
+
+2014-04-28 14:57  robert
+
+	* src/osgDB/FileUtils.cpp: From Jason Beverage, "Here is a fix for
+	  a small race condition in osgDB::makeDirectory. It attempts to
+	  create all the directories in the given path and stops attempting
+	  to make directories when one of them fails. I've added a check to
+	  see if the failure occurred b/c the directory was created by
+	  another thread or process.
+	  
+	  We were running into issues occasionally in osgEarth where
+	  multiple threads were writing out files like /1/2/3.jpg and
+	  /1/3/4.jpg. Both threads would try to create the /1 directory and
+	  only one of them would succeed. So the first thread would write
+	  out the full /1/2/3.jpg while the second thread wouldn't create
+	  the /1/3 directory b/c /1 was already created and the writing of
+	  /1/3/4.jpg would fail.
+	  "
+
+2014-04-28 11:53  robert
+
+	* src/osgSim/SphereSegment.cpp: Fixed type error
+
+2014-04-24 17:26  robert
+
+	* src/osgPlugins/dae/daeRMaterials.cpp: From Farshid Lashkari,
+	  "I've attached a small fix to the Collada loader which prevents a
+	  null pointer access in some cases."
+
+2014-04-24 17:23  robert
+
+	* src/osg/Texture2DArray.cpp: In the ::apply method, when the image
+	  data need to be re-uploaded, the Texture2DArray checks if the
+	  TextureObject can be re-used. The test was made using the
+	  constant 1 instead of the real texture depth, so the
+	  TextureObject was never re-used.
+
+2014-04-24 10:39  robert
+
+	* src/osgSim/SphereSegment.cpp: Fixed reference invalidation bug.
+
+2014-04-14 16:16  robert
+
+	* include/osgManipulator/TranslatePlaneDragger: Fixed comment
+
+2014-04-13 16:04  robert
+
+	* CMakeLists.txt, CMakeModules/FindFreeType.cmake,
+	  CMakeModules/FindFreetype.cmake: Renamed FindFreeType.cmake to
+	  FindFreetype.cmake to enable CMake build to pick up on CMake's
+	  own FindFreetype.cmake when it's available.
+
+2014-04-13 16:03  robert
+
+	* CMakeModules/OsgMacroUtils.cmake: Merged changes from svn/trunk
+	  to add the REMOVE_CXX_FLAGS macro
+
+2014-04-09 17:21  robert
+
+	* src/osgPlugins/fbx/CMakeLists.txt: Disabled warnings that FBX
+	  headers are generating that we can't fix
+
+2014-04-08 19:44  robert
+
+	* CMakeModules/FindFreeType.cmake: Added extra search files for
+	  K/Ubuntu 14.04 new location for freetype headers
+
+2014-04-08 12:00  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Remo Eichenberger,
+	  "I have extended the TIFF plugin that allows you to write LZW or
+	  JPEG compressed TIFF's. Options are:
+	  
+	  tiff_compression = lzw | jpeg"
+
+2014-04-08 11:17  robert
+
+	* src/osgWrappers/serializers/osgAnimation/Animation.cpp: From
+	  Pjotr Svetachov, "We had a small problem converting skeleton
+	  animations from fbx to osgt
+	  format. Turned out that the serializer didn't handle bone names
+	  with
+	  spaces very well (the 3ds studio max biped for instance has
+	  spaces by
+	  default). Here is a small fix for the problem."
+
+2014-04-08 11:07  robert
+
+	* src/osgPlugins/obj/obj.cpp: From Pjotr Svetachov, previous obj
+	  "commit broke compilation under visual studio 2013. To use
+	  std::not1 you need to include the functional header. Here is a
+	  fix."
+
+2014-04-07 15:04  robert
+
+	* include/osg/BoundingBox, include/osg/BoundingSphere: Fixed build
+	  when using of double BoundingBox/BoundingSphere
+
+2014-04-07 14:18  robert
+
+	* src/osgPlugins/obj/obj.cpp: From Jan Peciva, "I am sending four
+	  fixes to obj plugin:
+	  
+	  - materialName used to be not stripped of whitespace, making
+	  number of models
+	  fail to load materials; now fixed
+	  - stripping was considering spaces only, thus models using tabs
+	  had problems
+	  to load correctly; fixed
+	  - fixed references to textures; they did not performed conversion
+	  to native
+	  directory separators
+	  - make d (dissolve) takes precedence over Tr (transparency);
+	  there seems to be
+	  a confusion about the Tr item - some claiming 1 to be opaque and
+	  0
+	  transparent, while number of models uses exactly the opposite. d
+	  (dissolve),
+	  if present in the model, does not suffer from this confusion,
+	  thus using it
+	  instead fixes the problem for many many models.
+	  
+	  I put many comments to the file concerning d and Tr item as
+	  others may further
+	  investigate. Let me know in the case of any problems."
+
+2014-04-07 14:11  robert
+
+	* src/OpenThreads/pthreads/PThread.cpp: From Marcel Pursche, "The
+	  problem is that when OpenThreads is build with the Linux pthreads
+	  implementation all threads inherit the processor affinity from
+	  their parent thread.
+	  This behavior is also described in the pthreads man page
+	  (http://man7.org/linux/man-pages/man3/pthread_create.3.html):
+	  
+	  >
+	  > Linux-specific details
+	  > The new thread inherits copies of the calling thread's
+	  capability
+	  > sets (see capabilities(7)) and CPU affinity mask (see
+	  > sched_setaffinity(2)).
+	  >
+	  
+	  To prevent this behaviour I wrote a patch that explicitly sets
+	  the affinity mask to all cores of the system, if no specific
+	  affinity was defined with PThread::setProcessorAffinity(unsigned
+	  int) .
+	  
+	  Thank you!
+	  "
+
+2014-04-07 14:03  robert
+
+	* src/osgPlugins/3ds/lib3ds/lib3ds.h,
+	  src/osgPlugins/3ds/lib3ds/lib3ds_chunktable.c,
+	  src/osgPlugins/3ds/lib3ds/lib3ds_impl.h,
+	  src/osgPlugins/3ds/lib3ds/lib3ds_material.c: From Bjorn Blessing,
+	  "I got bored of the constant reports of “missing chunk 0xA08A”
+	  when reading 3ds-files. After a bit of research I discovered that
+	  this property is related to the advanced transparency settings
+	  for the material in 3D studio. In this case the falloff
+	  parameter. These controls affect the opacity falloff of a
+	  transparent material. And the property chooses whether falloff is
+	  in or out. I have added the property to the file reader BUT no
+	  changes are made to make this property propagate into the
+	  osgMaterial. But at least we get rid of this annoying error
+	  message."
+
+2014-04-07 13:48  robert
+
+	* include/osg/GL2Extensions: From Paul Martz, "We discussed the
+	  issue of GL_RED_SNORM and GL_RG_SNORM some time ago, but the
+	  issue was never completely resolved. Please see the attached
+	  submission to fix the issue.
+	  
+	  osg/GL2Extensions was incorrectly defining GL_RED_SNORM and
+	  GL_RG_SNORM as part of the definitions for OpenGL v3.1. However,
+	  a quick review of the 3.1 spec indicates that these are not part
+	  of the 3.1 standard.
+	  
+	  My attached change moves these definitions out of the #ifndef
+	  GL_VERSION_3_1 conditional block, and defines them conditionally
+	  if not already defined. This allows the DDS plugin to build for
+	  GL3.
+	  "
+
+2014-02-05 11:06  robert
+
+	* src/osgDB/XmlParser.cpp: Improved white space trimming
+
+2014-01-31 19:18  robert
+
+	* src/osgText/Glyph.cpp: Replaced C cast to long with a
+	  static_cast<const void*>() to avoid a build error under Mingw 64.
+
+2014-01-29 11:08  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2014-01-28 16:48  robert
 
 	* CMakeModules/OsgMacroUtils.cmake: Fixed MingW build's handling of

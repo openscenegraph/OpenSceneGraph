@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.2.1
 
-516 Contributors:
+519 Contributors:
 
 Firstname Surname
 -----------------
@@ -25,23 +25,23 @@ Geoff Michel
 Wojciech Lewandowski
 Eric Sokolowsky
 David Callu
-Trajce Nikolov
 Colin McDonald
+Trajce Nikolov
 Tim Moore
 Martin Lavery
 Laurens Voerman
 Tree 
 Luigi Calori
 Mike Wittman
+Jason Beverage
 Chris Hanson
 Roland Smeenk
 Roger James
 Jeremy Moles
-Jason Beverage
 Jan Peciva
+Mattias Helsing
 J.P. Delport
 Alberto Luaces
-Mattias Helsing
 Magnus Kessler
 David Fries
 Andy Skinner
@@ -62,21 +62,22 @@ Serge Lages
 Romano José Magacho da Silva
 Lionel Lagarde
 Chris Denham
+Aurelien Albert
 Alberto Farre
+Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-Aurelien Albert
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
-Torben Dannhauer
 Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
+Pjotr Svetachov
 Michael Gronager
 Martin Naylor
 Joakim Simonsson
@@ -116,14 +117,15 @@ Frederic Bouvier
 Carlo Camporesi
 Ben Discoe
 Thibault Genessay
+Sebastian Messerschmidt
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
-Pjotr Svetachov
 Neil Groves
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
+Jordi Torres
 John Shue
 Brad Colbert
 Vivek Rajan
@@ -144,7 +146,6 @@ Martins Innus
 Maciej Krol
 Lilin Xiong
 Leandro Motta Barros
-Jordi Torres
 Johan Nouvel
 Hartwig Wiesmann
 Donn Mielcarek
@@ -154,12 +155,13 @@ Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
-Sebastian Messerschmidt
 Ryan Kawicki
 Rudolf Wiedemann
+Robert Milharcic
 Mikhail Izmestev
 Maria Ten
 Liang Aibin
+Kristofer Tingdahl
 Katharina Plugge
 John Vidar Larring
 John Kelso
@@ -177,13 +179,13 @@ Alok Priyadarshi
 Alberto Barbati
 Alan Dickinson
 Vladimir Shabanov
+Vladimir Chebaev
 Tugkan Calapoglu
 Tim Daoust
 Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
 Ryan Pavlik
-Robert Milharcic
 Rene Molenaar
 Piotr Domagalski
 Phil Atkin
@@ -211,9 +213,11 @@ Doug McCorkle
 Donald Cipperly
 Don Leich
 Dietmar Funck
+Colin Cochran
 Christian Buchner
 Charles Cole
 Blake Williams
+Björn Blissing
 Antoine Hue
 Andrew Bettison
 Anders Backman
@@ -224,7 +228,6 @@ Zach Deedler
 Yuzhong Shen
 Wee See
 Warren Macchi
-Vladimir Chebaev
 Vincent Bourdier
 Terrex 
 Tassilo Glander
@@ -258,8 +261,9 @@ Martin Lambers
 Martijn Kragtwijk
 Marius Heise
 Marcin Hajder
+Marcel Pursche
 Lilith Bryant
-Kristofer Tingdahl
+Konstantin Matveyev
 Kevin Moiule
 Keith Steffen
 Julen Garcia
@@ -297,7 +301,6 @@ Christophe Loustaunau
 Christian Ruzicka
 Brad Anderegg
 Björn Hein
-Björn Blissing
 Aric Aumann
 Andrew Sampson
 Andrew Lorino
@@ -351,6 +354,7 @@ Rob Radtke
 Rob Bloemkool
 Rick Pingry
 Rick Appleton
+Remo Eichenberger
 Reinhard Sainitzer
 Rein Kadijk
 Ragnar Hammarqvist
@@ -381,8 +385,10 @@ Nick Black
 Mojtaba Fathi
 Mirko Viviani
 Mikkel GjÃ¸l
+Mike Krus
 Mike Garrity
 Miha Ravsel
+Michael Schanne
 Michael Polak
 Michael Morrison
 Michael Logan
@@ -391,7 +397,6 @@ Michael Bach Jensen
 Max Rhiener
 Max Behensky
 Mauricio Hofmam
-Matthias Helsing
 Matthew May
 Matthew Johnson-Roberson
 Matt Green
@@ -406,7 +411,7 @@ Marius Kintel
 Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
-Marcel Pursche
+Marc Helbling
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -416,7 +421,6 @@ Laurence Muller
 Laura Cerritelli
 Kyle Centers
 Kristopher Bixler
-Konstantin Matveyev
 Kim Seokhwan
 Kim Bale
 Karsten Weiss
@@ -482,7 +486,6 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
-Colin Cochran
 Clay Fowler
 Chuck Sembroski
 Christopher Blaesius

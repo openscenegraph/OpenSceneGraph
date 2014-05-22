@@ -78,29 +78,12 @@ void LineEdit::setText(const std::string& text)
 
 void LineEdit::createGraphicsImplementation()
 {
+    OSG_NOTICE<<"LineEdit::createGraphicsImplementation()"<<std::endl;
 
-    if (_textDrawable.valid())
-    {
-        OSG_NOTICE<<"LineEdit::createGraphicsImplementation() updating existing TextDrawable"<<std::endl;
-        _textDrawable->setText(_text);
-        _graphicsInitialized = true;
-    }
-    else
-    {
-        OSG_NOTICE<<"LineEdit::createGraphicsImplementation()"<<std::endl;
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
 
-        Widget::createGraphicsImplementation();
-
-        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-        osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
-        _textDrawable = dynamic_cast<osgText::Text*>(node.get());
-        _textDrawable->setDataVariance(osg::Object::DYNAMIC);
-#if 0
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        geode->addDrawable(_textDrawable.get());
-        addChild(geode.get());
-#else
-        addChild(_textDrawable.get());
-#endif
-    }
+    setGraphicsSubgraph(_textDrawable.get());
 }

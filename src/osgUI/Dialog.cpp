@@ -71,36 +71,25 @@ void Dialog::open()
 
 void Dialog::createGraphicsImplementation()
 {
+    OSG_NOTICE<<"Dialog::createGraphicsImplementation()"<<std::endl;
 
-    if (_titleDrawable.valid())
-    {
-        OSG_NOTICE<<"Dialog::createGraphicsImplementation() updating existing TextDrawable"<<std::endl;
-        _titleDrawable->setText(_title);
-        _graphicsInitialized = true;
-    }
-    else
-    {
-        OSG_NOTICE<<"Dialog::createGraphicsImplementation()"<<std::endl;
+    _transform = new osg::PositionAttitudeTransform;
 
-        Widget::createGraphicsImplementation();
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
-        _transform = new osg::PositionAttitudeTransform;
-        addChild(_transform.get());
+    float titleHeight = 1.0;
+    osg::BoundingBox titleBarExents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
 
-        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+    osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
+    _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
+    _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
+    _transform->addChild(_titleDrawable.get());
 
-        float titleHeight = 1.0;
-        osg::BoundingBox titleBarExents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
+    osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
+    osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
 
-        osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
-        _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
-        _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
-        _transform->addChild(_titleDrawable.get());
+    _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
+    _transform->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
 
-        osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
-        osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
-
-        _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
-        _transform->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
-    }
+    setGraphicsSubgraph(_transform.get());
 }

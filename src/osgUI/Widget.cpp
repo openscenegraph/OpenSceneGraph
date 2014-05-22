@@ -215,9 +215,13 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
                 }
             }
         }
+
+        osg::Group::traverse(nv);
     }
     else
     {
+        if (_graphicsSubgraph.valid()) _graphicsSubgraph->accept(nv);
+
         osg::Group::traverse(nv);
     }
 }
@@ -284,4 +288,17 @@ osg::BoundingSphere Widget::computeBound() const
 {
     if (_extents.valid()) return osg::BoundingSphere(_extents);
     else return osg::Group::computeBound();
+}
+
+void Widget::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_graphicsSubgraph.valid()) _graphicsSubgraph->resizeGLObjectBuffers(maxSize);
+    Group::resizeGLObjectBuffers(maxSize);
+}
+
+
+void Widget::releaseGLObjects(osg::State* state) const
+{
+    if (_graphicsSubgraph.valid()) _graphicsSubgraph->releaseGLObjects(state);
+    Group::releaseGLObjects(state);
 }

@@ -11,4 +11,6 @@ REGISTER_OBJECT_WRAPPER( Dialog,
                          "osg::Object osg::Node osg::Group osgUI::Widget osgUI::Dialog" )
 {
     ADD_STRING_SERIALIZER( Title, std::string());
+    ADD_METHOD( open );
+    ADD_METHOD( close );
 }

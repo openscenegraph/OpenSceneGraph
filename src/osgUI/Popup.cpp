@@ -86,5 +86,7 @@ void Popup::createGraphicsImplementation()
 
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
 
+    style->setupDialogStateSet(getOrCreateStateSet());
+
     setGraphicsSubgraph(_transform.get());
 }

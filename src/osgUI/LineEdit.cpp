@@ -32,8 +32,6 @@ LineEdit::LineEdit(const osgUI::LineEdit& label, const osg::CopyOp& copyop):
 
 bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    OSG_NOTICE<<"LineEdit::handleImplementation"<<std::endl;
-
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
@@ -78,12 +76,12 @@ void LineEdit::setText(const std::string& text)
 
 void LineEdit::createGraphicsImplementation()
 {
-    OSG_NOTICE<<"LineEdit::createGraphicsImplementation()"<<std::endl;
-
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
     osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());
     _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+
+    style->setupClipStateSet(_extents, getOrCreateStateSet());
 
     setGraphicsSubgraph(_textDrawable.get());
 }

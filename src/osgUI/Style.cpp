@@ -13,6 +13,7 @@
 
 #include <osgUI/Style>
 #include <osg/Geode>
+#include <osg/Depth>
 #include <osgText/Text>
 
 using namespace osgUI;
@@ -89,3 +90,9 @@ osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string&
     return 0;
 }
 
+void Style::setupDialogStateSet(osg::StateSet* stateset)
+{
+    stateset->setRenderBinDetails(5, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+    stateset->setAttributeAndModes( new osg::Depth(osg::Depth::LESS,0.0, 1.0,false), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+    stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+}

@@ -32,8 +32,6 @@ Dialog::Dialog(const osgUI::Dialog& dialog, const osg::CopyOp& copyop):
 
 bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    OSG_NOTICE<<"Dialog::handleImplementation"<<std::endl;
-
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
@@ -80,16 +78,19 @@ void Dialog::createGraphicsImplementation()
     float titleHeight = 1.0;
     osg::BoundingBox titleBarExents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
 
-    osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
-    _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
-    _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
-    _transform->addChild(_titleDrawable.get());
 
     osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
     osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
 
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
     _transform->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
+
+    osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
+    _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
+    _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
+    _transform->addChild(_titleDrawable.get());
+
+    style->setupDialogStateSet(getOrCreateStateSet());
 
     setGraphicsSubgraph(_transform.get());
 }

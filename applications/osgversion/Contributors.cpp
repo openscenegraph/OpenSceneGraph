@@ -467,7 +467,8 @@ TypoCorrection typoCorrections[] =
     {"Kristoger","Kristofer"},
     {"Blessing","Blissing"},
     {"Dannahuer","Dannhauer"},
-    {"Chebeav", "Chebaev"}
+    {"Chebeav", "Chebaev"},
+    {"Messershmidt","Messerschmidt"}
 };
 
 
@@ -634,7 +635,9 @@ NameCorrection nameCorrections[] =
     {"Tyge",           "",
      "Tyge",           "Løvset"},
     {"Ricard",         "Schmidt",
-     "Richard",        "Schmidt"}
+     "Richard",        "Schmidt"},
+    {"Matthias",       "Helsing",
+     "Mattias",        "Helsing"}
 };
 
 

@@ -76,11 +76,6 @@ void PushButton::createGraphicsImplementation()
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
-    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
-    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
-
-    group->addChild(_textDrawable.get());
 
     _buttonSwitch = new osg::Switch;
 
@@ -94,6 +89,13 @@ void PushButton::createGraphicsImplementation()
     _buttonSwitch->setSingleChildOn(0);
 
     group->addChild(_buttonSwitch.get());
+
+    // create label.
+    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+
+    group->addChild(_textDrawable.get());
 
     setGraphicsSubgraph(group.get());
 }

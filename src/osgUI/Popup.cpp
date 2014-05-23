@@ -76,9 +76,7 @@ void Popup::leaveImplementation()
 
 void Popup::createGraphicsImplementation()
 {
-    OSG_NOTICE<<"Popup::createGraphicsImplementation()"<<std::endl;
-
-    _transform = new osg::PositionAttitudeTransform;
+   _transform = new osg::PositionAttitudeTransform;
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
@@ -87,6 +85,7 @@ void Popup::createGraphicsImplementation()
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
 
     style->setupDialogStateSet(getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateStateSet());
 
     setGraphicsSubgraph(_transform.get());
 }

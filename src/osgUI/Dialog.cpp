@@ -69,15 +69,12 @@ void Dialog::open()
 
 void Dialog::createGraphicsImplementation()
 {
-    OSG_NOTICE<<"Dialog::createGraphicsImplementation()"<<std::endl;
-
     _transform = new osg::PositionAttitudeTransform;
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
-    float titleHeight = 1.0;
+    float titleHeight = 10.0;
     osg::BoundingBox titleBarExents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
-
 
     osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
     osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
@@ -85,12 +82,20 @@ void Dialog::createGraphicsImplementation()
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
     _transform->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
 
+    osg::BoundingBox dialogWithTileExtents(_extents);
+    dialogWithTileExtents.expandBy(titleBarExents);
+
+    OSG_NOTICE<<"Dialog::_extents ("<<_extents.xMin()<<", "<<_extents.yMin()<<", "<<_extents.zMin()<<"), ("<<_extents.xMax()<<", "<<_extents.yMax()<<", "<<_extents.zMax()<<")"<<std::endl;
+    OSG_NOTICE<<"Dialog::titleBarExents ("<<titleBarExents.xMin()<<", "<<titleBarExents.yMin()<<", "<<titleBarExents.zMin()<<"), ("<<titleBarExents.xMax()<<", "<<titleBarExents.yMax()<<", "<<titleBarExents.zMax()<<")"<<std::endl;
+    OSG_NOTICE<<"Dialog::dialogWithTileExtents ("<<dialogWithTileExtents.xMin()<<", "<<dialogWithTileExtents.yMin()<<", "<<dialogWithTileExtents.zMin()<<"), ("<<dialogWithTileExtents.xMax()<<", "<<dialogWithTileExtents.yMax()<<", "<<dialogWithTileExtents.zMax()<<")"<<std::endl;
+
     osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
     _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
     _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
     _transform->addChild(_titleDrawable.get());
 
     style->setupDialogStateSet(getOrCreateStateSet());
+    style->setupClipStateSet(dialogWithTileExtents, getOrCreateStateSet());
 
     setGraphicsSubgraph(_transform.get());
 }

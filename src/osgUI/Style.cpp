@@ -14,7 +14,10 @@
 #include <osgUI/Style>
 #include <osg/Geode>
 #include <osg/Depth>
+#include <osg/TexGen>
+#include <osg/AlphaFunc>
 #include <osgText/Text>
+#include <osgDB/ReadFile>
 
 using namespace osgUI;
 
@@ -28,10 +31,25 @@ OSG_INIT_SINGLETON_PROXY(StyleSingletonProxy, Style::instance())
 
 Style::Style()
 {
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    image->allocateImage(1,1,1,GL_RGBA, GL_FLOAT);
+    *(reinterpret_cast<osg::Vec4f*>(image->data(0,0,0))) = osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+    _clipTexture = new osg::Texture2D;
+    _clipTexture->setImage(image.get());
+    _clipTexture->setBorderColor(osg::Vec4f(1.0f,1.0f,0.5f,0.0f));
+    _clipTexture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_BORDER);
+    _clipTexture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_BORDER);
+    _clipTexture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
+    _clipTexture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
+
+    //image = osgDB::readImageFile("Images/lz.rgb");
+    //_clipTexture->setImage(image.get());
 }
 
 Style::Style(const Style& style, const osg::CopyOp& copyop):
-    osg::Object(style, copyop)
+    osg::Object(style, copyop),
+    _clipTexture(style._clipTexture)
 {
 }
 
@@ -93,6 +111,23 @@ osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string&
 void Style::setupDialogStateSet(osg::StateSet* stateset)
 {
     stateset->setRenderBinDetails(5, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
-    stateset->setAttributeAndModes( new osg::Depth(osg::Depth::LESS,0.0, 1.0,false), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
     stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+    stateset->setAttributeAndModes( new osg::Depth(osg::Depth::LESS,0.0, 1.0,false), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+}
+
+void Style::setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset)
+{
+    unsigned int clipTextureUnit = 1;
+
+    stateset->setAttributeAndModes( new osg::AlphaFunc(osg::AlphaFunc::GREATER, 0.0f), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+
+    stateset->setTextureAttributeAndModes( clipTextureUnit, _clipTexture.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+
+    osg::Matrixd matrix = osg::Matrixd::translate(osg::Vec3(-extents.xMin(), -extents.yMin(), -extents.zMin()))*
+                          osg::Matrixd::scale(osg::Vec3(1.0f/(extents.xMax()-extents.xMin()), 1.0f/(extents.yMax()-extents.yMin()), 1.0f));
+
+    osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
+    texgen->setPlanesFromMatrix(matrix);
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    stateset->setTextureAttributeAndModes( clipTextureUnit, texgen.get(), osg::StateAttribute::ON);
 }

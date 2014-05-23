@@ -99,43 +99,31 @@ void ComboBox::setCurrentItem(unsigned int i)
 
 void ComboBox::createGraphicsImplementation()
 {
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
-    if (_switch.valid() && _switch->getNumChildren()==_items.size())
+    _switch = new osg::Switch;
+
+    if (!_items.empty())
     {
-        OSG_NOTICE<<"Need to update existing scene graph"<<std::endl;
-        _graphicsInitialized = true;
+        for(Items::iterator itr = _items.begin();
+            itr != _items.end();
+            ++itr)
+        {
+            Item* item = itr->get();
+            OSG_NOTICE<<"Creating item "<<item->getText()<<", "<<item->getColor()<<std::endl;
+            osg::ref_ptr<osg::Group> group = new osg::Group;
+            if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(_extents, item->getColor()) );
+            if (!item->getText().empty()) group->addChild( style->createText(_extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+            _switch->addChild(group.get());
+        }
     }
     else
     {
-        OSG_NOTICE<<"ComboBox::createGraphicsImplementation()"<<std::endl;
-
-        Widget::createGraphicsImplementation();
-
-        Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-
-        _switch = new osg::Switch;
-
-        if (!_items.empty())
-        {
-            for(Items::iterator itr = _items.begin();
-                itr != _items.end();
-                ++itr)
-            {
-                Item* item = itr->get();
-                OSG_NOTICE<<"Creating item "<<item->getText()<<", "<<item->getColor()<<std::endl;
-                osg::ref_ptr<osg::Group> group = new osg::Group;
-                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(_extents, item->getColor()) );
-                if (!item->getText().empty()) group->addChild( style->createText(_extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
-                _switch->addChild(group.get());
-            }
-        }
-        else
-        {
-            _switch->addChild( style->createPanel(_extents, osg::Vec4(1.0f,1.0f,1.0f,1.0f)) );
-        }
-
-        _switch->setSingleChildOn(_currentItem);
-
-        setGraphicsSubgraph(_switch.get());
+        _switch->addChild( style->createPanel(_extents, osg::Vec4(1.0f,1.0f,1.0f,1.0f)) );
     }
+
+    _switch->setSingleChildOn(_currentItem);
+
+    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    setGraphicsSubgraph(_switch.get());
 }

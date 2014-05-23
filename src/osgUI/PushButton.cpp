@@ -71,8 +71,6 @@ void PushButton::leaveImplementation()
 
 void PushButton::createGraphicsImplementation()
 {
-    OSG_NOTICE<<"PushButton::createGraphicsImplementation()"<<std::endl;
-
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
@@ -96,6 +94,8 @@ void PushButton::createGraphicsImplementation()
     _textDrawable->setDataVariance(osg::Object::DYNAMIC);
 
     group->addChild(_textDrawable.get());
+
+    style->setupClipStateSet(_extents, getOrCreateStateSet());
 
     setGraphicsSubgraph(group.get());
 }

@@ -16,6 +16,7 @@
 
 #include <osg/Object>
 #include <osg/BoundingBox>
+#include <osg/Texture2D>
 #include <osg/Vec4>
 
 #include <osgUI/AlignmentSettings>
@@ -48,9 +49,12 @@ public:
     virtual osg::Node* createText(const osg::BoundingBox& extents, const AlignmentSettings* as, const TextSettings* textSettings, const std::string& text);
     virtual osg::Node* createIcon(const osg::BoundingBox& extents, const std::string& filename);
     virtual void setupDialogStateSet(osg::StateSet* stateset);
-    
+    virtual void setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset);
+
 protected:
     virtual ~Style() {}
+
+    osg::ref_ptr<osg::Texture2D> _clipTexture;
 
     osg::Vec4 _backgroundColor;
     osg::Vec4 _textColor;

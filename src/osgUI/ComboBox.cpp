@@ -21,7 +21,8 @@
 
 using namespace osgUI;
 
-ComboBox::ComboBox()
+ComboBox::ComboBox():
+    _currentItem(0)
 {
 }
 

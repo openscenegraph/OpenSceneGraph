@@ -198,34 +198,46 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
     if (ev)
     {
-
-        updateFocus(nv);
-
-        // OSG_NOTICE<<"EventTraversal getHasEventFocus()="<<getHasEventFocus()<<std::endl;
-
-        if (getHasEventFocus())
+        if (_visible && _enabled)
         {
-            // signify that event has been taken by widget with focus
-            ev->setEventHandled(true);
 
-            osgGA::EventQueue::Events& events = ev->getEvents();
-            for(osgGA::EventQueue::Events::iterator itr = events.begin();
-                itr != events.end();
-                ++itr)
+            updateFocus(nv);
+
+            // OSG_NOTICE<<"EventTraversal getHasEventFocus()="<<getHasEventFocus()<<std::endl;
+
+            if (getHasEventFocus())
             {
-                if (handle(ev, itr->get()))
+                // signify that event has been taken by widget with focus
+                ev->setEventHandled(true);
+
+                osgGA::EventQueue::Events& events = ev->getEvents();
+                for(osgGA::EventQueue::Events::iterator itr = events.begin();
+                    itr != events.end();
+                    ++itr)
                 {
-                    (*itr)->setHandled(true);
+                    if (handle(ev, itr->get()))
+                    {
+                        (*itr)->setHandled(true);
+                    }
                 }
             }
-        }
 
-        osg::Group::traverse(nv);
+            osg::Group::traverse(nv);
+        }
+    }
+
+    else if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR ||
+             nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    {
+        if (_visible)
+        {
+            if (_graphicsSubgraph.valid()) _graphicsSubgraph->accept(nv);
+            osg::Group::traverse(nv);
+        }
     }
     else
     {
         if (_graphicsSubgraph.valid()) _graphicsSubgraph->accept(nv);
-
         osg::Group::traverse(nv);
     }
 }

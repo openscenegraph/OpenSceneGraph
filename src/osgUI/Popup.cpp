@@ -61,12 +61,12 @@ bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
 void Popup::close()
 {
-    if (_transform.valid()) _transform->setNodeMask(0x0);
+    setVisible(false);
 }
 
 void Popup::open()
 {
-    if (_transform.valid()) _transform->setNodeMask(0xffffffff);
+    setVisible(true);
 }
 
 void Popup::leaveImplementation()

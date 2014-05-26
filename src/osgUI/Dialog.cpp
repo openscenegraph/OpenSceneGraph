@@ -59,17 +59,17 @@ bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
 void Dialog::close()
 {
-    if (_transform.valid()) _transform->setNodeMask(0x0);
+    setVisible(false);
 }
 
 void Dialog::open()
 {
-    if (_transform.valid()) _transform->setNodeMask(0xffffffff);
+    setVisible(true);
 }
 
 void Dialog::createGraphicsImplementation()
 {
-    _transform = new osg::PositionAttitudeTransform;
+    _group = new osg::Group;
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
@@ -79,8 +79,8 @@ void Dialog::createGraphicsImplementation()
     osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
     osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
 
-    _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
-    _transform->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
+    _group->addChild( style->createPanel(_extents, dialogBackgroundColor) );
+    _group->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
 
     osg::BoundingBox dialogWithTileExtents(_extents);
     dialogWithTileExtents.expandBy(titleBarExents);
@@ -92,10 +92,10 @@ void Dialog::createGraphicsImplementation()
     osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
     _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
     _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
-    _transform->addChild(_titleDrawable.get());
+    _group->addChild(_titleDrawable.get());
 
     style->setupDialogStateSet(getOrCreateStateSet());
     style->setupClipStateSet(dialogWithTileExtents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(_transform.get());
+    setGraphicsSubgraph(_group.get());
 }

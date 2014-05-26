@@ -16,7 +16,6 @@
 
 #include <osgUI/Widget>
 #include <osgText/Text>
-#include <osg/PositionAttitudeTransform>
 
 namespace osgUI
 {
@@ -44,7 +43,7 @@ protected:
 
     std::string                         _title;
 
-    osg::ref_ptr<osg::PositionAttitudeTransform> _transform;
+    osg::ref_ptr<osg::Group>            _group;
 
     // implementation detail
     osg::ref_ptr<osgText::Text>         _titleDrawable;

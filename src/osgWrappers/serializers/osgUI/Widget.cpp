@@ -77,6 +77,8 @@ REGISTER_OBJECT_WRAPPER( Widget,
     ADD_OBJECT_SERIALIZER( AlignmentSettings, osgUI::AlignmentSettings, NULL );
     ADD_OBJECT_SERIALIZER( TextSettings, osgUI::TextSettings, NULL );
 
+    ADD_BOOL_SERIALIZER(Visible, true);
+    ADD_BOOL_SERIALIZER(Enabled, true);
 
     ADD_METHOD( createGraphics );
     ADD_METHOD( createGraphicsImplementation );

@@ -76,6 +76,15 @@ public:
     TextSettings* getTextSettings() { return _textSettings.get(); }
     const TextSettings* getTextSettings() const { return _textSettings.get(); }
 
+    /** set the visibility of the widget.*/
+    virtual void setVisible(bool visible) { _visible = visible; }
+    /** get the visibility of the widget.*/
+    virtual bool getVisible() const { return _visible; }
+
+    /** set whether the widget is enabled for user interaction.*/
+    virtual void setEnabled(bool enabled) { _enabled = enabled; }
+    /** get whether the widget is enabled for user interaction.*/
+    virtual bool getEnabled() const { return _enabled; }
 
     enum FocusBehaviour
     {
@@ -136,6 +145,9 @@ protected:
     osg::ref_ptr<AlignmentSettings> _alignmentSettings;
     osg::ref_ptr<FrameSettings> _frameSettings;
     osg::ref_ptr<TextSettings> _textSettings;
+
+    bool                _visible;
+    bool                _enabled;
 };
 
 }

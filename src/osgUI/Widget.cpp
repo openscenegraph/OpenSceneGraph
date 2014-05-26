@@ -28,7 +28,9 @@ using namespace osgUI;
 Widget::Widget():
     _focusBehaviour(FOCUS_FOLLOWS_POINTER),
     _hasEventFocus(false),
-    _graphicsInitialized(false)
+    _graphicsInitialized(false),
+    _visible(true),
+    _enabled(true)
 {
     setNumChildrenRequiringEventTraversal(1);
 }
@@ -40,7 +42,9 @@ Widget::Widget(const Widget& widget, const osg::CopyOp& copyop):
     _graphicsInitialized(false),
     _alignmentSettings(osg::clone(widget._alignmentSettings.get(), copyop)),
     _frameSettings(osg::clone(widget._frameSettings.get(), copyop)),
-    _textSettings(osg::clone(widget._textSettings.get(), copyop))
+    _textSettings(osg::clone(widget._textSettings.get(), copyop)),
+    _visible(widget._visible),
+    _enabled(widget._enabled)
 {
     setNumChildrenRequiringEventTraversal(1);
 }

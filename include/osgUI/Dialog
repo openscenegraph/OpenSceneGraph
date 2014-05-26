@@ -31,9 +31,6 @@ public:
     std::string& getTitle() { return _title; }
     const std::string& getTitle() const { return _title; }
 
-    void close();
-    void open();
-
     bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
 
     virtual void createGraphicsImplementation();

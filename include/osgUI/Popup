@@ -28,9 +28,6 @@ public:
     Popup(const Popup& dialog, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Node(osgUI, Popup);
 
-    void close();
-    void open();
-
     virtual void leaveImplementation();
 
     bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);

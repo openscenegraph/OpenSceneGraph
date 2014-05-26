@@ -10,6 +10,4 @@ REGISTER_OBJECT_WRAPPER( Popup,
                          osgUI::Popup,
                          "osg::Object osg::Node osg::Group osgUI::Widget osgUI::Popup" )
 {
-    ADD_METHOD( open );
-    ADD_METHOD( close );
 }

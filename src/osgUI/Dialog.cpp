@@ -43,7 +43,7 @@ bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
             if (ea->getKey()=='c')
             {
-                close();
+                setVisible(false);
                 ea->setHandled(true);
 
                 return true;
@@ -55,16 +55,6 @@ bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
     }
 
     return false;
-}
-
-void Dialog::close()
-{
-    setVisible(false);
-}
-
-void Dialog::open()
-{
-    setVisible(true);
 }
 
 void Dialog::createGraphicsImplementation()

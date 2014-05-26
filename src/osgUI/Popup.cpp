@@ -45,7 +45,7 @@ bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
             if (ea->getKey()=='c')
             {
-                close();
+                setVisible(false);
                 ea->setHandled(true);
 
                 return true;
@@ -59,19 +59,9 @@ bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
     return false;
 }
 
-void Popup::close()
-{
-    setVisible(false);
-}
-
-void Popup::open()
-{
-    setVisible(true);
-}
-
 void Popup::leaveImplementation()
 {
-    close();
+    setVisible(false);
 }
 
 void Popup::createGraphicsImplementation()

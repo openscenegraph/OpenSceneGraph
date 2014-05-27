@@ -88,6 +88,9 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
     textDrawable->setText(text);
     textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
 
+
+    textDrawable->setEnableDepthWrites(false);
+
     if (ts)
     {
         textDrawable->setFont(ts->getFont());

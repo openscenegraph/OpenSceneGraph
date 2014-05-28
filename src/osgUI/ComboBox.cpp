@@ -126,5 +126,5 @@ void ComboBox::createGraphicsImplementation()
     _switch->setSingleChildOn(_currentItem);
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
-    setGraphicsSubgraph(_switch.get());
+    setGraphicsSubgraph(0, _switch.get());
 }

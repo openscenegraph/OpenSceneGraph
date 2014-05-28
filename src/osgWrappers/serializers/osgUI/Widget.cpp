@@ -69,7 +69,7 @@ REGISTER_OBJECT_WRAPPER( Widget,
 
     ADD_BOOL_SERIALIZER(HasEventFocus, false);
 
-    ADD_OBJECT_SERIALIZER( GraphicsSubgraph, osg::Node, NULL );
+    ADD_MAP_SERIALIZER(GraphicsSubgraphMap, osgUI::Widget::GraphicsSubgraphMap, osgDB::BaseSerializer::RW_INT, osgDB::BaseSerializer::RW_OBJECT);
 
     ADD_BOUNDINGBOXF_SERIALIZER(Extents, osg::BoundingBoxf());
 

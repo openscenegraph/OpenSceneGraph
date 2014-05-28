@@ -1703,6 +1703,10 @@ public:
 #define REMOVE_SERIALIZER(PROP) \
     wrapper->markSerializerAsRemoved( #PROP );
 
+#define ADD_MAP_SERIALIZER(PROP, TYPE, KEYTYPE, ELEMENTTYPE) \
+    wrapper->addSerializer( new osgDB::MapSerializer< MyClass, TYPE >( \
+        #PROP, &MyClass::get##PROP, &MyClass::get##PROP, &MyClass::set##PROP, KEYTYPE, ELEMENTTYPE), osgDB::BaseSerializer::RW_MAP )
+
 #define ADD_METHOD_OBJECT( METHODNAME, METHODOBJECTCLASS ) wrapper->addMethodObject(METHODNAME, new METHODOBJECTCLASS());
 
 #define ADD_METHOD(METHODNAME) \

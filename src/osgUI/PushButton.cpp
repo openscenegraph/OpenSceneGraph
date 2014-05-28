@@ -97,7 +97,7 @@ void PushButton::createGraphicsImplementation()
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(group.get());
+    setGraphicsSubgraph(0, group.get());
 }
 
 void PushButton::pressedImplementation()

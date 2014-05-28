@@ -77,5 +77,10 @@ void Popup::createGraphicsImplementation()
     style->setupDialogStateSet(getOrCreateStateSet());
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(_transform.get());
+
+    // render before the subgraph
+    setGraphicsSubgraph(-1, _transform.get());
+
+    // render after the subgraph
+    setGraphicsSubgraph(1, style->createDepthSetPanel(_extents));
 }

@@ -38,10 +38,6 @@ static bool writeColorMap( osgDB::OutputStream& os, const osg::TransferFunction1
 }
 #endif
 
-#define ADD_MAP_SERIALIZER(PROP, TYPE, KEYTYPE, ELEMENTTYPE) \
-    wrapper->addSerializer( new osgDB::MapSerializer< MyClass, TYPE >( \
-        #PROP, &MyClass::get##PROP, &MyClass::get##PROP, &MyClass::set##PROP, KEYTYPE, ELEMENTTYPE), osgDB::BaseSerializer::RW_MAP )
-
 
 REGISTER_OBJECT_WRAPPER( TransferFunction1D,
                          new osg::TransferFunction1D,

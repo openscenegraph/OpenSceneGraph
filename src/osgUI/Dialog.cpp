@@ -87,5 +87,9 @@ void Dialog::createGraphicsImplementation()
     style->setupDialogStateSet(getOrCreateStateSet());
     style->setupClipStateSet(dialogWithTileExtents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(_group.get());
+    // render before the subgraph
+    setGraphicsSubgraph(-1, _group.get());
+
+    // render after the subgraph
+    setGraphicsSubgraph(1, style->createDepthSetPanel(dialogWithTileExtents));
 }

@@ -225,20 +225,22 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
             osg::Group::traverse(nv);
         }
     }
-
-    else if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR ||
-             nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    else if (_visible || (nv.getVisitorType()!=osg::NodeVisitor::UPDATE_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR))
     {
-        if (_visible)
+        GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
+        while(itr!= _graphicsSubgraphMap.end() && itr->first<=0)
         {
-            if (_graphicsSubgraph.valid()) _graphicsSubgraph->accept(nv);
-            osg::Group::traverse(nv);
+            itr->second->accept(nv);
+            ++itr;
         }
-    }
-    else
-    {
-        if (_graphicsSubgraph.valid()) _graphicsSubgraph->accept(nv);
-        osg::Group::traverse(nv);
+
+        Group::traverse(nv);
+
+        while(itr!= _graphicsSubgraphMap.end())
+        {
+            itr->second->accept(nv);
+            ++itr;
+        }
     }
 }
 
@@ -308,13 +310,25 @@ osg::BoundingSphere Widget::computeBound() const
 
 void Widget::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    if (_graphicsSubgraph.valid()) _graphicsSubgraph->resizeGLObjectBuffers(maxSize);
+    for(GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
+        itr !=  _graphicsSubgraphMap.end();
+        ++itr)
+    {
+        itr->second->resizeGLObjectBuffers(maxSize);
+    }
+
     Group::resizeGLObjectBuffers(maxSize);
 }
 
 
 void Widget::releaseGLObjects(osg::State* state) const
 {
-    if (_graphicsSubgraph.valid()) _graphicsSubgraph->releaseGLObjects(state);
+    for(GraphicsSubgraphMap::const_iterator itr = _graphicsSubgraphMap.begin();
+        itr !=  _graphicsSubgraphMap.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
     Group::releaseGLObjects(state);
 }

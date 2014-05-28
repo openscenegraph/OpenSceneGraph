@@ -42,13 +42,20 @@ public:
 
     virtual void dirty();
 
+    typedef std::map<int, osg::ref_ptr<osg::Node> > GraphicsSubgraphMap;
 
-    /** Set the subgraph to be used to erndering the widget.*/
-    void setGraphicsSubgraph(osg::Node* node) { _graphicsSubgraph = node; _graphicsInitialized = true; }
-    /** Get the subgraph to be used to erndering the widget.*/
-    osg::Node* getGraphicsSubgraph() { return _graphicsSubgraph.get(); }
-    /** Get the const subgraph to be used to erndering the widget.*/
-    const osg::Node* getGraphicsSubgraph() const { return _graphicsSubgraph.get(); }
+    /** Set the subgraph to be used to render the widget.*/
+    void setGraphicsSubgraph(int orderNum, osg::Node* node) { _graphicsSubgraphMap[orderNum] = node; _graphicsInitialized = true; }
+    /** Get the subgraph to be used to render the widget.*/
+    osg::Node* getGraphicsSubgraph(int orderNum) { GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.find(orderNum); return (itr!=_graphicsSubgraphMap.end()) ? itr->second.get() :  0; }
+    /** Get the const subgraph to be used to render the widget.*/
+    const osg::Node* getGraphicsSubgraph(int orderNum) const { GraphicsSubgraphMap::const_iterator itr = _graphicsSubgraphMap.find(orderNum); return (itr!=_graphicsSubgraphMap.end()) ? itr->second.get() :  0; }
+
+    void setGraphicsSubgraphMap(const GraphicsSubgraphMap& gsm) { _graphicsSubgraphMap = gsm; _graphicsInitialized = true; }
+    GraphicsSubgraphMap& getGraphicsSubgraphMap() { return _graphicsSubgraphMap; }
+    const GraphicsSubgraphMap& getGraphicsSubgraphMap() const { return _graphicsSubgraphMap; }
+
+
 
     /** createGraphics entry method, calls either callback object named "createGraphics" or the createGraphicsImplementation() method.*/
     virtual void createGraphics();
@@ -136,7 +143,7 @@ protected:
     bool                _hasEventFocus;
     bool                _graphicsInitialized;
 
-    osg::ref_ptr<osg::Node> _graphicsSubgraph;
+    GraphicsSubgraphMap _graphicsSubgraphMap;
 
     osg::BoundingBoxf   _extents;
 

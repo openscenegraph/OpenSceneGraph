@@ -83,5 +83,5 @@ void LineEdit::createGraphicsImplementation()
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(_textDrawable.get());
+    setGraphicsSubgraph(0, _textDrawable.get());
 }

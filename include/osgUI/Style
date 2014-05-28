@@ -44,6 +44,7 @@ public:
     void setDisabledTextColor(const osg::Vec4& color) { _disabledTextColor = color; }
     const osg::Vec4& getDisabledTextColor() const { return _disabledTextColor; }
 
+    virtual osg::Node* createDepthSetPanel(const osg::BoundingBox& extents);
     virtual osg::Node* createPanel(const osg::BoundingBox& extents, const osg::Vec4& colour);
     virtual osg::Node* createFrame(const osg::BoundingBox& extents, const FrameSettings* frameSettings);
     virtual osg::Node* createText(const osg::BoundingBox& extents, const AlignmentSettings* as, const TextSettings* textSettings, const std::string& text);

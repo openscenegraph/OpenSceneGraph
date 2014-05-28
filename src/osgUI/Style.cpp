@@ -45,6 +45,10 @@ Style::Style()
 
     //image = osgDB::readImageFile("Images/lz.rgb");
     //_clipTexture->setImage(image.get());
+
+    _disabledDepthWrite = new osg::Depth(osg::Depth::LESS,0.0, 1.0,false);
+    _enabledDepthWrite = new osg::Depth(osg::Depth::LESS,0.0, 1.0,true);
+    _disableColorWriteMask = new osg::ColorMask(false, false, false, false);
 }
 
 Style::Style(const Style& style, const osg::CopyOp& copyop):
@@ -91,8 +95,8 @@ osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
     geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
 
     osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
-    stateset->setAttributeAndModes( new osg::Depth(osg::Depth::LESS,0.0, 1.0,true), osg::StateAttribute::ON);
-    stateset->setAttributeAndModes( new osg::ColorMask(false, false, false, false));
+    stateset->setAttributeAndModes( _enabledDepthWrite.get(), osg::StateAttribute::ON);
+    stateset->setAttributeAndModes( _disableColorWriteMask.get() );
 
     return geometry.release();
 }
@@ -136,7 +140,7 @@ void Style::setupDialogStateSet(osg::StateSet* stateset)
 {
     stateset->setRenderBinDetails(5, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
     stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-    stateset->setAttributeAndModes( new osg::Depth(osg::Depth::LESS,0.0, 1.0,false), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+    stateset->setAttributeAndModes( _disabledDepthWrite.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
 }
 
 void Style::setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset)

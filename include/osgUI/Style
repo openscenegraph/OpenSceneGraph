@@ -17,6 +17,8 @@
 #include <osg/Object>
 #include <osg/BoundingBox>
 #include <osg/Texture2D>
+#include <osg/Depth>
+#include <osg/ColorMask>
 #include <osg/Vec4>
 
 #include <osgUI/AlignmentSettings>
@@ -55,6 +57,9 @@ public:
 protected:
     virtual ~Style() {}
 
+    osg::ref_ptr<osg::Depth>     _disabledDepthWrite;
+    osg::ref_ptr<osg::Depth>     _enabledDepthWrite;
+    osg::ref_ptr<osg::ColorMask> _disableColorWriteMask;
     osg::ref_ptr<osg::Texture2D> _clipTexture;
 
     osg::Vec4 _backgroundColor;

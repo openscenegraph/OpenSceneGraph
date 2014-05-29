@@ -94,37 +94,68 @@ void ComboBox::setCurrentItem(unsigned int i)
 {
     OSG_NOTICE << "ComboBox::setCurrentItem("<<i<<")"<<std::endl;
     _currentItem = i;
-    if (_switch.valid()) _switch->setSingleChildOn(_currentItem);
+    if (_buttonSwitch.valid()) _buttonSwitch->setSingleChildOn(_currentItem);
 }
-
 
 void ComboBox::createGraphicsImplementation()
 {
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
-    _switch = new osg::Switch;
+    _buttonSwitch = new osg::Switch;
+    _popup = new osgUI::Popup;
+    _popup->setVisible(true);
 
     if (!_items.empty())
     {
+
+        float itemWidth = (_extents.xMax()-_extents.xMin());
+        float itemHeight = (_extents.yMax()-_extents.yMin());
+        float popupHeight = itemHeight * _items.size();
+        float gap = (_extents.yMax()-_extents.yMin())*0.1f;
+        float popupTop = _extents.yMin()-gap;
+
+        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop, _extents.zMax());
+        _popup->setExtents(popupExtents);
+
+        osg::BoundingBox popupItemExtents(_extents.xMin(), popupTop-itemHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop, _extents.zMax());
+
         for(Items::iterator itr = _items.begin();
             itr != _items.end();
             ++itr)
         {
             Item* item = itr->get();
             OSG_NOTICE<<"Creating item "<<item->getText()<<", "<<item->getColor()<<std::endl;
-            osg::ref_ptr<osg::Group> group = new osg::Group;
-            if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(_extents, item->getColor()) );
-            if (!item->getText().empty()) group->addChild( style->createText(_extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
-            _switch->addChild(group.get());
+
+            // setup graphics for button
+            {
+                osg::ref_ptr<osg::Group> group = new osg::Group;
+                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(_extents, item->getColor()) );
+                if (!item->getText().empty()) group->addChild( style->createText(_extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+                _buttonSwitch->addChild(group.get());
+            }
+
+            // setup graphics for popup
+            {
+                osg::ref_ptr<osg::Group> group = new osg::Group;
+                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(popupItemExtents, item->getColor()) );
+                if (!item->getText().empty()) group->addChild( style->createText(popupItemExtents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+                _popup->addChild(group.get());
+
+                popupItemExtents.yMin() -= itemHeight;
+                popupItemExtents.yMax() -= itemHeight;
+            }
+
         }
+
     }
     else
     {
-        _switch->addChild( style->createPanel(_extents, osg::Vec4(1.0f,1.0f,1.0f,1.0f)) );
+        _buttonSwitch->addChild( style->createPanel(_extents, osg::Vec4(1.0f,1.0f,1.0f,1.0f)) );
     }
 
-    _switch->setSingleChildOn(_currentItem);
+    _buttonSwitch->setSingleChildOn(_currentItem);
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
-    setGraphicsSubgraph(0, _switch.get());
+    setGraphicsSubgraph(0, _buttonSwitch.get());
+    addChild(_popup.get());
 }

@@ -68,6 +68,8 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
             break;
         case(osgGA::GUIEventAdapter::PUSH):
             OSG_NOTICE<<"Button pressed "<<std::endl;
+            // toggle visibility of popup.
+            if (_popup) _popup->setVisible(!_popup->getVisible());
             break;
         case(osgGA::GUIEventAdapter::RELEASE):
             OSG_NOTICE<<"Button release "<<std::endl;
@@ -103,21 +105,21 @@ void ComboBox::createGraphicsImplementation()
 
     _buttonSwitch = new osg::Switch;
     _popup = new osgUI::Popup;
-    _popup->setVisible(true);
+    _popup->setVisible(false);
 
     if (!_items.empty())
     {
 
-        float itemWidth = (_extents.xMax()-_extents.xMin());
-        float itemHeight = (_extents.yMax()-_extents.yMin());
-        float popupHeight = itemHeight * _items.size();
-        float gap = (_extents.yMax()-_extents.yMin())*0.1f;
-        float popupTop = _extents.yMin()-gap;
+        float margin = (_extents.yMax()-_extents.yMin())*0.1f;
+        float itemWidth = (_extents.xMax()-_extents.xMin())-2.0f*margin;
+        float itemHeight = (_extents.yMax()-_extents.yMin())-margin;
+        float popupHeight = itemHeight * _items.size() + 2.0f*margin;
+        float popupTop = _extents.yMin()-margin;
 
-        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop, _extents.zMax());
+        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMin()+itemWidth+2*margin, popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);
 
-        osg::BoundingBox popupItemExtents(_extents.xMin(), popupTop-itemHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop, _extents.zMax());
+        osg::BoundingBox popupItemExtents(_extents.xMin()+margin, popupTop-margin-itemHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop-margin, _extents.zMax());
 
         for(Items::iterator itr = _items.begin();
             itr != _items.end();
@@ -141,8 +143,8 @@ void ComboBox::createGraphicsImplementation()
                 if (!item->getText().empty()) group->addChild( style->createText(popupItemExtents, getAlignmentSettings(), getTextSettings(), item->getText()) );
                 _popup->addChild(group.get());
 
-                popupItemExtents.yMin() -= itemHeight;
-                popupItemExtents.yMax() -= itemHeight;
+                popupItemExtents.yMin() -= (itemHeight+margin);
+                popupItemExtents.yMax() -= (itemHeight+margin);
             }
 
         }

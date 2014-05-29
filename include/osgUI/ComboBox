@@ -14,7 +14,7 @@
 #ifndef OSGUI_COMBOBOX
 #define OSGUI_COMBOBOX
 
-#include <osgUI/Widget>
+#include <osgUI/Popup>
 #include <osg/Switch>
 #include <osgText/Text>
 
@@ -72,7 +72,6 @@ public:
     Items& getItems() { return _items; }
     const Items& getItems() const { return _items; }
 
-
     void setCurrentItem(unsigned int i);
     unsigned int getCurrentItem() const { return _currentItem; }
 
@@ -84,11 +83,12 @@ public:
 protected:
     virtual ~ComboBox() {}
 
-
     Items _items;
     unsigned int _currentItem;
 
-    osg::ref_ptr<osg::Switch> _switch;
+    osg::ref_ptr<osg::Switch> _buttonSwitch;
+
+    osg::ref_ptr<osgUI::Popup> _popup;
 };
 
 }

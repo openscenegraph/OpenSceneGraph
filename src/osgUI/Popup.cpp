@@ -61,7 +61,7 @@ bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 
 void Popup::leaveImplementation()
 {
-    setVisible(false);
+//    setVisible(false);
 }
 
 void Popup::createGraphicsImplementation()

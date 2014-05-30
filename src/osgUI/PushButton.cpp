@@ -81,15 +81,29 @@ void PushButton::createGraphicsImplementation()
     float withFocus = 0.8;
     float pressed = 0.5;
 
-    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
-    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
-    _buttonSwitch->addChild(style->createPanel(_extents, osg::Vec4(pressed,pressed,pressed,1.0)));
+    osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
+
+    osg::BoundingBox extents(_extents);
+
+    bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+    if (requiresFrame)
+    {
+        group->addChild(style->createFrame(_extents, getFrameSettings(), frameColor));
+        extents.xMin() += getFrameSettings()->getLineWidth();
+        extents.xMax() -= getFrameSettings()->getLineWidth();
+        extents.yMin() += getFrameSettings()->getLineWidth();
+        extents.yMax() -= getFrameSettings()->getLineWidth();
+    }
+
+    _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
+    _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
+    _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(pressed,pressed,pressed,1.0)));
     _buttonSwitch->setSingleChildOn(0);
 
     group->addChild(_buttonSwitch.get());
 
     // create label.
-    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+    osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());
     _textDrawable->setDataVariance(osg::Object::DYNAMIC);
 

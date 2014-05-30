@@ -77,11 +77,29 @@ void LineEdit::setText(const std::string& text)
 void LineEdit::createGraphicsImplementation()
 {
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
-    osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+
+    osg::BoundingBox extents(_extents);
+    osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
+
+    bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+    if (requiresFrame)
+    {
+        group->addChild(style->createFrame(_extents, getFrameSettings(), frameColor));
+        extents.xMin() += getFrameSettings()->getLineWidth();
+        extents.xMax() -= getFrameSettings()->getLineWidth();
+        extents.yMin() += getFrameSettings()->getLineWidth();
+        extents.yMax() -= getFrameSettings()->getLineWidth();
+    }
+
+
+    osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());
     _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+    group->addChild(node.get());
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 
-    setGraphicsSubgraph(0, _textDrawable.get());
+    setGraphicsSubgraph(0, group.get());
 }

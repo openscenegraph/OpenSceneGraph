@@ -74,6 +74,9 @@ void Popup::createGraphicsImplementation()
 
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
 
+    bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+    if (requiresFrame) { _transform->addChild(style->createFrame(_extents, getFrameSettings(), dialogBackgroundColor)); }
+
     style->setupDialogStateSet(getOrCreateStateSet());
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 

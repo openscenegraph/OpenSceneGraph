@@ -41,14 +41,6 @@ bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
         case(osgGA::GUIEventAdapter::KEYUP):
             OSG_NOTICE<<"Key pressed : "<<ea->getKey()<<std::endl;
 
-            if (ea->getKey()=='c')
-            {
-                setVisible(false);
-                ea->setHandled(true);
-
-                return true;
-            }
-
             break;
         default:
             break;
@@ -74,6 +66,9 @@ void Dialog::createGraphicsImplementation()
 
     osg::BoundingBox dialogWithTileExtents(_extents);
     dialogWithTileExtents.expandBy(titleBarExents);
+
+    bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+    if (requiresFrame) { _group->addChild(style->createFrame(dialogWithTileExtents, getFrameSettings(), dialogBackgroundColor)); }
 
     OSG_NOTICE<<"Dialog::_extents ("<<_extents.xMin()<<", "<<_extents.yMin()<<", "<<_extents.zMin()<<"), ("<<_extents.xMax()<<", "<<_extents.yMax()<<", "<<_extents.zMax()<<")"<<std::endl;
     OSG_NOTICE<<"Dialog::titleBarExents ("<<titleBarExents.xMin()<<", "<<titleBarExents.yMin()<<", "<<titleBarExents.zMin()<<"), ("<<titleBarExents.xMax()<<", "<<titleBarExents.yMax()<<", "<<titleBarExents.zMax()<<")"<<std::endl;

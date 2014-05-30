@@ -37,7 +37,7 @@ Style::Style()
 
     _clipTexture = new osg::Texture2D;
     _clipTexture->setImage(image.get());
-    _clipTexture->setBorderColor(osg::Vec4f(1.0f,1.0f,0.5f,0.0f));
+    _clipTexture->setBorderColor(osg::Vec4f(1.0f,1.0f,1.0f,0.0f));
     _clipTexture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_BORDER);
     _clipTexture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_BORDER);
     _clipTexture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
@@ -101,9 +101,119 @@ osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
     return geometry.release();
 }
 
-osg::Node* Style::createFrame(const osg::BoundingBox& extents, const FrameSettings* frameSettings)
+osg::Node* Style::createFrame(const osg::BoundingBox& extents, const FrameSettings* frameSettings, const osg::Vec4& color)
 {
-    return 0;
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+
+    float topScale = 1.0f;
+    float bottomScale = 1.0f;
+    float leftScale = 1.0f;
+    float rightScale = 1.0f;
+
+    if (frameSettings)
+    {
+        switch(frameSettings->getShadow())
+        {
+            case(FrameSettings::PLAIN):
+                // default settings are appropriate for PLAIN
+                break;
+            case(FrameSettings::SUNKEN):
+                topScale = 0.6f;
+                bottomScale = 1.2f;
+                leftScale = 0.8f;
+                rightScale = 0.8f;
+                break;
+            case(FrameSettings::RAISED):
+                topScale = 1.2f;
+                bottomScale = 0.6f;
+                leftScale = 0.8f;
+                rightScale = 0.8f;
+                break;
+        }
+    }
+
+    osg::Vec4 topColor(osg::minimum(color.r()*topScale,1.0f), osg::minimum(color.g()*topScale,1.0f), osg::minimum(color.b()*topScale,1.0f), color.a());
+    osg::Vec4 bottomColor(osg::minimum(color.r()*bottomScale,1.0f), osg::minimum(color.g()*bottomScale,1.0f), osg::minimum(color.b()*bottomScale,1.0f), color.a());
+    osg::Vec4 leftColor(osg::minimum(color.r()*leftScale,1.0f), osg::minimum(color.g()*leftScale,1.0f), osg::minimum(color.b()*leftScale,1.0f), color.a());
+    osg::Vec4 rightColor(osg::minimum(color.r()*rightScale,1.0f), osg::minimum(color.g()*rightScale,1.0f), osg::minimum(color.b()*rightScale,1.0f), color.a());
+
+    float lineWidth = frameSettings ? frameSettings->getLineWidth() : 1.0f;
+
+    osg::Vec3 outerBottomLeft(extents.xMin(), extents.yMin(), extents.zMin());
+    osg::Vec3 outerBottomRight(extents.xMax(), extents.yMin(), extents.zMin());
+    osg::Vec3 outerTopLeft(extents.xMin(), extents.yMax(), extents.zMin());
+    osg::Vec3 outerTopRight(extents.xMax(), extents.yMax(), extents.zMin());
+
+    osg::Vec3 innerBottomLeft(extents.xMin()+lineWidth, extents.yMin()+lineWidth, extents.zMin());
+    osg::Vec3 innerBottomRight(extents.xMax()-lineWidth, extents.yMin()+lineWidth, extents.zMin());
+    osg::Vec3 innerTopLeft(extents.xMin()+lineWidth, extents.yMax()-lineWidth, extents.zMin());
+    osg::Vec3 innerTopRight(extents.xMax()-lineWidth, extents.yMax()-lineWidth, extents.zMin());
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+    vertices->push_back( outerBottomLeft );   // 0
+    vertices->push_back( outerBottomRight );  // 1
+    vertices->push_back( outerTopLeft );      // 2
+    vertices->push_back( outerTopRight );     // 3
+
+    vertices->push_back( innerBottomLeft );  // 4
+    vertices->push_back( innerBottomRight ); // 5
+    vertices->push_back( innerTopLeft );     // 6
+    vertices->push_back( innerTopRight );    // 7
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    geometry->setColorArray(colours.get(), osg::Array::BIND_PER_PRIMITIVE_SET);
+
+    // bottom
+    {
+        colours->push_back(bottomColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(4);
+        primitives->push_back(0);
+        primitives->push_back(5);
+        primitives->push_back(1);
+    }
+
+    // top
+    {
+        colours->push_back(topColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(2);
+        primitives->push_back(6);
+        primitives->push_back(3);
+        primitives->push_back(7);
+    }
+
+    // left
+    {
+        colours->push_back(leftColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(2);
+        primitives->push_back(0);
+        primitives->push_back(6);
+        primitives->push_back(4);
+    }
+
+    // right
+    {
+        colours->push_back(rightColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(7);
+        primitives->push_back(5);
+        primitives->push_back(3);
+        primitives->push_back(1);
+    }
+
+    return geometry.release();
 }
 
 osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSettings* as, const TextSettings* ts, const std::string& text)

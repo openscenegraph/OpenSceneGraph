@@ -53,6 +53,8 @@ namespace osg
     };
 }
 
+
+
 Node::Node()
     :Object(true)
 {

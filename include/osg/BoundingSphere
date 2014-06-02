@@ -135,7 +135,6 @@ class BoundingSphereImpl
             return valid() && bs.valid() &&
                    ((_center - bs._center).length2() <= (_radius + bs._radius)*(_radius + bs._radius));
         }
-
 };
 
 

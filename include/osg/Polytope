@@ -289,14 +289,6 @@ class OSG_EXPORT Polytope
             return true;
         }
 
-#ifdef OSG_USE_BOUND
-        inline bool contains(const osg::Bound& bound)
-        {
-            if (bound.bb) return contains(*bound.bb);
-            else return contains(*bound.bs);
-        }
-#endif
-
         /** Check whether all of vertex list is contained with clipping set.*/
         inline bool containsAllOf(const std::vector<Vec3>& vertices)
         {

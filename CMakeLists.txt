@@ -443,9 +443,6 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 
-OPTION(OSG_USE_BOUND "Set to ON to build OpenSceneGraph with Bound adapter class to help with porting applications between OSG-3.2 and 3.4 and later." ON)
-MARK_AS_ADVANCED(OSG_USE_BOUND)
-
 IF (WIN32)
     OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
     MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)

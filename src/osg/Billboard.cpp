@@ -107,7 +107,7 @@ bool Billboard::addDrawable(Drawable *gset)
     if (Geode::addDrawable(gset))
     {
         Vec3 pos(0.0f,0.0f,0.0f);
-        while (_positionList.size()<_drawables.size())
+        while (_positionList.size()<_children.size())
         {
             _positionList.push_back(pos);
         }
@@ -121,7 +121,7 @@ bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
 {
     if (Geode::addDrawable(gset))
     {
-        while (_positionList.size()<_drawables.size())
+        while (_positionList.size()<_children.size())
         {
             _positionList.push_back(pos);
         }
@@ -134,14 +134,14 @@ bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
 bool Billboard::removeDrawable( Drawable *gset )
 {
     PositionList::iterator pitr = _positionList.begin();
-    for (DrawableList::iterator itr=_drawables.begin();
-        itr!=_drawables.end();
+    for (NodeList::iterator itr=_children.begin();
+        itr!=_children.end();
         ++itr,++pitr)
     {
         if (itr->get()==gset)
         {
             // note ref_ptr<> automatically handles decrementing gset's reference count.
-            _drawables.erase(itr);
+            _children.erase(itr);
             _positionList.erase(pitr);
             dirtyBound();
             return true;
@@ -307,7 +307,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
 BoundingSphere Billboard::computeBound() const
 {
     int i;
-    int ngsets = _drawables.size();
+    int ngsets = _children.size();
 
     if( ngsets == 0 ) return BoundingSphere();
 
@@ -316,11 +316,14 @@ BoundingSphere Billboard::computeBound() const
 
     for( i = 0; i < ngsets; i++ )
     {
-        const Drawable *gset = _drawables[i].get();
-        const BoundingBox& bbox = gset->getBoundingBox();
+        const Drawable* drawable = _children[i].valid() ? _children[i]->asDrawable() : 0;
+        if (drawable)
+        {
+            const BoundingBox& bbox = drawable->getBoundingBox();
 
-        bsphere._center += bbox.center();
-        bsphere._center += _positionList[i];
+            bsphere._center += bbox.center();
+            bsphere._center += _positionList[i];
+        }
     }
 
     bsphere._center /= (float)(ngsets);
@@ -328,13 +331,16 @@ BoundingSphere Billboard::computeBound() const
     float maxd = 0.0;
     for( i = 0; i < ngsets; ++i )
     {
-        const Drawable *gset = _drawables[i].get();
-        const BoundingBox& bbox = gset->getBoundingBox();
-        Vec3 local_center = bsphere._center-_positionList[i];
-        for(unsigned int c=0;c<8;++c)
+        const Drawable* drawable = _children[i].valid() ? _children[i]->asDrawable() : 0;
+        if (drawable)
         {
-            float d = (bbox.corner(c)-local_center).length2();
-            if( d > maxd ) maxd = d;
+            const BoundingBox& bbox = drawable->getBoundingBox();
+            Vec3 local_center = bsphere._center-_positionList[i];
+            for(unsigned int c=0;c<8;++c)
+            {
+                float d = (bbox.corner(c)-local_center).length2();
+                if( d > maxd ) maxd = d;
+            }
         }
     }
     bsphere._radius = sqrtf(maxd);

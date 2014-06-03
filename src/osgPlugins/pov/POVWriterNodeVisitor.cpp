@@ -88,12 +88,11 @@ void POVWriterNodeVisitor::apply( Geode& node )
    pushStateSet( node.getStateSet() );
 
    // iterate through drawables
-   const Geode::DrawableList& dl = node.getDrawableList();
-   for( Geode::DrawableList::const_iterator itr = dl.begin();
-        itr != dl.end(); ++itr)
+   for(unsigned int i=0; i<node.getNumDrawables(); ++i)
    {
       // get drawable
-      const Drawable *d = itr->get();
+      const Drawable *d = node.getDrawable(i);
+      if (!d) continue;
 
       // push state set
       const StateSet *ss = d->getStateSet();

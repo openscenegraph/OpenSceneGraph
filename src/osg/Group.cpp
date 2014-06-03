@@ -15,7 +15,7 @@
 #include <osg/BoundingBox>
 #include <osg/Transform>
 #include <osg/OccluderNode>
-#include <osg/Drawable>
+#include <osg/Geometry>
 #include <osg/Notify>
 
 #include <stdio.h>
@@ -84,6 +84,11 @@ bool Group::insertChild( unsigned int index, Node *child )
 
     if (child)
     {
+        // handle deprecated geometry configurations by calling fixDeprecatedData().
+        osg::Geometry* geometry = child->asGeometry();
+        if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
+
+
         // note ref_ptr<> automatically handles incrementing child's reference count.
         if (index >= _children.size())
         {

@@ -123,8 +123,8 @@ const ScalarBar::TextProperties& ScalarBar::getTextProperties() const
 void ScalarBar::createDrawables()
 {
     // Remove any existing Drawables
-    _drawables.erase(_drawables.begin(), _drawables.end());
-
+    removeDrawables(0, getNumDrawables());
+    
     if (_numColors==0) return;
 
     osg::Matrix matrix;

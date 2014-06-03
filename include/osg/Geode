@@ -25,11 +25,9 @@ namespace osg {
   * are represented by objects from the \c Drawable class, so a \c Geode is a
   * \c Node whose purpose is grouping <tt>Drawable</tt>s.
 */
-class OSG_EXPORT Geode : public Node
+class OSG_EXPORT Geode : public Group
 {
     public:
-
-        typedef std::vector< ref_ptr<Drawable> > DrawableList;
 
         Geode();
 
@@ -40,8 +38,6 @@ class OSG_EXPORT Geode : public Node
 
         virtual Geode* asGeode() { return this; }
         virtual const Geode* asGeode() const { return this; }
-
-        virtual void traverse(NodeVisitor& nv);
 
         /** Add a \c Drawable to the \c Geode.
           * If \c drawable is not \c NULL and is not contained in the \c Geode
@@ -92,22 +88,22 @@ class OSG_EXPORT Geode : public Node
         /** Return the number of <tt>Drawable</tt>s currently attached to the
           * \c Geode.
         */
-        inline unsigned int getNumDrawables() const { return static_cast<unsigned int>(_drawables.size()); }
+        inline unsigned int getNumDrawables() const { return getNumChildren(); }
 
         /** Return the \c Drawable at position \c i.*/
-        inline Drawable* getDrawable( unsigned int i ) { return _drawables[i].get(); }
+        inline Drawable* getDrawable( unsigned int i ) { return _children[i].valid() ? _children[i]->asDrawable() : 0; }
 
         /** Return the \c Drawable at position \c i.*/
-        inline const Drawable* getDrawable( unsigned int i ) const { return _drawables[i].get(); }
+        inline const Drawable* getDrawable( unsigned int i ) const { return _children[i].valid() ? _children[i]->asDrawable() : 0;  }
 
         /** Return \c true if a given \c Drawable is contained within \c Geode.*/
-        inline bool containsDrawable(const Drawable* gset) const
+        inline bool containsDrawable(const Drawable* drawable) const
         {
-            for (DrawableList::const_iterator itr=_drawables.begin();
-                 itr!=_drawables.end();
+            for (NodeList::const_iterator itr=_children.begin();
+                 itr!=_children.end();
                  ++itr)
             {
-                if (itr->get()==gset) return true;
+                if (itr->get() == drawable) return true;
             }
             return false;
         }
@@ -119,15 +115,8 @@ class OSG_EXPORT Geode : public Node
         */
         inline unsigned int getDrawableIndex( const Drawable* drawable ) const
         {
-            for (unsigned int drawableNum=0;drawableNum<_drawables.size();++drawableNum)
-            {
-                if (_drawables[drawableNum]==drawable) return drawableNum;
-            }
-            return static_cast<unsigned int>(_drawables.size()); // drawable not found.
+            return getChildIndex(drawable);
         }
-
-        /** Get the list of drawables.*/
-        const DrawableList& getDrawableList() const { return _drawables; }
 
         /** Compile OpenGL Display List for each drawable.*/
         void compileDrawables(RenderInfo& renderInfo);
@@ -142,25 +131,12 @@ class OSG_EXPORT Geode : public Node
 
         virtual BoundingSphere computeBound() const;
 
-        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        virtual void setThreadSafeRefUnref(bool threadSafe);
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-        /** If State is non-zero, this function releases any associated OpenGL objects for
-           * the specified graphics context. Otherwise, releases OpenGL objects
-           * for all graphics contexts. */
-        virtual void releaseGLObjects(osg::State* = 0) const;
-
 
     protected:
 
         virtual ~Geode();
 
-
         mutable osg::BoundingBox        _bbox;
-        DrawableList                    _drawables;
 
 };
 

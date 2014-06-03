@@ -1888,35 +1888,40 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         // OSG_NOTICE<<"Before "<<geode.getNumDrawables()<<std::endl;
 
         typedef std::vector<osg::Geometry*>                         DuplicateList;
+        typedef std::vector< osg::ref_ptr<osg::Drawable> >          DrawableList;
         typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
 
         typedef std::vector<DuplicateList> MergeList;
 
         GeometryDuplicateMap geometryDuplicateMap;
-        osg::Geode::DrawableList standardDrawables;
+        DrawableList standardDrawables;
 
         unsigned int i;
         for(i=0;i<geode.getNumDrawables();++i)
         {
-            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom)
+            osg::Drawable* drawable = geode.getDrawable(i);
+            if (drawable)
             {
-                //geom->computeCorrectBindingsAndArraySizes();
-
-                if (!geometryContainsSharedArrays(*geom) &&
-                      geom->getDataVariance()!=osg::Object::DYNAMIC &&
-                      isOperationPermissibleForObject(geom))
+                osg::Geometry* geom = drawable->asGeometry();
+                if (geom)
                 {
-                    geometryDuplicateMap[geom].push_back(geom);
+                    //geom->computeCorrectBindingsAndArraySizes();
+
+                    if (!geometryContainsSharedArrays(*geom) &&
+                        geom->getDataVariance()!=osg::Object::DYNAMIC &&
+                        isOperationPermissibleForObject(geom))
+                    {
+                        geometryDuplicateMap[geom].push_back(geom);
+                    }
+                    else
+                    {
+                        standardDrawables.push_back(drawable);
+                    }
                 }
                 else
                 {
-                    standardDrawables.push_back(geode.getDrawable(i));
+                    standardDrawables.push_back(drawable);
                 }
-            }
-            else
-            {
-                standardDrawables.push_back(geode.getDrawable(i));
             }
         }
 
@@ -2037,18 +2042,20 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         if (needToDoMerge)
         {
             // first take a reference to all the drawables to prevent them being deleted prematurely
-            osg::Geode::DrawableList keepDrawables;
+            typedef std::vector< osg::ref_ptr<osg::Drawable> >          DrawableList;
+            DrawableList keepDrawables;
             keepDrawables.resize(geode.getNumDrawables());
             for(i=0; i<geode.getNumDrawables(); ++i)
             {
-                keepDrawables[i] = geode.getDrawable(i);
+                osg::Drawable* drawable = geode.getDrawable(i);
+                if (drawable) keepDrawables[i] = geode.getDrawable(i);
             }
 
             // now clear the drawable list of the Geode so we don't have to remove items one by one (which is slow)
             geode.removeDrawables(0, geode.getNumDrawables());
 
             // add back in the standard drawables which arn't possible to merge.
-            for(osg::Geode::DrawableList::iterator sitr = standardDrawables.begin();
+            for(DrawableList::iterator sitr = standardDrawables.begin();
                 sitr != standardDrawables.end();
                 ++sitr)
             {

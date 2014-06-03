@@ -256,12 +256,9 @@ void DebugShadowMap::ViewData::setDebugPolytope
                 pg._geometry[i]->setSupportsDisplayList( false );
             }
 
-            if( _geode[i].valid() &&
-                  !_geode[i]->containsDrawable( pg._geometry[i].get() ) ) {
-                        osg::Geode::DrawableList & dl =
-                           const_cast< osg::Geode::DrawableList &>
-                              ( _geode[i]->getDrawableList() );
-                        dl.insert( dl.begin(), pg._geometry[i].get() );
+            if( _geode[i].valid() && !_geode[i]->containsDrawable( pg._geometry[i].get() ) )
+            {
+                _geode[i]->insertChild(0, pg._geometry[i].get() );
             }
         }
     }

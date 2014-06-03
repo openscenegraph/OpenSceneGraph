@@ -26,170 +26,38 @@ Geode::Geode()
 }
 
 Geode::Geode(const Geode& geode,const CopyOp& copyop):
-    Node(geode,copyop)
+    Group(geode,copyop)
 {
-    for(DrawableList::const_iterator itr=geode._drawables.begin();
-        itr!=geode._drawables.end();
-        ++itr)
-    {
-        Drawable* drawable = copyop(itr->get());
-        if (drawable) addDrawable(drawable);
-    }
 }
 
 Geode::~Geode()
 {
-    // remove reference to this from children's parent lists.
-    for(DrawableList::iterator itr=_drawables.begin();
-        itr!=_drawables.end();
-        ++itr)
-    {
-       (*itr)->removeParent(this);
-    }
 }
 
-void Geode::traverse(NodeVisitor& nv)
+bool Geode::addDrawable( Drawable* drawable )
 {
-    for(DrawableList::iterator itr=_drawables.begin();
-        itr!=_drawables.end();
-        ++itr)
-    {
-        (*itr)->accept(nv);
-    }
-}
-
-bool Geode::addDrawable( Drawable *drawable )
-{
-    if (drawable /* && !containsDrawable(drawable)*/)
-    {
-        // fallback for handling geometry with deprecated data
-        osg::Geometry* geometry = drawable->asGeometry();
-        if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
-
-        // note ref_ptr<> automatically handles incrementing drawable's reference count.
-        _drawables.push_back(drawable);
-
-        // register as parent of drawable.
-        drawable->addParent(this);
-
-        if (drawable->requiresUpdateTraversal())
-        {
-            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-        }
-
-        if (drawable->requiresEventTraversal())
-        {
-            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
-        }
-
-        dirtyBound();
-
-        return true;
-    }
-    else return false;
+    return addChild(drawable);
 }
 
 
-bool Geode::removeDrawable( Drawable *drawable )
+bool Geode::removeDrawable( Drawable* drawable )
 {
     return removeDrawables(getDrawableIndex(drawable),1);
 }
 
 bool Geode::removeDrawables(unsigned int pos,unsigned int numDrawablesToRemove)
 {
-    if (pos<_drawables.size() && numDrawablesToRemove>0)
-    {
-        unsigned int endOfRemoveRange = pos+numDrawablesToRemove;
-        if (endOfRemoveRange>_drawables.size())
-        {
-            OSG_DEBUG<<"Warning: Geode::removeDrawable(i,numDrawablesToRemove) has been passed an excessive number"<<std::endl;
-            OSG_DEBUG<<"         of drawables to remove, trimming just to end of drawable list."<<std::endl;
-            endOfRemoveRange=_drawables.size();
-        }
-
-        unsigned int updateCallbackRemoved = 0;
-        unsigned int eventCallbackRemoved = 0;
-        for(unsigned i=pos;i<endOfRemoveRange;++i)
-        {
-            // remove this Geode from the child parent list.
-            _drawables[i]->removeParent(this);
-            // update the number of app callbacks removed
-            if (_drawables[i]->requiresUpdateTraversal()) ++updateCallbackRemoved;
-            if (_drawables[i]->requiresEventTraversal()) ++eventCallbackRemoved;
-        }
-
-        _drawables.erase(_drawables.begin()+pos,_drawables.begin()+endOfRemoveRange);
-
-        if (updateCallbackRemoved)
-        {
-            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
-        }
-
-        if (eventCallbackRemoved)
-        {
-            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
-        }
-
-        dirtyBound();
-
-        return true;
-    }
-    else return false;
+    return removeChildren(pos, numDrawablesToRemove);
 }
 
-bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
+bool Geode::replaceDrawable( Drawable* origDrawable, Drawable* newDrawable )
 {
-    if (newDrawable==NULL || origDrawable==newDrawable) return false;
-
-    unsigned int pos = getDrawableIndex(origDrawable);
-    if (pos<_drawables.size())
-    {
-        return setDrawable(pos,newDrawable);
-    }
-    return false;
+    return replaceChild(origDrawable, newDrawable);
 }
 
 bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
 {
-    if (i<_drawables.size() && newDrawable)
-    {
-
-        Drawable* origDrawable = _drawables[i].get();
-
-        int deltaUpdate = 0;
-        if (origDrawable->requiresUpdateTraversal()) --deltaUpdate;
-        if (newDrawable->requiresUpdateTraversal()) ++deltaUpdate;
-        if (deltaUpdate!=0)
-        {
-            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+deltaUpdate);
-        }
-
-        int deltaEvent = 0;
-        if (origDrawable->requiresEventTraversal()) --deltaEvent;
-        if (newDrawable->requiresEventTraversal()) ++deltaEvent;
-        if (deltaEvent!=0)
-        {
-            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+deltaEvent);
-        }
-
-
-        // remove from origDrawable's parent list.
-        origDrawable->removeParent(this);
-
-        // note ref_ptr<> automatically handles decrementing origGset's reference count,
-        // and incrementing newGset's reference count.
-        _drawables[i] = newDrawable;
-
-        // register as parent of child.
-        newDrawable->addParent(this);
-
-
-        dirtyBound();
-
-        return true;
-    }
-    else return false;
-
+    return setChild(i, newDrawable);
 }
 
 
@@ -199,12 +67,22 @@ BoundingSphere Geode::computeBound() const
 
     _bbox.init();
 
-    DrawableList::const_iterator itr;
-    for(itr=_drawables.begin();
-        itr!=_drawables.end();
+    for(NodeList::const_iterator itr = _children.begin();
+        itr!=_children.end();
         ++itr)
     {
-        _bbox.expandBy((*itr)->getBoundingBox());
+        if (itr->valid())
+        {
+            const osg::Drawable* drawable = (*itr)->asDrawable();
+            if (drawable)
+            {
+                _bbox.expandBy(drawable->getBoundingBox());
+            }
+            else
+            {
+                _bbox.expandBy((*itr)->getBound());
+            }
+        }
     }
 
     if (_bbox.valid())
@@ -216,46 +94,11 @@ BoundingSphere Geode::computeBound() const
 
 void Geode::compileDrawables(RenderInfo& renderInfo)
 {
-    for(DrawableList::iterator itr = _drawables.begin();
-        itr!=_drawables.end();
+    for(NodeList::iterator itr = _children.begin();
+        itr!=_children.end();
         ++itr)
     {
-        (*itr)->compileGLObjects(renderInfo);
-    }
-}
-
-void Geode::setThreadSafeRefUnref(bool threadSafe)
-{
-    Node::setThreadSafeRefUnref(threadSafe);
-
-    for(DrawableList::const_iterator itr=_drawables.begin();
-        itr!=_drawables.end();
-        ++itr)
-    {
-        (*itr)->setThreadSafeRefUnref(threadSafe);
-    }
-}
-
-void Geode::resizeGLObjectBuffers(unsigned int maxSize)
-{
-    Node::resizeGLObjectBuffers(maxSize);
-
-    for(DrawableList::const_iterator itr=_drawables.begin();
-        itr!=_drawables.end();
-        ++itr)
-    {
-        (*itr)->resizeGLObjectBuffers(maxSize);
-    }
-}
-
-void Geode::releaseGLObjects(osg::State* state) const
-{
-    Node::releaseGLObjects(state);
-
-    for(DrawableList::const_iterator itr=_drawables.begin();
-        itr!=_drawables.end();
-        ++itr)
-    {
-        (*itr)->releaseGLObjects(state);
+        osg::Drawable* drawable = itr->valid() ? (*itr)->asDrawable() : 0;
+        if (drawable) drawable->compileGLObjects(renderInfo);
     }
 }

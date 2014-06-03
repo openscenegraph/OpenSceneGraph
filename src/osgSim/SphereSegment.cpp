@@ -378,21 +378,19 @@ void SphereSegment::init()
 
 void SphereSegment::dirtyAllDrawableDisplayLists()
 {
-    for(DrawableList::iterator itr = _drawables.begin();
-        itr != _drawables.end();
-        ++itr)
+    for(unsigned int i=0; i<getNumDrawables(); ++i)
     {
-        (*itr)->dirtyDisplayList();
+        osg::Drawable* drawable = getDrawable(i);
+        if (drawable) drawable->dirtyDisplayList();
     }
 }
 
 void SphereSegment::dirtyAllDrawableBounds()
 {
-    for(DrawableList::iterator itr = _drawables.begin();
-        itr != _drawables.end();
-        ++itr)
+    for(unsigned int i=0; i<getNumDrawables(); ++i)
     {
-        (*itr)->dirtyBound();
+        osg::Drawable* drawable = getDrawable(i);
+        if (drawable) drawable->dirtyBound();
     }
 }
 
@@ -893,17 +891,18 @@ struct ActivateTransparencyOnType
 {
     ActivateTransparencyOnType(const std::type_info& t): _t(t) {}
 
-    void operator()(osg::ref_ptr<osg::Drawable>& dptr) const
+    void operator()(osg::ref_ptr<osg::Node>& nptr) const
     {
-        if(typeid(*dptr)==_t)
+        if(typeid(*nptr)==_t)
         {
-            osg::StateSet* ss = dptr->getOrCreateStateSet();
+            osg::Drawable* drawable = nptr->asDrawable();
+            osg::StateSet* ss = drawable->getOrCreateStateSet();
             ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
             ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK),osg::StateAttribute::ON);
             ss->setMode(GL_BLEND,osg::StateAttribute::ON);
 
-            dptr->dirtyDisplayList();
+            drawable->dirtyDisplayList();
         }
     }
 
@@ -918,14 +917,15 @@ struct DeactivateTransparencyOnType
 {
     DeactivateTransparencyOnType(const std::type_info& t): _t(t) {}
 
-    void operator()(osg::ref_ptr<osg::Drawable>& dptr) const
+    void operator()(osg::ref_ptr<osg::Node>& nptr) const
     {
-        if(typeid(*dptr)==_t)
+        if(typeid(*nptr)==_t)
         {
-            osg::StateSet* ss = dptr->getStateSet();
+            osg::Drawable* drawable = nptr->asDrawable();
+            osg::StateSet* ss = drawable->getOrCreateStateSet();
             if(ss) ss->setRenderingHint(osg::StateSet::OPAQUE_BIN);
 
-            dptr->dirtyDisplayList();
+            drawable->dirtyDisplayList();
         }
     }
 
@@ -940,32 +940,32 @@ void SphereSegment::setSurfaceColor(const osg::Vec4& c)
 {
     _surfaceColor=c;
 
-    if(c.w() != 1.0) std::for_each(_drawables.begin(), _drawables.end(), ActivateTransparencyOnType(typeid(Surface)));
-    else std::for_each(_drawables.begin(), _drawables.end(), DeactivateTransparencyOnType(typeid(Surface)));
+    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Surface)));
+    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Surface)));
 }
 
 void SphereSegment::setSpokeColor(const osg::Vec4& c)
 {
     _spokeColor=c;
 
-    if(c.w() != 1.0) std::for_each(_drawables.begin(), _drawables.end(), ActivateTransparencyOnType(typeid(Spoke)));
-    else std::for_each(_drawables.begin(), _drawables.end(), DeactivateTransparencyOnType(typeid(Spoke)));
+    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Spoke)));
+    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Spoke)));
 }
 
 void SphereSegment::setEdgeLineColor(const osg::Vec4& c)
 {
     _edgeLineColor=c;
 
-    if(c.w() != 1.0) std::for_each(_drawables.begin(), _drawables.end(), ActivateTransparencyOnType(typeid(EdgeLine)));
-    else std::for_each(_drawables.begin(), _drawables.end(), DeactivateTransparencyOnType(typeid(EdgeLine)));
+    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(EdgeLine)));
+    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(EdgeLine)));
 }
 
 void SphereSegment::setSideColor(const osg::Vec4& c)
 {
     _planeColor=c;
 
-    if(c.w() != 1.0) std::for_each(_drawables.begin(), _drawables.end(), ActivateTransparencyOnType(typeid(Side)));
-    else std::for_each(_drawables.begin(), _drawables.end(), DeactivateTransparencyOnType(typeid(Side)));
+    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Side)));
+    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Side)));
 }
 
 void SphereSegment::setAllColors(const osg::Vec4& c)

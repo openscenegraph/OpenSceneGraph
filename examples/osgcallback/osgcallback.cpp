@@ -38,7 +38,7 @@
 class UpdateCallback : public osg::NodeCallback
 {
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-        { 
+        {
             std::cout<<"update callback - pre traverse"<<node<<std::endl;
             traverse(node,nv);
             std::cout<<"update callback - post traverse"<<node<<std::endl;
@@ -48,7 +48,7 @@ class UpdateCallback : public osg::NodeCallback
 class CullCallback : public osg::NodeCallback
 {
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-        { 
+        {
             std::cout<<"cull callback - pre traverse"<<node<<std::endl;
             traverse(node,nv);
             std::cout<<"cull callback - post traverse"<<node<<std::endl;
@@ -87,11 +87,11 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
 {
 
    public:
-   
+
         InsertCallbacksVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
         {
         }
-        
+
         virtual void apply(osg::Node& node)
         {
              node.setUpdateCallback(new UpdateCallback());
@@ -102,7 +102,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
         virtual void apply(osg::Geode& geode)
         {
             geode.setUpdateCallback(new UpdateCallback());
-            
+
             //note, it makes no sense to attach a cull callback to the node
             //at there are no nodes to traverse below the geode, only
             //drawables, and as such the Cull node callbacks is ignored.
@@ -116,7 +116,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
                 geode.getDrawable(i)->setDrawCallback(new DrawableDrawCallback());
             }
         }
-        
+
         virtual void apply(osg::Transform& node)
         {
             apply((osg::Node&)node);
@@ -140,7 +140,7 @@ public:
 class CameraUpdateCallback : public osg::NodeCallback
 {
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    { 
+    {
         std::cout<<"Camera update callback - pre traverse"<<node<<std::endl;
         traverse(node,nv);
         std::cout<<"Camera update callback - post traverse"<<node<<std::endl;
@@ -150,44 +150,115 @@ class CameraUpdateCallback : public osg::NodeCallback
 class CameraEventCallback : public osg::NodeCallback
 {
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    { 
+    {
         std::cout<<"Camera event callback - pre traverse"<<node<<std::endl;
         traverse(node,nv);
         std::cout<<"Camera event callback - post traverse"<<node<<std::endl;
     }
 };
 
+
+struct TestDrawableUpdateCallback : public osg::Drawable::UpdateCallback
+{
+    TestDrawableUpdateCallback(const std::string &message): _message(message) {}
+
+    virtual void update(osg::NodeVisitor*, osg::Drawable* drw) {
+        printf("%s\n", _message.c_str());
+    }
+    std::string _message;
+};
+
+struct TestNodeUpdateCallback : public osg::NodeCallback
+{
+    TestNodeUpdateCallback(const std::string &message): _message(message) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv) {
+        printf("%s\n", _message.c_str());
+    }
+    std::string _message;
+};
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-   
+
     // set the osgDB::Registy read file callback to catch all requests for reading files.
     osgDB::Registry::instance()->setReadFileCallback(new MyReadFileCallback());
-   
+
     // initialize the viewer.
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode;
 
-    // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!rootnode) rootnode = osgDB::readNodeFile("cow.osgt");
-
-    if (!rootnode)
+    if (arguments.read("--test"))
     {
-        osg::notify(osg::NOTICE)<<"Please specify a file on the command line"<<std::endl;
+        osg::ref_ptr<osg::Group> root = new osg::Group();
+        rootnode = root;
 
-        return 1;
+        osg::Node *test1 = new osg::Node();
+        test1->setUpdateCallback(new TestNodeUpdateCallback("test1"));
+        root->addChild(test1);
+
+        osg::Drawable *test2 = new osg::Drawable();
+        test2->osg::Node::setUpdateCallback(new TestNodeUpdateCallback("test2"));
+        root->addChild(test2);
+
+        osg::Drawable *test3 = new osg::Drawable();
+        test3->setUpdateCallback(new TestDrawableUpdateCallback("test3"));
+        root->addChild(test3);
+
+        osg::Geode *test4 = new osg::Geode();
+        osg::Drawable *drawable1 = new osg::Drawable();
+        drawable1->osg::Node::setUpdateCallback(new TestNodeUpdateCallback("test4"));
+        test4->addDrawable(drawable1);
+        root->addChild(test4);
+
+        osg::Geode *test5 = new osg::Geode();
+        osg::Drawable *drawable2 = new osg::Drawable();
+        drawable2->setUpdateCallback(new TestDrawableUpdateCallback("test5"));
+        test5->addDrawable(drawable2);
+        root->addChild(test5);
+
+        osg::Geode *test6 = new osg::Geode();
+        osg::Drawable *drawable3 = new osg::Drawable();
+        drawable3->setUpdateCallback(new TestDrawableUpdateCallback("test6"));
+        test6->addChild(drawable3);
+        root->addChild(test6);
+
+        osg::Geode *test7 = new osg::Geode();
+        osg::Drawable *drawable4 = new osg::Drawable();
+        drawable4->osg::Node::setUpdateCallback(new TestNodeUpdateCallback("test7"));
+        test7->addChild(drawable4);
+        root->addChild(test7);
+
+        printf("Numchildren with updates %u\n", rootnode->getNumChildrenRequiringUpdateTraversal());
+
     }
-    
-    // run optimization over the scene graph
-    osgUtil::Optimizer optimzer;
-    optimzer.optimize(rootnode);
-     
-    // insert all the callbacks
-    InsertCallbacksVisitor icv;
-    rootnode->accept(icv);
+    else
+    {
+        rootnode = osgDB::readNodeFiles(arguments);
+
+        // if not loaded assume no arguments passed in, try use default mode instead.
+        if (!rootnode) rootnode = osgDB::readNodeFile("cow.osgt");
+
+        if (!rootnode)
+        {
+            osg::notify(osg::NOTICE)<<"Please specify a file on the command line"<<std::endl;
+
+            return 1;
+        }
+
+        // run optimization over the scene graph
+        osgUtil::Optimizer optimzer;
+        optimzer.optimize(rootnode);
+
+        // insert all the callbacks
+        InsertCallbacksVisitor icv;
+        rootnode->accept(icv);
+    }
 
     viewer.getCamera()->setUpdateCallback(new CameraUpdateCallback());
     viewer.getCamera()->setEventCallback(new CameraEventCallback());
@@ -195,5 +266,15 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootnode);
 
-    return viewer.run();
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator);
+
+    viewer.realize();
+
+    while(!viewer.done())
+    {
+        OSG_NOTICE<<std::endl<<"New Frame"<<std::endl;
+        viewer.frame();
+    }
+
+    return 0;
 }

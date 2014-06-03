@@ -1387,7 +1387,7 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
                 pitr!=parents.end();
                 ++pitr)
             {
-                osg::Node* parent = *pitr;
+                osg::Group* parent = *pitr;
                 if (!dynamic_cast<osg::Sequence*>(parent) &&
                     !dynamic_cast<osg::Switch*>(parent) &&
                     strcmp(parent->className(),"MultiSwitch")!=0)

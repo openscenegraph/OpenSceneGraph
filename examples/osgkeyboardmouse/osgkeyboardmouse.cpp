@@ -104,8 +104,7 @@ public:
                 pitr != parents.end();
                 ++pitr)
             {
-                osg::Node* parent = *pitr;
-                parent->removeChild(node);
+                (*pitr)->removeChild(node);
             }
         }
     }

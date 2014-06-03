@@ -334,7 +334,7 @@ public:
                 // particle effect can be inserted into this.
                 osg::ref_ptr<osg::Node> hitNode = hit.nodePath.back();
                 osg::Node::ParentList parents = hitNode->getParents();
-                osg::Node* insertGroup = 0;
+                osg::Group* insertGroup = 0;
                 unsigned int numGroupsFound = 0;
                 for(osg::Node::ParentList::iterator itr=parents.begin();
                     itr!=parents.end();

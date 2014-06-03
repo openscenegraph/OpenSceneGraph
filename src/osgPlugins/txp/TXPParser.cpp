@@ -316,8 +316,7 @@ void TXPParser::removeEmptyGroups()
             osg::Node::ParentList parents = node->getParents();
             for (unsigned int j = 0; j < parents.size(); j++)
             {
-                osg::Node* parent = parents[j];
-                if (parent) parent->removeChild(node);
+                parents[j]->removeChild(node);
             }
         }
     }

@@ -84,6 +84,26 @@ bool osg::isTextureMode(StateAttribute::GLMode mode)
     return getTextureGLModeSet().isTextureMode(mode);
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// StateAttributeCallback
+//
+bool StateSet::Callback::run(osg::Object* object, osg::Object* data)
+{
+    osg::StateSet* ss = dynamic_cast<osg::StateSet*>(object);
+    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+    if (ss && nv)
+    {
+        operator()(ss, nv);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}
+
 StateSet::StateSet():
     Object(true),
     _nestRenderBins(true)

@@ -72,9 +72,9 @@ REGISTER_OBJECT_WRAPPER( Node,
     ADD_USER_SERIALIZER( InitialBound );  // _initialBound
     ADD_OBJECT_SERIALIZER( ComputeBoundingSphereCallback,
                            osg::Node::ComputeBoundingSphereCallback, NULL );  // _computeBoundCallback
-    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::NodeCallback, NULL );  // _updateCallback
-    ADD_OBJECT_SERIALIZER( EventCallback, osg::NodeCallback, NULL );  // _eventCallback
-    ADD_OBJECT_SERIALIZER( CullCallback, osg::NodeCallback, NULL );  // _cullCallback
+    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::Callback, NULL );  // _updateCallback
+    ADD_OBJECT_SERIALIZER( EventCallback, osg::Callback, NULL );  // _eventCallback
+    ADD_OBJECT_SERIALIZER( CullCallback, osg::Callback, NULL );  // _cullCallback
     ADD_BOOL_SERIALIZER( CullingActive, true );  // _cullingActive
     ADD_HEXINT_SERIALIZER( NodeMask, 0xffffffff );  // _nodeMask
 

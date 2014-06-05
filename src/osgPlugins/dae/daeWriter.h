@@ -93,7 +93,7 @@ public:
 
     virtual void apply(osg::Node& node)
     {
-        osg::NodeCallback* ncb = node.getUpdateCallback();
+        osg::Callback* ncb = node.getUpdateCallback();
         if (ncb)
         {
             osgAnimation::AnimationUpdateCallback<osg::NodeCallback>* ut = dynamic_cast<osgAnimation::AnimationUpdateCallback<osg::NodeCallback>*>(ncb);

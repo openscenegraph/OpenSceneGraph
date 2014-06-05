@@ -19,6 +19,7 @@
 #include <osg/PrimitiveSet>
 #include <osg/Shape>
 #include <osg/StateAttribute>
+#include <osg/Callback>
 
 using namespace osg;
 
@@ -66,19 +67,19 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
         return const_cast<StateAttribute*>(attr);
 }
 
-NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
+Callback* CopyOp::operator() (const Callback* nc) const
 {
     if (nc && _flags&DEEP_COPY_CALLBACKS)
     {
         // deep copy the full chain of callback
-        osg::NodeCallback* first = osg::clone(nc, *this);
+        Callback* first = osg::clone(nc, *this);
         if (!first) return 0;
 
         first->setNestedCallback(0);
         nc = nc->getNestedCallback();
         while (nc)
         {
-            osg::NodeCallback* ucb = osg::clone(nc, *this);
+            Callback* ucb = osg::clone(nc, *this);
             if (ucb)
             {
                 ucb->setNestedCallback(0);
@@ -89,5 +90,5 @@ NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
         return first;
     }
     else
-        return const_cast<NodeCallback*>(nc);
+        return const_cast<Callback*>(nc);
 }

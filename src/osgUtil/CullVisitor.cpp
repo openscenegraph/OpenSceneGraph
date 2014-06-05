@@ -985,8 +985,11 @@ void CullVisitor::apply(osg::Drawable& drawable)
 
     if( drawable.getCullCallback() )
     {
-        if( drawable.getCullCallback()->cull( this, &drawable, &_renderInfo ) == true )
-        return;
+        osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable.getCullCallback());
+        if (dcb)
+        {
+            if( dcb->cull( this, &drawable, &_renderInfo ) == true ) return;
+        }
     }
 
     if (!getNodePath().empty() && getNodePath().back()->isCullingActive() && isCulled(bb)) return;
@@ -1073,7 +1076,8 @@ void CullVisitor::apply(Billboard& node)
 
         if( drawable->getCullCallback() )
         {
-            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
+            osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable->getCullCallback());
+            if (dcb && dcb->cull( this, drawable, &_renderInfo ) == true )
                 continue;
         }
 

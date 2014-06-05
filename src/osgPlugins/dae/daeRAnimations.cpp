@@ -758,7 +758,7 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
     return NULL;
 }
 
-osgAnimation::Target* findChannelTarget(osg::NodeCallback* nc, const std::string& targetName, bool& rotation)
+osgAnimation::Target* findChannelTarget(osg::Callback* nc, const std::string& targetName, bool& rotation)
 {
     if (osgAnimation::UpdateMatrixTransform* umt = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc))
     {
@@ -827,7 +827,7 @@ void daeReader::processChannel(domChannel* pDomChannel, SourceMap& sources, Targ
             domChannelOsgAnimationUpdateCallbackMap::iterator iter = _domChannelOsgAnimationUpdateCallbackMap.find(pDomChannel);
             if (iter != _domChannelOsgAnimationUpdateCallbackMap.end())
             {
-                osg::NodeCallback* nc = iter->second.get();
+                osg::Callback* nc = iter->second.get();
 
                 std::string channelName, targetName, componentName;
                 extractTargetName(pDomChannel->getTarget(), channelName, targetName, componentName);

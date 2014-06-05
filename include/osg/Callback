@@ -1,0 +1,202 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_CALLBACK
+#define OSG_CALLBACK 1
+
+#include <osg/Object>
+#include <osg/UserDataContainer>
+
+namespace osg {
+
+
+class Callback : public virtual Object {
+
+    public :
+
+        Callback(){}
+
+        Callback(const Callback& cb,const CopyOp&):
+            _nestedCallback(cb._nestedCallback) {}
+
+        META_Object(osg, Callback);
+
+        /** Invoke the callback, first parameter is the Object that the callback is attached to,
+         *  the second parameter, the data, is typically the NodeVisitor that is invoking the callback.
+         *  The run(..) method may be overriden by users directly, or if the user is using one of the old
+         *  style callbacks such as NodeCallback or Drawable::UpdateCallback then you can just override
+         *  the appropriate callback method on those callback subclasses.
+         *  If you are implementing your own callback then one should call traverse() to make sure nested callbacks
+         *  and visitor traversal() is completed. */
+        virtual bool run(osg::Object* object, osg::Object* data)
+        {
+            return traverse(object, data);
+        }
+
+        /** traverse the nested callbacks or call NodeVisitor::traverse() if the object is Node, and data is NodeVisitor.*/
+        bool traverse(osg::Object* object, osg::Object* data);
+
+        void setNestedCallback(osg::Callback* cb) { _nestedCallback = cb; }
+        osg::Callback* getNestedCallback() { return _nestedCallback.get(); }
+        const osg::Callback* getNestedCallback() const { return _nestedCallback.get(); }
+
+        inline void addNestedCallback(osg::Callback* nc)
+        {
+            if (nc)
+            {
+                if (_nestedCallback.valid())
+                {
+                    _nestedCallback->addNestedCallback(nc);
+                }
+                else
+                {
+                    _nestedCallback = nc;
+                }
+            }
+        }
+
+        inline void removeNestedCallback(osg::Callback* nc)
+        {
+            if (nc)
+            {
+                if (_nestedCallback==nc)
+                {
+                    ref_ptr<osg::Callback> new_nested_callback = _nestedCallback->getNestedCallback();
+                    _nestedCallback->setNestedCallback(0);
+                    _nestedCallback = new_nested_callback;
+                }
+                else if (_nestedCallback.valid())
+                {
+                    _nestedCallback->removeNestedCallback(nc);
+                }
+            }
+        }
+
+    protected:
+
+        virtual ~Callback() {}
+        ref_ptr<Callback> _nestedCallback;
+};
+
+typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
+
+/** Callback for attaching a script to a Node's via there UserDataContainer for the purpose of overriding class methods within scripts.*/
+class OSG_EXPORT CallbackObject : public virtual osg::Callback
+{
+public:
+    CallbackObject() {}
+    CallbackObject(const std::string& name) { setName(name); }
+    CallbackObject(const CallbackObject& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):osg::Callback(rhs,copyop) {}
+    META_Object(osg, CallbackObject);
+
+    virtual CallbackObject* asCallbackObject() { return this; }
+    virtual const CallbackObject* asCallbackObject() const { return this; }
+
+    /** override Callback::run() entry point to adapt to CallbackObject::run(..) method.*/
+    bool run(osg::Object* object, osg::Object* data);
+
+    inline bool run(osg::Object* object) const
+    {
+        osg::Parameters inputParameters;
+        osg::Parameters outputParameters;
+        return run(object, inputParameters, outputParameters);
+    }
+
+    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
+
+};
+
+/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
+inline CallbackObject* getCallbackObject(osg::Object* object, const std::string& name)
+{
+    osg::UserDataContainer* udc = object->getUserDataContainer();
+    return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
+}
+
+/** Call run(..) on named CallbackObjects attached to specified Object. Return true if at least one CallbackObject has been successfully invoked.*/
+inline bool runNamedCallbackObjects(osg::Object* object, const std::string& name, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
+{
+    bool result = false;
+    osg::UserDataContainer* udc = object->getUserDataContainer();
+    if (udc)
+    {
+        for(unsigned int i = 0; i<udc->getNumUserObjects(); ++i)
+        {
+            osg::Object* obj = udc->getUserObject(i);
+            if (obj && obj->getName()==name)
+            {
+                osg::CallbackObject* co = dynamic_cast<osg::CallbackObject*>(obj);
+                if (co) result = co->run(object, inputParameters, outputParameters) | result;
+            }
+        }
+    }
+
+    return result;
+}
+
+
+
+// forward declare
+class Node;
+class NodeVisitor;
+
+
+/** Deprecated. */
+class OSG_EXPORT NodeCallback : public virtual Callback {
+
+    public :
+
+
+        NodeCallback(){}
+
+        NodeCallback(const NodeCallback& nc,const CopyOp& copyop):
+            Callback(nc,copyop) {}
+
+        META_Object(osg,NodeCallback);
+
+        /** NodeCallback overrides the Callback::run() method to adapt it the old style NodeCallback::operator()(Node* node, NodeVisitor* nv) method.*/
+        virtual bool run(osg::Object* object, osg::Object* data);
+
+        /** Callback method called by the NodeVisitor when visiting a node.*/
+        virtual void operator()(Node* node, NodeVisitor* nv);
+
+    protected:
+
+        virtual ~NodeCallback() {}
+};
+
+// forward declare
+class StateAttribute;
+
+/** Deprecated. */
+class OSG_EXPORT StateAttributeCallback : public virtual osg::Callback
+{
+    public:
+        StateAttributeCallback() {}
+
+        StateAttributeCallback(const StateAttributeCallback&,const CopyOp&) {}
+
+        META_Object(osg,StateAttributeCallback);
+
+        /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
+        virtual bool run(osg::Object* object, osg::Object* data);
+
+        /** do customized update code.*/
+        virtual void operator () (StateAttribute*, NodeVisitor*) {}
+};
+
+
+} // namespace
+
+#endif
+

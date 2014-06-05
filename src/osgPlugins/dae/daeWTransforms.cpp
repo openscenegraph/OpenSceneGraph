@@ -67,7 +67,7 @@ void daeWriter::apply( osg::MatrixTransform &node )
     std::string nodeName = getNodeName(node,"matrixTransform");
     currentNode->setId(nodeName.c_str());
 
-    osg::NodeCallback* ncb = node.getUpdateCallback();
+    osg::Callback* ncb = node.getUpdateCallback();
     bool handled = false;
     if (ncb)
     {
@@ -124,7 +124,7 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
     const osg::Quat &q = node.getAttitude();
     const osg::Vec3 &s = node.getScale();
 
-    osg::NodeCallback* ncb = node.getUpdateCallback();
+    osg::Callback* ncb = node.getUpdateCallback();
     bool handled = false;
     if (ncb)
     {
@@ -287,7 +287,7 @@ void daeWriter::apply( osg::Transform &node )
             osg::Matrix matrix;
             node.computeLocalToWorldMatrix(matrix, NULL);
 
-            osg::NodeCallback* ncb = node.getUpdateCallback();
+            osg::Callback* ncb = node.getUpdateCallback();
             bool handled = false;
             if (ncb)
             {
@@ -309,7 +309,7 @@ void daeWriter::apply( osg::Transform &node )
                 domMatrix *mat = daeSafeCast< domMatrix >(currentNode->add( COLLADA_ELEMENT_MATRIX ) );
                 nodeName += "_matrix";
                 mat->setSid(nodeName.c_str());
-        
+
                 const osg::Matrix::value_type *mat_vals = matrix.ptr();
                 for ( int i = 0; i < 4; i++ )
                 {

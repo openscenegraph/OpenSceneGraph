@@ -28,7 +28,7 @@ FlightManipulator::FlightManipulator( int flags )
 
 /// Constructor.
 FlightManipulator::FlightManipulator( const FlightManipulator& fm, const CopyOp& copyOp )
-    : osg::Object(fm, copyOp),
+    : osg::Callback(fm, copyOp),
       inherited( fm, copyOp ),
       _yawMode( fm._yawMode )
 {

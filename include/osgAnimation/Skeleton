@@ -17,6 +17,7 @@
 
 #include <osgAnimation/Export>
 #include <osg/MatrixTransform>
+#include <osg/Callback>
 
 namespace osgAnimation
 {

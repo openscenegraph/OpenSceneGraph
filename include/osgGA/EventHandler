@@ -16,7 +16,6 @@
 
 #include <vector>
 
-#include <osg/NodeCallback>
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 
@@ -37,11 +36,19 @@ public:
 
         EventHandler() {}
         EventHandler(const EventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Object(eh,copyop),
+            osg::Callback(eh,copyop),
             osg::NodeCallback(eh, copyop),
             osg::Drawable::EventCallback(eh, copyop) {}
 
         META_Object(osgGA, EventHandler);
+
+        virtual bool run(osg::Object* object, osg::Object* data)
+        {
+            osg::Node* node = dynamic_cast<osg::Node*>(object);
+            osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+            operator()(node, nv);
+            return true;
+        }
 
         /** Event traversal node callback method. There is no need to override this method in subclasses of EventHandler as this implementation calls handle(..) for you. */
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);

@@ -37,7 +37,7 @@ using namespace osgDAE;
 void daeWriter::writeAnimations( osg::Node &node )
 {
     const std::string nodeNameUTF( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(node.getName()) : node.getName() );
-    osg::NodeCallback* ncb = node.getUpdateCallback();
+    osg::Callback* ncb = node.getUpdateCallback();
     if (ncb)
     {
         osgAnimation::AnimationManagerBase* am = dynamic_cast<osgAnimation::AnimationManagerBase*>(ncb);

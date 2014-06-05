@@ -12,6 +12,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/State>
+#include <osg/NodeVisitor>
 #include <osg/Notify>
 
 #include <algorithm>

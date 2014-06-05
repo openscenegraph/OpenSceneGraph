@@ -25,7 +25,6 @@
 #include <osg/Geode>
 #include <osg/Transform>
 #include <osg/Material>
-#include <osg/NodeCallback>
 #include <osg/Depth>
 #include <osg/CullFace>
 #include <osg/TexMat>
@@ -220,7 +219,7 @@ class MoveEarthySkyWithEyePointTransform : public osg::Transform
 {
 public:
     /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const 
+    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
@@ -270,7 +269,7 @@ osg::Node* createSkyBox()
     // clear the depth to the far plane.
     osg::Depth* depth = new osg::Depth;
     depth->setFunction(osg::Depth::ALWAYS);
-    depth->setRange(1.0,1.0);   
+    depth->setRange(1.0,1.0);
     stateset->setAttributeAndModes(depth, osg::StateAttribute::ON );
 
     stateset->setRenderBinDetails(-1,"RenderBin");
@@ -305,7 +304,7 @@ osg::Node* addRefractStateSet(osg::Node* node)
     osg::TextureCubeMap* reflectmap = readCubeMap();
     stateset->setTextureAttributeAndModes( 0, reflectmap, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
     stateset->setTextureAttributeAndModes( 1, reflectmap, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
-    
+
     osg::TexMat* texMat = new osg::TexMat;
     stateset->setTextureAttribute(0, texMat);
 
@@ -329,14 +328,14 @@ osg::Node* addRefractStateSet(osg::Node* node)
 
     // REPLACE function: Arg0
     // = T0
-    osg::TexEnvCombine *te0 = new osg::TexEnvCombine;    
+    osg::TexEnvCombine *te0 = new osg::TexEnvCombine;
     te0->setCombine_RGB(osg::TexEnvCombine::REPLACE);
     te0->setSource0_RGB(osg::TexEnvCombine::TEXTURE0);
     te0->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
-    
+
     // INTERPOLATE function: Arg0 * (Arg2) + Arg1 * (1-Arg2)
     // = T1 * C0.a + Cp * (1-C0.a)
-    osg::TexEnvCombine *te1 = new osg::TexEnvCombine;    
+    osg::TexEnvCombine *te1 = new osg::TexEnvCombine;
 
     // rgb = Cp + Ct
     te1->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
@@ -354,7 +353,7 @@ osg::Node* addRefractStateSet(osg::Node* node)
     group->addChild(node);
     group->setCullCallback(new TexMatCallback(*texMat));
     group->setStateSet( stateset );
-    
+
     return group;
 }
 
@@ -385,7 +384,7 @@ int main(int argc, char *argv[])
     osgUtil::Optimizer optimzer;
     optimzer.optimize(model);
 
-    // create normals.    
+    // create normals.
     osgUtil::SmoothingVisitor smoother;
     model->accept(smoother);
 
@@ -393,7 +392,7 @@ int main(int argc, char *argv[])
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(rootnode);
-    
+
     // create the windows and run the threads.
     viewer.realize();
 

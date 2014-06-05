@@ -13,27 +13,6 @@
 #ifndef OSG_STATEATTRIBUTECALLBACK
 #define OSG_STATEATTRIBUTECALLBACK 1
 
-#include <osg/Export>
-#include <osg/Object>
-
-namespace osg {
-
-class StateAttribute;
-class NodeVisitor;
-
-class OSG_EXPORT StateAttributeCallback : public virtual osg::Object
-{
-    public:
-        StateAttributeCallback() {}
-
-        StateAttributeCallback(const StateAttributeCallback&,const CopyOp&) {}
-
-        META_Object(osg,StateAttributeCallback);
-
-        /** do customized update code.*/
-        virtual void operator () (StateAttribute*, NodeVisitor*) {}
-};
-
-}
+#include <osg/Callback>
 
 #endif

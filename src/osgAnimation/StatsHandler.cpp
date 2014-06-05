@@ -466,7 +466,7 @@ struct FindTimelineStats : public osg::NodeVisitor
     FindTimelineStats() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
     void apply(osg::Node& node) {
-        osg::NodeCallback* cb = node.getUpdateCallback();
+        osg::Callback* cb = node.getUpdateCallback();
         while (cb) {
             osgAnimation::TimelineAnimationManager* tam = dynamic_cast<osgAnimation::TimelineAnimationManager*>(cb);
             if (tam)

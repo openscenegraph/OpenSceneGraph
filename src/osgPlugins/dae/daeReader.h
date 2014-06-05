@@ -241,7 +241,7 @@ public:
     typedef std::map<domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
     typedef std::map<std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
     typedef std::multimap< daeElement*, domChannel*> daeElementDomChannelMap;
-    typedef std::map<domChannel*, osg::ref_ptr<osg::NodeCallback> > domChannelOsgAnimationUpdateCallbackMap;
+    typedef std::map<domChannel*, osg::ref_ptr<osg::Callback> > domChannelOsgAnimationUpdateCallbackMap;
     typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Bone> > domNodeOsgBoneMap;
     typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Skeleton> > domNodeOsgSkeletonMap;
     typedef std::map<TextureParameters, osg::ref_ptr<osg::Texture2D> > TextureParametersMap;

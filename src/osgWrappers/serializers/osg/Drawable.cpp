@@ -43,8 +43,8 @@ REGISTER_OBJECT_WRAPPER( Drawable,
     ADD_BOOL_SERIALIZER( SupportsDisplayList, true );  // _supportsDisplayList
     ADD_BOOL_SERIALIZER( UseDisplayList, true );  // _useDisplayList
     ADD_BOOL_SERIALIZER( UseVertexBufferObjects, false );  // _useVertexBufferObjects
-    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::Drawable::UpdateCallback, NULL );  // _updateCallback
-    ADD_OBJECT_SERIALIZER( EventCallback, osg::Drawable::EventCallback, NULL );  // _eventCallback
-    ADD_OBJECT_SERIALIZER( CullCallback, osg::Drawable::CullCallback, NULL );  // _cullCallback
+    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::Callback, NULL );  // _updateCallback
+    ADD_OBJECT_SERIALIZER( EventCallback, osg::Callback, NULL );  // _eventCallback
+    ADD_OBJECT_SERIALIZER( CullCallback, osg::Callback, NULL );  // _cullCallback
     ADD_OBJECT_SERIALIZER( DrawCallback, osg::Drawable::DrawCallback, NULL );  // _drawCallback
 }

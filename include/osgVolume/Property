@@ -447,7 +447,9 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
 
         PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&);
 
-        META_Object(osgVolume,PropertyAdjustmentCallback);
+        META_Object(osgVolume, PropertyAdjustmentCallback);
+
+        virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 
         void setKeyEventCycleForward(int key) { _cyleForwardKey = key; }
         int getKeyEventCycleForward() const { return _cyleForwardKey; }

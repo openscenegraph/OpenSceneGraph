@@ -203,7 +203,7 @@ MatrixList Node::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
     return matrices;
 }
 
-void Node::setUpdateCallback(NodeCallback* nc)
+void Node::setUpdateCallback(Callback* nc)
 {
     // if no changes just return.
     if (_updateCallback==nc) return;
@@ -281,7 +281,7 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
 }
 
 
-void Node::setEventCallback(NodeCallback* nc)
+void Node::setEventCallback(Callback* nc)
 {
     // if no changes just return.
     if (_eventCallback==nc) return;

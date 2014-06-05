@@ -309,15 +309,15 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         inline void handle_cull_callbacks_and_traverse(osg::Node& node)
         {
-            osg::NodeCallback* callback = node.getCullCallback();
-            if (callback) (*callback)(&node,this);
+            osg::Callback* callback = node.getCullCallback();
+            if (callback) callback->run(&node,this);
             else traverse(node);
         }
 
         inline void handle_cull_callbacks_and_accept(osg::Node& node,osg::Node* acceptNode)
         {
-            osg::NodeCallback* callback = node.getCullCallback();
-            if (callback) (*callback)(&node,this);
+            osg::Callback* callback = node.getCullCallback();
+            if (callback) callback->run(&node,this);
             else acceptNode->accept(*this);
         }
 

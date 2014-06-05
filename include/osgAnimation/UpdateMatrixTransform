@@ -16,10 +16,10 @@
 #ifndef OSGANIMATION_UPDATE_MATRIX_TRANSFORM
 #define OSGANIMATION_UPDATE_MATRIX_TRANSFORM 1
 
+#include <osg/Callback>
 #include <osgAnimation/Export>
 #include <osgAnimation/AnimationUpdateCallback>
 #include <osgAnimation/StackedTransform>
-#include <osg/NodeCallback>
 
 namespace osgAnimation
 {

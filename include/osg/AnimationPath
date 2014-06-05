@@ -21,7 +21,7 @@
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 #include <osg/Quat>
-#include <osg/NodeCallback>
+#include <osg/Callback>
 
 namespace osg {
 

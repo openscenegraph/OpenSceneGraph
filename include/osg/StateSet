@@ -378,13 +378,16 @@ class OSG_EXPORT StateSet : public Object
         inline bool getNestRenderBins() const { return _nestRenderBins; }
 
 
-        struct Callback : public virtual osg::Object
+        struct Callback : public virtual osg::Callback
         {
             Callback() {}
 
             Callback(const Callback&,const CopyOp&) {}
 
             META_Object(osg,Callback);
+
+            /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
+            virtual bool run(osg::Object* object, osg::Object* data);
 
             /** do customized callback code.*/
             virtual void operator() (StateSet*, NodeVisitor*) {}

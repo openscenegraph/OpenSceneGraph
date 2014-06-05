@@ -46,7 +46,7 @@ public:
                 parent->setMatrixInSkeletonSpace( osg::Matrix::translate(offset) *
                                                   parent->getMatrixInSkeletonSpace() );
                 osgAnimation::UpdateBone* updateBone =
-                    static_cast<osgAnimation::UpdateBone*>( parent->getUpdateCallback() );
+                    dynamic_cast<osgAnimation::UpdateBone*>( parent->getUpdateCallback() );
                 if ( updateBone )
                 {
                     osgAnimation::StackedTransform& stack = updateBone->getStackedTransforms();

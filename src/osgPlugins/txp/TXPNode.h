@@ -37,7 +37,6 @@
 
 #include <osg/Group>
 #include <osg/NodeVisitor>
-#include <osg/NodeCallback>
 #include <osg/ref_ptr>
 
 #include "TXPArchive.h"

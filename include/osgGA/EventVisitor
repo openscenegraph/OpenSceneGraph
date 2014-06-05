@@ -24,6 +24,7 @@
 #include <osg/Transform>
 #include <osg/Projection>
 #include <osg/OccluderNode>
+#include <osg/ScriptEngine>
 
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIActionAdapter>
@@ -68,8 +69,27 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
         /** During traversal each type of node calls its callbacks and its children traversed. */
         virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
 
-        virtual void apply(osg::Geode& node)        { handle_geode_callbacks(node); }
-        virtual void apply(osg::Billboard& node)    { handle_geode_callbacks(node); }
+
+        virtual void apply(osg::Drawable& drawable)
+        {
+            osg::Callback* callback = drawable.getEventCallback();
+            if (callback)
+            {
+                osg::Drawable::UpdateCallback* drawable_callback = dynamic_cast<osg::Drawable::UpdateCallback*>(callback);
+                osg::NodeCallback* node_callback = dynamic_cast<osg::NodeCallback*>(callback);
+                osg::CallbackObject* callback_object = dynamic_cast<osg::CallbackObject*>(callback);
+
+                if (drawable_callback) drawable_callback->update(this,&drawable);
+                if (node_callback) (*node_callback)(&drawable, this);
+
+                if ((!drawable_callback && !node_callback) || callback_object)  callback_object->run(&drawable, this);
+            }
+
+            handle_callbacks(drawable.getStateSet());
+        }
+
+        virtual void apply(osg::Geode& node)        { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Billboard& node)    { handle_callbacks_and_traverse(node); }
 
         virtual void apply(osg::LightSource& node)  { handle_callbacks_and_traverse(node); }
 
@@ -98,34 +118,11 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
         {
             handle_callbacks(node.getStateSet());
 
-            osg::NodeCallback* callback = node.getEventCallback();
-            if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringEventTraversal()>0) traverse(node);
+            osg::Callback* callback = node.getEventCallback();
+            if (callback) callback->run(&node,this);
+            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverse(node);
         }
 
-        inline void handle_geode_callbacks(osg::Geode& node)
-        {
-            handle_callbacks(node.getStateSet());
-
-            osg::NodeCallback* callback = node.getEventCallback();
-            if (callback) (*callback)(&node,this);
-            /*else if (node.getNumChildrenRequiringEventTraversal()>0)*/
-            traverseGeode(node);
-        }
-
-        inline void traverseGeode(osg::Geode& geode)
-        {
-            traverse((osg::Node&)geode);
-
-            // Call the app callbacks on the drawables.
-            for(unsigned int i=0;i<geode.getNumDrawables();++i)
-            {
-                osg::Drawable::EventCallback* callback = geode.getDrawable(i)->getEventCallback();
-                if (callback) callback->event(this,geode.getDrawable(i));
-
-                handle_callbacks(geode.getDrawable(i)->getStateSet());
-            }
-        }
 
         osgGA::GUIActionAdapter*        _actionAdapter;
 

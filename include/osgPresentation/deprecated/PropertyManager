@@ -15,7 +15,6 @@
 
 #include <osg/UserDataContainer>
 #include <osg/ValueObject>
-#include <osg/NodeCallback>
 #include <osg/ImageSequence>
 #include <osgGA/GUIEventHandler>
 
@@ -29,13 +28,13 @@ namespace osgPresentation
 class PropertyManager : protected osg::Object
 {
 public:
-    
+
     PropertyManager() {}
     PropertyManager(const PropertyManager& pm, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
         osg::Object(pm,copyop) {}
 
     META_Object(osgPresentation, PropertyManager)
-    
+
     /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
         * To use this template method you need to include the osg/ValueObject header.*/
     template<typename T>
@@ -57,7 +56,7 @@ public:
 
     int ref() const { return osg::Referenced::ref(); }
     int unref() const { return osg::Referenced::unref(); }
-    
+
 protected:
 
     mutable OpenThreads::Mutex _mutex;
@@ -125,7 +124,7 @@ struct PropertyReader
 
     bool                _errorGenerated;
     osg::NodePath       _nodePath;
-    std::istringstream  _sstream;    
+    std::istringstream  _sstream;
 };
 
 
@@ -176,7 +175,7 @@ protected:
     double      _latestTime;
     bool        _pause;
     double      _pauseTime;
-    
+
 };
 
 

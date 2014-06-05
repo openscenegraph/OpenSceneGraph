@@ -19,7 +19,7 @@
 #include <osg/StateSet>
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
-#include <osg/NodeCallback>
+#include <osg/Callback>
 
 #include <string>
 #include <vector>
@@ -202,16 +202,16 @@ class OSG_EXPORT Node : public Object
 
 
         /** Set update node callback, called during update traversal. */
-        void setUpdateCallback(NodeCallback* nc);
+        void setUpdateCallback(Callback* nc);
 
         /** Get update node callback, called during update traversal. */
-        inline NodeCallback* getUpdateCallback() { return _updateCallback.get(); }
+        inline Callback* getUpdateCallback() { return _updateCallback.get(); }
 
         /** Get const update node callback, called during update traversal. */
-        inline const NodeCallback* getUpdateCallback() const { return _updateCallback.get(); }
+        inline const Callback* getUpdateCallback() const { return _updateCallback.get(); }
 
         /** Convenience method that sets the update callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addUpdateCallback(NodeCallback* nc) {
+        inline void addUpdateCallback(Callback* nc) {
             if (nc != NULL) {
                 if (_updateCallback.valid()) _updateCallback->addNestedCallback(nc);
                 else setUpdateCallback(nc);
@@ -219,7 +219,7 @@ class OSG_EXPORT Node : public Object
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removeUpdateCallback(NodeCallback* nc) {
+        inline void removeUpdateCallback(Callback* nc) {
             if (nc != NULL && _updateCallback.valid()) {
                 if (_updateCallback == nc)
                 {
@@ -236,16 +236,16 @@ class OSG_EXPORT Node : public Object
 
 
         /** Set event node callback, called during event traversal. */
-        void setEventCallback(NodeCallback* nc);
+        void setEventCallback(Callback* nc);
 
         /** Get event node callback, called during event traversal. */
-        inline NodeCallback* getEventCallback() { return _eventCallback.get(); }
+        inline Callback* getEventCallback() { return _eventCallback.get(); }
 
         /** Get const event node callback, called during event traversal. */
-        inline const NodeCallback* getEventCallback() const { return _eventCallback.get(); }
+        inline const Callback* getEventCallback() const { return _eventCallback.get(); }
 
         /** Convenience method that sets the event callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addEventCallback(NodeCallback* nc) {
+        inline void addEventCallback(Callback* nc) {
             if (nc != NULL) {
                 if (_eventCallback.valid()) _eventCallback->addNestedCallback(nc);
                 else setEventCallback(nc);
@@ -253,7 +253,7 @@ class OSG_EXPORT Node : public Object
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removeEventCallback(NodeCallback* nc) {
+        inline void removeEventCallback(Callback* nc) {
             if (nc != NULL && _eventCallback.valid()) {
                 if (_eventCallback == nc)
                 {
@@ -270,16 +270,16 @@ class OSG_EXPORT Node : public Object
 
 
         /** Set cull node callback, called during cull traversal. */
-        void setCullCallback(NodeCallback* nc) { _cullCallback = nc; }
+        void setCullCallback(Callback* nc) { _cullCallback = nc; }
 
         /** Get cull node callback, called during cull traversal. */
-        inline NodeCallback* getCullCallback() { return _cullCallback.get(); }
+        inline Callback* getCullCallback() { return _cullCallback.get(); }
 
         /** Get const cull node callback, called during cull traversal. */
-        inline const NodeCallback* getCullCallback() const { return _cullCallback.get(); }
+        inline const Callback* getCullCallback() const { return _cullCallback.get(); }
 
         /** Convenience method that sets the cull callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addCullCallback(NodeCallback* nc) {
+        inline void addCullCallback(Callback* nc) {
             if (nc != NULL) {
                 if (_cullCallback.valid()) _cullCallback->addNestedCallback(nc);
                 else setCullCallback(nc);
@@ -287,7 +287,7 @@ class OSG_EXPORT Node : public Object
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removeCullCallback(NodeCallback* nc) {
+        inline void removeCullCallback(Callback* nc) {
             if (nc != NULL && _cullCallback.valid()) {
                 if (_cullCallback == nc)
                 {
@@ -477,15 +477,15 @@ class OSG_EXPORT Node : public Object
         friend class osg::Drawable;
         friend class osg::StateSet;
 
-        ref_ptr<NodeCallback> _updateCallback;
+        ref_ptr<Callback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;
         void setNumChildrenRequiringUpdateTraversal(unsigned int num);
 
-        ref_ptr<NodeCallback> _eventCallback;
+        ref_ptr<Callback> _eventCallback;
         unsigned int _numChildrenRequiringEventTraversal;
         void setNumChildrenRequiringEventTraversal(unsigned int num);
 
-        ref_ptr<NodeCallback> _cullCallback;
+        ref_ptr<Callback> _cullCallback;
 
         bool _cullingActive;
         unsigned int _numChildrenWithCullingDisabled;

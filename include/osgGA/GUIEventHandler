@@ -16,7 +16,6 @@
 
 #include <vector>
 
-#include <osg/NodeCallback>
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 
@@ -54,7 +53,7 @@ public:
 #if 1
         GUIEventHandler() {}
         GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Object(eh, copyop), EventHandler(eh, copyop) {}
+            osg::Callback(eh, copyop), EventHandler(eh, copyop) {}
 #else
         GUIEventHandler() : _ignoreHandledEventsMask(GUIEventAdapter::NONE) {}
         GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
@@ -123,7 +122,7 @@ protected:
         unsigned int _ignoreHandledEventsMask;
 #endif
 
-protected: 
+protected:
         virtual ~GUIEventHandler();
 
 };

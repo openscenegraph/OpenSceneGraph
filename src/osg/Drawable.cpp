@@ -216,6 +216,36 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
 #endif
 }
 
+bool Drawable::UpdateCallback::run(osg::Object* object, osg::Object* data)
+{
+    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
+    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+    if (drawable && nv)
+    {
+        update(nv, drawable);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}
+
+bool Drawable::EventCallback::run(osg::Object* object, osg::Object* data)
+{
+    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
+    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+    if (drawable && nv)
+    {
+        event(nv, drawable);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}
+
 Drawable::Drawable()
 {
     _boundingBoxComputed = false;
@@ -467,48 +497,6 @@ void Drawable::dirtyDisplayList()
 #endif
 }
 
-
-void Drawable::setUpdateCallback(UpdateCallback* ac)
-{
-    if (_drawableUpdateCallback==ac) return;
-
-    int delta = 0;
-    if (_drawableUpdateCallback.valid()) --delta;
-    if (ac) ++delta;
-
-    _drawableUpdateCallback = ac;
-
-    if (delta!=0 && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
-    {
-        for(ParentList::iterator itr=_parents.begin();
-            itr!=_parents.end();
-            ++itr)
-        {
-            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
-        }
-    }
-}
-
-void Drawable::setEventCallback(EventCallback* ac)
-{
-    if (_drawableEventCallback==ac) return;
-
-    int delta = 0;
-    if (_drawableEventCallback.valid()) --delta;
-    if (ac) ++delta;
-
-    _drawableEventCallback = ac;
-
-    if (delta!=0 && !(_stateset.valid() && _stateset->requiresEventTraversal()))
-    {
-        for(ParentList::iterator itr=_parents.begin();
-            itr!=_parents.end();
-            ++itr)
-        {
-            (*itr)->setNumChildrenRequiringEventTraversal( (*itr)->getNumChildrenRequiringEventTraversal()+delta );
-        }
-    }
-}
 
 struct ComputeBound : public PrimitiveFunctor
 {

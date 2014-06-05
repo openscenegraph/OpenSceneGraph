@@ -16,7 +16,7 @@
 
 #include <osg/Export>
 #include <osg/Object>
-#include <osg/StateAttributeCallback>
+#include <osg/Callback>
 #include <osg/Shader>
 #include <osg/GL>
 

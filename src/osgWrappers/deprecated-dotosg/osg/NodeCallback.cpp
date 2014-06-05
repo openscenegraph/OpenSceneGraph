@@ -1,6 +1,6 @@
 #include <osg/Notify>
 
-#include <osg/NodeCallback>
+#include <osg/Callback>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

@@ -44,7 +44,7 @@ FirstPersonManipulator::FirstPersonManipulator( int flags )
 
 /// Constructor.
 FirstPersonManipulator::FirstPersonManipulator( const FirstPersonManipulator& fpm, const CopyOp& copyOp )
-   : osg::Object(fpm, copyOp),
+   : osg::Callback(fpm, copyOp),
      inherited( fpm, copyOp ),
      _eye( fpm._eye ),
      _rotation( fpm._rotation ),

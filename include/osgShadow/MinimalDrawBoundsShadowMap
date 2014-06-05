@@ -98,28 +98,30 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             osg::observer_ptr< ViewData > _vd;
         };
 
-        struct CameraCullCallback: public osg::NodeCallback {
+        struct CameraCullCallback: public osg::Callback {
 
-            CameraCullCallback(ViewData * vd, osg::NodeCallback * nc): _vd(vd), _nc(nc)
+            CameraCullCallback(ViewData * vd, osg::Callback * nc): _vd(vd), _nc(nc)
             {
             }
 
-            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+            virtual bool run(osg::Object* object, osg::Object* data)
             {
-                osgUtil::CullVisitor *cv = dynamic_cast< osgUtil::CullVisitor *>( nv );
+                osgUtil::CullVisitor *cv = dynamic_cast< osgUtil::CullVisitor *>( data );
 
                 if( _nc.valid() )
-                    _nc->operator()(node,nv);
+                    _nc->run(object, data);
                 else
-                    traverse(node,nv);
+                    traverse(object, data);
 
                 if( cv )
                     _vd->recordShadowMapParams( );
+
+                return true;
             }
 
         protected:
             osg::observer_ptr< ViewData >     _vd;
-            osg::ref_ptr< osg::NodeCallback > _nc;
+            osg::ref_ptr< osg::Callback >       _nc;
         };
 };
 

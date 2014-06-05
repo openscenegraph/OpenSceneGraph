@@ -15,19 +15,15 @@
 #define OSG_SCRIPTENGINE 1
 
 #include <osg/Object>
-#include <osg/NodeCallback>
+#include <osg/Callback>
 #include <osg/NodeVisitor>
 #include <osg/UserDataContainer>
 
 namespace osg
 {
 
-typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;
-
-
 // forward declare
 class ScriptEngine;
-
 
 /* Script class for wrapping a script and the language used in the script.*/
 class Script : public osg::Object
@@ -57,53 +53,6 @@ class Script : public osg::Object
         unsigned int _modifiedCount;
 };
 
-/** Callback for attaching a script to a Node's via there UserDataContainer for the purpose of overriding class methods within scripts.*/
-class OSG_EXPORT CallbackObject : public osg::Object
-{
-public:
-    CallbackObject() {}
-    CallbackObject(const std::string& name) { setName(name); }
-    CallbackObject(const CallbackObject& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):osg::Object(rhs,copyop) {}
-    META_Object(osg, CallbackObject);
-
-    inline bool run(osg::Object* object) const
-    {
-        osg::Parameters inputParameters;
-        osg::Parameters outputParameters;
-        return run(object, inputParameters, outputParameters);
-    }
-
-    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
-
-};
-
-/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
-inline CallbackObject* getCallbackObject(osg::Object* object, const std::string& name)
-{
-    osg::UserDataContainer* udc = object->getUserDataContainer();
-    return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
-}
-
-/** Call run(..) on named CallbackObjects attached to specified Object. Return true if at least one CallbackObject has been successfully invoked.*/
-inline bool runNamedCallbackObjects(osg::Object* object, const std::string& name, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
-{
-    bool result = false;
-    osg::UserDataContainer* udc = object->getUserDataContainer();
-    if (udc)
-    {
-        for(unsigned int i = 0; i<udc->getNumUserObjects(); ++i)
-        {
-            osg::Object* obj = udc->getUserObject(i);
-            if (obj && obj->getName()==name)
-            {
-                osg::CallbackObject* co = dynamic_cast<osg::CallbackObject*>(obj);
-                if (co) result = co->run(object, inputParameters, outputParameters) | result;
-            }
-        }
-    }
-
-    return result;
-}
 
 /** NodeCallback for attaching a script to a NodeCallback so that it can be called as an update or event callback.*/
 class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback

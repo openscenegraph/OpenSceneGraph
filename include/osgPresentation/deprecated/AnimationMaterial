@@ -14,7 +14,7 @@
 #define OSG_ANIMATIONMATERIAL 1
 
 #include <osg/Material>
-#include <osg/NodeCallback>
+#include <osg/Callback>
 
 #include <osgPresentation/Export>
 

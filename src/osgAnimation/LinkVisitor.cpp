@@ -64,7 +64,7 @@ void LinkVisitor::apply(osg::Node& node)
     if (st)
         handle_stateset(st);
 
-    osg::NodeCallback* cb = node.getUpdateCallback();
+    osg::Callback* cb = node.getUpdateCallback();
     while (cb)
     {
         osgAnimation::AnimationUpdateCallbackBase* cba = dynamic_cast<osgAnimation::AnimationUpdateCallbackBase*>(cb);

@@ -23,7 +23,6 @@
 #include <osg/Geometry>
 #include <osg/GLExtensions>
 #include <osg/Node>
-#include <osg/NodeCallback>
 #include <osg/Notify>
 #include <osg/observer_ptr>
 #include <osg/Projection>

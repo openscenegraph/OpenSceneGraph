@@ -20,7 +20,7 @@
 namespace osg {
 
 
-class Callback : public virtual Object {
+class OSG_EXPORT Callback : public virtual Object {
 
     public :
 

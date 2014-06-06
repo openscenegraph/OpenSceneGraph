@@ -378,7 +378,7 @@ class OSG_EXPORT StateSet : public Object
         inline bool getNestRenderBins() const { return _nestRenderBins; }
 
 
-        struct Callback : public virtual osg::Callback
+        struct OSG_EXPORT Callback : public virtual osg::Callback
         {
             Callback() {}
 

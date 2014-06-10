@@ -307,6 +307,9 @@ class OSG_EXPORT Drawable : public Node
 
             META_Object(osg,CullCallback);
 
+            // just use the standard run implementation to passes run onto any nested callbacks.
+            using Callback::run;
+
             /** deprecated.*/
             virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
 

@@ -225,9 +225,6 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
     textDrawable->setName("Text");
 
     textDrawable->setText(text);
-    textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
-
-
     textDrawable->setEnableDepthWrites(false);
 
     if (ts)
@@ -236,10 +233,59 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
         textDrawable->setCharacterSize(ts->getCharacterSize());
     }
 
-    if (as)
+    AlignmentSettings::Alignment alignment = as ? as->getAlignment() : AlignmentSettings::CENTER_CENTER;
+    textDrawable->setAlignment(static_cast<osgText::TextBase::AlignmentType>(alignment));
+
+    switch(alignment)
     {
-        osgText::TextBase::AlignmentType alignmentType = static_cast<osgText::TextBase::AlignmentType>(as->getAlignment());
-        textDrawable->setAlignment(alignmentType);
+        case(AlignmentSettings::LEFT_TOP):
+            textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMax(), extents.zMin()) );
+            break;
+        case(AlignmentSettings::LEFT_CENTER):
+            textDrawable->setPosition( osg::Vec3(extents.xMin(), (extents.yMin()+extents.yMax())*0.5f, extents.zMin()) );
+            break;
+        case(AlignmentSettings::LEFT_BOTTOM):
+            textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
+            break;
+
+        case(AlignmentSettings::CENTER_TOP):
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, extents.yMax(), extents.zMin()) );
+            break;
+        case(AlignmentSettings::CENTER_CENTER):
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, (extents.yMin()+extents.yMax())*0.5f, extents.zMin()) );
+            break;
+        case(AlignmentSettings::CENTER_BOTTOM):
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, extents.yMin(), extents.zMin()) );
+            break;
+
+        case(AlignmentSettings::RIGHT_TOP):
+            textDrawable->setPosition( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
+            break;
+        case(AlignmentSettings::RIGHT_CENTER):
+            textDrawable->setPosition( osg::Vec3(extents.xMax(), (extents.yMin()+extents.yMax())*0.5f, extents.zMin()) );
+            break;
+        case(AlignmentSettings::RIGHT_BOTTOM):
+            textDrawable->setPosition( osg::Vec3(extents.xMax(), extents.yMin(), extents.zMin()) );
+            break;
+
+        case(AlignmentSettings::LEFT_BASE_LINE):
+            OSG_NOTICE<<"Text : LEFT_BASE_LINE"<<std::endl;
+            textDrawable->setPosition( osg::Vec3(extents.xMin(), (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5f, extents.zMin()) );
+            break;
+        case(AlignmentSettings::CENTER_BASE_LINE):
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5, extents.zMin()) );
+            break;
+        case(AlignmentSettings::RIGHT_BASE_LINE):
+            textDrawable->setPosition( osg::Vec3(extents.xMax(), (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5, extents.zMin()) );
+            break;
+
+        case(AlignmentSettings::LEFT_BOTTOM_BASE_LINE):
+        case(AlignmentSettings::CENTER_BOTTOM_BASE_LINE):
+        case(AlignmentSettings::RIGHT_BOTTOM_BASE_LINE):
+
+        default:
+            textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
+            break;
     }
 
     return textDrawable.release();

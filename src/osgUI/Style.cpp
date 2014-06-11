@@ -61,6 +61,7 @@ osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& 
 {
     OSG_NOTICE<<"Creating Panel"<<std::endl;
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("Panel");
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -83,6 +84,7 @@ osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& 
 osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
 {
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("DepthSetPanel");
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -104,6 +106,7 @@ osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
 osg::Node* Style::createFrame(const osg::BoundingBox& extents, const FrameSettings* frameSettings, const osg::Vec4& color)
 {
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("Frame");
 
     float topScale = 1.0f;
     float bottomScale = 1.0f;
@@ -219,6 +222,7 @@ osg::Node* Style::createFrame(const osg::BoundingBox& extents, const FrameSettin
 osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSettings* as, const TextSettings* ts, const std::string& text)
 {
     osg::ref_ptr<osgText::Text> textDrawable = new osgText::Text;
+    textDrawable->setName("Text");
 
     textDrawable->setText(text);
     textDrawable->setPosition( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );

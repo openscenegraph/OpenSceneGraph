@@ -32,7 +32,7 @@ Popup::Popup(const osgUI::Popup& dialog, const osg::CopyOp& copyop):
 
 bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    OSG_NOTICE<<"Popup::handleImplementation"<<std::endl;
+//    OSG_NOTICE<<"Popup::handleImplementation"<<std::endl;
 
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
@@ -70,7 +70,7 @@ void Popup::createGraphicsImplementation()
 
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
-    osg::Vec4 dialogBackgroundColor(0.8,0.8,0.8,1.0);
+    osg::Vec4 dialogBackgroundColor(0.9,0.9,0.9,1.0);
 
     _transform->addChild( style->createPanel(_extents, dialogBackgroundColor) );
 

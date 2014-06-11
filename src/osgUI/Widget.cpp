@@ -23,6 +23,8 @@
 #include <osgGA/EventVisitor>
 #include <osgGA/GUIActionAdapter>
 
+#include <algorithm>
+
 using namespace osgUI;
 
 Widget::Widget():
@@ -271,22 +273,6 @@ bool Widget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
     return false;
 }
 
-bool Widget::computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const
-{
-    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
-    osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (aa && aa->computeIntersections(*event, ev->getNodePath(), intersections))
-    {
-        localPosition = intersections.begin()->getLocalIntersectPoint();
-
-        return (_extents.contains(localPosition, 1e-6));
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void Widget::dirty()
 {
     _graphicsInitialized = false;
@@ -304,8 +290,10 @@ void Widget::createGraphicsImplementation()
 
 osg::BoundingSphere Widget::computeBound() const
 {
-    if (_extents.valid()) return osg::BoundingSphere(_extents);
-    else return osg::Group::computeBound();
+    osg::BoundingSphere bs;
+    if (_extents.valid()) bs.expandBy(_extents);
+    bs.expandBy(Group::computeBound());
+    return bs;
 }
 
 void Widget::resizeGLObjectBuffers(unsigned int maxSize)
@@ -331,4 +319,119 @@ void Widget::releaseGLObjects(osg::State* state) const
     }
 
     Group::releaseGLObjects(state);
+
+
+}
+
+bool Widget::computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const
+{
+    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (aa && aa->computeIntersections(*event, ev->getNodePath(), intersections))
+    {
+        localPosition = intersections.begin()->getLocalIntersectPoint();
+
+        return (_extents.contains(localPosition, 1e-6));
+    }
+    else
+    {
+        return false;
+    }
+}
+
+struct SortTraversalOrder
+{
+    bool operator() (const osgUtil::LineSegmentIntersector::Intersection* lhs, const osgUtil::LineSegmentIntersector::Intersection* rhs) const
+    {
+        double epsilon = 1e-6;
+        if (lhs->ratio > (rhs->ratio+epsilon)) return true;
+        if (lhs->ratio < (rhs->ratio-epsilon)) return false;
+
+        const osg::NodePath& np_lhs = lhs->nodePath;
+        const osg::NodePath& np_rhs = rhs->nodePath;
+
+        osg::NodePath::const_iterator itr_lhs = np_lhs.begin();
+        osg::NodePath::const_iterator end_lhs = np_lhs.end();
+        osg::NodePath::const_iterator itr_rhs = np_rhs.begin();
+        osg::NodePath::const_iterator end_rhs = np_rhs.end();
+        const osg::Group* parent = 0;
+
+        while(itr_lhs!=end_lhs && itr_rhs!=end_rhs)
+        {
+            if (*itr_lhs == *itr_rhs)
+            {
+                parent = (*itr_lhs)->asGroup();
+                ++itr_lhs;
+                ++itr_rhs;
+            }
+            else if (parent==0)
+            {
+                OSG_NOTICE<<"SortTraversalOrder::operator() NodePath has no parent, just have to use default less than operator for Intersection"<<std::endl;
+                return (*lhs)<(*rhs);
+            }
+            else
+            {
+                const osgUI::Widget* widget = dynamic_cast<const osgUI::Widget*>(parent);
+
+                unsigned int lhs_index = parent->getChildIndex(*itr_lhs);
+                double lhs_sort_value = static_cast<double>(lhs_index)/static_cast<double>(parent->getNumChildren());
+
+                unsigned int rhs_index = parent->getChildIndex(*itr_rhs);
+                double rhs_sort_value = (static_cast<double>(rhs_index)+epsilon)/static_cast<double>(parent->getNumChildren());
+
+                if (widget)
+                {
+                    const osgUI::Widget::GraphicsSubgraphMap& gsm = widget->getGraphicsSubgraphMap();
+                    for(osgUI::Widget::GraphicsSubgraphMap::const_iterator itr=gsm.begin();
+                        itr!=gsm.end();
+                        ++itr)
+                    {
+                        if (itr->second==(*itr_lhs)) lhs_sort_value = itr->first;
+                        if (itr->second==(*itr_rhs)) rhs_sort_value = itr->first;
+                    }
+                }
+
+                if (lhs_sort_value>rhs_sort_value) return true;
+                if (lhs_sort_value<rhs_sort_value) return false;
+
+            }
+        }
+
+        return false;
+    }
+};
+
+bool Widget::computeIntersections(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, Intersections& intersections, osg::Node::NodeMask traversalMask) const
+{
+    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
+    osgUtil::LineSegmentIntersector::Intersections source_intersections;
+    if (aa && aa->computeIntersections(*event, ev->getNodePath(), source_intersections, traversalMask))
+    {
+        typedef std::vector<const osgUtil::LineSegmentIntersector::Intersection*> IntersectionPointerList;
+        IntersectionPointerList intersectionsToSort;
+
+        // populate the temporay vector of poiners to the original intersection pointers.
+        for(osgUtil::LineSegmentIntersector::Intersections::iterator itr = source_intersections.begin();
+            itr != source_intersections.end();
+            ++itr)
+        {
+            if (itr->drawable->getName()!="DepthSetPanel")
+            {
+                intersectionsToSort.push_back(&(*itr));
+            }
+        }
+
+        // sort the pointer list into order based on child traversal order, to be consistent with osgUI rendering order.
+        std::sort(intersectionsToSort.begin(), intersectionsToSort.end(), SortTraversalOrder());
+
+        // copy the pointers to final Intersection container
+        for(IntersectionPointerList::iterator itr = intersectionsToSort.begin();
+            itr != intersectionsToSort.end();
+            ++itr)
+        {
+            intersections.push_back(*(*itr));
+        }
+        return true;
+    }
+    return false;
 }

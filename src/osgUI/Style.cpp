@@ -249,13 +249,13 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
             break;
 
         case(AlignmentSettings::CENTER_TOP):
-            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, extents.yMax(), extents.zMin()) );
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMax())*0.5f, extents.yMax(), extents.zMin()) );
             break;
         case(AlignmentSettings::CENTER_CENTER):
-            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, (extents.yMin()+extents.yMax())*0.5f, extents.zMin()) );
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMax())*0.5f, (extents.yMin()+extents.yMax())*0.5f, extents.zMin()) );
             break;
         case(AlignmentSettings::CENTER_BOTTOM):
-            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, extents.yMin(), extents.zMin()) );
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMax())*0.5f, extents.yMin(), extents.zMin()) );
             break;
 
         case(AlignmentSettings::RIGHT_TOP):
@@ -273,7 +273,7 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
             textDrawable->setPosition( osg::Vec3(extents.xMin(), (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5f, extents.zMin()) );
             break;
         case(AlignmentSettings::CENTER_BASE_LINE):
-            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMin())*0.5f, (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5, extents.zMin()) );
+            textDrawable->setPosition( osg::Vec3((extents.xMin()+extents.xMax())*0.5f, (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5, extents.zMin()) );
             break;
         case(AlignmentSettings::RIGHT_BASE_LINE):
             textDrawable->setPosition( osg::Vec3(extents.xMax(), (extents.yMin()+extents.yMax())*0.5f-textDrawable->getCharacterHeight()*0.5, extents.zMin()) );

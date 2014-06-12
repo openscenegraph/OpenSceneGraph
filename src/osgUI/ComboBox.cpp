@@ -164,20 +164,41 @@ void ComboBox::createGraphicsImplementation()
     _buttonSwitch = new osg::Switch;
     _popup = new osgUI::Popup;
     _popup->setVisible(false);
+    _popup->setFrameSettings(getFrameSettings());
+
+    osg::BoundingBox extents(_extents);
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+    float frameWidth = 0.0;
+    if (requiresFrame)
+    {
+        osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
+        frameWidth = getFrameSettings()->getLineWidth();
+
+        group->addChild(style->createFrame(_extents, getFrameSettings(), frameColor));
+        extents.xMin() += frameWidth;
+        extents.xMax() -= frameWidth;
+        extents.yMin() += frameWidth;
+        extents.yMax() -= frameWidth;
+    }
+
+    group->addChild(_buttonSwitch.get());
+
 
     if (!_items.empty())
     {
 
-        float margin = (_extents.yMax()-_extents.yMin())*0.1f;
-        float itemWidth = (_extents.xMax()-_extents.xMin())-2.0f*margin;
-        float itemHeight = (_extents.yMax()-_extents.yMin())-margin;
-        float popupHeight = itemHeight * _items.size() + 2.0f*margin;
+        float margin = (extents.yMax()-extents.yMin())*0.1f;
+        float itemWidth = (_extents.xMax()-_extents.xMin()) - 2.0f*margin - 2.0f*frameWidth;
+        float itemHeight = (_extents.yMax()-_extents.yMin()) - margin - 2.0f*frameWidth;
+        float popupHeight = (itemHeight +margin)* _items.size() + margin + 2.0f*frameWidth;
         float popupTop = _extents.yMin()-margin;
 
-        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMin()+itemWidth+2*margin, popupTop, _extents.zMax());
+        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMax(), popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);
 
-        osg::BoundingBox popupItemExtents(_extents.xMin()+margin, popupTop-margin-itemHeight, _extents.zMin(), _extents.xMin()+itemWidth, popupTop-margin, _extents.zMax());
+        osg::BoundingBox popupItemExtents(_extents.xMin()+margin, popupTop-margin-itemHeight, _extents.zMin(), _extents.xMax()-margin, popupTop-margin, _extents.zMax());
 
         unsigned int index = 0;
         for(Items::iterator itr = _items.begin();
@@ -190,8 +211,8 @@ void ComboBox::createGraphicsImplementation()
             // setup graphics for button
             {
                 osg::ref_ptr<osg::Group> group = new osg::Group;
-                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(_extents, item->getColor()) );
-                if (!item->getText().empty()) group->addChild( style->createText(_extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(extents, item->getColor()) );
+                if (!item->getText().empty()) group->addChild( style->createText(extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
                 _buttonSwitch->addChild(group.get());
             }
 
@@ -219,6 +240,7 @@ void ComboBox::createGraphicsImplementation()
     _buttonSwitch->setSingleChildOn(_currentItem);
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
-    setGraphicsSubgraph(0, _buttonSwitch.get());
+
+    setGraphicsSubgraph(0, group.get());
     addChild(_popup.get());
 }

@@ -1476,11 +1476,13 @@ bool GraphicsWindowX11::checkEvents()
 
                 if( ev.xbutton.button == Button4 )
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP, eventTime);
+                    //ignore scroll release as X11 is generating button press and release pairs for scroll wheel motion and we only need only event for each scroll action
+                    //getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP, eventTime);
                 }
                 else if( ev.xbutton.button == Button5)
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN, eventTime);
+                    //ignore scroll release as X11 is generating button press and release pairs for scroll wheel motion and we only need only event for each scroll action
+                    //getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN, eventTime);
                 }
                 else
                 {
@@ -1564,7 +1566,7 @@ bool GraphicsWindowX11::checkEvents()
             requestRedraw();
         }
     }
-    
+
     return !(getEventQueue()->empty());
 }
 
@@ -2173,7 +2175,7 @@ void GraphicsWindowX11::raiseWindow()
         xev.xclient.data.l[0] = 1;
         xev.xclient.data.l[1] = stateAbove;
         xev.xclient.data.l[2] = 0;
-        
+
         XSendEvent(display, RootWindow(display, DefaultScreen(display)),
                    False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
     }

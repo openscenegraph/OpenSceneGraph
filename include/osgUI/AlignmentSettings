@@ -26,7 +26,7 @@ class OSGUI_EXPORT AlignmentSettings : public osg::Object
 {
 public:
     AlignmentSettings();
-    AlignmentSettings(const AlignmentSettings& textSettings, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    AlignmentSettings(const AlignmentSettings& as, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Object(osgUI, AlignmentSettings);
 
     enum Alignment

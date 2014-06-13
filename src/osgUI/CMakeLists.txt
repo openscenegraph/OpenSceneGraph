@@ -9,6 +9,7 @@ SET(LIB_NAME osgUI)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/ColorPalette
     ${HEADER_PATH}/Widget
     ${HEADER_PATH}/Label
     ${HEADER_PATH}/LineEdit
@@ -24,6 +25,7 @@ SET(TARGET_H
 
 SET(TARGET_SRC
     Widget.cpp
+    ColorPalette.cpp
     Label.cpp
     LineEdit.cpp
     Dialog.cpp

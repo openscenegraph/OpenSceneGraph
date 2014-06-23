@@ -22,7 +22,7 @@ using namespace osg;
 //
 bool Callback::traverse(Object* object, Object* data)
 {
-    if (_nestedCallback.valid()) return run(object, data);
+    if (_nestedCallback.valid()) return _nestedCallback->run(object, data);
     else
     {
 #if 1

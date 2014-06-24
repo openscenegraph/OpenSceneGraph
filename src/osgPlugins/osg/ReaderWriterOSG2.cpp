@@ -257,7 +257,7 @@ public:
 
     Options* prepareWriting( WriteResult& result, const std::string& fileName, std::ios::openmode& mode, const Options* options ) const
     {
-        std::string ext = osgDB::getFileExtension( fileName );
+        std::string ext = osgDB::getLowerCaseFileExtension( fileName );
         if ( !acceptsExtension(ext) ) result = WriteResult::FILE_NOT_HANDLED;
 
         osg::ref_ptr<Options> local_opt = options ?

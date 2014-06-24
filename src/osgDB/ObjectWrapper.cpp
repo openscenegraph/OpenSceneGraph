@@ -379,6 +379,9 @@ ObjectWrapperManager::ObjectWrapperManager()
     glTable.add( "GL_LIGHT6", GL_LIGHT6 );
     glTable.add( "GL_LIGHT7", GL_LIGHT7 );
 
+    glTable.add("GL_VERTEX_PROGRAM_POINT_SIZE", GL_VERTEX_PROGRAM_POINT_SIZE);
+    glTable.add("GL_VERTEX_PROGRAM_TWO_SIDE", GL_VERTEX_PROGRAM_TWO_SIDE);
+
     // Functions
     glTable.add( "NEVER", GL_NEVER );
     glTable.add( "LESS", GL_LESS );

@@ -2022,7 +2022,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
             }
 
             // push back if bellow the limit
-            if (numVertices<_targetMaximumNumberOfVertices)
+            if (eachGeom==duplicateList.end())
             {
                 if (duplicateList.size()>1) needToDoMerge = true;
                 mergeList.push_back(duplicateList);

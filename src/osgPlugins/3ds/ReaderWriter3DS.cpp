@@ -238,6 +238,7 @@ ReaderWriter3DS::ReaderWriter3DS()
     //supportsOption("OutputTextureFiles","Write out the texture images to file");
     //supportsOption("flipTexture", "flip texture upside-down");
     supportsOption("extended3dsFilePaths", "(Write option) Keeps long texture filenames (not 8.3) when exporting 3DS, but can lead to compatibility problems.");
+    supportsOption("preserveMaterialNames", "(Write option) Preserve original material names, up to 64 characters. This can lead to compatibility problems.");
     supportsOption("noMatrixTransforms", "(Read option) Set the plugin to apply matrices into the mesh vertices (\"old behaviour\") instead of restoring them (\"new behaviour\"). You may use this option to avoid a few rounding errors.");
     supportsOption("checkForEspilonIdentityMatrices", "(Read option) If not set, then consider \"almost identity\" matrices to be identity ones (in case of rounding errors).");
     supportsOption("restoreMatrixTransformsNoMeshes", "(Read option) Makes an exception to the behaviour when 'noMatrixTransforms' is not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.");

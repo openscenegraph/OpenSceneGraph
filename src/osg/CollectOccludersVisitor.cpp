@@ -225,21 +225,26 @@ void CollectOccludersVisitor::removeOccludedOccluders()
                 break;
             }
 
-            // now check all the holes in the occludee against the occluder,
-            // do so in reverse order so that the iterators remain valid.
-            for(ShadowVolumeOccluder::HoleList::reverse_iterator holeItr=holeList.rbegin();
-                holeItr!=holeList.rend();
-                )
+            // now check all the holes in the occludee against the occluder, and remove the ones that won't be valid
+            unsigned int previous_valid_hole_i = 0;
+            for(unsigned int i=0; i<holeList.size(); ++i)
             {
-                if (occluder->contains((*holeItr).getReferenceVertexList()))
+                if (!occluder->contains(holeList[i].getReferenceVertexList()))
                 {
-                    holeList.erase((++holeItr).base());
-                }
-                else
-                {
-                    ++holeItr;
-                }
+                    if (previous_valid_hole_i<i)
+                    {
+                        // copy valid holes into gaps left by invalid ones
+                        holeList[previous_valid_hole_i] = holeList[i];
+                    }
 
+                    previous_valid_hole_i++;
+                }
+            }
+
+            // remove the tail of the holeList if holes have been removed.
+            if (previous_valid_hole_i<holeList.size())
+            {
+                holeList.erase(holeList.begin()+previous_valid_hole_i,holeList.end());
             }
 
         }

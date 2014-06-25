@@ -834,6 +834,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
+                bool isTexStorage2DSupported() const { return _glTexStorage2D != 0; }
+                bool isTexStorageEnabled() const { return _isTextureStorageEnabled; }
+
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
                 bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
 
@@ -850,6 +853,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool isTextureIntegerSupported() const { return _isTextureIntegerEXTSupported; }
 
                 bool isBindImageTextureSupported() const { return _glBindImageTexture!=0; }
+
+                void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height) const
+                {
+                    _glTexStorage2D(target, levels, internalformat, width, height);
+                }
 
                 void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
                 {
@@ -891,6 +899,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 ~Extensions() {}
 
+                typedef void (GL_APIENTRY * TexStorage2DArbProc) (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
                 typedef void (GL_APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
                 typedef void (GL_APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
                 typedef void (GL_APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
@@ -908,6 +917,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 // ARB_shader_image_load_store
                 BindImageTextureProc            _glBindImageTexture;
+
+                // ARB_texture_storage
+                TexStorage2DArbProc             _glTexStorage2D;
 
                 bool    _isMultiTexturingSupported;
                 bool    _isTextureFilterAnisotropicSupported;
@@ -933,6 +945,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isNonPowerOfTwoTextureNonMipMappedSupported;
                 bool    _isTextureIntegerEXTSupported;
                 bool    _isTextureMaxLevelSupported;
+                bool    _isTextureStorageEnabled;
 
                 GLint   _maxTextureSize;
         };

@@ -360,7 +360,7 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 
 
 
-WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg::StateSet * stateset, osg::Material* mat, osg::Texture* tex, int index) :
+WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg::StateSet * stateset, osg::Material* mat, osg::Texture* tex, bool preserveName, int index) :
     index(index),
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
@@ -387,7 +387,14 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         //shininess = mat->getShininess(osg::Material::FRONT) <= 0 ? 0 : log( mat->getShininess(osg::Material::FRONT) ) / log(2.f) / 10.f;
 
         transparency = 1-diffuse.w();
-        name = writerNodeVisitor.getUniqueName(mat->getName(),true,"mat");
+        if (preserveName == false)
+        {
+            name = writerNodeVisitor.getUniqueName(mat->getName(),true,"mat");
+        }
+        else
+        {
+            name = writerNodeVisitor.getMaterialName(mat->getName());
+        }
         osg::StateAttribute * attribute = stateset->getAttribute(osg::StateAttribute::CULLFACE);
         if (!attribute)
         {
@@ -458,7 +465,8 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
     _cur3dsNode(NULL),
     _options(options),
     _imageCount(0),
-    _extendedFilePaths(false)
+    _extendedFilePaths(false),
+    _preserveMaterialNames(false)
 {
     if (!fileName.empty())
         _directory = options->getDatabasePathList().empty() ? osgDB::getFilePath(fileName) : options->getDatabasePathList().front();
@@ -471,6 +479,8 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
         {
             if (opt == "extended3dsFilePaths" || opt == "extended3DSFilePaths")
                 _extendedFilePaths = true;
+            if (opt == "preserveMaterialNames")
+                _preserveMaterialNames = true;
         }
     }
 }
@@ -717,6 +727,53 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, b
     return "ERROR";
 }
 
+std::string WriterNodeVisitor::getMaterialName(const std::string& inputMaterialName)
+{
+    std::string result;
+
+    // Search in map if this material name already exists
+    MaterialNameMap::const_iterator mapIter=_materialNameMap.find(inputMaterialName);
+
+    if (mapIter!=_materialNameMap.end())
+    {
+        // Found, use it !
+        result = mapIter->second;
+    }
+    else
+    {
+        // Not found, create a new (unique) entry mapped to this material name
+        std::string resultPrefix = inputMaterialName.substr(0, 60);    // Up to 64 characters : truncate to 60 characters : 60 + "_" + number
+        result = resultPrefix;
+
+        NameMap::const_iterator setIter=_materialNameSet.find(result);
+        int suffixValue=-1;
+        while (setIter!=_materialNameSet.end())
+        {
+            if (suffixValue < 0)
+            {
+                // First add of the suffix
+                resultPrefix = resultPrefix + "_";
+                suffixValue++;
+            }
+
+            std::stringstream ss;
+            ss << resultPrefix << suffixValue;
+
+            result = ss.str();
+
+            setIter=_materialNameSet.find(result);
+            suffixValue++;
+        }
+
+        // Add entry in map
+        _materialNameMap[inputMaterialName] = result;
+    }
+    
+    std::cout << "getMaterialName : " << inputMaterialName << " => " << result << std::endl;
+
+    return result;
+}
+
 int WriterNodeVisitor::processStateSet(osg::StateSet* ss)
 {
     MaterialMap::const_iterator itr = _materialMap.find(ss);
@@ -732,7 +789,7 @@ int WriterNodeVisitor::processStateSet(osg::StateSet* ss)
     if (mat || tex)
     {
         int matNum = _lastMaterialIndex;
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), Material(*this, ss, mat, tex, matNum) ));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), Material(*this, ss, mat, tex, _preserveMaterialNames, matNum) ));
         ++_lastMaterialIndex;
         return matNum;
     }

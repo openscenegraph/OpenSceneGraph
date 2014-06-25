@@ -557,6 +557,7 @@ int main( int argc, char **argv )
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
+        osg::setNotifyLevel(osg::NOTICE);
         usage( arguments.getApplicationName().c_str(), 0 );
         //arguments.getApplicationUsage()->write(std::cout);
         return 1;

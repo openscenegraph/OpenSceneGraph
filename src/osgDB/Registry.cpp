@@ -1041,7 +1041,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 
         if(fileExists(simpleFileName))
         {
-            OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+            OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << simpleFileName << std::endl;
             return simpleFileName;
         }
 

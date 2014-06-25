@@ -49,26 +49,17 @@ void StateGraph::clean()
 /** recursively prune the StateGraph of empty children.*/
 void StateGraph::prune()
 {
-    std::vector<const osg::StateSet*> toEraseList;
-
     // call prune on all children.
-    for(ChildList::iterator citr=_children.begin();
-        citr!=_children.end();
-        ++citr)
+    ChildList::iterator citr=_children.begin();
+    while(citr!=_children.end())
     {
         citr->second->prune();
 
         if (citr->second->empty())
         {
-            toEraseList.push_back(citr->first);
+            ChildList::iterator ditr= citr++;
+            _children.erase(ditr);
         }
+        else ++citr;
     }
-
-    for(std::vector<const osg::StateSet*>::iterator eitr=toEraseList.begin();
-        eitr!=toEraseList.end();
-        ++eitr)
-    {
-        _children.erase(*eitr);
-    }
-
 }

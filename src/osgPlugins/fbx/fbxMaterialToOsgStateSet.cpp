@@ -50,10 +50,20 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
         }
     }
 
+    double transparencyColorFactor = 1.0;
+    bool useTransparencyColorFactor = false;
+
     // opacity map...
     const FbxProperty lOpacityProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sTransparentColor);
     if (lOpacityProperty.IsValid())
     {
+        FbxDouble3 transparentColor = lOpacityProperty.Get<FbxDouble3>();
+        // If transparent color is defined set the transparentFactor to gray scale value of transparentColor
+        if (transparentColor[0] < 1.0 || transparentColor[1] < 1.0 || transparentColor[2] < 1.0) {
+            transparencyColorFactor = transparentColor[0]*0.30 + transparentColor[1]*0.59 + transparentColor[2]*0.11;
+            useTransparencyColorFactor = true;
+        }         
+
         int lNbTex = lOpacityProperty.GetSrcObjectCount<FbxFileTexture>();
         for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
         {
@@ -121,11 +131,12 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     {
         FbxDouble3 color = pFbxLambert->Diffuse.Get();
         double factor = pFbxLambert->DiffuseFactor.Get();
+        double transparencyFactor = useTransparencyColorFactor ? transparencyColorFactor : pFbxLambert->TransparencyFactor.Get();
         pOsgMat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(
             static_cast<float>(color[0] * factor),
             static_cast<float>(color[1] * factor),
             static_cast<float>(color[2] * factor),
-            static_cast<float>(1.0 - pFbxLambert->TransparencyFactor.Get())));
+            static_cast<float>(1.0 - transparencyFactor)));
 
         color = pFbxLambert->Ambient.Get();
         factor = pFbxLambert->AmbientFactor.Get();
@@ -155,9 +166,12 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
                 static_cast<float>(color[1] * factor),
                 static_cast<float>(color[2] * factor),
                 1.0f));
-
+            // Since Maya and 3D studio Max stores their glossiness values in exponential format (2^(log2(x)) 
+            // We need to linearize to values between 0-100 and then scale to values between 0-128.
+            // Glossiness values above 100 will result in shininess larger than 128.0 and will be clamped
+            double shininess = (64.0 * log (pFbxPhong->Shininess.Get())) / (5.0 * log(2.0));
             pOsgMat->setShininess(osg::Material::FRONT_AND_BACK,
-                static_cast<float>(pFbxPhong->Shininess.Get()));
+                static_cast<float>(shininess));
 
             // get maps factors...
             result.reflectionFactor = pFbxPhong->ReflectionFactor.Get();

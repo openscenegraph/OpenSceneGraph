@@ -34,10 +34,6 @@ const double LN_2 = 0.69314718055994530942;
 const double INVLN_2 = 1.0 / LN_2;
 
 
-/** return the minimum of two values, equivalent to std::min.
-  * std::min not used because of STL implementation under IRIX not
-  * containing std::min.
-*/
 template<typename T>
 inline T absolute(T v) { return v<(T)0?-v:v; }
 

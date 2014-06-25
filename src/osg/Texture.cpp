@@ -2962,7 +2962,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
         else _isTextureStorageEnabled = true;
     }
 
-    OSG_NOTICE<<"_isTextureStorageEnabled = "<<_isTextureStorageEnabled<<std::endl;
+    OSG_DEBUG<<"Texture::Extensions::Extensionts() _isTextureStorageEnabled = "<<_isTextureStorageEnabled<<std::endl;
 }
 
 

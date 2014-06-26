@@ -225,7 +225,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
         virtual float getDistanceToViewPoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
         virtual void apply(Drawable& drawable);
-        virtual void apply(Geometry& drawable);
+        virtual void apply(Geometry& geometry);
 
         virtual void apply(Node& node);
 

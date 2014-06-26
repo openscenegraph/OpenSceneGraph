@@ -263,8 +263,9 @@ public:
     {
         if ( _supportBinaryBrackets && _beginPositions.size()>0 )
         {
-            std::streampos pos = _beginPositions.back() + _blockSizes.back();
-            _in->seekg( pos, std::ios_base::beg );
+            std::streampos position(_beginPositions.back());
+            position += _blockSizes.back();
+            _in->seekg( position );
             _beginPositions.pop_back();
             _blockSizes.pop_back();
         }
@@ -272,7 +273,7 @@ public:
 
 protected:
     std::vector<std::streampos> _beginPositions;
-    std::vector<std::streampos> _blockSizes;
+    std::vector<int> _blockSizes;
 };
 
 #endif

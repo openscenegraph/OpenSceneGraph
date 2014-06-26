@@ -650,7 +650,7 @@ protected:
         }
 
         if ( newpos<0 || newpos>_numChars ) return -1;
-        if ( (std::streamoff)_streambuf->pubseekpos( STREAM_POS(_startPos+newpos), which) < 0 ) return -1;
+        if ( ARCHIVE_POS(_streambuf->pubseekpos( STREAM_POS(_startPos+newpos), which)) < 0 ) return -1;
         _curPos = newpos;
         return _curPos;
     }

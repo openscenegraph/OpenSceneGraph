@@ -60,6 +60,7 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("FileNames {"))
     {
+        if (fr.getOptions()) is.setReadOptions(new osgDB::Options(*fr.getOptions()));
         fr += 2;
         iteratorAdvanced = true;
         int entry = fr[0].getNoNestedBrackets();

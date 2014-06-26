@@ -32,7 +32,7 @@ StackedTransform::StackedTransform(const StackedTransform& rhs, const osg::CopyO
 
 void StackedTransform::update(float t)
 {
-    int dirty = 0;
+    bool dirty = false;
     for (StackedTransform::iterator it = begin(); it != end(); ++it)
     {
         StackedTransformElement* element = it->get();
@@ -40,9 +40,9 @@ void StackedTransform::update(float t)
             continue;
         // update and check if there are changes
         element->update(t);
-        if (element->isIdentity())
-            continue;
-        dirty++;
+        if (!dirty && !element->isIdentity()){
+            dirty = true;
+        }
     }
 
     if (!dirty)

@@ -418,8 +418,14 @@ osg::BoundingBox Text3D::computeBound() const
         for(unsigned int i=0;i<_autoTransformCache.size();++i)
         {
             osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-            bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-            bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+            bbox.expandBy(_textBB.corner(0)*matrix);
+            bbox.expandBy(_textBB.corner(1)*matrix);
+            bbox.expandBy(_textBB.corner(2)*matrix);
+            bbox.expandBy(_textBB.corner(3)*matrix);
+            bbox.expandBy(_textBB.corner(4)*matrix);
+            bbox.expandBy(_textBB.corner(5)*matrix);
+            bbox.expandBy(_textBB.corner(6)*matrix);
+            bbox.expandBy(_textBB.corner(7)*matrix);
         }
     }
 
@@ -432,17 +438,17 @@ void Text3D::computePositions(unsigned int contextID) const
 
     switch(_alignment)
     {
-    case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
-    case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
+    case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),0.0f); break;
+    case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
+    case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),0.0f); break;
 
-    case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
-    case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
+    case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),0.0f); break;
+    case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
+    case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),0.0f); break;
 
-    case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
-    case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
+    case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),0.0f); break;
+    case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
+    case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),0.0f); break;
 
     case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
     case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;

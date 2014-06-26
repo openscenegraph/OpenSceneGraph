@@ -17,6 +17,7 @@
 #include "Object.h"
 
 #include <osg/Notify>
+#include <osgDB/Options>
 
 using namespace ive;
 
@@ -75,6 +76,7 @@ void ImageSequence::read(DataInputStream* in)
         unsigned int numFileNames = in->readUInt();
         if (numFileNames>0)
         {
+            if (in->getOptions()) setReadOptions(new osgDB::Options(*in->getOptions()));
             for(unsigned int i=0; i<numFileNames; ++i)
             {
                 addImageFile(in->readString());

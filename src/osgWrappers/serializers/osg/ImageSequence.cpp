@@ -12,6 +12,7 @@ static bool checkFileNames( const osg::ImageSequence& image )
 static bool readFileNames( osgDB::InputStream& is, osg::ImageSequence& image )
 {
     unsigned int files = 0; is >> files >> is.BEGIN_BRACKET;
+    if (is.getOptions()) image.setReadOptions(new osgDB::Options(*is.getOptions()));
     for ( unsigned int i=0; i<files; ++i )
     {
         std::string filename; is.readWrappedString( filename );

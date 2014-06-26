@@ -1,3 +1,232 @@
+2014-06-26 15:18  robert
+
+	* CMakeLists.txt: Updated RC number to 4.
+
+2014-06-26 11:49  robert
+
+	* src/osg/Sequence.cpp: From Sebastian Messerschmidt, "I've applied
+	  a simple fix for the backward animation support in osg::Sequence.
+	  It will simply use the sign of the speed set in the getNextValue.
+	  Attached file is against trunk."
+
+2014-06-26 11:11  robert
+
+	* src/osgDB/Registry.cpp: From Laurens Voerman, "In order to speed
+	  up loading large scenes (especially from network disk) I added
+	  code to our viewer to setup multiple database-pagers and request
+	  the files trough a database-request:
+	  databasePager->setUpThreads(16, 1);
+	  
+	  We experienced problems with multiple databasepagers loading
+	  files in parallel, when two threads start to load the same file
+	  (usually a texture referenced by multiple models). The second
+	  thread to add the file to the cache (sometimes) manages to do so
+	  while the refcount from the cached object still is zero, causing
+	  the object loaded to be destroyed.
+	  Sometimes the second thread manages to ref() the object before
+	  Referenced::signalObserversAndDelete does the final recount
+	  check, causing a warning:
+	  "Warning Referenced::signalObserversAndDelete(,,) doing delete
+	  with _refCount=1"
+	  
+	  With a deleted object added to the scenegraph we get some
+	  undesired results, I think the program only crashes if the object
+	  was a Node, and just has some untextured surfaces if it was a
+	  texture, but I'm not completely sure.
+	  
+	  Attached is a modified version of the Registry.cpp, returning the
+	  object in cache and let the duplicate loaded object to be
+	  destroyed.
+	  
+	  A more efficient option would be to add some sort of blocking
+	  entry to the objectcache to stop the second thread from reading
+	  the file, and just wait until the first thread added it to the
+	  cache. If you think that's worthwile we would be happy to
+	  implement that version. A bit tricky to implement and test,
+	  that's why I submit a simple version that stops my program from
+	  crashing.
+	  "
+
+2014-06-26 11:09  robert
+
+	* src/osgDB/Registry.cpp: Removed erroneous character
+
+2014-06-26 10:53  robert
+
+	* src/osgText/Text3D.cpp, src/osgText/TextBase.cpp: From Farshid
+	  Lashkari,
+	  "I noticed that Text3D objects would change there z alignment
+	  depending on the alignment mode. I'm not sure if this was
+	  intentional or just a simple mistake. My expectation was that the
+	  front of the object would always stay aligned to the 0 z-plane,
+	  regardless of the alignment mode. I've attached an updated
+	  version that retains a consistent z-alignment."
+	  "I just now noticed another issue with Text3D objects. It was not
+	  properly computing the bounding box when non-axis aligned
+	  rotations were being applied. In this case all corners of the
+	  bounding box need to be transformed in order to get the correct
+	  containing box. I've attached the updated file."
+	  "The incorrect bounding box problem also applies to regular Text
+	  objects. I've attached the fix for that as well as the original
+	  Text3D fix."
+
+2014-06-26 10:24  robert
+
+	* src/osg/ImageSequence.cpp: From Laurens Voerman, "while debugging
+	  ImageSequence I had a crash, due to the very large frametimes
+	  caused by halting the program. The problem is that when the frame
+	  time exceeds the length of the entire image sequence, a looping
+	  sequence will try to read it's _imageDataList beyond its size.
+	  fix attached for src/osg/ImageSequence.cpp"
+
+2014-06-26 10:05  robert
+
+	* src/osgPlugins/ive/ImageSequence.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ImageSequence.cpp,
+	  src/osgWrappers/serializers/osg/ImageSequence.cpp: From Laurens
+	  Voerman, "while testing databasepager stuff I noticed that the
+	  various loaders (osg/ive/osgx) do not pass the current options to
+	  the imagePager, therefore the images cannot be found if not in
+	  the global OSG_FILE_PATH. Attached is a fix, containing modified
+	  versions of
+	  
+	  From Robert Osfield, add check to only apply Options object when
+	  a valid Option object is assigned.
+	  
+	  src\osgPlugins\ive\ImageSequence.cpp
+	  src\osgWrappers\deprecated-dotosg\osg\ImageSequence.cpp
+	  src\osgWrappers\serializers\osg\ImageSequence.cpp"
+
+2014-06-26 09:39  robert
+
+	* src/osgPlugins/ply/plyfile.cpp: From Farshid Lashkari, "I've
+	  attached a small fix for the ply loader to support Windows style
+	  line endings when reading the header."
+
+2014-06-26 09:33  robert
+
+	* src/osgPlugins/osg/BinaryStreamOperator.h,
+	  src/osgPlugins/osga/OSGA_Archive.cpp: From Aurelien Albert, "This
+	  submission fix all my problems with reading / writing "osgb"
+	  files inside "osga" archive with final archive size > 2 Go, with
+	  Windows OS (didn't tested with Linux)"
+
+2014-06-25 16:05  robert
+
+	* src/osgDB/Registry.cpp: From Riccardo Corsi, "there's an
+	  inconsistency between the behavior of the method and the
+	  debug message it prints out on the console.
+	  
+	  Around line 1040 of Registry.cpp (see code below) the method
+	  returns
+	  "simpleFileName" but prints about returning "filename".
+	  
+	  In attachment the modified file, based on osg 3.2.0
+	  ricky
+	  
+	  
+	  <code>
+	  if(fileExists(simpleFileName))
+	  {
+	  OSG_DEBUG << "FindFileInPath(" << filename << "): returning " <<
+	  filename << std::endl;
+	  return simpleFileName;
+	  }
+	  </code>
+	  "
+
+2014-06-25 15:47  robert
+
+	* src/osg/CollectOccludersVisitor.cpp: Refactored the way that hole
+	  are pruned from the occluder hole list.
+
+2014-06-25 11:07  robert
+
+	* applications/osgconv/osgconv.cpp: From Laurens Voerman, "a minor
+	  patch for osgconv to make sure the helptext is printed if you run
+	  "osgconv -h" with OSG_NOTIFY_LEVEL set too low.
+	  applys to both trunk and stable branch."
+
+2014-06-25 10:45  robert
+
+	* src/osgUtil/StateGraph.cpp: From Mikhail Izmestev, "Attached fix
+	  to avoid vector usage in StateGraph::prune and reduce heap
+	  allocations."
+	  
+	  Notes from Robert Osfield, ammended the erase so that it
+	  explictly increments the iterator before the erase call.
+
+2014-06-25 08:21  robert
+
+	* include/osg/Math: From Björn Blissing, "I found a minor error in
+	  documentation in include/osg/Math.
+	  Function: absolute() had the same description as the function
+	  minimum()
+	  
+	  I removed the erroneous text."
+
+2014-06-25 08:17  robert
+
+	* src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp: From Björn
+	  Blissing, "Fix to support correct shininess and transparency in
+	  FBX plugin
+
+2014-06-24 19:57  robert
+
+	* src/osgDB/ObjectWrapper.cpp: From Pjotr Svetachov, "There were
+	  some modes missing when exporting to .ogst so I added them."
+
+2014-06-24 14:59  robert
+
+	* src/osgPlugins/osg/ReaderWriterOSG2.cpp: "I've attached a small
+	  for the osg ReaderWriter. It was performing a case sensitive
+	  comparison to the file extension to determine whether to write
+	  the file in ascii or binary. This meant that if the filename was
+	  "model.OSGT" it would be treated as binary, instead of ascii.
+	  I've updated the plugin to ignore case."
+
+2014-06-24 11:24  robert
+
+	* src/osgUtil/Optimizer.cpp: Fix to merge Geometries.
+
+2014-06-16 16:18  robert
+
+	* src/osgUtil/Optimizer.cpp: Fixed check against number of vertices
+
+2014-06-16 08:54  robert
+
+	* src/osgPlugins/osg/BinaryStreamOperator.h: From Aurelien Albert,
+	  "I've got some issues using osgb files within an big osga archive
+	  (file size > 2Go).
+	  
+	  Issue is described here :
+	  http://forum.openscenegraph.org/viewtopic.php?t=13914
+	  
+	  Here is a fix, using "std::streampos" standard type for stream
+	  positions up to 64bits.
+	  "
+
+2014-06-12 16:00  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Removed generation of scroll
+	  event on the X11 button release event as X11 was generating both
+	  a pair of press/release events for a single scroll when movement.
+
+2014-06-12 15:24  robert
+
+	* src/osg/State.cpp: Added if () blocks to
+	  State::convertVertexShaderSourceToOsgBuiltIns() to ensure that
+	  only parts of the shader than need replacing are replaced.
+
+2014-05-22 14:52  robert
+
+	* CMakeLists.txt: Updated release candidate for 3.2.1-rc3
+
+2014-05-22 14:43  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Upated ChangeLog and AUTHORS in prep for release candidate
+
 2014-05-15 14:58  robert
 
 	* src/osg/Notify.cpp: From Sebastian Messershmidt, "There was some

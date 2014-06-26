@@ -415,7 +415,7 @@ Registry::Registry()
     addFileExtensionAlias("cid",    "freetype");  // Postscript CID-Fonts
     addFileExtensionAlias("cff",    "freetype");  // OpenType
     addFileExtensionAlias("cef",    "freetype");  // OpenType
-    addFileExtensionAlias("fon",    "freetype");  // Windows bitmap fonts
+    addFileExtensionAlias("fon",    "freetype");  // Windows bitmap fonts
     addFileExtensionAlias("fnt",    "freetype");  // Windows bitmap fonts
     addFileExtensionAlias("text3d", "freetype"); // use 3D Font instead of 2D Font
 

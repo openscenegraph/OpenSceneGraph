@@ -402,7 +402,7 @@ int Sequence::_getNextValue()
     int _sbegin = osg::minimum(_ubegin,_uend);
     int _send = osg::maximum(_ubegin,_uend);
 
-    int v = _value + _step;
+    int v = _value + _step * static_cast<int>(osg::sign(_speed));
 
     if (_sbegin==_send)
     {

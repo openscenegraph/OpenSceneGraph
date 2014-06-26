@@ -396,17 +396,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         if (startLoadIndex<0) startLoadIndex = 0;
 
         int endLoadIndex = int(preLoadTime/_timePerImage);
-        if (endLoadIndex>=int(_imageDataList.size()))
-        {
-            if (looping)
-            {
-                endLoadIndex -= int(_imageDataList.size());
-            }
-            else
-            {
-                endLoadIndex = int(_imageDataList.size())-1;
-            }
-        }
+        if (looping && (endLoadIndex>=int(_imageDataList.size()))) endLoadIndex -= int(_imageDataList.size());
+        if (endLoadIndex>=int(_imageDataList.size())) endLoadIndex = int(_imageDataList.size())-1;
         if (endLoadIndex<0) endLoadIndex = 0;
 
         double requestTime = time;

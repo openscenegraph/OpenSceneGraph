@@ -279,8 +279,14 @@ osg::BoundingBox TextBase::computeBound() const
             if (_autoTransformCache[i]._traversalNumber>=0)
             {
                 osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+                bbox.expandBy(_textBB.corner(0)*matrix);
+                bbox.expandBy(_textBB.corner(1)*matrix);
+                bbox.expandBy(_textBB.corner(2)*matrix);
+                bbox.expandBy(_textBB.corner(3)*matrix);
+                bbox.expandBy(_textBB.corner(4)*matrix);
+                bbox.expandBy(_textBB.corner(5)*matrix);
+                bbox.expandBy(_textBB.corner(6)*matrix);
+                bbox.expandBy(_textBB.corner(7)*matrix);
             }
         }
 
@@ -305,14 +311,14 @@ osg::BoundingBox TextBase::computeBound() const
                 matrix.makeTranslate(-_offset);
                 matrix.postMultRotate(_rotation);
                 matrix.postMultTranslate(_position);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMax())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMax())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMax())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+                bbox.expandBy(_textBB.corner(0)*matrix);
+                bbox.expandBy(_textBB.corner(1)*matrix);
+                bbox.expandBy(_textBB.corner(2)*matrix);
+                bbox.expandBy(_textBB.corner(3)*matrix);
+                bbox.expandBy(_textBB.corner(4)*matrix);
+                bbox.expandBy(_textBB.corner(5)*matrix);
+                bbox.expandBy(_textBB.corner(6)*matrix);
+                bbox.expandBy(_textBB.corner(7)*matrix);
             }
         }
     }

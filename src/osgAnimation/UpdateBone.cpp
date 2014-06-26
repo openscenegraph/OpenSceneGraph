@@ -46,9 +46,9 @@ void UpdateBone::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
         Bone* parent = b->getBoneParent();
         if (parent)
-            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace() * parent->getMatrixInSkeletonSpace());
+            b->setMatrixInSkeletonSpace(matrix * parent->getMatrixInSkeletonSpace());
         else
-            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace());
+            b->setMatrixInSkeletonSpace(matrix);
     }
     traverse(node,nv);
 }

@@ -801,24 +801,15 @@ KdTreeBuilder::KdTreeBuilder(const KdTreeBuilder& rhs):
 {
 }
 
-void KdTreeBuilder::apply(osg::Geode& geode)
+void KdTreeBuilder::apply(osg::Geometry& geometry)
 {
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+    osg::KdTree* previous = dynamic_cast<osg::KdTree*>(geometry.getShape());
+    if (previous) return;
+
+    osg::ref_ptr<osg::KdTree> kdTree = osg::clone(_kdTreePrototype.get());
+
+    if (kdTree->build(_buildOptions, &geometry))
     {
-
-        osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-        if (geom)
-        {
-            osg::KdTree* previous = dynamic_cast<osg::KdTree*>(geom->getShape());
-            if (previous) continue;
-
-            osg::ref_ptr<osg::Object> obj = _kdTreePrototype->cloneType();
-            osg::ref_ptr<osg::KdTree> kdTree = dynamic_cast<osg::KdTree*>(obj.get());
-
-            if (kdTree->build(_buildOptions, geom))
-            {
-                geom->setShape(kdTree.get());
-            }
-        }
+        geometry.setShape(kdTree.get());
     }
 }

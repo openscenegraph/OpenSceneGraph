@@ -8,11 +8,11 @@ Robert Osfield
 Don Burns
 Stephan Huber
 Paul Martz
-Mathias Frhlich
+Mathias Fröhlich
 Farshid Lashkari
 Marco Jez
 Wang Rui
-Jean-Sbastien Guay
+Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Eric Wing
@@ -60,7 +60,7 @@ Per Fahlberg
 Norman Vine
 Terry Welsh
 Serge Lages
-Romano Jos Magacho da Silva
+Romano José Magacho da Silva
 Lionel Lagarde
 Chris Denham
 Alberto Farre
@@ -68,7 +68,7 @@ Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-Andr Garneau
+André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -82,7 +82,7 @@ Michael Gronager
 Martin Naylor
 Joakim Simonsson
 David Spilling
-Daniel Sjlie
+Daniel Sjölie
 Bryan Thrall
 Fabien Lavignotte
 Andreas Ekstrand
@@ -133,7 +133,7 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautr
+Tanguy Fautré
 Sean Spicer
 Richard Schmidt
 Peter Hrenka
@@ -152,7 +152,7 @@ Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
-Bjrn Blissing
+Björn Blissing
 Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
@@ -248,7 +248,7 @@ Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morn Pistorius
+Morné Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -291,7 +291,7 @@ Eric Buehler
 Eduardo Poyart
 Edgar Ellis
 Dimi Christopoulos
-Diane Delalle
+Diane DelallÃ©e
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -300,7 +300,7 @@ Claus Scheiblauer
 Christophe Loustaunau
 Christian Ruzicka
 Brad Anderegg
-Bjrn Hein
+Björn Hein
 Aric Aumann
 Andrew Sampson
 Andrew Lorino
@@ -320,7 +320,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Lvset
+Tyge Løvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -363,7 +363,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mchler
+Philipp Mächler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -384,7 +384,7 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjl
+Mikkel GjÃ¸l
 Mike Krus
 Mike Garrity
 Miha Ravsel
@@ -484,7 +484,7 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-Csar L. B. Silveira
+César L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski

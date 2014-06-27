@@ -8,11 +8,11 @@ Robert Osfield
 Don Burns
 Stephan Huber
 Paul Martz
-Mathias Fröhlich
-Marco Jez
+Mathias Frhlich
 Farshid Lashkari
+Marco Jez
 Wang Rui
-Jean-Sébastien Guay
+Jean-Sbastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Eric Wing
@@ -26,10 +26,10 @@ Wojciech Lewandowski
 Eric Sokolowsky
 David Callu
 Colin McDonald
+Laurens Voerman
 Trajce Nikolov
 Tim Moore
 Martin Lavery
-Laurens Voerman
 Tree 
 Luigi Calori
 Mike Wittman
@@ -53,44 +53,44 @@ Brad Christiansen
 Olaf Flebbe
 Mathieu Marache
 Jason Daly
+Aurelien Albert
 Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
 Terry Welsh
 Serge Lages
-Romano José Magacho da Silva
+Romano Jos Magacho da Silva
 Lionel Lagarde
 Chris Denham
-Aurelien Albert
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-André Garneau
+Andr Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
+Pjotr Svetachov
 Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
-Pjotr Svetachov
 Michael Gronager
 Martin Naylor
 Joakim Simonsson
 David Spilling
-Daniel Sjölie
+Daniel Sjlie
 Bryan Thrall
 Fabien Lavignotte
 Andreas Ekstrand
+Riccardo Corsi
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
 Thomas Hogarth
-Riccardo Corsi
 Rafa Gaitan
 Neil Hughes
 Martin Beckett
@@ -105,6 +105,7 @@ Boris Bralo
 Yefei He
 Sondra Iverson
 Simon Julier
+Sebastian Messerschmidt
 Rune Schmidt Jensen
 Rainer Oder
 Nico Kruithof
@@ -117,7 +118,6 @@ Frederic Bouvier
 Carlo Camporesi
 Ben Discoe
 Thibault Genessay
-Sebastian Messerschmidt
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
@@ -133,13 +133,14 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautré
+Tanguy Fautr
 Sean Spicer
 Richard Schmidt
 Peter Hrenka
 Paul de Repentigny
 Nikolaus Hanekamp
 Neil Salter
+Mikhail Izmestev
 Mihai Radu
 Michael Hartman
 Martins Innus
@@ -151,6 +152,7 @@ Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
+Bjrn Blissing
 Alexander Sinditskiy
 Alexander Irion
 Toshiyuki Takahei
@@ -158,7 +160,6 @@ Sebastien Grignard
 Ryan Kawicki
 Rudolf Wiedemann
 Robert Milharcic
-Mikhail Izmestev
 Maria Ten
 Liang Aibin
 Kristofer Tingdahl
@@ -217,7 +218,6 @@ Colin Cochran
 Christian Buchner
 Charles Cole
 Blake Williams
-Björn Blissing
 Antoine Hue
 Andrew Bettison
 Anders Backman
@@ -248,7 +248,7 @@ Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
+Morn Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -291,7 +291,7 @@ Eric Buehler
 Eduardo Poyart
 Edgar Ellis
 Dimi Christopoulos
-Diane DelallÃ©e
+Diane Delalle
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -300,7 +300,7 @@ Claus Scheiblauer
 Christophe Loustaunau
 Christian Ruzicka
 Brad Anderegg
-Björn Hein
+Bjrn Hein
 Aric Aumann
 Andrew Sampson
 Andrew Lorino
@@ -320,7 +320,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Løvset
+Tyge Lvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -363,7 +363,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mächler
+Philipp Mchler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -384,7 +384,7 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel GjÃ¸l
+Mikkel Gjl
 Mike Krus
 Mike Garrity
 Miha Ravsel
@@ -484,7 +484,7 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-César L. B. Silveira
+Csar L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski

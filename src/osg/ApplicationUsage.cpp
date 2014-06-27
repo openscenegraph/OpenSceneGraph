@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include <osg/ApplicationUsage>
+#include <osg/Object>
 #include <osg/Math>
 #include <osg/ref_ptr>
 
@@ -32,6 +33,8 @@ ApplicationUsage* ApplicationUsage::instance()
     static osg::ref_ptr<ApplicationUsage> s_applicationUsage = new ApplicationUsage;
     return s_applicationUsage.get();
 }
+
+OSG_INIT_SINGLETON_PROXY(ApplicationUsageSingletonProxy, ApplicationUsage::instance())
 
 void ApplicationUsage::addUsageExplanation(Type type,const std::string& option,const std::string& explanation)
 {
@@ -69,7 +72,7 @@ void ApplicationUsage::addKeyboardMouseBinding(const std::string& prefix, int ke
     {
         std::ostringstream ostr;
         ostr<<prefix;
-        
+
         if (key==' ')
         {
             ostr<<"Space";

@@ -219,35 +219,6 @@ public:
         }
         return isedge;
     }
-    // GWM July 2005 add test for triangle intersected by p1-p2.
-    // return true for unused edge
-
-    bool intersected(const unsigned int ip1,const unsigned int ip2,const osg::Vec2 p1 ,const osg::Vec2 p2,const int iedge, osg::Vec3Array *points) const
-    {
-        // return true if edge iedge of triangle is intersected by ip1,ip2
-        Vertex_index ie1,ie2;
-        if (iedge==0)
-        {
-            ie1=a();
-            ie2=b();
-        }
-        else if (iedge==1)
-        {
-            ie1=b();
-            ie2=c();
-        }
-        else if (iedge==2)
-        {
-            ie1=c();
-            ie2=a();
-        }
-        if (ip1==ie1 || ip2==ie1) return false;
-        if (ip1==ie2 || ip2==ie2) return false;
-
-        osg::Vec2 tp1((*points)[ie1].x(),(*points)[ie1].y());
-        osg::Vec2 tp2((*points)[ie2].x(),(*points)[ie2].y());
-        return intersect(tp1,tp2,p1,p2);
-    }
 
     bool intersectedby(const osg::Vec2 p1,const osg::Vec2 p2,osg::Vec3Array *points) const {
         // true if line [p1,p2] cuts at least one edge of this triangle

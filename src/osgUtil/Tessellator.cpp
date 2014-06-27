@@ -86,7 +86,13 @@ void Tessellator::addVertex(osg::Vec3* vertex)
         }
         else
         {
-            OSG_INFO<<"Tessellator::addVertex("<<*vertex<<") detected NaN, ignoring vertex."<<std::endl;
+            if (vertex) {
+                OSG_INFO << "Tessellator::addVertex(" << *vertex << ") detected NaN, ignoring vertex." << std::endl;
+            }
+            else
+            {
+                OSG_INFO<<"Tessellator::addVertex(NULL) detected Nullpointer, ignoring vertex."<<std::endl;
+            }
         }
     }
 }

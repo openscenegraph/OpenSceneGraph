@@ -680,6 +680,19 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         ref_ptr<DrawCallback>               _finalDrawCallback;
 };
 
+
+/** Functor to assist with ordering camers in the order they should be rendered in.*/
+struct CameraRenderOrderSortOp
+{
+    inline bool operator() (const Camera* lhs,const Camera* rhs) const
+    {
+        if (lhs->getRenderOrder()<rhs->getRenderOrder()) return true;
+        if (rhs->getRenderOrder()<lhs->getRenderOrder()) return false;
+        return lhs->getRenderOrderNum()<rhs->getRenderOrderNum();
+    }
+};
+
+
 }
 
 #endif

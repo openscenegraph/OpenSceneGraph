@@ -1400,16 +1400,14 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osgVolume::VolumeTile*>(node)){
             ((ive::VolumeTile*)(node))->write(this);
         }
-
-        else if(dynamic_cast<const osg::Group*>(node)){
-            ((ive::Group*)(node))->write(this);
-        }
-
         else if(dynamic_cast<const osg::Billboard*>(node)){
             ((ive::Billboard*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Geode*>(node)){
             ((ive::Geode*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::Group*>(node)){
+            ((ive::Group*)(node))->write(this);
         }
         else if(dynamic_cast<const osgSim::LightPointNode*>(node)){
             ((ive::LightPointNode*)(node))->write(this);

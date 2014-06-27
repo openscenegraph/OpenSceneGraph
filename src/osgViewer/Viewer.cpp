@@ -774,7 +774,9 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
     event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                     y, 0, gw->getTraits()->height));
 
-    // new code for populating the PointerData
+    typedef std::vector<osg::Camera*> CameraVector;
+    CameraVector activeCameras;
+
     osgViewer::View* this_view = dynamic_cast<osgViewer::View*>(this);
     osg::GraphicsContext::Cameras& cameras = gw->getCameras();
     for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
@@ -791,15 +793,26 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
                 x >= viewport->x() && y >= viewport->y() &&
                 x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
             {
-                event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
-                                                                    (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));
-
-                // if camera isn't the master it must be a slave and could need reprojecting.
-                if (camera!=getCamera())
-                {
-                    generateSlavePointerData(camera, event);
-                }
+                activeCameras.push_back(camera);
             }
+        }
+    }
+
+    std::sort(activeCameras.begin(), activeCameras.end(), osg::CameraRenderOrderSortOp());
+
+    osg::Camera* camera = activeCameras.empty() ? 0 : activeCameras.back();
+
+    if (camera)
+    {
+        osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+
+        event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
+                                                            (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));
+
+        // if camera isn't the master it must be a slave and could need reprojecting.
+        if (camera!=getCamera())
+        {
+            generateSlavePointerData(camera, event);
         }
     }
 }

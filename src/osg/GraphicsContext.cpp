@@ -754,18 +754,6 @@ void GraphicsContext::removeAllOperations()
     _operationsBlock->set(false);
 }
 
-
-struct CameraRenderOrderSortOp
-{
-    inline bool operator() (const Camera* lhs,const Camera* rhs) const
-    {
-        if (lhs->getRenderOrder()<rhs->getRenderOrder()) return true;
-        if (rhs->getRenderOrder()<lhs->getRenderOrder()) return false;
-        return lhs->getRenderOrderNum()<rhs->getRenderOrderNum();
-    }
-};
-
-
 void GraphicsContext::runOperations()
 {
     // sort the cameras into order

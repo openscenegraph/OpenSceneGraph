@@ -34,7 +34,7 @@ class OSG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public 
         META_Object(osg,ClusterCullingCallback);
 
         // use the NodeCallbacks implementation of run.
-        using NodeCallback::run;
+        virtual bool run(osg::Object* object, osg::Object* data) { return NodeCallback::run(object, data); }
 
         /** Computes the control point, normal, and deviation from the
           * given drawable contents. */

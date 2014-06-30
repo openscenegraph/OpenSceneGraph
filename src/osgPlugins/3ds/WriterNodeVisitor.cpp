@@ -768,8 +768,6 @@ std::string WriterNodeVisitor::getMaterialName(const std::string& inputMaterialN
         // Add entry in map
         _materialNameMap[inputMaterialName] = result;
     }
-    
-    std::cout << "getMaterialName : " << inputMaterialName << " => " << result << std::endl;
 
     return result;
 }

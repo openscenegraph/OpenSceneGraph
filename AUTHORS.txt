@@ -122,6 +122,7 @@ Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
 Neil Groves
+Mikhail Izmestev
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
@@ -141,7 +142,6 @@ Peter Hrenka
 Paul de Repentigny
 Nikolaus Hanekamp
 Neil Salter
-Mikhail Izmestev
 Mihai Radu
 Michael Hartman
 Martins Innus

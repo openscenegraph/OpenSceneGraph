@@ -1185,7 +1185,8 @@ int main( int argc, char **argv )
             if (image_3d.valid())
             {
                 image_3d->setFileName(name_no_ext + ".dds");
-                osgDB::writeImageFile(*image_3d, image_3d->getFileName());
+                osg::ref_ptr<osgDB::Options> options = new osgDB::Options("ddsNoAutoFlipWrite");;
+                osgDB::writeImageFile(*image_3d, image_3d->getFileName(), options.get());
             }
             osgDB::writeNodeFile(*volume, outputFile);
         }

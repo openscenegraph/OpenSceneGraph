@@ -1,3 +1,13 @@
+2014-06-30 10:13  robert
+
+	* include/osgUtil/StateGraph: From Mikhail Izmestev, "Attached fix
+	  to avoid vector reallocs on push_back in
+	  StateGraph::moveStateGraph."
+
+2014-06-30 09:13  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file
+
 2014-06-30 08:55  robert
 
 	* CMakeLists.txt: Updated RC number

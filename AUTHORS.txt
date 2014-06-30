@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.3.2
+OpenSceneGraph Library 3.3.3
 
 528 Contributors:
 
@@ -47,11 +47,11 @@ David Fries
 Andy Skinner
 Tom Jolley
 Paul Melis
+Pjotr Svetachov
 Luc Frauciel
 Pavel Moloshtan
 Brad Christiansen
 Aurelien Albert
-Pjotr Svetachov
 Olaf Flebbe
 Mathieu Marache
 Jason Daly
@@ -119,6 +119,7 @@ Gordon Tomlinson
 Frederic Bouvier
 Carlo Camporesi
 Ben Discoe
+Alexander Sinditskiy
 Thibault Genessay
 Sasa Bistrovic
 Ravi Mathur
@@ -129,7 +130,6 @@ Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
-Alexander Sinditskiy
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin

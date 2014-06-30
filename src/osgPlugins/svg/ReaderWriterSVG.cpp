@@ -22,7 +22,11 @@
 #include <osgDB/ImageOptions>
 
 extern "C" {
-        #include <librsvg/rsvg.h>
+    #include <librsvg/rsvg.h>
+
+    #ifndef LIBRSVG_CHECK_VERSION
+        #include < librsvg/rsvg-cairo.h>
+    #endif
 }
 
 class ReaderWriterSVG : public osgDB::ReaderWriter

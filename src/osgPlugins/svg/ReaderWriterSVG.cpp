@@ -25,7 +25,7 @@ extern "C" {
     #include <librsvg/rsvg.h>
 
     #ifndef LIBRSVG_CHECK_VERSION
-        #include < librsvg/rsvg-cairo.h>
+        #include <librsvg/rsvg-cairo.h>
     #endif
 }
 

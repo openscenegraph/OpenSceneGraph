@@ -207,6 +207,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
                 // use return path to trace back steps to sg_new.
                 std::vector<StateGraph*> return_path;
+                return_path.reserve(sg_new->_depth+1);
 
                 // need to pop back root render graph.
                 do
@@ -248,6 +249,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
             // use return path to trace back steps to sg_new.
             std::vector<StateGraph*> return_path;
+            return_path.reserve(sg_new->_depth+1);
 
             // need to pop back up to the same depth as the curr state group.
             while (sg_new->_depth>sg_curr->_depth)

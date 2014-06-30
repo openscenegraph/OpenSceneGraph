@@ -302,13 +302,13 @@ class OSG_EXPORT Image : public BufferData
           * take care to access the data per row rather than treating the whole data as a single block. */
         inline const unsigned char* data() const { return _data; }
 
-        inline unsigned char* data(int column, int row=0,int image=0)
+        inline unsigned char* data(unsigned int column, unsigned int row = 0, unsigned int image = 0)
         {
             if (!_data) return NULL;
             return _data+(column*getPixelSizeInBits())/8+row*getRowStepInBytes()+image*getImageSizeInBytes();
         }
 
-        inline const unsigned char* data(int column, int row=0,int image=0) const
+        inline const unsigned char* data(unsigned int column, unsigned int row = 0, unsigned int image = 0) const
         {
             if (!_data) return NULL;
             return _data+(column*getPixelSizeInBits())/8+row*getRowStepInBytes()+image*getImageSizeInBytes();

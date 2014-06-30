@@ -1,3 +1,66 @@
+2014-06-30 08:55  robert
+
+	* CMakeLists.txt: Updated RC number
+
+2014-06-30 08:46  robert
+
+	* include/osg/Image: From Pjotr Svetachov, "Here is a small fix for
+	  a overflow when editing large 3d volume data."
+
+2014-06-30 08:20  robert
+
+	* src/osgPlugins/svg/ReaderWriterSVG.cpp: Removed space from
+	  #include.
+
+2014-06-30 07:39  robert
+
+	* CMakeModules/FindRSVG.cmake: Merged librsvg-2.0>=2.35 version
+	  check from svn/trunk.
+
+2014-06-30 07:37  robert
+
+	* src/osgPlugins/svg/ReaderWriterSVG.cpp: From Alexander
+	  Sinditskiy, build fix to allow building against versions older
+	  than librsvg-2.36.2
+
+2014-06-27 15:55  robert
+
+	* src/osgUtil/DelaunayTriangulator.cpp: Removed unused method.
+
+2014-06-27 15:48  robert
+
+	* src/osgUtil/Tessellator.cpp: From Laurens Voerman, "attached is a
+	  modified version of src/osgUtil/Tessellator.cpp
+	  current code checks for a Nullpointer and on notify level info or
+	  above will inform you with a crash, by dereferencing it."
+
+2014-06-27 15:39  robert
+
+	* AUTHORS.txt: Updated AUTHORS file
+
+2014-06-27 15:38  robert
+
+	* src/osg/ApplicationUsage.cpp: Added a render order sort to the
+	  list of Cameras being tested by the
+	  *Viewer::generatePointerData(..) method to ensure that the
+	  highest Camera gets focus.
+
+2014-06-27 15:30  robert
+
+	* include/osg/Camera, src/osg/GraphicsContext.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Added a render order sort to the list of Cameras being tested by
+	  the *Viewer::generatePointerData(..) method to ensure that the
+	  highest Camera gets focus.
+
+2014-06-27 15:26  robert
+
+	* AUTHORS.txt: Updated AUTHORS file
+
+2014-06-26 15:54  robert
+
+	* ChangeLog: Updated ChangeLog for 3.2.1-rc4
+
 2014-06-26 15:18  robert
 
 	* CMakeLists.txt: Updated RC number to 4.

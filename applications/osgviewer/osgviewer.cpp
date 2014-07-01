@@ -31,6 +31,7 @@
 #include <osgGA/Device>
 
 #include <iostream>
+#include <stdint.h>
 
 #include <osg/GLExtensions>
 

@@ -1,0 +1,81 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVOLUMESETTINGS
+#define OSGVOLUMESETTINGS 1
+
+#include <osg/Object>
+#include <osgVolume/Export>
+
+namespace osgVolume {
+
+class OSGVOLUME_EXPORT VolumeSettings : public osg::Object
+{
+    public:
+
+        VolumeSettings();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        VolumeSettings(const VolumeSettings&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgVolume, VolumeSettings);
+
+        enum Technique
+        {
+            FixedFunction,
+            RayTraced,
+            MultiPass
+        };
+
+        void setTechnique(Technique technique) { _technique = technique; }
+        Technique getTechnique() const { return _technique; }
+
+        enum ShadingModel
+        {
+            Standard,
+            Light,
+            Isosurface,
+            MaximumIntensityProjection
+        };
+
+        void setShadingModel(ShadingModel sm) { _shadingModel = sm; }
+        ShadingModel getShadingModel() const { return _shadingModel; }
+
+        void setSampleRatio(float sr) { _sampleRatio = sr; }
+        float getSampleRatio() const { return _sampleRatio; }
+
+        void setSampleRatioWhenMoving(float sr) { _sampleRatioWhenMoving = sr; }
+        float getSampleRatioWhenMoving() const { return _sampleRatioWhenMoving; }
+
+        void setCutoff(float co) { _cutoff = co; }
+        float getCutoff() const { return _cutoff; }
+
+        void setTransparency(float t) { _transparency = t; }
+        float getTransparency() const { return _transparency; }
+
+    protected:
+
+        virtual ~VolumeSettings() {}
+
+        Technique       _technique;
+        ShadingModel    _shadingModel;
+        float           _sampleRatio;
+        float           _sampleRatioWhenMoving;
+        float           _cutoff;
+        float           _transparency;
+
+};
+
+}
+
+#endif

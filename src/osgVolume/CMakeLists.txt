@@ -18,6 +18,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/Volume
     ${HEADER_PATH}/VolumeScene
+    ${HEADER_PATH}/VolumeSettings
     ${HEADER_PATH}/VolumeTechnique
     ${HEADER_PATH}/VolumeTile
 )
@@ -33,6 +34,7 @@ SET(TARGET_SRC
     Version.cpp
     Volume.cpp
     VolumeScene.cpp
+    VolumeSettings.cpp
     VolumeTechnique.cpp
     VolumeTile.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}

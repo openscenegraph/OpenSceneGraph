@@ -1184,7 +1184,9 @@ int main( int argc, char **argv )
         {
             if (image_3d.valid())
             {
-                image_3d->setFileName(name_no_ext + ".dds");
+                std::string image_writeExtension = ".osgb";
+
+                image_3d->setFileName(name_no_ext + image_writeExtension);
                 osg::ref_ptr<osgDB::Options> options = new osgDB::Options("ddsNoAutoFlipWrite");;
                 osgDB::writeImageFile(*image_3d, image_3d->getFileName(), options.get());
             }

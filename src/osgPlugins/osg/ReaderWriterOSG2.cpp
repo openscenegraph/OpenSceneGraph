@@ -33,9 +33,9 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
     bool extensionIsAscii = false, extensionIsXML = false;
     if ( options )
     {
-        const std::string& optionString = options->getOptionString();
-        if ( optionString.find("Ascii")!=std::string::npos ) extensionIsAscii = true;
-        else if ( optionString.find("XML")!=std::string::npos ) extensionIsXML = true;
+        const std::string& optionString = options->getPluginStringData("fileType");
+        if ( optionString=="Ascii") extensionIsAscii = true;
+        else if ( optionString=="XML" ) extensionIsXML = true;
     }
 
     if ( !extensionIsAscii && !extensionIsXML )
@@ -95,12 +95,13 @@ OutputIterator* writeOutputIterator( std::ostream& fout, const Options* options 
         }
     }
 
-    if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
+    const std::string optionString = (options!=0) ? options->getPluginStringData("fileType") : std::string();
+    if (optionString == "Ascii")
     {
         fout << std::string("#Ascii") << ' ';
         return new AsciiOutputIterator(&fout, precision);
     }
-    else if ( options && options->getOptionString().find("XML")!=std::string::npos )
+    else if ( optionString == "XML")
     {
         fout << std::string("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>") << std::endl;
         return new XmlOutputIterator(&fout, precision);
@@ -155,12 +156,20 @@ public:
             return 0;
         }
 
-        osg::ref_ptr<Options> local_opt = options ?
-            static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-        if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
-        else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
-        else mode |= std::ios::binary;
+        if ( ext=="osgt" ) local_opt->setPluginStringData( "fileType", "Ascii" );
+        else if ( ext=="osgx" ) local_opt->setPluginStringData( "fileType", "XML" );
+        else  if ( ext=="osgb" )
+        {
+            local_opt->setPluginStringData( "fileType", "Binary" );
+            mode |= std::ios::binary;
+        }
+        else
+        {
+            local_opt->setPluginStringData( "fileType", std::string() );
+            mode |= std::ios::binary;
+        }
 
         return local_opt.release();
     }
@@ -213,14 +222,17 @@ public:
         osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
         if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
 
+
         InputStream is( options );
         if ( is.start(ii.get())!=InputStream::READ_IMAGE )
         {
             CATCH_EXCEPTION(is);
             return ReadResult::FILE_NOT_HANDLED;
         }
+
         is.decompress(); CATCH_EXCEPTION(is);
         osg::Image* image = is.readImage(); CATCH_EXCEPTION(is);
+
         return image;
     }
 
@@ -260,12 +272,20 @@ public:
         std::string ext = osgDB::getLowerCaseFileExtension( fileName );
         if ( !acceptsExtension(ext) ) result = WriteResult::FILE_NOT_HANDLED;
 
-        osg::ref_ptr<Options> local_opt = options ?
-            static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-        if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
-        else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
-        else mode |= std::ios::binary;
+        if ( ext=="osgt" ) local_opt->setPluginStringData( "fileType", "Ascii" );
+        else if ( ext=="osgx" ) local_opt->setPluginStringData( "fileType", "XML" );
+        else  if ( ext=="osgb" )
+        {
+            local_opt->setPluginStringData( "fileType", "Binary" );
+            mode |= std::ios::binary;
+        }
+        else
+        {
+            local_opt->setPluginStringData( "fileType", std::string() );
+            mode |= std::ios::binary;
+        }
 
         return local_opt.release();
     }

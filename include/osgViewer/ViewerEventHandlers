@@ -514,7 +514,8 @@ public:
 
     META_Object(osgViewer, InteractiveImageHandler);
 
-    using osgGA::GUIEventHandler::run;
+    // use the osgGA::GUIEventHandler implementation of run.
+    virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
 

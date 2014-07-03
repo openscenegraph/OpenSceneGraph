@@ -15,11 +15,11 @@
 #define OSGVOLUMESETTINGS 1
 
 #include <osg/Object>
-#include <osgVolume/Export>
+#include <osgVolume/Property>
 
 namespace osgVolume {
 
-class OSGVOLUME_EXPORT VolumeSettings : public osg::Object
+class OSGVOLUME_EXPORT VolumeSettings : public Property
 {
     public:
 
@@ -29,6 +29,8 @@ class OSGVOLUME_EXPORT VolumeSettings : public osg::Object
         VolumeSettings(const VolumeSettings&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgVolume, VolumeSettings);
+
+        virtual void accept(PropertyVisitor& pv);
 
         enum Technique
         {
@@ -51,17 +53,21 @@ class OSGVOLUME_EXPORT VolumeSettings : public osg::Object
         void setShadingModel(ShadingModel sm) { _shadingModel = sm; }
         ShadingModel getShadingModel() const { return _shadingModel; }
 
-        void setSampleRatio(float sr) { _sampleRatio = sr; }
-        float getSampleRatio() const { return _sampleRatio; }
+        void setSampleRatio(float sr) { _sampleRatioProperty->setValue(sr); }
+        float getSampleRatio() const { return _sampleRatioProperty->getValue(); }
+        SampleRatioProperty* getSampleRatioProperty() const { return _sampleRatioProperty.get(); }
 
-        void setSampleRatioWhenMoving(float sr) { _sampleRatioWhenMoving = sr; }
-        float getSampleRatioWhenMoving() const { return _sampleRatioWhenMoving; }
+        void setSampleRatioWhenMoving(float sr) { _sampleRatioWhenMovingProperty->setValue(sr); }
+        float getSampleRatioWhenMoving() const { return _sampleRatioWhenMovingProperty->getValue(); }
+        SampleRatioWhenMovingProperty* getSampleRatioWhenMovingProperty() const { return _sampleRatioWhenMovingProperty.get(); }
 
-        void setCutoff(float co) { _cutoff = co; }
-        float getCutoff() const { return _cutoff; }
+        void setCutoff(float co) { _cutoffProperty->setValue(co); }
+        float getCutoff() const { return _cutoffProperty->getValue(); }
+        AlphaFuncProperty* getCutoffProperty() const { return _cutoffProperty.get(); }
 
-        void setTransparency(float t) { _transparency = t; }
-        float getTransparency() const { return _transparency; }
+        void setTransparency(float t) { _transparencyProperty->setValue(t); }
+        float getTransparency() const { return _transparencyProperty->getValue(); }
+        TransparencyProperty* getTransparencyProperty() const { return _transparencyProperty.get(); }
 
     protected:
 
@@ -69,11 +75,11 @@ class OSGVOLUME_EXPORT VolumeSettings : public osg::Object
 
         Technique       _technique;
         ShadingModel    _shadingModel;
-        float           _sampleRatio;
-        float           _sampleRatioWhenMoving;
-        float           _cutoff;
-        float           _transparency;
 
+        osg::ref_ptr<SampleRatioProperty>               _sampleRatioProperty;
+        osg::ref_ptr<SampleRatioWhenMovingProperty>     _sampleRatioWhenMovingProperty;
+        osg::ref_ptr<AlphaFuncProperty>                 _cutoffProperty;
+        osg::ref_ptr<TransparencyProperty>              _transparencyProperty;
 };
 
 }

@@ -18,20 +18,28 @@ using namespace osgVolume;
 VolumeSettings::VolumeSettings():
     _technique(MultiPass),
     _shadingModel(Standard),
-    _sampleRatio(1.0f),
-    _sampleRatioWhenMoving(1.0f),
-    _cutoff(0.0f),
-    _transparency(1.0f)
+    _sampleRatioProperty(new SampleRatioProperty(1.0f)),
+    _sampleRatioWhenMovingProperty(new SampleRatioWhenMovingProperty(1.0f)),
+    _cutoffProperty(new AlphaFuncProperty(0.0f)),
+    _transparencyProperty(new TransparencyProperty(1.0f))
 {
 }
 
 VolumeSettings::VolumeSettings(const VolumeSettings& vs,const osg::CopyOp& copyop):
-    osg::Object(vs, copyop),
+    Property(vs, copyop),
     _technique(vs._technique),
     _shadingModel(vs._shadingModel),
-    _sampleRatio(vs._sampleRatio),
-    _sampleRatioWhenMoving(vs._sampleRatioWhenMoving),
-    _cutoff(vs._cutoff),
-    _transparency(vs._transparency)
+    _sampleRatioProperty(osg::clone(vs._sampleRatioProperty.get(), copyop)),
+    _sampleRatioWhenMovingProperty(osg::clone(vs._sampleRatioWhenMovingProperty.get(), copyop)),
+    _cutoffProperty(osg::clone(vs._cutoffProperty.get(), copyop)),
+    _transparencyProperty(osg::clone(vs._transparencyProperty.get(), copyop))
 {
+}
+
+void VolumeSettings::accept(PropertyVisitor& pv)
+{
+    _sampleRatioProperty->accept(pv);
+    _sampleRatioWhenMovingProperty->accept(pv);
+    _cutoffProperty->accept(pv);
+    _transparencyProperty->accept(pv);
 }

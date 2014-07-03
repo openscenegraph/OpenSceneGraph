@@ -179,6 +179,8 @@ public:
     virtual void apply(osg::Matrixf& value)     { combineMatrixUserValue(value); }
     virtual void apply(osg::Matrixd& value)     { combineMatrixUserValue(value); }
 
+    virtual ~MySetValueVisitor() {}
+
     double _r1, _r2;
     osg::ValueObject* _object2;
 };

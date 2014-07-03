@@ -29,7 +29,7 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port, unsigne
     , _delayBetweenSendsInMilliSecs( (_numMessagesPerEvent > 1) ? delay_between_sends_in_millisecs : 0)
 {
     setCapabilities(SEND_EVENTS);
-    
+
     OSG_NOTICE << "OscDevice :: sending events to " << address << ":" << port << " ";
     #ifdef OSC_HOST_LITTLE_ENDIAN
         OSG_NOTICE << "(little endian)";
@@ -38,7 +38,7 @@ OscSendingDevice::OscSendingDevice(const std::string& address, int port, unsigne
     #endif
     OSG_NOTICE << " (" << _numMessagesPerEvent << "msgs/event, " << _delayBetweenSendsInMilliSecs << "ms delay between msgs)";
     OSG_NOTICE << std::endl;
-    
+
 }
 
 
@@ -52,10 +52,10 @@ void OscSendingDevice::sendEvent(const osgGA::GUIEventAdapter &ea)
     static osc::int64 msg_id(0);
     bool msg_sent(false);
     unsigned int num_messages = _numMessagesPerEvent;
-    
+
     if((ea.getEventType() == osgGA::GUIEventAdapter::DRAG) || (ea.getEventType() == osgGA::GUIEventAdapter::MOVE))
         num_messages = 1;
-    
+
     for(unsigned int i = 0; i < num_messages; ++i) {
         msg_sent = sendEventImpl(ea, msg_id);
         if ((_delayBetweenSendsInMilliSecs > 0) && (i < num_messages-1))
@@ -77,14 +77,14 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-            
+
         case osgGA::GUIEventAdapter::SCROLL:
             beginSendInputRange(ea, msg_id);
             _oscStream << osc::BeginMessage("/osgga/mouse/scroll") << ea.getScrollingMotion() << ea.getScrollingDeltaX() << ea.getScrollingDeltaY() << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::PEN_PRESSURE:
             beginBundle(msg_id);
             _oscStream
@@ -92,10 +92,10 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
                 << ea.getPenPressure()
                 << osc::EndMessage;
             _oscStream << osc::EndBundle;
-            
+
             do_send = true;
             break;
-            
+
         case osgGA::GUIEventAdapter::PEN_ORIENTATION:
             beginBundle(msg_id);
             _oscStream
@@ -107,7 +107,7 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
             do_send = true;
             _oscStream << osc::EndBundle;
             break;
-            
+
         case osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER:
             beginBundle(msg_id);
             _oscStream
@@ -116,7 +116,7 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
                 << osc::EndMessage;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE:
             beginBundle(msg_id);
             _oscStream
@@ -126,28 +126,28 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::PUSH:
             beginSendInputRange(ea, msg_id);
             _oscStream << osc::BeginMessage("/osgga/mouse/press") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-            
+
         case osgGA::GUIEventAdapter::RELEASE:
             beginSendInputRange(ea, msg_id);
             _oscStream << osc::BeginMessage("/osgga/mouse/release") << ea.getX() << ea.getY() << getButtonNum(ea)  << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::DOUBLECLICK:
             beginSendInputRange(ea, msg_id);
             _oscStream << osc::BeginMessage("/osgga/mouse/doublepress") << ea.getX() << ea.getY() << getButtonNum(ea) << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-            
+
         case osgGA::GUIEventAdapter::MOVE:
         case osgGA::GUIEventAdapter::DRAG:
             beginSendInputRange(ea, msg_id);
@@ -155,46 +155,46 @@ bool OscSendingDevice::sendEventImpl(const osgGA::GUIEventAdapter &ea, MsgIdType
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::KEYDOWN:
             beginBundle(msg_id);
             _oscStream << osc::BeginMessage("/osgga/key/press") << ea.getKey() << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::KEYUP:
             beginBundle(msg_id);
             _oscStream << osc::BeginMessage("/osgga/key/release") << ea.getKey() << osc::EndMessage;
             _oscStream << osc::EndBundle;
             do_send = true;
             break;
-        
+
         case osgGA::GUIEventAdapter::USER:
             if (ea.getUserDataContainer())
             {
                 std::string key = ea.getUserDataContainer()->getName();
                 if (key.empty()) key = ea.getName();
                 if (key.empty()) key = "user_data";
-                
+
                 sendUserDataContainer(transliterateKey(key), ea.getUserDataContainer(), true, msg_id);
-                
+
                 do_send = true;
             }
-        
+
         default:
             break;
-        
+
     }
-    
+
     if (do_send)
     {
         OSG_INFO << "OscDevice :: sending event per OSC " << std::endl;
-        
+
         _transmitSocket.Send( _oscStream.Data(), _oscStream.Size() );
         _oscStream.Clear();
     }
-    
+
     return do_send;
 }
 
@@ -238,7 +238,7 @@ public:
         , _stream(stream)
     {
     }
-    
+
     virtual void apply(bool value)                  { _stream << value; }
     virtual void apply(char value)                  { _stream << value; }
     virtual void apply(unsigned char value)         { _stream << value; }
@@ -259,6 +259,8 @@ public:
     virtual void apply(const osg::Plane& value)     { _stream << value[0] << value[1] << value[2] << value[3]; }
     virtual void apply(const osg::Matrixf& value)   { for(unsigned int i=0; i<16; ++i) _stream << (value.ptr())[i]; }
     virtual void apply(const osg::Matrixd& value)   { for(unsigned int i=0; i<16; ++i) _stream << (value.ptr())[i]; }
+
+    virtual ~OscSendingDeviceGetValueVisitor() {}
 
 private:
     osc::OutboundPacketStream& _stream;
@@ -288,9 +290,9 @@ void OscSendingDevice::sendUserDataContainer(const std::string& key, const osg::
     if (asBundle) {
         beginBundle(msg_id);
     }
-    
+
     OscSendingDeviceGetValueVisitor gvv(_oscStream);
-    
+
     unsigned int num_objects = udc->getNumUserObjects();
     for(unsigned int i = 0; i < num_objects; ++i)
     {
@@ -308,8 +310,8 @@ void OscSendingDevice::sendUserDataContainer(const std::string& key, const osg::
             _oscStream << osc::EndMessage;
         }
     }
-    
+
     if (asBundle)
         _oscStream << osc::EndBundle;
-    
+
 }

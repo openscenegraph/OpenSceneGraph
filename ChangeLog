@@ -1,3 +1,34 @@
+2014-07-03 14:13  robert
+
+	* NEWS.txt: Updated NEWS in prep for 3.2.1 release
+
+2014-07-03 13:06  robert
+
+	* src/osgPlugins/osc/OscSendingDevice.cpp,
+	  src/osgPresentation/PropertyManager.cpp: Added vertical
+	  destructors
+
+2014-07-02 14:14  robert
+
+	* src/osgPlugins/osg/ReaderWriterOSG2.cpp: Merged fix from
+	  svn/trunk to handlng of file type of nested files within a .osgx,
+	  .osgt and .osgb file.
+
+2014-07-01 07:31  robert
+
+	* applications/osgviewer/osgviewer.cpp: Added #include <stdint.h>
+	  to address compile issue on some Linux distro's.
+
+2014-06-30 15:31  robert
+
+	* examples/osgvolume/osgvolume.cpp: Add dds no flip on write option
+	  to prevent output of .dds volume from being flipped by the dds
+	  plugin.
+
+2014-06-30 10:22  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file
+
 2014-06-30 10:13  robert
 
 	* include/osgUtil/StateGraph: From Mikhail Izmestev, "Attached fix

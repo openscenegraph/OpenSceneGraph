@@ -2836,23 +2836,23 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         switch(volumeData.shadingModel)
         {
-            case(VolumeData::Standard):                     sp->setActiveProperty(0); break;
-            case(VolumeData::Light):                        sp->setActiveProperty(1); break;
-            case(VolumeData::Isosurface):                   sp->setActiveProperty(2); break;
-            case(VolumeData::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
+            case(osgVolume::VolumeSettings::Standard):                     sp->setActiveProperty(0); break;
+            case(osgVolume::VolumeSettings::Light):                        sp->setActiveProperty(1); break;
+            case(osgVolume::VolumeSettings::Isosurface):                   sp->setActiveProperty(2); break;
+            case(osgVolume::VolumeSettings::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
         }
 
         layer->addProperty(sp.get());
 
         switch(volumeData.technique)
         {
-            case(VolumeData::FixedFunction):
+            case(osgVolume::VolumeSettings::FixedFunction):
                 tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
                 break;
-            case(VolumeData::RayTraced):
+            case(osgVolume::VolumeSettings::RayTraced):
                 tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
                 break;
-            case(VolumeData::MultiPass):
+            case(osgVolume::VolumeSettings::MultiPass):
                 tile->setVolumeTechnique(new osgVolume::MultipassTechnique);
                 break;
         }

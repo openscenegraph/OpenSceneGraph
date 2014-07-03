@@ -30,7 +30,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgVolume/VolumeTile>
-#include <osgVolume/Property>
+#include <osgVolume/VolumeSettings>
 
 #include <osgPresentation/deprecated/AnimationMaterial>
 #include <osgPresentation/deprecated/SlideEventHandler>
@@ -284,23 +284,11 @@ public:
 
     struct VolumeData
     {
-        enum ShadingModel
-        {
-            Standard,
-            Light,
-            Isosurface,
-            MaximumIntensityProjection
-        };
-
-        enum Technique
-        {
-            FixedFunction,
-            RayTraced,
-            MultiPass
-        };
+        typedef osgVolume::VolumeSettings::ShadingModel ShadingModel;
+        typedef osgVolume::VolumeSettings::Technique Technique;
 
         VolumeData():
-            shadingModel(Standard),
+            shadingModel(osgVolume::VolumeSettings::Standard),
             useTabbedDragger(false),
             useTrackballDragger(false),
             region_in_pixel_coords(false),
@@ -311,11 +299,13 @@ public:
             sampleRatioValue("1.0"),
             colorSpaceOperation(osg::NO_COLOR_SPACE_OPERATION),
             colorModulate(1.0f,1.0f,1.0f,1.0f),
-            technique(RayTraced)
+            technique(osgVolume::VolumeSettings::RayTraced)
         {
             hullPositionData.position = osg::Vec3(0.0,0.0,0.0);
             hullPositionData.frame = osgPresentation::SlideShowConstructor::MODEL;
         }
+
+        osg::ref_ptr<osgVolume::VolumeSettings> volumeSettings;
 
         std::string                             options;
         ShadingModel                            shadingModel;

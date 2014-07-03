@@ -373,6 +373,8 @@ public:
     virtual void apply(const osg::Matrixf& value)   { for(unsigned int i=0; i<16; ++i) _stream << (value.ptr())[i]; }
     virtual void apply(const osg::Matrixd& value)   { for(unsigned int i=0; i<16; ++i) _stream << (value.ptr())[i]; }
 
+    virtual ~OscSendingDeviceGetValueVisitor() {}
+
 private:
     osc::OutboundPacketStream& _stream;
 

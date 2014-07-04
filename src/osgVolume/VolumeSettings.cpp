@@ -38,6 +38,11 @@ VolumeSettings::VolumeSettings(const VolumeSettings& vs,const osg::CopyOp& copyo
 
 void VolumeSettings::accept(PropertyVisitor& pv)
 {
+    pv.apply(*this);
+}
+
+void VolumeSettings::traverse(PropertyVisitor& pv)
+{
     _sampleRatioProperty->accept(pv);
     _sampleRatioWhenMovingProperty->accept(pv);
     _cutoffProperty->accept(pv);

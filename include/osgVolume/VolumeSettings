@@ -31,6 +31,7 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
         META_Object(osgVolume, VolumeSettings);
 
         virtual void accept(PropertyVisitor& pv);
+        virtual void traverse(PropertyVisitor& pv);
 
         enum Technique
         {

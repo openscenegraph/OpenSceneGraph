@@ -14,8 +14,10 @@
 #include <osgVolume/Property>
 #include <osgVolume/VolumeTile>
 #include <osgVolume/RayTracedTechnique>
+#include <osgVolume/VolumeSettings>
 
 using namespace osgVolume;
+
 
 Property::Property()
 {
@@ -261,31 +263,22 @@ PropertyVisitor::PropertyVisitor(bool traverseOnlyActiveChildren):
 {
 }
 
-void PropertyVisitor::apply(CompositeProperty& cp)
-{
-    for(unsigned int i=0; i<cp.getNumProperties(); ++i)
-    {
-        cp.getProperty(i)->accept(*this);
-    }
-}
-
-void PropertyVisitor::apply(SwitchProperty& sp)
-{
-    if (_traverseOnlyActiveChildren)
-    {
-        if (sp.getActiveProperty()>=0 && sp.getActiveProperty()<static_cast<int>(sp.getNumProperties()))
-        {
-            sp.getProperty(sp.getActiveProperty())->accept(*this);
-        }
-    }
-    else
-    {
-        for(unsigned int i=0; i<sp.getNumProperties(); ++i)
-        {
-            sp.getProperty(i)->accept(*this);
-        }
-    }
-}
+void PropertyVisitor::apply(Property& p) { p.traverse(*this); }
+void PropertyVisitor::apply(CompositeProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(SwitchProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(TransferFunctionProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(ScalarProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(IsoSurfaceProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(AlphaFuncProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(MaximumIntensityProjectionProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(LightingProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(SampleRatioProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(SampleRatioWhenMovingProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(SampleDensityProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(SampleDensityWhenMovingProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(TransparencyProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(ExteriorTransparencyFactorProperty& p) { apply(static_cast<Property&>(p)); }
+void PropertyVisitor::apply(VolumeSettings& p) { apply(static_cast<Property&>(p)); }
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -297,7 +290,6 @@ CollectPropertiesVisitor::CollectPropertiesVisitor(bool traverseOnlyActiveChildr
 {
 }
 
-void CollectPropertiesVisitor::apply(Property&) {}
 void CollectPropertiesVisitor::apply(TransferFunctionProperty& tf) { _tfProperty = &tf; }
 void CollectPropertiesVisitor::apply(ScalarProperty&) {}
 void CollectPropertiesVisitor::apply(IsoSurfaceProperty& iso) { _isoProperty = &iso; }
@@ -310,7 +302,6 @@ void CollectPropertiesVisitor::apply(SampleRatioProperty& srp) { _sampleRatioPro
 void CollectPropertiesVisitor::apply(SampleRatioWhenMovingProperty& srp) { _sampleRatioWhenMovingProperty = &srp; }
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
 void CollectPropertiesVisitor::apply(ExteriorTransparencyFactorProperty& etfp) { _exteriorTransparencyFactorProperty = &etfp; }
-
 
 class CycleSwitchVisitor : public osgVolume::PropertyVisitor
 {

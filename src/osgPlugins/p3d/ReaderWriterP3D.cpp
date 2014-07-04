@@ -1432,10 +1432,19 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     if (getProperty(cur, "vs", vs) || getProperty(cur, "VolumeSettings", vs))
     {
         volumeData.volumeSettings = osgDB::readFile<osgVolume::VolumeSettings>(vs);
-        OSG_NOTICE<<"VolumeSetting read "<<vs<<" "<<volumeData.volumeSettings.get()<<std::endl;
+        if (volumeData.volumeSettings.valid())
+        {
+            OSG_NOTICE<<"VolumeSetting read "<<vs<<" "<<volumeData.volumeSettings.get()<<std::endl;
+            volumeData.volumeSettings->setName(vs);
+            OSG_NOTICE<<" assigned name to VS "<<volumeData.volumeSettings->getName()<<std::endl;
+        }
     }
 
-    if (!volumeData.volumeSettings) volumeData.volumeSettings = new osgVolume::VolumeSettings;
+    if (!volumeData.volumeSettings)
+    {
+        OSG_NOTICE<<"VolumeSetting fallback has been created"<<std::endl;
+        volumeData.volumeSettings = new osgVolume::VolumeSettings;
+    }
 
     // check the rendering technique/shading model to use
     std::string technique;

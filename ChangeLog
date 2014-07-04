@@ -1,3 +1,16 @@
+2014-07-04 11:29  robert
+
+	* CMakeLists.txt: Updated version number to 3.2.1 for release
+
+2014-07-04 08:52  robert
+
+	* CMakeLists.txt: Updated RC number
+
+2014-07-03 14:20  robert
+
+	* CMakeLists.txt, ChangeLog: Updated release candidate number and
+	  ChangeLog for 3.2.1-rc6
+
 2014-07-03 14:13  robert
 
 	* NEWS.txt: Updated NEWS in prep for 3.2.1 release

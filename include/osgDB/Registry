@@ -128,10 +128,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get const list of all registered ReaderWriters.*/
         const ReaderWriterList& getReaderWriterList() const { return _rwList; }
-        
+
         /** get a list of registered ReaderWriters which can handle given protocol */
         void getReaderWriterListForProtocol(const std::string& protocol, ReaderWriterList& results) const;
-        
+
         ReaderWriter* getReaderWriterForProtocolAndExtension(const std::string& protocol, const std::string& extension);
 
 
@@ -251,6 +251,14 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
         ReaderWriter::ReadResult readShaderImplementation(const std::string& fileName,const Options* options);
 
+        ReaderWriter::ReadResult readScript(const std::string& fileName,const Options* options)
+        {
+            if (options && options->getReadFileCallback()) return options->getReadFileCallback()->readScript(fileName,options);
+            else if (_readFileCallback.valid()) return _readFileCallback->readScript(fileName,options);
+            else return readScriptImplementation(fileName,options);
+        }
+        ReaderWriter::ReadResult readScriptImplementation(const std::string& fileName,const Options* options);
+
 
         /** Set the Registry callback to use in place of the default writeFile calls.*/
         void setWriteFileCallback( WriteFileCallback* cb) { _writeFileCallback = cb; }
@@ -302,6 +310,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
         ReaderWriter::WriteResult writeShaderImplementation(const osg::Shader& obj, const std::string& fileName,const Options* options);
 
+        ReaderWriter::WriteResult writeScript(const osg::Script& obj, const std::string& fileName,const Options* options)
+        {
+            if (options && options->getWriteFileCallback()) return options->getWriteFileCallback()->writeScript(obj,fileName,options);
+            else if (_writeFileCallback.valid()) return _writeFileCallback->writeScript(obj,fileName,options);
+            else return writeScriptImplementation(obj,fileName,options);
+        }
+        ReaderWriter::WriteResult writeScriptImplementation(const osg::Script& obj, const std::string& fileName,const Options* options);
 
         inline void _buildKdTreeIfRequired(ReaderWriter::ReadResult& result, const Options* options)
         {
@@ -551,6 +566,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         struct ReadNodeFunctor;
         struct ReadArchiveFunctor;
         struct ReadShaderFunctor;
+        struct ReadScriptFunctor;
 
         // make helper classes friends to get round VS6.0 "issues"
         friend struct ReadFunctor;
@@ -560,6 +576,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         friend struct ReadNodeFunctor;
         friend struct ReadArchiveFunctor;
         friend struct ReadShaderFunctor;
+        friend struct ReadScriptFunctor;
 
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
         ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,Options::CacheHintOptions cacheHint);

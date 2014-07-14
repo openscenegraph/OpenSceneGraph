@@ -250,6 +250,16 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options
 
 }
 
+
+Script* osgDB::readScriptFile(const std::string& filename,const Options* options)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readScript(filename,options);
+    if (rr.validScript()) return rr.takeScript();
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
+    return NULL;
+}
+
+
 osg::ref_ptr<osg::Object> osgDB::readRefObjectFile(const std::string& filename,const Options* options)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,options);
@@ -286,6 +296,14 @@ osg::ref_ptr<osg::Node> osgDB::readRefNodeFile(const std::string& filename,const
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,options);
     if (rr.validNode()) return osg::ref_ptr<osg::Node>(rr.getNode());
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
+    return NULL;
+}
+
+osg::ref_ptr<osg::Script> osgDB::readRefScriptFile(const std::string& filename,const Options* options)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readScript(filename,options);
+    if (rr.validScript()) return osg::ref_ptr<osg::Script>(rr.getScript());
     if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }

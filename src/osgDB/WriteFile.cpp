@@ -61,3 +61,10 @@ bool osgDB::writeShaderFile(const Shader& shader,const std::string& filename, co
     return wr.success();
 }
 
+bool osgDB::writeScriptFile(const Script& image,const std::string& filename, const Options* options )
+{
+    ReaderWriter::WriteResult wr = Registry::instance()->writeScript( image, filename, options );
+    if (wr.error()) OSG_WARN << "Error writing file " << filename << ": " << wr.message() << std::endl;
+    return wr.success();
+}
+

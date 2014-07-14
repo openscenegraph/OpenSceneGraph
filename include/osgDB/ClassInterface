@@ -12,8 +12,8 @@
 */
 
 
-#ifndef OSGDB_PROPERTYINTERFACE
-#define OSGDB_PROPERTYINTERFACE 1
+#ifndef OSGDB_CLASSINTERFACE
+#define OSGDB_CLASSINTERFACE 1
 
 #include <osgDB/ObjectWrapper>
 #include <osgDB/Registry>
@@ -116,13 +116,13 @@ class PropertyOutputIterator;
 class PropertyInputIterator;
 
 
-/** PropertyInterface provides a general means of checking for supported properties of classes, and getting/setting thoses properties.
+/** ClassInterface provides a general means of checking for supported properties of classes, and getting/setting thoses properties.
     Uses the osgDB serializers to do the actual object querry/get/set.
 */
-class OSGDB_EXPORT PropertyInterface
+class OSGDB_EXPORT ClassInterface
 {
 public:
-    PropertyInterface();
+    ClassInterface();
 
 
     /// get the Type of the specified property, return true if property is supported, otherwise false.
@@ -223,14 +223,14 @@ protected:
 
 
 template<typename T>
-bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, T& value)
+bool ClassInterface::getProperty(const osg::Object* object, const std::string& propertyName, T& value)
 {
     if (copyPropertyDataFromObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>())) return true;
     else return object->getUserValue(propertyName, value); // fallback to check user data for property
 }
 
 template<typename T>
-bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const T& value)
+bool ClassInterface::setProperty(osg::Object* object, const std::string& propertyName, const T& value)
 {
     if (copyPropertyDataToObject(object, propertyName, &value, sizeof(T), getTypeEnum<T>())) return true;
     else
@@ -244,12 +244,12 @@ bool PropertyInterface::setProperty(osg::Object* object, const std::string& prop
 typedef osg::Object* ObjectPtr;
 
 template<>
-inline bool PropertyInterface::getProperty(const osg::Object* object, const std::string& propertyName, ObjectPtr& value)
+inline bool ClassInterface::getProperty(const osg::Object* object, const std::string& propertyName, ObjectPtr& value)
 {
     if (copyPropertyObjectFromObject(object, propertyName, &value, sizeof(ObjectPtr), getTypeEnum<ObjectPtr>())) return true;
     else
     {
-        OSG_INFO<<"PropertyInterface::getProperty("<<propertyName<<", Checking UserDataContainer for object ptr"<<std::endl;
+        OSG_INFO<<"ClassInterface::getProperty("<<propertyName<<", Checking UserDataContainer for object ptr"<<std::endl;
         const osg::UserDataContainer* udc = object->getUserDataContainer();
         if (udc)
         {
@@ -266,7 +266,7 @@ inline bool PropertyInterface::getProperty(const osg::Object* object, const std:
 }
 
 template<>
-inline bool PropertyInterface::setProperty(osg::Object* object, const std::string& propertyName, const ObjectPtr& value)
+inline bool ClassInterface::setProperty(osg::Object* object, const std::string& propertyName, const ObjectPtr& value)
 {
     osgDB::BaseSerializer::Type type = dynamic_cast<osg::Image*>(value) ? osgDB::BaseSerializer::RW_IMAGE : getTypeEnum<ObjectPtr>();
     // osgDB::BaseSerializer::Type type = getTypeEnum<ObjectPtr>();
@@ -281,13 +281,13 @@ inline bool PropertyInterface::setProperty(osg::Object* object, const std::strin
             const osg::Object* outgoingObject = udc->getUserObject(objectIndex);
             if (outgoingObject==value) return true;
 
-            OSG_INFO<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") replace object on UserDataContainer"<<std::endl;
+            OSG_INFO<<"ClassInterface::setProperty("<<propertyName<<", "<<value->className()<<") replace object on UserDataContainer"<<std::endl;
             value->setName(propertyName);
             udc->setUserObject(objectIndex, value);
         }
         else
         {
-            OSG_INFO<<"PropertyInterface::setProperty("<<propertyName<<", "<<value->className()<<") Adding object to UserDataContainer"<<std::endl;
+            OSG_INFO<<"ClassInterface::setProperty("<<propertyName<<", "<<value->className()<<") Adding object to UserDataContainer"<<std::endl;
             value->setName(propertyName);
             udc->addUserObject(value);
         }

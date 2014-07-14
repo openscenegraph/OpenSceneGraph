@@ -29,7 +29,7 @@
 
 #include <osg/io_utils>
 
-#include<osgDB/PropertyInterface>
+#include<osgDB/ClassInterface>
 
 int main(int argc, char** argv)
 {
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 
     osgDB::writeNodeFile(*presentation, "pres.osgt");
 
-    osgDB::PropertyInterface pi;
+    osgDB::ClassInterface pi;
 
     pi.getWhiteList()["osgPresentation::Presentation"]["filename"]=osgDB::BaseSerializer::RW_STRING;
     pi.getBlackList()["osgPresentation::Presentation"]["Children"];
@@ -314,11 +314,11 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     osg::ref_ptr<osg::Node> node = new osg::Node;
-    osgDB::PropertyInterface::PropertyMap properties;
+    osgDB::ClassInterface::PropertyMap properties;
     if (pi.getSupportedProperties(presentation.get(), properties, true))
     {
         OSG_NOTICE<<"Have supported properites found."<<std::endl;
-        for(osgDB::PropertyInterface::PropertyMap::iterator itr = properties.begin();
+        for(osgDB::ClassInterface::PropertyMap::iterator itr = properties.begin();
             itr != properties.end();
             ++itr)
         {
@@ -412,7 +412,7 @@ int main(int argc, char** argv)
     if (pi.getSupportedProperties(event.get(), properties, true))
     {
         OSG_NOTICE<<"Have supported properites found."<<std::endl;
-        for(osgDB::PropertyInterface::PropertyMap::iterator itr = properties.begin();
+        for(osgDB::ClassInterface::PropertyMap::iterator itr = properties.begin();
             itr != properties.end();
             ++itr)
         {
@@ -477,12 +477,12 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Object> obj = pi.createObject("osgVolume::VolumeTile");
     if (obj.valid()) { OSG_NOTICE<<"obj created "<<obj->getCompoundClassName()<<std::endl; }
     else { OSG_NOTICE<<"obj creation failed "<<std::endl; }
-    osgDB::PropertyInterface::PropertyMap properties;
+    osgDB::ClassInterface::PropertyMap properties;
 
     if (pi.getSupportedProperties(obj.get(), properties, true))
     {
         OSG_NOTICE<<"Have supported properites found."<<std::endl;
-        for(osgDB::PropertyInterface::PropertyMap::iterator itr = properties.begin();
+        for(osgDB::ClassInterface::PropertyMap::iterator itr = properties.begin();
             itr != properties.end();
             ++itr)
         {

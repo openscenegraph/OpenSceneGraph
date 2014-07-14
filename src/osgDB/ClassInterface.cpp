@@ -12,7 +12,7 @@
 */
 
 
-#include <osgDB/PropertyInterface>
+#include <osgDB/ClassInterface>
 
 namespace osgDB  // start of osgDB namespace
 {
@@ -162,9 +162,9 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// PropertyInterface class provides a generic mechanism for get/setting class properties using the osgDB serializers
+// ClassInterface class provides a generic mechanism for get/setting class properties using the osgDB serializers
 //
-PropertyInterface::PropertyInterface():
+ClassInterface::ClassInterface():
     _outputStream(0),
     _inputStream(0)
 {
@@ -246,7 +246,7 @@ PropertyInterface::PropertyInterface():
 }
 
 
-bool PropertyInterface::areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgDB::BaseSerializer::Type rhs) const
+bool ClassInterface::areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgDB::BaseSerializer::Type rhs) const
 {
     if (lhs==rhs) return true;
 
@@ -269,14 +269,14 @@ bool PropertyInterface::areTypesCompatible(osgDB::BaseSerializer::Type lhs, osgD
     return lhs==rhs;
 }
 
-std::string PropertyInterface::getTypeName(osgDB::BaseSerializer::Type type) const
+std::string ClassInterface::getTypeName(osgDB::BaseSerializer::Type type) const
 {
     TypeToTypeNameMap::const_iterator itr = _typeToTypeNameMap.find(type);
     if (itr != _typeToTypeNameMap.end()) return itr->second;
     else return std::string();
 }
 
-osgDB::BaseSerializer::Type PropertyInterface::getType(const std::string& typeName) const
+osgDB::BaseSerializer::Type ClassInterface::getType(const std::string& typeName) const
 {
     TypeNameToTypeMap::const_iterator itr = _typeNameToTypeMap.find(typeName);
     if (itr != _typeNameToTypeMap.end()) return itr->second;
@@ -284,35 +284,35 @@ osgDB::BaseSerializer::Type PropertyInterface::getType(const std::string& typeNa
 }
 
 
-osgDB::ObjectWrapper* PropertyInterface::getObjectWrapper(const osg::Object* object) const
+osgDB::ObjectWrapper* ClassInterface::getObjectWrapper(const osg::Object* object) const
 {
     return osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(object->getCompoundClassName());
 }
 
-osgDB::BaseSerializer* PropertyInterface::getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
+osgDB::BaseSerializer* ClassInterface::getSerializer(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
 {
     osgDB::ObjectWrapper* ow = getObjectWrapper(object);
     return (ow!=0) ? ow->getSerializer(propertyName, type) : 0;
 }
 
-osg::Object* PropertyInterface::createObject(const std::string& compoundClassName) const
+osg::Object* ClassInterface::createObject(const std::string& compoundClassName) const
 {
     osgDB::ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
     if (ow)
     {
         osg::Object* object = ow->createInstance();
-        // OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), wrapper found, created object="<<object<<std::endl;
+        // OSG_NOTICE<<"ClassInterface::createObject("<<compoundClassName<<"), wrapper found, created object="<<object<<std::endl;
         return object;
     }
     else
     {
-        OSG_NOTICE<<"PropertyInterface::createObject("<<compoundClassName<<"), No object wrapper avaiable."<<std::endl;
+        OSG_NOTICE<<"ClassInterface::createObject("<<compoundClassName<<"), No object wrapper avaiable."<<std::endl;
         return 0;
     }
     // return (ow!=0) ? ow->createInstance() : 0;
 }
 
-bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyDataFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     _poi->flush();
 
@@ -322,7 +322,7 @@ bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, co
 
     if (!areTypesCompatible(sourceType, valueType))
     {
-        OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() Types are not compatible, valueType = "<<valueType<<", sourceType="<<sourceType<<std::endl;
+        OSG_NOTICE<<"ClassInterface::copyPropertyDataFromObject() Types are not compatible, valueType = "<<valueType<<", sourceType="<<sourceType<<std::endl;
         return false;
     }
 
@@ -343,18 +343,18 @@ bool PropertyInterface::copyPropertyDataFromObject(const osg::Object* object, co
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyDataFromObject() Sizes not compatible, sourceSize = "<<sourceSize<<" valueSize = "<<valueSize<<std::endl;
+            OSG_NOTICE<<"ClassInterface::copyPropertyDataFromObject() Sizes not compatible, sourceSize = "<<sourceSize<<" valueSize = "<<valueSize<<std::endl;
             return false;
         }
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() serializer write failed."<<std::endl;
+        OSG_INFO<<"ClassInterface::copyPropertyDataFromObject() serializer write failed."<<std::endl;
         return false;
     }
 }
 
-bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyDataToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     // copy data to PropertyInputIterator
     if (valueType==osgDB::BaseSerializer::RW_STRING)
@@ -377,18 +377,18 @@ bool PropertyInterface::copyPropertyDataToObject(osg::Object* object, const std:
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyDataToObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , destinationType="<<destinationType<<" ["<<getTypeName(destinationType)<<"]"<<std::endl;
+            OSG_NOTICE<<"ClassInterface::copyPropertyDataToObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , destinationType="<<destinationType<<" ["<<getTypeName(destinationType)<<"]"<<std::endl;
             return false;
         }
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"ClassInterface::copyPropertyDataFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
 
-bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     osgDB::BaseSerializer::Type sourceType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
@@ -400,18 +400,18 @@ bool PropertyInterface::copyPropertyObjectFromObject(const osg::Object* object, 
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectFromObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , sourceType="<<sourceType<<" ["<<getTypeName(sourceType)<<"]"<<std::endl;
+            OSG_NOTICE<<"ClassInterface::copyPropertyObjectFromObject() Types are not compatible, valueType = "<<valueType<<" ["<<getTypeName(valueType)<<"] , sourceType="<<sourceType<<" ["<<getTypeName(sourceType)<<"]"<<std::endl;
             return false;
         }
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
+        OSG_INFO<<"ClassInterface::copyPropertyObjectFromObject() no serializer available."<<std::endl;
         return false;
     }
 }
 
-bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
 {
     osgDB::BaseSerializer::Type destinationType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, destinationType);
@@ -423,13 +423,13 @@ bool PropertyInterface::copyPropertyObjectToObject(osg::Object* object, const st
         }
         else
         {
-            OSG_NOTICE<<"PropertyInterface::copyPropertyObjectToObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<destinationType<<std::endl;
+            OSG_NOTICE<<"ClassInterface::copyPropertyObjectToObject() Types are not compatible, valueType = "<<valueType<<", destinationType="<<destinationType<<std::endl;
             return false;
         }
     }
     else
     {
-        OSG_INFO<<"PropertyInterface::copyPropertyObjectToObject() no serializer available."<<std::endl;
+        OSG_INFO<<"ClassInterface::copyPropertyObjectToObject() no serializer available."<<std::endl;
         return false;
     }
 }
@@ -469,7 +469,7 @@ public:
     virtual void apply(const osg::BoundingSphered& /*value*/) { type = osgDB::BaseSerializer::RW_BOUNDINGSPHERED; }
 };
 
-bool PropertyInterface::getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
+bool ClassInterface::getPropertyType(const osg::Object* object, const std::string& propertyName, osgDB::BaseSerializer::Type& type) const
 {
     if (getSerializer(object, propertyName, type)!=0) return true;
 
@@ -490,7 +490,7 @@ bool PropertyInterface::getPropertyType(const osg::Object* object, const std::st
 }
 
 
-bool PropertyInterface::getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates) const
+bool ClassInterface::getSupportedProperties(const osg::Object* object, PropertyMap& properties, bool searchAssociates) const
 {
     osgDB::ObjectWrapper* ow = getObjectWrapper(object);
     if (!ow)
@@ -548,7 +548,7 @@ bool PropertyInterface::getSupportedProperties(const osg::Object* object, Proper
     return true;
 }
 
-bool PropertyInterface::isObjectOfType(const osg::Object* object, const std::string& compoundClassName) const
+bool ClassInterface::isObjectOfType(const osg::Object* object, const std::string& compoundClassName) const
 {
     if (!object) return false;
 
@@ -570,7 +570,7 @@ bool PropertyInterface::isObjectOfType(const osg::Object* object, const std::str
     return false;
 }
 
-bool PropertyInterface::run(void* objectPtr, const std::string& compoundClassName, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
 {
     ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
     if (!ow) return false;
@@ -606,12 +606,12 @@ bool PropertyInterface::run(void* objectPtr, const std::string& compoundClassNam
     return false;
 }
 
-bool PropertyInterface::run(osg::Object* object, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+bool ClassInterface::run(osg::Object* object, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
 {
     return run(object, object->getCompoundClassName(), methodName, inputParameters, outputParameters);
 }
 
-bool PropertyInterface::hasMethod(const std::string& compoundClassName, const std::string& methodName) const
+bool ClassInterface::hasMethod(const std::string& compoundClassName, const std::string& methodName) const
 {
     ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
     if (!ow) return false;
@@ -637,7 +637,7 @@ bool PropertyInterface::hasMethod(const std::string& compoundClassName, const st
     return false;
 }
 
-bool PropertyInterface::hasMethod(const osg::Object* object, const std::string& methodName) const
+bool ClassInterface::hasMethod(const osg::Object* object, const std::string& methodName) const
 {
     return hasMethod(object->getCompoundClassName(), methodName);
 }

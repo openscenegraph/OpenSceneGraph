@@ -15,7 +15,7 @@
 #define LUASCRIPTENGINE_H
 
 #include <osg/ScriptEngine>
-#include <osgDB/PropertyInterface>
+#include <osgDB/ClassInterface>
 
 extern "C" {
 #include <lua.h>
@@ -98,7 +98,7 @@ class LuaScriptEngine : public osg::ScriptEngine
         /** get the lua_State object.*/
         lua_State* getLuaState() const { return _lua; }
 
-        osgDB::PropertyInterface& getPropertyInterface() const { return _pi; }
+        osgDB::ClassInterface& getClassInterface() const { return _ci; }
 
         int pushDataToStack(SerializerScratchPad* ssp) const;
         int getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type, int pos) const;
@@ -253,7 +253,7 @@ class LuaScriptEngine : public osg::ScriptEngine
         typedef std::map< osg::ref_ptr<osg::Script>, std::string> ScriptMap;
         ScriptMap _loadedScripts;
 
-        mutable osgDB::PropertyInterface _pi;
+        mutable osgDB::ClassInterface _ci;
 };
 
 

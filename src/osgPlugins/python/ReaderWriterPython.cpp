@@ -28,7 +28,19 @@ class ReaderWriterPython : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "Python ScriptEngine plugin"; }
 
-        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+        virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readScript(fin);
+        }
+
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            if (file=="ScriptEngine.python") return new python::PythonScriptEngine();
+
+            return readScript(file, options);
+        }
+
+        virtual ReadResult readScript(std::istream& fin, const osgDB::ReaderWriter::Options* options =NULL) const
         {
             osg::ref_ptr<osg::Script> script = new osg::Script;
             script->setLanguage("python");
@@ -47,10 +59,10 @@ class ReaderWriterPython : public osgDB::ReaderWriter
             return script.release();
         }
 
-        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+
+        virtual ReadResult readScript(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
         {
             if (file=="ScriptEngine.python") return new python::PythonScriptEngine();
-
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
@@ -60,7 +72,7 @@ class ReaderWriterPython : public osgDB::ReaderWriter
             osgDB::ifstream istream(fileName.c_str(), std::ios::in);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
 
-            return readObject(istream, options);
+            return readScript(istream, options);
         }
 
 };

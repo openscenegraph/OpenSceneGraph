@@ -25,6 +25,7 @@ osg::HeightField* ReaderWriter::ReadResult::getHeightField() { return dynamic_ca
 osg::Node* ReaderWriter::ReadResult::getNode() { return dynamic_cast<osg::Node*>(_object.get()); }
 osgDB::Archive* ReaderWriter::ReadResult::getArchive() { return dynamic_cast<osgDB::Archive*>(_object.get()); }
 osg::Shader* ReaderWriter::ReadResult::getShader() { return dynamic_cast<osg::Shader*>(_object.get()); }
+osg::Script* ReaderWriter::ReadResult::getScript() { return dynamic_cast<osg::Script*>(_object.get()); }
 
 osg::Object* ReaderWriter::ReadResult::takeObject() { osg::Object* obj = _object.get(); if (obj) { obj->ref(); _object=NULL; obj->unref_nodelete(); } return obj; }
 osg::Image* ReaderWriter::ReadResult::takeImage() { osg::Image* image=dynamic_cast<osg::Image*>(_object.get()); if (image) { image->ref(); _object=NULL; image->unref_nodelete(); } return image; }
@@ -32,6 +33,7 @@ osg::HeightField* ReaderWriter::ReadResult::takeHeightField() { osg::HeightField
 osg::Node* ReaderWriter::ReadResult::takeNode() { osg::Node* node=dynamic_cast<osg::Node*>(_object.get()); if (node) { node->ref(); _object=NULL; node->unref_nodelete(); } return node; }
 osgDB::Archive* ReaderWriter::ReadResult::takeArchive() { osgDB::Archive* archive=dynamic_cast<osgDB::Archive*>(_object.get()); if (archive) { archive->ref(); _object=NULL; archive->unref_nodelete(); } return archive; }
 osg::Shader* ReaderWriter::ReadResult::takeShader() { osg::Shader* shader=dynamic_cast<osg::Shader*>(_object.get()); if (shader) { shader->ref(); _object=NULL; shader->unref_nodelete(); } return shader; }
+osg::Script* ReaderWriter::ReadResult::takeScript() { osg::Script* script=dynamic_cast<osg::Script*>(_object.get()); if (script) { script->ref(); _object=NULL; script->unref_nodelete(); } return script; }
 
 ReaderWriter::~ReaderWriter()
 {

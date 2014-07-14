@@ -64,6 +64,11 @@ ReaderWriter::ReadResult ReadFileCallback::readShader(const std::string& filenam
     return osgDB::Registry::instance()->readShaderImplementation(filename,options);
 }
 
+ReaderWriter::ReadResult ReadFileCallback::readScript(const std::string& filename, const Options* options)
+{
+    return osgDB::Registry::instance()->readScriptImplementation(filename,options);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // WriteFileCallback default implementation
@@ -91,4 +96,9 @@ ReaderWriter::WriteResult WriteFileCallback::writeNode(const osg::Node& obj, con
 ReaderWriter::WriteResult WriteFileCallback::writeShader(const osg::Shader& obj, const std::string& fileName,const Options* options)
 {
     return osgDB::Registry::instance()->writeShaderImplementation(obj,fileName,options);
+}
+
+ReaderWriter::WriteResult WriteFileCallback::writeScript(const osg::Script& obj, const std::string& fileName,const Options* options)
+{
+    return osgDB::Registry::instance()->writeScriptImplementation(obj,fileName,options);
 }

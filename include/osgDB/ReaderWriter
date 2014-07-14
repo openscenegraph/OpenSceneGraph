@@ -17,6 +17,7 @@
 #include <osg/Image>
 #include <osg/Shape>
 #include <osg/Node>
+#include <osg/ScriptEngine>
 
 #include <osgDB/AuthenticationMap>
 
@@ -64,7 +65,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         /** Return true if ReaderWriter accepts specified file extension.*/
         virtual bool acceptsExtension(const std::string& /*extension*/) const;
-        
+
         virtual bool acceptsProtocol(const std::string& protocol) const;
 
         /// Bit mask for setting up which feature types are available for read and/or write
@@ -81,16 +82,20 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
             FEATURE_WRITE_HEIGHT_FIELD = 1<<7,
             FEATURE_WRITE_NODE         = 1<<8,
             FEATURE_WRITE_SHADER       = 1<<9,
+            FEATURE_READ_SCRIPT        = 1<<10,
+            FEATURE_WRITE_SCRIPT       = 1<<11,
             FEATURE_ALL                = FEATURE_READ_OBJECT        |
                                          FEATURE_READ_IMAGE         |
                                          FEATURE_READ_HEIGHT_FIELD  |
                                          FEATURE_READ_NODE          |
                                          FEATURE_READ_SHADER        |
+                                         FEATURE_READ_SCRIPT        |
                                          FEATURE_WRITE_OBJECT       |
                                          FEATURE_WRITE_IMAGE        |
                                          FEATURE_WRITE_HEIGHT_FIELD |
                                          FEATURE_WRITE_NODE         |
-                                         FEATURE_WRITE_SHADER
+                                         FEATURE_WRITE_SHADER       |
+                                         FEATURE_WRITE_SCRIPT
         };
         /** Return available features*/
         virtual Features supportedFeatures() const;
@@ -124,13 +129,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 ReadResult& operator = (const ReadResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message;_object=rr._object; return *this; }
 
                 bool operator < (const ReadResult& rhs) const { return _status < rhs._status; }
-                
+
                 osg::Object* getObject();
                 osg::Image* getImage();
                 osg::HeightField* getHeightField();
                 osg::Node* getNode();
                 osgDB::Archive* getArchive();
                 osg::Shader* getShader();
+                osg::Script* getScript();
 
                 bool validObject() { return _object.valid(); }
                 bool validImage() { return getImage()!=0; }
@@ -138,6 +144,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 bool validNode() { return getNode()!=0; }
                 bool validArchive() { return getArchive()!=0; }
                 bool validShader() { return getShader()!=0; }
+                bool validScript() { return getScript()!=0; }
 
                 osg::Object* takeObject();
                 osg::Image* takeImage();
@@ -145,6 +152,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 osg::Node* takeNode();
                 osgDB::Archive* takeArchive();
                 osg::Shader* takeShader();
+                osg::Script* takeScript();
 
                 std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
@@ -223,24 +231,28 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readShader(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
+        virtual ReadResult readScript(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
 
         virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeShader(const osg::Shader& /*shader*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::NOT_IMPLEMENTED); }
+        virtual WriteResult writeScript(const osg::Script& /*script*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::NOT_IMPLEMENTED); }
 
         virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readHeightField(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
         virtual ReadResult readShader(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
+        virtual ReadResult readScript(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
 
         virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeShader(const osg::Shader& /*shader*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
+        virtual WriteResult writeScript(const osg::Script& /*script*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
 
         /** Specify fmt string as a supported protocol.
           * Please note, this method should usually only be used internally by subclasses of ReaderWriter, Only in special cases

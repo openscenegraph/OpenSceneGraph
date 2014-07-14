@@ -41,10 +41,12 @@ int main(int argc, char** argv)
     typedef std::list< osg::ref_ptr<osg::Script> > Scripts;
     Scripts scripts;
 
+    osg::ref_ptr<osg::Group> model = new osg::Group;
+
     std::string filename;
     while(arguments.read("--script",filename))
     {
-        osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(filename);
+        osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(filename);
         if (script.valid()) scripts.push_back(script.get());
     }
 
@@ -67,7 +69,7 @@ int main(int argc, char** argv)
     {
         while (arguments.read("--lua", str))
         {
-            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(str);
             if (script.valid())
             {
                 luaScriptEngine->run(script.get());
@@ -80,7 +82,7 @@ int main(int argc, char** argv)
     {
         while (arguments.read("--js",str))
         {
-            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(str);
             if (script.valid())
             {
                 v8ScriptEngine->run(script.get());
@@ -94,15 +96,18 @@ int main(int argc, char** argv)
     {
         while (arguments.read("--python",str))
         {
-            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(str);
             if (script.valid())
             {
                 pythonScriptEngine->run(script.get());
             }
         }
     }
+
+    return 0;
 #endif
 
+#if 1
 
     osg::ref_ptr<osgPresentation::Presentation> presentation = new osgPresentation::Presentation;
     osg::ref_ptr<osgPresentation::Slide> slide = new osgPresentation::Slide;
@@ -438,7 +443,7 @@ int main(int argc, char** argv)
         std::string str;
         while (arguments.read("--lua", str))
         {
-            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(str);
             if (script.valid())
             {
                 presentation->addUpdateCallback(new osg::ScriptNodeCallback(script.get(),"update"));
@@ -448,7 +453,7 @@ int main(int argc, char** argv)
 
         if (arguments.read("--test", str))
         {
-            osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(str);
+            osg::ref_ptr<osg::Script> script = osgDB::readScriptFile(str);
             if (script.valid())
             {
                 osg::Parameters inputParameters;
@@ -498,5 +503,5 @@ int main(int argc, char** argv)
 
     return viewer.run();
 
-
+#endif
 }

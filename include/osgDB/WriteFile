@@ -125,6 +125,26 @@ inline bool writeShaderFile(const osg::Shader& shader, const std::string& filena
     return writeShaderFile( shader, filename, Registry::instance()->getOptions() );
 }
 
+/** Write an osg::Script to file.
+  * Return true on success,
+  * return false on failure.
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to write the specified file.*/
+extern OSGDB_EXPORT bool writeScriptFile(const osg::Script& image, const std::string& filename, const Options* options );
+
+/** Write an osg::Script to file.
+  * Return true on success,
+  * return false on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to write the specified file.*/
+inline bool writeScriptFile(const osg::Script& image, const std::string& filename)
+{
+    return writeScriptFile( image, filename, Registry::instance()->getOptions() );
+}
+
 }
 
 #endif

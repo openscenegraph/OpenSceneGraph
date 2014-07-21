@@ -14,6 +14,7 @@
 #include <osg/CoordinateSystemNode>
 
 #include <osg/Switch>
+#include <osg/Types>
 #include <osgText/Text>
 
 #include <osgViewer/Viewer>
@@ -31,7 +32,6 @@
 #include <osgGA/Device>
 
 #include <iostream>
-#include <stdint.h>
 
 #include <osg/GLExtensions>
 

@@ -2,14 +2,8 @@
 #define OSG2_BINARYSTREAMOPERATOR
 
 #include <osgDB/StreamOperator>
+#include <osg/Types>
 #include <vector>
-
-#if defined(_MSC_VER)
-typedef unsigned __int32 uint32_t;
-typedef __int32 int32_t;
-#else
-#include <stdint.h>
-#endif
 
 
 class BinaryOutputIterator : public osgDB::OutputIterator
@@ -107,7 +101,7 @@ public:
 
     virtual void writeWrappedString( const std::string& str )
     { writeString( str ); }
-    
+
 protected:
     std::vector<std::streampos> _beginPositions;
 };
@@ -258,7 +252,7 @@ public:
 
     virtual void readWrappedString( std::string& str )
     { readString( str ); }
-    
+
     virtual void advanceToCurrentEndBracket()
     {
         if ( _supportBinaryBrackets && _beginPositions.size()>0 )

@@ -1238,9 +1238,9 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(*getModelViewMatrix());
+    RefMatrix* matrix = createOrReuseMatrix(*getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
-    pushModelViewMatrix(matrix.get(), node.getReferenceFrame());
+    pushModelViewMatrix(matrix, node.getReferenceFrame());
 
     handle_cull_callbacks_and_traverse(node);
 
@@ -1279,8 +1279,8 @@ void CullVisitor::apply(Projection& node)
     _computed_zfar = -FLT_MAX;
 
 
-    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
-    pushProjectionMatrix(matrix.get());
+    RefMatrix *matrix = createOrReuseMatrix(node.getMatrix());
+    pushProjectionMatrix(matrix);
 
     //OSG_INFO<<"Push projection "<<*matrix<<std::endl;
 

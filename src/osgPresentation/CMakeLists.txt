@@ -74,6 +74,8 @@ SET(TARGET_SRC
 
 SET(TARGET_LIBRARIES
     osgViewer
+    osgUI
+    osgWidget
     osgManipulator
     osgVolume
     osgFX

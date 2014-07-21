@@ -91,7 +91,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
 
         NodeVisitor(const NodeVisitor& nv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-    virtual ~NodeVisitor();
+        virtual ~NodeVisitor();
 
         META_Object(osg, NodeVisitor)
 

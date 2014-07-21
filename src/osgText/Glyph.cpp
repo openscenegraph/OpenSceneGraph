@@ -221,6 +221,11 @@ void GlyphTexture::apply(osg::State& state) const
             imageData[i] = 0;
         }
 
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
+        #endif
 
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,

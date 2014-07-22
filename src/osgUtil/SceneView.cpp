@@ -940,11 +940,7 @@ void SceneView::releaseAllGLObjects()
     if (!_camera) return;
 
     _camera->releaseGLObjects(_renderInfo.getState());
-
-    // we need to reset State as it keeps handles to Program objects.
-    if (_renderInfo.getState()) _renderInfo.getState()->reset();
 }
-
 
 void SceneView::flushAllDeletedGLObjects()
 {

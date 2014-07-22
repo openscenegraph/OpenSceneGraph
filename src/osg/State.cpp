@@ -134,27 +134,7 @@ State::~State()
     //_texCoordArrayList.clear();
 
     //_vertexAttribArrayList.clear();
-
-    // OSG_NOTICE<<"State::~State()"<<this<<std::endl;
-    for(AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.begin();
-        itr != _appliedProgramObjectSet.end();
-        ++itr)
-    {
-        (*itr)->removeObserver(this);
-    }
 }
-
-void State::objectDeleted(void* object)
-{
-    const Program::PerContextProgram* ppcp = reinterpret_cast<const Program::PerContextProgram*>(object);
-    AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
-    if (itr != _appliedProgramObjectSet.end())
-    {
-        // OSG_NOTICE<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
-        _appliedProgramObjectSet.erase(itr);
-    }
-}
-
 
 void State::releaseGLObjects()
 {
@@ -208,7 +188,6 @@ void State::releaseGLObjects()
 
 void State::reset()
 {
-
 #if 1
     for(ModeMap::iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
@@ -289,17 +268,6 @@ void State::reset()
     _currentShaderCompositionUniformList.clear();
 
     _lastAppliedProgramObject = 0;
-
-    for(AppliedProgramObjectSet::iterator apitr=_appliedProgramObjectSet.begin();
-        apitr!=_appliedProgramObjectSet.end();
-        ++apitr)
-    {
-        (*apitr)->resetAppliedUniforms();
-        (*apitr)->removeObserver(this);
-    }
-
-    _appliedProgramObjectSet.clear();
-
 
     // what about uniforms??? need to clear them too...
     // go through all active Unfirom's, setting to change to force update,
@@ -1766,14 +1734,6 @@ void State::print(std::ostream& fout) const
             fout<<"  }"<<std::endl;
         }
         fout<<"}"<<std::endl;
-
-#if 0
-        TextureModeMapList                                              _textureModeMapList;
-        TextureAttributeMapList                                         _textureAttributeMapList;
-
-        AppliedProgramObjectSet                                         _appliedProgramObjectSet;
-        const Program::PerContextProgram*                               _lastAppliedProgramObject;
-#endif
 
 
         fout<<"StateSetStack _stateSetStack {"<<std::endl;

@@ -112,7 +112,7 @@ class VertexAttribAlias
   *   which typically stall the graphics pipeline (see, for instance,
   *   \c captureCurrentState() and \c getModelViewMatrix()).
   */
-class OSG_EXPORT State : public Referenced, public Observer
+class OSG_EXPORT State : public Referenced
 {
     public :
 
@@ -213,7 +213,6 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         /** reset the state object to an empty stack.*/
         void reset();
-
 
         inline const Viewport* getCurrentViewport() const
         {
@@ -1329,11 +1328,6 @@ class OSG_EXPORT State : public Referenced, public Observer
             if (_lastAppliedProgramObject!=program)
             {
                 _lastAppliedProgramObject = program;
-                if (program && _appliedProgramObjectSet.count(program)==0)
-                {
-                    _appliedProgramObjectSet.insert(program);
-                    program->addObserver(this);
-                }
             }
         }
         inline const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
@@ -1463,8 +1457,6 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Initialize extension used by osg:::State.*/
         void initializeExtensionProcs();
 
-        virtual void objectDeleted(void* object);
-
         /** Get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/
         inline GLBeginEndAdapter& getGLBeginEndAdapter() { return _glBeginEndAdapter; }
 
@@ -1573,8 +1565,6 @@ class OSG_EXPORT State : public Referenced, public Observer
         typedef std::map<std::string,UniformStack>                      UniformMap;
 
         typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
-
-        typedef std::set<const Program::PerContextProgram* >            AppliedProgramObjectSet;
 
         inline const ModeMap&                                            getModeMap() const {return _modeMap;};
         inline const AttributeMap&                                       getAttributeMap() const {return _attributeMap;};
@@ -1788,7 +1778,6 @@ class OSG_EXPORT State : public Referenced, public Observer
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
 
-        AppliedProgramObjectSet                                         _appliedProgramObjectSet;
         const Program::PerContextProgram*                               _lastAppliedProgramObject;
 
         StateSetStack                                                   _stateStateStack;

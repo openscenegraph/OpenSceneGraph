@@ -1336,11 +1336,6 @@ class OSG_EXPORT State : public Referenced, public Observer
             if (_lastAppliedProgramObject!=program)
             {
                 _lastAppliedProgramObject = program;
-                if (program && _appliedProgramObjectSet.count(program)==0)
-                {
-                    _appliedProgramObjectSet.insert(program);
-                    program->addObserver(this);
-                }
             }
         }
         inline const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }

@@ -15,6 +15,7 @@
 
 #include <osg/io_utils>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 using namespace lua;
 
@@ -1812,6 +1813,28 @@ static int readNodeFile(lua_State * _lua)
     return 0;
 }
 
+
+static int writeFile(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n>=2 && lua_type(_lua, 1)==LUA_TTABLE && lua_type(_lua, 2)==LUA_TSTRING)
+    {
+        osg::Object* object  = lse->getObjectFromTable<osg::Object>(1);
+        std::string filename = lua_tostring(_lua, 2);
+        if (object)
+        {
+            osgDB::writeObjectFile(*object, filename);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+
+
 LuaScriptEngine::LuaScriptEngine():
     osg::ScriptEngine("lua"),
     _lua(0),
@@ -1866,6 +1889,13 @@ void LuaScriptEngine::initialize()
     {
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, readObjectFile, 1);
+        lua_setglobal(_lua, "readFile");
+    }
+
+    // provide global new method for reading Objects
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, readObjectFile, 1);
         lua_setglobal(_lua, "readObjectFile");
     }
 
@@ -1881,6 +1911,13 @@ void LuaScriptEngine::initialize()
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, readImageFile, 1);
         lua_setglobal(_lua, "readImageFile");
+    }
+
+    // provide global new method for read Images
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, writeFile, 1);
+        lua_setglobal(_lua, "writeFile");
     }
 
     // Set up the __newindex and __index methods for looking up implementations of Object properties

@@ -27,6 +27,7 @@ VolumeSettings::VolumeSettings():
 
 VolumeSettings::VolumeSettings(const VolumeSettings& vs,const osg::CopyOp& copyop):
     Property(vs, copyop),
+    _filename(vs._filename),
     _technique(vs._technique),
     _shadingModel(vs._shadingModel),
     _sampleRatioProperty(osg::clone(vs._sampleRatioProperty.get(), copyop)),

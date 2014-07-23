@@ -1435,8 +1435,8 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         if (volumeData.volumeSettings.valid())
         {
             OSG_NOTICE<<"VolumeSetting read "<<vs<<" "<<volumeData.volumeSettings.get()<<std::endl;
-            volumeData.volumeSettings->setName(vs);
-            OSG_NOTICE<<" assigned name to VS "<<volumeData.volumeSettings->getName()<<std::endl;
+            volumeData.volumeSettings->setFilename(vs);
+            OSG_NOTICE<<" assigned name to VS "<<volumeData.volumeSettings->getFilename()<<std::endl;
         }
     }
 

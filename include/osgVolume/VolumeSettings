@@ -33,6 +33,9 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
         virtual void accept(PropertyVisitor& pv);
         virtual void traverse(PropertyVisitor& pv);
 
+        void setFilename(const std::string& str) { _filename = str; }
+        const std::string& getFilename() const { return _filename; }
+
         enum Technique
         {
             FixedFunction,
@@ -73,6 +76,8 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
     protected:
 
         virtual ~VolumeSettings() {}
+
+        std::string     _filename;
 
         Technique       _technique;
         ShadingModel    _shadingModel;

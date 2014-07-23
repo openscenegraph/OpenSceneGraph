@@ -9,6 +9,8 @@ REGISTER_OBJECT_WRAPPER( osgVolume_VolumeSettings,
                          osgVolume::VolumeSettings,
                          "osg::Object osgVolume::VolumeSettings" )
 {
+    ADD_STRING_SERIALIZER( Filename, "" );
+
     BEGIN_ENUM_SERIALIZER( Technique, MultiPass );
         ADD_ENUM_VALUE( FixedFunction );
         ADD_ENUM_VALUE( RayTraced );

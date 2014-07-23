@@ -1607,6 +1607,62 @@ static int callImageSet(lua_State* _lua)
 
 //////////////////////////////////////////////////////////////////////////////////////
 //
+//  Node Parent
+//
+static int callGetParent(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Node* node  = lse->getObjectFromTable<osg::Node>(1);
+    if (!node)
+    {
+        OSG_NOTICE<<"Warning: Node::getParent() can only be called on a Node"<<std::endl;
+        return 0;
+    }
+
+    int index = 0;
+    if (n>=2 && lua_isnumber(_lua, 2))
+    {
+        index = static_cast<int>(lua_tonumber(_lua, 2));
+        if (index>=0 && index<static_cast<int>(node->getNumParents()))
+        {
+            lse->pushObject(node->getParent(0));
+            return 1;
+        }
+        else
+        {
+            OSG_NOTICE<<"Warning: Call to node:getParent(index) has an out of range index."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"Warning: node:getParent() requires a integer parameter."<<std::endl;
+        return 0;
+    }
+}
+
+static int callGetNumParents(lua_State* _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n<1 || lua_type(_lua, 1)!=LUA_TTABLE) return 0;
+
+    osg::Node* node  = lse->getObjectFromTable<osg::Node>(1);
+    if (!node)
+    {
+        OSG_NOTICE<<"Warning: Node::getNumParents() can only be called on a Node"<<std::endl;
+        return 0;
+    }
+
+    lua_pushnumber(_lua, node->getNumParents());
+    return 1;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
 //  Method calling support
 //
 static int callClassMethod(lua_State* _lua)
@@ -4178,6 +4234,14 @@ void LuaScriptEngine::pushObject(osg::Object* object) const
             assignClosure("set", callStateSetSet);
             assignClosure("get", callStateSetGet);
             assignClosure("remove", callStateSetRemove);
+
+            luaL_getmetatable(_lua, "LuaScriptEngine.Object");
+            lua_setmetatable(_lua, -2);
+        }
+        else if (dynamic_cast<osg::Node*>(object)!=0)
+        {
+            assignClosure("getParent", callGetParent);
+            assignClosure("getNumParents", callGetNumParents);
 
             luaL_getmetatable(_lua, "LuaScriptEngine.Object");
             lua_setmetatable(_lua, -2);

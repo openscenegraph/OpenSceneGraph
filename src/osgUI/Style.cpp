@@ -228,11 +228,14 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
 {
     // OSG_NOTICE<<"createText"<<std::endl;
 
+    osg::Vec4 textColor(0.0f,0.0,0.0f,1.0);
+
     osg::ref_ptr<osgText::Text> textDrawable = new osgText::Text;
     textDrawable->setName("Text");
 
     textDrawable->setText(text);
     textDrawable->setEnableDepthWrites(false);
+    textDrawable->setColor(textColor);
 
     if (ts)
     {

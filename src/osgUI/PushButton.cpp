@@ -77,11 +77,11 @@ void PushButton::createGraphicsImplementation()
 
     _buttonSwitch = new osg::Switch;
 
-    float unFocused = 0.7;
-    float withFocus = 0.8;
-    float pressed = 0.5;
+    float unFocused = 0.92;
+    float withFocus = 0.97;
+    float pressed = 0.75;
 
-    osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
+    osg::Vec4 frameColor(unFocused,unFocused,unFocused,1.0f);
 
     osg::BoundingBox extents(_extents);
 

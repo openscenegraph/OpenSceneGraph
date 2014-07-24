@@ -171,9 +171,9 @@ void ComboBox::createGraphicsImplementation()
     osg::ref_ptr<osg::Group> group = new osg::Group;
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
     float frameWidth = 0.0;
+    osg::Vec4 frameColor(0.97f,0.97f,0.97f,1.0f);
     if (requiresFrame)
     {
-        osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
         frameWidth = getFrameSettings()->getLineWidth();
 
         group->addChild(style->createFrame(_extents, getFrameSettings(), frameColor));
@@ -234,7 +234,7 @@ void ComboBox::createGraphicsImplementation()
     }
     else
     {
-        _buttonSwitch->addChild( style->createPanel(_extents, osg::Vec4(1.0f,1.0f,1.0f,1.0f)) );
+        _buttonSwitch->addChild( style->createPanel(_extents, frameColor) );
     }
 
     _buttonSwitch->setSingleChildOn(_currentItem);

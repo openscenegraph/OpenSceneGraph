@@ -81,7 +81,7 @@ void LineEdit::createGraphicsImplementation()
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
     osg::BoundingBox extents(_extents);
-    osg::Vec4 frameColor(0.75f,0.75f,0.75f,1.0f);
+    osg::Vec4 frameColor(1.0f,1.0f,1.0f,1.0f);
 
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
     if (requiresFrame)
@@ -93,6 +93,8 @@ void LineEdit::createGraphicsImplementation()
         extents.yMax() -= getFrameSettings()->getLineWidth();
     }
 
+    // clear background of edit region
+    group->addChild(style->createPanel(extents, frameColor));
 
     osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());

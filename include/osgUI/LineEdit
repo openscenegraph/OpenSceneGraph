@@ -27,12 +27,14 @@ public:
     LineEdit(const LineEdit& label, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Node(osgUI, LineEdit);
 
-    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
-
     void setText(const std::string& text);
     const std::string& getText() const { return _text; }
 
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
     virtual void createGraphicsImplementation();
+    virtual void enterImplementation();
+    virtual void leaveImplementation();
+
 
 protected:
     virtual ~LineEdit() {}
@@ -40,6 +42,7 @@ protected:
     std::string                         _text;
 
     // implementation detail
+    osg::ref_ptr<osg::Switch>           _backgroundSwitch;
     osg::ref_ptr<osgText::Text>         _textDrawable;
 };
 

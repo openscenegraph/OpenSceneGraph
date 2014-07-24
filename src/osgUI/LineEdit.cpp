@@ -72,6 +72,18 @@ void LineEdit::setText(const std::string& text)
     if (_textDrawable) _textDrawable->setText(_text);
 }
 
+void LineEdit::enterImplementation()
+{
+    OSG_NOTICE<<"PushButton enter"<<std::endl;
+    if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(1);
+}
+
+
+void LineEdit::leaveImplementation()
+{
+    OSG_NOTICE<<"PushButton leave"<<std::endl;
+    if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
+}
 
 
 void LineEdit::createGraphicsImplementation()
@@ -81,7 +93,11 @@ void LineEdit::createGraphicsImplementation()
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
     osg::BoundingBox extents(_extents);
-    osg::Vec4 frameColor(1.0f,1.0f,1.0f,1.0f);
+    float unFocused = 0.92;
+    float withFocus = 0.97;
+    float pressed = 0.75;
+
+    osg::Vec4 frameColor(unFocused,unFocused,unFocused,1.0f);
 
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
     if (requiresFrame)
@@ -94,7 +110,12 @@ void LineEdit::createGraphicsImplementation()
     }
 
     // clear background of edit region
-    group->addChild(style->createPanel(extents, frameColor));
+    _backgroundSwitch = new osg::Switch;
+    _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
+    _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
+    _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(pressed,pressed,pressed,1.0)));
+    _backgroundSwitch->setSingleChildOn(0);
+    group->addChild(_backgroundSwitch.get());
 
     osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());

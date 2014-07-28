@@ -48,11 +48,6 @@ void ComputeBoundsVisitor::getBase(osg::Polytope& polytope, float margin) const
     polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
 }
 
-void ComputeBoundsVisitor::apply(osg::Node& node)
-{
-    traverse(node);
-}
-
 void ComputeBoundsVisitor::apply(osg::Transform& transform)
 {
     osg::Matrix matrix;
@@ -67,17 +62,9 @@ void ComputeBoundsVisitor::apply(osg::Transform& transform)
     popMatrix();
 }
 
-void ComputeBoundsVisitor::apply(osg::Geode& geode)
+void ComputeBoundsVisitor::apply(osg::Drawable& drawable)
 {
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-    {
-        applyDrawable(geode.getDrawable(i));
-    }
-}
-
-void ComputeBoundsVisitor::applyDrawable(osg::Drawable* drawable)
-{
-    applyBoundingBox(drawable->getBoundingBox());
+    applyBoundingBox(drawable.getBoundingBox());
 }
 
 void ComputeBoundsVisitor::applyBoundingBox(const osg::BoundingBox& bbox)

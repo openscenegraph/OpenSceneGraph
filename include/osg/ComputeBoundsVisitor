@@ -36,17 +36,14 @@ public:
 
     void getBase(osg::Polytope& polytope, float margin=0.1) const;
 
-    void apply(osg::Node& node);
+    void apply(osg::Drawable& drawable);
 
     void apply(osg::Transform& transform);
-
-    void apply(osg::Geode& geode);
 
     inline void pushMatrix(osg::Matrix& matrix) { _matrixStack.push_back(matrix); }
 
     inline void popMatrix() { _matrixStack.pop_back(); }
 
-    void applyDrawable(osg::Drawable* drawable);
 
     void applyBoundingBox(const osg::BoundingBox&);
 

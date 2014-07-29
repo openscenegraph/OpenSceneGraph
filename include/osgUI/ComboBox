@@ -25,8 +25,8 @@ class OSGUI_EXPORT Item : public osg::Object
 {
 public:
 
-    Item() : _color(1.0f,1.0f,1.0f,1.0f) {}
-    Item(const std::string& str) : _text(str), _color(1.0f,1.0f,1.0f,1.0f) {}
+    Item() : _color(1.0f,1.0f,1.0f,0.0f) {}
+    Item(const std::string& str) : _text(str), _color(1.0f,1.0f,1.0f,0.0f) {}
     Item(const std::string& str, const osg::Vec4& col) : _text(str), _color(col) {}
     Item(const osg::Vec4& col) : _color(col) {}
 
@@ -87,7 +87,7 @@ protected:
     unsigned int _currentItem;
 
     osg::ref_ptr<osg::Switch> _buttonSwitch;
-
+    osg::ref_ptr<osg::Switch> _backgroundSwitch;
     osg::ref_ptr<osgUI::Popup> _popup;
 };
 

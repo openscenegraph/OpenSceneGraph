@@ -12,10 +12,15 @@
 */
 
 #include <osgUI/Style>
+#include <osg/io_utils>
 #include <osg/Geode>
+#include <osg/ShapeDrawable>
 #include <osg/Depth>
 #include <osg/TexGen>
 #include <osg/AlphaFunc>
+#include <osg/MatrixTransform>
+#include <osg/ComputeBoundsVisitor>
+#include <osgUtil/Optimizer>
 #include <osgText/Text>
 #include <osgDB/ReadFile>
 
@@ -301,9 +306,109 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
     return textDrawable.release();
 }
 
-osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string& filename)
+osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string& filename, const osg::Vec4& color)
 {
-    return 0;
+    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
+    if (!object)
+    {
+        //OSG_NOTICE<<"Warning: Style::createIcon(.., "<<filename<<") could not find icon file."<<std::endl;
+        //return 0;
+    }
+
+    osg::ref_ptr<osg::Image> image = dynamic_cast<osg::Image*>(object.get());
+    if (image.valid())
+    {
+        osg::Vec3 center(extents.center());
+        float width = extents.xMax()-extents.xMin();
+        float height = extents.yMax()-extents.yMin();
+        float extentsAspectRatio = height/width;
+
+        float imageAspectRatio = static_cast<float>(image->t())/static_cast<float>(image->s());
+        if (imageAspectRatio>extentsAspectRatio) width *= (extentsAspectRatio/imageAspectRatio);
+        else height *= (imageAspectRatio/extentsAspectRatio);
+
+        osg::ref_ptr<osg::Geometry> geometry = osg::createTexturedQuadGeometry(osg::Vec3(center.x()-width*0.5f,center.y()-height*0.5f,center.z()),
+                                                                               osg::Vec3(width, 0.0f, 0.0f),
+                                                                               osg::Vec3(0.0f, height, 0.0f));
+
+        osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+        colors->push_back(color);
+        geometry->setColorArray(colors.get(), osg::Array::BIND_OVERALL);
+
+        osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D(image.get());
+
+        osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON);
+
+        if (image->isImageTranslucent())
+        {
+            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+        }
+
+        return geometry.release();
+    }
+
+    osg::ref_ptr<osg::Node> node = dynamic_cast<osg::Node*>(object.get());
+    if (!node)
+    {
+        OSG_NOTICE<<"Warning: Style::createIcon(.., "<<filename<<") could not find icon file."<<std::endl;
+
+        osg::ref_ptr<osg::ShapeDrawable> ds = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0,0.0,0.0),1.0));
+
+        node = ds.get();
+
+        //return 0;
+    }
+
+    osg::ComputeBoundsVisitor cbv;
+    node->accept(cbv);
+    osg::BoundingBox bb = cbv.getBoundingBox();
+    osg::Vec3 bb_size(bb.xMax()-bb.xMin(), bb.zMax()-bb.zMin(), bb.zMax()-bb.zMin());
+
+    osg::Vec3 scale( (bb_size.x()>0) ? (extents.xMax()-extents.xMin())/bb_size.x() : 1.0f,
+                     (bb_size.y()>0) ? (extents.yMax()-extents.yMin())/bb_size.y() : 1.0f,
+                     (bb_size.z()>0) ? (extents.zMax()-extents.zMin())/bb_size.z() : 1.0f);
+
+    float minNonZeroScale = scale.x();
+    if (scale.y()!=0.0 && scale.y()<minNonZeroScale) minNonZeroScale = scale.y();
+    if (scale.z()!=0.0 && scale.z()<minNonZeroScale) minNonZeroScale = scale.z();
+
+    scale.set(minNonZeroScale, minNonZeroScale, minNonZeroScale);
+
+    // create Transform to rescale subgraph
+    osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+    transform->setMatrix(osg::Matrix::translate(-bb.center()) *
+                         osg::Matrix::scale(scale) *
+                         osg::Matrix::translate(extents.center()));
+
+
+    transform->setDataVariance(osg::Transform::STATIC);
+    transform->addChild(node.get());
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->addChild(transform.get());
+
+    {
+        osgUtil::Optimizer::FlattenStaticTransformsVisitor fstv;
+        group->accept(fstv);
+        fstv.removeTransforms(group.get());
+    }
+
+    if (group->getNumChildren()==1)
+    {
+        node = group->getChild(0);
+
+        // remove references to avoid node from node being unreferenced afer the node ref_ptr<> is released().
+        group = 0;
+        transform = 0;
+
+        return node.release();
+    }
+    else
+    {
+        OSG_NOTICE<<"Warning: Style::createIcon(.., "<<filename<<"), error in creation of icon."<<std::endl;
+        return 0;
+    }
 }
 
 void Style::setupDialogStateSet(osg::StateSet* stateset)

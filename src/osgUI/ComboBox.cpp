@@ -142,12 +142,14 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 void ComboBox::enterImplementation()
 {
     OSG_NOTICE<<"ComboBox enter"<<std::endl;
+    if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(1);
 }
 
 
 void ComboBox::leaveImplementation()
 {
     OSG_NOTICE<<"ComboBox leave"<<std::endl;
+    if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
 }
 
 void ComboBox::setCurrentItem(unsigned int i)
@@ -171,7 +173,10 @@ void ComboBox::createGraphicsImplementation()
     osg::ref_ptr<osg::Group> group = new osg::Group;
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
     float frameWidth = 0.0;
-    osg::Vec4 frameColor(0.97f,0.97f,0.97f,1.0f);
+    float unFocused = 0.92;
+    float withFocus = 0.97;
+    osg::Vec4 frameColor(unFocused,unFocused,unFocused,1.0f);
+
     if (requiresFrame)
     {
         frameWidth = getFrameSettings()->getLineWidth();
@@ -183,17 +188,61 @@ void ComboBox::createGraphicsImplementation()
         extents.yMax() -= frameWidth;
     }
 
+
+    bool itemsHaveColor = false;
+    for(Items::iterator itr = _items.begin();
+        itr != _items.end();
+        ++itr)
+    {
+        Item* item = itr->get();
+        if (item->getColor().a()!=0.0f)
+        {
+            itemsHaveColor = true; break;
+        }
+    }
+
+    // work out position of carat.
+    float h = extents.yMax()-extents.yMin();
+    float w = h*0.7;
+    float minItemWidth = (extents.xMax()-extents.xMin())*0.5f;
+    if (w>minItemWidth) w = minItemWidth;
+    float xDivision = extents.xMax()-w;
+
+    osg::BoundingBox backgroundExtents = extents;
+    osg::BoundingBox iconExtents = backgroundExtents;
+    iconExtents.xMin() = xDivision;
+    extents.xMax() = xDivision;
+
+    if (itemsHaveColor)
+    {
+        backgroundExtents.xMin() = xDivision;
+    }
+
+    OSG_NOTICE<<"itemsHaveColor = "<<itemsHaveColor<<std::endl;
+
+    // clear background of edit region
+    _backgroundSwitch = new osg::Switch;
+    _backgroundSwitch->addChild(style->createPanel(backgroundExtents, osg::Vec4(unFocused, unFocused, unFocused, 1.0)));
+    _backgroundSwitch->addChild(style->createPanel(backgroundExtents, osg::Vec4(withFocus, withFocus, withFocus,1.0)));
+    _backgroundSwitch->setSingleChildOn(0);
+
+
+    // assign carat
+    group->addChild(_backgroundSwitch.get());
+
     group->addChild(_buttonSwitch.get());
 
+    //group->addChild(style->createIcon(iconExtents, "cow.osgt", osg::Vec4(withFocus, withFocus, withFocus,1.0)));
+    group->addChild(style->createIcon(iconExtents, "Images/osg64.png", osg::Vec4(withFocus, withFocus, withFocus,1.0)));
 
     if (!_items.empty())
     {
 
         float margin = (extents.yMax()-extents.yMin())*0.1f;
-        float itemWidth = (_extents.xMax()-_extents.xMin()) - 2.0f*frameWidth;
+        // float itemWidth = (_extents.xMax()-_extents.xMin()) - 2.0f*frameWidth;
         float itemHeight = (_extents.yMax()-_extents.yMin()) - 2.0f*frameWidth;
         float popupHeight = (itemHeight)* _items.size() + margin*static_cast<float>(_items.size()-1) + 2.0f*frameWidth;
-        float popupTop = _extents.yMin()-frameWidth;
+        float popupTop = _extents.yMin()-frameWidth-50.0f;
 
         osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMax(), popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);

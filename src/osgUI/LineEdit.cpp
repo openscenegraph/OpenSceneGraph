@@ -74,14 +74,14 @@ void LineEdit::setText(const std::string& text)
 
 void LineEdit::enterImplementation()
 {
-    OSG_NOTICE<<"PushButton enter"<<std::endl;
+    OSG_NOTICE<<"LineEdit enter"<<std::endl;
     if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(1);
 }
 
 
 void LineEdit::leaveImplementation()
 {
-    OSG_NOTICE<<"PushButton leave"<<std::endl;
+    OSG_NOTICE<<"LineEdit leave"<<std::endl;
     if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
 }
 
@@ -95,7 +95,6 @@ void LineEdit::createGraphicsImplementation()
     osg::BoundingBox extents(_extents);
     float unFocused = 0.92;
     float withFocus = 0.97;
-    float pressed = 0.75;
 
     osg::Vec4 frameColor(unFocused,unFocused,unFocused,1.0f);
 
@@ -113,7 +112,6 @@ void LineEdit::createGraphicsImplementation()
     _backgroundSwitch = new osg::Switch;
     _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
     _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
-    _backgroundSwitch->addChild(style->createPanel(extents, osg::Vec4(pressed,pressed,pressed,1.0)));
     _backgroundSwitch->setSingleChildOn(0);
     group->addChild(_backgroundSwitch.get());
 

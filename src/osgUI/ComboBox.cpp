@@ -242,9 +242,11 @@ void ComboBox::createGraphicsImplementation()
         // float itemWidth = (_extents.xMax()-_extents.xMin()) - 2.0f*frameWidth;
         float itemHeight = (_extents.yMax()-_extents.yMin()) - 2.0f*frameWidth;
         float popupHeight = (itemHeight)* _items.size() + margin*static_cast<float>(_items.size()-1) + 2.0f*frameWidth;
-        float popupTop = _extents.yMin()-frameWidth-50.0f;
+        float popupTop = _extents.yMin()-frameWidth-margin*1.0f;
+        float popupLeft = _extents.xMin();
+        float popupRight = _extents.xMax();
 
-        osg::BoundingBox popupExtents(_extents.xMin(), popupTop-popupHeight, _extents.zMin(), _extents.xMax(), popupTop, _extents.zMax());
+        osg::BoundingBox popupExtents(popupLeft, popupTop-popupHeight, _extents.zMin(), popupRight, popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);
 
         osg::BoundingBox popupItemExtents(popupExtents.xMin()+frameWidth, popupTop-frameWidth-itemHeight, popupExtents.zMin(), popupExtents.xMax()-frameWidth, popupTop-frameWidth, popupExtents.zMax());

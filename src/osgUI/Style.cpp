@@ -411,11 +411,12 @@ osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string&
     }
 }
 
-void Style::setupDialogStateSet(osg::StateSet* stateset)
+void Style::setupDialogStateSet(osg::StateSet* stateset, int binNum)
 {
-    stateset->setRenderBinDetails(5, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+    stateset->setRenderBinDetails(binNum, "TraversalOrderBin", osg::StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS);
     stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     stateset->setAttributeAndModes( _disabledDepthWrite.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+    stateset->setNestRenderBins(false);
 }
 
 void Style::setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset)

@@ -79,7 +79,7 @@ void Dialog::createGraphicsImplementation()
     _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
     _group->addChild(_titleDrawable.get());
 
-    style->setupDialogStateSet(getOrCreateStateSet());
+    style->setupDialogStateSet(getOrCreateStateSet(), 5);
     style->setupClipStateSet(dialogWithTileExtents, getOrCreateStateSet());
 
     // render before the subgraph

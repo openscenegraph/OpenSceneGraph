@@ -117,7 +117,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         {
             _currentStateGraph = _currentStateGraph->find_or_insert(ss);
 
-            if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
+            bool useRenderBinDetails = (ss->useRenderBinDetails() && !ss->getBinName().empty()) &&
+                                       (_numberOfEncloseOverrideRenderBinDetails==0 || (ss->getRenderBinMode()&osg::StateSet::PROTECTED_RENDERBIN_DETAILS)!=0);
+
+            if (useRenderBinDetails)
             {
                 _renderBinStack.push_back(_currentRenderBin);
 
@@ -126,7 +129,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
                     _currentRenderBin->getStage()->find_or_insert(ss->getBinNumber(),ss->getBinName());
             }
 
-            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
+            if ((ss->getRenderBinMode()&osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)!=0)
             {
                 ++_numberOfEncloseOverrideRenderBinDetails;
             }
@@ -139,11 +142,15 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline void popStateSet()
         {
             const osg::StateSet* ss = _currentStateGraph->getStateSet();
-            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
+            if ((ss->getRenderBinMode()&osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)!=0)
             {
                 --_numberOfEncloseOverrideRenderBinDetails;
             }
-            if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
+
+            bool useRenderBinDetails = (ss->useRenderBinDetails() && !ss->getBinName().empty()) &&
+                                       (_numberOfEncloseOverrideRenderBinDetails==0 || (ss->getRenderBinMode()&osg::StateSet::PROTECTED_RENDERBIN_DETAILS)!=0);
+
+            if (useRenderBinDetails)
             {
                 if (_renderBinStack.empty())
                 {

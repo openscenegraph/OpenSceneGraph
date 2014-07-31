@@ -82,7 +82,8 @@ class OSG_EXPORT NodeVisitor : public virtual Object
             UPDATE_VISITOR,
             EVENT_VISITOR,
             COLLECT_OCCLUDER_VISITOR,
-            CULL_VISITOR
+            CULL_VISITOR,
+            INTERSECTION_VISITOR
         };
 
         NodeVisitor(TraversalMode tm=TRAVERSE_NONE);

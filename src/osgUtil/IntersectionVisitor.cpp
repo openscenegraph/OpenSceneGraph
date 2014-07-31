@@ -151,11 +151,9 @@ bool IntersectorGroup::containsIntersections()
 //  IntersectionVisitor
 //
 
-IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback* readCallback)
+IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback* readCallback):
+    osg::NodeVisitor(osg::NodeVisitor::INTERSECTION_VISITOR, osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
 {
-    // override the default node visitor mode.
-    setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-
     _useKdTreesWhenAvailable = true;
     _dummyTraversal = false;
 

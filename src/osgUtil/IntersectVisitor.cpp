@@ -179,7 +179,8 @@ void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
 }
 
 
-IntersectVisitor::IntersectVisitor()
+IntersectVisitor::IntersectVisitor():
+    osg::NodeVisitor(osg::NodeVisitor::INTERSECTION_VISITOR, osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
 {
 
     // override the default node visitor mode.

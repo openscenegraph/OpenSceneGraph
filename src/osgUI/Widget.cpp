@@ -114,8 +114,13 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
 
                     if (checkWithinWidget)
                     {
+#if 0
                         osgUtil::LineSegmentIntersector::Intersections intersections;
                         bool withinWidget = aa->computeIntersections(*ea, nv.getNodePath(), intersections);
+#else
+                        Intersections intersections;
+                        bool withinWidget = computeIntersections( ev, ea, intersections);
+#endif
 
                         _hasEventFocus = withinWidget;
                     }
@@ -227,7 +232,8 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
             osg::Group::traverse(nv);
         }
     }
-    else if (_visible || (nv.getVisitorType()!=osg::NodeVisitor::UPDATE_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR))
+    else if (_visible ||
+            (nv.getVisitorType()!=osg::NodeVisitor::UPDATE_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::INTERSECTION_VISITOR) )
     {
         GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
         while(itr!= _graphicsSubgraphMap.end() && itr->first<=0)

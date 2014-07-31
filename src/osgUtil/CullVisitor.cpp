@@ -45,7 +45,7 @@ inline int EQUAL_F(float a, float b)
 
 
 CullVisitor::CullVisitor():
-    NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
+    osg::NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _currentStateGraph(NULL),
     _currentRenderBin(NULL),
     _traversalNumber(0),

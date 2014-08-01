@@ -212,20 +212,17 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
 
             // OSG_NOTICE<<"EventTraversal getHasEventFocus()="<<getHasEventFocus()<<std::endl;
 
-            if (getHasEventFocus())
-            {
-                // signify that event has been taken by widget with focus
-                ev->setEventHandled(true);
+            // signify that event has been taken by widget with focus
 
-                osgGA::EventQueue::Events& events = ev->getEvents();
-                for(osgGA::EventQueue::Events::iterator itr = events.begin();
-                    itr != events.end();
-                    ++itr)
+            osgGA::EventQueue::Events& events = ev->getEvents();
+            for(osgGA::EventQueue::Events::iterator itr = events.begin();
+                itr != events.end();
+                ++itr)
+            {
+                if (handle(ev, itr->get()))
                 {
-                    if (handle(ev, itr->get()))
-                    {
-                        (*itr)->setHandled(true);
-                    }
+                    (*itr)->setHandled(true);
+                    ev->setEventHandled(true);
                 }
             }
 

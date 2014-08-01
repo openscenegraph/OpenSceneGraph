@@ -17,6 +17,7 @@
 #include <osgText/Font>
 #include <osgText/Text>
 #include <osg/Notify>
+#include <osg/ValueObject>
 
 using namespace osgUI;
 
@@ -45,16 +46,19 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
             {
                 if (!_text.empty())
                 {
-                    _text.erase(_text.size()-1, 1);
-                    if (_textDrawable) _textDrawable->setText(_text);
+                    setText(_text.substr(0, _text.size()-1));
                     return true;
 
                 }
             }
             else if (ea->getKey()>=32 && ea->getKey()<=0xff00)
             {
-                _text.push_back(ea->getKey());
-                if (_textDrawable) _textDrawable->setText(_text);
+                setText(_text + std::string::value_type(ea->getKey()));
+                return true;
+            }
+            else if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Return )
+            {
+                returnPressed();
                 return true;
             }
 
@@ -70,7 +74,13 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
 void LineEdit::setText(const std::string& text)
 {
+    if (!validate(text)) return;
+    if (_text==text) return;
+
     _text = text;
+
+    textChanged(_text);
+
     if (_textDrawable) _textDrawable->setText(_text);
 }
 
@@ -87,6 +97,61 @@ void LineEdit::leaveImplementation()
     if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
 }
 
+bool LineEdit::validate(const std::string& text)
+{
+    osg::CallbackObject* co = getCallbackObject(this, "validate");
+    if (co)
+    {
+        osg::Parameters inputParameters, outputParameters;
+        inputParameters.push_back(new osg::StringValueObject("text",text));
+        if (co->run(this, inputParameters, outputParameters))
+        {
+            if (outputParameters.size()>=1)
+            {
+                osg::Object* object = outputParameters[0].get();
+                osg::BoolValueObject* bvo = dynamic_cast<osg::BoolValueObject*>(object);
+                if (bvo)
+                {
+                    OSG_NOTICE<<"Have bool return value from validate "<<bvo->getValue()<<std::endl;
+                    return bvo->getValue();
+                }
+                OSG_NOTICE<<"Called validate CallbackObject but didn't get bool return value."<<object->className()<<std::endl;
+            }
+        }
+    }
+    return validateImplementation(text);
+}
+
+bool LineEdit::validateImplementation(const std::string& text)
+{
+    OSG_NOTICE<<"LineEdit::validateImplemetation("<<text<<")"<<std::endl;
+    return true;
+}
+
+void LineEdit::textChanged(const std::string& text)
+{
+    osg::CallbackObject* co = getCallbackObject(this, "textChanged");
+    if (co)
+    {
+        osg::Parameters inputParameters, outputParameters;
+        inputParameters.push_back(new osg::StringValueObject("text",text));
+        if (co->run(this, inputParameters, outputParameters))
+        {
+            return;
+        }
+    }
+    textChangedImplementation(text);
+}
+
+void LineEdit::textChangedImplementation(const std::string& text)
+{
+    OSG_NOTICE<<"textChangedImplementation("<<text<<")"<<std::endl;
+}
+
+void LineEdit::returnPressedImplementation()
+{
+    OSG_NOTICE<<"returnPressedImplementation()"<<std::endl;
+}
 
 void LineEdit::createGraphicsImplementation()
 {

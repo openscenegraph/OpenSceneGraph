@@ -36,6 +36,15 @@ public:
     virtual void leaveImplementation();
 
 
+    virtual bool validate(const std::string& text);
+    virtual bool validateImplementation(const std::string& text);
+
+    virtual void textChanged(const std::string& text);
+    virtual void textChangedImplementation(const std::string& text);
+
+    virtual void returnPressed() { if (!runCallbacks("returnPressed")) returnPressedImplementation(); }
+    virtual void returnPressedImplementation();
+
 protected:
     virtual ~LineEdit() {}
 

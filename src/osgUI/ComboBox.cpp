@@ -40,6 +40,17 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
+    if (!getHasEventFocus())
+    {
+        if (ea->getEventType()==osgGA::GUIEventAdapter::PUSH && _popup->getVisible())
+        {
+            _popup->setVisible(false);
+        }
+
+        return false;
+    }
+
+
     switch(ea->getEventType())
     {
         case(osgGA::GUIEventAdapter::SCROLL):
@@ -125,6 +136,10 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
                     _popup->setVisible(false);
                 }
+            }
+            else
+            {
+                _popup->setVisible(false);
             }
             break;
         }

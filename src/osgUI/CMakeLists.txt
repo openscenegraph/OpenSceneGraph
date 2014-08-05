@@ -21,6 +21,7 @@ SET(TARGET_H
     ${HEADER_PATH}/AlignmentSettings
     ${HEADER_PATH}/FrameSettings
     ${HEADER_PATH}/TextSettings
+    ${HEADER_PATH}/Validator
 )
 
 SET(TARGET_SRC
@@ -36,6 +37,7 @@ SET(TARGET_SRC
     AlignmentSettings.cpp
     FrameSettings.cpp
     TextSettings.cpp
+    Validator.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

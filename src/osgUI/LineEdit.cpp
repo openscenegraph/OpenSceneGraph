@@ -58,6 +58,17 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
             }
             else if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Return )
             {
+                if (_validator.valid())
+                {
+                    std::string text_copy(_text);
+                    int cursorpos;
+                    if (_validator->validate(text_copy, cursorpos)==Validator::INTERMEDIATE)
+                    {
+                        _validator->fixup(text_copy);
+                    }
+                    if (text_copy!=_text) setText(text_copy);
+                }
+
                 returnPressed();
                 return true;
             }
@@ -74,10 +85,17 @@ bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
 void LineEdit::setText(const std::string& text)
 {
-    if (!validate(text)) return;
     if (_text==text) return;
 
-    _text = text;
+    std::string text_copy(text);
+    if (_validator.valid())
+    {
+        int cursorpos = 0;
+        Validator::State state = _validator->validate(text_copy, cursorpos);
+        if (state==Validator::INVALID) return;
+    }
+
+    _text = text_copy;
 
     textChanged(_text);
 
@@ -97,36 +115,6 @@ void LineEdit::leaveImplementation()
     if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
 }
 
-bool LineEdit::validate(const std::string& text)
-{
-    osg::CallbackObject* co = getCallbackObject(this, "validate");
-    if (co)
-    {
-        osg::Parameters inputParameters, outputParameters;
-        inputParameters.push_back(new osg::StringValueObject("text",text));
-        if (co->run(this, inputParameters, outputParameters))
-        {
-            if (outputParameters.size()>=1)
-            {
-                osg::Object* object = outputParameters[0].get();
-                osg::BoolValueObject* bvo = dynamic_cast<osg::BoolValueObject*>(object);
-                if (bvo)
-                {
-                    OSG_NOTICE<<"Have bool return value from validate "<<bvo->getValue()<<std::endl;
-                    return bvo->getValue();
-                }
-                OSG_NOTICE<<"Called validate CallbackObject but didn't get bool return value."<<object->className()<<std::endl;
-            }
-        }
-    }
-    return validateImplementation(text);
-}
-
-bool LineEdit::validateImplementation(const std::string& text)
-{
-    OSG_NOTICE<<"LineEdit::validateImplemetation("<<text<<")"<<std::endl;
-    return true;
-}
 
 void LineEdit::textChanged(const std::string& text)
 {

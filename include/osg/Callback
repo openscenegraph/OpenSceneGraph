@@ -123,6 +123,14 @@ inline CallbackObject* getCallbackObject(osg::Object* object, const std::string&
     return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
 }
 
+
+/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
+inline const CallbackObject* getCallbackObject(const osg::Object* object, const std::string& name)
+{
+    const osg::UserDataContainer* udc = object->getUserDataContainer();
+    return udc ? dynamic_cast<const osg::CallbackObject*>(udc->getUserObject(name)) : 0;
+}
+
 /** Call run(..) on named CallbackObjects attached to specified Object. Return true if at least one CallbackObject has been successfully invoked.*/
 inline bool runNamedCallbackObjects(osg::Object* object, const std::string& name, osg::Parameters& inputParameters, osg::Parameters& outputParameters)
 {

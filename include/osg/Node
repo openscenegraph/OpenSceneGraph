@@ -203,8 +203,9 @@ class OSG_EXPORT Node : public Object
             if (nc != NULL && _updateCallback.valid()) {
                 if (_updateCallback == nc)
                 {
-                    setUpdateCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    ref_ptr<NodeCallback> new_nested_callback = nc->getNestedCallback();
                     nc->setNestedCallback(0);
+                    setUpdateCallback(new_nested_callback.get());
                 }
                 else _updateCallback->removeNestedCallback(nc);
             }
@@ -237,8 +238,9 @@ class OSG_EXPORT Node : public Object
             if (nc != NULL && _eventCallback.valid()) {
                 if (_eventCallback == nc)
                 {
-                    setEventCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    ref_ptr<NodeCallback> new_nested_callback = nc->getNestedCallback();
                     nc->setNestedCallback(0);
+                    setEventCallback(new_nested_callback.get()); // replace the callback by the nested one
                 }
                 else _eventCallback->removeNestedCallback(nc);
             }
@@ -271,8 +273,9 @@ class OSG_EXPORT Node : public Object
             if (nc != NULL && _cullCallback.valid()) {
                 if (_cullCallback == nc)
                 {
-                    setCullCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                    ref_ptr<NodeCallback> new_nested_callback = nc->getNestedCallback();
                     nc->setNestedCallback(0);
+                    setCullCallback(new_nested_callback.get()); // replace the callback by the nested one
                 }
                 else _cullCallback->removeNestedCallback(nc);
             }

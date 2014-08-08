@@ -60,7 +60,6 @@ struct GeometryArrayGatherer
     typedef std::vector<osg::Array*> ArrayList;
 
     GeometryArrayGatherer(osg::Geometry& geometry)
-        : _useDrawElements(true)
     {
         add(geometry.getVertexArray());
         add(geometry.getNormalArray());
@@ -97,9 +96,6 @@ struct GeometryArrayGatherer
     }
 
     ArrayList _arrayList;
-    // True if geometry contains bindings that are compatible with
-    // DrawElements.
-    bool _useDrawElements;
 };
 
 // Compare vertices in a mesh using all their attributes. The vertices
@@ -1124,9 +1120,6 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
     if (!vertArray)
         return;
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
-    GeometryArrayGatherer gatherer(geom);
-    if (!gatherer._useDrawElements)
-        return;
     VertexReorder vr(vertArray->getNumElements());
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
              end = primSets.end();
@@ -1144,6 +1137,7 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
 
     // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
     if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
+    GeometryArrayGatherer gatherer(geom);
 
     Remapper remapper(vr.remap);
     gatherer.accept(remapper);

@@ -989,8 +989,10 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
             // framebuffer is multisampled then the dimension arguments are ignored
             // and the whole framebuffer is always copied.
             fbo_ext->glBlitFramebuffer(
-                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
                 blitMask, GL_NEAREST);
         }
 
@@ -1008,8 +1010,10 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                     glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
 
                     fbo_ext->glBlitFramebuffer(
-                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                        static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                        static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                        static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                        static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
                         GL_COLOR_BUFFER_BIT, GL_NEAREST);
                 }
             }

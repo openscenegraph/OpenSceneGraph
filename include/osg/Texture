@@ -305,6 +305,11 @@
     #define GL_RGBA_INTEGER_MODE_EXT                           0x8D9E
 #endif
 
+#ifndef GL_VERSION_1_1
+#define GL_R3_G3_B2                             0x2A10
+#define GL_RGB4                                 0x804F
+#endif
+
 #ifndef GL_ARB_texture_rg
     #define GL_RG                             0x8227
     #define GL_RG_INTEGER                     0x8228

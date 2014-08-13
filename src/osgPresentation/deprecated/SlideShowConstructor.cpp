@@ -2866,7 +2866,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osg::ref_ptr<osgVolume::SampleRatioWhenMovingProperty> srm = vs.valid() ? vs->getSampleRatioWhenMovingProperty() : 0;
         if (!volumeData.sampleRatioWhenMovingValue.empty())
         {
-            srm = new osgVolume::SampleRatioWhenMovingProperty(0.5);
+            srm = new osgVolume::SampleRatioWhenMovingProperty(1.0);
             setUpVolumeScalarProperty(tile.get(), srm.get(), volumeData.sampleRatioWhenMovingValue);
         }
 

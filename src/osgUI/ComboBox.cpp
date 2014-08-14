@@ -23,7 +23,7 @@
 using namespace osgUI;
 
 ComboBox::ComboBox():
-    _currentItem(0)
+    _currentIndex(0)
 {
 }
 
@@ -56,12 +56,12 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
         case(osgGA::GUIEventAdapter::SCROLL):
             if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_DOWN)
             {
-                if (getCurrentItem()<getNumItems()-1) setCurrentItem(getCurrentItem()+1);
+                if (getCurrentIndex()<getNumItems()-1) setCurrentIndex(getCurrentIndex()+1);
                 return true;
             }
             else if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_UP)
             {
-                if (getCurrentItem()>0) setCurrentItem(getCurrentItem()-1);
+                if (getCurrentIndex()>0) setCurrentIndex(getCurrentIndex()-1);
                 return true;
             }
             break;
@@ -69,12 +69,12 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
         case(osgGA::GUIEventAdapter::KEYDOWN):
             if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Down)
             {
-                if (getCurrentItem()<getNumItems()-1) setCurrentItem(getCurrentItem()+1);
+                if (getCurrentIndex()<getNumItems()-1) setCurrentIndex(getCurrentIndex()+1);
                 return true;
             }
             else if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Up)
             {
-                if (getCurrentItem()>0) setCurrentItem(getCurrentItem()-1);
+                if (getCurrentIndex()>0) setCurrentIndex(getCurrentIndex()-1);
                 return true;
             }
 
@@ -127,7 +127,7 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
                     if (index<_items.size())
                     {
                         OSG_NOTICE<<"   index selected "<<index<<std::endl;
-                        setCurrentItem(index);
+                        setCurrentIndex(index);
                     }
                     else
                     {
@@ -167,12 +167,38 @@ void ComboBox::leaveImplementation()
     if (_backgroundSwitch.valid()) _backgroundSwitch->setSingleChildOn(0);
 }
 
-void ComboBox::setCurrentItem(unsigned int i)
+void ComboBox::setCurrentIndex(unsigned int i)
 {
-    OSG_NOTICE << "ComboBox::setCurrentItem("<<i<<")"<<std::endl;
-    _currentItem = i;
-    if (_buttonSwitch.valid()) _buttonSwitch->setSingleChildOn(_currentItem);
+    // OSG_NOTICE << "ComboBox::setCurrentIndex("<<i<<")"<<std::endl;
+    if (_currentIndex==i) return;
+
+    _currentIndex = i;
+    if (_buttonSwitch.valid()) _buttonSwitch->setSingleChildOn(_currentIndex);
+
+    currrentIndexChanged(_currentIndex);
 }
+
+void ComboBox::currrentIndexChanged(unsigned int i)
+{
+    osg::CallbackObject* co = getCallbackObject(this, "currentIndexChanged");
+    if (co)
+    {
+        osg::Parameters inputParameters, outputParameters;
+        inputParameters.push_back(new osg::UIntValueObject("index",i));
+        if (co->run(this, inputParameters, outputParameters))
+        {
+            return;
+        }
+    }
+    currentIndexChangedImplementation(i);
+}
+
+void ComboBox::currentIndexChangedImplementation(unsigned int i)
+{
+  OSG_NOTICE<<"ComboBox::currentIndexChangedImplementation("<<i<<")"<<std::endl;
+}
+
+
 
 void ComboBox::createGraphicsImplementation()
 {
@@ -303,7 +329,7 @@ void ComboBox::createGraphicsImplementation()
         _buttonSwitch->addChild( style->createPanel(_extents, frameColor) );
     }
 
-    _buttonSwitch->setSingleChildOn(_currentItem);
+    _buttonSwitch->setSingleChildOn(_currentIndex);
 
     style->setupClipStateSet(_extents, getOrCreateStateSet());
 

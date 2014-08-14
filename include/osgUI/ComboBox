@@ -72,8 +72,12 @@ public:
     Items& getItems() { return _items; }
     const Items& getItems() const { return _items; }
 
-    void setCurrentItem(unsigned int i);
-    unsigned int getCurrentItem() const { return _currentItem; }
+    void setCurrentIndex(unsigned int i);
+    unsigned int getCurrentIndex() const { return _currentIndex; }
+    
+    virtual void currrentIndexChanged(unsigned int i);
+    virtual void currentIndexChangedImplementation(unsigned int i);
+
 
     virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
     virtual void createGraphicsImplementation();
@@ -84,7 +88,7 @@ protected:
     virtual ~ComboBox() {}
 
     Items _items;
-    unsigned int _currentItem;
+    unsigned int _currentIndex;
 
     osg::ref_ptr<osg::Switch> _buttonSwitch;
     osg::ref_ptr<osg::Switch> _backgroundSwitch;

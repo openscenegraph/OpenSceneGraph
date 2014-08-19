@@ -3093,18 +3093,17 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
 
 
-    model->addEventCallback(new VolumeSettingsCallback());
 
     ModelData modelData;
     addModel(model.get(), positionData, modelData, scriptData);
 
-#if 0
+#if 1
     osgUI::Widget* widget = vs.valid() ? osgDB::readFile<osgUI::Widget>("ui/VolumeSettings.lua") : 0;
     if (widget)
     {
         OSG_NOTICE<<"Addig widget"<<std::endl;
 
-        widget->setVisible(true);
+        widget->setVisible(false);
         vs->setName("VolumeSettings");
         widget->getOrCreateUserDataContainer()->addUserObject(vs.get());
 
@@ -3117,6 +3116,8 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         transform->setDataVariance(osg::Object::DYNAMIC);
         transform->setMatrix(osg::Matrix::rotate(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f)) * osg::Matrix::scale(slide_scale,slide_scale,slide_scale)*osg::Matrix::translate(pos));
         transform->addChild(widget);
+
+        transform->addEventCallback(new VolumeSettingsCallback());
 
 #if 0
         HUDTransform* hudTransform = new HUDTransform(_hudSettings.get());

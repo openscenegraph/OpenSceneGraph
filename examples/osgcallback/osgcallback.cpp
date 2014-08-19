@@ -253,7 +253,7 @@ int main( int argc, char **argv )
 
         // run optimization over the scene graph
         osgUtil::Optimizer optimzer;
-        optimzer.optimize(rootnode);
+        optimzer.optimize(rootnode.get());
 
         // insert all the callbacks
         InsertCallbacksVisitor icv;
@@ -264,7 +264,7 @@ int main( int argc, char **argv )
     viewer.getCamera()->setEventCallback(new CameraEventCallback());
 
     // set the scene to render
-    viewer.setSceneData(rootnode);
+    viewer.setSceneData(rootnode.get());
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
 

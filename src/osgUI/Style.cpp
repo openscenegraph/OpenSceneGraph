@@ -78,7 +78,7 @@ osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& 
     vertices->push_back( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
 
     osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
+    geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
 
     colours->push_back( colour );
 

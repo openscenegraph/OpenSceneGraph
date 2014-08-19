@@ -208,12 +208,12 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     // read in the frame info into a vector
     const char *last_frame_name = NULL;
 
-    osg::Vec3Array *vertexCoords = NULL;
-    osg::Vec2Array *texCoords = NULL;
-    osg::UIntArray *vertexIndices = NULL;
-    osg::UIntArray *texIndices = NULL;
-    osg::Vec3Array *normalCoords = NULL;
-    osg::UIntArray *normalIndices = NULL;
+    osg::ref_ptr<osg::Vec3Array> vertexCoords = NULL;
+    osg::ref_ptr<osg::Vec2Array> texCoords = NULL;
+    osg::ref_ptr<osg::UIntArray> vertexIndices = NULL;
+    osg::ref_ptr<osg::UIntArray> texIndices = NULL;
+    osg::ref_ptr<osg::Vec3Array> normalCoords = NULL;
+    osg::ref_ptr<osg::UIntArray> normalIndices = NULL;
 
     // load the texture skins
 
@@ -375,24 +375,24 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
             }
         }
 
-        deprecated_osg::Geometry *geom = new deprecated_osg::Geometry;
+        osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
 
-        geom->setVertexArray (vertexCoords);
-        geom->setVertexIndices (vertexIndices);
+        geom->setVertexArray (vertexCoords.get());
+        geom->setVertexIndices (vertexIndices.get());
 
-        geom->setTexCoordArray (0, texCoords);
-        geom->setTexCoordIndices (0, texIndices);
+        geom->setTexCoordArray (0, texCoords.get());
+        geom->setTexCoordIndices (0, texIndices.get());
 
-        geom->setNormalArray (normalCoords);
-        geom->setNormalIndices (normalIndices);
+        geom->setNormalArray (normalCoords.get());
+        geom->setNormalIndices (normalIndices.get());
         geom->setNormalBinding (deprecated_osg::Geometry::BIND_PER_VERTEX);
 
         geom->addPrimitiveSet (new osg::DrawArrays (osg::PrimitiveSet::TRIANGLES, 0, vertexIndices->size ()));
 
-        osg::Geode *geode = new osg::Geode;
-        geode->addDrawable (geom);
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        geode->addDrawable (geom.get());
 
-        current_sequence->addChild (geode);
+        current_sequence->addChild (geode.get());
         current_sequence->setTime (sequence_frame, 0.2f);
         sequence_frame++;
 

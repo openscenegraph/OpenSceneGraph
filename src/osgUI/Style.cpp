@@ -62,55 +62,6 @@ Style::Style(const Style& style, const osg::CopyOp& copyop):
 {
 }
 
-osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& colour)
-{
-    // OSG_NOTICE<<"createPanel"<<std::endl;
-
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    geometry->setName("Panel");
-
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices.get());
-
-    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMax(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMin(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
-
-    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
-    geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
-
-    colours->push_back( colour );
-
-    geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
-
-    return geometry.release();
-}
-
-osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
-{
-    // OSG_NOTICE<<"createDepthSetPanel"<<std::endl;
-
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-    geometry->setName("DepthSetPanel");
-
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices.get());
-
-    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMax(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMin(), extents.zMin()) );
-    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
-
-    geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
-
-    osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
-    stateset->setAttributeAndModes( _enabledDepthWrite.get(), osg::StateAttribute::ON);
-    stateset->setAttributeAndModes( _disableColorWriteMask.get() );
-
-    return geometry.release();
-}
-
 osg::Node* Style::createFrame(const osg::BoundingBox& extents, const FrameSettings* frameSettings, const osg::Vec4& color)
 {
     // OSG_NOTICE<<"createFrame"<<std::endl;
@@ -409,6 +360,55 @@ osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string&
         OSG_NOTICE<<"Warning: Style::createIcon(.., "<<filename<<"), error in creation of icon."<<std::endl;
         return 0;
     }
+}
+
+osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& colour)
+{
+    // OSG_NOTICE<<"createPanel"<<std::endl;
+
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("Panel");
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMax(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMin(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
+
+    colours->push_back( colour );
+
+    geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
+
+    return geometry.release();
+}
+
+osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
+{
+    // OSG_NOTICE<<"createDepthSetPanel"<<std::endl;
+
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("DepthSetPanel");
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMin(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMin(), extents.yMax(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMin(), extents.zMin()) );
+    vertices->push_back( osg::Vec3(extents.xMax(), extents.yMax(), extents.zMin()) );
+
+    geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
+
+    osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
+    stateset->setAttributeAndModes( _enabledDepthWrite.get(), osg::StateAttribute::ON);
+    stateset->setAttributeAndModes( _disableColorWriteMask.get() );
+
+    return geometry.release();
 }
 
 void Style::setupDialogStateSet(osg::StateSet* stateset, int binNum)

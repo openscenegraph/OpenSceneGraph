@@ -387,6 +387,7 @@ osg::Node* Style::createPanel(const osg::BoundingBox& extents, const osg::Vec4& 
     return geometry.release();
 }
 
+
 osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
 {
     // OSG_NOTICE<<"createDepthSetPanel"<<std::endl;
@@ -405,11 +406,14 @@ osg::Node* Style::createDepthSetPanel(const osg::BoundingBox& extents)
     geometry->addPrimitiveSet( new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4) );
 
     osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
-    stateset->setAttributeAndModes( _enabledDepthWrite.get(), osg::StateAttribute::ON);
-    stateset->setAttributeAndModes( _disableColorWriteMask.get() );
+    stateset->setAttributeAndModes( _enabledDepthWrite.get(), osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
+    stateset->setAttributeAndModes( _disableColorWriteMask.get(), osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
+    stateset->setRenderBinDetails(20, "TraversalOrderBin", osg::StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS);
+    stateset->setNestRenderBins(false);
 
     return geometry.release();
 }
+
 
 void Style::setupDialogStateSet(osg::StateSet* stateset, int binNum)
 {
@@ -417,6 +421,10 @@ void Style::setupDialogStateSet(osg::StateSet* stateset, int binNum)
     stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     stateset->setAttributeAndModes( _disabledDepthWrite.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
     stateset->setNestRenderBins(false);
+}
+
+void Style::setupPopupStateSet(osg::StateSet* /*stateset*/, int /*binNum*/)
+{
 }
 
 void Style::setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset)

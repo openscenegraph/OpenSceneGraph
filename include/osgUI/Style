@@ -52,6 +52,7 @@ public:
     virtual osg::Node* createText(const osg::BoundingBox& extents, const AlignmentSettings* as, const TextSettings* textSettings, const std::string& text);
     virtual osg::Node* createIcon(const osg::BoundingBox& extents, const std::string& filename, const osg::Vec4& colour);
     virtual void setupDialogStateSet(osg::StateSet* stateset, int binNum);
+    virtual void setupPopupStateSet(osg::StateSet* stateset, int binNum);
     virtual void setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* stateset);
 
 protected:

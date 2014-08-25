@@ -19,12 +19,14 @@
 using namespace osgVolume;
 
 
-Property::Property()
+Property::Property():
+    _modifiedCount(0)
 {
 }
 
 Property::Property(const Property& property,const osg::CopyOp& copyop):
-    osg::Object(property,copyop)
+    osg::Object(property,copyop),
+    _modifiedCount(0)
 {
 }
 
@@ -49,6 +51,7 @@ CompositeProperty::CompositeProperty(const CompositeProperty& compositeProperty,
 void CompositeProperty::clear()
 {
     _properties.clear();
+    dirty();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -136,6 +139,7 @@ AlphaFuncProperty::AlphaFuncProperty(const AlphaFuncProperty& afp,const osg::Cop
 
 void AlphaFuncProperty::setValue(float v)
 {
+    dirty();
     _uniform->set(v);
     _alphaFunc->setReferenceValue(v);
 }

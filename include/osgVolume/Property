@@ -82,12 +82,19 @@ class OSGVOLUME_EXPORT Property : public osg::Object
 
         META_Object(osgVolume, Property);
 
+        void dirty() { ++_modifiedCount; }
+
+        void setModifiedCount(unsigned int c) { _modifiedCount = c; }
+        unsigned int getModifiedCount() const { return _modifiedCount; }
+
         virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
         virtual void traverse(PropertyVisitor& pv) {}
 
     protected:
 
         virtual ~Property();
+
+        unsigned int _modifiedCount;
 };
 
 class OSGVOLUME_EXPORT CompositeProperty : public Property
@@ -123,7 +130,7 @@ class OSGVOLUME_EXPORT CompositeProperty : public Property
 
         const Property* getProperty(unsigned int i) const { return i<_properties.size() ? _properties[i].get() : 0; }
 
-        void addProperty(Property* property) { _properties.push_back(property); }
+        void addProperty(Property* property) { _properties.push_back(property); dirty(); }
 
         void removeProperty(unsigned int i) { _properties.erase(_properties.begin()+i); }
 
@@ -169,7 +176,7 @@ class OSGVOLUME_EXPORT SwitchProperty : public CompositeProperty
 
         /** Set which child property is active.
           * -1 disables all children.*/
-        void setActiveProperty(int i) { _activeProperty = i; }
+        void setActiveProperty(int i) { _activeProperty = i; dirty(); }
 
         /** Get the active property.*/
         int getActiveProperty() const { return _activeProperty; }
@@ -225,7 +232,7 @@ class OSGVOLUME_EXPORT ScalarProperty : public Property
         virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
 
         /** Set the value.*/
-        virtual void setValue(float v) { _uniform->set(v); }
+        virtual void setValue(float v) { _uniform->set(v); dirty(); }
 
         /** Get the value.*/
         float getValue() const { float v; _uniform->get(v); return v; }

@@ -28,4 +28,11 @@ REGISTER_OBJECT_WRAPPER( osgVolume_VolumeSettings,
     ADD_FLOAT_SERIALIZER( SampleRatioWhenMoving, 1.0f );
     ADD_FLOAT_SERIALIZER( Cutoff, 0.0f );
     ADD_FLOAT_SERIALIZER( Transparency, 1.0f );
+
+    ADD_OBJECT_SERIALIZER_NO_SET( SampleRatioProperty, osgVolume::SampleRatioProperty, NULL );
+    ADD_OBJECT_SERIALIZER_NO_SET( SampleRatioWhenMovingProperty, osgVolume::SampleRatioWhenMovingProperty, NULL );
+    ADD_OBJECT_SERIALIZER_NO_SET( CutoffProperty, osgVolume::AlphaFuncProperty, NULL );
+    ADD_OBJECT_SERIALIZER_NO_SET( TransparencyProperty, osgVolume::TransparencyProperty, NULL );
+
+
 }

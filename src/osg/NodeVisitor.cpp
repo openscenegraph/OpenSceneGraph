@@ -93,7 +93,7 @@ void NodeVisitor::apply(Node& node)
 
 void NodeVisitor::apply(Geode& node)
 {
-    apply(static_cast<Node&>(node));
+    apply(static_cast<Group&>(node));
 }
 
 void NodeVisitor::apply(Billboard& node)

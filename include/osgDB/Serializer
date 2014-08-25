@@ -511,7 +511,7 @@ public:
     : ParentType(name, def), _getter(gf), _setter(sf) {}
 
     virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
-    virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; }
+    virtual bool get(const osg::Object& obj, void* value) { if (_setter!=0) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; } else return false;}
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -1642,6 +1642,10 @@ public:
 #define ADD_OBJECT_SERIALIZER(PROP, TYPE, DEF) \
     wrapper->addSerializer( new osgDB::ObjectSerializer< MyClass, TYPE >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_OBJECT )
+
+#define ADD_OBJECT_SERIALIZER_NO_SET(PROP, TYPE, DEF) \
+    wrapper->addSerializer( new osgDB::ObjectSerializer< MyClass, TYPE >( \
+        #PROP, DEF, &MyClass::get##PROP, 0), osgDB::BaseSerializer::RW_OBJECT )
 
 #define ADD_IMAGE_SERIALIZER(PROP, TYPE, DEF) \
     wrapper->addSerializer( new osgDB::ImageSerializer< MyClass, TYPE >( \

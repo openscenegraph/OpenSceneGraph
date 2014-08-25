@@ -33,7 +33,7 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
         virtual void accept(PropertyVisitor& pv);
         virtual void traverse(PropertyVisitor& pv);
 
-        void setFilename(const std::string& str) { _filename = str; }
+        void setFilename(const std::string& str) { _filename = str; dirty(); }
         const std::string& getFilename() const { return _filename; }
 
         enum Technique
@@ -43,7 +43,7 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
             MultiPass
         };
 
-        void setTechnique(Technique technique) { _technique = technique; }
+        void setTechnique(Technique technique) { _technique = technique; dirty(); }
         Technique getTechnique() const { return _technique; }
 
         enum ShadingModel
@@ -54,24 +54,28 @@ class OSGVOLUME_EXPORT VolumeSettings : public Property
             MaximumIntensityProjection
         };
 
-        void setShadingModel(ShadingModel sm) { _shadingModel = sm; }
+        void setShadingModel(ShadingModel sm) { _shadingModel = sm; dirty(); }
         ShadingModel getShadingModel() const { return _shadingModel; }
 
-        void setSampleRatio(float sr) { _sampleRatioProperty->setValue(sr); }
+        void setSampleRatio(float sr) { _sampleRatioProperty->setValue(sr); dirty(); }
         float getSampleRatio() const { return _sampleRatioProperty->getValue(); }
-        SampleRatioProperty* getSampleRatioProperty() const { return _sampleRatioProperty.get(); }
+        SampleRatioProperty* getSampleRatioProperty() { return _sampleRatioProperty.get(); }
+        const SampleRatioProperty* getSampleRatioProperty() const { return _sampleRatioProperty.get(); }
 
-        void setSampleRatioWhenMoving(float sr) { _sampleRatioWhenMovingProperty->setValue(sr); }
+        void setSampleRatioWhenMoving(float sr) { _sampleRatioWhenMovingProperty->setValue(sr); dirty(); }
         float getSampleRatioWhenMoving() const { return _sampleRatioWhenMovingProperty->getValue(); }
-        SampleRatioWhenMovingProperty* getSampleRatioWhenMovingProperty() const { return _sampleRatioWhenMovingProperty.get(); }
+        SampleRatioWhenMovingProperty* getSampleRatioWhenMovingProperty() { return _sampleRatioWhenMovingProperty.get(); }
+        const SampleRatioWhenMovingProperty* getSampleRatioWhenMovingProperty() const { return _sampleRatioWhenMovingProperty.get(); }
 
-        void setCutoff(float co) { _cutoffProperty->setValue(co); }
+        void setCutoff(float co) { _cutoffProperty->setValue(co); dirty(); }
         float getCutoff() const { return _cutoffProperty->getValue(); }
-        AlphaFuncProperty* getCutoffProperty() const { return _cutoffProperty.get(); }
+        AlphaFuncProperty* getCutoffProperty() { return _cutoffProperty.get(); }
+        const AlphaFuncProperty* getCutoffProperty() const { return _cutoffProperty.get(); }
 
-        void setTransparency(float t) { _transparencyProperty->setValue(t); }
+        void setTransparency(float t) { _transparencyProperty->setValue(t); dirty(); }
         float getTransparency() const { return _transparencyProperty->getValue(); }
-        TransparencyProperty* getTransparencyProperty() const { return _transparencyProperty.get(); }
+        TransparencyProperty* getTransparencyProperty() { return _transparencyProperty.get(); }
+        const TransparencyProperty* getTransparencyProperty() const { return _transparencyProperty.get(); }
 
     protected:
 

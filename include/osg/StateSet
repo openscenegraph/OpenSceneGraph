@@ -65,7 +65,7 @@ class OSG_EXPORT StateSet : public Object
 
 
         /** A vector of osg::Object pointers which is used to store the parent(s) of this Stateset, the parents could be osg::Node or osg::Drawable.*/
-        typedef std::vector<Object*> ParentList;
+        typedef std::vector<Node*> ParentList;
 
         /** Get the parent list of this StateSet. */
         inline const ParentList& getParents() const { return _parents; }
@@ -74,13 +74,13 @@ class OSG_EXPORT StateSet : public Object
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
-        inline Object* getParent(unsigned int i)  { return _parents[i]; }
+        inline Node* getParent(unsigned int i)  { return _parents[i]; }
         /**
          * Get a single const parent of this StateSet.
          * @param i index of the parent to get.
          * @return the parent i.
          */
-        inline const Object* getParent(unsigned int i) const  { return _parents[i]; }
+        inline const Node* getParent(unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of this StateSet.
@@ -458,8 +458,8 @@ class OSG_EXPORT StateSet : public Object
 
         StateSet& operator = (const StateSet&) { return *this; }
 
-        void addParent(osg::Object* object);
-        void removeParent(osg::Object* object);
+        void addParent(osg::Node* object);
+        void removeParent(osg::Node* object);
 
         ParentList _parents;
         friend class osg::Node;

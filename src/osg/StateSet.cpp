@@ -273,7 +273,7 @@ void StateSet::computeDataVariance()
 }
 
 
-void StateSet::addParent(osg::Object* object)
+void StateSet::addParent(osg::Node* object)
 {
     // OSG_DEBUG_FP<<"Adding parent"<<std::endl;
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
@@ -281,7 +281,7 @@ void StateSet::addParent(osg::Object* object)
     _parents.push_back(object);
 }
 
-void StateSet::removeParent(osg::Object* object)
+void StateSet::removeParent(osg::Node* object)
 {
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 

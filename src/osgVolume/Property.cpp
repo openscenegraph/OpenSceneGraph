@@ -391,6 +391,8 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentC
 
 bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
 {
+    if (ea.getHandled()) return false;
+
     osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(object);
     osgVolume::Layer* layer = tile ? tile->getLayer() : 0;
     osgVolume::Property* property = layer ? layer->getProperty() : 0;

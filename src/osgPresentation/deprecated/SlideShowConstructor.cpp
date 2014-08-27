@@ -3092,16 +3092,11 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     }
 
 
-
-
-    ModelData modelData;
-    addModel(model.get(), positionData, modelData, scriptData);
-
 #if 1
     osgUI::Widget* widget = vs.valid() ? osgDB::readFile<osgUI::Widget>("ui/VolumeSettings.lua") : 0;
     if (widget)
     {
-        OSG_NOTICE<<"Addig widget"<<std::endl;
+        OSG_NOTICE<<"Adding widget"<<std::endl;
 
         widget->setVisible(false);
         vs->setName("VolumeSettings");
@@ -3129,6 +3124,10 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 #endif
     }
 #endif
+
+
+    ModelData modelData;
+    addModel(model.get(), positionData, modelData, scriptData);
 }
 
 bool SlideShowConstructor::attachTexMat(osg::StateSet* stateset, const ImageData& imageData, float s, float t, bool textureRectangle)

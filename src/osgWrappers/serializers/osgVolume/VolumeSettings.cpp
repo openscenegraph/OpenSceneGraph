@@ -7,7 +7,7 @@
 REGISTER_OBJECT_WRAPPER( osgVolume_VolumeSettings,
                          new osgVolume::VolumeSettings,
                          osgVolume::VolumeSettings,
-                         "osg::Object osgVolume::VolumeSettings" )
+                         "osg::Object osgVolume::Property osgVolume::VolumeSettings" )
 {
     ADD_STRING_SERIALIZER( Filename, "" );
 

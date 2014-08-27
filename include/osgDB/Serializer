@@ -510,8 +510,8 @@ public:
     ObjectSerializer( const char* name, P* def, Getter gf, Setter sf )
     : ParentType(name, def), _getter(gf), _setter(sf) {}
 
-    virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
-    virtual bool get(const osg::Object& obj, void* value) { if (_setter!=0) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; } else return false;}
+    virtual bool set(osg::Object& obj, void* value) { if (_setter!=0) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; } else return false; }
+    virtual bool get(const osg::Object& obj, void* value) { if (_getter!=0) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; } else return false;}
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {

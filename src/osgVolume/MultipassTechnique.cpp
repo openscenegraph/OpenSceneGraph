@@ -14,6 +14,7 @@
 #include <osgVolume/MultipassTechnique>
 #include <osgVolume/VolumeTile>
 #include <osgVolume/VolumeScene>
+#include <osgVolume/VolumeSettings>
 
 #include <osg/Geometry>
 #include <osg/ValueObject>
@@ -953,6 +954,26 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
         osg::observer_ptr<osgVolume::MultipassTechnique> _mt;
 };
 
+class ShadingModelVisitor : public osgVolume::PropertyVisitor
+{
+    public:
+
+        ShadingModelVisitor():
+            PropertyVisitor(true),
+            _shadingModel(VolumeSettings::Standard),
+            _usesTransferFunction(false) {}
+
+        virtual void apply(IsoSurfaceProperty& iso) { _shadingModel = VolumeSettings::Isosurface; }
+        virtual void apply(MaximumIntensityProjectionProperty& mip) { _shadingModel = VolumeSettings::MaximumIntensityProjection; }
+        virtual void apply(LightingProperty& lp) { _shadingModel = VolumeSettings::Light; }
+        virtual void apply(TransferFunctionProperty& tf) { _usesTransferFunction = true; }
+        virtual void apply(VolumeSettings& vs) { _shadingModel = vs.getShadingModel(); }
+
+        VolumeSettings::ShadingModel    _shadingModel;
+        bool                            _usesTransferFunction;
+
+};
+
 void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
 {
     std::string traversalPass;
@@ -1018,29 +1039,21 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
         int shaderMask = 0;
         if (_volumeTile->getLayer()->getProperty())
         {
-            CollectPropertiesVisitor cpv;
-            _volumeTile->getLayer()->getProperty()->accept(cpv);
+            ShadingModelVisitor smv;
 
-            if (cpv._tfProperty.valid())
+            _volumeTile->getLayer()->getProperty()->accept(smv);
+
+            if (smv._usesTransferFunction)
             {
                 shaderMask |= TF_SHADERS;
             }
 
-            if (cpv._isoProperty.valid())
+            switch(smv._shadingModel)
             {
-                shaderMask |= ISO_SHADERS;
-            }
-            else if (cpv._mipProperty.valid())
-            {
-                shaderMask |= MIP_SHADERS;
-            }
-            else if (cpv._lightingProperty.valid())
-            {
-                shaderMask |= LIT_SHADERS;
-            }
-            else
-            {
-                shaderMask |= STANDARD_SHADERS;
+                case(VolumeSettings::Isosurface):                       shaderMask |= ISO_SHADERS; break;
+                case(VolumeSettings::MaximumIntensityProjection):       shaderMask |= MIP_SHADERS; break;
+                case(VolumeSettings::Light):                            shaderMask |= LIT_SHADERS; break;
+                default:                                                shaderMask |= STANDARD_SHADERS; break;
             }
         }
 

@@ -2938,12 +2938,19 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             sp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
         }
 
-        switch(volumeData.shadingModel)
+        if (volumeData.volumeSettings.valid())
         {
-            case(osgVolume::VolumeSettings::Standard):                     sp->setActiveProperty(0); break;
-            case(osgVolume::VolumeSettings::Light):                        sp->setActiveProperty(1); break;
-            case(osgVolume::VolumeSettings::Isosurface):                   sp->setActiveProperty(2); break;
-            case(osgVolume::VolumeSettings::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
+            sp->setActiveProperty(volumeData.volumeSettings->getShadingModel());
+        }
+        else
+        {
+            switch(volumeData.shadingModel)
+            {
+                case(osgVolume::VolumeSettings::Standard):                     sp->setActiveProperty(0); break;
+                case(osgVolume::VolumeSettings::Light):                        sp->setActiveProperty(1); break;
+                case(osgVolume::VolumeSettings::Isosurface):                   sp->setActiveProperty(2); break;
+                case(osgVolume::VolumeSettings::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
+            }
         }
 #else
         {

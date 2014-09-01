@@ -17,6 +17,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Popup
     ${HEADER_PATH}/PushButton
     ${HEADER_PATH}/ComboBox
+    ${HEADER_PATH}/Callbacks
     ${HEADER_PATH}/Style
     ${HEADER_PATH}/AlignmentSettings
     ${HEADER_PATH}/FrameSettings
@@ -33,6 +34,7 @@ SET(TARGET_SRC
     Popup.cpp
     PushButton.cpp
     ComboBox.cpp
+    Callbacks.cpp
     Style.cpp
     AlignmentSettings.cpp
     FrameSettings.cpp
@@ -46,6 +48,7 @@ SET(TARGET_LIBRARIES
     osgGA
     osgUtil
     osgText
+    osgViewer
     osg
     OpenThreads
 )

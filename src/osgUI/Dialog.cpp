@@ -13,6 +13,10 @@
 
 
 #include <osgUI/Dialog>
+#include <osgUI/PushButton>
+#include <osgUI/Label>
+#include <osgUI/Callbacks>
+
 #include <osgText/String>
 #include <osgText/Font>
 #include <osgText/Text>
@@ -62,29 +66,41 @@ void Dialog::createGraphicsImplementation()
     osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
 
     _group->addChild( style->createPanel(_extents, dialogBackgroundColor) );
+
     _group->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
 
-    osg::BoundingBox dialogWithTileExtents(_extents);
-    dialogWithTileExtents.expandBy(titleBarExents);
+    osg::BoundingBox dialogWithTitleExtents(_extents);
+    dialogWithTitleExtents.expandBy(titleBarExents);
 
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
-    if (requiresFrame) { _group->addChild(style->createFrame(dialogWithTileExtents, getFrameSettings(), dialogBackgroundColor)); }
+    if (requiresFrame) { _group->addChild(style->createFrame(dialogWithTitleExtents, getFrameSettings(), dialogBackgroundColor)); }
 
     OSG_NOTICE<<"Dialog::_extents ("<<_extents.xMin()<<", "<<_extents.yMin()<<", "<<_extents.zMin()<<"), ("<<_extents.xMax()<<", "<<_extents.yMax()<<", "<<_extents.zMax()<<")"<<std::endl;
     OSG_NOTICE<<"Dialog::titleBarExents ("<<titleBarExents.xMin()<<", "<<titleBarExents.yMin()<<", "<<titleBarExents.zMin()<<"), ("<<titleBarExents.xMax()<<", "<<titleBarExents.yMax()<<", "<<titleBarExents.zMax()<<")"<<std::endl;
-    OSG_NOTICE<<"Dialog::dialogWithTileExtents ("<<dialogWithTileExtents.xMin()<<", "<<dialogWithTileExtents.yMin()<<", "<<dialogWithTileExtents.zMin()<<"), ("<<dialogWithTileExtents.xMax()<<", "<<dialogWithTileExtents.yMax()<<", "<<dialogWithTileExtents.zMax()<<")"<<std::endl;
+    OSG_NOTICE<<"Dialog::dialogWithTitleExtents ("<<dialogWithTitleExtents.xMin()<<", "<<dialogWithTitleExtents.yMin()<<", "<<dialogWithTitleExtents.zMin()<<"), ("<<dialogWithTitleExtents.xMax()<<", "<<dialogWithTitleExtents.yMax()<<", "<<dialogWithTitleExtents.zMax()<<")"<<std::endl;
 
+#if 0
     osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
     _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
     _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
     _group->addChild(_titleDrawable.get());
+#endif
+
+    osg::ref_ptr<Label> titleLabel = new osgUI::Label;
+    titleLabel->setExtents(titleBarExents);
+    titleLabel->setText(_title);
+    titleLabel->setAlignmentSettings(getAlignmentSettings());
+    titleLabel->setTextSettings(getTextSettings());
+    titleLabel->setFrameSettings(getFrameSettings());
+    titleLabel->getOrCreateUserDataContainer()->addUserObject(new osgUI::DragCallback);
+    addChild(titleLabel.get());
 
     style->setupDialogStateSet(getOrCreateStateSet(), 5);
-    style->setupClipStateSet(dialogWithTileExtents, getOrCreateStateSet());
+    style->setupClipStateSet(dialogWithTitleExtents, getOrCreateStateSet());
 
     // render before the subgraph
     setGraphicsSubgraph(-1, _group.get());
 
     // render after the subgraph
-    setGraphicsSubgraph(1, style->createDepthSetPanel(dialogWithTileExtents));
+    setGraphicsSubgraph(1, style->createDepthSetPanel(dialogWithTitleExtents));
 }

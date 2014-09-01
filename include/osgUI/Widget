@@ -40,7 +40,8 @@ public:
 
     typedef std::vector<osgUtil::LineSegmentIntersector::Intersection> Intersections;
     virtual bool computeIntersections(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, Intersections& intersections, osg::Node::NodeMask traversalMask = 0xffffffff) const;
-    virtual bool computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3& localPosition) const;
+    virtual bool computePositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3d& localPosition) const;
+    virtual bool computeExtentsPositionInLocalCoordinates(osgGA::EventVisitor* ev, osgGA::GUIEventAdapter* event, osg::Vec3d& localPosition, bool withinExtents=true) const;
 
     virtual void dirty();
 
@@ -84,6 +85,11 @@ public:
     void setTextSettings(TextSettings* textSettings) { _textSettings = textSettings; }
     TextSettings* getTextSettings() { return _textSettings.get(); }
     const TextSettings* getTextSettings() const { return _textSettings.get(); }
+
+    /** set whether the widget should fill the extents of its background.*/
+    virtual void setAutoFillBackground(bool enabled) { _autoFillBackground = enabled; }
+    /** get whether the widget should fill the extents of its background.*/
+    virtual bool getAutoFillBackground() const { return _autoFillBackground; }
 
     /** set the visibility of the widget.*/
     virtual void setVisible(bool visible) { _visible = visible; }
@@ -141,22 +147,23 @@ public:
 protected:
     virtual ~Widget() {}
 
-    FocusBehaviour      _focusBehaviour;
-    bool                _hasEventFocus;
-    bool                _graphicsInitialized;
+    FocusBehaviour                      _focusBehaviour;
+    bool                                _hasEventFocus;
+    bool                                _graphicsInitialized;
 
-    GraphicsSubgraphMap _graphicsSubgraphMap;
+    GraphicsSubgraphMap                 _graphicsSubgraphMap;
 
-    osg::BoundingBoxf   _extents;
+    osg::BoundingBoxf                   _extents;
 
-    osg::ref_ptr<Style> _style;
+    osg::ref_ptr<Style>                 _style;
 
-    osg::ref_ptr<AlignmentSettings> _alignmentSettings;
-    osg::ref_ptr<FrameSettings> _frameSettings;
-    osg::ref_ptr<TextSettings> _textSettings;
+    osg::ref_ptr<AlignmentSettings>     _alignmentSettings;
+    osg::ref_ptr<FrameSettings>         _frameSettings;
+    osg::ref_ptr<TextSettings>          _textSettings;
+    bool                                _autoFillBackground;
 
-    bool                _visible;
-    bool                _enabled;
+    bool                                _visible;
+    bool                                _enabled;
 };
 
 }

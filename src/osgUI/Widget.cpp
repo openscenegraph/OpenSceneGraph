@@ -128,7 +128,7 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
                     }
                 }
 
-                if (numButtonsPressed!=0)
+                if (_hasEventFocus && (ea->getEventType()==osgGA::GUIEventAdapter::PUSH || ea->getEventType()==osgGA::GUIEventAdapter::SCROLL) )
                 {
                     osgViewer::View* view = dynamic_cast<osgViewer::View*>(aa);
                     if (view && view->getCameraManipulator())

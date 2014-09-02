@@ -60,6 +60,22 @@ DragCallback::DragCallback(const DragCallback& hc, const osg::CopyOp& copyop):
 {
 }
 
+osg::Transform* findNearestTransform(const osg::NodePath& nodePath)
+{
+    osg::Transform* transform = 0;
+    for(osg::NodePath::const_reverse_iterator itr = nodePath.rbegin();
+        itr != nodePath.rend();
+        ++itr)
+    {
+        if ((*itr)->asTransform())
+        {
+            transform = (*itr)->asTransform();
+            break;
+        }
+    }
+    return transform;
+}
+
 bool DragCallback::handle(osgGA::EventVisitor* ev, osgGA::Event* event) const
 {
     osgGA::GUIEventAdapter* ea = event ? event->asGUIEventAdapter() : 0;
@@ -71,20 +87,46 @@ bool DragCallback::handle(osgGA::EventVisitor* ev, osgGA::Event* event) const
         DragCallback* dc = const_cast<DragCallback*>(this);
         switch(ea->getEventType())
         {
+            case(osgGA::GUIEventAdapter::SCROLL):
+            {
+                osg::Vec3d localPosition;
+                if (!widget->computeExtentsPositionInLocalCoordinates(ev, ea, localPosition)) break;
+
+                OSG_NOTICE<<"Scroll motion: "<<ea->getScrollingMotion()<<", "<<localPosition<<std::endl;
+                double scale = 1.0;
+
+                switch(ea->getScrollingMotion())
+                {
+                    case(osgGA::GUIEventAdapter::SCROLL_UP): scale = 0.9; break;
+                    case(osgGA::GUIEventAdapter::SCROLL_DOWN): scale = 1.0/0.9; break;
+                    default: break;
+                }
+
+                if (scale!=1.0)
+                {
+                    osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(findNearestTransform(ev->getNodePath()));
+                    if (transform)
+                    {
+                        transform->setMatrix(
+                            osg::Matrixd::translate(-localPosition)*
+                            osg::Matrixd::scale(osg::Vec3d(scale, scale, scale))*
+                            osg::Matrixd::translate(localPosition)*
+                            transform->getMatrix());
+                    }
+                }
+
+                break;
+            }
             case(osgGA::GUIEventAdapter::PUSH):
             {
                 dc->_dragging = (ea->getButtonMask()==osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
                 if (dc->_dragging)
                 {
                     osg::Vec3d localPosition;
-#if 0
-                    if (widget->computePositionInLocalCoordinates(ev, ea, localPosition))
-#else
                     if (widget->computeExtentsPositionInLocalCoordinates(ev, ea, localPosition))
-#endif
+
                     {
                         dc->_previousPosition = localPosition;
-                        OSG_NOTICE<<"* Move to local"<<_previousPosition<<std::endl;
                     }
                 }
                 break;
@@ -93,17 +135,7 @@ bool DragCallback::handle(osgGA::EventVisitor* ev, osgGA::Event* event) const
             {
                 if (dc->_dragging)
                 {
-                    osg::Transform* transform = 0;
-                    for(osg::NodePath::reverse_iterator itr = ev->getNodePath().rbegin();
-                        itr != ev->getNodePath().rend();
-                        ++itr)
-                    {
-                        if ((*itr)->asTransform())
-                        {
-                            transform = (*itr)->asTransform();
-                            break;
-                        }
-                    }
+                    osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(findNearestTransform(ev->getNodePath()));
                     if (transform)
                     {
                         osg::Vec3d position;

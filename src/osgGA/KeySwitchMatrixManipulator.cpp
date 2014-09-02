@@ -100,7 +100,6 @@ void KeySwitchMatrixManipulator::computeHomePosition()
 
 void KeySwitchMatrixManipulator::finishAnimation()
 {
-    OSG_NOTICE<<"KeySwitchMatrixManipulator::finishAnimation()"<<std::endl;
     for(KeyManipMap::iterator itr=_manips.begin();
         itr!=_manips.end();
         ++itr)

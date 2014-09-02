@@ -86,67 +86,30 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
 
         case(osgGA::GUIEventAdapter::PUSH):
         {
-            OSG_NOTICE<<"Button pressed "<<std::endl;
-            // toggle visibility of popup.
-            //typedef osgUI::Widget::Intersections Intersections;
-            typedef osgUtil::LineSegmentIntersector::Intersections Intersections;
-            Intersections intersections;
-            osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
-            osgGA::GUIEventAdapter* ea = event ? event->asGUIEventAdapter() : 0;
-           if ((aa && ea) && aa->computeIntersections(*ea, ev->getNodePath(), intersections))
-//            if ((aa && ea) && computeIntersections(ev, ea, intersections))
+            if (_popup->getVisible() && _popup->getHasEventFocus())
             {
-                OSG_NOTICE<<"ComboBox intersections { "<<std::endl;
-                for(Intersections::const_iterator itr =intersections.begin();
-                    itr!=intersections.end();
-                    ++itr)
+                osg::Vec3d position;
+                if (_popup->computeExtentsPositionInLocalCoordinates(ev, ea, position))
                 {
-                        const osgUtil::LineSegmentIntersector::Intersection& hit = *itr;
-                        OSG_NOTICE<<"   hit:drawable "<<hit.drawable.get()<<", "<<hit.drawable->getName()<<std::endl;
-                        OSG_NOTICE<<"   NodePath::size() "<<hit.nodePath.size()<<std::endl;
-                }
-                OSG_NOTICE<<"}"<<std::endl;
-
-                const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
-                osg::Vec3d localPosition = hit.getLocalIntersectPoint();
-                if (_extents.contains(localPosition, 1e-6))
-                {
-                    OSG_NOTICE<<"ComboBox button"<<std::endl;
-                    _popup->setVisible(!_popup->getVisible());
-                }
-
-                if (_popup->getVisible() && _popup->getExtents().contains(localPosition, 1e-6))
-                {
-                    OSG_NOTICE<<"In pop up"<<std::endl;
-                    OSG_NOTICE<<"   hit:drawable "<<hit.drawable.get()<<std::endl;
-                    OSG_NOTICE<<"   NodePath::size() "<<hit.nodePath.size()<<std::endl;
-
-                    unsigned int index=_items.size();
-                    for(osg::NodePath::const_reverse_iterator itr = hit.nodePath.rbegin();
-                        itr != hit.nodePath.rend();
-                        ++itr)
+                    position -= _popupItemOrigin;
+                    position.x() /= _popupItemSize.x();
+                    position.y() /= _popupItemSize.y();
+                    int index = static_cast<int>(position.y());
+                    if (index>=0 && index<static_cast<int>(_items.size()))
                     {
-                        if ((*itr)==this) break;
-                        if ((*itr)->getUserValue("index",index)) break;
-                    }
-
-                    if (index<_items.size())
-                    {
-                        OSG_NOTICE<<"   index selected "<<index<<std::endl;
                         setCurrentIndex(index);
                     }
-                    else
-                    {
-                        OSG_NOTICE<<"   No index selected "<<std::endl;
-                    }
-
-                    _popup->setVisible(false);
                 }
+                _popup->setVisible(false);
+            }
+            else if (getHasEventFocus())
+            {
+                _popup->setVisible(!_popup->getVisible());
             }
             else
             {
-                OSG_NOTICE<<"Toggling off ComboBox popup"<<std::endl;
                 _popup->setVisible(false);
+                return false;
             }
             break;
         }
@@ -291,13 +254,18 @@ void ComboBox::createGraphicsImplementation()
         float itemHeight = (_extents.yMax()-_extents.yMin()) - 2.0f*frameWidth;
         float popupHeight = (itemHeight)* _items.size() + margin*static_cast<float>(_items.size()-1) + 2.0f*frameWidth;
         float popupTop = _extents.yMin()-frameWidth-margin*1.0f;
-        float popupLeft = _extents.xMin()+30.0f;
-        float popupRight = _extents.xMax()+30.0f;
+        float popupLeft = _extents.xMin();
+        float popupRight = _extents.xMax();
+
+
 
         osg::BoundingBox popupExtents(popupLeft, popupTop-popupHeight, _extents.zMin(), popupRight, popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);
 
         osg::BoundingBox popupItemExtents(popupExtents.xMin()+frameWidth, popupTop-frameWidth-itemHeight, popupExtents.zMin(), popupExtents.xMax()-frameWidth, popupTop-frameWidth, popupExtents.zMax());
+
+        _popupItemOrigin.set(popupItemExtents.xMin(), popupItemExtents.yMax(), popupExtents.zMin());
+        _popupItemSize.set(popupItemExtents.xMax()-popupItemExtents.xMin(), -(itemHeight+margin), 0.0);
 
         unsigned int index = 0;
         for(Items::iterator itr = _items.begin();
@@ -318,7 +286,6 @@ void ComboBox::createGraphicsImplementation()
             // setup graphics for popup
             {
                 osg::ref_ptr<osg::Group> group = new osg::Group;
-                group->setUserValue("index",index);
 
                 if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(popupItemExtents, item->getColor()) );
                 if (!item->getText().empty()) group->addChild( style->createText(popupItemExtents, getAlignmentSettings(), getTextSettings(), item->getText()) );

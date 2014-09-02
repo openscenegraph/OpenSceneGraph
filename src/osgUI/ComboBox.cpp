@@ -40,7 +40,11 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;
 
-    if (!getHasEventFocus())
+
+    bool hasFocus = getHasEventFocus() ||
+                   (_popup->getVisible() && _popup->getHasEventFocus());
+
+    if (!hasFocus)
     {
         if (ea->getEventType()==osgGA::GUIEventAdapter::PUSH && _popup->getVisible())
         {
@@ -84,14 +88,16 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
         {
             OSG_NOTICE<<"Button pressed "<<std::endl;
             // toggle visibility of popup.
-            osgUI::Widget::Intersections intersections;
+            //typedef osgUI::Widget::Intersections Intersections;
+            typedef osgUtil::LineSegmentIntersector::Intersections Intersections;
+            Intersections intersections;
             osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
             osgGA::GUIEventAdapter* ea = event ? event->asGUIEventAdapter() : 0;
-//           if ((aa && ea) && aa->computeIntersections(*ea, ev->getNodePath(), intersections))
-            if ((aa && ea) && computeIntersections(ev, ea, intersections))
+           if ((aa && ea) && aa->computeIntersections(*ea, ev->getNodePath(), intersections))
+//            if ((aa && ea) && computeIntersections(ev, ea, intersections))
             {
                 OSG_NOTICE<<"ComboBox intersections { "<<std::endl;
-                for(osgUI::Widget::Intersections::const_iterator itr =intersections.begin();
+                for(Intersections::const_iterator itr =intersections.begin();
                     itr!=intersections.end();
                     ++itr)
                 {
@@ -139,6 +145,7 @@ bool ComboBox::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event
             }
             else
             {
+                OSG_NOTICE<<"Toggling off ComboBox popup"<<std::endl;
                 _popup->setVisible(false);
             }
             break;
@@ -284,8 +291,8 @@ void ComboBox::createGraphicsImplementation()
         float itemHeight = (_extents.yMax()-_extents.yMin()) - 2.0f*frameWidth;
         float popupHeight = (itemHeight)* _items.size() + margin*static_cast<float>(_items.size()-1) + 2.0f*frameWidth;
         float popupTop = _extents.yMin()-frameWidth-margin*1.0f;
-        float popupLeft = _extents.xMin();
-        float popupRight = _extents.xMax();
+        float popupLeft = _extents.xMin()+30.0f;
+        float popupRight = _extents.xMax()+30.0f;
 
         osg::BoundingBox popupExtents(popupLeft, popupTop-popupHeight, _extents.zMin(), popupRight, popupTop, _extents.zMax());
         _popup->setExtents(popupExtents);

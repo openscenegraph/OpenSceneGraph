@@ -74,7 +74,7 @@ public:
 
     void setCurrentIndex(unsigned int i);
     unsigned int getCurrentIndex() const { return _currentIndex; }
-    
+
     virtual void currrentIndexChanged(unsigned int i);
     virtual void currentIndexChangedImplementation(unsigned int i);
 
@@ -87,8 +87,10 @@ public:
 protected:
     virtual ~ComboBox() {}
 
-    Items _items;
-    unsigned int _currentIndex;
+    Items                       _items;
+    unsigned int                _currentIndex;
+    osg::Vec3d                  _popupItemOrigin;
+    osg::Vec3d                  _popupItemSize;
 
     osg::ref_ptr<osg::Switch> _buttonSwitch;
     osg::ref_ptr<osg::Switch> _backgroundSwitch;

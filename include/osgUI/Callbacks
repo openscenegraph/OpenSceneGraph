@@ -22,6 +22,20 @@
 namespace osgUI
 {
 
+
+class OSGUI_EXPORT CloseCallback : public osg::CallbackObject
+{
+public:
+    CloseCallback(const std::string& callbackName=std::string("close"));
+    CloseCallback(const CloseCallback& hc, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Object(osgUI, CloseCallback);
+
+    virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
+
+protected:
+    virtual ~CloseCallback() {}
+};
+
 class OSGUI_EXPORT HandleCallback : public osg::CallbackObject
 {
 public:
@@ -35,7 +49,6 @@ public:
 protected:
     virtual ~HandleCallback() {}
 };
-
 
 class OSGUI_EXPORT DragCallback : public HandleCallback
 {

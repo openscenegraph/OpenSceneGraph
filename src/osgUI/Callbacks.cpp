@@ -13,11 +13,50 @@
 
 #include <osgUI/Callbacks>
 #include <osgUI/Widget>
+#include <osgUI/Dialog>
+
 #include <osg/ValueObject>
 #include <osg/MatrixTransform>
 #include <osg/io_utils>
 
 using namespace osgUI;
+
+CloseCallback::CloseCallback(const std::string& callbackName)
+{
+    setName(callbackName);
+}
+
+CloseCallback::CloseCallback(const CloseCallback& hc, const osg::CopyOp& copyop)
+{
+}
+
+bool CloseCallback::run(osg::Object* object, osg::Parameters&, osg::Parameters&) const
+{
+    osg::Node* node = dynamic_cast<osg::Node*>(object);
+    if (node)
+    {
+        osg::NodePathList nodePathList = node->getParentalNodePaths();
+        for(osg::NodePathList::iterator itr = nodePathList.begin();
+            itr != nodePathList.end();
+            ++itr)
+        {
+            osg::NodePath& nodePath = *itr;
+            for(osg::NodePath::reverse_iterator ritr = nodePath.rbegin();
+                ritr !=  nodePath.rend();
+                ++ritr)
+            {
+                osgUI::Dialog* dialog = dynamic_cast<osgUI::Dialog*>(*ritr);
+                if (dialog)
+                {
+                    dialog->setVisible(false);
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
 
 HandleCallback::HandleCallback()
 {

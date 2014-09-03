@@ -60,34 +60,53 @@ void Dialog::createGraphicsImplementation()
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
     float titleHeight = 10.0;
-    osg::BoundingBox titleBarExents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
+    osg::BoundingBox titleBarExtents(_extents.xMin(), _extents.yMax(), _extents.zMin(), _extents.xMax()-titleHeight, _extents.yMax()+titleHeight, _extents.zMin());
+    osg::BoundingBox closeButtonExtents(_extents.xMax()-titleHeight, _extents.yMax(), _extents.zMin(), _extents.xMax(), _extents.yMax()+titleHeight, _extents.zMin());
 
     osg::Vec4 dialogBackgroundColor(0.84,0.82,0.82,1.0);
     osg::Vec4 dialogTitleBackgroundColor(0.5,0.5,1.0,1.0);
 
     _group->addChild( style->createPanel(_extents, dialogBackgroundColor) );
 
-    _group->addChild( style->createPanel(titleBarExents, dialogTitleBackgroundColor) );
+    _group->addChild( style->createPanel(titleBarExtents, dialogTitleBackgroundColor) );
 
     osg::BoundingBox dialogWithTitleExtents(_extents);
-    dialogWithTitleExtents.expandBy(titleBarExents);
+    dialogWithTitleExtents.expandBy(titleBarExtents);
+    dialogWithTitleExtents.expandBy(closeButtonExtents);
 
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
-    if (requiresFrame) { _group->addChild(style->createFrame(dialogWithTitleExtents, getFrameSettings(), dialogBackgroundColor)); }
+    if (requiresFrame)
+    {
+        _group->addChild(style->createFrame(dialogWithTitleExtents, getFrameSettings(), dialogBackgroundColor));
+
+        titleBarExtents.xMin() += getFrameSettings()->getLineWidth();
+        titleBarExtents.yMax() -= getFrameSettings()->getLineWidth();
+        closeButtonExtents.xMax() -= getFrameSettings()->getLineWidth();
+        closeButtonExtents.yMax() -= getFrameSettings()->getLineWidth();
+    }
 
     OSG_NOTICE<<"Dialog::_extents ("<<_extents.xMin()<<", "<<_extents.yMin()<<", "<<_extents.zMin()<<"), ("<<_extents.xMax()<<", "<<_extents.yMax()<<", "<<_extents.zMax()<<")"<<std::endl;
-    OSG_NOTICE<<"Dialog::titleBarExents ("<<titleBarExents.xMin()<<", "<<titleBarExents.yMin()<<", "<<titleBarExents.zMin()<<"), ("<<titleBarExents.xMax()<<", "<<titleBarExents.yMax()<<", "<<titleBarExents.zMax()<<")"<<std::endl;
+    OSG_NOTICE<<"Dialog::titleBarExtents ("<<titleBarExtents.xMin()<<", "<<titleBarExtents.yMin()<<", "<<titleBarExtents.zMin()<<"), ("<<titleBarExtents.xMax()<<", "<<titleBarExtents.yMax()<<", "<<titleBarExtents.zMax()<<")"<<std::endl;
     OSG_NOTICE<<"Dialog::dialogWithTitleExtents ("<<dialogWithTitleExtents.xMin()<<", "<<dialogWithTitleExtents.yMin()<<", "<<dialogWithTitleExtents.zMin()<<"), ("<<dialogWithTitleExtents.xMax()<<", "<<dialogWithTitleExtents.yMax()<<", "<<dialogWithTitleExtents.zMax()<<")"<<std::endl;
 
 #if 0
-    osg::ref_ptr<Node> node = style->createText(titleBarExents, getAlignmentSettings(), getTextSettings(), _title);
+    osg::ref_ptr<Node> node = style->createText(titleBarExtents, getAlignmentSettings(), getTextSettings(), _title);
     _titleDrawable = dynamic_cast<osgText::Text*>(node.get());
     _titleDrawable->setDataVariance(osg::Object::DYNAMIC);
     _group->addChild(_titleDrawable.get());
 #endif
 
+    osg::ref_ptr<PushButton> closeButton = new osgUI::PushButton;
+    closeButton->setExtents(closeButtonExtents);
+    closeButton->setText("x");
+    closeButton->setAlignmentSettings(getAlignmentSettings());
+    closeButton->setTextSettings(getTextSettings());
+    //closeButton->setFrameSettings(getFrameSettings());
+    closeButton->getOrCreateUserDataContainer()->addUserObject(new osgUI::CloseCallback("released"));
+    addChild(closeButton.get());
+
     osg::ref_ptr<Label> titleLabel = new osgUI::Label;
-    titleLabel->setExtents(titleBarExents);
+    titleLabel->setExtents(titleBarExtents);
     titleLabel->setText(_title);
     titleLabel->setAlignmentSettings(getAlignmentSettings());
     titleLabel->setTextSettings(getTextSettings());

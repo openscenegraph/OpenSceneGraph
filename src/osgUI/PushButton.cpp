@@ -78,6 +78,7 @@ void PushButton::createGraphicsImplementation()
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
 
+    float pressed = 0.88;
     float unFocused = 0.92;
     float withFocus = 0.97;
 
@@ -98,6 +99,7 @@ void PushButton::createGraphicsImplementation()
     _buttonSwitch = new osg::Switch;
     _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(unFocused, unFocused,unFocused, 1.0)));
     _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(withFocus,withFocus,withFocus,1.0)));
+    _buttonSwitch->addChild(style->createPanel(extents, osg::Vec4(pressed,pressed,pressed,1.0)));
     _buttonSwitch->setSingleChildOn(0);
 
     group->addChild(_buttonSwitch.get());

@@ -21,7 +21,8 @@ VolumeSettings::VolumeSettings():
     _sampleRatioProperty(new SampleRatioProperty(1.0f)),
     _sampleRatioWhenMovingProperty(new SampleRatioWhenMovingProperty(1.0f)),
     _cutoffProperty(new AlphaFuncProperty(0.0f)),
-    _transparencyProperty(new TransparencyProperty(1.0f))
+    _transparencyProperty(new TransparencyProperty(1.0f)),
+    _isoSurfaceProperty(new IsoSurfaceProperty(0.0f))
 {
 }
 
@@ -33,7 +34,8 @@ VolumeSettings::VolumeSettings(const VolumeSettings& vs,const osg::CopyOp& copyo
     _sampleRatioProperty(osg::clone(vs._sampleRatioProperty.get(), copyop)),
     _sampleRatioWhenMovingProperty(osg::clone(vs._sampleRatioWhenMovingProperty.get(), copyop)),
     _cutoffProperty(osg::clone(vs._cutoffProperty.get(), copyop)),
-    _transparencyProperty(osg::clone(vs._transparencyProperty.get(), copyop))
+    _transparencyProperty(osg::clone(vs._transparencyProperty.get(), copyop)),
+    _isoSurfaceProperty(osg::clone(vs._isoSurfaceProperty.get(), copyop))
 {
 }
 
@@ -44,8 +46,21 @@ void VolumeSettings::accept(PropertyVisitor& pv)
 
 void VolumeSettings::traverse(PropertyVisitor& pv)
 {
-    _sampleRatioProperty->accept(pv);
-    _sampleRatioWhenMovingProperty->accept(pv);
-    _cutoffProperty->accept(pv);
-    _transparencyProperty->accept(pv);
+    if (_sampleRatioProperty.valid())                                   _sampleRatioProperty->accept(pv);
+    if (_sampleRatioWhenMovingProperty.valid())                         _sampleRatioWhenMovingProperty->accept(pv);
+    if (_cutoffProperty.valid())                                        _cutoffProperty->accept(pv);
+    if (_transparencyProperty.valid())                                  _transparencyProperty->accept(pv);
+    if (_isoSurfaceProperty.valid() && _shadingModel==Isosurface)       _isoSurfaceProperty->accept(pv);
+}
+
+void VolumeSettings::setCutoff(float co)
+{
+    _cutoffProperty->setValue(co);
+    if (_isoSurfaceProperty.valid())
+    {
+        OSG_NOTICE<<"Setting IsoSurface value to "<<co<<std::endl;
+        _isoSurfaceProperty->setValue(co);
+    }
+
+    dirty();
 }

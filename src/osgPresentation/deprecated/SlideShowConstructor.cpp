@@ -2927,7 +2927,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         {
             // Isosurface
-            osgVolume::IsoSurfaceProperty* isp = new osgVolume::IsoSurfaceProperty(0.1);
+            osgVolume::IsoSurfaceProperty* isp = vs.valid() ? vs->getIsoSurfaceProperty() : new osgVolume::IsoSurfaceProperty(0.1);
             setUpVolumeScalarProperty(tile.get(), isp, volumeData.alphaValue);
 
             sp->addProperty(isp);

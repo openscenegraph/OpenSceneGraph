@@ -33,7 +33,7 @@ REGISTER_OBJECT_WRAPPER( osgVolume_VolumeSettings,
     ADD_OBJECT_SERIALIZER_NO_SET( SampleRatioWhenMovingProperty, osgVolume::SampleRatioWhenMovingProperty, NULL );
     ADD_OBJECT_SERIALIZER_NO_SET( CutoffProperty, osgVolume::AlphaFuncProperty, NULL );
     ADD_OBJECT_SERIALIZER_NO_SET( TransparencyProperty, osgVolume::TransparencyProperty, NULL );
-    ADD_OBJECT_SERIALIZER_NO_SET( IsoSurfaceProperty, osgVolume::IsoSurfaceProperty, NULL );
+    ADD_OBJECT_SERIALIZER_NO_SET( IsoSurfaceProperty, osgVolume::IsoSurfaceProperty, NULL ); 
 
 
 }

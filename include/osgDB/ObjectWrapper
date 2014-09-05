@@ -81,6 +81,7 @@ public:
 
     void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED );
     void markSerializerAsRemoved( const std::string& name );
+    BaseSerializer* getLastSerializer() { return _serializers.empty() ? 0 : _serializers.back().get(); }
     BaseSerializer* getSerializer( const std::string& name );
     BaseSerializer* getSerializer( const std::string& name, BaseSerializer::Type& type);
 

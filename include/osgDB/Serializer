@@ -139,7 +139,16 @@ public:
         RW_VECTOR, RW_MAP
     };
 
-    BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
+    enum Usage
+    {
+        READ_WRITE_PROPERTY = 1,
+        GET_PROPERTY = 2,
+        SET_PROPERTY = 4,
+        GET_SET_PROPERTY = GET_PROPERTY | SET_PROPERTY
+    };
+
+
+    BaseSerializer(int usage) : _firstVersion(0), _lastVersion(INT_MAX), _usage(usage) {}
 
     virtual bool set(osg::Object& /*object*/, void* /*value*/) { return false; }
     virtual bool get(const osg::Object& /*object*/, void* /*value*/) { return false; }
@@ -150,9 +159,25 @@ public:
 
     virtual IntLookup* getIntLookup() { return 0; }
 
+    void setUsage(int usage) { _usage = usage; }
+    int getUsage() const { return _usage; }
+
+    void setUsage(bool hasGetter, bool hasSetter)
+    {
+        setUsage( ((hasGetter && hasSetter) ? BaseSerializer::READ_WRITE_PROPERTY : 0) |
+                  ((hasGetter) ? BaseSerializer::GET_PROPERTY : 0) |
+                  ((hasSetter) ? BaseSerializer::SET_PROPERTY : 0) );
+    }
+
+    bool supportsReadWrite() const { return (_usage & READ_WRITE_PROPERTY)!=0; }
+    bool supportsGetSet() const { return (_usage & GET_SET_PROPERTY)!=0; }
+    bool supportsGet() const { return (_usage & GET_PROPERTY)!=0; }
+    bool supportsSet() const { return (_usage & SET_PROPERTY)!=0; }
+
 protected:
     int _firstVersion;  // Library version when the serializer is first introduced
-    int _lastVersion;  // Library version when the serializer is last required.
+    int _lastVersion;   // Library version when the serializer is last required.
+    int _usage;         // How the Serializer can be used.
 };
 
 template<typename C>
@@ -164,7 +189,7 @@ public:
     typedef bool (*Writer)( OutputStream&, const C& );
 
     UserSerializer( const char* name, Checker cf, Reader rf, Writer wf )
-    : BaseSerializer(), _name(name), _checker(cf), _reader(rf), _writer(wf) {}
+    : BaseSerializer(READ_WRITE_PROPERTY), _name(name), _checker(cf), _reader(rf), _writer(wf) {}
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -216,7 +241,7 @@ class TemplateSerializer : public BaseSerializer
 public:
 
     TemplateSerializer( const char* name, P def)
-    : BaseSerializer(), _name(name), _defaultValue(def) {}
+        : BaseSerializer(READ_WRITE_PROPERTY), _name(name), _defaultValue(def) {}
 
     virtual bool read( InputStream& is, osg::Object& obj ) = 0;
     virtual bool write( OutputStream& os, const osg::Object& obj ) = 0;
@@ -235,8 +260,10 @@ public:
     typedef P (C::*Getter)() const;
     typedef void (C::*Setter)( P );
 
-    PropByValSerializer( const char* name, P def, Getter gf, Setter sf, bool useHex=false )
-    : ParentType(name, def), _getter(gf), _setter(sf), _useHex(useHex) {}
+    PropByValSerializer( const char* name, P def, Getter gf, Setter sf, bool useHex=false ) : ParentType(name, def), _getter(gf), _setter(sf), _useHex(useHex)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -245,14 +272,14 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             if ( _useHex ) is >> std::hex;
             is >> value;
             if ( _useHex ) is >> std::dec;
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         return true;
     }
@@ -293,8 +320,10 @@ public:
     typedef CP (C::*Getter)() const;
     typedef void (C::*Setter)( CP );
 
-    PropByRefSerializer( const char* name, CP def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    PropByRefSerializer( const char* name, CP def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -303,12 +332,12 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             is >> value;
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         return true;
     }
@@ -341,8 +370,10 @@ public:
     typedef const osg::Matrix& (C::*Getter)() const;
     typedef void (C::*Setter)( const osg::Matrix& );
 
-    MatrixSerializer( const char* name, const osg::Matrix& def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    MatrixSerializer( const char* name, const osg::Matrix& def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -351,12 +382,12 @@ public:
         if ( is.isBinary() )
         {
             readMatrixImplementation( is, value );
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             readMatrixImplementation( is, value );
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         return true;
     }
@@ -409,8 +440,10 @@ public:
     typedef P (C::*Getter)() const;
     typedef void (C::*Setter)( P );
 
-    GLenumSerializer( const char* name, P def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    GLenumSerializer( const char* name, P def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -418,12 +451,12 @@ public:
         if ( is.isBinary() )
         {
             GLenum value; is >> value;
-            if (_setter!=0) (object.*_setter)( static_cast<P>(value) );
+            (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             DEF_GLENUM(value); is >> value;
-            if (_setter!=0) (object.*_setter)( static_cast<P>(value.get()) );
+            (object.*_setter)( static_cast<P>(value.get()) );
         }
         return true;
     }
@@ -456,8 +489,10 @@ public:
     typedef const std::string& (C::*Getter)() const;
     typedef void (C::*Setter)( const std::string& );
 
-    StringSerializer( const char* name, const std::string& def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    StringSerializer( const char* name, const std::string& def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -466,7 +501,7 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if (_setter!=0) (object.*_setter)( value );
+            (object.*_setter)( value );
         }
         else if ( is.matchString(ParentType::_name) )
         {
@@ -507,11 +542,13 @@ public:
     typedef const P* (C::*Getter)() const;
     typedef void (C::*Setter)( P* );
 
-    ObjectSerializer( const char* name, P* def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    ObjectSerializer( const char* name, P* def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
-    virtual bool set(osg::Object& obj, void* value) { if (_setter!=0) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; } else return false; }
-    virtual bool get(const osg::Object& obj, void* value) { if (_getter!=0) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; } else return false;}
+    virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
+    virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -523,7 +560,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readObject() );
-                if (_setter!=0) (object.*_setter)( value );
+                (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -533,7 +570,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readObject() );
-                if (_setter!=0) (object.*_setter)( value );
+                (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -577,8 +614,11 @@ public:
     typedef const P* (C::*Getter)() const;
     typedef void (C::*Setter)( P* );
 
-    ImageSerializer( const char* name, P* def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    ImageSerializer( const char* name, P* def, Getter gf, Setter sf ):
+        ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
     virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; }
@@ -593,7 +633,7 @@ public:
             if ( hasObject )
             {
                 P* value = dynamic_cast<P*>( is.readImage() );
-                if (_setter!=0) (object.*_setter)( value );
+                (object.*_setter)( value );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -603,7 +643,7 @@ public:
             {
                 is >> is.BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readImage() );
-                if (_setter!=0) (object.*_setter)( value );
+                (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
         }
@@ -647,8 +687,10 @@ public:
     typedef P (C::*Getter)() const;
     typedef B (C::*Setter)( P );
 
-    EnumSerializer( const char* name, P def, Getter gf, Setter sf )
-    : ParentType(name, def), _getter(gf), _setter(sf) {}
+    EnumSerializer( const char* name, P def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    {
+        ParentType::setUsage( _getter!=0, _setter!=0);
+    }
 
     virtual IntLookup* getIntLookup() { return &_lookup; }
 
@@ -668,12 +710,12 @@ public:
         if ( is.isBinary() )
         {
             is >> value;
-            if (_setter!=0) (object.*_setter)( static_cast<P>(value) );
+            (object.*_setter)( static_cast<P>(value) );
         }
         else if ( is.matchString(ParentType::_name) )
         {
             std::string str; is >> str;
-            if (_setter!=0) (object.*_setter)( getValue(str.c_str()) );
+            (object.*_setter)( getValue(str.c_str()) );
         }
         return true;
     }
@@ -711,8 +753,9 @@ public:
     typedef const P& (C::*Getter)() const;
     typedef void (C::*Setter)( const P& );
 
-    ListSerializer( const char* name, Getter gf, Setter sf )
-    : _name(name), _getter(gf), _setter(sf) {}
+    ListSerializer( const char* name, Getter gf, Setter sf ):
+        BaseSerializer(READ_WRITE_PROPERTY),
+        _name(name), _getter(gf), _setter(sf) {}
 
     virtual const std::string& getName() const { return _name; }
 
@@ -790,6 +833,7 @@ class VectorBaseSerializer : public BaseSerializer
 public:
 
     VectorBaseSerializer(BaseSerializer::Type elementType, unsigned int elementSize):
+        BaseSerializer(READ_WRITE_PROPERTY|GET_SET_PROPERTY),
         _elementType(elementType),_elementSize(elementSize) {}
 
     Type getElementType() const { return _elementType; }
@@ -1170,6 +1214,7 @@ class MapBaseSerializer : public BaseSerializer
 public:
 
     MapBaseSerializer(BaseSerializer::Type keyType, unsigned int keySize, BaseSerializer::Type elementType, unsigned int elementSize):
+        BaseSerializer(READ_WRITE_PROPERTY|GET_SET_PROPERTY),
         _keyType(keyType), _keySize(keySize),
         _elementType(elementType),_elementSize(elementSize) {}
 
@@ -1726,6 +1771,9 @@ public:
         }; \
         wrapper->addMethodObject(#METHODNAME, new MethodCaller()); \
     }
+
+
+#define SET_USAGE(VALUE) wrapper->getLastSerializer()->setUsage(VALUE)
 
 }
 

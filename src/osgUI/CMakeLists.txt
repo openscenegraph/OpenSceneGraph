@@ -21,6 +21,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Style
     ${HEADER_PATH}/AlignmentSettings
     ${HEADER_PATH}/FrameSettings
+    ${HEADER_PATH}/TabWidget
     ${HEADER_PATH}/TextSettings
     ${HEADER_PATH}/Validator
 )
@@ -38,6 +39,7 @@ SET(TARGET_SRC
     Style.cpp
     AlignmentSettings.cpp
     FrameSettings.cpp
+    TabWidget.cpp
     TextSettings.cpp
     Validator.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}

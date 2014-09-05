@@ -1,0 +1,101 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUI_COMBOBOX
+#define OSGUI_COMBOBOX
+
+#include <osgUI/Popup>
+#include <osg/Switch>
+#include <osgText/Text>
+
+namespace osgUI
+{
+
+class OSGUI_EXPORT Tab : public osg::Object
+{
+public:
+
+    Tab() : _color(1.0f,1.0f,1.0f,0.0f) {}
+    Tab(const std::string& str) : _text(str), _color(1.0f,1.0f,1.0f,0.0f) {}
+    Tab(const std::string& str, const osg::Vec4& col) : _text(str), _color(col) {}
+    Tab(const osg::Vec4& col) : _color(col) {}
+
+    Tab(const Tab& item, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(item,copyop), _text(item._text), _color(item._color) {}
+
+    META_Object(osgUI, Tab);
+
+    void setText(const std::string& text) { _text = text; }
+    std::string& getText() { return _text; }
+    const std::string& getText() const { return _text; }
+
+    void setColor(const osg::Vec4f& color) { _color = color; }
+    osg::Vec4f& getColor() { return _color; }
+    const osg::Vec4f& getColor() const { return _color; }
+
+    void setWidget(osgUI::Widget* widget) { _widget = widget; }
+    osgUI::Widget* getWidget() { return _widget.get(); }
+    const osgUI::Widget* getWidget() const { return _widget.get(); }
+
+protected:
+    virtual ~Tab() {}
+
+    std::string                 _text;
+    osg::Vec4                   _color;
+    osg::ref_ptr<osgUI::Widget> _widget;
+};
+
+class OSGUI_EXPORT TabWidget : public osgUI::Widget
+{
+public:
+    TabWidget();
+    TabWidget(const TabWidget& combobox, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Node(osgUI, TabWidget);
+
+    void addTab(Tab* item) { _tabs.push_back(item); dirty(); }
+
+    void setTab(unsigned int i, Tab* item) { _tabs[i] = item; dirty(); }
+    Tab* getTab(unsigned int i) { return _tabs[i].get(); }
+    const Tab* getTab(unsigned int i) const { return _tabs[i].get(); }
+
+    void clear() { _tabs.clear(); dirty(); }
+    void removeTab(unsigned int i) { _tabs.erase(_tabs.begin()+i); dirty(); }
+    unsigned int getNumTabs() { return static_cast<unsigned int>(_tabs.size()); }
+
+    typedef std::vector< osg::ref_ptr<Tab> > Tabs;
+
+    void setTabs(const Tabs& items) { _tabs = items; }
+    Tabs& getTabs() { return _tabs; }
+    const Tabs& getTabs() const { return _tabs; }
+
+    void setCurrentIndex(unsigned int i);
+    unsigned int getCurrentIndex() const { return _currentIndex; }
+
+    virtual void currrentIndexChanged(unsigned int i);
+    virtual void currentIndexChangedImplementation(unsigned int i);
+
+
+    virtual bool handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event);
+    virtual void createGraphicsImplementation();
+    virtual void enterImplementation();
+    virtual void leaveImplementation();
+
+protected:
+    virtual ~TabWidget() {}
+
+    Tabs                        _tabs;
+    unsigned int                _currentIndex;
+};
+
+}
+
+#endif

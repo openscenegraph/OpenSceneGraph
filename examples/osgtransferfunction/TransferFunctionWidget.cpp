@@ -137,7 +137,7 @@ bool TransferFunctionWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA
             _startedDrag = false;
             if (ea->getButtonMask()==osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
             {
-                osg::Vec3 position;
+                osg::Vec3d position;
                 if (computePositionInLocalCoordinates(ev, ea, position))
                 {
                     _startedDrag = true;
@@ -153,7 +153,7 @@ bool TransferFunctionWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA
             // OSG_NOTICE<<"Dragged "<<std::endl;
             if (_startedDrag)
             {
-                osg::Vec3 position;
+                osg::Vec3d position;
                 if (computePositionInLocalCoordinates(ev, ea, position))
                 {
                     float delta = -(position.x()-_previousDragPosition);
@@ -166,7 +166,7 @@ bool TransferFunctionWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA
             break;
         case(osgGA::GUIEventAdapter::SCROLL):
         {
-            osg::Vec3 position;
+            osg::Vec3d position;
             if (computePositionInLocalCoordinates(ev, ea, position))
             {
                 float translation = 0.0;

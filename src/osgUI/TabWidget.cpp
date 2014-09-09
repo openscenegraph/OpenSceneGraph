@@ -95,7 +95,7 @@ void TabWidget::createGraphicsImplementation()
     float unselected = 0.92f;
     float selected = 0.97f;
     float titleHeight = 10.0f;
-    float characterWidth = titleHeight*0.5f;
+    float characterWidth = titleHeight*0.7f;
     float margin = titleHeight*0.1f;
     float xPos = _extents.xMin();
     float yMin = _extents.yMax()-titleHeight;
@@ -117,12 +117,20 @@ void TabWidget::createGraphicsImplementation()
                   <<headerExtents.xMin()<<", "<<headerExtents.yMin()<<", "<<headerExtents.zMin()<<", "
                   <<headerExtents.xMax()<<", "<<headerExtents.yMax()<<", "<<headerExtents.zMax()<<std::endl;
 
-        osg::ref_ptr<Node> text = style->createText(headerExtents, getAlignmentSettings(), getTextSettings(), tab->getText());
-        osg::ref_ptr<Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(unselected, unselected, unselected, 1.0f));
-        osg::ref_ptr<Node> unselected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
+        osg::ref_ptr<osg::Node> text = style->createText(headerExtents, getAlignmentSettings(), getTextSettings(), tab->getText());
+        osg::ref_ptr<osg::Node> unselected_panel = style->createPanel(headerExtents, osg::Vec4(unselected, unselected, unselected, 1.0f));
+        osg::ref_ptr<osg::Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
 
-        _selectedHeaderSwitch->addChild(selected_panel.get());
-        _selectedHeaderSwitch->addChild(unselected_panel.get());
+        osg::ref_ptr<osg::Group> selected_group = new osg::Group;
+        selected_group->addChild(selected_panel.get());
+        selected_group->addChild(text.get());
+
+        osg::ref_ptr<osg::Group> unselected_group = new osg::Group;
+        unselected_group->addChild(unselected_panel.get());
+        unselected_group->addChild(text.get());
+
+        _unselectedHeaderSwitch->addChild(unselected_group.get());
+        _selectedHeaderSwitch->addChild(selected_group.get());
         _tabWidgetSwitch->addChild(tab->getWidget());
 
         xPos += width+margin;

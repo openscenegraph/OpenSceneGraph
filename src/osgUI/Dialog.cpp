@@ -112,18 +112,8 @@ void Dialog::createGraphicsImplementation()
     titleLabel->setFrameSettings(getFrameSettings());
     titleLabel->getOrCreateUserDataContainer()->addUserObject(new osgUI::DragCallback);
 
-#if 1
-    #if 0
-        _group->addChild(closeButton.get());
-        _group->addChild(titleLabel.get());
-    #else
-        setGraphicsSubgraph(-3, closeButton.get());
-        setGraphicsSubgraph(-2, titleLabel.get());
-    #endif
-#else
-    addChild(closeButton.get());
-    addChild(titleLabel.get());
-#endif
+    _group->addChild(closeButton.get());
+    _group->addChild(titleLabel.get());
 
     style->setupDialogStateSet(getOrCreateWidgetStateSet(), 5);
     style->setupClipStateSet(dialogWithTitleExtents, getOrCreateWidgetStateSet());

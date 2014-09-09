@@ -235,7 +235,21 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
                 }
             }
 
+            GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
+            while(itr!= _graphicsSubgraphMap.end() && itr->first<=0)
+            {
+                itr->second->accept(nv);
+                ++itr;
+            }
+
             osg::Group::traverse(nv);
+
+            while(itr!= _graphicsSubgraphMap.end())
+            {
+                itr->second->accept(nv);
+                ++itr;
+            }
+
         }
     }
     else if (_visible ||

@@ -438,6 +438,11 @@ void Style::setupClipStateSet(const osg::BoundingBox& extents, osg::StateSet* st
     osg::Matrixd matrix = osg::Matrixd::translate(osg::Vec3(-extents.xMin(), -extents.yMin(), -extents.zMin()))*
                           osg::Matrixd::scale(osg::Vec3(1.0f/(extents.xMax()-extents.xMin()), 1.0f/(extents.yMax()-extents.yMin()), 1.0f));
 
+    OSG_NOTICE<<"setupClipState("
+            <<extents.xMin()<<", "<<extents.yMin()<<", "<<extents.zMin()<<", "
+            <<extents.xMax()<<", "<<extents.yMax()<<", "<<extents.zMax()<<")"<<std::endl;
+
+
     osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
     texgen->setPlanesFromMatrix(matrix);
     texgen->setMode(osg::TexGen::OBJECT_LINEAR);

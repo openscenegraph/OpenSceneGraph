@@ -241,6 +241,9 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
     else if (_visible ||
             (nv.getVisitorType()!=osg::NodeVisitor::UPDATE_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::INTERSECTION_VISITOR) )
     {
+        osgUtil::CullVisitor* cv = (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) ? dynamic_cast<osgUtil::CullVisitor*>(&nv) : 0;
+        if (cv && _widgetStateSet.valid()) cv->pushStateSet(_widgetStateSet.get());
+
         GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
         while(itr!= _graphicsSubgraphMap.end() && itr->first<=0)
         {
@@ -255,6 +258,8 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
             itr->second->accept(nv);
             ++itr;
         }
+
+        if (cv && _widgetStateSet.valid()) cv->popStateSet();
     }
 }
 

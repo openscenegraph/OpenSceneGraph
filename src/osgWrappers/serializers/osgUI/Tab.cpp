@@ -11,6 +11,5 @@ REGISTER_OBJECT_WRAPPER( Tab,
                          "osg::Object osgUI::Tab" )
 {
     ADD_STRING_SERIALIZER(Text, "");
-    ADD_VEC4F_SERIALIZER(Color, osg::Vec4(1.0f,1.0f,1.0f,0.0f));
     ADD_OBJECT_SERIALIZER(Widget, osgUI::Widget, NULL);
 }

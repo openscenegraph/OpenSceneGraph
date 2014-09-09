@@ -111,7 +111,7 @@ void PushButton::createGraphicsImplementation()
 
     group->addChild(_textDrawable.get());
 
-    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
 
     setGraphicsSubgraph(0, group.get());
 }

@@ -305,7 +305,7 @@ void ComboBox::createGraphicsImplementation()
 
     _buttonSwitch->setSingleChildOn(_currentIndex);
 
-    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
 
     setGraphicsSubgraph(0, group.get());
     addChild(_popup.get());

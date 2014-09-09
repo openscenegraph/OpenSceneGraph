@@ -77,11 +77,11 @@ void Popup::createGraphicsImplementation()
     bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
     if (requiresFrame) { _transform->addChild(style->createFrame(_extents, getFrameSettings(), dialogBackgroundColor)); }
 #if 1
-    style->setupDialogStateSet(getOrCreateStateSet(),6);
+    style->setupDialogStateSet(getOrCreateWidgetStateSet(),6);
 #else
-    style->setupPopupStateSet(getOrCreateStateSet(),6);
+    style->setupPopupStateSet(getOrCreateWidgetStateSet(),6);
 #endif
-    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
 
 
     // render before the subgraph

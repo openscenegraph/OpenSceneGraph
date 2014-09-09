@@ -175,7 +175,7 @@ void LineEdit::createGraphicsImplementation()
     _textDrawable->setDataVariance(osg::Object::DYNAMIC);
     group->addChild(node.get());
 
-    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
 
     setGraphicsSubgraph(0, group.get());
 }

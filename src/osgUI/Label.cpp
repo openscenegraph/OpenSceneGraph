@@ -37,6 +37,6 @@ void Label::createGraphicsImplementation()
     osg::ref_ptr<Node> node = style->createText(_extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());
 
-    style->setupClipStateSet(_extents, getOrCreateStateSet());
+    style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
     setGraphicsSubgraph(0, node.get());
 }

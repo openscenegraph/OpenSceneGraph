@@ -25,22 +25,16 @@ class OSGUI_EXPORT Tab : public osg::Object
 {
 public:
 
-    Tab() : _color(1.0f,1.0f,1.0f,0.0f) {}
-    Tab(const std::string& str) : _text(str), _color(1.0f,1.0f,1.0f,0.0f) {}
-    Tab(const std::string& str, const osg::Vec4& col) : _text(str), _color(col) {}
-    Tab(const osg::Vec4& col) : _color(col) {}
+    Tab() {}
+    Tab(const std::string& str) : _text(str) {}
 
-    Tab(const Tab& item, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(item,copyop), _text(item._text), _color(item._color) {}
+    Tab(const Tab& item, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) : osg::Object(item,copyop), _text(item._text) {}
 
     META_Object(osgUI, Tab);
 
     void setText(const std::string& text) { _text = text; }
     std::string& getText() { return _text; }
     const std::string& getText() const { return _text; }
-
-    void setColor(const osg::Vec4f& color) { _color = color; }
-    osg::Vec4f& getColor() { return _color; }
-    const osg::Vec4f& getColor() const { return _color; }
 
     void setWidget(osgUI::Widget* widget) { _widget = widget; }
     osgUI::Widget* getWidget() { return _widget.get(); }
@@ -50,7 +44,6 @@ protected:
     virtual ~Tab() {}
 
     std::string                 _text;
-    osg::Vec4                   _color;
     osg::ref_ptr<osgUI::Widget> _widget;
 };
 
@@ -92,8 +85,14 @@ public:
 protected:
     virtual ~TabWidget() {}
 
+    void _activateWidgets();
+
     Tabs                        _tabs;
     unsigned int                _currentIndex;
+
+    osg::ref_ptr<osg::Switch>   _unselectedHeaderSwitch;
+    osg::ref_ptr<osg::Switch>   _selectedHeaderSwitch;
+    osg::ref_ptr<osg::Switch>   _tabWidgetSwitch;
 };
 
 }

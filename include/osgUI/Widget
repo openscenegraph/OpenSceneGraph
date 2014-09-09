@@ -58,6 +58,14 @@ public:
     GraphicsSubgraphMap& getGraphicsSubgraphMap() { return _graphicsSubgraphMap; }
     const GraphicsSubgraphMap& getGraphicsSubgraphMap() const { return _graphicsSubgraphMap; }
 
+    /** Set the WidgetStateSet is used internally by Widgets to manage state that decorates the subgraph.
+      * WidgetStateSet is not serialized and is typically populated by teh Widget::createGraphics() implementation,
+      * end users will not normally touoch the WidgetStateSet, use the normal Node::setStateSet() if you want to apply
+      * your own state to the Widget and it's subgraphs.*/
+    void setWidgetStateSet(osg::StateSet* stateset) { _widgetStateSet = stateset; }
+    osg::StateSet* getWidgetStateSet() { return _widgetStateSet.get(); }
+    const osg::StateSet* getWidgetStateSet() const { return _widgetStateSet.get(); }
+    osg::StateSet* getOrCreateWidgetStateSet() { if (!_widgetStateSet) _widgetStateSet = new osg::StateSet; return _widgetStateSet.get(); }
 
 
     /** createGraphics entry method, calls either callback object named "createGraphics" or the createGraphicsImplementation() method.*/
@@ -152,6 +160,7 @@ protected:
     bool                                _graphicsInitialized;
 
     GraphicsSubgraphMap                 _graphicsSubgraphMap;
+    osg::ref_ptr<osg::StateSet>         _widgetStateSet;
 
     osg::BoundingBoxf                   _extents;
 

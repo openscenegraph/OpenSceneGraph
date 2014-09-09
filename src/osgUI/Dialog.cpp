@@ -114,8 +114,8 @@ void Dialog::createGraphicsImplementation()
     titleLabel->getOrCreateUserDataContainer()->addUserObject(new osgUI::DragCallback);
     addChild(titleLabel.get());
 
-    style->setupDialogStateSet(getOrCreateStateSet(), 5);
-    style->setupClipStateSet(dialogWithTitleExtents, getOrCreateStateSet());
+    style->setupDialogStateSet(getOrCreateWidgetStateSet(), 5);
+    style->setupClipStateSet(dialogWithTitleExtents, getOrCreateWidgetStateSet());
 
     // render before the subgraph
     setGraphicsSubgraph(-1, _group.get());

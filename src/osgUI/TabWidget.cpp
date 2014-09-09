@@ -57,6 +57,7 @@ void TabWidget::setCurrentIndex(unsigned int i)
     if (_currentIndex==i) return;
 
     _currentIndex = i;
+    _activateWidgets();
 
     currrentIndexChanged(_currentIndex);
 }
@@ -85,4 +86,69 @@ void TabWidget::currentIndexChangedImplementation(unsigned int i)
 
 void TabWidget::createGraphicsImplementation()
 {
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+
+    _unselectedHeaderSwitch = new osg::Switch;
+    _selectedHeaderSwitch = new osg::Switch;
+    _tabWidgetSwitch = new osg::Switch;
+
+    float unselected = 0.92f;
+    float selected = 0.97f;
+    float titleHeight = 10.0f;
+    float characterWidth = titleHeight*0.5f;
+    float margin = titleHeight*0.1f;
+    float xPos = _extents.xMin();
+    float yMin = _extents.yMax()-titleHeight;
+    float yMax = _extents.yMax();
+    float zMin = _extents.zMin();
+    float zMax = _extents.zMax();
+
+    for(Tabs::iterator itr = _tabs.begin();
+        itr != _tabs.end();
+        ++itr)
+    {
+        Tab* tab = itr->get();
+
+        float width = tab->getText().size() * characterWidth;
+
+        osg::BoundingBox headerExtents( xPos, yMin, zMin, xPos+width, yMax, zMax);
+
+        OSG_NOTICE<<"headerExtents = "
+                  <<headerExtents.xMin()<<", "<<headerExtents.yMin()<<", "<<headerExtents.zMin()<<", "
+                  <<headerExtents.xMax()<<", "<<headerExtents.yMax()<<", "<<headerExtents.zMax()<<std::endl;
+
+        osg::ref_ptr<Node> text = style->createText(headerExtents, getAlignmentSettings(), getTextSettings(), tab->getText());
+        osg::ref_ptr<Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(unselected, unselected, unselected, 1.0f));
+        osg::ref_ptr<Node> unselected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
+
+        _selectedHeaderSwitch->addChild(selected_panel.get());
+        _selectedHeaderSwitch->addChild(unselected_panel.get());
+        _tabWidgetSwitch->addChild(tab->getWidget());
+
+        xPos += width+margin;
+
+    }
+
+    setGraphicsSubgraph(-3, _unselectedHeaderSwitch.get());
+    setGraphicsSubgraph(-2, _selectedHeaderSwitch.get());
+    setGraphicsSubgraph(-1, _tabWidgetSwitch.get());
+
+    _activateWidgets();
+}
+
+void TabWidget::_activateWidgets()
+{
+    if (_graphicsInitialized && _currentIndex<_tabs.size())
+    {
+        OSG_NOTICE<<"Activating widget "<<_currentIndex<<std::endl;
+
+        _unselectedHeaderSwitch->setAllChildrenOn();
+        _unselectedHeaderSwitch->setValue(_currentIndex, false);
+
+        _selectedHeaderSwitch->setAllChildrenOff();
+        _selectedHeaderSwitch->setValue(_currentIndex, true);
+
+        _tabWidgetSwitch->setAllChildrenOff();
+        _tabWidgetSwitch->setValue(_currentIndex, true);
+    }
 }

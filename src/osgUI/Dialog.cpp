@@ -102,8 +102,7 @@ void Dialog::createGraphicsImplementation()
     closeButton->setAlignmentSettings(getAlignmentSettings());
     closeButton->setTextSettings(getTextSettings());
     //closeButton->setFrameSettings(getFrameSettings());
-    closeButton->getOrCreateUserDataContainer()->addUserObject(new osgUI::CloseCallback("released"));
-    addChild(closeButton.get());
+    closeButton->getOrCreateUserDataContainer()->addUserObject(new osgUI::CloseCallback("released", this));
 
     osg::ref_ptr<Label> titleLabel = new osgUI::Label;
     titleLabel->setExtents(titleBarExtents);
@@ -112,7 +111,19 @@ void Dialog::createGraphicsImplementation()
     titleLabel->setTextSettings(getTextSettings());
     titleLabel->setFrameSettings(getFrameSettings());
     titleLabel->getOrCreateUserDataContainer()->addUserObject(new osgUI::DragCallback);
+
+#if 1
+    #if 0
+        _group->addChild(closeButton.get());
+        _group->addChild(titleLabel.get());
+    #else
+        setGraphicsSubgraph(-3, closeButton.get());
+        setGraphicsSubgraph(-2, titleLabel.get());
+    #endif
+#else
+    addChild(closeButton.get());
     addChild(titleLabel.get());
+#endif
 
     style->setupDialogStateSet(getOrCreateWidgetStateSet(), 5);
     style->setupClipStateSet(dialogWithTitleExtents, getOrCreateWidgetStateSet());

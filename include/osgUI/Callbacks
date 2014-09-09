@@ -18,6 +18,7 @@
 #include <osgGA/EventVisitor>
 
 #include <osgUI/Export>
+#include <osgUI/Widget>
 
 namespace osgUI
 {
@@ -26,14 +27,19 @@ namespace osgUI
 class OSGUI_EXPORT CloseCallback : public osg::CallbackObject
 {
 public:
-    CloseCallback(const std::string& callbackName=std::string("close"));
+    CloseCallback(const std::string& callbackName=std::string("close"), osgUI::Widget* closeWidget=0);
     CloseCallback(const CloseCallback& hc, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     META_Object(osgUI, CloseCallback);
+
+    void setCloseWidget(osgUI::Widget* widget) { _closeWidget = widget; }
+    osgUI::Widget* getCloseWidget() { return _closeWidget.get(); }
+    const osgUI::Widget* getCloseWidget() const { return _closeWidget.get(); }
 
     virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
 
 protected:
     virtual ~CloseCallback() {}
+    osg::observer_ptr<osgUI::Widget> _closeWidget;
 };
 
 class OSGUI_EXPORT HandleCallback : public osg::CallbackObject

@@ -21,7 +21,8 @@
 
 using namespace osgUI;
 
-CloseCallback::CloseCallback(const std::string& callbackName)
+CloseCallback::CloseCallback(const std::string& callbackName, osgUI::Widget* closeWidget):
+    _closeWidget(closeWidget)
 {
     setName(callbackName);
 }
@@ -32,6 +33,11 @@ CloseCallback::CloseCallback(const CloseCallback& hc, const osg::CopyOp& copyop)
 
 bool CloseCallback::run(osg::Object* object, osg::Parameters&, osg::Parameters&) const
 {
+    if (_closeWidget.valid())
+    {
+        _closeWidget->setVisible(false);
+    }
+
     osg::Node* node = dynamic_cast<osg::Node*>(object);
     if (node)
     {

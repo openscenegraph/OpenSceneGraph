@@ -35,7 +35,88 @@ TabWidget::TabWidget(const osgUI::TabWidget& tabwidget, const osg::CopyOp& copyo
 
 bool TabWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
 {
-    // OSG_NOTICE<<"TabWidget::handleImplementation"<<std::endl;
+    osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
+    if (!ea) return false;
+
+    osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
+    if (!aa) return false;
+
+    if (!getHasEventFocus()) return false;
+
+    unsigned int tabHeaderContainsPointer = _tabs.size();
+
+    // test if active tab header contains pointer
+    {
+        osg::NodePath nodePath = ev->getNodePath();
+        nodePath.push_back(_selectedHeaderSwitch.get());
+
+        osgUtil::LineSegmentIntersector::Intersections intersections;
+        if (aa->computeIntersections(*ea, nodePath, intersections))
+        {
+            tabHeaderContainsPointer = _currentIndex;
+        }
+    }
+
+    // test if inactive tab header contains pointer
+    {
+        osg::NodePath nodePath = ev->getNodePath();
+        nodePath.push_back(_unselectedHeaderSwitch.get());
+
+        osgUtil::LineSegmentIntersector::Intersections intersections;
+        if (aa->computeIntersections(*ea, nodePath, intersections))
+        {
+
+            const osgUtil::LineSegmentIntersector::Intersection& Intersection = *intersections.begin();
+            for(osg::NodePath::const_iterator itr = Intersection.nodePath.begin();
+                itr != Intersection.nodePath.end();
+                ++itr)
+            {
+                if ((*itr)->getUserValue("index",tabHeaderContainsPointer)) break;
+            }
+        }
+    }
+
+    if (tabHeaderContainsPointer>=_tabs.size()) return false;
+
+    switch(ea->getEventType())
+    {
+        case(osgGA::GUIEventAdapter::SCROLL):
+            if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_DOWN)
+            {
+                if (getCurrentIndex()<_tabs.size()-1) setCurrentIndex(getCurrentIndex()+1);
+                return true;
+            }
+            else if (ea->getScrollingMotion()==osgGA::GUIEventAdapter::SCROLL_UP)
+            {
+                if (getCurrentIndex()>0) setCurrentIndex(getCurrentIndex()-1);
+                return true;
+            }
+            break;
+
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+            if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Down || ea->getKey()==osgGA::GUIEventAdapter::KEY_Right )
+            {
+                if (getCurrentIndex()<_tabs.size()-1) setCurrentIndex(getCurrentIndex()+1);
+                return true;
+            }
+            else if (ea->getKey()==osgGA::GUIEventAdapter::KEY_Up || ea->getKey()==osgGA::GUIEventAdapter::KEY_Left )
+            {
+                if (getCurrentIndex()>0) setCurrentIndex(getCurrentIndex()-1);
+                return true;
+            }
+
+            break;
+
+        case(osgGA::GUIEventAdapter::RELEASE):
+        {
+            setCurrentIndex(tabHeaderContainsPointer);
+            return true;
+
+            break;
+        }
+        default:
+            break;
+    }
 
     return false;
 }
@@ -88,6 +169,8 @@ void TabWidget::createGraphicsImplementation()
 {
     Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
 
+    // bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
+
     _unselectedHeaderSwitch = new osg::Switch;
     _selectedHeaderSwitch = new osg::Switch;
     _tabWidgetSwitch = new osg::Switch;
@@ -103,9 +186,10 @@ void TabWidget::createGraphicsImplementation()
     float zMin = _extents.zMin();
     float zMax = _extents.zMax();
 
+    unsigned int tabIndex = 0;
     for(Tabs::iterator itr = _tabs.begin();
         itr != _tabs.end();
-        ++itr)
+        ++itr, ++tabIndex)
     {
         Tab* tab = itr->get();
 
@@ -122,10 +206,12 @@ void TabWidget::createGraphicsImplementation()
         osg::ref_ptr<osg::Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
 
         osg::ref_ptr<osg::Group> selected_group = new osg::Group;
+        selected_group->setUserValue("index",tabIndex);
         selected_group->addChild(selected_panel.get());
         selected_group->addChild(text.get());
 
         osg::ref_ptr<osg::Group> unselected_group = new osg::Group;
+        unselected_group->setUserValue("index",tabIndex);
         unselected_group->addChild(unselected_panel.get());
         unselected_group->addChild(text.get());
 

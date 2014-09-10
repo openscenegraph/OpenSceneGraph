@@ -17,8 +17,8 @@
 
 using namespace osgUI;
 
-AlignmentSettings::AlignmentSettings():
-    _alignment(AlignmentSettings::LEFT_BOTTOM)
+AlignmentSettings::AlignmentSettings(AlignmentSettings::Alignment alignment):
+    _alignment(alignment)
 {
 }
 

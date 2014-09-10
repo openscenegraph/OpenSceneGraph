@@ -65,7 +65,6 @@ bool TabWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* even
         osgUtil::LineSegmentIntersector::Intersections intersections;
         if (aa->computeIntersections(*ea, nodePath, intersections))
         {
-
             const osgUtil::LineSegmentIntersector::Intersection& Intersection = *intersections.begin();
             for(osg::NodePath::const_iterator itr = Intersection.nodePath.begin();
                 itr != Intersection.nodePath.end();
@@ -179,7 +178,7 @@ void TabWidget::createGraphicsImplementation()
     float selected = 0.97f;
     float titleHeight = 10.0f;
     float characterWidth = titleHeight*0.7f;
-    float margin = titleHeight*0.1f;
+    float margin = titleHeight*0.2f;
     float xPos = _extents.xMin();
     float yMin = _extents.yMax()-titleHeight;
     float yMax = _extents.yMax();
@@ -187,6 +186,9 @@ void TabWidget::createGraphicsImplementation()
     float zMax = _extents.zMax();
 
     unsigned int tabIndex = 0;
+
+    osg::ref_ptr<osgUI::AlignmentSettings> textAlignment = new osgUI::AlignmentSettings(osgUI::AlignmentSettings::LEFT_CENTER);
+
     for(Tabs::iterator itr = _tabs.begin();
         itr != _tabs.end();
         ++itr, ++tabIndex)
@@ -196,12 +198,18 @@ void TabWidget::createGraphicsImplementation()
         float width = tab->getText().size() * characterWidth;
 
         osg::BoundingBox headerExtents( xPos, yMin, zMin, xPos+width, yMax, zMax);
+        osg::BoundingBox textExtents( xPos+margin, yMin, zMin, xPos+width-margin, yMax, zMax);
 
-        OSG_NOTICE<<"headerExtents = "
-                  <<headerExtents.xMin()<<", "<<headerExtents.yMin()<<", "<<headerExtents.zMin()<<", "
-                  <<headerExtents.xMax()<<", "<<headerExtents.yMax()<<", "<<headerExtents.zMax()<<std::endl;
+        osg::ref_ptr<osg::Node> textNode = style->createText(textExtents, textAlignment.get(), getTextSettings(), tab->getText());
 
-        osg::ref_ptr<osg::Node> text = style->createText(headerExtents, getAlignmentSettings(), getTextSettings(), tab->getText());
+        osg::ref_ptr<osgText::Text> text = dynamic_cast<osgText::Text*>(textNode.get());
+        if (text.valid()) textExtents = text->getBoundingBox();
+
+        // adjust position of size of text.
+        float textWidth = (textExtents.xMax() - textExtents.xMin());
+
+        headerExtents.xMax() = textExtents.xMin() + textWidth + margin;
+
         osg::ref_ptr<osg::Node> unselected_panel = style->createPanel(headerExtents, osg::Vec4(unselected, unselected, unselected, 1.0f));
         osg::ref_ptr<osg::Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
 
@@ -219,7 +227,7 @@ void TabWidget::createGraphicsImplementation()
         _selectedHeaderSwitch->addChild(selected_group.get());
         _tabWidgetSwitch->addChild(tab->getWidget());
 
-        xPos += width+margin;
+        xPos += textWidth+3.0*margin;
 
     }
 

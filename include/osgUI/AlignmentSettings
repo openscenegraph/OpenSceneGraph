@@ -25,9 +25,6 @@ namespace osgUI
 class OSGUI_EXPORT AlignmentSettings : public osg::Object
 {
 public:
-    AlignmentSettings();
-    AlignmentSettings(const AlignmentSettings& as, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-    META_Object(osgUI, AlignmentSettings);
 
     enum Alignment
     {
@@ -51,6 +48,10 @@ public:
         CENTER_BOTTOM_BASE_LINE,
         RIGHT_BOTTOM_BASE_LINE
     };
+
+    AlignmentSettings(Alignment alignment=AlignmentSettings::LEFT_BOTTOM);
+    AlignmentSettings(const AlignmentSettings& as, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+    META_Object(osgUI, AlignmentSettings);
 
     void setAlignment(Alignment alignment) { _alignment = alignment; }
     Alignment getAlignment() const { return _alignment; }

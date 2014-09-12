@@ -48,7 +48,7 @@ bool TabWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* even
     // test if active tab header contains pointer
     {
         osg::NodePath nodePath = ev->getNodePath();
-        nodePath.push_back(_selectedHeaderSwitch.get());
+        nodePath.push_back(_activeHeaderSwitch.get());
 
         osgUtil::LineSegmentIntersector::Intersections intersections;
         if (aa->computeIntersections(*ea, nodePath, intersections))
@@ -60,7 +60,7 @@ bool TabWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* even
     // test if inactive tab header contains pointer
     {
         osg::NodePath nodePath = ev->getNodePath();
-        nodePath.push_back(_unselectedHeaderSwitch.get());
+        nodePath.push_back(_inactiveHeaderSwitch.get());
 
         osgUtil::LineSegmentIntersector::Intersections intersections;
         if (aa->computeIntersections(*ea, nodePath, intersections))
@@ -170,24 +170,39 @@ void TabWidget::createGraphicsImplementation()
 
     // bool requiresFrame = (getFrameSettings() && getFrameSettings()->getShape()!=osgUI::FrameSettings::NO_FRAME);
 
-    _unselectedHeaderSwitch = new osg::Switch;
-    _selectedHeaderSwitch = new osg::Switch;
+    _inactiveHeaderSwitch = new osg::Switch;
+    _activeHeaderSwitch = new osg::Switch;
     _tabWidgetSwitch = new osg::Switch;
 
-    float unselected = 0.92f;
-    float selected = 0.97f;
+    float active = 0.84f;
+    float inactive = 0.80f;
     float titleHeight = 10.0f;
     float characterWidth = titleHeight*0.7f;
     float margin = titleHeight*0.2f;
-    float xPos = _extents.xMin();
-    float yMin = _extents.yMax()-titleHeight;
-    float yMax = _extents.yMax();
-    float zMin = _extents.zMin();
-    float zMax = _extents.zMax();
 
     unsigned int tabIndex = 0;
 
+    osg::BoundingBox centerExtents = _extents;
+    centerExtents.yMax() -= titleHeight;
+
     osg::ref_ptr<osgUI::AlignmentSettings> textAlignment = new osgUI::AlignmentSettings(osgUI::AlignmentSettings::LEFT_CENTER);
+
+    osg::ref_ptr<FrameSettings> fs = getFrameSettings();
+    if (!fs)
+    {
+        fs = new osgUI::FrameSettings;
+        fs->setShadow(osgUI::FrameSettings::RAISED);
+        fs->setLineWidth(1.0f);
+    }
+
+    osg::Vec4 dialogBackgroundColor(active,active,active,1.0);
+    osg::Vec4 inactiveColor(inactive, inactive, inactive, 1.0f);
+
+    float xPos = _extents.xMin();
+    float yMin = _extents.yMax() - titleHeight - fs->getLineWidth();
+    float yMax = _extents.yMax();
+    float zMin = _extents.zMin();
+    float zMax = _extents.zMax();
 
     for(Tabs::iterator itr = _tabs.begin();
         itr != _tabs.end();
@@ -210,29 +225,33 @@ void TabWidget::createGraphicsImplementation()
 
         headerExtents.xMax() = textExtents.xMin() + textWidth + margin;
 
-        osg::ref_ptr<osg::Node> unselected_panel = style->createPanel(headerExtents, osg::Vec4(unselected, unselected, unselected, 1.0f));
-        osg::ref_ptr<osg::Node> selected_panel = style->createPanel(headerExtents, osg::Vec4(selected, selected, selected, 1.0f));
+        osg::ref_ptr<osg::Node> inactive_panel = _createTabHeader(headerExtents, fs.get(), inactiveColor);
+        osg::ref_ptr<osg::Node> selected_panel = _createTabHeader(headerExtents, fs.get(), dialogBackgroundColor);
 
         osg::ref_ptr<osg::Group> selected_group = new osg::Group;
         selected_group->setUserValue("index",tabIndex);
         selected_group->addChild(selected_panel.get());
         selected_group->addChild(text.get());
 
-        osg::ref_ptr<osg::Group> unselected_group = new osg::Group;
-        unselected_group->setUserValue("index",tabIndex);
-        unselected_group->addChild(unselected_panel.get());
-        unselected_group->addChild(text.get());
+        osg::ref_ptr<osg::Group> inactive_group = new osg::Group;
+        inactive_group->setUserValue("index",tabIndex);
+        inactive_group->addChild(inactive_panel.get());
+        inactive_group->addChild(text.get());
 
-        _unselectedHeaderSwitch->addChild(unselected_group.get());
-        _selectedHeaderSwitch->addChild(selected_group.get());
+        _inactiveHeaderSwitch->addChild(inactive_group.get());
+        _activeHeaderSwitch->addChild(selected_group.get());
         _tabWidgetSwitch->addChild(tab->getWidget());
 
         xPos += textWidth+3.0*margin;
 
     }
 
-    setGraphicsSubgraph(-3, _unselectedHeaderSwitch.get());
-    setGraphicsSubgraph(-2, _selectedHeaderSwitch.get());
+    setGraphicsSubgraph(-4, _inactiveHeaderSwitch.get());
+
+    osg::ref_ptr<osg::Node> backgroundPanel = _createTabFrame( centerExtents, fs.get(), dialogBackgroundColor);
+    setGraphicsSubgraph(-3, backgroundPanel.get());
+
+    setGraphicsSubgraph(-2, _activeHeaderSwitch.get());
     setGraphicsSubgraph(-1, _tabWidgetSwitch.get());
 
     _activateWidgets();
@@ -244,13 +263,153 @@ void TabWidget::_activateWidgets()
     {
         OSG_NOTICE<<"Activating widget "<<_currentIndex<<std::endl;
 
-        _unselectedHeaderSwitch->setAllChildrenOn();
-        _unselectedHeaderSwitch->setValue(_currentIndex, false);
+        _inactiveHeaderSwitch->setAllChildrenOn();
+        _inactiveHeaderSwitch->setValue(_currentIndex, false);
 
-        _selectedHeaderSwitch->setAllChildrenOff();
-        _selectedHeaderSwitch->setValue(_currentIndex, true);
+        _activeHeaderSwitch->setAllChildrenOff();
+        _activeHeaderSwitch->setValue(_currentIndex, true);
 
         _tabWidgetSwitch->setAllChildrenOff();
         _tabWidgetSwitch->setValue(_currentIndex, true);
     }
+}
+
+osg::Node* TabWidget::_createTabFrame(const osg::BoundingBox& extents, osgUI::FrameSettings* fs, const osg::Vec4& color)
+{
+    Style* style = (getStyle()!=0) ? getStyle() : Style::instance().get();
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+
+    group->addChild( style->createPanel(extents, color) );
+    group->addChild( style->createFrame(extents, fs, color) );
+
+    return group.release();
+}
+
+osg::Node* TabWidget::_createTabHeader(const osg::BoundingBox& extents, osgUI::FrameSettings* frameSettings, const osg::Vec4& color)
+{
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    geometry->setName("Frame");
+
+    float topScale = 1.0f;
+    float bottomScale = 1.0f;
+    float leftScale = 1.0f;
+    float rightScale = 1.0f;
+
+    if (frameSettings)
+    {
+        switch(frameSettings->getShadow())
+        {
+            case(FrameSettings::PLAIN):
+                // default settings are appropriate for PLAIN
+                break;
+            case(FrameSettings::SUNKEN):
+                topScale = 0.6f;
+                bottomScale = 1.2f;
+                leftScale = 0.8f;
+                rightScale = 0.8f;
+                break;
+            case(FrameSettings::RAISED):
+                topScale = 1.2f;
+                bottomScale = 0.6f;
+                leftScale = 0.8f;
+                rightScale = 0.8f;
+                break;
+        }
+    }
+
+    osg::Vec4 topColor(osg::minimum(color.r()*topScale,1.0f), osg::minimum(color.g()*topScale,1.0f), osg::minimum(color.b()*topScale,1.0f), color.a());
+    osg::Vec4 bottomColor(osg::minimum(color.r()*bottomScale,1.0f), osg::minimum(color.g()*bottomScale,1.0f), osg::minimum(color.b()*bottomScale,1.0f), color.a());
+    osg::Vec4 leftColor(osg::minimum(color.r()*leftScale,1.0f), osg::minimum(color.g()*leftScale,1.0f), osg::minimum(color.b()*leftScale,1.0f), color.a());
+    osg::Vec4 rightColor(osg::minimum(color.r()*rightScale,1.0f), osg::minimum(color.g()*rightScale,1.0f), osg::minimum(color.b()*rightScale,1.0f), color.a());
+
+    float lineWidth = frameSettings ? frameSettings->getLineWidth() : 1.0f;
+
+    osg::Vec3 outerBottomLeft(extents.xMin(), extents.yMin()+lineWidth, extents.zMin());
+    osg::Vec3 outerBottomRight(extents.xMax(), extents.yMin()+lineWidth, extents.zMin());
+    osg::Vec3 outerTopLeft(extents.xMin(), extents.yMax(), extents.zMin());
+    osg::Vec3 outerTopRight(extents.xMax(), extents.yMax(), extents.zMin());
+
+    osg::Vec3 innerBottomLeft(extents.xMin()+lineWidth, extents.yMin(), extents.zMin());
+    osg::Vec3 innerBottomRight(extents.xMax()-lineWidth, extents.yMin(), extents.zMin());
+    osg::Vec3 innerTopLeft(extents.xMin()+lineWidth, extents.yMax()-lineWidth, extents.zMin());
+    osg::Vec3 innerTopRight(extents.xMax()-lineWidth, extents.yMax()-lineWidth, extents.zMin());
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices.get());
+
+    vertices->push_back( outerBottomLeft );   // 0
+    vertices->push_back( outerBottomRight );  // 1
+    vertices->push_back( outerTopLeft );      // 2
+    vertices->push_back( outerTopRight );     // 3
+
+    vertices->push_back( innerBottomLeft );  // 4
+    vertices->push_back( innerBottomRight ); // 5
+    vertices->push_back( innerTopLeft );     // 6
+    vertices->push_back( innerTopRight );    // 7
+
+    osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array;
+    geometry->setColorArray(colours.get(), osg::Array::BIND_PER_PRIMITIVE_SET);
+
+    // bottom
+    {
+        colours->push_back(bottomColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(4);
+        primitives->push_back(0);
+        primitives->push_back(5);
+        primitives->push_back(1);
+    }
+
+    // top
+    {
+        colours->push_back(topColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(2);
+        primitives->push_back(6);
+        primitives->push_back(3);
+        primitives->push_back(7);
+    }
+
+    // left
+    {
+        colours->push_back(leftColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(2);
+        primitives->push_back(0);
+        primitives->push_back(6);
+        primitives->push_back(4);
+    }
+
+    // right
+    {
+        colours->push_back(rightColor);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(7);
+        primitives->push_back(5);
+        primitives->push_back(3);
+        primitives->push_back(1);
+    }
+
+
+    // center
+    {
+        colours->push_back(color);
+
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+        geometry->addPrimitiveSet(primitives.get());
+        primitives->push_back(6);
+        primitives->push_back(4);
+        primitives->push_back(7);
+        primitives->push_back(5);
+    }
+
+    return geometry.release();
 }

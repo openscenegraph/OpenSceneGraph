@@ -87,11 +87,14 @@ protected:
 
     void _activateWidgets();
 
+    osg::Node* _createTabFrame(const osg::BoundingBox& extents, osgUI::FrameSettings* fs, const osg::Vec4& color);
+    osg::Node* _createTabHeader(const osg::BoundingBox& extents, osgUI::FrameSettings* fs, const osg::Vec4& color);
+
     Tabs                        _tabs;
     unsigned int                _currentIndex;
 
-    osg::ref_ptr<osg::Switch>   _unselectedHeaderSwitch;
-    osg::ref_ptr<osg::Switch>   _selectedHeaderSwitch;
+    osg::ref_ptr<osg::Switch>   _inactiveHeaderSwitch;
+    osg::ref_ptr<osg::Switch>   _activeHeaderSwitch;
     osg::ref_ptr<osg::Switch>   _tabWidgetSwitch;
 };
 

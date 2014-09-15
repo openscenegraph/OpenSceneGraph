@@ -424,6 +424,9 @@ Registry::Registry()
     // addFileExtensionAlias("pfa",   "freetype");  // type2 ascii
 
 
+    // TransferFunction head
+    addFileExtensionAlias("tf-255", "tf");
+
     // portable bitmap, greyscale and colour/pixmap image formats
     addFileExtensionAlias("pbm", "pnm");
     addFileExtensionAlias("pgm", "pnm");

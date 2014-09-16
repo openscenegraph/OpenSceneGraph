@@ -26,17 +26,66 @@ class ReaderWriterTF : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "TransferFunction Reader/Writer"; }
 
-        ReadResult readTransferFunction(std::istream& fin, float colorScale) const
+        ReadResult readTransferFunction(std::istream& fin) const
         {
             osg::TransferFunction1D::ColorMap colorMap;
+
+            float colorScale = 1.0f/255.0f;
+
             while(fin)
             {
-                float value, red, green, blue, alpha;
-                fin >> value >> red >> green >> blue >> alpha;
-                if (fin)
+                char readline[4096];
+                *readline = 0;
+                fin.getline(readline, sizeof(readline));
+
+                if (*readline==0) continue;
+
+                if (*readline=='#')
                 {
-                    std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-                    colorMap[value] = osg::Vec4(red,green,blue,alpha);
+                    OSG_NOTICE<<"comment = ["<<readline<<"]"<<std::endl;
+                }
+                else
+                {
+                    std::stringstream str(readline);
+
+                    std::string value;
+                    str >> value;
+
+                    if (value=="colour-scale" || value=="color-scale")
+                    {
+                        std::string scaleStr;
+                        str >> scaleStr;
+
+                        OSG_NOTICE<<"color-scale = ["<<scaleStr<<"]"<<std::endl;
+
+                        if (!scaleStr.empty())
+                        {
+                            colorScale = 1.0f/osg::asciiToFloat(scaleStr.c_str());
+                        }
+                    }
+                    else
+                    {
+
+                        std::string red, green, blue, alpha;
+                        str >> red >> green >> blue >> alpha;
+
+                        *readline = 0;
+                        str.getline(readline, sizeof(readline));
+
+                        char* comment = readline;
+                        while(*comment==' ' || *comment=='\t') ++comment;
+
+                        if (*comment!=0)
+                        {
+                            OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<") comment = ["<<comment<<"]"<<std::endl;
+                        }
+                        else
+                        {
+                            OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+                        }
+
+                        colorMap[osg::asciiToFloat(value.c_str())] = osg::Vec4(osg::asciiToFloat(red.c_str()),osg::asciiToFloat(green.c_str()),osg::asciiToFloat(blue.c_str()),osg::asciiToFloat(alpha.c_str()));
+                    }
                 }
             }
 
@@ -47,27 +96,7 @@ class ReaderWriterTF : public osgDB::ReaderWriter
 
             // colorMap[value] = osg::Vec4(red*colorScale,green*colorScale,blue*colorScale,alpha*colorScale);
 
-            if (colorScale==0.0f)
-            {
-                float maxValue = 0.0f;
-                for(osg::TransferFunction1D::ColorMap::iterator itr = colorMap.begin();
-                    itr != colorMap.end();
-                    ++itr)
-                {
-                    const osg::Vec4& c = itr->second;
-                    if (c.r()>maxValue) maxValue = c.r();
-                    if (c.g()>maxValue) maxValue = c.g();
-                    if (c.b()>maxValue) maxValue = c.b();
-                    if (c.a()>maxValue) maxValue = c.a();
-                }
-
-                if (maxValue>=2.0f)
-                {
-                    colorScale = 1.0f/255.0f;
-                }
-            }
-
-            if (colorScale!=0.0)
+            if (colorScale!=1.0)
             {
                 OSG_NOTICE<<"Rescaling ColorMap by "<<colorScale<<std::endl;
                 for(osg::TransferFunction1D::ColorMap::iterator itr = colorMap.begin();
@@ -88,27 +117,9 @@ class ReaderWriterTF : public osgDB::ReaderWriter
             return tf;
         }
 
-        bool readColorScale(const osgDB::ReaderWriter::Options* options, float& colorScale) const
+        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options*) const
         {
-            if (options && options->getOptionString().find("tf-255")!=std::string::npos)
-            {
-                colorScale = 1.0/255.0f;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
-        {
-            float colorScale = 0.0f; // default auto-detect scale
-
-            readColorScale(options, colorScale);
-
-            return readTransferFunction(fin, colorScale);
+            return readTransferFunction(fin);
         }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -119,22 +130,16 @@ class ReaderWriterTF : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            float colorScale = 0.0f; // default auto-detect scale
-            if (ext=="tf-255") colorScale = 1.0f/255.0f;
-
-            readColorScale(options, colorScale);
-
             osgDB::ifstream fin(fileName.c_str(), std::ios::in | std::ios::binary);
 
-            if (fin) return readTransferFunction( fin, colorScale);
+            if (fin) return readTransferFunction( fin);
             else return ReadResult::ERROR_IN_READING_FILE;
         }
 
-        virtual WriteResult writeTransferFunction(const osg::TransferFunction1D* tf, std::ostream& fout, float colorScale) const
+        virtual WriteResult writeTransferFunction(const osg::TransferFunction1D* tf, std::ostream& fout) const
         {
-            if (colorScale == 0.0) colorScale = 1.0f;
-
             const osg::TransferFunction1D::ColorMap& cm = tf->getColorMap();
+            float colorScale = 255.0f;
             for(osg::TransferFunction1D::ColorMap::const_iterator itr = cm.begin();
                 itr != cm.end();
                 ++itr)
@@ -147,18 +152,15 @@ class ReaderWriterTF : public osgDB::ReaderWriter
         }
 
 
-        virtual WriteResult writeObject(const osg::Object& object, std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
+        virtual WriteResult writeObject(const osg::Object& object, std::ostream& fout, const osgDB::ReaderWriter::Options*) const
         {
             const osg::TransferFunction1D* tf = dynamic_cast<const osg::TransferFunction1D*>(&object);
             if (!tf) return WriteResult::FILE_NOT_HANDLED;
 
-            float colorScale = 0.0f; // default auto-detect scale
-            readColorScale(options, colorScale);
-
-            return writeTransferFunction(tf, fout, colorScale);
+            return writeTransferFunction(tf, fout);
         }
 
-        virtual WriteResult writeObject(const osg::Object& object, const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        virtual WriteResult writeObject(const osg::Object& object, const std::string& fileName, const osgDB::ReaderWriter::Options*) const
         {
             OSG_NOTICE<<"ReaderWriterTF::writeObject"<<fileName<<std::endl;
 
@@ -168,14 +170,10 @@ class ReaderWriterTF : public osgDB::ReaderWriter
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-            float colorScale = 0.0f; // default auto-detect scale
-            if (ext=="tf-255") colorScale = 1.0f/255.0f;
-            readColorScale(options, colorScale);
-
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
-            return writeTransferFunction(tf, fout, colorScale);
+            return writeTransferFunction(tf, fout);
         }
 };
 

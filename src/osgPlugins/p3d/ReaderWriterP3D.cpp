@@ -178,9 +178,7 @@ public:
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
     void parseModelScript(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
 
-    osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float scale) const;
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
-
 
     void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const;
 
@@ -1348,65 +1346,6 @@ void ReaderWriterP3DXML::parseModelScript(osgPresentation::SlideShowConstructor&
     }
 }
 
-
-
-osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std::string& filename, float scale) const
-{
-    std::string foundFile = osgDB::findDataFile(filename);
-    if (foundFile.empty())
-    {
-        OSG_NOTICE<<"Error: could not find transfer function file : "<<filename<<std::endl;
-        return 0;
-    }
-
-    OSG_NOTICE<<"Reading transfer function "<<filename<<std::endl;
-
-    osg::TransferFunction1D::ColorMap colorMap;
-    osgDB::ifstream fin(foundFile.c_str());
-    while(fin)
-    {
-        char readline[4096];
-        *readline = 0;
-        fin.getline(readline, sizeof(readline));
-
-        if (*readline!=0)
-        {
-            std::stringstream str(readline);
-
-            float value, red, green, blue, alpha;
-            str >> value >> red >> green >> blue >> alpha;
-
-            *readline = 0;
-            str.getline(readline, sizeof(readline));
-
-            char* comment = readline;
-            while(*comment==' ' || *comment=='\t' ) ++comment;
-
-            if (*comment!=0)
-            {
-                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<") comment = ["<<comment<<"]"<<std::endl;
-            }
-            else
-            {
-                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-            }
-            colorMap[value] = osg::Vec4(red*scale,green*scale,blue*scale,alpha*scale);
-        }
-    }
-
-    if (colorMap.empty())
-    {
-        OSG_NOTICE<<"Error: No values read from transfer function file: "<<filename<<std::endl;
-        return 0;
-    }
-
-    osg::TransferFunction1D* tf = new osg::TransferFunction1D;
-    tf->assign(colorMap);
-
-    return tf;
-}
-
-
 void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
 {
 
@@ -1499,12 +1438,12 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     std::string transferFunctionFile;
     if (getTrimmedProperty(cur, "tf", transferFunctionFile))
     {
-        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile, 1.0);
+        volumeData.transferFunction = osgDB::readFile<osg::TransferFunction1D>(transferFunctionFile);
     }
 
     if (getTrimmedProperty(cur, "tf-255", transferFunctionFile))
     {
-        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile, 1.0/255.0);
+        volumeData.transferFunction = osgDB::readFile<osg::TransferFunction1D>(transferFunctionFile);
     }
 
     if (getProperty(cur, "options", volumeData.options)) {}

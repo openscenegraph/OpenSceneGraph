@@ -301,44 +301,6 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
 
 }
 
-
-osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float colorScale=1.0f)
-{
-    std::string foundFile = osgDB::findDataFile(filename);
-    if (foundFile.empty())
-    {
-        std::cout<<"Error: could not find transfer function file : "<<filename<<std::endl;
-        return 0;
-    }
-
-    std::cout<<"Reading transfer function "<<filename<<std::endl;
-
-    osg::TransferFunction1D::ColorMap colorMap;
-    osgDB::ifstream fin(foundFile.c_str());
-    while(fin)
-    {
-        float value, red, green, blue, alpha;
-        fin >> value >> red >> green >> blue >> alpha;
-        if (fin)
-        {
-            std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-            colorMap[value] = osg::Vec4(red*colorScale,green*colorScale,blue*colorScale,alpha*colorScale);
-        }
-    }
-
-    if (colorMap.empty())
-    {
-        std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
-        return 0;
-    }
-
-    osg::TransferFunction1D* tf = new osg::TransferFunction1D;
-    tf->assign(colorMap);
-
-    return tf;
-}
-
-
 class TestSupportOperation: public osg::GraphicsOperation
 {
 public:
@@ -512,11 +474,7 @@ int main( int argc, char **argv )
     std::string tranferFunctionFile;
     while (arguments.read("--tf",tranferFunctionFile))
     {
-        transferFunction = readTransferFunctionFile(tranferFunctionFile);
-    }
-    while (arguments.read("--tf-255",tranferFunctionFile))
-    {
-        transferFunction = readTransferFunctionFile(tranferFunctionFile,1.0f/255.0f);
+        transferFunction = osgDB::readFile<osg::TransferFunction1D>(tranferFunctionFile);
     }
 
     while(arguments.read("--test"))

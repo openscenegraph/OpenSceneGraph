@@ -239,6 +239,10 @@ class LuaScriptEngine : public osg::ScriptEngine
         std::string lookUpGLenumString(GLenum value) const;
         GLenum lookUpGLenumValue(const std::string& str) const;
 
+
+        void addPaths(const osgDB::FilePathList& paths);
+        void addPaths(const osgDB::Options* options);
+
     protected:
 
         void initialize();

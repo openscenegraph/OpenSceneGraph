@@ -218,6 +218,7 @@ void DisplaySettings::setDefaults()
     _glContextProfileMask = 0;
 
     _swapMethod = SWAP_DEFAULT;
+    _syncSwapBuffers = 0;
 
     _keystoneHint = false;
 
@@ -630,6 +631,23 @@ void DisplaySettings::readEnvironmentalVariables()
 
     }
 
+    if ((ptr = getenv("OSG_SYNC_SWAP_BUFFERS")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _syncSwapBuffers = 0;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _syncSwapBuffers = 1;
+        }
+        else
+        {
+            _syncSwapBuffers = atoi(ptr);
+        }
+    }
+
     if( (ptr = getenv("OSG_KEYSTONE")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
@@ -715,6 +733,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--keystone-on","Set the keystone hint to true to tell the viewer to do keystone correction.");
         arguments.getApplicationUsage()->addCommandLineOption("--keystone-off","Set the keystone hint to false.");
         arguments.getApplicationUsage()->addCommandLineOption("--menubar-behavior <behavior>","Set the menubar behavior (AUTO_HIDE | FORCE_HIDE | FORCE_SHOW)");
+        arguments.getApplicationUsage()->addCommandLineOption("--sync","Enable sync of swap buffers");
     }
 
     std::string str;
@@ -767,6 +786,11 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while(arguments.read("--samples",str))
     {
         _numMultiSamples = atoi(str.c_str());
+    }
+
+    while(arguments.read("--sync"))
+    {
+        _syncSwapBuffers = 1;
     }
 
     if (arguments.read("--keystone",str))

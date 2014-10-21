@@ -35,6 +35,8 @@
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Layer>
 
+#include "ShaderTerrain.h"
+
 #include <iostream>
 
 template<class T>
@@ -125,6 +127,53 @@ protected:
     osg::ref_ptr<osgTerrain::Terrain>  _terrain;
 };
 
+
+class CleanTechniqueReadFileCallback : public osgDB::ReadFileCallback
+{
+
+    public:
+
+        class CleanTechniqueVisitor : public osg::NodeVisitor
+        {
+        public:
+            CleanTechniqueVisitor():
+                osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+            void apply(osg::Node& node)
+            {
+                osgTerrain::TerrainTile* tile = dynamic_cast<osgTerrain::TerrainTile*>(&node);
+                if (tile)
+                {
+                    if (tile->getTerrainTechnique())
+                    {
+                        // OSG_NOTICE<<"Resetting TerrainTechnhique "<<tile->getTerrainTechnique()->className()<<" to 0"<<std::endl;
+                        tile->setTerrainTechnique(0);
+                    }
+                }
+                else
+                {
+                    traverse(node);
+                }
+            }
+        };
+
+
+        virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::Options* options)
+        {
+            osgDB::ReaderWriter::ReadResult rr = ReadFileCallback::readNode(filename, options);
+            if (rr.validNode())
+            {
+                CleanTechniqueVisitor ctv;
+                rr.getNode()->accept(ctv);
+            }
+            return rr;
+        }
+
+    protected:
+        virtual ~CleanTechniqueReadFileCallback() {}
+};
+
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -146,7 +195,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -189,6 +238,13 @@ int main(int argc, char** argv)
         else if (strBlendingPolicy == "ENABLE_BLENDING_WHEN_ALPHA_PRESENT") blendingPolicy = osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT;
     }
 
+    bool useShaderTerrain = arguments.read("--shader") || arguments.read("-s");
+    if (useShaderTerrain)
+    {
+        osgDB::Registry::instance()->setReadFileCallback(new CleanTechniqueReadFileCallback());
+    }
+
+
     // load the nodes from the commandline arguments.
     osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
 
@@ -225,6 +281,12 @@ int main(int argc, char** argv)
     terrain->setSampleRatio(sampleRatio);
     terrain->setVerticalScale(verticalScale);
     terrain->setBlendingPolicy(blendingPolicy);
+
+    if (useShaderTerrain)
+    {
+        terrain->setTerrainTechniquePrototype(new osgTerrain::ShaderTerrain());
+    }
+
 
     // register our custom handler for adjust Terrain settings
     viewer.addEventHandler(new TerrainHandler(terrain.get()));

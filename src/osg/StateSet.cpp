@@ -24,8 +24,8 @@
 #include <osg/Material>
 #include <osg/BlendFunc>
 #include <osg/Depth>
-#include <osg/Drawable>
 #include <osg/Node>
+#include <osg/NodeVisitor>
 
 #include <osg/TexGen>
 #include <osg/Texture1D>
@@ -273,19 +273,19 @@ void StateSet::computeDataVariance()
 }
 
 
-void StateSet::addParent(osg::Node* object)
+void StateSet::addParent(osg::Node* node)
 {
     // OSG_DEBUG_FP<<"Adding parent"<<std::endl;
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 
-    _parents.push_back(object);
+    _parents.push_back(node);
 }
 
-void StateSet::removeParent(osg::Node* object)
+void StateSet::removeParent(osg::Node* node)
 {
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 
-    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
+    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
     if (pitr!=_parents.end()) _parents.erase(pitr);
 }
 
@@ -1687,21 +1687,8 @@ void StateSet::setUpdateCallback(Callback* ac)
             itr!=_parents.end();
             ++itr)
         {
-            //OSG_INFO<<"Setting StateSet parent"<<std::endl;
-
-            osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-            if (drawable)
-            {
-                //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
-            }
-            else
-            {
-                osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                if (node)
-                {
-                    node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
-                }
-            }
+            osg::Node* node = *itr;
+            node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
         }
     }
 }
@@ -1765,19 +1752,8 @@ void StateSet::setEventCallback(Callback* ac)
             itr!=_parents.end();
             ++itr)
         {
-            osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-            if (drawable)
-            {
-                //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
-            }
-            else
-            {
-                osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                if (node)
-                {
-                    node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
-                }
-            }
+            osg::Node* node = *itr;
+            node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
         }
     }
 }
@@ -1847,19 +1823,8 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
                 itr != _parents.end();
                 ++itr)
             {
-                osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-                if (drawable)
-                {
-                    drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
-                }
-                else
-                {
-                    osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                    if (node)
-                    {
-                        node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
-                    }
-                }
+                osg::Node* node = *itr;
+                node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
             }
         }
     }
@@ -1892,19 +1857,8 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
                 itr != _parents.end();
                 ++itr)
             {
-                osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
-                if (drawable)
-                {
-                    drawable->setNumChildrenRequiringEventTraversal(drawable->getNumChildrenRequiringEventTraversal()+delta);
-                }
-                else
-                {
-                    osg::Node* node = dynamic_cast<osg::Node*>(*itr);
-                    if (node)
-                    {
-                        node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
-                    }
-                }
+                osg::Node* node = *itr;
+                node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
             }
         }
     }

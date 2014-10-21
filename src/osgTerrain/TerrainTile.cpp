@@ -80,7 +80,7 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
 {
     if (terrain.getTerrainTechnique())
     {
-        setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
+        setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->clone(osg::CopyOp::SHALLOW_COPY)));
     }
 }
 

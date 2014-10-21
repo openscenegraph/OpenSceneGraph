@@ -266,6 +266,15 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         /** Get preferred swap method */
         SwapMethod getSwapMethod( void ) { return _swapMethod; }
 
+
+        /** Set whether Arb Sync should be used to manage the swaps buffers, 0 disables the use of the sync, greater than zero enables sync based on number of frames specified.*/
+        void setSyncSwapBuffers(unsigned int numFrames=0) { _syncSwapBuffers = numFrames; }
+
+        /** Set whether Arb Sync should be used to manage the swaps buffers.*/
+        unsigned int getSyncSwapBuffers() const { return _syncSwapBuffers; }
+
+
+
         /** Set the hint of which OpenGL version to attempt to create a graphics context for.*/
         void setGLContextVersion(const std::string& version) { _glContextVersion = version; }
 
@@ -372,7 +381,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _glContextProfileMask;
 
         SwapMethod                      _swapMethod;
-
+        unsigned int                    _syncSwapBuffers;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;

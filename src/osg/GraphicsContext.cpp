@@ -23,6 +23,7 @@
 #include <osg/Drawable>
 #include <osg/FragmentProgram>
 #include <osg/VertexProgram>
+#include <osg/GLExtensions>
 
 #include <OpenThreads/ReentrantMutex>
 
@@ -974,4 +975,61 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
     _traits->y = y;
     _traits->width = width;
     _traits->height = height;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// SyncSwapBuffersCallback
+//
+SyncSwapBuffersCallback::SyncSwapBuffersCallback():
+    _extensionInitialized(false),
+    _glFenceSync(0),
+    _glIsSync(0),
+    _glDeleteSync(0),
+    _glClientWaitSync(0),
+    _glWaitSync(0),
+    _glGetInteger64v(0),
+    _glGetSynciv(0),
+    _previousSync(0)
+{
+        OSG_NOTICE<<"Created Swap callback."<<std::endl;
+}
+
+void SyncSwapBuffersCallback::setUpExtensions()
+{
+    _extensionInitialized = true;
+    osg::setGLExtensionFuncPtr(_glFenceSync, "glFenceSync");
+    osg::setGLExtensionFuncPtr(_glIsSync, "glIsSync");
+    osg::setGLExtensionFuncPtr(_glDeleteSync, "glDeleteSync");
+    osg::setGLExtensionFuncPtr(_glClientWaitSync, "glClientWaitSync");
+    osg::setGLExtensionFuncPtr(_glWaitSync, "glWaitSync");
+    osg::setGLExtensionFuncPtr(_glGetInteger64v, "glGetInteger64v");
+    osg::setGLExtensionFuncPtr(_glGetSynciv, "glGetSynciv");
+}
+
+void SyncSwapBuffersCallback::swapBuffersImplementation(osg::GraphicsContext* gc)
+{
+    // OSG_NOTICE<<"Before swap - place to do swap ready sync"<<std::endl;
+    gc->swapBuffersImplementation();
+    //glFinish();
+
+    if (!_extensionInitialized) setUpExtensions();
+
+    if (_glClientWaitSync)
+    {
+        if (_previousSync)
+        {
+            unsigned int num_seconds = 1;
+            GLuint64 timeout = num_seconds * ((GLuint64)1000 * 1000 * 1000);
+            _glClientWaitSync(_previousSync, 0, timeout);
+
+            _glDeleteSync(_previousSync);
+        }
+
+        _previousSync = _glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+    }
+    //gc->getState()->checkGLErrors("after glWaitSync");
+
+    //OSG_NOTICE<<"After swap"<<std::endl;
 }

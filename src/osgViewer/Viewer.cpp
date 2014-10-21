@@ -544,6 +544,8 @@ void Viewer::realize()
     {
         osg::GraphicsContext* gc = *citr;
 
+        if (ds->getSyncSwapBuffers()) gc->setSwapCallback(new osg::SyncSwapBuffersCallback);
+
         // set the pool sizes, 0 the default will result in no GL object pools.
         gc->getState()->setMaxTexturePoolSize(maxTexturePoolSize);
         gc->getState()->setMaxBufferObjectPoolSize(maxBufferObjectPoolSize);

@@ -46,8 +46,8 @@ void testFrustum(double left,double right,double bottom,double top,double zNear,
     double c_bottom=0;
     double c_zNear=0;
     double c_zFar=0;
-    
-    
+
+
     std::cout << "testFrustum"<<f.getFrustum(c_left,c_right,c_bottom,c_top,c_zNear,c_zFar)<<std::endl;
     std::cout << "  left = "<<left<<" compute "<<c_left<<std::endl;
     std::cout << "  right = "<<right<<" compute "<<c_right<<std::endl;
@@ -57,7 +57,7 @@ void testFrustum(double left,double right,double bottom,double top,double zNear,
 
     std::cout << "  zNear = "<<zNear<<" compute "<<c_zNear<<std::endl;
     std::cout << "  zFar = "<<zFar<<" compute "<<c_zFar<<std::endl;
-    
+
     std::cout << std::endl;
 }
 
@@ -82,7 +82,7 @@ void testOrtho(double left,double right,double bottom,double top,double zNear,do
 
     std::cout << "  zNear = "<<zNear<<" compute "<<c_zNear<<std::endl;
     std::cout << "  zFar = "<<zFar<<" compute "<<c_zFar<<std::endl;
-    
+
     std::cout << std::endl;
 }
 
@@ -102,7 +102,7 @@ void testPerspective(double fovy,double aspect,double zNear,double zFar)
 
     std::cout << "  zNear = "<<zNear<<" compute "<<c_zNear<<std::endl;
     std::cout << "  zFar = "<<zFar<<" compute "<<c_zFar<<std::endl;
-    
+
     std::cout << std::endl;
 }
 
@@ -110,17 +110,17 @@ void testLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up
 {
     osg::Matrix mv;
     mv.makeLookAt(eye,center,up);
-    
+
     osg::Vec3 c_eye,c_center,c_up;
     mv.getLookAt(c_eye,c_center,c_up);
-    
+
     std::cout << "testLookAt"<<std::endl;
     std::cout << "  eye "<<eye<< " compute "<<c_eye<<std::endl;
     std::cout << "  center "<<center<< " compute "<<c_center<<std::endl;
     std::cout << "  up "<<up<< " compute "<<c_up<<std::endl;
-    
+
     std::cout << std::endl;
-    
+
 }
 
 
@@ -170,15 +170,15 @@ void sizeOfTest()
 
 /// Exercise the Matrix.getRotate function.
 /// Compare the output of:
-///  q1 * q2 
+///  q1 * q2
 /// versus
 ///  (mat(q1)*mat(q2)*scale).getRotate()
 /// for a range of rotations
-void testGetQuatFromMatrix(const osg::Vec3d& scale) 
+void testGetQuatFromMatrix(const osg::Vec3d& scale)
 {
-    
+
     // Options
-    
+
     // acceptable error range
     double eps=1e-6;
 
@@ -187,7 +187,7 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
     // Not sure if 0's or negative values are acceptable
     osg::Matrixd scalemat;
     scalemat.makeScale(scale);
-    
+
     // range of rotations
 #if 1
     // wide range
@@ -290,7 +290,7 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
                             if(out_quat1.w()<0) out_quat1 = out_quat1 * -1.0;
                             if(out_quat2.w()<0) out_quat2 = out_quat2 * -1.0;
 
-                            // if the output quat length is not one 
+                            // if the output quat length is not one
                             // or if the components do not match,
                             // something is amiss
 
@@ -346,10 +346,10 @@ void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)
 {
     osg::Quat q_nicolas;
     q_nicolas.makeRotate(from,to);
-    
+
     osg::Quat q_original;
     q_original.makeRotate_original(from,to);
-    
+
     std::cout<<"osg::Quat::makeRotate("<<from<<", "<<to<<")"<<std::endl;
     std::cout<<"  q_nicolas = "<<q_nicolas<<std::endl;
     std::cout<<"  q_original = "<<q_original<<std::endl;
@@ -370,16 +370,16 @@ void testQuat(const osg::Vec3d& quat_scale)
 
     osg::Matrix m1 = osg::Matrix::rotate(q1);
     osg::Matrix m2 = osg::Matrix::rotate(q2);
-    
+
     osg::Matrix m1_2 = m1*m2;
     osg::Matrix m2_1 = m2*m1;
-    
+
     osg::Quat qm1_2;
     qm1_2.set(m1_2);
-    
+
     osg::Quat qm2_1;
     qm2_1.set(m2_1);
-    
+
     std::cout<<"q1*q2 = "<<q1_2<<std::endl;
     std::cout<<"q2*q1 = "<<q2_1<<std::endl;
     std::cout<<"m1*m2 = "<<qm1_2<<std::endl;
@@ -406,10 +406,10 @@ void testQuat(const osg::Vec3d& quat_scale)
                        0.0, 0.5, 0.0, 0.0,
                        0.0, 0.0, 0.5, 0.0,
                        1.0, 1.0, 1.0, 1.0);
-                       
+
     osg::Quat quat;
     matrix.get(quat);
-    
+
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<"rotation = "<<quat<<", expected quat = (0,0,0,1)"<<std::endl;
 }
 
@@ -475,9 +475,10 @@ public:
     ~NotifyThread()
     {
         _done = true;
-        while(isRunning())
+        if (isRunning())
         {
-            OpenThreads::Thread::YieldCurrentThread();
+            cancel();
+            join();
         }
     }
 
@@ -487,7 +488,7 @@ public:
 
         unsigned int count=0;
 
-        while(!_done) 
+        while(!_done)
         {
             ++count;
 #if 1
@@ -503,7 +504,7 @@ public:
     bool                  _done;
     osg::NotifySeverity   _level;
     std::string           _message;
-  
+
 };
 
 void testThreadInitAndExit()
@@ -514,10 +515,10 @@ void testThreadInitAndExit()
         MyThread thread;
         thread.startThread();
     }
-    
+
     // add a sleep to allow the thread start to fall over it its going to.
     OpenThreads::Thread::microSleep(500000);
-    
+
     std::cout<<"pass    thread start and delete test"<<std::endl<<std::endl;
 
 
@@ -572,7 +573,7 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("performance","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("read-threads <numthreads>","Run multi-thread reading test.");
- 
+
 
     if (arguments.argc()<=1)
     {
@@ -580,35 +581,35 @@ int main( int argc, char** argv )
         return 1;
     }
 
-    bool printQualifiedTest = false; 
-    while (arguments.read("qt")) printQualifiedTest = true; 
+    bool printQualifiedTest = false;
+    while (arguments.read("qt")) printQualifiedTest = true;
 
-    bool printMatrixTest = false; 
-    while (arguments.read("matrix")) printMatrixTest = true; 
+    bool printMatrixTest = false;
+    while (arguments.read("matrix")) printMatrixTest = true;
 
-    bool printSizeOfTest = false; 
+    bool printSizeOfTest = false;
     while (arguments.read("sizeof")) printSizeOfTest = true;
 
     bool printFileNameUtilsTests = false;
     while (arguments.read("filenames")) printFileNameUtilsTests = true;
 
-    bool printQuatTest = false; 
+    bool printQuatTest = false;
     while (arguments.read("quat")) printQuatTest = true;
 
-    int numReadThreads = 0; 
+    int numReadThreads = 0;
     while (arguments.read("read-threads", numReadThreads)) {}
 
-    bool printPolytopeTest = false; 
+    bool printPolytopeTest = false;
     while (arguments.read("polytope")) printPolytopeTest = true;
-    
+
     bool doTestThreadInitAndExit = false;
     while (arguments.read("thread")) doTestThreadInitAndExit = true;
 
-    osg::Vec3d quat_scale(1.0,1.0,1.0); 
-    while (arguments.read("quat_scaled", quat_scale.x(), quat_scale.y(), quat_scale.z() )) printQuatTest = true; 
+    osg::Vec3d quat_scale(1.0,1.0,1.0);
+    while (arguments.read("quat_scaled", quat_scale.x(), quat_scale.y(), quat_scale.z() )) printQuatTest = true;
 
-    bool performanceTest = false; 
-    while (arguments.read("p") || arguments.read("performance")) performanceTest = true; 
+    bool performanceTest = false;
+    while (arguments.read("p") || arguments.read("performance")) performanceTest = true;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -627,7 +628,7 @@ int main( int argc, char** argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     if (printQuatTest)
     {
         testQuat(quat_scale);
@@ -648,7 +649,7 @@ int main( int argc, char** argv )
 
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(1.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
-        
+
         testMatrixInvert(osg::Matrix(0.999848,  -0.002700,  0.017242, -0.1715,
                                      0,         0.987960,   0.154710,  0.207295,
                                      -0.017452, -0.154687,  0.987809, -0.98239,
@@ -662,11 +663,11 @@ int main( int argc, char** argv )
         testDecompose();
 
     }
-    
+
     if (printSizeOfTest)
     {
         std::cout<<"**** sizeof() tests  ******"<<std::endl;
-        
+
         sizeOfTest();
 
         std::cout<<std::endl;
@@ -676,7 +677,7 @@ int main( int argc, char** argv )
     if (performanceTest)
     {
         std::cout<<"**** performance tests  ******"<<std::endl;
-        
+
         runPerformanceTests();
     }
 
@@ -693,12 +694,12 @@ int main( int argc, char** argv )
     }
 
 
-    if (printQualifiedTest) 
+    if (printQualifiedTest)
     {
          std::cout<<"*****   Qualified Tests  ******"<<std::endl;
 
          osgUtx::QualifiedTestPrinter printer;
-         osgUtx::TestGraph::instance().root()->accept( printer );    
+         osgUtx::TestGraph::instance().root()->accept( printer );
          std::cout<<std::endl;
     }
 

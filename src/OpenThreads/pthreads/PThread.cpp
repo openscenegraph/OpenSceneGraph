@@ -456,6 +456,10 @@ Thread::~Thread()
         // Kill the thread when it is destructed
         //
         cancel();
+
+        // wait till the thread is stopped before finishing.
+        join();
+
     }
 
     delete pd;

@@ -201,7 +201,7 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
 
         void setDone(bool done);
 
-        bool getDone() const { return _done; }
+        bool getDone() const { return _done!=0; }
 
         /** Cancel this graphics thread.*/
         virtual int cancel();
@@ -212,7 +212,7 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
 
         observer_ptr<Object>            _parent;
 
-        bool                            _done;
+        OpenThreads::Atomic             _done;
 
         OpenThreads::Mutex              _threadMutex;
         osg::ref_ptr<OperationQueue>    _operationQueue;

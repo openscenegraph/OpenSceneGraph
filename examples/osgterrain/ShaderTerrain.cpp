@@ -15,6 +15,11 @@
 
 using namespace osgTerrain;
 
+#if 0
+#define LOCK(mutex)  OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
+#else
+#define LOCK(mutex) /* OpenThreads::Thread::microSleep(1);*/
+#endif
 
 const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::TerrainTile* tile)
 {
@@ -38,6 +43,11 @@ const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::Te
 //
 //  GeometryPool
 //
+GeometryPool::~GeometryPool()
+{
+    printf("GeometryPool::~GeometryPool()\n");
+}
+
 bool GeometryPool::createKeyForTile(TerrainTile* tile, GeometryKey& key)
 {
     const osgTerrain::Locator* masterLocator = computeMasterLocator(tile);
@@ -79,7 +89,7 @@ bool GeometryPool::createKeyForTile(TerrainTile* tile, GeometryKey& key)
 static int numberGeometryCreated = 0;
 static int numberSharedGeometry = 0;
 
-osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
+osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_geometryMapMutex);
 
@@ -109,11 +119,8 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
     geometry->setColorArray(colours.get(), osg::Array::BIND_OVERALL);
     colours->push_back(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array;
+    osg::ref_ptr<osg::Vec4Array> texcoords = new osg::Vec4Array;
     geometry->setTexCoordArray(0, texcoords.get(), osg::Array::BIND_PER_VERTEX);
-    geometry->setTexCoordArray(1, texcoords.get(), osg::Array::BIND_PER_VERTEX);
-    geometry->setTexCoordArray(2, texcoords.get(), osg::Array::BIND_PER_VERTEX);
-    geometry->setTexCoordArray(3, texcoords.get(), osg::Array::BIND_PER_VERTEX);
 
     int nx = key.nx;
     int ny = key.nx;
@@ -124,8 +131,8 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
     normals->reserve(numVertices);
     texcoords->reserve(numVertices);
 
-    double r_mult = 1.0/static_cast<double>(ny-1);
     double c_mult = 1.0/static_cast<double>(nx-1);
+    double r_mult = 1.0/static_cast<double>(ny-1);
 
     typedef std::vector<osg::Vec2d> LocationCoords;
     LocationCoords locationCoords;
@@ -133,6 +140,12 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
 
     osg::Vec3d pos(0.0, 0.0, 0.0);
     osg::Vec3d normal(0.0, 0.0, 1.0);
+    osg::Vec2 delta(1.0f/static_cast<float>(nx), 1.0f/static_cast<float>(ny));
+
+    // pass in the delta texcoord per texel via the color array
+    (*colours)[0].x() = c_mult;
+    (*colours)[0].y() = r_mult;
+
     for(int r=0; r<ny; ++r)
     {
         pos.y () = static_cast<double>(r)*r_mult;
@@ -141,7 +154,7 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
             pos.x() = static_cast<double>(c)*c_mult;
             vertices->push_back(pos);
             normals->push_back(normal);
-            texcoords->push_back(osg::Vec2(pos.x(), pos.y()));
+            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
             locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
         }
     }
@@ -223,6 +236,20 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
                 osg::Vec3d pos = osg::Vec3d(location.x(), location.y(), 0.0) * matrix;
                 em->convertLatLongHeightToXYZ(pos.y(), pos.x(), 0.0, pos.x(), pos.y(),pos.z());
 
+                osg::Vec4& tc = (*texcoords)[i];
+
+                osg::Vec3d pos_right = osg::Vec3d(location.x()+static_cast<double>(tc[2]), location.y(), 0.0) * matrix;
+                em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), 0.0, pos_right.x(), pos_right.y(),pos_right.z());
+
+                osg::Vec3d pos_up = osg::Vec3d(location.x(), location.y()+static_cast<double>(tc[3]), 0.0) * matrix;
+                em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), 0.0, pos_up.x(), pos_up.y(),pos_up.z());
+
+                double length_right = (pos_right-pos).length();
+                double length_up = (pos_up-pos).length();
+                tc[2] = 1.0/length_right;
+                tc[3] = 1.0/length_up;
+
+
                 osg::Vec3d normal(pos);
                 normal = osg::Matrixd::transform3x3(localToWorldTransform, normal);
                 normal.normalize();
@@ -232,6 +259,7 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
 
                 (*vertices)[i] = pos;
                 (*normals)[i] = normal;
+
             }
 
         }
@@ -253,10 +281,10 @@ osg::Geometry* GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
     ++ numberGeometryCreated;
 //    OSG_NOTICE<<"Creating new geometry "<<geometry.get()<<std::endl;
 
-    return geometry.release();
+    return geometry;
 }
 
-osg::MatrixTransform* GeometryPool::getTileSubgraph(osgTerrain::TerrainTile* tile)
+osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::TerrainTile* tile)
 {
     // create or reuse Geometry
     osg::ref_ptr<osg::Geometry> geometry = getOrCreateGeometry(tile);
@@ -338,10 +366,10 @@ osg::MatrixTransform* GeometryPool::getTileSubgraph(osgTerrain::TerrainTile* til
     // apply colour layers
     applyLayers(tile, stateset.get());
 
-    return transform.release();
+    return transform;
 }
 
-osg::Program* GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
+osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
 {
 #if 0
     OSG_NOTICE<<"getOrCreateProgram(";
@@ -359,6 +387,7 @@ osg::Program* GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
     }
 #endif
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
     ProgramMap::iterator itr = _programMap.find(layerTypes);
     if (itr!=_programMap.end())
     {
@@ -369,15 +398,15 @@ osg::Program* GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
 
-    OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
+    // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
 
-    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("terrain.vert");
+    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("shaders/terrain.vert");
     program->addShader(vertex_shader.get());
 
-    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("terrain.frag");
+    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("shaders/terrain.frag");
     program->addShader(fragment_shader.get());
 
-    return program.get();
+    return program;
 }
 
 void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset)
@@ -410,6 +439,9 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
             texture2D->setImage(image.get());
             texture2D->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
             texture2D->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
+            texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
+            texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+            texture2D->setBorderColor(osg::Vec4d(0.0,0.0,0.0,0.0));
             texture2D->setResizeNonPowerOfTwoHint(false);
 
             layerToTextureMap[hfl] = texture2D;
@@ -518,10 +550,10 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
     }
 #endif
 
-    osg::Program* program = getOrCreateProgram(layerTypes);
-    if (program)
+    osg::ref_ptr<osg::Program> program = getOrCreateProgram(layerTypes);
+    if (program.valid())
     {
-        stateset->setAttribute(program);
+        stateset->setAttribute(program.get());
     }
 }
 
@@ -600,9 +632,31 @@ ShaderTerrain::ShaderTerrain(const ShaderTerrain& st,const osg::CopyOp& copyop):
     // OSG_NOTICE<<"ShaderTerrain::ShaderTerrain(ShaderTerrain&, CopyOp&) "<<_geometryPool.get()<<std::endl;
 }
 
+ShaderTerrain::~ShaderTerrain()
+{
+}
+
 void ShaderTerrain::init(int dirtyMask, bool assumeMultiThreaded)
 {
     if (!_terrainTile) return;
+
+    LOCK(_transformMutex);
+
+    ++_currentTraversalCount;
+
+#if 0
+    if (_currentTraversalCount>1)
+    {
+        unsigned int val = _currentTraversalCount;
+        printf("Has a concurrent traversal %i\n",val);
+        //throw "have concurrent traversal happening";
+        OpenThreads::Thread::YieldCurrentThread();
+    }
+    else
+    {
+        printf("Single threaded traversal\n");
+    }
+#endif
 
     //OSG_NOTICE<<"ShaderTerrain::init("<<dirtyMask<<", "<<assumeMultiThreaded<<")"<<std::endl;
 
@@ -610,10 +664,14 @@ void ShaderTerrain::init(int dirtyMask, bool assumeMultiThreaded)
 
     // set tile as no longer dirty.
     _terrainTile->setDirtyMask(0);
+
+    --_currentTraversalCount;
 }
 
 void ShaderTerrain::update(osgUtil::UpdateVisitor* uv)
 {
+    LOCK(_transformMutex);
+
     if (_terrainTile) _terrainTile->osg::Group::traverse(*uv);
 
     if (_transform.valid()) _transform->accept(*uv);
@@ -622,6 +680,8 @@ void ShaderTerrain::update(osgUtil::UpdateVisitor* uv)
 
 void ShaderTerrain::cull(osgUtil::CullVisitor* cv)
 {
+    LOCK(_transformMutex);
+
     if (_transform.valid()) _transform->accept(*cv);
 }
 
@@ -633,7 +693,7 @@ void ShaderTerrain::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_terrainTile->getDirty()) _terrainTile->init(_terrainTile->getDirtyMask(), false);
+        // if (_terrainTile->getDirty()) _terrainTile->init(_terrainTile->getDirtyMask(), false);
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -652,16 +712,12 @@ void ShaderTerrain::traverse(osg::NodeVisitor& nv)
         }
     }
 
-
-    if (_terrainTile->getDirty())
     {
-        // OSG_INFO<<"******* Doing init ***********"<<std::endl;
-        _terrainTile->init(_terrainTile->getDirtyMask(), false);
-    }
-
-    if (_transform.valid())
-    {
-        _transform->accept(nv);
+        LOCK(_transformMutex);
+        if (_transform.valid())
+        {
+            _transform->accept(nv);
+        }
     }
 }
 
@@ -672,5 +728,10 @@ void ShaderTerrain::cleanSceneGraph()
 
 void ShaderTerrain::releaseGLObjects(osg::State* state) const
 {
-    _transform->releaseGLObjects(state);
+//    LOCK(_transformMutex);
+    if (_transform.valid())
+    {
+//      OSG_NOTICE<<"ShaderTerrain::releaseGLObjects()"<<std::endl;
+        _transform->releaseGLObjects(state);
+    }
 }

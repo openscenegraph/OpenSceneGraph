@@ -59,18 +59,21 @@ class GeometryPool : public osg::Referenced
         typedef std::vector<LayerType> LayerTypes;
         typedef std::map<LayerTypes, osg::ref_ptr<osg::Program> > ProgramMap;
 
-        ProgramMap& getProgramMap() { return _programMap; }
-        osg::Program* getOrCreateProgram(LayerTypes& layerTypes);
+        osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
 
-        osg::Geometry* getOrCreateGeometry(osgTerrain::TerrainTile* tile);
-        osg::MatrixTransform* getTileSubgraph(osgTerrain::TerrainTile* tile);
+        osg::ref_ptr<osg::Geometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
+
+        osg::ref_ptr<osg::MatrixTransform> getTileSubgraph(osgTerrain::TerrainTile* tile);
+
         void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
 
     protected:
-        virtual ~GeometryPool() {}
+        virtual ~GeometryPool();
 
         OpenThreads::Mutex      _geometryMapMutex;
         GeometryMap             _geometryMap;
+
+        OpenThreads::Mutex      _programMapMutex;
         ProgramMap              _programMap;
 };
 
@@ -137,9 +140,17 @@ class ShaderTerrain : public osgTerrain::TerrainTechnique
 
     protected:
 
+        virtual ~ShaderTerrain();
+
         osg::ref_ptr<GeometryPool> _geometryPool;
 
-        osg::ref_ptr<osg::MatrixTransform> _transform;
+        mutable OpenThreads::Mutex              _traversalMutex;
+
+        mutable OpenThreads::Mutex              _transformMutex;
+        osg::ref_ptr<osg::MatrixTransform>      _transform;
+
+        OpenThreads::Atomic                     _currentTraversalCount;
+
 };
 
 }

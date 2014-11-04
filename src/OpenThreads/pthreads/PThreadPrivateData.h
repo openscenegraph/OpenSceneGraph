@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -22,6 +22,7 @@
 #include <pthread.h>
 #include <OpenThreads/Thread>
 #include <OpenThreads/Block>
+#include <OpenThreads/Atomic>
 
 namespace OpenThreads {
 
@@ -33,7 +34,7 @@ class PThreadPrivateData {
     friend class Thread;
 
     //-------------------------------------------------------------------------
-    // We're friendly to PThreadPrivateActions, so it can get at some 
+    // We're friendly to PThreadPrivateActions, so it can get at some
     // variables.
     //
     friend class ThreadPrivateActions;
@@ -48,7 +49,10 @@ private:
 
     volatile bool stackSizeLocked;
 
-    volatile bool isRunning;
+    void setRunning(bool flag) { _isRunning.exchange(flag); }
+    bool isRunning() const { return _isRunning!=0; }
+
+    Atomic _isRunning;
 
     Block threadStartedBlock;
 
@@ -57,7 +61,7 @@ private:
     volatile bool idSet;
 
     volatile Thread::ThreadPriority threadPriority;
-    
+
     volatile Thread::ThreadPolicy threadPolicy;
 
     pthread_t tid;
@@ -65,7 +69,7 @@ private:
     volatile int uniqueId;
 
     volatile int cpunum;
-    
+
 
     static int nextId;
 

@@ -25,6 +25,8 @@
 #include <osg/TexMat>
 #include <osg/DeleteHandler>
 
+#include <osgDB/Registry>
+
 #include <osgUtil/Optimizer>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/Statistics>
@@ -37,6 +39,23 @@ static osg::ApplicationUsageProxy ViewerBase_e4(osg::ApplicationUsage::ENVIRONME
 static osg::ApplicationUsageProxy ViewerBase_e5(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_MAX_FRAME_RATE","Set the maximum number of frame as second that viewer run. 0.0 is default and disables an frame rate capping.");
 
 using namespace osgViewer;
+
+
+struct InitRegistry
+{
+    InitRegistry()
+    {
+        osgDB::Registry::instance();
+    }
+
+    ~InitRegistry()
+    {
+        osgDB::DatabasePager::prototype() = 0;
+        osgDB::Registry::instance(true);
+    }
+};
+
+static InitRegistry s_InitRegistry;
 
 ViewerBase::ViewerBase():
     osg::Object(true)

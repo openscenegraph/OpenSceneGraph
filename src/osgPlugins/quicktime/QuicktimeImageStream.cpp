@@ -120,13 +120,9 @@ void QuicktimeImageStream::quit(bool wiatForThreadToExit)
    OSG_DEBUG<<"Sending quit"<<this<<std::endl;
    setCmd(THREAD_QUIT);
 
-   if (wiatForThreadToExit)
+   if (isRunning() && wiatForThreadToExit)
    {
-      while(isRunning())
-      {
-         OSG_DEBUG<<"Waiting for QuicktimeImageStream to quit"<<this<<std::endl;
-         OpenThreads::Thread::YieldCurrentThread();
-      }
+      join();
       OSG_DEBUG<<"QuicktimeImageStream has quit"<<this<<std::endl;
    }
 }

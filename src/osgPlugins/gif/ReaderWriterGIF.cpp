@@ -95,11 +95,10 @@ public:
     virtual void quit( bool waitForThreadToExit=true )
     {
         _done = true;
-        if ( waitForThreadToExit )
+        if (isRunning() && waitForThreadToExit)
         {
-            while( isRunning() )
-                OpenThreads::Thread::YieldCurrentThread();
-            OSG_DEBUG<<"GifImageStream thread quitted"<<std::endl;
+            cancel();
+            join();
         }
     }
 

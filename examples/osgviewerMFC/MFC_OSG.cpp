@@ -5,7 +5,7 @@
 
 
 cOSG::cOSG(HWND hWnd) :
-   m_hWnd(hWnd) 
+   m_hWnd(hWnd)
 {
 }
 
@@ -73,7 +73,7 @@ void cOSG::InitCameraConfig(void)
 
     // Add a Stats Handler to the viewer
     mViewer->addEventHandler(new osgViewer::StatsHandler);
-    
+
     // Get the current window size
     ::GetWindowRect(m_hWnd, &rect);
 
@@ -161,8 +161,8 @@ void cOSG::PostFrameUpdate()
         //Sleep(10);         // Use this command if you need to allow other processes to have cpu time
     }
 
-    // For some reason this has to be here to avoid issue: 
-    // if you have multiple OSG windows up 
+    // For some reason this has to be here to avoid issue:
+    // if you have multiple OSG windows up
     // and you exit one then all stop rendering
     AfxMessageBox("Exit Rendering Thread");
 
@@ -177,8 +177,11 @@ CRenderingThread::CRenderingThread( cOSG* ptr )
 CRenderingThread::~CRenderingThread()
 {
     _done = true;
-    while( isRunning() )
-        OpenThreads::Thread::YieldCurrentThread();
+    if (isRunning())
+    {
+        cancel();
+        join();
+    }
 }
 
 void CRenderingThread::run()

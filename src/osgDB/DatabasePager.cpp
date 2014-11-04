@@ -662,14 +662,7 @@ int DatabasePager::DatabaseThread::cancel()
                 break;
         }
 
-        // then wait for the the thread to stop running.
-        while(isRunning())
-        {
-            // commenting out debug info as it was cashing crash on exit, presumable
-            // due to OSG_NOTICE or std::cout destructing earlier than this destructor.
-            // OSG_INFO<<"Waiting for DatabasePager::DatabaseThread to cancel"<<std::endl;
-            OpenThreads::Thread::YieldCurrentThread();
-        }
+        join();
 
         // _startThreadCalled = false;
     }

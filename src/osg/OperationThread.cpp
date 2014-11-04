@@ -264,7 +264,7 @@ void OperationQueue::removeOperationThread(OperationThread* thread)
 OperationThread::OperationThread():
     osg::Referenced(true),
     _parent(0),
-    _done(false)
+    _done(0)
 {
     setOperationQueue(new OperationQueue);
 }
@@ -293,9 +293,10 @@ void OperationThread::setOperationQueue(OperationQueue* opq)
 
 void OperationThread::setDone(bool done)
 {
-    if (_done==done) return;
+    unsigned d = done?0:1;
+    if (_done==d) return;
 
-    _done = true;
+    _done.exchange(d);
 
     if (done)
     {
@@ -322,7 +323,7 @@ int OperationThread::cancel()
     if( isRunning() )
     {
 
-        _done = true;
+        _done.exchange(1);
 
         OSG_INFO<<"   Doing cancel "<<this<<std::endl;
 
@@ -339,27 +340,7 @@ int OperationThread::cancel()
         }
 
         // then wait for the the thread to stop running.
-        while(isRunning())
-        {
-
-#if 1
-            {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
-
-                if (_operationQueue.valid())
-                {
-                    _operationQueue->releaseOperationsBlock();
-                    // _operationQueue->releaseAllOperations();
-                }
-
-                if (_currentOperation.valid()) _currentOperation->release();
-            }
-#endif
-            // commenting out debug info as it was cashing crash on exit, presumable
-            // due to OSG_NOTIFY or std::cout destructing earlier than this destructor.
-            OSG_DEBUG<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
-            OpenThreads::Thread::YieldCurrentThread();
-        }
+        join();
     }
 
     OSG_INFO<<"  OperationThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;

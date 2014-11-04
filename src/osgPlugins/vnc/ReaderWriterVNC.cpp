@@ -73,9 +73,10 @@ class LibVncImage : public osgWidget::VncImage
             virtual ~RfbThread()
             {
                 _done = true;
-                while(isRunning())
+                if (isRunning())
                 {
-                    OpenThreads::Thread::YieldCurrentThread();
+                    cancel();
+                    join();
                 }
             }
 
@@ -97,9 +98,9 @@ class LibVncImage : public osgWidget::VncImage
                     {
                         // OSG_NOTICE<<"Timed out"<<std::endl;
                     }
-                    
-                    
-                    
+
+
+
                     double currentTime = _image->time();
                     double timeBeforeIdle = 0.1;
 
@@ -115,7 +116,7 @@ class LibVncImage : public osgWidget::VncImage
                         //OSG_NOTICE<<"New: Should still be active"<<std::endl;
                     }
 
-                    
+
                 } while (!_done && !testCancel());
             }
 
@@ -321,8 +322,8 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
 void LibVncImage::updateImage(rfbClient* client,int x,int y,int w,int h)
 {
     LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
-    
-    image->dirty();    
+
+    image->dirty();
 }
 
 bool LibVncImage::sendPointerEvent(int x, int y, int buttonMask)
@@ -348,9 +349,9 @@ bool LibVncImage::sendKeyEvent(int key, bool keyDown)
 
 void LibVncImage::setFrameLastRendered(const osg::FrameStamp*)
 {
-    
+
     _timeOfLastRender = time();
-    
+
     // release block
     _inactiveBlock->release();
 }

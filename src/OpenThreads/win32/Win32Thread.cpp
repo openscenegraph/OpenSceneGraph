@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -89,7 +89,7 @@ namespace OpenThreads {
         static unsigned int __stdcall StartThread(void *data) {
 
             Thread *thread = static_cast<Thread *>(data);
-        
+
             Win32ThreadPrivateData *pd =
                 static_cast<Win32ThreadPrivateData *>(thread->_prvData);
 
@@ -102,7 +102,7 @@ namespace OpenThreads {
             SetThreadSchedulingParams(thread);
 
             pd->isRunning = true;
-            
+
             // release the thread that created this thread.
             pd->threadStartedBlock.release();
 
@@ -276,10 +276,12 @@ Thread::~Thread()
         std::cout<<"Error: Thread "<<this<<" still running in destructor"<<std::endl;
         pd->cancelMode = 0;
         cancel();
+
+        join();
     }
 
     delete pd;
-    
+
     _prvData = 0;
 }
 //-----------------------------------------------------------------------------
@@ -337,11 +339,11 @@ int Thread::start() {
     //-------------------------------------------------------------------------
     // Prohibit the stack size from being changed.
     // (bb 5/13/2005) it actually doesn't matter.
-    // 1) usually setStackSize()/start() sequence is serialized. 
-    // 2) if not than we're in trouble anyway - nothing is protected 
+    // 1) usually setStackSize()/start() sequence is serialized.
+    // 2) if not than we're in trouble anyway - nothing is protected
     // pd->stackSizeLocked = true;
     unsigned int ID;
-    
+
     pd->threadStartedBlock.reset();
 
     pd->tid.set( (void*)_beginthreadex(NULL,static_cast<unsigned>(pd->stackSize),ThreadPrivateActions::StartThread,static_cast<void *>(this),CREATE_SUSPENDED,&ID));
@@ -362,7 +364,7 @@ int Thread::start() {
 
 int Thread::startThread()
 {
-    if (_prvData) return start(); 
+    if (_prvData) return start();
     else return 0;
 }
 
@@ -685,7 +687,7 @@ int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
     Thread::Init();
 
     Thread* thread = Thread::CurrentThread();
-    if (thread) 
+    if (thread)
     {
         return thread->setProcessorAffinity(cpunum);
     }

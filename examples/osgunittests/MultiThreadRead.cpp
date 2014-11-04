@@ -37,33 +37,37 @@ public:
         _done(false)
     {
     }
-    
+
     virtual ~ReadThread()
     {
         _done = true;
-        
-        while(isRunning()) OpenThreads::Thread::YieldCurrentThread();
+
+        if (isRunning())
+        {
+            cancel();
+            join();
+        }
     }
-    
+
     void addFileName(const std::string& filename)
     {
         _fileNames.push_back(filename);
     }
-    
+
     void setStartBarrier(RefBarrier* barrier) { _startBarrier = barrier; }
     void setEndBarrier(RefBarrier* barrier) { _endBarrier = barrier; }
 
     virtual void run()
     {
-        if (_startBarrier.valid()) 
+        if (_startBarrier.valid())
         {
-#if VERBOSE                
+#if VERBOSE
             std::cout<<"Waiting on start block "<<this<<std::endl;
 #endif
             _startBarrier->block();
         }
 
-#if VERBOSE                
+#if VERBOSE
         std::cout<<"Starting "<<this<<std::endl;
 #endif
 
@@ -75,31 +79,31 @@ public:
                 std::string filename = _fileNames.front();
                 _fileNames.erase(_fileNames.begin());
 
-#if VERBOSE                
+#if VERBOSE
                 std::cout<<"Reading "<<filename;
 #endif
                 osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
-#if VERBOSE                
+#if VERBOSE
                 if (node.valid()) std::cout<<"..  OK"<<std::endl;
                 else std::cout<<"..  FAILED"<<std::endl;
 #endif
             }
-            
+
         } while (!testCancel() && !_fileNames.empty() && !_done);
-        
-        if (_endBarrier.valid()) 
+
+        if (_endBarrier.valid())
         {
-#if VERBOSE                
+#if VERBOSE
             std::cout<<"Waiting on end block "<<this<<std::endl;
 #endif
             _endBarrier->block();
         }
 
-#if VERBOSE                
+#if VERBOSE
         std::cout<<"Completed"<<this<<std::endl;
 #endif
     }
-    
+
     typedef std::list<std::string> FileNames;
     FileNames                   _fileNames;
     bool                        _done;
@@ -151,7 +155,7 @@ public:
 
 protected:
        virtual ~SerializerReadFileCallback() {}
-       
+
        OpenThreads::Mutex _mutex;
 };
 
@@ -159,13 +163,13 @@ protected:
 
 void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments)
 {
-#if VERBOSE                
+#if VERBOSE
     osg::notify(osg::NOTICE)<<"runMultiThreadReadTests() -- running"<<std::endl;
 #endif
 
 
     if (arguments.read("preload"))
-    {    
+    {
         osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("osg"));
         osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("rgb"));
         osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("jpeg"));
@@ -195,17 +199,17 @@ void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments)
         readThread->addFileName("cessna.osgt");
         readThread->addFileName("glider.osgt");
         readThread->addFileName("town.ive");
-        
+
         readThreads.push_back(readThread.get());
 
         readThread->start();
-        
+
     }
 
     startBarrier->block();
     endBarrier->block();
 
-#if VERBOSE                
+#if VERBOSE
     osg::notify(osg::NOTICE)<<"runMultiThreadReadTests() -- completed."<<std::endl;
 #endif
 }

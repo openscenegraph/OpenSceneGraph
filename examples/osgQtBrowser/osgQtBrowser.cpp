@@ -59,10 +59,10 @@ class ViewerFrameThread : public OpenThreads::Thread
 
         ~ViewerFrameThread()
         {
-            cancel();
-            while(isRunning())
+            if (isRunning())
             {
-                OpenThreads::Thread::YieldCurrentThread();
+                cancel();
+                join();
             }
         }
 

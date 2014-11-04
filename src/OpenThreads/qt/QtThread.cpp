@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -54,7 +54,7 @@ int Thread::GetConcurrency()
 Thread::Thread()
 {
     if (!s_isInitialized) Init();
-    
+
     QtThreadPrivateData* pd = new QtThreadPrivateData(this);
     pd->isRunning = false;
     pd->detached = false;
@@ -65,7 +65,7 @@ Thread::Thread()
     pd->stackSize = 0;
     pd->threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
     pd->threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
-    
+
     _prvData = static_cast<void*>(pd);
 }
 
@@ -82,6 +82,8 @@ Thread::~Thread()
     {
         std::cout<<"Error: Thread "<< this <<" still running in destructor"<<std::endl;
         cancel();
+
+        join();
     }
     delete pd;
     _prvData = 0;
@@ -90,7 +92,7 @@ Thread::~Thread()
 Thread* Thread::CurrentThread()
 {
     if (!s_isInitialized) Thread::Init();
-    
+
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(QThread::currentThread());
     return (pd ? pd->getMasterThread() : 0);
 }
@@ -151,10 +153,10 @@ int Thread::start()
 {
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(_prvData);
     pd->threadStartedBlock.reset();
-    
+
     pd->setStackSize( pd->stackSize );
     pd->start();
-    
+
     // wait till the thread has actually started.
     pd->threadStartedBlock.block();
     return 0;
@@ -209,13 +211,13 @@ int Thread::testCancel()
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(_prvData);
     if (!pd->cancelled)
         return 0;
-    
+
     if (pd->cancelMode == 2)
         return -1;
-    
+
     if (pd!=QThread::currentThread())
         return -1;
-    
+
     throw QtThreadCanceled();
 }
 
@@ -232,7 +234,7 @@ int Thread::cancel()
     {
         if (pd->cancelMode == 2)
             return -1;
-        
+
         pd->cancelled = true;
         if (pd->cancelMode == 1)
         {
@@ -294,7 +296,7 @@ int Thread::setSchedulePriority(ThreadPriority priority)
 {
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(_prvData);
     pd->threadPriority = priority;
-    
+
     if (pd->isRunning)
         pd->applyPriority();
     return 0;
@@ -374,7 +376,7 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(_prvData);
     pd->cpunum = cpunum;
     if (!pd->isRunning) return 0;
-    
+
     // FIXME:
     // Qt doesn't have a platform-independent thread affinity method at present.
     // Does it automatically configure threads on different processors, or we have to do it ourselves?
@@ -391,7 +393,7 @@ void Thread::printSchedulingInfo()
 {
     QtThreadPrivateData* pd = static_cast<QtThreadPrivateData*>(_prvData);
     std::cout << "Thread "<< pd->getMasterThread() <<" priority: ";
-    
+
     switch (pd->threadPriority)
     {
     case Thread::THREAD_PRIORITY_MAX:
@@ -453,7 +455,7 @@ int OpenThreads::GetNumberOfProcessors()
 int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
 {
     if (cpunum<0) return -1;
-    
+
     Thread::Init();
     Thread* thread = Thread::CurrentThread();
     if (thread)

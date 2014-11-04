@@ -152,19 +152,6 @@ RenderSurface::RenderSurface( void )
 
 RenderSurface::~RenderSurface( void )
 {
-#if 0
-     cancel();
-
-    _fini();
-
-    while (isRunning())
-    {
-        //std::cout << "waiting for RenderSurface to cancel"<<std::endl;
-        OpenThreads::Thread::YieldCurrentThread();
-    }
-
-    delete _threadReady;
-#endif
 }
 
 

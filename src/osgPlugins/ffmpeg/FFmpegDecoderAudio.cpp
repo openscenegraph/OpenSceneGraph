@@ -14,6 +14,9 @@
 #endif
 
 
+#if LIBAVCODEC_VERSION_MAJOR < 56
+   #define AV_CODEC_ID_NONE CODEC_ID_NONE
+#endif
 
 namespace osgFFmpeg {
 
@@ -21,7 +24,54 @@ static int decode_audio(AVCodecContext *avctx, int16_t *samples,
                          int *frame_size_ptr,
                          const uint8_t *buf, int buf_size)
 {
-#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
+#if LIBAVCODEC_VERSION_MAJOR >= 56
+
+    AVFrame *frame = av_frame_alloc();
+
+    if (!frame) return AVERROR(ENOMEM);
+
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = const_cast<uint8_t *>(buf);
+    avpkt.size = buf_size;
+
+    int got_frame = 0;
+    int result = avcodec_decode_audio4(avctx, frame, &got_frame, &avpkt);
+
+    if (result>=0 && got_frame)
+    {
+        int ch, plane_size;
+        int planar = av_sample_fmt_is_planar(avctx->sample_fmt);
+        int data_size = av_samples_get_buffer_size(&plane_size, avctx->channels, frame->nb_samples, avctx->sample_fmt, 1);
+        if (*frame_size_ptr < data_size)
+        {
+            av_log(avctx, AV_LOG_ERROR, "output buffer size is too small for "
+            "the current frame (%d < %d)\n", *frame_size_ptr, data_size);
+            av_frame_free(&frame);
+            return AVERROR(EINVAL);
+        }
+        memcpy(samples, frame->extended_data[0], plane_size);
+        if (planar && avctx->channels > 1)
+        {
+            uint8_t *out = ((uint8_t *)samples) + plane_size;
+            for (ch = 1; ch < avctx->channels; ch++)
+            {
+                memcpy(out, frame->extended_data[ch], plane_size);
+                out += plane_size;
+            }
+        }
+        *frame_size_ptr = data_size;
+    }
+    else
+    {
+        *frame_size_ptr = 0;
+    }
+
+    av_frame_free(&frame);
+
+    return result;
+
+#elif LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
 
     // following code segment copied from ffmpeg's avcodec_decode_audio2()
     // implementation to avoid warnings about deprecated function usage.
@@ -77,6 +127,10 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 
         m_frequency = m_context->sample_rate;
         m_nb_channels = m_context->channels;
+
+        OSG_NOTICE<<"FFmpegDecoderAudio::open(..), m_nb_channels="<<m_nb_channels<<", m_context->sample_fmt="<<m_context->sample_fmt<<std::endl;
+
+
         switch (m_context->sample_fmt)
         {
         case AV_SAMPLE_FMT_NONE:
@@ -100,7 +154,7 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
         }
 
         // Check stream sanity
-        if (m_context->codec_id == CODEC_ID_NONE)
+        if (m_context->codec_id == AV_CODEC_ID_NONE)
             throw std::runtime_error("invalid audio codec");;
 
         // Find the decoder for the audio stream

@@ -10,7 +10,7 @@ namespace osgFFmpeg {
 
 // TODO - add support for using RGB or RGBA pixel format.
 // Note from Jason Daly in a osg-submissions thread, "The pix_fmt field of AVCodecContext will indicate the pixel format of the decoded video"
-    
+
 
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),
@@ -74,7 +74,11 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
     m_alpha_channel = (m_context->pix_fmt == PIX_FMT_YUVA420P);
 
     // Find out the framerate
+    #if LIBAVCODEC_VERSION_MAJOR >= 56
+    m_frame_rate = av_q2d(stream->avg_frame_rate);
+    #else
     m_frame_rate = av_q2d(stream->r_frame_rate);
+    #endif
 
     // Find the decoder for the video stream
     m_codec = avcodec_find_decoder(m_context->codec_id);

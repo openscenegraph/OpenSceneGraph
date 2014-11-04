@@ -83,7 +83,7 @@ struct ThreadCleanupStruct
 {
 
     OpenThreads::Thread *thread;
-    volatile bool *runflag;
+    Atomic *runflag;
 
 };
 
@@ -97,7 +97,7 @@ void thread_cleanup_handler(void *arg)
     ThreadCleanupStruct *tcs = static_cast<ThreadCleanupStruct *>(arg);
 
     tcs->thread->cancelCleanup();
-    *(tcs->runflag) = false;
+    (*(tcs->runflag)).exchange(0);
 
 }
 
@@ -176,7 +176,7 @@ private:
 
         ThreadCleanupStruct tcs;
         tcs.thread = thread;
-        tcs.runflag = &pd->isRunning;
+        tcs.runflag = &pd->_isRunning;
 
         // Set local storage so that Thread::CurrentThread() can return the right thing
         int status = pthread_setspecific(PThreadPrivateData::s_tls_key, thread);
@@ -196,14 +196,14 @@ private:
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 
-        pd->isRunning = true;
+        pd->setRunning(true);
 
         // release the thread that created this thread.
         pd->threadStartedBlock.release();
 
         thread->run();
 
-        pd->isRunning = false;
+        pd->setRunning(false);
 
         pthread_cleanup_pop(0);
 
@@ -426,7 +426,7 @@ Thread::Thread()
     pd->stackSize = 0;
     pd->stackSizeLocked = false;
     pd->idSet = false;
-    pd->isRunning = false;
+    pd->setRunning(false);
     pd->isCanceled = false;
     pd->uniqueId = pd->nextId;
     pd->nextId++;
@@ -448,7 +448,7 @@ Thread::~Thread()
 {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *>(_prvData);
 
-    if(pd->isRunning)
+    if(pd->isRunning())
     {
         std::cout<<"Error: Thread "<<this<<" still running in destructor"<<std::endl;
 
@@ -594,7 +594,7 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
 
 #elif defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
 
-    if (pd->isRunning && Thread::CurrentThread()==this)
+    if (pd->isRunning() && Thread::CurrentThread()==this)
     {
         cpu_set_t cpumask;
         CPU_ZERO( &cpumask );
@@ -624,7 +624,7 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
 bool Thread::isRunning()
 {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
-    return pd->isRunning;
+    return pd->isRunning();
 
 }
 
@@ -783,7 +783,7 @@ int Thread::cancel()
 {
 #if defined(HAVE_PTHREAD_CANCEL)
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
-    if (pd->isRunning)
+    if (pd->isRunning())
     {
         pd->isCanceled = true;
         int status = pthread_cancel(pd->tid);

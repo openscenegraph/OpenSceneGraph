@@ -340,6 +340,30 @@ int OperationThread::cancel()
         }
 
         // then wait for the the thread to stop running.
+        while(isRunning())
+        {
+
+#if 1
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
+
+                if (_operationQueue.valid())
+                {
+                    _operationQueue->releaseOperationsBlock();
+                    // _operationQueue->releaseAllOperations();
+                }
+
+                if (_currentOperation.valid()) _currentOperation->release();
+            }
+#endif
+            // commenting out debug info as it was cashing crash on exit, presumable
+            // due to OSG_NOTIFY or std::cout destructing earlier than this destructor.
+            OSG_DEBUG<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+
+        // use join to appease valgrind as the above loop won't exit till the thread stops running
+        // but valgrind doesn't reconginze this and assumes the thread is still running
         join();
     }
 

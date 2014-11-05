@@ -219,6 +219,9 @@ protected:
     osg::ref_ptr<InputException> _exception;
     osg::ref_ptr<const osgDB::Options> _options;
 
+    // object to used to read field properties that will be discarded.
+    osg::ref_ptr<osg::Object> _dummyReadObject;
+
     // store here to avoid a new and a leak in InputStream::decompress
     std::stringstream* _dataDecompress;
 };

@@ -23,6 +23,17 @@ using namespace osgDB;
 
 static std::string s_lastSchema;
 
+class DummyObject : public osg::Object
+{
+public:
+    DummyObject() {}
+    DummyObject(const DummyObject& dummy, const osg::CopyOp& copyop) {}
+    META_Object(osgDB, DummyObject)
+protected:
+    virtual ~DummyObject() {}
+};
+
+
 InputStream::InputStream( const osgDB::Options* options )
     :   _fileVersion(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
@@ -65,6 +76,9 @@ InputStream::InputStream( const osgDB::Options* options )
         resetSchema();
         s_lastSchema.clear();
     }
+
+    // assign dummy object to used for reading field properties that will be discarded.
+    _dummyReadObject = new DummyObject;
 }
 
 InputStream::~InputStream()
@@ -772,17 +786,37 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         break;
     }
 
+    bool loadedFromCache = false;
     if ( readFromExternal && !name.empty() )
     {
-        image = osgDB::readImageFile( name, getOptions() );
+        ReaderWriter::ReadResult rr = Registry::instance()->readImage(name, getOptions());
+        if (rr.validImage())
+        {
+            image = rr.takeImage();
+            loadedFromCache = rr.loadedFromCache();
+        }
+        else
+        {
+            if (rr.error()) OSG_WARN << rr.message() << std::endl;
+        }
+
         if ( !image && _forceReadingImage ) image = new osg::Image;
     }
 
-    image = static_cast<osg::Image*>( readObjectFields("osg::Object", id, image.get()) );
-    if ( image.valid() )
+    if (loadedFromCache)
     {
-        image->setFileName( name );
-        image->setWriteHint( (osg::Image::WriteHint)writeHint );
+        // we don't want to overwrite the properties of the image in the cache as this could cause theading problems if the object is currently being used
+        // so we read the properties from the file into a dummy object and discard the changes.
+        osg::ref_ptr<osg::Object> temp_obj = readObjectFields("osg::Object", id, _dummyReadObject.get() );
+    }
+    else
+    {
+        image = static_cast<osg::Image*>( readObjectFields("osg::Object", id, image.get()) );
+        if ( image.valid() )
+        {
+            image->setFileName( name );
+            image->setWriteHint( (osg::Image::WriteHint)writeHint );
+        }
     }
     return image.release();
 }

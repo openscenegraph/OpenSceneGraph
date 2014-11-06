@@ -166,7 +166,7 @@ TXFFont::loadFont(std::istream& stream)
         glyphData.x = readShort(stream, isSwapped);
         glyphData.y = readShort(stream, isSwapped);
 
-        computedmaxheight = std::max(computedmaxheight, (unsigned)glyphData.height);
+		computedmaxheight = (computedmaxheight> (unsigned)glyphData.height) ? computedmaxheight: (unsigned)glyphData.height;
 
         glyphs.push_back(glyphData);
     }

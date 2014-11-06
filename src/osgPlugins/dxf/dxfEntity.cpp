@@ -182,13 +182,13 @@ dxfCircle::drawScene(scene* sc)
         // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc
         // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with
         // one side=r-maxError, hypotenuse=r, and internal angle at center is half the angle we will step with:
-        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
+		double maxError = (_maxError< _radius) ? _maxError: _radius; // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
         double newtheta=acos( (_radius-maxError) / _radius);
         newtheta=osg::RadiansToDegrees(newtheta)*2.0;
 
         // Option to only use the new accuracy code when it would improve on the accuracy of the old method
         if (_improveAccuracyOnly) {
-            theta=min(newtheta,theta);
+			theta = (newtheta< theta) ? newtheta: theta;
         } else {
             theta=newtheta;
         }
@@ -276,13 +276,13 @@ dxfArc::drawScene(scene* sc)
         // we generate points on a polyline where each point lies on the arc, thus the maximum error occurs at the midpoint of each line segment where it lies furthest inside the arc
         // If we divide the segment in half and connect the bisection point to the arc's center, we have two rightangled triangles with
         // one side=r-maxError, hypotenuse=r, and internal angle at center is half the angle we will step with:
-        double maxError=min(_maxError,_radius); // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
+		double maxError = (_maxError< _radius)?_maxError: _radius; // Avoid offending acos() in the edge case where allowable deviation is greater than radius.
         double newtheta=acos( (_radius-maxError) / _radius);
         newtheta=osg::RadiansToDegrees(newtheta)*2.0;
         //cout<<"r="<<_radius<<" _me="<<_maxError<<" (_radius-_maxError)="<<(_radius-_maxError)<<" newtheta="<<newtheta<<endl;
         // Option to only use the new accuracy code when it would improve on the accuracy of the old method
         if (_improveAccuracyOnly) {
-            theta=min(newtheta,theta);
+			theta = (newtheta<theta) ? newtheta:theta;
         } else {
             theta=newtheta;
         }
@@ -292,7 +292,7 @@ dxfArc::drawScene(scene* sc)
     int numsteps = (int)((end - start)/theta);
     //cout<<"arc theta="<<osg::RadiansToDegrees(theta)<<" end="<<end<<" start="<<start<<" numsteps="<<numsteps<<" e-s/theta="<<((end-start)/theta)<<" end-start="<<(end-start)<<endl;
     if (numsteps * theta < (end - start)) numsteps++;
-    numsteps=max(numsteps,2); // Whatever else, minimum representation of an arc is a straightline
+	numsteps = (numsteps>2) ? numsteps: 2; // Whatever else, minimum representation of an arc is a straightline
     angle_step /=  (double) numsteps;
     end = DegreesToRadians((-_startAngle)+90.0);
     start = DegreesToRadians((-_endAngle)+90.0);

@@ -22,7 +22,7 @@
 * license:     OpenSceneGraph Public License (OSGPL)
 *
 * A demo of GLSL geometry shaders using OSG transform feedback
-* 
+*
 */
 
 ///missing GL define
@@ -70,19 +70,19 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-class SineAnimation: public osg::Uniform::Callback
+class SineAnimation : public osg::Uniform::Callback
 {
 public:
-	SineAnimation( float rate = 1.0f, float scale = 1.0f, float offset = 0.0f ) :
-	  _rate(rate), _scale(scale), _offset(offset)
-	  {}
+	SineAnimation(float rate = 1.0f, float scale = 1.0f, float offset = 0.0f) :
+		_rate(rate), _scale(scale), _offset(offset)
+	{}
 
-	  void operator()( osg::Uniform* uniform, osg::NodeVisitor* nv )
-	  {
-		  float angle = _rate * nv->getFrameStamp()->getSimulationTime();
-		  float value = sinf( angle ) * _scale + _offset;
-		  uniform->set( value );
-	  }
+	void operator()(osg::Uniform* uniform, osg::NodeVisitor* nv)
+	{
+		float angle = _rate * nv->getFrameStamp()->getSimulationTime();
+		float value = sinf(angle) * _scale + _offset;
+		uniform->set(value);
+	}
 
 private:
 	const float _rate;
@@ -124,28 +124,28 @@ static const char* geomSource = {
 	"#version 120\n"
 	"#extension GL_EXT_geometry_shader4 : enable\n"
 	//	"layout(points) in;\n"\
-	//	"layout(points, max_vertices = 4) out;\n"
-	"uniform float u_anim1;\n"
-	" varying in vec4 v_color[];\n"
-	//" varying in vec4 v_vertex[];\n"
-	" varying  vec4 v_color_out;\n"
-	"void main(void)\n"
-	"{\n"
-	"    vec4 v =vec4( gl_PositionIn[0].xyz,1);\n"
-	"  v_color_out =  v + vec4(u_anim1,0.,0.,0.);//  gl_Position = v + vec4(u_anim1,0.,0.,0.); \n"
-	"  EmitVertex();\n"
-	"    EndPrimitive();\n"
-	"   v_color_out =  v - vec4(u_anim1,0.,0.,0.); // gl_Position = v - vec4(u_anim1,0.,0.,0.);  \n"
-	" EmitVertex();\n"
-	"    EndPrimitive();\n"
-	"\n"
-	"   v_color_out =  v + vec4(0.,1.0-u_anim1,0.,0.);// gl_Position = v + vec4(0.,1.0-u_anim1,0.,0.); \n"
-	"  EmitVertex();\n"
-	"    EndPrimitive();\n"
-	"   v_color_out =  v - vec4(0.,1.0-u_anim1,0.,0.); //gl_Position = v - vec4(0.,1.0-u_anim1,0.,0.); \n"
-	"  EmitVertex();\n"
-	"    EndPrimitive();\n"
-	"}\n"
+		//	"layout(points, max_vertices = 4) out;\n"
+		"uniform float u_anim1;\n"
+		" varying in vec4 v_color[];\n"
+		//" varying in vec4 v_vertex[];\n"
+		" varying  vec4 v_color_out;\n"
+		"void main(void)\n"
+		"{\n"
+		"    vec4 v =vec4( gl_PositionIn[0].xyz,1);\n"
+		"  v_color_out =  v + vec4(u_anim1,0.,0.,0.);//  gl_Position = v + vec4(u_anim1,0.,0.,0.); \n"
+		"  EmitVertex();\n"
+		"    EndPrimitive();\n"
+		"   v_color_out =  v - vec4(u_anim1,0.,0.,0.); // gl_Position = v - vec4(u_anim1,0.,0.,0.);  \n"
+		" EmitVertex();\n"
+		"    EndPrimitive();\n"
+		"\n"
+		"   v_color_out =  v + vec4(0.,1.0-u_anim1,0.,0.);// gl_Position = v + vec4(0.,1.0-u_anim1,0.,0.); \n"
+		"  EmitVertex();\n"
+		"    EndPrimitive();\n"
+		"   v_color_out =  v - vec4(0.,1.0-u_anim1,0.,0.); //gl_Position = v - vec4(0.,1.0-u_anim1,0.,0.); \n"
+		"  EmitVertex();\n"
+		"    EndPrimitive();\n"
+		"}\n"
 };
 
 
@@ -163,21 +163,21 @@ static const char* fragSource = {
 osg::Program* createGeneratorShader()
 {
 	osg::Program* pgm = new osg::Program;
-	pgm->setName( "osg transformfeedback demo" );
-	pgm->addShader( new osg::Shader( osg::Shader::VERTEX,   vertSource ) );
-	pgm->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
-	pgm->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
-	pgm->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
-	pgm->addShader( new osg::Shader( osg::Shader::GEOMETRY, geomSource ) );
+	pgm->setName("osg transformfeedback demo");
+	pgm->addShader(new osg::Shader(osg::Shader::VERTEX, vertSource));
+	pgm->setParameter(GL_GEOMETRY_VERTICES_OUT_EXT, 4);
+	pgm->setParameter(GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS);
+	pgm->setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS);
+	pgm->addShader(new osg::Shader(osg::Shader::GEOMETRY, geomSource));
 	return pgm;
 }
 
 osg::Program* createRenderShader()
 {
 	osg::Program* pgm = new osg::Program;
-	pgm->setName( "osg transformfeedback renderer demo" );
-	pgm->addShader( new osg::Shader( osg::Shader::VERTEX,   RendervertSource ) );
-	pgm->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) );
+	pgm->setName("osg transformfeedback renderer demo");
+	pgm->addShader(new osg::Shader(osg::Shader::VERTEX, RendervertSource));
+	pgm->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragSource));
 	return pgm;
 }
 
@@ -191,7 +191,7 @@ public:
 };
 
 class SomePointsRenderer;
-class SomePointsGenerator:public osg::Geometry{	
+class SomePointsGenerator :public osg::Geometry{
 public:
 	SomePointsGenerator();
 	void setRenderer(SomePointsRenderer*renderer);
@@ -203,7 +203,7 @@ protected:
 	osg::ref_ptr<osg::VertexBufferObject> genbuffer;//Renderer buffer
 	osg::Vec4Array* vAry;
 
-	virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
+	virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 };
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -215,20 +215,26 @@ public:
 		setUseVertexBufferObjects(true);
 
 		osg::Vec4Array* vAry2 = new osg::Vec4Array;
-		vAry2->resize(_generator->getNumPrimitivesGenerated());			
+		vAry2->resize(_generator->getNumPrimitivesGenerated());
 		setVertexArray(vAry2);
-		addPrimitiveSet( new osg::DrawArrays( GL_LINES, 0,_generator->getNumPrimitivesGenerated()));
+		/*	osg::ref_ptr<osg::Vec4Array>  vAryN = new osg::Vec4Array();
+		vAryN->push_back(osg::Vec4(0, 0, 0, 1));
+		vAryN->push_back(osg::Vec4(0, 1, 0, 1));
+		vAryN->push_back(osg::Vec4(1, 0, 0, 1));
+		vAryN->push_back(osg::Vec4(1, 1, 0, 1));
+		setNormalArray(vAryN,osg::Array::Binding::BIND_PER_VERTEX);*/
+		addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, _generator->getNumPrimitivesGenerated()));
 
 		osg::StateSet* sset = getOrCreateStateSet();
 		///hacking rendering order
-		/*osg::BlendFunc* bf = new
-		osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,
-		osg::BlendFunc::ONE_MINUS_SRC_ALPHA );
-		sset->setAttributeAndModes(bf);*/
+		osg::BlendFunc* bf = new
+			osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,
+			osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+		sset->setAttributeAndModes(bf);
 
-		sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+		sset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 		getOrCreateVertexBufferObject();
-		sset->setAttribute( createRenderShader() );
+		sset->setAttribute(createRenderShader());
 
 	}
 
@@ -237,33 +243,43 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////
-GLuint SomePointsGenerator::getNumPrimitivesGenerated()const {return vAry->size()*4;} 
+GLuint SomePointsGenerator::getNumPrimitivesGenerated()const { return vAry->size() * 4; }
 
-void SomePointsGenerator::drawImplementation( osg::RenderInfo& renderInfo ) const
+void SomePointsGenerator::drawImplementation(osg::RenderInfo& renderInfo) const
 {
 	//get output buffer
 	unsigned int contextID = renderInfo.getState()->getContextID();
-	GLuint ubuff=	genbuffer->getOrCreateGLBufferObject(contextID)->getGLObjectID();
+	osg::GLBufferObject*glbo = genbuffer->getOrCreateGLBufferObject(contextID);
 
-	if(_renderData->ext==0){
+	osg::BufferObject* bo = genbuffer->getOrCreateGLBufferObject(contextID)->getBufferObject();
+	GLuint ubuff = glbo->getGLObjectID();
+	//bo->getBufferData(0)
+	if (_renderData->ext == 0){
 		///First Time Hack 
-		_renderData-> ext = osg::GLBufferObject::getExtensions( contextID, true );
-		_renderData->ext2=new osg::GL2Extensions(contextID);   
-
+		_renderData->ext = osg::GLBufferObject::getExtensions(contextID, true);
+		_renderData->ext2 = new osg::GL2Extensions(contextID);
+		//Relink GL Program to take into account feedback binding
+		const char* varyings[1] = { "v_color_out" };
+		osg::Program::PerContextProgram* pcp = _program->getPCP(contextID);
+		GLuint prID = pcp->getHandle();
+		_renderData->ext2->glTransformFeedbackVaryings(prID, 1, varyings, GL_INTERLEAVED_ATTRIBS);
+		_program->dirtyProgram();
 
 	}
-
-
-	_renderData->ext->glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0,ubuff);
-
+	for (int i = 0; i <bo->getNumBufferData(); i++){
+		GLuint offset = glbo->getOffset(i);
+		GLuint ptrsize = ((osg::Array*)bo->getBufferData(i))->getTotalDataSize();
+		//_renderData->ext->glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, ubuff);
+		_renderData->ext->glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, i, ubuff, offset, ptrsize);
+	}
 	glEnable(GL_RASTERIZER_DISCARD);
-	_renderData->ext2->	glBeginTransformFeedback(GL_POINTS);
+	_renderData->ext2->glBeginTransformFeedback(GL_POINTS);
 
 
-	osg::Geometry:: drawImplementation(  renderInfo );
+	osg::Geometry::drawImplementation(renderInfo);
 
 
-	_renderData->ext2->	glEndTransformFeedback();
+	_renderData->ext2->glEndTransformFeedback();
 	glDisable(GL_RASTERIZER_DISCARD);
 
 	_renderData->ext->glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
@@ -271,37 +287,42 @@ void SomePointsGenerator::drawImplementation( osg::RenderInfo& renderInfo ) cons
 
 
 
-SomePointsGenerator::SomePointsGenerator():osg::Geometry()
+SomePointsGenerator::SomePointsGenerator() :osg::Geometry()
 {
-	_renderData= new InitGeneratorData;
-	_renderData->ext=0;
-	_renderData->ext2=0;
+	_renderData = new InitGeneratorData;
+	_renderData->ext = 0;
+	_renderData->ext2 = 0;
 
 
 	setUseVertexBufferObjects(true);
 
 	osg::StateSet* sset = getOrCreateStateSet();
-	sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+	sset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 	vAry = new osg::Vec4Array;;
-		vAry->push_back( osg::Vec4(0,0,0,1) );
-		vAry->push_back( osg::Vec4(0,1,0,1) );
-		vAry->push_back( osg::Vec4(1,0,0,1) );
-		vAry->push_back( osg::Vec4(1,1,0,1 ));
-		addPrimitiveSet( new osg::DrawArrays( GL_POINTS, 0, vAry->size() ) );
-		setVertexArray( vAry );
-
-	_program=createGeneratorShader() ;
-	sset->setAttribute(_program );
+	vAry->push_back(osg::Vec4(0, 0, 0, 1));
+	vAry->push_back(osg::Vec4(0, 1, 0, 1));
+	vAry->push_back(osg::Vec4(1, 0, 0, 1));
+	vAry->push_back(osg::Vec4(1, 1, 0, 1));
+	addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vAry->size()));
+	setVertexArray(vAry);
+	/*	osg::ref_ptr<osg::Vec4Array>  vAryN = new osg::Vec4Array();
+	vAryN->push_back(osg::Vec4(0, 0, 0, 1));
+	vAryN->push_back(osg::Vec4(0, 1, 0, 1));
+	vAryN->push_back(osg::Vec4(1, 0, 0, 1));
+	vAryN->push_back(osg::Vec4(1, 1, 0, 1));
+	setNormalArray(vAryN,osg::Array::Binding::BIND_PER_VERTEX);*/
+	_program = createGeneratorShader();
+	sset->setAttribute(_program);
 
 	// a generic cyclic animation value
-	osg::Uniform* u_anim1( new osg::Uniform( "u_anim1", 0.9f ) );
-	u_anim1->setUpdateCallback( new SineAnimation( 4, 0.5, 0.5 ) );
-	sset->addUniform( u_anim1 );
+	osg::Uniform* u_anim1(new osg::Uniform("u_anim1", 0.9f));
+	u_anim1->setUpdateCallback(new SineAnimation(4, 0.5, 0.5));
+	sset->addUniform(u_anim1);
 
-}	
+}
 
 void SomePointsGenerator::setRenderer(SomePointsRenderer*renderer){
-	genbuffer=renderer->getOrCreateVertexBufferObject();
+	genbuffer = renderer->getOrCreateVertexBufferObject();
 	/*	osg::StateSet* sset = getOrCreateStateSet();
 	osg::ref_ptr<osg::TransformFeedbackBufferBinding> tfeed=
 	new 	osg::TransformFeedbackBufferBinding(0,
@@ -315,15 +336,15 @@ void SomePointsGenerator::setRenderer(SomePointsRenderer*renderer){
 
 ///////////////////////////////////////////////////////////////////////////
 
-int main( int , char** )
+int main(int, char**)
 {
-	osg::Geode* root( new osg::Geode );
-	SomePointsGenerator * pate=new SomePointsGenerator();
-	SomePointsRenderer* pate2=new SomePointsRenderer(pate);
+	osg::Geode* root(new osg::Geode);
+	SomePointsGenerator * pate = new SomePointsGenerator();
+	SomePointsRenderer* pate2 = new SomePointsRenderer(pate);
 	pate->setRenderer(pate2);
-	root->addDrawable(pate  );
-	root->addDrawable( pate2);
+	root->addDrawable(pate);
+	root->addDrawable(pate2);
 	osgViewer::Viewer viewer;
-	viewer.setSceneData( root );
+	viewer.setSceneData(root);
 	return viewer.run();
 }

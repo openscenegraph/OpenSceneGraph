@@ -1,3 +1,3 @@
 SET(TARGET_SRC osgviewer.cpp )
 
-SETUP_APPLICATION(osgviewer)
+SETUP_APPLICATION(osgviewere)

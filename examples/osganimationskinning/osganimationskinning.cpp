@@ -19,6 +19,7 @@
 #include <osgViewer/Viewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/WriteFile>
+#include <osgDB/ReadFile>
 #include <osgUtil/SmoothingVisitor>
 #include <osg/io_utils>
 
@@ -254,9 +255,20 @@ int main (int argc, char* argv[])
     geom->setDataVariance(osg::Object::DYNAMIC);
 
     initVertexMap(root.get(), right0.get(), right1.get(), geom, src.get());
-
+	//geom->setSourceGeometry(0);
+	osgDB::writeNodeFile(*scene, "animation.osgt");
+	//scene = osgDB::readNodeFile("animation.osgt");
     // let's run !
-    viewer.setSceneData( scene );
+	/*
+	scene=osgDB::readNodeFile("animation.osgt")->asGroup();
+	manager=dynamic_cast<osgAnimation::BasicAnimationManager*>(scene->getUpdateCallback());
+
+	scene->setUpdateCallback(manager.get());
+	manager->buildTargetReference();
+	const osgAnimation::AnimationList &li = manager->getAnimationList();
+	if(li.size()>0)
+	manager->playAnimation(manager->getAnimationList().front());*/
+	viewer.setSceneData(scene);
     viewer.realize();
 
     while (!viewer.done())

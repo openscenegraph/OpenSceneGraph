@@ -54,6 +54,7 @@ void CompositeProperty::clear()
 //
 SwitchProperty::SwitchProperty()
 {
+	_activeProperty = 0;
 }
 
 SwitchProperty::SwitchProperty(const SwitchProperty& switchProperty, const osg::CopyOp& copyop):

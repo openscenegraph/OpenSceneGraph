@@ -18,7 +18,10 @@
 #include <osgAnimation/Export>
 #include <osgAnimation/AnimationUpdateCallback>
 #include <osg/Geometry>
-
+#ifdef RELATIVE
+#define RELATIVEB RELATIVE
+#undef RELATIVE
+#endif
 namespace osgAnimation
 {
 
@@ -150,5 +153,8 @@ namespace osgAnimation
     };
 
 }
-
+#ifdef RELATIVEB
+#define RELATIVE RELATIVEB
+#undef RELATIVEB
 #endif
+#endif 

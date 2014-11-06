@@ -23,17 +23,6 @@ using namespace osgDB;
 
 static std::string s_lastSchema;
 
-class DummyObject : public osg::Object
-{
-public:
-    DummyObject() {}
-    DummyObject(const DummyObject& dummy, const osg::CopyOp& copyop) {}
-    META_Object(osgDB, DummyObject)
-protected:
-    virtual ~DummyObject() {}
-};
-
-
 InputStream::InputStream( const osgDB::Options* options )
     :   _fileVersion(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
@@ -78,7 +67,7 @@ InputStream::InputStream( const osgDB::Options* options )
     }
 
     // assign dummy object to used for reading field properties that will be discarded.
-    _dummyReadObject = new DummyObject;
+    _dummyReadObject = new osg::DummyObject;
 }
 
 InputStream::~InputStream()

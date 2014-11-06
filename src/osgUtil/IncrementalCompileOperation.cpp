@@ -53,10 +53,11 @@ static osg::ApplicationUsageProxy UCO_e3(osg::ApplicationUsage::ENVIRONMENTAL_VA
 //
 // CollectStateToCompile
 //
-StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode):
+StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode, osg::Object* markerObject):
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _mode(mode),
-    _assignPBOToImages(false)
+    _assignPBOToImages(false),
+    _markerObject(markerObject)
 {
 }
 
@@ -76,35 +77,44 @@ void StateToCompile::apply(osg::Drawable& drawable)
 
     _drawablesHandled.insert(&drawable);
 
-    if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
+    if (_markerObject!=drawable.getUserData())
     {
-        drawable.setUseDisplayList(false);
-    }
+        if (drawable.getDataVariance()!=osg::Object::STATIC)
+        {
+            if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
+            {
+                drawable.setUseDisplayList(false);
+            }
 
-    if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
-    {
-        drawable.setUseDisplayList(true);
-    }
+            if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
+            {
+                drawable.setUseDisplayList(true);
+            }
 
-    if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
-    {
-        drawable.setUseVertexBufferObjects(true);
-    }
+            if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
+            {
+                drawable.setUseVertexBufferObjects(true);
+            }
 
-    if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
-    {
-        drawable.setUseVertexBufferObjects(false);
-    }
+            if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
+            {
+                drawable.setUseVertexBufferObjects(false);
+            }
+        }
 
-    if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
-        (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
-    {
-        _drawables.insert(&drawable);
-    }
+        if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
+            (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
+        {
+            _drawables.insert(&drawable);
+        }
 
-    if (drawable.getStateSet())
-    {
-        apply(*(drawable.getStateSet()));
+        if (drawable.getStateSet())
+        {
+            apply(*(drawable.getStateSet()));
+        }
+
+        // mark the drawable as visited
+        if (drawable.getUserData()==0) drawable.setUserData(_markerObject.get());
     }
 }
 
@@ -114,22 +124,20 @@ void StateToCompile::apply(osg::StateSet& stateset)
 
     _statesetsHandled.insert(&stateset);
 
-    if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
+    if ((_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)!=0 &&
+        _markerObject!=stateset.getUserData())
     {
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program)
+        if (program && _markerObject!=program->getUserData())
         {
             _programs.insert(program);
+
+            // mark the stateset as visited
+            if (program->getUserData()==0) program->setUserData(_markerObject.get());
         }
 
         const osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
 
-#if 0
-        if (tal.size()>1)
-        {
-            tal.erase(tal.begin()+1,tal.end());
-        }
-#endif
         for(osg::StateSet::TextureAttributeList::const_iterator itr = tal.begin();
             itr != tal.end();
             ++itr)
@@ -149,11 +157,17 @@ void StateToCompile::apply(osg::StateSet& stateset)
                 }
             }
         }
+
+        // mark the stateset as visited
+        if (stateset.getUserData()==0) stateset.setUserData(_markerObject.get());
     }
 }
 
 void StateToCompile::apply(osg::Texture& texture)
 {
+    // don't make any changes if Texture already processed
+    if (_markerObject==texture.getUserData()) return;
+
     if (_assignPBOToImages)
     {
         unsigned int numRequringPBO = 0;
@@ -198,6 +212,8 @@ void StateToCompile::apply(osg::Texture& texture)
             }
         }
     }
+
+    if (texture.getUserData()==0) texture.setUserData(_markerObject.get());
 
     _textures.insert(&texture);
 }
@@ -435,6 +451,9 @@ IncrementalCompileOperation::IncrementalCompileOperation():
     _currentFrameNumber(0),
     _compileAllTillFrameNumber(0)
 {
+    _markerObject = new osg::DummyObject;
+    _markerObject->setName("HasBeenProcessedByStateToCompile");
+
     _targetFrameRate = 100.0;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
     _maximumNumOfObjectsToCompilePerFrame = 20;

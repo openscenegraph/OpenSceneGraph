@@ -286,6 +286,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const = 0;
         };
 
+        void setMarkerObject(osg::Object* mo) { _markerObject = mo; }
+        osg::Object* getMarkerObject() { return _markerObject.get(); }
+        const osg::Object* getMarkerObject() const { return _markerObject.get(); }
 
     protected:
 
@@ -469,6 +472,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _maximumTimeToMergeTile;
         double                          _totalTimeToMergeTiles;
         unsigned int                    _numTilesMerges;
+
+        osg::ref_ptr<osg::Object>       _markerObject;
 };
 
 }

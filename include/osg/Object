@@ -269,6 +269,19 @@ T* cloneType(const T* t)
     }
 }
 
+/** DummyObject that can be used as placeholder but otherwise has no other functionality.*/
+class DummyObject : public osg::Object
+{
+public:
+    DummyObject() {}
+    DummyObject(const DummyObject& dummy, const osg::CopyOp& copyop) {}
+    META_Object(osg, DummyObject)
+protected:
+    virtual ~DummyObject() {}
+};
+
+
+
 }
 
 #endif

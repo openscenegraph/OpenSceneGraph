@@ -294,8 +294,8 @@ public:
 class DatabasePager::FindCompileableGLObjectsVisitor : public osgUtil::StateToCompile
 {
 public:
-    FindCompileableGLObjectsVisitor(const DatabasePager* pager):
-            osgUtil::StateToCompile(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES),
+    FindCompileableGLObjectsVisitor(const DatabasePager* pager, osg::Object* markerObject):
+            osgUtil::StateToCompile(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES, markerObject),
             _pager(pager),
             _changeAutoUnRef(false), _valueAutoUnRef(false),
             _changeAnisotropy(false), _valueAnisotropy(1.0)
@@ -340,29 +340,46 @@ public:
 
     bool requiresCompilation() const { return !empty(); }
 
-    virtual void apply(osg::Geode& geode)
+    virtual void apply(osg::Drawable& drawable)
     {
-        StateToCompile::apply(geode);
-
-        if (_kdTreeBuilder.valid())
+        if (_kdTreeBuilder.valid() && _markerObject!=drawable.getUserData())
         {
-            geode.accept(*_kdTreeBuilder);
+            drawable.accept(*_kdTreeBuilder);
+        }
+
+        StateToCompile::apply(drawable);
+
+
+        if (drawable.getUserData()==0)
+        {
+            drawable.setUserData(_markerObject.get());
         }
     }
 
     void apply(osg::Texture& texture)
     {
+        // apply any changes if the texture is not static.
+        if (texture.getDataVariance()!=osg::Object::STATIC &&
+            _markerObject!=texture.getUserData())
+        {
+            if (_changeAutoUnRef)
+            {
+                texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+            }
+
+            if ((_changeAnisotropy && texture.getMaxAnisotropy() != _valueAnisotropy))
+            {
+                texture.setMaxAnisotropy(_valueAnisotropy);
+            }
+        }
+
         StateToCompile::apply(texture);
 
-        if (_changeAutoUnRef)
+        if (texture.getUserData()==0)
         {
-            texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+            texture.setUserData(_markerObject.get());
         }
 
-        if ((_changeAnisotropy && texture.getMaxAnisotropy() != _valueAnisotropy))
-        {
-            texture.setMaxAnisotropy(_valueAnisotropy);
-        }
     }
 
     const DatabasePager*                    _pager;
@@ -875,7 +892,7 @@ void DatabasePager::DatabaseThread::run()
                 loadedModel->getBound();
 
                 // find all the compileable rendering objects
-                DatabasePager::FindCompileableGLObjectsVisitor stateToCompile(_pager);
+                DatabasePager::FindCompileableGLObjectsVisitor stateToCompile(_pager, _pager->getMarkerObject());
                 loadedModel->accept(stateToCompile);
 
                 bool loadedObjectsNeedToBeCompiled = _pager->_doPreCompile &&
@@ -1074,6 +1091,9 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
 {
     //OSG_INFO<<"Constructing DatabasePager(const DatabasePager& )"<<std::endl;
 
+    _markerObject = new osg::DummyObject;
+    _markerObject->setName("HasBeenByStateToCompileProcessedMarker");
+
     _startThreadCalled = false;
 
     _done = false;
@@ -1129,6 +1149,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
 void DatabasePager::setIncrementalCompileOperation(osgUtil::IncrementalCompileOperation* ico)
 {
     _incrementalCompileOperation = ico;
+    if (_incrementalCompileOperation.valid()) _markerObject = _incrementalCompileOperation->getMarkerObject();
 }
 
 DatabasePager::~DatabasePager()

@@ -311,12 +311,18 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 _timestampLastRequest(0.0),
                 _priorityLastRequest(0.0f),
                 _numOfRequests(0),
-                _groupExpired(false)
+                _groupExpired(false),
+                _insertLoadedSubgraphIntoObjectCache(false)
             {}
 
             void invalidate();
 
             bool valid() const { return _valid; }
+
+            bool isRequestCurrent (int frameNumber) const
+            {
+                return _valid && (frameNumber - _frameNumberLastRequest <= 1);
+            }
 
             bool                        _valid;
             std::string                 _fileName;
@@ -337,10 +343,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             osg::observer_ptr<osgUtil::IncrementalCompileOperation::CompileSet> _compileSet;
             bool                        _groupExpired; // flag used only in update thread
 
-            bool isRequestCurrent (int frameNumber) const
-            {
-                return _valid && (frameNumber - _frameNumberLastRequest <= 1);
-            }
+            bool                        _insertLoadedSubgraphIntoObjectCache;
         };
 
 

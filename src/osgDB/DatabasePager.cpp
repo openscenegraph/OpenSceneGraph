@@ -761,27 +761,51 @@ void DatabasePager::DatabaseThread::run()
         osg::ref_ptr<Options> dr_loadOptions;
         std::string fileName;
         int frameNumberLastRequest = 0;
+        bool cacheNodes = false;
         if (databaseRequest.valid())
         {
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
-                dr_loadOptions = databaseRequest->_loadOptions;
+                dr_loadOptions = databaseRequest->_loadOptions.valid() ? databaseRequest->_loadOptions->cloneOptions() : new osgDB::Options;
+                dr_loadOptions->setTerrain(databaseRequest->_terrain);
                 fileName = databaseRequest->_fileName;
                 frameNumberLastRequest = databaseRequest->_frameNumberLastRequest;
             }
-            if (dr_loadOptions.valid())
-            {
-                if (dr_loadOptions->getFileCache()) fileCache = dr_loadOptions->getFileCache();
-                if (dr_loadOptions->getFileLocationCallback()) fileLocationCallback = dr_loadOptions->getFileLocationCallback();
 
-                dr_loadOptions = dr_loadOptions->cloneOptions();
-            }
-            else
+            cacheNodes = (dr_loadOptions->getObjectCacheHint() & osgDB::Options::CACHE_NODES)!=0;
+            if (cacheNodes)
             {
-                dr_loadOptions = new osgDB::Options;
+                // check the object cache to see if the file we want has already been loaded.
+                osg::ref_ptr<osg::Object> objectFromCache = osgDB::Registry::instance()->getRefFromObjectCache(fileName);
+                osg::Node* modelFromCache = dynamic_cast<osg::Node*>(objectFromCache.get());
+                if (modelFromCache)
+                {
+                    // OSG_NOTICE<<"Found object in cache "<<fileName<<std::endl;
+
+                    // assign the cached model to the request
+                    {
+                        OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
+                        databaseRequest->_loadedModel = modelFromCache;
+                    }
+
+                    // move the request to the dataToMerge list so it can be merged during the update phase of the frame.
+                    {
+                        OpenThreads::ScopedLock<OpenThreads::Mutex> listLock( _pager->_dataToMergeList->_requestMutex);
+                        _pager->_dataToMergeList->addNoLock(databaseRequest.get());
+                        databaseRequest = 0;
+                    }
+
+                    // skip the rest of the do/while loop as we have done all the processing we need to do.
+                    continue;
+                }
+
+                // need to disable any attempt to use the cache when loading as we're handle this ourselves to avoid threading conflicts
+                dr_loadOptions->setObjectCacheHint(static_cast<osgDB::Options::CacheHintOptions>(dr_loadOptions->getObjectCacheHint() & ~osgDB::Options::CACHE_NODES));
             }
 
-            dr_loadOptions->setTerrain(databaseRequest->_terrain);
+            if (dr_loadOptions->getFileCache()) fileCache = dr_loadOptions->getFileCache();
+            if (dr_loadOptions->getFileLocationCallback()) fileLocationCallback = dr_loadOptions->getFileLocationCallback();
+
 
             // disable the FileCache if the fileLocationCallback tells us that it isn't required for this request.
             if (fileLocationCallback.valid() && !fileLocationCallback->useFileCache()) fileCache = 0;
@@ -915,6 +939,7 @@ void DatabasePager::DatabaseThread::run()
                     OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
                     databaseRequest->_loadedModel = loadedModel;
                     databaseRequest->_compileSet = compileSet;
+                    databaseRequest->_insertLoadedSubgraphIntoObjectCache = cacheNodes;
                 }
                 // Dereference the databaseRequest while the queue is
                 // locked. This prevents the request from being
@@ -1339,8 +1364,6 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
     if (!loadOptions)
     {
        loadOptions = Registry::instance()->getOptions();
-
-        // OSG_NOTICE<<"Using options from Registry "<<std::endl;
     }
     else
     {
@@ -1428,6 +1451,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
                     databaseRequest->_group = group;
                     databaseRequest->_terrain = terrain;
                     databaseRequest->_loadOptions = loadOptions;
+                    databaseRequest->_insertLoadedSubgraphIntoObjectCache = false;
                     requeue = true;
                 }
 
@@ -1460,6 +1484,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& 
             databaseRequest->_group = group;
             databaseRequest->_terrain = terrain;
             databaseRequest->_loadOptions = loadOptions;
+            databaseRequest->_insertLoadedSubgraphIntoObjectCache = false;
 
             _fileRequestQueue->addNoLock(databaseRequest.get());
         }
@@ -1636,6 +1661,13 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             else
             {
                 registerPagedLODs(databaseRequest->_loadedModel.get(), frameNumber);
+            }
+
+            if (databaseRequest->_insertLoadedSubgraphIntoObjectCache)
+            {
+                // insert loaded model into Registry ObjectCache
+                // OSG_NOTICE<<"Inserting loaded Model ("<<databaseRequest->_fileName<<") into ObjectCache"<<std::endl;
+                osgDB::Registry::instance()->addEntryToObjectCache( databaseRequest->_fileName, databaseRequest->_loadedModel.get(), timeStamp);
             }
 
             // OSG_NOTICE<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;

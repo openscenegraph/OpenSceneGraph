@@ -68,6 +68,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ImagePager
     ${HEADER_PATH}/ImageProcessor
     ${HEADER_PATH}/Input
+    ${HEADER_PATH}/ObjectCache
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/Options
     ${HEADER_PATH}/ParameterOutput
@@ -107,6 +108,7 @@ SET(TARGET_SRC
     ImagePager.cpp
     Input.cpp
     MimeTypes.cpp
+    ObjectCache.cpp
     Output.cpp
     Options.cpp
     PluginQuery.cpp

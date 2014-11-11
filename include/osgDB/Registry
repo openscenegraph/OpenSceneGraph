@@ -26,6 +26,7 @@
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/FileCache>
+#include <osgDB/ObjectCache>
 #include <osgDB/SharedStateManager>
 #include <osgDB/ImageProcessor>
 
@@ -417,6 +418,22 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the const library file path which is used when search for library (dso/dll's) files.*/
         const FilePathList& getLibraryFilePathList() const { return _libraryFilePath; }
 
+
+
+        /** Set the ObjectCache that is used to manage local storage of files downloaded from the internet.*/
+        void setObjectCache(ObjectCache* objectCache) { _objectCache = objectCache; }
+
+        /** Get the ObjectCache that is used to manage local storage of files downloaded from the internet.*/
+        ObjectCache* getObjectCache() { return _objectCache.get(); }
+
+        /** Get the const ObjectCache that is used to manage local storage of files downloaded from the internet.*/
+        const ObjectCache* getObjectCache() const { return _objectCache.get(); }
+
+        /** set hint to viewer code calling removeExpiredObjectsInCache to specify how long it should give before expiring objects in Registry cache,*/
+        void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
+
+        double getExpiryDelay() const { return _expiryDelay; }
+
         /** For each object in the cache which has an reference count greater than 1
           * (and therefore referenced by elsewhere in the application) set the time stamp
           * for that object in the cache to specified time.
@@ -430,12 +447,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * and need to prune objects that are no longer required, and called after the a called
           * after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp).*/
         void removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp);
-
-        /** set hint to viewer code calling removeExpiredObjectsInCache to specify how long it should give before expiring objects in Registry cache,*/
-        void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
-
-        double getExpiryDelay() const { return _expiryDelay; }
-
 
         /** Remove all objects in the cache regardless of having external references or expiry times.*/
         void clearObjectCache();
@@ -511,8 +522,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
 
-        typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
-        typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
         typedef std::map<std::string, osg::ref_ptr<osgDB::Archive> >    ArchiveCache;
 
         typedef std::set<std::string>                                   RegisteredProtocolsSet;
@@ -619,9 +628,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         FilePathList                            _dataFilePath;
         FilePathList                            _libraryFilePath;
 
+        osg::ref_ptr<ObjectCache>               _objectCache;
+
         double                                  _expiryDelay;
-        ObjectCache                             _objectCache;
-        OpenThreads::Mutex                      _objectCacheMutex;
 
 
         ArchiveExtensionList                    _archiveExtList;

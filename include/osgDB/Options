@@ -15,6 +15,7 @@
 #define OSGDB_OPTIONS 1
 
 #include <osgDB/Callbacks>
+#include <osgDB/ObjectCache>
 #include <osg/ObserverNodePath>
 
 #include <deque>
@@ -138,6 +139,13 @@ class OSGDB_EXPORT Options : public osg::Object
         /** Get whether the Registry::ObjectCache should be used by default.*/
         CacheHintOptions getObjectCacheHint() const { return _objectCacheHint; }
 
+        /** Set the ObjectCache that is used to cache previously loaded data.*/
+        void setObjectCache(ObjectCache* objectCache) { _objectCache = objectCache; }
+
+        /** Get the ObjectCache that is used to cache previously loaded data.*/
+        ObjectCache* getObjectCache() const { return _objectCache.get(); }
+
+
         /** Set which geometry attributes plugins should import at double precision. */
         void setPrecisionHint(PrecisionHint hint) { _precisionHint = hint; }
 
@@ -248,7 +256,10 @@ class OSGDB_EXPORT Options : public osg::Object
 
         std::string                     _str;
         FilePathList                    _databasePaths;
+
         CacheHintOptions                _objectCacheHint;
+        osg::ref_ptr<ObjectCache>       _objectCache;
+
         PrecisionHint                   _precisionHint;
         BuildKdTreesHint                _buildKdTreesHint;
         osg::ref_ptr<AuthenticationMap> _authenticationMap;

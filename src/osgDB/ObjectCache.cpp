@@ -22,14 +22,27 @@ using namespace osgDB;
 ObjectCache::ObjectCache():
     osg::Referenced(true)
 {
-    OSG_NOTICE<<"Constructed ObjectCach"<<std::endl;
+//    OSG_NOTICE<<"Constructed ObjectCach"<<std::endl;
 }
 
 ObjectCache::~ObjectCache()
 {
-    OSG_NOTICE<<"Destructed ObjectCach"<<std::endl;
+//    OSG_NOTICE<<"Destructed ObjectCach"<<std::endl;
 }
 
+void ObjectCache::addObjectCache(ObjectCache* objectCache)
+{
+    // don't allow a cache to be added to itself.
+    if (objectCache==this) return;
+
+    // lock both ObjectCache to prevent their contents from being modified by other threads while we merge.
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock1(_objectCacheMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock2(objectCache->_objectCacheMutex);
+
+    // OSG_NOTICE<<"Inserting objects to main ObjectCache "<<objectCache->_objectCache.size()<<std::endl;
+
+    _objectCache.insert(objectCache->_objectCache.begin(), objectCache->_objectCache.end());
+}
 
 
 void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
@@ -50,7 +63,11 @@ osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& 
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     ObjectCacheMap::iterator itr = _objectCache.find(fileName);
-    if (itr!=_objectCache.end()) return itr->second.first;
+    if (itr!=_objectCache.end())
+    {
+        // OSG_NOTICE<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
+        return itr->second.first;
+    }
     else return 0;
 }
 

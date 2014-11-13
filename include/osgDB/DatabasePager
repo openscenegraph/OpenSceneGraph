@@ -311,8 +311,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 _timestampLastRequest(0.0),
                 _priorityLastRequest(0.0f),
                 _numOfRequests(0),
-                _groupExpired(false),
-                _insertLoadedSubgraphIntoObjectCache(false)
+                _groupExpired(false)
             {}
 
             void invalidate();
@@ -324,26 +323,25 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 return _valid && (frameNumber - _frameNumberLastRequest <= 1);
             }
 
-            bool                        _valid;
-            std::string                 _fileName;
-            unsigned int                _frameNumberFirstRequest;
-            double                      _timestampFirstRequest;
-            float                       _priorityFirstRequest;
-            unsigned int                _frameNumberLastRequest;
-            double                      _timestampLastRequest;
-            float                       _priorityLastRequest;
-            unsigned int                _numOfRequests;
+            bool                                _valid;
+            std::string                         _fileName;
+            unsigned int                        _frameNumberFirstRequest;
+            double                              _timestampFirstRequest;
+            float                               _priorityFirstRequest;
+            unsigned int                        _frameNumberLastRequest;
+            double                              _timestampLastRequest;
+            float                               _priorityLastRequest;
+            unsigned int                        _numOfRequests;
 
             osg::observer_ptr<osg::Node>        _terrain;
             osg::observer_ptr<osg::Group>       _group;
 
             osg::ref_ptr<osg::Node>             _loadedModel;
             osg::ref_ptr<Options>               _loadOptions;
+            osg::ref_ptr<ObjectCache>           _objectCache;
 
             osg::observer_ptr<osgUtil::IncrementalCompileOperation::CompileSet> _compileSet;
-            bool                        _groupExpired; // flag used only in update thread
-
-            bool                        _insertLoadedSubgraphIntoObjectCache;
+            bool                                _groupExpired; // flag used only in update thread
         };
 
 

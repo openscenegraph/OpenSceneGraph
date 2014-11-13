@@ -1245,43 +1245,46 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 {
     std::string file(readFunctor._filename);
 
-    bool useObjectCache=false;
+    bool useObjectCache = false;
+    const Options* options = readFunctor._options;
+    ObjectCache* optionsCache = options ? options->getObjectCache() : 0;
 
     //Note CACHE_ARCHIVES has a different object that it caches to so it will never be used here
-    if (_objectCache.valid() && cacheHint!=Options::CACHE_ARCHIVES)
+    if ((optionsCache || _objectCache.valid()) && cacheHint!=Options::CACHE_ARCHIVES)
     {
-        const Options* options=readFunctor._options;
-        useObjectCache=options ? (options->getObjectCacheHint()&cacheHint)!=0: false;
+        useObjectCache= options ? (options->getObjectCacheHint()&cacheHint)!=0: false;
     }
 
     if (useObjectCache)
     {
         // search for entry in the object cache.
+        osg::ref_ptr<osg::Object> object = optionsCache ? optionsCache->getRefFromObjectCache(file) : 0;
+
+        if (!object && _objectCache.valid()) object = _objectCache->getRefFromObjectCache(file);
+
+        if (object.valid())
         {
-            osg::ref_ptr<osg::Object> object = _objectCache->getRefFromObjectCache(file);
-            if (object.valid())
-            {
-                OSG_INFO<<"returning cached instanced of "<<file<<std::endl;
-                if (readFunctor.isValid(object.get())) return ReaderWriter::ReadResult(object.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
-            }
+            if (readFunctor.isValid(object.get())) return ReaderWriter::ReadResult(object.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+            else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
         }
 
         ReaderWriter::ReadResult rr = read(readFunctor);
         if (rr.validObject())
         {
             // search AGAIN for entry in the object cache.
-            osg::ref_ptr<osg::Object> object = _objectCache->getRefFromObjectCache(file);
+            object = _objectCache->getRefFromObjectCache(file);
             if (object.valid())
             {
-                OSG_INFO << "returning cached instanced of " << file << std::endl;
                 if (readFunctor.isValid(object.get())) return ReaderWriter::ReadResult(object.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+                else
+                {
+                    return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+                }
             }
 
             // update cache with new entry.
-            OSG_INFO<<"Adding to object cache "<<file<<std::endl;
-            _objectCache->addEntryToObjectCache(file, rr.getObject(), 0.0);
+            if (optionsCache) optionsCache->addEntryToObjectCache(file, rr.getObject(), 0.0);
+            else if (_objectCache.valid()) _objectCache->addEntryToObjectCache(file, rr.getObject(), 0.0);
         }
         else
         {

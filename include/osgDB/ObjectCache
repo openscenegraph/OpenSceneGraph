@@ -46,6 +46,9 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
         /** Remove all objects in the cache regardless of having external references or expiry times.*/
         void clear();
 
+        /** Add contents of specified ObjectCache to this object cache.*/
+        void addObjectCache(ObjectCache* object);
+
         /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
 

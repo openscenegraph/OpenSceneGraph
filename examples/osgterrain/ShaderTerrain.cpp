@@ -241,6 +241,58 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
         }
     }
 
+#if 1
+
+    bool smallTile = numVertices <= 16384;
+    osg::ref_ptr<osg::DrawElements> elements = smallTile ?
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLE_STRIP)) :
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLE_STRIP));
+
+    elements->reserveElements( (nx-1) * (ny-1) * 2 + (nx-1)*2*2 + (ny-1)*2*2 +(ny)*2);
+    geometry->addPrimitiveSet(elements.get());
+
+
+    // first row containing the skirt
+    int il = 0;
+    int iu = 0;
+    for(int c=0; c<nx; ++c)
+    {
+        il = c;
+        iu = il+nx+1;
+        elements->addElement(iu);
+        elements->addElement(il);
+    }
+    elements->addElement(il);
+
+    // center section
+    for(int r=0; r<ny-1; ++r)
+    {
+        il = nx+r*(nx+2);
+        iu = il+nx+2;
+        elements->addElement(iu);
+        for(int c=0; c<nx+2; ++c)
+        {
+            il = c+nx+r*(nx+2);
+            iu = il+nx+2;
+            elements->addElement(iu);
+            elements->addElement(il);
+        }
+        elements->addElement(il);
+    }
+
+    // top row containing skirt
+    il = nx+(ny-1)*(nx+2)+1;
+    iu = il+nx+1;
+    elements->addElement(iu);
+    for(int c=0; c<nx; ++c)
+    {
+        il = c+nx+(ny-1)*(nx+2)+1;
+        iu = il+nx+1;
+        elements->addElement(iu);
+        elements->addElement(il);
+    }
+
+#else
     bool smallTile = numVertices <= 16384;
     osg::ref_ptr<osg::DrawElements> elements = smallTile ?
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUADS)) :
@@ -285,7 +337,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
         elements->addElement(iu+1);
         elements->addElement(iu);
     }
-
+#endif
     if (locator)
     {
         matrix = locator->getTransform();

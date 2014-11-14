@@ -45,7 +45,6 @@ const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::Te
 //
 GeometryPool::~GeometryPool()
 {
-    printf("GeometryPool::~GeometryPool()\n");
 }
 
 bool GeometryPool::createKeyForTile(TerrainTile* tile, GeometryKey& key)
@@ -124,8 +123,10 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
 
     int nx = key.nx;
     int ny = key.nx;
-    int numVertices = nx * ny;
 
+    int numVerticesMainBody = nx * ny;
+    int numVerticesSkirt = (nx)*2 + (ny)*2;
+    int numVertices = numVerticesMainBody + numVerticesSkirt;
 
     vertices->reserve(numVertices);
     normals->reserve(numVertices);
@@ -146,9 +147,90 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
     (*colours)[0].x() = c_mult;
     (*colours)[0].y() = r_mult;
 
-    for(int r=0; r<ny; ++r)
+
+
+    osg::Matrixd matrix;
+    const osgTerrain::Locator* locator = computeMasterLocator(tile);
+    if (locator)
     {
-        pos.y () = static_cast<double>(r)*r_mult;
+        matrix = locator->getTransform();
+    }
+
+    // compute the size of the skirtHeight
+    osg::Vec3d bottom_left(0.0,0.0,0.0);
+    osg::Vec3d top_right(1.0,1.0,0.0);
+
+    // transform for unit coords to local coords of the tile
+    bottom_left = bottom_left * matrix;
+    top_right = top_right * matrix;
+
+    // if we have a geocentric database then transform into geocentric coords.
+    const osg::EllipsoidModel* em = locator->getEllipsoidModel();
+    if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
+    {
+        // note y axis maps to latitude, x axis to longitude
+        em->convertLatLongHeightToXYZ(bottom_left.y(), bottom_left.x(), bottom_left.z(), bottom_left.x(), bottom_left.y(), bottom_left.z());
+        em->convertLatLongHeightToXYZ(top_right.y(), top_right.x(), top_right.z(), top_right.x(), top_right.y(), top_right.z());
+    }
+
+    double diagonalLength = (top_right-bottom_left).length();
+    double skirtRatio = 0.02;
+    double skirtHeight = -diagonalLength*skirtRatio;
+
+    // set up the vertex data
+    {
+        // bottom row for skirt
+        pos.y () = static_cast<double>(0)*r_mult;
+        pos.z() = skirtHeight;
+        for(int c=0; c<nx; ++c)
+        {
+            pos.x() = static_cast<double>(c)*c_mult;
+            vertices->push_back(pos);
+            normals->push_back(normal);
+            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
+            locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+        }
+
+        // main body
+        for(int r=0; r<ny; ++r)
+        {
+            pos.y () = static_cast<double>(r)*r_mult;
+
+            // start skirt vertex
+            pos.z() = skirtHeight;
+            {
+                pos.x() = static_cast<double>(0)*c_mult;
+                vertices->push_back(pos);
+                normals->push_back(normal);
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
+                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+            }
+
+            pos.z() = 0;
+            for(int c=0; c<nx; ++c)
+            {
+                pos.x() = static_cast<double>(c)*c_mult;
+                vertices->push_back(pos);
+                normals->push_back(normal);
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
+                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+            }
+
+            // end skirt vertex
+            pos.z() = skirtHeight;
+            {
+                pos.x() = static_cast<double>(nx-1)*c_mult;
+                vertices->push_back(pos);
+                normals->push_back(normal);
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
+                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+            }
+
+        }
+
+        // top row skirt
+        pos.y () = static_cast<double>(ny-1)*r_mult;
+        pos.z() = skirtHeight;
         for(int c=0; c<nx; ++c)
         {
             pos.x() = static_cast<double>(c)*c_mult;
@@ -164,33 +246,55 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUADS)) :
         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUADS));
 
-    elements->reserveElements((nx-1) * (ny-1) * 4);
+    elements->reserveElements( (nx-1) * (ny-1) * 4 + (nx-1)*2*4 + (ny-1)*2*4 );
     geometry->addPrimitiveSet(elements.get());
 
+
+    // first row containing the skirt
+    for(int c=0; c<nx-1; ++c)
+    {
+        int il = c;
+        int iu = il+nx+1;
+        elements->addElement(il);
+        elements->addElement(il+1);
+        elements->addElement(iu+1);
+        elements->addElement(iu);
+    }
+
+    // center section
     for(int r=0; r<ny-1; ++r)
     {
-        for(int c=0; c<nx-1; ++c)
+        for(int c=0; c<nx+1; ++c)
         {
-            int i = c+r*nx;
-            elements->addElement(i);
-            elements->addElement(i+1);
-            elements->addElement(i+nx+1);
-            elements->addElement(i+nx);
+            int il = c+nx+r*(nx+2);
+            int iu = il+nx+2;
+            elements->addElement(il);
+            elements->addElement(il+1);
+            elements->addElement(iu+1);
+            elements->addElement(iu);
         }
     }
 
-    osg::Matrixd matrix;
+    // top row containing skirt
+    for(int c=0; c<nx-1; ++c)
+    {
+        int il = c+nx+(ny-1)*(nx+2)+1;
+        int iu = il+nx+1;
+        elements->addElement(il);
+        elements->addElement(il+1);
+        elements->addElement(iu+1);
+        elements->addElement(iu);
+    }
 
-    osg::Vec3d center(0.5, 0.5, 0.0);
-
-    osg::Vec3d bottom_left(0.0,0.0,0.0);
-    osg::Vec3d bottom_right(1.0,0.0,0.0);
-    osg::Vec3d top_left(0.0,1.0,0.0);
-
-    const osgTerrain::Locator* locator = computeMasterLocator(tile);
     if (locator)
     {
         matrix = locator->getTransform();
+
+        osg::Vec3d center(0.5, 0.5, 0.0);
+
+        osg::Vec3d bottom_left(0.0,0.0,0.0);
+        osg::Vec3d bottom_right(1.0,0.0,0.0);
+        osg::Vec3d top_left(0.0,1.0,0.0);
 
         center = center * matrix;
         bottom_left = bottom_left * matrix;
@@ -233,16 +337,17 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
             for(int i=0; i<numVertices; ++i)
             {
                 const osg::Vec2d& location = locationCoords[i];
+                double height = (*vertices)[i].z();
                 osg::Vec3d pos = osg::Vec3d(location.x(), location.y(), 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos.y(), pos.x(), 0.0, pos.x(), pos.y(),pos.z());
+                em->convertLatLongHeightToXYZ(pos.y(), pos.x(), height, pos.x(), pos.y(),pos.z());
 
                 osg::Vec4& tc = (*texcoords)[i];
 
                 osg::Vec3d pos_right = osg::Vec3d(location.x()+static_cast<double>(tc[2]), location.y(), 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), 0.0, pos_right.x(), pos_right.y(),pos_right.z());
+                em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), height, pos_right.x(), pos_right.y(),pos_right.z());
 
                 osg::Vec3d pos_up = osg::Vec3d(location.x(), location.y()+static_cast<double>(tc[3]), 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), 0.0, pos_up.x(), pos_up.y(),pos_up.z());
+                em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), height, pos_up.x(), pos_up.y(),pos_up.z());
 
                 double length_right = (pos_right-pos).length();
                 double length_up = (pos_up-pos).length();

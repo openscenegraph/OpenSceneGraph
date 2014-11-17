@@ -22,12 +22,12 @@ using namespace osgDB;
 ObjectCache::ObjectCache():
     osg::Referenced(true)
 {
-//    OSG_NOTICE<<"Constructed ObjectCach"<<std::endl;
+//    OSG_NOTICE<<"Constructed ObjectCache"<<std::endl;
 }
 
 ObjectCache::~ObjectCache()
 {
-//    OSG_NOTICE<<"Destructed ObjectCach"<<std::endl;
+//    OSG_NOTICE<<"Destructed ObjectCache"<<std::endl;
 }
 
 void ObjectCache::addObjectCache(ObjectCache* objectCache)

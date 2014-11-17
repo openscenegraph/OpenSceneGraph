@@ -24,7 +24,7 @@ using namespace Imath;
 /****************************************************************************
  *
  * Follows is code written by FOI (www.foi.se)
- * it is a wraper of openEXR(www.openexr.com)
+ * it is a wrapper of openEXR(www.openexr.com)
  * to add suport of exr images into osg
  *
  * Ported to a OSG-plugin, Ragnar Hammarqvist.

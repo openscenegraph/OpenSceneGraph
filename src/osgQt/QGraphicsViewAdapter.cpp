@@ -67,9 +67,13 @@ const QImage::Format s_imageFormat = QImage::Format_ARGB32_Premultiplied;
 
 QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _image(image),
+    _backgroundWidget(0),
+    _previousMouseX(-1),
+    _previousMouseY(-1),
     _previousQtMouseX(-1),
     _previousQtMouseY(-1),
     _previousSentEvent(false),
+    _requiresRendering(false),
     _qtKeyModifiers(Qt::NoModifier),
     _backgroundColor(255, 255, 255),
     _widget(widget)
@@ -115,13 +119,13 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
 void QGraphicsViewAdapter::repaintRequestedSlot(const QList<QRectF>&)
 {
     // OSG_NOTICE<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
-    render();
+    _requiresRendering = true;
 }
 
 void QGraphicsViewAdapter::repaintRequestedSlot(const QRectF&)
 {
     // OSG_NOTICE<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
-    render();
+    _requiresRendering = true;
 }
 
 void QGraphicsViewAdapter::customEvent ( QEvent * event )
@@ -281,9 +285,9 @@ QWidget* QGraphicsViewAdapter::getWidgetAt(const QPoint& pos)
    }
 
    QGraphicsItem* item = _graphicsView->itemAt(pos);
-   if(item && item->contains(item->mapFromScene(pos)))
+   if(item /*&& item->contains(item->mapFromScene(pos))*/)
    {
-      QGraphicsProxyWidget* p = dynamic_cast<QGraphicsProxyWidget*>(item);
+      QGraphicsProxyWidget* p = qgraphicsitem_cast<QGraphicsProxyWidget*>(item);
       if(p)
       {
          childAt = p->widget();
@@ -291,6 +295,14 @@ QWidget* QGraphicsViewAdapter::getWidgetAt(const QPoint& pos)
          while( (c = childAt->childAt(childAt->mapFromGlobal(pos)))!=0 )
          {
             childAt = c;
+         }
+
+         // Widgets like QTextEdit will automatically add child scroll area widgets
+         // that will be selected by childAt(), we have to change to parents at that moment
+         // Hardcoded by the internal widget's name 'qt_scrollarea_viewport' at present
+         if (childAt->objectName() == "qt_scrollarea_viewport")
+         {
+            childAt = childAt->parentWidget();
          }
          return childAt;
       }
@@ -305,7 +317,17 @@ bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
 
     QPoint pos(_previousQtMouseX, _previousQtMouseY);
 
-    if (getWidgetAt(pos) != NULL || (_previousSentEvent && buttonMask != 0))
+    QWidget* targetWidget = getWidgetAt(pos);
+    OSG_INFO << "Get " << (targetWidget ? targetWidget->metaObject()->className() : std::string("NULL"))
+               << " at global pos " << x << ", " << y << std::endl;
+
+    if (_backgroundWidget && _backgroundWidget == targetWidget)
+    {
+        // Mouse is at background widget, so ignore such events
+        return false;
+    }
+
+    if (targetWidget != NULL || (_previousSentEvent && buttonMask != 0))
     {
         QCoreApplication::postEvent(this, new MyQPointerEvent(x,y,buttonMask));
         OSG_INFO<<"sendPointerEvent("<<x<<", "<<y<<") sent"<<std::endl;
@@ -342,6 +364,7 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         (rightButtonPressed ? Qt::RightButton : Qt::NoButton);
 
     const QPoint globalPos(x, y);
+    QWidget* targetWidget = getWidgetAt(globalPos);
 
     if (buttonMask != _previousButtonMask)
     {
@@ -363,7 +386,6 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
             eventType = rightButtonPressed ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease ;
             if(!rightButtonPressed)
             {
-               QWidget* targetWidget = getWidgetAt(globalPos);
                if(targetWidget)
                {
                   QPoint localPos = targetWidget->mapFromGlobal(globalPos);
@@ -376,10 +398,11 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         if (eventType==QEvent::MouseButtonPress)
         {
             _image->sendFocusHint(true);
+            if (targetWidget) targetWidget->setFocus(Qt::MouseFocusReason);
         }
 
         QMouseEvent event(eventType, globalPos, qtButton, qtMouseButtons, 0);
-        QCoreApplication::sendEvent(_graphicsView->viewport(), &event );
+        QCoreApplication::sendEvent(_graphicsView->viewport(), &event);
 
         _previousButtonMask = buttonMask;
     }
@@ -398,7 +421,14 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 bool QGraphicsViewAdapter::sendKeyEvent(int key, bool keyDown)
 {
     QPoint pos(_previousQtMouseX, _previousQtMouseY);
-    if (getWidgetAt(pos) != NULL)
+    QWidget* targetWidget = getWidgetAt(pos);
+    if (_backgroundWidget && _backgroundWidget == targetWidget)
+    {
+        // Mouse is at background widget, so ignore such events
+        return false;
+    }
+
+    if (targetWidget != NULL)
     {
         QCoreApplication::postEvent(this, new MyQKeyEvent(key,keyDown));
         return true;
@@ -489,6 +519,7 @@ void QGraphicsViewAdapter::render()
 {
     OSG_INFO<<"Current write = "<<_currentWrite<<std::endl;
     QImage& image = _qimages[_currentWrite];
+    _requiresRendering = false;
 
     // If we got a resize, act on it, first by resizing the view, then the current image
 

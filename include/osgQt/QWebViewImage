@@ -66,9 +66,12 @@ class QWebViewImage : public osgWidget::BrowserImage
 
         void render()
         {
-            _adapter->render();
+            if (_adapter->requiresRendering()) _adapter->render();
         }
 
+        virtual bool requiresUpdateCall() const { return true; }
+        virtual void update( osg::NodeVisitor* nv ) { render(); }
+        
         virtual bool sendFocusHint(bool focus)
         {
             QFocusEvent event(focus ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);

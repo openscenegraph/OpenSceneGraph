@@ -29,6 +29,8 @@ class OSGQT_EXPORT QWidgetImage : public osg::Image
         QWidget* getQWidget() { return _widget; }
         QGraphicsViewAdapter* getQGraphicsViewAdapter() { return _adapter; }
 
+        virtual bool requiresUpdateCall() const { return true; }
+        virtual void update( osg::NodeVisitor* nv ) { render(); }
 
         void clearWriteBuffer();
 

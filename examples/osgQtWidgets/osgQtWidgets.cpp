@@ -107,25 +107,25 @@ protected:
 };
 
 
-//We would need to document the following somewhere in order to guide people on 
+//We would need to document the following somewhere in order to guide people on
 //what they need to use...
 //
 //----------------------------------------------
 //There are two angles to consider.
 //
-//1. If someone wants a widget in their Qt app to be an OSG-rendered scene, they 
-//need GraphicsWindowQt (in the osgViewerQtContext example) or QOSGWidget (in the 
-//osgViewerQt example). These two allow both OSG and Qt to manage their threads 
-//in a way which is optimal to them. We've used QOSGWidget in the past and had 
-//trouble when Qt tried to overlay other widgets over the QOSGWidget (since OSG 
-//did its rendering independently of Qt, it would overwrite what Qt had drawn). I 
-//haven't tried GraphicsWindowQt yet, but I expect since it uses QGLWidget, it 
-//will result in Qt knowing when OSG has drawn and be able to do overlays at the 
+//1. If someone wants a widget in their Qt app to be an OSG-rendered scene, they
+//need GraphicsWindowQt (in the osgViewerQtContext example) or QOSGWidget (in the
+//osgViewerQt example). These two allow both OSG and Qt to manage their threads
+//in a way which is optimal to them. We've used QOSGWidget in the past and had
+//trouble when Qt tried to overlay other widgets over the QOSGWidget (since OSG
+//did its rendering independently of Qt, it would overwrite what Qt had drawn). I
+//haven't tried GraphicsWindowQt yet, but I expect since it uses QGLWidget, it
+//will result in Qt knowing when OSG has drawn and be able to do overlays at the
 //right time. Eventually GraphicsWindowQt can be brought into osgViewer I imagine...
 //
-//2. If someone wants to bring Qt widgets inside their OSG scene (to do HUDs or 
-//an interface on a computer screen which is inside the 3D scene, or even 
-//floating Qt widgets, for example). That's where QGraphicsViewAdapter + 
+//2. If someone wants to bring Qt widgets inside their OSG scene (to do HUDs or
+//an interface on a computer screen which is inside the 3D scene, or even
+//floating Qt widgets, for example). That's where QGraphicsViewAdapter +
 //QWidgetImage will be useful.
 //----------------------------------------------
 
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     bool useLabel = false;
     if (arguments.read("--useLabel")) useLabel = true;
 
-    // true = make a Qt window with the same content to compare to 
+    // true = make a Qt window with the same content to compare to
     // QWebViewImage/QWidgetImage
     // false = use QWebViewImage/QWidgetImage (depending on useWidgetImage)
     bool sanityCheck = false;
@@ -183,9 +183,9 @@ int main(int argc, char **argv)
         //-------------------------------------------------------------------
         // QWebViewImage test
         //-------------------------------------------------------------------
-        // Note: When the last few issues with QWidgetImage are fixed, 
-        // QWebViewImage and this if() {} section can be removed since 
-        // QWidgetImage can display a QWebView just like QWebViewImage. Use 
+        // Note: When the last few issues with QWidgetImage are fixed,
+        // QWebViewImage and this if() {} section can be removed since
+        // QWidgetImage can display a QWebView just like QWebViewImage. Use
         // --useWidgetImage --useBrowser to see that in action.
 
         if (!sanityCheck)
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
             osg::ref_ptr<osgQt::QWebViewImage> image = new osgQt::QWebViewImage;
 
             if (arguments.argc()>1) image->navigateTo((arguments[1]));
-            else image->navigateTo("http://www.youtube.com/");
+            else image->navigateTo("http://www.openscenegraph.org/");
 
             osgWidget::GeometryHints hints(osg::Vec3(0.0f,0.0f,0.0f),
                                            osg::Vec3(1.0f,0.0f,0.0f),
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            // Sanity check, do the same thing as QGraphicsViewAdapter but in 
+            // Sanity check, do the same thing as QGraphicsViewAdapter but in
             // a separate Qt window.
             QWebPage* webPage = new QWebPage;
             webPage->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
@@ -218,7 +218,7 @@ int main(int argc, char **argv)
             webView->setPage(webPage);
 
             if (arguments.argc()>1) webView->load(QUrl(arguments[1]));
-            else webView->load(QUrl("http://www.youtube.com/"));
+            else webView->load(QUrl("http://www.openscenegraph.org/"));
 
             QGraphicsScene* graphicsScene = new QGraphicsScene;
             graphicsScene->addWidget(webView);
@@ -240,13 +240,15 @@ int main(int argc, char **argv)
         // QWidgetImage test
         //-------------------------------------------------------------------
         // QWidgetImage still has some issues, some examples are:
-        // 
-        // 1. Editing in the QTextEdit doesn't work. Also when started with 
-        //    --useBrowser, editing in the search field on YouTube doesn't 
-        //    work. But that same search field when using QWebViewImage 
-        //    works... And editing in the text field in the pop-up getInteger 
-        //    dialog works too. All these cases use QGraphicsViewAdapter 
+        //
+        // 1. Editing in the QTextEdit doesn't work. Also when started with
+        //    --useBrowser, editing in the search field on YouTube doesn't
+        //    work. But that same search field when using QWebViewImage
+        //    works... And editing in the text field in the pop-up getInteger
+        //    dialog works too. All these cases use QGraphicsViewAdapter
         //    under the hood, so why do some work and others don't?
+        //
+        //    <<< FIXED, need TextEditorInteraction >>>
         //
         //    a) osgQtBrowser --useWidgetImage [--fullscreen] (optional)
         //    b) Try to click in the QTextEdit and type, or to select text
@@ -259,11 +261,11 @@ int main(int argc, char **argv)
         //    g) osgQtBrowser
         //    h) Try the operation in f), it works.
         //
-        // 2. Operations on floating windows (--numFloatingWindows 1 or more). 
-        //    Moving by dragging the titlebar, clicking the close button, 
-        //    resizing them, none of these work. I wonder if it's because the 
-        //    OS manages those functions (they're functions of the window 
-        //    decorations) so we need to do something special for that? But 
+        // 2. Operations on floating windows (--numFloatingWindows 1 or more).
+        //    Moving by dragging the titlebar, clicking the close button,
+        //    resizing them, none of these work. I wonder if it's because the
+        //    OS manages those functions (they're functions of the window
+        //    decorations) so we need to do something special for that? But
         //    in --sanityCheck mode they work.
         //
         //    a) osgQtBrowser --useWidgetImage --numFloatingWindows 1 [--fullscreen]
@@ -272,35 +274,37 @@ int main(int argc, char **argv)
         //    c) osgQtBrowser --useWidgetImage --numFloatingWindows 1 --sanityCheck
         //    d) Try the operations in b), all they work.
         //    e) osgQtBrowser --useWidgetImage [--fullscreen]
-        //    f) Click the button so that the getInteger() dialog is 
-        //       displayed, then try to move that dialog or close it with the 
+        //    f) Click the button so that the getInteger() dialog is
+        //       displayed, then try to move that dialog or close it with the
         //       close button, these don't work.
         //    g) osgQtBrowser --useWidgetImage --sanityCheck
         //    h) Try the operation in f), it works.
         //
-        // 3. (Minor) The QGraphicsView's scrollbars don't appear when 
-        //    using QWidgetImage or QWebViewImage. QGraphicsView is a 
+        // 3. (Minor) The QGraphicsView's scrollbars don't appear when
+        //    using QWidgetImage or QWebViewImage. QGraphicsView is a
         //    QAbstractScrollArea and it should display scrollbars as soon as
         //    the scene is too large to fit the view.
+        //
+        //    <<< FIXED >>>
         //
         //    a) osgQtBrowser --useWidgetImage --fullscreen
         //    b) Resize the OSG window so it's smaller than the QTextEdit.
         //       Scrollbars should appear but don't.
         //    c) osgQtBrowser --useWidgetImage --sanityCheck
-        //    d) Try the operation in b), scrollbars appear. Even if you have 
-        //       floating windows (by clicking the button or by adding 
-        //       --numFloatingWindows 1) and move them outside the view, 
-        //       scrollbars appear too. You can't test that case in OSG for 
+        //    d) Try the operation in b), scrollbars appear. Even if you have
+        //       floating windows (by clicking the button or by adding
+        //       --numFloatingWindows 1) and move them outside the view,
+        //       scrollbars appear too. You can't test that case in OSG for
         //       now because of problem 2 above, but that's pretty cool.
         //
-        // 4. (Minor) In sanity check mode, the widget added to the 
+        // 4. (Minor) In sanity check mode, the widget added to the
         //    QGraphicsView is centered. With QGraphicsViewAdapter, it is not.
         //
         //    a) osgQtBrowser --useWidgetImage [--fullscreen]
         //    b) The QTextEdit and button are not in the center of the image
         //       generated by the QGraphicsViewAdapter.
         //    c) osgQtBrowser --useWidgetImage --sanityCheck
-        //    d) The QTextEdit and button are in the center of the 
+        //    d) The QTextEdit and button are in the center of the
         //       QGraphicsView.
 
 
@@ -346,7 +350,7 @@ int main(int argc, char **argv)
             {
                 QTextEdit* textEdit = new QTextEdit(text);
                 textEdit->setReadOnly(false);
-                textEdit->setTextInteractionFlags(Qt::TextEditable);
+                textEdit->setTextInteractionFlags(Qt::TextEditorInteraction);
 
                 QPalette palette = textEdit->palette();
                 palette.setColor(QPalette::Highlight, Qt::darkBlue);
@@ -388,7 +392,7 @@ int main(int argc, char **argv)
             texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
             mt->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
 
-            osgViewer::InteractiveImageHandler* handler; 
+            osgViewer::InteractiveImageHandler* handler;
             if (inScene)
             {
                 mt->setMatrix(osg::Matrix::rotate(osg::Vec3(0,1,0), osg::Vec3(0,0,1)));
@@ -398,9 +402,9 @@ int main(int argc, char **argv)
             }
             else    // fullscreen
             {
-                // The HUD camera's viewport needs to follow the size of the 
+                // The HUD camera's viewport needs to follow the size of the
                 // window. MyInteractiveImageHandler will make sure of this.
-                // As for the quad and the camera's projection, setting the 
+                // As for the quad and the camera's projection, setting the
                 // projection resize policy to FIXED takes care of them, so
                 // they can stay the same: (0,1,0,1) with a quad that fits.
 
@@ -429,13 +433,13 @@ int main(int argc, char **argv)
             overlay->addChild(mt);
 
             root->addChild(overlay);
-            
+
             quad->setEventCallback(handler);
             quad->setCullCallback(handler);
         }
         else
         {
-            // Sanity check, do the same thing as QWidgetImage and 
+            // Sanity check, do the same thing as QWidgetImage and
             // QGraphicsViewAdapter but in a separate Qt window.
 
             graphicsScene = new QGraphicsScene;

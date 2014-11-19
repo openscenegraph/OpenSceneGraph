@@ -40,7 +40,7 @@ void QWidgetImage::clearWriteBuffer()
 
 void QWidgetImage::render()
 {
-    _adapter->render();
+    if (_adapter->requiresRendering()) _adapter->render();
 }
 
 void QWidgetImage::scaleImage(int s,int t,int /*r*/, GLenum /*newDataType*/)

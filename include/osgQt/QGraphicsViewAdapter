@@ -52,6 +52,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
 
         void clearWriteBuffer();
 
+        bool requiresRendering() const { return _requiresRendering; }
         void render();
 
         void assignImage(unsigned int i);
@@ -60,6 +61,12 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
 
         void setBackgroundColor(QColor color) { _backgroundColor = color; }
         QColor getBackgroundColor() const     { return _backgroundColor; }
+
+        /** The 'background widget' will ignore mouse/keyboard events and let following handlers handle them
+            It is mainly used for integrating scene graph and full-screen UIs
+        */
+        void setBackgroundWidget(QWidget* w) { _backgroundWidget = w; }
+        QWidget* getBackgroundWidget() { return _backgroundWidget; }
 
         QGraphicsView* getQGraphicsView() { return _graphicsView; }
         QGraphicsScene* getQGraphicsScene() { return _graphicsScene; }
@@ -71,6 +78,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
         QWidget* getWidgetAt(const QPoint& pos);
 
         osg::observer_ptr<osg::Image>   _image;
+        QWidget*                        _backgroundWidget;
 
         int                             _previousButtonMask;
         int                             _previousMouseX;
@@ -78,6 +86,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
         int                             _previousQtMouseX;
         int                             _previousQtMouseY;
         bool                            _previousSentEvent;
+        bool                            _requiresRendering;
 
         int _width;
         int _height;

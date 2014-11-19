@@ -49,7 +49,7 @@ simply runs 'cmake . -DCMAKE_BUILD_TYPE=Release' to ensure that you
 get the best performance from your final libraries/applications.
 
     cd OpenSceneGraph
-    ./configure
+    cmake .
     make
     sudo make install
 
@@ -62,7 +62,7 @@ directory alongside the OpenSceneGraph use:
 
     mkdir build
     cd build
-    cmake ../OpenSceneGraph -DCMAKE_BUILD_TYPE=Release
+    cmake ../OpenSceneGraph
     make
     sudo make install
 

@@ -204,12 +204,10 @@ bool isSizedInternalFormat(GLint internalFormat)
 {
     const size_t formatsCount = sizeof(sizedInternalFormats) / sizeof(sizedInternalFormats[0]);
 
-    size_t i = 0;
-    while(i < formatsCount)
+    for (size_t i=0; i < formatsCount; ++i)
     {
         if((GLenum)internalFormat == sizedInternalFormats[i].sizedInternalFormat)
             return true;
-        ++i;
     }
 
     return false;
@@ -219,12 +217,10 @@ GLenum assumeSizedInternalFormat(GLint internalFormat, GLenum type)
 {
     const size_t formatsCount = sizeof(sizedInternalFormats) / sizeof(sizedInternalFormats[0]);
 
-    size_t i = formatsCount;
-    while(i >= 0)
+    for (size_t i=0; i < formatsCount; ++i)
     {
         if(internalFormat == sizedInternalFormats[i].internalFormat && type == sizedInternalFormats[i].type)
             return sizedInternalFormats[i].sizedInternalFormat;
-        --i;
     }
 
     return 0;
@@ -234,12 +230,10 @@ bool isCompressedInternalFormatSupportedByTexStorrage(GLint internalFormat)
 {
     const size_t formatsCount = sizeof(compressedInternalFormats) / sizeof(compressedInternalFormats[0]);
 
-    size_t i = 0;
-    while(i < formatsCount)
+    for (size_t i=0; i < formatsCount; ++i)
     {
         if((GLenum)internalFormat == compressedInternalFormats[i].sizedInternalFormat)
             return true;
-        ++i;
     }
 
     return false;

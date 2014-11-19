@@ -135,7 +135,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
     double c_mult = 1.0/static_cast<double>(nx-1);
     double r_mult = 1.0/static_cast<double>(ny-1);
 
-    typedef std::vector<osg::Vec2d> LocationCoords;
+    typedef std::vector<osg::Vec4d> LocationCoords;
     LocationCoords locationCoords;
     locationCoords.reserve(numVertices);
 
@@ -187,8 +187,8 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
             pos.x() = static_cast<double>(c)*c_mult;
             vertices->push_back(pos);
             normals->push_back(normal);
-            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
-            locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
+            locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
         }
 
         // main body
@@ -202,8 +202,8 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 pos.x() = static_cast<double>(0)*c_mult;
                 vertices->push_back(pos);
                 normals->push_back(normal);
-                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
-                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
+                locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
             }
 
             pos.z() = 0;
@@ -212,8 +212,8 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 pos.x() = static_cast<double>(c)*c_mult;
                 vertices->push_back(pos);
                 normals->push_back(normal);
-                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
-                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
+                locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
             }
 
             // end skirt vertex
@@ -222,8 +222,8 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 pos.x() = static_cast<double>(nx-1)*c_mult;
                 vertices->push_back(pos);
                 normals->push_back(normal);
-                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
-                locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+                texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
+                locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
             }
 
         }
@@ -236,8 +236,8 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
             pos.x() = static_cast<double>(c)*c_mult;
             vertices->push_back(pos);
             normals->push_back(normal);
-            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), c_mult, r_mult));
-            locationCoords.push_back(osg::Vec2d(pos.x(), pos.y()));
+            texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
+            locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
         }
     }
 
@@ -388,17 +388,17 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
 
             for(int i=0; i<numVertices; ++i)
             {
-                const osg::Vec2d& location = locationCoords[i];
+                const osg::Vec4d& location = locationCoords[i];
                 double height = (*vertices)[i].z();
                 osg::Vec3d pos = osg::Vec3d(location.x(), location.y(), 0.0) * matrix;
                 em->convertLatLongHeightToXYZ(pos.y(), pos.x(), height, pos.x(), pos.y(),pos.z());
 
                 osg::Vec4& tc = (*texcoords)[i];
 
-                osg::Vec3d pos_right = osg::Vec3d(location.x()+static_cast<double>(tc[2]), location.y(), 0.0) * matrix;
+                osg::Vec3d pos_right = osg::Vec3d(location.x()+location[2], location.y(), 0.0) * matrix;
                 em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), height, pos_right.x(), pos_right.y(),pos_right.z());
 
-                osg::Vec3d pos_up = osg::Vec3d(location.x(), location.y()+static_cast<double>(tc[3]), 0.0) * matrix;
+                osg::Vec3d pos_up = osg::Vec3d(location.x(), location.y()+location[3], 0.0) * matrix;
                 em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), height, pos_up.x(), pos_up.y(),pos_up.z());
 
                 double length_right = (pos_right-pos).length();

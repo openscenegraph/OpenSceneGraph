@@ -576,6 +576,8 @@ NameCorrection nameCorrections[] =
      "Melchior",       "Franz"},
     {"Glen",           "Waldon",
      "Glenn",          "Waldron"},
+    {"Glen",           "Waldron",
+     "Glenn",          "Waldron"},
     {"Ralf",           "Karn",
      "Ralf",           "Kern"},
     {"Donny",          "Cipperly",
@@ -637,7 +639,9 @@ NameCorrection nameCorrections[] =
     {"Ricard",         "Schmidt",
      "Richard",        "Schmidt"},
     {"Matthias",       "Helsing",
-     "Mattias",        "Helsing"}
+     "Mattias",        "Helsing"},
+    {"Clement",        "Boesch",
+     "Clément",        "B½sch"}
 };
 
 

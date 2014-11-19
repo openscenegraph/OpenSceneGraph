@@ -123,6 +123,8 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    bool make_options = (fr.getOptions() == NULL);
+    if (make_options) fr.setOptions(new osgDB::Options()); //need valid options
     unsigned int i;
     for(i=0; i<num_children; i++)
     {
@@ -154,7 +156,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
             }
         }
     }
-
+    if (make_options) fr.setOptions(NULL);
     return iteratorAdvanced;
 }
 

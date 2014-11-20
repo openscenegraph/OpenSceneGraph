@@ -32,15 +32,16 @@ Texture2DArray::Texture2DArray(const Texture2DArray& text,const CopyOp& copyop):
             Texture(text,copyop),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
-            _textureDepth(text._textureDepth),
+            _textureDepth(0),
             _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
+    setTextureDepth(text._textureDepth);
+
     // copy all images by iterating through all of them
     for (int i=0; i < text._textureDepth; i++)
     {
         setImage(i, copyop(text._images[i].get()));
-        _modifiedCount.push_back(ImageModifiedCount());
     }
 }
 

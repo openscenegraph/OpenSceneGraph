@@ -1268,7 +1268,7 @@ SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
         if (url.getNum() && url[0].getLength())
         {
             osg::ref_ptr<osg::Image> image = loadImage(url[0].getString(), options);
-            if (!image->valid())
+            if (!image.valid())
             {
                 OSG_WARN << "Could not read texture file: " << url[0].getString() << std::endl;
                 this->setReadStatus(FALSE);

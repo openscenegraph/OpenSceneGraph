@@ -127,6 +127,27 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
         }
     }
 
+    // ambient map...
+    const FbxProperty lAmbientProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sAmbient);
+    if (lAmbientProperty.IsValid())
+    {
+        int lNbTex = lAmbientProperty.GetSrcObjectCount<FbxFileTexture>();
+        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        {
+            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lAmbientProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+            if (lTexture)
+            {
+                result.ambientTexture = fbxTextureToOsgTexture(lTexture);
+                result.ambientChannel = lTexture->UVSet.Get();
+                result.ambientScaleU = lTexture->GetScaleU();
+                result.ambientScaleV = lTexture->GetScaleV();
+            }
+
+            //For now only allow 1 texture
+            break;
+        }
+    }
+
     if (pFbxLambert)
     {
         FbxDouble3 color = pFbxLambert->Diffuse.Get();

@@ -1103,12 +1103,12 @@ class OSG_EXPORT State : public Referenced
             }
             else
             {
-                if (setClientActiveTextureUnit(unit))
-                {
-                    if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
-                    EnabledArrayPair& eap = _texCoordArrayList[unit];
+                if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
 
-                    if (eap._enabled || eap._dirty)
+                if (eap._enabled || eap._dirty)
+                {
+                    if(setClientActiveTextureUnit(unit))
                     {
                         eap._lazy_disable = false;
                         eap._enabled = false;

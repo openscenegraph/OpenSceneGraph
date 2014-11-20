@@ -31,6 +31,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <limits>
 #include <assert.h>
 
 using namespace std;
@@ -864,7 +865,7 @@ struct RemappedFace
 {
     Lib3dsFace* face;        // Original face definition.
     osg::Vec3f normal;
-    unsigned short index[3]; // Indices to OSG vertex/normal/texcoord arrays.
+    unsigned int index[3];   // Indices to OSG vertex/normal/texcoord arrays.
 };
 
 struct VertexParams
@@ -884,6 +885,14 @@ static bool isFaceValid(const Lib3dsMesh* mesh, const Lib3dsFace* face)
         face->index[2] < mesh->nvertices;
 }
 
+bool isNumber(float x)
+{
+    // This looks like it should always be true,
+    // but it's false if x is a NaN.
+    return (x == x);
+}
+
+
 /* ChrisD: addVertex handles the averaging of normals and spltting of vertices
    required to implement normals for smoothing groups. When a shared
    vertex is encountered when smoothing is required, normals are added
@@ -896,7 +905,7 @@ static bool isFaceValid(const Lib3dsMesh* mesh, const Lib3dsFace* face)
 static void addVertex(
     const Lib3dsMesh* mesh,
     RemappedFace& remappedFace,
-    unsigned short int i,
+    unsigned int i,
     osg::Geometry* geometry,
     std::vector<int>& origToNewMapping,
     std::vector<int>& splitVertexChain,
@@ -906,7 +915,7 @@ static void addVertex(
     osg::Vec3Array* normals = (osg::Vec3Array*)geometry->getNormalArray();
     osg::Vec2Array* texCoords = (osg::Vec2Array*)geometry->getTexCoordArray(0);
 
-    unsigned short int index = remappedFace.face->index[i];
+    unsigned int index = remappedFace.face->index[i];
     if (origToNewMapping[index] == -1)
     {
         int newIndex = vertices->size();
@@ -927,6 +936,10 @@ static void addVertex(
             osg::Vec2f texCoord(mesh->texcos[index][0], mesh->texcos[index][1]);
             texCoord = componentMultiply(texCoord, params.scaleUV);
             texCoord += params.offsetUV;
+            if (!isNumber(texCoord.x()) || !isNumber(texCoord.y())) {
+                OSG_WARN << "NaN found in texcoord" << std::endl;
+                texCoord.set(0,0);
+            }
             texCoords->push_back(texCoord);
         }
 
@@ -1003,6 +1016,25 @@ static bool addFace(
     }
 }
 
+template <typename Prim>
+void fillTriangles(osg::Geometry & geom, const std::vector<RemappedFace> & remappedFaces, unsigned int numIndices) {
+    //if (m->nvertices < std::numeric_limits<unsigned short>::max()) {
+    osg::ref_ptr<Prim> elements( new Prim(osg::PrimitiveSet::TRIANGLES, numIndices) );
+    typename Prim::iterator index_itr( elements->begin() );
+    for (unsigned int i = 0; i < remappedFaces.size(); ++i)
+    {
+        const RemappedFace& remappedFace = remappedFaces[i];
+        if (remappedFace.face != NULL)
+        {
+            *(index_itr++) = remappedFace.index[0];
+            *(index_itr++) = remappedFace.index[1];
+            *(index_itr++) = remappedFace.index[2];
+        }
+    }
+    geom.addPrimitiveSet(elements.get());
+}
+
+
 /**
 use matrix to pretransform geometry, or NULL to do nothing
 */
@@ -1059,21 +1091,27 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
 
     unsigned int faceIndex = 0;
     unsigned int faceCount = 0;
+    unsigned int maxVertexIndex = 0;
     for (FaceList::iterator itr = faceList.begin();
         itr != faceList.end();
         ++itr, ++faceIndex)
     {
-        osg::Vec3 normal = copyLib3dsVec3ToOsgVec3(normals[*itr]);
+        osg::Vec3f normal(copyLib3dsVec3ToOsgVec3(normals[*itr]));
         if (matrix) normal = osg::Matrix::transform3x3(normal, *(params.matrix));
         normal.normalize();
 
         Lib3dsFace& face = m->faces[*itr];
-        remappedFaces[faceIndex].face = &face;
-        remappedFaces[faceIndex].normal = normal;
-        if (addFace(m, remappedFaces[faceIndex], geom, origToNewMapping, splitVertexChain, params))
+        RemappedFace & rf = remappedFaces[faceIndex];
+        rf.face = &face;
+        rf.normal = normal;
+        if (addFace(m, rf, geom, origToNewMapping, splitVertexChain, params))
         {
             ++faceCount;
         }
+        // Get the highest index
+        maxVertexIndex = osg::maximum(maxVertexIndex, rf.index[0]);
+        maxVertexIndex = osg::maximum(maxVertexIndex, rf.index[1]);
+        maxVertexIndex = osg::maximum(maxVertexIndex, rf.index[2]);
     }
 
     // 'Shrink to fit' all vertex arrays because potentially faceList refers to fewer vertices than the whole mesh.
@@ -1088,23 +1126,12 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     geom->setColorArray(osg_colors.get(), osg::Array::BIND_OVERALL);
 
     // Create triangle primitives.
-    int numIndices = faceCount * 3;
-    osg::ref_ptr<DrawElementsUShort> elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES, numIndices);
-    DrawElementsUShort::iterator index_itr = elements->begin();
-
-    for (unsigned int i = 0; i < remappedFaces.size(); ++i)
-    {
-        RemappedFace& remappedFace = remappedFaces[i];
-        if (remappedFace.face != NULL)
-        {
-            *(index_itr++) = remappedFace.index[0];
-            *(index_itr++) = remappedFace.index[1];
-            *(index_itr++) = remappedFace.index[2];
-        }
-    }
-
-    geom->addPrimitiveSet(elements.get());
-
+    // Remapping may create additional vertices, thus creating indices over USHORT_MAX
+    if (maxVertexIndex < std::numeric_limits<unsigned short>::max()) {
+        fillTriangles<DrawElementsUShort>(*geom, remappedFaces, faceCount * 3);
+    } else {
+        fillTriangles<DrawElementsUInt>  (*geom, remappedFaces, faceCount * 3);
+   }
 #if 0
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geom);
@@ -1178,7 +1205,7 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg_texture->setImage(osg_image.get());
         osg_texture->setName(texture->name);
         // does the texture support transparancy?
-        //transparency = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
+        transparency = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
 
         // what is the wrap mode of the texture.
         osg::Texture2D::WrapMode wm = ((texture->flags)&LIB3DS_TEXTURE_NO_TILE) ?
@@ -1221,6 +1248,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparency);
     if (texture1_map)
     {
+        if(textureTransparency) transparency = true;
         stateset->setTextureAttributeAndModes(unit, texture1_map, osg::StateAttribute::ON);
 
         double factor = mat->texture1_map.percent;
@@ -1301,7 +1329,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
 
     if ((alpha < 1.0f) || transparency)
     {
-        //stateset->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        stateset->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }

@@ -154,6 +154,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     bool useDiffuseMap,
     bool useOpacityMap,
     bool useEmissiveMap,
+    bool useAmbientMap,
     // more here...
     bool bColor,
     const osgDB::Options& options,
@@ -188,6 +189,8 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
         pGeometry->setTexCoordArray(StateSetContent::OPACITY_TEXTURE_UNIT, createVec2Array((precision & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0), osg::Array::BIND_PER_VERTEX);
     if (useEmissiveMap)
         pGeometry->setTexCoordArray(StateSetContent::EMISSIVE_TEXTURE_UNIT, createVec2Array((precision & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0), osg::Array::BIND_PER_VERTEX);
+    if (useAmbientMap)
+        pGeometry->setTexCoordArray(StateSetContent::AMBIENT_TEXTURE_UNIT, createVec2Array((precision & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0), osg::Array::BIND_PER_VERTEX);
     // create more textures coordinates here...
 
     if (bColor) pGeometry->setColorArray(createVec4Array((precision & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0), osg::Array::BIND_PER_VERTEX);
@@ -299,6 +302,22 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
             }
 
             stateSet->setTextureAttributeAndModes(StateSetContent::EMISSIVE_TEXTURE_UNIT, ssc.emissiveTexture.get());
+        }
+
+        // ambient texture map
+        if (ssc.ambientTexture)
+        {
+            if (ssc.ambientScaleU != 1.0 || ssc.ambientScaleV != 1.0)
+            {
+                // set UV scaling...
+                osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+                osg::Matrix uvScaling;
+                uvScaling.makeScale(osg::Vec3(ssc.ambientScaleU, ssc.ambientScaleV, 1.0));
+                texmat->setMatrix(uvScaling);
+                stateSet->setTextureAttributeAndModes(StateSetContent::AMBIENT_TEXTURE_UNIT, texmat.get(), osg::StateAttribute::ON);
+            }
+
+            stateSet->setTextureAttributeAndModes(StateSetContent::AMBIENT_TEXTURE_UNIT, ssc.ambientTexture.get());
         }
 
         // add more texture maps here...
@@ -483,6 +502,8 @@ std::string getUVChannelForTextureMap(std::vector<StateSetContent>& stateSetList
             return stateSetList[i].reflectionChannel;
         if (0 == strcmp(pName, FbxSurfaceMaterial::sEmissive))
             return stateSetList[i].emissiveChannel;
+        if (0 == strcmp(pName, FbxSurfaceMaterial::sAmbient))
+            return stateSetList[i].ambientChannel;
         // more here...
     }
 
@@ -536,6 +557,7 @@ void readMeshTriangle(const FbxMesh * fbxMesh, int i /*polygonIndex*/,
                       const FbxLayerElementUV* pFbxUVs_diffuse,
                       const FbxLayerElementUV* pFbxUVs_opacity,
                       const FbxLayerElementUV* pFbxUVs_emissive,
+                      const FbxLayerElementUV* pFbxUVs_ambient,
                       const FbxLayerElementVertexColor* pFbxColors,
                       osg::Geometry* pGeometry,
                       osg::Array* pVertices,
@@ -543,6 +565,7 @@ void readMeshTriangle(const FbxMesh * fbxMesh, int i /*polygonIndex*/,
                       osg::Array* pTexCoords_diffuse,
                       osg::Array* pTexCoords_opacity,
                       osg::Array* pTexCoords_emissive,
+                      osg::Array* pTexCoords_ambient,
                       osg::Array* pColors)
 {
     int v0 = fbxMesh->GetPolygonVertex(i, posInPoly0),
@@ -593,6 +616,12 @@ void readMeshTriangle(const FbxMesh * fbxMesh, int i /*polygonIndex*/,
         addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly0, meshVertex0));
         addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly1, meshVertex1));
         addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly2, meshVertex2));
+    }
+    if (pTexCoords_ambient && (pTexCoords_ambient != pTexCoords_opacity) && (pTexCoords_ambient != pTexCoords_diffuse) && (pTexCoords_ambient != pTexCoords_emissive))
+    {
+        addVec2ArrayElement(*pTexCoords_ambient, getElement(pFbxUVs_ambient, fbxMesh, i, posInPoly0, meshVertex0));
+        addVec2ArrayElement(*pTexCoords_ambient, getElement(pFbxUVs_ambient, fbxMesh, i, posInPoly1, meshVertex1));
+        addVec2ArrayElement(*pTexCoords_ambient, getElement(pFbxUVs_ambient, fbxMesh, i, posInPoly2, meshVertex2));
     }
     // add more texture maps here...
 
@@ -695,12 +724,14 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     std::string diffuseChannel = getUVChannelForTextureMap(stateSetList, FbxSurfaceMaterial::sDiffuse);
     std::string opacityChannel = getUVChannelForTextureMap(stateSetList, FbxSurfaceMaterial::sTransparentColor);
     std::string emissiveChannel = getUVChannelForTextureMap(stateSetList, FbxSurfaceMaterial::sEmissive);
+    std::string ambientChannel = getUVChannelForTextureMap(stateSetList, FbxSurfaceMaterial::sAmbient);
     // look for more UV elements here...
 
     // UV elements...
     const FbxLayerElementUV* pFbxUVs_diffuse = getUVElementForChannel(diffuseChannel, FbxLayerElement::eTextureDiffuse, fbxMesh);
     const FbxLayerElementUV* pFbxUVs_opacity = getUVElementForChannel(opacityChannel, FbxLayerElement::eTextureTransparency, fbxMesh);
     const FbxLayerElementUV* pFbxUVs_emissive = getUVElementForChannel(emissiveChannel, FbxLayerElement::eTextureEmissive, fbxMesh);
+    const FbxLayerElementUV* pFbxUVs_ambient = getUVElementForChannel(ambientChannel, FbxLayerElement::eTextureAmbient, fbxMesh);
     // more UV elements here...
 
     // check elements validity...
@@ -710,6 +741,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     if (!layerElementValid(pFbxUVs_diffuse)) pFbxUVs_diffuse = 0;
     if (!layerElementValid(pFbxUVs_opacity)) pFbxUVs_opacity = 0;
     if (!layerElementValid(pFbxUVs_emissive)) pFbxUVs_emissive = 0;
+    if (!layerElementValid(pFbxUVs_ambient)) pFbxUVs_ambient = 0;
     // more here...
 
     int nPolys = fbxMesh->GetPolygonCount();
@@ -750,6 +782,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
             pFbxUVs_diffuse != 0,
             pFbxUVs_opacity != 0,
             pFbxUVs_emissive != 0,
+            pFbxUVs_ambient != 0,
             // more UV elements here...
             pFbxColors != 0,
             options,
@@ -762,6 +795,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         osg::Array* pTexCoords_diffuse = pGeometry->getTexCoordArray(StateSetContent::DIFFUSE_TEXTURE_UNIT);
         osg::Array* pTexCoords_opacity = pGeometry->getTexCoordArray(StateSetContent::OPACITY_TEXTURE_UNIT);
         osg::Array* pTexCoords_emissive = pGeometry->getTexCoordArray(StateSetContent::EMISSIVE_TEXTURE_UNIT);
+        osg::Array* pTexCoords_ambient = pGeometry->getTexCoordArray(StateSetContent::AMBIENT_TEXTURE_UNIT);
         // more texture coordinates here...
 
         osg::Array* pColors = pGeometry->getColorArray();
@@ -773,9 +807,9 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
                 0, 1, 2,
                 nVertex, nVertex+1, nVertex+2,
                 fbxToOsgVertMap, osgToFbxNormMap,
-                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxUVs_ambient, pFbxColors,
                 pGeometry,
-                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pTexCoords_ambient, pColors);
             nVertex += 3;
         }
         else if (lPolygonSize == 4)
@@ -790,16 +824,16 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
                 0, 1, p02,
                 nVertex, nVertex+1, nVertex+p02,
                 fbxToOsgVertMap, osgToFbxNormMap,
-                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxUVs_ambient, pFbxColors,
                 pGeometry,
-                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pTexCoords_ambient, pColors);
             readMeshTriangle(fbxMesh, i,
                 p10, 2, 3,
                 nVertex+p10, nVertex+2, nVertex+3,
                 fbxToOsgVertMap, osgToFbxNormMap,
-                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxUVs_ambient, pFbxColors,
                 pGeometry,
-                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pTexCoords_ambient, pColors);
             nVertex += 4;
         }
         else if (tessellatePolygons)
@@ -819,9 +853,9 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
                     0, j - 1, j,
                     nVertex0, nVertex - 1, nVertex,
                     fbxToOsgVertMap, osgToFbxNormMap,
-                    pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                    pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxUVs_ambient, pFbxColors,
                     pGeometry,
-                    pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+                    pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pTexCoords_ambient, pColors);
             }
         }
     }
@@ -851,6 +885,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         osg::Array* pTexCoords_diffuse = pGeometry->getTexCoordArray(StateSetContent::DIFFUSE_TEXTURE_UNIT);
         osg::Array* pTexCoords_opacity = pGeometry->getTexCoordArray(StateSetContent::OPACITY_TEXTURE_UNIT);
         osg::Array* pTexCoords_emissive = pGeometry->getTexCoordArray(StateSetContent::EMISSIVE_TEXTURE_UNIT);
+        osg::Array* pTexCoords_ambient = pGeometry->getTexCoordArray(StateSetContent::AMBIENT_TEXTURE_UNIT);
         osg::Array* pColors = pGeometry->getColorArray();
         // Index of the 1st vertex of the polygon in the geometry
         int osgVertex0 = pVertices->getNumElements();
@@ -882,6 +917,10 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
             if (pTexCoords_emissive && (pTexCoords_emissive != pTexCoords_opacity) && (pTexCoords_emissive != pTexCoords_diffuse))
             {
                 addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, j, nVertex));
+            }
+            if (pTexCoords_ambient && (pTexCoords_ambient != pTexCoords_opacity) && (pTexCoords_ambient != pTexCoords_diffuse))
+            {
+                addVec2ArrayElement(*pTexCoords_ambient, getElement(pFbxUVs_ambient, fbxMesh, i, j, nVertex));
             }
             // add more texture maps here...
 

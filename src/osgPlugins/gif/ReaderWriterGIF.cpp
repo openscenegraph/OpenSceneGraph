@@ -560,7 +560,7 @@ GifImageStream** obj)
     *width_ret = giffile->SWidth;
     *height_ret = giffile->SHeight;
     *numComponents_ret = 4;
-#if (GIFLIB_MAJOR >= 5)
+#if (GIFLIB_MAJOR >= 5&& !(GIFLIB_MAJOR == 5 && GIFLIB_MINOR == 0))
     DGifCloseFile(giffile, &Error);
 #else
     DGifCloseFile(giffile);

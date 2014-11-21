@@ -143,6 +143,15 @@ ELSE()
           NOT _OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
                   SET(_OPENTHREADS_ATOMIC_USE_MUTEX 1)
        ENDIF()
+
+       
+       # MinGW can set both WIN32_INTERLOCKED and GCC_BUILTINS to true which results in compliation errors
+       IF (_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS AND _OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+          # In this case we prefer the GCC_BUILTINS
+          SET(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS 1)
+          SET(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED 0)
+       ENDIF()
+
     ENDIF()
 
 ENDIF()

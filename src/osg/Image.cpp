@@ -1919,9 +1919,9 @@ Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
 
 Vec4 Image::getColor(const Vec3& texcoord) const
 {
-    int s = int(texcoord.x()*float(_s-1)) % _s;
-    int t = int(texcoord.y()*float(_t-1)) % _t;
-    int r = int(texcoord.z()*float(_r-1)) % _r;
+    unsigned int s = osg::clampTo(int(texcoord.x()*float(_s-1)), 0, _s-1);
+    unsigned int t = osg::clampTo(int(texcoord.y()*float(_t-1)), 0, _t-1);
+    unsigned int r = osg::clampTo(int(texcoord.z()*float(_r-1)), 0, _r-1);
     //OSG_NOTICE<<"getColor("<<texcoord<<")="<<getColor(s,t,r)<<std::endl;
     return getColor(s,t,r);
 }
@@ -1964,9 +1964,9 @@ void Image::setColor( const Vec4& color, unsigned int s, unsigned int t/*=0*/, u
 
 void Image::setColor( const Vec4& color, const Vec3& texcoord )
 {
-    int s = int(texcoord.x()*float(_s - 1 )) % _s;
-    int t = int(texcoord.y()*float(_t - 1))  % _t;
-    int r = int(texcoord.z()*float(_r - 1))  % _r;
+    unsigned int s = osg::clampTo(int(texcoord.x()*float(_s-1)), 0, _s-1);
+    unsigned int t = osg::clampTo(int(texcoord.y()*float(_t-1)), 0, _t-1);
+    unsigned int r = osg::clampTo(int(texcoord.z()*float(_r-1)), 0, _r-1);
 
     return setColor(color, s,t,r);
 }

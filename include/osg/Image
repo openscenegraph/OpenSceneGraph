@@ -376,10 +376,10 @@ class OSG_EXPORT Image : public BufferData
          /** Set the color value for specified texcoord.*/
         void setColor(const osg::Vec4& color, unsigned int s, unsigned int t=0, unsigned int r=0);
 
-         /** Set the color value for specified texcoord.*/
+         /** Set the color value for specified texcoord. Note texcoord is clamped to edge.*/
         void setColor(const osg::Vec4& color, const osg::Vec2& texcoord ) { setColor(color, osg::Vec3(texcoord, 0.0f)); }
 
-         /** Set the color value for specified texcoord.*/
+         /** Set the color value for specified texcoord. Note texcoord is clamped to edge.*/
         void setColor(const osg::Vec4& color, const osg::Vec3& texcoord );
 
         /** Flip the image horizontally, around s dimension. */

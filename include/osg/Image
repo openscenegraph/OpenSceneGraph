@@ -373,6 +373,14 @@ class OSG_EXPORT Image : public BufferData
         /** Get the color value for specified texcoord.*/
         Vec4 getColor(const Vec3& texcoord) const;
 
+         /** Set the color value for specified texcoord.*/
+        void setColor(const osg::Vec4& color, unsigned int s, unsigned int t=0, unsigned int r=0);
+
+         /** Set the color value for specified texcoord.*/
+        void setColor(const osg::Vec4& color, const osg::Vec2& texcoord ) { setColor(color, osg::Vec3(texcoord, 0.0f)); }
+
+         /** Set the color value for specified texcoord.*/
+        void setColor(const osg::Vec4& color, const osg::Vec3& texcoord );
 
         /** Flip the image horizontally, around s dimension. */
         void flipHorizontal();
@@ -476,15 +484,15 @@ class OSG_EXPORT Image : public BufferData
 
         /** Pass frame information to the custom Image classes, to be called only when objects associated with imagery are not culled.*/
         virtual void setFrameLastRendered(const osg::FrameStamp* /*frameStamp*/) {}
-        
+
         class DimensionsChangedCallback : public osg::Referenced {
         public:
             DimensionsChangedCallback() : osg::Referenced() {}
             virtual void operator()(osg::Image* image) = 0;
         };
-        
+
         typedef std::vector< osg::ref_ptr<DimensionsChangedCallback> > DimensionsChangedCallbackVector;
-        
+
         void addDimensionsChangedCallback(DimensionsChangedCallback* cb);
         void removeDimensionsChangedCallback(DimensionsChangedCallback* cb);
 
@@ -493,8 +501,8 @@ class OSG_EXPORT Image : public BufferData
         virtual ~Image();
 
         Image& operator = (const Image&) { return *this; }
-        
-        void handleDimensionsChangedCallbacks() 
+
+        void handleDimensionsChangedCallbacks()
         {
             for(DimensionsChangedCallbackVector::iterator i = _dimensionsChangedCallbacks.begin(); i != _dimensionsChangedCallbacks.end(); ++i)
             {
@@ -523,7 +531,7 @@ class OSG_EXPORT Image : public BufferData
         void setData(unsigned char* data,AllocationMode allocationMode);
 
         MipmapDataType _mipmapData;
-        
+
         DimensionsChangedCallbackVector _dimensionsChangedCallbacks;
 };
 

@@ -1926,6 +1926,51 @@ Vec4 Image::getColor(const Vec3& texcoord) const
     return getColor(s,t,r);
 }
 
+
+template <typename T>
+void _writeColor(GLenum pixelFormat, T* data, float scale, const Vec4& c)
+{
+    switch(pixelFormat)
+    {
+    case(GL_DEPTH_COMPONENT):   //intentionally fall through and execute the code for GL_LUMINANCE
+    case(GL_LUMINANCE):         { (*data++) = c[0] * scale; } break;
+    case(GL_ALPHA):             { (*data++) = c[3] * scale; } break;
+    case(GL_LUMINANCE_ALPHA):   { (*data++) = c[0] * scale;  (*data++) = c[3] * scale; } break;
+    case(GL_RGB):               { (*data++) = c[0] *scale; (*data++) = c[1] *scale; (*data++) = c[2] *scale;} break;
+    case(GL_RGBA):              { (*data++) = c[0] *scale; (*data++) = c[1] *scale; (*data++) = c[2] *scale; (*data++) = c[3] *scale;} break;
+    case(GL_BGR):               { (*data++) = c[2] *scale; (*data++) = c[1] *scale; (*data++) = c[0] *scale;} break;
+    case(GL_BGRA):              { (*data++) = c[2] *scale; (*data++) = c[1] *scale; (*data++) = c[0] *scale; (*data++) = c[3] *scale;} break;
+    }
+
+}
+
+
+void Image::setColor( const Vec4& color, unsigned int s, unsigned int t/*=0*/, unsigned int r/*=0*/ )
+{
+    unsigned char* ptr = data(s,t,r);
+
+    switch(getDataType())
+    {
+    case(GL_BYTE):              return _writeColor(getPixelFormat(), (char*)ptr,             128.0f, color);
+    case(GL_UNSIGNED_BYTE):     return _writeColor(getPixelFormat(), (unsigned char*)ptr,    255.0f, color);
+    case(GL_SHORT):             return _writeColor(getPixelFormat(), (short*)ptr,            32768.0f, color);
+    case(GL_UNSIGNED_SHORT):    return _writeColor(getPixelFormat(), (unsigned short*)ptr,   65535.0f, color);
+    case(GL_INT):               return _writeColor(getPixelFormat(), (int*)ptr,              2147483648.0f, color);
+    case(GL_UNSIGNED_INT):      return _writeColor(getPixelFormat(), (unsigned int*)ptr,     4294967295.0f, color);
+    case(GL_FLOAT):             return _writeColor(getPixelFormat(), (float*)ptr,            1.0f, color);
+    case(GL_DOUBLE):            return _writeColor(getPixelFormat(), (double*)ptr,           1.0f, color);
+    }
+}
+
+void Image::setColor( const Vec4& color, const Vec3& texcoord )
+{
+    int s = int(texcoord.x()*float(_s - 1 )) % _s;
+    int t = int(texcoord.y()*float(_t - 1))  % _t;
+    int r = int(texcoord.z()*float(_r - 1))  % _r;
+
+    return setColor(color, s,t,r);
+}
+
 void Image::addDimensionsChangedCallback(DimensionsChangedCallback* cb)
 {
     _dimensionsChangedCallbacks.push_back(cb);

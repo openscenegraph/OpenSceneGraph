@@ -39,7 +39,4 @@ IF ((QT4_FOUND OR Qt5Widgets_FOUND) AND NOT ANDROID)
     ADD_SUBDIRECTORY(osgQt)
 ENDIF()
 
-IF(ANDROID)
-    configure_file("${OSG_ANDROID_TEMPLATES}/Android.mk.src.in" "${CMAKE_CURRENT_BINARY_DIR}/Android.mk")
-ENDIF()
 

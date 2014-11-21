@@ -80,84 +80,15 @@ SET(OpenThreads_SOURCE_DIR ${OpenSceneGraph_SOURCE_DIR})
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-
 # Change the default build type to Release
 IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
-## Option to enable Android build using AndroidNDK
-OPTION(OSG_BUILD_PLATFORM_ANDROID OFF)
-IF(OSG_BUILD_PLATFORM_ANDROID)
-
-    CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0 FATAL_ERROR)
-
+IF(ANDROID)
     INCLUDE(OsgAndroidMacroUtils)
-    SET(ANDROID TRUE)
-    IF(NOT ANDROID_PLATFORM)
-        MESSAGE("Warning Android Platform version NOT defined, Default selected version: 5")
-        SET(ANDROID_PLATFORM 5)
-    ENDIF()
-    IF(NOT ANDROID_ABI)
-        MESSAGE("Warning Android ABI version NOT defined, Default selection: armeabi armeabi-v7a")
-        SET(ANDROID_ABI "armeabi armeabi-v7a")
-    ENDIF()
-    IF(NOT ANDROID_STL)
-        MESSAGE("Warning Android STL NOT defined, Default selection: gnustl_static")
-        SET(ANDROID_STL "gnustl_static")
-    ENDIF()
-    IF(ANDROID_DEBUG)
-        MESSAGE("Warning Android Build is in debug mode")
-        SET(ANDROID_RELEASE_OPTIM "debug")
-    ELSE()
-        MESSAGE("Warning Android Build is in release mode")
-        SET(ANDROID_RELEASE_OPTIM "release")
-    ENDIF()
-    IF(ANDROID_NEON)
-        MESSAGE("Warning Android NEON optimizations enabled, this will not be available on all armeabi-v7a devices ie. Tegra2")
-        SET(ANDROID_OPTIM_NEON true)
-    ELSE()
-        SET(ANDROID_OPTIM_NEON false)
-    ENDIF()
-    IF(ANDROID_ARM32)
-        MESSAGE("Warning ARM 32bit instruction set will be used")
-        SET(ANDROID_OPTIM_ARM32 true)
-    ELSE()
-        SET(ANDROID_OPTIM_ARM32 false)
-    ENDIF()
-
-    FIND_PACKAGE(AndroidNDK REQUIRED)
-
-    SET(OSG_ANDROID_TEMPLATES "${CMAKE_SOURCE_DIR}/PlatformSpecifics/Android")
-
-    SET(J  "4" CACHE STRING "how many processes for make -j <J>")
-
-    ADD_CUSTOM_COMMAND(
-        OUTPUT    Android-OpenSceneGraph
-        DEPENDS   ${CMAKE_BINARY_DIR}/Android.mk
-        COMMAND   "${ANDROID_NDK}/ndk-build"
-        ARGS      --directory=${CMAKE_BINARY_DIR} NDK_APPLICATION_MK=Application.mk -j${J} NDK_LOG=1
-    )
-
-    ADD_CUSTOM_TARGET(ndk ALL echo
-          DEPENDS Android-OpenSceneGraph
-    )
-    install(DIRECTORY include/ DESTINATION include/
-        PATTERN ".svn" EXCLUDE
-    )
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION include/
-    )
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/obj/ DESTINATION obj/
-        PATTERN ".svn" EXCLUDE
-        PATTERN "objs" EXCLUDE
-    )
-
-    ADD_DEFINITIONS(-DANDROID)
-
 ENDIF()
-
-
 
 # Okay, here's the problem: On some platforms, linking against OpenThreads
 # is not enough and explicit linking to the underlying thread library
@@ -235,8 +166,7 @@ IF (OSG_MAINTAINER)
 
 ENDIF(OSG_MAINTAINER)
 
-IF(NOT ANDROID)
-IF(APPLE)
+IF(APPLE AND NOT ANDROID)
     # Determine the canonical name of the selected Platform SDK
     EXECUTE_PROCESS(COMMAND "/usr/bin/sw_vers" "-productVersion"
                     OUTPUT_VARIABLE OSG_OSX_SDK_NAME
@@ -288,14 +218,11 @@ IF(APPLE)
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ELSE()
-    # Non-Apple: Find OpenGL
-    FIND_PACKAGE(OpenGL)
+    IF(NOT ANDROID)
+        # Non-Apple: Find OpenGL
+        FIND_PACKAGE(OpenGL)
+    ENDIF()
 ENDIF()
-ENDIF()
-
-
-
-
 
 IF(UNIX AND NOT ANDROID)
     # Not sure what this will do on Cygwin and Msys
@@ -602,7 +529,23 @@ ELSE()
     SET(OSG_GLES2_FEATURES "false")
 ENDIF()
 
-
+IF(ANDROID)
+    IF(OSG_GLES1_AVAILABLE)
+        FIND_PATH(OPENGL_INCLUDE_DIR GLES/gl.h
+              PATHS
+              ${ANDROID_SYSROOT}/usr/include)
+        FIND_LIBRARY(OPENGL_gl_LIBRARY  GLESv1_CM
+                 PATHS
+                     ${ANDROID_SYSROOT}/usr/lib)
+    ELSEIF(OSG_GLES2_AVAILABLE)
+        FIND_PATH(OPENGL_INCLUDE_DIR GLES2/gl2.h
+              PATHS
+              ${ANDROID_SYSROOT}/usr/include)
+        FIND_LIBRARY(OPENGL_gl_LIBRARY  GLESv2
+                 PATHS
+                     ${ANDROID_SYSROOT}/usr/lib)
+    ENDIF()
+ENDIF()
 
 
 ################################################################################
@@ -1338,10 +1281,4 @@ ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
 #
-IF(ANDROID)
-    message(STATUS "Creating Android Makefile Master files" )
-    configure_file("${OSG_ANDROID_TEMPLATES}/Android.mk.master.in" "${CMAKE_BINARY_DIR}/Android.mk")
-    configure_file("${OSG_ANDROID_TEMPLATES}/Application.mk.master.in" "${CMAKE_BINARY_DIR}/Application.mk")
-    configure_file("${OSG_ANDROID_TEMPLATES}/AndroidManifest.xml.master.in" "${CMAKE_BINARY_DIR}/AndroidManifest.xml")
-ENDIF(ANDROID)
 

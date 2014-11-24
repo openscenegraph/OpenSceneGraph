@@ -827,18 +827,19 @@ Polytope State::getViewFrustum() const
 }
 
 
-void State::resetVertexAttributeAlias(bool compactAliasing)
+void State::resetVertexAttributeAlias(bool compactAliasing, unsigned int numTextureUnits)
 {
     _texCoordAliasList.clear();
     _attributeBindingList.clear();
 
     if (compactAliasing)
     {
-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
-        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute vec3 ");
-        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute vec4 ");
+        unsigned int slot = 0;
+        setUpVertexAttribAlias(_vertexAlias, slot++, "gl_Vertex","osg_Vertex","attribute vec4 ");
+        setUpVertexAttribAlias(_normalAlias, slot++, "gl_Normal","osg_Normal","attribute vec3 ");
+        setUpVertexAttribAlias(_colorAlias, slot++, "gl_Color","osg_Color","attribute vec4 ");
 
-        _texCoordAliasList.resize(5);
+        _texCoordAliasList.resize(numTextureUnits);
         for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
         {
             std::stringstream gl_MultiTexCoord;
@@ -846,11 +847,11 @@ void State::resetVertexAttributeAlias(bool compactAliasing)
             gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
             osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
 
-            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+            setUpVertexAttribAlias(_texCoordAliasList[i], slot++, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
         }
 
-        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
-        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute float ");
+        setUpVertexAttribAlias(_secondaryColorAlias, slot++, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+        setUpVertexAttribAlias(_fogCoordAlias, slot++, "gl_FogCoord","osg_FogCoord","attribute float ");
 
     }
     else
@@ -861,7 +862,8 @@ void State::resetVertexAttributeAlias(bool compactAliasing)
         setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
         setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
 
-        _texCoordAliasList.resize(8);
+        unsigned int base = 8;
+        _texCoordAliasList.resize(numTextureUnits);
         for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
         {
             std::stringstream gl_MultiTexCoord;
@@ -869,7 +871,7 @@ void State::resetVertexAttributeAlias(bool compactAliasing)
             gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
             osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
 
-            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+            setUpVertexAttribAlias(_texCoordAliasList[i], base+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
         }
     }
 }
@@ -1440,6 +1442,7 @@ void State::setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, co
 {
     alias = VertexAttribAlias(location, glName, osgName, declaration);
     _attributeBindingList[osgName] = location;
+    OSG_NOTICE<<"State::setUpVertexAttribAlias("<<location<<" "<<glName<<" "<<osgName<<")"<<std::endl;
 }
 
 void State::applyProjectionMatrix(const osg::RefMatrix* matrix)

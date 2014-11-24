@@ -166,13 +166,18 @@ IF (OSG_MAINTAINER)
 
 ENDIF(OSG_MAINTAINER)
 
-IF(APPLE AND NOT ANDROID)
+IF(NOT ANDROID)
+IF(APPLE)
     # Determine the canonical name of the selected Platform SDK
     EXECUTE_PROCESS(COMMAND "/usr/bin/sw_vers" "-productVersion"
                     OUTPUT_VARIABLE OSG_OSX_SDK_NAME
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
-    STRING(SUBSTRING "${OSG_OSX_SDK_NAME}" 0 4 OSG_OSX_SDK_NAME)
-    SET(OSG_OSX_SDK_NAME "macosx${OSG_OSX_SDK_NAME}")
+    STRING(REPLACE "." ";" MACOS_VERSION_LIST ${OSG_OSX_SDK_NAME})
+    LIST(GET MACOS_VERSION_LIST 0 MACOS_VERSION_MAJOR)
+    LIST(GET MACOS_VERSION_LIST 1 MACOS_VERSION_MINOR)
+    LIST(GET MACOS_VERSION_LIST 2 MACOS_VERSION_PATCH)
+
+    SET(OSG_OSX_SDK_NAME "macosx${MACOS_VERSION_MAJOR}.${MACOS_VERSION_MINOR}")
 
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
@@ -218,11 +223,14 @@ IF(APPLE AND NOT ANDROID)
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ELSE()
-    IF(NOT ANDROID)
-        # Non-Apple: Find OpenGL
-        FIND_PACKAGE(OpenGL)
-    ENDIF()
+    # Non-Apple: Find OpenGL
+    FIND_PACKAGE(OpenGL)
 ENDIF()
+ENDIF()
+
+
+
+
 
 IF(UNIX AND NOT ANDROID)
     # Not sure what this will do on Cygwin and Msys
@@ -1044,7 +1052,7 @@ IF(APPLE AND NOT ANDROID)
         # FORCE is used because the options are not reflected in the UI otherwise.
         # Seems like a good place to add version specific compiler flags too.
         IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9")
+            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.10")
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 # 64 Bit Works, i386,ppc is not supported any more
                 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)

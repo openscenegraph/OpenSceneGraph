@@ -20,7 +20,7 @@
 
 void configureShaders( osg::StateSet* stateSet )
 {
-    const std::string vertexSource = 
+    const std::string vertexSource =
         "#version 140 \n"
         " \n"
         "uniform mat4 osg_ModelViewProjectionMatrix; \n"
@@ -41,7 +41,7 @@ void configureShaders( osg::StateSet* stateSet )
         "} \n";
     osg::Shader* vShader = new osg::Shader( osg::Shader::VERTEX, vertexSource );
 
-    const std::string fragmentSource = 
+    const std::string fragmentSource =
         "#version 140 \n"
         " \n"
         "in vec4 color; \n"
@@ -90,16 +90,16 @@ int main( int argc, char** argv )
         return( 1 );
     }
 
+    osgViewer::Viewer viewer;
+
     // Create a Camera that uses the above OpenGL context.
-    osg::Camera* cam = new osg::Camera;
+    osg::Camera* cam = viewer.getCamera();
     cam->setGraphicsContext( gc.get() );
     // Must set perspective projection for fovy and aspect.
     cam->setProjectionMatrix( osg::Matrix::perspective( 30., (double)width/(double)height, 1., 100. ) );
     // Unlike OpenGL, OSG viewport does *not* default to window dimensions.
     cam->setViewport( new osg::Viewport( 0, 0, width, height ) );
 
-    osgViewer::Viewer viewer;
-    viewer.setCamera( cam );
     viewer.setSceneData( root );
 
     // for non GL3/GL4 and non GLES2 platforms we need enable the osg_ uniforms that the shaders will use,
@@ -118,7 +118,7 @@ OSG currently support OpenGL 3.x on Windows. This comment block describes the
 necessary configuration steps.
 
 Get the draft gl3.h header file from OpenGL.org and put it in a folder called
-“GL3” somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
+GL3 somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
 gl3.h from here:
 http://www.opengl.org/registry/
 
@@ -128,7 +128,7 @@ several changes.
  * Add the path to <GL3/gl3.h> to the CMake compiler flags, CMAKE_CXX_FLAGS and
    CMAKE_CXX_FLAGS_DEBUG (for release and debug builds; others if you use other
    build configurations). The text to add should look something like this:
-     /I “C:\GLHeader”
+     /I C:\GLHeader
    The folder GLHeader should contain a subfolder GL3, which in turn contains
    gl3.h.
 

@@ -74,7 +74,7 @@ bool PixelBufferCocoa::realizeImplementation()
     _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
     NSOpenGLPixelBuffer* pbuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget: _traits->target textureInternalFormat: _traits->format textureMaxMipMapLevel: _traits->level pixelsWide: _traits->width pixelsHigh: _traits->height];
     
-    [_context setPixelBuffer: pbuffer cubeMapFace: _traits->face mipMapLevel:_traits->level currentVirtualScreen: nil];
+    [_context setPixelBuffer: pbuffer cubeMapFace: _traits->face mipMapLevel:_traits->level currentVirtualScreen: 0];
     
     [pool release];
     

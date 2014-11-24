@@ -256,7 +256,7 @@ class OSG_EXPORT State : public Referenced
         typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
 
         /** Reset the vertex attribute aliasing to osg's default. This method needs to be called before render anything unless you really know what you're doing !*/
-        void resetVertexAttributeAlias(bool compactAliasing=true);
+        void resetVertexAttributeAlias(bool compactAliasing=true, unsigned int numTextureUnits=8);
 
         /** Set the vertex attribute aliasing for "vertex". This method needs to be called before render anything unless you really know what you're doing !*/
         void setVertexAlias(const VertexAttribAlias& alias) { _vertexAlias = alias; }

@@ -37,7 +37,7 @@ SET(TARGET_H
     ${HEADER_PATH}/buffered_value
     ${HEADER_PATH}/BufferIndexBinding
     ${HEADER_PATH}/BufferObject
-    ${HEADER_PATH}/Callback
+    ${HEADER_PATH}/BufferTemplate
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraView
     ${HEADER_PATH}/ClampColor
@@ -72,6 +72,7 @@ SET(TARGET_H
     ${HEADER_PATH}/FrontFace
     ${HEADER_PATH}/Geode
     ${HEADER_PATH}/Geometry
+    ${HEADER_PATH}/GL
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLExtensions
     ${HEADER_PATH}/GLBeginEndAdapter

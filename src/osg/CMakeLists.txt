@@ -72,7 +72,6 @@ SET(TARGET_H
     ${HEADER_PATH}/FrontFace
     ${HEADER_PATH}/Geode
     ${HEADER_PATH}/Geometry
-    ${HEADER_PATH}/GL
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLExtensions
     ${HEADER_PATH}/GLBeginEndAdapter

@@ -1442,7 +1442,7 @@ void State::setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, co
 {
     alias = VertexAttribAlias(location, glName, osgName, declaration);
     _attributeBindingList[osgName] = location;
-    OSG_NOTICE<<"State::setUpVertexAttribAlias("<<location<<" "<<glName<<" "<<osgName<<")"<<std::endl;
+    // OSG_NOTICE<<"State::setUpVertexAttribAlias("<<location<<" "<<glName<<" "<<osgName<<")"<<std::endl;
 }
 
 void State::applyProjectionMatrix(const osg::RefMatrix* matrix)

@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -39,9 +39,9 @@
 #elif defined(__sgi)
     #include <unistd.h>
     #include <net/soioctl.h>
-#elif defined(__CYGWIN__) 
+#elif defined(__CYGWIN__)
     #include <unistd.h>
-#elif defined(__sun) 
+#elif defined(__sun)
     #include <unistd.h>
     #include <sys/sockio.h>
 #elif defined (__APPLE__)
@@ -249,7 +249,7 @@ void CameraPacket::writeEventQueue(osgViewer::Viewer& viewer)
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Reciever 
+//  Reciever
 //
 Receiver::Receiver( void )
 {
@@ -338,7 +338,7 @@ void Receiver::sync( void )
 
 #if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ ) || \
     defined(__DragonFly__)
-    socklen_t 
+    socklen_t
 #else
     int
 #endif
@@ -381,7 +381,7 @@ void Receiver::sync( void )
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Broadcaster 
+//  Broadcaster
 //
 Broadcaster::Broadcaster( void )
 {

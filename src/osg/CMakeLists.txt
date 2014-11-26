@@ -38,6 +38,7 @@ SET(TARGET_H
     ${HEADER_PATH}/BufferIndexBinding
     ${HEADER_PATH}/BufferObject
     ${HEADER_PATH}/BufferTemplate
+    ${HEADER_PATH}/Callback
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraView
     ${HEADER_PATH}/ClampColor

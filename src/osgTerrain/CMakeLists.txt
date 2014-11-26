@@ -7,6 +7,7 @@ ENDIF()
 SET(LIB_NAME osgTerrain)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
+    ${HEADER_PATH}/DisplacementMappingTechnique
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Locator
     ${HEADER_PATH}/Layer
@@ -21,6 +22,7 @@ SET(TARGET_H
 
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
+    DisplacementMappingTechnique.cpp
     Layer.cpp
     Locator.cpp
     TerrainTile.cpp

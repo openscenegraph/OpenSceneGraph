@@ -1,9 +1,4 @@
-SET(TARGET_H
-    ShaderTerrain.h
-)
-
 SET(TARGET_SRC
-    ShaderTerrain.cpp
     osgterrain.cpp
 )
 

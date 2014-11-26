@@ -241,14 +241,14 @@ class DataConverter
         inline void writeFloat(float c)             { write4((char*)&c); }
         inline void writeDouble(double c)           { write8((char*)&c); }
 
-        inline char readChar() { char c; read1(&c); return c; }
-        inline unsigned char readUChar() { unsigned char c; read1((char*)&c); return c; }
-        inline short readShort() { short c; read2((char*)&c); return c; }
-        inline unsigned short readUShort() { unsigned short c; read2((char*)&c); return c; }
-        inline int readInt() { int c; read4((char*)&c); return c; }
-        inline unsigned int readUInt() { unsigned int c; read4((char*)&c); return c; }
-        inline float readFloat() { float c; read4((char*)&c); return c; }
-        inline double readDouble() { double c; read8((char*)&c); return c; }
+        inline char readChar() { char c=0; read1(&c); return c; }
+        inline unsigned char readUChar() { unsigned char c=0; read1((char*)&c); return c; }
+        inline short readShort() { short c=0; read2((char*)&c); return c; }
+        inline unsigned short readUShort() { unsigned short c=0; read2((char*)&c); return c; }
+        inline int readInt() { int c=0; read4((char*)&c); return c; }
+        inline unsigned int readUInt() { unsigned int c=0; read4((char*)&c); return c; }
+        inline float readFloat() { float c=0.0f; read4((char*)&c); return c; }
+        inline double readDouble() { double c=0.0; read8((char*)&c); return c; }
 
         void write(const osg::FrameStamp& fs)
         {

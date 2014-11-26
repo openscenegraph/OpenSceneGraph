@@ -737,6 +737,8 @@ bool StateSet_matchRenderBinModeStr(const char* str,StateSet::RenderBinMode& mod
     else if (strcmp(str,"USE")==0) mode = StateSet::USE_RENDERBIN_DETAILS;
     else if (strcmp(str,"OVERRIDE")==0) mode = StateSet::OVERRIDE_RENDERBIN_DETAILS;
     else if (strcmp(str,"ENCLOSE")==0) mode = StateSet::USE_RENDERBIN_DETAILS;
+    else if (strcmp(str,"PROTECTED")==0) mode = StateSet::PROTECTED_RENDERBIN_DETAILS;
+    else if (strcmp(str,"OVERRIDE|PROTECTED")==0) mode = StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS;
     else return false;
     return true;
 }
@@ -748,6 +750,8 @@ const char* StateSet_getRenderBinModeStr(StateSet::RenderBinMode mode)
         case(StateSet::INHERIT_RENDERBIN_DETAILS):  return "INHERIT";
         case(StateSet::USE_RENDERBIN_DETAILS):      return "USE";
         case(StateSet::OVERRIDE_RENDERBIN_DETAILS): return "OVERRIDE";
+        case(StateSet::PROTECTED_RENDERBIN_DETAILS):return "PROTECTED";
+        case(StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS): return "OVERRIDE|PROTECTED";
     }
     return "";
 }

@@ -25,7 +25,7 @@
 
 namespace osgTerrain {
 
-extern const osgTerrain::Locator* computeMasterLocator(const osgTerrain::TerrainTile* tile);
+extern OSGTERRAIN_EXPORT const osgTerrain::Locator* computeMasterLocator(const osgTerrain::TerrainTile* tile);
 
 class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 {
@@ -94,7 +94,7 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 };
 
 
-class HeightFieldDrawable : public osg::Drawable
+class OSGTERRAIN_EXPORT HeightFieldDrawable : public osg::Drawable
 {
     public:
         HeightFieldDrawable();

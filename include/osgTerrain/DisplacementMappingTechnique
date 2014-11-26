@@ -23,7 +23,7 @@
 namespace osgTerrain
 {
 
-class DisplacementMappingTechnique : public osgTerrain::TerrainTechnique
+class OSGTERRAIN_EXPORT DisplacementMappingTechnique : public osgTerrain::TerrainTechnique
 {
     public:
 

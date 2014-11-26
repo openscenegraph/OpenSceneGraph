@@ -21,7 +21,7 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 # MESSAGE("FFMPEG_LIBAVUTIL_INCLUDE_DIRS = "  ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS} )
 # MESSAGE("FFMPEG_LIBRARIES = "  ${FFMPEG_LIBRARIES} )
 
-SET(TARGET_SRC 
+SET(TARGET_SRC
     FFmpegClocks.cpp
     FFmpegDecoderAudio.cpp
     FFmpegDecoder.cpp
@@ -46,9 +46,8 @@ SET(TARGET_H
     MessageQueue.hpp
 )
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    # Remove -pedantic flag as it barfs on ffmoeg headers
-   STRING(REGEX REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+IF(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 ENDIF()
 
 #### end var setup  ###

@@ -141,8 +141,8 @@ static HeartBeat heartBeat;
 GLWidget::GLWidget( QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f, bool forwardKeyEvents )
 : QGLWidget(parent, shareWidget, f),
 _gw( NULL ),
-_forwardKeyEvents( forwardKeyEvents ),
-_touchEventsEnabled( false )
+_touchEventsEnabled( false ),
+_forwardKeyEvents( forwardKeyEvents )
 {
     _devicePixelRatio = GETDEVICEPIXELRATIO();
 }
@@ -151,8 +151,8 @@ GLWidget::GLWidget( QGLContext* context, QWidget* parent, const QGLWidget* share
                     bool forwardKeyEvents )
 : QGLWidget(context, parent, shareWidget, f),
 _gw( NULL ),
-_forwardKeyEvents( forwardKeyEvents ),
-_touchEventsEnabled( false )
+_touchEventsEnabled( false ),
+_forwardKeyEvents( forwardKeyEvents )
 {
     _devicePixelRatio = GETDEVICEPIXELRATIO();
 }
@@ -161,8 +161,8 @@ GLWidget::GLWidget( const QGLFormat& format, QWidget* parent, const QGLWidget* s
                     bool forwardKeyEvents )
 : QGLWidget(format, parent, shareWidget, f),
 _gw( NULL ),
-_forwardKeyEvents( forwardKeyEvents ),
-_touchEventsEnabled( false )
+_touchEventsEnabled( false ),
+_forwardKeyEvents( forwardKeyEvents )
 {
     _devicePixelRatio = GETDEVICEPIXELRATIO();
 }

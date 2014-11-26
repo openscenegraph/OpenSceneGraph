@@ -14,6 +14,7 @@ SET(TARGET_H
     ${HEADER_PATH}/TerrainTechnique
     ${HEADER_PATH}/Terrain
     ${HEADER_PATH}/GeometryTechnique
+    ${HEADER_PATH}/GeometryPool
     ${HEADER_PATH}/ValidDataOperator
     ${HEADER_PATH}/Version
 )
@@ -26,6 +27,7 @@ SET(TARGET_SRC
     TerrainTechnique.cpp
     Terrain.cpp
     GeometryTechnique.cpp
+    GeometryPool.cpp
     Version.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )

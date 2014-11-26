@@ -1,0 +1,145 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGTERRAIN_GEOMETRYPOOL
+#define OSGTERRAIN_GEOMETRYPOOL 1
+
+#include <osg/Geometry>
+#include <osg/MatrixTransform>
+#include <osg/Program>
+
+#include <OpenThreads/Mutex>
+
+#include <osgTerrain/TerrainTile>
+
+
+namespace osgTerrain {
+
+extern const osgTerrain::Locator* computeMasterLocator(const osgTerrain::TerrainTile* tile);
+
+class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
+{
+    public:
+        GeometryPool();
+
+        struct GeometryKey
+        {
+            GeometryKey(): sx(0.0), sy(0.0), y(0.0), nx(0), ny(0) {}
+
+            bool operator < (const GeometryKey& rhs) const
+            {
+                if (sx<rhs.sx) return true;
+                if (sx>rhs.sx) return false;
+
+                if (sx<rhs.sx) return true;
+                if (sx>rhs.sx) return false;
+
+                if (y<rhs.y) return true;
+                if (y>rhs.y) return false;
+
+                if (nx<rhs.nx) return true;
+                if (nx>rhs.nx) return false;
+
+                return (ny<rhs.ny);
+            }
+
+            double sx;
+            double sy;
+            double y;
+
+            int nx;
+            int ny;
+        };
+
+        typedef std::map< GeometryKey, osg::ref_ptr<osg::Geometry> >  GeometryMap;
+
+        bool createKeyForTile(TerrainTile* tile, GeometryKey& key);
+
+        enum LayerType
+        {
+            HEIGHTFIELD_LAYER,
+            COLOR_LAYER,
+            CONTOUR_LAYER
+        };
+
+        typedef std::vector<LayerType> LayerTypes;
+        typedef std::map<LayerTypes, osg::ref_ptr<osg::Program> > ProgramMap;
+
+        osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
+
+        osg::ref_ptr<osg::Geometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
+
+        osg::ref_ptr<osg::MatrixTransform> getTileSubgraph(osgTerrain::TerrainTile* tile);
+
+        void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
+
+    protected:
+        virtual ~GeometryPool();
+
+        OpenThreads::Mutex      _geometryMapMutex;
+        GeometryMap             _geometryMap;
+
+        OpenThreads::Mutex      _programMapMutex;
+        ProgramMap              _programMap;
+};
+
+
+class HeightFieldDrawable : public osg::Drawable
+{
+    public:
+        HeightFieldDrawable();
+
+        HeightFieldDrawable(const HeightFieldDrawable&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgTerrain, HeightFieldDrawable);
+
+        void setHeightField(osg::HeightField* hf) { _heightField = hf; }
+        osg::HeightField* getHeightField() { return _heightField.get(); }
+        const osg::HeightField* getHeightField() const { return _heightField.get(); }
+
+        void setGeometry(osg::Geometry* geom) { _geometry = geom; }
+        osg::Geometry* getGeometry() { return _geometry.get(); }
+        const osg::Geometry* getGeometry() const { return _geometry.get(); }
+
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
+        virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* state=0) const;
+
+
+        virtual bool supports(const osg::Drawable::AttributeFunctor&) const { return true; }
+        virtual void accept(osg::Drawable::AttributeFunctor&);
+
+        virtual bool supports(const osg::Drawable::ConstAttributeFunctor&) const { return true; }
+        virtual void accept(osg::Drawable::ConstAttributeFunctor&) const;
+
+        virtual bool supports(const osg::PrimitiveFunctor&) const { return true; }
+        virtual void accept(osg::PrimitiveFunctor&) const;
+
+        virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return true; }
+        virtual void accept(osg::PrimitiveIndexFunctor&) const;
+
+
+
+protected:
+
+        osg::ref_ptr<osg::HeightField>  _heightField;
+        osg::ref_ptr<osg::Geometry>     _geometry;
+
+};
+
+
+
+}
+
+#endif

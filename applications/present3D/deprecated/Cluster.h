@@ -1,12 +1,12 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
+ * This software is open source and may be redistributed and/or modified under
  * the terms of the GNU General Public License (GPL) version 2.0.
  * The full license is in LICENSE.txt file included with this distribution,.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * include LICENSE.txt for more details.
 */
 
@@ -29,25 +29,25 @@
 //
 // Class definition for the recipient of a broadcasted message
 //
-class Receiver 
+class Receiver
 {
     public :
 
-	Receiver();
-	~Receiver();
+    Receiver();
+    ~Receiver();
 
-   	// setBuffer defines the buffer into which the broadcasted
-	// message will be received.
-	void setBuffer( void *buffer, const unsigned int size );
+       // setBuffer defines the buffer into which the broadcasted
+    // message will be received.
+    void setBuffer( void *buffer, const unsigned int size );
 
- 	// Define what port to listen and bind to
-	void setPort( const short port );
+     // Define what port to listen and bind to
+    void setPort( const short port );
 
-	// Sync does a blocking wait to recieve next message
-	void sync( void );
+    // Sync does a blocking wait to recieve next message
+    void sync( void );
 
     private :
-	bool init( void );
+    bool init( void );
 
     private :
 #if defined (WIN32) && !defined(__CYGWIN__)
@@ -68,29 +68,29 @@ class Receiver
 //
 // Class definition for broadcasting a buffer to a LAN
 //
-class Broadcaster  
+class Broadcaster
 {
     public :
 
-	Broadcaster( void );
-	~Broadcaster( void );
+    Broadcaster( void );
+    ~Broadcaster( void );
 
-	// Set the broadcast port
-	void setPort( const short port );
+    // Set the broadcast port
+    void setPort( const short port );
 
-	// Set the buffer to be broadcast
-	void setBuffer( void *buffer, const unsigned int buffer_size );
+    // Set the buffer to be broadcast
+    void setBuffer( void *buffer, const unsigned int buffer_size );
 
-	// Set a recipient host.  If this is used, the Broadcaster
-	// no longer broadcasts, but rather directs UDP packets at
-	// host.
-	void setHost( const char *hostname ); 
+    // Set a recipient host.  If this is used, the Broadcaster
+    // no longer broadcasts, but rather directs UDP packets at
+    // host.
+    void setHost( const char *hostname );
 
-	// Sync broadcasts the buffer
-	void sync( void );
+    // Sync broadcasts the buffer
+    void sync( void );
 
     private :
-	bool init( void );
+    bool init( void );
 
     private :
 #if defined(WIN32) && !defined(__CYGWIN__)
@@ -112,15 +112,15 @@ class Broadcaster
 
 class CameraPacket {
     public:
-    
+
         static const unsigned int MAX_NUM_EVENTS;
         static const unsigned int SWAP_BYTES_COMPARE;
-    
-        CameraPacket():_masterKilled(false) 
+
+        CameraPacket():_masterKilled(false)
         {
             _byte_order = SWAP_BYTES_COMPARE;
         }
-        
+
         void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
         {
             _matrix = matrix;
@@ -129,20 +129,20 @@ class CameraPacket {
                 _frameStamp    = *frameStamp;
             }
         }
-        
+
         void getModelView(osg::Matrix& matrix,float angle_offset=0.0f)
         {
-        
+
             matrix = _matrix * osg::Matrix::rotate(osg::DegreesToRadians(angle_offset),0.0f,1.0f,0.0f);
         }
-        
+
         void readEventQueue(osgViewer::Viewer& viewer);
-        
+
         void writeEventQueue(osgViewer::Viewer& viewer);
 
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
-        
+
         unsigned int    _byte_order;
         bool            _masterKilled;
         osg::Matrix     _matrix;
@@ -150,11 +150,11 @@ class CameraPacket {
         // note don't use a ref_ptr as used elsewhere for FrameStamp
         // since we don't want to copy the pointer - but the memory.
         // FrameStamp doesn't have a private destructor to allow
-        // us to do this, even though its a reference counted object.    
+        // us to do this, even though its a reference counted object.
         osg::FrameStamp  _frameStamp;
-        
+
         osgGA::EventQueue::Events _events;
-        
+
 };
 
 class DataConverter
@@ -186,22 +186,22 @@ class DataConverter
         {
             if (_currentPtr+1>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read1(char* ptr)
         {
             if (_currentPtr+1>=_endPtr) return;
 
-            *(ptr) = *(_currentPtr++); 
+            *(ptr) = *(_currentPtr++);
         }
 
         inline void write2(char* ptr)
         {
             if (_currentPtr+2>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read2(char* ptr)
@@ -210,13 +210,13 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -224,10 +224,10 @@ class DataConverter
         {
             if (_currentPtr+4>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read4(char* ptr)
@@ -236,17 +236,17 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+3) = *(_currentPtr++); 
-                *(ptr+2) = *(_currentPtr++); 
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+3) = *(_currentPtr++);
+                *(ptr+2) = *(_currentPtr++);
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -254,15 +254,15 @@ class DataConverter
         {
             if (_currentPtr+8>=_endPtr) return;
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr++); 
-            *(_currentPtr++) = *(ptr); 
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr++);
+            *(_currentPtr++) = *(ptr);
         }
 
         inline void read8(char* ptr)
@@ -272,27 +272,27 @@ class DataConverter
 
             if (_swapBytes)
             {
-                *(ptr+7) = *(_currentPtr++); 
-                *(ptr+6) = *(_currentPtr++); 
-                *(ptr+5) = *(_currentPtr++); 
-                *(ptr+4) = *(_currentPtr++); 
+                *(ptr+7) = *(_currentPtr++);
+                *(ptr+6) = *(_currentPtr++);
+                *(ptr+5) = *(_currentPtr++);
+                *(ptr+4) = *(_currentPtr++);
 
-                *(ptr+3) = *(_currentPtr++); 
-                *(ptr+2) = *(_currentPtr++); 
-                *(ptr+1) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr+3) = *(_currentPtr++);
+                *(ptr+2) = *(_currentPtr++);
+                *(ptr+1) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
             else
             {
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr++) = *(_currentPtr++); 
-                *(ptr) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr++) = *(_currentPtr++);
+                *(ptr) = *(_currentPtr++);
             }
         }
 
@@ -305,14 +305,14 @@ class DataConverter
         inline void writeFloat(float c)             { write4((char*)&c); }
         inline void writeDouble(double c)           { write8((char*)&c); }
 
-        inline char readChar() { char c; read1(&c); return c; }
-        inline unsigned char readUChar() { unsigned char c; read1((char*)&c); return c; }
-        inline short readShort() { short c; read2((char*)&c); return c; }
-        inline unsigned short readUShort() { unsigned short c; read2((char*)&c); return c; }
-        inline int readInt() { int c; read4((char*)&c); return c; }
-        inline unsigned int readUInt() { unsigned int c; read4((char*)&c); return c; }
-        inline float readFloat() { float c; read4((char*)&c); return c; }
-        inline double readDouble() { double c; read8((char*)&c); return c; }
+        inline char readChar() { char c=0; read1(&c); return c; }
+        inline unsigned char readUChar() { unsigned char c=0; read1((char*)&c); return c; }
+        inline short readShort() { short c=0; read2((char*)&c); return c; }
+        inline unsigned short readUShort() { unsigned short c=0; read2((char*)&c); return c; }
+        inline int readInt() { int c=0; read4((char*)&c); return c; }
+        inline unsigned int readUInt() { unsigned int c=0; read4((char*)&c); return c; }
+        inline float readFloat() { float c=0.0f; read4((char*)&c); return c; }
+        inline double readDouble() { double c=0.0; read8((char*)&c); return c; }
 
         void write(const osg::FrameStamp& fs);
         void read(osg::FrameStamp& fs);
@@ -322,13 +322,13 @@ class DataConverter
 
         void write(const osgGA::GUIEventAdapter& event);
         void read(osgGA::GUIEventAdapter& event);
-        
+
         void write(CameraPacket& cameraPacket);
         void read(CameraPacket& cameraPacket);
 
         char* startPtr() { return _startPtr; }
         unsigned int numBytes() { return _numBytes; }
-        
+
     protected:
 
         char* _startPtr;
@@ -341,4 +341,4 @@ class DataConverter
 
 
 
-#endif 
+#endif

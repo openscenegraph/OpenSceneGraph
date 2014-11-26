@@ -18,6 +18,7 @@ using namespace lwosg;
 namespace
 {
 
+#if 0
     bool triangle_is_clockwise(const osg::Vec3Array *points, int a, int b, int c)
     {
         const osg::Vec3 &A = (*points)[a];
@@ -29,6 +30,7 @@ namespace
         area2 += C.x() * A.y() - A.x() * C.y();
         return area2 < 0;
     }
+#endif
 
     float cylindrical_angle(float x, float y)
     {

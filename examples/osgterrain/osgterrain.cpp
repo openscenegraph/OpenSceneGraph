@@ -33,9 +33,9 @@
 #include <osgTerrain/Terrain>
 #include <osgTerrain/TerrainTile>
 #include <osgTerrain/GeometryTechnique>
+#include <osgTerrain/DisplacementMappingTechnique>
 #include <osgTerrain/Layer>
 
-#include "ShaderTerrain.h"
 
 #include <iostream>
 
@@ -238,8 +238,8 @@ int main(int argc, char** argv)
         else if (strBlendingPolicy == "ENABLE_BLENDING_WHEN_ALPHA_PRESENT") blendingPolicy = osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT;
     }
 
-    bool useShaderTerrain = arguments.read("--shader") || arguments.read("-s");
-    if (useShaderTerrain)
+    bool useDisplacementMappingTechnique = arguments.read("--dm");
+    if (useDisplacementMappingTechnique)
     {
         osgDB::Registry::instance()->setReadFileCallback(new CleanTechniqueReadFileCallback());
     }
@@ -285,9 +285,9 @@ int main(int argc, char** argv)
     terrain->setVerticalScale(verticalScale);
     terrain->setBlendingPolicy(blendingPolicy);
 
-    if (useShaderTerrain)
+    if (useDisplacementMappingTechnique)
     {
-        terrain->setTerrainTechniquePrototype(new osgTerrain::ShaderTerrain());
+        terrain->setTerrainTechniquePrototype(new osgTerrain::DisplacementMappingTechnique());
     }
 
 

@@ -559,10 +559,21 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
 
+
     osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("shaders/terrain_displacement_mapping.vert");
+    if (!vertex_shader)
+    {
+        #include "shaders/terrain_displacement_mapping_vert.cpp"
+        vertex_shader = new osg::Shader(osg::Shader::VERTEX, terrain_displacement_mapping_vert);
+    }
     program->addShader(vertex_shader.get());
 
     osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("shaders/terrain_displacement_mapping.frag");
+    if (!fragment_shader)
+    {
+        #include "shaders/terrain_displacement_mapping_frag.cpp"
+        fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, terrain_displacement_mapping_frag);
+    }
     program->addShader(fragment_shader.get());
 
     return program;

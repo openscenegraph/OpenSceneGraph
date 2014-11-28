@@ -206,11 +206,11 @@ SET(TARGET_H
     ${HEADER_PATH}/Vec4ub
     ${HEADER_PATH}/Vec4ui
     ${HEADER_PATH}/Vec4us
-    ${HEADER_PATH}/Version
     ${HEADER_PATH}/VertexAttribDivisor
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
+    ${OPENSCENEGRAPH_VERSION_HEADER}
     ${OPENSCENEGRAPH_CONFIG_HEADER}
     ${OPENSCENEGRAPH_OPENGL_HEADER}
 )

@@ -46,7 +46,7 @@
     #include <sys/sysctl.h>
 #endif
 
-#if defined(ANDROID)
+#if defined(__ANDROID__)
     #ifndef PAGE_SIZE
         #define PAGE_SIZE 0x400
     #endif
@@ -996,7 +996,7 @@ int Thread::YieldCurrentThread()
 //
 int Thread::microSleep(unsigned int microsec)
 {
-#if !defined(ANDROID)
+#if !defined(__ANDROID__)
     return ::usleep(microsec);
 #else
     ::usleep(microsec);

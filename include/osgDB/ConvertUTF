@@ -19,7 +19,7 @@
 
 #include <string>
 
-#if defined(__CYGWIN__) || defined(ANDROID)
+#if defined(__CYGWIN__) || defined(__ANDROID__)
 namespace std
 {
 typedef basic_string<wchar_t> wstring;

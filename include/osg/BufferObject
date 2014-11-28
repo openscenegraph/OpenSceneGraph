@@ -40,7 +40,7 @@
     #if defined(_WIN64)
         typedef __int64 GLintptr;
         typedef __int64 GLsizeiptr;
-    #elif defined(__ia64__) || defined(__x86_64__) || defined(ANDROID)
+    #elif defined(__ia64__) || defined(__x86_64__) || defined(__ANDROID__)
         typedef long int GLintptr;
         typedef long int GLsizeiptr;
     #else

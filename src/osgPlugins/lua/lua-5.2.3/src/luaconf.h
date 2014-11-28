@@ -533,6 +533,15 @@
 
 #endif							/* } */
 
+
+
+#if defined(__ANDROID__)
+#define getlocaledecpoint() '.'
+#elif !defined(getlocaledecpoint)
+#define getlocaledecpoint() (localeconv()->decimal_point[0])
+#endif
+
+
 /* }================================================================== */
 
 

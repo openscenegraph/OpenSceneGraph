@@ -319,7 +319,7 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
     void* osg::getGLExtensionFuncPtr(const char *funcName)
     {
         // OSG_NOTICE<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
-    #if defined(ANDROID)
+    #if defined(__ANDROID__)
         #if defined(OSG_GLES1_AVAILABLE)
             static void *handle = dlopen("libGLESv1_CM.so", RTLD_NOW);
         #elif defined(OSG_GLES2_AVAILABLE)

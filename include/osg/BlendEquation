@@ -97,56 +97,20 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         inline Equation getEquationAlpha() const { return _equationAlpha; }
 
         virtual void apply(State& state) const;
-        /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convenience wrappers for
-          * calling extension functions. */
-        class OSG_EXPORT Extensions : public osg::Referenced
+
+        /** Encapsulates queries of extension availability, obtains extension function pointers. */
+        struct OSG_EXPORT Extensions : public osg::Referenced
         {
-            public:
-                Extensions(unsigned int contextID);
+            Extensions(unsigned int contextID);
 
-                Extensions(const Extensions& rhs);
+            bool                isBlendEquationSupported;
+            bool                isBlendEquationSeparateSupported;
+            bool                isSGIXMinMaxSupported;
+            bool                isLogicOpSupported;
 
-                void lowestCommonDenominator(const Extensions& rhs);
-
-                void setupGLExtensions(unsigned int contextID);
-
-                bool isBlendEquationSupported() const { return _isBlendEquationSupported; }
-                bool isBlendEquationSeparateSupported() const { return _isBlendEquationSeparateSupported; }
-                bool isSGIXMinMaxSupported() const { return _isSGIXMinMaxSupported; }
-                bool isLogicOpSupported() const { return _isLogicOpSupported; }
-
-                void glBlendEquation(GLenum mode) const;
-                void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const;
-
-            protected:
-
-                ~Extensions() {}
-
-                typedef void (GL_APIENTRY * GLBlendEquationProc)(GLenum mode);
-                typedef void (GL_APIENTRY * GLBlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
-
-                bool                _isBlendEquationSupported;
-                bool                _isBlendEquationSeparateSupported;
-                bool                _isSGIXMinMaxSupported;
-                bool                _isLogicOpSupported;
-
-                GLBlendEquationProc _glBlendEquation;
-                GLBlendEquationSeparateProc _glBlendEquationSeparate;
+            void (GL_APIENTRY * glBlendEquation)(GLenum mode);
+            void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         };
-
-        /** Returns the Extensions object for the given context.
-          * If createIfNotInitalized is true and the Extensions object doesn't
-          * exist, getExtensions() creates it on the given context.
-          * Returns NULL if createIfNotInitalized is false and the Extensions
-          * object doesn't exist. */
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions() allows users to override the extensions across graphics contexts.
-          * Typically used when you have different extensions supported across graphics pipes,
-          * but need to ensure that they all use the same low common denominator extensions. */
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-
 
     protected :
 

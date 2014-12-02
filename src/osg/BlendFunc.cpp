@@ -17,6 +17,16 @@
 
 using namespace osg;
 
+// Set up extensions
+BlendFunc::Extensions::Extensions(unsigned int contextID)
+{
+    isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                                    osg::isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
+                                    strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
+
+    setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+}
+
 BlendFunc::BlendFunc():
     _source_factor(SRC_ALPHA),
     _destination_factor(ONE_MINUS_SRC_ALPHA),

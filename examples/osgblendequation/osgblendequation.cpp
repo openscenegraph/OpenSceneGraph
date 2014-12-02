@@ -82,7 +82,7 @@ protected:
 
 
 
-    
+
 bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
     switch(ea.getEventType())
@@ -104,7 +104,7 @@ bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAc
                 _eq_index--;
                 if (_eq_index<0) _eq_index=_eq_nb-1;
                 _blendEq->setEquation(_equations[_eq_index]);
-                std::cout<<"Operation name = "<<_equations_name[_eq_index]<<std::endl;
+                std::cout<<"Equation name = "<<_equations_name[_eq_index]<<std::endl;
                 return true;
             }
             return false;
@@ -134,7 +134,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to use glBlendEquation for mixing rendered scene and the frame-buffer.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -143,7 +143,7 @@ int main( int argc, char **argv )
 
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readNodeFile("cessnafire.osgt");
-  
+
     if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
@@ -152,18 +152,18 @@ int main( int argc, char **argv )
 
     osg::Group* root = new osg::Group;
     root->addChild(loadedModel);
-    
-    
+
+
     osg::StateSet* stateset = new osg::StateSet;
     stateset->setDataVariance(osg::Object::DYNAMIC);
-    
+
     osg::BlendEquation* blendEquation = new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);
     blendEquation->setDataVariance(osg::Object::DYNAMIC);
-    
+
     stateset->setAttributeAndModes(blendEquation,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-            
+
     //tell to sort the mesh before displaying it
-    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);           
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
     loadedModel->setStateSet(stateset);
 
@@ -171,6 +171,6 @@ int main( int argc, char **argv )
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( root );
-    
+
     return viewer.run();
 }

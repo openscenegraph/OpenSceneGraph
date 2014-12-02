@@ -25,6 +25,9 @@ BlendFunc::Extensions::Extensions(unsigned int contextID)
                                     strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
 
     setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+
+    setGLExtensionFuncPtr(glBlendFunci, "glBlendFunci", "glBlendFunciARB");
+    setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB");
 }
 
 BlendFunc::BlendFunc():

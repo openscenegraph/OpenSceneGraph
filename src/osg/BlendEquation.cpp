@@ -40,6 +40,9 @@ BlendEquation::Extensions::Extensions(unsigned int contextID)
 
     setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
     setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT");
+
+    setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB");
+    setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB");
 }
 
 BlendEquation::BlendEquation():

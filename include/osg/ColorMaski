@@ -1,0 +1,81 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_COLORMASKI
+#define OSG_COLORMASKI 1
+
+#include <osg/ColorMask>
+
+namespace osg {
+
+/** Encapsulates glColorMaski function : the index version of glColorMask for multiple render target.
+*/
+class OSG_EXPORT ColorMaski : public ColorMask
+{
+    public :
+
+        ColorMaski();
+
+        ColorMaski(unsigned int buf, bool red, bool green, bool blue, bool alpha):
+            ColorMask(red, green,blue,alpha),
+            _index(buf) {}
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        ColorMaski(const ColorMaski& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            ColorMask(cm,copyop),
+            _index(cm._index) {}
+
+        META_StateAttribute(osg, ColorMaski, COLORMASK);
+
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Parameter macros below.
+            COMPARE_StateAttribute_Types(ColorMaski,sa)
+
+            COMPARE_StateAttribute_Parameter(_index);
+
+            return ColorMask::compare(sa);
+        }
+
+        /** Return the buffer index as the member identifier.*/
+        virtual unsigned int getMember() const { return _index; }
+
+        /** Set the renderbuffer index of the ColorMaski. */
+        void setIndex(unsigned int buf) { _index = buf; }
+
+        /** Get the renderbuffer index of the ColorMaski. */
+        unsigned int getIndex() const { return _index; }
+
+        virtual void apply(State& state) const;
+
+        /** Encapsulates queries of extension availability, obtains extension function pointers. */
+        struct OSG_EXPORT Extensions : public osg::Referenced
+        {
+            Extensions(unsigned int contextID);
+
+            void (GL_APIENTRY * glColorMaski)(GLuint buf, GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+        };
+
+    protected:
+
+        virtual ~ColorMaski();
+
+        unsigned int    _index;
+
+};
+
+}
+
+#endif

@@ -50,13 +50,8 @@ void BlendFunc::apply(State& state) const
     if (_source_factor != _source_factor_alpha ||
         _destination_factor != _destination_factor_alpha)
     {
-        // get the contextID (user defined ID of 0 upwards) for the
-        // current OpenGL context.
-        const unsigned int contextID = state.getContextID();
-
-        const Extensions* extensions = getExtensions(contextID,true);
-
-        if (!extensions->isBlendFuncSeparateSupported())
+        const Extensions* extensions = state.get<Extensions>();
+        if (!extensions->isBlendFuncSeparateSupported)
         {
             OSG_WARN<<"Warning: BlendFunc::apply(..) failed, BlendFuncSeparate is not support by OpenGL driver, falling back to BlendFunc."<<std::endl;
         }
@@ -68,62 +63,4 @@ void BlendFunc::apply(State& state) const
     }
 
     glBlendFunc( _source_factor, _destination_factor );
-}
-
-
-typedef buffered_value< ref_ptr<BlendFunc::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-BlendFunc::Extensions* BlendFunc::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void BlendFunc::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-
-BlendFunc::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-BlendFunc::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isBlendFuncSeparateSupported = rhs._isBlendFuncSeparateSupported;
-    _glBlendFuncSeparate = rhs._glBlendFuncSeparate;
-}
-
-void BlendFunc::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isBlendFuncSeparateSupported)  _isBlendFuncSeparateSupported = false;
-    if (!rhs._glBlendFuncSeparate)           _glBlendFuncSeparate = 0;
-}
-
-void BlendFunc::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    _isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
-                                    isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
-                                    strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
-
-     setGLExtensionFuncPtr(_glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
-}
-
-void BlendFunc::Extensions::glBlendFuncSeparate(GLenum sfactorRGB,
-                                                GLenum dfactorRGB,
-                                                GLenum sfactorAlpha,
-                                                GLenum dfactorAlpha) const
-{
-    if (_glBlendFuncSeparate)
-    {
-        _glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glBlendFuncSeparate not supported by OpenGL driver"<<std::endl;
-    }
 }

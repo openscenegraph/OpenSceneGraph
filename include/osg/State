@@ -150,6 +150,37 @@ class OSG_EXPORT State : public Referenced
         inline unsigned int getContextID() const { return _contextID; }
 
 
+        // ExtensionMap contains GL Extentsions objects used by StateAttribue to call OpenGL extensions/advanced features
+        typedef std::map<const std::type_info*, osg::ref_ptr<osg::Referenced> > ExtensionMap;
+        ExtensionMap _extensionMap;
+
+        /** Get a specific GL extensions object, initialize if not already present.
+          * Note, must only be called from a the graphics context thread associated with this osg::State. */
+        template<typename T>
+        T* get()
+        {
+            const std::type_info* id(&typeid(T));
+            osg::ref_ptr<osg::Referenced>& ptr = _extensionMap[id];
+            if (!ptr)
+            {
+                ptr = new T(_contextID);
+            }
+            return static_cast<T*>(ptr.get());
+        }
+
+        /** Get a specific GL extensions object if it already exists in the extension map.
+          * Note, safe to call outwith a the graphics context thread associated with this osg::State.
+          * Returns NULL if the desired extension object has not been created yet.*/
+        template<typename T>
+        const T* getExisting() const
+        {
+            const std::type_info* id(&typeid(T));
+            ExtensionMap::const_iterator itr = _extensionMap.find(id);
+            if (itr==_extensionMap.end()) return 0;
+            else return itr->second.get();
+        }
+
+
         /* Set whether shader composition is enabled.*/
         void setShaderCompositionEnabled(bool flag) { _shaderCompositionEnabled = flag; }
 

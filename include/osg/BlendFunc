@@ -15,8 +15,6 @@
 #define OSG_BLENDFUNC 1
 
 #include <osg/StateAttribute>
-#include <osg/GLExtensions>
-
 
 #ifndef GL_VERSION_1_2
 #define GL_CONSTANT_COLOR                 0x8001
@@ -166,6 +164,9 @@ class OSG_EXPORT BlendFunc : public StateAttribute
 
             bool                isBlendFuncSeparateSupported;
             void (GL_APIENTRY * glBlendFuncSeparate) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
+
+            void (GL_APIENTRY * glBlendFunci) (GLuint buf, GLenum src, GLenum dst);
+            void (GL_APIENTRY * glBlendFuncSeparatei) (GLuint buf, GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
         };
 
 

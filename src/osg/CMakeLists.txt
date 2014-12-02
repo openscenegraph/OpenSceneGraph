@@ -30,7 +30,9 @@ SET(TARGET_H
     ${HEADER_PATH}/Billboard
     ${HEADER_PATH}/BlendColor
     ${HEADER_PATH}/BlendEquation
+    ${HEADER_PATH}/BlendEquationi
     ${HEADER_PATH}/BlendFunc
+    ${HEADER_PATH}/BlendFunci
     ${HEADER_PATH}/BoundingBox
     ${HEADER_PATH}/BoundingSphere
     ${HEADER_PATH}/BoundsChecking
@@ -48,6 +50,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ClusterCullingCallback
     ${HEADER_PATH}/CollectOccludersVisitor
     ${HEADER_PATH}/ColorMask
+    ${HEADER_PATH}/ColorMaski
     ${HEADER_PATH}/ColorMatrix
     ${HEADER_PATH}/ComputeBoundsVisitor
     ${HEADER_PATH}/ConvexPlanarOccluder
@@ -230,7 +233,9 @@ SET(TARGET_SRC
     Billboard.cpp
     BlendColor.cpp
     BlendEquation.cpp
+    BlendEquationi.cpp
     BlendFunc.cpp
+    BlendFunci.cpp
     BufferIndexBinding.cpp
     BufferObject.cpp
     Callback.cpp
@@ -243,6 +248,7 @@ SET(TARGET_SRC
     ClusterCullingCallback.cpp
     CollectOccludersVisitor.cpp
     ColorMask.cpp
+    ColorMaski.cpp
     ColorMatrix.cpp
     ComputeBoundsVisitor.cpp
     ConvexPlanarOccluder.cpp

@@ -110,6 +110,9 @@ class OSG_EXPORT BlendEquation : public StateAttribute
 
             void (GL_APIENTRY * glBlendEquation)(GLenum mode);
             void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
+
+            void (GL_APIENTRY * glBlendEquationi)(GLuint buf,  GLenum mode);
+            void (GL_APIENTRY * glBlendEquationSeparatei)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
         };
 
     protected :

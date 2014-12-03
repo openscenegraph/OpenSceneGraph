@@ -43,6 +43,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Callback
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraView
+    ${HEADER_PATH}/Capability
     ${HEADER_PATH}/ClampColor
     ${HEADER_PATH}/ClearNode
     ${HEADER_PATH}/ClipNode
@@ -239,6 +240,7 @@ SET(TARGET_SRC
     BufferIndexBinding.cpp
     BufferObject.cpp
     Callback.cpp
+    Capability.cpp
     Camera.cpp
     CameraView.cpp
     ClampColor.cpp

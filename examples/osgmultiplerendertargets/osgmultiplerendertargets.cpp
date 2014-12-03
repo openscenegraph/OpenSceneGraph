@@ -25,6 +25,7 @@
 #include <osg/TextureRectangle>
 #include <osg/ColorMask>
 #include <osg/Material>
+#include <osg/Capability>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -353,6 +354,12 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
 
 
         }
+
+#if 0
+        // test for new glEnablei/glDisablei functionality.
+        camera->getOrCreateStateSet()->setAttribute(new osg::Enablei(GL_BLEND, 0));
+        camera->getOrCreateStateSet()->setAttribute(new osg::Disablei(GL_BLEND, 1));
+#endif
 
         // we can also read back any of the targets as an image, modify this image and push it back
         if (useImage) {

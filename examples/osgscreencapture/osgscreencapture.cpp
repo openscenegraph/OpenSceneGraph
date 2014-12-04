@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,7 +36,7 @@
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {
     public:
-    
+
         enum Mode
         {
             READ_PIXELS,
@@ -44,16 +44,16 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             DOUBLE_PBO,
             TRIPLE_PBO
         };
-    
+
         enum FramePosition
         {
             START_FRAME,
             END_FRAME
         };
-    
+
         struct ContextData : public osg::Referenced
         {
-        
+
             ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer, const std::string& name):
                 _gc(gc),
                 _mode(mode),
@@ -81,46 +81,46 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                         osg::notify(osg::NOTICE)<<"Select GL_BGRA read back format"<<std::endl;
                         _pixelFormat = GL_BGRA;
                     }
-                    else 
+                    else
                     {
                         osg::notify(osg::NOTICE)<<"Select GL_BGR read back format"<<std::endl;
-                        _pixelFormat = GL_BGR; 
+                        _pixelFormat = GL_BGR;
                     }
                 }
-            
+
                 getSize(gc, _width, _height);
-                
+
                 std::cout<<"Window size "<<_width<<", "<<_height<<std::endl;
-            
+
                 // single buffered image
                 _imageBuffer.push_back(new osg::Image);
-                
+
                 // double buffer PBO.
                 switch(_mode)
                 {
                     case(READ_PIXELS):
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with out PixelBufferObject."<<std::endl;
                         break;
-                    case(SINGLE_PBO): 
+                    case(SINGLE_PBO):
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a single PixelBufferObject."<<std::endl;
-                        _pboBuffer.push_back(0); 
+                        _pboBuffer.push_back(0);
                         break;
-                    case(DOUBLE_PBO): 
+                    case(DOUBLE_PBO):
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
-                        _pboBuffer.push_back(0); 
-                        _pboBuffer.push_back(0); 
+                        _pboBuffer.push_back(0);
+                        _pboBuffer.push_back(0);
                         break;
-                    case(TRIPLE_PBO): 
+                    case(TRIPLE_PBO):
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
-                        _pboBuffer.push_back(0); 
-                        _pboBuffer.push_back(0); 
-                        _pboBuffer.push_back(0); 
+                        _pboBuffer.push_back(0);
+                        _pboBuffer.push_back(0);
+                        _pboBuffer.push_back(0);
                         break;
                     default:
-                        break;                                
+                        break;
                 }
             }
-            
+
             void getSize(osg::GraphicsContext* gc, int& width, int& height)
             {
                 if (gc->getTraits())
@@ -129,7 +129,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                     height = gc->getTraits()->height;
                 }
             }
-            
+
             void updateTimings(osg::Timer_t tick_start,
                                osg::Timer_t tick_afterReadPixels,
                                osg::Timer_t tick_afterMemCpy,
@@ -155,29 +155,29 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                     readPixels();
                 }
             }
-            
+
             void readPixels();
 
             void singlePBO(osg::GLBufferObject::Extensions* ext);
 
             void multiPBO(osg::GLBufferObject::Extensions* ext);
-        
+
             typedef std::vector< osg::ref_ptr<osg::Image> >             ImageBuffer;
             typedef std::vector< GLuint > PBOBuffer;
-        
+
             osg::GraphicsContext*   _gc;
             Mode                    _mode;
             GLenum                  _readBuffer;
             std::string             _fileName;
-            
+
             GLenum                  _pixelFormat;
             GLenum                  _type;
             int                     _width;
             int                     _height;
-            
+
             unsigned int            _currentImageIndex;
             ImageBuffer             _imageBuffer;
-            
+
             unsigned int            _currentPboIndex;
             PBOBuffer               _pboBuffer;
 
@@ -188,7 +188,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             double                  _timeForMemCpy;
             osg::Timer_t            _previousFrameTick;
         };
-    
+
         WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer):
             _mode(mode),
             _position(position),
@@ -204,13 +204,13 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             filename << "test_"<<_contextDataMap.size()<<".jpg";
             return new ContextData(gc, _mode, _readBuffer, filename.str());
         }
-        
+
         ContextData* getContextData(osg::GraphicsContext* gc) const
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             osg::ref_ptr<ContextData>& data = _contextDataMap[gc];
             if (!data) data = createContextData(gc);
-            
+
             return data.get();
         }
 
@@ -222,16 +222,16 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             osg::ref_ptr<ContextData> cd = getContextData(gc);
             cd->read();
         }
-        
+
         typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
 
-        Mode                        _mode;        
+        Mode                        _mode;
         FramePosition               _position;
         GLenum                      _readBuffer;
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
-        
-        
+
+
 };
 
 void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
@@ -248,17 +248,17 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
     _timeForReadPixels += timeForReadPixels;
     _timeForFullCopy += timeForFullCopy;
     _timeForMemCpy += timeForMemCpy;
-    
+
     ++_numTimeValuesRecorded;
-    
+
     if (_numTimeValuesRecorded==_reportTimingFrequency)
     {
         timeForReadPixels = _timeForReadPixels/double(_numTimeValuesRecorded);
         timeForFullCopy = _timeForFullCopy/double(_numTimeValuesRecorded);
         timeForMemCpy = _timeForMemCpy/double(_numTimeValuesRecorded);
-        
+
         double averageFrameTime =  osg::Timer::instance()->delta_s(_previousFrameTick, tick_afterMemCpy)/double(_numTimeValuesRecorded);
-        double fps = 1.0/averageFrameTime;    
+        double fps = 1.0/averageFrameTime;
         _previousFrameTick = tick_afterMemCpy;
 
         _timeForReadPixels = 0.0;
@@ -341,14 +341,14 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
     }
 
     GLuint& pbo = _pboBuffer[0];
-    
+
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
-    if (image->s() != _width || 
+    if (image->s() != _width ||
         image->t() != _height)
     {
         osg::notify(osg::NOTICE)<<"Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
-        
+
         if (pbo!=0)
         {
             osg::notify(osg::NOTICE)<<"deleting pbo "<<pbo<<std::endl;
@@ -356,8 +356,8 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
             pbo = 0;
         }
     }
-    
-    
+
+
     if (pbo==0)
     {
         ext->glGenBuffers(1, &pbo);
@@ -384,7 +384,7 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
     if(src)
     {
         memcpy(image->data(), src, image->getTotalSizeInBytes());
-        
+
         ext->glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB);
     }
 
@@ -420,14 +420,14 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
 
     GLuint& copy_pbo = _pboBuffer[_currentPboIndex];
     GLuint& read_pbo = _pboBuffer[nextPboIndex];
-    
+
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
-    if (image->s() != _width || 
+    if (image->s() != _width ||
         image->t() != _height)
     {
         osg::notify(osg::NOTICE)<<"Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
-        
+
         if (read_pbo!=0)
         {
             osg::notify(osg::NOTICE)<<"deleting pbo "<<read_pbo<<std::endl;
@@ -442,8 +442,8 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
             copy_pbo = 0;
         }
     }
-    
-    
+
+
     bool doCopy = copy_pbo!=0;
     if (copy_pbo==0)
     {
@@ -493,11 +493,11 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
             // osgDB::writeImageFile(*image, _fileName);
         }
     }
-    
+
     ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
-    
+
     updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
@@ -506,7 +506,7 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
 
 void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* callback)
 {
-    
+
     if (callback->getFramePosition()==WindowCaptureCallback::START_FRAME)
     {
         osgViewer::ViewerBase::Windows windows;
@@ -553,7 +553,7 @@ void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* c
         }
     }
     else
-    {    
+    {
         osgViewer::ViewerBase::Windows windows;
         viewer.getWindows(windows);
         for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
@@ -615,14 +615,14 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout, helpType);
         return 1;
     }
-    
+
     // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -643,7 +643,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -657,13 +657,13 @@ int main(int argc, char** argv)
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -691,12 +691,12 @@ int main(int argc, char** argv)
     while (arguments.read("--double-pbo")) mode = WindowCaptureCallback::DOUBLE_PBO;
     while (arguments.read("--triple-pbo")) mode = WindowCaptureCallback::TRIPLE_PBO;
 
-    
+
     unsigned int width=1280;
     unsigned int height=1024;
     bool pbufferOnly = false;
     osg::ref_ptr<osg::GraphicsContext> pbuffer;
-    if (arguments.read("--pbuffer",width,height) || 
+    if (arguments.read("--pbuffer",width,height) ||
         (pbufferOnly = arguments.read("--pbuffer-only",width,height)))
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -724,10 +724,10 @@ int main(int argc, char** argv)
         }
 
     }
-        
+
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
@@ -750,7 +750,7 @@ int main(int argc, char** argv)
 
     viewer.setSceneData( loadedModel.get() );
 
-    
+
     if (pbuffer.valid())
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;

@@ -274,6 +274,7 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
 
     setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" );
 
+    // BufferObject extensions
     setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB");
     setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB");
     setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB");
@@ -294,6 +295,16 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
     isTBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
 
+
+    // BlendFunc extensions
+    isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                                    osg::isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
+                                    strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
+
+    setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+
+    setGLExtensionFuncPtr(glBlendFunci, "glBlendFunci", "glBlendFunciARB");
+    setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB");
 
 }
 

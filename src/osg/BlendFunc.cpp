@@ -17,19 +17,6 @@
 
 using namespace osg;
 
-// Set up extensions
-BlendFunc::Extensions::Extensions(unsigned int contextID)
-{
-    isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
-                                    osg::isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
-                                    strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
-
-    setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
-
-    setGLExtensionFuncPtr(glBlendFunci, "glBlendFunci", "glBlendFunciARB");
-    setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB");
-}
-
 BlendFunc::BlendFunc():
     _source_factor(SRC_ALPHA),
     _destination_factor(ONE_MINUS_SRC_ALPHA),
@@ -63,7 +50,7 @@ void BlendFunc::apply(State& state) const
     if (_source_factor != _source_factor_alpha ||
         _destination_factor != _destination_factor_alpha)
     {
-        const Extensions* extensions = state.get<Extensions>();
+        const GL2Extensions* extensions = state.get<GL2Extensions>();
         if (!extensions->isBlendFuncSeparateSupported)
         {
             OSG_WARN<<"Warning: BlendFunc::apply(..) failed, BlendFuncSeparate is not support by OpenGL driver, falling back to BlendFunc."<<std::endl;

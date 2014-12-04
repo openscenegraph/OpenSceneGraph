@@ -742,6 +742,15 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void (GL_APIENTRY * glMemoryBarrier)( GLbitfield barriers );
 
+        // BlendFunc extensions
+        bool                isBlendFuncSeparateSupported;
+        void (GL_APIENTRY * glBlendFuncSeparate) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
+
+        void (GL_APIENTRY * glBlendFunci) (GLuint buf, GLenum src, GLenum dst);
+        void (GL_APIENTRY * glBlendFuncSeparatei) (GLuint buf, GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
+
+
+
 };
 
 }

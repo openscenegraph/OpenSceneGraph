@@ -157,19 +157,6 @@ class OSG_EXPORT BlendFunc : public StateAttribute
 
         virtual void apply(State& state) const;
 
-        /** Encapsulates queries of extension availability, obtains extension function pointers. */
-        struct OSG_EXPORT Extensions : public osg::Referenced
-        {
-            Extensions(unsigned int contextID);
-
-            bool                isBlendFuncSeparateSupported;
-            void (GL_APIENTRY * glBlendFuncSeparate) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
-
-            void (GL_APIENTRY * glBlendFunci) (GLuint buf, GLenum src, GLenum dst);
-            void (GL_APIENTRY * glBlendFuncSeparatei) (GLuint buf, GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
-        };
-
-
     protected :
 
         virtual ~BlendFunc();

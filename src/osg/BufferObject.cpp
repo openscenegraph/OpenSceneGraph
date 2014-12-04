@@ -64,7 +64,7 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
 {
     assign(bufferObject);
 
-    _extensions = GLBufferObject::getExtensions(contextID, true);
+    _extensions = GL2Extensions::Get(contextID, true);
 
     if (glObjectID==0)
     {
@@ -264,6 +264,7 @@ void GLBufferObject::setBufferDataHasBeenRead(const osg::BufferData* bd)
     ++entry.numRead;
 }
 
+#if 0
 //////////////////////////////////////////////////////////////////////////////
 //
 //  Extension support
@@ -448,6 +449,7 @@ void GLBufferObject::Extensions::glTexBuffer( GLenum target, GLenum internalForm
     if ( _glTexBuffer ) _glTexBuffer( target, internalFormat, buffer );
     else OSG_WARN<<"Error: glTexBuffer not supported by OpenGL driver\n";
 }
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1679,7 +1681,7 @@ void PixelDataBufferObject::bindBufferInWriteMode(State& state)
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::unbindBuffer(unsigned int contextID) const
 {
-    GLBufferObject::Extensions* extensions = GLBufferObject::getExtensions(contextID,true);
+    GL2Extensions* extensions = GL2Extensions::Get(contextID, true);
 
     switch(_mode[contextID])
     {

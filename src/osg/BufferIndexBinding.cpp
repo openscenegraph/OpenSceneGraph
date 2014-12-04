@@ -51,7 +51,7 @@ void BufferIndexBinding::apply(State& state) const
     {
         GLBufferObject* glObject
             = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
-        if (!glObject->_extensions->isUniformBufferObjectSupported())
+        if (!glObject->_extensions->isUniformBufferObjectSupported)
             return;
         if (glObject->isDirty()) glObject->compileBuffer();
         glObject->_extensions->glBindBufferRange(_target, _index,

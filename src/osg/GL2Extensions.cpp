@@ -273,8 +273,27 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glDispatchCompute,  "glDispatchCompute" );
 
     setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" );
+
+    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB");
+    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB");
+    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB");
+    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB");
+    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB");
+    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB");
+    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB");
+    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB");
     setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange" );
+    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
+    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
+    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
+    setGLExtensionFuncPtr(glBindBufferRange, "glBindBufferRange");
     setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" );
+    setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" );
+
+    isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
+    isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
+    isTBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
+
 
 }
 

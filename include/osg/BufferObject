@@ -16,6 +16,7 @@
 #define OSG_BUFFEROBJECT 1
 
 #include <osg/GL>
+#include <osg/GL2Extensions>
 #include <osg/Object>
 #include <osg/buffered_value>
 #include <osg/FrameStamp>
@@ -248,7 +249,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         void assign(BufferObject* bufferObject);
 
-        bool isPBOSupported() const { return _extensions->isPBOSupported(); }
+        bool isPBOSupported() const { return _extensions->isPBOSupported; }
 
         static GLBufferObject* createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject);
 
@@ -258,7 +259,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         static void discardAllDeletedBufferObjects(unsigned int contextID);
         static void flushDeletedBufferObjects(unsigned int contextID,double currentTime, double& availbleTime);
         static void releaseGLBufferObject(unsigned int contextID, GLBufferObject* to);
-
+#if 0
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to
         * check for the extensions or use the associated functions.*/
@@ -343,6 +344,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         * typically used when you have different extensions supported across graphics pipes
         * but need to ensure that they all use the same low common denominator extensions.*/
         static void setExtensions(unsigned int contextID,Extensions* extensions);
+#endif
 
         bool hasAllBufferDataBeenRead() const;
 
@@ -380,7 +382,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         unsigned int            _frameLastUsed;
 
     public:
-        Extensions*             _extensions;
+        GL2Extensions*          _extensions;
 
 };
 

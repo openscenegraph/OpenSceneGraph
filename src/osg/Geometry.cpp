@@ -661,7 +661,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
     {
         State& state = *renderInfo.getState();
         unsigned int contextID = state.getContextID();
-        GLBufferObject::Extensions* extensions = GLBufferObject::getExtensions(contextID, true);
+        GL2Extensions* extensions = state.get<GL2Extensions>();
         if (!extensions) return;
 
         typedef std::set<BufferObject*> BufferObjects;

@@ -719,10 +719,29 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
 
+        // Buffer Object extensions
+        bool isBufferObjectSupported;
+        bool isPBOSupported;
+        bool isTBOSupported;
+
+        void (GL_APIENTRY * glGenBuffers) (GLsizei n, GLuint *buffers);
+        void (GL_APIENTRY * glBindBuffer) (GLenum target, GLuint buffer);
+        void (GL_APIENTRY * glBufferData) (GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+        void (GL_APIENTRY * glBufferSubData) (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
+        void (GL_APIENTRY * glDeleteBuffers) (GLsizei n, const GLuint *buffers);
+        GLboolean (GL_APIENTRY * glIsBuffer) (GLuint buffer);
+        void (GL_APIENTRY * glGetBufferSubData) (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
+        GLvoid* (GL_APIENTRY * glMapBuffer) (GLenum target, GLenum access);
+        GLvoid* (GL_APIENTRY * glMapBufferRange)(GLenum target,  GLintptr offset,  GLsizeiptr length,  GLbitfield access);
+        GLboolean (GL_APIENTRY * glUnmapBuffer) (GLenum target);
+        void (GL_APIENTRY * glGetBufferParameteriv) (GLenum target, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetBufferPointerv) (GLenum target, GLenum pname, GLvoid* *params);
+        void (GL_APIENTRY * glBindBufferRange) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
+        void (GL_APIENTRY * glBindBufferBase) (GLenum target, GLuint index, GLuint buffer);
+        void (GL_APIENTRY * glTexBuffer) (GLenum target, GLenum internalFormat, GLuint buffer);
+
         void (GL_APIENTRY * glMemoryBarrier)( GLbitfield barriers );
 
-        GLvoid* (GL_APIENTRY * glMapBufferRange)(GLenum target,  GLintptr offset,  GLsizeiptr length,  GLbitfield access);
-        void (GL_APIENTRY * glBindBufferBase)(GLenum target,  GLuint index,  GLuint buffer);
 };
 
 }

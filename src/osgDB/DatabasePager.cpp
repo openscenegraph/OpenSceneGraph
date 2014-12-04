@@ -342,7 +342,7 @@ public:
 
     virtual void apply(osg::Drawable& drawable)
     {
-        if (_kdTreeBuilder.valid() && _markerObject!=drawable.getUserData())
+        if (_kdTreeBuilder.valid() && _markerObject.get()!=drawable.getUserData())
         {
             drawable.accept(*_kdTreeBuilder);
         }
@@ -360,7 +360,7 @@ public:
     {
         // apply any changes if the texture is not static.
         if (texture.getDataVariance()!=osg::Object::STATIC &&
-            _markerObject!=texture.getUserData())
+            _markerObject.get()!=texture.getUserData())
         {
             if (_changeAutoUnRef)
             {

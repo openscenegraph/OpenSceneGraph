@@ -34,8 +34,8 @@ VertexAttribDivisor::~VertexAttribDivisor()
 
 void VertexAttribDivisor::apply(State& state) const
 {
-    const GL2Extensions* extensions = GL2Extensions::Get(state.getContextID(), true);
-    if (extensions)
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    if (extensions->glVertexAttribDivisor)
     {
         extensions->glVertexAttribDivisor( _index, _divisor );
     }

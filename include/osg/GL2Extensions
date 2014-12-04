@@ -491,52 +491,6 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 {
     public:
         GL2Extensions(unsigned int contextID);
-        GL2Extensions(const GL2Extensions& rhs);
-
-        void lowestCommonDenominator(const GL2Extensions& rhs);
-
-        void setupGL2Extensions(unsigned int contextID);
-
-        /** Does the GL driver support OpenGL Shading Language? */
-        bool isGlslSupported() const;
-
-        float getGlVersion() const { return _glVersion; }
-        float getLanguageVersion() const { return _glslLanguageVersion; }
-
-        void setShaderObjectsSupported(bool flag) { _isShaderObjectsSupported = flag; }
-        bool isShaderObjectsSupported() const { return _isShaderObjectsSupported; }
-
-        void setVertexShaderSupported(bool flag) { _isVertexShaderSupported = flag; }
-        bool isVertexShaderSupported() const { return _isVertexShaderSupported; }
-
-        void setFragmentShaderSupported(bool flag) { _isFragmentShaderSupported = flag; }
-        bool isFragmentShaderSupported() const { return _isFragmentShaderSupported; }
-
-        void setLanguage100Supported(bool flag) { _isLanguage100Supported = flag; }
-        bool isLanguage100Supported() const { return _isLanguage100Supported; }
-
-        void setGeometryShader4Supported(bool flag) { _isGeometryShader4Supported = flag; }
-        bool isGeometryShader4Supported() const { return _isGeometryShader4Supported; }
-
-        void setTessellationShadersSupported(bool flag) { _areTessellationShadersSupported = flag; }
-        bool areTessellationShadersSupported() const { return _areTessellationShadersSupported; }
-
-        void setGpuShader4Supported(bool flag) { _isGpuShader4Supported = flag; }
-        bool isGpuShader4Supported() const { return _isGpuShader4Supported; }
-
-        void setUniformBufferObjectSupported(bool flag) { _isUniformBufferObjectSupported = flag; }
-        bool isUniformBufferObjectSupported() const {return _isUniformBufferObjectSupported; }
-
-        void setGetProgramBinarySupported(bool flag) { _isGetProgramBinarySupported = flag; }
-        bool isGetProgramBinarySupported() const {return _isGetProgramBinarySupported; }
-
-        void setGpuShaderFp64Supported(bool flag) { _isGpuShaderFp64Supported = flag; }
-        bool isGpuShaderFp64Supported() const {return _isGpuShaderFp64Supported; }
-
-        void setShaderAtomicCounterSupported(bool flag) { _isShaderAtomicCountersSupported = flag; }
-        bool isShaderAtomicCounterSupported() const {return _isShaderAtomicCountersSupported; }
-
-        bool isDrawBuffersSupported() const { return _glDrawBuffers!=0; }
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
@@ -551,102 +505,6 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
           * but need to ensure that they all use the same low common denominator extensions.*/
         static void Set(unsigned int contextID, GL2Extensions* extensions);
 
-
-        void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const;
-        void glDrawBuffers(GLsizei n, const GLenum *bufs) const;
-        void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) const;
-        void glStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask) const;
-        void glStencilMaskSeparate(GLenum face, GLuint mask) const;
-        void glAttachShader(GLuint program, GLuint shader) const;
-        void glBindAttribLocation(GLuint program, GLuint index, const GLchar *name) const;
-        void glCompileShader(GLuint shader) const;
-        GLuint glCreateProgram(void) const;
-        GLuint glCreateShader(GLenum type) const;
-        void glDeleteProgram(GLuint program) const;
-        void glDeleteShader(GLuint shader) const;
-        void glDetachShader(GLuint program, GLuint shader) const;
-        void glDisableVertexAttribArray(GLuint index) const;
-        void glEnableVertexAttribArray(GLuint index) const;
-        void glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const;
-        void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const;
-        void glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj) const;
-        GLint glGetAttribLocation(GLuint program, const GLchar *name) const;
-        void glGetProgramiv(GLuint program, GLenum pname, GLint *params) const;
-        void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const;
-        void glGetShaderiv(GLuint shader, GLenum pname, GLint *params) const;
-        void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const;
-        void glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source) const;
-        GLint glGetUniformLocation(GLuint program, const GLchar *name) const;
-        void glGetUniformfv(GLuint program, GLint location, GLfloat *params) const;
-        void glGetUniformiv(GLuint program, GLint location, GLint *params) const;
-        void glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble *params) const;
-        void glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *params) const;
-        void glGetVertexAttribiv(GLuint index, GLenum pname, GLint *params) const;
-        void glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid* *pointer) const;
-        GLboolean glIsProgram(GLuint program) const;
-        GLboolean glIsShader(GLuint shader) const;
-        void glLinkProgram(GLuint program) const;
-        void glShaderSource(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length) const;
-        void glUseProgram(GLuint program) const;
-        void glUniform1f(GLint location, GLfloat v0) const;
-        void glUniform2f(GLint location, GLfloat v0, GLfloat v1) const;
-        void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) const;
-        void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const;
-        void glUniform1i(GLint location, GLint v0) const;
-        void glUniform2i(GLint location, GLint v0, GLint v1) const;
-        void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) const;
-        void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) const;
-        void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) const;
-        void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) const;
-        void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) const;
-        void glUniform4fv(GLint location, GLsizei count, const GLfloat *value) const;
-        void glUniform1iv(GLint location, GLsizei count, const GLint *value) const;
-        void glUniform2iv(GLint location, GLsizei count, const GLint *value) const;
-        void glUniform3iv(GLint location, GLsizei count, const GLint *value) const;
-        void glUniform4iv(GLint location, GLsizei count, const GLint *value) const;
-        void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
-        void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
-        void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
-        void glValidateProgram(GLuint program) const;
-        void glVertexAttrib1d(GLuint index, GLdouble x) const;
-        void glVertexAttrib1dv(GLuint index, const GLdouble *v) const;
-        void glVertexAttrib1f(GLuint index, GLfloat x) const;
-        void glVertexAttrib1fv(GLuint index, const GLfloat *v) const;
-        void glVertexAttrib1s(GLuint index, GLshort x) const;
-        void glVertexAttrib1sv(GLuint index, const GLshort *v) const;
-        void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) const;
-        void glVertexAttrib2dv(GLuint index, const GLdouble *v) const;
-        void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) const;
-        void glVertexAttrib2fv(GLuint index, const GLfloat *v) const;
-        void glVertexAttrib2s(GLuint index, GLshort x, GLshort y) const;
-        void glVertexAttrib2sv(GLuint index, const GLshort *v) const;
-        void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z) const;
-        void glVertexAttrib3dv(GLuint index, const GLdouble *v) const;
-        void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z) const;
-        void glVertexAttrib3fv(GLuint index, const GLfloat *v) const;
-        void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z) const;
-        void glVertexAttrib3sv(GLuint index, const GLshort *v) const;
-        void glVertexAttrib4Nbv(GLuint index, const GLbyte *v) const;
-        void glVertexAttrib4Niv(GLuint index, const GLint *v) const;
-        void glVertexAttrib4Nsv(GLuint index, const GLshort *v) const;
-        void glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) const;
-        void glVertexAttrib4Nubv(GLuint index, const GLubyte *v) const;
-        void glVertexAttrib4Nuiv(GLuint index, const GLuint *v) const;
-        void glVertexAttrib4Nusv(GLuint index, const GLushort *v) const;
-        void glVertexAttrib4bv(GLuint index, const GLbyte *v) const;
-        void glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) const;
-        void glVertexAttrib4dv(GLuint index, const GLdouble *v) const;
-        void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const;
-        void glVertexAttrib4fv(GLuint index, const GLfloat *v) const;
-        void glVertexAttrib4iv(GLuint index, const GLint *v) const;
-        void glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) const;
-        void glVertexAttrib4sv(GLuint index, const GLshort *v) const;
-        void glVertexAttrib4ubv(GLuint index, const GLubyte *v) const;
-        void glVertexAttrib4uiv(GLuint index, const GLuint *v) const;
-        void glVertexAttrib4usv(GLuint index, const GLushort *v) const;
-        void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) const;
-        void glVertexAttribDivisor(GLuint index, GLuint divisor) const;
-
         // C++-friendly convenience wrapper methods
         GLuint getCurrentProgram() const;
         bool getProgramInfoLog( GLuint program, std::string& result ) const;
@@ -654,411 +512,173 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool getAttribLocation( const char* attribName, GLuint& slot ) const;
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
-        // GL 2.1
-        void glUniformMatrix2x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
-        void glUniformMatrix3x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
-        void glUniformMatrix2x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
-        void glUniformMatrix4x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
-        void glUniformMatrix3x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
-        void glUniformMatrix4x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
 
-        // EXT_geometry_shader4
-        void glProgramParameteri( GLuint program, GLenum pname, GLint value ) const;
-        void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level ) const;
-        void glFramebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer ) const;
-        void glFramebufferTextureFace( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face ) const;
+        float glVersion;
+        float glslLanguageVersion;
 
-        // ARB_tessellation_shader
-        void glPatchParameteri(GLenum pname, GLint value) const;
-        void glPatchParameterfv(GLenum pname, const GLfloat *values) const;
+        bool isGlslSupported;
+        bool isShaderObjectsSupported;
+        bool isVertexShaderSupported;
+        bool isFragmentShaderSupported;
+        bool isLanguage100Supported;
+        bool isGeometryShader4Supported;
+        bool areTessellationShadersSupported;
+        bool isGpuShader4Supported;
+        bool isUniformBufferObjectSupported;
+        bool isGetProgramBinarySupported;
+        bool isGpuShaderFp64Supported;
+        bool isShaderAtomicCountersSupported;
 
-        // EXT_gpu_shader4
-        void glGetUniformuiv( GLuint program, GLint location, GLuint *params ) const;
-        void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ) const;
-        GLint glGetFragDataLocation( GLuint program, const GLchar *name ) const;
-        void glUniform1ui( GLint location, GLuint v0 ) const;
-        void glUniform2ui( GLint location, GLuint v0, GLuint v1 ) const;
-        void glUniform3ui( GLint location, GLuint v0, GLuint v1, GLuint v2 ) const;
-        void glUniform4ui( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 ) const;
-        void glUniform1uiv( GLint location, GLsizei count, const GLuint *value ) const;
-        void glUniform2uiv( GLint location, GLsizei count, const GLuint *value ) const;
-        void glUniform3uiv( GLint location, GLsizei count, const GLuint *value ) const;
-        void glUniform4uiv( GLint location, GLsizei count, const GLuint *value ) const;
+        void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
+        void (GL_APIENTRY * glDrawBuffers)(GLsizei n, const GLenum *bufs);
+        void (GL_APIENTRY * glStencilOpSeparate)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
+        void (GL_APIENTRY * glStencilFuncSeparate)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
+        void (GL_APIENTRY * glStencilMaskSeparate)(GLenum face, GLuint mask);
+        void (GL_APIENTRY * glAttachShader)(GLuint program, GLuint shader);
+        void (GL_APIENTRY * glBindAttribLocation)(GLuint program, GLuint index, const GLchar *name);
+        void (GL_APIENTRY * glCompileShader)(GLuint shader);
+        GLuint (GL_APIENTRY * glCreateProgram)(void);
+        GLuint (GL_APIENTRY * glCreateShader)(GLenum type);
+        void (GL_APIENTRY * glDeleteProgram)(GLuint program);
+        void (GL_APIENTRY * glDeleteObjectARB)(GLuint program);
+        void (GL_APIENTRY * glDeleteShader)(GLuint shader);
+        void (GL_APIENTRY * glDetachShader)(GLuint program, GLuint shader);
+        void (GL_APIENTRY * glDisableVertexAttribArray)(GLuint index);
+        void (GL_APIENTRY * glEnableVertexAttribArray)(GLuint index);
+        void (GL_APIENTRY * glGetActiveAttrib)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
+        void (GL_APIENTRY * glGetActiveUniform)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
+        void (GL_APIENTRY * glGetAttachedShaders)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
+        GLint (GL_APIENTRY * glGetAttribLocation)(GLuint program, const GLchar *name);
+        void (GL_APIENTRY * glGetProgramiv)(GLuint program, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetObjectParameterivARB)(GLuint program, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetProgramInfoLog)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        void (GL_APIENTRY * glGetInfoLogARB)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        void (GL_APIENTRY * glGetShaderiv)(GLuint shader, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetShaderInfoLog)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        void (GL_APIENTRY * glGetShaderSource)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
+        GLint (GL_APIENTRY * glGetUniformLocation)(GLuint program, const GLchar *name);
+        void (GL_APIENTRY * glGetUniformfv)(GLuint program, GLint location, GLfloat *params);
+        void (GL_APIENTRY * glGetUniformiv)(GLuint program, GLint location, GLint *params);
+        void (GL_APIENTRY * glGetVertexAttribdv)(GLuint index, GLenum pname, GLdouble *params);
+        void (GL_APIENTRY * glGetVertexAttribfv)(GLuint index, GLenum pname, GLfloat *params);
+        void (GL_APIENTRY * glGetVertexAttribiv)(GLuint index, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetVertexAttribPointerv)(GLuint index, GLenum pname, GLvoid* *pointer);
+        GLboolean (GL_APIENTRY * glIsProgram)(GLuint program);
+        GLboolean (GL_APIENTRY * glIsShader)(GLuint shader);
+        void (GL_APIENTRY * glLinkProgram)(GLuint program);
+        void (GL_APIENTRY * glShaderSource)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
+        void (GL_APIENTRY * glUseProgram)(GLuint program);
+        void (GL_APIENTRY * glUniform1f)(GLint location, GLfloat v0);
+        void (GL_APIENTRY * glUniform2f)(GLint location, GLfloat v0, GLfloat v1);
+        void (GL_APIENTRY * glUniform3f)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+        void (GL_APIENTRY * glUniform4f)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+        void (GL_APIENTRY * glUniform1i)(GLint location, GLint v0);
+        void (GL_APIENTRY * glUniform2i)(GLint location, GLint v0, GLint v1);
+        void (GL_APIENTRY * glUniform3i)(GLint location, GLint v0, GLint v1, GLint v2);
+        void (GL_APIENTRY * glUniform4i)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+        void (GL_APIENTRY * glUniform1fv)(GLint location, GLsizei count, const GLfloat *value);
+        void (GL_APIENTRY * glUniform2fv)(GLint location, GLsizei count, const GLfloat *value);
+        void (GL_APIENTRY * glUniform3fv)(GLint location, GLsizei count, const GLfloat *value);
+        void (GL_APIENTRY * glUniform4fv)(GLint location, GLsizei count, const GLfloat *value);
+        void (GL_APIENTRY * glUniform1iv)(GLint location, GLsizei count, const GLint *value);
+        void (GL_APIENTRY * glUniform2iv)(GLint location, GLsizei count, const GLint *value);
+        void (GL_APIENTRY * glUniform3iv)(GLint location, GLsizei count, const GLint *value);
+        void (GL_APIENTRY * glUniform4iv)(GLint location, GLsizei count, const GLint *value);
+        void (GL_APIENTRY * glUniformMatrix2fv)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        void (GL_APIENTRY * glUniformMatrix3fv)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        void (GL_APIENTRY * glUniformMatrix4fv)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        void (GL_APIENTRY * glValidateProgram)(GLuint program);
+        void (GL_APIENTRY * glVertexAttrib1d)(GLuint index, GLdouble x);
+        void (GL_APIENTRY * glVertexAttrib1dv)(GLuint index, const GLdouble *v);
+        void (GL_APIENTRY * glVertexAttrib1f)(GLuint index, GLfloat x);
+        void (GL_APIENTRY * glVertexAttrib1fv)(GLuint index, const GLfloat *v);
+        void (GL_APIENTRY * glVertexAttrib1s)(GLuint index, GLshort x);
+        void (GL_APIENTRY * glVertexAttrib1sv)(GLuint index, const GLshort *v);
+        void (GL_APIENTRY * glVertexAttrib2d)(GLuint index, GLdouble x, GLdouble y);
+        void (GL_APIENTRY * glVertexAttrib2dv)(GLuint index, const GLdouble *v);
+        void (GL_APIENTRY * glVertexAttrib2f)(GLuint index, GLfloat x, GLfloat y);
+        void (GL_APIENTRY * glVertexAttrib2fv)(GLuint index, const GLfloat *v);
+        void (GL_APIENTRY * glVertexAttrib2s)(GLuint index, GLshort x, GLshort y);
+        void (GL_APIENTRY * glVertexAttrib2sv)(GLuint index, const GLshort *v);
+        void (GL_APIENTRY * glVertexAttrib3d)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
+        void (GL_APIENTRY * glVertexAttrib3dv)(GLuint index, const GLdouble *v);
+        void (GL_APIENTRY * glVertexAttrib3f)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
+        void (GL_APIENTRY * glVertexAttrib3fv)(GLuint index, const GLfloat *v);
+        void (GL_APIENTRY * glVertexAttrib3s)(GLuint index, GLshort x, GLshort y, GLshort z);
+        void (GL_APIENTRY * glVertexAttrib3sv)(GLuint index, const GLshort *v);
+        void (GL_APIENTRY * glVertexAttrib4Nbv)(GLuint index, const GLbyte *v);
+        void (GL_APIENTRY * glVertexAttrib4Niv)(GLuint index, const GLint *v);
+        void (GL_APIENTRY * glVertexAttrib4Nsv)(GLuint index, const GLshort *v);
+        void (GL_APIENTRY * glVertexAttrib4Nub)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+        void (GL_APIENTRY * glVertexAttrib4Nubv)(GLuint index, const GLubyte *v);
+        void (GL_APIENTRY * glVertexAttrib4Nuiv)(GLuint index, const GLuint *v);
+        void (GL_APIENTRY * glVertexAttrib4Nusv)(GLuint index, const GLushort *v);
+        void (GL_APIENTRY * glVertexAttrib4bv)(GLuint index, const GLbyte *v);
+        void (GL_APIENTRY * glVertexAttrib4d)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+        void (GL_APIENTRY * glVertexAttrib4dv)(GLuint index, const GLdouble *v);
+        void (GL_APIENTRY * glVertexAttrib4f)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void (GL_APIENTRY * glVertexAttrib4fv)(GLuint index, const GLfloat *v);
+        void (GL_APIENTRY * glVertexAttrib4iv)(GLuint index, const GLint *v);
+        void (GL_APIENTRY * glVertexAttrib4s)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+        void (GL_APIENTRY * glVertexAttrib4sv)(GLuint index, const GLshort *v);
+        void (GL_APIENTRY * glVertexAttrib4ubv)(GLuint index, const GLubyte *v);
+        void (GL_APIENTRY * glVertexAttrib4uiv)(GLuint index, const GLuint *v);
+        void (GL_APIENTRY * glVertexAttrib4usv)(GLuint index, const GLushort *v);
+        void (GL_APIENTRY * glVertexAttribPointer)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribDivisor)(GLuint index, GLuint divisor);
+        void (GL_APIENTRY * glUniformMatrix2x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glUniformMatrix3x2fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glUniformMatrix2x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glUniformMatrix4x2fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glUniformMatrix3x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glUniformMatrix4x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glProgramParameteri)( GLuint program, GLenum pname, GLint value );
+        void (GL_APIENTRY * glFramebufferTexture)( GLenum target, GLenum attachment, GLuint texture, GLint level );
+        void (GL_APIENTRY * glFramebufferTextureLayer)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
+        void (GL_APIENTRY * glFramebufferTextureFace)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
+        void (GL_APIENTRY * glPatchParameteri)( GLenum pname, GLint value );
+        void (GL_APIENTRY * glPatchParameterfv)( GLenum pname, const GLfloat* values );
+        void (GL_APIENTRY * glGetUniformuiv)( GLuint program, GLint location, GLuint* params );
+        void (GL_APIENTRY * glBindFragDataLocation)( GLuint program, GLuint color, const GLchar* name );
+        GLint (GL_APIENTRY * glGetFragDataLocation)( GLuint program, const GLchar* name );
+        void (GL_APIENTRY * glUniform1ui)( GLint location, GLuint v0 );
+        void (GL_APIENTRY * glUniform2ui)( GLint location, GLuint v0, GLuint v1 );
+        void (GL_APIENTRY * glUniform3ui)( GLint location, GLuint v0, GLuint v1, GLuint v2 );
+        void (GL_APIENTRY * glUniform4ui)( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 );
+        void (GL_APIENTRY * glUniform1uiv)( GLint location, GLsizei count, const GLuint *value );
+        void (GL_APIENTRY * glUniform2uiv)( GLint location, GLsizei count, const GLuint *value );
+        void (GL_APIENTRY * glUniform3uiv)( GLint location, GLsizei count, const GLuint *value );
+        void (GL_APIENTRY * glUniform4uiv)( GLint location, GLsizei count, const GLuint *value );
+        GLuint (GL_APIENTRY * glGetHandleARB) (GLenum pname);
+        void (GL_APIENTRY * glGetUniformIndices)(GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices);
+        void (GL_APIENTRY * glGetActiveUniformsiv)(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetActiveUniformName)(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
+        GLuint (GL_APIENTRY * glGetUniformBlockIndex)(GLuint program, const GLchar *uniformBlockName);
+        void (GL_APIENTRY * glGetActiveUniformBlockiv)(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetActiveUniformBlockName)(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
+        void (GL_APIENTRY * glUniformBlockBinding)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+        void (GL_APIENTRY * glGetProgramBinary)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
+        void (GL_APIENTRY * glProgramBinary)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
+        void (GL_APIENTRY * glUniform1d)(GLint location, GLdouble v0);
+        void (GL_APIENTRY * glUniform2d)(GLint location, GLdouble v0, GLdouble v1);
+        void (GL_APIENTRY * glUniform3d)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2);
+        void (GL_APIENTRY * glUniform4d)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3);
+        void (GL_APIENTRY * glUniform1dv)(GLint location, GLsizei count, const GLdouble *value);
+        void (GL_APIENTRY * glUniform2dv)(GLint location, GLsizei count, const GLdouble *value);
+        void (GL_APIENTRY * glUniform3dv)(GLint location, GLsizei count, const GLdouble *value);
+        void (GL_APIENTRY * glUniform4dv)(GLint location, GLsizei count, const GLdouble *value);
+        void (GL_APIENTRY * glUniformMatrix2dv)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        void (GL_APIENTRY * glUniformMatrix3dv)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        void (GL_APIENTRY * glUniformMatrix4dv)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
+        void (GL_APIENTRY * glUniformMatrix2x3dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glUniformMatrix3x2dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glUniformMatrix2x4dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glUniformMatrix4x2dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glUniformMatrix3x4dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glUniformMatrix4x3dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
+        void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
+        void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
 
-        // ARB_uniform_buffer_object
-        void glGetUniformIndices(GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices) const;
-        void glGetActiveUniformsiv(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params) const;
-        void glGetActiveUniformName(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName) const;
-        GLuint glGetUniformBlockIndex(GLuint program, const GLchar *uniformBlockName) const;
-        void glGetActiveUniformBlockiv(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params) const;
-        void glGetActiveUniformBlockName(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName) const;
-        void glUniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding) const;
-
-        // ARB_get_program_binary
-        void glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary) const;
-        void glProgramBinary(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length) const;
-
-        // ARB_gpu_shader_fp64
-        void glUniform1d( GLint location, GLdouble v0 ) const;
-        void glUniform2d( GLint location, GLdouble v0, GLdouble v1 ) const;
-        void glUniform3d( GLint location, GLdouble v0, GLdouble v1, GLdouble v2 ) const;
-        void glUniform4d( GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3 ) const;
-        void glUniform1dv( GLint location, GLsizei count, const GLdouble *value ) const;
-        void glUniform2dv( GLint location, GLsizei count, const GLdouble *value ) const;
-        void glUniform3dv( GLint location, GLsizei count, const GLdouble *value ) const;
-        void glUniform4dv( GLint location, GLsizei count, const GLdouble *value ) const;
-        void glUniformMatrix2dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
-        void glUniformMatrix3dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
-        void glUniformMatrix4dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value) const;
-        void glUniformMatrix2x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-        void glUniformMatrix3x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-        void glUniformMatrix2x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-        void glUniformMatrix4x2dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-        void glUniformMatrix3x4dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-        void glUniformMatrix4x3dv( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value ) const;
-
-        // ARB_shader_atomic_counters
-        void glGetActiveAtomicCounterBufferiv( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params ) const;
-
-        // ARB_compute_shader
-        void glDispatchCompute( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ ) const;
-
-    protected:
-        ~GL2Extensions() {}
-
-        float _glVersion;
-        float _glslLanguageVersion;
-
-        bool _isShaderObjectsSupported;
-        bool _isVertexShaderSupported;
-        bool _isFragmentShaderSupported;
-        bool _isLanguage100Supported;
-        bool _isGeometryShader4Supported;
-        bool _areTessellationShadersSupported;
-        bool _isGpuShader4Supported;
-        bool _isUniformBufferObjectSupported;
-        bool _isGetProgramBinarySupported;
-        bool _isGpuShaderFp64Supported;
-        bool _isShaderAtomicCountersSupported;
-
-        typedef void (GL_APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
-        typedef void (GL_APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
-        typedef void (GL_APIENTRY * StencilOpSeparateProc)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-        typedef void (GL_APIENTRY * StencilFuncSeparateProc)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
-        typedef void (GL_APIENTRY * StencilMaskSeparateProc)(GLenum face, GLuint mask);
-        typedef void (GL_APIENTRY * AttachShaderProc)(GLuint program, GLuint shader);
-        typedef void (GL_APIENTRY * BindAttribLocationProc)(GLuint program, GLuint index, const GLchar *name);
-        typedef void (GL_APIENTRY * CompileShaderProc)(GLuint shader);
-        typedef GLuint (GL_APIENTRY * CreateProgramProc)(void);
-        typedef GLuint (GL_APIENTRY * CreateShaderProc)(GLenum type);
-        typedef void (GL_APIENTRY * DeleteProgramProc)(GLuint program);
-        typedef void (GL_APIENTRY * DeleteObjectARBProc)(GLuint program);
-        typedef void (GL_APIENTRY * DeleteShaderProc)(GLuint shader);
-        typedef void (GL_APIENTRY * DetachShaderProc)(GLuint program, GLuint shader);
-        typedef void (GL_APIENTRY * DisableVertexAttribArrayProc)(GLuint index);
-        typedef void (GL_APIENTRY * EnableVertexAttribArrayProc)(GLuint index);
-        typedef void (GL_APIENTRY * GetActiveAttribProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-        typedef void (GL_APIENTRY * GetActiveUniformProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-        typedef void (GL_APIENTRY * GetAttachedShadersProc)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
-        typedef GLint (GL_APIENTRY * GetAttribLocationProc)(GLuint program, const GLchar *name);
-        typedef void (GL_APIENTRY * GetProgramivProc)(GLuint program, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetObjectParameterivARBProc)(GLuint program, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetProgramInfoLogProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        typedef void (GL_APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        typedef void (GL_APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        typedef void (GL_APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
-        typedef GLint (GL_APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);
-        typedef void (GL_APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);
-        typedef void (GL_APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);
-        typedef void (GL_APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);
-        typedef void (GL_APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);
-        typedef void (GL_APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);
-        typedef GLboolean (GL_APIENTRY * IsProgramProc)(GLuint program);
-        typedef GLboolean (GL_APIENTRY * IsShaderProc)(GLuint shader);
-        typedef void (GL_APIENTRY * LinkProgramProc)(GLuint program);
-        typedef void (GL_APIENTRY * ShaderSourceProc)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
-        typedef void (GL_APIENTRY * UseProgramProc)(GLuint program);
-        typedef void (GL_APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);
-        typedef void (GL_APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);
-        typedef void (GL_APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-        typedef void (GL_APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-        typedef void (GL_APIENTRY * Uniform1iProc)(GLint location, GLint v0);
-        typedef void (GL_APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);
-        typedef void (GL_APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);
-        typedef void (GL_APIENTRY * Uniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-        typedef void (GL_APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        typedef void (GL_APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        typedef void (GL_APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        typedef void (GL_APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        typedef void (GL_APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);
-        typedef void (GL_APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);
-        typedef void (GL_APIENTRY * Uniform3ivProc)(GLint location, GLsizei count, const GLint *value);
-        typedef void (GL_APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);
-        typedef void (GL_APIENTRY * UniformMatrix2fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        typedef void (GL_APIENTRY * UniformMatrix3fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        typedef void (GL_APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        typedef void (GL_APIENTRY * ValidateProgramProc)(GLuint program);
-        typedef void (GL_APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);
-        typedef void (GL_APIENTRY * VertexAttrib1dvProc)(GLuint index, const GLdouble *v);
-        typedef void (GL_APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);
-        typedef void (GL_APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);
-        typedef void (GL_APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);
-        typedef void (GL_APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);
-        typedef void (GL_APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);
-        typedef void (GL_APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);
-        typedef void (GL_APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);
-        typedef void (GL_APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);
-        typedef void (GL_APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);
-        typedef void (GL_APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);
-        typedef void (GL_APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-        typedef void (GL_APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);
-        typedef void (GL_APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
-        typedef void (GL_APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);
-        typedef void (GL_APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);
-        typedef void (GL_APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-        typedef void (GL_APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);
-        typedef void (GL_APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);
-        typedef void (GL_APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);
-        typedef void (GL_APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-        typedef void (GL_APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);
-        typedef void (GL_APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        typedef void (GL_APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
-        typedef void (GL_APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);
-        typedef void (GL_APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-        typedef void (GL_APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);
-        typedef void (GL_APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);
-        typedef void (GL_APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
-        typedef void (GL_APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
-        typedef void (GL_APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-        typedef void (GL_APIENTRY * VertexAttribDivisorProc)(GLuint index, GLuint divisor);
-        typedef void (GL_APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * UniformMatrix3x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * UniformMatrix2x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * UniformMatrix4x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * UniformMatrix3x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * UniformMatrix4x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        typedef void (GL_APIENTRY * ProgramParameteriProc)( GLuint program, GLenum pname, GLint value );
-        typedef void (GL_APIENTRY * FramebufferTextureProc)( GLenum target, GLenum attachment, GLuint texture, GLint level );
-        typedef void (GL_APIENTRY * FramebufferTextureLayerProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
-        typedef void (GL_APIENTRY * FramebufferTextureFaceProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
-        typedef void (GL_APIENTRY * PatchParameteriProc)( GLenum pname, GLint value );
-        typedef void (GL_APIENTRY * PatchParameterfvProc)( GLenum pname, const GLfloat* values );
-        typedef void (GL_APIENTRY * GetUniformuivProc)( GLuint program, GLint location, GLuint* params );
-        typedef void (GL_APIENTRY * BindFragDataLocationProc)( GLuint program, GLuint color, const GLchar* name );
-        typedef GLint (GL_APIENTRY * GetFragDataLocationProc)( GLuint program, const GLchar* name );
-        typedef void (GL_APIENTRY * Uniform1uiProc)( GLint location, GLuint v0 );
-        typedef void (GL_APIENTRY * Uniform2uiProc)( GLint location, GLuint v0, GLuint v1 );
-        typedef void (GL_APIENTRY * Uniform3uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2 );
-        typedef void (GL_APIENTRY * Uniform4uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 );
-        typedef void (GL_APIENTRY * Uniform1uivProc)( GLint location, GLsizei count, const GLuint *value );
-        typedef void (GL_APIENTRY * Uniform2uivProc)( GLint location, GLsizei count, const GLuint *value );
-        typedef void (GL_APIENTRY * Uniform3uivProc)( GLint location, GLsizei count, const GLuint *value );
-        typedef void (GL_APIENTRY * Uniform4uivProc)( GLint location, GLsizei count, const GLuint *value );
-        typedef GLuint (GL_APIENTRY * GetHandleProc) (GLenum pname);
-        typedef void (GL_APIENTRY * GetUniformIndicesProc)(GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices);
-        typedef void (GL_APIENTRY * GetActiveUniformsivProc)(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetActiveUniformNameProc)(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
-        typedef GLuint (GL_APIENTRY * GetUniformBlockIndexProc)(GLuint program, const GLchar *uniformBlockName);
-        typedef void (GL_APIENTRY * GetActiveUniformBlockivProc)(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY * GetActiveUniformBlockNameProc)(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
-        typedef void (GL_APIENTRY * UniformBlockBindingProc)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-        typedef void (GL_APIENTRY * GetProgramBinaryProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
-        typedef void (GL_APIENTRY * ProgramBinaryProc)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
-        typedef void (GL_APIENTRY * Uniform1dProc)(GLint location, GLdouble v0);
-        typedef void (GL_APIENTRY * Uniform2dProc)(GLint location, GLdouble v0, GLdouble v1);
-        typedef void (GL_APIENTRY * Uniform3dProc)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2);
-        typedef void (GL_APIENTRY * Uniform4dProc)(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3);
-        typedef void (GL_APIENTRY * Uniform1dvProc)(GLint location, GLsizei count, const GLdouble *value);
-        typedef void (GL_APIENTRY * Uniform2dvProc)(GLint location, GLsizei count, const GLdouble *value);
-        typedef void (GL_APIENTRY * Uniform3dvProc)(GLint location, GLsizei count, const GLdouble *value);
-        typedef void (GL_APIENTRY * Uniform4dvProc)(GLint location, GLsizei count, const GLdouble *value);
-        typedef void (GL_APIENTRY * UniformMatrix2dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-        typedef void (GL_APIENTRY * UniformMatrix3dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-        typedef void (GL_APIENTRY * UniformMatrix4dvProc)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-        typedef void (GL_APIENTRY * UniformMatrix2x3dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * UniformMatrix3x2dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * UniformMatrix2x4dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * UniformMatrix4x2dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * UniformMatrix3x4dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * UniformMatrix4x3dvProc)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
-        typedef void (GL_APIENTRY * GetActiveAtomicCounterBufferivProc)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
-        typedef void (GL_APIENTRY * DispatchComputeProc)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
-
-        BlendEquationSeparateProc _glBlendEquationSeparate;
-        DrawBuffersProc _glDrawBuffers;
-        StencilOpSeparateProc _glStencilOpSeparate;
-        StencilFuncSeparateProc _glStencilFuncSeparate;
-        StencilMaskSeparateProc _glStencilMaskSeparate;
-        AttachShaderProc _glAttachShader;
-        BindAttribLocationProc _glBindAttribLocation;
-        CompileShaderProc _glCompileShader;
-        CreateProgramProc _glCreateProgram;
-        CreateShaderProc _glCreateShader;
-        DeleteProgramProc _glDeleteProgram;
-        DeleteShaderProc _glDeleteShader;
-        DetachShaderProc _glDetachShader;
-        DisableVertexAttribArrayProc _glDisableVertexAttribArray;
-        EnableVertexAttribArrayProc _glEnableVertexAttribArray;
-        GetActiveAttribProc _glGetActiveAttrib;
-        GetActiveUniformProc _glGetActiveUniform;
-        GetAttachedShadersProc _glGetAttachedShaders;
-        GetAttribLocationProc _glGetAttribLocation;
-        GetProgramivProc _glGetProgramiv;
-        GetProgramInfoLogProc _glGetProgramInfoLog;
-        GetShaderivProc _glGetShaderiv;
-        GetShaderInfoLogProc _glGetShaderInfoLog;
-        GetShaderSourceProc _glGetShaderSource;
-        GetUniformLocationProc _glGetUniformLocation;
-        GetUniformfvProc _glGetUniformfv;
-        GetUniformivProc _glGetUniformiv;
-        GetVertexAttribdvProc _glGetVertexAttribdv;
-        GetVertexAttribfvProc _glGetVertexAttribfv;
-        GetVertexAttribivProc _glGetVertexAttribiv;
-        GetVertexAttribPointervProc _glGetVertexAttribPointerv;
-        IsProgramProc _glIsProgram;
-        IsShaderProc _glIsShader;
-        LinkProgramProc _glLinkProgram;
-        ShaderSourceProc _glShaderSource;
-        UseProgramProc _glUseProgram;
-        Uniform1fProc _glUniform1f;
-        Uniform2fProc _glUniform2f;
-        Uniform3fProc _glUniform3f;
-        Uniform4fProc _glUniform4f;
-        Uniform1iProc _glUniform1i;
-        Uniform2iProc _glUniform2i;
-        Uniform3iProc _glUniform3i;
-        Uniform4iProc _glUniform4i;
-        Uniform1fvProc _glUniform1fv;
-        Uniform2fvProc _glUniform2fv;
-        Uniform3fvProc _glUniform3fv;
-        Uniform4fvProc _glUniform4fv;
-        Uniform1ivProc _glUniform1iv;
-        Uniform2ivProc _glUniform2iv;
-        Uniform3ivProc _glUniform3iv;
-        Uniform4ivProc _glUniform4iv;
-        UniformMatrix2fvProc _glUniformMatrix2fv;
-        UniformMatrix3fvProc _glUniformMatrix3fv;
-        UniformMatrix4fvProc _glUniformMatrix4fv;
-        ValidateProgramProc _glValidateProgram;
-        VertexAttrib1dProc _glVertexAttrib1d;
-        VertexAttrib1dvProc _glVertexAttrib1dv;
-        VertexAttrib1fProc _glVertexAttrib1f;
-        VertexAttrib1fvProc _glVertexAttrib1fv;
-        VertexAttrib1sProc _glVertexAttrib1s;
-        VertexAttrib1svProc _glVertexAttrib1sv;
-        VertexAttrib2dProc _glVertexAttrib2d;
-        VertexAttrib2dvProc _glVertexAttrib2dv;
-        VertexAttrib2fProc _glVertexAttrib2f;
-        VertexAttrib2fvProc _glVertexAttrib2fv;
-        VertexAttrib2sProc _glVertexAttrib2s;
-        VertexAttrib2svProc _glVertexAttrib2sv;
-        VertexAttrib3dProc _glVertexAttrib3d;
-        VertexAttrib3dvProc _glVertexAttrib3dv;
-        VertexAttrib3fProc _glVertexAttrib3f;
-        VertexAttrib3fvProc _glVertexAttrib3fv;
-        VertexAttrib3sProc _glVertexAttrib3s;
-        VertexAttrib3svProc _glVertexAttrib3sv;
-        VertexAttrib4NbvProc _glVertexAttrib4Nbv;
-        VertexAttrib4NivProc _glVertexAttrib4Niv;
-        VertexAttrib4NsvProc _glVertexAttrib4Nsv;
-        VertexAttrib4NubProc _glVertexAttrib4Nub;
-        VertexAttrib4NubvProc _glVertexAttrib4Nubv;
-        VertexAttrib4NuivProc _glVertexAttrib4Nuiv;
-        VertexAttrib4NusvProc _glVertexAttrib4Nusv;
-        VertexAttrib4bvProc _glVertexAttrib4bv;
-        VertexAttrib4dProc _glVertexAttrib4d;
-        VertexAttrib4dvProc _glVertexAttrib4dv;
-        VertexAttrib4fProc _glVertexAttrib4f;
-        VertexAttrib4fvProc _glVertexAttrib4fv;
-        VertexAttrib4ivProc _glVertexAttrib4iv;
-        VertexAttrib4sProc _glVertexAttrib4s;
-        VertexAttrib4svProc _glVertexAttrib4sv;
-        VertexAttrib4ubvProc _glVertexAttrib4ubv;
-        VertexAttrib4uivProc _glVertexAttrib4uiv;
-        VertexAttrib4usvProc _glVertexAttrib4usv;
-        VertexAttribPointerProc _glVertexAttribPointer;
-        VertexAttribDivisorProc _glVertexAttribDivisor;
-
-        GetInfoLogARBProc _glGetInfoLogARB;
-        GetObjectParameterivARBProc _glGetObjectParameterivARB;
-        DeleteObjectARBProc _glDeleteObjectARB;
-        GetHandleProc _glGetHandleARB;
-
-        // GL 2.1
-        UniformMatrix2x3fvProc _glUniformMatrix2x3fv;
-        UniformMatrix3x2fvProc _glUniformMatrix3x2fv;
-        UniformMatrix2x4fvProc _glUniformMatrix2x4fv;
-        UniformMatrix4x2fvProc _glUniformMatrix4x2fv;
-        UniformMatrix3x4fvProc _glUniformMatrix3x4fv;
-        UniformMatrix4x3fvProc _glUniformMatrix4x3fv;
-
-        // EXT_geometry_shader4
-        ProgramParameteriProc _glProgramParameteri;
-        FramebufferTextureProc _glFramebufferTexture;
-        FramebufferTextureLayerProc _glFramebufferTextureLayer;
-        FramebufferTextureFaceProc _glFramebufferTextureFace;
-
-        // ARB_tesselation_shader
-        PatchParameteriProc _glPatchParameteri;
-        PatchParameterfvProc _glPatchParameterfv;
-
-        // EXT_gpu_shader4
-        GetUniformuivProc _glGetUniformuiv;
-        BindFragDataLocationProc _glBindFragDataLocation;
-        GetFragDataLocationProc _glGetFragDataLocation;
-        Uniform1uiProc _glUniform1ui;
-        Uniform2uiProc _glUniform2ui;
-        Uniform3uiProc _glUniform3ui;
-        Uniform4uiProc _glUniform4ui;
-        Uniform1uivProc _glUniform1uiv;
-        Uniform2uivProc _glUniform2uiv;
-        Uniform3uivProc _glUniform3uiv;
-        Uniform4uivProc _glUniform4uiv;
-
-        // ARB_uniform_buffer_object
-        GetUniformIndicesProc _glGetUniformIndices;
-        GetActiveUniformsivProc _glGetActiveUniformsiv;
-        GetActiveUniformNameProc _glGetActiveUniformName;
-        GetUniformBlockIndexProc _glGetUniformBlockIndex;
-        GetActiveUniformBlockivProc _glGetActiveUniformBlockiv;
-        GetActiveUniformBlockNameProc _glGetActiveUniformBlockName;
-        UniformBlockBindingProc _glUniformBlockBinding;
-
-        // ARB_get_program_binary
-        GetProgramBinaryProc _glGetProgramBinary;
-        ProgramBinaryProc _glProgramBinary;
-
-        // ARB_gpu_shader_fp64
-        Uniform1dProc _glUniform1d;
-        Uniform2dProc _glUniform2d;
-        Uniform3dProc _glUniform3d;
-        Uniform4dProc _glUniform4d;
-        Uniform1dvProc _glUniform1dv;
-        Uniform2dvProc _glUniform2dv;
-        Uniform3dvProc _glUniform3dv;
-        Uniform4dvProc _glUniform4dv;
-        UniformMatrix2dvProc _glUniformMatrix2dv;
-        UniformMatrix3dvProc _glUniformMatrix3dv;
-        UniformMatrix4dvProc _glUniformMatrix4dv;
-        UniformMatrix2x3dvProc _glUniformMatrix2x3dv;
-        UniformMatrix3x2dvProc _glUniformMatrix3x2dv;
-        UniformMatrix2x4dvProc _glUniformMatrix2x4dv;
-        UniformMatrix4x2dvProc _glUniformMatrix4x2dv;
-        UniformMatrix3x4dvProc _glUniformMatrix3x4dv;
-        UniformMatrix4x3dvProc _glUniformMatrix4x3dv;
-
-        // ARB_shader_atomic_counters
-        GetActiveAtomicCounterBufferivProc _glGetActiveAtomicCounterBufferiv;
-
-        // ARB_compute_shader
-        DispatchComputeProc _glDispatchCompute;
 };
 
 }

@@ -131,6 +131,10 @@ State::State():
 
 State::~State()
 {
+    // delete the GL2Extensions object associated with this osg::State.
+    GL2Extensions::Set(_contextID, 0);
+    _gl2Extentsions = 0;
+
     //_texCoordArrayList.clear();
 
     //_vertexAttribArrayList.clear();
@@ -917,6 +921,9 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
+
+    _gl2Extentsions = new GL2Extensions(_contextID);
+    GL2Extensions::Set(_contextID, _gl2Extentsions.get());
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
     setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");

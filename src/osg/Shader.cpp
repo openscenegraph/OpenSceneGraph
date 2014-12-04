@@ -178,7 +178,7 @@ void Shader::flushDeletedGlShaders(unsigned int contextID,double /*currentTime*/
     if (availableTime<=0.0) return;
 
     const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
-    if( ! extensions->isGlslSupported() ) return;
+    if( ! extensions->isGlslSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();

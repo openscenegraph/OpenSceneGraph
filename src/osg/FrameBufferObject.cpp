@@ -918,8 +918,8 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     {
         if (_drawBuffers.size() > 0)
         {
-            GL2Extensions *gl2e = GL2Extensions::Get(state.getContextID(), true );
-            if (gl2e && gl2e->isDrawBuffersSupported())
+            GL2Extensions *gl2e = state.get<GL2Extensions>();
+            if (gl2e && gl2e->glDrawBuffers)
             {
                 gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));
             }

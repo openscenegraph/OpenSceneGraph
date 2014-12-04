@@ -77,7 +77,7 @@ void StateToCompile::apply(osg::Drawable& drawable)
 
     _drawablesHandled.insert(&drawable);
 
-    if (_markerObject!=drawable.getUserData())
+    if (_markerObject.get()!=drawable.getUserData())
     {
         if (drawable.getDataVariance()!=osg::Object::STATIC)
         {
@@ -125,10 +125,10 @@ void StateToCompile::apply(osg::StateSet& stateset)
     _statesetsHandled.insert(&stateset);
 
     if ((_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)!=0 &&
-        _markerObject!=stateset.getUserData())
+        _markerObject.get()!=stateset.getUserData())
     {
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program && _markerObject!=program->getUserData())
+        if (program && _markerObject.get()!=program->getUserData())
         {
             _programs.insert(program);
 
@@ -166,7 +166,7 @@ void StateToCompile::apply(osg::StateSet& stateset)
 void StateToCompile::apply(osg::Texture& texture)
 {
     // don't make any changes if Texture already processed
-    if (_markerObject==texture.getUserData()) return;
+    if (_markerObject.get()==texture.getUserData()) return;
 
     if (_assignPBOToImages)
     {

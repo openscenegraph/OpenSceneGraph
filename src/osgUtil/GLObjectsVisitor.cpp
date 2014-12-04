@@ -45,9 +45,10 @@ void GLObjectsVisitor::apply(osg::Node& node)
     bool programSetAfter = _renderInfo.getState()->getLastAppliedProgramObject()!=0;
     if (programSetBefore && !programSetAfter)
     {
-        osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+        osg::State* state = _renderInfo.getState();
+        osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
         extensions->glUseProgram(0);
-        _renderInfo.getState()->setLastAppliedProgramObject(0);
+        state->setLastAppliedProgramObject(0);
         _lastCompiledProgram = 0;
     }
 }
@@ -66,9 +67,10 @@ void GLObjectsVisitor::apply(osg::Geode& node)
     bool programSetAfter = _lastCompiledProgram.valid();
     if (!programSetBefore && programSetAfter)
     {
-        osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+        osg::State* state = _renderInfo.getState();
+        osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
         extensions->glUseProgram(0);
-        _renderInfo.getState()->setLastAppliedProgramObject(0);
+        state->setLastAppliedProgramObject(0);
         _lastCompiledProgram = 0;
     }
 }
@@ -152,9 +154,10 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
                 }
             }
         }
-        else if(_renderInfo.getState()->getLastAppliedProgramObject()){
-
-            osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+        else if(_renderInfo.getState()->getLastAppliedProgramObject())
+        {
+            osg::State* state = _renderInfo.getState();
+            osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
             extensions->glUseProgram(0);
             _renderInfo.getState()->setLastAppliedProgramObject(0);
         }

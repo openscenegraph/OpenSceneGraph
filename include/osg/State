@@ -15,6 +15,7 @@
 #define OSG_STATE 1
 
 #include <osg/Export>
+#include <osg/GL2Extensions>
 #include <osg/StateSet>
 #include <osg/Matrix>
 #include <osg/Uniform>
@@ -1940,6 +1941,8 @@ class OSG_EXPORT State : public Referenced
         DrawArraysInstancedProc     _glDrawArraysInstanced;
         DrawElementsInstancedProc   _glDrawElementsInstanced;
 
+        osg::ref_ptr<GL2Extensions> _gl2Extentsions;
+
         unsigned int                                            _dynamicObjectCount;
         osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
 
@@ -2772,6 +2775,10 @@ inline bool State::setActiveTextureUnit( unsigned int unit )
     }
     return true;
 }
+
+// forward declare speciailization of State::get() method
+template<> inline GL2Extensions* State::get<GL2Extensions>() { return _gl2Extentsions.get(); }
+template<> inline const GL2Extensions* State::getExisting<GL2Extensions>() const { return _gl2Extentsions.get(); }
 
 }
 

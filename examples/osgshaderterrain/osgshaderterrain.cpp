@@ -269,11 +269,12 @@ public:
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
+
         unsigned int contextID = gc->getState()->getContextID();
-        osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
+        osg::GL2Extensions* gl2ext = gc->getState()->get<osg::GL2Extensions>();
         if( gl2ext )
         {
-            if( !gl2ext->isGlslSupported() )
+            if( !gl2ext->isGlslSupported )
             {
                 _supported = false;
                 _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";

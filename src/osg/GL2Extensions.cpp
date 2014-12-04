@@ -272,6 +272,9 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     // ARB_compute_shader
     setGLExtensionFuncPtr(glDispatchCompute,  "glDispatchCompute" );
 
+    setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" );
+    setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange" );
+    setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" );
 
 }
 

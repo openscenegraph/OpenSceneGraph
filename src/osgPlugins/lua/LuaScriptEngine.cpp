@@ -2778,7 +2778,7 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
         {
             if (lua_isboolean(_lua, pos))
             {
-                ssp->set(static_cast<bool>(lua_toboolean(_lua, pos)));
+                ssp->set(static_cast<bool>(lua_toboolean(_lua, pos)!=0));
                 return 0;
             }
             else if (lua_isnumber(_lua, pos))
@@ -3116,7 +3116,7 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         {
             if (lua_isboolean(_lua, -1))
             {
-                _ci.setProperty(object, propertyName, static_cast<bool>(lua_toboolean(_lua, -1)));
+                _ci.setProperty(object, propertyName, static_cast<bool>(lua_toboolean(_lua, -1)!=0));
                 return 0;
             }
             else if (lua_isnumber(_lua, -1))

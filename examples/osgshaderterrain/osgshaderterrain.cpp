@@ -270,7 +270,6 @@ public:
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
 
-        unsigned int contextID = gc->getState()->getContextID();
         osg::GL2Extensions* gl2ext = gc->getState()->get<osg::GL2Extensions>();
         if( gl2ext )
         {

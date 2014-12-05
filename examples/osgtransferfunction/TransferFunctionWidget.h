@@ -19,12 +19,10 @@
 
 #include <osgUI/Widget>
 
-#define OSGUI_EXPORT
-
 namespace osgUI
 {
 
-class OSGUI_EXPORT TransferFunctionWidget : public osgUI::Widget
+class TransferFunctionWidget : public osgUI::Widget
 {
 public:
     TransferFunctionWidget(osg::TransferFunction1D* tf=0);

@@ -157,13 +157,7 @@ void TextureRectangle::setImage(Image* image)
 
 void TextureRectangle::apply(State& state) const
 {
-    static bool s_rectangleSupported =
-            OSG_GL3_FEATURES ||
-            isGLExtensionSupported(state.getContextID(),"GL_ARB_texture_rectangle") ||
-            isGLExtensionSupported(state.getContextID(),"GL_EXT_texture_rectangle") ||
-            isGLExtensionSupported(state.getContextID(),"GL_NV_texture_rectangle");
-
-    if (!s_rectangleSupported)
+    if (!state.get<GL2Extensions>()->isRectangleSupported)
     {
         OSG_WARN<<"Warning: TextureRectangle::apply(..) failed, texture rectangle is not support by your OpenGL drivers."<<std::endl;
         return;

@@ -595,6 +595,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isGetProgramBinarySupported;
         bool isGpuShaderFp64Supported;
         bool isShaderAtomicCountersSupported;
+        bool isRectangleSupported;
 
         void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         void (GL_APIENTRY * glDrawBuffers)(GLsizei n, const GLenum *bufs);
@@ -777,9 +778,80 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glBlendFuncSeparatei) (GLuint buf, GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) ;
 
 
+        // Vertex Array extensions
+        bool isVertexProgramSupported;
+        bool isSecondaryColorSupported;
+        bool isFogCoordSupported;
+        bool isMultiTexSupported;
+        bool isOcclusionQuerySupported;
+        bool isARBOcclusionQuerySupported;
+        bool isTimerQuerySupported;
+        bool isARBTimerQuerySupported;
+
+        void (GL_APIENTRY * glSecondaryColor3ubv) (const GLubyte* coord);
+        void (GL_APIENTRY * glSecondaryColor3fv) (const GLfloat* coord);
+
+        void (GL_APIENTRY * glFogCoordfv) (const GLfloat* coord);
+
+        void (GL_APIENTRY * glMultiTexCoord1f) (GLenum target,GLfloat coord);
+        void (GL_APIENTRY * glMultiTexCoord1fv) (GLenum target,const GLfloat* coord);
+        void (GL_APIENTRY * glMultiTexCoord2fv) (GLenum target,const GLfloat* coord);
+        void (GL_APIENTRY * glMultiTexCoord3fv) (GLenum target,const GLfloat* coord);
+        void (GL_APIENTRY * glMultiTexCoord4fv) (GLenum target,const GLfloat* coord);
+
+        void (GL_APIENTRY * glMultiTexCoord1d) (GLenum target,GLdouble coord);
+        void (GL_APIENTRY * glMultiTexCoord1dv) (GLenum target,const GLdouble* coord);
+        void (GL_APIENTRY * glMultiTexCoord2dv) (GLenum target,const GLdouble* coord);
+        void (GL_APIENTRY * glMultiTexCoord3dv) (GLenum target,const GLdouble* coord);
+        void (GL_APIENTRY * glMultiTexCoord4dv) (GLenum target,const GLdouble* coord);
+#if 0
+        void (GL_APIENTRY * glVertexAttrib1s) (unsigned int index, GLshort s);
+        void (GL_APIENTRY * glVertexAttrib1f) (unsigned int index, GLfloat f);
+        void (GL_APIENTRY * glVertexAttrib1d) (unsigned int index, GLdouble f);
+        void (GL_APIENTRY * glVertexAttrib2fv) (unsigned int index, const GLfloat * v);
+        void (GL_APIENTRY * glVertexAttrib3fv) (unsigned int index, const GLfloat * v);
+        void (GL_APIENTRY * glVertexAttrib4fv) (unsigned int index, const GLfloat * v);
+        void (GL_APIENTRY * glVertexAttrib2dv) (unsigned int index, const GLdouble * v);
+        void (GL_APIENTRY * glVertexAttrib3dv) (unsigned int index, const GLdouble * v);
+        void (GL_APIENTRY * glVertexAttrib4dv) (unsigned int index, const GLdouble * v);
+        void (GL_APIENTRY * glVertexAttrib4ubv) (unsigned int index, const GLubyte * v);
+        void (GL_APIENTRY * glVertexAttrib4Nubv) (unsigned int index, const GLubyte * v);
+
+        void (GL_APIENTRY * glGenBuffers) (GLsizei n, GLuint *buffers);
+        void (GL_APIENTRY * glBindBuffer (GLenum target, GLuint buffer);
+        void (GL_APIENTRY * glBufferData (GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+        void (GL_APIENTRY * glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
+        void (GL_APIENTRY * glDeleteBuffers (GLsizei n, const GLuint *buffers);
+        GLboolean (GL_APIENTRY * glIsBuffer (GLuint buffer);
+        void (GL_APIENTRY * glGetBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
+        GLvoid* (GL_APIENTRY * glMapBuffer (GLenum target, GLenum access);
+        GLboolean (GL_APIENTRY * glUnmapBuffer (GLenum target);
+        void (GL_APIENTRY * glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params);
+#endif
+
+
+        void (GL_APIENTRY * glGenOcclusionQueries) ( GLsizei n, GLuint *ids );
+        void (GL_APIENTRY * glDeleteOcclusionQueries) ( GLsizei n, const GLuint *ids );
+        GLboolean (GL_APIENTRY * glIsOcclusionQuery) ( GLuint id );
+        void (GL_APIENTRY * glBeginOcclusionQuery) ( GLuint id );
+        void (GL_APIENTRY * glEndOcclusionQuery) ();
+        void (GL_APIENTRY * glGetOcclusionQueryiv) ( GLuint id, GLenum pname, GLint *params );
+        void (GL_APIENTRY * glGetOcclusionQueryuiv) ( GLuint id, GLenum pname, GLuint *params );
+
+        void (GL_APIENTRY * glGetQueryiv) (GLenum target, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGenQueries) (GLsizei n, GLuint *ids);
+        void (GL_APIENTRY * glBeginQuery) (GLenum target, GLuint id);
+        void (GL_APIENTRY * glEndQuery) (GLenum target);
+        void (GL_APIENTRY * glQueryCounter) (GLuint id, GLenum target);
+        GLboolean (GL_APIENTRY * glIsQuery) (GLuint id);
+        void (GL_APIENTRY * glDeleteQueries) (GLsizei n, const GLuint *ids);
+        void (GL_APIENTRY * glGetQueryObjectiv) (GLuint id, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glGetQueryObjectuiv) (GLuint id, GLenum pname, GLuint *params);
+        void (GL_APIENTRY * glGetQueryObjectui64v) (GLuint id, GLenum pname, GLuint64 *params);
+        void (GL_APIENTRY * glGetInteger64v) (GLenum pname, GLint64 *params);
 
 };
 
 }
-
 #endif

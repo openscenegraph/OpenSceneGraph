@@ -966,8 +966,7 @@ void State::initializeExtensionProcs()
         _glMaxTextureCoords = 1;
     }
 
-    osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
-    if (extensions && extensions->isARBTimerQuerySupported())
+    if (_gl2Extentsions->isARBTimerQuerySupported)
     {
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::string rendererString = renderer ? (const char*)renderer : "";
@@ -982,7 +981,7 @@ void State::initializeExtensionProcs()
         else
         {
             GLint bits = 0;
-            extensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            _gl2Extentsions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
             setTimestampBits(bits);
         }
     }
@@ -1758,11 +1757,10 @@ void State::print(std::ostream& fout) const
 
 void State::frameCompleted()
 {
-    osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
-    if (extensions && getTimestampBits())
+    if (getTimestampBits())
     {
         GLint64 timestamp;
-        extensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
+        _gl2Extentsions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
         //OSG_NOTICE<<"State::frameCompleted() setting time stamp. timestamp="<<timestamp<<std::endl;
     }

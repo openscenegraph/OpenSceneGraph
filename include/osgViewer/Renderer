@@ -35,7 +35,7 @@ class OSGVIEWER_EXPORT OpenGLQuerySupport : public osg::Referenced
         virtual void initialize(osg::State* state, osg::Timer_t startTick);
     protected:
 
-        const osg::Drawable::Extensions*            _extensions;
+        const osg::GL2Extensions*            _extensions;
 };
 
 class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation

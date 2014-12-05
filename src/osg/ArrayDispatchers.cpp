@@ -196,7 +196,7 @@ void ArrayDispatchers::init()
 
 
 #ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE
-    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
+    GL2Extensions* extensions = _state->get<GL2Extensions>();
 
     #ifndef OSG_GLES1_AVAILABLE
         _vertexDispatchers->assign<GLfloat>(Array::Vec2ArrayType, glVertex2fv, 2);
@@ -216,9 +216,9 @@ void ArrayDispatchers::init()
     _colorDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glColor3dv, 3);
     _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType, glColor4dv, 4);
 
-    _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);
+    _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->glSecondaryColor3fv, 3);
 
-    _fogCoordDispatchers->assign<GLfloat>(Array::FloatArrayType, extensions->_glFogCoordfv, 1);
+    _fogCoordDispatchers->assign<GLfloat>(Array::FloatArrayType, extensions->glFogCoordfv, 1);
 #endif
 
     // pre allocate.
@@ -281,7 +281,7 @@ AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, A
 void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 {
     #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
+    GL2Extensions* extensions = _state->get<GL2Extensions>();
     #endif
 
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
@@ -300,10 +300,10 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
         else
         {
             #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, extensions->_glMultiTexCoord1fv, 1);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, extensions->_glMultiTexCoord2fv, 2);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, extensions->_glMultiTexCoord3fv, 3);
-            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, extensions->_glMultiTexCoord4fv, 4);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, extensions->glMultiTexCoord1fv, 1);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, extensions->glMultiTexCoord2fv, 2);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, extensions->glMultiTexCoord3fv, 3);
+            texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, extensions->glMultiTexCoord4fv, 4);
             #endif
         }
     }
@@ -312,16 +312,16 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 
 void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
 {
-    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
+    GL2Extensions* extensions = _state->get<GL2Extensions>();
 
     for(unsigned int i=_vertexAttribDispatchers.size(); i<=unit; ++i)
     {
         _vertexAttribDispatchers.push_back(new AttributeDispatchMap());
         AttributeDispatchMap& vertexAttribDispatcher = *_vertexAttribDispatchers[i];
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
-        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->glVertexAttrib1fv, 1);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->glVertexAttrib2fv, 2);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->glVertexAttrib3fv, 3);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->glVertexAttrib4fv, 4);
     }
 }
 

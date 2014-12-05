@@ -838,7 +838,7 @@ void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::RenderI
 if (!_geometry) return;
 
 
-    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(renderInfo.getContextID(),true);
+    const osg::GL2Extensions* extensions = renderInfo.getState()->get<osg::GL2Extensions>();
 
     // save OpenGL matrices
     glPushMatrix();

@@ -173,7 +173,7 @@ class OSG_EXPORT State : public Referenced
           * Note, safe to call outwith a the graphics context thread associated with this osg::State.
           * Returns NULL if the desired extension object has not been created yet.*/
         template<typename T>
-        const T* getExisting() const
+        const T* get() const
         {
             const std::type_info* id(&typeid(T));
             ExtensionMap::const_iterator itr = _extensionMap.find(id);
@@ -2778,7 +2778,7 @@ inline bool State::setActiveTextureUnit( unsigned int unit )
 
 // forward declare speciailization of State::get() method
 template<> inline GL2Extensions* State::get<GL2Extensions>() { return _gl2Extentsions.get(); }
-template<> inline const GL2Extensions* State::getExisting<GL2Extensions>() const { return _gl2Extentsions.get(); }
+template<> inline const GL2Extensions* State::get<GL2Extensions>() const { return _gl2Extentsions.get(); }
 
 }
 

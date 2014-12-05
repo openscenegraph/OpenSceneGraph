@@ -76,6 +76,18 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     isGpuShaderFp64Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
     isShaderAtomicCountersSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_atomic_counters");
 
+    isRectangleSupported = OSG_GL3_FEATURES ||
+                           isGLExtensionSupported(contextID,"GL_ARB_texture_rectangle") ||
+                           isGLExtensionSupported(contextID,"GL_EXT_texture_rectangle") ||
+                           isGLExtensionSupported(contextID,"GL_NV_texture_rectangle");
+
+    isCubeMapSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                          isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
+                          isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
+                          strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0;;
+
+
+
     isGlslSupported = ( glVersion >= 2.0f ) ||
                       ( isShaderObjectsSupported &&
                         isVertexShaderSupported &&
@@ -317,12 +329,6 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
 
     isTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query" );
     isARBTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_ARB_timer_query");
-
-    isRectangleSupported = OSG_GL3_FEATURES ||
-                           isGLExtensionSupported(contextID,"GL_ARB_texture_rectangle") ||
-                           isGLExtensionSupported(contextID,"GL_EXT_texture_rectangle") ||
-                           isGLExtensionSupported(contextID,"GL_NV_texture_rectangle");
-
 
     setGLExtensionFuncPtr(glFogCoordfv, "glFogCoordfv","glFogCoordfvEXT");
     setGLExtensionFuncPtr(glSecondaryColor3ubv, "glSecondaryColor3ubv","glSecondaryColor3ubvEXT");

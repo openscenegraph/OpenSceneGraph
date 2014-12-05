@@ -596,6 +596,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isGpuShaderFp64Supported;
         bool isShaderAtomicCountersSupported;
         bool isRectangleSupported;
+        bool isCubeMapSupported;
 
         void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         void (GL_APIENTRY * glDrawBuffers)(GLsizei n, const GLenum *bufs);

@@ -114,12 +114,8 @@ namespace
         {
             if (!Technique::validate(state)) return false;
 
-            osg::TextureCubeMap::Extensions *ext =
-                osg::TextureCubeMap::getExtensions(state.getContextID(), true);
-            if (ext) {
-                return ext->isCubeMapSupported();
-            }
-            return false;
+            osg::GL2Extensions *ext = state.get<osg::GL2Extensions>();
+            return ext ?  ext->isCubeMapSupported : false;
         }
 
     protected:

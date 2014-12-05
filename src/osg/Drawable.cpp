@@ -1112,13 +1112,13 @@ void Drawable::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
     else OSG_WARN<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
 }
 
-void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
+void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage) const
 {
     if (_glBufferData) _glBufferData(target, size, data, usage);
     else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
-void Drawable::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
+void Drawable::Extensions::glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) const
 {
     if (_glBufferSubData) _glBufferSubData(target, offset, size, data);
     else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
@@ -1140,7 +1140,7 @@ GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
     }
 }
 
-void Drawable::Extensions::glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const
+void Drawable::Extensions::glGetBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) const
 {
     if (_glGetBufferSubData) _glGetBufferSubData(target,offset,size,data);
     else OSG_WARN<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;

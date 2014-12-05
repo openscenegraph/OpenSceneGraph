@@ -203,9 +203,9 @@ void TextureCubeMap::apply(State& state) const
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
-    if (!extensions->isCubeMapSupported())
+    if (!extensions->isCubeMapSupported)
         return;
 
     // get the texture object for the current contextID.
@@ -366,9 +366,9 @@ void TextureCubeMap::apply(State& state) const
 void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset, int yoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
-    if (!extensions->isCubeMapSupported())
+    if (!extensions->isCubeMapSupported)
         return;
 
     if (_internalFormat==0) _internalFormat=GL_RGBA;
@@ -475,42 +475,4 @@ void TextureCubeMap::allocateMipmap(State& state) const
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
     }
-}
-
-typedef buffered_value< ref_ptr<TextureCubeMap::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-TextureCubeMap::Extensions* TextureCubeMap::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void TextureCubeMap::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-TextureCubeMap::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-TextureCubeMap::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isCubeMapSupported = rhs._isCubeMapSupported;
-}
-
-void TextureCubeMap::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isCubeMapSupported) _isCubeMapSupported = false;
-}
-
-void TextureCubeMap::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    _isCubeMapSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
-                          isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
-                          isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
-                          strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0;;
 }

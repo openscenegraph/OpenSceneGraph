@@ -28,6 +28,15 @@
 
 #include <string>
 
+
+// identify GLES 1.1
+#if (defined(GL_VERSION_ES_CM_1_0) && GL_VERSION_ES_CM_1_0 > 0) || \
+    (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)
+
+    #define OPENGLES_1_1_FOUND 1
+
+#endif
+
 #ifndef GL_SAMPLER_2D_ARRAY_EXT
     #define GL_SAMPLER_1D_ARRAY_EXT           0x8DC0
     #define GL_SAMPLER_2D_ARRAY_EXT           0x8DC1
@@ -524,6 +533,24 @@ typedef char GLchar;
 #define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #endif
+
+// for compatibility with gl.h headers that don't support VBO,
+//GL_VERSION_1_5 and GL_ARB_vertex_buffer_object provide these types for OpenGL
+//all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
+#if !defined(GL_VERSION_1_5) && !defined(GL_ARB_vertex_buffer_object) \
+  && !defined(GL_ES_VERSION_2_0) && !defined(OPENGLES_1_1_FOUND)
+    #if defined(_WIN64)
+        typedef __int64 GLintptr;
+        typedef __int64 GLsizeiptr;
+    #elif defined(__ia64__) || defined(__x86_64__) || defined(__ANDROID__)
+        typedef long int GLintptr;
+        typedef long int GLsizeiptr;
+    #else
+        typedef int GLintptr;
+        typedef int GLsizeiptr;
+    #endif
+#endif
+
 
 namespace osg {
 

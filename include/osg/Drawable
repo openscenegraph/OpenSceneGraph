@@ -562,11 +562,11 @@ class OSG_EXPORT Drawable : public Node
 
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
-            void glBufferData (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
-            void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
+            void glBufferData (GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage) const;
+            void glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data) const;
             void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
             GLboolean glIsBuffer (GLuint buffer) const;
-            void glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const;
+            void glGetBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) const;
             GLvoid* glMapBuffer (GLenum target, GLenum access) const;
             GLboolean glUnmapBuffer (GLenum target) const;
             void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const;
@@ -617,11 +617,11 @@ class OSG_EXPORT Drawable : public Node
 
             typedef void (GL_APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
             typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
-            typedef void (GL_APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
-            typedef void (GL_APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+            typedef void (GL_APIENTRY * BufferDataProc) (GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+            typedef void (GL_APIENTRY * BufferSubDataProc) (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
             typedef void (GL_APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
             typedef GLboolean (GL_APIENTRY * IsBufferProc) (GLuint buffer);
-            typedef void (GL_APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+            typedef void (GL_APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
             typedef GLvoid* (GL_APIENTRY * MapBufferProc) (GLenum target, GLenum access);
             typedef GLboolean (GL_APIENTRY * UnmapBufferProc) (GLenum target);
             typedef void (GL_APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);

@@ -25,36 +25,8 @@
 #include <list>
 #include <map>
 
-// identify GLES 1.1
-#if (defined(GL_VERSION_ES_CM_1_0) && GL_VERSION_ES_CM_1_0 > 0) || \
-    (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)
-
-    #define OPENGLES_1_1_FOUND 1
-
-#endif
-
-// for compatibility with gl.h headers that don't support VBO,
-//GL_VERSION_1_5 and GL_ARB_vertex_buffer_object provide these types for OpenGL
-//all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
-#if !defined(GL_VERSION_1_5) && !defined(GL_ARB_vertex_buffer_object) \
-  && !defined(GL_ES_VERSION_2_0) && !defined(OPENGLES_1_1_FOUND)
-    #if defined(_WIN64)
-        typedef __int64 GLintptr;
-        typedef __int64 GLsizeiptr;
-    #elif defined(__ia64__) || defined(__x86_64__) || defined(__ANDROID__)
-        typedef long int GLintptr;
-        typedef long int GLsizeiptr;
-    #else
-        typedef int GLintptr;
-        typedef int GLsizeiptr;
-    #endif
-#endif
-
 #ifndef GL_ARB_vertex_buffer_object
     #define GL_ARB_vertex_buffer_object
-
-    typedef GLintptr GLintptrARB;
-    typedef GLsizeiptr GLsizeiptrARB;
 
     #define GL_ARRAY_BUFFER_ARB               0x8892
     #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
@@ -228,7 +200,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         inline GLuint& getGLObjectID() { return _glObjectID; }
         inline GLuint getGLObjectID() const { return _glObjectID; }
-        inline GLsizeiptrARB getOffset(unsigned int i) const { return _bufferEntries[i].offset; }
+        inline GLsizeiptr getOffset(unsigned int i) const { return _bufferEntries[i].offset; }
 
         inline void bindBuffer();
 
@@ -259,92 +231,6 @@ class OSG_EXPORT GLBufferObject : public Referenced
         static void discardAllDeletedBufferObjects(unsigned int contextID);
         static void flushDeletedBufferObjects(unsigned int contextID,double currentTime, double& availbleTime);
         static void releaseGLBufferObject(unsigned int contextID, GLBufferObject* to);
-#if 0
-        /** Extensions class which encapsulates the querying of extensions and
-        * associated function pointers, and provide convenience wrappers to
-        * check for the extensions or use the associated functions.*/
-        class OSG_EXPORT Extensions : public osg::Referenced
-        {
-        public:
-            Extensions(unsigned int contextID);
-
-            Extensions(const Extensions& rhs);
-
-            void lowestCommonDenominator(const Extensions& rhs);
-
-            void setupGLExtensions(unsigned int contextID);
-
-            bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
-            bool isPBOSupported() const { return _isPBOSupported; }
-            bool isUniformBufferObjectSupported() const { return _isUniformBufferObjectSupported; }
-            bool isTBOSupported() const { return _isTBOSupported; }
-
-            void glGenBuffers (GLsizei n, GLuint *buffers) const;
-            void glBindBuffer (GLenum target, GLuint buffer) const;
-            void glBufferData (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
-            void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
-            void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
-            GLboolean glIsBuffer (GLuint buffer) const;
-            void glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const;
-            GLvoid* glMapBuffer (GLenum target, GLenum access) const;
-            GLboolean glUnmapBuffer (GLenum target) const;
-            void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const;
-            void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const;
-            void glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-            void glBindBufferBase (GLenum target, GLuint index, GLuint buffer);
-            void glTexBuffer( GLenum target, GLenum internalFormat, GLuint buffer ) const;
-
-        protected:
-
-            typedef void (GL_APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
-            typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
-            typedef void (GL_APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
-            typedef void (GL_APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
-            typedef void (GL_APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
-            typedef GLboolean (GL_APIENTRY * IsBufferProc) (GLuint buffer);
-            typedef void (GL_APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
-            typedef GLvoid* (GL_APIENTRY * MapBufferProc) (GLenum target, GLenum access);
-            typedef GLboolean (GL_APIENTRY * UnmapBufferProc) (GLenum target);
-            typedef void (GL_APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
-            typedef void (GL_APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
-            typedef void (GL_APIENTRY * BindBufferRangeProc) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-            typedef void (GL_APIENTRY * BindBufferBaseProc) (GLenum target, GLuint index, GLuint buffer);
-            typedef void (GL_APIENTRY *TexBufferProc ) ( GLenum target, GLenum internalFormat, GLuint buffer );
-
-
-            GenBuffersProc          _glGenBuffers;
-            BindBufferProc          _glBindBuffer;
-            BufferDataProc          _glBufferData;
-            BufferSubDataProc       _glBufferSubData;
-            DeleteBuffersProc       _glDeleteBuffers;
-            IsBufferProc            _glIsBuffer;
-            GetBufferSubDataProc    _glGetBufferSubData;
-            MapBufferProc           _glMapBuffer;
-            UnmapBufferProc         _glUnmapBuffer;
-            GetBufferParameterivProc _glGetBufferParameteriv;
-            GetBufferPointervProc   _glGetBufferPointerv;
-            BindBufferRangeProc     _glBindBufferRange;
-            BindBufferBaseProc      _glBindBufferBase;
-            TexBufferProc           _glTexBuffer;
-
-            bool _isPBOSupported;
-            bool _isUniformBufferObjectSupported;
-            bool _isTBOSupported;
-        };
-
-        /** Function to call to get the extension of a specified context.
-        * If the Extension object for that context has not yet been created
-        * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-        * If 'createIfNotInitalized' is true then the Extensions object is
-        * automatically created.  However, in this case the extension object is
-        * only created with the graphics context associated with ContextID..*/
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions allows users to override the extensions across graphics contexts.
-        * typically used when you have different extensions supported across graphics pipes
-        * but need to ensure that they all use the same low common denominator extensions.*/
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-#endif
 
         bool hasAllBufferDataBeenRead() const;
 

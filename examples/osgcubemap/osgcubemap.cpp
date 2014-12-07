@@ -43,21 +43,21 @@
 void create_specular_highlights(osg::Node *node)
 {
     osg::StateSet *ss = node->getOrCreateStateSet();
-    
+
     // create and setup the texture object
     osg::TextureCubeMap *tcm = new osg::TextureCubeMap;
     tcm->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
     tcm->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
     tcm->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
     tcm->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-    tcm->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);    
+    tcm->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
 
     // generate the six highlight map images (light direction = [1, 1, -1])
     osgUtil::HighlightMapGenerator *mapgen = new osgUtil::HighlightMapGenerator(
         osg::Vec3(1, 1, -1),            // light direction
         osg::Vec4(1, 0.9f, 0.8f, 1),    // light color
         8);                             // specular exponent
-    
+
     mapgen->generateMap();
 
     // assign the six images to the texture object
@@ -77,7 +77,7 @@ void create_specular_highlights(osg::Node *node)
     ss->setTextureAttributeAndModes(0, tg, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
     // use TexEnvCombine to add the highlights to the original lighting
-    osg::TexEnvCombine *te = new osg::TexEnvCombine;    
+    osg::TexEnvCombine *te = new osg::TexEnvCombine;
     te->setCombine_RGB(osg::TexEnvCombine::ADD);
     te->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
     te->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
     // construct the viewer.
     osgViewer::Viewer viewer;
-    
+
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
 
@@ -108,32 +108,16 @@ int main(int argc, char *argv[])
 
     // create specular highlights
     create_specular_highlights(rootnode);
-    
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(rootnode);
-    
+
     // create the windows and run the threads.
     viewer.realize();
-
-    // now check to see if texture cube map is supported.
-    for(unsigned int contextID = 0; 
-        contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
-        ++contextID)
-    {
-        osg::TextureCubeMap::Extensions* tcmExt = osg::TextureCubeMap::getExtensions(contextID,false);
-        if (tcmExt)
-        {
-            if (!tcmExt->isCubeMapSupported())
-            {
-                std::cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
-                return 1;
-            }
-        }
-    }
 
     return viewer.run();
 }

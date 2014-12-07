@@ -18,7 +18,7 @@
 
 namespace osg {
 
-/** 
+/**
  *  osg::SampleMaski does nothing if OpenGL 3.2 or ARB_texture_multisample are not available.
 */
 class OSG_EXPORT SampleMaski : public StateAttribute
@@ -34,53 +34,12 @@ class OSG_EXPORT SampleMaski : public StateAttribute
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const;
-        
+
         inline void setMask(unsigned int mask, unsigned int maskNumber = 0u ) { _sampleMask[maskNumber] = mask; }
-        
+
         inline unsigned int getMask(unsigned int maskNumber = 0u) const { return _sampleMask[maskNumber]; }
 
         virtual void apply(State& state) const;
-
-    public:
-
-        /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provide convenience wrappers to
-          * check for the extensions or use the associated functions.
-        */
-        class OSG_EXPORT Extensions : public osg::Referenced
-        {
-            public:
-                Extensions(unsigned int contextID);
-
-                Extensions(const Extensions& rhs);
-
-                void lowestCommonDenominator(const Extensions& rhs);
-
-                void setupGLExtensions(unsigned int contextID);
-
-                bool isOpenGL32upported() const { return _isOpenGL32upported; }
-                bool isTextureMultisampleSupported() const { return _isTextureMultisampleSupported; }
-                bool isSampleMaskiSupported() const { return _isSampleMaskiSupported; }
-
-                void glSampleMaski(GLuint maskNumber, GLbitfield mask) const;
-
-            protected:
-
-                ~Extensions() {}
-                
-                bool _isOpenGL32upported;
-                bool _isTextureMultisampleSupported;
-                bool _isSampleMaskiSupported;
-
-                typedef void (GL_APIENTRY * SampleMaski) ( GLuint maskNumber, GLbitfield mask );
-                
-                SampleMaski _glSampleMaski;
-        };
-
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-
 
     protected:
 

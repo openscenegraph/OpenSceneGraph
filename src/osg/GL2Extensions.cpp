@@ -388,6 +388,15 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glQueryCounter, "glQueryCounter");
     setGLExtensionFuncPtr(glGetInteger64v, "glGetInteger64v");
 
+
+    // SampleMaski functionality
+    isTextureMultisampleSupported = isGLExtensionSupported(contextID, "GL_ARB_texture_multisample");
+    isOpenGL32upported = getGLVersionNumber() >= 3.2;
+
+    // function pointers
+    setGLExtensionFuncPtr(glSampleMaski, "glSampleMaski");
+    // protect against buggy drivers (maybe not necessary)
+    isSampleMaskiSupported = glSampleMaski!=0;
 }
 
 

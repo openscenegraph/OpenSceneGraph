@@ -51,93 +51,16 @@ int SampleMaski::compare(const StateAttribute& sa) const
 void SampleMaski::apply(State& state) const
 {
     // get "per-context" extensions
-    const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
-    
-    if ( (extensions->isTextureMultisampleSupported()) || (extensions->isOpenGL32upported()) || (extensions->isSampleMaskiSupported())  )
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
+
+    if ( (extensions->isTextureMultisampleSupported) || (extensions->isOpenGL32upported) || (extensions->isSampleMaskiSupported)  )
     {
         extensions->glSampleMaski(0u, _sampleMask[0u]);
-//For now we use only 32-bit Sample mask
-//        extensions->glSampleMaski(1u, _sampleMask[1u]);
+        //For now we use only 32-bit Sample mask
+        //        extensions->glSampleMaski(1u, _sampleMask[1u]);
         return;
     }
 
-    OSG_WARN << "SampleMaski failed as the required graphics capabilities were\n"
-                "   not found (contextID " << contextID << "). OpenGL 3.2 or \n"
-                "   ARB_texture_multisample extension is required." << std::endl;
+    OSG_WARN << "SampleMaski failed as the required graphics capabilities were not found. \n"
+                "OpenGL 3.2 or  ARB_texture_multisample extension is required." << std::endl;
 }
-
-
-typedef buffered_value< ref_ptr<SampleMaski::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-SampleMaski::Extensions* SampleMaski::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void SampleMaski::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-SampleMaski::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-SampleMaski::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isTextureMultisampleSupported = rhs._isTextureMultisampleSupported;
-    _isOpenGL32upported = rhs._isOpenGL32upported;
-    _isSampleMaskiSupported = rhs._isSampleMaskiSupported;
-    _glSampleMaski = rhs._glSampleMaski;
-}
-
-
-void SampleMaski::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isTextureMultisampleSupported) _isTextureMultisampleSupported = false;
-    if (!rhs._isOpenGL32upported) _isOpenGL32upported = false;
-    if (!rhs._isSampleMaskiSupported) _isSampleMaskiSupported = false;
-
-    if (!rhs._glSampleMaski) _glSampleMaski = NULL;
-}
-
-void SampleMaski::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    // extension support
-    _isTextureMultisampleSupported = isGLExtensionSupported(contextID, "GL_ARB_texture_multisample");
-    _isOpenGL32upported = getGLVersionNumber() >= 3.2;
-
-    // function pointers
-    setGLExtensionFuncPtr(_glSampleMaski, "glSampleMaski");
-
-
-    // protect against buggy drivers (maybe not necessary)
-    if (!_glSampleMaski) _isSampleMaskiSupported = false;
-
-    // notify
-    if( _isOpenGL32upported )
-    {
-       OSG_INFO << "SampleMaski is going to use OpenGL 3.2 API (contextID " << contextID << ")." << std::endl;
-    }
-    else if( _isTextureMultisampleSupported )
-    {
-       OSG_INFO << "SampleMaski is going to use GL_ARB_texture_multisample extension (contextID " << contextID << ")." << std::endl;
-    }
-    else
-    {
-       OSG_INFO << "SampleMaski did not found required graphics capabilities\n"
-                   "   (contextID " << contextID << "). OpenGL 3.2 or \n"
-                   "   GL_ARB_texture_multisample extension is required." << std::endl;
-    }
-}
-
-void SampleMaski::Extensions::glSampleMaski(GLuint maskNumber, GLbitfield mask) const
-{
-    _glSampleMaski(maskNumber, mask);
-}
-

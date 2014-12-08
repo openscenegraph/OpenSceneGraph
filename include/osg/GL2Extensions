@@ -780,7 +780,6 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
 
         // Vertex Array extensions
-        bool isVertexProgramSupported;
         bool isSecondaryColorSupported;
         bool isFogCoordSupported;
         bool isMultiTexSupported;
@@ -834,6 +833,17 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isSampleMaskiSupported;
 
         void (GL_APIENTRY * glSampleMaski) (GLuint maskNumber, GLbitfield mask);
+
+        // Vertex/Fragment Programs
+        bool isVertexProgramSupported;
+        bool isFragmentProgramSupported;
+
+        void (GL_APIENTRY * glBindProgram) (GLenum target, GLuint id);
+        void (GL_APIENTRY * glGenPrograms) (GLsizei n, GLuint *programs);
+        void (GL_APIENTRY * glDeletePrograms) (GLsizei n, GLuint *programs);
+        void (GL_APIENTRY * glProgramString) (GLenum target, GLenum format, GLsizei len, const void *string);
+        void (GL_APIENTRY * glProgramLocalParameter4fv) (GLenum target, GLuint index, const GLfloat *params);
+
 
 };
 

@@ -404,10 +404,10 @@ int main(int argc, char *argv[])
         ++itr)
     {
         unsigned int contextID = (*itr)->getState()->getContextID();
-        osg::VertexProgram::Extensions* vpExt = osg::VertexProgram::getExtensions(contextID,false);
+        osg::GL2Extensions* vpExt = osg::GL2Extensions::Get(contextID,false);
         if (vpExt)
         {
-            if (!vpExt->isVertexProgramSupported())
+            if (!vpExt->isVertexProgramSupported)
             {
                 std::cout<<"Warning: ARB_vertex_program not supported by OpenGL drivers, unable to run application."<<std::endl;
                 return 1;

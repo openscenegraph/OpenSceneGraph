@@ -56,7 +56,7 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
 
-        const Extensions* extensions = getExtensions(contextID,true);
+        const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
 
         VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
 
@@ -127,10 +127,9 @@ void VertexProgram::apply(State& state) const
 {
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 
-    const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
-    if (!extensions->isVertexProgramSupported())
+    if (!extensions->isVertexProgramSupported)
         return;
 
 
@@ -211,120 +210,5 @@ void VertexProgram::releaseGLObjects(State* state) const
             VertexProgram::deleteVertexProgramObject(contextID,_vertexProgramIDList[contextID]);
             _vertexProgramIDList[contextID] = 0;
         }
-    }
-}
-
-
-typedef buffered_value< ref_ptr<VertexProgram::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-VertexProgram::Extensions* VertexProgram::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void VertexProgram::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-VertexProgram::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-VertexProgram::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isVertexProgramSupported = rhs._isVertexProgramSupported;
-    _glBindProgram = rhs._glBindProgram;
-    _glGenPrograms = rhs._glGenPrograms;
-    _glDeletePrograms = rhs._glDeletePrograms;
-    _glProgramString = rhs._glProgramString;
-    _glProgramLocalParameter4fv = rhs._glProgramLocalParameter4fv;
-}
-
-
-void VertexProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isVertexProgramSupported) _isVertexProgramSupported = false;
-
-    if (!rhs._glBindProgram) _glBindProgram = 0;
-    if (!rhs._glGenPrograms) _glGenPrograms = 0;
-    if (!rhs._glDeletePrograms) _glDeletePrograms = 0;
-    if (!rhs._glProgramString) _glProgramString = 0;
-    if (!rhs._glProgramLocalParameter4fv) _glProgramLocalParameter4fv = 0;
-
-}
-
-void VertexProgram::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    _isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
-
-    setGLExtensionFuncPtr(_glBindProgram,"glBindProgramARB");
-    setGLExtensionFuncPtr(_glGenPrograms, "glGenProgramsARB");
-    setGLExtensionFuncPtr(_glDeletePrograms, "glDeleteProgramsARB");
-    setGLExtensionFuncPtr(_glProgramString, "glProgramStringARB");
-    setGLExtensionFuncPtr(_glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB");
-}
-
-void VertexProgram::Extensions::glBindProgram(GLenum target, GLuint id) const
-{
-    if (_glBindProgram)
-    {
-        _glBindProgram(target,id);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glBindProgram not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void VertexProgram::Extensions::glGenPrograms(GLsizei n, GLuint *programs) const
-{
-    if (_glGenPrograms)
-    {
-        _glGenPrograms(n,programs);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glGenPrograms not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void VertexProgram::Extensions::glDeletePrograms(GLsizei n, GLuint *programs) const
-{
-    if (_glDeletePrograms)
-    {
-        _glDeletePrograms(n,programs);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glDeletePrograms not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void VertexProgram::Extensions::glProgramString(GLenum target, GLenum format, GLsizei len, const void *string) const
-{
-    if (_glProgramString)
-    {
-        _glProgramString(target,format, len, string);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glProgramString not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void VertexProgram::Extensions::glProgramLocalParameter4fv(GLenum target, GLuint index, const GLfloat *params) const
-{
-    if (_glProgramLocalParameter4fv)
-    {
-        _glProgramLocalParameter4fv(target, index, params);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glProgramLocalParameter4fv not supported by OpenGL driver"<<std::endl;
     }
 }

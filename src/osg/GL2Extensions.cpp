@@ -320,7 +320,6 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
 
 
     // Vertex Array extensions
-    isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
     isSecondaryColorSupported = isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
     isFogCoordSupported = isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
     isMultiTexSupported = isGLExtensionSupported(contextID,"GL_ARB_multitexture");
@@ -397,6 +396,20 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glSampleMaski, "glSampleMaski");
     // protect against buggy drivers (maybe not necessary)
     isSampleMaskiSupported = glSampleMaski!=0;
+
+
+    // old styple Vertex/Fragment Programs
+    isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
+    isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
+
+    setGLExtensionFuncPtr(glBindProgram,"glBindProgramARB");
+    setGLExtensionFuncPtr(glGenPrograms, "glGenProgramsARB");
+    setGLExtensionFuncPtr(glDeletePrograms, "glDeleteProgramsARB");
+    setGLExtensionFuncPtr(glProgramString, "glProgramStringARB");
+    setGLExtensionFuncPtr(glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB");
+
+
+
 }
 
 

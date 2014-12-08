@@ -1364,19 +1364,41 @@ void CullVisitor::apply(osg::ClearNode& node)
 namespace osgUtil
 {
 
-class RenderStageCache : public osg::Object
+class RenderStageCache : public osg::Object, public osg::Observer
 {
     public:
 
         RenderStageCache() {}
         RenderStageCache(const RenderStageCache&, const osg::CopyOp&) {}
+        virtual ~RenderStageCache()
+        {
+            for(RenderStageMap::iterator itr = _renderStageMap.begin();
+                itr != _renderStageMap.end();
+                ++itr)
+            {
+                itr->first->removeObserver(this);
+            }
+        }
 
         META_Object(osgUtil, RenderStageCache);
+
+        virtual void objectDeleted(void* object)
+        {
+            osg::Referenced* ref = reinterpret_cast<osg::Referenced*>(object);
+            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(ref);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            RenderStageMap::iterator itr = _renderStageMap.find(cv);
+            if (itr!=_renderStageMap.end())
+            {
+                _renderStageMap.erase(cv);
+            }
+        }
 
         void setRenderStage(CullVisitor* cv, RenderStage* rs)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             _renderStageMap[cv] = rs;
+            cv->addObserver(this);
         }
 
         RenderStage* getRenderStage(osgUtil::CullVisitor* cv)

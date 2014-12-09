@@ -20,7 +20,6 @@
 #include <osg/Vec4>
 
 
-
 namespace osg {
 
 /** Encapsulates OpenGL blend/transparency state. */
@@ -65,53 +64,6 @@ class OSG_EXPORT BlendColor : public StateAttribute
         inline const osg::Vec4& getConstantColor() const { return _constantColor; }
 
         virtual void apply(State& state) const;
-
-
-
-
-        /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convenience wrappers for
-          * calling extension functions. */
-        class OSG_EXPORT Extensions : public osg::Referenced
-        {
-            public:
-                Extensions(unsigned int contextID);
-
-                Extensions(const Extensions& rhs);
-
-                void lowestCommonDenominator(const Extensions& rhs);
-
-                void setupGLExtensions(unsigned int contextID);
-
-                void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
-                bool isBlendColorSupported() const { return _isBlendColorSupported; }
-
-                void glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const;
-
-            protected:
-
-                ~Extensions() {}
-
-
-                typedef void (GL_APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-                bool                _isBlendColorSupported;
-                GLBlendColorProc    _glBlendColor;
-
-        };
-
-        /** Returns the Extensions object for the given context.
-          * If createIfNotInitalized is true and the Extensions object doesn't
-          * exist, getExtensions() creates it on the given context.
-          * Returns NULL if createIfNotInitalized is false and the Extensions
-          * object doesn't exist. */
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions() allows users to override the extensions across graphics contexts.
-          * Typically used when you have different extensions supported across graphics pipes,
-          * but need to ensure that they all use the same low common denominator extensions. */
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-
-
 
     protected :
 

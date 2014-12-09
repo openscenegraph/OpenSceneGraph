@@ -115,7 +115,6 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
             << std::endl;
 
 
-    setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate");
     setGLExtensionFuncPtr(glDrawBuffers, "glDrawBuffers", "glDrawBuffersARB");
     setGLExtensionFuncPtr(glStencilOpSeparate, "glStencilOpSeparate");
     setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate");
@@ -525,6 +524,36 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     maxLayerCount = 0;
     glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
 
+    // Blending
+    isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                            isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
+                            strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+
+    setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT");
+
+    bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    isBlendEquationSupported = bultInSupport ||
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
+        strncmp((const char*)glGetString(GL_VERSION), "1.2", 3) >= 0;
+
+
+    isBlendEquationSeparateSupported = bultInSupport ||
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
+        strncmp((const char*)glGetString(GL_VERSION), "2.0", 3) >= 0;
+
+
+    isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
+    isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
+
+    setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
+    setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT");
+
+    setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB");
+    setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB");
+
+    // glEnablei/glDisabli
+    setGLExtensionFuncPtr(glEnablei, "glEnablei");
+    setGLExtensionFuncPtr(glDisablei, "glDisablei");
 
 }
 

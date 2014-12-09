@@ -598,7 +598,6 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isRectangleSupported;
         bool isCubeMapSupported;
 
-        void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         void (GL_APIENTRY * glDrawBuffers)(GLsizei n, const GLenum *bufs);
         void (GL_APIENTRY * glStencilOpSeparate)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
         void (GL_APIENTRY * glStencilFuncSeparate)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
@@ -911,6 +910,25 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool isTexture2DArraySupported;
         GLint maxLayerCount;
         GLint max2DSize;
+
+
+        // Blending
+        bool isBlendColorSupported;
+        bool isBlendEquationSupported;
+        bool isBlendEquationSeparateSupported;
+        bool isSGIXMinMaxSupported;
+        bool isLogicOpSupported;
+
+        void (GL_APIENTRY * glBlendColor) (GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha);
+        void (GL_APIENTRY * glBlendEquation)(GLenum mode);
+        void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
+        void (GL_APIENTRY * glBlendEquationi)(GLuint buf,  GLenum mode);
+        void (GL_APIENTRY * glBlendEquationSeparatei)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+
+
+        // glEnablei/glDisabeli
+        void (GL_APIENTRY * glEnablei) (GLenum capability, GLuint buf);
+        void (GL_APIENTRY * glDisablei) (GLenum capability, GLuint buf);
 
 };
 

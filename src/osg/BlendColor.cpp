@@ -35,78 +35,12 @@ BlendColor::~BlendColor()
 
 void BlendColor::apply(State& state) const
 {
-    // get the contextID (user defined ID of 0 upwards) for the
-    // current OpenGL context.
-    const unsigned int contextID = state.getContextID();
-
-    const Extensions* extensions = getExtensions(contextID,true);
-
-    if (!extensions->isBlendColorSupported())
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    if (!extensions->isBlendColorSupported)
     {
         OSG_WARN<<"Warning: BlendColor::apply(..) failed, BlendColor is not support by OpenGL driver."<<std::endl;
         return;
     }
 
-    extensions->glBlendColor(_constantColor[0], _constantColor[1],
-                             _constantColor[2], _constantColor[3]);
+    extensions->glBlendColor(_constantColor[0], _constantColor[1], _constantColor[2], _constantColor[3]);
 }
-
-
-
-
-
-typedef buffered_value< ref_ptr<BlendColor::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-BlendColor::Extensions* BlendColor::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void BlendColor::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-
-BlendColor::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-BlendColor::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isBlendColorSupported = rhs._isBlendColorSupported;
-    _glBlendColor = rhs._glBlendColor;
-}
-
-void BlendColor::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isBlendColorSupported)  _isBlendColorSupported = false;
-    if (!rhs._glBlendColor)           _glBlendColor = 0;
-}
-
-void BlendColor::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    _isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
-                             isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
-                             strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
-
-    setGLExtensionFuncPtr(_glBlendColor, "glBlendColor", "glBlendColorEXT");
-}
-
-void BlendColor::Extensions::glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const
-{
-    if (_glBlendColor)
-    {
-        _glBlendColor(red, green, blue, alpha);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glBlendColor not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-

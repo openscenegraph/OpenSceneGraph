@@ -103,15 +103,6 @@ class OSG_EXPORT Capabilityi : public osg::Capability
         /** Get the renderbuffer index of the Enablei. */
         unsigned int getIndex() const { return _index; }
 
-        /** Encapsulates queries of extension availability, obtains extension function pointers. */
-        struct OSG_EXPORT Extensions : public osg::Referenced
-        {
-            Extensions(unsigned int contextID);
-
-            void (GL_APIENTRY * glEnablei) (GLenum capability, GLuint buf);
-            void (GL_APIENTRY * glDisablei) (GLenum capability, GLuint buf);
-        };
-
 protected:
 
         virtual ~Capabilityi();

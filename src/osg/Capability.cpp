@@ -27,13 +27,6 @@ Capability::~Capability()
 {
 }
 
-
-Capabilityi::Extensions::Extensions(unsigned int contextID)
-{
-    setGLExtensionFuncPtr(glEnablei, "glEnablei");
-    setGLExtensionFuncPtr(glDisablei, "glDisablei");
-}
-
 Capabilityi::Capabilityi():
     _index(0)
 {
@@ -45,7 +38,7 @@ Capabilityi::~Capabilityi()
 
 void Enablei::apply(State& state) const
 {
-    const Extensions* extensions = state.get<Extensions>();
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
     if (extensions->glEnablei)
     {
         OSG_NOTICE<<"extensions->glEnablei("<<_capability<<", "<<_index<<")"<<std::endl;
@@ -59,7 +52,7 @@ void Enablei::apply(State& state) const
 
 void Disablei::apply(State& state) const
 {
-    const Extensions* extensions = state.get<Extensions>();
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
     if (extensions->glDisablei)
     {
         OSG_NOTICE<<"extensions->glDisablei("<<_capability<<", "<<_index<<")"<<std::endl;

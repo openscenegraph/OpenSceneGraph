@@ -19,32 +19,6 @@
 
 using namespace osg;
 
-
-// Set up extensions
-BlendEquation::Extensions::Extensions(unsigned int contextID)
-{
-
-    bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
-    isBlendEquationSupported = bultInSupport ||
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
-        strncmp((const char*)glGetString(GL_VERSION), "1.2", 3) >= 0;
-
-
-    isBlendEquationSeparateSupported = bultInSupport ||
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
-        strncmp((const char*)glGetString(GL_VERSION), "2.0", 3) >= 0;
-
-
-    isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
-    isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
-
-    setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
-    setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT");
-
-    setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB");
-    setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB");
-}
-
 BlendEquation::BlendEquation():
     _equationRGB(FUNC_ADD),
     _equationAlpha(FUNC_ADD)
@@ -69,7 +43,7 @@ BlendEquation::~BlendEquation()
 
 void BlendEquation::apply(State& state) const
 {
-    const Extensions* extensions = state.get<Extensions>();
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
     if (!extensions->isBlendEquationSupported)
     {

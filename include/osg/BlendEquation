@@ -98,24 +98,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
 
         virtual void apply(State& state) const;
 
-        /** Encapsulates queries of extension availability, obtains extension function pointers. */
-        struct OSG_EXPORT Extensions : public osg::Referenced
-        {
-            Extensions(unsigned int contextID);
-
-            bool                isBlendEquationSupported;
-            bool                isBlendEquationSeparateSupported;
-            bool                isSGIXMinMaxSupported;
-            bool                isLogicOpSupported;
-
-            void (GL_APIENTRY * glBlendEquation)(GLenum mode);
-            void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
-
-            void (GL_APIENTRY * glBlendEquationi)(GLuint buf,  GLenum mode);
-            void (GL_APIENTRY * glBlendEquationSeparatei)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
-        };
-
-    protected :
+protected :
 
         virtual ~BlendEquation();
 

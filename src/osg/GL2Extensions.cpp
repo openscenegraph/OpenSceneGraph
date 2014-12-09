@@ -116,9 +116,6 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
 
 
     setGLExtensionFuncPtr(glDrawBuffers, "glDrawBuffers", "glDrawBuffersARB");
-    setGLExtensionFuncPtr(glStencilOpSeparate, "glStencilOpSeparate");
-    setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate");
-    setGLExtensionFuncPtr(glStencilMaskSeparate, "glStencilMaskSeparate");
     setGLExtensionFuncPtr(glAttachShader, "glAttachShader", "glAttachObjectARB");
     setGLExtensionFuncPtr(glBindAttribLocation, "glBindAttribLocation", "glBindAttribLocationARB");
     setGLExtensionFuncPtr(glCompileShader, "glCompileShader", "glCompileShaderARB");
@@ -551,10 +548,24 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB");
     setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB");
 
+
     // glEnablei/glDisabli
     setGLExtensionFuncPtr(glEnablei, "glEnablei");
     setGLExtensionFuncPtr(glDisablei, "glDisablei");
 
+
+    // Stencil`
+    isStencilWrapSupported = isGLExtensionOrVersionSupported(contextID, "GL_EXT_stencil_wrap", 1.4f);
+    isStencilTwoSidedSupported = isGLExtensionSupported(contextID, "GL_EXT_stencil_two_side");
+    isOpenGL20Supported = getGLVersionNumber() >= 2.0;
+    isSeparateStencilSupported = isGLExtensionSupported(contextID, "GL_ATI_separate_stencil");
+
+    // function pointers
+    setGLExtensionFuncPtr(glActiveStencilFace, "glActiveStencilFaceEXT");
+    setGLExtensionFuncPtr(glStencilOpSeparate, "glStencilOpSeparate", "glStencilOpSeparateATI");
+    setGLExtensionFuncPtr(glStencilMaskSeparate, "glStencilMaskSeparate");
+    setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate", "glStencilFuncSeparateATI");
+    setGLExtensionFuncPtr(glStencilFuncSeparateATI, "glStencilFuncSeparateATI");
 }
 
 

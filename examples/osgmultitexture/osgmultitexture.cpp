@@ -39,22 +39,22 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
-    
+
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!rootnode) rootnode = osgDB::readNodeFile("cessnafire.osgt");
-    
+
     if (!rootnode)
     {
         osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
-    
+
     osg::Image* image = osgDB::readImageFile("Images/reflect.rgb");
     if (image)
     {
@@ -72,7 +72,7 @@ int main( int argc, char **argv )
         stateset->setTextureAttributeAndModes(1,texture,osg::StateAttribute::ON);
         stateset->setTextureAttributeAndModes(1,texgen,osg::StateAttribute::ON);
         stateset->setTextureAttribute(1,texenv);
-        
+
         rootnode->setStateSet(stateset);
     }
     else
@@ -83,21 +83,21 @@ int main( int argc, char **argv )
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
-    
+
     // create the windows and run the threads.
     viewer.realize();
 
-    for(unsigned int contextID = 0; 
+    for(unsigned int contextID = 0;
         contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
         ++contextID)
     {
-        osg::Texture::Extensions* textExt = osg::Texture::getExtensions(contextID,false);
+        osg::GL2Extensions* textExt = osg::GL2Extensions::Get(contextID,false);
         if (textExt)
         {
-            if (!textExt->isMultiTexturingSupported())
+            if (!textExt->isMultiTexturingSupported)
             {
                 std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
                 return 1;

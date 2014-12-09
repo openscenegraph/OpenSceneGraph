@@ -845,6 +845,73 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glProgramLocalParameter4fv) (GLenum target, GLuint index, const GLfloat *params);
 
 
+        // Texture Extensions
+        bool isMultiTexturingSupported;
+        bool isTextureFilterAnisotropicSupported;
+        bool isTextureSwizzleSupported;
+        bool isTextureCompressionARBSupported;
+        bool isTextureCompressionS3TCSupported;
+        bool isTextureCompressionPVRTC2BPPSupported;
+        bool isTextureCompressionPVRTC4BPPSupported;
+        bool isTextureCompressionETCSupported;
+        bool isTextureCompressionETC2Supported;
+        bool isTextureCompressionRGTCSupported;
+        bool isTextureCompressionPVRTCSupported;
+        bool isTextureMirroredRepeatSupported;
+        bool isTextureEdgeClampSupported;
+        bool isTextureBorderClampSupported;
+        bool isGenerateMipMapSupported;
+        bool preferGenerateMipmapSGISForPowerOfTwo;
+        bool isTextureMultisampledSupported;
+        bool isShadowSupported;
+        bool isShadowAmbientSupported;
+        bool isTextureMaxLevelSupported;
+        GLint maxTextureSize;
+        bool _isTextureStorageEnabled;
+        bool isClientStorageSupported;
+        bool isTextureIntegerEXTSupported;
+        bool isTextureStorageEnabled;
+
+        bool isTexStorage2DSupported() const { return glTexStorage2D != 0; }
+        bool isCompressedTexImage2DSupported() const { return glCompressedTexImage2D!=0; }
+        bool isCompressedTexSubImage2DSupported() const { return glCompressedTexSubImage2D!=0; }
+        bool isBindImageTextureSupported() const { return glBindImageTexture!=0; }
+        bool isNonPowerOfTwoTextureMipMappedSupported;
+        bool isNonPowerOfTwoTextureNonMipMappedSupported;
+        bool isNonPowerOfTwoTextureSupported(GLenum filter) const
+        {
+            return (filter==GL_LINEAR || filter==GL_NEAREST) ?
+                    isNonPowerOfTwoTextureNonMipMappedSupported :
+                    isNonPowerOfTwoTextureMipMappedSupported;
+        }
+
+        void (GL_APIENTRY * glTexStorage2D) (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+        void (GL_APIENTRY * glCompressedTexImage2D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+        void (GL_APIENTRY * glCompressedTexSubImage2D) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
+        void (GL_APIENTRY * glGetCompressedTexImage) (GLenum target, GLint level, GLvoid *data);
+        void (GL_APIENTRY * glTexImage2DMultisample) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+        void (GL_APIENTRY * glTexParameterIiv) (GLenum target, GLenum pname, const GLint* data);
+        void (GL_APIENTRY * glTexParameterIuiv) (GLenum target, GLenum pname, const GLuint* data);
+        void (GL_APIENTRY * glBindImageTexture) (GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format);
+
+        // Texture3D extensions
+        bool isTexture3DSupported;
+        bool isTexture3DFast;
+        GLint maxTexture3DSize;
+        bool isCompressedTexImage3DSupported() const { return glCompressedTexImage3D!=0; }
+        bool isCompressedTexSubImage3DSupported() const { return glCompressedTexSubImage3D!=0; }
+
+        void (GL_APIENTRY * glTexImage3D) ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+        void (GL_APIENTRY * glTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+        void (GL_APIENTRY * glCopyTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+        void (GL_APIENTRY * glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
+        void (GL_APIENTRY * glCompressedTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data );
+
+        // Texture2DArray extensions
+        bool isTexture2DArraySupported;
+        GLint maxLayerCount;
+        GLint max2DSize;
+
 };
 
 }

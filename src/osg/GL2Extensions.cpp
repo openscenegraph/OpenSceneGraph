@@ -398,6 +398,7 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     isSampleMaskiSupported = glSampleMaski!=0;
 
 
+
     // old styple Vertex/Fragment Programs
     isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
     isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
@@ -408,6 +409,121 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glProgramString, "glProgramStringARB");
     setGLExtensionFuncPtr(glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB");
 
+
+
+    // Texture extensions
+    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    std::string rendererString(renderer ? renderer : "");
+
+    bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
+    bool fireGLHardwareDetected = (rendererString.find("FireGL")!=std::string::npos || rendererString.find("FIREGL")!=std::string::npos);
+
+    bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+
+    isMultiTexturingSupported = builtInSupport || OSG_GLES1_FEATURES ||
+                                 isGLExtensionOrVersionSupported( contextID,"GL_ARB_multitexture", 1.3f) ||
+                                 isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f);
+
+    isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
+    isTextureSwizzleSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
+    isTextureCompressionARBSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f);
+    isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc");
+    isTextureCompressionPVRTC2BPPSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+    isTextureCompressionPVRTC4BPPSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
+    isTextureCompressionETCSupported = isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
+    isTextureCompressionETC2Supported = isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
+    isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
+    isTextureCompressionPVRTCSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+
+    isTextureMirroredRepeatSupported = builtInSupport ||
+                                       isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
+                                       isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f);
+
+    isTextureEdgeClampSupported = builtInSupport ||
+                                   isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2f) ||
+                                   isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f);
+
+
+    isTextureBorderClampSupported = OSG_GL3_FEATURES || ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f));
+    isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
+    preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
+    isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
+    isShadowSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow");
+    isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
+    isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
+    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
+    isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || isNonPowerOfTwoTextureNonMipMappedSupported;
+    isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
+
+    if (rendererString.find("GeForce FX")!=std::string::npos)
+    {
+        isNonPowerOfTwoTextureMipMappedSupported = false;
+        OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
+    }
+
+    maxTextureSize=0;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxTextureSize);
+
+    char *ptr;
+    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    {
+        GLint osg_max_size = atoi(ptr);
+
+        if (osg_max_size<maxTextureSize)
+        {
+
+            maxTextureSize = osg_max_size;
+        }
+    }
+
+    setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB");
+    setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
+    setGLExtensionFuncPtr(glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
+    setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;
+    setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB");
+
+    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB");
+    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB");
+
+
+    if (glTexParameterIiv == NULL) setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIivEXT");
+    if (glTexParameterIuiv == NULL) setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuivEXT");
+
+    setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB");
+
+    isTextureMaxLevelSupported = ( getGLVersionNumber() >= 1.2f );
+
+    isTextureStorageEnabled = isTexStorage2DSupported();
+    if ( (ptr = getenv("OSG_GL_TEXTURE_STORAGE"))  != 0 && isTexStorage2DSupported())
+    {
+        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"DISABLE")==0 ) isTextureStorageEnabled = false;
+        else isTextureStorageEnabled = true;
+    }
+
+
+    // Texture3D extensions
+    isTexture3DFast = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
+
+    if (isTexture3DFast) isTexture3DSupported = true;
+    else isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+
+    maxTexture3DSize = 0;
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
+
+    setGLExtensionFuncPtr(glTexImage3D, "glTexImage3D","glTexImage3DEXT");
+    setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT");
+    setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB");
+    setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
+    setGLExtensionFuncPtr(glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+
+
+    // Texture2DArray extensions
+    isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
+
+    max2DSize = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max2DSize);
+    maxLayerCount = 0;
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
 
 
 }

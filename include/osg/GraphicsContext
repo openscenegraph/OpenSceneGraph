@@ -541,8 +541,6 @@ public:
 
     virtual void swapBuffersImplementation(GraphicsContext* gc);
 
-    typedef struct __GLsync *GLsync;
-
     GLsync _previousSync;
 };
 

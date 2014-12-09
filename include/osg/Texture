@@ -188,17 +188,6 @@
     #define GL_TEXTURE_3D                     0x806F
 #endif
 
-#ifndef GL_TEXTURE_2D_ARRAY_EXT
-    #define GL_TEXTURE_2D_ARRAY_EXT           0x8C1A
-    #define GL_TEXTURE_2D_ARRAY_EXT                        0x8C1A
-    #define GL_PROXY_TEXTURE_2D_ARRAY_EXT                  0x8C1B
-    #define GL_TEXTURE_BINDING_2D_ARRAY_EXT                0x8C1D
-    #define GL_MAX_ARRAY_TEXTURE_LAYERS_EXT                0x88FF
-    #define GL_COMPARE_REF_DEPTH_TO_TEXTURE_EXT            0x884E
-    #define GL_SAMPLER_2D_ARRAY_EXT                        0x8DC1
-    #define GL_SAMPLER_2D_ARRAY_SHADOW_EXT                 0x8DC4
-    #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT    0x8CD4
-#endif
 
 #ifndef GL_TEXTURE_CUBE_MAP
     #define GL_TEXTURE_CUBE_MAP             0x8513

@@ -37,22 +37,14 @@ Stencil::~Stencil()
 {
 }
 
-static Stencil::Operation validateOperation(State& state,
-        const Stencil::Extensions* extensions, Stencil::Operation op)
+static Stencil::Operation validateOperation(const GL2Extensions* extensions, Stencil::Operation op)
 {
     // only wrap requires validation
     if (op != Stencil::INCR_WRAP && op != Stencil::DECR_WRAP)
         return op;
 
-    // get extension object
-    if (!extensions)
-    {
-        const unsigned int contextID = state.getContextID();
-        extensions = Stencil::getExtensions(contextID, true);
-    }
-
     // wrap support
-    if (extensions->isStencilWrapSupported())
+    if (extensions->isStencilWrapSupported)
         return op;
     else
         return op==Stencil::INCR_WRAP ? Stencil::INCR : Stencil::DECR;
@@ -60,53 +52,12 @@ static Stencil::Operation validateOperation(State& state,
 
 void Stencil::apply(State& state) const
 {
-    const Extensions* extensions = NULL;
-    Operation sf = validateOperation(state, extensions, _sfail);
-    Operation zf = validateOperation(state, extensions, _zfail);
-    Operation zp = validateOperation(state, extensions, _zpass);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    Operation sf = validateOperation(extensions, _sfail);
+    Operation zf = validateOperation(extensions, _zfail);
+    Operation zp = validateOperation(extensions, _zpass);
 
     glStencilFunc((GLenum)_func,_funcRef,_funcMask);
     glStencilOp((GLenum)sf,(GLenum)zf,(GLenum)zp);
     glStencilMask(_writeMask);
-}
-
-
-typedef buffered_value< ref_ptr<Stencil::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
-
-Stencil::Extensions* Stencil::getExtensions(unsigned int contextID, bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized)
-        s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void Stencil::setExtensions(unsigned int contextID, Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-Stencil::Extensions::Extensions(unsigned int contextID)
-{
-    setupGLExtensions(contextID);
-}
-
-Stencil::Extensions::Extensions(const Extensions& rhs) :
-    Referenced()
-{
-    _isStencilWrapSupported = rhs._isStencilWrapSupported;
-}
-
-
-void Stencil::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isStencilWrapSupported)
-        _isStencilWrapSupported = false;
-}
-
-void Stencil::Extensions::setupGLExtensions(unsigned int contextID)
-{
-    _isStencilWrapSupported = isGLExtensionOrVersionSupported(contextID, "GL_EXT_stencil_wrap", 1.4f);
-
-    OSG_INFO << "Stencil wrap: " << (_isStencilWrapSupported ? "supported" : "not supported") << std::endl;
 }

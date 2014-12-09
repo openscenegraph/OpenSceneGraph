@@ -1,6 +1,6 @@
 echo osgversion
 osgversion
- 
+
 echo osgunittests
 osgunittests matrix
 osgunittests qt
@@ -21,10 +21,25 @@ osgbillboard
 echo osgblendequation
 osgblendequation
 
+echo osgblenddrawbuffers
+osgblenddrawbuffers
+
+echo osgoit
+osgoit
+
+echo osgdrawinstanced
+osgdrawinstanced
+
+echo osgcomputeshaders
+osgcomputeshaders
+
+echo osggpucull
+osggpucull
+
 echo osgcallback
 osgcallback
 
-echo osgcatch
+# echo osgcatch
 # osgcatch
 
 echo osgclip

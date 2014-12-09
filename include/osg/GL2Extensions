@@ -941,6 +941,34 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glStencilFuncSeparateATI) (GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
 
 
+        // ColorMask
+        void (GL_APIENTRY * glColorMaski)(GLuint buf, GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+
+
+        // ClampColor
+        bool isClampColorSupported;
+        void (GL_APIENTRY * glClampColor) (GLenum target, GLenum mode);
+
+
+        // PrimitiveRestartIndex
+        void (GL_APIENTRY * glPrimitiveRestartIndex) ( GLuint index );
+
+
+        // Mutlisample
+        bool isMultisampleSupported;
+        bool isMultisampleFilterHintSupported;
+
+        void (GL_APIENTRY * glSampleCoverage) (GLclampf value, GLboolean invert);
+
+        // Point
+        bool isPointParametersSupported;
+        bool isPointSpriteSupported;
+        bool isPointSpriteCoordOriginSupported;
+
+        void (GL_APIENTRY * glPointParameteri) (GLenum pname, GLint param);
+        void (GL_APIENTRY * glPointParameterf) (GLenum pname, GLfloat param);
+        void (GL_APIENTRY * glPointParameterfv) (GLenum pname, const GLfloat *params);
+
 };
 
 }

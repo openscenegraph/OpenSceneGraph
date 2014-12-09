@@ -31,9 +31,7 @@ namespace osg {
 *   GL_EXT_stencil_wrap extension is present.
 *
 *   If INCR_WRAP or DECR_WRAP values are used while they are detected to be not supported,
-*   the INCR or DECR values are sent to OpenGL instead. Note: do not use Stencil::getFunction()
-*   to detect whether WRAP operations is used as the object's value is kept intact.
-*   Use osg::Stencil::getExtensions() method instead.
+*   the INCR or DECR values are sent to OpenGL instead. 
 *
 *   OpenGL 2.0 introduced two side stenciling that is available through
 *   osg::StencilTwoSided class.

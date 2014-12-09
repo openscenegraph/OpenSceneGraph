@@ -80,49 +80,7 @@ class OSG_EXPORT ClampColor : public StateAttribute
         void setClampReadColor(GLenum mode) { _clampReadColor = mode; }
         GLenum getClampReadColor() const { return _clampReadColor; }
 
-
         virtual void apply(State& state) const;
-        /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convenience wrappers for
-          * calling extension functions. */
-        class OSG_EXPORT Extensions : public osg::Referenced
-        {
-            public:
-                Extensions(unsigned int contextID);
-
-                Extensions(const Extensions& rhs);
-
-                void lowestCommonDenominator(const Extensions& rhs);
-
-                void setupGLExtensions(unsigned int contextID);
-
-                void setClampColorSupported(bool flag) { _isClampColorSupported=flag; }
-                bool isClampColorSupported() const { return _isClampColorSupported; }
-
-                void glClampColor(GLenum target, GLenum mode) const;
-
-            protected:
-
-                ~Extensions() {}
-
-                typedef void (GL_APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
-                bool                _isClampColorSupported;
-                GLClampColorProc    _glClampColor;
-
-        };
-
-        /** Returns the Extensions object for the given context.
-          * If createIfNotInitalized is true and the Extensions object doesn't
-          * exist, getExtensions() creates it on the given context.
-          * Returns NULL if createIfNotInitalized is false and the Extensions
-          * object doesn't exist. */
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions() allows users to override the extensions across graphics contexts.
-          * Typically used when you have different extensions supported across graphics pipes,
-          * but need to ensure that they all use the same low common denominator extensions. */
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-
 
     protected :
 

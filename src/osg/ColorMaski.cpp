@@ -16,13 +16,6 @@
 
 using namespace osg;
 
-// Set up extensions
-ColorMaski::Extensions::Extensions(unsigned int contextID)
-{
-    setGLExtensionFuncPtr(glColorMaski, "glColorMaski", "glColorMaskiARB");
-}
-
-
 ColorMaski::ColorMaski():
     _index(0)
 {
@@ -34,7 +27,7 @@ ColorMaski::~ColorMaski()
 
 void ColorMaski::apply(State& state) const
 {
-    const Extensions* extensions = state.get<Extensions>();
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
     if (extensions->glColorMaski)
     {
         extensions->glColorMaski((GLboolean)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);

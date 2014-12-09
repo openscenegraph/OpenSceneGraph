@@ -277,11 +277,8 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     if (!image || !image->data())
         return;
 
-    // get the contextID (user defined ID of 0 upwards) for the
-    // current OpenGL context.
-    const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
-
+    // get extension object
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
@@ -290,10 +287,10 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     bool compressed = isCompressedInternalFormat(_internalFormat);
 
     //Rescale if resize hint is set or NPOT not supported or dimension exceeds max size
-    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported(_min_filter) || inwidth > extensions->maxTextureSize() )
+    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported(_min_filter) || inwidth > extensions->maxTextureSize )
     {
         // this is not thread safe... should really create local image data and rescale to that as per Texture2D.
-        image->ensureValidSizeForTexturing(extensions->maxTextureSize());
+        image->ensureValidSizeForTexturing(extensions->maxTextureSize);
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());

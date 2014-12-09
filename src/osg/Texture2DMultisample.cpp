@@ -86,8 +86,8 @@ void Texture2DMultisample::apply(State& state) const
 {
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
-    if (!extensions->isTextureMultisampledSupported())
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    if (!extensions->isTextureMultisampledSupported)
     {
         OSG_INFO<<"Texture2DMultisample not supoorted."<<std::endl;
         return;

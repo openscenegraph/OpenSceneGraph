@@ -308,7 +308,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
     // update the modified count to show that it is upto date.
     getModifiedCount(contextID) = image->getModifiedCount();
@@ -321,7 +321,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 #endif
 
-    bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
+    bool useClientStorage = extensions->isClientStorageSupported && getClientStorageHint();
     if (useClientStorage)
     {
         glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
@@ -390,7 +390,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
 
     // update the modified count to show that it is upto date.

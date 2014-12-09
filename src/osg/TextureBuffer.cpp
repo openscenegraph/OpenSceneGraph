@@ -106,7 +106,7 @@ void TextureBuffer::apply(State& state) const
 
     TextureObject* textureObject = getTextureObject(contextID);
     TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
-    
+
 
     if (textureObject)
     {
@@ -118,11 +118,11 @@ void TextureBuffer::apply(State& state) const
             textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER_ARB);
             _modifiedCount[contextID] = _image->getModifiedCount();
         }
-        textureObject->bind();        
-        
+        textureObject->bind();
+
         if( getTextureParameterDirty(contextID) )
         {
-            const Extensions* extensions = Texture::getExtensions(contextID,true);
+            const GL2Extensions* extensions = state.get<GL2Extensions>();
             if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
             {
                  extensions->glBindImageTexture(
@@ -138,11 +138,11 @@ void TextureBuffer::apply(State& state) const
         textureObject = generateTextureObject(this, contextID,GL_TEXTURE_BUFFER_ARB);
         _textureObjectBuffer[contextID] = textureObject;
         textureObject->bind();
-        
+
         textureBufferObject = new TextureBufferObject(contextID,_usageHint);
         _textureBufferObjects[contextID] = textureBufferObject;
-        
-        const Extensions* extensions = Texture::getExtensions(contextID,true);
+
+        const GL2Extensions* extensions = state.get<GL2Extensions>();
         if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
         {
                 extensions->glBindImageTexture(
@@ -151,17 +151,17 @@ void TextureBuffer::apply(State& state) const
                     _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
         }
         getTextureParameterDirty(state.getContextID()) = false;
-        
+
         computeInternalFormat();
         _textureWidth = _image->s();
         textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER_ARB);
         textureBufferObject->bufferData( _image.get() );
         textureObject->setAllocated(true);
         textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER_ARB);
-        
+
         textureObject->bind();
         textureBufferObject->texBuffer(_internalFormat);
-               
+
         _modifiedCount[contextID] = _image->getModifiedCount();
     }
     else
@@ -176,14 +176,14 @@ void TextureBuffer::apply(State& state) const
 
 void TextureBuffer::bindBufferAs( unsigned int contextID, GLuint target )
 {
-    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();    
+    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
     textureBufferObject->bindBuffer(target);
-    
+
 }
 
 void TextureBuffer::unbindBufferAs( unsigned int contextID, GLuint target )
 {
-    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();    
+    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
     textureBufferObject->unbindBuffer(target);
 }
 

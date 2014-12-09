@@ -52,7 +52,7 @@ Texture3D::Texture3D(const Texture3D& text,const CopyOp& copyop):
 }
 
 Texture3D::~Texture3D()
-{  
+{
     setImage(NULL);
 }
 
@@ -141,13 +141,11 @@ void Texture3D::setImage(Image* image)
 
 void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& indepth, GLsizei& numMipmapLevels) const
 {
-    const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
-    const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
     int width,height,depth;
 
-    if( !_resizeNonPowerOfTwoHint && texExtensions->isNonPowerOfTwoTextureSupported(_min_filter) )
+    if( !_resizeNonPowerOfTwoHint && extensions->isNonPowerOfTwoTextureSupported(_min_filter) )
     {
         width = image.s();
         height = image.t();
@@ -161,15 +159,15 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
     }
 
     // cap the size to what the graphics hardware can handle.
-    if (width>extensions->maxTexture3DSize()) width = extensions->maxTexture3DSize();
-    if (height>extensions->maxTexture3DSize()) height = extensions->maxTexture3DSize();
-    if (depth>extensions->maxTexture3DSize()) depth = extensions->maxTexture3DSize();
+    if (width>extensions->maxTexture3DSize) width = extensions->maxTexture3DSize;
+    if (height>extensions->maxTexture3DSize) height = extensions->maxTexture3DSize;
+    if (depth>extensions->maxTexture3DSize) depth = extensions->maxTexture3DSize;
 
     inwidth = width;
     inheight = height;
     indepth = depth;
 
-    bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
+    bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported;
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
@@ -210,9 +208,9 @@ void Texture3D::apply(State& state) const
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
-    if (!extensions->isTexture3DSupported())
+    if (!extensions->isTexture3DSupported)
     {
         OSG_WARN<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
         return;
@@ -367,8 +365,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
-    const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
+    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
@@ -384,18 +381,18 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     }
 
     //Rescale if resize hint is set or NPOT not supported or dimensions exceed max size
-    if( _resizeNonPowerOfTwoHint || !texExtensions->isNonPowerOfTwoTextureSupported(_min_filter)
-        || inwidth > extensions->maxTexture3DSize()
-        || inheight > extensions->maxTexture3DSize()
-        || indepth > extensions->maxTexture3DSize() )
-        image->ensureValidSizeForTexturing(extensions->maxTexture3DSize());
+    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported(_min_filter)
+        || inwidth > extensions->maxTexture3DSize
+        || inheight > extensions->maxTexture3DSize
+        || indepth > extensions->maxTexture3DSize )
+        image->ensureValidSizeForTexturing(extensions->maxTexture3DSize);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 #endif
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
+    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported;
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
@@ -489,7 +486,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    const Extensions* extensions = getExtensions(contextID,true);
+    const GL2Extensions* extensions = state.get<GL2Extensions>();
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
@@ -523,7 +520,7 @@ void Texture3D::allocateMipmap(State& state) const
 
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
-        const Extensions* extensions = getExtensions(contextID,true);
+        const GL2Extensions* extensions = state.get<GL2Extensions>();
 
         // bind texture
         textureObject->bind();
@@ -563,6 +560,7 @@ void Texture3D::allocateMipmap(State& state) const
     }
 }
 
+#if 0
 typedef buffered_value< ref_ptr<Texture3D::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
@@ -630,3 +628,4 @@ void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(glCopyTexSubImage3D,"glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
 
 }
+#endif

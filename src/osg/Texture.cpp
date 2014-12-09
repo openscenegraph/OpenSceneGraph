@@ -2671,17 +2671,13 @@ bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
 {
     if (_useHardwareMipMapGeneration)
     {
-        unsigned int contextID = state.getContextID();
         const GL2Extensions* extensions = state.get<GL2Extensions>();
-
         if (extensions->isGenerateMipMapSupported)
         {
             return true;
         }
 
-        const FBOExtensions* fbo_ext = FBOExtensions::instance(contextID,true);
-
-        if (fbo_ext->isSupported() && fbo_ext->glGenerateMipmap)
+        if (extensions->glGenerateMipmap)
         {
             return true;
         }
@@ -2698,13 +2694,12 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
         return GENERATE_MIPMAP;
 #else
 
-        FBOExtensions* fbo_ext = FBOExtensions::instance(state.getContextID(),true);
-        const GL2Extensions* tex_ext = state.get<GL2Extensions>();
-        bool useGenerateMipMap = fbo_ext->isSupported() && fbo_ext->glGenerateMipmap;
+        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        bool useGenerateMipMap = extensions->glGenerateMipmap;
 
         if (useGenerateMipMap)
         {
-            if (tex_ext->preferGenerateMipmapSGISForPowerOfTwo)
+            if (extensions->preferGenerateMipmapSGISForPowerOfTwo)
             {
                 int width = getTextureWidth();
                 int height = getTextureHeight();
@@ -2736,8 +2731,8 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
             TextureObject* textureObject = getTextureObject(contextID);
             if (textureObject)
             {
-                osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(contextID, true);
-                fbo_ext->glGenerateMipmap(textureObject->target());
+                osg::GL2Extensions* ext = state.get<GL2Extensions>();
+                ext->glGenerateMipmap(textureObject->target());
             }
             break;
         }
@@ -2769,13 +2764,13 @@ void Texture::generateMipmap(State& state) const
     }
 
     // get fbo extension which provides us with the glGenerateMipmapEXT function
-    osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(), true);
+    osg::GL2Extensions* ext = state.get<GL2Extensions>();
 
     // check if the function is supported
-    if (fbo_ext->isSupported() && fbo_ext->glGenerateMipmap)
+    if (ext->glGenerateMipmap)
     {
         textureObject->bind();
-        fbo_ext->glGenerateMipmap(textureObject->target());
+        ext->glGenerateMipmap(textureObject->target());
 
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
@@ -2817,145 +2812,5 @@ void Texture::releaseGLObjects(State* state) const
         }
     }
 }
-
-#if 0
-Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-void Texture::setExtensions(unsigned int contextID,Extensions* extensions)
-{
-    s_extensions[contextID] = extensions;
-}
-
-Texture::Extensions::Extensions(unsigned int contextID)
-{
-    const char* version = (const char*) glGetString( GL_VERSION );
-    if (!version)
-    {
-        OSG_FATAL<<"Error: In Texture::Extensions::setupGLExtensions(..) OpenGL version test failed, requires valid graphics context."<<std::endl;
-        return;
-    }
-
-    const char* renderer = (const char*) glGetString(GL_RENDERER);
-    std::string rendererString(renderer ? renderer : "");
-
-    bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
-    bool fireGLHardwareDetected = (rendererString.find("FireGL")!=std::string::npos || rendererString.find("FIREGL")!=std::string::npos);
-
-    bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
-
-    _isMultiTexturingSupported = builtInSupport || OSG_GLES1_FEATURES ||
-                                 isGLExtensionOrVersionSupported( contextID,"GL_ARB_multitexture", 1.3f) ||
-                                 isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f);
-
-    _isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
-
-    _isTextureSwizzleSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
-
-    _isTextureCompressionARBSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f);
-
-    _isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc");
-
-    _isTextureCompressionPVRTC2BPPSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
-
-    _isTextureCompressionPVRTC4BPPSupported = _isTextureCompressionPVRTC2BPPSupported;//covered by same extension
-
-    _isTextureCompressionETCSupported = isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
-
-    _isTextureCompressionETC2Supported = isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
-
-    _isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
-
-    _isTextureCompressionPVRTCSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
-
-    _isTextureMirroredRepeatSupported = builtInSupport ||
-                                        isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
-                                        isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f);
-
-    _isTextureEdgeClampSupported = builtInSupport ||
-                                   isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2f) ||
-                                   isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f);
-
-
-    _isTextureBorderClampSupported = OSG_GL3_FEATURES ||
-                                     ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f));
-
-    _isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
-
-    _preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
-
-    _isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
-
-    _isShadowSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow");
-
-    _isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
-
-    _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
-
-    _isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
-
-    _isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || _isNonPowerOfTwoTextureNonMipMappedSupported;
-
-    _isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
-
-    #if 0
-    if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
-    {
-        _isNonPowerOfTwoTextureMipMappedSupported = false;
-        OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
-    }
-    #endif
-
-    if (rendererString.find("GeForce FX")!=std::string::npos)
-    {
-        _isNonPowerOfTwoTextureMipMappedSupported = false;
-        OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
-    }
-
-    _maxTextureSize=0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
-
-    char *ptr;
-    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
-    {
-        GLint osg_max_size = atoi(ptr);
-
-        if (osg_max_size<_maxTextureSize)
-        {
-
-            _maxTextureSize = osg_max_size;
-        }
-    }
-
-    setGLExtensionFuncPtr(_glTexStorage2D,"glTexStorage2D","glTexStorage2DARB");
-    setGLExtensionFuncPtr(_glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
-    setGLExtensionFuncPtr(_glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
-    setGLExtensionFuncPtr(_glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;
-    setGLExtensionFuncPtr(_glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB");
-
-    setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB");
-    setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB");
-
-
-    if (_glTexParameterIiv == NULL) setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIivEXT");
-    if (_glTexParameterIuiv == NULL) setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuivEXT");
-
-    setGLExtensionFuncPtr(_glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB");
-
-    _isTextureMaxLevelSupported = ( getGLVersionNumber() >= 1.2f );
-
-    _isTextureStorageEnabled = isTexStorage2DSupported();
-    if ( (ptr = getenv("OSG_GL_TEXTURE_STORAGE"))  != 0 && isTexStorage2DSupported())
-    {
-        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"DISABLE")==0 ) _isTextureStorageEnabled = false;
-        else _isTextureStorageEnabled = true;
-    }
-
-    OSG_DEBUG<<"Texture::Extensions::Extensionts() _isTextureStorageEnabled = "<<_isTextureStorageEnabled<<std::endl;
-}
-#endif
 
 }

@@ -120,72 +120,11 @@ namespace osg
 {
 
 /**************************************************************************
- * FBOExtensions
- **************************************************************************/
-
-    class OSG_EXPORT FBOExtensions : public osg::Referenced
-    {
-    public:
-        typedef void GL_APIENTRY TglBindRenderbuffer(GLenum, GLuint);
-        typedef void GL_APIENTRY TglDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
-        typedef void GL_APIENTRY TglGenRenderbuffers(GLsizei, GLuint *);
-        typedef void GL_APIENTRY TglRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei);
-        typedef void GL_APIENTRY TglRenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
-        typedef void GL_APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
-        typedef void GL_APIENTRY TglBindFramebuffer(GLenum, GLuint);
-        typedef void GL_APIENTRY TglDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
-        typedef void GL_APIENTRY TglGenFramebuffers(GLsizei, GLuint *);
-        typedef GLenum GL_APIENTRY TglCheckFramebufferStatus(GLenum);
-        typedef void GL_APIENTRY TglFramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint);
-        typedef void GL_APIENTRY TglFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint);
-        typedef void GL_APIENTRY TglFramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint);
-        typedef void GL_APIENTRY TglFramebufferTexture(GLenum, GLenum, GLint, GLint);
-        typedef void GL_APIENTRY TglFramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint);
-        typedef void GL_APIENTRY TglFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint);
-        typedef void GL_APIENTRY TglGenerateMipmap(GLenum);
-        typedef void GL_APIENTRY TglBlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
-        typedef void GL_APIENTRY TglGetRenderbufferParameteriv(GLenum, GLenum, GLint*);
-
-        TglBindRenderbuffer* glBindRenderbuffer;
-        TglGenRenderbuffers* glGenRenderbuffers;
-        TglDeleteRenderbuffers* glDeleteRenderbuffers;
-        TglRenderbufferStorage* glRenderbufferStorage;
-        TglRenderbufferStorageMultisample* glRenderbufferStorageMultisample;
-        TglRenderbufferStorageMultisampleCoverageNV* glRenderbufferStorageMultisampleCoverageNV;
-        TglBindFramebuffer* glBindFramebuffer;
-        TglDeleteFramebuffers* glDeleteFramebuffers;
-        TglGenFramebuffers* glGenFramebuffers;
-        TglCheckFramebufferStatus* glCheckFramebufferStatus;
-        TglFramebufferTexture1D* glFramebufferTexture1D;
-        TglFramebufferTexture2D* glFramebufferTexture2D;
-        TglFramebufferTexture3D* glFramebufferTexture3D;
-        TglFramebufferTexture* glFramebufferTexture;
-        TglFramebufferTextureLayer* glFramebufferTextureLayer;
-        TglFramebufferRenderbuffer* glFramebufferRenderbuffer;
-        TglGenerateMipmap* glGenerateMipmap;
-        TglBlitFramebuffer* glBlitFramebuffer;
-        TglGetRenderbufferParameteriv* glGetRenderbufferParameteriv;
-
-        static FBOExtensions* instance(unsigned contextID, bool createIfNotInitalized);
-
-        bool isSupported() const { return _supported; }
-        bool isMultisampleSupported() const { return glRenderbufferStorageMultisample != 0; }
-        bool isMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
-        bool isPackedDepthStencilSupported() const { return _packed_depth_stencil_supported; }
-
-    protected:
-        FBOExtensions(unsigned int contextID);
-
-        bool _supported;
-        bool _packed_depth_stencil_supported;
-    };
-
-/**************************************************************************
  * RenderBuffer
  **************************************************************************/
 
-    class OSG_EXPORT RenderBuffer: public Object
-    {
+class OSG_EXPORT RenderBuffer: public Object
+{
     public:
         RenderBuffer();
         RenderBuffer(int width, int height, GLenum internalFormat, int samples=0, int colorSamples=0);
@@ -205,7 +144,7 @@ namespace osg
         inline void setSamples(int samples);
         inline void setColorSamples(int colorSamples);
 
-        GLuint getObjectID(unsigned int contextID, const FBOExtensions *ext) const;
+        GLuint getObjectID(unsigned int contextID, const GL2Extensions *ext) const;
         inline int compare(const RenderBuffer &rb) const;
 
         /** Mark internal RenderBuffer for deletion.
@@ -222,7 +161,7 @@ namespace osg
           * this call is useful for when an OpenGL context has been destroyed. */
         static void discardDeletedRenderBuffers(unsigned int contextID);
 
-        static int getMaxSamples(unsigned int contextID, const FBOExtensions *ext);
+        static int getMaxSamples(unsigned int contextID, const GL2Extensions* ext);
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -335,16 +274,16 @@ namespace osg
 /**************************************************************************
  * FrameBufferAttachement
  **************************************************************************/
-    class Texture1D;
-    class Texture2D;
-    class Texture2DMultisample;
-    class Texture3D;
-    class Texture2DArray;
-    class TextureCubeMap;
-    class TextureRectangle;
+class Texture1D;
+class Texture2D;
+class Texture2DMultisample;
+class Texture3D;
+class Texture2DArray;
+class TextureCubeMap;
+class TextureRectangle;
 
-    class OSG_EXPORT FrameBufferAttachment
-    {
+class OSG_EXPORT FrameBufferAttachment
+{
     public:
         FrameBufferAttachment();
         FrameBufferAttachment(const FrameBufferAttachment& copy);
@@ -364,8 +303,8 @@ namespace osg
         FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);
 
         bool isMultisample() const;
-        void createRequiredTexturesAndApplyGenerateMipMap(State& state, const FBOExtensions* ext) const;
-        void attach(State &state, GLenum target, GLenum attachment_point, const FBOExtensions* ext) const;
+        void createRequiredTexturesAndApplyGenerateMipMap(State& state, const GL2Extensions* ext) const;
+        void attach(State &state, GLenum target, GLenum attachment_point, const GL2Extensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 
         RenderBuffer* getRenderBuffer();
@@ -389,8 +328,8 @@ namespace osg
 /**************************************************************************
  * FrameBufferObject
  **************************************************************************/
-    class OSG_EXPORT FrameBufferObject: public StateAttribute
-    {
+class OSG_EXPORT FrameBufferObject: public StateAttribute
+{
     public:
         typedef std::map<Camera::BufferComponent, FrameBufferAttachment> AttachmentMap;
         typedef std::vector<GLenum> MultipleRenderingTargets;

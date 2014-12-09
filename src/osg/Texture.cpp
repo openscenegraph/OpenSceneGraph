@@ -2695,7 +2695,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 #else
 
         const GL2Extensions* extensions = state.get<GL2Extensions>();
-        bool useGenerateMipMap = extensions->glGenerateMipmap;
+        bool useGenerateMipMap = extensions->glGenerateMipmap!=0;
 
         if (useGenerateMipMap)
         {

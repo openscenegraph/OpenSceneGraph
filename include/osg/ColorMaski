@@ -60,14 +60,6 @@ class OSG_EXPORT ColorMaski : public ColorMask
 
         virtual void apply(State& state) const;
 
-        /** Encapsulates queries of extension availability, obtains extension function pointers. */
-        struct OSG_EXPORT Extensions : public osg::Referenced
-        {
-            Extensions(unsigned int contextID);
-
-            void (GL_APIENTRY * glColorMaski)(GLuint buf, GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
-        };
-
     protected:
 
         virtual ~ColorMaski();

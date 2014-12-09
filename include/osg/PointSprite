@@ -59,8 +59,6 @@ public:
 
         virtual void apply(osg::State& state) const;
 
-        static bool isPointSpriteSupported(unsigned int context);
-
         enum CoordOriginMode {
             UPPER_LEFT = GL_UPPER_LEFT,
             LOWER_LEFT = GL_LOWER_LEFT

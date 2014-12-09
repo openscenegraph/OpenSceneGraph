@@ -566,6 +566,52 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(glStencilMaskSeparate, "glStencilMaskSeparate");
     setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate", "glStencilFuncSeparateATI");
     setGLExtensionFuncPtr(glStencilFuncSeparateATI, "glStencilFuncSeparateATI");
+
+
+    // Color Mask
+    setGLExtensionFuncPtr(glColorMaski, "glColorMaski", "glColorMaskiARB");
+
+
+    // ClampColor
+    isClampColorSupported = OSG_GL3_FEATURES ||
+                             isGLExtensionSupported(contextID,"GL_ARB_color_buffer_float") ||
+                             strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
+
+    setGLExtensionFuncPtr(glClampColor, "glClampColor", "glClampColorARB");
+
+
+    // PrimitiveRestartIndex
+    setGLExtensionFuncPtr(glPrimitiveRestartIndex, "glPrimitiveRestartIndex", "glPrimitiveRestartIndexNV");
+
+
+    // Point
+    isPointParametersSupported = OSG_GL3_FEATURES ||
+                                  strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0 ||
+                                  isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||
+                                  isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
+                                  isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
+
+
+    isPointSpriteSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite");
+    isPointSpriteCoordOriginSupported = OSG_GL3_FEATURES || strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
+
+
+    setGLExtensionFuncPtr(glPointParameteri, "glPointParameteri", "glPointParameteriARB");
+    if (!glPointParameteri) setGLExtensionFuncPtr(glPointParameteri, "glPointParameteriEXT", "glPointParameteriSGIS");
+
+    setGLExtensionFuncPtr(glPointParameterf, "glPointParameterf", "glPointParameterfARB");
+    if (!glPointParameterf) setGLExtensionFuncPtr(glPointParameterf, "glPointParameterfEXT", "glPointParameterfSGIS");
+
+    setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfv", "glPointParameterfvARB");
+    if (!glPointParameterfv) setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfvEXT", "glPointParameterfvSGIS");
+
+
+    // Multisample
+    isMultisampleSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample");
+    isMultisampleFilterHintSupported = isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
+
+    setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverageARB");
+
 }
 
 

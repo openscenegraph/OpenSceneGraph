@@ -92,55 +92,6 @@ class OSG_EXPORT Multisample : public StateAttribute
 
         virtual void apply(State& state) const;
 
-
-        /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provide convenience wrappers to
-          * check for the extensions or use the associated functions.*/
-        class OSG_EXPORT Extensions : public osg::Referenced
-        {
-            public:
-                Extensions(unsigned int contextID);
-
-                Extensions(const Extensions& rhs);
-
-                void lowestCommonDenominator(const Extensions& rhs);
-
-                void setupGLExtensions(unsigned int contextID);
-
-                void setMultisampleSupported(bool flag) { _isMultisampleSupported=flag; }
-                void setMultisampleFilterHintSupported(bool flag) { _isMultisampleFilterHintSupported=flag; }
-                bool isMultisampleSupported() const { return _isMultisampleSupported; }
-                bool isMultisampleFilterHintSupported() const { return _isMultisampleFilterHintSupported; }
-
-                void glSampleCoverage(GLclampf value, GLboolean invert) const;
-
-            protected:
-
-                ~Extensions() {}
-
-                bool    _isMultisampleSupported;
-                bool    _isMultisampleFilterHintSupported;
-
-                typedef void (GL_APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
-                GLSampleCoverageProc _glSampleCoverage;
-
-        };
-
-        /** Function to call to get the extension of a specified context.
-          * If the Extension object for that context has not yet been created
-          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-          * If 'createIfNotInitalized' is true then the Extensions object is
-          * automatically created.  However, in this case the extension object will
-          * only be created with the graphics context associated with ContextID..*/
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions allows users to override the extensions across graphics contexts.
-          * Typically used when you have different extensions supported across graphics pipes
-          * but need to ensure that they all use the same low common denominator extensions.*/
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
-
-
-
     protected :
 
         virtual ~Multisample();

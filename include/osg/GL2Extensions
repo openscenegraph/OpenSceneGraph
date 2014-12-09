@@ -568,7 +568,9 @@ typedef char GLchar;
     #define GL_MAX_3D_TEXTURE_SIZE      0x8073
 #endif
 
+#ifndef GL_VERSION_3_2
 typedef struct __GLsync *GLsync;
+#endif
 
 // for compatibility with gl.h headers that don't support VBO,
 //GL_VERSION_1_5 and GL_ARB_vertex_buffer_object provide these types for OpenGL

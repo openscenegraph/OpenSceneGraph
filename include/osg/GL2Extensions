@@ -534,6 +534,24 @@ typedef char GLchar;
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #endif
 
+#ifndef GL_ARB_sync
+#define GL_MAX_SERVER_WAIT_TIMEOUT        0x9111
+#define GL_OBJECT_TYPE                    0x9112
+#define GL_SYNC_CONDITION                 0x9113
+#define GL_SYNC_STATUS                    0x9114
+#define GL_SYNC_FLAGS                     0x9115
+#define GL_SYNC_FENCE                     0x9116
+#define GL_SYNC_GPU_COMMANDS_COMPLETE     0x9117
+#define GL_UNSIGNALED                     0x9118
+#define GL_SIGNALED                       0x9119
+#define GL_ALREADY_SIGNALED               0x911A
+#define GL_TIMEOUT_EXPIRED                0x911B
+#define GL_CONDITION_SATISFIED            0x911C
+#define GL_WAIT_FAILED                    0x911D
+#define GL_SYNC_FLUSH_COMMANDS_BIT        0x00000001
+#define GL_TIMEOUT_IGNORED                0xFFFFFFFFFFFFFFFFull
+#endif
+
 // for compatibility with gl.h headers that don't support VBO,
 //GL_VERSION_1_5 and GL_ARB_vertex_buffer_object provide these types for OpenGL
 //all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
@@ -698,9 +716,6 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glUniformMatrix3x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix4x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glProgramParameteri)( GLuint program, GLenum pname, GLint value );
-        void (GL_APIENTRY * glFramebufferTexture)( GLenum target, GLenum attachment, GLuint texture, GLint level );
-        void (GL_APIENTRY * glFramebufferTextureLayer)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
-        void (GL_APIENTRY * glFramebufferTextureFace)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
         void (GL_APIENTRY * glPatchParameteri)( GLenum pname, GLint value );
         void (GL_APIENTRY * glPatchParameterfv)( GLenum pname, const GLfloat* values );
         void (GL_APIENTRY * glGetUniformuiv)( GLuint program, GLint location, GLuint* params );
@@ -960,6 +975,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void (GL_APIENTRY * glSampleCoverage) (GLclampf value, GLboolean invert);
 
+
         // Point
         bool isPointParametersSupported;
         bool isPointSpriteSupported;
@@ -968,6 +984,46 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void (GL_APIENTRY * glPointParameteri) (GLenum pname, GLint param);
         void (GL_APIENTRY * glPointParameterf) (GLenum pname, GLfloat param);
         void (GL_APIENTRY * glPointParameterfv) (GLenum pname, const GLfloat *params);
+
+
+        // FrameBuferObject
+        bool isFrameBufferObjectSupported;
+        bool isPackedDepthStencilSupported;
+        bool isRenderbufferMultisampleSupported() const { return glRenderbufferStorageMultisample != 0; }
+        bool isRenderbufferMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
+
+        void (GL_APIENTRY * glBindRenderbuffer) (GLenum, GLuint);
+        void (GL_APIENTRY * glDeleteRenderbuffers) (GLsizei n, const GLuint *renderbuffers);
+        void (GL_APIENTRY * glGenRenderbuffers) (GLsizei, GLuint *);
+        void (GL_APIENTRY * glRenderbufferStorage) (GLenum, GLenum, GLsizei, GLsizei);
+        void (GL_APIENTRY * glRenderbufferStorageMultisample) (GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+        void (GL_APIENTRY * glRenderbufferStorageMultisampleCoverageNV) (GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
+        void (GL_APIENTRY * glBindFramebuffer) (GLenum, GLuint);
+        void (GL_APIENTRY * glDeleteFramebuffers) (GLsizei n, const GLuint *framebuffers);
+        void (GL_APIENTRY * glGenFramebuffers) (GLsizei, GLuint *);
+        GLenum (GL_APIENTRY * glCheckFramebufferStatus) (GLenum);
+
+        void (GL_APIENTRY * glFramebufferTexture1D) (GLenum, GLenum, GLenum, GLuint, GLint);
+        void (GL_APIENTRY * glFramebufferTexture2D) (GLenum, GLenum, GLenum, GLuint, GLint);
+        void (GL_APIENTRY * glFramebufferTexture3D) (GLenum, GLenum, GLenum, GLuint, GLint, GLint);
+        void (GL_APIENTRY * glFramebufferTexture) (GLenum, GLenum, GLint, GLint);
+        void (GL_APIENTRY * glFramebufferTextureLayer) (GLenum, GLenum, GLuint, GLint, GLint);
+        void (GL_APIENTRY * glFramebufferTextureFace)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
+        void (GL_APIENTRY * glFramebufferRenderbuffer) (GLenum, GLenum, GLenum, GLuint);
+
+        void (GL_APIENTRY * glGenerateMipmap) (GLenum);
+        void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+        void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
+
+
+        // Sync
+        GLsync (GL_APIENTRY * glFenceSync) (GLenum condition, GLbitfield flags);
+        GLboolean (GL_APIENTRY * glIsSync) (GLsync sync);
+        void (GL_APIENTRY * glDeleteSync) (GLsync sync);
+        GLenum (GL_APIENTRY * glClientWaitSync) (GLsync sync, GLbitfield flags, GLuint64 timeout);
+        void (GL_APIENTRY * glWaitSync) (GLsync sync, GLbitfield flags, GLuint64 timeout);
+        void (GL_APIENTRY * glGetSynciv) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
+
 
 };
 

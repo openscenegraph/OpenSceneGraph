@@ -129,13 +129,13 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         {
             // No valid GraphicsContext in the Camera. This might happen in
             //   SceneView-based apps. Rely on the creating code to have passed
-            //   in a valid Extensions pointer, and hope it's valid for any
+            //   in a valid GL2Extensions pointer, and hope it's valid for any
             //   context that might be current.
-            OSG_DEBUG << "osgOQ: RQCB: Using fallback path to obtain Extensions pointer." << std::endl;
+            OSG_DEBUG << "osgOQ: RQCB: Using fallback path to obtain GL2Extensions pointer." << std::endl;
             ext = _extensionsFallback;
             if (!ext)
             {
-                OSG_FATAL << "osgOQ: RQCB: Extensions pointer fallback is NULL." << std::endl;
+                OSG_FATAL << "osgOQ: RQCB: GL2Extensions pointer fallback is NULL." << std::endl;
                 return;
             }
         }

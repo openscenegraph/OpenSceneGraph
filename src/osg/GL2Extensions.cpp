@@ -222,9 +222,6 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
 
     // EXT_geometry_shader4
     setGLExtensionFuncPtr(glProgramParameteri,  "glProgramParameteri", "glProgramParameteriEXT" );
-    setGLExtensionFuncPtr(glFramebufferTexture,  "glFramebufferTexture", "glFramebufferTextureEXT" );
-    setGLExtensionFuncPtr(glFramebufferTextureLayer,  "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT" );
-    setGLExtensionFuncPtr(glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT" );
 
     // ARB_tesselation_shader
     setGLExtensionFuncPtr(glPatchParameteri, "glPatchParameteri" );
@@ -611,6 +608,58 @@ GL2Extensions::GL2Extensions(unsigned int contextID)
     isMultisampleFilterHintSupported = isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
 
     setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverageARB");
+
+
+    // FrameBufferObject
+    setGLExtensionFuncPtr(glBindRenderbuffer, "glBindRenderbuffer", "glBindRenderbufferEXT", "glBindRenderbufferOES");
+    setGLExtensionFuncPtr(glDeleteRenderbuffers, "glDeleteRenderbuffers", "glDeleteRenderbuffersEXT", "glDeleteRenderbuffersOES");
+    setGLExtensionFuncPtr(glGenRenderbuffers, "glGenRenderbuffers", "glGenRenderbuffersEXT", "glGenRenderbuffersOES");
+    setGLExtensionFuncPtr(glRenderbufferStorage, "glRenderbufferStorage", "glRenderbufferStorageEXT", "glRenderbufferStorageOES");
+    setGLExtensionFuncPtr(glRenderbufferStorageMultisample, "glRenderbufferStorageMultisample", "glRenderbufferStorageMultisampleEXT", "glRenderbufferStorageMultisampleOES");
+    setGLExtensionFuncPtr(glRenderbufferStorageMultisampleCoverageNV, "glRenderbufferStorageMultisampleCoverageNV");
+    setGLExtensionFuncPtr(glBindFramebuffer, "glBindFramebuffer", "glBindFramebufferEXT", "glBindFramebufferOES");
+    setGLExtensionFuncPtr(glDeleteFramebuffers, "glDeleteFramebuffers", "glDeleteFramebuffersEXT", "glDeleteFramebuffersOES");
+    setGLExtensionFuncPtr(glGenFramebuffers, "glGenFramebuffers", "glGenFramebuffersEXT", "glGenFramebuffersOES");
+    setGLExtensionFuncPtr(glCheckFramebufferStatus, "glCheckFramebufferStatus", "glCheckFramebufferStatusEXT", "glCheckFramebufferStatusOES");
+
+    setGLExtensionFuncPtr(glFramebufferTexture1D, "glFramebufferTexture1D", "glFramebufferTexture1DEXT", "glFramebufferTexture1DOES");
+    setGLExtensionFuncPtr(glFramebufferTexture2D, "glFramebufferTexture2D", "glFramebufferTexture2DEXT", "glFramebufferTexture2DOES");
+    setGLExtensionFuncPtr(glFramebufferTexture3D, "glFramebufferTexture3D", "glFramebufferTexture3DEXT", "glFramebufferTexture3DOES");
+    setGLExtensionFuncPtr(glFramebufferTexture, "glFramebufferTexture", "glFramebufferTextureEXT", "glFramebufferTextureOES");
+    setGLExtensionFuncPtr(glFramebufferTextureLayer, "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT", "glFramebufferTextureLayerOES");
+    setGLExtensionFuncPtr(glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT", "glFramebufferTextureFaceOES" );
+    setGLExtensionFuncPtr(glFramebufferRenderbuffer, "glFramebufferRenderbuffer", "glFramebufferRenderbufferEXT", "glFramebufferRenderbufferOES");
+
+    setGLExtensionFuncPtr(glGenerateMipmap, "glGenerateMipmap", "glGenerateMipmapEXT", "glGenerateMipmapOES");
+    setGLExtensionFuncPtr(glBlitFramebuffer, "glBlitFramebuffer", "glBlitFramebufferEXT", "glBlitFramebufferOES");
+    setGLExtensionFuncPtr(glGetRenderbufferParameteriv, "glGetRenderbufferParameteriv", "glGetRenderbufferParameterivEXT", "glGetRenderbufferParameterivOES");
+
+    isFrameBufferObjectSupported =
+        glBindRenderbuffer != 0 &&
+        glDeleteRenderbuffers != 0 &&
+        glGenRenderbuffers != 0 &&
+        glRenderbufferStorage != 0 &&
+        glBindFramebuffer != 0 &&
+        glDeleteFramebuffers != 0 &&
+        glGenFramebuffers != 0 &&
+        glCheckFramebufferStatus != 0 &&
+        glFramebufferTexture2D != 0 &&
+        glFramebufferRenderbuffer != 0 &&
+        glGenerateMipmap != 0 &&
+        glGetRenderbufferParameteriv != 0;
+
+    isPackedDepthStencilSupported = OSG_GL3_FEATURES ||
+        (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
+        (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
+
+
+    // Sync
+    osg::setGLExtensionFuncPtr(glFenceSync, "glFenceSync");
+    osg::setGLExtensionFuncPtr(glIsSync, "glIsSync");
+    osg::setGLExtensionFuncPtr(glDeleteSync, "glDeleteSync");
+    osg::setGLExtensionFuncPtr(glClientWaitSync, "glClientWaitSync");
+    osg::setGLExtensionFuncPtr(glWaitSync, "glWaitSync");
+    osg::setGLExtensionFuncPtr(glGetSynciv, "glGetSynciv");
 
 }
 

@@ -28,96 +28,6 @@
 
 using namespace osg;
 
-static buffered_object< ref_ptr<FBOExtensions> > s_extensions;
-
-FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInitalized)
-{
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new FBOExtensions(contextID);
-    return s_extensions[contextID].get();
-}
-
-/**************************************************************************
- * FBOExtensions
- **************************************************************************/
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    #if defined(OSG_GLES1_AVAILABLE)
-        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("OES") ).c_str() )
-    #else
-        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), std::string(#name).c_str() )
-    #endif
-#else
-    #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("EXT") ).c_str() )
-#endif
-
-FBOExtensions::FBOExtensions(unsigned int contextID)
-:   glBindRenderbuffer(0),
-    glGenRenderbuffers(0),
-    glDeleteRenderbuffers(0),
-    glRenderbufferStorage(0),
-    glRenderbufferStorageMultisample(0),
-    glRenderbufferStorageMultisampleCoverageNV(0),
-    glBindFramebuffer(0),
-    glDeleteFramebuffers(0),
-    glGenFramebuffers(0),
-    glCheckFramebufferStatus(0),
-    glFramebufferTexture1D(0),
-    glFramebufferTexture2D(0),
-    glFramebufferTexture3D(0),
-    glFramebufferTexture(0),
-    glFramebufferTextureLayer(0),
-    glFramebufferRenderbuffer(0),
-    glGenerateMipmap(0),
-    glBlitFramebuffer(0),
-    _supported(false),
-    _packed_depth_stencil_supported(false)
-{
-    LOAD_FBO_EXT(glBindRenderbuffer);
-    LOAD_FBO_EXT(glGenRenderbuffers);
-    LOAD_FBO_EXT(glDeleteRenderbuffers);
-    LOAD_FBO_EXT(glRenderbufferStorage);
-    LOAD_FBO_EXT(glBindFramebuffer);
-    LOAD_FBO_EXT(glDeleteFramebuffers);
-    LOAD_FBO_EXT(glGenFramebuffers);
-    LOAD_FBO_EXT(glCheckFramebufferStatus);
-    LOAD_FBO_EXT(glFramebufferTexture1D);
-    LOAD_FBO_EXT(glFramebufferTexture2D);
-    LOAD_FBO_EXT(glFramebufferTexture3D);
-    LOAD_FBO_EXT(glFramebufferTexture);
-    LOAD_FBO_EXT(glFramebufferTextureLayer);
-    LOAD_FBO_EXT(glFramebufferRenderbuffer);
-    LOAD_FBO_EXT(glGenerateMipmap);
-    LOAD_FBO_EXT(glGetRenderbufferParameteriv);
-
-    _supported =
-        glBindRenderbuffer != 0 &&
-        glDeleteRenderbuffers != 0 &&
-        glGenRenderbuffers != 0 &&
-        glRenderbufferStorage != 0 &&
-        glBindFramebuffer != 0 &&
-        glDeleteFramebuffers != 0 &&
-        glGenFramebuffers != 0 &&
-        glCheckFramebufferStatus != 0 &&
-        glFramebufferTexture2D != 0 &&
-        glFramebufferRenderbuffer != 0 &&
-        glGenerateMipmap != 0 &&
-        glGetRenderbufferParameteriv != 0;
-
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-    _supported = _supported &&
-        glFramebufferTexture1D != 0 &&
-        glFramebufferTexture3D != 0 &&
-        isGLExtensionOrVersionSupported(contextID, "GL_EXT_framebuffer_object",3.0f);
-#endif
-
-    LOAD_FBO_EXT(glBlitFramebuffer);
-    LOAD_FBO_EXT(glRenderbufferStorageMultisample);
-    LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
-
-    _packed_depth_stencil_supported = OSG_GL3_FEATURES ||
-        (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
-        (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
-}
-
 
 /**************************************************************************
  * RenderBuffer
@@ -149,8 +59,8 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const FBOExtensions* extensions = FBOExtensions::instance(contextID,true);
-    if(!extensions || !extensions->isSupported() ) return;
+    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();
@@ -219,13 +129,13 @@ RenderBuffer::~RenderBuffer()
     }
 }
 
-int RenderBuffer::getMaxSamples(unsigned int contextID, const FBOExtensions *ext)
+int RenderBuffer::getMaxSamples(unsigned int contextID, const GL2Extensions* ext)
 {
     static osg::buffered_value<GLint> maxSamplesList;
 
     GLint& maxSamples = maxSamplesList[contextID];
 
-    if (!maxSamples && ext->isMultisampleSupported())
+    if (!maxSamples && ext->isMultisampleSupported)
     {
         glGetIntegerv(GL_MAX_SAMPLES_EXT, &maxSamples);
     }
@@ -233,7 +143,7 @@ int RenderBuffer::getMaxSamples(unsigned int contextID, const FBOExtensions *ext
     return maxSamples;
 }
 
-GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ext) const
+GLuint RenderBuffer::getObjectID(unsigned int contextID, const GL2Extensions* ext) const
 {
     GLuint &objectID = _objectID[contextID];
 
@@ -261,7 +171,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
             const_cast<RenderBuffer*>(this)->setSamples(_colorSamples);
         }
 
-        if (_samples > 0 && ext->isMultisampleCoverageSupported())
+        if (_samples > 0 && ext->isRenderbufferMultisampleCoverageSupported())
         {
             int samples = minimum(_samples, getMaxSamples(contextID, ext));
             int colorSamples = minimum(_colorSamples, samples);
@@ -269,7 +179,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
             ext->glRenderbufferStorageMultisampleCoverageNV(GL_RENDERBUFFER_EXT,
                 samples, colorSamples, _internalFormat, _width, _height);
         }
-        else if (_samples > 0 && ext->isMultisampleSupported())
+        else if (_samples > 0 && ext->isRenderbufferMultisampleSupported())
         {
             int samples = minimum(_samples, getMaxSamples(contextID, ext));
 
@@ -540,7 +450,7 @@ bool FrameBufferAttachment::isMultisample() const
     return false;
 }
 
-void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const FBOExtensions* ext) const
+void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const GL2Extensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -571,7 +481,7 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
     }
 }
 
-void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachment_point, const FBOExtensions* ext) const
+void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachment_point, const GL2Extensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -731,8 +641,8 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const FBOExtensions* extensions = FBOExtensions::instance(contextID,true);
-    if(!extensions || !extensions->isSupported() ) return;
+    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();
@@ -862,8 +772,8 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         return;
 
 
-    FBOExtensions* ext = FBOExtensions::instance(contextID,true);
-    if (!ext->isSupported())
+    GL2Extensions* ext = state.get<GL2Extensions>();
+    if (!ext->isFrameBufferObjectSupported)
     {
         _unsupported[contextID] = 1;
         OSG_WARN << "Warning: EXT_framebuffer_object is not supported" << std::endl;
@@ -938,7 +848,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
             switch(i->first)
             {
                 case(Camera::PACKED_DEPTH_STENCIL_BUFFER):
-                    if (ext->isPackedDepthStencilSupported())
+                    if (ext->isPackedDepthStencilSupported)
                     {
                         fa.attach(state, target, GL_DEPTH_ATTACHMENT_EXT, ext);
                         fa.attach(state, target, GL_STENCIL_ATTACHMENT_EXT, ext);

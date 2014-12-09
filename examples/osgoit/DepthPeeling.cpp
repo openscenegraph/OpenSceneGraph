@@ -86,9 +86,9 @@ public:
      // check if we need to do some depth buffer copying from a source FBO into the current FBO
      if (_source_fbo.get() != NULL)
      {
-         osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(renderInfo.getContextID(),true);
-         bool fbo_supported = fbo_ext && fbo_ext->isSupported();
-         if (fbo_supported && fbo_ext->glBlitFramebuffer)
+         osg::GL2Extensions* ext = renderInfo.getState()->get<osg::GL2Extensions>();
+         bool fbo_supported = ext && ext->isFrameBufferObjectSupported;
+         if (fbo_supported && ext->glBlitFramebuffer)
          {
              // blit the depth buffer from the solid geometry fbo into the current transparency fbo
              (_fbo.get())->apply(*renderInfo.getState(), osg::FrameBufferObject::DRAW_FRAMEBUFFER);
@@ -96,7 +96,7 @@ public:
 
 //             glReadBuffer(GL_COLOR_ATTACHMENT0_EXT); // only needed to blit the color buffer
 //             glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT); // only needed to blit the color buffer
-             fbo_ext->glBlitFramebuffer(
+             ext->glBlitFramebuffer(
                  0, 0, static_cast<GLint>(_width), static_cast<GLint>(_height),
                  0, 0, static_cast<GLint>(_width), static_cast<GLint>(_height),
 #ifdef USE_PACKED_DEPTH_STENCIL
@@ -130,7 +130,9 @@ public:
   {
     // only unbind the fbo if this is the last transparency pass
     if (_restore)
-      osg::FBOExtensions::instance( renderInfo.getState()->getContextID(), false )->glBindFramebuffer( GL_FRAMEBUFFER_EXT, 0 );
+    {
+        renderInfo.getState()->get<osg::GL2Extensions>()->glBindFramebuffer( GL_FRAMEBUFFER_EXT, 0 );
+    }
   }
 protected:
   bool _restore;

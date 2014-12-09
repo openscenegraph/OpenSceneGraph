@@ -499,24 +499,6 @@ void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int
 
     applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 
-
-/*    bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
-    bool hardwareMipMapOn = false;
-    if (needHardwareMipMap)
-    {
-        const Extensions* extensions = getExtensions(contextID,true);
-        bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
-
-        hardwareMipMapOn = _useHardwareMipMapGeneration && generateMipMapSupported;
-
-        if (!hardwareMipMapOn)
-        {
-            // have to swtich off mip mapping
-            OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
-            _min_filter = LINEAR;
-        }
-    }
-*/
 //    if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
 
     glCopyTexImage2D( GL_TEXTURE_RECTANGLE, 0, _internalFormat, x, y, width, height, 0 );
@@ -551,23 +533,6 @@ void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset,
 
         applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 
-/*        bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
-        bool hardwareMipMapOn = false;
-        if (needHardwareMipMap)
-        {
-            const Extensions* extensions = getExtensions(contextID,true);
-            bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
-
-            hardwareMipMapOn = _useHardwareMipMapGeneration && generateMipMapSupported;
-
-            if (!hardwareMipMapOn)
-            {
-                // have to swtich off mip mapping
-                OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
-                _min_filter = LINEAR;
-            }
-        }
-*/
 //        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
 
         glCopyTexSubImage2D( GL_TEXTURE_RECTANGLE, 0, xoffset, yoffset, x, y, width, height);

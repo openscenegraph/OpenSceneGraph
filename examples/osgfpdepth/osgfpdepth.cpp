@@ -132,10 +132,10 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
     unsigned contextID = gc->getState()->getContextID();
     colorConfigs.push_back(BufferConfig("RGBA8", GL_RGBA8, 8));
     depthConfigs.push_back(BufferConfig("D24", GL_DEPTH_COMPONENT24, 24));
-    FBOExtensions* fboe = FBOExtensions::instance(contextID, true);
-    if (!fboe->isSupported())
+    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    if (!ext->isRenderbufferMultisampleSupported())
         return;
-    if (fboe->isMultisampleSupported())
+    if (ext->isMultisampleSupported)
         glGetIntegerv(GL_MAX_SAMPLES_EXT, &maxSamples);
     // isMultisampleCoverageSupported
     if (isGLExtensionSupported(contextID,
@@ -156,9 +156,8 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
 bool checkFramebufferStatus(GraphicsContext* gc, bool silent = false)
 {
     State& state = *gc->getState();
-    unsigned contextID = state.getContextID();
-    FBOExtensions* fboe = FBOExtensions::instance(contextID, true);
-    switch(fboe->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT)) {
+    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    switch(ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT)) {
         case GL_FRAMEBUFFER_COMPLETE_EXT:
             break;
         case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
@@ -242,30 +241,30 @@ bool createFBO(GraphicsContext* gc, FboConfig &config, FboData &data)
     }
     State& state = *gc->getState();
     unsigned int contextID = state.getContextID();
-    FBOExtensions* fboe = FBOExtensions::instance(contextID, true);
+    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
 
     data.fb->apply(state);
     result = checkFramebufferStatus(gc, true);
     if (!result)
     {
-        fboe->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
         return false;
     }
     int query;
     if (multisample)
     {
-        GLuint colorRBID = colorRB->getObjectID(contextID, fboe);
-        fboe->glBindRenderbuffer(GL_RENDERBUFFER_EXT, colorRBID);
+        GLuint colorRBID = colorRB->getObjectID(contextID, ext);
+        ext->glBindRenderbuffer(GL_RENDERBUFFER_EXT, colorRBID);
         if (csaa)
         {
-            fboe->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
+            ext->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
                                                GL_RENDERBUFFER_COVERAGE_SAMPLES_NV,
                                                &query);
             if (query < config.coverageSamples)
                 result = false;
             else
                 config.coverageSamples = query;
-            fboe->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
+            ext->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
                                                GL_RENDERBUFFER_COLOR_SAMPLES_NV,
                                                &query);
 
@@ -277,7 +276,7 @@ bool createFBO(GraphicsContext* gc, FboConfig &config, FboData &data)
         }
         else
         {
-            fboe->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
+            ext->glGetRenderbufferParameteriv(GL_RENDERBUFFER_EXT,
                                                GL_RENDERBUFFER_SAMPLES_EXT,
                                                &query);
             if (query < config.depthSamples)
@@ -303,7 +302,7 @@ bool createFBO(GraphicsContext* gc, FboConfig &config, FboData &data)
                 result = false;
         }
     }
-    fboe->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
     return result;
 }
 
@@ -696,15 +695,15 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     DisplaySettings* ds = viewer.getDisplaySettings() ? viewer.getDisplaySettings() : DisplaySettings::instance().get();
     GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-
-    // displayNum has not been set so reset it to 0.
-    if (si.displayNum<0) si.displayNum = 0;
+    si.setUndefinedScreenDetailsToDefaultScreen();
 
     bool decoration = true;
     if (x < 0)
     {
         unsigned int w, h;
         wsi->getScreenResolution(si, w, h);
+        OSG_NOTICE<<"Screen resolution is "<<w<<", "<<h<<std::endl;
+        OSG_NOTICE<<"ScreenIdentifier "<<si.displayNum<<", "<<si.screenNum<<std::endl;
         x = 0;
         y = 0;
         width = w;
@@ -712,8 +711,9 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
         decoration = false;
     }
 
-    ref_ptr<GraphicsContext::Traits> traits
-        = new GraphicsContext::Traits(ds);
+    OSG_NOTICE<<"x = "<<x<<", y = "<<y<<", width = "<<width<<", height = "<<height<<std::endl;
+
+    ref_ptr<GraphicsContext::Traits> traits = new GraphicsContext::Traits(ds);
     traits->hostName = si.hostName;
     traits->displayNum = si.displayNum;
     traits->screenNum = si.screenNum;
@@ -724,10 +724,9 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     traits->windowDecoration = decoration;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    ref_ptr<GraphicsContext> gc
-        = GraphicsContext::createGraphicsContext(traits.get());
-    osgViewer::GraphicsWindow* gw
-        = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+
+    ref_ptr<GraphicsContext> gc = GraphicsContext::createGraphicsContext(traits.get());
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
     if (gw)
     {
         OSG_NOTIFY(INFO)<<"View::setUpViewOnSingleScreen - GraphicsWindow has been created successfully."<<std::endl;
@@ -750,20 +749,29 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     }
     // Context has to be current to test for extensions
     gc->realize();
-    gc->makeCurrent();
+    if (!gc->makeCurrent())
+    {
+        OSG_NOTIFY(NOTICE) << "Unable to create GraphicsWindow"<<std::endl;
+        gc->releaseContext();
+        gc->close(true);
+        return 0;
+    }
+
     unsigned int contextID = gc->getState()->getContextID();
-    FBOExtensions* fboe = FBOExtensions::instance(contextID, true);
-    if (!fboe->isSupported())
+    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    if (!ext->isFrameBufferObjectSupported)
     {
         OSG_NOTIFY(NOTICE) << "Frame buffer objects are not supported\n";
         gc->releaseContext();
         gc->close(true);
         return 0;
     }
+    
     if (isGLExtensionSupported(contextID, "GL_ARB_depth_buffer_float"))
         depthTextureEnum = GL_DEPTH_COMPONENT32F;
     else if (isGLExtensionSupported(contextID, "GL_NV_depth_buffer_float"))
         depthTextureEnum = GL_DEPTH_COMPONENT32F_NV;
+
     BufferConfigList colorConfigs;
     BufferConfigList depthConfigs;
     vector<int> coverageConfigs;

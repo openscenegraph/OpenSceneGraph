@@ -577,6 +577,29 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGetSynciv) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
 
 
+        // Transform feedback
+        void (GL_APIENTRY * glBeginTransformFeedback) (GLenum primitiveMode);
+        void (GL_APIENTRY * glEndTransformFeedback) (void);
+        void (GL_APIENTRY * glTransformFeedbackVaryings) (GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode);
+        void (GL_APIENTRY * glGetTransformFeedbackVarying) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
+        void (GL_APIENTRY * glBindTransformFeedback) (GLenum target, GLuint id);
+        void (GL_APIENTRY * glDeleteTransformFeedbacks) (GLsizei n, const GLuint *ids);
+        void (GL_APIENTRY * glGenTransformFeedbacks) (GLsizei n, GLuint *ids);
+        GLboolean (GL_APIENTRY * glIsTransformFeedback) (GLuint id);
+        void (GL_APIENTRY * glPauseTransformFeedback) (void);
+        void (GL_APIENTRY * glResumeTransformFeedback) (void);
+        void (GL_APIENTRY * glDrawTransformFeedback) (GLenum mode, GLuint id);
+        void (GL_APIENTRY * glDrawTransformFeedbackStream) (GLenum mode, GLuint id, GLuint stream);
+        void (GL_APIENTRY * glDrawTransformFeedbackInstanced) (GLenum mode, GLuint id, GLsizei instancecount);
+        void (GL_APIENTRY * glDrawTransformFeedbackStreamInstanced) (GLenum mode, GLuint id, GLuint stream, GLsizei instancecount);
+        void (GL_APIENTRY * glCreateTransformFeedbacks) (GLsizei n, GLuint *ids);
+        void (GL_APIENTRY * glTransformFeedbackBufferBase) (GLuint xfb, GLuint index, GLuint buffer);
+        void (GL_APIENTRY * glTransformFeedbackBufferRange) (GLuint xfb, GLuint index, GLuint buffer, GLintptr offset, GLsizei size);
+        void (GL_APIENTRY * glGetTransformFeedbackiv) (GLuint xfb, GLenum pname, GLint *param);
+        void (GL_APIENTRY * glGetTransformFeedbacki_v) (GLuint xfb, GLenum pname, GLuint index, GLint *param);
+        void (GL_APIENTRY * glGetTransformFeedbacki64_v) (GLuint xfb, GLenum pname, GLuint index, GLint64 *param);
+
+
 };
 
 

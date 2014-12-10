@@ -199,6 +199,8 @@ class OSG_EXPORT StateAttribute : public Object
 
             VERTEX_ATTRIB_DIVISOR,
 
+            SHADERSTORAGEBUFFERBINDING,
+
             CAPABILITY = 100
         };
 

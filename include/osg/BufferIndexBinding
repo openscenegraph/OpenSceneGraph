@@ -164,6 +164,35 @@ class OSG_EXPORT AtomicCounterBufferBinding : public BufferIndexBinding
     }
 };
 
+class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
+{
+ public:
+    ShaderStorageBufferBinding(GLuint index=0);
+    /** Create a binding for a shader storage buffer index target.
+     *  @param index the index target
+     *  @param bo associated buffer object
+     *  @param offset offset into buffer object
+     *  @param size size of data in buffer object
+     */
+    ShaderStorageBufferBinding(GLuint index, BufferObject* bo, GLintptr offset, GLsizeiptr size);
+    ShaderStorageBufferBinding(const ShaderStorageBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_StateAttribute(osg, ShaderStorageBufferBinding, SHADERSTORAGEBUFFERBINDING);
+
+    virtual int compare(const StateAttribute& bb) const
+    {
+        COMPARE_StateAttribute_Types(ShaderStorageBufferBinding, bb)
+        COMPARE_StateAttribute_Parameter(_target)
+        COMPARE_StateAttribute_Parameter(_index)
+        COMPARE_StateAttribute_Parameter(_bufferObject)
+        COMPARE_StateAttribute_Parameter(_offset)
+        COMPARE_StateAttribute_Parameter(_size)
+        return 0;
+    }
+};
+
+
+
+
 } // namespace osg
 
 #endif

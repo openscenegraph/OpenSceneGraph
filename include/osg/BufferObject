@@ -732,6 +732,7 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
 
 };
 
+
 class OSG_EXPORT UniformBufferObject : public BufferObject
 {
  public:
@@ -758,6 +759,20 @@ inline void GLBufferObject::bindBuffer()
     _extensions->glBindBuffer(_profile._target,_glObjectID);
     if (_set) _set->moveToBack(this);
 }
+
+
+class OSG_EXPORT ShaderStorageBufferObject : public BufferObject
+{
+ public:
+
+    ShaderStorageBufferObject();
+    ShaderStorageBufferObject(const ShaderStorageBufferObject& ubo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg, ShaderStorageBufferObject);
+ protected:
+    virtual ~ShaderStorageBufferObject();
+};
+
+
 
 }
 

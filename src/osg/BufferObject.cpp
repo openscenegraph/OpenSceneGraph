@@ -1560,3 +1560,25 @@ AtomicCounterBufferObject::AtomicCounterBufferObject(const AtomicCounterBufferOb
 AtomicCounterBufferObject::~AtomicCounterBufferObject()
 {
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  ShaderStorageBufferObject
+//
+ShaderStorageBufferObject::ShaderStorageBufferObject()
+{
+    setTarget(GL_SHADER_STORAGE_BUFFER);
+    setUsage(GL_STATIC_DRAW);
+}
+
+ShaderStorageBufferObject::ShaderStorageBufferObject(const ShaderStorageBufferObject& ubo, const CopyOp& copyop)
+    : BufferObject(ubo, copyop)
+{
+}
+
+ShaderStorageBufferObject::~ShaderStorageBufferObject()
+{
+}
+
+

@@ -1047,7 +1047,7 @@ osg::Texture2D* daeReader::processTexture(
             return NULL;
         }
 
-        if (sampler->getSource() == NULL )
+        if (sampler->getSource() == NULL || sampler->getSource()->getValue() == NULL)
         {
             OSG_WARN << "Could not locate source for sampler2D" << std::endl;
             return NULL;

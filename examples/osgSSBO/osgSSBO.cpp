@@ -429,10 +429,15 @@ void ComputeNode::addDataMonitor(osg::Vec3 placement, osg::Vec3 relativePlacemen
         break;
     }
 
-
     case RGB_CHANNEL:
     {
         fragmentshaderstringstreamChannelMonitor << "   vec4 color; color.x = 0.5+dataRangeMultiplier*particleData.x; color.y = 0.5+dataRangeMultiplier*particleData.y; color.z = 0.5+dataRangeMultiplier*particleData.z; color.w = 1.0; gl_FragColor = color;\n";
+        break;
+    }
+
+    case RGBA_CHANNEL:
+    {
+        fragmentshaderstringstreamChannelMonitor << "   vec4 color; color.x = 0.5+dataRangeMultiplier*particleData.x; color.y = 0.5+dataRangeMultiplier*particleData.y; color.z = 0.5+dataRangeMultiplier*particleData.z; color.w = 0.5+0.5*particleData.w; gl_FragColor = color;\n";
         break;
     }
 
@@ -534,7 +539,7 @@ void ComputeNode::addComputationResultsRenderTree()
     osg::PointSprite *sprite = new osg::PointSprite;
     int texture_unit = 0;
     _computationResultsRenderStateSet->setTextureAttributeAndModes(texture_unit, sprite, osg::StateAttribute::ON);
-    _computationResultsRenderStateSet->setAttributeAndModes(_computationResultsRenderProgram, osg::StateAttribute::ON);
+    _computationResultsRenderStateSet->setAttributeAndModes(_computationResultsRenderProgram.get(), osg::StateAttribute::ON);
     _computationResultsRenderStateSet->addUniform(new osg::Uniform("particleTexture", texture_unit));
     _computationResultsRenderStateSet->addUniform(new osg::Uniform("numRows", (int)NUM_ELEMENTS_X));
     _computationResultsRenderStateSet->addUniform(new osg::Uniform("numCols", (int)NUM_ELEMENTS_Y));
@@ -615,7 +620,7 @@ void ComputeNode::addComputationResultsRenderTree()
     _computationResultsRenderGroup->addChild(particleGeode);
     particleGeode->addDrawable(particleGeometry);
 
-    addChild(_computationResultsRenderGroup);
+    addChild(_computationResultsRenderGroup.get());
 
 }
 
@@ -920,7 +925,7 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<ComputeNode> computeNode = new ComputeNode();
     computeNode->setPosition(osg::Vec3(0, 0, 0));
-    computeNode->setUpdateCallback(new ComputeNodeUpdateCallback(computeNode)); // on-the-fly reloading the shaders if shader source on disk is changed
+    computeNode->setUpdateCallback(new ComputeNodeUpdateCallback(computeNode.get())); // on-the-fly reloading the shaders if shader source on disk is changed
     computeNode->initComputingSetup();
 
 

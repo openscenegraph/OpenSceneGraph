@@ -16,7 +16,6 @@
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformSoftware>
 #include <sstream>
-#include <osg/GL2Extensions>
 
 using namespace osgAnimation;
 

@@ -43,7 +43,7 @@ BlendEquation::~BlendEquation()
 
 void BlendEquation::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isBlendEquationSupported)
     {

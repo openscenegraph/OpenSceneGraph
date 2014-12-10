@@ -141,7 +141,7 @@ void Texture3D::setImage(Image* image)
 
 void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& indepth, GLsizei& numMipmapLevels) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     int width,height,depth;
 
@@ -208,7 +208,7 @@ void Texture3D::apply(State& state) const
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isTexture3DSupported)
     {
@@ -365,7 +365,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
@@ -486,7 +486,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
@@ -520,7 +520,7 @@ void Texture3D::allocateMipmap(State& state) const
 
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
 
         // bind texture
         textureObject->bind();

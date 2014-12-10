@@ -56,7 +56,7 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
 
-        const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+        const GLExtensions* extensions = GLExtensions::Get(contextID,true);
 
         VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
 
@@ -127,7 +127,7 @@ void VertexProgram::apply(State& state) const
 {
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isVertexProgramSupported)
         return;

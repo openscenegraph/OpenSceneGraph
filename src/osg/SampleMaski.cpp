@@ -51,7 +51,7 @@ int SampleMaski::compare(const StateAttribute& sa) const
 void SampleMaski::apply(State& state) const
 {
     // get "per-context" extensions
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if ( (extensions->isTextureMultisampleSupported) || (extensions->isOpenGL32upported) || (extensions->isSampleMaskiSupported)  )
     {

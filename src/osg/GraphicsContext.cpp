@@ -993,7 +993,7 @@ void SyncSwapBuffersCallback::swapBuffersImplementation(osg::GraphicsContext* gc
     gc->swapBuffersImplementation();
     //glFinish();
 
-    GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    GLExtensions* ext = gc->getState()->get<GLExtensions>();
 
     if (ext->glClientWaitSync)
     {

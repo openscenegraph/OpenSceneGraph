@@ -132,7 +132,7 @@ void EXTQuerySupport::endQuery(osg::State* /*state*/)
 
 void OpenGLQuerySupport::initialize(osg::State* state, osg::Timer_t /*startTick*/)
 {
-    _extensions = state->get<osg::GL2Extensions>();
+    _extensions = state->get<osg::GLExtensions>();
 }
 
 void EXTQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
@@ -464,7 +464,7 @@ void Renderer::initialize(osg::State* state)
     if (!_initialized)
     {
         _initialized = true;
-        osg::GL2Extensions* ext = state->get<osg::GL2Extensions>();
+        osg::GLExtensions* ext = state->get<osg::GLExtensions>();
         if (ext->isARBTimerQuerySupported && state->getTimestampBits() > 0)
             _querySupport = new ARBQuerySupport();
         else if (ext->isTimerQuerySupported)

@@ -331,7 +331,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 /** Pointer to our parent Program */
                 const Program* _program;
                 /** Pointer to this context's extension functions */
-                osg::ref_ptr<GL2Extensions> _extensions;
+                osg::ref_ptr<GLExtensions> _extensions;
                 /** Handle to the actual OpenGL glProgram */
                 GLuint _glProgramHandle;
                 /** Does our glProgram need to be linked? */
@@ -342,7 +342,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool _loadedBinary;
 
                 const unsigned int _contextID;
-                
+
                 /** Does the glProgram handle belongs to this class? */
                 bool _ownsProgramHandle;
 

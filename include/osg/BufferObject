@@ -16,7 +16,7 @@
 #define OSG_BUFFEROBJECT 1
 
 #include <osg/GL>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/Object>
 #include <osg/buffered_value>
 #include <osg/FrameStamp>
@@ -268,7 +268,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         unsigned int            _frameLastUsed;
 
     public:
-        GL2Extensions*          _extensions;
+        GLExtensions*          _extensions;
 
 };
 

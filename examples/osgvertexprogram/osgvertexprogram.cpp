@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
         ++itr)
     {
         unsigned int contextID = (*itr)->getState()->getContextID();
-        osg::GL2Extensions* vpExt = osg::GL2Extensions::Get(contextID,false);
+        osg::GLExtensions* vpExt = osg::GLExtensions::Get(contextID,false);
         if (vpExt)
         {
             if (!vpExt->isVertexProgramSupported)

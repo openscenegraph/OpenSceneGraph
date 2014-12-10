@@ -203,7 +203,7 @@ void TextureCubeMap::apply(State& state) const
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isCubeMapSupported)
         return;
@@ -366,7 +366,7 @@ void TextureCubeMap::apply(State& state) const
 void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset, int yoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isCubeMapSupported)
         return;

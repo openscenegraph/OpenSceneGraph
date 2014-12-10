@@ -30,7 +30,7 @@
 #include <osg/ref_ptr>
 #include <osg/Program>
 #include <osg/Shader>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -66,7 +66,7 @@ void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime
     if (availableTime<=0.0) return;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
     if( ! extensions->isGlslSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -441,7 +441,7 @@ void Program::removeBindUniformBlock(const std::string& name)
 void Program::apply( osg::State& state ) const
 {
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if( ! extensions->isGlslSupported ) return;
 
     if( isFixedFunction() )
@@ -534,7 +534,7 @@ Program::PerContextProgram::PerContextProgram(const Program* program, unsigned i
     _program = program;
     if (_glProgramHandle == 0)
     {
-        _extensions = GL2Extensions::Get( _contextID, true );
+        _extensions = GLExtensions::Get( _contextID, true );
         _glProgramHandle = _extensions->glCreateProgram();
         _ownsProgramHandle = true;
     }

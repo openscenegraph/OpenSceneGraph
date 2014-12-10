@@ -1,10 +1,12 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2007 Art Tevs
  * Copyright (C) 2008 Zebra Imaging
  * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  * Copyright (C) 2012 David Callu
+ * Copyright (C) 2008 Mike Weiblen
+ * Copyright (C) 2012 Holger Helmich
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -15,16 +17,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:        include/osg/GL2Extensions
- * author:      Mike Weiblen 2008-01-02
- *              Holger Helmich 2010-10-21
-*/
-
 #ifndef OSG_GL2EXTENSIONS
 #define OSG_GL2EXTENSIONS 1
 
 #include <osg/Referenced>
 #include <osg/GL>
+
 
 #include <string>
 

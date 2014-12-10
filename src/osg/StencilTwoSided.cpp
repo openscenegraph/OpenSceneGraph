@@ -88,7 +88,7 @@ void StencilTwoSided::apply(State& state) const
 {
     // get "per-context" extensions
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // use OpenGL 2.0 functions if available
     if (extensions->isOpenGL20Supported)

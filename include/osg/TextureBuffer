@@ -121,7 +121,7 @@ class OSG_EXPORT TextureBuffer : public Texture
                 _id(0),
                 _usageHint(usageHint)
             {
-                _extensions = osg::GL2Extensions::Get(contextID, true);
+                _extensions = osg::GLExtensions::Get(contextID, true);
             }
 
             void bindBuffer(GLenum target);
@@ -134,7 +134,7 @@ class OSG_EXPORT TextureBuffer : public Texture
         public:
             GLuint _id;
             GLenum _usageHint;
-            osg::GL2Extensions* _extensions;
+            osg::GLExtensions* _extensions;
         };
 
         typedef osg::buffered_object<osg::ref_ptr<TextureBufferObject> > TextureBufferObjectList;

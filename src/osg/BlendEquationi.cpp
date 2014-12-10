@@ -28,7 +28,7 @@ BlendEquationi::~BlendEquationi()
 
 void BlendEquationi::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (_equationRGB == _equationAlpha)
     {
         if (extensions->glBlendEquationi)

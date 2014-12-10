@@ -46,7 +46,7 @@ void GLObjectsVisitor::apply(osg::Node& node)
     if (programSetBefore && !programSetAfter)
     {
         osg::State* state = _renderInfo.getState();
-        osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
+        osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
         extensions->glUseProgram(0);
         state->setLastAppliedProgramObject(0);
         _lastCompiledProgram = 0;
@@ -68,7 +68,7 @@ void GLObjectsVisitor::apply(osg::Geode& node)
     if (!programSetBefore && programSetAfter)
     {
         osg::State* state = _renderInfo.getState();
-        osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
+        osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
         extensions->glUseProgram(0);
         state->setLastAppliedProgramObject(0);
         _lastCompiledProgram = 0;
@@ -157,7 +157,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         else if(_renderInfo.getState()->getLastAppliedProgramObject())
         {
             osg::State* state = _renderInfo.getState();
-            osg::GL2Extensions* extensions = state->get<osg::GL2Extensions>();
+            osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
             extensions->glUseProgram(0);
             _renderInfo.getState()->setLastAppliedProgramObject(0);
         }

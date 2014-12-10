@@ -86,7 +86,7 @@ public:
      // check if we need to do some depth buffer copying from a source FBO into the current FBO
      if (_source_fbo.get() != NULL)
      {
-         osg::GL2Extensions* ext = renderInfo.getState()->get<osg::GL2Extensions>();
+         osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
          bool fbo_supported = ext && ext->isFrameBufferObjectSupported;
          if (fbo_supported && ext->glBlitFramebuffer)
          {
@@ -131,7 +131,7 @@ public:
     // only unbind the fbo if this is the last transparency pass
     if (_restore)
     {
-        renderInfo.getState()->get<osg::GL2Extensions>()->glBindFramebuffer( GL_FRAMEBUFFER_EXT, 0 );
+        renderInfo.getState()->get<osg::GLExtensions>()->glBindFramebuffer( GL_FRAMEBUFFER_EXT, 0 );
     }
   }
 protected:

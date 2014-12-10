@@ -144,7 +144,7 @@ class OSG_EXPORT RenderBuffer: public Object
         inline void setSamples(int samples);
         inline void setColorSamples(int colorSamples);
 
-        GLuint getObjectID(unsigned int contextID, const GL2Extensions *ext) const;
+        GLuint getObjectID(unsigned int contextID, const GLExtensions *ext) const;
         inline int compare(const RenderBuffer &rb) const;
 
         /** Mark internal RenderBuffer for deletion.
@@ -161,7 +161,7 @@ class OSG_EXPORT RenderBuffer: public Object
           * this call is useful for when an OpenGL context has been destroyed. */
         static void discardDeletedRenderBuffers(unsigned int contextID);
 
-        static int getMaxSamples(unsigned int contextID, const GL2Extensions* ext);
+        static int getMaxSamples(unsigned int contextID, const GLExtensions* ext);
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -303,8 +303,8 @@ class OSG_EXPORT FrameBufferAttachment
         FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);
 
         bool isMultisample() const;
-        void createRequiredTexturesAndApplyGenerateMipMap(State& state, const GL2Extensions* ext) const;
-        void attach(State &state, GLenum target, GLenum attachment_point, const GL2Extensions* ext) const;
+        void createRequiredTexturesAndApplyGenerateMipMap(State& state, const GLExtensions* ext) const;
+        void attach(State &state, GLenum target, GLenum attachment_point, const GLExtensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 
         RenderBuffer* getRenderBuffer();

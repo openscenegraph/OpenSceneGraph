@@ -37,7 +37,7 @@ Stencil::~Stencil()
 {
 }
 
-static Stencil::Operation validateOperation(const GL2Extensions* extensions, Stencil::Operation op)
+static Stencil::Operation validateOperation(const GLExtensions* extensions, Stencil::Operation op)
 {
     // only wrap requires validation
     if (op != Stencil::INCR_WRAP && op != Stencil::DECR_WRAP)
@@ -52,7 +52,7 @@ static Stencil::Operation validateOperation(const GL2Extensions* extensions, Ste
 
 void Stencil::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     Operation sf = validateOperation(extensions, _sfail);
     Operation zf = validateOperation(extensions, _zfail);
     Operation zp = validateOperation(extensions, _zpass);

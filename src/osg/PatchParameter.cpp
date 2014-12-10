@@ -31,7 +31,7 @@ PatchParameter::~PatchParameter()
 
 void PatchParameter::apply(State& state) const
 {
-    GL2Extensions* extensions = state.get<GL2Extensions>();
+    GLExtensions* extensions = state.get<GLExtensions>();
     if (extensions->areTessellationShadersSupported )
     {
 

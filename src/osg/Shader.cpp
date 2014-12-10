@@ -177,7 +177,7 @@ void Shader::flushDeletedGlShaders(unsigned int contextID,double /*currentTime*/
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
     if( ! extensions->isGlslSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -458,7 +458,7 @@ Shader::PerContextShader::PerContextShader(const Shader* shader, unsigned int co
         _contextID( contextID )
 {
     _shader = shader;
-    _extensions = GL2Extensions::Get( _contextID, true );
+    _extensions = GLExtensions::Get( _contextID, true );
     _glShaderHandle = _extensions->glCreateShader( shader->getType() );
     requestCompile();
 }

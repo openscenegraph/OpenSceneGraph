@@ -131,9 +131,9 @@ State::State():
 
 State::~State()
 {
-    // delete the GL2Extensions object associated with this osg::State.
-    GL2Extensions::Set(_contextID, 0);
-    _gl2Extentsions = 0;
+    // delete the GLExtensions object associated with this osg::State.
+    GLExtensions::Set(_contextID, 0);
+    _glExtensions = 0;
 
     //_texCoordArrayList.clear();
 
@@ -922,8 +922,8 @@ void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
 
-    _gl2Extentsions = new GL2Extensions(_contextID);
-    GL2Extensions::Set(_contextID, _gl2Extentsions.get());
+    _glExtensions = new GLExtensions(_contextID);
+    GLExtensions::Set(_contextID, _glExtensions.get());
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
     setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
@@ -966,7 +966,7 @@ void State::initializeExtensionProcs()
         _glMaxTextureCoords = 1;
     }
 
-    if (_gl2Extentsions->isARBTimerQuerySupported)
+    if (_glExtensions->isARBTimerQuerySupported)
     {
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::string rendererString = renderer ? (const char*)renderer : "";
@@ -981,7 +981,7 @@ void State::initializeExtensionProcs()
         else
         {
             GLint bits = 0;
-            _gl2Extentsions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
             setTimestampBits(bits);
         }
     }
@@ -1760,7 +1760,7 @@ void State::frameCompleted()
     if (getTimestampBits())
     {
         GLint64 timestamp;
-        _gl2Extentsions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
+        _glExtensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
         //OSG_NOTICE<<"State::frameCompleted() setting time stamp. timestamp="<<timestamp<<std::endl;
     }

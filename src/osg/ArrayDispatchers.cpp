@@ -196,7 +196,7 @@ void ArrayDispatchers::init()
 
 
 #ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE
-    GL2Extensions* extensions = _state->get<GL2Extensions>();
+    GLExtensions* extensions = _state->get<GLExtensions>();
 
     #ifndef OSG_GLES1_AVAILABLE
         _vertexDispatchers->assign<GLfloat>(Array::Vec2ArrayType, glVertex2fv, 2);
@@ -281,7 +281,7 @@ AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, A
 void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 {
     #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-    GL2Extensions* extensions = _state->get<GL2Extensions>();
+    GLExtensions* extensions = _state->get<GLExtensions>();
     #endif
 
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
@@ -312,7 +312,7 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 
 void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
 {
-    GL2Extensions* extensions = _state->get<GL2Extensions>();
+    GLExtensions* extensions = _state->get<GLExtensions>();
 
     for(unsigned int i=_vertexAttribDispatchers.size(); i<=unit; ++i)
     {

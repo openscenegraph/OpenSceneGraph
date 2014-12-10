@@ -84,7 +84,7 @@ void Point::apply(State& state) const
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glPointSize(_size);
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isPointParametersSupported)
         return;

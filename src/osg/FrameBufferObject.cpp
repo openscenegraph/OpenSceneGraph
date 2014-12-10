@@ -59,7 +59,7 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
     if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -129,7 +129,7 @@ RenderBuffer::~RenderBuffer()
     }
 }
 
-int RenderBuffer::getMaxSamples(unsigned int contextID, const GL2Extensions* ext)
+int RenderBuffer::getMaxSamples(unsigned int contextID, const GLExtensions* ext)
 {
     static osg::buffered_value<GLint> maxSamplesList;
 
@@ -143,7 +143,7 @@ int RenderBuffer::getMaxSamples(unsigned int contextID, const GL2Extensions* ext
     return maxSamples;
 }
 
-GLuint RenderBuffer::getObjectID(unsigned int contextID, const GL2Extensions* ext) const
+GLuint RenderBuffer::getObjectID(unsigned int contextID, const GLExtensions* ext) const
 {
     GLuint &objectID = _objectID[contextID];
 
@@ -450,7 +450,7 @@ bool FrameBufferAttachment::isMultisample() const
     return false;
 }
 
-void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const GL2Extensions* ext) const
+void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const GLExtensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -481,7 +481,7 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
     }
 }
 
-void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachment_point, const GL2Extensions* ext) const
+void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachment_point, const GLExtensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -641,7 +641,7 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
     if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -772,7 +772,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         return;
 
 
-    GL2Extensions* ext = state.get<GL2Extensions>();
+    GLExtensions* ext = state.get<GLExtensions>();
     if (!ext->isFrameBufferObjectSupported)
     {
         _unsupported[contextID] = 1;
@@ -828,7 +828,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     {
         if (_drawBuffers.size() > 0)
         {
-            GL2Extensions *gl2e = state.get<GL2Extensions>();
+            GLExtensions *gl2e = state.get<GLExtensions>();
             if (gl2e && gl2e->glDrawBuffers)
             {
                 gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));

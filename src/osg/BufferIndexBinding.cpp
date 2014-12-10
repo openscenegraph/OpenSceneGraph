@@ -143,4 +143,26 @@ void AtomicCounterBufferBinding::readData(osg::State & state, osg::UIntArray & u
         bo->_extensions->glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, static_cast<GLuint>(previousID));
 }
 
+
+ShaderStorageBufferBinding::ShaderStorageBufferBinding(GLuint index)
+    : BufferIndexBinding(GL_SHADER_STORAGE_BUFFER, index)
+{
+}
+
+ShaderStorageBufferBinding::ShaderStorageBufferBinding(GLuint index, BufferObject* bo, GLintptr offset, GLsizeiptr size)
+    : BufferIndexBinding(GL_SHADER_STORAGE_BUFFER, index, bo, offset, size)
+{
+
+}
+
+ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBufferBinding& rhs, const CopyOp& copyop)
+    : BufferIndexBinding(rhs, copyop)
+{
+}
+
+
+
+
+
+
 } // namespace osg

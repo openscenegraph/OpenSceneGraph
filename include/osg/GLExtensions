@@ -71,11 +71,10 @@ extern OSG_EXPORT std::string& getGLExtensionDisableString();
   * not supported by OpenGL library. This is used for checking something
   * like glActiveTexture (which is in OGL1.3) or glActiveTextureARB.
 */
-inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFuncName)
+inline void* getGLExtensionFuncPtr(const char *funcName, const char *fallbackFuncName)
 {
     void* ptr = getGLExtensionFuncPtr(funcName);
-    if (ptr) return ptr;
-    return getGLExtensionFuncPtr(fallbackFuncName);
+    return (ptr!=0) ? ptr : getGLExtensionFuncPtr(fallbackFuncName);
 }
 
 /** Return the address of the specified OpenGL function. If not found then
@@ -86,12 +85,14 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
 inline void* getGLExtensionFuncPtr(const char *funcName1, const char *funcName2, const char *funcName3)
 {
     void* ptr = getGLExtensionFuncPtr(funcName1);
-    if (ptr) return ptr;
+    return (ptr!=0) ? ptr : getGLExtensionFuncPtr(funcName2, funcName3);
+}
 
-    ptr = getGLExtensionFuncPtr(funcName2);
-    if (ptr) return ptr;
-
-    return getGLExtensionFuncPtr(funcName3);
+template<typename T, typename R>
+bool convertPointer(T& dest, R src)
+{
+    memcpy(&dest, &src, sizeof(src));
+    return src!=0;
 }
 
 template<typename T, typename R>
@@ -105,49 +106,19 @@ T convertPointerType(R src)
 template<typename T>
 bool setGLExtensionFuncPtr(T& t, const char* str1)
 {
-    void* data = osg::getGLExtensionFuncPtr(str1);
-    if (data)
-    {
-        memcpy(&t, &data, sizeof(T));
-        return true;
-    }
-    else
-    {
-        t = 0;
-        return false;
-    }
+    return convertPointer(t, osg::getGLExtensionFuncPtr(str1));
 }
 
 template<typename T>
 bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2)
 {
-    void* data = osg::getGLExtensionFuncPtr(str1,str2);
-    if (data)
-    {
-        memcpy(&t, &data, sizeof(T));
-        return true;
-    }
-    else
-    {
-        t = 0;
-        return false;
-    }
+    return convertPointer(t, osg::getGLExtensionFuncPtr(str1, str2));
 }
 
 template<typename T>
 bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char* str3)
 {
-    void* data = osg::getGLExtensionFuncPtr(str1,str2,str3);
-    if (data)
-    {
-        memcpy(&t, &data, sizeof(T));
-        return true;
-    }
-    else
-    {
-        t = 0;
-        return false;
-    }
+    return convertPointer(t, osg::getGLExtensionFuncPtr(str1, str2, str3));
 }
 
 }

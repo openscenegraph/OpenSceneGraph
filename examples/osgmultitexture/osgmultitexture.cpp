@@ -94,7 +94,7 @@ int main( int argc, char **argv )
         contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
         ++contextID)
     {
-        osg::GL2Extensions* textExt = osg::GL2Extensions::Get(contextID,false);
+        osg::GLExtensions* textExt = osg::GLExtensions::Get(contextID,false);
         if (textExt)
         {
             if (!textExt->isMultiTexturingSupported)

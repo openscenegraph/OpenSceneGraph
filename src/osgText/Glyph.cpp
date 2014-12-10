@@ -147,7 +147,7 @@ void GlyphTexture::apply(osg::State& state) const
     }
 
 
-    const osg::GL2Extensions* extensions = state.get<osg::GL2Extensions>();
+    const osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported;
 
     // get the texture object for the current contextID.

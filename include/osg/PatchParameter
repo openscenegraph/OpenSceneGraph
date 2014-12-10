@@ -17,7 +17,6 @@
 #include <osg/Vec2>
 #include <osg/Vec4>
 #include <osg/StateAttribute>
-#include <osg/GL2Extensions>
 
 namespace osg {
 
@@ -59,13 +58,13 @@ class OSG_EXPORT PatchParameter : public StateAttribute
 
         /** Get GL_PATCH_VERTICES parameter.*/
         GLint getVertices() const { return _vertices; }
-        
+
         /** Set GL_PATCH_DEFAULT_INNER_LEVEL parameter.*/
         void setPatchDefaultInnerLevel(const osg::Vec2& level) { _patchDefaultInnerLevel = level; }
 
         /** Get GL_PATCH_DEFAULT_INNER_LEVEL parameter.*/
         const osg::Vec2& getPatchDefaultInnerLevel() const { return _patchDefaultInnerLevel; }
-        
+
         /** Set GL_PATCH_DEFAULT_OUTER_LEVEL parameter.*/
         void setPatchDefaultOuterLevel(const osg::Vec4& level) { _patchDefaultOuterLevel = level; }
 

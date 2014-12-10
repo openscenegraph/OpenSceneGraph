@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/VertexAttribDivisor>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/State>
 
 using namespace osg;
@@ -34,7 +34,7 @@ VertexAttribDivisor::~VertexAttribDivisor()
 
 void VertexAttribDivisor::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (extensions->glVertexAttribDivisor)
     {
         extensions->glVertexAttribDivisor( _index, _divisor );

@@ -338,7 +338,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
     if (renderTargetImplementation==osg::Camera::FRAME_BUFFER_OBJECT)
     {
-        osg::GL2Extensions* ext = state.get<osg::GL2Extensions>();
+        osg::GLExtensions* ext = state.get<osg::GLExtensions>();
         bool fbo_supported = ext->isFrameBufferObjectSupported;
 
         if (fbo_supported)
@@ -903,7 +903,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 
     osg::State& state = *renderInfo.getState();
 
-    osg::GL2Extensions* ext = _fbo.valid() ? state.get<osg::GL2Extensions>() : 0;
+    osg::GLExtensions* ext = _fbo.valid() ? state.get<osg::GLExtensions>() : 0;
     bool fbo_supported = ext && ext->isFrameBufferObjectSupported;
 
     bool using_multiple_render_targets = fbo_supported && _fbo->hasMultipleRenderingTargets();

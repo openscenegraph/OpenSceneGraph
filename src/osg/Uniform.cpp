@@ -973,7 +973,7 @@ unsigned int Uniform::getNameID(const std::string& name)
     typedef std::map<std::string, unsigned int> UniformNameIDMap;
     static OpenThreads::Mutex s_mutex_uniformNameIDMap;
     static UniformNameIDMap s_uniformNameIDMap;
-    
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_uniformNameIDMap);
     UniformNameIDMap::iterator it = s_uniformNameIDMap.find(name);
     if (it != s_uniformNameIDMap.end())
@@ -2456,7 +2456,7 @@ unsigned int Uniform::getNameID() const
 
 ///////////////////////////////////////////////////////////////////////////
 
-void Uniform::apply(const GL2Extensions* ext, GLint location) const
+void Uniform::apply(const GLExtensions* ext, GLint location) const
 {
     // OSG_NOTICE << "uniform at "<<location<<" "<<_name<< std::endl;
 

@@ -132,7 +132,7 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
     unsigned contextID = gc->getState()->getContextID();
     colorConfigs.push_back(BufferConfig("RGBA8", GL_RGBA8, 8));
     depthConfigs.push_back(BufferConfig("D24", GL_DEPTH_COMPONENT24, 24));
-    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    osg::GLExtensions* ext = gc->getState()->get<GLExtensions>();
     if (!ext->isRenderbufferMultisampleSupported())
         return;
     if (ext->isMultisampleSupported)
@@ -156,7 +156,7 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
 bool checkFramebufferStatus(GraphicsContext* gc, bool silent = false)
 {
     State& state = *gc->getState();
-    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    osg::GLExtensions* ext = gc->getState()->get<GLExtensions>();
     switch(ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT)) {
         case GL_FRAMEBUFFER_COMPLETE_EXT:
             break;
@@ -241,7 +241,7 @@ bool createFBO(GraphicsContext* gc, FboConfig &config, FboData &data)
     }
     State& state = *gc->getState();
     unsigned int contextID = state.getContextID();
-    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    osg::GLExtensions* ext = gc->getState()->get<GLExtensions>();
 
     data.fb->apply(state);
     result = checkFramebufferStatus(gc, true);
@@ -758,7 +758,7 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     }
 
     unsigned int contextID = gc->getState()->getContextID();
-    osg::GL2Extensions* ext = gc->getState()->get<GL2Extensions>();
+    osg::GLExtensions* ext = gc->getState()->get<GLExtensions>();
     if (!ext->isFrameBufferObjectSupported)
     {
         OSG_NOTIFY(NOTICE) << "Frame buffer objects are not supported\n";
@@ -766,7 +766,7 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
         gc->close(true);
         return 0;
     }
-    
+
     if (isGLExtensionSupported(contextID, "GL_ARB_depth_buffer_float"))
         depthTextureEnum = GL_DEPTH_COMPONENT32F;
     else if (isGLExtensionSupported(contextID, "GL_NV_depth_buffer_float"))

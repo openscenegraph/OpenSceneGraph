@@ -31,7 +31,7 @@ Multisample::~Multisample()
 
 void Multisample::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (!extensions->isMultisampleSupported)
     {
         OSG_WARN<<"Warning: Multisample::apply(..) failed, Multisample is not support by OpenGL driver."<<std::endl;

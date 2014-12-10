@@ -42,7 +42,7 @@ void ClampColor::apply(State& state) const
 
    // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (!extensions->isClampColorSupported)
     {
         OSG_WARN<<"Warning: ClampColor::apply(..) failed, ClampColor is not support by OpenGL driver."<<std::endl;

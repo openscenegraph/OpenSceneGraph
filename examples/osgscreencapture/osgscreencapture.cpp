@@ -137,7 +137,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
 
             void read()
             {
-                osg::GL2Extensions* ext = osg::GL2Extensions::Get(_gc->getState()->getContextID(),true);
+                osg::GLExtensions* ext = osg::GLExtensions::Get(_gc->getState()->getContextID(),true);
 
                 if (ext->isPBOSupported && !_pboBuffer.empty())
                 {
@@ -158,9 +158,9 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
 
             void readPixels();
 
-            void singlePBO(osg::GL2Extensions* ext);
+            void singlePBO(osg::GLExtensions* ext);
 
-            void multiPBO(osg::GL2Extensions* ext);
+            void multiPBO(osg::GLExtensions* ext);
 
             typedef std::vector< osg::ref_ptr<osg::Image> >             ImageBuffer;
             typedef std::vector< GLuint > PBOBuffer;
@@ -325,7 +325,7 @@ void WindowCaptureCallback::ContextData::readPixels()
     _currentPboIndex = nextPboIndex;
 }
 
-void WindowCaptureCallback::ContextData::singlePBO(osg::GL2Extensions* ext)
+void WindowCaptureCallback::ContextData::singlePBO(osg::GLExtensions* ext)
 {
     // std::cout<<"singelPBO(  "<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
 
@@ -403,7 +403,7 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GL2Extensions* ext)
     _currentImageIndex = nextImageIndex;
 }
 
-void WindowCaptureCallback::ContextData::multiPBO(osg::GL2Extensions* ext)
+void WindowCaptureCallback::ContextData::multiPBO(osg::GLExtensions* ext)
 {
     // std::cout<<"multiPBO(  "<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
     unsigned int nextImageIndex = (_currentImageIndex+1)%_imageBuffer.size();

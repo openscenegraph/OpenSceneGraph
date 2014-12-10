@@ -56,7 +56,7 @@ void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
 
-        const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+        const GLExtensions* extensions = GLExtensions::Get(contextID,true);
 
         FragmentProgramObjectList& vpol = s_deletedFragmentProgramObjectCache[contextID];
 
@@ -127,7 +127,7 @@ void FragmentProgram::apply(State& state) const
 {
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isFragmentProgramSupported)
         return;

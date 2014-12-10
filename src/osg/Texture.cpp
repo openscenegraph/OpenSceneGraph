@@ -1465,7 +1465,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     {
 
         const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same parameters for each graphics context...
-        const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
+        const GLExtensions* extensions = GLExtensions::Get(contextID,true);
 
         switch(_internalFormatMode)
         {
@@ -1873,7 +1873,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     WrapMode ws = _wrap_s, wt = _wrap_t, wr = _wrap_r;
 
@@ -2016,7 +2016,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
 void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& numMipmapLevels) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     int width,height;
 
@@ -2078,7 +2078,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 #endif
 
     // get extensions object
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
@@ -2485,7 +2485,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
@@ -2671,7 +2671,7 @@ bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
 {
     if (_useHardwareMipMapGeneration)
     {
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
         if (extensions->isGenerateMipMapSupported)
         {
             return true;
@@ -2694,7 +2694,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
         return GENERATE_MIPMAP;
 #else
 
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
         bool useGenerateMipMap = extensions->glGenerateMipmap!=0;
 
         if (useGenerateMipMap)
@@ -2731,7 +2731,7 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
             TextureObject* textureObject = getTextureObject(contextID);
             if (textureObject)
             {
-                osg::GL2Extensions* ext = state.get<GL2Extensions>();
+                osg::GLExtensions* ext = state.get<GLExtensions>();
                 ext->glGenerateMipmap(textureObject->target());
             }
             break;
@@ -2764,7 +2764,7 @@ void Texture::generateMipmap(State& state) const
     }
 
     // get fbo extension which provides us with the glGenerateMipmapEXT function
-    osg::GL2Extensions* ext = state.get<GL2Extensions>();
+    osg::GLExtensions* ext = state.get<GLExtensions>();
 
     // check if the function is supported
     if (ext->glGenerateMipmap)

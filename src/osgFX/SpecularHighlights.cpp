@@ -114,7 +114,7 @@ namespace
         {
             if (!Technique::validate(state)) return false;
 
-            osg::GL2Extensions *ext = state.get<osg::GL2Extensions>();
+            osg::GLExtensions *ext = state.get<osg::GLExtensions>();
             return ext ?  ext->isCubeMapSupported : false;
         }
 

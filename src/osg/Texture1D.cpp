@@ -278,7 +278,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
         return;
 
     // get extension object
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();

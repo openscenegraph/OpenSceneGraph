@@ -52,7 +52,7 @@ int PrimitiveRestartIndex::compare(const StateAttribute& sa) const
 void PrimitiveRestartIndex::apply(State& state) const
 {
     // get "per-context" extensions
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (extensions->glPrimitiveRestartIndex)
     {
         extensions->glPrimitiveRestartIndex( _restartIndex );

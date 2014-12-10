@@ -22,7 +22,7 @@
 #define OSG_SHADER 1
 
 
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/Object>
 #include <osg/buffered_value>
 
@@ -236,7 +236,7 @@ class OSG_EXPORT Shader : public osg::Object
                 /** Pointer to our parent osg::Shader */
                 const Shader* _shader;
                 /** Pointer to this context's extension functions. */
-                osg::ref_ptr<osg::GL2Extensions> _extensions;
+                osg::ref_ptr<osg::GLExtensions> _extensions;
                 /** Handle to the actual glShader. */
                 GLuint _glShaderHandle;
                 /** Does our glShader need to be recompiled? */

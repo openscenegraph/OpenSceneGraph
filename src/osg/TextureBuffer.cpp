@@ -122,7 +122,7 @@ void TextureBuffer::apply(State& state) const
 
         if( getTextureParameterDirty(contextID) )
         {
-            const GL2Extensions* extensions = state.get<GL2Extensions>();
+            const GLExtensions* extensions = state.get<GLExtensions>();
             if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
             {
                  extensions->glBindImageTexture(
@@ -142,7 +142,7 @@ void TextureBuffer::apply(State& state) const
         textureBufferObject = new TextureBufferObject(contextID,_usageHint);
         _textureBufferObjects[contextID] = textureBufferObject;
 
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
         if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
         {
                 extensions->glBindImageTexture(

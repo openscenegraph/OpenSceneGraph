@@ -18,7 +18,7 @@
 #include <osg/BufferObject>
 #include <osg/Notify>
 #include <osg/GLExtensions>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/Timer>
 #include <osg/Image>
 #include <osg/State>
@@ -64,7 +64,7 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
 {
     assign(bufferObject);
 
-    _extensions = GL2Extensions::Get(contextID, true);
+    _extensions = GLExtensions::Get(contextID, true);
 
     if (glObjectID==0)
     {
@@ -1494,7 +1494,7 @@ void PixelDataBufferObject::bindBufferInWriteMode(State& state)
 //--------------------------------------------------------------------------------
 void PixelDataBufferObject::unbindBuffer(unsigned int contextID) const
 {
-    GL2Extensions* extensions = GL2Extensions::Get(contextID, true);
+    GLExtensions* extensions = GLExtensions::Get(contextID, true);
 
     switch(_mode[contextID])
     {

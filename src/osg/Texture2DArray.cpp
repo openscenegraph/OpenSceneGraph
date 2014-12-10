@@ -225,7 +225,7 @@ void Texture2DArray::apply(State& state) const
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // if not supported, then return
     if (!extensions->isTexture2DArraySupported || !extensions->isTexture3DSupported)
@@ -367,7 +367,7 @@ void Texture2DArray::apply(State& state) const
             }
         }
 
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
         // source images have no mipmamps but we could generate them...
         if( _min_filter != LINEAR && _min_filter != NEAREST && !_images[0]->isMipmap() &&
             _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported )
@@ -434,7 +434,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
 
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     GLenum target = GL_TEXTURE_2D_ARRAY_EXT;
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
@@ -582,7 +582,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
 void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
@@ -614,7 +614,7 @@ void Texture2DArray::allocateMipmap(State& state) const
 
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
-        const GL2Extensions* extensions = state.get<GL2Extensions>();
+        const GLExtensions* extensions = state.get<GLExtensions>();
 
         int safeSourceFormat = _sourceFormat ? _sourceFormat : _internalFormat;
 

@@ -28,7 +28,7 @@ BlendFunci::~BlendFunci()
 
 void BlendFunci::apply(State& state) const
 {
-    const GL2Extensions* extensions = state.get<GL2Extensions>();
+    const GLExtensions* extensions = state.get<GLExtensions>();
     if (_source_factor != _source_factor_alpha ||
         _destination_factor != _destination_factor_alpha)
     {

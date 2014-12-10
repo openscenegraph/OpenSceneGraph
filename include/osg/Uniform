@@ -28,7 +28,7 @@
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/Matrix>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 
 #include <string.h> // for memset
 #include <string>
@@ -889,7 +889,7 @@ class OSG_EXPORT Uniform : public Object
         /** Get the number that the Uniform's name maps to uniquely */
         unsigned int getNameID() const;
 
-        void apply(const GL2Extensions* ext, GLint location) const;
+        void apply(const GLExtensions* ext, GLint location) const;
 
 
     protected:

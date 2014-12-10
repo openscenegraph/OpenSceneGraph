@@ -100,7 +100,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
     typedef std::vector<osg::TestResult*> ResultsVector;
     ResultsVector _results;
 
-    RetrieveQueriesCallback( osg::GL2Extensions* ext=NULL )
+    RetrieveQueriesCallback( osg::GLExtensions* ext=NULL )
       : _extensionsFallback( ext )
     {
     }
@@ -118,24 +118,24 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         double elapsedTime( 0. );
         int count( 0 );
 
-        const osg::GL2Extensions* ext=0;
+        const osg::GLExtensions* ext=0;
         if (camera.getGraphicsContext())
         {
             // The typical path, for osgViewer-based applications or any
             //   app that has set up a valid GraphicsCOntext for the Camera.
-            ext = camera.getGraphicsContext()->getState()->get<osg::GL2Extensions>();
+            ext = camera.getGraphicsContext()->getState()->get<osg::GLExtensions>();
         }
         else
         {
             // No valid GraphicsContext in the Camera. This might happen in
             //   SceneView-based apps. Rely on the creating code to have passed
-            //   in a valid GL2Extensions pointer, and hope it's valid for any
+            //   in a valid GLExtensions pointer, and hope it's valid for any
             //   context that might be current.
-            OSG_DEBUG << "osgOQ: RQCB: Using fallback path to obtain GL2Extensions pointer." << std::endl;
+            OSG_DEBUG << "osgOQ: RQCB: Using fallback path to obtain GLExtensions pointer." << std::endl;
             ext = _extensionsFallback;
             if (!ext)
             {
-                OSG_FATAL << "osgOQ: RQCB: GL2Extensions pointer fallback is NULL." << std::endl;
+                OSG_FATAL << "osgOQ: RQCB: GLExtensions pointer fallback is NULL." << std::endl;
                 return;
             }
         }
@@ -204,7 +204,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         _results.push_back( tr );
     }
 
-    osg::GL2Extensions* _extensionsFallback;
+    osg::GLExtensions* _extensionsFallback;
 };
 
 
@@ -279,7 +279,7 @@ void
 QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 {
     unsigned int contextID = renderInfo.getState()->getContextID();
-    osg::GL2Extensions* ext = renderInfo.getState()->get<GL2Extensions>();
+    osg::GLExtensions* ext = renderInfo.getState()->get<GLExtensions>();
     osg::Camera* cam = renderInfo.getCurrentCamera();
 
     // Add callbacks if necessary.
@@ -412,7 +412,7 @@ QueryGeometry::flushDeletedQueryObjects( unsigned int contextID, double /*curren
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedQueryObjectCache);
 
-        const osg::GL2Extensions* extensions = osg::GL2Extensions::Get( contextID, true );
+        const osg::GLExtensions* extensions = osg::GLExtensions::Get( contextID, true );
 
         QueryObjectList& qol = s_deletedQueryObjectCache[contextID];
 

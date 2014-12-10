@@ -23,7 +23,7 @@
 #include <osg/Vec4d>
 #include <osg/Vec4i>
 #include <osg/buffered_value>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 
 #include <list>
 #include <map>

@@ -1042,6 +1042,29 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glWaitSync, "glWaitSync");
     osg::setGLExtensionFuncPtr(glGetSynciv, "glGetSynciv");
 
+
+    // Transform Feeedback
+    osg::setGLExtensionFuncPtr(glBeginTransformFeedback, "glBeginTransformFeedback", "glBeginTransformFeedbackEXT");
+    osg::setGLExtensionFuncPtr(glEndTransformFeedback, "glEndTransformFeedback", "glEndTransformFeedbackEXT");
+    osg::setGLExtensionFuncPtr(glTransformFeedbackVaryings, "glTransformFeedbackVaryings", "glTransformFeedbackVaryingsEXT");
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbackVarying, "glGetTransformFeedbackVarying", "glGetTransformFeedbackVaryingEXT");
+    osg::setGLExtensionFuncPtr(glBindTransformFeedback, "glBindTransformFeedback");
+    osg::setGLExtensionFuncPtr(glDeleteTransformFeedbacks, "glDeleteTransformFeedbacks");
+    osg::setGLExtensionFuncPtr(glGenTransformFeedbacks, "glGenTransformFeedbacks");
+    osg::setGLExtensionFuncPtr(glIsTransformFeedback, "glIsTransformFeedback");
+    osg::setGLExtensionFuncPtr(glPauseTransformFeedback, "glPauseTransformFeedback");
+    osg::setGLExtensionFuncPtr(glResumeTransformFeedback, "glResumeTransformFeedback");
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedback, "glDrawTransformFeedback");
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStream, "glDrawTransformFeedbackStream");
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackInstanced, "glDrawTransformFeedbackInstanced");
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStreamInstanced, "glDrawTransformFeedbackStreamInstanced");
+    osg::setGLExtensionFuncPtr(glCreateTransformFeedbacks, "glCreateTransformFeedbacks");
+    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferBase, "glTransformFeedbackBufferBase");
+    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferRange, "glTransformFeedbackBufferRange");
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbackiv, "glGetTransformFeedbackiv");
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki_v, "glGetTransformFeedbacki_v");
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v");
+
 }
 
 

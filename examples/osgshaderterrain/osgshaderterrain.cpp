@@ -22,7 +22,7 @@
 #include <osg/Depth>
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/Material>
 #include <osg/Math>
 #include <osg/MatrixTransform>
@@ -270,7 +270,7 @@ public:
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
 
-        osg::GL2Extensions* gl2ext = gc->getState()->get<osg::GL2Extensions>();
+        osg::GLExtensions* gl2ext = gc->getState()->get<osg::GLExtensions>();
         if( gl2ext )
         {
             if( !gl2ext->isGlslSupported )

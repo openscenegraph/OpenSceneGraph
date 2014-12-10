@@ -276,7 +276,6 @@ SET(TARGET_SRC
     FrontFace.cpp
     Geode.cpp
     Geometry.cpp
-    GL2Extensions.cpp
     GLExtensions.cpp
     GLBeginEndAdapter.cpp
     GLObjects.cpp

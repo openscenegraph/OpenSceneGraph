@@ -18,7 +18,7 @@
 #include <osg/ClampColor>
 #include <osg/Fog>
 #include <osg/FragmentProgram>
-#include <osg/GL2Extensions>
+#include <osg/GLExtensions>
 #include <osg/PointSprite>
 #include <osg/StateSet>
 #include <osg/StencilTwoSided>

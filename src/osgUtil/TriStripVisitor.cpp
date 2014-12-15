@@ -504,6 +504,10 @@ void TriStripVisitor::stripify(Geometry& geom)
             }
         }
 
+        if(_mergeTriangleStrips) {
+            mergeTriangleStrips(new_primitives);
+        }
+
         geom.setPrimitiveSetList(new_primitives);
 
         #if 0
@@ -525,6 +529,73 @@ void TriStripVisitor::stripify(Geometry& geom)
         OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     not doing tri strip *****************"<< std::endl;
     }
 
+}
+
+
+void TriStripVisitor::mergeTriangleStrips(osg::Geometry::PrimitiveSetList& primitives)
+{
+    int nbtristrip = 0;
+    int nbtristripVertexes = 0;
+
+    for (unsigned int i = 0; i < primitives.size(); ++ i)
+    {
+        osg::PrimitiveSet* ps = primitives[i].get();
+        osg::DrawElements* de = ps->getDrawElements();
+        if (de && de->getMode() == osg::PrimitiveSet::TRIANGLE_STRIP)
+        {
+            ++ nbtristrip;
+            nbtristripVertexes += de->getNumIndices();
+        }
+    }
+
+    if (nbtristrip > 0) {
+        osg::notify(osg::NOTICE) << "found " << nbtristrip << " tristrip, "
+                                 << "total indices " << nbtristripVertexes
+                                 << " should result to " << nbtristripVertexes + nbtristrip * 2
+                                 << " after connection" << std::endl;
+
+        osg::DrawElementsUInt* ndw = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP);
+        for (unsigned int i = 0; i < primitives.size(); ++ i)
+        {
+            osg::PrimitiveSet* ps = primitives[i].get();
+            if (ps && ps->getMode() == osg::PrimitiveSet::TRIANGLE_STRIP)
+            {
+                osg::DrawElements* de = ps->getDrawElements();
+                if (de)
+                {
+                    // if connection needed insert degenerate triangles
+                    if (ndw->getNumIndices() != 0 && ndw->back() != de->getElement(0))
+                    {
+                        // duplicate last vertex
+                        ndw->addElement(ndw->back());
+                        // insert first vertex of next strip
+                        ndw->addElement(de->getElement(0));
+                    }
+
+                    if (ndw->getNumIndices() % 2 != 0 ) {
+                        // add a dummy vertex to reverse the strip
+                        ndw->addElement(de->getElement(0));
+                    }
+
+                    for (unsigned int j = 0; j < de->getNumIndices(); j++) {
+                        ndw->addElement(de->getElement(j));
+                    }
+                }
+            }
+        }
+
+        for (int i = primitives.size() - 1 ; i >= 0 ; -- i)
+        {
+            osg::PrimitiveSet* ps = primitives[i].get();
+            // remove null primitive sets and all primitives that have been merged
+            // (i.e. all TRIANGLE_STRIP DrawElements)
+            if (!ps || (ps && ps->getMode() == osg::PrimitiveSet::TRIANGLE_STRIP))
+            {
+                primitives.erase(primitives.begin() + i);
+            }
+        }
+        primitives.insert(primitives.begin(), ndw);
+    }
 }
 
 void TriStripVisitor::stripify()

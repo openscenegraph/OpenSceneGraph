@@ -36,7 +36,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
                 BaseOptimizerVisitor( optimizer, Optimizer::TRISTRIP_GEOMETRY),
                 _cacheSize( 16 ),
                 _minStripSize( 2 ),
-                _generateFourPointPrimitivesQuads ( false)
+                _generateFourPointPrimitivesQuads ( false ),
+                _mergeTriangleStrips( false )
         {}
 
         /** Convert mesh primitives in Geometry into Tri Strips.
@@ -44,6 +45,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
           * and lines, linestrips which it leaves unchanged.
           */
         void stripify(osg::Geometry& drawable);
+
+        void mergeTriangleStrips(osg::Geometry::PrimitiveSetList& primitives);
 
         /** Stripify (make into strips of tria or quads) the accumulated list of Geometry drawables.*/
         void stripify();
@@ -75,6 +78,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
         void setGenerateFourPointPrimitivesQuads(bool flag) { _generateFourPointPrimitivesQuads = flag; }
         bool getGenerateFourPointPrimitivesQuads() const { return _generateFourPointPrimitivesQuads; }
 
+        void setMergeTriangleStrips(bool flag) { _mergeTriangleStrips = flag; }
+        bool getMergeTriangleStrips() const { return _mergeTriangleStrips; }
 
     private:
 
@@ -84,6 +89,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
         unsigned int _minStripSize;
         GeometryList _geometryList;
         bool         _generateFourPointPrimitivesQuads;
+        bool         _mergeTriangleStrips;
 };
 
 }

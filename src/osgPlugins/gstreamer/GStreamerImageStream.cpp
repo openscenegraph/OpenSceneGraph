@@ -1,34 +1,55 @@
 #include "GStreamerImageStream.hpp"
 
+#if 0
+    #define OSGGST_INFO OSG_NOTICE
+#else
+    #define OSGGST_INFO OSG_INFO
+#endif
+
 namespace osgGStreamer {
 
-GStreamerImageStream::GStreamerImageStream()
+GStreamerImageStream::GStreamerImageStream():
+    _loop(0),
+    _pipeline(0),
+    _internal_buffer(0),
+    _width(0),
+    _height(0)
 {
     setOrigin(osg::Image::TOP_LEFT);
 
-    loop = g_main_loop_new(NULL, FALSE);
+    _loop = g_main_loop_new(NULL, FALSE);
 }
 
 GStreamerImageStream::GStreamerImageStream(const GStreamerImageStream & image, const osg::CopyOp & copyop) :
-    osg::ImageStream(image, copyop)
+    osg::ImageStream(image, copyop),
+    _loop(0),
+    _pipeline(0),
+    _internal_buffer(0),
+    _width(0),
+    _height(0)
 {
-    // TODO: probably incorrect or incomplete
+    setOrigin(osg::Image::TOP_LEFT);
+
+    _loop = g_main_loop_new(NULL, FALSE);
+
+    if (!getFileName().empty())
+    {
+        open(getFileName());
+    }
 }
 
 GStreamerImageStream::~GStreamerImageStream()
 {
-    OSG_INFO<<"Destructing GStreamerImageStream..."<<std::endl;
+    gst_element_set_state(_pipeline, GST_STATE_NULL);
+    gst_element_get_state(_pipeline, NULL, NULL, GST_CLOCK_TIME_NONE); //wait until the state changed
 
-    gst_element_set_state(pipeline, GST_STATE_NULL);
-    gst_element_get_state(pipeline, NULL, NULL, GST_CLOCK_TIME_NONE); //wait until the state changed
+    g_main_loop_quit(_loop);
+    g_main_loop_unref(_loop);
 
-    g_main_loop_quit(loop);
-    g_main_loop_unref(loop);
-
-    free(internal_buffer);
+    free(_internal_buffer);
 }
 
-bool GStreamerImageStream::open(const std::string &filename)
+bool GStreamerImageStream::open(const std::string& filename)
 {
     setFileName(filename);
 
@@ -65,9 +86,9 @@ bool GStreamerImageStream::open(const std::string &filename)
         deco. ! queue ! videoconvert ! video/x-raw,format=RGB ! appsink name=sink emit-signals=true \
         %s", filename.c_str(), audio_pipe);
 
-    pipeline = gst_parse_launch(string, &error);
+    _pipeline = gst_parse_launch(string, &error);
 
-    if( pipeline == NULL )
+    if( _pipeline == NULL )
     {
         g_printerr("Error: %s\n", error->message);
         return false;
@@ -78,7 +99,7 @@ bool GStreamerImageStream::open(const std::string &filename)
 
     // bus
 
-    GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
+    GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(_pipeline));
 
     gst_bus_add_watch(bus, (GstBusFunc)on_message, this);
 
@@ -87,19 +108,25 @@ bool GStreamerImageStream::open(const std::string &filename)
 
     // sink
 
-    GstElement *sink = gst_bin_get_by_name(GST_BIN(pipeline), "sink");
+    GstElement *sink = gst_bin_get_by_name(GST_BIN(_pipeline), "sink");
 
     g_signal_connect(sink, "new-sample", G_CALLBACK(on_new_sample), this);
     g_signal_connect(sink, "new-preroll", G_CALLBACK(on_new_preroll), this);
 
     gst_object_unref(sink);
 
-    gst_element_set_state(pipeline, GST_STATE_PAUSED);
-    gst_element_get_state(pipeline, NULL, NULL, GST_CLOCK_TIME_NONE); // wait until the state changed
+    gst_element_set_state(_pipeline, GST_STATE_PAUSED);
+    gst_element_get_state(_pipeline, NULL, NULL, GST_CLOCK_TIME_NONE); // wait until the state changed
 
-    //setPixelBufferObject(new osg::PixelBufferObject(this)); // can help with the performance
-    setImage(width, height, 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, internal_buffer, osg::Image::NO_DELETE);
+    if (_width==0 || _height==0)
+    {
+        // no valid image has been setup by a on_new_preroll() call.
+        return false;
+    }
 
+    // setLoopingMode(osg::ImageStream::NO_LOOPING);
+
+    // start the thread to run gstreamer main loop
     start();
 
     return true;
@@ -109,32 +136,26 @@ bool GStreamerImageStream::open(const std::string &filename)
 
 void GStreamerImageStream::play()
 {
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    OSGGST_INFO<<"GStreamerImageStream::play()"<<std::endl;
+    gst_element_set_state(_pipeline, GST_STATE_PLAYING);
 }
 
 void GStreamerImageStream::pause()
 {
-    gst_element_set_state(pipeline, GST_STATE_PAUSED);
+    OSGGST_INFO<<"GStreamerImageStream::pause()"<<std::endl;
+    gst_element_set_state(_pipeline, GST_STATE_PAUSED);
 }
 
 void GStreamerImageStream::rewind()
 {
-    gst_element_seek_simple(pipeline, GST_FORMAT_TIME, GstSeekFlags(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT), 0);
+    OSGGST_INFO<<"GStreamerImageStream::rewind()"<<std::endl;
+    gst_element_seek_simple(_pipeline, GST_FORMAT_TIME, GstSeekFlags(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT), 0);
 }
 
 void GStreamerImageStream::seek(double time)
 {
-    gst_element_seek_simple(pipeline, GST_FORMAT_TIME, GstSeekFlags(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT), time * GST_MSECOND);
-}
-
-int GStreamerImageStream::s() const
-{
-    return width;
-}
-
-int GStreamerImageStream::t() const
-{
-    return height;
+    OSGGST_INFO<<"GStreamerImageStream::seek("<<time<<")"<<std::endl;
+    gst_element_seek_simple(_pipeline, GST_FORMAT_TIME, GstSeekFlags(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT), time * GST_MSECOND);
 }
 
 //** Callback implementations **
@@ -150,11 +171,10 @@ GstFlowReturn GStreamerImageStream::on_new_sample(GstAppSink *appsink, GStreamer
 
     GstMapInfo info;
     gst_buffer_map(buffer, &info, GST_MAP_READ);
-    gst_buffer_extract(buffer, 0, user_data->internal_buffer, info.size);
+    gst_buffer_extract(buffer, 0, user_data->_internal_buffer, info.size);
 
-    OSG_NOTICE<<"on_new_sample("<<(user_data->width)<<", "<<(user_data->height)<<")"<<std::endl;
-
-    user_data->setImage(user_data->width, user_data->height, 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, user_data->internal_buffer, osg::Image::NO_DELETE, 4);
+    // data has been modified so dirty the image so the texture will updated
+    user_data->dirty();
 
     // clean resources
 
@@ -181,23 +201,35 @@ GstFlowReturn GStreamerImageStream::on_new_preroll(GstAppSink *appsink, GStreame
     gst_structure_get_int(structure, "width", &width);
     gst_structure_get_int(structure, "height", &height);
 
-    user_data->width = width;
-    user_data->height = height;
-
-    int row_width = width*3;
-    if ((row_width%4)!=0)
+    if (width<=0 || height<=0)
     {
-        OSG_NOTICE<<"Rounding up row width from "<<row_width<<" to ";
-        row_width += (4-(row_width%4));
-        OSG_NOTICE<<row_width<<std::endl;;
+        OSG_NOTICE<<"Error: video size invalid width="<<width<<", height="<<height<<std::endl;
+        return GST_FLOW_ERROR;
     }
 
-    user_data->internal_buffer = (unsigned char*)malloc(sizeof(unsigned char)*row_width*height);
+    if (user_data->_width != width || user_data->_height != height)
+    {
+        user_data->_width = width;
+        user_data->_height = height;
 
-    OSG_NOTICE<<"on_new_preroll("<<(user_data->width)<<", "<<(user_data->height)<<")"<<std::endl;
+
+        int row_width = width*3;
+        if ((row_width%4)!=0)
+        {
+            row_width += (4-(row_width%4));
+        }
+
+        // if buffer previously assigned free it before allocating new buffer.
+        if (user_data->_internal_buffer) free(user_data->_internal_buffer);
+
+        // allocate buffer
+        user_data->_internal_buffer = (unsigned char*)malloc(sizeof(unsigned char)*row_width*height);
+
+        // assign buffer to image
+        user_data->setImage(user_data->_width, user_data->_height, 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, user_data->_internal_buffer, osg::Image::NO_DELETE, 4);
+    }
 
     // clean resources
-
     gst_sample_unref(sample);
 
     return GST_FLOW_OK;
@@ -207,7 +239,11 @@ gboolean GStreamerImageStream::on_message(GstBus *bus, GstMessage *message, GStr
 {
     if( GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS)
     {
-        user_data->rewind();
+        OSGGST_INFO<<"Video '"<<user_data->getFileName()<<"' finished."<<std::endl;
+        if (user_data->getLoopingMode()==osg::ImageStream::LOOPING)
+        {
+            user_data->rewind();
+        }
     }
 
     return TRUE;
@@ -215,7 +251,8 @@ gboolean GStreamerImageStream::on_message(GstBus *bus, GstMessage *message, GStr
 
 void GStreamerImageStream::run()
 {
-    g_main_loop_run(loop);
+    g_main_loop_run(_loop);
 }
+
 
 } // namespace osgGStreamer

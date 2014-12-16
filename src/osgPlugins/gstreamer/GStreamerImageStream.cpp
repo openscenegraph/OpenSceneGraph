@@ -76,7 +76,7 @@ bool GStreamerImageStream::open(const std::string& filename)
 
     // build pipeline
 
-    gchar *audio_pipe = "";
+    const gchar *audio_pipe = "";
 
     if( has_audio_stream )
         audio_pipe = "deco. ! queue ! audioconvert ! autoaudiosink";

@@ -1,0 +1,24 @@
+INCLUDE_DIRECTORIES(
+    ${GSTREAMER_INCLUDE_DIRS}
+    ${GLIB_INCLUDE_DIRS}
+)
+
+SET(TARGET_EXTERNAL_LIBRARIES 
+    ${GSTREAMER_LIBRARIES}
+    ${GSTREAMER_APP_LIBRARIES}
+    ${GSTREAMER_PBUTILS_LIBRARIES}
+    ${GLIB_LIBRARIES}
+    ${GLIB_GOBJECT_LIBRARIES}
+)
+
+SET(TARGET_SRC 
+    GStreamerImageStream.cpp
+    ReaderWriterGStreamer.cpp
+)
+
+SET(TARGET_H
+    GStreamerImageStream.hpp
+)
+
+#### end var setup  ###
+SETUP_PLUGIN(gstreamer)

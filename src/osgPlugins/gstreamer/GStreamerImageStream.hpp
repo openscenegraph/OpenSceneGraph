@@ -20,33 +20,30 @@ namespace osgGStreamer {
         META_Object(osgGStreamer, GStreamerImageStream);
 
         bool open(const std::string &filename);
-        
+
         virtual void play();
         virtual void pause();
         virtual void rewind();
         virtual void seek(double time);
 
-        virtual int s() const;
-        virtual int t() const;
-
     private:
 
         virtual ~GStreamerImageStream();
+
+        virtual void run();
 
         static gboolean on_message(GstBus *bus, GstMessage *message, GStreamerImageStream *user_data);
 
         static GstFlowReturn on_new_sample(GstAppSink *appsink, GStreamerImageStream *user_data);
         static GstFlowReturn on_new_preroll(GstAppSink *appsink, GStreamerImageStream *user_data);
 
-        virtual void run();
+        GMainLoop* _loop;
+        GstElement* _pipeline;
 
-        GMainLoop *loop;
-        GstElement *pipeline;
+        unsigned char* _internal_buffer;
 
-        unsigned char *internal_buffer;
-
-        int width;
-        int height;
+        int _width;
+        int _height;
     };
 }
 

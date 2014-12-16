@@ -59,11 +59,11 @@ bool GStreamerImageStream::open(const std::string& filename)
 
     bool has_audio_stream = false;
 
-    GstDiscoverer *item = gst_discoverer_new(1*GST_SECOND, &error);
     gchar *uri = g_filename_to_uri(filename.c_str(), NULL, NULL);
 
-    if( gst_uri_is_valid(uri) )
+    if( uri!=0 && gst_uri_is_valid(uri) )
     {
+        GstDiscoverer *item = gst_discoverer_new(1*GST_SECOND, &error);
         GstDiscovererInfo *info = gst_discoverer_discover_uri(item, uri, &error);
         GList *audio_list = gst_discoverer_info_get_audio_streams(info);
 
@@ -75,11 +75,11 @@ bool GStreamerImageStream::open(const std::string& filename)
     }
 
     // build pipeline
-
     const gchar *audio_pipe = "";
-
     if( has_audio_stream )
+    {
         audio_pipe = "deco. ! queue ! audioconvert ! autoaudiosink";
+    }
 
     gchar *string = g_strdup_printf("filesrc location=%s ! \
         decodebin name=deco \
@@ -88,17 +88,21 @@ bool GStreamerImageStream::open(const std::string& filename)
 
     _pipeline = gst_parse_launch(string, &error);
 
-    if( _pipeline == NULL )
+    g_free(string);
+
+    if (error)
     {
         g_printerr("Error: %s\n", error->message);
+        g_error_free(error);
+    }
+
+    if( _pipeline == NULL )
+    {
         return false;
     }
 
-    g_free(string);
-    g_error_free(error);
 
     // bus
-
     GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(_pipeline));
 
     gst_bus_add_watch(bus, (GstBusFunc)on_message, this);

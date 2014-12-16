@@ -25,6 +25,7 @@
 #include <osg/Math>
 #include <osg/PrimitiveSet>
 #include <osg/TriangleIndexFunctor>
+#include <osg/TriangleLinePointIndexFunctor>
 
 #include <osgUtil/MeshOptimizers>
 
@@ -97,6 +98,60 @@ struct GeometryArrayGatherer
 
     ArrayList _arrayList;
 };
+
+class SharedArrayOptimizer {
+public:
+    void findDuplicatedUVs(const osg::Geometry& geometry)
+    {
+        _deduplicateUvs.clear();
+
+        // look for all channels that are shared only *within* the geometry
+        std::map<const osg::Array*, unsigned int> arrayPointerCounter;
+
+        for(unsigned int id = 0 ; id < geometry.getNumTexCoordArrays() ; ++ id) {
+            const osg::Array* channel = geometry.getTexCoordArray(id);
+            if(channel && channel->getNumElements()) {
+                if(arrayPointerCounter.find(channel) == arrayPointerCounter.end()) {
+                    arrayPointerCounter[channel] = 1;
+                }
+                else {
+                    arrayPointerCounter[channel] += 1;
+                }
+            }
+        }
+
+        std::map<const osg::Array*, unsigned int> references;
+
+        for(unsigned int id = 0 ; id != geometry.getNumTexCoordArrays() ; ++ id) {
+            const osg::Array* channel = geometry.getTexCoordArray(id);
+            // test if array is shared outside the geometry
+            if(channel && static_cast<unsigned int>(channel->referenceCount()) == arrayPointerCounter[channel]) {
+                std::map<const osg::Array*, unsigned int>::const_iterator reference = references.find(channel);
+                if(reference == references.end()) {
+                    references[channel] = id;
+                }
+                else {
+                    _deduplicateUvs[id] = reference->second;
+                }
+            }
+        }
+    }
+
+    void deduplicateUVs(osg::Geometry& geometry)
+    {
+        for(std::map<unsigned int, unsigned int>::const_iterator it_duplicate = _deduplicateUvs.begin() ;
+            it_duplicate != _deduplicateUvs.end() ; ++ it_duplicate) {
+            osg::Array* original = geometry.getTexCoordArray(it_duplicate->second);
+            geometry.setTexCoordArray(it_duplicate->first,
+                                      original,
+                                      (original ? original->getBinding() : osg::Array::BIND_UNDEFINED));
+        }
+    }
+
+protected:
+    std::map<unsigned int, unsigned int> _deduplicateUvs;
+};
+
 
 // Compare vertices in a mesh using all their attributes. The vertices
 // are identified by their index. Extracted from TriStripVisitor.cpp
@@ -1059,11 +1114,11 @@ public:
 
 const unsigned Remapper::invalidIndex = std::numeric_limits<unsigned>::max();
 
-// Record the order in which vertices in a Geometry are used.
+// Record the order in which vertices in a Geometry are used in triangle, line or point primitives.
 struct VertexReorderOperator
 {
     unsigned seq;
-    vector<unsigned> remap;
+    std::vector<unsigned int> remap;
 
     VertexReorderOperator() : seq(0)
     {
@@ -1071,24 +1126,36 @@ struct VertexReorderOperator
 
     void inline doVertex(unsigned v)
     {
-        if (remap[v] == Remapper::invalidIndex)
-            remap[v] = seq++;
+        if (remap[v] == Remapper::invalidIndex) {
+            remap[v] = seq ++;
+        }
     }
+
     void operator()(unsigned p1, unsigned p2, unsigned p3)
     {
         doVertex(p1);
         doVertex(p2);
         doVertex(p3);
     }
+
+    void operator()(unsigned p1, unsigned p2)
+    {
+        doVertex(p1);
+        doVertex(p2);
+    }
+
+    void operator()(unsigned p1)
+    {
+        doVertex(p1);
+    }
 };
 
-struct VertexReorder : public TriangleIndexFunctor<VertexReorderOperator>
+struct VertexReorder : public TriangleLinePointIndexFunctor<osgUtil::VertexReorderOperator>
 {
     VertexReorder(unsigned numVerts)
     {
         remap.resize(numVerts, Remapper::invalidIndex);
     }
-
 };
 }
 
@@ -1119,7 +1186,12 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
     Array* vertArray = geom.getVertexArray();
     if (!vertArray || vertArray->getNumElements()==0)
         return;
+
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
+
+    // sort primitives: first triangles, then lines and finally points
+    std::sort(primSets.begin(), primSets.end(), order_by_primitive_mode);
+
     VertexReorder vr(vertArray->getNumElements());
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
              end = primSets.end();
@@ -1134,6 +1206,10 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
             return;
         ps->accept(vr);
     }
+
+    // search for UVs array shared only within the geometry
+    SharedArrayOptimizer deduplicator;
+    deduplicator.findDuplicatedUVs(geom);
 
     // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
     if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
@@ -1162,6 +1238,10 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
             break;
         }
     }
+
+    // deduplicate UVs array that were only shared within the geometry
+    deduplicator.deduplicateUVs(geom);
+
     geom.dirtyDisplayList();
 }
 }

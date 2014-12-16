@@ -89,6 +89,20 @@ protected:
 // attributes in the order they are used.
 class OSGUTIL_EXPORT VertexAccessOrderVisitor : public GeometryCollector
 {
+    struct OrderByPrimitiveMode
+    {
+        inline bool operator() (const osg::ref_ptr<osg::PrimitiveSet>& prim1, const osg::ref_ptr<osg::PrimitiveSet>& prim2)
+        {
+            if(prim1 && prim2) {
+                return prim1->getMode() >= prim2->getMode();
+            }
+            else if(prim1) {
+                return true;
+            }
+            return false;
+        }
+    } order_by_primitive_mode;
+
 public:
     VertexAccessOrderVisitor(Optimizer* optimizer = 0)
         : GeometryCollector(optimizer, Optimizer::VERTEX_PRETRANSFORM)

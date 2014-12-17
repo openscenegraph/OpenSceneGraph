@@ -376,7 +376,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
-#if USE_SDL
+#if USE_SDL || USE_SDL2
 
 class SDLAudioSink : public osg::AudioSink
 {
@@ -508,11 +508,11 @@ int main(int argc, char** argv)
     osg::Vec3 bottomright = pos;
 
     bool xyPlane = fullscreen;
-    
+
     bool useAudioSink = false;
     while(arguments.read("--audio")) { useAudioSink = true; }
-    
-#if USE_SDL
+
+#if USE_SDL || USE_SDL2
     unsigned int numAudioStreamsEnabled = 0;
 #endif
 
@@ -522,18 +522,18 @@ int main(int argc, char** argv)
         {
             osg::Image* image = osgDB::readImageFile(arguments[i]);
             osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
-            if (imagestream) 
+            if (imagestream)
             {
                 osg::ImageStream::AudioStreams& audioStreams = imagestream->getAudioStreams();
                 if (useAudioSink && !audioStreams.empty())
                 {
                     osg::AudioStream* audioStream = audioStreams[0].get();
                     osg::notify(osg::NOTICE)<<"AudioStream read ["<<audioStream->getName()<<"]"<<std::endl;
-#if USE_SDL
+#if USE_SDL || USE_SDL2
                     if (numAudioStreamsEnabled==0)
                     {
                         audioStream->setAudioSink(new SDLAudioSink(audioStream));
-                        
+
                         ++numAudioStreamsEnabled;
                     }
 #endif
@@ -551,7 +551,7 @@ int main(int argc, char** argv)
                 float height = image->t();
 
                 osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height,image, useTextureRectangle, xyPlane, flip);
-                
+
                 if (image->isImageTranslucent())
                 {
                     osg::notify(osg::NOTICE)<<"Transparent movie, enabling blending."<<std::endl;
@@ -606,22 +606,22 @@ int main(int argc, char** argv)
     if (fullscreen)
     {
         viewer.realize();
-        
+
         viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
         float screenAspectRatio = 1280.0f/1024.0f;
 
         osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-        if (wsi) 
+        if (wsi)
         {
             unsigned int width, height;
             wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-            
+
             screenAspectRatio = float(width) / float(height);
         }
-        
+
         float modelAspectRatio = (bottomright.x()-topleft.x())/(bottomright.y()-topleft.y());
-        
+
         viewer.getCamera()->setViewMatrix(osg::Matrix::identity());
 
 
@@ -659,7 +659,7 @@ int main(int argc, char** argv)
     }
 }
 
-#if USE_SDL
+#if USE_SDL || USE_SDL2
 
 #include "SDL.h"
 
@@ -699,22 +699,51 @@ void SDLAudioSink::play()
     osg::notify(osg::NOTICE)<<"  audioNbChannels()="<<_audioStream->audioNbChannels()<<std::endl;
     osg::notify(osg::NOTICE)<<"  audioSampleFormat()="<<_audioStream->audioSampleFormat()<<std::endl;
 
+
+
     SDL_AudioSpec specs = { 0 };
     SDL_AudioSpec wanted_specs = { 0 };
 
     wanted_specs.freq = _audioStream->audioFrequency();
-    wanted_specs.format = AUDIO_S16SYS;
     wanted_specs.channels = _audioStream->audioNbChannels();
     wanted_specs.silence = 0;
     wanted_specs.samples = 1024;
     wanted_specs.callback = soundReadCallback;
     wanted_specs.userdata = this;
+    wanted_specs.format = 0;
 
-    if (SDL_OpenAudio(&wanted_specs, &specs) < 0)
-        throw "SDL_OpenAudio() failed (" + std::string(SDL_GetError()) + ")";
+#if SDL_MAJOR_VERSION>=2
+    switch(_audioStream->audioSampleFormat())
+    {
+        case(osg::AudioStream::SAMPLE_FORMAT_U8):  { wanted_specs.format = AUDIO_U8; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_U8"<<std::endl;  break;}
+        case(osg::AudioStream::SAMPLE_FORMAT_S16): { wanted_specs.format = AUDIO_S16SYS; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S16"<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_S24): { OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S24 NOT Supported by SDL."<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_S32): { wanted_specs.format = AUDIO_S32SYS; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S32"<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_F32): { wanted_specs.format = AUDIO_F32SYS; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_F32"<<std::endl; break; }
+    }
+#else
+    switch(_audioStream->audioSampleFormat())
+    {
+        case(osg::AudioStream::SAMPLE_FORMAT_U8):  { wanted_specs.format = AUDIO_U8; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_U8"<<std::endl;  break;}
+        case(osg::AudioStream::SAMPLE_FORMAT_S16): { wanted_specs.format = AUDIO_S16SYS; OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S16"<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_S24): { OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S24 NOT Supported by SDL1.x."<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_S32): { OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_S32 NOT Supported by SDL1.x"<<std::endl; break; }
+        case(osg::AudioStream::SAMPLE_FORMAT_F32): { OSG_NOTICE<<"    SampleFormat  = SAMPLE_FORMAT_F32 NOT Supported by SDL1.x"<<std::endl; break; }
+    }
+#endif
 
-    SDL_PauseAudio(0);
+    if (wanted_specs.format!=0)
+    {
 
+        if (SDL_OpenAudio(&wanted_specs, &specs) < 0)
+            throw "SDL_OpenAudio() failed (" + std::string(SDL_GetError()) + ")";
+
+        SDL_PauseAudio(0);
+    }
+    else
+    {
+        throw "SDL_OpenAudio() does not support audio format";
+    }
 }
 
 void SDLAudioSink::pause()

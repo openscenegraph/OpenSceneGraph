@@ -32,6 +32,8 @@ MACRO(FFMPEG_FIND varname shortname headername)
         PATHS
         ${FFMPEG_ROOT}/include
         $ENV{FFMPEG_DIR}/include
+        ${FFMPEG_ROOT}
+        $ENV{FFMPEG_DIR}
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/include
@@ -49,6 +51,8 @@ MACRO(FFMPEG_FIND varname shortname headername)
         PATHS
         ${FFMPEG_ROOT}/include
         $ENV{FFMPEG_DIR}/include
+        ${FFMPEG_ROOT}
+        $ENV{FFMPEG_DIR}
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/include
@@ -67,6 +71,8 @@ MACRO(FFMPEG_FIND varname shortname headername)
         PATHS
         ${FFMPEG_ROOT}/lib
         $ENV{FFMPEG_DIR}/lib
+        ${FFMPEG_ROOT}/lib${shortname}
+        $ENV{FFMPEG_DIR}/lib${shortname}
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib

@@ -37,7 +37,7 @@
 bool isBasicRootNode(const osg::Node& node)
 {
     const osg::Group* osgGroup = node.asGroup();
-    if (!osgGroup)
+    if (!osgGroup || node.asGeode())        // WriterNodeVisitor handles Geodes the "old way" (= Derived from Node, not Group as for now). Geodes may be considered "basic root nodes" when WriterNodeVisitor will be adapted.
     {
         // Geodes & such are not basic root nodes
         return false;

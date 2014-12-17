@@ -128,8 +128,7 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
         m_frequency = m_context->sample_rate;
         m_nb_channels = m_context->channels;
 
-        OSG_NOTICE<<"FFmpegDecoderAudio::open(..), m_nb_channels="<<m_nb_channels<<", m_context->sample_fmt="<<m_context->sample_fmt<<std::endl;
-
+        OSG_INFO<<"FFmpegDecoderAudio::open(..), m_nb_channels="<<m_nb_channels<<", m_context->sample_fmt="<<m_context->sample_fmt<<std::endl;
 
         switch (m_context->sample_fmt)
         {
@@ -149,6 +148,26 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
             break;
         case AV_SAMPLE_FMT_DBL:
             throw std::runtime_error("unhandled audio format AV_SAMPLE_FMT_DBL");
+
+        case AV_SAMPLE_FMT_U8P:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_U8;
+            m_context->request_sample_fmt = av_get_packed_sample_fmt( m_context->sample_fmt );
+            break;
+        case AV_SAMPLE_FMT_S16P:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_S16;
+            m_context->request_sample_fmt = av_get_packed_sample_fmt( m_context->sample_fmt );
+            break;
+        case AV_SAMPLE_FMT_S32P:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_S32;
+            m_context->request_sample_fmt = av_get_packed_sample_fmt( m_context->sample_fmt );
+            break;
+        case AV_SAMPLE_FMT_FLTP:
+            m_sample_format = osg::AudioStream::SAMPLE_FORMAT_F32;
+            m_context->request_sample_fmt = av_get_packed_sample_fmt( m_context->sample_fmt );
+            break;
+        case AV_SAMPLE_FMT_DBLP:
+            throw std::runtime_error("unhandled audio format AV_SAMPLE_FMT_DBLP");
+
         default:
             throw std::runtime_error("unknown audio format");
         }

@@ -4,7 +4,7 @@ APP_PROJECT_PATH := $(call my-dir)
 
 APP_OPTIM := ${ANDROID_RELEASE_OPTIM}
 
-APP_PLATFORM := ${ANDROID_PLATFORM}
+APP_PLATFORM := android-${ANDROID_PLATFORM}
 APP_STL := ${ANDROID_STL}
 APP_CPPFLAGS := -fexceptions -frtti
 #APP_CPPFLAGS := -Os -mthumb-interwork -fno-short-enums

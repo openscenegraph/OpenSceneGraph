@@ -489,6 +489,8 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
         pSdkManager->SetIOSettings(FbxIOSettings::Create(pSdkManager, IOSROOT));
 
         bool useFbxRoot = false;
+        bool ascii(false);
+        std::string exportVersion;
         if (options)
         {
             std::istringstream iss(options->getOptionString());
@@ -503,10 +505,29 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
                 {
                     useFbxRoot = true;
                 }
+                else if (opt == "FBX-ASCII")
+                {
+                    ascii = true;
+                }
+                else if (opt == "FBX-ExportVersion")
+                {
+                    iss >> exportVersion;
+                }
             }
         }
 
         FbxScene* pScene = FbxScene::Create(pSdkManager, "");
+
+        if (options)
+        {
+            if (options->getPluginData("FBX-AssetUnitMeter"))
+            {
+                float unit = *static_cast<const float*>(options->getPluginData("FBX-AssetUnitMeter"));
+                FbxSystemUnit kFbxSystemUnit(unit*100);
+                pScene->GetGlobalSettings().SetSystemUnit(kFbxSystemUnit);
+            }
+        }
+
         pluginfbx::WriterNodeVisitor writerNodeVisitor(pScene, pSdkManager, filename,
             options, osgDB::getFilePath(node.getName().empty() ? filename : node.getName()));
         if (useFbxRoot && isBasicRootNode(node))
@@ -551,7 +572,23 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
         std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
-        if (!lExporter->Initialize(utf8filename.c_str()))
+        // Output format selection. Here we only handle "recent" FBX, binary or ASCII.
+        // pSdkManager->GetIOPluginRegistry()->GetWriterFormatDescription() / GetReaderFormatCount() gives the following list:
+        //FBX binary (*.fbx)
+        //FBX ascii (*.fbx)
+        //FBX encrypted (*.fbx)
+        //FBX 6.0 binary (*.fbx)
+        //FBX 6.0 ascii (*.fbx)
+        //FBX 6.0 encrypted (*.fbx)
+        //AutoCAD DXF (*.dxf)
+        //Alias OBJ (*.obj)
+        //Collada DAE (*.dae)
+        //Biovision BVH (*.bvh)
+        //Motion Analysis HTR (*.htr)
+        //Motion Analysis TRC (*.trc)
+        //Acclaim ASF (*.asf)
+        int format = ascii ? pSdkManager->GetIOPluginRegistry()->FindWriterIDByDescription("FBX ascii (*.fbx)") : -1;        // -1 = Default
+        if (!lExporter->Initialize(utf8filename.c_str(), format))
         {
 #if FBXSDK_VERSION_MAJOR < 2014
             return std::string(lExporter->GetLastErrorString());
@@ -559,6 +596,14 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
             return std::string(lExporter->GetStatus().GetErrorString());
 #endif
         }
+
+        if (!exportVersion.empty() && !lExporter->SetFileExportVersion(FbxString(exportVersion.c_str()), FbxSceneRenamer::eNone)) {
+            std::stringstream versionsStr;
+            char const * const * versions = lExporter->GetCurrentWritableVersions();
+            if (versions) for(; *versions; ++versions) versionsStr << " " << *versions;
+            OSG_WARN << "Can't set FBX export version to '" << exportVersion << "'. Using default. Available export versions are:" << versionsStr.str() << std::endl;
+        }
+
         if (!lExporter->Export(pScene))
         {
 #if FBXSDK_VERSION_MAJOR < 2014

@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.3
 
-528 Contributors:
+532 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,8 +15,8 @@ Wang Rui
 Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
-Eric Wing
 Sukender 
+Eric Wing
 Cedric Pinson
 Brede Johansen
 Bob Kuehne
@@ -25,33 +25,33 @@ Geoff Michel
 Wojciech Lewandowski
 Eric Sokolowsky
 David Callu
-Colin McDonald
 Laurens Voerman
+Colin McDonald
 Trajce Nikolov
 Tim Moore
 Martin Lavery
 Tree 
-Luigi Calori
-Mike Wittman
 Mattias Helsing
+Luigi Calori
 Jason Beverage
+Pjotr Svetachov
+Mike Wittman
 Jan Peciva
 Chris Hanson
 Roland Smeenk
 Roger James
 Jeremy Moles
-J.P. Delport
 Alberto Luaces
+J.P. Delport
 Magnus Kessler
 David Fries
 Andy Skinner
 Tom Jolley
 Paul Melis
-Pjotr Svetachov
 Luc Frauciel
+Aurelien Albert
 Pavel Moloshtan
 Brad Christiansen
-Aurelien Albert
 Olaf Flebbe
 Mathieu Marache
 Jason Daly
@@ -78,6 +78,7 @@ Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
+Sebastian Messerschmidt
 Michael Gronager
 Martin Naylor
 Kristofer Tingdahl
@@ -85,15 +86,14 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
+Rafa Gaitan
 Fabien Lavignotte
 Andreas Ekstrand
-Sebastian Messerschmidt
 Riccardo Corsi
 Mike Connell
 Melchior Franz
 Johannes Baeuerle
 Thomas Hogarth
-Rafa Gaitan
 Neil Hughes
 Martin Beckett
 Joran Jessurun
@@ -112,6 +112,7 @@ Rainer Oder
 Nico Kruithof
 Martin Aumueller
 Mario Valle
+Marc Helbling
 Lukasz Izdebski
 Jorge Izquierdo Ciges
 Jordi Torres
@@ -125,11 +126,13 @@ Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
 Neil Groves
+Mikhail Izmestev
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
+Björn Blissing
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
@@ -137,12 +140,12 @@ Thom DeCarlo
 Tatsuhiro Nishioka
 Tanguy Fautré
 Sean Spicer
+Ryan Kawicki
 Richard Schmidt
 Peter Hrenka
 Paul de Repentigny
 Nikolaus Hanekamp
 Neil Salter
-Mikhail Izmestev
 Mihai Radu
 Michael Hartman
 Martins Innus
@@ -154,11 +157,9 @@ Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
-Björn Blissing
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
-Ryan Kawicki
 Rudolf Wiedemann
 Maria Ten
 Liang Aibin
@@ -202,11 +203,14 @@ Lars Nilsson
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
+Julen Garcia
 John Kaniarz
 Jim Vaughan
 Jeremy Bell
+Javier Taibo
 Jaromir Vitek
 James French
+Jaap Glas
 Guillaume Millet
 Gary Quinn
 Garrett Potts
@@ -217,6 +221,7 @@ Donald Cipperly
 Don Leich
 Dietmar Funck
 Colin Cochran
+Christian Ruzicka
 Christian Buchner
 Charles Cole
 Blake Williams
@@ -268,15 +273,14 @@ Lilith Bryant
 Konstantin Matveyev
 Kevin Moiule
 Keith Steffen
-Julen Garcia
 Joseph Winston
 John Aughey
 Johannes Scholz
 Joachim Pouderoux
 Jean-Christophe Lombardo
-Javier Taibo
+Jan Klimke
+James Turner
 James Moliere
-Jaap Glas
 Igor Kravtchenko
 Himar Carmona
 He Sicong
@@ -300,7 +304,6 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
-Christian Ruzicka
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -310,6 +313,7 @@ Zbigniew Sroczynski
 Yuri Vilmanis
 Xin Li
 Wang Lam
+Wand Rui
 Walter J. Altice
 Volker Walkiewicz
 Vladimir Vukicevic
@@ -328,6 +332,7 @@ Tomas Hnilica
 Todd Furlong
 Tobias Ottenweller
 Tino Schwarze
+Tim George
 Thorsten Brehm
 Thomas Weidner
 Tan Dunning
@@ -360,7 +365,6 @@ Reinhard Sainitzer
 Rein Kadijk
 Ragnar Hammarqvist
 Qing Shen
-Pjotr Sventachov
 Piotr Rak
 Pierre Bourdin
 Philipp Svehla
@@ -370,6 +374,8 @@ Philip Lamb
 Petr Salinger
 Peter Bear
 Peter Amstutz
+Per Nordqvist
+PawelKsiezopolski 
 Paul Idstein
 Paul Fredrikson
 Paul Fotheringham
@@ -413,9 +419,9 @@ Martin Innus
 Martin Beck
 Marius Kintel
 Mario Guimaraes
+Marcus Hein
 Marco Sciabica
 Marco Lehmann
-Marc Helbling
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -423,7 +429,6 @@ Likasz Izebski
 Lewis Harmon
 Leigh Stivers
 Laurence Muller
-Lauren Voerman
 Laura Cerritelli
 Kyle Centers
 Kristopher Bixler
@@ -450,8 +455,6 @@ Jeffrey Kinross
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
-Jan Klimke
-James Turner
 James Killian
 James Athey
 J.E. Hoffmann
@@ -493,7 +496,9 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Clément B½sch
 Clay Fowler
+Claus Steuer
 Chuck Sembroski
 Christopher Blaesius
 Christopher Baker
@@ -515,7 +520,6 @@ Benjamin Wasty
 Ben van Basten
 Bart Gallet
 Axel Volley
-Auelien Albert
 Anthousis Andreadis
 Anish Thomas
 Andy Preece

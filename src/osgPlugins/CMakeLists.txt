@@ -263,6 +263,10 @@ ADD_SUBDIRECTORY(osc)
 ADD_SUBDIRECTORY(trk)
 ADD_SUBDIRECTORY(tf)
 
+IF(Boost_INCLUDE_DIR AND LIBLAS_FOUND)
+    ADD_SUBDIRECTORY(las)
+ENDIF()
+
 
 ####################################################
 #

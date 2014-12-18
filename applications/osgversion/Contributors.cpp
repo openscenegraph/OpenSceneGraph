@@ -259,7 +259,8 @@ const char* invalidNames[] =
     "VolumeTile",
     "PushStackValueVisitor",
     "RayIntersector",
-    "OpenSceneGraph-Data"
+    "OpenSceneGraph-Data",
+    "Node"
 };
 
 
@@ -468,7 +469,8 @@ TypoCorrection typoCorrections[] =
     {"Blessing","Blissing"},
     {"Dannahuer","Dannhauer"},
     {"Chebeav", "Chebaev"},
-    {"Messershmidt","Messerschmidt"}
+    {"Messershmidt","Messerschmidt"},
+    {"Auelien","Aurelien"}
 };
 
 
@@ -641,7 +643,11 @@ NameCorrection nameCorrections[] =
     {"Matthias",       "Helsing",
      "Mattias",        "Helsing"},
     {"Clement",        "Boesch",
-     "Clément",        "B½sch"}
+     "Clément",        "B½sch"},
+    {"Lauren",         "Voerman",
+     "Laurens",        "Voerman"},
+    {"Pjotr",          "Sventachov",
+     "Pjotr",          "Svetachov"}
 };
 
 

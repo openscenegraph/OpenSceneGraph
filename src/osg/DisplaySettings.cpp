@@ -23,11 +23,29 @@
 using namespace osg;
 using namespace std;
 
+#if defined(WIN32) && !defined(__CYGWIN__)
+extern "C" { _declspec(dllexport) DWORD NvOptimusEnablement=0x00000001; }
+#else
+extern "C" { int NvOptimusEnablement=0x00000001; }
+#endif
+
+void DisplaySettings::setNvOptimusEnablement(int value)
+{
+    NvOptimusEnablement = value;
+}
+
+int DisplaySettings::getNvOptimusEnablement() const
+{
+    return NvOptimusEnablement;
+}
+
 ref_ptr<DisplaySettings>& DisplaySettings::instance()
 {
     static ref_ptr<DisplaySettings> s_displaySettings = new DisplaySettings;
     return s_displaySettings;
 }
+
+OSG_INIT_SINGLETON_PROXY(ProxyInitDisplaySettings, DisplaySettings::instance())
 
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced(true)
 {
@@ -334,10 +352,12 @@ static ApplicationUsageProxy DisplaySetting_e28(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e29(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_KEYSTONE_FILES <filename>[:filename]..",
         "Specify filenames of keystone parameter files. Under Windows use ; to deliminate files, otherwise use :");
-
 static ApplicationUsageProxy DisplaySetting_e30(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_MENUBAR_BEHAVIOR <behavior>",
         "OSX Only : Specify the behavior of the menubar (AUTO_HIDE, FORCE_HIDE, FORCE_SHOW)");
+static ApplicationUsageProxy DisplaySetting_e31(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_NvOptimusEnablement <value>",
+        "Set the hint to NvOptimus of whether to enable it or not, set 1 to enable, 0 to disable");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -703,6 +723,11 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             _OSXMenubarBehavior = MENUBAR_FORCE_SHOW;
         }
+    }
+
+    if( (ptr = getenv("OSG_NvOptimusEnablement")) != 0)
+    {
+        setNvOptimusEnablement(atoi(ptr));
     }
 }
 

@@ -293,6 +293,11 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         /** Get the hint of the profile mask to use in when creating graphic contexts.*/
         unsigned int getGLContextProfileMask() const { return _glContextProfileMask; }
 
+        /** Set the NvOptimusEnablement value. Default can be set using OSG_NvOptimusEnablement env var.*/
+        void setNvOptimusEnablement(int value);
+        /** Get the NvOptimusEnablement value. */
+        int getNvOptimusEnablement() const;
+
 
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }

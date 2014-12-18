@@ -153,7 +153,7 @@ foreach (_component ${GStreamer_FIND_COMPONENTS})
 endforeach ()
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(GStreamer REQUIRED_VARS _GSTREAMER_REQUIRED_VARS
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(GStreamer REQUIRED_VARS ${_GSTREAMER_REQUIRED_VARS}
                                             VERSION_VAR   GSTREAMER_VERSION)
 
 mark_as_advanced(

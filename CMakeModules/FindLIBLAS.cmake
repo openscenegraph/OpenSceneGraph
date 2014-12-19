@@ -42,8 +42,7 @@ macro(FIND_LIBLAS_LIBRARY MYLIBRARY MYLIBRARYNAME)
      /opt/local/lib
      /opt/csw/lib
      /opt/lib
-     [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ 
-Manager\\Environment;LIBLAS_ROOT]/lib
+     [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;LIBLAS_ROOT]/lib
      /usr/freeware/lib64
    )
 
@@ -82,8 +81,7 @@ Manager\\Environment;LIBLAS_ROOT]/lib
      /opt/local/lib
      /opt/csw/lib
      /opt/lib
-     [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ 
-Manager\\Environment;LIBLAS_ROOT]/lib
+     [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;LIBLAS_ROOT]/lib
      /usr/freeware/lib64
    )
 
@@ -102,4 +100,4 @@ set(LIBLAS_FOUND "NO")
 if(LIBLAS_LIBRARY AND LIBLASC_LIBRARY AND LIBLAS_INCLUDE_DIR)
    set(LIBLAS_LIBRARIES ${LIBLAS_LIBRARY} ${LIBLASC_LIBRARY} )
    set(LIBLAS_FOUND "YES")
-endif(LIBLAS_LIBRARY AND LIBLASC_LIBRARY LIBLAS_INCLUDE_DIR)
+endif()

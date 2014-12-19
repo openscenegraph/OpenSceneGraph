@@ -253,7 +253,7 @@ public:
     typedef std::map< int, osg::Array*, std::less<int> > ArrayMap;
 
     typedef std::multimap< osgAnimation::Target*, osg::ref_ptr<ChannelPart> > TargetChannelPartMap;
-    typedef std::multimap<std::pair<const domMesh*, unsigned>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
+    typedef std::multimap<std::pair<const domMesh*, size_t>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
 
 private:
     bool processDocument( const std::string& );

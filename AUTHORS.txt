@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.3
 
-532 Contributors:
+534 Contributors:
 
 Firstname Surname
 -----------------
@@ -534,5 +534,7 @@ Alberto Jaspe
 Alan Purvis
 Alan Ott
 Alan Harris
+Aitor Moreno
 Adrien Grandemange
+Adrian Clark
 Adam Richard

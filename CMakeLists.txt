@@ -527,6 +527,12 @@ IF(WIN32 AND NOT ANDROID)
     INCLUDE(Find3rdPartyDependencies)
 ENDIF()
 
+#
+# If you want to prevent CMake from picking up on any of the following optional 3rd Party dependencies in CMake 2.8 onwards
+# you can use the following style of command line option when invoking Cmake (here illustrating ignoring PythonLibs) :
+# cmake -DCMAKE_DISABLE_FIND_PACKAGE_PythonLibs=1 .
+#
+
 IF(ANDROID)
     ANDROID_3RD_PARTY()
 ELSE()

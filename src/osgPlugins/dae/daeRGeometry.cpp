@@ -928,7 +928,15 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
 
     if (color_source)
     {
+        // first try Vec4Array
         osg::ref_ptr<osg::Array> array( createGeometryArray<osg::Vec4Array, osg::Vec4dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors) );
+
+        // if no array matched try Vec3Array
+        if (!array)
+        {
+            array = createGeometryArray<osg::Vec3Array, osg::Vec3dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors);
+        }
+
         if (array.valid())
         {
             geometry->setColorArray(array.get());

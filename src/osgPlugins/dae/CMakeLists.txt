@@ -18,7 +18,7 @@ SET(TARGET_SRC
     ReaderWriterDAE.cpp
 )
 
-SET(TARGET_H 
+SET(TARGET_H
     daeReader.h
     daeWriter.h
     domSourceReader.h
@@ -35,6 +35,11 @@ ELSE()
 ENDIF()
 
 ADD_DEFINITIONS(-DNO_BOOST)
+ADD_DEFINITIONS(-DCOLLADA_DOM_SUPPORT141)
+
+IF (COLLADA_DOM_2_4_OR_LATER)
+    ADD_DEFINITIONS(-DCOLLADA_DOM_2_4_OR_LATER)
+ENDIF()
 
 IF(COLLADA_USE_STATIC)
     IF(WIN32)
@@ -68,8 +73,8 @@ ELSE()
     ENDIF()
 
 ENDIF()
- 
-SET(TARGET_ADDED_LIBRARIES osgSim osgAnimation) 
+
+SET(TARGET_ADDED_LIBRARIES osgSim osgAnimation)
 
 #### end var setup  ###
 SETUP_PLUGIN(dae dae)

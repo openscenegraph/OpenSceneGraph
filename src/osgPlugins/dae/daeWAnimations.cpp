@@ -31,6 +31,7 @@
 #include <osg/CameraView>
 #include <osgDB/ConvertUTF>
 
+
 using namespace osgDAE;
 
 

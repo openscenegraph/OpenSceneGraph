@@ -17,7 +17,11 @@
 #include <osg/Array>
 #include <osg/Notify>
 
-class domSource;
+#include <dom/domSource.h>
+
+#ifdef COLLADA_DOM_2_4_OR_LATER
+using namespace ColladaDOM141;
+#endif
 
 namespace osgDAE {
 

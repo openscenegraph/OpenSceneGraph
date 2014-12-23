@@ -50,6 +50,10 @@
 #include <dae/daeDocument.h>
 #include <dom/domChannel.h>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+namespace ColladaDOM141
+{
+#endif
 
 class domCOLLADA;
 class domGeometry;
@@ -67,6 +71,12 @@ class domNode;
 class domSource;
 class domVisual_scene;
 class domP;
+
+#ifdef COLLADA_DOM_2_4_OR_LATER
+}
+
+using namespace ColladaDOM141;
+#endif
 
 namespace osgDAE {
 

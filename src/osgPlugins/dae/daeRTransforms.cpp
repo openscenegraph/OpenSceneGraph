@@ -24,6 +24,11 @@
 #include <osg/MatrixTransform>
 #include <osgSim/DOFTransform>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 using namespace osgDAE;
 
 // Note <lookat>, <matrix>, <rotate>, <scale>, <skew> and <translate> may appear in any order

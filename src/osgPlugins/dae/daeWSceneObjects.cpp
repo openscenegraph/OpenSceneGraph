@@ -28,6 +28,11 @@
 #include <osg/Billboard>
 #include <osg/CameraView>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 using namespace osgDAE;
 
 // Write non-standard node data as extra of type "Node" with "OpenSceneGraph" technique

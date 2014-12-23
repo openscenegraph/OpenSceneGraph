@@ -29,6 +29,11 @@
 
 using namespace osgDAE;
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
 {
     osgSim::MultiSwitch* msw = new osgSim::MultiSwitch;

@@ -33,6 +33,11 @@
 
 using namespace osgDAE;
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 template <typename T>
 void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one) const
 {

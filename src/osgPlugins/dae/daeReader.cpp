@@ -23,6 +23,11 @@
 
 using namespace osgDAE;
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 daeReader::Options::Options() :
     strictTransparency(false),
     precisionHint(0),
@@ -296,7 +301,8 @@ bool daeReader::convert( std::istream& fin )
     std::vector<char> buffer(length);
     fin.read(&buffer[0], length);
 
-    _document = _dae->openFromMemory(fileURI, &buffer[0]);
+    domElement* loaded_element = _dae->openFromMemory(fileURI, &buffer[0]);
+    _document = dynamic_cast<domCOLLADA*>(loaded_element);
 
     return processDocument (fileURI);
 }
@@ -305,7 +311,8 @@ bool daeReader::convert( const std::string &fileURI )
 {
     clearCaches();
 
-    _document = _dae->open(fileURI);
+    domElement* loaded_element = _dae->open(fileURI);
+    _document = dynamic_cast<domCOLLADA*>(loaded_element);
 
     return processDocument (fileURI);
 }

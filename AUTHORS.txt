@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.3.3
+OpenSceneGraph Library 3.3.4
 
-534 Contributors:
+535 Contributors:
 
 Firstname Surname
 -----------------
@@ -96,6 +96,7 @@ Johannes Baeuerle
 Thomas Hogarth
 Neil Hughes
 Martin Beckett
+Marc Helbling
 Joran Jessurun
 Gino van den Bergen
 Frederic Marmond
@@ -112,7 +113,6 @@ Rainer Oder
 Nico Kruithof
 Martin Aumueller
 Mario Valle
-Marc Helbling
 Lukasz Izdebski
 Jorge Izquierdo Ciges
 Jordi Torres
@@ -226,6 +226,7 @@ Christian Buchner
 Charles Cole
 Blake Williams
 Björn Hein
+Aurélien Chatelain
 Antoine Hue
 Andrew Bettison
 Anders Backman

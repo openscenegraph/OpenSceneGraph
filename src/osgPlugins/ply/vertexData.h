@@ -66,11 +66,6 @@ namespace ply
         // Reads the triangle indices from the ply file
         void readTriangles( PlyFile* file, const int nFaces );
 
-        // Calculates the normals according to passed flag
-        // if vertexNormals is true then computes normal per vertices
-        // otherwise per triangle means per face
-        void _calculateNormals( const bool vertexNormals = true );
-
         bool        _invertFaces;
 
         // Vertex array in osg format
@@ -85,6 +80,7 @@ namespace ply
         osg::ref_ptr<osg::Vec3Array> _normals;
         // The indices of the faces in premitive set
         osg::ref_ptr<osg::DrawElementsUInt> _triangles;
+        osg::ref_ptr<osg::DrawElementsUInt> _quads;
     };
 }
 

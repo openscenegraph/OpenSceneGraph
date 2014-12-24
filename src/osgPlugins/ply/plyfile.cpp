@@ -45,6 +45,8 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <string>
+#include <vector>
 
 #include <osg/Math>
 #include <osgDB/FileUtils>
@@ -1052,6 +1054,35 @@ void ply_get_element_setup( PlyFile *plyfile, char *elem_name, int nprops,
     }
 }
 
+void ply_set_property(
+  PlyProperty *prop,
+  PlyProperty *prop_ptr,
+  PlyElement *elem,
+  const int &index
+)
+{
+  prop_ptr->internal_type  = prop->internal_type;
+  prop_ptr->offset         = prop->offset;
+  prop_ptr->count_internal = prop->count_internal;
+  prop_ptr->count_offset   = prop->count_offset;
+
+  /* specify that the user wants this property */
+  elem->store_prop[index] = STORE_PROP;
+}
+
+// Tokenize a property using the given delimiter
+void tokenizeProperties(const char* pnames, std::vector<std::string> &tokens, const std::string &delimiter)
+{
+  std::string propNames(pnames);
+  std::string::size_type lastPos = propNames.find_first_not_of(delimiter, 0);
+  std::string::size_type pos     = propNames.find_first_of(delimiter, lastPos);
+
+  while (std::string::npos != pos || std::string::npos != lastPos) {
+    tokens.push_back(propNames.substr(lastPos, pos - lastPos));
+    lastPos = propNames.find_first_not_of(delimiter, pos);
+    pos = propNames.find_first_of(delimiter, lastPos);
+  }
+}
 
 /******************************************************************************
 Specify a property of an element that is to be returned.  This should be
@@ -1072,7 +1103,7 @@ void ply_get_property(
 )
 {
   PlyElement *elem;
-  PlyProperty *prop_ptr;
+  PlyProperty *prop_ptr = 0;
   int index;
 
   /* find information about the element */
@@ -1080,20 +1111,27 @@ void ply_get_property(
   plyfile->which_elem = elem;
 
   /* deposit the property information into the element's description */
+  /* Properties may have several names, separated by | with no spaces */
+  std::vector<std::string> tokens;
+  tokenizeProperties(prop->name, tokens, "|");
 
-  prop_ptr = find_property (elem, prop->name, &index);
-  if (prop_ptr == NULL) {
+  for(std::vector<std::string>::iterator it_property = tokens.begin();
+      !prop_ptr && it_property != tokens.end();
+      ++it_property)
+  {
+    prop_ptr = find_property(elem, it_property->c_str(), &index);
+  }
+
+  if(prop_ptr)
+  {
+    ply_set_property(prop, prop_ptr, elem, index);
+  }
+  else
+  {
     fprintf (stderr, "Warning:  Can't find property '%s' in element '%s'\n",
              prop->name, elem_name);
     return;
   }
-  prop_ptr->internal_type  = prop->internal_type;
-  prop_ptr->offset         = prop->offset;
-  prop_ptr->count_internal = prop->count_internal;
-  prop_ptr->count_offset   = prop->count_offset;
-
-  /* specify that the user wants this property */
-  elem->store_prop[index] = STORE_PROP;
 }
 
 

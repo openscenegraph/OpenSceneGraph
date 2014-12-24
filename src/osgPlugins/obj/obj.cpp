@@ -29,6 +29,12 @@
 
 using namespace obj;
 
+
+#ifdef _MSC_VER
+#define strncasecmp strnicmp
+#endif
+
+
 static std::string strip( const std::string& ss )
 {
     std::string result;
@@ -237,7 +243,7 @@ bool Model::readMTL(std::istream& fin)
         }
         else if (strlen(line)>0)
         {
-            if (strncmp(line,"newmtl ",7)==0)
+            if (strncasecmp(line,"newmtl ",7)==0)
             {
                 // get material name and left- and right-trim all the white-space
                 std::string materialName(strip(line+7));
@@ -247,7 +253,7 @@ bool Model::readMTL(std::istream& fin)
             }
             else if (material)
             {
-                if (strncmp(line,"Ka ",3)==0)
+                if (strncasecmp(line,"Ka ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
@@ -274,7 +280,7 @@ bool Model::readMTL(std::istream& fin)
                         material->ambient[ 3 ] = a;
                     }
                 }
-                else if (strncmp(line,"Kd ",3)==0)
+                else if (strncasecmp(line,"Kd ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
@@ -301,7 +307,7 @@ bool Model::readMTL(std::istream& fin)
                         material->diffuse[ 3 ] = a;
                     }
                 }
-                else if (strncmp(line,"Ks ",3)==0)
+                else if (strncasecmp(line,"Ks ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
@@ -328,7 +334,7 @@ bool Model::readMTL(std::istream& fin)
                         material->specular[ 3 ] = a;
                     }
                 }
-                else if (strncmp(line,"Ke ",3)==0)
+                else if (strncasecmp(line,"Ke ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
@@ -355,7 +361,7 @@ bool Model::readMTL(std::istream& fin)
                         material->emissive[ 3 ] = a;
                     }
                 }
-                else if (strncmp(line,"Tf ",3)==0)
+                else if (strncasecmp(line,"Tf ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
@@ -382,28 +388,28 @@ bool Model::readMTL(std::istream& fin)
                         material->Tf[ 3 ] = a;
                     }
                 }
-                else if (strncmp(line,"sharpness ",10)==0)
+                else if (strncasecmp(line,"sharpness ",10)==0)
                 {
                     float sharpness = 0.0f;
                     unsigned int fieldsRead = sscanf(line+10,"%f", &sharpness);
 
                     if (fieldsRead==1) material->sharpness = sharpness;
                 }
-                else if (strncmp(line,"illum ",6)==0)
+                else if (strncasecmp(line,"illum ",6)==0)
                 {
                     int illum = 0;
                     unsigned int fieldsRead = sscanf(line+6,"%d", &illum);
 
                     if (fieldsRead==1) material->illum = illum;
                 }
-                else if (strncmp(line,"Ns ",3)==0)
+                else if (strncasecmp(line,"Ns ",3)==0)
                 {
                     int Ns = 0;
                     unsigned int fieldsRead = sscanf(line+3,"%d", &Ns);
 
                     if (fieldsRead==1) material->Ns = Ns;
                 }
-                else if (strncmp(line,"Ni ",3)==0)
+                else if (strncasecmp(line,"Ni ",3)==0)
                 {
                     int Ni = 0;
                     unsigned int fieldsRead = sscanf(line+3,"%d", &Ni);
@@ -431,7 +437,7 @@ bool Model::readMTL(std::istream& fin)
                 // the value 0 and value 1 for Tr, we will rely on d (dissolve) parameter instead
                 // whenever it is present. This seems to fix the problem on large number of models.
                 //
-                else if (strncmp(line,"Tr ",3)==0)
+                else if (strncasecmp(line,"Tr ",3)==0)
                 {
                     if( !usingDissolve )
                     {
@@ -456,7 +462,7 @@ bool Model::readMTL(std::istream& fin)
                 // To be compatible with 3D Max obj exporter,
                 // d takes precedence over Tr (handled through usingDissolve variable).
                 //
-                else if (strncmp(line,"d ",2)==0)
+                else if (strncasecmp(line,"d ",2)==0)
                 {
                     float alpha=1.0f;
                     unsigned int fieldsRead = sscanf(line+2,"%f", &alpha);
@@ -470,58 +476,58 @@ bool Model::readMTL(std::istream& fin)
                         usingDissolve = true;
                     }
                 }
-                else if (strncmp(line,"map_Ka ",7)==0)
+                else if (strncasecmp(line,"map_Ka ",7)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::AMBIENT));
                 }
                 // diffuse map
-                else if (strncmp(line,"map_Kd ",7)==0)
+                else if (strncasecmp(line,"map_Kd ",7)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::DIFFUSE));
                 }
                 // specular colour/level map
-                else if (strncmp(line,"map_Ks ",7)==0)
+                else if (strncasecmp(line,"map_Ks ",7)==0)
                 {
                      material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::SPECULAR));
                 }
                 // map_opacity doesn't exist in the spec, but was already in the plugin
                 // so leave it or plugin will break for some users
-                else if (strncmp(line,"map_opacity ",12)==0)
+                else if (strncasecmp(line,"map_opacity ",12)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+12),Material::Map::OPACITY));
                 }
                 // proper dissolve/opacity map
-                else if (strncmp(line,"map_d ",6)==0)
+                else if (strncasecmp(line,"map_d ",6)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+6),Material::Map::OPACITY));
                 }
                 // specular exponent map
-                else if (strncmp(line,"map_Ns ",7)==0)
+                else if (strncasecmp(line,"map_Ns ",7)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::SPECULAR_EXPONENT));
                 }
                 // modelling tools and convertors variously produce bump, map_bump, and map_Bump so parse them all
-                else if (strncmp(line,"bump ",5)==0)
+                else if (strncasecmp(line,"bump ",5)==0 || strncasecmp(line,"map_bump ",9)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::BUMP));
                 }
-                else if (strncmp(line,"map_bump ",9)==0)
+                else if (strncasecmp(line,"map_bump ",9)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+9),Material::Map::BUMP));
                 }
-                else if (strncmp(line,"map_Bump ",9)==0)
+                else if (strncasecmp(line,"map_Bump ",9)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+9),Material::Map::BUMP));
                 }
                 // displacement map
-                else if (strncmp(line,"disp ",5)==0)
+                else if (strncasecmp(line,"disp ",5)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::DISPLACEMENT));
                 }
                 // reflection map (the original code had the possibility of a blank "refl" line
                 // which isn't correct according to the spec, so this bit might break for some
                 // modelling packages...
-                else if (strncmp(line,"refl ",5)==0)
+                else if (strncasecmp(line,"refl ",5)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::REFLECTION));
                 }
@@ -553,6 +559,11 @@ std::string trim(const std::string& s)
   return std::string(s, b, e - b + 1);
 }
 
+inline bool isZBrushColorField(char* line)
+{
+    return strncmp(line, "#MRGB", 5) == 0;
+}
+
 bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options)
 {
     OSG_INFO<<"Reading OBJ file"<<std::endl;
@@ -560,25 +571,67 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
     float x = 0.0f, y = 0.0f, z = 0.0f, w = 0.0f;
+    float r,g,b,a;
 
     while (fin)
     {
         readline(fin,line,LINE_SIZE);
-        if (line[0]=='#' || line[0]=='$')
+        if ((line[0]=='#' && !isZBrushColorField(line)) || line[0]=='$')
         {
             // comment line
             // OSG_NOTICE <<"Comment: "<<line<<std::endl;
+        }
+        else if(isZBrushColorField(line))
+        {
+            // Get the zBrush vertex colors given in comments under the form :
+            // * #MRGB MMRRGGBB MMRRGGBB ... (up to 64 hexadecimal color fields)
+            std::string colorFields(line + 6);
+            while (colorFields.size() >= 8)
+            {
+                std::string currentValue;
+
+                // Skipping the MM component
+                colorFields = colorFields.substr(2);
+
+                currentValue = colorFields.substr(0,2);
+                r = static_cast<float>(strtol(currentValue.c_str(), NULL, 16)) / 255.;
+                colorFields = colorFields.substr(2);
+
+                currentValue = colorFields.substr(0,2);
+                g = static_cast<float>(strtol(currentValue.c_str(), NULL, 16)) / 255.;
+                colorFields = colorFields.substr(2);
+
+                currentValue = colorFields.substr(0,2);
+                b = static_cast<float>(strtol(currentValue.c_str(), NULL, 16)) / 255.;
+                colorFields = colorFields.substr(2);
+
+                colors.push_back(osg::Vec4(r, g, b, 1.0));
+            }
         }
         else if (strlen(line)>0)
         {
             if (strncmp(line,"v ",2)==0)
             {
-                unsigned int fieldsRead = sscanf(line+2,"%f %f %f %f", &x, &y, &z, &w);
+                unsigned int fieldsRead = sscanf(line+2,"%f %f %f %f %f %f %f", &x, &y, &z, &w, &g, &b, &a);
 
-                if (fieldsRead==1) vertices.push_back(osg::Vec3(x,0.0f,0.0f));
-                else if (fieldsRead==2) vertices.push_back(osg::Vec3(x,y,0.0f));
-                else if (fieldsRead==3) vertices.push_back(osg::Vec3(x,y,z));
-                else if (fieldsRead>=4) vertices.push_back(osg::Vec3(x/w,y/w,z/w));
+                if (fieldsRead==1)
+                    vertices.push_back(osg::Vec3(x,0.0f,0.0f));
+                else if (fieldsRead==2)
+                    vertices.push_back(osg::Vec3(x,y,0.0f));
+                else if (fieldsRead==3)
+                    vertices.push_back(osg::Vec3(x,y,z));
+                else if (fieldsRead == 4)
+                    vertices.push_back(osg::Vec3(x/w,y/w,z/w));
+                else if (fieldsRead == 6)
+                {
+                    vertices.push_back(osg::Vec3(x,y,z));
+                    colors.push_back(osg::Vec4(w, g, b, 1.0));
+                }
+                else if ( fieldsRead == 7 )
+                {
+                    vertices.push_back(osg::Vec3(x,y,z));
+                    colors.push_back(osg::Vec4(w, g, b, a));
+                }
             }
             else if (strncmp(line,"vn ",3)==0)
             {
@@ -625,13 +678,15 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                     {
                         // OSG_NOTICE<<"   vi="<<vi<<"//ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
-                        element->normalIndices.push_back(remapNormalIndex(ni));
+                        if (remapNormalIndex(ni) < static_cast<int>(normals.size()))
+                            element->normalIndices.push_back(remapNormalIndex(ni));
                     }
                     else if (sscanf(ptr, "%d/%d", &vi, &ti) == 2)
                     {
                         // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
-                        element->texCoordIndices.push_back(remapTexCoordIndex(ti));
+                        if (remapTexCoordIndex(ti) < static_cast<int>(texcoords.size()))
+                            element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d", &vi) == 1)
                     {

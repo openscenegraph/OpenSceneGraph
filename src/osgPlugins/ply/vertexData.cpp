@@ -17,24 +17,11 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osg/io_utils>
+#include <osgUtil/SmoothingVisitor>
 
 using namespace std;
 using namespace ply;
 
-
-struct Normal{
-    osg::Vec3 triNormal;
-    void normal(osg::Vec3 v1, osg::Vec3 v2, osg::Vec3 v3)
-    {
-        osg::Vec3 u,v;
-
-        // right hand system, CCW triangle
-        u = v2 - v1;
-        v = v3 - v1;
-        triNormal = u^v;
-        triNormal.normalize();
-    }
-};
 
 /*  Contructor.  */
 VertexData::VertexData()
@@ -215,7 +202,7 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
 
     PlyProperty faceProps[] =
     {
-        { "vertex_indices", PLY_INT, PLY_INT, offsetof( _Face, vertices ),
+        { "vertex_indices|vertex_index", PLY_INT, PLY_INT, offsetof( _Face, vertices ),
           1, PLY_UCHAR, PLY_UCHAR, offsetof( _Face, nVertices ) }
     };
 
@@ -225,25 +212,31 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
     //triangles.reserve( nFaces );
     if(!_triangles.valid())
         _triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
+    if(!_quads.valid())
+        _quads = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
 
 
-    // read in the faces, asserting that they are only triangles
-    int ind1 = _invertFaces ? 2 : 0;
-    int ind3 = _invertFaces ? 0 : 2;
-    for( int i = 0; i < nFaces; ++i )
+    // read the faces, reversing the reading direction if _invertFaces is true
+    for( int i = 0 ; i < nFaces; i++ )
     {
         ply_get_element( file, static_cast< void* >( &face ) );
         MESHASSERT( face.vertices != 0 );
-        if( (unsigned int)(face.nVertices) != 3 )
+        if( (unsigned int)(face.nVertices) > 4 )
         {
             free( face.vertices );
             throw MeshException( "Error reading PLY file. Encountered a "
-                                 "face which does not have three vertices." );
+                                 "face which does not have three or four vertices." );
         }
-        // Add the face indices in the premitive set
-        _triangles->push_back( face.vertices[ind1]);
-        _triangles->push_back( face.vertices[1]);
-        _triangles->push_back( face.vertices[ind3] );
+
+        unsigned short index;
+        for(int j = 0 ; j < face.nVertices ; j++)
+        {
+            index = ( _invertFaces ? face.nVertices - 1 - j : j );
+            if(face.nVertices == 4)
+                _quads->push_back(face.vertices[index]);
+            else
+                _triangles->push_back(face.vertices[index]);
+        }
 
         // free the memory that was allocated by ply_get_element
         free( face.vertices );
@@ -353,7 +346,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                     fields |= DIFFUSE;
                 if( equal_strings( props[j]->name, "specular_red" ) )
                     fields |= SPECULAR;
-	      }
+          }
 
             if( ignoreColors )
 	      {
@@ -408,7 +401,10 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             // Read Triangles
             readTriangles( file, nElems );
             // Check whether all face elements read or not
-            MESHASSERT( _triangles->size()/3  == static_cast< size_t >( nElems ) );
+            unsigned int nbTriangles = (_triangles.valid() ? _triangles->size() / 3 : 0) ;
+            unsigned int nbQuads = (_quads.valid() ? _quads->size() / 4 : 0 );
+
+            MESHASSERT( (nbTriangles + nbQuads) == static_cast< size_t >( nElems ) );
             result = true;
         }
         catch( exception& e )
@@ -442,23 +438,22 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // set the vertex array
         geom->setVertexArray(_vertices.get());
 
-        // If the normals are not calculated calculate the normals for faces
-        if(_triangles.valid())
+        // Add the primitive set
+        bool hasTriOrQuads = false;
+        if (_triangles.valid() && _triangles->size() > 0 )
         {
-            if(!_normals.valid())
-                _calculateNormals();
-	}
-
-        // Set the normals
-	if (_normals.valid())
-	{
-            geom->setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
+            geom->addPrimitiveSet(_triangles.get());
+            hasTriOrQuads = true;
         }
 
-        // Add the primitive set
-        if (_triangles.valid() && _triangles->size() > 0 )
-            geom->addPrimitiveSet(_triangles.get());
-        else
+        if (_quads.valid() && _quads->size() > 0 )
+        {
+            geom->addPrimitiveSet(_quads.get());
+            hasTriOrQuads = true;
+        }
+
+        // Print points if the file contains unsupported primitives
+        if(!hasTriOrQuads)
             geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _vertices->size()));
 
 
@@ -483,6 +478,17 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             geom->setColorArray(_specular.get(), osg::Array::BIND_PER_VERTEX );
         }
 
+        // If the model has normals, add them to the geometry
+        if(_normals.valid())
+        {
+            geom->setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
+        }
+        else
+        {   // If not, use the smoothing visitor to generate them
+            // (quads will be triangulated by the smoothing visitor)
+            osgUtil::SmoothingVisitor::smooth((*geom), osg::PI/2);
+        }
+
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
 
@@ -495,70 +501,4 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     return NULL;
 }
 
-
-/*  Calculate the face or vertex normals of the current vertex data.  */
-void VertexData::_calculateNormals( const bool vertexNormals )
-{
-
-    if(_normals.valid())
-        return;
-
-    #ifndef NDEBUG
-    int wrongNormals = 0;
-    #endif
-
-    if(!_normals.valid())
-    {
-        _normals = new osg::Vec3Array;
-    }
-
-    //normals.clear();
-    if( vertexNormals )
-    {
-        // initialize all normals to zero
-        for( size_t i = 0; i < _vertices->size(); ++i )
-        {
-            _normals->push_back( osg::Vec3( 0, 0, 0 ) );
-        }
-    }
-
-
-    for( size_t i = 0; i < ((_triangles->size()));  i += 3 )
-    {
-        // iterate over all triangles and add their normals to adjacent vertices
-        Normal  triangleNormal;
-        unsigned int i0, i1, i2;
-        i0 = (*_triangles)[i+0];
-        i1 = (*_triangles)[i+1];
-        i2 = (*_triangles)[i+2];
-        triangleNormal.normal((*_vertices)[i0],
-                               (*_vertices)[i1],
-                               (*_vertices)[i2] );
-
-        // count emtpy normals in debug mode
-        #ifndef NDEBUG
-        if( triangleNormal.triNormal.length() == 0.0f )
-            ++wrongNormals;
-        #endif
-
-        if( vertexNormals )
-        {
-            (*_normals)[i0] += triangleNormal.triNormal;
-            (*_normals)[i1] += triangleNormal.triNormal;
-            (*_normals)[i2] += triangleNormal.triNormal;
-        }
-        else
-            _normals->push_back( triangleNormal.triNormal );
-    }
-
-    // normalize all the normals
-    if( vertexNormals )
-        for( size_t i = 0; i < _normals->size(); ++i )
-            (*_normals)[i].normalize();
-
-    #ifndef NDEBUG
-    if( wrongNormals > 0 )
-        MESHINFO << wrongNormals << " faces had no valid normal." << endl;
-    #endif
-}
 

@@ -530,22 +530,6 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
 
 osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
 {
-#if 0
-    OSG_NOTICE<<"getOrCreateProgram(";
-    for(LayerTypes::iterator itr = layerTypes.begin();
-        itr != layerTypes.end();
-        ++itr)
-    {
-        if (itr!= layerTypes.begin()) OSG_NOTICE<<", ";
-        switch(*itr)
-        {
-            case(HEIGHTFIELD_LAYER): OSG_NOTICE<<"HeightField"; break;
-            case(COLOR_LAYER): OSG_NOTICE<<"Colour"; break;
-            case(CONTOUR_LAYER): OSG_NOTICE<<"Contour"; break;
-        }
-    }
-#endif
-
     OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
     ProgramMap::iterator itr = _programMap.find(layerTypes);
     if (itr!=_programMap.end())
@@ -554,27 +538,72 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
         return itr->second.get();
     }
 
+#if 1
+    unsigned int num_HeightField = 0;
+    unsigned int num_Color = 0;
+    unsigned int num_Contour = 0;
+    for(LayerTypes::iterator itr = layerTypes.begin();
+        itr != layerTypes.end();
+        ++itr)
+    {
+        switch(*itr)
+        {
+            case(HEIGHTFIELD_LAYER): ++num_HeightField; break;
+            case(COLOR_LAYER): ++num_Color; break;
+            case(CONTOUR_LAYER): ++num_Contour; break;
+        }
+    }
+    OSG_NOTICE<<"getOrCreateProgram()"<<std::endl;
+
+    OSG_NOTICE<<"    HeightField "<<num_HeightField<<std::endl;
+    OSG_NOTICE<<"    Color "<<num_Color<<std::endl;
+    OSG_NOTICE<<"    Contour "<<num_Contour<<std::endl;
+
+#endif
+
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
-
-
-    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("shaders/terrain_displacement_mapping.vert");
-    if (!vertex_shader)
+    if (num_HeightField>0)
     {
         #include "shaders/terrain_displacement_mapping_vert.cpp"
-        vertex_shader = new osg::Shader(osg::Shader::VERTEX, terrain_displacement_mapping_vert);
+        program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert));
     }
-    program->addShader(vertex_shader.get());
-
-    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("shaders/terrain_displacement_mapping.frag");
-    if (!fragment_shader)
+    else
     {
-        #include "shaders/terrain_displacement_mapping_frag.cpp"
-        fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, terrain_displacement_mapping_frag);
+        #include "shaders/terrain_displacement_mapping_flat_vert.cpp"
+        program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_flat_vert));
     }
-    program->addShader(fragment_shader.get());
+
+    if (num_Contour>0)
+    {
+        OSG_NOTICE<<"No support for Contour yet."<<std::endl;
+    }
+
+    {
+        if (num_Color==0)
+        {
+            #include "shaders/terrain_displacement_mapping_frag.cpp"
+            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag));
+        }
+        else if (num_Color==1)
+        {
+            #include "shaders/terrain_displacement_mapping_C_frag.cpp"
+            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_C.frag", terrain_displacement_mapping_C_frag));
+        }
+        else if (num_Color==2)
+        {
+            #include "shaders/terrain_displacement_mapping_CC_frag.cpp"
+            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_CC.frag", terrain_displacement_mapping_CC_frag));
+        }
+        else if (num_Color==3)
+        {
+            #include "shaders/terrain_displacement_mapping_CCC_frag.cpp"
+            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_CCC.frag", terrain_displacement_mapping_CCC_frag));
+        }
+
+    }
 
     return program;
 }

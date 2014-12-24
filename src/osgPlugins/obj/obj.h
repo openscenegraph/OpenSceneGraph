@@ -149,6 +149,7 @@ public:
     IndexList vertexIndices;
     IndexList normalIndices;
     IndexList texCoordIndices;
+    IndexList colorsIndices;
 };
 
 class ElementState
@@ -211,6 +212,7 @@ public:
     typedef std::map<std::string,Material>          MaterialMap;
     typedef std::vector< osg::Vec2 >                Vec2Array;
     typedef std::vector< osg::Vec3 >                Vec3Array;
+    typedef std::vector< osg::Vec4 >                Vec4Array;
     typedef std::vector< osg::ref_ptr<Element> >    ElementList;
     typedef std::map< ElementState,ElementList >    ElementStateMap;
 
@@ -219,6 +221,7 @@ public:
     MaterialMap     materialMap;
 
     Vec3Array       vertices;
+    Vec4Array       colors;
     Vec3Array       normals;
     Vec2Array       texcoords;
 

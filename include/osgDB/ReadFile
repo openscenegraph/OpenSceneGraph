@@ -195,6 +195,28 @@ inline osg::Shader* readShaderFile(osg::Shader::Type type, const std::string& fi
 }
 
 
+/** Read an osg::Shader from file and set to specified shader type, if a shader isn't loaded fallback to specific shader source.
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::Shader* readShaderFileWithFallback(osg::Shader::Type type, const std::string& filename, const Options* options, const char* fallback)
+{
+    osg::Shader* shader = readShaderFile(filename, options);
+    if (shader && type != osg::Shader::UNDEFINED) shader->setType(type);
+    if (!shader) shader = new osg::Shader(type, fallback);
+    return shader;
+}
+
+/** Read an osg::Shader from file and set to specified shader type, if a shader isn't loaded fallback to specific shader source.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::Shader* readShaderFileWithFallback(osg::Shader::Type type, const std::string& filename, const char* fallback)
+{
+    return osgDB::readShaderFileWithFallback(type, filename, Registry::instance()->getOptions(), fallback);
+}
+
 /** Read an osg::Script from file.
   * Return valid osg::Script on success,
   * return NULL on failure.

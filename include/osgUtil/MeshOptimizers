@@ -111,5 +111,15 @@ public:
     void optimizeOrder();
     void optimizeOrder(osg::Geometry& geom);
 };
+
+class OSGUTIL_EXPORT SharedArrayOptimizer
+{
+public:
+    void findDuplicatedUVs(const osg::Geometry& geometry);
+    void deduplicateUVs(osg::Geometry& geometry);
+protected:
+    std::map<unsigned int, unsigned int> _deduplicateUvs;
+}; // SharedArrayOptimizer
+
 }
 #endif

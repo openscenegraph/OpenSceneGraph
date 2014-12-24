@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <list>
 #include <set>
+#include <osgUtil/MeshOptimizers>
 
 
 using namespace osg;
@@ -635,6 +636,13 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
     }
 
     osg::TriangleIndexFunctor<FindSharpEdgesFunctor> fsef;
+
+    osgUtil::SharedArrayOptimizer sharedArrayOptimizer;
+    sharedArrayOptimizer.findDuplicatedUVs(geom);
+
+    // Duplicate shared arrays to avoid index errors during duplication
+    if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
+
     if (fsef.set(&geom, creaseAngle))
     {
         // look for normals that deviate too far
@@ -660,6 +668,8 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
         }
 
     }
+
+    sharedArrayOptimizer.deduplicateUVs(geom);
 }
 
 }

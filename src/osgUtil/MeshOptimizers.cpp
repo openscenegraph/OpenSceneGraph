@@ -99,60 +99,6 @@ struct GeometryArrayGatherer
     ArrayList _arrayList;
 };
 
-class SharedArrayOptimizer {
-public:
-    void findDuplicatedUVs(const osg::Geometry& geometry)
-    {
-        _deduplicateUvs.clear();
-
-        // look for all channels that are shared only *within* the geometry
-        std::map<const osg::Array*, unsigned int> arrayPointerCounter;
-
-        for(unsigned int id = 0 ; id < geometry.getNumTexCoordArrays() ; ++ id) {
-            const osg::Array* channel = geometry.getTexCoordArray(id);
-            if(channel && channel->getNumElements()) {
-                if(arrayPointerCounter.find(channel) == arrayPointerCounter.end()) {
-                    arrayPointerCounter[channel] = 1;
-                }
-                else {
-                    arrayPointerCounter[channel] += 1;
-                }
-            }
-        }
-
-        std::map<const osg::Array*, unsigned int> references;
-
-        for(unsigned int id = 0 ; id != geometry.getNumTexCoordArrays() ; ++ id) {
-            const osg::Array* channel = geometry.getTexCoordArray(id);
-            // test if array is shared outside the geometry
-            if(channel && static_cast<unsigned int>(channel->referenceCount()) == arrayPointerCounter[channel]) {
-                std::map<const osg::Array*, unsigned int>::const_iterator reference = references.find(channel);
-                if(reference == references.end()) {
-                    references[channel] = id;
-                }
-                else {
-                    _deduplicateUvs[id] = reference->second;
-                }
-            }
-        }
-    }
-
-    void deduplicateUVs(osg::Geometry& geometry)
-    {
-        for(std::map<unsigned int, unsigned int>::const_iterator it_duplicate = _deduplicateUvs.begin() ;
-            it_duplicate != _deduplicateUvs.end() ; ++ it_duplicate) {
-            osg::Array* original = geometry.getTexCoordArray(it_duplicate->second);
-            geometry.setTexCoordArray(it_duplicate->first,
-                                      original,
-                                      (original ? original->getBinding() : osg::Array::BIND_UNDEFINED));
-        }
-    }
-
-protected:
-    std::map<unsigned int, unsigned int> _deduplicateUvs;
-};
-
-
 // Compare vertices in a mesh using all their attributes. The vertices
 // are identified by their index. Extracted from TriStripVisitor.cpp
 struct VertexAttribComparitor : public GeometryArrayGatherer
@@ -1244,4 +1190,61 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
 
     geom.dirtyDisplayList();
 }
+
+void SharedArrayOptimizer::findDuplicatedUVs(const osg::Geometry& geometry)
+{
+    _deduplicateUvs.clear();
+
+    // look for all channels that are shared only *within* the geometry
+    std::map<const osg::Array*, unsigned int> arrayPointerCounter;
+
+    for(unsigned int id = 0 ; id < geometry.getNumTexCoordArrays() ; ++ id)
+    {
+        const osg::Array* channel = geometry.getTexCoordArray(id);
+        if(channel && channel->getNumElements())
+        {
+            if(arrayPointerCounter.find(channel) == arrayPointerCounter.end())
+            {
+                arrayPointerCounter[channel] = 1;
+            }
+            else
+            {
+                arrayPointerCounter[channel] += 1;
+            }
+        }
+    }
+
+    std::map<const osg::Array*, unsigned int> references;
+
+    for(unsigned int id = 0 ; id != geometry.getNumTexCoordArrays() ; ++ id)
+    {
+        const osg::Array* channel = geometry.getTexCoordArray(id);
+        // test if array is shared outside the geometry
+        if(channel && static_cast<unsigned int>(channel->referenceCount()) == arrayPointerCounter[channel])
+        {
+            std::map<const osg::Array*, unsigned int>::const_iterator reference = references.find(channel);
+            if(reference == references.end())
+            {
+                references[channel] = id;
+            }
+            else
+            {
+                _deduplicateUvs[id] = reference->second;
+            }
+        }
+    }
+}
+
+void SharedArrayOptimizer::deduplicateUVs(osg::Geometry& geometry)
+{
+    for(std::map<unsigned int, unsigned int>::const_iterator it_duplicate = _deduplicateUvs.begin() ;
+        it_duplicate != _deduplicateUvs.end() ; ++ it_duplicate)
+    {
+        osg::Array* original = geometry.getTexCoordArray(it_duplicate->second);
+        geometry.setTexCoordArray(it_duplicate->first,
+                                  original,
+                                  (original ? original->getBinding() : osg::Array::BIND_UNDEFINED));
+    }
+}
+
 }

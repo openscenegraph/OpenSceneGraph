@@ -46,6 +46,49 @@
 
 #include <memory>
 
+struct STLOptionsStruct {
+    bool smooth;
+    bool separateFiles;
+    bool dontSaveNormals;
+    bool noTriStripPolygons;
+};
+
+STLOptionsStruct parseOptions(const osgDB::ReaderWriter::Options* options)  {
+
+    STLOptionsStruct localOptions;
+    localOptions.smooth = false;
+    localOptions.separateFiles = false;
+    localOptions.dontSaveNormals = false;
+    localOptions.noTriStripPolygons = false;
+
+    if (options != NULL)
+    {
+        std::istringstream iss(options->getOptionString());
+        std::string opt;
+        while (iss >> opt)
+        {
+            if (opt == "smooth")
+            {
+                localOptions.smooth = true;
+            }
+            else if (opt == "separateFiles")
+            {
+                localOptions.separateFiles = true;
+            }
+            else if (opt == "dontSaveNormals")
+            {
+                localOptions.dontSaveNormals = true;
+            }
+            else if (opt == "noTriStripPolygons")
+            {
+                localOptions.noTriStripPolygons = true;
+            }
+        }
+    }
+
+    return localOptions;
+}
+
 /**
  * STL importer for OpenSceneGraph.
  */
@@ -73,7 +116,8 @@ private:
     class ReaderObject
     {
     public:
-        ReaderObject(bool generateNormals = true):
+        ReaderObject(bool noTriStripPolygons, bool generateNormals = true):
+            _noTriStripPolygons(noTriStripPolygons),
             _generateNormal(generateNormals),
             _numFacets(0)
         {
@@ -126,14 +170,21 @@ private:
                     ++itr)
                 {
                     perVertexColours->push_back(*itr);
+                    perVertexColours->push_back(*itr);
+                    perVertexColours->push_back(*itr);
                 }
-                geom->setColorArray(perVertexColours.get(), osg::Array::BIND_PER_VERTEX);
+
+                if(perVertexColours->size() == geom->getVertexArray()->getNumElements()) {
+                    geom->setColorArray(perVertexColours.get(), osg::Array::BIND_PER_VERTEX);
+                }
             }
 
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
-            osgUtil::TriStripVisitor tristripper;
-            tristripper.stripify(*geom);
+            if(!_noTriStripPolygons) {
+                osgUtil::TriStripVisitor tristripper;
+                tristripper.stripify(*geom);
+            }
 
             return geom;
         }
@@ -149,6 +200,7 @@ private:
         }
 
     protected:
+        bool _noTriStripPolygons;
         bool _generateNormal;
         unsigned int _numFacets;
 
@@ -170,14 +222,19 @@ private:
     class AsciiReaderObject : public ReaderObject
     {
     public:
+        AsciiReaderObject(bool noTriStripPolygons)
+        : ReaderObject(noTriStripPolygons)
+        {
+        }
+
         ReadResult read(FILE *fp);
     };
 
     class BinaryReaderObject : public ReaderObject
     {
     public:
-        BinaryReaderObject(unsigned int expectNumFacets, bool generateNormals = true)
-            : ReaderObject(generateNormals),
+        BinaryReaderObject(unsigned int expectNumFacets, bool noTriStripPolygons, bool generateNormals = true)
+            : ReaderObject(noTriStripPolygons, generateNormals),
             _expectNumFacets(expectNumFacets)
         {
         }
@@ -193,11 +250,10 @@ private:
     public:
         CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
-            counter(0),
-            m_options(options),
-            m_dontSaveNormals(false)
+            counter(0)
         {
-            if (options && (options->getOptionString() == "separateFiles"))
+            m_localOptions = parseOptions(options);
+            if (m_localOptions.separateFiles)
             {
                 OSG_INFO << "ReaderWriterSTL::writeNode: Files are written separately" << std::endl;
                 m_fout_ext = osgDB::getLowerCaseFileExtension(fout);
@@ -209,10 +265,9 @@ private:
                 m_f = new osgDB::ofstream(m_fout.c_str());
             }
 
-            if (options && (options->getOptionString() == "dontSaveNormals"))
+            if (m_localOptions.dontSaveNormals)
             {
                 OSG_INFO << "ReaderWriterSTL::writeNode: Not saving normals" << std::endl;
-                m_dontSaveNormals = true;
             }
         }
 
@@ -227,7 +282,7 @@ private:
         {
             osg::Matrix mat = osg::computeLocalToWorld(getNodePath());
 
-            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            if (m_localOptions.separateFiles)
             {
                 std::string sepFile = m_fout + i2s(counter) + "." + m_fout_ext;
                 m_f = new osgDB::ofstream(sepFile.c_str());
@@ -243,7 +298,7 @@ private:
                 osg::TriangleFunctor<PushPoints> tf;
                 tf.m_stream = m_f;
                 tf.m_mat = mat;
-                tf.m_dontSaveNormals = m_dontSaveNormals;
+                tf.m_dontSaveNormals = m_localOptions.dontSaveNormals;
                 node.getDrawable(i)->accept(tf);
             }
 
@@ -252,7 +307,7 @@ private:
             else
                 *m_f << "endsolid " << node.getName() << std::endl;
 
-            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            if (m_localOptions.separateFiles)
             {
                 m_f->close();
                 delete m_f;
@@ -264,7 +319,7 @@ private:
 
         ~CreateStlVisitor()
         {
-            if (m_options && (m_options->getOptionString() == "separateFiles"))
+            if (m_localOptions.separateFiles)
             {
                 OSG_INFO << "ReaderWriterSTL::writeNode: " << counter - 1 << " files were written" << std::endl;
             }
@@ -282,9 +337,8 @@ private:
         std::ofstream* m_f;
         std::string m_fout;
         std::string m_fout_ext;
-        osgDB::ReaderWriter::Options const * m_options;
         std::string m_ErrorString;
-        bool m_dontSaveNormals;
+        STLOptionsStruct m_localOptions;
 
         struct PushPoints
         {
@@ -341,6 +395,36 @@ const unsigned short StlHasColor = 0x8000;
 const unsigned short StlColorSize = 0x1f;        // 5 bit
 const float StlColorDepth = float(StlColorSize); // 2^5 - 1
 
+// Check if the file comes from magics, and retrieve the corresponding data
+// Magics files have a header with a "COLOR=" field giving the color of the whole model
+bool fileComesFromMagics(FILE *fp, osg::Vec4& magicsColor)
+{
+    char header[80];
+    const float magicsColorDepth = 255.f;
+
+    ::rewind(fp);
+
+    size_t bytes_read = fread((void*) &header, sizeof(header), 1, fp);
+    if (bytes_read!=sizeof(header)) return false;
+
+    ::fseek(fp, sizeof_StlHeader, SEEK_SET);
+
+    std::string magicsColorPattern ("COLOR=");
+    std::string headerStr = std::string(header);
+    if(size_t colorFieldPos = headerStr.find(magicsColorPattern) != std::string::npos)
+    {
+        int colorIndex = colorFieldPos + magicsColorPattern.size() - 1;
+        float r = (uint8_t)header[colorIndex] / magicsColorDepth;
+        float g = (uint8_t)header[colorIndex + 1] / magicsColorDepth;
+        float b = (uint8_t)header[colorIndex + 2] / magicsColorDepth;
+        float a = (uint8_t)header[colorIndex + 3] / magicsColorDepth;
+        magicsColor = osg::Vec4(r, g, b, a);
+        return true;
+    }
+
+    return false;
+}
+
 osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -348,6 +432,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     std::string fileName = osgDB::findDataFile(file, options);
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+    STLOptionsStruct localOptions = parseOptions (options);
 
     if (sizeof(unsigned int) != 4)
     {
@@ -418,9 +504,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     ReaderObject *readerObject;
 
     if (isBinary)
-        readerObject = new BinaryReaderObject(expectFacets);
+        readerObject = new BinaryReaderObject(expectFacets, localOptions.noTriStripPolygons);
     else
-        readerObject = new AsciiReaderObject();
+        readerObject = new AsciiReaderObject(localOptions.noTriStripPolygons);
 
     std::auto_ptr<ReaderObject> readerPtr(readerObject);
 
@@ -449,7 +535,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     fclose(fp);
 
-    if (options && (options->getOptionString() == "smooth"))
+    if (localOptions.smooth)
     {
         osgUtil::SmoothingVisitor smoother;
         group->accept(smoother);
@@ -581,6 +667,10 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
 
     _numFacets = _expectNumFacets;
 
+    // Check if the file comes from Magics and retrieve the global color from the header
+    osg::Vec4 magicsHeaderColor;
+    bool comesFromMagics = fileComesFromMagics(fp, magicsHeaderColor);
+
     // seek to beginning of facets
     ::fseek(fp, sizeof_StlHeader, SEEK_SET);
 
@@ -625,18 +715,39 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
         /*
          * color extension
          * RGB555 with most-significat bit indicating if color is present
+         *
+         * The magics files may use whether per-face or per-object colors
+         * for a given face, according to the value of the last bit (0 = per-face, 1 = per-object)
+         * Moreover, magics uses RGB instead of BGR (as the other softwares)
          */
-        if (facet.color & StlHasColor)
+        if (!_color.valid())
         {
-            if (!_color.valid())
-            {
-                _color = new osg::Vec4Array;
-            }
-            float r = ((facet.color >> 10) & StlColorSize) / StlColorDepth;
-            float g = ((facet.color >> 5) & StlColorSize) / StlColorDepth;
-            float b = (facet.color & StlColorSize) / StlColorDepth;
-            _color->push_back(osg::Vec4(r, g, b, 1.0f));
+            _color = new osg::Vec4Array;
         }
+
+        // Case of a Magics file
+        if(comesFromMagics)
+        {
+            if(facet.color & StlHasColor) // The last bit is 1, the per-object color is used
+            {
+                _color->push_back(magicsHeaderColor);
+            }
+            else // the last bit is 0, the facet has its own unique color
+            {
+                float b = ((facet.color >> 10) & StlColorSize) / StlColorDepth;
+                float g = ((facet.color >> 5) & StlColorSize) / StlColorDepth;
+                float r = (facet.color & StlColorSize) / StlColorDepth;
+                _color->push_back(osg::Vec4(r, g, b, 1.0f));
+            }
+        }
+        // Case of a generic file
+        else if (facet.color & StlHasColor) // The color is valid if the last bit is 1
+            {
+                float r = ((facet.color >> 10) & StlColorSize) / StlColorDepth;
+                float g = ((facet.color >> 5) & StlColorSize) / StlColorDepth;
+                float b = (facet.color & StlColorSize) / StlColorDepth;
+                _color->push_back(osg::Vec4(r, g, b, 1.0f));
+            }
     }
 
     return ReadEOF;

@@ -1,0 +1,11 @@
+char terrain_displacement_mapping_C_frag[] = "uniform sampler2D colorTexture1;\n"
+                                             "\n"
+                                             "varying vec2 texcoord;\n"
+                                             "varying vec4 basecolor;\n"
+                                             "\n"
+                                             "void main(void)\n"
+                                             "{\n"
+                                             "    vec4 color = texture2D( colorTexture1, texcoord);\n"
+                                             "    gl_FragColor = basecolor * color;\n"
+                                             "}\n"
+                                             "\n";

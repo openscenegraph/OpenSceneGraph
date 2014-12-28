@@ -137,7 +137,7 @@ void Program::ProgramBinary::assign(unsigned int size, const unsigned char* data
 Program::Program() :
     _geometryVerticesOut(1), _geometryInputType(GL_TRIANGLES),
     _geometryOutputType(GL_TRIANGLE_STRIP),
-    _numGroupsX(0), _numGroupsY(0), _numGroupsZ(0)
+    _numGroupsX(0), _numGroupsY(0), _numGroupsZ(0),_feedbackmode(GL_SEPARATE_ATTRIBS)
 {
 }
 
@@ -169,6 +169,10 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     _numGroupsX = rhs._numGroupsX;
     _numGroupsY = rhs._numGroupsY;
     _numGroupsZ = rhs._numGroupsZ;
+
+
+    _feedbackmode=rhs._feedbackmode;
+    _feedbackout=rhs._feedbackout;
 }
 
 
@@ -211,6 +215,9 @@ int Program::compare(const osg::StateAttribute& sa) const
 
     if( _numGroupsZ < rhs._numGroupsZ ) return -1;
     if( rhs._numGroupsZ < _numGroupsZ ) return 1;
+
+    if(_feedbackout<rhs._feedbackout)return -1;
+    if(_feedbackmode<rhs._feedbackmode)return -1;
 
     ShaderList::const_iterator litr=_shaderList.begin();
     ShaderList::const_iterator ritr=rhs._shaderList.begin();
@@ -441,7 +448,22 @@ void Program::apply( osg::State& state ) const
     }
 
     PerContextProgram* pcp = getPCP( contextID );
-    if( pcp->needsLink() ) compileGLObjects( state );
+
+
+    if( pcp->needsLink() ) {
+        if(!_feedbackout.empty()){
+            const char**varyings=new const char*[_feedbackout.size()];
+            //for(int i=0;i<_feedbackout.size();i++)      varyings[i]=_feedbackout[i].c_str();
+            const  char **varyingsptr=varyings;
+            for(std::vector<std::string>::const_iterator it=_feedbackout.begin();it!=_feedbackout.end();it++)
+            *varyingsptr++=(*it).c_str();
+            extensions->glTransformFeedbackVaryings( pcp->getHandle(),(GLsizei)_feedbackout.size(), varyings,_feedbackmode);
+            delete []varyings;
+        }
+
+
+    compileGLObjects( state );
+    }
     if( pcp->isLinked() )
     {
         // for shader debugging: to minimize performance impact,

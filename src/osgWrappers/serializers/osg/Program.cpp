@@ -76,6 +76,58 @@ static bool writeShaders( osgDB::OutputStream& os, const osg::Program& attr )
     os << os.END_BRACKET << std::endl;
     return true;
 }
+//  feedBackVaryings
+static bool checkFeedBackVaryingsName( const osg::Program& attr )
+{
+    return true;
+}
+
+static bool readFeedBackVaryingsName( osgDB::InputStream& is, osg::Program& attr )
+{
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        std::string str;
+        is>> str;
+        attr.addTransformFeedBackVarying(str);
+    }
+    is >> is.END_BRACKET;
+    return true;
+}
+
+static bool writeFeedBackVaryingsName( osgDB::OutputStream& os, const osg::Program& attr )
+{
+    unsigned int size = attr.getNumTransformFeedBackVaryings();
+    os.writeSize(size); os << os.BEGIN_BRACKET << std::endl;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        os << attr.getTransformFeedBackVarying(i)<< std::endl;
+    }
+    os << os.END_BRACKET << std::endl;
+    return true;
+}
+
+//  feedBack mode
+static bool checkFeedBackMode( const osg::Program& attr )
+{
+    return true;
+}
+
+static bool readFeedBackMode( osgDB::InputStream& is, osg::Program& attr )
+{
+    unsigned int size ;
+
+    is>>size;
+    attr.setTransformFeedBackMode(size);
+    return true;
+}
+
+static bool writeFeedBackMode( osgDB::OutputStream& os, const osg::Program& attr )
+{
+
+    os << attr.getTransformFeedBackMode()<< std::endl;
+    return true;
+}
 
 // _numGroupsX/Y/Z
 static bool checkComputeGroups( const osg::Program& attr )
@@ -112,6 +164,10 @@ REGISTER_OBJECT_WRAPPER( Program,
     ADD_USER_SERIALIZER( GeometryVerticesOut );  // _geometryVerticesOut
     ADD_USER_SERIALIZER( GeometryInputType );  // _geometryInputType
     ADD_USER_SERIALIZER( GeometryOutputType );  // _geometryOutputType
+
+
+    ADD_USER_SERIALIZER( FeedBackVaryingsName );  // _geometryOutputType
+    ADD_USER_SERIALIZER(FeedBackMode);
     {
         UPDATE_TO_VERSION_SCOPED( 95 )
         ADD_USER_SERIALIZER( ComputeGroups );  // _numGroupsX/Y/Z

@@ -124,6 +124,31 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove a uniform block binding. */
         void removeBindUniformBlock(const std::string& name);
 
+
+        /** Remove a TransformFeedBackVarying. */
+        void removeTransformFeedBackVarying(const std::string& name){
+        for(std::vector<std::string>::iterator i=_feedbackout.begin();i!=_feedbackout.end();i++)
+        if( *i == name){_feedbackout.erase(i);break; }
+        }
+
+        /** Add a TransformFeedBack Varying Name. */
+        void addTransformFeedBackVarying(std::string outname){
+        _feedbackout.push_back(outname);
+        }
+
+        /** Get number of TransformFeedBack Varyings. */
+        inline unsigned int getNumTransformFeedBackVaryings()const{return _feedbackout.size();}
+
+        /** Get  TransformFeedBack Varying at index i. */
+        inline  const std::string &getTransformFeedBackVarying(int i)const {return _feedbackout[i];}
+
+         /** Set  TransformFeedBack Mode. */
+        void setTransformFeedBackMode(GLenum e){_feedbackmode=e;}
+
+         /** Get  TransformFeedBack Mode. */
+        const GLenum getTransformFeedBackMode()const {return _feedbackmode;}
+
+
         /** Simple class for wrapping up the data used in glProgramBinary and glGetProgramBinary.
           * On the first run of your application Programs should be assigned an empty ProgramBinary.
           * Before your application exits it should retrieve the program binary via
@@ -183,6 +208,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         typedef std::map<std::string,GLuint> AttribBindingList;
         typedef std::map<std::string,GLuint> FragDataBindingList;
         typedef std::map<std::string,GLuint> UniformBlockBindingList;
+
 
         const AttribBindingList& getAttribBindingList() const { return _attribBindingList; }
         const FragDataBindingList& getFragDataBindingList() const { return _fragDataBindingList; }
@@ -342,7 +368,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool _loadedBinary;
 
                 const unsigned int _contextID;
-                
+
                 /** Does the glProgram handle belongs to this class? */
                 bool _ownsProgramHandle;
 
@@ -376,6 +402,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
         AttribBindingList _attribBindingList;
         FragDataBindingList _fragDataBindingList;
         UniformBlockBindingList _uniformBlockBindingList;
+
+        GLenum _feedbackmode;
+        std::vector<std::string> _feedbackout;
 
         typedef std::vector< ref_ptr<Shader> > ShaderList;
         ShaderList _shaderList;

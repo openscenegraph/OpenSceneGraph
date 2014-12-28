@@ -150,9 +150,9 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         while (it != _results.end())
         {
             osg::TestResult* tr = const_cast<osg::TestResult*>( *it );
-
+ 
             if (!tr->_active || !tr->_init)
-            {
+            { 
                 // This test wasn't executed last frame. This is probably because
                 //   a parent node failed the OQ test, this node is outside the
                 //   view volume, or we didn't run the test because we had not

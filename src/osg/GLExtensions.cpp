@@ -1065,6 +1065,12 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glGetTransformFeedbacki_v, "glGetTransformFeedbacki_v");
     osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v");
 
+    //Vertex Array Object
+    osg::setGLExtensionFuncPtr(glGenVertexArrays,"glGenVertexArrays");
+    osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray");
+    osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays");
+    osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray");
+    
 }
 
 

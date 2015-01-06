@@ -124,6 +124,33 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove a uniform block binding. */
         void removeBindUniformBlock(const std::string& name);
 
+        /** Remove a TransformFeedBackVarying. */
+        void removeTransformFeedBackVarying(const std::string& name)
+        {
+            for(std::vector<std::string>::iterator i=_feedbackout.begin(); i!=_feedbackout.end(); i++)
+            {
+                if (*i == name) {_feedbackout.erase(i);break; }
+            }
+        }
+
+        /** Add a TransformFeedBack Varying Name. */
+        void addTransformFeedBackVarying(const std::string& outname)
+        {
+            _feedbackout.push_back(outname);
+        }
+
+        /** Get number of TransformFeedBack Varyings. */
+        inline unsigned int getNumTransformFeedBackVaryings() const { return _feedbackout.size(); }
+
+        /** Get const TransformFeedBack Varying at index i. */
+        inline const std::string& getTransformFeedBackVarying(unsigned int i) const { return _feedbackout[i]; }
+
+        /** Set TransformFeedBack Mode. */
+        void setTransformFeedBackMode(GLenum e) {_feedbackmode=e;}
+
+        /** Get TransformFeedBack Mode. */
+        GLenum getTransformFeedBackMode() const {return _feedbackmode;}
+
         /** Simple class for wrapping up the data used in glProgramBinary and glGetProgramBinary.
           * On the first run of your application Programs should be assigned an empty ProgramBinary.
           * Before your application exits it should retrieve the program binary via
@@ -392,6 +419,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _numGroupsX;
         GLint _numGroupsY;
         GLint _numGroupsZ;
+
+        /**TransformFeedBack**/
+        GLenum _feedbackmode;
+        std::vector<std::string> _feedbackout;
 
     private:
         Program& operator=(const Program&);        // disallowed

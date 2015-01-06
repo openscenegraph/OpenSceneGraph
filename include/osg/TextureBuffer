@@ -19,14 +19,6 @@
 #include <osg/Texture>
 #include <osg/BufferObject>
 
-#ifndef GL_ARB_texture_buffer_object
-    #define GL_TEXTURE_BUFFER_ARB                    0x8C2A
-    #define GL_MAX_TEXTURE_BUFFER_SIZE_ARB           0x8C2B
-    #define GL_TEXTURE_BINDING_BUFFER_ARB            0x8C2C
-    #define GL_TEXTURE_BUFFER_DATA_STORE_BINDING_ARB 0x8C2D
-    #define GL_TEXTURE_BUFFER_FORMAT_ARB             0x8C2E
-#endif
-
 namespace osg {
 
 /** Encapsulates OpenGL texture buffer functionality.
@@ -48,7 +40,7 @@ class OSG_EXPORT TextureBuffer : public Texture
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual GLenum getTextureTarget() const { return GL_TEXTURE_BUFFER_ARB; }
+        virtual GLenum getTextureTarget() const { return GL_TEXTURE_BUFFER; }
 
         /** Sets the texture image. */
         void setImage(Image* image);

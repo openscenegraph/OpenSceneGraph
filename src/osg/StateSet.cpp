@@ -50,7 +50,7 @@ class TextureGLModeSet
             _textureModeSet.insert(GL_TEXTURE_1D);
             _textureModeSet.insert(GL_TEXTURE_2D);
             _textureModeSet.insert(GL_TEXTURE_3D);
-            _textureModeSet.insert(GL_TEXTURE_BUFFER_ARB);
+            _textureModeSet.insert(GL_TEXTURE_BUFFER);
 
             _textureModeSet.insert(GL_TEXTURE_CUBE_MAP);
             _textureModeSet.insert(GL_TEXTURE_RECTANGLE_NV);

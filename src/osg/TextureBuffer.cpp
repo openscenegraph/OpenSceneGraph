@@ -113,9 +113,9 @@ void TextureBuffer::apply(State& state) const
         if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             computeInternalFormat();
-            textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER_ARB);
+            textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
             textureBufferObject->bufferSubData(_image.get() );
-            textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER_ARB);
+            textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER);
             _modifiedCount[contextID] = _image->getModifiedCount();
         }
         textureObject->bind();
@@ -135,7 +135,7 @@ void TextureBuffer::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
-        textureObject = generateTextureObject(this, contextID,GL_TEXTURE_BUFFER_ARB);
+        textureObject = generateTextureObject(this, contextID, GL_TEXTURE_BUFFER);
         _textureObjectBuffer[contextID] = textureObject;
         textureObject->bind();
 
@@ -154,10 +154,10 @@ void TextureBuffer::apply(State& state) const
 
         computeInternalFormat();
         _textureWidth = _image->s();
-        textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER_ARB);
+        textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
         textureBufferObject->bufferData( _image.get() );
         textureObject->setAllocated(true);
-        textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER_ARB);
+        textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER);
 
         textureObject->bind();
         textureBufferObject->texBuffer(_internalFormat);
@@ -166,7 +166,7 @@ void TextureBuffer::apply(State& state) const
     }
     else
     {
-        glBindTexture(GL_TEXTURE_BUFFER_ARB, 0);
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
     }
 
 #else
@@ -208,15 +208,15 @@ void TextureBuffer::TextureBufferObject::unbindBuffer(GLenum target)
 
 void TextureBuffer::TextureBufferObject::texBuffer(GLenum internalFormat)
 {
-    _extensions->glTexBuffer(GL_TEXTURE_BUFFER_ARB, internalFormat, _id);
+    _extensions->glTexBuffer(GL_TEXTURE_BUFFER, internalFormat, _id);
 }
 
 void TextureBuffer::TextureBufferObject::bufferData( osg::Image* image )
 {
-    _extensions->glBufferData(GL_TEXTURE_BUFFER_ARB, image->getTotalDataSize(), image->data(), _usageHint);
+    _extensions->glBufferData(GL_TEXTURE_BUFFER, image->getTotalDataSize(), image->data(), _usageHint);
 }
 
 void TextureBuffer::TextureBufferObject::bufferSubData( osg::Image* image )
 {
-    _extensions->glBufferSubData(GL_TEXTURE_BUFFER_ARB, 0, image->getTotalDataSize(), image->data());
+    _extensions->glBufferSubData(GL_TEXTURE_BUFFER, 0, image->getTotalDataSize(), image->data());
 }

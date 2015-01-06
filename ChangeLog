@@ -1,3 +1,492 @@
+2015-01-06 14:55  robert
+
+	* src/osgVolume/Property.cpp: From Julien Valentin, added missing
+	  initializer
+
+2015-01-06 14:41  robert
+
+	* src/osgWrappers/serializers/osgVolume/VolumeTechnique.cpp: From
+	  Julien Valentin, typo fix
+
+2014-12-22 10:35  robert
+
+	* CMakeLists.txt: Added comment about using
+	  -DCMAKE_DISABLE_FINDPACKAGE_* command line.
+
+2014-12-22 09:50  robert
+
+	* include/osg/ref_ptr: Added doxygen comment for
+	  ref_ptr<>::release().
+
+2014-12-18 15:59  robert
+
+	* CMakeLists.txt: From Mattias Helsing, "CMake have release 3.0 and
+	  3.1 and we have some bad checks for cmake
+	  major version when settings cmake policies in CMakeLists.txt.
+	  This fixes it"
+
+2014-12-18 11:37  robert
+
+	* applications/osgversion/Contributors.cpp: Updated AUTHORS
+
+2014-12-18 09:20  robert
+
+	* PlatformSpecifics/Android/Application.mk.master.in: From Adrian
+	  Clark, "Recently I tried compiling version 3.x of OpenSceneGraph
+	  for Android, using a recent Android NDK, only to run into
+	  problems with missing dependencies when trying to link my android
+	  project against the generated libraries.
+	  
+	  
+	  
+	  After some exploration, I found the problem is because the
+	  APP_PLATFORM variable in Application.mk is set to a platform
+	  number which is no longer compatible with the Android NDK by the
+	  OSG CMake toolchain. This causes the Android to compile it using
+	  the most recent Android platform libraries which (for reasons I
+	  don't know) no longer provide functions which OSG relies (in
+	  particular rand and stat64).
+	  
+	  
+	  
+	  This bug affects the current SVN repos for OSG 3.3.1, OSG 3.3.0,
+	  OSG 3.2.1 and OSG 3.2.0 (and possibly earlier).
+	  
+	  
+	  
+	  I posted a longer discussion of what the problem is in this forum
+	  thread:
+	  
+	  http://forum.openscenegraph.org/viewtopic.php?p=62012#62012
+	  
+	  
+	  
+	  
+	  
+	  But essentially the fix is to change one line in
+	  OSG/PlatformSpecifics/Android/Application.mk.master.in from:
+	  
+	  
+	  
+	  APP_PLATFORM := ${ANDROID_PLATFORM}
+	  
+	  
+	  
+	  To
+	  
+	  
+	  
+	  APP_PLATFORM := android-${ANDROID_PLATFORM}
+	  
+	  
+	  
+	  
+	  
+	  The attached file will fix the bug in the 3.2.0 - 3.3.1 SVN repos
+	  for OSG.
+	  
+	  "
+
+2014-12-10 11:30  robert
+
+	* src/osgPlugins/dae/daeRMaterials.cpp: From Farshid Lashkari, "The
+	  Collada loader would crash while processing textures on certain
+	  files. I've attached the fix."
+
+2014-12-08 11:08  robert
+
+	* src/osgUtil/CullVisitor.cpp: Fixed memory leak in
+	  RenderStageCache.
+
+2014-11-26 17:07  robert
+
+	* applications/present3D/Cluster.h: Fixed warnigns
+
+2014-11-26 17:07  robert
+
+	* applications/present3D/Cluster.cpp,
+	  applications/present3D/Cluster.h: Removed redundent line endings
+
+2014-11-26 16:29  robert
+
+	* src/osgPlugins/ffmpeg/CMakeLists.txt: Fixed deprecated warnings
+
+2014-11-26 16:15  robert
+
+	* src/osgPlugins/pdf/CMakeLists.txt: Fixed warning
+
+2014-11-26 16:07  robert
+
+	* examples/osgcluster/osgcluster.cpp: Fixed warnings
+
+2014-11-26 16:06  robert
+
+	* examples/osgcluster/osgcluster.cpp: Removed redudent spaces
+
+2014-11-26 16:02  robert
+
+	* src/osgPlugins/lwo/Object.cpp: Fixed warning
+
+2014-11-24 15:24  robert
+
+	* CMakeLists.txt, CMakeModules/FindAVFoundation.cmake,
+	  CMakeModules/FindQuickTime.cmake,
+	  src/osgViewer/PixelBufferCocoa.mm: From Jan Klimke, "i noticed,
+	  that there are a couple of additional flaws when building osg for
+	  Mac OS X 10.10 Yosemite.
+	  
+	  The mac os sdk version is recognized by the current CMAKE script
+	  as 10.1 instead of 10.10 since it cuts the version string from
+	  the 4th place. I introduced a more reliable version checking
+	  based on splitting the returned version code into MAJOR MINOR and
+	  PATCH parts and reassemble the OSG sdk version afterwards.
+	  
+	  I replaced the existing CMake code against the following
+	  (returning now version 10.10 as expected):
+	  
+	  # Determine the canonical name of the selected Platform SDK
+	  EXECUTE_PROCESS(COMMAND "/usr/bin/sw_vers" "-productVersion"
+	  OUTPUT_VARIABLE OSG_OSX_SDK_NAME
+	  OUTPUT_STRIP_TRAILING_WHITESPACE)
+	  STRING(REPLACE "." ";" MACOS_VERSION_LIST ${OSG_OSX_SDK_NAME})
+	  LIST(GET MACOS_VERSION_LIST 0 MACOS_VERSION_MAJOR)
+	  LIST(GET MACOS_VERSION_LIST 1 MACOS_VERSION_MINOR)
+	  LIST(GET MACOS_VERSION_LIST 2 MACOS_VERSION_PATCH)
+	  
+	  SET(OSG_OSX_SDK_NAME
+	  "macosx${MACOS_VERSION_MAJOR}.${MACOS_VERSION_MINOR}")
+	  
+	  Also i added the check for the new Version to some more find
+	  scripts.
+	  
+	  Additionally the nil object in Objective C now seems to be
+	  equivalent with a null_ptr that cannot be passed as GLInt
+	  anymore. So i switched this in the PixelBufferCocoa.mm to pass a
+	  zero instead of nil.
+	  "
+
+2014-11-24 14:10  robert
+
+	* examples/osgsimplegl3/osgsimplegl3.cpp: Fixed handling of
+	  viewer's Camera
+
+2014-11-21 20:16  robert
+
+	* src/osgDB/CMakeLists.txt, src/osgDB/FileUtils.cpp: From Alberto
+	  Luaces,"the current code uses the preprocessor for generating the
+	  plugin path in
+	  a way that when CMAKE_INSTALL_PREFIX contains something along the
+	  lines
+	  of
+	  
+	  /usr/x86_64-linux-gnu/
+	  
+	  it gets substituted as
+	  
+	  /usr/x86_64-1-gnu/
+	  
+	  that is, the string is preprocessed again, thereby making changes
+	  to
+	  anything that matches any defined symbol, as "linux" in this
+	  example
+	  (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=763816).
+	  
+	  Quoting that path directly in CMake scripts solves that problem.
+	  "
+
+2014-11-21 10:21  robert
+
+	* CMakeModules/CheckAtomicOps.cmake: From Björn Blissing, fix for
+	  ambiguous defines in Atomic.cpp when compiling with MinGW and GCC
+
+2014-11-21 09:28  robert
+
+	* applications/osgversion/Contributors.cpp: Copied Contributors
+	  file from svn/trunk.
+
+2014-11-20 17:37  robert
+
+	* include/osg/Texture: From Claus Steuer, "XCode 6, IOs 8.1 SDK
+	  Compile fix : There are some undefined texture formats when
+	  compiling osg for IOs 8.1 with XCode 6 and OpenGLES2 enabled."
+
+2014-11-20 16:38  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: From Farshid Lashkari,
+	  "The obj loader was overriding the existing database path list
+	  with the file path of the model, instead of prepending the file
+	  path to the path list. The latter seems to be more common
+	  behavior for most of the existing loader plugins. Also, the local
+	  options weren't actually being used when processing the scene
+	  graph for textures. I've attached the fix for both issues."
+
+2014-11-20 10:52  robert
+
+	* src/osgPlugins/Inventor/ConvertFromInventor.cpp: From Marc
+	  Helbling, "here is a trivial fix in the Inventor plugin. In one
+	  code path, the pointer validity is checked after dereferencing a
+	  pointer that can be null (image->valid()) instead of calling
+	  ref_ptr::valid (image.valid())."
+
+2014-11-20 10:45  robert
+
+	* src/osgUtil/MeshOptimizers.cpp: From Marc Helbling, "I've come
+	  across scenes that contains geometries with initialized but empty
+	  vertex arrays and primitives and that would make some optimizers
+	  crash.
+	  
+	  The submission therefore only contains a test on the size of the
+	  vertex array for the VertexCacheMissVisitor and the
+	  VertexAccessOrderVisitor visitors."
+
+2014-11-20 09:55  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Sukender, "Fix for
+	  3DS reader, which may read wrong triangles. Actually, indices may
+	  suffer a 'short int' overflow, in two places."
+
+2014-11-20 09:41  robert
+
+	* src/osg/Texture2DArray.cpp: Fixed segfalt in Texture2DArray copy
+	  constructor where it would apply images to an uninitialzed
+	  vector.
+
+2014-11-20 09:32  robert
+
+	* src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.h,
+	  src/osgPlugins/fbx/fbxRMesh.cpp: From Marc Helbling, "patch
+	  adding support for ambient material in the FBX plugin. It's a
+	  straightfoward adaptation of the emissive support and has been
+	  tested on a proprietary model."
+
+2014-11-20 09:31  robert
+
+	* CMakeLists.txt: Added default setting of build type to Release
+
+2014-11-20 09:21  robert
+
+	* src/osgPlugins/gif/ReaderWriterGIF.cpp: From Pjotr Svetachov, fix
+	  for build breakage with giflib 5.0.
+
+2014-11-19 17:31  robert
+
+	* applications/osgversion/Contributors.cpp: Fixed contributors
+	  names
+
+2014-11-19 17:31  robert
+
+	* src/osgPlugins/gif/ReaderWriterGIF.cpp: From Clement Boesch, "Fix
+	  remaining bit of Giflib5 usage"
+
+2014-11-19 11:37  robert
+
+	* src/osgWrappers/deprecated-dotosg/osg/ProxyNode.cpp: From Laurens
+	  Voerman, "I found a new way to crach the osgviewer:
+	  osgviewer "ProxyNode { FileNameList { cow.osgt } num_children 1
+	  }".osgs
+	  
+	  The proxy node reader wrongly assumes options to be non NULL.
+	  
+	  fixed in attached zip:
+	  src\osgWrappers\deprecated-dotosg\osg\ProxyNode.cpp
+	  
+	  applies to both the 3.2 branch and svn trunk"
+
+2014-11-04 16:29  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp: Build fixes for
+	  ffmpeg LIBAVCODEC_VERSION_MAJOR >= 56
+
+2014-08-19 09:27  robert
+
+	* src/osgPlugins/md2/ReaderWriterMD2.cpp: Fixed MD2 danglng pointer
+	  crash.
+
+2014-08-08 16:42  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp: From Ryan Kawicki, "There
+	  is an issue where the model insets of a terrex terrain are being
+	  removed during the loading process. The issue is described below.
+	  
+	  - the issue here is that the plugin is removing group nodes if
+	  that group node only has one child. becuase transforms are also
+	  group nodes, there were cases when the transform would have only
+	  one child under it and would cause it to remove the translation
+	  portion. this would cause all the vertex data to be loaded around
+	  the last matrix operation, which in our case was the origin
+	  (0,0,0).
+	  
+	  We work off of OSG 2.8.1 but see that this has not been addressed
+	  on latest yet. I’ve tested this against 2.8.1 and have cleanly
+	  applied it to my local repository off of latest."
+
+2014-08-08 16:34  robert
+
+	* src/osgUtil/RenderStage.cpp: From Tim George, "Currently there is
+	  a problem with using a camera with a viewport with a non 0 offset
+	  and also using an FBO. The problem is that only area made up of
+	  the viewports width and height is drawn based on an offset of 0,0
+	  instead of using the viewports offset.
+	  
+	  It is caused by line 991 in RenderStage.cpp:
+	  
+	  
+	  Code:
+	  fbo_ext->glBlitFramebuffer(
+	  0, 0, static_cast<GLint>(_viewport->width()),
+	  static_cast<GLint>(_viewport->height()),
+	  0, 0, static_cast<GLint>(_viewport->width()),
+	  static_cast<GLint>(_viewport->height()),
+	  blitMask, GL_NEAREST);
+	  
+	  
+	  
+	  which is not taking into account the viewport x and y when
+	  performing the blit. It probably should be:
+	  
+	  
+	  Code:
+	  fbo_ext->glBlitFramebuffer(
+	  static_cast<GLint>(_viewport->x()),
+	  static_cast<GLint>(_viewport->y()),
+	  static_cast<GLint>(_viewport->width()) +
+	  static_cast<GLint>(_viewport->x()),
+	  static_cast<GLint>(_viewport->height()) +
+	  static_cast<GLint>(_viewport->y()),
+	  static_cast<GLint>(_viewport->x()),
+	  static_cast<GLint>(_viewport->y()),
+	  static_cast<GLint>(_viewport->width()) +
+	  static_cast<GLint>(_viewport->x()),
+	  static_cast<GLint>(_viewport->height()) +
+	  static_cast<GLint>(_viewport->y()),
+	  blitMask, GL_NEAREST);
+	  "
+	  
+	  Note from Robert Osfield, made small tweak to above on merge,
+	  changing the width+x to x+width to make it read more naturally.
+
+2014-08-08 16:09  robert
+
+	* src/osgUtil/MeshOptimizers.cpp: From Marc Helbling, "please find
+	  a fix for the vertex pretransform visitor
+	  (VertexAccessOrderVisitor).
+	  The issue with current code is that arrays are collected *before*
+	  duplicating shared arrays which leads to arrays that are
+	  correctly duplicated but that are not reordered.
+	  
+	  Also the submitted patch contains a small cleaning in
+	  GeometryArrayGathrer as the _useDrawElements variable is not
+	  used; it is only set in the GeometryArrayGathrer constructor and
+	  VertexAccessOrderVisitor already checks that primitives have
+	  indexed type."
+
+2014-08-08 15:45  robert
+
+	* include/osg/Node: Applied fix to
+	  Node::remove*Callback(NodeCallback*) inspired by fix from Glen
+	  Waldron that was applied to svn/trunk.
+
+2014-07-29 15:47  robert
+
+	* src/osgUtil/Optimizer.cpp: Added catch for NULL Transform
+	  pointers getting into the _transformMap.
+
+2014-07-22 16:35  robert
+
+	* include/osg/State, src/osg/State.cpp: Removed usage of
+	  _appliedProgramObjectSet as it's no longer used by OSG
+	  applications and was causing a threading crash.
+
+2014-07-22 16:34  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version to 3.2.2
+
+2014-07-21 13:45  robert
+
+	* src/osgText/Glyph.cpp: Added setting of glPixelStore before
+	  glTexSubImage2D call.
+
+2014-07-21 13:43  robert
+
+	* src/osgText/Glyph.cpp: I want to submit a bugfix for a crash
+	  occurring in osgText/Glyph.cpp if
+	  the scene tree contains (large) 2D textures from images with
+	  STRIDE.
+	  
+	  ============================================================================
+	  #0 0x00007fffe8ea4350 in __memmove_ssse3 () from /lib64/libc.so.6
+	  #1 0x00007fffe52ced76 in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #2 0x00007fffe52d8e86 in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #3 0x00007fffe53dd8be in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #4 0x00007fffe53c2643 in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #5 0x00007fffe53c7fdd in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #6 0x00007fffe53cbabf in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #7 0x00007fffe53cc1fa in ?? () from
+	  /usr/lib64/libnvidia-glcore.so.310.44
+	  #8 0x00007ffff30092fd in osgText::GlyphTexture::apply
+	  (this=0x1bb8cf0, state=
+	  ...)
+	  at
+	  /d43/jaap/dev/jaapOSG/build/OpenSceneGraph3.3.1/src/osgText/Glyph.cpp:234
+	  #9 0x00007ffff56c30b6 in osg::State::applyAttributeOnTexUnit
+	  (this=0x125f180,
+	  unit=0, attribute=0x1bb8cf0, as=...)
+	  at
+	  /d43/jaap/dev/jaapOSG/build/OpenSceneGraph3.3.1/include/osg/State:1713
+	  #10 0x00007ffff56c2f3f in osg::State::applyTextureAttribute
+	  (this=0x125f180,
+	  unit=0, attribute=0x1bb8cf0)
+	  at
+	  /d43/jaap/dev/jaapOSG/build/OpenSceneGraph3.3.1/include/osg/State:411
+	  #11 0x00007ffff30204da in osgText::Text::drawTextWithBackdrop
+	  (this=0x1baed70,
+	  state=..., colorMultiplier=...)
+	  ==============================================================================
+	  
+	  The crash disappears if I either (1) disable the use of images
+	  with stride
+	  in the (public) osgGeo-library, or (2) add the following bugfix
+	  to Glyph.cpp.
+	  This combination gives me the confidence that I understand where
+	  this problem
+	  originates from, without trying to understand the full OpenGL
+	  details.
+	  
+	  ===============================================================================
+	  @@ -221,7 +223,12 @@
+	  imageData[i] = 0;
+	  }
+	  
+	  + glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	  
+	  + #if !defined(OSG_GLES1_AVAILABLE) &&
+	  !defined(OSG_GLES2_AVAILABLE)
+	  + glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
+	  + #endif
+	  +
+	  // allocate the texture memory.
+	  glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
+	  getTextureWidth(), getTextureHeight(), 0,
+	  ================================================================================
+	  
+	  I have copied (and adapted) the added lines above from the same
+	  source file,
+	  where they were used in front of a similar call to
+	  glTexSubImage2D(.) around
+	  line 515."
+
+2014-07-04 11:34  robert
+
+	* ChangeLog, README.txt: Updated ChangeLog and README for release
+
 2014-07-04 11:29  robert
 
 	* CMakeLists.txt: Updated version number to 3.2.1 for release

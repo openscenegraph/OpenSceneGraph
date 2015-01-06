@@ -58,7 +58,7 @@ void CompositeProperty::clear()
 //
 // SwitchProperty
 //
-SwitchProperty::SwitchProperty()
+SwitchProperty::SwitchProperty():_activeProperty(0)
 {
 }
 

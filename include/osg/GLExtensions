@@ -599,6 +599,11 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGetTransformFeedbacki_v) (GLuint xfb, GLenum pname, GLuint index, GLint *param);
         void (GL_APIENTRY * glGetTransformFeedbacki64_v) (GLuint xfb, GLenum pname, GLuint index, GLint64 *param);
 
+        // Vertex Array Object
+        void (GL_APIENTRY * glDeleteVertexArrays) (GLsizei size,const GLuint *handles);
+        void (GL_APIENTRY * glGenVertexArrays) (GLsizei size, GLuint *handles);
+        GLboolean (GL_APIENTRY * glIsVertexArray) (GLuint handle);
+        void (GL_APIENTRY * glBindVertexArray) (GLuint handle);
 
 };
 

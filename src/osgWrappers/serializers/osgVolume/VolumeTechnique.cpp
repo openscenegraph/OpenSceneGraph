@@ -6,6 +6,6 @@
 REGISTER_OBJECT_WRAPPER( osgVolume_VolumeTechnique,
                          new osgVolume::VolumeTechnique,
                          osgVolume::VolumeTechnique,
-                         "osg::Object osgVolume::VolumeTechniquee" )
+                         "osg::Object osgVolume::VolumeTechnique" )
 {
 }

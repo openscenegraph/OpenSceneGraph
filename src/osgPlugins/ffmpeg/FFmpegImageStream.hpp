@@ -81,6 +81,8 @@ namespace osgFFmpeg
         Condition        m_frame_published_cond;
         bool             m_frame_published_flag;
         double           m_seek_time;
+
+        osg::Timer_t _lastUpdateTS;     ///< Timestamp for last frame update
     };
 
 }

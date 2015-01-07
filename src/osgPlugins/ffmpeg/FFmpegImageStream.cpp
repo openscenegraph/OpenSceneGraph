@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#define STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD   10
 
 
 namespace osgFFmpeg {
@@ -17,7 +18,8 @@ namespace osgFFmpeg {
 FFmpegImageStream::FFmpegImageStream() :
     m_decoder(0),
     m_commands(0),
-    m_frame_published_flag(false)
+    m_frame_published_flag(false),
+    _lastUpdateTS(0.)
 {
     setOrigin(osg::Image::TOP_LEFT);
 
@@ -219,6 +221,14 @@ void FFmpegImageStream::run()
                 }
                 else
                     done = ! handleCommand(cmd);
+
+                // Security check to detect (and stop) dead streams
+                if ( _lastUpdateTS > 0. &&
+                    osg::Timer::instance()->delta_s(_lastUpdateTS, osg::Timer::instance()->tick()) > STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD )
+                {
+                    _status = INVALID;
+                    done = true;
+                }
             }
             else
             {
@@ -238,6 +248,8 @@ void FFmpegImageStream::run()
     }
 
     OSG_NOTICE<<"Finished FFmpegImageStream::run()"<<std::endl;
+
+//    _status = INVALID;
 }
 
 
@@ -336,6 +348,9 @@ void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_
     /** \bug If viewer.realize() hasn't been already called, this doesn't work? */
     this_->dirty();
 #endif
+
+    // Store the timestamp of this update. Needed to check dead streams
+    this_->_lastUpdateTS = osg::Timer::instance()->tick();
 
     OpenThreads::ScopedLock<Mutex> lock(this_->m_mutex);
 

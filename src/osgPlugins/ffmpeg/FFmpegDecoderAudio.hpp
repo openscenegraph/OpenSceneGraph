@@ -8,12 +8,11 @@
 
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
+#include "FFmpegParameters.hpp"
 
 #include <osg/AudioStream>
 
 #include "BoundedMessageQueue.hpp"
-
-
 
 
 namespace osgFFmpeg {
@@ -30,10 +29,10 @@ public:
     FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clocks);
     ~FFmpegDecoderAudio();
 
-    void open(AVStream * stream);
+    void open(AVStream * stream, FFmpegParameters* parameters);
     void pause(bool pause);
     void close(bool waitForThreadToExit);
-    
+
     void setVolume(float volume);
     float getVolume() const;
 
@@ -53,7 +52,7 @@ private:
     typedef std::vector<uint8_t> Buffer;
 
     void decodeLoop();
-    void adjustBufferEndTps(size_t buffer_size);
+    void adjustBufferEndPts(size_t buffer_size);
     size_t decodeFrame(void * buffer, size_t size);
 
 
@@ -69,9 +68,12 @@ private:
     size_t                              m_audio_buf_size;
     size_t                              m_audio_buf_index;
 
-    int                                 m_frequency;
-    int                                 m_nb_channels;
-    osg::AudioStream::SampleFormat      m_sample_format;
+    int                                 m_in_sample_rate;
+    int                                 m_in_nb_channels;
+    AVSampleFormat                      m_in_sample_format;
+    int                                 m_out_sample_rate;
+    int                                 m_out_nb_channels;
+    AVSampleFormat                      m_out_sample_format;
 
     SinkPtr                             m_audio_sink;
 
@@ -80,6 +82,8 @@ private:
     bool                                m_end_of_stream;
     bool                                m_paused;
     volatile bool                       m_exit;
+
+    SwrContext *                        m_swr_context;  // Sw resampling context
 };
 
 
@@ -94,22 +98,14 @@ inline bool FFmpegDecoderAudio::validContext() const
 
 inline int FFmpegDecoderAudio::frequency() const
 {
-    return m_frequency;
+    return m_out_sample_rate;
 }
 
 
 inline int FFmpegDecoderAudio::nbChannels() const
 {
-    return m_nb_channels;
+    return m_out_nb_channels;
 }
-
-
-inline osg::AudioStream::SampleFormat FFmpegDecoderAudio::sampleFormat() const
-{
-    return m_sample_format;
-}
-
-
 
 } // namespace osgFFmpeg
 

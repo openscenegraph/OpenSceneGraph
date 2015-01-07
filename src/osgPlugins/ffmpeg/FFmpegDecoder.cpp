@@ -126,8 +126,15 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
         m_format_context.reset(p_format_context);
 
         // Retrieve stream info
-        // Only buffer up to one and a half seconds
-        p_format_context->max_analyze_duration = AV_TIME_BASE * 1.5f;
+        // Only buffer up to one and a half seconds by default
+        float max_analyze_duration = 1.5;
+        AVDictionaryEntry *mad = av_dict_get( *parameters->getOptions(), "mad", NULL, 0 );
+        if ( mad ) {
+            max_analyze_duration = atof(mad->value);
+        }
+        p_format_context->max_analyze_duration = AV_TIME_BASE * max_analyze_duration;
+//        p_format_context->probesize = 100000;
+
         if (avformat_find_stream_info(p_format_context, NULL) < 0)
             throw std::runtime_error("av_find_stream_info() failed");
 
@@ -160,9 +167,8 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
 
         try
         {
-            m_audio_decoder.open(m_audio_stream);
+            m_audio_decoder.open(m_audio_stream, parameters);
         }
-
         catch (const std::runtime_error & error)
         {
             OSG_WARN << "FFmpegImageStream::open audio failed, audio stream will be disabled: " << error.what() << std::endl;

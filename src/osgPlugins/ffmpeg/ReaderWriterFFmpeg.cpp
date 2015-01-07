@@ -96,13 +96,20 @@ public:
         supportsExtension("3gp",    "3G multi-media format");
         supportsExtension("sdp",    "Session Description Protocol");
         supportsExtension("m2ts",   "MPEG-2 Transport Stream");
+        supportsExtension("ts",     "MPEG-2 Transport Stream");
 
         supportsOption("format",            "Force setting input format (e.g. vfwcap for Windows webcam)");
         supportsOption("pixel_format",      "Set pixel format");
         supportsOption("frame_size",              "Set frame size (e.g. 320x240)");
         supportsOption("frame_rate",        "Set frame rate (e.g. 25)");
+        // WARNING:  This option is kept for backwards compatibility only, use out_sample_rate instead!
         supportsOption("audio_sample_rate", "Set audio sampling rate (e.g. 44100)");
+        supportsOption("out_sample_format", "Set the output sample format (e.g. AV_SAMPLE_FMT_S16)");
+        supportsOption("out_sample_rate",     "Set the output sample rate or frequency in Hz (e.g. 48000)");
+        supportsOption("out_nb_channels",   "Set the output number of channels (e.g. 2 for stereo)");
         supportsOption("context",            "AVIOContext* for custom IO");
+        supportsOption("mad",            "Max analyze duration (seconds)");
+        supportsOption("rtsp_transport", "RTSP transport (udp, tcp, udp_multicast or http)");
 
         av_log_set_callback(log_to_osg);
 
@@ -138,10 +145,22 @@ public:
             return readImageStream(filename, parameters.get());
         }
 
+#if 1
+        // NOTE: The original code checks parameters->isFormatAvailable() which returns
+        // false when a format is not explicitly specified.
+        // In these cases, the extension is used, which is a problem for videos served
+        // from URLs without an extension
+        {
+            ReadResult rr = readImageStream(filename, parameters.get());
+            if ( rr.validImage() )
+                return rr;
+        }
+#else
         if (parameters->isFormatAvailable())
         {
             return readImageStream(filename, parameters.get());
         }
+#endif
 
         if (! acceptsExtension(ext))
             return ReadResult::FILE_NOT_HANDLED;

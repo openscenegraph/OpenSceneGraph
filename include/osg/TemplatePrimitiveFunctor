@@ -307,8 +307,6 @@ namespace osg {
         const Vec3*         _vertexArrayPtr;
 
         GLenum              _modeCache;
-        std::vector<Vec3>   _vertexCache;
-        bool                _treatVertexDataAsTemporary;
     };
 
 

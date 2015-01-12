@@ -119,6 +119,14 @@ public:
 
     /// Mimics the OpenGL \c glEnd() function.
     virtual void end() = 0;
+
+    void useVertexCacheAsVertexArray()
+    {
+        setVertexArray(_vertexCache.size(),&_vertexCache.front());
+    }
+
+    std::vector<Vec3>   _vertexCache;
+    bool                _treatVertexDataAsTemporary;
 };
 
 class PrimitiveIndexFunctor
@@ -143,6 +151,14 @@ public:
     virtual void begin(GLenum mode) = 0;
     virtual void vertex(unsigned int pos) = 0;
     virtual void end() = 0;
+
+    void useVertexCacheAsVertexArray()
+    {
+        setVertexArray(_vertexCache.size(),&_vertexCache.front());
+    }
+
+    std::vector<Vec3>   _vertexCache;
+    bool                _treatVertexDataAsTemporary;
 };
 
 class DrawElements;

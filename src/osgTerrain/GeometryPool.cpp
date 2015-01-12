@@ -87,10 +87,7 @@ bool GeometryPool::createKeyForTile(TerrainTile* tile, GeometryKey& key)
     return true;
 }
 
-static int numberGeometryCreated = 0;
-static int numberSharedGeometry = 0;
-
-osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
+osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::TerrainTile* tile)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_geometryMapMutex);
 
@@ -100,15 +97,14 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
     GeometryMap::iterator itr = _geometryMap.find(key);
     if (itr != _geometryMap.end())
     {
-
-        ++numberSharedGeometry;
-//        OSG_NOTICE<<"Sharing geometry "<<itr->second.get()<<", number shared = "<<std::dec<<numberSharedGeometry<<", number created "<<numberGeometryCreated<<std::endl;
-//        OSG_NOTICE<<"   GeometryKey "<<key.y<<", sx="<<key.sx<<", sy="<<key.sy<<", "<<key.nx<<", "<<key.ny<<std::endl;
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    osg::ref_ptr<SharedGeometry> geometry = new SharedGeometry;
     _geometryMap[key] = geometry;
+
+    SharedGeometry::VertexToHeightFieldMapping& vthfm = geometry->getVertexToHeightFieldMapping();
+
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -133,6 +129,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
     vertices->reserve(numVertices);
     normals->reserve(numVertices);
     texcoords->reserve(numVertices);
+    vthfm.reserve(numVertices);
 
     double c_mult = 1.0/static_cast<double>(nx-1);
     double r_mult = 1.0/static_cast<double>(ny-1);
@@ -179,6 +176,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
     double skirtRatio = 0.02;
     double skirtHeight = -diagonalLength*skirtRatio;
 
+
     // set up the vertex data
     {
         // bottom row for skirt
@@ -191,6 +189,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
             normals->push_back(normal);
             texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
             locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
+            vthfm.push_back(0*nx + c);
         }
 
         // main body
@@ -206,6 +205,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 normals->push_back(normal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
+                vthfm.push_back(r*nx + 0);
             }
 
             pos.z() = 0;
@@ -216,6 +216,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 normals->push_back(normal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
+                vthfm.push_back(r*nx + c);
             }
 
             // end skirt vertex
@@ -226,6 +227,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
                 normals->push_back(normal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
+                vthfm.push_back((r+1)*nx-1);
             }
 
         }
@@ -240,6 +242,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
             normals->push_back(normal);
             texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
             locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
+            vthfm.push_back((ny-1)*nx + c);
         }
     }
 
@@ -436,8 +439,6 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
 
     //osgDB::writeNodeFile(*geometry, "geometry.osgt");
 
-
-    ++ numberGeometryCreated;
 //    OSG_NOTICE<<"Creating new geometry "<<geometry.get()<<std::endl;
 
     return geometry;
@@ -446,7 +447,7 @@ osg::ref_ptr<osg::Geometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terrai
 osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::TerrainTile* tile)
 {
     // create or reuse Geometry
-    osg::ref_ptr<osg::Geometry> geometry = getOrCreateGeometry(tile);
+    osg::ref_ptr<SharedGeometry> geometry = getOrCreateGeometry(tile);
 
 
     osg::ref_ptr<HeightFieldDrawable> hfDrawable = new HeightFieldDrawable();
@@ -489,36 +490,56 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
         }
     }
 
-    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-    osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
-    if (hf && vertices && normals && (vertices->size()==normals->size()))
+    osg::Vec3Array* shared_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    osg::Vec3Array* shared_normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
+    osg::FloatArray* heights = hf->getFloatArray();
+    const SharedGeometry::VertexToHeightFieldMapping& vthfm = geometry->getVertexToHeightFieldMapping();
+
+    if (hf && shared_vertices && shared_normals && (shared_vertices->size()==shared_normals->size()))
     {
-        unsigned int nr = hf->getNumRows();
-        unsigned int nc = hf->getNumColumns();
-
-        osg::BoundingBox bb;
-        osg::FloatArray* heights = hf->getFloatArray();
-
-        for(unsigned int r=0; r<nr; ++r)
+        if (vthfm.size()==shared_vertices->size())
         {
-            for(unsigned int c=0; c<nc; ++c)
+            // Using cache VertexArray
+            unsigned int numVertices = shared_vertices->size();
+            osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+            vertices->resize(numVertices);
+
+            for(unsigned int i=0; i<numVertices; ++i)
             {
-                unsigned int i = r*nc+c;
-                float h = (*heights)[i];
-                const osg::Vec3& v = (*vertices)[i];
-                const osg::Vec3& n = (*normals)[i];
-
-                const osg::Vec3 vt(v+n*h);
-                bb.expandBy(vt);
+                unsigned int hi = vthfm[i];
+                (*vertices)[i] = (*shared_vertices)[i] + (*shared_normals)[i] * (*heights)[hi];
             }
+
+            hfDrawable->setVertices(vertices.get());
         }
-        hfDrawable->setInitialBound(bb);
-        // OSG_NOTICE<<"Assigning initial bound ("<<bb.xMin()<<", "<<bb.xMax()<<") ,  ("<<bb.yMin()<<", "<<bb.yMax()<<") ("<<bb.zMin()<<", "<<bb.zMax()<<")"<< std::endl;
-        // bb = hfDrawable->getBoundingBox();
-        //OSG_NOTICE<<"         getBoundingBox ("<<bb.xMin()<<", "<<bb.xMax()<<") ,  ("<<bb.yMin()<<", "<<bb.yMax()<<") ("<<bb.zMin()<<", "<<bb.zMax()<<")"<< std::endl;
+        else
+        {
+            // Setting local bounding
+            unsigned int nr = hf->getNumRows();
+            unsigned int nc = hf->getNumColumns();
+
+            osg::BoundingBox bb;
+
+            for(unsigned int r=0; r<nr; ++r)
+            {
+                for(unsigned int c=0; c<nc; ++c)
+                {
+                    unsigned int i = r*nc+c;
+                    float h = (*heights)[i];
+                    const osg::Vec3& v = (*shared_vertices)[i];
+                    const osg::Vec3& n = (*shared_normals)[i];
+
+                    const osg::Vec3 vt(v+n*h);
+                    bb.expandBy(vt);
+                }
+            }
+            hfDrawable->setInitialBound(bb);
+            // OSG_NOTICE<<"Assigning initial bound ("<<bb.xMin()<<", "<<bb.xMax()<<") ,  ("<<bb.yMin()<<", "<<bb.yMax()<<") ("<<bb.zMin()<<", "<<bb.zMax()<<")"<< std::endl;
+            // bb = hfDrawable->getBoundingBox();
+            //OSG_NOTICE<<"         getBoundingBox ("<<bb.xMin()<<", "<<bb.xMax()<<") ,  ("<<bb.yMin()<<", "<<bb.yMax()<<") ("<<bb.zMin()<<", "<<bb.zMax()<<")"<< std::endl;
+
+        }
     }
-
-
 
     osg::ref_ptr<osg::StateSet> stateset = transform->getOrCreateStateSet();
 
@@ -756,6 +777,29 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
     }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  SharedGeometry
+//
+SharedGeometry::SharedGeometry()
+{
+//    setSupportsDisplayList(false);
+}
+
+SharedGeometry::SharedGeometry(const SharedGeometry& rhs,const osg::CopyOp& copyop):
+    osg::Geometry(rhs, copyop),
+    _vertexToHeightFieldMapping(rhs._vertexToHeightFieldMapping)
+{
+//    setSupportsDisplayList(false);
+}
+
+SharedGeometry::~SharedGeometry()
+{
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  HeightFieldDrawable
@@ -768,9 +812,14 @@ HeightFieldDrawable::HeightFieldDrawable()
 HeightFieldDrawable::HeightFieldDrawable(const HeightFieldDrawable& rhs,const osg::CopyOp& copyop):
     osg::Drawable(rhs, copyop),
     _heightField(rhs._heightField),
-    _geometry(rhs._geometry)
+    _geometry(rhs._geometry),
+    _vertices(rhs._vertices)
 {
     setSupportsDisplayList(false);
+}
+
+HeightFieldDrawable::~HeightFieldDrawable()
+{
 }
 
 void HeightFieldDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
@@ -805,10 +854,39 @@ void HeightFieldDrawable::accept(osg::Drawable::ConstAttributeFunctor& caf) cons
 
 void HeightFieldDrawable::accept(osg::PrimitiveFunctor& pf) const
 {
-    if (_geometry) _geometry->accept(pf);
+    // use the cached vertex positions for PrimitiveFunctor operations
+    if (!_geometry) return;
+
+    if (_vertices.valid())
+    {
+        pf.setVertexArray(_vertices->size(), &((*_vertices)[0]));
+        for(osg::Geometry::PrimitiveSetList::const_iterator itr = _geometry->getPrimitiveSetList().begin();
+            itr != _geometry->getPrimitiveSetList().end();
+            ++itr)
+        {
+            (*itr)->accept(pf);
+        }
+    }
+    else
+    {
+        _geometry->accept(pf);
+    }
 }
 
 void HeightFieldDrawable::accept(osg::PrimitiveIndexFunctor& pif) const
 {
-    if (_geometry) _geometry->accept(pif);
+    if (_vertices.valid())
+    {
+        pif.setVertexArray(_vertices->size(), &((*_vertices)[0]));
+        for(osg::Geometry::PrimitiveSetList::const_iterator itr = _geometry->getPrimitiveSetList().begin();
+            itr != _geometry->getPrimitiveSetList().end();
+            ++itr)
+        {
+            (*itr)->accept(pif);
+        }
+    }
+    else
+    {
+        _geometry->accept(pif);
+    }
 }

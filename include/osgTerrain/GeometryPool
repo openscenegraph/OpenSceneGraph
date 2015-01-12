@@ -27,6 +27,33 @@ namespace osgTerrain {
 
 extern OSGTERRAIN_EXPORT const osgTerrain::Locator* computeMasterLocator(const osgTerrain::TerrainTile* tile);
 
+
+class OSGTERRAIN_EXPORT SharedGeometry : public osg::Geometry
+{
+    public:
+        SharedGeometry();
+
+        SharedGeometry(const SharedGeometry&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgTerrain, SharedGeometry);
+
+        typedef std::vector<unsigned int> VertexToHeightFieldMapping;
+
+        void setVertexToHeightFieldMapping(const VertexToHeightFieldMapping& vthfm) { _vertexToHeightFieldMapping = vthfm; }
+
+        VertexToHeightFieldMapping& getVertexToHeightFieldMapping() { return _vertexToHeightFieldMapping; }
+        const VertexToHeightFieldMapping& getVertexToHeightFieldMapping() const { return _vertexToHeightFieldMapping; }
+
+        using osg::Geometry::supports;
+        using osg::Geometry::accept;
+
+protected:
+
+        virtual ~SharedGeometry();
+
+        VertexToHeightFieldMapping      _vertexToHeightFieldMapping;
+};
+
 class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 {
     public:
@@ -61,7 +88,7 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
             int ny;
         };
 
-        typedef std::map< GeometryKey, osg::ref_ptr<osg::Geometry> >  GeometryMap;
+        typedef std::map< GeometryKey, osg::ref_ptr<SharedGeometry> >  GeometryMap;
 
         bool createKeyForTile(TerrainTile* tile, GeometryKey& key);
 
@@ -77,7 +104,7 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 
         osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
 
-        osg::ref_ptr<osg::Geometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
+        osg::ref_ptr<SharedGeometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
 
         osg::ref_ptr<osg::MatrixTransform> getTileSubgraph(osgTerrain::TerrainTile* tile);
 
@@ -107,9 +134,13 @@ class OSGTERRAIN_EXPORT HeightFieldDrawable : public osg::Drawable
         osg::HeightField* getHeightField() { return _heightField.get(); }
         const osg::HeightField* getHeightField() const { return _heightField.get(); }
 
-        void setGeometry(osg::Geometry* geom) { _geometry = geom; }
-        osg::Geometry* getGeometry() { return _geometry.get(); }
-        const osg::Geometry* getGeometry() const { return _geometry.get(); }
+        void setGeometry(SharedGeometry* geom) { _geometry = geom; }
+        SharedGeometry* getGeometry() { return _geometry.get(); }
+        const SharedGeometry* getGeometry() const { return _geometry.get(); }
+
+        void setVertices(osg::Vec3Array* vertices) { _vertices = vertices; }
+        osg::Vec3Array* getVertices() { return _vertices.get(); }
+        const osg::Vec3Array* getVertices() const { return _vertices.get(); }
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
@@ -129,13 +160,13 @@ class OSGTERRAIN_EXPORT HeightFieldDrawable : public osg::Drawable
         virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return true; }
         virtual void accept(osg::PrimitiveIndexFunctor&) const;
 
-
-
 protected:
 
-        osg::ref_ptr<osg::HeightField>  _heightField;
-        osg::ref_ptr<osg::Geometry>     _geometry;
+        virtual ~HeightFieldDrawable();
 
+        osg::ref_ptr<osg::HeightField>  _heightField;
+        osg::ref_ptr<SharedGeometry>    _geometry;
+        osg::ref_ptr<osg::Vec3Array>    _vertices;
 };
 
 

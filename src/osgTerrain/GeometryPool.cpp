@@ -41,7 +41,8 @@ const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::Te
 //
 //  GeometryPool
 //
-GeometryPool::GeometryPool()
+GeometryPool::GeometryPool():
+    _useGeometryShader(false)
 {
 }
 
@@ -103,8 +104,9 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
     osg::ref_ptr<SharedGeometry> geometry = new SharedGeometry;
     _geometryMap[key] = geometry;
 
-    SharedGeometry::VertexToHeightFieldMapping& vthfm = geometry->getVertexToHeightFieldMapping();
+    geometry->setUseVertexBufferObjects(true);
 
+    SharedGeometry::VertexToHeightFieldMapping& vthfm = geometry->getVertexToHeightFieldMapping();
 
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices.get());
@@ -246,7 +248,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         }
     }
 
-#if 1
+#if 0
 
     bool smallTile = numVertices <= 16384;
     osg::ref_ptr<osg::DrawElements> elements = smallTile ?
@@ -299,9 +301,10 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
 
 #else
     bool smallTile = numVertices <= 16384;
+    GLenum primitiveTypes = _useGeometryShader ? GL_LINES_ADJACENCY : GL_QUADS;
     osg::ref_ptr<osg::DrawElements> elements = smallTile ?
-        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUADS)) :
-        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUADS));
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(primitiveTypes)) :
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(primitiveTypes));
 
     elements->reserveElements( (nx-1) * (ny-1) * 4 + (nx-1)*2*4 + (ny-1)*2*4 );
     geometry->addPrimitiveSet(elements.get());
@@ -582,19 +585,48 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
 #endif
 
+    bool useLighting = true;
+    bool useTextures = true;
+
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
+
+    // add shader that provides the lighting functions
+    program->addShader(osgDB::readShaderFile("shaders/lighting.vert"));
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
     if (num_HeightField>0)
     {
         #include "shaders/terrain_displacement_mapping_vert.cpp"
-        program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert));
+        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert);
+        if (_useGeometryShader)
+        {
+            // prepend define to enable the compute shader style
+            shader->setShaderSource(std::string("#define COMPUTE_DIAGONALS\n")+shader->getShaderSource());
+        }
+
+        if (useLighting)
+        {
+            // prepend define to enable lighting
+            shader->setShaderSource(std::string("#define GL_LIGHTING\n")+shader->getShaderSource());
+        }
+
+        program->addShader(shader.get());
     }
     else
     {
         #include "shaders/terrain_displacement_mapping_flat_vert.cpp"
         program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_flat_vert));
+    }
+
+
+    if (_useGeometryShader)
+    {
+        program->addShader(osgDB::readShaderFile("shaders/terrain_displacement_mapping.geom"));
+
+        program->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
+        program->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_LINES_ADJACENCY );
+        program->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP);
     }
 
     if (num_Contour>0)
@@ -603,25 +635,36 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     }
 
     {
+        osg::ref_ptr<osg::Shader> shader;
         if (num_Color==0)
         {
             #include "shaders/terrain_displacement_mapping_frag.cpp"
-            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag));
+            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag);
         }
         else if (num_Color==1)
         {
             #include "shaders/terrain_displacement_mapping_C_frag.cpp"
-            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_C.frag", terrain_displacement_mapping_C_frag));
+            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_C.frag", terrain_displacement_mapping_C_frag);
         }
         else if (num_Color==2)
         {
             #include "shaders/terrain_displacement_mapping_CC_frag.cpp"
-            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_CC.frag", terrain_displacement_mapping_CC_frag));
+            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_CC.frag", terrain_displacement_mapping_CC_frag);
         }
         else if (num_Color==3)
         {
             #include "shaders/terrain_displacement_mapping_CCC_frag.cpp"
-            program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping_CCC.frag", terrain_displacement_mapping_CCC_frag));
+            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_CCC.frag", terrain_displacement_mapping_CCC_frag);
+        }
+
+        if (shader.valid())
+        {
+            if (useTextures)
+            {
+                // prepend define to enable lighting
+                shader->setShaderSource(std::string("#define GL_TEXTURE_2D\n")+shader->getShaderSource());
+            }
+            program->addShader(shader.get());
         }
 
     }
@@ -860,11 +903,24 @@ void HeightFieldDrawable::accept(osg::PrimitiveFunctor& pf) const
     if (_vertices.valid())
     {
         pf.setVertexArray(_vertices->size(), &((*_vertices)[0]));
+
         for(osg::Geometry::PrimitiveSetList::const_iterator itr = _geometry->getPrimitiveSetList().begin();
             itr != _geometry->getPrimitiveSetList().end();
             ++itr)
         {
-            (*itr)->accept(pf);
+            const osg::DrawElementsUShort* deus = dynamic_cast<const osg::DrawElementsUShort*>(itr->get());
+            if (deus)
+            {
+                pf.drawElements(GL_QUADS, deus->size(), &((*deus)[0]));
+            }
+            else
+            {
+                const osg::DrawElementsUInt* deui = dynamic_cast<const osg::DrawElementsUInt*>(itr->get());
+                if (deui)
+                {
+                    pf.drawElements(GL_QUADS, deui->size(), &((*deui)[0]));
+                }
+            }
         }
     }
     else

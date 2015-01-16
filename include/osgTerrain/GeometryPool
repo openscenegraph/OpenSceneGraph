@@ -113,6 +113,8 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
     protected:
         virtual ~GeometryPool();
 
+        bool                    _useGeometryShader;
+
         OpenThreads::Mutex      _geometryMapMutex;
         GeometryMap             _geometryMap;
 

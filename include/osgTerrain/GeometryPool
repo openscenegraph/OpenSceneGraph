@@ -110,6 +110,9 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 
         void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
 
+        void setUseGeometryShader(bool flag) { _useGeometryShader = flag; }
+        bool getUseGeometryShader() const { return _useGeometryShader; }
+
     protected:
         virtual ~GeometryPool();
 

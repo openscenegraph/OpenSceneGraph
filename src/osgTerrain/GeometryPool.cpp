@@ -44,6 +44,19 @@ const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::Te
 GeometryPool::GeometryPool():
     _useGeometryShader(false)
 {
+    const char* ptr = 0;
+    if ((ptr = getenv("OSG_TERRAIN_USE_GEOMETRY_SHADER")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"Off")==0 || strcmp(ptr,"off")==0 ||
+            strcmp(ptr,"FALSE")==0 || strcmp(ptr,"False")==0 || strcmp(ptr,"false")==0)
+        {
+            _useGeometryShader = false;
+        }
+        else
+        {
+            _useGeometryShader = true;
+        }
+    }
 }
 
 GeometryPool::~GeometryPool()

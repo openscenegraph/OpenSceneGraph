@@ -599,7 +599,7 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 #endif
 
     bool useLighting = true;
-    bool useTextures = false;
+    bool useTextures = true;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
@@ -636,7 +636,7 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     if (_useGeometryShader)
     {
         #include "shaders/terrain_displacement_mapping_geom.cpp"
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom);
+        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::GEOMETRY, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom);
         program->addShader(shader.get());
 
         program->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );

@@ -132,8 +132,11 @@ State::State():
 State::~State()
 {
     // delete the GLExtensions object associated with this osg::State.
-    GLExtensions::Set(_contextID, 0);
-    _glExtensions = 0;
+    if (_glExtensions)
+    {
+        GLExtensions::Set(_contextID, 0);
+        _glExtensions = 0;
+    }
 
     //_texCoordArrayList.clear();
 

@@ -599,7 +599,7 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 #endif
 
     bool useLighting = true;
-    bool useTextures = true;
+    bool useTextures = false;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
@@ -635,7 +635,9 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
     if (_useGeometryShader)
     {
-        program->addShader(osgDB::readShaderFile("shaders/terrain_displacement_mapping.geom"));
+        #include "shaders/terrain_displacement_mapping_geom.cpp"
+        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom);
+        program->addShader(shader.get());
 
         program->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
         program->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_LINES_ADJACENCY );
@@ -715,8 +717,8 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
             texture2D->setImage(image.get());
             texture2D->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
             texture2D->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
-            texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-            texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+            texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+            texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
             texture2D->setBorderColor(osg::Vec4d(0.0,0.0,0.0,0.0));
             texture2D->setResizeNonPowerOfTwoHint(false);
 

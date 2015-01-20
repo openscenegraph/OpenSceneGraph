@@ -90,7 +90,7 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 
         typedef std::map< GeometryKey, osg::ref_ptr<SharedGeometry> >  GeometryMap;
 
-        bool createKeyForTile(TerrainTile* tile, GeometryKey& key);
+        virtual bool createKeyForTile(TerrainTile* tile, GeometryKey& key);
 
         enum LayerType
         {
@@ -102,13 +102,13 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
         typedef std::vector<LayerType> LayerTypes;
         typedef std::map<LayerTypes, osg::ref_ptr<osg::Program> > ProgramMap;
 
-        osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
+        virtual osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
 
-        osg::ref_ptr<SharedGeometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
+        virtual osg::ref_ptr<SharedGeometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
 
-        osg::ref_ptr<osg::MatrixTransform> getTileSubgraph(osgTerrain::TerrainTile* tile);
+        virtual osg::ref_ptr<osg::MatrixTransform> getTileSubgraph(osgTerrain::TerrainTile* tile);
 
-        void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
+        virtual void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
 
         void setUseGeometryShader(bool flag) { _useGeometryShader = flag; }
         bool getUseGeometryShader() const { return _useGeometryShader; }

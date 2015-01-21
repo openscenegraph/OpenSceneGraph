@@ -22,7 +22,6 @@
 #include <osg/io_utils>
 #include <osg/Texture2D>
 #include <osg/Texture1D>
-#include <osg/TexEnvCombine>
 #include <osg/Program>
 #include <osg/Math>
 #include <osg/Timer>

@@ -32,11 +32,21 @@ namespace osgFX
 
         META_Node(osgFX, MultiTextureControl);
 
+        typedef std::vector<float> TextureWeightList;
+
+        void setTextureWeights(const TextureWeightList& twl) { _textureWeightList = twl; }
+        TextureWeightList& getTextureWeights() { return _textureWeightList; }
+        const TextureWeightList& getTextureWeights() const { return _textureWeightList; }
+
         void setTextureWeight(unsigned int unit, float weight);
-
         float getTextureWeight(unsigned int unit) const { return (unit<_textureWeightList.size()) ?  _textureWeightList[unit] : 0.0f; }
-
         unsigned int getNumTextureWeights() const { return _textureWeightList.size(); }
+
+        void setUseTexEnvCombine(bool flag) { _useTexEnvCombine = flag; }
+        bool getUseTexEnvCombine() const { return _useTexEnvCombine; }
+
+        void setUseTextureWeightsUniform(bool flag) { _useTextureWeightsUniform = flag; }
+        bool getUseTextureWeightsUniform() const { return _useTextureWeightsUniform; }
 
     protected:
         virtual ~MultiTextureControl() {}
@@ -44,8 +54,11 @@ namespace osgFX
 
         void updateStateSet();
 
-        typedef std::vector<float> TextureWeightList;
         TextureWeightList _textureWeightList;
+
+        bool _useTexEnvCombine;
+        bool _useTextureWeightsUniform;
+
     };
 
 }

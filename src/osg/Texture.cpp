@@ -1909,7 +1909,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             wr = CLAMP;
     }
 
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
         if (ws == CLAMP) ws = CLAMP_TO_EDGE;
         if (wt == CLAMP) wt = CLAMP_TO_EDGE;
         if (wr == CLAMP) wr = CLAMP_TO_EDGE;
@@ -1982,7 +1982,9 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         {
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
             glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC_ARB, _shadow_compare_func);
-            glTexParameteri(target, GL_DEPTH_TEXTURE_MODE_ARB, _shadow_texture_mode);
+            #if defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE)
+                glTexParameteri(target, GL_DEPTH_TEXTURE_MODE_ARB, _shadow_texture_mode);
+            #endif
 
             // if ambient value is 0 - it is default behaviour of GL_ARB_shadow
             // no need for GL_ARB_shadow_ambient in this case

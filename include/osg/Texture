@@ -441,7 +441,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
-            usage.usesTextureMode(getTextureTarget());
+            #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+                usage.usesTextureMode(getTextureTarget());
+            #endif
             return true;
         }
 

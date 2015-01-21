@@ -945,13 +945,14 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
     setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
 
-    if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") || OSG_GLES2_FEATURES)
+    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
     {
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        if(OSG_GLES2_FEATURES)
+        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+            glGetIntegerv(GL_MAX_TEXTURE_COORDS, &_glMaxTextureCoords);
+        #else
             _glMaxTextureCoords = _glMaxTextureUnits;
-        else
-            glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
+        #endif
     }
     else if ( osg::getGLVersionNumber() >= 1.3 ||
                                  osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||

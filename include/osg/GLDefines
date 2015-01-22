@@ -566,6 +566,10 @@ typedef char GLchar;
     #define GL_MAX_3D_TEXTURE_SIZE      0x8073
 #endif
 
+#ifndef GL_INTERLEAVED_ATTRIBS
+    #define GL_INTERLEAVED_ATTRIBS      0x8C8D
+#endif
+
 #ifndef GL_VERSION_3_2
 typedef struct __GLsync *GLsync;
 #endif

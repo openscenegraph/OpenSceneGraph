@@ -567,7 +567,11 @@ typedef char GLchar;
 #endif
 
 #ifndef GL_INTERLEAVED_ATTRIBS
-    #define GL_INTERLEAVED_ATTRIBS      0x8C8D
+    #define GL_INTERLEAVED_ATTRIBS      0x8C8C
+#endif
+
+#ifndef GL_SEPARATE_ATTRIBS
+    #define GL_SEPARATE_ATTRIBS         0x8C8D
 #endif
 
 #ifndef GL_VERSION_3_2

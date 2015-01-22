@@ -25,7 +25,7 @@ using namespace std;
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 #include<Windows.h>
-extern "C" { _declspec(dllexport) DWORD NvOptimusEnablement=0x00000001; }
+extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
 #else
 extern "C" { int NvOptimusEnablement=0x00000001; }
 #endif

@@ -47,7 +47,11 @@ static int decode_audio(AVCodecContext *avctx, int16_t *samples,
 
     ret = avcodec_decode_audio4(avctx, frame, &got_frame, &avpkt);
 
+#ifdef USE_AVRESAMPLE    // libav's AVFrame structure does not contain a 'channels' field
     if (ret >= 0 && got_frame) {
+#else
+    if (ret >= 0 && got_frame && av_frame_get_channels(frame)>0) {
+#endif
         int ch, plane_size;
         int planar = av_sample_fmt_is_planar(avctx->sample_fmt);
 

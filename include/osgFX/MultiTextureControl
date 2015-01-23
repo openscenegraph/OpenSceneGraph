@@ -32,15 +32,15 @@ namespace osgFX
 
         META_Node(osgFX, MultiTextureControl);
 
-        typedef std::vector<float> TextureWeightList;
+        typedef osg::FloatArray TextureWeights;
 
-        void setTextureWeights(const TextureWeightList& twl) { _textureWeightList = twl; }
-        TextureWeightList& getTextureWeights() { return _textureWeightList; }
-        const TextureWeightList& getTextureWeights() const { return _textureWeightList; }
+        void setTextureWeights(TextureWeights* twl) { _textureWeights = twl; }
+        TextureWeights* getTextureWeights() { return _textureWeights.get(); }
+        const TextureWeights* getTextureWeights() const { return _textureWeights.get(); }
 
         void setTextureWeight(unsigned int unit, float weight);
-        float getTextureWeight(unsigned int unit) const { return (unit<_textureWeightList.size()) ?  _textureWeightList[unit] : 0.0f; }
-        unsigned int getNumTextureWeights() const { return _textureWeightList.size(); }
+        float getTextureWeight(unsigned int unit) const { return (unit<_textureWeights->size()) ?  (*_textureWeights)[unit] : 0.0f; }
+        unsigned int getNumTextureWeights() const { return _textureWeights->size(); }
 
         void setUseTexEnvCombine(bool flag) { _useTexEnvCombine = flag; }
         bool getUseTexEnvCombine() const { return _useTexEnvCombine; }
@@ -49,12 +49,13 @@ namespace osgFX
         bool getUseTextureWeightsUniform() const { return _useTextureWeightsUniform; }
 
     protected:
+
         virtual ~MultiTextureControl() {}
         MultiTextureControl& operator = (const MultiTextureControl&) { return *this; }
 
         void updateStateSet();
 
-        TextureWeightList _textureWeightList;
+        osg::ref_ptr<TextureWeights> _textureWeights;
 
         bool _useTexEnvCombine;
         bool _useTextureWeightsUniform;

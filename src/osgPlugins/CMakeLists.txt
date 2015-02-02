@@ -276,13 +276,15 @@ IF ((LUA_LIBRARIES AND LUA_INCLUDE_DIR) OR (LUA_SOURCE_DIR AND LUA_INCLUDE_DIR) 
     ADD_SUBDIRECTORY(lua)
 ENDIF()
 
-IF (V8_FOUND)
-    ADD_SUBDIRECTORY(V8)
-ENDIF()
 
-IF (PYTHONLIBS_FOUND)
-    ADD_SUBDIRECTORY(python)
-ENDIF()
+# V8 and Python plugins are tests for linking against these libraries but aren't functionality beyond this.
+# IF (V8_FOUND)
+#     ADD_SUBDIRECTORY(V8)
+# ENDIF()
+#
+# IF (PYTHONLIBS_FOUND)
+#     ADD_SUBDIRECTORY(python)
+# ENDIF()
 
 ####################################################
 #

@@ -659,8 +659,9 @@ ELSE()
         ENDIF()
     ENDIF()
 
-    FIND_PACKAGE(V8)
-    FIND_PACKAGE(PythonLibs)
+    # V8 and Python plugins are tests for linking against these libraries but aren't functionality beyond this.
+    # FIND_PACKAGE(V8)
+    # FIND_PACKAGE(PythonLibs)
 ENDIF()
 
 IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 8)

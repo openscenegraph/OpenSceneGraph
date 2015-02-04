@@ -76,7 +76,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         const osg::GraphicsContext* getGraphicsContext() const { return getCurrentEventState()->getGraphicsContext(); }
 
         /** Read the window record dimensions from the graphics context. */
-        void syncWindowRectangleWithGraphcisContext();
+        void syncWindowRectangleWithGraphicsContext();
 
 
         /** Set the mouse input range.*/

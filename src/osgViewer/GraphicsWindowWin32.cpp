@@ -1186,9 +1186,9 @@ void GraphicsWindowWin32::init()
 
     _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
     _valid       = _initialized;
-    
+
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 
     // 2008/10/03
     // Few days ago NVidia released WHQL certified drivers ver 178.13.
@@ -1992,7 +1992,7 @@ bool GraphicsWindowWin32::realizeImplementation()
     _realized = true;
 
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 
     return true;
 }
@@ -2078,7 +2078,7 @@ bool GraphicsWindowWin32::checkEvents()
         _destroyWindow = false;
         destroyWindow(false);
     }
-           
+
     return !(getEventQueue()->empty());
 }
 

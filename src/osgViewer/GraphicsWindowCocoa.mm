@@ -271,7 +271,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
         NSMutableDictionary* _touchPoints;
         unsigned int _lastTouchPointId;
-        
+
 }
 - (void)setGraphicsWindowCocoa: (osgViewer::GraphicsWindowCocoa*) win;
 
@@ -440,7 +440,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     // if multitouch is enabled, disable standard event handling
     if ([self useMultiTouchOnly: theEvent])
         return;
-    
+
     NSPoint converted_point = [self getLocalPoint: theEvent];
     DEBUG_OUT("Mouse moved" << converted_point.x << "/" << converted_point.y);
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
@@ -453,7 +453,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     // if multitouch is enabled, disable standard event handling
     if ([self useMultiTouchOnly: theEvent])
         return;
-        
+
     DEBUG_OUT("Mouse down");
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
@@ -486,7 +486,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     // if multitouch is enabled, disable standard event handling
     if ([self useMultiTouchOnly: theEvent])
         return;
-    
+
     if (!_win) return;
 
     NSPoint converted_point = [self getLocalPoint: theEvent];
@@ -502,7 +502,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     // if multitouch is enabled, disable standard event handling
     if ([self useMultiTouchOnly: theEvent])
         return;
-        
+
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
     // I will use the Ctrl modifer to represent right-clicking
@@ -787,10 +787,10 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 #if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
 
-- (osgGA::GUIEventAdapter::TouchPhase) convertTouchPhase: (NSTouchPhase) phase 
+- (osgGA::GUIEventAdapter::TouchPhase) convertTouchPhase: (NSTouchPhase) phase
 {
     switch(phase) {
-    
+
         case NSTouchPhaseBegan:
             return osgGA::GUIEventAdapter::TOUCH_BEGAN;
             break;
@@ -807,7 +807,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
             return osgGA::GUIEventAdapter::TOUCH_ENDED;
             break;
     }
-    
+
     return osgGA::GUIEventAdapter::TOUCH_ENDED;
 
 }
@@ -816,24 +816,24 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (unsigned int)computeTouchId: (NSTouch*) touch mayCleanup: (BOOL) may_cleanup
 {
     unsigned int result(0);
-    
+
     if(!_touchPoints) {
         _touchPoints = [[NSMutableDictionary alloc] init];
         _lastTouchPointId = 0;
     }
-    
+
     switch([touch phase])
     {
-    
+
         case NSTouchPhaseBegan:
-            if ([_touchPoints objectForKey: [touch identity]] == nil) 
+            if ([_touchPoints objectForKey: [touch identity]] == nil)
             {
                 [_touchPoints setObject: [NSNumber numberWithInt: _lastTouchPointId] forKey: [touch identity]];
                 result = _lastTouchPointId++;
                 break;
             }
             // missing "break" by intention!
-        
+
         case NSTouchPhaseMoved:
         case NSTouchPhaseStationary:
             {
@@ -841,7 +841,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
                 result = [n intValue];
             }
             break;
-       
+
         case NSTouchPhaseEnded:
         case NSTouchPhaseCancelled:
             {
@@ -854,11 +854,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
                 }
             }
             break;
-            
+
         default:
             break;
     }
-        
+
     return result;
 }
 
@@ -867,13 +867,13 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (void)touchesBeganWithEvent:(NSEvent *)event
 {
     NSSet *allTouches = [event touchesMatchingPhase: NSTouchPhaseAny inView: self];
-    
+
     osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
     NSRect bounds = [self bounds];
 
     for(unsigned int i=0; i<[allTouches count]; i++)
     {
-        
+
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
         NSPoint pos = [touch normalizedPosition];
         pos.x *= bounds.size.width;
@@ -895,10 +895,10 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (void)touchesMovedWithEvent:(NSEvent *)event
 {
     NSSet *allTouches = [event touchesMatchingPhase: NSTouchPhaseAny inView: self];
-    
+
     osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
     NSRect bounds = [self bounds];
-    
+
     for(unsigned int i=0; i<[allTouches count]; i++)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
@@ -923,11 +923,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (void)touchesEndedWithEvent:(NSEvent *)event
 {
     NSSet *allTouches = [event touchesMatchingPhase: NSTouchPhaseAny inView: self];
-    
+
     osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
     NSRect bounds = [self bounds];
 
-    
+
     for(unsigned int i=0; i<[allTouches count]; i++)
     {
         NSTouch *touch = [[allTouches allObjects] objectAtIndex:i];
@@ -1094,9 +1094,9 @@ void GraphicsWindowCocoa::init()
 
     _updateContext = false;
     _valid = _initialized = true;
-    
+
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 }
 
 
@@ -1226,25 +1226,25 @@ bool GraphicsWindowCocoa::realizeImplementation()
     // set graphics handle for shared usage
     setNSOpenGLContext(_context);
 
-    
+
     _view = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
     [_view setAutoresizingMask:  (NSViewWidthSizable | NSViewHeightSizable) ];
     [_view setGraphicsWindowCocoa: this];
     [_view setOpenGLContext:_context];
-    
+
     // enable multitouch
     if (_multiTouchEnabled || (windowData && windowData->isMultiTouchEnabled()))
     {
         setMultiTouchEnabled(true);
     }
-    
+
     OSG_DEBUG << "GraphicsWindowCocoa::realizeImplementation / view: " << _view << std::endl;
 
     if (_ownsWindow) {
         [_window setContentView: _view];
         setupNSWindow(_window);
         [_view release];
-        
+
         MenubarController::instance()->attachWindow( new CocoaWindowAdapter(this) );
     }
     else
@@ -1265,7 +1265,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
     getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 
     _valid = _initialized = _realized = true;
     return _valid;
@@ -1382,7 +1382,7 @@ bool GraphicsWindowCocoa::checkEvents()
     }
 
     [pool release];
-    
+
     return !(getEventQueue()->empty());
 }
 
@@ -1546,29 +1546,29 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
 // requestWarpPointer
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::requestWarpPointer(float x,float y)
-{    
+{
     CGPoint point;
     point.x = x + _traits->x;
     point.y = y + _traits->y;
-    
+
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
     CGEventRef warpEvent = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, point, kCGMouseButtonLeft);
     CGEventPost(kCGHIDEventTap, warpEvent);
     CFRelease(warpEvent);
-    
+
 #else
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
-    
+
     if (wsi == NULL) {
         osg::notify(osg::WARN) << "GraphicsWindowCocoa::useCursor :: could not get OSXCocoaWindowingSystemInterface" << std::endl;
         return;
     }
-    
+
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
     CGSetLocalEventsSuppressionInterval(0);
     CGDisplayMoveCursorToPoint(displayId, point);
 #endif
-    
+
     getEventQueue()->mouseWarped(x,y);
 }
 
@@ -1666,7 +1666,7 @@ bool GraphicsWindowCocoa::isMultiTouchEnabled()
 void GraphicsWindowCocoa::setMultiTouchEnabled(bool b)
 {
     _multiTouchEnabled = b;
-    
+
 #if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
     if (_view) [_view setAcceptsTouchEvents: b];
 #else
@@ -1748,7 +1748,7 @@ struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface
 
         return createGraphicsContextImplementation<PixelBufferCocoa, GraphicsWindowCocoa>(traits);
     }
-    
+
 
     virtual ~CocoaWindowingSystemInterface()
     {

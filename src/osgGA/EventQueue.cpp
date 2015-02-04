@@ -132,7 +132,7 @@ bool EventQueue::copyEvents(Events& events) const
     }
 }
 
-void EventQueue::syncWindowRectangleWithGraphcisContext()
+void EventQueue::syncWindowRectangleWithGraphicsContext()
 {
     const osg::GraphicsContext::Traits* traits = (getGraphicsContext()!=0) ? getGraphicsContext()->getTraits() : 0;
     if (traits) _accumulateEventState->setWindowRectangle(traits->x, traits->y, traits->width, traits->height, !_useFixedMouseInputRange);

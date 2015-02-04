@@ -565,7 +565,7 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
     }
 
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 
     return true;
 }
@@ -783,7 +783,7 @@ bool GraphicsWindowQt::realizeImplementation()
     _realized = true;
 
     // make sure the event queue has the correct window rectangle size and input range
-    getEventQueue()->syncWindowRectangleWithGraphcisContext();
+    getEventQueue()->syncWindowRectangleWithGraphicsContext();
 
     // make this window's context not current
     // note: this must be done as we will probably make the context current from another thread

@@ -138,7 +138,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
 
         if (_lastCompiledProgram.valid() && !stateset.getUniformList().empty())
         {
-            osg::Program::PerContextProgram* pcp = _lastCompiledProgram->getPCP(_renderInfo.getState()->getContextID());
+            osg::Program::PerContextProgram* pcp = _lastCompiledProgram->getPCP(*_renderInfo.getState());
             if (pcp)
             {
                 pcp->useProgram();

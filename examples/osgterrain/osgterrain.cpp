@@ -135,11 +135,42 @@ public:
                     assignedToAll();
                     return true;
                 }
+                else if (ea.getKey()=='l')
+                {
+                    toggleDefine("GL_LIGHTING");
+                    return true;
+                }
+                else if (ea.getKey()=='t')
+                {
+                    toggleDefine("GL_TEXTURE_2D");
+                    return true;
+                }
+                else if (ea.getKey()=='d')
+                {
+                    toggleDefine("COMPUTE_DIAGONALS");
+                    return true;
+                }
 
                 return false;
             }
             default:
                 return false;
+        }
+    }
+
+    void toggleDefine(const std::string& defineName)
+    {
+        osg::StateSet::DefineList& defineList = _terrain->getOrCreateStateSet()->getDefineList();
+        osg::StateSet::DefineList::iterator itr = defineList.find(defineName);
+        if (itr==defineList.end())
+        {
+            defineList[defineName].second = (osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        }
+        else
+        {
+            osg::StateSet::DefinePair& dp = itr->second;
+            if ( (dp.second & osg::StateAttribute::ON)==0) dp.second = (osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            else dp.second = (osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
         }
     }
 
@@ -350,6 +381,10 @@ int main(int argc, char** argv)
             OSG_NOTICE<<"Settings affinity of DatabaseThread="<<thread<<" isRunning()="<<thread->isRunning()<<" cpuNum="<<cpuNum<<std::endl;
         }
     }
+
+    //terrain->getOrCreateStateSet()->setDefine("NUM_LIGHTS", "20.0");
+    //terrain->getOrCreateStateSet()->setDefine("GL_LIGHTING"); // , osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
+    //terrain->getOrCreateStateSet()->setDefine("COMPUTE_DIAGONALS"); // , osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
 
     // run the viewers main loop
     return viewer.run();

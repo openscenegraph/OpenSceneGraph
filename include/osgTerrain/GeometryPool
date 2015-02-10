@@ -28,7 +28,7 @@ namespace osgTerrain {
 extern OSGTERRAIN_EXPORT const osgTerrain::Locator* computeMasterLocator(const osgTerrain::TerrainTile* tile);
 
 
-class OSGTERRAIN_EXPORT SharedGeometry : public osg::Geometry
+class OSGTERRAIN_EXPORT SharedGeometry : public osg::Drawable
 {
     public:
         SharedGeometry();
@@ -37,6 +37,27 @@ class OSGTERRAIN_EXPORT SharedGeometry : public osg::Geometry
 
         META_Node(osgTerrain, SharedGeometry);
 
+        void setVertexArray(osg::Array* array) { _vertexArray = array; }
+        osg::Array* getVertexArray() { return _vertexArray.get(); }
+        const osg::Array* getVertexArray() const  { return _vertexArray.get(); }
+
+        void setNormalArray(osg::Array* array) { _normalArray = array; }
+        osg::Array* getNormalArray() { return _normalArray.get(); }
+        const osg::Array* getNormalArray() const { return _normalArray.get(); }
+
+        void setColorArray(osg::Array* array) { _colorArray = array; }
+        osg::Array* getColorArray() { return _colorArray.get(); }
+        const osg::Array* getColorArray() const { return _colorArray.get(); }
+
+        void setTexCoordArray(osg::Array* array) { _texcoordArray = array; }
+        osg::Array* getTexCoordArray() { return _texcoordArray.get(); }
+        const osg::Array* getTexCoordArray() const { return _texcoordArray.get(); }
+
+        void setDrawElements(osg::DrawElements* array) { _drawElements = array; }
+        osg::DrawElements* getDrawElements() { return _drawElements.get(); }
+        const osg::DrawElements* getDrawElements() const { return _drawElements.get(); }
+
+
         typedef std::vector<unsigned int> VertexToHeightFieldMapping;
 
         void setVertexToHeightFieldMapping(const VertexToHeightFieldMapping& vthfm) { _vertexToHeightFieldMapping = vthfm; }
@@ -44,12 +65,34 @@ class OSGTERRAIN_EXPORT SharedGeometry : public osg::Geometry
         VertexToHeightFieldMapping& getVertexToHeightFieldMapping() { return _vertexToHeightFieldMapping; }
         const VertexToHeightFieldMapping& getVertexToHeightFieldMapping() const { return _vertexToHeightFieldMapping; }
 
-        using osg::Geometry::supports;
-        using osg::Geometry::accept;
+        void compileGLObjects(osg::RenderInfo& renderInfo) const;
+
+        void drawImplementation(osg::RenderInfo& renderInfo) const;
+
+        void resizeGLObjectBuffers(unsigned int maxSize);
+        void releaseGLObjects(osg::State* state) const;
+
+        virtual bool supports(const osg::Drawable::AttributeFunctor&) const { return true; }
+        virtual void accept(osg::Drawable::AttributeFunctor&);
+
+        virtual bool supports(const osg::Drawable::ConstAttributeFunctor&) const { return true; }
+        virtual void accept(osg::Drawable::ConstAttributeFunctor&) const;
+
+        virtual bool supports(const osg::PrimitiveFunctor&) const { return true; }
+        virtual void accept(osg::PrimitiveFunctor&) const;
+
+        virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return true; }
+        virtual void accept(osg::PrimitiveIndexFunctor&) const;
 
 protected:
 
         virtual ~SharedGeometry();
+
+        osg::ref_ptr<osg::Array>        _vertexArray;
+        osg::ref_ptr<osg::Array>        _normalArray;
+        osg::ref_ptr<osg::Array>        _colorArray;
+        osg::ref_ptr<osg::Array>        _texcoordArray;
+        osg::ref_ptr<osg::DrawElements> _drawElements;
 
         VertexToHeightFieldMapping      _vertexToHeightFieldMapping;
 };

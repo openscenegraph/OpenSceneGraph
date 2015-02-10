@@ -177,12 +177,19 @@ typedef char GLchar;
 #define GL_FRAMEBUFFER_SRGB               0x8DB9
 #endif
 
-// EXT_geometry_shader4
+#ifndef EXT_geometry_shader4
+#define GL_GEOMETRY_VERTICES_OUT_EXT            0x8DDA
+#define GL_GEOMETRY_INPUT_TYPE_EXT              0x8DDB
+#define GL_GEOMETRY_OUTPUT_TYPE_EXT             0x8DDC
+#define GL_MAX_GEOMETRY_VARYING_COMPONENTS_EXT  0x8DDD
+#define GL_MAX_VERTEX_VARYING_COMPONENTS_EXT    0x8DDE
+#endif
+
 #ifndef GL_VERSION_3_2
 #define GL_GEOMETRY_SHADER                       0x8DD9
-#define GL_GEOMETRY_VERTICES_OUT                 0x8DDA
-#define GL_GEOMETRY_INPUT_TYPE                   0x8DDB
-#define GL_GEOMETRY_OUTPUT_TYPE                  0x8DDC
+#define GL_GEOMETRY_VERTICES_OUT                 0x8916
+#define GL_GEOMETRY_INPUT_TYPE                   0x8917
+#define GL_GEOMETRY_OUTPUT_TYPE                  0x8918
 #define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS      0x8C29
 #define GL_MAX_GEOMETRY_VARYING_COMPONENTS       0x8DDD
 #define GL_MAX_VERTEX_VARYING_COMPONENTS         0x8DDE
@@ -493,7 +500,7 @@ typedef char GLchar;
 #endif
 
 #ifndef GL_VERSION_4_3
-#define GL_SHADER_STORAGE_BARRIER_BIT 0x2000
+#define GL_SHADER_STORAGE_BARRIER_BIT 0x00002000
 #define GL_MAX_COMBINED_SHADER_OUTPUT_RESOURCES 0x8F39
 #define GL_SHADER_STORAGE_BUFFER 0x90D2
 #define GL_SHADER_STORAGE_BUFFER_BINDING 0x90D3

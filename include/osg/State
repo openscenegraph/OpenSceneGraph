@@ -1588,21 +1588,54 @@ class OSG_EXPORT State : public Referenced
             UniformVec              uniformVec;
         };
 
+        struct DefineStack
+        {
+            typedef std::vector<StateSet::DefinePair> DefineVec;
+
+            DefineStack() {}
+
+            void print(std::ostream& fout) const;
+
+            bool                   changed;
+            DefineVec              defineVec;
+        };
+
+        struct DefineMap
+        {
+            DefineMap():
+                changed(false) {}
+
+            typedef std::map<std::string, DefineStack> DefineStackMap;
+            DefineStackMap map;
+            bool changed;
+            StateSet::DefineList currentDefines;
+
+            bool updateCurrentDefines();
+
+        };
+
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
 
         typedef std::map<StateAttribute::TypeMemberPair,AttributeStack> AttributeMap;
         typedef std::vector<AttributeMap>                               TextureAttributeMapList;
 
-        typedef std::map<std::string,UniformStack>                      UniformMap;
+        typedef std::map<std::string, UniformStack>                     UniformMap;
 
-        typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
 
-        inline const ModeMap&                                            getModeMap() const {return _modeMap;};
-        inline const AttributeMap&                                       getAttributeMap() const {return _attributeMap;};
-        inline const UniformMap&                                         getUniformMap() const {return _uniformMap;};
-        inline const TextureModeMapList&                                 getTextureModeMapList() const {return _textureModeMapList;};
-        inline const TextureAttributeMapList&                            getTextureAttributeMapList() const {return _textureAttributeMapList;};
+        typedef std::vector< ref_ptr<const Matrix> >                     MatrixStack;
+
+        inline const ModeMap&                                           getModeMap() const {return _modeMap;}
+        inline const AttributeMap&                                      getAttributeMap() const {return _attributeMap;}
+        inline const UniformMap&                                        getUniformMap() const {return _uniformMap;}
+        inline DefineMap&                                               getDefineMap() {return _defineMap;}
+        inline const DefineMap&                                         getDefineMap() const {return _defineMap;}
+        inline const TextureModeMapList&                                getTextureModeMapList() const {return _textureModeMapList;}
+        inline const TextureAttributeMapList&                           getTextureAttributeMapList() const {return _textureAttributeMapList;}
+
+        std::string getDefineString(const osg::ShaderDefines& shaderDefines);
+        bool supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements);
+        bool supportsShaderRequirement(const std::string& shaderRequirement);
 
     protected:
 
@@ -1806,6 +1839,7 @@ class OSG_EXPORT State : public Referenced
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
         UniformMap                                                      _uniformMap;
+        DefineMap                                                       _defineMap;
 
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
@@ -1865,18 +1899,22 @@ class OSG_EXPORT State : public Referenced
         inline void pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void pushAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
         inline void pushUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
+        inline void pushDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList);
 
         inline void popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
         inline void popUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
+        inline void popDefineList(DefineMap& uniformMap,const StateSet::DefineList& defineList);
 
         inline void applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
         inline void applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
+        inline void applyDefineList(DefineMap& uniformMap,const StateSet::DefineList& defineList);
 
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
         inline void applyUniformMap(UniformMap& uniformMap);
+        inline void applyUniformMap(DefineMap& defineMap);
 
         inline void applyModeListOnTexUnit(unsigned int unit,ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeListOnTexUnit(unsigned int unit,AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
@@ -2042,6 +2080,44 @@ inline void State::pushUniformList(UniformMap& uniformMap,const StateSet::Unifor
     }
 }
 
+inline void State::pushDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList)
+{
+    for(StateSet::DefineList::const_iterator aitr=defineList.begin();
+        aitr!=defineList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incoming type {aitr->first}.
+        DefineStack& ds = defineMap.map[aitr->first];
+        DefineStack::DefineVec& dv = ds.defineVec;
+        if (dv.empty())
+        {
+            // first pair so simply push incoming pair to back.
+            dv.push_back(StateSet::DefinePair(aitr->second.first,aitr->second.second));
+
+            ds.changed = true;
+            defineMap.changed = true;
+        }
+        else if ((ds.defineVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag
+        {
+            // push existing back since override keeps the previous value.
+            ds.defineVec.push_back(ds.defineVec.back());
+        }
+        else
+        {
+            // no override on so simply push incoming pair to back.
+            dv.push_back(StateSet::DefinePair(aitr->second.first,aitr->second.second));
+
+            // if the back of the stack has changed since the last then mark it as changed.
+            bool changed = (dv[dv.size()-2].first==dv[dv.size()-1].first);
+            if (changed)
+            {
+                ds.changed = true;
+                defineMap.changed = true;
+            }
+        }
+    }
+}
+
 inline void State::popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)
 {
     for(StateSet::ModeList::const_iterator mitr=modeList.begin();
@@ -2085,6 +2161,28 @@ inline void State::popUniformList(UniformMap& uniformMap,const StateSet::Uniform
         if (!us.uniformVec.empty())
         {
             us.uniformVec.pop_back();
+        }
+    }
+}
+
+inline void State::popDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList)
+{
+    for(StateSet::DefineList::const_iterator aitr=defineList.begin();
+        aitr!=defineList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incoming type {aitr->first}.
+        DefineStack& ds = defineMap.map[aitr->first];
+        DefineStack::DefineVec& dv = ds.defineVec;
+        if (!dv.empty())
+        {
+            // if the stack has less than 2 entries or new back vs old back are different then mark the DefineStack as changed
+            if ((dv.size()<2) || (dv[dv.size()-2].first!=dv.back().first))
+            {
+                ds.changed = true;
+                defineMap.changed = true;
+            }
+            dv.pop_back();
         }
     }
 }
@@ -2641,6 +2739,74 @@ inline void State::applyUniformList(UniformMap& uniformMap,const StateSet::Unifo
         _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
     }
 
+}
+
+inline void State::applyDefineList(DefineMap& defineMap, const StateSet::DefineList& defineList)
+{
+    StateSet::DefineList::const_iterator dl_itr = defineList.begin();
+    DefineMap::DefineStackMap::iterator dm_itr = defineMap.map.begin();
+
+    defineMap.changed = false;
+    defineMap.currentDefines.clear();
+
+    while (dm_itr!=defineMap.map.end() && dl_itr!=defineList.end())
+    {
+        if (dm_itr->first<dl_itr->first)
+        {
+            DefineStack& ds = dm_itr->second;
+            DefineStack::DefineVec& dv = ds.defineVec;
+            if (!dv.empty() && (dv.back().second & StateAttribute::ON)!=0) defineMap.currentDefines[dm_itr->first] = dv.back();
+
+            ++dm_itr;
+        }
+        else if (dl_itr->first<dm_itr->first)
+        {
+            if ((dl_itr->second.second & StateAttribute::ON)!=0) defineMap.currentDefines[dl_itr->first] = dl_itr->second;
+
+            ++dl_itr;
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same mode, check the override
+            // if any otherwise just apply the incoming mode.
+
+            DefineStack& ds = dm_itr->second;
+            DefineStack::DefineVec& dv = ds.defineVec;
+
+            if (!dv.empty() && (dv.back().second & StateAttribute::OVERRIDE)!=0 && !(dl_itr->second.second & StateAttribute::PROTECTED))
+            {
+                // override is on, just treat as a normal apply on modes.
+                if ((dv.back().second & StateAttribute::ON)!=0) defineMap.currentDefines[dm_itr->first] = dv.back();
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incoming mode.
+                if ((dl_itr->second.second & StateAttribute::ON)!=0) defineMap.currentDefines[dl_itr->first] = dl_itr->second;
+            }
+
+            ++dm_itr;
+            ++dl_itr;
+        }
+    }
+
+    // iterator over the remaining state modes to apply any previous changes.
+    for(;
+        dm_itr!=defineMap.map.end();
+        ++dm_itr)
+    {
+        // note GLMode = this_mitr->first
+        DefineStack& ds = dm_itr->second;
+        DefineStack::DefineVec& dv = ds.defineVec;
+        if (!dv.empty() && (dv.back().second & StateAttribute::ON)!=0) defineMap.currentDefines[dm_itr->first] = dv.back();
+    }
+
+    // iterator over the remaining incoming modes to apply any new mode.
+    for(;
+        dl_itr!=defineList.end();
+        ++dl_itr)
+    {
+        if ((dl_itr->second.second & StateAttribute::ON)!=0) defineMap.currentDefines[dl_itr->first] = dl_itr->second;
+    }
 }
 
 inline void State::applyModeMap(ModeMap& modeMap)

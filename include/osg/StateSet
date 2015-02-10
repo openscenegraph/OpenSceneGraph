@@ -308,6 +308,35 @@ class OSG_EXPORT StateSet : public Object
         /** return the const list of all Uniforms contained in this const StateSet.*/
         inline const UniformList& getUniformList() const { return _uniformList; }
 
+
+        typedef std::pair<std::string, StateAttribute::OverrideValue> DefinePair;
+        typedef std::map<std::string, DefinePair> DefineList;
+
+        /** Added define pass on to shaders that use utilize that define, as secified by the GLSL #pragma import_defines(..) and #pragam requires(..). */
+        void setDefine(const std::string& defineName, StateAttribute::OverrideValue value=StateAttribute::ON);
+
+        /** Added define with value to pass on to shaders that use utilize that define, as secified by the GLSL #pragma import_defines(..) and #pragam requires(..). */
+        void setDefine(const std::string& defineName, const std::string& defineValue, StateAttribute::OverrideValue value=StateAttribute::ON);
+
+        DefinePair* getDefinePair(const std::string& defineName) { DefineList::iterator itr = _defineList.find(defineName); return (itr!=_defineList.end()) ? &(itr->second) : 0; }
+        const DefinePair* getDefinePair(const std::string& defineName) const { DefineList::const_iterator itr = _defineList.find(defineName); return (itr!=_defineList.end()) ? &(itr->second) : 0; }
+
+
+        /** Remove define*/
+        void removeDefine(const std::string& defineName);
+
+
+        /** Set the list of defines to pass on to shaders.*/
+        void setDefineList(DefineList& dl) { _defineList = dl; }
+
+        /** Get the list of defines to pass on to shaders.*/
+        DefineList& getDefineList() { return _defineList; }
+
+        /** Get the const list of defines to pass on to shaders.*/
+        const DefineList& getDefineList() const { return _defineList; }
+
+
+
         enum RenderingHint
         {
             DEFAULT_BIN = 0,
@@ -474,6 +503,7 @@ class OSG_EXPORT StateSet : public Object
         TextureAttributeList                _textureAttributeList;
 
         UniformList                         _uniformList;
+        DefineList                          _defineList;
 
         inline ModeList& getOrCreateTextureModeList(unsigned int unit)
         {

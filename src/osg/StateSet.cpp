@@ -178,6 +178,8 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop),
         }
     }
 
+    _defineList = rhs._defineList;
+
     _renderingHint = rhs._renderingHint;
 
     _binMode = rhs._binMode;
@@ -1128,6 +1130,27 @@ const StateSet::RefUniformPair* StateSet::getUniformPair(const std::string& name
     if (itr!=_uniformList.end()) return &(itr->second);
     else return 0;
 }
+
+void StateSet::setDefine(const std::string& defineName, StateAttribute::OverrideValue value)
+{
+    DefinePair& dp = _defineList[defineName];
+    dp.first = "";
+    dp.second = value;
+}
+
+void StateSet::setDefine(const std::string& defineName, const std::string& defineValue, StateAttribute::OverrideValue value)
+{
+    DefinePair& dp = _defineList[defineName];
+    dp.first = defineValue;
+    dp.second = value;
+}
+
+void StateSet::removeDefine(const std::string& defineName)
+{
+    DefineList::iterator itr = _defineList.find(defineName);
+    if (itr != _defineList.end()) _defineList.erase(itr);
+}
+
 
 void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {

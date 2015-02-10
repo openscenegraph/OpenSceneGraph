@@ -389,6 +389,7 @@ class DrawElements : public PrimitiveSet
         /** Get the const ElementBufferObject. If no EBO is assigned returns NULL*/
         inline const osg::ElementBufferObject* getElementBufferObject() const { return dynamic_cast<const osg::ElementBufferObject*>(_bufferObject.get()); }
 
+        virtual GLenum getDataType() = 0;
         virtual void resizeElements(unsigned int numIndices) = 0;
         virtual void reserveElements(unsigned int numIndices) = 0;
         virtual void setElement(unsigned int, unsigned int) = 0;
@@ -446,6 +447,7 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual GLenum getDataType() { return GL_UNSIGNED_BYTE; }
         virtual void resizeElements(unsigned int numIndices) { resize(numIndices); }
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v)  { (*this)[i] = v; }
@@ -509,6 +511,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual GLenum getDataType() { return GL_UNSIGNED_SHORT; }
         virtual void resizeElements(unsigned int numIndices) { resize(numIndices); }
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }
@@ -572,6 +575,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual GLenum getDataType() { return GL_UNSIGNED_INT; }
         virtual void resizeElements(unsigned int numIndices) { resize(numIndices); }
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }

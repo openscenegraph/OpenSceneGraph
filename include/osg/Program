@@ -151,6 +151,13 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Get TransformFeedBack Mode. */
         GLenum getTransformFeedBackMode() const {return _feedbackmode;}
 
+        /** Experimental. */
+        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
+        ShaderDefines& getShaderDefines() { return _shaderDefines; }
+        const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
+
+
+
         /** Simple class for wrapping up the data used in glProgramBinary and glGetProgramBinary.
           * On the first run of your application Programs should be assigned an empty ProgramBinary.
           * Before your application exits it should retrieve the program binary via
@@ -245,8 +252,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
         };
         typedef std::map< unsigned int, ActiveVarInfo > ActiveUniformMap;
         typedef std::map< std::string, ActiveVarInfo > ActiveVarInfoMap;
-        const ActiveUniformMap& getActiveUniforms(unsigned int contextID) const;
-        const ActiveVarInfoMap& getActiveAttribs(unsigned int contextID) const;
+        //const ActiveUniformMap& getActiveUniforms(unsigned int contextID) const;
+        //const ActiveVarInfoMap& getActiveAttribs(unsigned int contextID) const;
         struct UniformBlockInfo
         {
             UniformBlockInfo() : _index(GL_INVALID_INDEX), _size(0) {}
@@ -258,7 +265,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
             GLsizei _size;
         };
         typedef std::map<std::string, UniformBlockInfo> UniformBlockMap;
-        const UniformBlockMap& getUniformBlocks(unsigned contextID) const;
+
+        //const UniformBlockMap& getUniformBlocks(unsigned contextID) const;
     public:
 
         // make PerContextProgram a friend to allow it access Program's protected
@@ -274,6 +282,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 PerContextProgram(const Program* program, unsigned int contextID, GLuint programHandle=0);
 
                 GLuint getHandle() const {return _glProgramHandle;}
+
+                void setDefineString(const std::string& defStr) { _defineStr = defStr; }
+                const std::string& getDefineString() const { return _defineStr; }
 
                 void requestLink();
                 virtual void linkProgram(osg::State& state);
@@ -359,8 +370,13 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 const Program* _program;
                 /** Pointer to this context's extension functions */
                 osg::ref_ptr<GLExtensions> _extensions;
+
                 /** Handle to the actual OpenGL glProgram */
                 GLuint _glProgramHandle;
+
+                /** Define string passed on to Shaders to help configure them.*/
+                std::string _defineStr;
+
                 /** Does our glProgram need to be linked? */
                 bool _needsLink;
                 /** Is our glProgram successfully linked? */
@@ -391,15 +407,33 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 PerContextProgram& operator=(const PerContextProgram&);        // disallowed
         };
 
+        struct OSG_EXPORT ProgramObjects : public osg::Referenced
+        {
+            typedef std::vector< osg::ref_ptr<PerContextProgram> > PerContextPrograms;
+
+            ProgramObjects(const Program* program, unsigned int contextID);
+
+            unsigned int        _contextID;
+            const Program*      _program;
+            mutable PerContextPrograms  _perContextPrograms;
+
+            PerContextProgram* getPCP(const std::string& defineStr) const;
+            PerContextProgram* createPerContextProgram(const std::string& defineStr);
+            void requestLink();
+            void addShaderToAttach(Shader* shader);
+            void addShaderToDetach(Shader* shader);
+            bool getGlProgramInfoLog(std::string& log) const;
+        };
+
         /** Get the PCP for a particular GL context */
-        PerContextProgram* getPCP(unsigned int contextID) const;
+        PerContextProgram* getPCP(State& state) const;
 
     protected:        /*methods*/
         virtual ~Program();
 
     protected:        /*data*/
 
-        mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
+        mutable osg::buffered_value< osg::ref_ptr<ProgramObjects> > _pcpList;
         AttribBindingList _attribBindingList;
         FragDataBindingList _fragDataBindingList;
         UniformBlockBindingList _uniformBlockBindingList;
@@ -423,6 +457,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /**TransformFeedBack**/
         GLenum _feedbackmode;
         std::vector<std::string> _feedbackout;
+
+        ShaderDefines _shaderDefines;
+
 
     private:
         Program& operator=(const Program&);        // disallowed

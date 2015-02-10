@@ -33,6 +33,9 @@ namespace osg {
 
 class Program;
 
+// set of shader define strings that the shader is dependent upon.
+typedef std::set<std::string> ShaderDefines;
+
 /** Simple class for wrapping up the data used in OpenGL ES 2's glShaderBinary calls.
   * ShaderBinary is set up with the binary data then assigned to one or more osg::Shader. */
 class OSG_EXPORT ShaderBinary : public osg::Object
@@ -131,6 +134,25 @@ class OSG_EXPORT Shader : public osg::Object
         inline const std::string& getShaderSource() const { return _shaderSource; }
 
 
+        enum ShaderDefinesMode
+        {
+            USE_SHADER_PRAGAMA,
+            USE_MANUAL_SETTINGS
+        };
+
+        void setShaderDefinesMode(ShaderDefinesMode sdm) { _shaderDefinesMode = sdm; }
+        ShaderDefinesMode getShaderDefinesMode() const { return _shaderDefinesMode; }
+
+
+        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
+        ShaderDefines& getShaderDefines() { return _shaderDefines; }
+        const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
+
+        void setShaderRequirements(const ShaderDefines& shaderDefs) { _shaderRequirements = shaderDefs; }
+        ShaderDefines& getShaderRequirements() { return _shaderRequirements; }
+        const ShaderDefines& getShaderRequirements() const { return _shaderRequirements; }
+
+
         /** Set the Shader using a ShaderBinary. */
         void setShaderBinary(ShaderBinary* shaderBinary) { _shaderBinary = shaderBinary; }
 
@@ -183,14 +205,6 @@ class OSG_EXPORT Shader : public osg::Object
         /** If needed, compile the PCS's glShader */
         void compileShader(osg::State& state) const;
 
-        /** For a given GL context, attach a glShader to a glProgram */
-        void attachShader(unsigned int contextID, GLuint program) const;
-
-        /** For a given GL context, detach a glShader to a glProgram */
-        void detachShader(unsigned int contextID, GLuint program) const;
-
-        /** Query InfoLog from a glShader */
-        bool getGlShaderInfoLog(unsigned int contextID, std::string& log) const;
 
         /** Mark internal glShader for deletion.
           * Deletion requests are queued until they can be executed
@@ -215,6 +229,9 @@ class OSG_EXPORT Shader : public osg::Object
             public:
                 PerContextShader(const Shader* shader, unsigned int contextID);
 
+                void setDefineString(const std::string& defStr) { _defineStr = defStr; }
+                const std::string& getDefineString() const { return _defineStr; }
+
                 GLuint getHandle() const {return _glShaderHandle;}
 
                 void requestCompile();
@@ -235,14 +252,22 @@ class OSG_EXPORT Shader : public osg::Object
             protected:        /*data*/
                 /** Pointer to our parent osg::Shader */
                 const Shader* _shader;
+
                 /** Pointer to this context's extension functions. */
                 osg::ref_ptr<osg::GLExtensions> _extensions;
+
                 /** Handle to the actual glShader. */
                 GLuint _glShaderHandle;
+
+                /** Define string passed on to Shaders to help configure them.*/
+                std::string _defineStr;
+
                 /** Does our glShader need to be recompiled? */
                 bool _needsCompile;
+
                 /** Is our glShader successfully compiled? */
                 bool _isCompiled;
+
                 const unsigned int _contextID;
 
             private:
@@ -251,7 +276,23 @@ class OSG_EXPORT Shader : public osg::Object
                 PerContextShader& operator=(const PerContextShader&);        // disallowed
         };
 
-        PerContextShader* getPCS(unsigned int contextID) const;
+
+        struct OSG_EXPORT ShaderObjects : public osg::Referenced
+        {
+            typedef std::vector< osg::ref_ptr<PerContextShader> > PerContextShaders;
+
+            ShaderObjects(const Shader* shader, unsigned int contextID);
+
+            unsigned int        _contextID;
+            const Shader*       _shader;
+            mutable PerContextShaders  _perContextShaders;
+
+            PerContextShader* getPCS(const std::string& defineStr) const;
+            PerContextShader* createPerContextShader(const std::string& defineStr);
+            void requestCompile();
+        };
+
+        PerContextShader* getPCS(osg::State& state) const;
 
     protected:        /*methods*/
         virtual ~Shader();
@@ -261,7 +302,11 @@ class OSG_EXPORT Shader : public osg::Object
         bool addProgramRef( osg::Program* program );
         bool removeProgramRef( osg::Program* program );
 
-    protected:        /*data*/
+        void _computeShaderDefines();
+        void _parseShaderDefines(const std::string& str, ShaderDefines& defines);
+
+
+        protected:        /*data*/
         Type                            _type;
         std::string                     _shaderFileName;
         std::string                     _shaderSource;
@@ -269,10 +314,15 @@ class OSG_EXPORT Shader : public osg::Object
 
         CodeInjectionMap                _codeInjectionMap;
 
+        // ShaderDefines variables
+        ShaderDefinesMode               _shaderDefinesMode;
+        ShaderDefines                   _shaderDefines;
+        ShaderDefines                   _shaderRequirements;
+
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;
         ProgramSet                      _programSet;
-        mutable osg::buffered_value< osg::ref_ptr<PerContextShader> > _pcsList;
+        mutable osg::buffered_value< osg::ref_ptr<ShaderObjects> > _pcsList;
 
     private:
         Shader& operator=(const Shader&);        // disallowed

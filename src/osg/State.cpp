@@ -338,6 +338,8 @@ void State::pushStateSet(const StateSet* dstate)
         }
 
         pushUniformList(_uniformMap,dstate->getUniformList());
+
+        pushDefineList(_defineMap,dstate->getDefineList());
     }
 
     // OSG_NOTICE<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
@@ -387,6 +389,8 @@ void State::popStateSet()
         }
 
         popUniformList(_uniformMap,dstate->getUniformList());
+
+        popDefineList(_defineMap,dstate->getDefineList());
 
     }
 
@@ -513,6 +517,7 @@ void State::apply(const StateSet* dstate)
         const Program::PerContextProgram* previousLastAppliedProgramObject = _lastAppliedProgramObject;
 
         applyModeList(_modeMap,dstate->getModeList());
+        applyDefineList(_defineMap, dstate->getDefineList());
         applyAttributeList(_attributeMap,dstate->getAttributeList());
 
         if (_shaderCompositionEnabled)
@@ -617,7 +622,7 @@ void State::applyShaderComposition()
 
         if (_currentShaderCompositionProgram)
         {
-            Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(_contextID);
+            Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(*this);
             if (_lastAppliedProgramObject != pcp) applyAttribute(_currentShaderCompositionProgram);
         }
     }
@@ -1284,23 +1289,24 @@ bool State::checkGLErrors(const char* str) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
+        osg::NotifySeverity notifyLevel = NOTICE; // WARN;
         const char* error = (char*)gluErrorString(errorNo);
         if (error)
         {
-            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '" << error<<"'";
+            OSG_NOTIFY(notifyLevel)<<"Warning: detected OpenGL error '" << error<<"'";
         }
         else
         {
-            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
+            OSG_NOTIFY(notifyLevel)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
         }
 
         if (str)
         {
-            OSG_NOTIFY(WARN)<<" at "<<str<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" at "<<str<< std::endl;
         }
         else
         {
-            OSG_NOTIFY(WARN)<<" in osg::State."<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" in osg::State."<< std::endl;
         }
 
         return true;
@@ -1768,4 +1774,92 @@ void State::frameCompleted()
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
         //OSG_NOTICE<<"State::frameCompleted() setting time stamp. timestamp="<<timestamp<<std::endl;
     }
+}
+
+bool State::DefineMap::updateCurrentDefines()
+{
+    if (changed)
+    {
+        currentDefines.clear();
+        for(DefineStackMap::const_iterator itr = map.begin();
+            itr != map.end();
+            ++itr)
+        {
+            const DefineStack::DefineVec& dv = itr->second.defineVec;
+            if (!dv.empty())
+            {
+                const StateSet::DefinePair& dp = dv.back();
+                if (dp.second & osg::StateAttribute::ON)
+                {
+                    currentDefines[itr->first] = dp;
+                }
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
+{
+    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+
+    const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
+
+    ShaderDefines::const_iterator sd_itr = shaderDefines.begin();
+    StateSet::DefineList::const_iterator cd_itr = currentDefines.begin();
+
+    std::string shaderDefineStr;
+
+    while(sd_itr != shaderDefines.end() && cd_itr != currentDefines.end())
+    {
+        if ((*sd_itr) < cd_itr->first) ++sd_itr;
+        else if (cd_itr->first < (*sd_itr)) ++cd_itr;
+        else
+        {
+            const StateSet::DefinePair& dp = cd_itr->second;
+            shaderDefineStr += "#define ";
+            shaderDefineStr += cd_itr->first;
+            if (cd_itr->second.first.empty())
+            {
+                shaderDefineStr += "\n";
+            }
+            else
+            {
+                shaderDefineStr += " ";
+                shaderDefineStr += cd_itr->second.first;
+                shaderDefineStr += "\n";
+            }
+
+            ++sd_itr;
+            ++cd_itr;
+        }
+    }
+    return shaderDefineStr;
+}
+
+bool State::supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements)
+{
+    if (shaderRequirements.empty()) return true;
+
+    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+
+    const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
+    for(ShaderDefines::const_iterator sr_itr = shaderRequirements.begin();
+        sr_itr != shaderRequirements.end();
+        ++sr_itr)
+    {
+        if (currentDefines.find(*sr_itr)==currentDefines.end()) return false;
+    }
+    return true;
+}
+
+bool State::supportsShaderRequirement(const std::string& shaderRequirement)
+{
+    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+    const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
+    return (currentDefines.find(shaderRequirement)!=currentDefines.end());
 }

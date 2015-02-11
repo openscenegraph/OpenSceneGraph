@@ -401,10 +401,12 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             // Read Triangles
             readTriangles( file, nElems );
             // Check whether all face elements read or not
+#if DEBUG
             unsigned int nbTriangles = (_triangles.valid() ? _triangles->size() / 3 : 0) ;
             unsigned int nbQuads = (_quads.valid() ? _quads->size() / 4 : 0 );
 
             MESHASSERT( (nbTriangles + nbQuads) == static_cast< size_t >( nElems ) );
+#endif
             result = true;
         }
         catch( exception& e )

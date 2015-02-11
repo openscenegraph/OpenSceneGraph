@@ -585,6 +585,10 @@ typedef char GLchar;
     #define GL_SEPARATE_ATTRIBS         0x8C8D
 #endif
 
+#ifndef GL_RASTERIZER_DISCARD
+#define GL_RASTERIZER_DISCARD           0x8C89
+#endif
+
 #ifndef GL_VERSION_3_2
 typedef struct __GLsync *GLsync;
 #endif

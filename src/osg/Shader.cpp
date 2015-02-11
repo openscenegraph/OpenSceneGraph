@@ -634,10 +634,51 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     }
     else
     {
-        const GLchar* sourceText[2];
-        sourceText[0] = reinterpret_cast<const GLchar*>(_defineStr.c_str());
-        sourceText[1] = reinterpret_cast<const GLchar*>(source.c_str());
-        _extensions->glShaderSource( _glShaderHandle, 2, sourceText, NULL );
+
+        std::string versionLine;
+        unsigned int lineNum = 0;
+        std::string::size_type previous_pos = 0;
+        do
+        {
+            std::string::size_type start_of_line = source.find_first_not_of(" \t", previous_pos);
+            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? source.find_first_of("\n\r", start_of_line) : std::string::npos;
+            if (end_of_line != std::string::npos)
+            {
+                // OSG_NOTICE<<"A Checking line "<<lineNum<<" ["<<source.substr(start_of_line, end_of_line-start_of_line)<<"]"<<std::endl;
+                if ((end_of_line-start_of_line)>=8 && source.compare(start_of_line, 8, "#version")==0)
+                {
+                    versionLine = source.substr(start_of_line, end_of_line-start_of_line+1);
+                    source.insert(start_of_line, "// following version spec has been automatically reassigned to start of source list: ");
+                    //source.erase(start_of_line, end_of_line-start_of_line);
+                    break;
+                }
+                previous_pos = end_of_line+1<source.size() ? end_of_line+1 : std::string::npos;
+            }
+            else
+            {
+                // OSG_NOTICE<<"B Checking line "<<lineNum<<" ["<<source.substr(start_of_line, end_of_line-start_of_line)<<"]"<<std::endl;
+                previous_pos = std::string::npos;
+            }
+            ++lineNum;
+
+        } while (previous_pos != std::string::npos);
+
+        if (!versionLine.empty())
+        {
+            // OSG_NOTICE<<"Shader::PerContextShader::compileShader() : Found #version,  lineNum = "<<lineNum<<" ["<<versionLine<<"] new source = ["<<source<<"]"<<std::endl;
+            const GLchar* sourceText[3];
+            sourceText[0] = reinterpret_cast<const GLchar*>(versionLine.c_str());
+            sourceText[1] = reinterpret_cast<const GLchar*>(_defineStr.c_str());
+            sourceText[2] = reinterpret_cast<const GLchar*>(source.c_str());
+            _extensions->glShaderSource( _glShaderHandle, 3, sourceText, NULL );
+        }
+        else
+        {
+            const GLchar* sourceText[2];
+            sourceText[0] = reinterpret_cast<const GLchar*>(_defineStr.c_str());
+            sourceText[1] = reinterpret_cast<const GLchar*>(source.c_str());
+            _extensions->glShaderSource( _glShaderHandle, 2, sourceText, NULL );
+        }
     }
     _extensions->glCompileShader( _glShaderHandle );
     _extensions->glGetShaderiv( _glShaderHandle, GL_COMPILE_STATUS, &compiled );

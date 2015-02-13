@@ -283,6 +283,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 GLuint getHandle() const {return _glProgramHandle;}
 
+                const osg::Program* getProgram() const { return _program; }
+
                 void setDefineString(const std::string& defStr) { _defineStr = defStr; }
                 const std::string& getDefineString() const { return _defineStr; }
 

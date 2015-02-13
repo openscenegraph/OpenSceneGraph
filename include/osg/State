@@ -1914,7 +1914,6 @@ class OSG_EXPORT State : public Referenced
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
         inline void applyUniformMap(UniformMap& uniformMap);
-        inline void applyUniformMap(DefineMap& defineMap);
 
         inline void applyModeListOnTexUnit(unsigned int unit,ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeListOnTexUnit(unsigned int unit,AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);

@@ -667,6 +667,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         {
             // OSG_NOTICE<<"Shader::PerContextShader::compileShader() : Found #version,  lineNum = "<<lineNum<<" ["<<versionLine<<"] new source = ["<<source<<"]"<<std::endl;
             const GLchar* sourceText[3];
+            //OSG_NOTICE<<"glShaderSource() ["<<versionLine<<"] "<<std::endl<<"["<<_defineStr<<"], ["<<sourceText<<"]"<<std::endl;
             sourceText[0] = reinterpret_cast<const GLchar*>(versionLine.c_str());
             sourceText[1] = reinterpret_cast<const GLchar*>(_defineStr.c_str());
             sourceText[2] = reinterpret_cast<const GLchar*>(source.c_str());
@@ -675,6 +676,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         else
         {
             const GLchar* sourceText[2];
+            //OSG_NOTICE<<"glShaderSource() ["<<_defineStr<<"], ["<<sourceText<<"]"<<std::endl;
             sourceText[0] = reinterpret_cast<const GLchar*>(_defineStr.c_str());
             sourceText[1] = reinterpret_cast<const GLchar*>(source.c_str());
             _extensions->glShaderSource( _glShaderHandle, 2, sourceText, NULL );
@@ -725,6 +727,7 @@ void Shader::PerContextShader::detachShader(GLuint program) const
 
 void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
 {
+    OSG_NOTICE<<"Shader::_parseShaderDefines("<<str<<")"<<std::endl;
     std::string::size_type start_of_parameter = 0;
     do
     {
@@ -735,13 +738,24 @@ void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
         // find end of the parameter
         std::string::size_type end_of_parameter = str.find_first_of(" \t,)", start_of_parameter);
 
-        if (end_of_parameter==std::string::npos) end_of_parameter = str.size();
+        if (end_of_parameter!=std::string::npos)
+        {
+            std::string::size_type start_of_open_brackets = str.find_first_of("(", start_of_parameter);
+            if (start_of_open_brackets<end_of_parameter) ++end_of_parameter;
+        }
+        else
+        {
+            end_of_parameter = str.size();
+        }
 
-        std::string parameter = str.substr(start_of_parameter, end_of_parameter-start_of_parameter);
+        if (start_of_parameter<end_of_parameter)
+        {
+            std::string parameter = str.substr(start_of_parameter, end_of_parameter-start_of_parameter);
+            defines.insert(parameter);
+            OSG_NOTICE<<"   defines.insert("<<parameter<<")"<<std::endl;
+        }
 
-        defines.insert(parameter);
-
-        start_of_parameter = end_of_parameter;
+        start_of_parameter = end_of_parameter+1;
 
     } while (start_of_parameter<str.size());
 }
@@ -763,7 +777,7 @@ void Shader::_computeShaderDefines()
         std::string::size_type eol = _shaderSource.find_first_of("\n\r", pos);
         if (eol==std::string::npos) eol = _shaderSource.size();
 
-        // OSG_NOTICE<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
+        OSG_NOTICE<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
 
         if (first_chararcter<eol)
         {
@@ -772,11 +786,10 @@ void Shader::_computeShaderDefines()
             std::string keyword = _shaderSource.substr(first_chararcter, end_of_keyword-first_chararcter);
 
             std::string::size_type open_brackets = _shaderSource.find_first_of("(", end_of_keyword);
-            std::string::size_type close_brackets = _shaderSource.find_first_of(")", open_brackets);
 
-            if ((open_brackets!=std::string::npos) && (close_brackets!=std::string::npos) && (close_brackets<eol))
+            if ((open_brackets!=std::string::npos))
             {
-                std::string str(_shaderSource, open_brackets+1, close_brackets-open_brackets-1);
+                std::string str(_shaderSource, open_brackets+1, eol-open_brackets-1);
 
                 // OSG_NOTICE<<"    parameter str = ["<<str<<"]"<<std::endl;
                 if (keyword == "import_defines") _parseShaderDefines(str, _shaderDefines);
@@ -785,7 +798,7 @@ void Shader::_computeShaderDefines()
                     //OSG_NOTICE<<"  keyword not matched ["<<keyword<<"]"<<std::endl;
                     _parseShaderDefines(str, _shaderDefines);
                 }
-#if 0
+#if 1
                 for(ShaderDefines::iterator itr = _shaderDefines.begin();
                     itr != _shaderDefines.end();
                     ++itr)
@@ -802,7 +815,7 @@ void Shader::_computeShaderDefines()
 #endif
 
             }
-#if 0
+#if 1
             else
             {
                 OSG_NOTICE<<"    Found keyword ["<<keyword<<"] but not matched ()\n"<<std::endl;

@@ -517,8 +517,19 @@ void State::apply(const StateSet* dstate)
         const Program::PerContextProgram* previousLastAppliedProgramObject = _lastAppliedProgramObject;
 
         applyModeList(_modeMap,dstate->getModeList());
+#if 1
+        pushDefineList(_defineMap, dstate->getDefineList());
+#else
         applyDefineList(_defineMap, dstate->getDefineList());
+#endif
+
         applyAttributeList(_attributeMap,dstate->getAttributeList());
+
+        if ((_lastAppliedProgramObject!=0) && (previousLastAppliedProgramObject==_lastAppliedProgramObject) && _defineMap.changed)
+        {
+            // OSG_NOTICE<<"State::apply(StateSet*) Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
+            _lastAppliedProgramObject->getProgram()->apply(*this);
+        }
 
         if (_shaderCompositionEnabled)
         {
@@ -544,6 +555,10 @@ void State::apply(const StateSet* dstate)
                 applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
             }
         }
+
+#if 1
+        popDefineList(_defineMap, dstate->getDefineList());
+#endif
 
         // pop the stateset from the stack
         _stateStateStack.pop_back();
@@ -576,8 +591,17 @@ void State::apply()
     // appropriate.
     applyModeMap(_modeMap);
 
+    const Program::PerContextProgram* previousLastAppliedProgramObject = _lastAppliedProgramObject;
+
     // go through all active StateAttribute's, applying where appropriate.
     applyAttributeMap(_attributeMap);
+
+
+    if ((_lastAppliedProgramObject!=0) && (previousLastAppliedProgramObject==_lastAppliedProgramObject) && _defineMap.changed)
+    {
+        //OSG_NOTICE<<"State::apply() Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
+        if (_lastAppliedProgramObject) _lastAppliedProgramObject->getProgram()->apply(*this);
+    }
 
 
     if (_shaderCompositionEnabled)

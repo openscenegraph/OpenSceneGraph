@@ -85,7 +85,7 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D, GLenum, GL
 static GLfloat bytes_per_element(GLenum type);
 static GLint elements_per_group(GLenum format, GLenum type);
 static GLint is_index(GLenum format);
-static GLint image_size(GLint width, GLint height, GLenum format, GLenum type);
+static size_t image_size(GLint width, GLint height, GLenum format, GLenum type);
 static void fill_image(const PixelStorageModes *,
                        GLint width, GLint height, GLenum format,
                        GLenum type, GLboolean index_format,
@@ -3599,7 +3599,7 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
     GLint newImage_width;
     GLushort *otherImage;
     GLushort *imageTemp;
-    GLint memreq;
+    size_t memreq;
     GLint cmpts;
     PixelStorageModes psm;
 
@@ -3752,7 +3752,7 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
     GLint newImage_height;
     GLushort *otherImage;
     GLushort *imageTemp;
-    GLint memreq;
+    size_t memreq;
     GLint cmpts;
     PixelStorageModes psm;
 
@@ -3868,7 +3868,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
     const void *usersImage; /* passed from user. Don't touch! */
     void *srcImage, *dstImage; /* scratch area to build mipmapped images */
     __GLU_INIT_SWAP_IMAGE;
-    GLint memreq;
+    size_t memreq;
     GLint cmpts;
 
     GLint myswap_bytes, groups_per_line, element_size, group_size;
@@ -4710,7 +4710,7 @@ static int fastBuild2DMipmaps(const PixelStorageModes *psm,
     GLint newImage_height;
     GLubyte *otherImage;
     GLubyte *imageTemp;
-    GLint memreq;
+    size_t memreq;
     GLint cmpts;
 
 
@@ -4933,10 +4933,10 @@ static GLint is_index(GLenum format)
 ** Compute memory required for internal packed array of data of given type
 ** and format.
 */
-static GLint image_size(GLint width, GLint height, GLenum format, GLenum type)
+static size_t image_size(GLint width, GLint height, GLenum format, GLenum type)
 {
-    int bytes_per_row;
-    int components;
+    size_t bytes_per_row;
+    size_t components;
 
 assert(width > 0);
 assert(height > 0);
@@ -4944,7 +4944,7 @@ assert(height > 0);
     if (type == GL_BITMAP) {
         bytes_per_row = (width + 7) / 8;
     } else {
-        bytes_per_row = GLint(bytes_per_element(type) * width);
+        bytes_per_row = size_t(bytes_per_element(type) * width);
     }
     return bytes_per_row * height * components;
 }

@@ -1,4 +1,4 @@
-/* OpenSceneGraph example, osganimate.
+/* O penSceneGraph example, osganimate.
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -18,145 +18,129 @@
 
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
-#include <osg/ShaderAttribute>
 #include <osg/PositionAttitudeTransform>
 
-osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
+// pull in the old shader composition implementation function
+extern osg::Node* createOldShaderCompositionScene(osg::ArgumentParser& arguments);
+
+osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
 {
-    osg::Node* node = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
     if (!node) return 0;
 
-    osg::Group* group = new osg::Group;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+
+    osg::ref_ptr<osg::StateSet> stateset = group->getOrCreateStateSet();
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    stateset->setAttribute(program.get());
+
+    osg::ref_ptr<osg::Shader> lighting_shader = osgDB::readShaderFile("shaders/lighting.vert");
+    if (lighting_shader.valid())
+    {
+        program->addShader(lighting_shader.get());
+        OSG_NOTICE<<"Adding lighting shader"<<std::endl;
+    }
+
+    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("shaders/osgshadercomposition.vert");
+    if (vertex_shader.valid())
+    {
+        program->addShader(vertex_shader.get());
+        OSG_NOTICE<<"Adding vertex shader"<<std::endl;
+    }
+
+    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("shaders/osgshadercomposition.frag");
+    if (fragment_shader.valid())
+    {
+        program->addShader(fragment_shader.get());
+        OSG_NOTICE<<"Adding fragment shader"<<std::endl;
+    }
+
+    stateset->addUniform(new osg::Uniform("texture0", 0));
+
+
     double spacing = node->getBound().radius() * 2.0;
 
     osg::Vec3d position(0.0,0.0,0.0);
 
-    osg::ShaderAttribute* sa1 = NULL;
-
     {
-        osg::StateSet* stateset = group->getOrCreateStateSet();
-        osg::ShaderAttribute* sa = new osg::ShaderAttribute;
-        sa->setType(osg::StateAttribute::Type(10000));
-        sa1 = sa;
-        stateset->setAttribute(sa);
-
-        {
-            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX);
-            vertex_shader->addCodeInjection(-1,"varying vec4 color;\n");
-            vertex_shader->addCodeInjection(-1,"varying vec4 texcoord;\n");
-            vertex_shader->addCodeInjection(0,"color = gl_Color;\n");
-            vertex_shader->addCodeInjection(0,"texcoord = gl_MultiTexCoord0;\n");
-            vertex_shader->addCodeInjection(0,"gl_Position = ftransform();\n");
-            sa->addShader(vertex_shader);
-        }
-
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
-            fragment_shader->addCodeInjection(-1,"varying vec4 color;\n");
-            fragment_shader->addCodeInjection(-1,"varying vec4 texcoord;\n");
-            fragment_shader->addCodeInjection(-1,"uniform sampler2D baseTexture; \n");
-            fragment_shader->addCodeInjection(0,"gl_FragColor = color * texture2DProj( baseTexture, texcoord );\n");
-
-            sa->addShader(fragment_shader);
-        }
-
-        sa->addUniform(new osg::Uniform("baseTexture",0));
-
-    }
-
-    // inherit the ShaderComponents entirely from above
-    {
+        // first subgraph, one the left, just inherit all the defaults
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->addChild(node);
+        pat->addChild(node.get());
 
         position.x() += spacing;
 
         group->addChild(pat);
-
     }
 
     {
+        // second subgraph, enable lighting by passing a GL_LIGHTING defines to the shaders
+        // As the lighting.vert shader has a #pragma requires(GL_LIGHTING) in the shader it
+        // instructs the osg::Prorgam to link in this shader only when the GL_LIGHTING define
+        // is provided.  The osgshadercomposition.vert also has a #pragma import_defines(GL_LIGHTING ..) so
+        // when the GL_LIGHTING is provided it'll enable the lighting paths in the osgshadercomposition.vert
+        // shader calling the lighting function per vertex
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->addChild(node);
+        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
+
+        pat->addChild(node.get());
 
         position.x() += spacing;
-
-        osg::StateSet* stateset = pat->getOrCreateStateSet();
-        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-
-        osg::ShaderAttribute* sa = new osg::ShaderAttribute;
-        sa->setType(osg::StateAttribute::Type(10001));
-        stateset->setAttribute(sa);
-
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
-            fragment_shader->addCodeInjection(0.9f,"gl_FragColor.a = gl_FragColor.a*0.5;\n");
-
-            sa->addShader(fragment_shader);
-        }
 
         group->addChild(pat);
     }
 
-    // resuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
     {
+        // third subgraph, enable texturing by passing the GL_TEXTURE_2D define to the shaders.
+        // Both the osgshadercomposition.vert and osgshadercomposition.frag shaders have a
+        // #pragma import_defines(GL_TEXTURE_2D) so that can use this define to enable the
+        // passing of texture coordinates between the vertex and framgment shaders and for
+        // the fragment shader to read the texture of unit 0 (provided by the "texture0" uniform above.
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->addChild(node);
+        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+
+        pat->addChild(node.get());
 
         position.x() += spacing;
 
-        osg::StateSet* stateset = pat->getOrCreateStateSet();
-        osg::ShaderAttribute* sa = new osg::ShaderAttribute(*sa1);
-        stateset->setAttribute(sa);
-
-        // reuse the same ShaderComponent as the first branch
-        sa->addUniform(new osg::Uniform("myColour",osg::Vec4(1.0f,1.0f,0.0f,1.0f)));
-
         group->addChild(pat);
-
     }
 
 
-    // resuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
     {
+        // fourth subgraph, enable texturing and lighting
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->addChild(node);
+        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
+        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+
+        pat->addChild(node.get());
 
         position.x() += spacing;
 
-        osg::StateSet* stateset = pat->getOrCreateStateSet();
-        osg::ShaderAttribute* sa = new osg::ShaderAttribute;
-        sa->setType(osg::StateAttribute::Type(10000));
-        stateset->setAttribute(sa);
-        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-
-        {
-            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX);
-            vertex_shader->addCodeInjection(0,"gl_Position = ftransform();\n");
-
-            sa->addShader(vertex_shader);
-        }
-
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
-            fragment_shader->addCodeInjection(-1,"uniform vec4 newColour;\n");
-            fragment_shader->addCodeInjection(-1,"uniform float osg_FrameTime;\n");
-            fragment_shader->addCodeInjection(0,"gl_FragColor = vec4(newColour.r,newColour.g,newColour.b, 0.5+sin(osg_FrameTime*2.0)*0.5);\n");
-
-            sa->addShader(fragment_shader);
-            sa->addUniform(new osg::Uniform("newColour",osg::Vec4(1.0f,1.0f,1.0f,0.5f)));
-        }
-
         group->addChild(pat);
-
     }
 
-    return group;
+    {
+        // fourth subgraph, enable texturing and lighting
+        osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
+        pat->setPosition(position);
+        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
+        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+        pat->getOrCreateStateSet()->setDefine("VERTEX_FUNC(v)", "vec4(v.x, v.y, v.z * sin(osg_SimulationTime), v.w)");
+
+        pat->addChild(node.get());
+
+        position.x() += spacing;
+
+        group->addChild(pat);
+    }
+
+    group->addChild(node.get());
+
+    return group.release();
 }
 
 int main( int argc, char **argv )
@@ -165,21 +149,35 @@ int main( int argc, char **argv )
 
     osgViewer::Viewer viewer(arguments);
 
-    osg::ref_ptr<osg::Node> scenegraph = createSceneGraph(arguments);
-    if (!scenegraph) return 1;
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
-    viewer.setSceneData(scenegraph.get());
-
-    viewer.realize();
-
-    // enable shader composition
-    osgViewer::Viewer::Windows windows;
-    viewer.getWindows(windows);
-    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
-        itr != windows.end();
-        ++itr)
+    if (arguments.read("--old"))
     {
-        (*itr)->getState()->setShaderCompositionEnabled(true);
+        // use deprecated shader composition infrastructure
+        osg::ref_ptr<osg::Node> scenegraph = createOldShaderCompositionScene(arguments);
+        if (!scenegraph) return 1;
+
+        viewer.setSceneData(scenegraph.get());
+
+        viewer.realize();
+
+        // enable shader composition
+        osgViewer::Viewer::Windows windows;
+        viewer.getWindows(windows);
+        for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+            itr != windows.end();
+            ++itr)
+        {
+            (*itr)->getState()->setShaderCompositionEnabled(true);
+        }
+    }
+    else
+    {
+        // use new #pragama(tic) shader composition.
+        osg::ref_ptr<osg::Node> scenegraph = createNewShaderCompositionScene(arguments);
+        if (!scenegraph) return 1;
+
+        viewer.setSceneData(scenegraph.get());
     }
 
     return viewer.run();

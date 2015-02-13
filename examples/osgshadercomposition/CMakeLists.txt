@@ -1,4 +1,5 @@
 SET(TARGET_SRC
+    oldshadercomposition.cpp
     osgshadercomposition.cpp
 )
 

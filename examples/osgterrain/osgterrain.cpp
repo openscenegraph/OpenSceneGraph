@@ -137,12 +137,12 @@ public:
                 }
                 else if (ea.getKey()=='l')
                 {
-                    toggleDefine("GL_LIGHTING");
+                    toggleDefine("LIGHTING");
                     return true;
                 }
                 else if (ea.getKey()=='t')
                 {
-                    toggleDefine("GL_TEXTURE_2D");
+                    toggleDefine("TEXTURE_2D");
                     return true;
                 }
                 else if (ea.getKey()=='d')
@@ -382,8 +382,9 @@ int main(int argc, char** argv)
         }
     }
 
-    //terrain->getOrCreateStateSet()->setDefine("NUM_LIGHTS", "20.0");
-    //terrain->getOrCreateStateSet()->setDefine("GL_LIGHTING"); // , osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
+    // following are tests of the #pragma(tic) shader composition
+    //terrain->getOrCreateStateSet()->setDefine("NUM_LIGHTS", "1");
+    //terrain->getOrCreateStateSet()->setDefine("LIGHTING"); // , osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
     //terrain->getOrCreateStateSet()->setDefine("COMPUTE_DIAGONALS"); // , osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
 
     // run the viewers main loop

@@ -803,6 +803,32 @@ void StateSet::merge(const StateSet& rhs)
         }
     }
 
+    // merge the defines of rhs into this,
+    // this overrides rhs if OVERRIDE defined in this.
+    for(DefineList::const_iterator rhs_mitr = rhs._defineList.begin();
+        rhs_mitr != rhs._defineList.end();
+        ++rhs_mitr)
+    {
+        DefineList::iterator lhs_mitr = _defineList.find(rhs_mitr->first);
+        if (lhs_mitr!=_defineList.end())
+        {
+            // take the rhs mode unless the lhs is override and the rhs is not protected
+            if (!(lhs_mitr->second.second & StateAttribute::OVERRIDE ) ||
+                 (rhs_mitr->second.second & StateAttribute::PROTECTED))
+            {
+                // override isn't on in rhs, so override it with incoming
+                // value.
+                lhs_mitr->second = rhs_mitr->second;
+            }
+        }
+        else
+        {
+            // entry doesn't exist so insert it.
+            _defineList.insert(*rhs_mitr);
+        }
+    }
+
+
     // Merge RenderBin state from rhs into this.
     // Only do so if this's RenderBinMode is INHERIT.
     if (getRenderBinMode() == INHERIT_RENDERBIN_DETAILS)

@@ -293,7 +293,7 @@ void OperationThread::setOperationQueue(OperationQueue* opq)
 
 void OperationThread::setDone(bool done)
 {
-    unsigned d = done?0:1;
+    unsigned d = done?1:0;
     if (_done==d) return;
 
     _done.exchange(d);

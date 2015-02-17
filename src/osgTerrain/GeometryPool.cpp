@@ -608,9 +608,6 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
 #endif
 
-    bool useLighting = true;
-    bool useTextures = true;
-
     osg::ref_ptr<osg::Program> program = new osg::Program;
     _programMap[layerTypes] = program;
 
@@ -622,17 +619,6 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     {
         #include "shaders/terrain_displacement_mapping_vert.cpp"
         osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert);
-        if (_useGeometryShader)
-        {
-            // prepend define to enable the compute shader style
-            //shader->setShaderSource(std::string("#define COMPUTE_DIAGONALS\n")+shader->getShaderSource());
-        }
-
-        if (useLighting)
-        {
-            // prepend define to enable lighting
-            // shader->setShaderSource(std::string("#define GL_LIGHTING\n")+shader->getShaderSource());
-        }
 
         program->addShader(shader.get());
     }
@@ -684,11 +670,6 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
         if (shader.valid())
         {
-            if (useTextures)
-            {
-                // prepend define to enable lighting
-                //shader->setShaderSource(std::string("#define GL_TEXTURE_2D\n")+shader->getShaderSource());
-            }
             program->addShader(shader.get());
         }
 

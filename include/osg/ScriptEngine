@@ -31,7 +31,7 @@ class Script : public osg::Object
     public:
         Script():_modifiedCount(0) {}
         Script(const std::string& language, const std::string& str): _language(language), _script(str), _modifiedCount(0)  {}
-        Script(const Script& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): _language(rhs._language), _script(rhs._script), _modifiedCount(0) {}
+        Script(const Script& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::Object(rhs,copyop), _language(rhs._language), _script(rhs._script), _modifiedCount(0) {}
 
         META_Object(osg, Script)
 
@@ -59,7 +59,10 @@ class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback
 {
     public:
         ScriptNodeCallback(Script* script=0, const std::string& entryPoint="") : _script(script), _entryPoint(entryPoint) {}
-        ScriptNodeCallback(const ScriptNodeCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::NodeCallback(rhs,copyop), _script(rhs._script) {}
+        ScriptNodeCallback(const ScriptNodeCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::Object(rhs,copyop),
+            osg::Callback(rhs,copyop),
+            osg::NodeCallback(rhs,copyop), _script(rhs._script) {}
 
         META_Object(osg, ScriptNodeCallback)
 

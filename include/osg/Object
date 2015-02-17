@@ -274,7 +274,7 @@ class DummyObject : public osg::Object
 {
 public:
     DummyObject() {}
-    DummyObject(const DummyObject& dummy, const osg::CopyOp& copyop) {}
+    DummyObject(const DummyObject&, const osg::CopyOp&) {}
     META_Object(osg, DummyObject)
 protected:
     virtual ~DummyObject() {}

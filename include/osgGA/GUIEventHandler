@@ -50,16 +50,11 @@ class OSGGA_EXPORT GUIEventHandler : public EventHandler
 {
 public:
 
-#if 1
         GUIEventHandler() {}
         GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Callback(eh, copyop), EventHandler(eh, copyop) {}
-#else
-        GUIEventHandler() : _ignoreHandledEventsMask(GUIEventAdapter::NONE) {}
-        GUIEventHandler(const GUIEventHandler& eh,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            EventHandler(eh, copyop)
-            _ignoreHandledEventsMask(eh._ignoreHandledEventsMask) {}
-#endif
+            osg::Object(eh, copyop),
+            osg::Callback(eh, copyop),
+            EventHandler(eh, copyop) {}
 
         META_Object(osgGA,GUIEventHandler);
 
@@ -69,58 +64,8 @@ public:
         /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor*) { return handle(ea,aa); }
 
-#if 0
-        /** Convenience method that only passes on to the handle(,,,) method events that either haven't been
-          * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
-          * Note, this method is an inline method, and not appropriate for users to override, override the handle(,,,)
-          * method instead.*/
-        inline bool handleWithCheckAgainstIgnoreHandledEventsMask(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
-        {
-            if (!ea.getHandled() ||
-                (ea.getEventType() & _ignoreHandledEventsMask)==0)
-            {
-                bool handled = handle(ea,aa,object,nv);
-                if (handled) ea.setHandled(true);
-                return handled;
-            }
-            else
-            {
-                return false;
-            }
-        }
-#endif
         /** Deprecated, Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter&,GUIActionAdapter&) { return false; }
-
-#if 0
-        /** Convenience method that only passes on to the handle(,) method events that either haven't been
-          * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
-          * Note, this method is an inline method, and not appropriate for users to override, override the handle(,)
-          * method instead.*/
-        inline bool handleWithCheckAgainstIgnoreHandledEventsMask(const GUIEventAdapter& ea,GUIActionAdapter& aa)
-        {
-            if (!ea.getHandled() ||
-                (ea.getEventType() & _ignoreHandledEventsMask)==0)
-            {
-                bool handled = handle(ea,aa);
-                if (handled) ea.setHandled(true);
-                return handled;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /** Set a mask of osgGA::GUIEeventAdapter::Event to be ignored if marked as handled */
-        void setIgnoreHandledEventsMask(unsigned int mask) { _ignoreHandledEventsMask = mask; }
-
-        /** Get the event mask of the osgGA::GUIEeventAdapter::Event to be ignored if marked as handled */
-        unsigned int getIgnoreHandledEventsMask() const { return _ignoreHandledEventsMask; };
-
-protected:
-        unsigned int _ignoreHandledEventsMask;
-#endif
 
 protected:
         virtual ~GUIEventHandler();

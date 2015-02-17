@@ -839,15 +839,15 @@ public:
     Type getElementType() const { return _elementType; }
     unsigned int getElementSize() const { return _elementSize; }
 
-    virtual unsigned int size(const osg::Object& obj) const { return 0; }
-    virtual void resize(osg::Object& obj, unsigned int numElements) const {}
-    virtual void reserve(osg::Object& obj, unsigned int numElements) const {}
-    virtual void clear(osg::Object& obj) const {}
-    virtual void addElement(osg::Object& obj, void* ptr) const {}
-    virtual void insertElement(osg::Object& obj, unsigned int index, void* ptr) const {}
-    virtual void setElement(osg::Object& obj, unsigned int index, void* ptr) const {}
-    virtual void* getElement(osg::Object& obj, unsigned int index) const { return 0; }
-    virtual const void* getElement(const osg::Object& obj, unsigned int index) const { return 0; }
+    virtual unsigned int size(const osg::Object& /*obj*/) const { return 0; }
+    virtual void resize(osg::Object& /*obj*/, unsigned int /*numElements*/) const {}
+    virtual void reserve(osg::Object& /*obj*/, unsigned int /*numElements*/) const {}
+    virtual void clear(osg::Object& /*obj*/) const {}
+    virtual void addElement(osg::Object& /*obj*/, void* /*ptr*/) const {}
+    virtual void insertElement(osg::Object& /*obj*/, unsigned int /*index*/, void* /*ptr*/) const {}
+    virtual void setElement(osg::Object& /*obj*/, unsigned int /*index*/, void* /*ptr*/) const {}
+    virtual void* getElement(osg::Object& /*obj*/, unsigned int /*index*/) const { return 0; }
+    virtual const void* getElement(const osg::Object& /*obj*/, unsigned int /*index*/) const { return 0; }
 
 protected:
     Type         _elementType;
@@ -1199,7 +1199,7 @@ public:
     virtual bool valid() const { return false; }
     virtual const void* getKey() const { return 0; }
     virtual void* getElement() const { return 0; }
-    virtual void setElement(void* ptr) const {}
+    virtual void setElement(void* /*ptr*/) const {}
 
 protected:
     BaseSerializer::Type _keyType;
@@ -1224,14 +1224,14 @@ public:
     Type getElementType() const { return _elementType; }
     unsigned int getElementSize() const { return _elementSize; }
 
-    virtual void clear(osg::Object& obj) const {}
-    virtual void setElement(osg::Object& obj, void* ptrKey, void* ptrValue) const {}
-    virtual void* getElement(osg::Object& obj, void* ptrKey) const { return 0; }
-    virtual const void* getElement(const osg::Object& obj, void* ptrKey) const { return 0; }
-    virtual unsigned int size(const osg::Object& obj) const { return 0; }
+    virtual void clear(osg::Object& /*obj*/) const {}
+    virtual void setElement(osg::Object& /*obj*/, void* /*ptrKey*/, void* /*ptrValue*/) const {}
+    virtual void* getElement(osg::Object& /*obj*/, void* /*ptrKey*/) const { return 0; }
+    virtual const void* getElement(const osg::Object& /*obj*/, void* /*ptrKey*/) const { return 0; }
+    virtual unsigned int size(const osg::Object& /*obj*/) const { return 0; }
 
-    virtual MapIteratorObject* createIterator(osg::Object& obj) const { return 0; }
-    virtual MapIteratorObject* createReverseIterator(osg::Object& obj) const { return 0; }
+    virtual MapIteratorObject* createIterator(osg::Object& /*obj*/) const { return 0; }
+    virtual MapIteratorObject* createReverseIterator(osg::Object& /*obj*/) const { return 0; }
 
 protected:
     Type _keyType;

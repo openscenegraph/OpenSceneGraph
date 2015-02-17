@@ -26,7 +26,8 @@ class OSG_EXPORT Callback : public virtual Object {
 
         Callback(){}
 
-        Callback(const Callback& cb,const CopyOp&):
+        Callback(const Callback& cb,const CopyOp& copyop):
+            osg::Object(cb, copyop),
             _nestedCallback(cb._nestedCallback) {}
 
         META_Object(osg, Callback);
@@ -96,7 +97,10 @@ class OSG_EXPORT CallbackObject : public virtual osg::Callback
 public:
     CallbackObject() {}
     CallbackObject(const std::string& name) { setName(name); }
-    CallbackObject(const CallbackObject& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):osg::Callback(rhs,copyop) {}
+    CallbackObject(const CallbackObject& co, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(co, copyop),
+        osg::Callback(co,copyop) {}
+        
     META_Object(osg, CallbackObject);
 
     virtual CallbackObject* asCallbackObject() { return this; }

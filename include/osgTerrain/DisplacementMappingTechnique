@@ -18,7 +18,6 @@
 #include <osg/MatrixTransform>
 #include <osg/Program>
 #include <osgTerrain/GeometryTechnique>
-#include <osgTerrain/GeometryPool>
 
 namespace osgTerrain
 {
@@ -43,8 +42,6 @@ class OSGTERRAIN_EXPORT DisplacementMappingTechnique : public osgTerrain::Terrai
     protected:
 
         virtual ~DisplacementMappingTechnique();
-
-        osg::ref_ptr<GeometryPool> _geometryPool;
 
         mutable OpenThreads::Mutex              _traversalMutex;
 

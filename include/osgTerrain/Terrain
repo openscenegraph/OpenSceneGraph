@@ -18,6 +18,7 @@
 #include <OpenThreads/ReentrantMutex>
 
 #include <osgTerrain/TerrainTile>
+#include <osgTerrain/GeometryPool>
 
 namespace osgTerrain {
 
@@ -54,14 +55,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         /** Get the vertical scale hint.*/
         float getVerticalScale() const { return _verticalScale; }
 
-        /** If set to true the boundaries between adjacent tiles should be equalized.
-          * Note, it is only possible to equalizae boundaries when the TerrainTile's contain properly assigned TileID's,
-          * databases built with VirtualPlanetBuilder-0.9.11 and older do not set the TileID, so databases must be
-          * built with later versions of VirtualPlanetBuilder to take advantage of boundary equalization. */
-        void setEqualizeBoundaries(bool equalizeBoundaries);
-
-        /** If true the boundaries between adjacent tiles will be equalized. */
-        bool getEqualizeBoundaries() const { return _equalizeBoundaries; }
 
         /** Set the default policy to use when deciding whether to enable/disable blending and use of transparent bin.
           * Note, the Terrain::BlendingPolicy value only sets the value for the TerrainTiles it encloses for the
@@ -71,6 +64,26 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
 
         /** Get the default policy to use when deciding whether to enable/disable blending and use of transparent bin.*/
         TerrainTile::BlendingPolicy getBlendingPolicy() const { return _blendingPolicy; }
+
+        /** If set to true the boundaries between adjacent tiles should be equalized.
+          * Note, it is only possible to equalizae boundaries when the TerrainTile's contain properly assigned TileID's,
+          * databases built with VirtualPlanetBuilder-0.9.11 and older do not set the TileID, so databases must be
+          * built with later versions of VirtualPlanetBuilder to take advantage of boundary equalization. */
+        void setEqualizeBoundaries(bool equalizeBoundaries);
+
+        /** If true the boundaries between adjacent tiles will be equalized. */
+        bool getEqualizeBoundaries() const { return _equalizeBoundaries; }
+
+
+        /** Set a custom GeometryPool to be used by TerrainTechniques that share geometry.*/
+        void setGeometryPool(GeometryPool* gp) { _geometryPool = gp; }
+
+        /** Get the GeometryPool.*/
+        GeometryPool* getGeometryPool() { return _geometryPool.get(); }
+
+        /** Get the const GeometryPool.*/
+        const GeometryPool* getGeometryPool() const { return _geometryPool.get(); }
+
 
 
         /** Get the TerrainTile for a given TileID.*/
@@ -109,6 +122,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         float                               _verticalScale;
         TerrainTile::BlendingPolicy         _blendingPolicy;
         bool                                _equalizeBoundaries;
+        osg::ref_ptr<GeometryPool>          _geometryPool;
 
         mutable OpenThreads::ReentrantMutex _mutex;
         TerrainTileSet                      _terrainTileSet;

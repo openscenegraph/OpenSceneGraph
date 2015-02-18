@@ -28,6 +28,7 @@ Terrain::Terrain():
     _equalizeBoundaries(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
+    _geometryPool = new GeometryPool;
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
@@ -36,6 +37,7 @@ Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
     _verticalScale(ts._verticalScale),
     _blendingPolicy(ts._blendingPolicy),
     _equalizeBoundaries(ts._equalizeBoundaries),
+    _geometryPool(ts._geometryPool),
     _terrainTechnique(ts._terrainTechnique)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);

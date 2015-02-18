@@ -982,7 +982,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         }
     }
 
-   OSG_NOTICE<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+   OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
 
     unsigned char* imageData = new unsigned char [sizeWithMipmaps];
     if(!imageData)
@@ -1018,7 +1018,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         osgImage->setOrigin(osg::Image::BOTTOM_LEFT);
         if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<4))        // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
         {
-            OSG_NOTICE<<"Flipping dds on load"<<std::endl;
+            OSG_INFO<<"Flipping dds on load"<<std::endl;
             osgImage->flipVertical();
         }
         else
@@ -1064,7 +1064,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
     unsigned int imageSize      = img->getTotalSizeInBytes();
 
-   OSG_NOTICE<<"WriteDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+   OSG_INFO<<"WriteDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
 
    // Check that theorical image size (computation taking into account DXTC blocks) is not bigger than actual image size.
     // This may happen, for instance, if some operation tuncated the data buffer non block-aligned. Example:
@@ -1276,7 +1276,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
     osg::ref_ptr<const osg::Image> source;
     if (autoFlipDDSWrite && img->getOrigin() == osg::Image::BOTTOM_LEFT)
     {
-        OSG_NOTICE<<"Flipping dds image on write"<<std::endl;
+        OSG_INFO<<"Flipping dds image on write"<<std::endl;
 
         osg::ref_ptr<osg::Image> copy( new osg::Image(*img,osg::CopyOp::DEEP_COPY_ALL) );
         const int s(copy->s());

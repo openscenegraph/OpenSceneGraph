@@ -123,6 +123,19 @@ void Terrain::traverse(osg::NodeVisitor& nv)
         }
     }
 
+    if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osg::StateSet* ss = _geometryPool.valid() ? _geometryPool->getRootStateSetForTerrain(this) : 0;
+        if (cv && ss)
+        {
+            cv->pushStateSet(ss);
+            Group::traverse(nv);
+            cv->popStateSet();
+            return;
+        }
+    }
+
     Group::traverse(nv);
 }
 

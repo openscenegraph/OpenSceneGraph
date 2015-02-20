@@ -42,21 +42,10 @@ const osgTerrain::Locator* osgTerrain::computeMasterLocator(const osgTerrain::Te
 //  GeometryPool
 //
 GeometryPool::GeometryPool():
-    _useGeometryShader(false)
+    _rootStateSetAssigned(false)
+
 {
-    const char* ptr = 0;
-    if ((ptr = getenv("OSG_TERRAIN_USE_GEOMETRY_SHADER")) != 0)
-    {
-        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"Off")==0 || strcmp(ptr,"off")==0 ||
-            strcmp(ptr,"FALSE")==0 || strcmp(ptr,"False")==0 || strcmp(ptr,"false")==0)
-        {
-            _useGeometryShader = false;
-        }
-        else
-        {
-            _useGeometryShader = true;
-        }
-    }
+    _rootStateSet = new osg::StateSet;
 }
 
 GeometryPool::~GeometryPool()
@@ -322,8 +311,8 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
 #else
     bool smallTile = numVertices <= 16384;
 
-    GLenum primitiveTypes = _useGeometryShader ? GL_LINES_ADJACENCY : GL_QUADS;
-    primitiveTypes = GL_QUADS;
+    GLenum primitiveTypes = GL_QUADS;
+
     osg::ref_ptr<osg::DrawElements> elements = smallTile ?
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(primitiveTypes)) :
         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(primitiveTypes));
@@ -577,11 +566,11 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
 
 osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
+    //OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
     ProgramMap::iterator itr = _programMap.find(layerTypes);
     if (itr!=_programMap.end())
     {
-        // OSG_NOTICE<<") returning exisitng Program "<<itr->second.get()<<std::endl;
+        // OSG_NOTICE<<") returning existing Program "<<itr->second.get()<<std::endl;
         return itr->second.get();
     }
 
@@ -615,21 +604,14 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     program->addShader(osgDB::readShaderFile("shaders/lighting.vert"));
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
-    if (num_HeightField>0)
     {
         #include "shaders/terrain_displacement_mapping_vert.cpp"
         osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert);
 
         program->addShader(shader.get());
     }
-    else
-    {
-        #include "shaders/terrain_displacement_mapping_flat_vert.cpp"
-        program->addShader(osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_flat_vert));
-    }
 
 
-    //if (_useGeometryShader)
     {
         #include "shaders/terrain_displacement_mapping_geom.cpp"
         osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::GEOMETRY, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom);
@@ -646,27 +628,8 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     }
 
     {
-        osg::ref_ptr<osg::Shader> shader;
-        if (num_Color==0)
-        {
-            #include "shaders/terrain_displacement_mapping_frag.cpp"
-            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag);
-        }
-        else if (num_Color==1)
-        {
-            #include "shaders/terrain_displacement_mapping_C_frag.cpp"
-            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_C.frag", terrain_displacement_mapping_C_frag);
-        }
-        else if (num_Color==2)
-        {
-            #include "shaders/terrain_displacement_mapping_CC_frag.cpp"
-            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_CC.frag", terrain_displacement_mapping_CC_frag);
-        }
-        else if (num_Color==3)
-        {
-            #include "shaders/terrain_displacement_mapping_CCC_frag.cpp"
-            shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping_CCC.frag", terrain_displacement_mapping_CCC_frag);
-        }
+        #include "shaders/terrain_displacement_mapping_frag.cpp"
+        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag);
 
         if (shader.valid())
         {
@@ -723,6 +686,7 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
         layerTypes.push_back(HEIGHTFIELD_LAYER);
     }
 #if 1
+    int colorLayerNum = 0;
     for(unsigned int layerNum=0; layerNum<tile->getNumColorLayers(); ++layerNum)
     {
         osgTerrain::Layer* colorLayer = tile->getColorLayer(layerNum);
@@ -787,47 +751,77 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
             stateset->setTextureAttributeAndModes(textureUnit, texture2D, osg::StateAttribute::ON);
 
             std::stringstream str;
-            str<<"colorTexture"<<textureUnit;
+            str<<"colorTexture"<<colorLayerNum;
             stateset->addUniform(new osg::Uniform(str.str().c_str(),textureUnit));
 
             layerTypes.push_back(COLOR_LAYER);
 
+            ++colorLayerNum;
+
         }
         else if (contourLayer)
         {
-            osg::Texture1D* texture1D = dynamic_cast<osg::Texture1D*>(layerToTextureMap[colorLayer]);
-            if (!texture1D)
-            {
-                texture1D = new osg::Texture1D;
-                texture1D->setImage(image);
-                texture1D->setResizeNonPowerOfTwoHint(false);
-                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getMagFilter());
-
-                layerToTextureMap[colorLayer] = texture1D;
-            }
-
-            int textureUnit = layerTypes.size();
-            stateset->setTextureAttributeAndModes(textureUnit, texture1D, osg::StateAttribute::ON);
-
-            std::stringstream str;
-            str<<"contourTexture"<<textureUnit;
-            stateset->addUniform(new osg::Uniform(str.str().c_str(),textureUnit));
-
-            layerTypes.push_back(CONTOUR_LAYER);
+            OSG_NOTICE<<"Warning : GeometryPool does not presently support ContourLayers."<<std::endl;
         }
     }
 #endif
 
-    osg::ref_ptr<osg::Program> program = getOrCreateProgram(layerTypes);
-    if (program.valid())
-    {
-        stateset->setAttribute(program.get());
-    }
+
+    // If we have a root StateSet assigned for Terrain?
+    //   If tile_LayerTypes a subset of root_LayerTypes then toggle on/off locally
+    //   If tile_LayerTypes a superset of root_LayerTypes then create local Program
+    //   else no need to set anything
+    // else no root StateSet
+    //    create new StateSet for Program required and assigned with layers required enabled
+    //
+
+
 
     //stateset->setDefine("GL_LIGHTING", osg::StateAttribute::ON);
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
+        if (!_rootStateSetAssigned)
+        {
+            _rootStateSetAssigned = true;
+
+            _rootStateSet->setDefine("LIGHTING");
+
+            int num_Color = 0;
+            for(LayerTypes::iterator itr = layerTypes.begin();
+                itr != layerTypes.end();
+                ++itr)
+            {
+                switch(*itr)
+                {
+                    case(HEIGHTFIELD_LAYER): _rootStateSet->setDefine("HEIGHTFIELD_LAYER"); break;
+                    case(COLOR_LAYER): ++num_Color; break;
+                    case(CONTOUR_LAYER): break; // not supported right now
+                }
+            }
+
+            if (num_Color>=1)
+            {
+                _rootStateSet->setDefine("TEXTURE_2D");
+                _rootStateSet->setDefine("COLOR_LAYER0");
+            }
+
+            if (num_Color>=2) _rootStateSet->setDefine("COLOR_LAYER1");
+            if (num_Color>=3) _rootStateSet->setDefine("COLOR_LAYER2");
+
+            osg::ref_ptr<osg::Program> program = getOrCreateProgram(layerTypes);
+            if (program.valid())
+            {
+                _rootStateSet->setAttribute(program.get());
+            }
+        }
+    }
 }
 
+osg::StateSet* GeometryPool::getRootStateSetForTerrain(Terrain* terrain)
+{
+    //OSG_NOTICE<<"getRootStateSetForTerrain("<<terrain<<")"<<std::endl;
+    return _rootStateSet.get();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

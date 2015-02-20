@@ -1,4 +1,7 @@
 char terrain_displacement_mapping_geom[] = "#version 120\n"
+                                           "\n"
+                                           "#pragma requires(COMPUTE_DIAGONALS)\n"
+                                           "\n"
                                            "#extension GL_EXT_geometry_shader4 : enable\n"
                                            "\n"
                                            "varying in vec3 normals_in[4];\n"

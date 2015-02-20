@@ -167,7 +167,7 @@ public:
                 }
                 else if (ea.getKey()=='d')
                 {
-                    toggleDefine("COMPUTE_DIAGONALS");
+                    toggleDefine("COMPUTE_DIAGONALS", osg::StateAttribute::OFF);
                     return true;
                 }
 
@@ -178,20 +178,21 @@ public:
         }
     }
 
-    void toggleDefine(const std::string& defineName)
+    void toggleDefine(const std::string& defineName, int expectedDefault=osg::StateAttribute::ON)
     {
         osg::StateSet::DefineList& defineList = _terrain->getOrCreateStateSet()->getDefineList();
         osg::StateSet::DefineList::iterator itr = defineList.find(defineName);
         if (itr==defineList.end())
         {
-            defineList[defineName].second = (osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            defineList[defineName].second = (expectedDefault | osg::StateAttribute::OVERRIDE); // assume the defines start off.
+            itr = defineList.find(defineName);
         }
-        else
-        {
-            osg::StateSet::DefinePair& dp = itr->second;
-            if ( (dp.second & osg::StateAttribute::ON)==0) dp.second = (osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            else dp.second = (osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
-        }
+
+        osg::StateSet::DefinePair& dp = itr->second;
+        if ( (dp.second & osg::StateAttribute::ON)==0) dp.second = (osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        else dp.second = (osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+
+
     }
 
 protected:

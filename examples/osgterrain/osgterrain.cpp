@@ -140,9 +140,29 @@ public:
                     toggleDefine("LIGHTING");
                     return true;
                 }
+                else if (ea.getKey()=='h')
+                {
+                    toggleDefine("HEIGHTFIELD_LAYER");
+                    return true;
+                }
                 else if (ea.getKey()=='t')
                 {
                     toggleDefine("TEXTURE_2D");
+                    return true;
+                }
+                else if (ea.getKey()=='y')
+                {
+                    toggleDefine("COLOR_LAYER0");
+                    return true;
+                }
+                else if (ea.getKey()=='u')
+                {
+                    toggleDefine("COLOR_LAYER1");
+                    return true;
+                }
+                else if (ea.getKey()=='i')
+                {
+                    toggleDefine("COLOR_LAYER2");
                     return true;
                 }
                 else if (ea.getKey()=='d')

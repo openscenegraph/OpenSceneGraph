@@ -327,7 +327,7 @@ class OSG_EXPORT StateSet : public Object
 
 
         /** Set the list of defines to pass on to shaders.*/
-        void setDefineList(DefineList& dl) { _defineList = dl; }
+        void setDefineList(const DefineList& dl) { _defineList = dl; }
 
         /** Get the list of defines to pass on to shaders.*/
         DefineList& getDefineList() { return _defineList; }

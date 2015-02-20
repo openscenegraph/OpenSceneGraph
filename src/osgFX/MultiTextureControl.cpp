@@ -165,6 +165,7 @@ void MultiTextureControl::updateStateSet()
         }
 #endif
         stateset->addUniform(uniform.get());
+        stateset->setDefine("TEXTURE_WEIGHTS");
     }
 
     setStateSet(stateset.get());

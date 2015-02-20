@@ -145,6 +145,8 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
         typedef std::vector<LayerType> LayerTypes;
         typedef std::map<LayerTypes, osg::ref_ptr<osg::Program> > ProgramMap;
 
+        osg::StateSet* getRootStateSetForTerrain(Terrain* terrain);
+
         virtual osg::ref_ptr<osg::Program> getOrCreateProgram(LayerTypes& layerTypes);
 
         virtual osg::ref_ptr<SharedGeometry> getOrCreateGeometry(osgTerrain::TerrainTile* tile);
@@ -153,19 +155,17 @@ class OSGTERRAIN_EXPORT GeometryPool : public osg::Referenced
 
         virtual void applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* stateset);
 
-        void setUseGeometryShader(bool flag) { _useGeometryShader = flag; }
-        bool getUseGeometryShader() const { return _useGeometryShader; }
-
     protected:
         virtual ~GeometryPool();
-
-        bool                    _useGeometryShader;
 
         OpenThreads::Mutex      _geometryMapMutex;
         GeometryMap             _geometryMap;
 
         OpenThreads::Mutex      _programMapMutex;
         ProgramMap              _programMap;
+
+        osg::ref_ptr<osg::StateSet>     _rootStateSet;
+        bool                            _rootStateSetAssigned;
 };
 
 

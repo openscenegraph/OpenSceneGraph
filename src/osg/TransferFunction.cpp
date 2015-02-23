@@ -48,14 +48,15 @@ TransferFunction1D::TransferFunction1D(const TransferFunction1D& tf, const CopyO
     TransferFunction(tf,copyop)
 {
     allocate(tf.getNumberImageCells());
-    assign(_colorMap);
+    assign(tf._colorMap);
 }
 
 void TransferFunction1D::allocate(unsigned int numX)
 {
     _image = new osg::Image;
     _image->allocateImage(numX,1,1,GL_RGBA, GL_FLOAT);
-    if (!_colorMap.empty()) assign(_colorMap);
+    
+    updateImage();
 }
 
 void TransferFunction1D::clear(const osg::Vec4& color)
@@ -177,7 +178,7 @@ osg::Vec4 TransferFunction1D::getColor(float v) const
 
 void TransferFunction1D::assign(const ColorMap& newColours)
 {
-    _colorMap = newColours;
+    if (&_colorMap != &newColours) _colorMap = newColours;
 
     updateImage();
 }

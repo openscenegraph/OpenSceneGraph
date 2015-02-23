@@ -143,10 +143,10 @@ static bool writeClearMask( osgDB::OutputStream& os, const osg::Camera& node )
     else
     {
         std::string maskString;
-        if ( mask==GL_COLOR_BUFFER_BIT ) maskString += std::string("COLOR|");
-        if ( mask==GL_DEPTH_BUFFER_BIT ) maskString += std::string("DEPTH|");
-        if ( mask==GL_ACCUM_BUFFER_BIT ) maskString += std::string("ACCUM|");
-        if ( mask==GL_STENCIL_BUFFER_BIT ) maskString += std::string("STENCIL|");
+        if ( (mask & GL_COLOR_BUFFER_BIT)!=0 ) maskString += std::string("COLOR|");
+        if ( (mask & GL_DEPTH_BUFFER_BIT)!=0 ) maskString += std::string("DEPTH|");
+        if ( (mask & GL_ACCUM_BUFFER_BIT)!=0 ) maskString += std::string("ACCUM|");
+        if ( (mask & GL_STENCIL_BUFFER_BIT)!=0 ) maskString += std::string("STENCIL|");
         if ( !maskString.size() ) maskString = std::string("NONE|");
         os << maskString.substr(0, maskString.size()-1) << std::endl;
     }

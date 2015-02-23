@@ -159,10 +159,10 @@ static bool writeDrawMode( osgDB::OutputStream& os, const osgText::TextBase& tex
     else
     {
         std::string maskString;
-        if ( mask==osgText::TextBase::TEXT ) maskString += std::string("TEXT|");
-        if ( mask==osgText::TextBase::BOUNDINGBOX ) maskString += std::string("BOUND|");
-        if ( mask==osgText::TextBase::FILLEDBOUNDINGBOX ) maskString += std::string("FILLED|");
-        if ( mask==osgText::TextBase::ALIGNMENT ) maskString += std::string("ALIGNMENT|");
+        if ( (mask&osgText::TextBase::TEXT)!=0 ) maskString += std::string("TEXT|");
+        if ( (mask&osgText::TextBase::BOUNDINGBOX)!=0 ) maskString += std::string("BOUND|");
+        if ( (mask&osgText::TextBase::FILLEDBOUNDINGBOX)!=0 ) maskString += std::string("FILLED|");
+        if ( (mask&osgText::TextBase::ALIGNMENT)!=0 ) maskString += std::string("ALIGNMENT|");
         if ( !maskString.size() ) maskString = std::string("NONE|");
         os << maskString.substr(0, maskString.size()-1) << std::endl;
     }

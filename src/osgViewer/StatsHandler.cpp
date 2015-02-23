@@ -326,6 +326,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 
     // only clear the depth buffer
     _camera->setClearMask(0);
+    _camera->setAllowEventFocus(false);
 
     _camera->setRenderer(new Renderer(_camera.get()));
 

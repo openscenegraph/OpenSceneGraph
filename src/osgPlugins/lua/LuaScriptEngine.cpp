@@ -1942,7 +1942,7 @@ void LuaScriptEngine::initialize()
         lua_pop(_lua,1);
     }
 
-    // Set up the __newindex and __index methods for looking up implementations of Object properties
+    // Set up the __tostring methods to be able to convert tables into strings so they can be output for debugging purposes.
     {
         luaL_newmetatable(_lua, "LuaScriptEngine.Table");
 
@@ -3869,7 +3869,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
     {
         for(unsigned int c=0; c<4; ++c)
         {
-            lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, value(r,c)); lua_settable(_lua, -3);
+            lua_pushinteger(_lua, r*4+c); lua_pushnumber(_lua, value(r,c)); lua_settable(_lua, -3);
         }
     }
 }

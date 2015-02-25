@@ -124,7 +124,7 @@ void ScalarBar::createDrawables()
 {
     // Remove any existing Drawables
     removeDrawables(0, getNumDrawables());
-    
+
     if (_numColors==0) return;
 
     osg::Matrix matrix;
@@ -167,11 +167,15 @@ void ScalarBar::createDrawables()
     osg::ref_ptr<osg::Vec4Array> cs(new osg::Vec4Array);
     cs->reserve(4*_numColors);
     const float halfIncr = incr*0.5;
-    for(i=0; i<_numColors; ++i)
+    // Check whether to use interpolated colors or retain the original
+    // color values if _numColors equals the number of ColorRange colors defined
+    ColorRange *cr = dynamic_cast<ColorRange*>(_stc.get());
+    bool fixedColors = cr && (_numColors == static_cast<int>(cr->getColors().size()));
+    for (i = 0; i<_numColors; ++i)
     {
         // We add half an increment to the color look-up to get the color
-        // square in the middle of the 'block'.
-        osg::Vec4 c = _stc->getColor(_stc->getMin() + (i*incr)  + halfIncr);
+        // square in the middle of the 'block' unless using fixed colors.
+        osg::Vec4 c = fixedColors ? cr->getColors()[i] : _stc->getColor(_stc->getMin() + (i*incr) + halfIncr);
         cs->push_back(c);
         cs->push_back(c);
         cs->push_back(c);

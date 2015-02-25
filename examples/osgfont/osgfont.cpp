@@ -19,17 +19,10 @@ void textInfo(osgText::Text* text)
 
     for(unsigned int i = 0; i < s.size(); i++)
     {
-        osg::Vec2 ul = gq.getCoords()[0 + (i * 4)]; // upperLeft
-        osg::Vec2 ll = gq.getCoords()[1 + (i * 4)]; // lowerLeft
-        osg::Vec2 lr = gq.getCoords()[2 + (i * 4)]; // lowerRight
-        osg::Vec2 ur = gq.getCoords()[3 + (i * 4)]; // upperRight
-
-        /*
-        osg::Vec3 ul = gq.getTransformedCoords(0)[0 + (i * 4)];
-        osg::Vec3 ll = gq.getTransformedCoords(0)[1 + (i * 4)];
-        osg::Vec3 lr = gq.getTransformedCoords(0)[2 + (i * 4)];
-        osg::Vec3 ur = gq.getTransformedCoords(0)[3 + (i * 4)];
-        */
+        osg::Vec2 ul = (*gq.getCoords())[0 + (i * 4)]; // upperLeft
+        osg::Vec2 ll = (*gq.getCoords())[1 + (i * 4)]; // lowerLeft
+        osg::Vec2 lr = (*gq.getCoords())[2 + (i * 4)]; // lowerRight
+        osg::Vec2 ur = (*gq.getCoords())[3 + (i * 4)]; // upperRight
 
         osg::notify(osg::NOTICE)
             << "'" << static_cast<char>(s[i]) << "':"

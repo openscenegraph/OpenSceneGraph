@@ -41,7 +41,9 @@ Text::Text():
     _colorGradientBottomLeft(0.0f, 1.0f, 0.0f, 1.0f),
     _colorGradientBottomRight(0.0f, 0.0f, 1.0f, 1.0f),
     _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)
-{}
+{
+    _supportsVertexBufferObjects = true;
+}
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
@@ -442,16 +444,16 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 lowLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 lowRight = local+osg::Vec2(width+fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 upRight = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
-                    glyphquad._coords.push_back(upLeft);
-                    glyphquad._coords.push_back(lowLeft);
-                    glyphquad._coords.push_back(lowRight);
-                    glyphquad._coords.push_back(upRight);
+                    glyphquad._coords->push_back(upLeft);
+                    glyphquad._coords->push_back(lowLeft);
+                    glyphquad._coords->push_back(lowRight);
+                    glyphquad._coords->push_back(upRight);
 
                     // set up the tex coords of the quad
-                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
-                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
-                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
-                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
+                    glyphquad._texcoords->push_back(osg::Vec2(mintc.x(), maxtc.y()));
+                    glyphquad._texcoords->push_back(osg::Vec2(mintc.x(), mintc.y()));
+                    glyphquad._texcoords->push_back(osg::Vec2(maxtc.x(), mintc.y()));
+                    glyphquad._texcoords->push_back(osg::Vec2(maxtc.x(), maxtc.y()));
 
                     // move the cursor onto the next character.
                     // also expand bounding box
@@ -521,6 +523,17 @@ void Text::computeGlyphRepresentation()
 
     }
 
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        titr->second.updateQuadIndices();
+        if (_useVertexBufferObjects)
+        {
+            titr->second.initGPUBufferObjects();
+        }
+    }
+
     TextBase::computePositions();
     computeBackdropBoundingBox();
     computeBoundingBoxMargin();
@@ -557,10 +570,10 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
     {
         const GlyphQuads& glyphquad = const_titr->second;
         const GlyphQuads::Coords2& coords2 = glyphquad._coords;
-        for(i = 0; i < coords2.size(); i+=4)
+        for (i = 0; i < coords2->size(); i += 4)
         {
-            width = coords2[i+2].x() - coords2[i].x();
-            height = coords2[i].y() - coords2[i+1].y();
+            width = (*coords2)[i + 2].x() - (*coords2)[i].x();
+            height = (*coords2)[i].y() - (*coords2)[i + 1].y();
 
             running_width += width;
             running_height += height;
@@ -713,16 +726,17 @@ void Text::computePositions(unsigned int contextID) const
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
         GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
 
-        unsigned int numCoords = coords2.size();
-        if (numCoords!=transformedCoords.size())
+        unsigned int numCoords = coords2->size();
+        if (numCoords != transformedCoords->size())
         {
-            transformedCoords.resize(numCoords);
+            transformedCoords->resize(numCoords);
         }
 
         for(unsigned int i=0;i<numCoords;++i)
         {
-            transformedCoords[i] = osg::Vec3(coords2[i].x(),coords2[i].y(),0.0f)*matrix;
+            (*transformedCoords)[i] = osg::Vec3((*coords2)[i].x(), (*coords2)[i].y(), 0.0f)*matrix;
         }
+        transformedCoords->dirty();
     }
 
     computeBackdropPositions(contextID);
@@ -790,10 +804,10 @@ void Text::computeBackdropPositions(unsigned int contextID) const
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             GlyphQuads::Coords3& transformedCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            unsigned int numCoords = coords2.size();
-            if (numCoords!=transformedCoords.size())
+            unsigned int numCoords = coords2->size();
+            if (numCoords!=transformedCoords->size())
             {
-                transformedCoords.resize(numCoords);
+                transformedCoords->resize(numCoords);
             }
 
             for(i=0;i<numCoords;++i)
@@ -856,7 +870,8 @@ void Text::computeBackdropPositions(unsigned int contextID) const
                             vertical_shift_direction = -1.0f;
                         }
                 }
-                transformedCoords[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width+coords2[i].x(),vertical_shift_direction * _backdropVerticalOffset * avg_height+coords2[i].y(),0.0f)*matrix;
+                (*transformedCoords)[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords2)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords2)[i].y(), 0.0f)*matrix;
+                transformedCoords->dirty();
             }
         }
     }
@@ -1056,24 +1071,24 @@ void Text::computeColorGradientsOverall() const
         const GlyphQuads& glyphquad = const_titr->second;
         const GlyphQuads::Coords2& coords2 = glyphquad._coords;
 
-        for(i=0;i<coords2.size();++i)
+        for(i=0;i<coords2->size();++i)
         {
             // Min and Max are needed for color gradients
-            if(coords2[i].x() > max_x)
+            if((*coords2)[i].x() > max_x)
             {
-                max_x = coords2[i].x();
+                max_x = (*coords2)[i].x();
             }
-            if(coords2[i].x() < min_x)
+            if ((*coords2)[i].x() < min_x)
             {
-                min_x = coords2[i].x();
+                min_x = (*coords2)[i].x();
             }
-            if(coords2[i].y() > max_y)
+            if ((*coords2)[i].y() > max_y)
             {
-                max_y = coords2[i].y();
+                max_y = (*coords2)[i].y();
             }
-            if(coords2[i].y() < min_y)
+            if ((*coords2)[i].y() < min_y)
             {
-                min_y = coords2[i].y();
+                min_y = (*coords2)[i].y();
             }
 
         }
@@ -1087,10 +1102,10 @@ void Text::computeColorGradientsOverall() const
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
         GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
 
-        unsigned int numCoords = coords2.size();
-        if (numCoords!=colorCoords.size())
+        unsigned int numCoords = coords2->size();
+        if (numCoords!=colorCoords->size())
         {
-            colorCoords.resize(numCoords);
+            colorCoords->resize(numCoords);
         }
 
         for(i=0;i<numCoords;++i)
@@ -1100,8 +1115,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                coords2[i].x(),
-                coords2[i].y(),
+                (*coords2)[i].x(),
+                (*coords2)[i].y(),
                 _colorGradientBottomLeft[0],
                 _colorGradientTopLeft[0],
                 _colorGradientBottomRight[0],
@@ -1113,8 +1128,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                coords2[i].x(),
-                coords2[i].y(),
+                (*coords2)[i].x(),
+                (*coords2)[i].y(),
                 _colorGradientBottomLeft[1],
                 _colorGradientTopLeft[1],
                 _colorGradientBottomRight[1],
@@ -1126,8 +1141,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                coords2[i].x(),
-                coords2[i].y(),
+                (*coords2)[i].x(),
+                (*coords2)[i].y(),
                 _colorGradientBottomLeft[2],
                 _colorGradientTopLeft[2],
                 _colorGradientBottomRight[2],
@@ -1139,15 +1154,15 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                coords2[i].x(),
-                coords2[i].y(),
+                (*coords2)[i].x(),
+                (*coords2)[i].y(),
                 _colorGradientBottomLeft[3],
                 _colorGradientTopLeft[3],
                 _colorGradientBottomRight[3],
                 _colorGradientTopRight[3]
             );
 
-            colorCoords[i] = osg::Vec4(red,green,blue,alpha);
+            (*colorCoords)[i] = osg::Vec4(red,green,blue,alpha);
         }
     }
 }
@@ -1162,10 +1177,10 @@ void Text::computeColorGradientsPerCharacter() const
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
         GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
 
-        unsigned int numCoords = coords2.size();
-        if (numCoords!=colorCoords.size())
+        unsigned int numCoords = coords2->size();
+        if (numCoords!=colorCoords->size())
         {
-            colorCoords.resize(numCoords);
+            colorCoords->resize(numCoords);
         }
 
         for(unsigned int i=0;i<numCoords;++i)
@@ -1174,27 +1189,27 @@ void Text::computeColorGradientsPerCharacter() const
             {
                 case 0: // top-left
                     {
-                        colorCoords[i] = _colorGradientTopLeft;
+                        (*colorCoords)[i] = _colorGradientTopLeft;
                         break;
                     }
                 case 1: // bottom-left
                     {
-                        colorCoords[i] = _colorGradientBottomLeft;
+                        (*colorCoords)[i] = _colorGradientBottomLeft;
                         break;
                     }
                 case 2: // bottom-right
                     {
-                        colorCoords[i] = _colorGradientBottomRight;
+                        (*colorCoords)[i] = _colorGradientBottomRight;
                         break;
                     }
                 case 3: // top-right
                     {
-                        colorCoords[i] = _colorGradientTopRight;
+                        (*colorCoords)[i] = _colorGradientTopRight;
                         break;
                     }
                 default: // error
                     {
-                        colorCoords[i] = osg::Vec4(0.0f,0.0f,0.0f,1.0f);
+                        (*colorCoords)[i] = osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
                     }
             }
         }
@@ -1273,7 +1288,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     if ( !_textureGlyphQuadMap.empty() )
     {
         const GlyphQuads& glyphquad = (_textureGlyphQuadMap.begin())->second;
-        if ( glyphquad._transformedCoords[contextID].empty() )
+        if ( glyphquad._transformedCoords[contextID]->empty() )
         {
             computePositions(contextID);
         }
@@ -1385,6 +1400,10 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         {
             renderWithDelayedDepthWrites(state,colorMultiplier);
         }
+
+        // unbind buffers if necessary
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
     }
 
     if (_drawMode & BOUNDINGBOX)
@@ -1444,8 +1463,8 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        af.apply(osg::Drawable::VERTICES,glyphquad._transformedCoords[0].size(),&(glyphquad._transformedCoords[0].front()));
-        af.apply(osg::Drawable::TEXTURE_COORDS_0,glyphquad._texcoords.size(),&(glyphquad._texcoords.front()));
+        af.apply(osg::Drawable::VERTICES, glyphquad._transformedCoords[0]->size(), &(glyphquad._transformedCoords[0]->front()));
+        af.apply(osg::Drawable::TEXTURE_COORDS_0, glyphquad._texcoords->size(), &(glyphquad._texcoords->front()));
     }
 }
 
@@ -1457,8 +1476,8 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     {
         const GlyphQuads& glyphquad = titr->second;
 
-        pf.setVertexArray(glyphquad._transformedCoords[0].size(),&(glyphquad._transformedCoords[0].front()));
-        pf.drawArrays(GL_QUADS,0,glyphquad._transformedCoords[0].size());
+        pf.setVertexArray(glyphquad._transformedCoords[0]->size(), &(glyphquad._transformedCoords[0]->front()));
+        pf.drawArrays(GL_QUADS, 0, glyphquad._transformedCoords[0]->size());
 
     }
 
@@ -1556,10 +1575,10 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     unsigned int contextID = state.getContextID();
 
     const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-    if (!transformedCoords.empty())
+    if (!transformedCoords->empty())
     {
-        state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setVertexPointer(transformedCoords);
+        state.setTexCoordPointer(0, glyphquad._texcoords);
 
         if(_colorGradientMode == SOLID)
         {
@@ -1568,11 +1587,10 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
         }
         else
         {
-            state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
+            state.setColorPointer(glyphquad._colorCoords);
         }
 
-        state.drawQuads(0,transformedCoords.size());
-
+        glyphquad._quadIndices->draw(state, _useVertexBufferObjects);
     }
 }
 
@@ -1647,17 +1665,17 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
                 max_backdrop_index = _backdropType+1;
             }
 
-            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+            state.setTexCoordPointer(0, glyphquad._texcoords);
             state.disableColorPointer();
             state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
             for( ; backdrop_index < max_backdrop_index; backdrop_index++)
             {
                 const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-                if (!transformedBackdropCoords.empty())
+                if (!transformedBackdropCoords->empty())
                 {
-                    state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                    state.drawQuads(0,transformedBackdropCoords.size());
+                    state.setVertexPointer(transformedBackdropCoords);
+                    glyphquad._quadIndices->draw(state, _useVertexBufferObjects);
                 }
             }
         }
@@ -1703,19 +1721,19 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty())
+            if (!transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords->front()));
                 glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
                                 osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
-                state.drawQuads(0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
 
@@ -1762,17 +1780,17 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty())
+            if (!transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                state.drawQuads(0,transformedBackdropCoords.size());
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords->front()));
+                state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
 
@@ -1818,20 +1836,20 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
             max_backdrop_index = _backdropType+1;
         }
 
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty())
+            if (!transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords->front()));
                 double offset = double(max_backdrop_index-backdrop_index)*0.0001;
                 glDepthRange( offset, 1.0+offset);
 
-                state.drawQuads(0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
 
@@ -1917,26 +1935,26 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
         state.disableColorPointer();
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty())
+            if (!transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                state.drawQuads(0,transformedBackdropCoords.size());
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords->front()));
+                state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
 
         // Draw the foreground text
         const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-        if (!transformedCoords.empty())
+        if (!transformedCoords->empty())
         {
-            state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
-            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
-            state.drawQuads(0,transformedCoords.size());
+            state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords->front()));
+            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
+            state.drawQuads(0, transformedCoords->size());
         }
     }
 
@@ -1984,17 +2002,17 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords->front()));
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-            if (!transformedBackdropCoords.empty())
+            if (!transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                state.drawQuads(0,transformedBackdropCoords.size());
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords->front()));
+                state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
 
@@ -2005,4 +2023,67 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 #else
     OSG_NOTICE<<"Warning: Text::renderWithStencilBuffer(..) not implemented."<<std::endl;
 #endif
+}
+
+Text::GlyphQuads::GlyphQuads()
+{
+    _coords = new osg::Vec2Array();
+    _texcoords = new osg::Vec2Array();
+    _colorCoords = new osg::Vec4Array();
+    for (size_t i = 0; i < _transformedCoords.size(); i++)
+    {
+        _transformedCoords[i] = new osg::Vec3Array();
+    }
+    for (int j = 0; j < 8; j++)
+    {
+        for (size_t i = 0; i < _transformedBackdropCoords[j].size(); i++)
+        {
+            _transformedBackdropCoords[j][i] = new osg::Vec3Array();
+        }
+    }
+
+    _quadIndices = new DrawElementsUInt(PrimitiveSet::TRIANGLES);
+}
+
+void Text::GlyphQuads::updateQuadIndices()
+{
+    _quadIndices->clear();
+    if (_coords->size() % 4 != 0)
+        OSG_WARN << "size of _coords is not divisible by 4.";
+    for (unsigned int i = 0; i < (unsigned int)_coords->size(); i += 4)
+    {
+        _quadIndices->push_back(i);
+        _quadIndices->push_back(i + 1);
+        _quadIndices->push_back(i + 3);
+
+        _quadIndices->push_back(i + 1);
+        _quadIndices->push_back(i + 2);
+        _quadIndices->push_back(i + 3);
+    }
+}
+
+void Text::GlyphQuads::initGPUBufferObjects()
+{
+    osg::VertexBufferObject* vbo = new osg::VertexBufferObject();
+    _coords->setBinding(osg::Array::BIND_PER_VERTEX);
+    _coords->setVertexBufferObject(vbo);
+    _texcoords->setBinding(osg::Array::BIND_PER_VERTEX);
+    _texcoords->setVertexBufferObject(vbo);
+    _colorCoords->setBinding(osg::Array::BIND_PER_VERTEX);
+    _colorCoords->setVertexBufferObject(vbo);
+    for (size_t i = 0; i < _transformedCoords.size(); i++)
+    {
+        _transformedCoords[i]->setBinding(osg::Array::BIND_PER_VERTEX);
+        _transformedCoords[i]->setVertexBufferObject(vbo);
+    }
+    for (int j = 0; j < 8; j++)
+    {
+        for (size_t i = 0; i < _transformedBackdropCoords[j].size(); i++)
+        {
+            _transformedBackdropCoords[j][i]->setBinding(osg::Array::BIND_PER_VERTEX);
+            _transformedBackdropCoords[j][i]->setVertexBufferObject(vbo);
+        }
+    }
+
+    _quadIndices->setElementBufferObject(new osg::ElementBufferObject());
 }

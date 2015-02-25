@@ -180,12 +180,6 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             }
             double const d2 = t.stop();
 
-            if (reader.GetHeader().GetPointRecordsCount() != i)
-            {
-                return ReadResult::ERROR_IN_READING_FILE;
-            }
-
-
             if (verbose) {
                 std::cout << "Read points: " << i << " Elapsed Time: " << d2
                     << std::endl << std::endl;

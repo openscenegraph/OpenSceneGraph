@@ -471,7 +471,8 @@ TypoCorrection typoCorrections[] =
     {"Chebeav", "Chebaev"},
     {"Messershmidt","Messerschmidt"},
     {"Auelien","Aurelien"},
-    {"AurÃ©lien","Aurélien"}
+    {"AurÃ©lien","Aurélien"},
+    {"McDonnell","Mc Donnell"}
 };
 
 

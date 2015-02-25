@@ -30,6 +30,15 @@
 
 #include <OpenThreads/Mutex>
 
+// GL_ALPHA is deprecated in GL3/GL4 core profile, use GL_RED and a shader in this case. See osgText example.
+#if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
+#define OSGTEXT_GLYPH_FORMAT GL_RED
+#define OSGTEXT_GLYPH_INTERNALFORMAT GL_R8
+#else
+#define OSGTEXT_GLYPH_FORMAT GL_ALPHA
+#define OSGTEXT_GLYPH_INTERNALFORMAT GL_ALPHA
+#endif
+
 namespace osgText {
 
 class Font;

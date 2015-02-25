@@ -187,7 +187,7 @@ void GlyphTexture::apply(osg::State& state) const
         // being bound for the first time, need to allocate the texture
 
         _textureObjectBuffer[contextID] = textureObject = osg::Texture::generateTextureObject(
-                this, contextID,GL_TEXTURE_2D,1,GL_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
+            this, contextID, GL_TEXTURE_2D, 1, OSGTEXT_GLYPH_INTERNALFORMAT, getTextureWidth(), getTextureHeight(), 1, 0);
 
         textureObject->bind();
 
@@ -228,9 +228,9 @@ void GlyphTexture::apply(osg::State& state) const
         #endif
 
         // allocate the texture memory.
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
+        glTexImage2D(GL_TEXTURE_2D, 0, OSGTEXT_GLYPH_INTERNALFORMAT,
                 getTextureWidth(), getTextureHeight(), 0,
-                GL_ALPHA,
+                OSGTEXT_GLYPH_FORMAT,
                 GL_UNSIGNED_BYTE,
                 imageData );
 
@@ -382,7 +382,7 @@ void GlyphTexture::apply(osg::State& state) const
             glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0,
                     getTextureWidth(),
                     getTextureHeight(),
-                    GL_ALPHA, GL_UNSIGNED_BYTE, local_data );
+                    OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE, local_data);
 
             #if defined(OSG_GLES2_AVAILABLE)
             if (requiresGenerateMipmapCall) glGenerateMipmap(GL_TEXTURE_2D);
@@ -433,7 +433,7 @@ void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 osg::Image* GlyphTexture::createImage()
 {
     osg::ref_ptr<osg::Image> image = new osg::Image;
-    image->allocateImage(getTextureWidth(), getTextureHeight(), 1, GL_ALPHA, GL_UNSIGNED_BYTE);
+    image->allocateImage(getTextureWidth(), getTextureHeight(), 1, OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE);
     memset(image->data(), 0, image->getTotalSizeInBytes());
 
     for(GlyphRefList::iterator itr = _glyphs.begin();

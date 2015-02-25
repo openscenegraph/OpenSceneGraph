@@ -299,10 +299,10 @@ public:
     {
         typedef std::vector<Glyph*> Glyphs;
         typedef std::vector<unsigned int> LineNumbers;
-        typedef std::vector<osg::Vec2> Coords2;
-        typedef std::vector<osg::Vec3> Coords3;
-        typedef std::vector<osg::Vec2> TexCoords;
-        typedef std::vector<osg::Vec4> ColorCoords;
+        typedef osg::ref_ptr<osg::Vec2Array> Coords2;
+        typedef osg::ref_ptr<osg::Vec3Array> Coords3;
+        typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
+        typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
 
         Glyphs                          _glyphs;
         Coords2                         _coords;
@@ -312,6 +312,13 @@ public:
 
         osg::buffered_object<Coords3>   _transformedBackdropCoords[8];
         ColorCoords    _colorCoords;
+
+        osg::ref_ptr<osg::DrawElementsUInt> _quadIndices;
+        void updateQuadIndices();
+
+        GlyphQuads();
+
+        void initGPUBufferObjects();
 
         Glyphs getGlyphs() { return _glyphs; }
         const Glyphs getGlyphs() const { return _glyphs; }

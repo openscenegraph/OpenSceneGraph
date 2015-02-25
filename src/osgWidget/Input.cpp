@@ -122,7 +122,7 @@ void Input::_calculateCursorOffsets() {
         const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
         //coords.insert(coords.end(),gq.getTransformedCoords(0).begin(),gq.getTransformedCoords(0).end());
-        coords.insert(coords.end(),gq.getCoords().begin(),gq.getCoords().end());
+        coords.insert(coords.end(),gq.getCoords()->begin(),gq.getCoords()->end());
         for (unsigned int i=0; i<gq.getGlyphs().size(); ++i)
         {
             glyphs.push_back(gq.getGlyphs().at(i));

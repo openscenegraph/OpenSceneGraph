@@ -577,7 +577,11 @@ void OutputStream::writeImage( const osg::Image* img )
 
 void OutputStream::writeObject( const osg::Object* obj )
 {
-    if ( !obj ) return;
+    if ( !obj )
+    {
+        *this << std::string("NULL") << std::endl;  // Write NULL token.
+        return;
+    }
 
     std::string name = obj->libraryName();
     name += std::string("::") + obj->className();

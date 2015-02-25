@@ -815,7 +815,14 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
 {
     std::string className;
     unsigned int id = 0;
-    *this >> className >> BEGIN_BRACKET >> PROPERTY("UniqueID") >> id;
+    *this >> className;
+
+    if (className=="NULL")
+    {
+        return 0;
+    }
+
+    *this >> BEGIN_BRACKET >> PROPERTY("UniqueID") >> id;
     if ( getException() ) return NULL;
 
     IdentifierMap::iterator itr = _identifierMap.find( id );
